@@ -45,6 +45,17 @@ hard-coded for any test; ratchets only move in the strict direction.
   web search; a documentation question to web search in ru/hi/zh but not en; an
   additive edit instruction to web search). Each is a symptom of the same cause
   this plan removes, and each supplies a regression case.
+- **Issues plan 13's coverage table names this plan as a deliverer of** (added by
+  the 2026-09-16 reconciliation): **#801** / **#821** ("search online for Elon
+  Musk" — an explicit search act must reach retrieval, the `(bare_term, retrieve,
+  web)` row); **#826** (`ФБС vs ФБО` then `Зарепорти баг` — an unknown-term
+  comparison followed by a report act, two rows of the table); **#827**
+  (`Что такое фуфломицин?` and its elliptical follow-up — routing to plan 01's
+  lookup, then coreference over the dialogue locus); **#838** ("find
+  hive-mind on my desktop" — the `(path_scope, retrieve, workspace)` row, with
+  plan 03 owning the workspace it reads); **#800** and **#872** (retrieval under
+  a marketplace constraint — the routing half lands, the source's coverage does
+  not).
 - **#1138 B10** — the umbrella.
 
 ---
@@ -797,7 +808,10 @@ New ledger `data/meta/capability-routing-ratchet.lino` (name checked free):
 
 The strict rule is plan 09's: a measured value that beats its ceiling fails with
 "lower the reviewed ceiling", copied from
-`scripts/check-minimal-core-boundary.rs:286-290`. New checker
+`scripts/check-minimal-core-boundary.rs:286-290`. **Six of these measures ratchet
+*upward*, which plan 00 §6.7 admits as a declared exception: each states its
+direction in its own `how` field, and the checker fails in both directions
+either way (plan 00 §9 X6).** New checker
 `scripts/check-capability-routing.rs` *(name free)* and gate file
 `data/meta/ci-gates/check-capability-routing.lino` *(free)*, stage `rust`,
 following `data/meta/ci-gates/check-debt-ratchet.lino`'s shape.
@@ -859,9 +873,14 @@ Ordered; each independently verifiable and commit-sized.
 
 - [ ] 12. News: the `freshness: live` qualifier and news-first source selection
       (**after plan 01**); honest-gap text; close #720 with its paraphrase set.
-- [ ] 13. Non-understanding: the re-render-previous-turn act; **delete**
-      `data/seed/intent-routing.lino:400-402` and the matching `lexeme zh`
-      surfaces at `data/seed/meanings-intent.lino:444-450`; close #721.
+- [ ] 13. Non-understanding: the re-render-previous-turn act, added as one
+      operation of plan 09's `dialogue_state_query` family (leaf 33) rather than
+      as a handler; **delete** `data/seed/intent-routing.lino:400-402` and the
+      matching `lexeme zh` surfaces at `data/seed/meanings-intent.lino:444-450`;
+      close #721. **This leaf lands after plan 09 leaves 33 and 36: leaf 36 keeps
+      `clarification`'s five-language role surfaces, and this leaf removes only
+      the three memorized literals, so the class stays routed while the
+      memorization goes (plan 00 §9 X12, X13).**
 - [ ] 14. Compose: the composition procedure over a retrieved concept graph
       (**after plans 01 and 04**); close #722 once plan 04's clause-splitting
       leaf has landed.
@@ -911,71 +930,28 @@ Ordered; each independently verifiable and commit-sized.
 
 ## Docs to update
 
-**`ROADMAP.md`** — there is no row for capability routing today (`grep -n
-"R745\|R758" ROADMAP.md REQUIREMENTS.md` returns nothing but an unrelated line
-number match). Add one to the current table:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D249-D256** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> "| Capability routing generalizes across phrasing and language (#745, #758) |
-> Measured, not asserted: `data/meta/capability-routing-ratchet.lino` records
-> intents measured, languages measured, paraphrases per intent, cases passing,
-> cross-tool misroutes and silent unknowns; the 420-case suite lives in
-> `data/benchmarks/capability-routing/`. #745 and #758 stay open until
-> misroutes and silent unknowns read 0. |
-> [#745](https://github.com/link-assistant/formal-ai/issues/745),
-> [#758](https://github.com/link-assistant/formal-ai/issues/758) |"
+| row | document |
+| --- | --- |
+| D249 | `ROADMAP.md` |
+| D250 | `VISION.md:337` |
+| D251 | `ARCHITECTURE.md:160-165` |
+| D252 | `docs/requirements/issue-0745-intent-routing-generalization.md` |
+| D253 | `docs/requirements-traceability.md` |
+| D254 | `experiments/issue_840_task_ladder/README.txt` |
+| D255 | `tests/fixtures/routing-parity.lino` |
+| D256 | `data/meta/learning-frontier-language-gap.lino` and
+`data/meta/language-adoption-ledger.lino` |
 
-**`VISION.md:337`** — currently ends "Every interface now reads its multilingual
-responses, concept table, tool registry, language-detection rules, prompt
-patterns, and intent-routing rule book from the shared `data/seed/` directory".
-"Intent-routing rule book" names
-`data/seed/intent-routing.lino`, a 477-line phrase list. Replace, as leaf 20
-proceeds, with: "…, and its capability-routing table — the decision from object
-type, act and locus to capability, with the phrase book it replaced deleted —
-from the shared `data/seed/` directory".
-
-**`ARCHITECTURE.md:160-165`** — "The pipeline runs the same way for every
-prompt … because the universal solver is intentionally domain-agnostic" is true
-of the solver and silently untrue of `src/agentic_coding/planner.rs`, which is
-845 lines of ordered arms. Add after it: "The agentic planner runs the same
-capability-routing table: `src/capability_routing.rs` derives the object type,
-the act and the locus, and `data/seed/capability-routing.lino` maps the triple
-to a capability, which `src/agentic_coding/capability_router.rs` turns into
-whichever tool name the connected client advertises. Arm order is data
-(`data/seed/planner-precedence.lino`) for the arms that remain."
-
-**`docs/requirements/issue-0745-intent-routing-generalization.md`** *(new shard;
-no `issue-0745-*` or `issue-0758-*` file exists today — `ls docs/requirements`
-confirms)* — one requirement row per #745 clause (intent not phrasing; no
-cross-tool misroutes; never silently UNKNOWN; language parity; CI variation
-matrix) and per #758 clause (route by capability; full shared set;
-grep/glob/list_dir never UNKNOWN; per-CLI matrix), each with an honest status
-and a named test. The 2026-07-25 maintainer re-measurement is quoted in the
-shard header so the closure history is visible in the requirement itself.
-
-**`docs/requirements-traceability.md`** — #745 and #758 have **no rows at all**
-today. Add one row per requirement created above, each naming the automated test
-(`tests/unit/issue_1138_capability_routing.rs::…`) and the manual confirmation
-(the ladder transcript, the #447 screenshots). `REQUIREMENTS.md` is generated
-and regenerates from the shard.
-
-**`experiments/issue_840_task_ladder/README.txt`** — the paragraph "The
-historical v0.303.0 measurement was 8/24 … The current committed `results.json`
-is the strict all-green baseline" stays (it is honest and load-bearing); add
-that the dataset now covers five languages and the seven #1087 frontier prompts,
-and that the route-only variant runs in the ordinary CI stage.
-
-**`tests/fixtures/routing-parity.lino`** — plan 09 rewrites its header; this
-plan adds the capability-routing invariants that must hold on both surfaces, so
-a browser fix and a Rust fix cannot diverge again (#720 and #721 were reported
-against the wasm build, not the CLI).
-
-**`data/meta/learning-frontier-language-gap.lino` and
-`data/meta/language-adoption-ledger.lino`** — both record Spanish at
-`total_prompts "7"` / `classes "2"`. After leaf 7 they must be re-derived by
-running the frontier, not hand-edited, so the Spanish numbers reflect the seven
-routed classes rather than the two concept-lookup ones.
-
----
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

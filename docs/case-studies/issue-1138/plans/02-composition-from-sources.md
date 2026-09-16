@@ -33,6 +33,14 @@
   module on it and adds no second construction surface.
 - **#923 (E76, closed)** — established the "widen the kernel, score it honestly
   through the #698 harness" discipline that this plan applies to composition.
+- **Issues plan 13's coverage table names this plan as a deliverer of** (added by
+  the 2026-09-16 reconciliation): **#948** (the idiom catalog shrinks, so the
+  memoized-answer surface burns down with plan 09); **#1071** (counting to any
+  number and the text-only reasoning tasks reach the composer through plan 08's
+  route); **#722** (composition of a long-form answer from retrieved parts);
+  **#940** (the research-to-document half, minus the PDF/DOCX rendering that is
+  blocked upstream); **#827** / E5 (three correct sources are fetched and their
+  titles emitted — fusion into a composed answer is this plan's stage 3).
 - **#710 R710-D1/D2/D3/D9/D10** (`docs/requirements/issue-0710-dynamic-coding-discovery.md`)
   — the first-20 rows and the forget/rediscover ledger. This plan promotes D2/D3
   from "first 20" to "whole suite" and extends D10 from the *procedure* ledger
@@ -499,20 +507,20 @@ Rejections:
 
 | Path | Status | Purpose |
 | --- | --- | --- |
-| `src/coding/procedure_text.rs` | new | retrieved page → ordered `ProcedureStepRecord` list with provenance |
+| `src/procedure_text.rs` | changed (declared by plan 04 L9) | retrieved page → ordered `ProcedureStepRecord` list with provenance. **reconciled: was `src/procedure_text.rs`, new here; now the top-level module plan 04 L9 declares and this plan L10 extends, because plan 04 lands first in plan 00 §5's order and both plans need one "ordered step with provenance" record — plan 04's `ExtractedProcedure::from_step_records` is its only constructor (plan 00 §9 R10).** |
 | `src/coding/program_ir.rs` | new | the language-neutral IR: `ProgramIr`, `IrNode`, typing, cost |
 | `src/coding/ir_lowering/mod.rs` | new | `LanguageLowering` trait + registry |
 | `src/coding/ir_lowering/python.rs` | new | Python lowering (replaces direct idiom substitution) |
 | `src/coding/ir_lowering/rust.rs` | new | second language, to prove the IR is not Python-shaped |
 | `src/coding/fragment_catalog.rs` | new | unified fragment store: bootstrap seed + retrieved fragments, content-addressed |
 | `src/coding/composition_search.rs` | new | bounded typed enumeration over available fragments |
-| `src/coding/source_lookup.rs` | new | `RegistryConceptLookup: UnknownConceptLookup` walking `sources-registry.lino` |
+| ~~`src/coding/source_lookup.rs`~~ | **withdrawn** | **reconciled: was a second `UnknownConceptLookup` implementation walking the registry; now this plan consumes plan 01's single `RegistrySourceLookup` (`src/concept_lookup.rs`), because B1's "fixed means" names one implementation used by two callers and two would re-open the parity defect #991 was filed to remove (plan 00 §9 R3).** |
 | `src/coding/composition.rs` | changed | `compose` consumes `ProgramIr`; the 9 authored blocks delete |
 | `src/coding/structural_composition.rs` | changed | 31 authored blocks delete; file becomes fragment *typing* declarations |
 | `src/coding/concept_discovery.rs` | changed | `discover()` takes a real lookup; `structural_meanings()` reads the fragment catalog |
 | `src/coding/python_render.rs` | changed | becomes the Python lowering backend only |
 | `src/coding/synthesis_runtime.rs` | changed | `discover_and_compose` gains the procedure-text stage |
-| `data/seed/sources-registry.lino` | changed | add `oeis` and `python_docs`; add `coding_role` per source |
+| `data/seed/sources-registry.lino` | changed | add `oeis` and `python_docs` with `need_kinds`. **reconciled: was "add `coding_role` per source"; now the existing `need_kinds` axis plan 01 L3 adds, because two selection axes over one registry is plan 01 root cause 5, and the primary/secondary split `coding_role` encoded is exactly what `PrimacyChain::derive_tier` already computes from `primacy` (plan 00 §9 R5).** |
 | `data/seed/coding-discovery-runtime.lino` | changed | the 7 algorithm-shaped templates removed |
 | `data/seed/meanings-coding-structure.lino` | changed | each meaning gains `bootstrap true` and `rediscovery_query` |
 | `data/meta/coding-fragment-ledger.lino` | new (generated, ignored) | content-addressed rediscovered fragments |
@@ -527,7 +535,7 @@ alone is taken by `src/skill_procedure.rs`, hence `ProcedureStepRecord`;
 ### Retrieved procedure text → step list
 
 ```rust
-// src/coding/procedure_text.rs
+// src/procedure_text.rs
 
 /// One instruction recovered from a retrieved page, with the bytes it came from.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -561,16 +569,18 @@ pub enum StepShape {
 pub fn steps_from_capture(
     capture: &crate::source_fetch::SourceCapture,
     source: &crate::seed::SourceRecord,
-    bounds: &crate::how_to_guide::GuideBounds,
+    bounds: &crate::source_walk::LookupBounds,
 ) -> Option<(StepShape, Vec<ProcedureStepRecord>)>;
 
 /// Retrieve and extract for one need phrase across the registry's coding
-/// sources, in `coding_role` order, bounded by `bounds`.
+/// sources that declare the need kind, in the registry's consultation order
+/// (declared kind first, then derived tier descending, then registry order),
+/// bounded by `bounds`.
 pub fn retrieve_procedure<T: crate::source_fetch::SourceTransport>(
     phrase: &str,
     prose_language: &str,
     client: &crate::source_fetch::CachedSourceClient<T>,
-    bounds: &crate::how_to_guide::GuideBounds,
+    bounds: &crate::source_walk::LookupBounds,
     log: &mut crate::event_log::EventLog,
 ) -> Vec<(StepShape, Vec<ProcedureStepRecord>)>;
 
@@ -585,17 +595,27 @@ one HTML extractor in the tree, and reuses `MIN_ACCEPTED_STEPS`' discipline
 (`src/how_to_guide.rs:127-152`) field-for-field so the two can merge later.
 
 Per-source contributions, declared as data in `data/seed/sources-registry.lino`
-under a new `coding_role` field (`primary` / `secondary` / `none`):
+through plan 01 L3's `need_kinds` field plus the tier the source's existing
+`primacy` chain already derives. **reconciled: this table was keyed by a new
+`coding_role primary/secondary/none` field; now by `need_kinds` and the derived
+tier, because two selection axes over one registry is plan 01 root cause 5 and
+the primary/secondary split is exactly what `PrimacyChain::derive_tier` computes
+(plan 00 §9 R5).**
 
-| Source | `coding_role` | What it yields | Shape |
-| --- | --- | --- | --- |
-| Python docs (`docs.python.org`, PSF-2.0) | `primary` | symbol + one-sentence semantics → an `IrNode::Call` fragment | `DefinitionSentence` |
-| Wikifunctions (CC0-1.0 / Apache-2.0) | `primary` | a ready implementation or an abstract recurrence | `PseudocodeBlock` |
-| OEIS (CC-BY-SA-4.0) | `primary` | a formula/recurrence line → `IrNode::Recurrence` | `DefinitionSentence` |
-| Rosetta Code (GFDL-1.2) | `secondary` | a per-language section, quoted with attribution, **never** silently pasted into a generated answer | `PseudocodeBlock` |
-| Stack Exchange (CC BY-SA 4.0) | `secondary` | accepted-answer prose steps | `NumberedProse` |
-| Wikipedia (CC BY-SA 4.0) | `secondary` | an "Algorithm"/"Method" section's ordered list | `OrderedList` |
-| Wiktionary / WordNet / Wikidata | `none` for composition | concept meaning only, consumed by `RegistryConceptLookup` | — |
+| Source | `need_kinds` | derived tier | What it yields | Shape |
+| --- | --- | --- | --- | --- |
+| Python docs (`docs.python.org`, PSF-2.0) | `(part procedure)` | `primary_source` | symbol + one-sentence semantics → an `IrNode::Call` fragment | `DefinitionSentence` |
+| Wikifunctions (CC0-1.0 / Apache-2.0) | `(part)` | `primary_source` | a ready implementation or an abstract recurrence | `PseudocodeBlock` |
+| OEIS (CC-BY-SA-4.0) | `(part)` | `primary_source` | a formula/recurrence line → `IrNode::Recurrence` | `DefinitionSentence` |
+| Rosetta Code (GFDL-1.2) | `(part)` | `independent_corroboration` | a per-language section, quoted with attribution, **never** silently pasted into a generated answer | `PseudocodeBlock` |
+| Stack Exchange (CC BY-SA 4.0) | `(concept procedure)` | `editorial_synthesis` | accepted-answer prose steps | `NumberedProse` |
+| Wikipedia (CC BY-SA 4.0) | `(concept)` | `editorial_synthesis` | an "Algorithm"/"Method" section's ordered list | `OrderedList` |
+| Wiktionary / WordNet / Wikidata | `(concept)` | per `primacy` | concept meaning only, consumed by plan 01's `RegistrySourceLookup` — these declare no composition kind, so `retrieve_procedure` never selects them | — |
+
+The ordering `retrieve_procedure` walks is therefore the one `select_sources`
+already computes for every need kind (plan 01): declared kind first, then derived
+tier descending, then registry order. There is no second ordering to keep in
+sync, which is the whole point of withdrawing `coding_role`.
 
 Share-alike licensing is enforced at lowering time, not at retrieval time: a
 GFDL or CC BY-SA capture may contribute an *abstract step* (an `IrNode`) but its
@@ -700,7 +720,7 @@ associative-stack data, not a Rust-only structure.
 /// the caller executes them all.
 pub fn elaborate(
     spec: &crate::coding::task_spec::CodingTaskSpec,
-    steps: &[crate::coding::procedure_text::ProcedureStepRecord],
+    steps: &[crate::procedure_text::ProcedureStepRecord],
     catalog: &crate::coding::fragment_catalog::FragmentCatalog,
     bounds: ElaborationBounds,
 ) -> Vec<ProgramIr>;
@@ -863,26 +883,28 @@ the case for everything except `composition::verify`.
 
 ### Concept lookup: the B1 seam this plan depends on
 
+> **reconciled: was `src/coding/source_lookup.rs::RegistryConceptLookup`, a
+> second implementation of the lookup trait; now this plan declares no lookup
+> type at all and takes plan 01's single `RegistrySourceLookup` from its caller,
+> because B1's fixed means names one implementation used by two callers (plan 00
+> §9 R3, X2).**
+
 ```rust
-// src/coding/source_lookup.rs
+// No new module. `discover()` (`src/coding/concept_discovery.rs:189-191`) stops
+// hard-coding `NoLookup` and takes the contract trait from its caller:
 
-/// The first real `UnknownConceptLookup`: walks the sources registry in
-/// `coding_role` order, bounded by depth and evidence rather than a budget.
-pub struct RegistryConceptLookup<'a, T: crate::source_fetch::SourceTransport> {
-    client: &'a crate::source_fetch::CachedSourceClient<T>,
-    preferences: crate::how_to_guide::ServicePreferences,
-    bounds: crate::how_to_guide::GuideBounds,
-    prose_language: String,
-    log: &'a mut crate::event_log::EventLog,
-}
-
-impl<T: crate::source_fetch::SourceTransport>
-    crate::coding::concept_discovery::UnknownConceptLookup for RegistryConceptLookup<'_, T>
-{
-    fn lookup(&mut self, phrase: &str, depth: usize)
-        -> Option<crate::coding::concept_discovery::ConceptEvidence>;
-}
+pub fn discover_with_lookup(
+    spec: &CodingTaskSpec,
+    catalog: &DiscoveryCatalog,
+    lookup: &mut dyn crate::source_walk::SourceLookup,   // plan 00 §4.2
+    bounds: crate::source_walk::LookupBounds,
+) -> ConceptMap;
 ```
+
+`discover_and_compose` (`src/coding/synthesis_runtime.rs:204-220`) constructs
+plan 01's `RegistrySourceLookup` when online and an offline one otherwise, and
+passes it through. Nothing in this plan constructs a lookup of its own, so plan
+01 L18 can delete `UnknownConceptLookup` without touching this plan's leaves.
 
 B1 owns the universal-loop half of this (`src/solver.rs:874-884`
 `record_external_search`, which today appends `policy:no_fetch_capability` and
@@ -907,7 +929,8 @@ already present at `src/coding/synthesis_runtime.rs:212-218`:
 2. **Ready parts.** `discovery_catalog` (unchanged) — stdlib, Wikifunctions
    implementations, Wikifunctions recurrences.
 3. **Procedure text.** `retrieve_procedure` over the registry's
-   `coding_role: primary` then `secondary` sources → `elaborate` → typed IR
+   sources declaring `need_kinds (part)` then `need_kinds (procedure)`, each in
+   derived-tier order → `elaborate` → typed IR
    candidates. **This stage is new and is the heart of B2.**
 4. **Sequence sources.** `extend_with_sequence_programs` (unchanged, OEIS).
 
@@ -1119,7 +1142,7 @@ the point.
 
 - [ ] **L1** — Add `oeis` and `python_docs` source records to
       `data/seed/sources-registry.lino` with license, api, cache path and a new
-      `coding_role` field; add `coding_role` to every existing record; assert in
+      `need_kinds` field (plan 01 L3's axis, not a second one); assert in
       `tests/unit/specification/…` that `src/coding/function_catalog/oeis.rs:16`
       and `python_docs.rs:12` read their URL and license from the registry.
 - [ ] **L2** — Add `src/coding/program_ir.rs`: `IrType`, `IrNode`, `ReuseMode`,
@@ -1145,22 +1168,28 @@ the point.
 - [ ] **L9** — Port the 31 blocks of `additional_drafts`
       (`src/coding/structural_composition.rs:12-342`) the same way; delete them;
       slice-20 stays green.
-- [ ] **L10** — Add `src/coding/procedure_text.rs`: `ProcedureStepRecord`,
+- [ ] **L10** — Add `src/procedure_text.rs`: `ProcedureStepRecord`,
       `StepShape`, `steps_from_capture` over the existing
       `how_to_guide::extract` helpers, with committed HTML fixtures.
-- [ ] **L11** — Add `retrieve_procedure` walking the registry in `coding_role`
-      order through `CachedSourceClient`, bounded by `GuideBounds`.
+- [ ] **L11** — Add `retrieve_procedure` walking the registry in `need_kinds`
+      consultation order through `CachedSourceClient`, bounded by `LookupBounds`.
 - [ ] **L12** — Add `program_ir::elaborate`: step list → candidate IR, with the
       type-threading rule and `Bind`/`Recurrence` introduction.
 - [ ] **L13** — Wire stage 3 into `discover_and_compose`
       (`src/coding/synthesis_runtime.rs:204-220`), after ready parts and before
       sequence sources.
-- [ ] **L14** — Add `src/coding/source_lookup.rs` `RegistryConceptLookup`;
-      `discover()` (`src/coding/concept_discovery.rs:189`) takes the lookup from
-      its caller instead of `NoLookup`.
+- [ ] **L14** — `discover()` (`src/coding/concept_discovery.rs:189`) takes
+      `&mut dyn SourceLookup` from its caller instead of `NoLookup`;
+      `discover_and_compose` constructs plan 01's `RegistrySourceLookup`.
+      **reconciled: was "add `src/coding/source_lookup.rs` `RegistryConceptLookup`";
+      now no new lookup type, because plan 01 owns the one implementation
+      (plan 00 §9 R3).**
 - [ ] **L15** — Delete the 7 algorithm-shaped templates from
       `data/seed/coding-discovery-runtime.lino`; make `oeis.rs` emit
-      `IrNode::Recurrence`; re-run the slice-20 control.
+      `IrNode::Recurrence`; re-run the slice-20 control **and the 13/13 curated
+      industry control in the same commit** — one of the seven answers a curated
+      case, and a fall in either is recorded, never repaired by restoring the
+      template (plan 00 §9 X3).
 - [ ] **L16** — Add `bootstrap true` and `rediscovery_query` to every meaning in
       `data/seed/meanings-coding-structure.lino`; add the seed-shape gate.
 - [ ] **L17** — Add `FragmentLedger` plus the `coding forget-fragments` /
@@ -1176,7 +1205,10 @@ the point.
 - [ ] **L21** — Browser/WASM parity: expose recognise→discover→elaborate→lower in
       the worker, label results unverified, keep the line and size budgets.
 - [ ] **L22** — Extend `external_benchmark_suite` with `full_slice` /
-      `full_minimum_pass_count`; teach `raise_floor`
+      `full_minimum_pass_count` (**lands before plan 08 L22, so its
+      re-measurement writes into a ledger that already knows two slices; the two
+      floors are independent series and neither may be derived from the other —
+      plan 00 §9 X8**); teach `raise_floor`
       (`src/external_benchmarks/ledger.rs:224-245`) and `best_pass_count`
       (`src/external_benchmarks/ratchet.rs:115-121`) the second floor.
 - [ ] **L23** — Raise the no-memorization gate's `SLICE`
@@ -1192,89 +1224,29 @@ the point.
 
 ## Docs to update
 
-**`VISION.md:343`** currently reads, in part:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D160-D169** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> "The latest committed-row summary (run of 2026-09-15) is: HumanEval 20/20; MBPP 20/20; GSM8K 2/20; MATH 0/20; BIG-bench object counting 0/20; CoEdIT 0/20; egg rewrite laws 20/20; Ascent closure assertions 5/5; and SWE-bench Lite 0/1."
+| row | document |
+| --- | --- |
+| D160 | `VISION.md:343` |
+| D161 | `ROADMAP.md:145` |
+| D162 | `ROADMAP.md:492` |
+| D163 | `docs/benchmarks.md:284-295` |
+| D164 | `docs/benchmarks.md:348-368` |
+| D165 | `docs/benchmarks.md:16-33` |
+| D166 | `docs/requirements/issue-0710-dynamic-coding-discovery.md` |
+| D167 | New shard `docs/requirements/issue-1138-composition-from-sources.md` |
+| D168 | `docs/requirements-traceability.md` |
+| D169 | `docs/meta-algorithm.md` |
 
-Replace with a sentence that names the slice beside every number and adds the
-full-suite rows:
-
-> "The latest committed-row summary is, per suite and per slice: HumanEval `<passed>/20` and `<passed>/164`; MBPP `<passed>/20` and `<passed>/500`; GSM8K `<passed>/20`; MATH `<passed>/20`; BIG-bench object counting `<passed>/20`; CoEdIT `<passed>/20`; egg rewrite laws `<passed>/20`; Ascent closure assertions `<passed>/5`; SWE-bench Lite `<passed>/1`. A first-20 score is not a suite score and is never cited without its slice."
-
-**`ROADMAP.md:145`** (pillar 26) currently reads, in part:
-
-> "The 2026-09-15 upstream rows are HumanEval 20/20 and MBPP 20/20 (empty source cache: 20/20 and 18/20) … `task_spec`, source-backed concept discovery, structural composition, bounded verification, and the procedure ledger derive Python programs without benchmark identifiers or canonical answers in production data."
-
-Replace with:
-
-> "Upstream rows are recorded per slice: HumanEval `<n>/20` and `<n>/164`, MBPP `<n>/20` and `<n>/500` (empty source cache: `<n>` and `<n>`). Composition no longer enumerates shapes in Rust: retrieved procedure text becomes an ordered step list, the step list becomes a language-neutral `ProgramIr`, and per-language lowerings render it. The seeded idiom catalog is a deletable bootstrap with a forget → rediscover → identical-content-id proof."
-
-**`ROADMAP.md:492`** currently reads:
-
-> "cleared fresh canonical coding (4/4), industry (13/13; the upstream HumanEval/MBPP slices score 0/20, see `data/benchmarks/external-results.lino`), and unit (12/12)"
-
-Replace the parenthetical with the current ledger values and the slice, or — the
-better fix, and the one #1089 asks for — replace the literal numbers with a
-pointer: "see the generated table in `docs/benchmarks.md`, rendered from
-`data/benchmarks/external-results.lino`". Same treatment for **`ROADMAP.md:570`**:
-
-> "were never compiled; upstream coding scores are 0/20 and flat; and most effort"
-
-which is stale on its face and must become "upstream coding scores are published
-per slice in `docs/benchmarks.md`".
-
-**`docs/benchmarks.md:284-295`** — the "Honest current numbers" table gains a
-`Slice` column and two rows (HumanEval @164, MBPP @500), and the preamble at
-`docs/benchmarks.md:279-282` ("The latest committed rows are dated `2026-09-15`
-for the coding suites") is restated to name each row's slice. The sentence at
-`docs/benchmarks.md:297-305` about the empty-source-cache control must be
-re-measured at the full slice or explicitly scoped to slice 20.
-
-**`docs/benchmarks.md:348-368`** — the "Running it" block gains the full-suite
-commands and the forget/rediscover round trip from the Tests-first section.
-
-**`docs/benchmarks.md:16-33`** — the "Suites at a glance" table gains a row:
-
-> `| Composition from retrieved sources | #1138 B2 | `coding-composition-from-sources.lino` | `coding_discovery::multilingual` | 25 |`
-
-**`docs/requirements/issue-0710-dynamic-coding-discovery.md`** — R710-D2 and
-R710-D3 currently read "The first 20 HumanEval cases must be run honestly …" and
-"The first 20 MBPP cases …". Replace "first 20" with "full upstream suite (164 /
-500), with the first-20 slice retained as a regression control", and update the
-Status column to cite the new rows. R710-D10 ("A verified coding procedure must
-be content-addressed, provenance-bearing, tamper-detecting, forgettable, and
-rediscoverable") gains a sibling: "R710-D17 — the *bootstrap idiom catalog* must
-be deletable and rediscoverable to the same content id."
-
-**New shard `docs/requirements/issue-1138-composition-from-sources.md`**, with
-IDs R1138-B2-1 … R1138-B2-8 covering: retrieval-to-step-list, the IR, the
-cross-language lowering, the deletable bootstrap, the forget/rediscover hash,
-full-suite measurement, the seed-shape gate, and registry declaration of OEIS and
-Python docs. `REQUIREMENTS.md` is generated from the shards by
-`scripts/assemble-requirements.rs`, so no manual edit there.
-
-**`docs/requirements-traceability.md`** — add rows for every new R1138-B2-*; and
-amend the R710-D2/D3 rows at `docs/requirements-traceability.md:702-703`, which
-today cite "local upstream run recorded in docs/case-studies/issue-710/README.md"
-and "not yet confirmed", to cite the full-suite ledger rows.
-
-**`docs/meta-algorithm.md`** — the coding-discovery recipe must gain the
-procedure-text and IR stages. Concretely, the twelve-step recursive core at
-`docs/meta-algorithm.md:144-167` keeps its shape, but step 7 ("Construct the
-answer back up the tree") is the one this plan implements for coding, and the
-document must say so with a pointer to `src/coding/program_ir.rs`. The agentic
-recipe's step 2 at `docs/meta-algorithm.md:214-218`:
-
-> "**Pin the canonical plan as named constants** (`SEARCH_QUERY`, `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered literals."
-
-is flatly inconsistent with B2's doctrine and must be rewritten to:
-
-> "**Derive the plan from the task**: the search phrase comes from the formalized need, the source is selected from `data/seed/sources-registry.lino` by `coding_role`, and the knowledge-base path is derived from the task's content id. No constant names a query, a URL or a path."
-
-(That rewrite is owned jointly with B4; this plan records it because B2 cannot
-claim "no hard-coding" while the published recipe pins three constants.)
-
----
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

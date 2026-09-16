@@ -14,13 +14,23 @@ corrects the issue's own summary where it overstates the gap.
   least action or shortest path/steps to evaluate/score solutions", and "try from the start
   produce for each task split into 2 sub tasks … 1, 2, 4, 8 and so on". Tracked as
   R491-C1..C4 (`docs/requirements/issue-0491-least-action-continuation.md:10-13`), all
-  Partial or Open. **Correction to the issue text: #491 is not "zero delivered code".**
+  Partial or Open. **This plan delivers R491-C1 and R491-C3 and advances R491-C2;
+  R491-C4 ("include user satisfaction and requirement completeness when comparing
+  candidate solutions") is recorded Open in the shard as a universal capability
+  and this plan does not deliver it, so #491 is not in plan 13's `Closes` list —
+  it stays open with that single named remainder (reconciled 2026-09-16; plan 13
+  "Issues this PR will NOT close").** **Correction to the issue text: #491 is not
+  "zero delivered code".**
   `src/draft_portfolio.rs:332-346` implements least-action ranking today, and
   `data/meta/draft-portfolio-recipe.lino:61` declares
   `least_action_order "cost_size, cost_steps, draft_index"`. What is missing is that it
   reaches exactly one code path, which is off by default. This plan delivers R491-C1 and
   R491-C3.
-- **#901 TRIZ** — "each such contradiction or union of different criteria/metrics of trade
+- **#901 TRIZ** *(this plan delivers the mechanism — contradictions as links with
+  a 0-1 selection value, the separation principles as seed data, resolution at
+  the ranking seam — but not the 20-task validation corpus #901 also asks for,
+  which is named as the follow-up in risk 5; #901 therefore stays open with that
+  remainder, reconciled 2026-09-16)* — "each such contradiction or union of different criteria/metrics of trade
   offs are links in our theory. Where we can assign value from 0 to 1 … to actually solve
   the binary contradiction by selecting 50% or 10% or 80%". Zero code:
   `grep -rni "triz" src/ data/` → 0. Delivered here as `ContradictionLink` with a 0–1
@@ -31,7 +41,11 @@ corrects the issue's own summary where it overstates the gap.
   `grep -rni "2-4-6\|wason\|hypothesis space" src/` → 0. The nearest existing thing is
   `src/fact_checking.rs:66` `RefutationStage`, which is statement refutation inside one
   handler, not experiment selection. Delivered here as `RefutationSearch`.
-- **#453 Moonshot tasks** — "at least we should be able to split each task into 2 parts.
+- **#453 Moonshot tasks** *(this plan delivers the binary-splitting constraint,
+  R453-M1 to M3; R453-M4 — "combine all different approaches … for each duplicated
+  idea, find the first source of it in the history" — is filed Open with its
+  blocker named in risk 7, so #453 stays open with that remainder, reconciled
+  2026-09-16)* — "at least we should be able to split each task into 2 parts.
   After that we will have enough data to split them again and again recursively … combine
   all different approaches (while removing duplicates, for each duplicated idea, we need to
   find the first source of it in the history)." Zero code for the binary constraint.
@@ -408,7 +422,11 @@ impl HeuristicMethod {
 ```
 
 `src/method_registry.rs` gains one field and two accessors, and keeps every existing
-signature (`method_for_route`, `ordered_method_names_for_relevants`, `to_links_notation`
+signature. **This declaration is authoritative for the whole plan set: plan 07
+also grows this struct, by making `learned_methods` executable at last
+precedence. One registry with three collections keeps R344's single dispatch
+authority true; two plans growing it without a shared declaration is how a second
+authority appears (plan 00 §9 R16).** (`method_for_route`, `ordered_method_names_for_relevants`, `to_links_notation`
 are all pinned by R331 and `tests/unit/docs_requirements_issue_559.rs`):
 
 ```rust
@@ -455,7 +473,13 @@ pub struct ActionCost {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CandidateScore {
     pub candidate_id: String,
-    /// Tests passed out of tests declared. `(0, 0)` is not a pass.
+    /// Checks satisfied out of checks declared, counted from the `Evidence`
+    /// rows plan 08's five self-checks emit for this candidate's
+    /// `derivation_id`. `(0, 0)` is not a pass.
+    ///
+    /// **reconciled: was a bare `(usize, usize)` with no stated source; now
+    /// counted from `Evidence`, so "it passed" is an observation rather than a
+    /// number a ranker was handed (plan 00 §9 R17, R15).**
     pub checks: (usize, usize),
     pub cost: ActionCost,
 }
@@ -700,7 +724,7 @@ pub struct HypothesisSpace {
     pub hypotheses: Vec<SearchHypothesis>,
     pub experiments: Vec<Experiment>,
     /// Every observation applied so far, so the elimination is replayable.
-    pub observations: Vec<ExecutionRecord>,   // plan 05
+    pub observations: Vec<Evidence>,   // plan 05, plan 00 §4.3
 }
 
 impl HypothesisSpace {
@@ -708,7 +732,7 @@ impl HypothesisSpace {
 
     /// Apply one observation: kill every hypothesis whose prediction it
     /// contradicts, recording which experiment did it.
-    pub fn observe(&mut self, experiment_id: &str, record: ExecutionRecord) -> usize;
+    pub fn observe(&mut self, experiment_id: &str, record: Evidence) -> usize;
 
     /// The honest verdict when the space stops shrinking: one survivor is a
     /// conclusion, zero survivors is a refuted frame, and more than one with no
@@ -747,7 +771,7 @@ Where the core calls it:
   the gate it already enforces for R1073-5, instead of reporting
   `not_confirmed_not_refuted` because nothing was tried.
 
-Each observation is an `ExecutionRecord` from plan 05, so the elimination is evidence, not
+Each observation is an `Evidence` record from plan 05 (**reconciled: was `ExecutionRecord` — plan 00 §9 R2**), so the elimination is evidence, not
 assertion — which is also what makes the whole space replayable and the verdict honest.
 
 ### Failure and honesty behaviour
@@ -816,7 +840,7 @@ The TRIZ cases pose an explicit trade-off in the requirement, so the selection v
 | | `a_refuting_probe_is_preferred_over_a_confirming_one_at_equal_power` | disproof-first (#802) |
 | | `observing_a_result_kills_every_contradicted_hypothesis_and_names_the_experiment` | |
 | | `two_survivors_with_no_discriminating_probe_report_not_confirmed_not_refuted` | matches `data/meta/recursive-core-recipe.lino:105` |
-| | `every_elimination_is_backed_by_an_execution_record` | plan 05 join |
+| | `every_elimination_is_backed_by_an_evidence_record` | plan 05 join |
 | | `the_same_space_and_seed_produce_the_same_experiment_sequence` | determinism |
 | `tests/unit/specification/triz_contradictions.rs` | `a_tie_on_the_least_action_key_with_two_winning_dimensions_is_a_contradiction` | detection |
 | | `the_selection_value_is_derived_from_requirement_clauses_not_guessed` | `RequirementClauses { a, b }` |
@@ -829,7 +853,7 @@ The TRIZ cases pose an explicit trade-off in the requirement, so the selection v
 | | `a_single_clause_moonshot_is_reported_as_underivable_not_atomic` | the honest #453 limit until plan 01 lands |
 | `tests/unit/specification/method_registry.rs` (extend) | `a_heuristic_is_never_returned_by_method_for_route` | heuristics never answer |
 | | `the_registry_event_lists_every_heuristic_with_its_role_and_order` | one authority, one event |
-| `tests/unit/docs_requirements_issue_1138.rs` (extend) | `issue_1138_selection_heuristics_are_traceable` | grep-pins `pub struct HeuristicMethod`, `fn balanced_split`, `pub struct ContradictionLink`, `pub struct HypothesisSpace` |
+| `tests/unit/docs_requirements/issue_1138.rs` (extend; **reconciled: was `tests/unit/docs_requirements_issue_1138.rs` — plan 00 §9 R11**) | `issue_1138_selection_heuristics_are_traceable` | grep-pins `pub struct HeuristicMethod`, `fn balanced_split`, `pub struct ContradictionLink`, `pub struct HypothesisSpace` |
 
 ### Gates and ratchets
 
@@ -867,13 +891,16 @@ The TRIZ cases pose an explicit trade-off in the requirement, so the selection v
 - [ ] Hand `src/algorithm_discovery.rs:586-605`'s surviving candidates to the same ranker,
       keeping `subsumes` (`:900`) as the correctness filter it is.
 - [ ] Seed `heuristic_resource_least_action` reading `resource_units` from plan 05's
-      execution records; R491-C3.
+      `Evidence` records; R491-C3.
 - [ ] Add `BinarySplit`, `imbalance`, `balanced_split`, `TaskSplitter`; seed the `split`
       role in `data/meta/selection-heuristics.lino`.
 - [ ] Measure `non_binary_work_unit_nodes` over the benchmark corpus; write
       `data/meta/selection-heuristic-ratchet.lino` at the measured value.
 - [ ] Switch `src/meta_frame.rs:320` `WorkUnit::build` to the `Split` heuristic; take one
-      ratchet step down; re-measure.
+      ratchet step down; re-measure. **This leaf lands after plan 05's obligation
+      join test, which asserts every `WorkUnit` leaf span is covered by an
+      obligation node span: this leaf changes the leaf set that join matches
+      against, and the join must stay green through it (plan 00 §9 X14).**
 - [ ] Replace `TaskExecutor::split`'s `Vec::new()` default
       (`src/recursive_execution.rs:111`) with the same heuristic.
 - [ ] Fix `data/meta/task-decomposition-invariant.lino`'s `source_reader` for `binary`;
@@ -898,149 +925,34 @@ The TRIZ cases pose an explicit trade-off in the requirement, so the selection v
 
 ## Docs to update
 
-**`docs/requirements/issue-0491-least-action-continuation.md:10`** (R491-C1) — replace:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D257-D271** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> Partial: task-decomposition and failure-driven recursive-execution tests cover binary
-> structure and atomic leaves. Complete decomposition of arbitrary natural-language
-> obligations remains open.
+| row | document |
+| --- | --- |
+| D257 | `docs/requirements/issue-0491-least-action-continuation.md:10` |
+| D258 | `docs/requirements/issue-0491-least-action-continuation.md:12` |
+| D259 | `data/meta/draft-portfolio-recipe.lino:61` |
+| D260 | `data/meta/task-decomposition-invariant.lino` |
+| D261 | `docs/meta-algorithm.md:150-151` |
+| D262 | `docs/meta-algorithm.md`, new section after the budget-search section (`:790-871`) |
+| D263 | `VISION.md:189` |
+| D264 | `VISION.md:99-100` |
+| D265 | `VISION.md:192` |
+| D266 | `ROADMAP.md` |
+| D267 | New shard `docs/requirements/issue-0901-triz-contradictions.md` |
+| D268 | New shard `docs/requirements/issue-0802-hypothesis-search.md` |
+| D269 | New shard `docs/requirements/issue-0453-moonshot-splitting.md` |
+| D270 | `docs/requirements-traceability.md` |
+| D271 | `docs/requirements/issue-1138-bottleneck-audit.md` |
 
-with:
-
-> `selection_heuristics::balanced_split` folds the n-ary output of `split_once_checkable`
-> into exactly two children per non-leaf node, preserving every segment and its byte spans,
-> and reports the achieved imbalance. `data/meta/selection-heuristic-ratchet.lino` counts
-> the remaining non-binary work-unit nodes over the benchmark corpus and turns strictly
-> downward each release. Complete decomposition of arbitrary natural-language obligations
-> remains open, and a single-clause moonshot is reported as underivable pending plan 01.
-
-**`docs/requirements/issue-0491-least-action-continuation.md:12`** (R491-C3) — replace:
-
-> Partial: existing candidate selection uses size/step costs. A shared measured-resource
-> optimizer across all reasoning and execution paths remains open.
-
-with:
-
-> `selection_heuristics::ActionCost` is the shared cost type — steps, code size,
-> deterministic resource units and leaf count — read by every ranker through the registry,
-> including the draft portfolio and discovered-algorithm ordering. Elapsed wall-clock time
-> is deliberately excluded from every ranking key and reported beside it instead, because a
-> key that depends on machine speed is not reproducible.
-
-**`data/meta/draft-portfolio-recipe.lino:61`** — the `meta_selector` record's
-`least_action_order "cost_size, cost_steps, draft_index"` becomes a reference so there is
-one place the order lives:
-
-> `least_action_order "see data/meta/selection-heuristics.lino heuristic_least_action key_order"`
-
-**`data/meta/task-decomposition-invariant.lino`** — the `binary` field's reader. Add:
-
-> `binary_reader "src/selection_heuristics.rs"`
-
-and correct the existing `source_reader "src/intent_formalization/requirements.rs"` to name
-the field it actually reads (`source_integrity_reader`).
-
-**`docs/meta-algorithm.md:150-151`** — step 3 of the recursive core currently reads:
-
-> 3. **Decompose the frame as a recursive, bounded work-unit tree** (downward pass),
->    stopping at `max_decomposition_depth`.
-
-Replace with:
-
-> 3. **Decompose the frame as a recursive, bounded, binary work-unit tree** (downward
->    pass): every non-leaf unit has exactly two children, so a complete layer has 1, 2, 4,
->    8, … leaves (#491, #453), the split preserves every segment and its byte spans, the
->    achieved imbalance is reported, and the recursion stops at `max_decomposition_depth`.
-
-**`docs/meta-algorithm.md`, new section after the budget-search section (`:790-871`)** —
-`## Selection heuristics (issues #491, #901, #802, #453)`, describing the registry, the
-three roles, the four seeded heuristics and the seams the core calls them from, with the
-same "Running it" block convention the other sections use:
-
-```sh
-# Verify the selection-heuristic catalog still matches the live source:
-cargo test --test unit specification::selection_heuristics -- --nocapture
-```
-
-**`VISION.md:189`** (Universal Problem-Solving Algorithm, step 7) currently reads:
-
-> 7. **Draft experiments and selection**: build testable drafts by (a) reusing known parts,
->    (b) reasoning from rules, and (c) random or evolutionary search where structure and
->    compute budget allow; select only a test-passing draft and record why it won.
-
-Append:
-
-> Selection is a registry heuristic, not a fixed rule: candidates are ranked by least action
-> — fewest steps, smallest code, fewest resources — only among those that already pass every
-> declared check; a tie in which two candidates win on different dimensions is a
-> contradiction resolved by a value on the range between them; and where a discriminating
-> probe exists, the search eliminates hypotheses by refutation instead of sampling for
-> confirmation.
-
-**`VISION.md:99-100`** currently reads:
-
-> Split a task in two, split the halves, and continue until each leaf is directly solvable.
-> Do not rate a task before splitting it.
-
-Append:
-
-> This is enforced, not aspirational: every non-leaf work unit has exactly two children, and
-> `data/meta/selection-heuristic-ratchet.lino` counts the nodes that do not yet comply and
-> turns strictly downward each release.
-
-**`VISION.md:192`** (step 10, Simplification: "Pick the smallest sufficient form") — append:
-
-> "Smallest" is `ActionCost`, and "sufficient" is checked first: an incomplete answer is
-> never a cheaper one.
-
-**`ROADMAP.md`** — the words `least action`, `TRIZ`, `2-4-6` and `moonshot` appear nowhere
-in the file today. Add one row to the status table at `ROADMAP.md:423`:
-
-> | Selection and splitting heuristics (least action, TRIZ contradictions, refutation-first hypothesis search, balanced binary splitting) | Delivered as registry heuristics for #1138 B12; the non-binary work-unit ratchet is measured and turns strictly downward | [#491](https://github.com/link-assistant/formal-ai/issues/491), [#901](https://github.com/link-assistant/formal-ai/issues/901), [#802](https://github.com/link-assistant/formal-ai/issues/802), [#453](https://github.com/link-assistant/formal-ai/issues/453) |
-
-**New shard `docs/requirements/issue-0901-triz-contradictions.md`** — R901-1..R901-4. The ID
-`R901` is unused (`grep -n "R901" REQUIREMENTS.md docs/requirements/` → 0):
-
-```
-| R901-1 | Represent a trade-off between two criteria as a link with a selection value on the range between them, expressed in integer basis points so the record stays hashable. | … |
-| R901-2 | Derive the selection value from the requirement's own clauses or from a seeded record; an underivable contradiction is named and left unresolved, never defaulted. | … |
-| R901-3 | Hold the inventive and separation principles as seed data discoverable from a trusted source, so the catalog can be forgotten and rediscovered to the same content hash. | … |
-| R901-4 | Apply contradiction resolution wherever the meta algorithm chooses among candidates, and record the resolving link in the trace. | … |
-```
-
-**New shard `docs/requirements/issue-0802-hypothesis-search.md`** — R802-1..R802-4:
-
-```
-| R802-1 | Maintain an explicit set of live hypotheses and eliminate them by observation, never by impression. | … |
-| R802-2 | Choose the next experiment by minimizing worst-case survivors, so each probe ideally halves the space. | … |
-| R802-3 | Prefer a probe that attempts to refute the leading hypothesis over one that would only confirm it. | … |
-| R802-4 | When survivors remain and no discriminating probe exists, report not-confirmed-not-refuted with the survivors and the blocker named. | … |
-```
-
-**New shard `docs/requirements/issue-0453-moonshot-splitting.md`** — the bare ID `R453` is
-**taken** (`REQUIREMENTS.md:1349`, the Wikontic pipeline requirement from #686), so the rows
-use the suffixed form `R453-M1..R453-M4`:
-
-```
-| R453-M1 | Split every non-leaf task into exactly two children, preserving every segment and its byte spans, so a complete layer has 1, 2, 4, 8, … leaves. | … |
-| R453-M2 | Report the achieved imbalance of every split; never discard a segment to balance a tree. | … |
-| R453-M3 | A task that cannot be split at the text level is reported as underivable with its blocker named, never certified atomic. | … |
-| R453-M4 | Draw splitting approaches from discovered sources, deduplicated to the first historical source of each idea. | Open — depends on plan 01's live concept lookup. |
-```
-
-**`docs/requirements-traceability.md`** — add rows for R491-C1..C4 (currently absent; the
-only `R491` row at `:634` is the unrelated Unlicense requirement from #834), R901-1..4,
-R802-1..4, R453-M1..M4 and R1138-B12-1..4, each pointing at the specification file that
-pins it.
-
-**`docs/requirements/issue-1138-bottleneck-audit.md`** (shared shard; this plan owns the B12
-rows):
-
-```
-| R1138-B12-1 | The selection heuristics live in the one method registry as link data, are never route targets, and their precedence is a data edit. | … |
-| R1138-B12-2 | No heuristic may reorder an unsatisfying candidate above a satisfying one, and no ranking key may depend on wall-clock time. | … |
-| R1138-B12-3 | An empty heuristic table falls back to the deterministic identity ordering and says so in the trace. | … |
-| R1138-B12-4 | The count of non-binary work-unit nodes is measured, recorded and strictly decreasing. | … |
-```
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 
@@ -1053,7 +965,7 @@ rows):
    `best_leaf_for` (`:734`) matches against a different leaf set, and every trace-pinning
    test sees a different tree. This is the single largest behavioural change in the plan and
    is why it is gated by a measured ratchet rather than a flag day.
-3. **`ActionCost::resource_units` has no producer until plan 05 lands.** Until execution
+3. **`ActionCost::resource_units` has no producer until plan 05 lands.** Until `Evidence`
    records carry measured units, the `least_resources` heuristic has nothing to rank by and
    must stay unseeded. Ordering dependency: plan 05 before this leaf.
 4. **R491-C3 asks for elapsed time and memory; this plan deliberately excludes wall-clock

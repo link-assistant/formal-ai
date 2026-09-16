@@ -48,6 +48,15 @@ hard-coded for any test; ratchets only move in the strict direction.
   evidence that precedence order, not handler quality, decides many outcomes.
 - **#558** — source ↔ links translation, the end state in which the doublets
   store is what the solver reads. This plan delivers the first two stages.
+- **Issues plan 13's coverage table names this plan as a deliverer of** (added by
+  the 2026-09-16 reconciliation, so both documents agree): **#934** (E82, the
+  worker budget turns downward — partial, absorbing all ~26,700 JS lines is
+  multi-slice); **#942** (E90, the redaction skill lands as a registry method
+  over plan 04's formalized concepts); **#950** (E98, the terminology lint —
+  leaf 42, added by the reconciliation); **#951** (E99, the first `main.jsx`
+  clusters move — partial); **#952** (E100, the browser reads the seed through
+  the WASM parser — leaf 13); **#953** (E101, the desktop permission logic moves
+  — partial).
 - **#1138 B9** — the umbrella.
 
 ---
@@ -540,7 +549,13 @@ record. Already owns 12 handlers. Takes no new pending rows; it is the residue
 target for any condition a family interpreter cannot express, and its growth is
 itself ratcheted (`rule_count()`, `src/rule_interpreter.rs:219`).
 
-**M2 — `source_lookup` (new generic interpreter, batch 1, 14 handlers).**
+**M2 — `retrieval_method` (new generic interpreter, `src/retrieval_method.rs`,
+batch 1, 14 handlers).**
+**reconciled: was named `source_lookup`; now `retrieval_method`, because
+`SourceLookup` is plan 00 §4.2's contract trait and plan 01 owns its one
+implementation. This family *calls* that trait; it is not one, and a family
+interpreter named after the contract would be unreadable and would invite a
+second implementation (plan 00 §9 R4).**
 One retrieval procedure: resolve the subject → choose a source kind from
 `data/seed/sources-registry.lino` (13 kinds) → fetch or read cache → render with
 provenance in the prompt's language. Absorbs `http_fetch`, `url_navigate`,
@@ -767,10 +782,12 @@ rule is not ambiguous.
 `src/web/seed-files.js:22` already fetches `seed/handler-precedence.lino`; the
 change is to consume it.
 
-1. `src/web/seed_loader.js` gains `parseHandlerPrecedence(text) -> string[]`,
+1. The WASM seed parser gains `handler_precedence_from(text) -> Vec<String>`,
    the exact three-line reader
    `tests/unit/specification/routing_precedence.rs:64-69` already specifies (an
-   indented, non-comment row's first whitespace-delimited token).
+   indented, non-comment row's first whitespace-delimited token), and
+   `src/web/seed_loader.js` calls it rather than reimplementing it in JavaScript
+   (#952; plan 00 §9 X5).
 2. `src/web/worker/formal_ai_worker_20.js` replaces the array *literal* at
    `:577-693` with a **registry object** keyed by the same handler names the
    seed uses — `{ web_search: () => …, numeric_list: () => …, … }` — plus a
@@ -786,7 +803,7 @@ change is to consume it.
 4. `tests/fixtures/routing-parity.lino`'s header claim — "Full order-parity is
    impossible on purpose" — is deleted, and the fixture becomes a *reorder*
    test: swap two rows in a fixture copy of the seed, feed it to both the Rust
-   `handler_precedence_from` and the worker's `parseHandlerPrecedence`, and
+   `handler_precedence_from` and the worker's call into the same WASM export, and
    assert both dispatch orders change identically. This is #959's "How to test"
    clause 3 and its manual check verbatim.
 5. `tests/unit/specification/routing_precedence.rs:207-238`'s substring search
@@ -977,7 +994,15 @@ Ordered; each is independently verifiable and commit-sized.
 - [ ] 4. Add `try_dispatch_entries 39`, `promotion_predicates 19`,
       `dispatch_name_special_cases 9`, `worker_sync_handler_literals 31`,
       `store_read_share 0` to `data/meta/debt-ratchet.lino` with `how` strings;
-      implement each measure in the checker.
+      implement each measure in the checker. **This leaf is the gate every other
+      plan's debt measure enters through: plan 03's `authored_ladder_rules`,
+      plan 06's `hardcoded_setup_hints` and `hardcoded_execution_environments`,
+      plan 08's generic-interpreter declaration and plan 12's
+      `non_binary_work_unit_nodes` all land after leaves 1-5, so no measure is
+      ever added to an at-or-below checker (plan 00 §9 X6). Capability ratchets
+      — `capability-routing-ratchet`, `selection-heuristic-ratchet`,
+      `adoption-effect-ratchet`, `obligation-evidence-ratchet`,
+      `toolchain-ledger` — keep their own files.**
 - [ ] 5. Add the 5 prelude methods as `status pending` ledger rows; widen
       `migration_ledger_is_a_complete_live_registry_census` to precedence +
       prelude; record `handler_migration_pending 45`; fix
@@ -1013,9 +1038,16 @@ Ordered; each is independently verifiable and commit-sized.
 
 **Make the browser derive its order from seed.**
 
-- [ ] 13. Add `parseHandlerPrecedence` to `src/web/seed_loader.js` with unit
-      tests; add `browser_only` and `phase async` guard notes to
+- [ ] 13. Expose `handler_precedence_from` through the **WASM seed parser**
+      (`src/web/wasm-worker/`) and have `src/web/seed_loader.js` call it, with
+      unit tests; add `browser_only` and `phase async` guard notes to
       `data/seed/handler-precedence.lino` for the worker-only entries.
+      **reconciled: was "add `parseHandlerPrecedence` to
+      `src/web/seed_loader.js`" — a new JavaScript parser. #952 (E100), which
+      plan 13 lists as fully closed by this plan, asks for the JS seed parser to
+      be *deleted* in favour of the WASM one; adding a second JS parser would
+      have made this plan close an issue by doing the opposite of what it asks
+      (plan 00 §9 X5).**
 - [ ] 14. Convert `formal_ai_worker_20.js:577-693` from an array literal to a
       name-keyed registry with a load-time permutation assertion; iterate the
       fetched precedence at `:694`; record `worker_sync_handler_literals 0`.
@@ -1024,11 +1056,11 @@ Ordered; each is independently verifiable and commit-sized.
       "full order-parity is impossible" claim; add
       `data/meta/ci-gates/check-worker-handler-registry.lino`.
 
-**Batch 1 — M2 `source_lookup` (14 handlers).** *Blocked on plan 01 (`01-live-concept-lookup.md`).*
+**Batch 1 — M2 `retrieval_method` (14 handlers).** *Blocked on plan 01 (`01-live-concept-lookup.md`).*
 
 - [ ] 16. Ship the M2 held-out paraphrase suite (5 languages × 12) and watch it
       fail honestly.
-- [ ] 17. Implement `source_lookup` as a generic interpreter over
+- [ ] 17. Implement `retrieval_method` as a generic interpreter over
       `data/seed/sources-registry.lino`; register it in the boundary ledger as a
       **Generic interpreter**, not a handler.
 - [ ] 18. Migrate `concept_lookup`, `network_query`, `source_refresh`,
@@ -1036,8 +1068,12 @@ Ordered; each is independently verifiable and commit-sized.
       `src/solver_handlers/mod.rs`; lower every ceiling touched.
 - [ ] 19. Migrate `web_search`, `http_fetch`, `url_navigate`; delete
       `web_requests.rs`, `web_search_intent.rs`, `web_requests/live_search.rs`;
-      replace `src/solver.rs:874-884`'s `policy:no_fetch_capability` with real
-      retrieval.
+      route them through the retrieval plan 01 L11 already installed.
+      **reconciled: was "replace `src/solver.rs:874-884`'s
+      `policy:no_fetch_capability` with real retrieval". Plan 01 L11 owns that
+      deletion and lands long before this batch; two plans deleting one event
+      would leave the second with nothing to delete and no test to fail
+      (plan 00 §9 X1).**
 - [ ] 20. Migrate `summarization` and `brainstorming`; delete the three canned
       bodies at `data/seed/summary-topics.lino:9-18`; add
       `no_answer_is_byte_equal_to_a_seed_body_field` (#948 item 1).
@@ -1071,6 +1107,9 @@ Ordered; each is independently verifiable and commit-sized.
 
 - [ ] 32. Ship the M5 paraphrase suite.
 - [ ] 33. Implement `dialogue_state_query` over `src/memory_query_language/`.
+      **This leaf lands before plan 10 leaf 13, which adds the
+      re-render-the-previous-turn operation for the non-understanding class to
+      this family rather than as a handler (plan 00 §9 X12).**
 - [ ] 34. Migrate `conversation_memory`, `coreference`, `conversation_topic`,
       `roleplay`.
 - [ ] 35. Migrate `response_language_followup`, `software_project_followup`,
@@ -1080,9 +1119,21 @@ Ordered; each is independently verifiable and commit-sized.
 
 - [ ] 36. Migrate `nl_tool`, `feature_capability`, `playwright_script` to M1;
       declare `diagnostic` `justified-native`; migrate `behavior_rules` to M5.
+      **`clarification`'s rule set keeps its five-language role surfaces here;
+      plan 10 leaf 13 then deletes the three memorized literals at
+      `data/seed/intent-routing.lino:400-402` and the matching `lexeme zh`
+      surfaces, and owns that deletion (plan 00 §9 X13).**
 - [ ] 37. Replace duplicated answer fields in `data/seed/identity.lino` and
       `data/seed/greetings.lino` with `response_link` indirection; add a seed
       lint failing on a byte-identical answer value appearing more than once.
+- [ ] 42. **Widen the terminology lint from route prefixes and module names to
+      identifiers and emitted tokens** (#950 / E98, carry-over C30): rename the
+      `Graph*` types, extend `scripts/check-terminology.rs` past `/v1/` and
+      module paths to declared identifiers and the tokens the engine emits, and
+      record the measure in `data/meta/debt-ratchet.lino`.
+      **Added by the 2026-09-16 reconciliation: plan 13 lists #950 as fully
+      closed by this plan, and no leaf delivered it. An issue in the `Closes`
+      list with no leaf is the failure mode #710's audit named.**
 
 **The read path.**
 
@@ -1101,112 +1152,29 @@ Ordered; each is independently verifiable and commit-sized.
 
 ## Docs to update
 
-**`VISION.md:320-326`** — currently:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D239-D248** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> "the solver reasons over Rust structures -- `MemoryStore` is a vector of
-> events, the seed is parsed into Rust tables by `src/seed.rs`, and
-> `src/solver.rs`, `src/engine.rs` and `src/main.rs` never read the doublets
-> store."
+| row | document |
+| --- | --- |
+| D239 | `VISION.md:320-326` |
+| D240 | `ROADMAP.md:362` |
+| D241 | `ROADMAP.md:421` |
+| D242 | `ARCHITECTURE.md:181-185` |
+| D243 | `ARCHITECTURE.md:162-165` |
+| D244 | `ARCHITECTURE.md:660-673` |
+| D245 | `docs/requirements/issue-0559-general-meta-algorithm.md:15-16` |
+| D246 | `docs/requirements/issue-0918-*.md` |
+| D247 | `docs/requirements-traceability.md` |
+| D248 | `data/README.md` |
 
-Replace, at leaf 40, with:
-
-> "the solver reads the doublets store: `src/seed_links.rs` projects every seed
-> meaning, handler rule and handler promotion into content-addressed
-> `LinkRecord`s at boot, and `src/rule_interpreter.rs` resolves every routing
-> condition through `link_store::query`. The `.lino` files remain the
-> human-reviewable source and export projection. `data/meta/debt-ratchet.lino`
-> records `store_read_share`, the fraction of routing decisions resolved from
-> the store; it is the one measure in that ledger whose strict direction is
-> upward."
-
-Until leaf 40 lands, the sentence stays true and is not touched — this is a
-statement that must change *with* the code, not ahead of it.
-
-**`ROADMAP.md:362`** — currently:
-
-> "Partial: registry precedence/route authority is data-driven; #699 batches 1-3
-> migrated number constraints, `who_is`, `definition_merge` and the
-> `program_synthesis` dead end (now a named skill gap), ratcheting the tree at
-> 37 handler files / 48 `try_*` registry entries, with the remaining methods
-> honestly pending in the ledger"
-
-Replace with:
-
-> "Partial, with a strict single-definition ratchet: 16 of 58 registry methods
-> are migrated and 2 are justified-native; 40 remain pending, grouped into five
-> meta-method families by `docs/case-studies/issue-1138/plans/09-handler-migration-ratchet.md`.
-> The measured numbers live in `data/meta/debt-ratchet.lino` alone — 46 handler
-> files, 39 `try_*` entries, 19 promotion predicates, 9 dispatch name special
-> cases — and every one of them may only fall."
-
-**`ROADMAP.md:421`** — currently:
-
-> "#918 recursively classifies all 46 mixed handler sources as migration debt
-> and ratchets their 19,543 outside-core lines"
-
-Replace with the measured values and the widened scan root:
-
-> "#918 recursively classifies every handler source as migration debt and
-> ratchets its lines; the scan root now includes `src/solver_handler_how.rs`,
-> `solver_handler_how_synthesis.rs`, `solver_handler_units.rs` and
-> `solver_handler_oracle.rs`, so a migration cannot lower the count by moving a
-> file out of `src/solver_handlers/`. The current values are in
-> `data/meta/core-boundary-ledger.lino`."
-
-**`ARCHITECTURE.md:181-185`** — currently:
-
-> "The browser worker mirrors the seed through `src/web/seed_loader.js`; because
-> it names its handlers differently and runs its async fetch handlers in a later
-> phase, full order-parity is impossible, so `tests/fixtures/routing-parity.lino`
-> pins the *shared* precedence invariants both surfaces must honour"
-
-Replace, at leaf 15, with:
-
-> "The browser worker reads the same `data/seed/handler-precedence.lino` it
-> fetches at startup: `src/web/seed_loader.js::parseHandlerPrecedence` supplies
-> the order and `formal_ai_worker_20.js` holds a name-keyed handler registry
-> that must be an exact permutation of it, asserted at load. Rows carry a
-> `phase async` note where the worker runs a handler in its later fetch phase,
-> and the parity test reorders a fixture row and asserts both surfaces change
-> identically."
-
-**`ARCHITECTURE.md:162-165`** — "Specialized handlers (`solver_handler_units`,
-`solver_handler_how`, `solver_handlers`, `solver_handlers_policy`) are *plugged
-into* the universal solver" — `solver_handlers_policy` no longer exists (the
-policy handlers migrated to `data/seed/handler-rules.lino`); replace the list
-with the five meta-method families and note that the named files are being
-retired batch by batch.
-
-**`ARCHITECTURE.md:660-673`** (Minimal Compiled Core) — add the sentence: "A
-family interpreter (`source_lookup`, `procedure_interpreter`,
-`structural_operator`, `dialogue_state_query`) is admitted under **Generic
-interpreters**; a handler is not. The boundary ledger records which category
-each source claims, so a handler cannot be promoted by renaming it."
-
-**`docs/requirements/issue-0559-general-meta-algorithm.md:15-16`** — currently
-"Issue #699 tracks that remaining migration honestly in
-`data/meta/handler-migration-ledger.lino`." Add: "and the plan that retires it
-is `docs/case-studies/issue-1138/plans/09-handler-migration-ratchet.md`, which
-groups the 40 pending methods into five meta-method families and makes every
-ceiling strict-downward." The R344 row's status text (`:43`) must lose the
-phrase "the complete 55-method status" — the census is 58 precedence rows plus
-5 prelude methods, i.e. 63.
-
-**`docs/requirements/issue-0918-*.md`** (the minimal-core shard) — record the
-widened scan root and the single shared `source_files()` definition.
-
-**`docs/requirements-traceability.md`** — add rows for the #959 items, which
-have none today: one row per "what to do" clause (ledger ratchet, contextual +
-prelude migration, browser derivation, promotion seed, closure honesty,
-`data/README.md`), each naming its automated test and its manual confirmation.
-`REQUIREMENTS.md` is generated and must not be hand-edited; it regenerates from
-the shards above.
-
-**`data/README.md`** (24 lines, documents only `data/benchmarks/`) — describe
-`data/seed/`, `data/cache/`, `data/overrides/`, `data/parity/`, `data/meta/`,
-`data/view/` and `data/training/`. This is #959 item 6 and is a single leaf.
-
----
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 
@@ -1219,7 +1187,7 @@ the shards above.
    the same commit so no later rise is possible.
 
 2. **A family interpreter can become a handler in disguise.** If
-   `source_lookup` grows a `match subject_kind` with fourteen arms, nothing has
+   `retrieval_method` grows a `match subject_kind` with fourteen arms, nothing has
    been migrated. Mitigation: `dispatch_name_special_cases` counts `name == "`
    and `match name` arms across all of `src/`, not only
    `meta_method_dispatch.rs`; and each family interpreter must pass held-out

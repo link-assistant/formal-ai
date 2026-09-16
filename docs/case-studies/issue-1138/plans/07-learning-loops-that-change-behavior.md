@@ -289,7 +289,7 @@ opens, as a draft.
 event logs ─► method_learning ─► MethodProposal
                                     │
                               behavior_delta::prove  (held-out, 5 languages,
-                                    │                 each side an ExecutionRecord)
+                                    │                 each side an Evidence)
                                     ▼
                               promotion (canonical gates replayed)
                                     │  --apply --confirm
@@ -312,7 +312,7 @@ The gate becomes the thing the doctrine names: review time.
 
 *Cons.* Learned methods can now change answers, which is the point and also the risk. A
 bad adoption is a behaviour regression, so the ratchets must be real and the precedence
-must be last. Requires plan 05's `ExecutionRecord` to land first.
+must be last. Requires plan 05's `Evidence` to land first.
 
 *Doctrine fit.* Strong on every clause: associative stack (the learned item is `.lino`,
 the interpreter is the existing recipe runner); generalization (one adoption contract for
@@ -434,7 +434,9 @@ Names verified free (`BehaviorDelta`, `DeltaVerdict`, `AdoptionEffect`, `behavio
 //! The #701 criterion, generalized: a learned item must demonstrably change the
 //! next answer, and the change must be an observation rather than a claim.
 
-use crate::execution_evidence::ExecutionRecord;   // plan 05
+use crate::execution_evidence::Evidence;   // plan 05, plan 00 §4.3
+// **reconciled: was `Evidence`; now `Evidence`, the contract name plans
+// 00, 03 and 06 already use (plan 00 §9 R2).**
 
 /// What one learned item did to one prompt.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -458,7 +460,7 @@ impl DeltaVerdict {
 
 /// One before/after observation for one learned item on one held-out prompt.
 ///
-/// Both sides are `ExecutionRecord`s, so "the answer changed" is a hash
+/// Both sides are `Evidence`s, so "the answer changed" is a hash
 /// comparison over observed bytes, not a prose judgement.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BehaviorDelta {
@@ -474,9 +476,9 @@ pub struct BehaviorDelta {
     /// The held-out prompt, never one the item was inferred from.
     pub prompt: String,
     /// The answer observed with the item absent.
-    pub before: ExecutionRecord,
+    pub before: Evidence,
     /// The answer observed with the item present.
-    pub after: ExecutionRecord,
+    pub after: Evidence,
     pub verdict: DeltaVerdict,
 }
 
@@ -552,7 +554,13 @@ adopted record in `data/seed/learned-methods.lino` lists `need:status`, `method_
 `skill_ledger`, `reasoning_standard` and their `:count`/`:steps` siblings — every one of
 which is an event kind the interpreter's `run_recorder` already knows.
 
-So no new interpreter is written. `src/method_registry.rs` gains:
+So no new interpreter is written. `src/method_registry.rs` gains the following. **Reconciled: plan 12 also grows
+this struct, with a `heuristics` collection. The authoritative declaration is
+plan 12's three-field `MethodRegistry { methods, learned_methods, heuristics }`;
+this plan owns the execution of `learned_methods` and plan 12 owns `heuristics`,
+and neither is ever returned by `method_for_route`. R344's one dispatch
+authority survives because both live in one registry rather than beside it
+(plan 00 §9 R16).**
 
 ```rust
 impl LearnedMethod {
@@ -670,7 +678,7 @@ New module `src/source_reconstruction.rs` (name free):
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ReconstructionOutcome {
     /// The payload was refetched and its hash matches the retained fingerprint.
-    Recovered { record: ExecutionRecord },
+    Recovered { record: Evidence },
     /// The payload was refetched and its hash differs: today's page is not the
     /// historical evidence. The stub is kept and the difference is reported.
     Diverged { retained_sha256: String, observed_sha256: String },
@@ -697,7 +705,7 @@ pub fn reconstruct_on_miss(
 
 `reconstruct` reuses `src/source_fetch.rs` for the fetch and its existing mismatch
 vocabulary (`source_cache_url_mismatch:281`, `source_cache_content_hash_mismatch:298`) for
-the `Diverged` case, and emits an `ExecutionRecord` (plan 05) so the recovery is itself an
+the `Diverged` case, and emits an `Evidence` (plan 05) so the recovery is itself an
 observation. `Diverged` is deliberately not an error: R710-R7 already says "a public URL
 authorizes reacquisition, not replacement of historical evidence with today's content."
 
@@ -775,7 +783,7 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
 | | `reconstruction_emits_an_execution_record` | plan 05 join |
 | `tests/unit/issue_705_anticipation.rs` (carried from PR #887) | all 15 existing cases | unchanged, re-registered in `tests/unit/mod.rs` |
 | `tests/unit/docs_requirements_issue_705.rs` (carried) | all cases | re-pointed at the new shard instead of `REQUIREMENTS.md` |
-| `tests/unit/docs_requirements_issue_1138.rs` (extend) | `issue_1138_behavior_delta_is_traceable` | grep-pins `pub struct AdoptionEffect`, `fn prove_effect`, `fn open_draft_pull_request` |
+| `tests/unit/docs_requirements/issue_1138.rs` (extend; **reconciled: was `tests/unit/docs_requirements_issue_1138.rs` — plan 00 §9 R11**) | `issue_1138_behavior_delta_is_traceable` | grep-pins `pub struct AdoptionEffect`, `fn prove_effect`, `fn open_draft_pull_request` |
 
 ### Gates and ratchets
 
@@ -799,7 +807,7 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
 ## Implementation leaves
 
 - [ ] Land plan 05's `src/execution_evidence.rs` first; `BehaviorDelta` depends on
-      `ExecutionRecord`.
+      `Evidence`.
 - [ ] Add `src/behavior_delta.rs` with `DeltaVerdict`, `BehaviorDelta`, `AdoptionEffect`,
       `prove_effect`, `to_links_notation` for all three; register in `src/lib.rs`.
 - [ ] Extend `data/meta/learning-adoption-ledger.lino` with the `behavior_delta` and
@@ -822,6 +830,9 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
       behaviour is unchanged and a second entry becomes a data edit.
 - [ ] Flip `SelfImprovementMode` default from `Off` to `Propose`
       (`src/meta_self_improvement.rs:44-45`); update the doc comment and R340's shard text.
+      **This leaf lands alone, after plan 05's recipe step 14, and carries its own
+      R343 parity run: both change every recorded trace, and sharing a commit
+      would leave a parity failure with two possible causes (plan 00 §9 X11).**
 - [ ] Pass `memory_events` through `FormalAiEngine::answer` so
       `dreaming_application::apply_retained_amendments` reaches the engine surface, not only
       `src/protocol.rs`.
@@ -847,148 +858,35 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
 
 ## Docs to update
 
-**`docs/meta-algorithm.md:772-775`** (the #922 section, item 6) — replace:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D210-D225** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> 6. **Load adopted link data** — only the checked-in
->    `data/seed/learned-methods.lino` reaches `MethodRegistry`. Learned records are
->    observable in the registry event but are separate from compiled handlers, so
->    adoption cannot silently introduce executable behavior or alter precedence.
+| row | document |
+| --- | --- |
+| D210 | `docs/meta-algorithm.md:772-775` |
+| D211 | `docs/meta-algorithm.md:761-764` |
+| D212 | `docs/meta-algorithm.md:671-678` |
+| D213 | `docs/meta-algorithm.md:137-142` |
+| D214 | `docs/requirements/issue-0922-method-learning-from-experience.md:13` |
+| D215 | `docs/requirements/issue-0922-method-learning-from-experience.md:16` |
+| D216 | `docs/requirements/issue-0559-general-meta-algorithm.md:39` |
+| D217 | `docs/requirements/issue-0710-repository-and-retention-continuation.md:16` |
+| D218 | `docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md:26` |
+| D219 | `ROADMAP.md:369` and `:428` |
+| D220 | `ROADMAP.md:440` |
+| D221 | `ROADMAP.md:364` and `:423` |
+| D222 | `VISION.md:377-382` |
+| D223 | New shard `docs/requirements/issue-0705-anticipatory-dreaming.md` |
+| D224 | `docs/requirements/issue-1138-bottleneck-audit.md` |
+| D225 | `docs/requirements-traceability.md` |
 
-with:
-
-> 6. **Load and execute adopted link data** — only the checked-in
->    `data/seed/learned-methods.lino` reaches `MethodRegistry`. An adopted record whose
->    operations all bind to known recorders is compiled to a `RecipeProgram` and dispatched
->    **after** every compiled method, so a learned abstraction may add a capability and can
->    never pre-empt one. The answer's trace names it (`method:learned`), and adoption
->    required a qualifying `AdoptionEffect` — an `Improved` before/after observation on
->    held-out prompts in en, ru, hi, zh and es, with no regression anywhere.
-
-**`docs/meta-algorithm.md:761-764`** (item 3, "Infer, then withhold") — the title is now
-wrong about the second half. Replace the heading phrase **"Infer, then withhold"** with
-**"Infer, then validate on unseen experience"**, and append to the item:
-
-> Withholding is about *inference*, not about *use*: a candidate is withheld from the
-> traces that validate it, and is then adopted into live dispatch through the promotion
-> gate and a reviewed pull request.
-
-**`docs/meta-algorithm.md:671-678`** (the promotion preamble) — replace:
-
-> Every self-improvement loop above stops at *proposing* … and even then only as a `.lino`
-> seed edit written onto a branch — never a direct push. Draft pull requests and human
-> review stay the outer gate.
-
-with:
-
-> Every self-improvement loop above proposes; this protocol decides. A proposal that clears
-> its benchmark ratchets is materialized as a `.lino` seed edit on a local branch and, with
-> `--open-draft-pr`, published as a **draft** pull request — never a push to the default
-> branch, never a merge, never marked ready. Human review of that pull request is the outer
-> gate, which is where the gate belongs: a learned item is reviewable because it is visible
-> in a diff, not because it is inert.
-
-**`docs/meta-algorithm.md:137-142`** — replace:
-
-> Second, it is **self-improving in proposal-only form**: `src/meta_self_improvement.rs`
-> reads this recipe against the live pipeline, detects drift between the algorithm-as-data
-> and the algorithm-as-code, and proposes the additions and stale-citation removals that
-> reconcile them — gated `off` by default, never writing the recipe back, so adoption stays
-> a human review step (R340).
-
-with:
-
-> Second, it is **self-improving**: `src/meta_self_improvement.rs` reads this recipe against
-> the live pipeline, detects drift between the algorithm-as-data and the algorithm-as-code,
-> and proposes the additions and stale-citation removals that reconcile them. It proposes by
-> default and still writes nothing itself; the seed edit it feeds passes the promotion gate
-> and arrives as a reviewed draft pull request (R340).
-
-**`docs/requirements/issue-0922-method-learning-from-experience.md:13`** (R922-2) — replace
-"Keep all learned candidates inert until benchmark-gated, human-confirmed promotion." with:
-
-> Keep all learned candidates out of dispatch until benchmark-gated, human-confirmed
-> promotion; after promotion they execute at last precedence with their effect proved and
-> their use named in the trace.
-
-**`docs/requirements/issue-0922-method-learning-from-experience.md:16`** (R922-5) — replace
-"Learned records are separate from compiled handlers, so dispatch order is unchanged" with:
-
-> Learned records are appended after every compiled method, so no compiled precedence
-> changes; a learned record with an unbound operation is reported and not dispatched.
-
-**`docs/requirements/issue-0559-general-meta-algorithm.md:39`** (R340) — replace "It must be
-gated and proposal-only: the default `off` mode proposes nothing and it never writes the
-recipe back" with:
-
-> It must be proposal-only at the loop and gated at review: the loop proposes by default and
-> never writes the recipe back itself; the seed edit it feeds clears the promotion ratchets
-> and is published as a draft pull request for human review.
-
-**`docs/requirements/issue-0710-repository-and-retention-continuation.md:16`** (R710-R7) —
-replace the tail "End-to-end automatic source-cache reconstruction remains open." with:
-
-> `src/source_reconstruction.rs` executes the retained `rediscover:` edge on the next cache
-> miss with no human command, emits an execution record for the recovery, and reports a
-> hash divergence as `Diverged` — today's page never replaces historical evidence.
-
-**`docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md:26`** (R472) — append:
-
-> The protocol may now open a **draft** pull request (`--open-draft-pr`); it still never
-> pushes to the default branch, never merges and never marks a pull request ready, so
-> required GitHub checks on the actual head SHA and human review remain the final authority.
-
-**`ROADMAP.md:369` and `:428`** both read "Anticipatory learning (predict next requests,
-pre-learn) | Not done | #705". Replace both with:
-
-> | Anticipatory learning (predict next requests, pre-learn) | Delivered by the #705 work carried forward from PR #887 into the #1138 pull request; PR #887 itself is closed as superseded | [#705](https://github.com/link-assistant/formal-ai/issues/705) |
-
-(Plan 11 owns collapsing these duplicated status tables into one generated table; this plan
-only makes both copies true.)
-
-**`ROADMAP.md:440`** — replace "Broader method construction and recipe mutation remain
-incremental work" with:
-
-> Adopted abstractions now execute at last precedence with a proved five-language effect;
-> broader method *construction* and recipe mutation remain incremental work.
-
-**`ROADMAP.md:364` and `:423`** — both describe self-improvement as "Partial". Replace the
-parenthetical in each with:
-
-> (learned items now change the next answer across the method registry, proved by
-> before/after execution records on held-out prompts in en, ru, hi, zh and es; promotion
-> publishes a reviewed draft pull request; broader classes and frontiers remain unproven)
-
-**`VISION.md:377-382`** currently reads:
-
-> The self-evolution frontier is explicit and benchmark-gated: proposals must pass tests and
-> benchmark ratchets before a reviewed promotion materializes them as seed edits (issues
-> #656, #701)
-
-Append:
-
-> A promoted item is not merely stored: it executes, at last precedence behind every
-> compiled method, and the trace names it. The gate is the review of the pull request that
-> carries the seed edit — learned items are reviewable because they are visible in a diff,
-> never because they are inert.
-
-**New shard `docs/requirements/issue-0705-anticipatory-dreaming.md`** carrying PR #887's 22
-`REQUIREMENTS.md` lines as R705-1..R705-6, plus a note that they arrived through the #1138
-pull request rather than through PR #887, which is closed as superseded.
-
-**`docs/requirements/issue-1138-bottleneck-audit.md`** (shared shard; this plan owns the B7
-rows):
-
-```
-| R1138-B7-1 | An adopted learned item must execute in the live dispatch path and its use must be named in the trace. | … |
-| R1138-B7-2 | Adoption requires a qualifying AdoptionEffect: an Improved before/after execution-record pair on held-out prompts in en, ru, hi, zh and es, with zero regressions. | … |
-| R1138-B7-3 | The human gate is the review of a draft pull request carrying the seed edit, never the inertness of the learned item. | … |
-| R1138-B7-4 | A forgotten cache payload is refetched automatically on the next miss, and a hash divergence is reported rather than substituted. | … |
-```
-
-**`docs/requirements-traceability.md`** — R922-1..6 and R710-R1..R10 have **no rows at all**
-today (`grep -c "R922\|R710-R"` → 0 for both). Add them, with R922-2/R922-5 pointing at
-`tests/unit/specification/method_registry.rs` and R710-R7 at
-`tests/unit/specification/source_reconstruction.rs`. Add R705-1..6 and R1138-B7-1..4.
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

@@ -41,6 +41,7 @@ lands, the flows here work from an observed exit code and say so.
 | [#699](https://github.com/link-assistant/formal-ai/issues/699) → [#959](https://github.com/link-assistant/formal-ai/issues/959) | Ratchet the handler ledger down; hard-coded predicates move to seed. | 14 hard-coded `setup_hint` strings and 5 hard-coded `environment` strings leave Rust; `src/solver_handlers/installation_conversion.rs` stops being the only "install" surface. |
 | [#924](https://github.com/link-assistant/formal-ai/issues/924) / PR [#1007](https://github.com/link-assistant/formal-ai/pull/1007), [#1021](https://github.com/link-assistant/formal-ai/issues/1021) / PR [#1027](https://github.com/link-assistant/formal-ai/pull/1027) | Self-development each release; refuse-by-default publishing ladder (`src/contribution_write_path.rs`). | The same default-deny shape governs installs: nothing is installed without an explicit grant, and never system-wide. |
 | [#1091](https://github.com/link-assistant/formal-ai/issues/1091), [#655](https://github.com/link-assistant/formal-ai/issues/655) / PR [#679](https://github.com/link-assistant/formal-ai/pull/679) | The first self-authored task; the replayable Hive-Mind-dispatched loop. | The replay discipline PR #679 established (183 stream-JSON events, byte-for-byte) is the model for replaying a discovered setup procedure offline. |
+| [#670](https://github.com/link-assistant/formal-ai/issues/670) (E51) | Browser multi-language execution via WebVM. | Added by the 2026-09-16 reconciliation to match plan 13's coverage table: this plan delivers the docker backend and honest browser probing (L15, L16); the WebVM spike itself is named as `ExecutionBackend::BrowserRuntime { runtime }` and stays open. |
 | hive-mind [#2059](https://github.com/link-assistant/hive-mind/issues/2059) | Asks for a separate docker image reachable on the docker network as `link-assistant-formal-ai`, and notes *"we don't store any memory of formal AI system, so once server restarted - it will be reset to its initial state."* | The toolchain ledger is durable and workspace-scoped, so a restart does not lose a discovered procedure; only the installed bytes are disposable. |
 
 ## Current state — evidence with file:line, tests, ledgers
@@ -560,12 +561,21 @@ Forget-and-rediscover proof (`formal-ai learn forget --toolchain kotlinc` then r
 // src/execution_box/mod.rs
 
 /// Where code actually runs. Selected per task; absence is a refusal, not a skip.
+///
+/// **This enum is plan 00 §4.4's single "where does this run" vocabulary. It
+/// absorbs plan 03's `VerifyBackend`, which declared the same idea a second
+/// time: `Sandbox` becomes `HostSandbox`, `BoxImage` becomes `Box`, and
+/// `SweBenchImage` joins here. This plan lands before plan 03 in plan 00 §5's
+/// order, so plan 03 consumes it (plan 00 §9 R7).**
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ExecutionBackend {
     /// The existing allowlisted sandbox (`src/agent.rs:177`).
     HostSandbox,
     /// A one-shot container for one compile-and-run (#930).
     Box { image: String },
+    /// The pinned upstream SWE-bench instance image, when Docker is present.
+    /// Optional: absence downgrades to `HostSandbox`, never to success (plan 03).
+    SweBenchImage { instance_id: String },
     /// A per-conversation detached container (#937).
     Conversation { conversation_id: String },
     /// The browser runtime, when one is loaded.
@@ -750,7 +760,7 @@ Expected with no execution backend: the reply contains the honest sentence in th
 
 ### Gates and ratchets
 
-1. `data/meta/debt-ratchet.lino` (22 lines, issue #1126) gains `hardcoded_setup_hints` at the current **14** and `hardcoded_execution_environments` at the current **5**, both shrink-only, reaching `0` when RC1/RC4 close.
+1. `data/meta/debt-ratchet.lino` (22 lines, issue #1126) gains `hardcoded_setup_hints` at the current **14** and `hardcoded_execution_environments` at the current **5**, both shrink-only, reaching `0` when RC1/RC4 close. **Both are added through the strict two-sided checker plan 09 leaves 1-5 install, so they land after those leaves; `check-debt-ratchet.rs` is at-or-below today and would not catch an improvement that was never recorded (plan 00 §9 X6).**
 2. `data/meta/ci-gates/check-prerequisite-recipe.lino` registers the specification test with its justification (R1085-16's requirement that every gate carry one).
 3. `scripts/check-hardcoded-language.rs`'s 1,286-literal allowlist may not grow for any string this plan adds; the honesty sentences are seed rows.
 4. `scripts/check-wasm-worker-size.rs`'s `MAX_WASM_BYTES = 512 * 1024` is **not raised**. Any browser runtime is a lazily fetched asset outside that budget, and a test asserts the worker binary is unchanged.
@@ -804,67 +814,31 @@ Record the probe table, the recovery outcome for each of the five languages, and
 
 ## Docs to update — exact statements, quoted, with replacement
 
-**`VISION.md:163`** — currently:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D198-D209** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> - Explicit agent autonomy: agent mode should expose actions and run them in an isolated environment such as a Docker image, a server sandbox, or a browser VM where practical.
-
-Replace with: *"- Explicit agent autonomy: agent mode exposes actions and runs them in an isolated environment — the allowlisted host sandbox, a `link-foundation/box` container, a per-conversation detached container, or a browser runtime — chosen by an observed probe rather than declared. Where no environment is available the answer says so and shows no unobserved output (issues #8, #930, #937, #1138 B6)."*
-
-**`VISION.md:269`** — currently:
-
-> Code-generation tasks should be a first focus area. The assistant should generate algorithms in popular languages, compile or run generated code when the environment supports it, report execution limits honestly, and preserve logs for failed reasoning or failed execution. Browser-only mode can start with JavaScript evaluation and later experiment with WebVM.
-
-Replace the middle clause: *"… compile or run generated code when the environment supports it — and when it does not, discover the missing toolchain from its trusted publisher, install it under the workspace, and retry — report execution limits honestly from a probe rather than from a constant, and preserve logs for failed reasoning or failed execution. Browser-only mode starts with JavaScript evaluation and offers a lazily fetched Python runtime; WebVM remains an open option."*
-
-**`ROADMAP.md:126`** (row 7) — currently ends:
-
-> #938 unifies the coding-task handler family behind one executable meta-builder | Generalizing the shared builder beyond coding tasks remains tracked work.
-
-Append to the notes column: *"Toolchain availability is probed, not declared (#1138 B6); the fourteen hard-coded `setup_hint` strings and five hard-coded `environment` strings are seed rows with retrieved provenance."*
-
-**`GOALS.md:96`** area — add one bullet after the agent-orchestration list: *"- Treat a missing prerequisite as a requirement: observe the failure, name the program, find its procedure at the trusted publisher, install it under the workspace and never system-wide, retry the original step, and keep only the recipe — so the toolchain can be forgotten and rediscovered."*
-
-**`GOALS.md`, Self-Evolution list** — add: *"- Never present unobserved output as observed. Every surface states its execution limit from a probe, in every supported language."*
-
-**`docs/meta-algorithm.md:185-262`** — the agentic-coding recipe section. After the eight-step list, add *"The prerequisite-discovery meta-algorithm (issue #1138 B6)"* recording the eight recovery steps, their `source_file`s and the grounding table, in the same shape as `docs/meta-algorithm.md:255-266`. Also amend the sentence at `:209-211`:
-
-> The loop is a pure, deterministic function of the conversation so far — no sampling, no hidden state, no neural inference (a NON-GOAL).
-
-to add: *"A step may observe that a program it needs is absent; that observation is a need, not an error, and the recovery sequence that follows is the same deterministic function of the conversation plus the observed exit code."*
-
-**`docs/benchmarks.md:356-358`** — currently:
-
-> ```sh
-> # Refresh every suite locally. SWE-bench additionally needs the pinned official
-> # Python harness and Docker; scheduled CI bounds it separately to one case.
-> ```
-
-Replace the comment with: *"# Refresh every suite locally. SWE-bench's pinned official Python harness and Docker are prerequisites the run now discovers and, with `--allow-install`, installs under the workspace; without a grant the run reports the missing prerequisite instead of recording a solver failure."*
-
-**`docs/requirements/issue-0008-telegram-bot-requirements.md`** — the R8 rows that #930 merges (R8-1, R8-2, R8-4). Each currently records the docker pipeline as deferred. Replace the status column with the implemented mechanism and cite `src/execution_box/`, or, where a leaf did not land, state precisely which.
-
-**`docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md`** — add a row: *"The image's `FORMAL_AI_START_ISOLATION` and `FORMAL_AI_START_RUNNER` (Dockerfile:66-67) are read by the runtime, not only asserted by `scripts/verify-docker-runtime.sh`."*
-
-**New shard `docs/requirements/issue-1138-prerequisite-discovery.md`** with R1138-6-1 … R1138-6-12:
-
-| ID | Requirement |
+| row | document |
 | --- | --- |
-| R1138-6-1 | Toolchain availability is an observation. A status that was never probed is `NotProbed`, never `Unavailable`. |
-| R1138-6-2 | `check_command` is executed before an answer claims an output was observed; an unobserved output is labelled as such in every supported language. |
-| R1138-6-3 | A missing program is classified from the observed exit code and distinguished from a permission denial and from an ordinary compile error. |
-| R1138-6-4 | A missing program becomes a `PrerequisiteNeed` recorded in the need ledger, `Blocked` until a re-probe returns `Present`. |
-| R1138-6-5 | A setup procedure comes from the trusted publisher declared for that program; ranking is not authority, and a lookalike host is refused and recorded. |
-| R1138-6-6 | Installation is default-deny, granted per program, scoped to the workspace root, and never system-wide; a step writing outside the root is refused before execution. |
-| R1138-6-7 | A procedure without a postcondition probe is refused; a successful command with a failing postcondition is `StillMissing`, never success. |
-| R1138-6-8 | The ledger retains the recipe and provenance, never the installed payload; deleting both and re-running reproduces the same content id. |
-| R1138-6-9 | Code execution may run in a `link-foundation/box` container or a per-conversation detached container with snapshot-by-default and command replay as a selectable fallback; the container has no network unless the task contract requires it. |
-| R1138-6-10 | A deadline is a reported failure with the elapsed time, the deadline and the partial output; the descending-N ladder records every N it tried and its outcome. No budget silently truncates work. |
-| R1138-6-11 | The browser states which runtime could be loaded and its size, loads it only on an explicit user action, and shows observed output only when a runtime ran the program. |
-| R1138-6-12 | The absence of every execution environment is an honest refusal in the user's language, never a silent skip and never an unobserved output presented as observed. |
+| D198 | `VISION.md:163` |
+| D199 | `VISION.md:269` |
+| D200 | `ROADMAP.md:126` |
+| D201 | `GOALS.md:96` |
+| D202 | `GOALS.md`, Self-Evolution list |
+| D203 | `docs/meta-algorithm.md:185-262` |
+| D204 | `docs/benchmarks.md:356-358` |
+| D205 | `docs/requirements/issue-0008-telegram-bot-requirements.md` |
+| D206 | `docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md` |
+| D207 | New shard `docs/requirements/issue-1138-prerequisite-discovery.md` |
+| D208 | `docs/requirements-traceability.md` |
+| D209 | `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81` |
 
-**`docs/requirements-traceability.md`** — one row per R1138-6-x, following the honesty rules at `:9-18`; `not yet confirmed` for manual confirmation until a maintainer runs it.
-
-**`docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81`** — tick only the boxes this plan's evidence actually closes, in the commit that closes each, and leave the rest with their reason, honouring `06-repository-task-generalization.md:74-75`: *"Use `[ ]` until evidence exists; record failing command/output before fixing."*
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

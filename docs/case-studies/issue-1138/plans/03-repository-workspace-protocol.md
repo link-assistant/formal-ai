@@ -34,6 +34,8 @@ states of the branch; neither plan may claim the other's result.
 | [#1091](https://github.com/link-assistant/formal-ai/issues/1091) | The first self-authored task ("count `Gemfile.lock` as a lockfile"), landed in `d060b00` via PR #1103. | The generalization: the same shape of task lands without a hand-written `--produces`/`--into`/`--contains` contract. |
 | [#699](https://github.com/link-assistant/formal-ai/issues/699) → [#959](https://github.com/link-assistant/formal-ai/issues/959) | No new specialized handler Rust; migrate to seed rows and registry methods. | The protocol's step list is `data/meta/repository-workspace-protocol.lino`; the Rust is one executor, and no `try_*` dispatch arm is added. |
 | [#8](https://github.com/link-assistant/formal-ai/issues/8), [#930](https://github.com/link-assistant/formal-ai/issues/930), [#937](https://github.com/link-assistant/formal-ai/issues/937) | Execution before answering; per-conversation containers. | Owned by Plan 06; this plan only declares the boundary at which the protocol asks for an execution environment. |
+| [#838](https://github.com/link-assistant/formal-ai/issues/838) | "Find hive-mind on my desktop" — a local filesystem search must reach the filesystem. | Added by the 2026-09-16 reconciliation to match plan 13's coverage table: plan 10 owns the routing, this plan owns the workspace the located path is read and edited in. |
+| [#1066](https://github.com/link-assistant/formal-ai/issues/1066) (closed by #1067 with five of six acceptance items undelivered) | run the self-authoring harness; land a qualifying attributed pull request; cut a release on it. | Added by the reconciliation: carry-over C83 assigns three of the five undelivered items to this plan (L13, L17) and the depth-5 decomposition ladder to plan 12. |
 
 ## Current state — evidence with file:line, tests, ledgers
 
@@ -223,7 +225,7 @@ Reasons:
 
 **Rejections.**
 
-- **Option B** rejected: it splits the protocol in two (container for foreign repos, worktree for our own), makes Docker a hard dependency for all repository work, and turns capability failures into `benchmark_unavailable`. Its one genuine advantage — free instance environments — is recovered as an *optional* verification backend in Option A's architecture (see `VerifyBackend::SweBenchImage` below), without making it load-bearing.
+- **Option B** rejected: it splits the protocol in two (container for foreign repos, worktree for our own), makes Docker a hard dependency for all repository work, and turns capability failures into `benchmark_unavailable`. Its one genuine advantage — free instance environments — is recovered as an *optional* verification backend in Option A's architecture (see `ExecutionBackend::SweBenchImage` below), without making it load-bearing.
 - **Option C** rejected: it produces an unapplied patch, which is narration, and #848's own record already names substring assertions on agent output as non-verification.
 - **Option D** rejected: it makes our measured capability depend on a repository we do not control, and the two hive-mind issues (#2059, #2229) show that dependency costing a year with nothing attributable at the end.
 
@@ -255,8 +257,8 @@ reconciliation leaf has nothing to rename:
 | `Location` | `Location { relative_path, symbol, how: LocationEvidence }` | `src/repository_workspace/locate.rs` |
 | `Workspace::locate` | `locate_targets(workspace, need)` | `src/repository_workspace/locate.rs` |
 | `Change` | reuses `structured_edit` / `link_edit_rules` / `workspace_change` shapes | `src/repository_workspace/edit.rs` |
-| `Command` | `Command { line, names }` — a named-test invocation or a build | `src/repository_workspace/verify.rs` |
-| `Evidence` | the plan 00 §4.3 record, emitted by `edit` and `run` | `src/repository_workspace/verify.rs` |
+| `RunCommand` | `RunCommand { line, names }` — a named-test invocation or a build (plan 00 §9 R6) | `src/repository_workspace/verify.rs` |
+| `Evidence` | plan 05's single record in `src/execution_evidence.rs`, emitted by `edit` and `run`; this module adds no fields (plan 00 §9 R2) | `src/execution_evidence.rs` |
 | `UnifiedDiff` | `UnifiedDiff(String)`, computed from the tree | `src/repository_workspace/diff.rs` |
 | `Need` | plan 00 §4.1 link record; consumed, never redefined here | `src/meta_frame.rs` + plan 05 |
 
@@ -271,7 +273,7 @@ src/repository_workspace/mod.rs          (RepositoryWorkspace, WorkspaceProtocol
 src/repository_workspace/clone.rs        (WorkspaceSpec, clone_at_base)
 src/repository_workspace/locate.rs       (locate_targets, Location, LocationEvidence)
 src/repository_workspace/edit.rs         (apply_change)
-src/repository_workspace/verify.rs       (Command, VerifyBackend, run_named_tests -> Evidence)
+src/repository_workspace/verify.rs       (RunCommand, run_named_tests -> Evidence; ExecutionBackend from plan 06)
 src/repository_workspace/diff.rs         (UnifiedDiff, unified_diff)
 src/cli_solve.rs                         (`formal-ai solve`)
 data/meta/repository-workspace-protocol.lino
@@ -279,7 +281,7 @@ data/seed/repository-task-verbs.lino
 data/seed/repository-command-allowlist.lino
 ```
 
-Every one of `RepositoryWorkspace`, `WorkspaceProtocol`, `WorkspaceSpec`, `UnifiedDiff`, `repository_workspace`, `of_directory`, `locate_targets`, `base_commit` returns **zero** hits from `grep -rn` over `src`, `tests`, `scripts`, `data` on the baseline, so no name collides. `NeedLedger` (`src/meta_frame.rs:644`), `RecipeProgress` (`src/agentic_coding/command_reroute.rs:163`), `ExecutionStatus` (`src/coding/catalog/types.rs:203`), `ProbeOutcome` (`src/reasoning_standard/refutation.rs:59`) and `AgentWorkspace` (`src/agent.rs:177`) are taken and are *reused*, not shadowed. `Location`, `Change`, `Command` and `Evidence` are contract names owned by plan 00; this plan defines them in `src/repository_workspace/` only if plan 05 has not already placed them, and adopts plan 05's definitions otherwise.
+Every one of `RepositoryWorkspace`, `WorkspaceProtocol`, `WorkspaceSpec`, `UnifiedDiff`, `repository_workspace`, `of_directory`, `locate_targets`, `base_commit` returns **zero** hits from `grep -rn` over `src`, `tests`, `scripts`, `data` on the baseline, so no name collides. `NeedLedger` (`src/meta_frame.rs:644`), `RecipeProgress` (`src/agentic_coding/command_reroute.rs:163`), `ExecutionStatus` (`src/coding/catalog/types.rs:203`), `ProbeOutcome` (`src/reasoning_standard/refutation.rs:59`) and `AgentWorkspace` (`src/agent.rs:177`) are taken and are *reused*, not shadowed. `Location`, `Change`, `RunCommand` and `Evidence` are contract names owned by plan 00; this plan defines them in `src/repository_workspace/` only if plan 05 has not already placed them, and adopts plan 05's definitions otherwise.
 
 ### Types and signatures
 
@@ -394,28 +396,30 @@ pub fn locate_targets(
 ```rust
 // src/repository_workspace/verify.rs
 
-/// One named test, build or program invocation. Contract name: `Command`
-/// (plan 00 §4.4). Not to be confused with `std::process::Command` (imported
-/// under an alias here) or with clap's `Command` enum in `src/main.rs`.
+/// One named test, build or program invocation. Contract name: `RunCommand`
+/// (plan 00 §4.4).
+///
+/// **reconciled: was `Command`; now `RunCommand`, because `Command` is already
+/// taken twice — by `std::process::Command` and by clap's `Command` enum in
+/// `src/main.rs` — and this plan's own draft used `line` in the struct and
+/// `command` at the SWE-bench call site (plan 00 §9 R6).**
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Command {
+pub struct RunCommand {
     /// The command line, lowered from seed data for the tree's ecosystem.
     pub line: String,
     /// The test names that must pass (SWE-bench `FAIL_TO_PASS` ∪ `PASS_TO_PASS`).
     pub names: Vec<String>,
 }
 
-/// Where the named tests actually execute.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum VerifyBackend {
-    /// In the sandbox, under `src/agent.rs`'s allowlist.
-    Sandbox,
-    /// Inside the pinned upstream SWE-bench instance image, when Docker is
-    /// present. Optional: absence downgrades to `Sandbox`, never to success.
-    SweBenchImage { instance_id: String },
-    /// Inside the language's `konard/box-*` image (`data/meta/box-language-projects.lino`).
-    BoxImage { image: String },
-}
+// Where the named tests actually execute is `crate::execution_box::ExecutionBackend`,
+// declared by plan 06 (`src/execution_box/mod.rs`) and consumed here.
+//
+// **reconciled: was `VerifyBackend { Sandbox, SweBenchImage, BoxImage }` declared
+// in this module; now plan 06's `ExecutionBackend { HostSandbox, Box { image },
+// SweBenchImage { instance_id }, Conversation { conversation_id },
+// BrowserRuntime { runtime } }`, because two enums for "where does this run" is
+// the same defect in two plans, and plan 06 lands first in plan 00 §5's order
+// with the superset of variants (plan 00 §9 R7).**
 
 /// Run `tests` in `workspace` on `backend` and report what was observed.
 ///
@@ -425,28 +429,21 @@ pub enum VerifyBackend {
 /// silent skip.
 pub fn run_named_tests(
     workspace: &RepositoryWorkspace,
-    tests: &Command,
-    backend: &VerifyBackend,
+    tests: &RunCommand,
+    backend: &crate::execution_box::ExecutionBackend,
 ) -> Result<Evidence, WorkspaceError>;
 
-/// The execution record every satisfaction needs. Contract name: `Evidence`
-/// (plan 00 §4.3), whose `.lino` projection carries `for_need`, `produced_by`,
-/// `command`, `exit`, `output_hash`, `source_ids` and `recorded_at`. The fields
-/// below are this plan's additions to that record for a test run; plan 05 owns
-/// the schema and this plan adopts whatever it lands.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Evidence {
-    pub for_need: String,
-    pub produced_by: String,
-    pub command: String,
-    pub exit: Option<i32>,
-    pub output_hash: String,
-    pub stdout: String,
-    pub stderr: String,
-    pub passed: Vec<String>,
-    pub failed: Vec<String>,
-    pub timed_out: bool,
-}
+// `Evidence` is plan 05's single definition in `src/execution_evidence.rs`
+// (plan 00 §4.3). This module declares no record of its own.
+//
+// **reconciled: this plan's draft declared a second `Evidence` struct carrying
+// `stdout`, `stderr`, `passed`, `failed` and `timed_out`. Now: the deterministic
+// half lives in `Evidence::detail` as
+// `EvidenceDetail::Tests { passed, failed, timed_out }`, which is hashable and
+// enters the ledger; the raw `stdout` / `stderr` are hashed into `output_hash`
+// and returned beside the record as the non-persisted
+// `ObservedOutput { stdout, stderr }`, so a caller can show them without the
+// ledger storing them (plan 00 §4.3, §9 R2).**
 ```
 
 ```rust
@@ -594,8 +591,8 @@ The `other =>` default-deny arm survives verbatim; what changes is that the allo
         base_commit: string_field(value, "base_commit", manifest, index)?,
         sparse_paths: Vec::new(),
     }),
-    tests: Some(Command {
-        command: String::new(),              // lowered from the tree's ecosystem at run time
+    tests: Some(RunCommand {
+        line: String::new(),                 // lowered from the tree's ecosystem at run time
         names: json_string_array(value, "FAIL_TO_PASS")?
             .into_iter()
             .chain(json_string_array(value, "PASS_TO_PASS")?)
@@ -605,7 +602,7 @@ The `other =>` default-deny arm survives verbatim; what changes is that the allo
 }),
 ```
 
-`BenchmarkCase` gains `pub repository: Option<WorkspaceSpec>` and `pub tests: Option<Command>`; every existing suite leaves both `None`, so `cases.rs:60-151` is untouched.
+`BenchmarkCase` gains `pub repository: Option<WorkspaceSpec>` and `pub tests: Option<RunCommand>`; every existing suite leaves both `None`, so `cases.rs:60-151` is untouched.
 
 `src/external_benchmarks/mod.rs:150-156` gains one branch:
 
@@ -621,7 +618,7 @@ let responses = cases
 
 `solve_repository_case` opens a `RepositoryWorkspace`, runs `WorkspaceProtocol::execute`, and returns a response whose `answer` **is** `ProtocolOutcome::diff` wrapped in a fenced block, so `grade::extract_diff` (`grade.rs:175`) keeps working byte for byte and `grade_swebench` is unchanged. The empty-patch short circuit at `grade.rs:186-192` then fires only when the protocol genuinely produced nothing — which is the honest case, not the structural one.
 
-Docker remains optional: `VerifyBackend::SweBenchImage` is chosen only when `ensure_swebench_runtime()` (`grade.rs:333`) succeeds; otherwise `VerifyBackend::Sandbox` runs the named tests with the repository's own interpreter, and a missing interpreter surfaces as `WorkspaceError::MissingPrerequisite` — Plan 06's input.
+Docker remains optional: `ExecutionBackend::SweBenchImage` is chosen only when `ensure_swebench_runtime()` (`grade.rs:333`) succeeds; otherwise `ExecutionBackend::HostSandbox` runs the named tests with the repository's own interpreter, and a missing interpreter surfaces as `WorkspaceError::MissingPrerequisite` — Plan 06's input.
 
 ### `#848` ladder conversion
 
@@ -799,7 +796,7 @@ Every one of these writes its number to a ledger before anything is tuned. A
 - [ ] **L4.** Add `src/repository_workspace/mod.rs` with `RepositoryWorkspace::{open, adopt, root, base_commit, source_files, read, write}`. Test: isolation from the ambient checkout.
 - [ ] **L5.** Add `src/repository_workspace/diff.rs` `unified_diff` and `RepositoryWorkspace::diff`. Test: empty diff for an untouched clone; `git apply` round trip.
 - [ ] **L6.** Add `src/repository_workspace/locate.rs` `locate_targets`, delegating Rust trees to `requirement_resolution::resolve_in` unchanged. Test: the five held-out prompts and the ambiguity case.
-- [ ] **L7.** Add `src/repository_workspace/verify.rs` `Command`, `VerifyBackend`, `run_named_tests`, `Evidence`, and `WorkspaceError::MissingPrerequisite`. Test: missing interpreter, timeout, pass/fail split.
+- [ ] **L7.** Add `src/repository_workspace/verify.rs` `Command`, `ExecutionBackend`, `run_named_tests`, `Evidence`, and `WorkspaceError::MissingPrerequisite`. Test: missing interpreter, timeout, pass/fail split.
 - [ ] **L8.** Add `data/meta/repository-workspace-protocol.lino` and `WorkspaceProtocol::{load, parse, execute}` plus `tests/unit/specification/repository_workspace_protocol.rs`. Test: source-file grounding, contiguous order, rediscovery content id.
 - [ ] **L9.** Wire the protocol's per-step observations into `NeedLedger` rows so no step is `Satisfied` without an execution record (`src/meta_frame.rs:644-700`). Test: a step that did not run leaves its need `Planned`, never `Satisfied`.
 - [ ] **L10.** Widen `BenchmarkCase` with `repository` / `tests`; convert `cases.rs:152-166`; add the `solve_repository_case` branch at `mod.rs:150-156`. Test: parsed case carries a 40-char base commit; every other suite still has `None`.
@@ -809,71 +806,36 @@ Every one of these writes its number to a ledger before anything is tuned. A
 - [ ] **L14.** Convert `experiments/issue_847_coding_ladder/run_coding_ladder.sh` (today `cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]` at `run_coding_ladder.sh:196`) to `formal-ai solve --repository . --base-commit …`; rerun; record the new 130-task number whatever it is. **This commit must also update `tests/unit/issue_848_coding_ladder.rs:532-560`, which pins nine exact substrings of that script** (`"[\"rustc\", \"--edition=2024\""`, `"rust_target_existed[created]"`, `"\"dataset_total\": len(all_tasks)"`, `"\"complete\": not only"`, `"results-partial-$FILTER_SLUG.json"`, `"expect_from_file"`, `"re.MULTILINE"`, and both lines of the `server_started` / `not_measured` predicate at `run_coding_ladder.sh:284-288`). Every pinned semantic must survive; only the invocation line changes.
 - [ ] **L14b.** Wire the #848 ladder into CI — it has never run there (`docs/case-studies/issue-957/raw-data/verified-776-928.md:57,62`: "recorded score 65/130 with L1 = 0/16 — the exact 'honest attempt at L1' bar konard set is still failing, and nothing ratchets it"). Add `.github/workflows/coding-ladder.yml` modelled on `.github/workflows/task-ladder.yml` (weekly + `workflow_dispatch` + path-filtered), a `data/meta/ci-gates/coding-ladder.lino` row with its justification, and a floor in `data/meta/ladder-ratchet.lino` for the 130-task score that may only rise. This closes the R848-1 "ladder runs in CI with recorded score" clause that `docs/case-studies/issue-957/raw-data/verified-all.ndjson:880` marks `PARTIAL`.
 - [ ] **L15.** Add `leaf_nodes_passing_without_authored_rules` to `data/meta/ladder-ratchet.lino`, run `issue_1028_agent_cli_ladder` with rules disabled, record the number, and add `authored_ladder_rules: 32` to `data/meta/debt-ratchet.lino` as a shrink-only ceiling.
-- [ ] **L16.** Raise `swebench_slice` to `23` in `.github/workflows/external-benchmarks.yml` and record the full-split row.
+- [ ] **L16.** Raise `swebench_slice` to `23` in `.github/workflows/external-benchmarks.yml` and record the full-split row. **A slice is a measurement width, not a ceiling: widening it can only lower the recorded score, and `historical_floor_violations` groups by `(suite, slice)`, so the recorded `0/1` floor is untouched. This is not a loosened gate (plan 00 §9 X7).**
 - [ ] **L17.** Author one real repository change through `formal-ai solve --commit` on a bot branch and attach it to the release cycle, closing R1021-22 or recording precisely why it is still open.
 - [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `docs/benchmarks.md`, `docs/meta-algorithm.md`, `VISION.md`, `ROADMAP.md`, `GOALS.md` per the next section.
 
 ## Docs to update — exact statements, quoted, with replacement
 
-**`docs/benchmarks.md:311`** — currently:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D170-D180** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> `2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on SWE-bench Lite. The ratchet makes every number a floor that may never fall below.
-
-Replace with: *"`2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `<passed> / 23` on SWE-bench Lite, measured over the whole dev split through the repository workspace protocol (issue #1138 B3). Before that protocol the row was `0 / 1` and was structural: the case was one prompt with no clone, so the empty-patch criterion closed it before the evaluator ran. The ratchet makes every number a floor that may never fall below."*
-
-**`docs/benchmarks.md:314-320`** — currently states the evaluator applies "a candidate patch" and that an evaluator/Docker/parquet failure becomes `benchmark_unavailable`. Add one sentence: *"The candidate patch is now produced by cloning the instance at its `base_commit` and diffing the edited tree; Docker is used for the instance tests when it is present and is not required for the patch to exist."*
-
-**`docs/meta-algorithm.md:185-262`** — the agentic-coding recipe section. Its step 2 currently reads:
-
-> **Pin the canonical plan as named constants** (`SEARCH_QUERY`, `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered literals.
-
-Add, immediately after the eight-step list, a new subsection *"The repository workspace protocol (issue #1138)"* recording the six steps (clone, locate, read, edit, verify, diff), their `source_file`s, and the grounding test — mirroring the table at `docs/meta-algorithm.md:255-266`. Also amend the sentence at `:212-215`:
-
-> ```text
-> web_search → web_fetch → write_file(formalize) → run_command(verify) → final
-> ```
-
-to note: *"A repository task substitutes the workspace protocol for the middle three stages: the tree replaces the fetched page as the ground truth, and `run_command` runs the named tests rather than a conformance script."*
-
-**`ROADMAP.md:145`** (row 26) — currently:
-
-> other latest rows remain GSM8K 2/20, MATH 0/20, CoEdIT 0/20, and SWE-bench Lite 0/1.
-
-Replace the SWE-bench clause with the measured full-split number and a pointer to #1138 B3.
-
-**`VISION.md:343`** — currently ends:
-
-> … and SWE-bench Lite 0/1. MBPP explicitly records `--online`.
-
-Replace `SWE-bench Lite 0/1` with the new measured row and add: *"SWE-bench is now run through the same repository workspace protocol the self-coding path uses, so the number measures repository capability rather than the absence of a clone."*
-
-**`GOALS.md:96`** — currently:
-
-> - Complete the self-coding chain: Formal AI codes itself via Agent CLI, directed by Hive Mind, with every change landing as a reviewed pull request.
-
-Replace with: *"- Complete the self-coding chain: `formal-ai solve --model formal-ai` clones at a base commit, locates the files a requirement names, edits, runs the named tests and produces the diff — the same protocol SWE-bench and both ladders use — with every change landing as a reviewed pull request carrying the four self-hosting trailers. An Agent CLI and Hive Mind drive that entry point; they do not own it."*
-
-**`GOALS.md:111`** (the "Formal AI codes itself" definition) — currently ends "Seed edits are the first rung; source edits follow through the same rule engine." Append: *"A source edit counts only when it was located from the requirement rather than from a pre-authored rule, and only when the named tests were observed to run."*
-
-**`docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md`** — the R1085-9 row (rendered at `REQUIREMENTS.md:2465`) says the ratchet "records how many of the 32 leaves Formal AI actually changed (15, may only rise)". Append: *"Issue #1138 B3 adds `leaf_nodes_passing_without_authored_rules`, measured with `experiments/issue_1028_agent_cli_ladder/rules/` disabled, because a committed per-leaf rule is a memoized answer and the original number measures rule authorship as much as capability."*
-
-**`docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`** — the R1021-22 row (rendered at `REQUIREMENTS.md:2405`) says **Not achieved.** Replace only when L17 lands, with the pull-request URL, the session id and the evidence path; until then leave it as written.
-
-**New shard `docs/requirements/issue-1138-repository-workspace-protocol.md`** with R1138-3-1 … R1138-3-9:
-
-| ID | Requirement |
+| row | document |
 | --- | --- |
-| R1138-3-1 | A repository task carries an origin and an exact base commit; a branch name is refused. |
-| R1138-3-2 | The files a requirement names are located without the requirement naming them, by census for Rust trees and by literal or path occurrence otherwise; ambiguity resolves to nothing. |
-| R1138-3-3 | Named tests are executed and their command, exit code and output recorded before any obligation may be satisfied. |
-| R1138-3-4 | A unified diff is computed from the tree, applies cleanly to the base commit, and is the only thing offered as a patch. |
-| R1138-3-5 | SWE-bench, the #848 ladder and self-coding use one protocol document; its steps are data and are grounded against the source. |
-| R1138-3-6 | Every command is default-deny; the allowlist is seed data scoped to program plus subcommand plus argument shape. |
-| R1138-3-7 | `formal-ai solve --model formal-ai` is an authoring path: it refuses to commit by default, and when it commits it emits all four self-hosting trailers with an evidence bundle naming the exact model. |
-| R1138-3-8 | A missing prerequisite is reported as an unsatisfied need with the observed exit code, never as a pass or a skip. |
-| R1138-3-9 | The protocol document is forgettable and rediscoverable: deleting and regenerating it reproduces the committed content id. |
+| D170 | `docs/benchmarks.md:311` |
+| D171 | `docs/benchmarks.md:314-320` |
+| D172 | `docs/meta-algorithm.md:185-262` |
+| D173 | `ROADMAP.md:145` |
+| D174 | `VISION.md:343` |
+| D175 | `GOALS.md:96` |
+| D176 | `GOALS.md:111` |
+| D177 | `docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md` |
+| D178 | `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md` |
+| D179 | New shard `docs/requirements/issue-1138-repository-workspace-protocol.md` |
+| D180 | `docs/requirements-traceability.md` |
 
-**`docs/requirements-traceability.md`** — add one row per R1138-3-x with delivered-in, automated test and `not yet confirmed` for manual, following the honesty rules at `docs/requirements-traceability.md:9-18`.
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

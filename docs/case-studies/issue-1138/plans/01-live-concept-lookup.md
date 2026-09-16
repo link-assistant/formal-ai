@@ -39,6 +39,20 @@ leaf that turns out wrong is struck through with the reason, never deleted.
   one generic kernel, one registry field, and seed data.
 - **#1085 / R1085-9** (the links network is not the system that reasons) — concept
   senses land as links with provenance, not as Rust tables.
+- **Issues plan 13's coverage table names this plan as a deliverer of** (added by
+  the 2026-09-16 reconciliation so the two documents agree): **#720** `последние
+  новости` and **#1063** `Какого размера средний корень яблони?` (the retrieval
+  half of the frontier classes, with plan 10 owning the routing); **#801** /
+  **#821** "search online for Elon Musk" (the retrieval walk); **#826** `ФБС vs
+  ФБО` and **#827** `Что такое фуфломицин?` (the canonical B1 cases — E5 of plan
+  13 records that three correct sources are fetched and their *page titles* are
+  emitted, so sense extraction is the missing stage); **#722** (the subject's
+  concept graph behind a composed essay); **#800** / **#872** (retrieval under a
+  marketplace constraint, with the option network as a new leaf); **#939** (the
+  installation-guide corpus is retrieved by this walk rather than hand-authored);
+  **#940** (the research half); **#952** (the browser reads the same seed through
+  the WASM parser — L13); **#453** (the splitting approaches a moonshot needs are
+  retrieved, deduplicated to their first source).
 - **Plan 00 of this batch** (`00-root-causes-and-integration.md` §4.1, §4.2) fixes
   the shared contract names `Need`, `NeedKind`, `SourceLookup`, `LookupBounds`,
   `LookupOutcome` and delegates two decisions to this plan: which `need_kinds` a
@@ -461,7 +475,7 @@ Rejected:
 | `src/web/worker/formal_ai_worker_source_walk.js` | Browser mirror of the kernel (shared by every need kind). |
 | `data/seed/meanings-concept-lookup.lino` | Five-language response meanings for the lookup's user-visible outcomes. |
 | `data/meta/concept-lookup-recipe.lino` | The grounded meta-recipe for this step. |
-| `tests/fixtures/issue-1138/` | Committed real-service captures + `capture-manifest.lino` + `expected-senses.json`. |
+| `tests/fixtures/issue-1138-b1/` | Committed real-service captures + `capture-manifest.lino` + `expected-senses.json`. **reconciled: was `tests/fixtures/issue-1138-b1/`, now suffixed `-b1` because plan 04 already uses `issue-1138-b4/` and plans 03, 06 and 08 will need their own (plan 00 §9 R13).** |
 | `examples/issue_1138_concept_lookup_parity.rs` | Writes `expected-senses.json` from the Rust path. |
 | `examples/issue_1138_concept_lookup_capture.rs` | Refreshes the committed captures live. |
 
@@ -493,33 +507,25 @@ nothing to rename here: `SourceLookup`, `LookupBounds`, `LookupOutcome`, `Need`,
 
 ### Rust signatures
 
+> **reconciled: was `NeedKind` declared in `src/seed/sources.rs` by this plan
+> and again in `src/formalization/needs.rs` by plan 04; now one definition in
+> `src/needs.rs`, landed by plan 00's contract leaf C1 before this plan's L3,
+> because the record every step connects through cannot have two Rust homes
+> (plan 00 §9 R1).**
+
 ```rust
+// src/needs.rs — the contract module (plan 00 leaf C1, lands before L3).
+// `NeedKind` is plan 00 §4.1's `need.kind` vocabulary, and it is also this
+// plan's registry selection axis: the `need_kinds` a source may answer, which
+// plan 00 §4.2 delegates to this plan to *use in the registry*, not to declare.
+//
+// Variants, fixed by plan 00 §4.1: Concept, Procedure, Part, Prerequisite,
+// Evidence, Decision, None. This plan reads the first four; plan 05 reads
+// Evidence and plan 12 reads Decision.
+pub enum NeedKind { Concept, Procedure, Part, Prerequisite, Evidence, Decision, None }
+
 // src/seed/sources.rs — the second selection axis, read from the registry.
-// This is plan 00 §4.2's "the `need_kinds` a source may answer", which plan 00
-// delegates to this plan to define.
-
-/// What a need lacks, and therefore which sources may answer it. The vocabulary
-/// is plan 00 §4.1's `need.kind`; one enum serves the registry, the need record
-/// and the lookup.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord)]
-pub enum NeedKind {
-    /// The meaning of a word or term.
-    Concept,
-    /// An ordered way of doing something.
-    Procedure,
-    /// A reusable implementation part.
-    Part,
-    /// A runtime, compiler or tool that is missing.
-    Prerequisite,
-    /// Not a retrievable need.
-    #[default]
-    None,
-}
-
-impl NeedKind {
-    #[must_use] pub const fn slug(self) -> &'static str;
-    fn from_seed(value: &str) -> Self;
-}
+use crate::needs::NeedKind;
 
 impl SourceRecord {
     /// The need kinds this source declares it may answer, in registry order.
@@ -899,7 +905,7 @@ concept_lookup_step_remember
   function remember
 ```
 
-`tests/fixtures/issue-1138/capture-manifest.lino` reuses the #991 manifest shape
+`tests/fixtures/issue-1138-b1/capture-manifest.lino` reuses the #991 manifest shape
 verbatim (`url`, `sha256`, `fetched_at`, `bytes`, `license_name`, `license_url`).
 
 ### Cache layout and content addressing
@@ -976,7 +982,7 @@ and filters `serviceGroup === "external_trusted"`. The walk moves to a new
 `formal_ai_worker_source_walk.js` with the same need-kind/extractor split as the Rust
 kernel, and `formal_ai_worker_how_to_guide.js` and a new
 `formal_ai_worker_concept_lookup.js` become its two extractors. Both runtimes are
-held to one recorded expectation, `tests/fixtures/issue-1138/expected-senses.json`,
+held to one recorded expectation, `tests/fixtures/issue-1138-b1/expected-senses.json`,
 written from the Rust path by `examples/issue_1138_concept_lookup_parity.rs` and
 asserted by `tests/unit/issue_1138_concept_lookup.rs` and
 `tests/web/issue-1138-concept-lookup.test.mjs` — the R991-1 pattern, reused.
@@ -1165,7 +1171,7 @@ same senses from the same fixtures and marks any composed program unverified.
   captures go to `FORMAL_AI_SOURCE_CACHE_DIR`, never `data/cache/**`.
 - **Capture-drift check.** `FORMAL_AI_LIVE_FETCH=1 cargo run --example
   issue_1138_concept_lookup_capture` re-fetches through the production path and
-  reports drift against `tests/fixtures/issue-1138/capture-manifest.lino`, gated
+  reports drift against `tests/fixtures/issue-1138-b1/capture-manifest.lino`, gated
   exactly like the #991 refresh check.
 
 ### Benchmark commands and the honest numbers expected
@@ -1236,7 +1242,7 @@ Ordered; each individually verifiable and commit-sized.
       `data/cache/**/*.lino` projection. Tests: one per extractor against a committed
       capture.
 - [ ] **L6 — Capture the fixtures.** `examples/issue_1138_concept_lookup_capture.rs`;
-      commit `tests/fixtures/issue-1138/source-cache/` and `capture-manifest.lino`
+      commit `tests/fixtures/issue-1138-b1/source-cache/` and `capture-manifest.lino`
       for both held-out words in every language the sources actually serve. Record
       the honest coverage in the manifest — a language with no capture gets no row.
 - [ ] **L7 — `lookup_surface` and `RegistryConceptLookup`.** The public entry plus the
@@ -1266,7 +1272,7 @@ Ordered; each individually verifiable and commit-sized.
 - [ ] **L13 — Browser parity.** `formal_ai_worker_source_walk.js`,
       `formal_ai_worker_concept_lookup.js`, two `data/meta/worker-line-budget/` files,
       `examples/issue_1138_concept_lookup_parity.rs`,
-      `tests/fixtures/issue-1138/expected-senses.json`,
+      `tests/fixtures/issue-1138-b1/expected-senses.json`,
       `tests/web/issue-1138-concept-lookup.test.mjs`.
 - [ ] **L14 — Five-language outcome prose.** `data/seed/meanings-concept-lookup.lino`
       (6 meanings + 30 responses); the language-coverage gate must report
@@ -1285,6 +1291,10 @@ Ordered; each individually verifiable and commit-sized.
 - [ ] **L18 — Retire the adapter.** Once plan 02 and plan 04 call `SourceLookup`
       directly, delete `UnknownConceptLookup`, `NoLookup` and
       `RegistryConceptLookup`; `discover_with_lookup` takes `&mut dyn SourceLookup`.
+      **reconciled (plan 00 §9 X2): this is the last leaf of the whole plan set.
+      Plan 02 L14 was amended to take the lookup from its caller as
+      `&mut dyn SourceLookup` rather than constructing a second implementation,
+      so nothing blocks this leaf except its own ordering.**
       One trait for retrieval in the whole tree. Coordinated with plan 09's ratchet;
       deferred to last on purpose, because it changes a signature
       `tests/unit/coding_discovery/concepts.rs` pins and must not share a commit
@@ -1292,101 +1302,25 @@ Ordered; each individually verifiable and commit-sized.
 
 ## Docs to update
 
-**`docs/meta-algorithm.md`** — the "coding-discovery meta-algorithm" list at
-`:882-891` currently reads:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D156-D273** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> 2. **Discover** — `concept_discovery::discover` maps each requirement to seeded
->    structural meanings and licensed parts from Python documentation,
->    Wikifunctions, or a previously verified procedure.
+| row | document |
+| --- | --- |
+| D156 | `docs/meta-algorithm.md` |
+| D157 | `VISION.md` |
+| D158 | `ROADMAP.md` |
+| D159 | `docs/requirements/issue-1138-live-concept-lookup.md` |
+| D272 | `docs/requirements-traceability.md` |
+| D273 | `docs/benchmarks.md` |
 
-Replace with:
-
-> 2. **Understand** — `concept_lookup::lookup_surface` resolves every surface of the
->    requirement that no seeded meaning accounts for, by walking the
->    `need_kinds`-declaring sources of `data/seed/sources-registry.lino`
->    (dictionary → lexicon → encyclopedia → technical) through the one bounded
->    capture walk in `src/source_walk.rs`. A resolved sense is quoted with its
->    license and digest and is used to reach a seeded structural meaning; it is never
->    inlined into generated code. A surface no source defines stays `blocked`, with
->    every consulted source and its observed outcome reported.
-> 3. **Discover** — `concept_discovery::discover_with_lookup` maps each requirement
->    to seeded structural meanings, to the senses step 2 retrieved, and to licensed
->    parts from Python documentation, Wikifunctions, or a previously verified
->    procedure.
-
-(subsequent items renumbered 4–6), and a new `## The concept-lookup meta-algorithm
-(issue #1138 B1)` section in the shape of the existing recipe sections, naming
-`data/meta/concept-lookup-recipe.lino` and
-`tests/unit/specification/concept_lookup_meta_algorithm.rs`.
-
-**`VISION.md`** — `:337` currently says:
-
-> Every interface now reads its multilingual responses, concept table, tool
-> registry, language-detection rules, prompt patterns, and intent-routing rule book
-> from the shared `data/seed/` directory through `src/seed.rs` (Rust) and
-> `src/web/seed_loader.js` (browser).
-
-Append, in the same paragraph:
-
-> Since issue #1138 the same seed directory also declares *which* trusted sources may
-> be consulted for the meaning of a word it does not know (`need_kinds` in
-> `data/seed/sources-registry.lino`), and both the universal loop and the coding path
-> consult them through one bounded, content-addressed walk. The assistant's
-> vocabulary is therefore no longer bounded by the seed; what is bounded is which
-> sources it will trust.
-
-**`ROADMAP.md`** — `:145` (row 26) currently ends:
-
-> `task_spec`, source-backed concept discovery, structural composition, bounded
-> verification, and the procedure ledger derive Python programs without benchmark
-> identifiers or canonical answers in production data.
-
-Replace the clause "source-backed concept discovery" with "live concept lookup
-through the sources registry (issue #1138 B1) followed by source-backed concept
-discovery", and append: "A requirement word absent from every seed file is resolved
-by retrieval, not by a seed edit; the held-out `isogram`/`lipogram` corpus in
-`data/benchmarks/concept-lookup-paraphrases.lino` records the honest five-language
-number."
-
-**`docs/requirements/issue-1138-live-concept-lookup.md`** — new shard (assembled into
-`REQUIREMENTS.md` by `rust-script scripts/assemble-requirements.rs --write`;
-`REQUIREMENTS.md` itself is never edited by hand):
-
-```markdown
-## Issue #1138 B1 Live Concept Lookup
-
-| ID | Requirement | Status / Evidence |
-| --- | --- | --- |
-| R1138-B1-1 | One `UnknownConceptLookup` implementation walks the sources registry and is used by the universal loop and the coding path. | … |
-| R1138-B1-2 | The lookup is bounded by declared depth, pages, services and capture age, never by a time or token budget. | … |
-| R1138-B1-3 | Every retrieved sense carries source id, exact URL, sha256, fetch time, license and depth; an offline run replays committed captures byte-identically. | … |
-| R1138-B1-4 | A retrieved gloss is quoted with attribution and never inlined into generated code. | … |
-| R1138-B1-5 | A word no source defines is reported as unresolved with every consulted source and its outcome; no floor, no guess. | … |
-| R1138-B1-6 | Settings opt-outs are authoritative for the lexical tier as they are for the procedural tier. | … |
-| R1138-B1-7 | A held-out word absent from every seed file resolves by lookup in en, ru, hi, zh and es, or is honestly reported unresolved per language. | … |
-| R1138-B1-8 | Deleting the sense ledger loses nothing: the same captures rediscover the same content ids. | … |
-| R1138-B1-9 | The native and browser runtimes execute one walk contract, held to one recorded expectation. | … |
-```
-
-**`docs/requirements-traceability.md`** — nine new rows, one per R1138-B1-*, each
-naming its test file and `not yet confirmed` for manual confirmation until a run is
-recorded. Also correct `:708`, which today reads
-
-> | R710-D8 | 1558 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/concepts.rs | not yet confirmed |
-
-to
-
-> | R710-D8 | 1558 | delivered 2026-09-15; PR #888 (issue #710); lookup extension point unimplemented until #1138 B1 | tests/unit/coding_discovery/concepts.rs (lookup exercised only by a test-local fake before #1138) | not yet confirmed |
-
-**`docs/benchmarks.md`** — add a `### Unknown-word concept lookup — issue #1138 B1`
-subsection under "Sources by suite", declaring the corpus path, the five languages,
-the two held-out words, the sources consulted with their licenses, and the honest
-current score. In `### Honest current numbers` (`:277-284`), append after the table:
-
-> The 2026-09-15 coding rows predate live concept lookup: a requirement whose
-> vocabulary fell outside the 82 seeded structural meanings could not be understood
-> at all. The unknown-word corpus records that number separately and does not alter
-> any upstream row.
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

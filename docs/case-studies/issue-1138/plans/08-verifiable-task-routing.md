@@ -40,6 +40,14 @@
 - **#923 (E76, closed)** — established that a new reasoning capability lands with
   external benchmark scores recorded in `data/benchmarks/`. This plan follows
   that contract for the four non-coding suites.
+- **Issues plan 13's coverage table names this plan as a deliverer of** (added by
+  the 2026-09-16 reconciliation): **#1071** ("support counting to 100 or any
+  number" — the route reaches any task with a verifiable expectation, and the
+  `Count` expectation is exactly its shape); **#700** (the `unit_carrying_*`
+  limitation class is fixed by check 5; adopting `link-foundation/si-units` as a
+  dependency stays a maintainer decision, so #700 is partial); **#939** (the
+  installation-guide corpus's verifiable half — a guide becomes a script whose
+  run is the observation).
 - **#938 (E86, closed)** — one shared meta-algorithm builder for coding handlers.
   This plan extends the same builder surface
   (`src/meta_algorithm_builder.rs`, used at
@@ -496,7 +504,27 @@ return zero `grep -rn` matches across `src/`, `data/`, `tests/`.
 ```rust
 // src/verifiable_task.rs
 
-/// What kind of observation would settle this task.
+/// What kind of observation would settle this task — the shape the **answer**
+/// must take.
+///
+/// This is *not* plan 05's `ObligationExpectation`, which declares what must be
+/// **observed** before an obligation node may be called satisfied. The two are
+/// bridged once, here, so a verifiable task's satisfaction flows through plan
+/// 05's ledger and there is exactly one satisfaction rule in the tree:
+///
+/// ```rust
+/// impl TaskExpectation {
+///     /// `check_id` is `"<VerifiedAnswer::derivation_id>:<check slug>"`.
+///     #[must_use]
+///     pub fn to_obligation_expectation(&self, check_id: &str)
+///         -> crate::obligation_ledger::ObligationExpectation;
+/// }
+/// ```
+///
+/// **reconciled: plan 05 risk 2 left `SymbolicCheck { check_id }` undefined and
+/// asked for it to be settled jointly with plan 12 before either lands; this
+/// plan now owns `check_id` and plan 12's `CandidateScore::checks` counts the
+/// satisfied `Evidence` rows of the same set (plan 00 §9 R15).**
 ///
 /// Deliberately *not* the upstream `Grading` enum: this is what the prompt
 /// itself declares, discovered from seed cues, never from a suite id. The two
@@ -720,8 +748,12 @@ pub struct VerifiedAnswer {
     pub derivation_id: String,
     pub source_urls: Vec<String>,
     pub source_licenses: Vec<String>,
-    /// Which self-checks passed (see below).
-    pub checks: Vec<String>,
+    /// Which self-checks passed, each as the observation that proves it.
+    ///
+    /// **reconciled: was `Vec<String>`; now `Vec<Evidence>` (plan 00 §4.3),
+    /// because a self-check recorded as a string is a claim, not an
+    /// observation, and plan 00 §6.6 requires the evidence (plan 00 §9 R14).**
+    pub checks: Vec<crate::execution_evidence::Evidence>,
 }
 
 /// Lower every candidate IR, run it in the bounded workspace, and keep the
@@ -1063,10 +1095,25 @@ run produces it. The commitments are about process:
       wording in `data/seed/multilingual-responses-*.lino`, no literals in Rust.
 - [ ] **L7** — Add `impl From<&VerifiableTask> for CodingTaskSpec` with the
       projection table above.
+- [ ] **L17'** — *(moved ahead of L8 by the reconciliation)* Replace
+      `INTENT_MARKERS` (`src/solver_handlers/pattern_inference.rs:29-43`) with
+      the `verifiable_expectation` seed role in five languages; retire
+      `pattern_inference` from `HANDLER_FUNCTIONS` and
+      `data/seed/handler-precedence.lino`; shrink the hard-coded-language
+      allowlist by the removed entries.
+      **reconciled: was L17, after L8. `recognise_verifiable`'s expectation
+      recognition *is* what `INTENT_MARKERS` approximates, so retiring
+      `pattern_inference` first frees the dispatch slot `verifiable_task` takes,
+      and `try_dispatch_entries` never rises. Plan 00 §6.2 forbids a rise and
+      plan 09 makes the ratchet strict; raising a ceiling for one commit would
+      have been a loosened gate (plan 00 §9 R12).**
 - [ ] **L8** — Add `src/solver_handlers/verifiable_task.rs` with
-      `try_verifiable_task_with_online`; register in `HANDLER_FUNCTIONS`
-      (`src/solver_dispatch.rs:286`) and `data/seed/handler-precedence.lino` in
-      one commit; assert the 228-case conversational suite is unchanged.
+      `try_verifiable_task_with_online`; register it in the slot L17' vacated, in
+      `HANDLER_FUNCTIONS` (`src/solver_dispatch.rs:286`) and
+      `data/seed/handler-precedence.lino`, in one commit; declare it a **generic
+      interpreter** in `data/meta/core-boundary-ledger.lino`, not a handler;
+      assert the 228-case conversational suite is unchanged. This leaf lands
+      after plan 09 leaves 1-5 have made the ratchet strict.
 - [ ] **L9** — Add `execute_candidates` and `VerifiedAnswer`: lower, run in
       `AgentWorkspace`, stdout is the answer. Checks 1 and 2 only.
 - [ ] **L10** — Add check 3 (agreement between two disjoint derivations) and the
@@ -1086,11 +1133,12 @@ run produces it. The commitments are about process:
       multiplicity.
 - [ ] **L16** — **Delete** `compose_object_count` and `OBJECT_CATEGORIES`
       (`src/solver_synthesis.rs:248-301, 339-447`) and the call site at `:115`.
-      Add the category-table ratchet.
-- [ ] **L17** — Replace `INTENT_MARKERS`
-      (`src/solver_handlers/pattern_inference.rs:29-43`) with the
-      `verifiable_expectation` seed role in five languages; shrink the
-      hard-coded-language allowlist by the removed entries.
+      Add the category-table ratchet. **L15 must be green in the same commit: the
+      curated 13/13 industry slice contains an object-counting case the table
+      answers today, and the ratchet will correctly refuse a fall (plan 00
+      §9 X4; this plan's risk 7, now an ordering constraint in plan 14).**
+- [ ] ~~**L17**~~ — struck through: moved ahead of L8 as **L17'** so the
+      dispatch slot is freed before it is filled (plan 00 §9 R12).
 - [ ] **L18** — Add the 30 held-out five-language cases as
       `data/benchmarks/verifiable-task-paraphrases.lino` plus the routing and
       recognition suites.
@@ -1101,7 +1149,9 @@ run produces it. The commitments are about process:
 - [ ] **L21** — Add the word-problem-shape ratchet and demote the three authored
       shapes below the derived candidate
       (`src/calculation_word_problem.rs:560-565`).
-- [ ] **L22** — Re-measure all four suites at slice 20, online and cold-offline;
+- [ ] **L22** — *(lands after plan 02 L22, which teaches the ledger its second
+      floor, so a re-measurement writes into a schema that already knows two
+      slices — plan 00 §9 X8)* Re-measure all four suites at slice 20, online and cold-offline;
       re-run the two coding controls; append every row; record the failure
       frontier through `--frontier-record` (`src/cli_benchmark.rs:57-61`).
 - [ ] **L23** — Run the wider slices (200) for GSM8K and CoEdIT and append, so the
@@ -1112,101 +1162,32 @@ run produces it. The commitments are about process:
 
 ## Docs to update
 
-**`VISION.md:343`** currently reads, in part:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D226-D238** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> "The synthesis step is now **general**: instead of resolving answers from seeded handlers, the universal 11-step loop **derives** them by composing decomposed sub-results over the links network. … the solver writes HumanEval/MBPP Python functions from parsed structure, source-grounded meanings, composed schemas, and bounded execution, and computes the GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) answers."
+| row | document |
+| --- | --- |
+| D226 | `VISION.md:343` |
+| D227 | `ROADMAP.md:145` |
+| D228 | `ROADMAP.md:179` |
+| D229 | `docs/benchmarks.md:284-295` |
+| D230 | `docs/benchmarks.md:307-312` |
+| D231 | `docs/benchmarks.md:16-33` |
+| D232 | `docs/benchmarks.md:31` |
+| D233 | `docs/requirements/issue-0891-equation-corpus-ratchet.md` |
+| D234 | `docs/requirements/issue-0698-real-external-benchmark-harness.md` |
+| D235 | New shard `docs/requirements/issue-1138-verifiable-task-routing.md` |
+| D236 | `docs/requirements-traceability.md` |
+| D237 | `docs/meta-algorithm.md:144-167` |
+| D238 | `docs/meta-algorithm.md:214-218` |
 
-The parenthetical values are curated-slice answers being cited beside upstream
-capability, which is the confusion #1085 asked to end. Replace with:
-
-> "The synthesis step is general across task *kinds*, not only across coding: any task carrying a verifiable expectation — a number, a count, an edited text, a value for a named unknown — enters the same recognise → discover → compose → verify → remember path, and the composed program is executed to produce the answer. Upstream scores are cited per suite and per slice from `data/benchmarks/external-results.lino`; the curated 13/13 slice is named as curated wherever it appears."
-
-**`ROADMAP.md:145`** (pillar 26) currently reads, in part:
-
-> "other latest rows remain GSM8K 2/20, MATH 0/20, CoEdIT 0/20, and SWE-bench Lite 0/1."
-
-Replace with the re-measured values and their date, and add:
-
-> "Non-coding suites are answered by the same verifiable-task route as coding: `src/verifiable_task.rs` recognises the expectation, `src/coding/program_ir.rs` composes the derivation, and the program is executed in the bounded workspace to produce the value. The object-counting category table and the pattern-inference keyword array were deleted, not extended."
-
-**`ROADMAP.md:179`** currently reads:
-
-> "| E29 | #314 | #320 | Compute math/word-problem and counting answers (GSM8K, MATH, BIG-bench) deterministically rather than seeding them. |"
-
-The row is accurate about intent and misleading about outcome: the counting
-answer *was* seeded, in `OBJECT_CATEGORIES`. Append: "Superseded for the upstream
-suites by the verifiable-task route (#1138 B8), which deletes the seeded category
-table."
-
-**`docs/benchmarks.md:284-295`** — the "Honest current numbers" table rows for
-GSM8K, MATH, BIG-bench object counting and CoEdIT are updated with the
-re-measured values and their date, so all rows share one measurement generation.
-The preamble at `docs/benchmarks.md:279-282`:
-
-> "The latest committed rows are dated `2026-09-15` for the coding suites, use solver version `0.349.2` … Other suite rows remain at their latest `2026-09-07` measurements:"
-
-becomes a single-date statement once L22 lands, or keeps the split with the new
-date if any suite could not be re-run.
-
-**`docs/benchmarks.md:307-312`** currently reads, in part:
-
-> "The existing corpus rows remain recorded exactly as measured: `2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on SWE-bench Lite."
-
-Replace with the measured values, and add a sentence distinguishing derivation
-gains from presentation gains:
-
-> "Where a score moved because the answer's shape now matches the upstream grader's convention rather than because a new derivation succeeded, that is stated per suite; a presentation gain is not a reasoning gain."
-
-**`docs/benchmarks.md:16-33`** — add a row to "Suites at a glance":
-
-> `| Verifiable-task paraphrases | #1138 B8 | `verifiable-task-paraphrases.lino` | `verifiable_task::routing` | 30 |`
-
-**`docs/benchmarks.md:31`** — the equation-corpus row's `minimum_pass_count` of
-"72 (and ≥50 distinct verified types)" rises with each promoted limitation; L1
-alone takes it to 73.
-
-**`docs/requirements/issue-0891-equation-corpus-ratchet.md`** — the shard must
-record that the ten limitations are now candidates for the verifiable-task route
-rather than permanent upstream constraints, and that each fix is promoted to a
-`benchmark_case` in the same commit as the code change.
-
-**`docs/requirements/issue-0698-real-external-benchmark-harness.md`** — R529's
-status cites `recorded_scores_are_honest_passed_over_total`; add that non-coding
-suites are re-measured at every solver generation, so a row's date is part of its
-honesty.
-
-**New shard `docs/requirements/issue-1138-verifiable-task-routing.md`** with IDs
-R1138-B8-1 … R1138-B8-9 covering: the shared task type, seed-driven recognition in
-five languages, the projection onto the discovery path, execution-produces-the-answer,
-the five self-checks, derivation memory that recomputes rather than replays,
-deletion of the seeded category table, the extended no-memorization gate, and the
-re-measurement. `REQUIREMENTS.md` is generated from the shards by
-`scripts/assemble-requirements.rs`; no manual edit there.
-
-**`docs/requirements-traceability.md`** — add rows for every R1138-B8-*. Also
-amend the R710-D12 row's neighbours: the file has no rows at all for R710-R1..R10,
-R873, R919, R922, R924, R991 and R1085-2/3/11 (#1138 B11), and this plan's rows
-must not repeat that pattern — each lands with its evidence column filled at
-merge time, not "not yet confirmed".
-
-**`docs/meta-algorithm.md:144-167`** — the twelve-step recursive core is the
-document that should already have described this route. Step 8 reads:
-
-> "8. **Resolve each atomic leaf through registry-backed method dispatch** — the registry is the sole authority (R344)."
-
-Add a sentence: "A leaf whose task carries a verifiable expectation resolves by
-*executing* a derived program and observing its output, not by selecting a method
-that formats a string; the observation is the evidence step 9 records." That
-sentence is also B5's requirement, and this plan is the first place it becomes
-true for a non-coding leaf.
-
-**`docs/meta-algorithm.md:214-218`** — the agentic recipe's step 2 pins
-`SEARCH_QUERY`, `CANONICAL_SOURCE_URL` and `KB_PATH` as constants. The same
-rewrite plan 02 specifies applies here and is recorded in both plans because
-neither can claim "no hard-coding" while the published recipe pins three
-constants.
-
----
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

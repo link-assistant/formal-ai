@@ -16,6 +16,48 @@ the final `Closes #N` list is derived from evidence rather than optimism.
 Nothing here is paraphrased. Every remainder is the merged pull request's own
 words, trimmed only at a sentence boundary and marked with `…` when trimmed.
 
+## Issues addressed
+
+*(Added by the 2026-09-16 reconciliation so this plan carries the same sections
+as plans 01-12; plan 00 §8.)*
+
+- **#1138**, the umbrella, and the maintainer's rule quoted above: "all not yet
+  fully done that from all previous merged pull request must be planned here to
+  actually fully done it here." This plan is the audit that makes that rule
+  checkable rather than aspirational.
+- **#710 (E68)** — the dropped-requirements regression backlog. This plan is its
+  re-verification, extended from the requirement documents to the pull-request
+  bodies. Every remainder it finds is assigned to a plan leaf.
+- **#1066**, closed by #1067 with five of six acceptance items undelivered in a
+  body that said so plainly. It is the precedent this plan exists to prevent and
+  the reason Option D below is rejected outright.
+- **#651** — the vision/roadmap epic whose children are the source of most
+  `other`-labelled obligations here.
+- **Every open issue**, all 61, classified for coverage in the table below, so
+  the final `Closes` list is derived from evidence rather than optimism.
+
+## Root causes
+
+*(Added by the reconciliation. The carry-over table is the evidence; these are
+the three mechanisms it is evidence of.)*
+
+1. **A pull request's honest-scope note has no consumer.** This repository's
+   convention requires one, and 71 merged pull requests wrote one — 97 substantive
+   remainder statements, of which 83 are still open. Nothing read them back. A
+   deferral that nobody re-reads is indistinguishable from a deferral that was
+   never made.
+2. **Closure is decided by a body, not by a gate.** #1066 was closed on a body
+   that listed five undelivered items; #745 and #758 were closed COMPLETED on
+   acceptance evidence that, in the maintainer's own words on #710, "asserted on
+   the *shape of a plan* rather than on *measured routing outcomes*". Without a
+   leaf and a gate behind each `Closes` line, a closing list is a promise.
+3. **Scope narrowing is often silent.** #710's audit found that of 183 closed
+   issues at or below #350, only about 15 % show clear delivery evidence. A pull
+   request that narrowed scope without saying so leaves no phrase for `grep` to
+   match, which is why this sweep and plan 11's requirement-by-requirement audit
+   are both inputs to every other plan's scope, and why risk 7 below states the
+   residual exposure rather than claiming completeness.
+
 ## Method
 
 ### Commands used
@@ -86,6 +128,55 @@ auditable rather than asserted:
    outside this repository's reach — `agent-commander` approve-each, Playwright
    #33031, `meta-language` query IR, crates.io 429. 12 hits, kept out of the
    table but named in "Risks and open questions".
+
+### Sweep options considered, and why this one
+
+*(Added by the 2026-09-16 reconciliation: this plan is a ledger rather than a
+bottleneck, but the maintainer's instruction asks every item for options and a
+decision with rejections, and the choice of sweep determines what the `Closes`
+list can honestly contain.)*
+
+#### Option A — sweep the closed *issues*
+
+557 closed issues, read their bodies
+  and closing comments. *Rejected as the primary sweep*: #710's own audit found
+  that "of 183 closed issues ≤ #350, only ~15% show clear delivery evidence", so
+  a closed issue's body is the weakest evidence in the repository. Retained as a
+  *supplement*: the 93 E-numbered ones were swept, and four (E1-E5 below) state a
+  remainder no pull request body repeats.
+#### Option B — sweep the merged *pull requests*
+
+500 merged bodies,
+  two grep passes, 344 hits discarded in five auditable classes, 97 substantive
+  remainders across 71 pull requests. A merged pull request's body is the
+  strongest available evidence because it was written by the person who knew
+  exactly what they had not done, at the moment they stopped doing it, and
+  because this repository's convention requires an honest-scope note. *Selected.*
+#### Option C — sweep the requirement documents
+
+Walk `REQUIREMENTS.md` and
+  `docs/requirements-traceability.md` row by row. *Rejected as the primary sweep,
+  adopted as plan 11*: it finds what the record *claims*, not what a pull request
+  *admitted*, and 225 requirement IDs have no traceability row at all, so the
+  denominator is itself incomplete. Plan 11 fixes the denominator; this plan
+  cannot wait for it.
+#### Option D — trust the issue tracker's open/closed state
+
+*Rejected
+outright*: #1066 was closed by #1067 with five of six acceptance items
+  undelivered, in a body that said so plainly. That single counterexample is why
+  this plan exists.
+
+#### Decision
+
+**Option B is selected**, with Option A retained as a supplement (the 93
+E-numbered issues' comment threads) and Option C adopted as plan 11 rather than
+rejected. Option D is rejected outright.
+
+The residual risk of Option B is stated in risk 7 and is real: a pull request
+that narrowed scope *silently* leaves no phrase for `grep` to match. Options B
+and C together are the answer, which is why plans 11 and 13 are both inputs to
+every other plan's scope.
 
 ### How a remainder was classified
 
@@ -354,9 +445,9 @@ fully close it by implementing plans 01–12, and why not when it cannot.
 | issue | title | ask (one line) | coverage | plan(s) | reason |
 | --- | --- | --- | --- | --- | --- |
 | #447 | Issue with dialog: интерфейс ужасен | mobile dialog is unusable; routing and layout both wrong | partial | 10 | #1087 names "the mobile flows in #447"; routing leaves land here, the mobile layout redesign is a UI change unrelated to the meta algorithm |
-| #453 | Moonshot tasks | split any task into two sub-tasks recursively using the best internet data, deduplicating ideas to their first source | full | 12, 01, 04 | balanced task splitting is B12's named method; the source ranking is plan 01's walk |
+| #453 | Moonshot tasks | split any task into two sub-tasks recursively using the best internet data, deduplicating ideas to their first source | **partial** | 12, 01, 04 | **changed by the 2026-09-16 reconciliation.** Plan 12 delivers R453-M1 to M3 (exactly two children, every segment preserved, an unsplittable task reported rather than certified atomic) and files **R453-M4** — "combine all different approaches … for each duplicated idea find the first source of it in the history" — as **Open** with its blocker named in its risk 7. Plan 12's own words: "Claiming it would be exactly the overstatement this issue exists to remove" |
 | #483 | Experimental fallback for formalization using small models | use a small in-browser model to match formalization to Wikipedia | **no** | — | maintainer decision: the ask conflicts with the standing NON-GOAL on neural inference; PR #644 is the stale attempt and must be resolved by the maintainer, not by this plan |
-| #491 | Principle of least action | optimize for the shortest reasoning path; split every task into two | full | 12 | B12's first named heuristic |
+| #491 | Principle of least action | optimize for the shortest reasoning path; split every task into two | **partial** | 12 | **changed by the 2026-09-16 reconciliation.** Plan 12 delivers R491-C1 and R491-C3 and advances R491-C2. **R491-C4** — "include user satisfaction and requirement completeness when comparing candidate solutions and learning general procedures" — is recorded **Open as a universal capability** in `docs/requirements/issue-0491-least-action-continuation.md:13`, and no leaf in this pull request delivers it |
 | #557 | Buttons embedded into the text field on desktop/tablet | adaptive, polished composer | **no** | — | UI redesign unrelated to the meta algorithm; PR #643 is the stale attempt |
 | #651 | Create issues for the most critical missing features; refresh vision and roadmap | maximum-detail issues plus a consistent vision/roadmap with status tracking | partial | 11, 13 | the docs half lands here; the epic's still-open children (#665–#670, #700, #705) are not all closable here |
 | #665 | E46: Installable offline PWA and npm package for the WASM engine | ship a PWA and publish an npm package | **no** | — | npm publishing requires registry credentials; PWA packaging is unrelated to the meta algorithm |
@@ -384,7 +475,7 @@ fully close it by implementing plans 01–12, and why not when it cannot.
 | #861 | Optional anonymous Sentry issue reporting | anonymous telemetry-based reporting | **no** | — | requires a third-party account, a DSN and a privacy decision |
 | #869 | Назначь мне встречу с Александром на 20:00 по Грузии | schedule a meeting in a named timezone | partial | 10, 04 | routing and the timezone concept land here; an actual calendar integration does not exist and is not meta-algorithm work |
 | #872 | игры для малышей … в App Store (iOS) | find free open-source children's games on the App Store | partial | 01, 10, new leaf (option network) | retrieval and constraint ranking land here; App Store coverage depends on what the source serves |
-| #901 | Automate TRIZ principles and contradiction resolution | contradictions as links with trade-off values, resolved by pattern | full | 12 | B12's named method |
+| #901 | Automate TRIZ principles and contradiction resolution | contradictions as links with trade-off values, resolved by pattern | **partial** | 12 | **changed by the 2026-09-16 reconciliation.** Plan 12 delivers the mechanism — `ContradictionLink` with an integer basis-point selection value, the forty inventive and four separation principles as forgettable seed data, resolution at the ranking seam — and states in its risk 5 that "the 20-task TRIZ corpus #901 asks for … is not in this plan's scope and is named as the follow-up". Without that corpus the mechanism is unvalidated, and #901 asked for both |
 | #930 | E78: Telegram — compile and run code before answering | docker execution pipeline from #8 | full | 06 | plan 06's docker execution leaf |
 | #934 | E82: Restart E39 — shrinking JS-worker budget, slice-2 absorption | absorb the JS worker into WASM | partial | 09 | the ratchet turns downward here; absorbing all ~26,700 lines is larger than one pull request can honestly claim |
 | #935 | E83: File the two promised upstream relative-meta-logic issues | file library-usability and WASM-compilation issues upstream | full | new leaf | two upstream issue filings plus the recorded dependency; E3 gives the concrete evidence |
@@ -394,12 +485,12 @@ fully close it by implementing plans 01–12, and why not when it cannot.
 | #941 | E89: Gemini protocol surface — thinking trace as thought parts | the missing fourth channel of #608 | full | new leaf | a bounded protocol-surface change; not a bottleneck, but it is a declared remainder |
 | #942 | E90: Automated redaction skill for issue-report publishing | reason about personal/sensitive data before publishing | full | 09, 04 | lands as a registry method over formalized concepts, never as a `try_*` handler |
 | #948 | E96: Memoized-answer-surface burndown | delete canned summaries, idiom handlers, identity/greeting duplication | full | 09, 02 | the ratchet plus the shrinking idiom catalog |
-| #949 | E97: Close the en/ru/hi/zh parity gap; add a parity lint | parity in responses, prompt patterns, greetings | full | 11, and every plan's held-out corpus | the lint is plan 11's; the coverage is delivered leaf by leaf, es included |
-| #950 | E98: Rename `Graph*` types; widen the terminology lint | identifiers and emitted tokens, not only prose | full | 09 | C30's obligation |
+| #949 | E97: Close the en/ru/hi/zh parity gap; add a parity lint | parity in responses, prompt patterns, greetings | full | 11 **L75**, and every plan's held-out corpus | the lint is plan 11's; the coverage is delivered leaf by leaf, es included. **The reconciliation found no leaf for the lint and added plan 11 L75** |
+| #950 | E98: Rename `Graph*` types; widen the terminology lint | identifiers and emitted tokens, not only prose | full | 09 **leaf 42** | C30's obligation. **The reconciliation found no leaf delivering this and added plan 09 leaf 42 rather than downgrading the row** |
 | #951 | E99: Split `main.jsx`; logic moves to WASM calls | 238 top-level functions in a 9,269-line file | partial | 09 | the ratchet lands and the first clusters move; the whole file is a multi-slice migration |
-| #952 | E100: Browser seed loading through the WASM seed parser | delete the JS parser; enforce manifest parity | full | 09, 01 L13 | plan 01 already requires the browser to read the same seed through WASM |
+| #952 | E100: Browser seed loading through the WASM seed parser | delete the JS parser; enforce manifest parity | full | 09 **leaf 13**, 01 L13 | plan 01 already requires the browser to read the same seed through WASM. **The reconciliation found plan 09 leaf 13 *adding* a JavaScript `parseHandlerPrecedence`, the opposite of this issue's ask; the leaf now routes the browser's precedence read through the WASM seed parser (plan 00 §9 X5)** |
 | #953 | E101: Desktop tool-router permission logic into the Rust core | security logic out of JS; stop committing minified bundles | partial | 09 | the permission logic moves; removing committed bundles touches the desktop build and is a separate slice |
-| #954 | E102: Reorganize `src/` into directory modules; generated module map | modularization instead of mechanical splitting | full | 09, 11 | the module map is generated and pinned by plan 11's single status render |
+| #954 | E102: Reorganize `src/` into directory modules; generated module map | modularization instead of mechanical splitting | **partial** | 09, 11 | **changed by the 2026-09-16 reconciliation.** Plan 11 L2 generates the module map into `docs/status.md`, and plan 09 retires handler files batch by batch — but **no leaf in any plan reorganizes the 541 files of `src/` into directory modules**, which is the issue's actual ask. Listing it as fully closed would have closed an issue on a leaf that does not exist |
 | #955 | E103: Runtime hand-check suite — 49 checks | checks that static review cannot confirm | partial | 11 | the checklist and its ledger land here; a live device, a deployed demo and an upstream tracker need the maintainer |
 | #957 | E105: Traceability protocol — delivered / tested / confirmed columns | CI-enforced columns on every requirement row | full | 11 | plan 11's generated table is exactly this |
 | #958 | E106: Report upstream benchmark scores wherever the curated number is cited | co-cite the honest external number | full | 11 | named in #1138's B11 fix criterion |
@@ -410,8 +501,8 @@ fully close it by implementing plans 01–12, and why not when it cannot.
 | #1084 | Published container images are linux/amd64 only | multi-arch publish | partial | new leaf (CI) | the workflow change lands here; the published manifest can only be verified after merge on `main` (C57) |
 | #1087 | E109: Work the frontier queue before more CI work | fix #720/#721/#722/#724/#869/#1063 by generalization | full | 10 | B10's fix criterion |
 | #1088 | E110: Move evidence out of the source repository | a separate evidence repository plus a hashed index | partial | new leaf | the Links Notation index with `sha256`, size and URL lands here; creating `link-assistant/formal-ai-evidence` is an organization action |
-| #1089 | E111: Collapse the gate ecosystem | render status tables from `data/meta`; at most 5 `docs_` tests | full | 11 | B11's fix criterion |
-| #1090 | E112: Finish or retire the traceability manual-confirmation column | fill it from replayable captures, or mark it aspirational | full | 11 | B11's fix criterion |
+| #1089 | E111: Collapse the gate ecosystem | render status tables from `data/meta`; at most 5 `docs_` tests | full | 11 L2 + **L76** | B11's fix criterion. **Plan 11 generated the status surface but had no leaf for the collapse to 5; the reconciliation added L76, whose ratchet starts at the measured 49 and turns strictly downward** |
+| #1090 | E112: Finish or retire the traceability manual-confirmation column | fill it from replayable captures, or mark it aspirational | **partial** | 11 | **changed by the 2026-09-16 reconciliation.** Plan 11 measures the column honestly (743 of 805 unconfirmed, and the number rose since #1085 D9 measured it) and lays out both branches, but its own risk 2 says the choice "should be asked explicitly rather than decided here". An issue whose resolution is a maintainer decision this pull request records rather than makes is not closed by it |
 | #1137 | Four-client E2E only runs after merge | routing regressions reach `main` | full | new leaf (CI) | the `full-replay` gate is widened to pull requests that change routing |
 | #1138 | E113: Bottlenecks blocking a truly general, self-coding meta algorithm | this issue | full | 00–13 | the pull request this plan belongs to |
 
@@ -434,14 +525,22 @@ the silent-omission failure this plan exists to catch:
 
 ## Issues this PR will close
 
-Thirty-seven issues, derived from the "full" rows of the coverage table. Each is
-closed only when the plan leaf named in that table is ticked and its gate is
+**Thirty-two** issues, derived from the "full" rows of the coverage table. Each
+is closed only when the plan leaf named in that table is ticked and its gate is
 green; a leaf that cannot be finished removes its issue from this list and
 records why, rather than closing it on prose.
 
+> **reconciled 2026-09-16: was thirty-seven. Five issues moved to "will not
+> close" because a plan's own text says the issue's ask is not fully
+> delivered — #453 (R453-M4 filed Open), #491 (R491-C4 Open), #901 (the
+> validation corpus out of scope), #954 (no leaf reorganizes `src/`), #1090
+> (an explicit maintainer decision). Three issues stayed only because the
+> reconciliation added the missing leaf rather than downgrading the row:
+> #950 (plan 09 leaf 42), #949 (plan 11 L75), #1089 (plan 11 L76). This is
+> exactly the mechanism risk 1 below promises: an issue leaves the list the
+> moment its leaf is struck through (plan 00 §8).**
+
 ```
-Closes #453
-Closes #491
 Closes #705
 Closes #710
 Closes #720
@@ -454,7 +553,6 @@ Closes #821
 Closes #826
 Closes #827
 Closes #838
-Closes #901
 Closes #930
 Closes #935
 Closes #937
@@ -465,7 +563,6 @@ Closes #948
 Closes #949
 Closes #950
 Closes #952
-Closes #954
 Closes #957
 Closes #958
 Closes #959
@@ -474,20 +571,26 @@ Closes #1071
 Closes #1083
 Closes #1087
 Closes #1089
-Closes #1090
 Closes #1137
 Closes #1138
 ```
 
 ### Issues this PR will NOT close, with one-line reasons
 
-Twenty-four issues. Thirteen are partially advanced and stay open with a
+**Twenty-nine** issues. **Eighteen** are partially advanced and stay open with a
 narrowed remainder; eleven are outside what this pull request can honestly
-deliver.
+deliver. The five marked **moved 2026-09-16** left the `Closes` list during the
+plan-00 §8 reconciliation, each because a plan's own text says the issue's ask is
+not fully delivered.
 
 | issue | why it stays open |
 | --- | --- |
 | #447 | routing leaves land; the mobile layout redesign does not |
+| #453 | **moved 2026-09-16** — R453-M1 to M3 land; R453-M4 ("deduplicate ideas to their first historical source") is filed Open in plan 12 with its blocker named |
+| #491 | **moved 2026-09-16** — R491-C1 and R491-C3 land and R491-C2 advances; R491-C4 (user satisfaction and requirement completeness as ranking dimensions) is Open in the shard and no leaf delivers it |
+| #901 | **moved 2026-09-16** — the contradiction mechanism lands; the 20-task validation corpus #901 also asks for is out of scope (plan 12 risk 5) |
+| #954 | **moved 2026-09-16** — the module map is generated; no leaf reorganizes the 541 files of `src/` into directory modules |
+| #1090 | **moved 2026-09-16** — the column is measured honestly and both branches are laid out; choosing between filling 743 cells and marking the column aspirational is a maintainer decision this pull request records rather than makes |
 | #483 | maintainer decision needed — the ask conflicts with the NON-GOAL on neural inference |
 | #557 | UI redesign unrelated to the meta algorithm |
 | #651 | parent epic; stays open while any of its children does |

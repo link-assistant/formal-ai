@@ -42,6 +42,14 @@ turns out wrong is struck through with the reason, never deleted.
 - **#559 / R333, R340-R344** — `meta_frame::NeedLedger` already has the need
   vocabulary; this plan makes the formalizer a producer of rows in it rather than a
   parallel universe.
+- **Issues plan 13's coverage table names this plan as a deliverer of** (added by
+  the 2026-09-16 reconciliation): **#869** (`по Грузии` is a concept the
+  formalizer must ground before plan 10 can schedule anything); **#942** (the
+  redaction skill reasons over formalized concepts, never a `try_*` handler);
+  **#722** (the greeting clause must stop consuming the request — this plan's
+  clause-splitting leaf is what plan 10 leaf 14 waits on); **#1063** (a magnitude
+  with a unit is a concept, not a sentence); **#453** (a moonshot's approaches
+  are formalized before they are split).
 - **Plan 00 of this batch** (`00-root-causes-and-integration.md` §4.1, §4.3) fixes
   the `Need` record and the `evidence` record. This plan gives `Need` its single
   Rust definition (`src/formalization/needs.rs`), makes the formalizer its first
@@ -549,11 +557,19 @@ pub fn sentences(text: &str) -> Vec<Segment>;
 pub fn clauses(sentence: &Segment) -> Vec<Segment>;
 ```
 
+> **reconciled: was `Need`, `NeedKind` and `NeedState` given their single Rust
+> definition in `src/formalization/needs.rs` by this plan and `NeedKind` given a
+> second one in `src/seed/sources.rs` by plan 01; now all three live in
+> `src/needs.rs`, landed by plan 00's contract leaf C1 before plan 01 L3, and
+> this module owns only what sits *beside* the record — `NeedOrigin`, the
+> retrieved senses, `emit_needs` and `satisfy_needs` (plan 00 §9 R1).**
+
 ```rust
 // src/formalization/needs.rs
 //
-// `Need`, `NeedKind` and `NeedState` are plan 00 §4.1's contract, given their
-// single Rust definition here. `data/seed/…` projects the same record as links:
+// `Need`, `NeedKind` and `NeedState` are plan 00 §4.1's contract, defined once
+// in `src/needs.rs` and re-exported here. `data/seed/…` projects the same
+// record as links:
 //
 //   need <id>
 //     kind      concept | procedure | part | prerequisite | evidence | decision
@@ -563,13 +579,13 @@ pub fn clauses(sentence: &Segment) -> Vec<Segment>;
 //     state     open | planned | satisfied | unsatisfiable
 //     satisfied_by <evidence id>
 
-/// Plan 00 §4.1's `state`. This plan proposes it as the single need-status
-/// vocabulary in the tree: `meta_frame::NeedStatus` (`src/meta_frame.rs:44-61`)
-/// maps onto it as Pending→Open, Planned→Planned, Satisfied→Satisfied,
-/// Blocked→Unsatisfiable; `Deferred` and `Rejected` have no producer today and
-/// are removed with their own test, not silently.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum NeedState { Open, Planned, Satisfied, Unsatisfiable }
+pub use crate::needs::{Need, NeedKind, NeedState};   // plan 00 leaf C1
+
+// `NeedState` is plan 00 §4.1's `state` and the single need-status vocabulary in
+// the tree: `meta_frame::NeedStatus` (`src/meta_frame.rs:44-61`) maps onto it as
+// Pending→Open, Planned→Planned, Satisfied→Satisfied, Blocked→Unsatisfiable;
+// `Deferred` and `Rejected` have no producer today and are removed with their
+// own test (this plan's L3).
 
 /// A finer reason *inside* a `NeedKind::Concept` or `NeedKind::Procedure` need,
 /// so a reader can tell an unknown word from an unknown relation from an
@@ -587,21 +603,20 @@ pub enum NeedOrigin {
     RecursiveGloss,
 }
 
-/// One thing the system does not know. `src/coding/concept_discovery.rs`
-/// re-exports this as its `ConceptNeed`; there is one definition in the tree,
-/// and plan 01's `SourceLookup::lookup(&Need, &LookupBounds)` takes it directly.
+/// What this plan carries *beside* a `Need`, never inside it, so
+/// `recipe_interpreter`'s event-for-event parity obligation (R343) is untouched.
+/// `src/coding/concept_discovery.rs::ConceptNeed` re-exports `needs::Need`;
+/// there is one definition in the tree, and plan 01's
+/// `SourceLookup::lookup(&Need, &LookupBounds)` takes it directly.
+///
+/// **reconciled: was a second `Need` struct with `origin` and `evidence` fields
+/// inline; now the contract record plus this sidecar, because adding a field to
+/// a recorded ledger row changes the event stream R343 pins (plan 00 §9 R1,
+/// and this plan's own risk 8).**
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Need {
-    pub need_id: String,
-    pub kind: NeedKind,             // plan 00 §4.1 / plan 01 registry axis
-    pub subject: String,            // the surface as written
-    pub language: String,
-    pub raised_by: String,          // obligation id | need id | tool result id
-    pub source_span: String,        // "<doc_id>@<start>:<end>", exact
+pub struct NeedContext {
+    pub need_id: String,                // joins to `Need::need_id`
     pub origin: NeedOrigin,
-    pub depth: usize,
-    pub state: NeedState,
-    pub satisfied_by: Option<String>,   // evidence id, per plan 00 §4.3
     pub evidence: Vec<ConceptSense>,    // from plan 01
 }
 
@@ -682,9 +697,31 @@ pub struct ProcedureStep {
 
 /// Extract an ordered procedure from any captured ordered text: a how-to guide's
 /// steps, a documentation page's numbered list, an answer's ordered block.
+///
+/// **reconciled: was `procedure_from_steps(goal, &[GuideStep], language)`, while
+/// plan 02 declared its own `ProcedureStepRecord` in
+/// `src/coding/procedure_text.rs`; now this plan's L9 declares
+/// `src/procedure_text.rs::ProcedureStepRecord` (one "ordered step with
+/// provenance" record for the whole tree) and plan 02 L10 extends that module
+/// with `StepShape`, `steps_from_capture` and `retrieve_procedure`. This plan
+/// lands first in plan 00 §5's order, so it owns the record (plan 00 §9 R10).**
 #[must_use]
-pub fn procedure_from_steps(goal: &str, steps: &[GuideStep], language: &str)
-    -> Option<ExtractedProcedure>;
+pub fn procedure_from_steps(
+    goal: &str,
+    steps: &[crate::procedure_text::ProcedureStepRecord],
+    language: &str,
+) -> Option<ExtractedProcedure>;
+
+impl ExtractedProcedure {
+    /// The only constructor. `GuideStep::to_step_record()` in
+    /// `src/how_to_guide.rs` is how a synthesised guide reaches it.
+    #[must_use]
+    pub fn from_step_records(
+        goal: &str,
+        steps: &[crate::procedure_text::ProcedureStepRecord],
+        language: &str,
+    ) -> Option<Self>;
+}
 
 impl ExtractedProcedure {
     /// Render into the versioned shape `coding_research_learning` already gates,
@@ -1201,9 +1238,14 @@ Ordered; each individually verifiable and commit-sized.
       `identity()`, `to_links_notation()`, `structure_ids()`, `unresolved()`,
       `grounded_ratio()`, `formalize_deeply`. Test:
       `the_same_requirement_in_five_languages_produces_one_concept_graph_identity`.
-- [ ] **L9 — Procedure extraction.** `src/formalization/procedures.rs`;
-      `GuideStep::to_extracted_procedure()` in `src/how_to_guide.rs`. Test:
-      `an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure`.
+- [ ] **L9 — Procedure extraction.** `src/procedure_text.rs` with
+      `ProcedureStepRecord` (the one "ordered step with provenance" record; plan
+      02 L10 extends this module with `StepShape`, `steps_from_capture` and
+      `retrieve_procedure`); `src/formalization/procedures.rs` with
+      `ExtractedProcedure::from_step_records`; `GuideStep::to_step_record()` in
+      `src/how_to_guide.rs`. Test:
+      `an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure`
+      and `a_guide_step_and_a_captured_step_produce_the_same_record_shape`.
 - [ ] **L10 — A typed route into the #919 ledger.**
       `ExtractedProcedure::to_coding_procedure_source()`;
       `src/coding_research_learning.rs` accepts it under the existing execution +
@@ -1217,6 +1259,9 @@ Ordered; each individually verifiable and commit-sized.
       `the_canonical_tale_still_formalizes_to_nine_primitives`.
 - [ ] **L12 — Unpin the recipe.** `SEARCH_QUERY`/`CANONICAL_SOURCE_URL` demoted to
       last-resort fallbacks; the query derives from `ConceptGraph::unresolved()`.
+      **This leaf solely owns the `docs/meta-algorithm.md:214-218` rewrite that
+      plans 02 and 08 also proposed; they now cite plan 11 row D181 instead
+      (plan 00 §9 X9).**
       Test: `a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale`. Amend
       `tests/unit/specification/agentic_meta_algorithm.rs` and
       `docs/meta-algorithm.md` in the same commit.
@@ -1241,117 +1286,25 @@ Ordered; each individually verifiable and commit-sized.
 
 ## Docs to update
 
-**`docs/meta-algorithm.md`** — the agentic-coding steps at `:214-218` currently read:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D181-D275** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> 1. **Recognise the agentic task** from the latest user turn against a small
->    closed keyword set — a non-match yields `None`, so agentic coding stays
->    strictly opt-in and ordinary chat is untouched.
-> 2. **Pin the canonical plan as named constants** (`SEARCH_QUERY`,
->    `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered
->    literals.
+| row | document |
+| --- | --- |
+| D181 | `docs/meta-algorithm.md` |
+| D182 | `VISION.md` |
+| D183 | `ROADMAP.md` |
+| D184 | `docs/requirements/issue-1138-formalization-depth.md` |
+| D274 | `docs/requirements-traceability.md` |
+| D275 | `docs/benchmarks.md` |
 
-Replace with:
-
-> 1. **Recognise the agentic task** by role from the seeded lexicon
->    (`ROLE_AGENT_ACTION_FORMALIZE_VERB`) — a non-match yields `None`, so agentic
->    coding stays strictly opt-in and ordinary chat is untouched.
-> 2. **Derive the plan from the task's own unresolved needs.** The source text is the
->    one the task quotes or names; the search query is built from the surfaces
->    `ConceptGraph::unresolved()` reports, not from a pinned literal. `KB_PATH`
->    remains a named constant because it is an output path, not a knowledge claim;
->    `SEARCH_QUERY` and `CANONICAL_SOURCE_URL` remain only as the regression
->    fixture's source for the canonical tale.
-
-And the nine-primitive claim implicit in the `meta_primitive` row at `:250`:
-
-> | `meta_primitive` | 9 | each appears in `PRIMITIVE_KINDS` in `src/agentic_coding/formalize.rs`; ordering 1..9 contiguous |
-
-gains a sentence beneath the table:
-
-> Nine kinds are *declared*; how many are *observed* depends on the document, and the
-> report states the observed number (`data/seed/meanings-formalization-report.lino`).
-> Since issue #1138 B4 the report also states how many of the needs the formalizer
-> raised were grounded, so a document cannot be reported as covered while a need is
-> unresolved.
-
-Plus a new `## The deep-formalization meta-algorithm (issue #1138 B4)` section naming
-`data/meta/formalization-depth-recipe.lino` and
-`tests/unit/specification/formalization_depth_meta_algorithm.rs`.
-
-**`VISION.md`** — `:339` currently reads:
-
-> The next step is to keep the implemented surfaces small while moving more of the
-> assistant's behavior into explicit links: requirements, source facts, traces,
-> prompts, handlers, permissions, tests, and reusable problem-solving procedures.
-
-Replace with:
-
-> The next step is to keep the implemented surfaces small while moving more of the
-> assistant's behavior into explicit links: requirements, source facts, traces,
-> prompts, handlers, permissions, tests, and reusable problem-solving procedures.
-> Since issue #1138 B4 a formalized document is a concept graph rather than a set of
-> preserved sentences: every surface the formalizer cannot ground becomes an explicit
-> need, needs are satisfied by retrieval from the trusted sources the registry
-> declares, and a need the sources cannot ground is reported as unresolved with its
-> exact source span. Preserving a sentence is recorded as preservation, never as
-> understanding.
-
-**`ROADMAP.md`** — `:145` (row 26) currently contains:
-
-> `task_spec`, source-backed concept discovery, structural composition, bounded
-> verification, and the procedure ledger derive Python programs without benchmark
-> identifiers or canonical answers in production data.
-
-Append:
-
-> Since issue #1138 B4 the requirement is first formalized to a concept graph whose
-> unresolved surfaces are retrieved rather than assumed; the graph's identity is
-> asserted equal across en, ru, hi, zh and es on the held-out corpus in
-> `data/benchmarks/formalization-depth-requirements.lino`, and the honest grounded
-> ratio is recorded per language.
-
-**`docs/requirements/issue-1138-formalization-depth.md`** — new shard (assembled into
-`REQUIREMENTS.md` by `rust-script scripts/assemble-requirements.rs --write`;
-`REQUIREMENTS.md` is never hand-edited):
-
-```markdown
-## Issue #1138 B4 Formalization Depth
-
-| ID | Requirement | Status / Evidence |
-| --- | --- | --- |
-| R1138-B4-1 | The formalizer emits an explicit need, with an exact source span and an origin, for every surface, relation and procedure it cannot ground. | … |
-| R1138-B4-2 | A need is satisfied by the issue #1138 B1 registry lookup; the retrieved gloss is itself formalized, bounded by a declared concept depth. | … |
-| R1138-B4-3 | A grounded result is a concept, predicate, entity or procedure link with source id, URL, sha256 and license — never a stored sentence. | … |
-| R1138-B4-4 | Preserving a source sentence is recorded as preservation and can no longer satisfy the assertion primitive; a document with an unresolved need is never reported as covered. | … |
-| R1138-B4-5 | An extracted procedure enters the procedure ledger only through the existing bounded execution and named review gate, with its source license honoured. | … |
-| R1138-B4-6 | The same unfamiliar requirement in en, ru, hi, zh and es produces one concept-graph identity, or reports per-language why it could not. | … |
-| R1138-B4-7 | Sentence segmentation is script-aware and every segment span selects exactly its own text. | … |
-| R1138-B4-8 | A custom agentic task is formalized instead of the seeded fairy tale; the tale remains a regression corpus. | … |
-| R1138-B4-9 | One need type and one need-status vocabulary serve the universal loop, the coding path and the formalizer. | … |
-| R1138-B4-10 | An offline run replays committed captures and reproduces the same graph identity; deleting the graph ledger loses nothing the captures cannot rebuild. | … |
-```
-
-**`docs/requirements-traceability.md`** — ten new rows, one per R1138-B4-*, each
-naming its test file and `not yet confirmed` until a run is recorded. Also amend
-`:376`, which today reads
-
-> | R314 | 867 | PR #469 (issue #468) | tests/unit/agentic_coding.rs; tests/unit/agentic_surfaces.rs | manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 (see audit finding: falls back to seeded fairy-tale KB rather than reflecting custom --task) |
-
-to
-
-> | R314 | 867 | PR #469 (issue #468); custom-task fallback repaired by #1138 B4 | tests/unit/agentic_coding.rs::a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale; tests/unit/agentic_surfaces.rs | manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 — the 2026-08-04 finding "falls back to seeded fairy-tale KB rather than reflecting custom --task" is now pinned as a regression |
-
-**`docs/benchmarks.md`** — add a `### Deep formalization of unfamiliar requirements
-— issue #1138 B4` subsection under "Sources by suite", declaring the corpus path,
-the five languages, the two families, the sources consulted with their licenses, and
-the honest grounded ratio and observed-primitive count per language. In
-`### Honest current numbers` (`:277-284`), append after the existing paragraph:
-
-> The observed-primitive count for an unfamiliar document is recorded separately from
-> the nine declared kinds. Before issue #1138 B4 it was 2 of 9 in every language,
-> because an unrecognised sentence became a preserved span and nothing else; the
-> deep-formalization corpus records what it is now, per language, including the
-> languages where no source served a definition.
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 

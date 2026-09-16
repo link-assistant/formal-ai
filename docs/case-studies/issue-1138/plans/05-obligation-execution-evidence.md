@@ -270,12 +270,12 @@ projection currently marks a selected route satisfied without runtime evidence")
 
 ### Option A — Evidence-carrying status inside `NeedStatus`
 
-*Description.* Change `NeedStatus::Satisfied` into `Satisfied(ExecutionRecordId)` so the
+*Description.* Change `NeedStatus::Satisfied` into `Satisfied(EvidenceId)` so the
 variant cannot be constructed without a record; revise rows in place after dispatch.
 
 *Architecture sketch.* `NeedStatus` loses `Copy`; `LedgerRow.status` becomes owned;
 `NeedLedger::resolve` still produces `Planned`/`Blocked`; a new
-`NeedLedger::apply_evidence(&mut self, records: &[ExecutionRecord])` upgrades rows.
+`NeedLedger::apply_evidence(&mut self, records: &[Evidence])` upgrades rows.
 
 *Pros.* Strongest possible enforcement — a satisfied row without evidence is a compile
 error. One ledger, one vocabulary, one place to read.
@@ -298,7 +298,7 @@ in-place revision would have to be re-emitted anyway.
 
 *Description.* Leave `NeedLedger` exactly as it is (planning). Add
 `src/obligation_ledger.rs` carrying a tree of `ObligationNode`s whose `Satisfied` outcome
-*holds* an `ExecutionRecord`. After dispatch, a second recorder emits the obligation
+*holds* an `Evidence`. After dispatch, a second recorder emits the obligation
 ledger and a **new** need ledger whose rows reach `Satisfied` only where an obligation
 discharged. Nothing is mutated; both ledgers stand side by side in the log.
 
@@ -374,7 +374,7 @@ Reasons:
    `record_need_ledger` and their behaviour are untouched; the new stage is additive.
 4. It gives plan 07 and plan 12 what they need. B7's "a learned item must change the next
    answer" requires a before/after that is an *observation*, not a route; B12's
-   refutation-first search requires an experiment *outcome*. Both consume `ExecutionRecord`.
+   refutation-first search requires an experiment *outcome*. Both consume `Evidence`.
 
 Rejected: **A**, because mutating a recorded artifact contradicts the append-only log and
 carries the largest blast radius for the smallest marginal gain over B. **C**, because it
@@ -387,7 +387,15 @@ heuristics with nothing to read.
 
 ### New module `src/execution_evidence.rs`
 
-Names verified free (`grep -rn "ExecutionRecord\|ObservationKind\|EvidenceSource" src tests --include='*.rs'` → 0).
+> **reconciled: was `Evidence`; now `Evidence`, plan 00 §4.3's contract
+> name, because plans 03 and 06 already implement against `Evidence` and the
+> contract is authoritative. The module keeps its name, the identity rule is
+> unchanged — no wall clock, pid or machine identity in the fingerprint — and
+> `recorded_at` joins the record as an event-log field that is excluded from the
+> id, which is how plan 00 §4.3's `recorded_at` and this plan's determinism
+> requirement are both satisfied (plan 00 §9 R2).**
+
+Names verified free (`grep -rn "Evidence\b.*struct\|ObservationKind\|EvidenceSource" src tests --include='*.rs'` → 0 for the struct form).
 
 ```rust
 //! The observation that turns a planned obligation into a satisfied one (#1138 B5).
@@ -427,9 +435,14 @@ pub enum EvidenceSource {
 /// deliberately narrower than `orchestration::runner::VerificationResult`, which
 /// carries `wall_time_ms` and therefore cannot be hashed.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ExecutionRecord {
-    /// `stable_id("execution_record", &fingerprint)`.
-    pub record_id: String,
+pub struct Evidence {
+    /// `stable_id("evidence", &fingerprint)`. The fingerprint is command, argv,
+    /// exit, output hash, output length, kind and source — never a wall clock.
+    pub evidence_id: String,
+    /// The need this observation discharges (plan 00 §4.1).
+    pub for_need: String,
+    /// The method that produced it (plan 00 §4.3).
+    pub produced_by: String,
     /// The exact command line as issued, or the canonical rendering of the tool
     /// call when the harness owns execution.
     pub command: String,
@@ -441,11 +454,28 @@ pub struct ExecutionRecord {
     pub observed_output_sha256: String,
     /// Length of the observed bytes, so an empty observation is distinguishable.
     pub observed_byte_length: usize,
+    /// Content ids of every source consulted (plan 00 §4.3).
+    pub source_ids: Vec<String>,
     pub kind: ObservationKind,
     pub source: EvidenceSource,
+    /// Deterministic, hashable per-kind detail. Raw stdout and stderr are hashed
+    /// into `observed_output_sha256`, never stored; a caller that must show them
+    /// receives the non-persisted sibling `ObservedOutput { stdout, stderr }`
+    /// from the same call. This is what plan 03's test-run fields become
+    /// (plan 00 §9 R2).
+    pub detail: EvidenceDetail,
+    /// Event-log field, excluded from `evidence_id` so the id stays stable.
+    pub recorded_at: Option<String>,
 }
 
-impl ExecutionRecord {
+/// Per-kind detail that is deterministic and therefore hashable.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum EvidenceDetail {
+    None,
+    Tests { passed: Vec<String>, failed: Vec<String>, timed_out: bool },
+}
+
+impl Evidence {
     #[must_use]
     pub fn observed(
         command: impl Into<String>,
@@ -478,11 +508,11 @@ already exists; nothing else about it changes. Note the name is duplicated at
 `src/agentic_coding/command_reroute.rs:312` (an `i32` variant that delegates to it at
 `:349`); the promoted one is the `tool_result` `i64` version.
 
-`.lino` projection, appended to the event log as kind `execution_record`:
+`.lino` projection, appended to the event log as kind `evidence`:
 
 ```
-execution_record_9f2c1a77
-  record_type "execution_record"
+evidence_9f2c1a77
+  record_type "evidence"
   command "cat notes/attribution.md"
   argv "cat"
   argv "notes/attribution.md"
@@ -505,6 +535,13 @@ already decides pass/fail from an executed observation, confined to one benchmar
 ```rust
 /// What must be observed before this node may be called satisfied.
 ///
+/// This is *not* plan 08's `TaskExpectation`, which declares the shape a task's
+/// **answer** must take. The two are bridged once, by plan 08's
+/// `TaskExpectation::to_obligation_expectation(&self, check_id) ->
+/// ObligationExpectation`, so a verifiable task's satisfaction flows through
+/// this ledger and there is exactly one satisfaction rule in the tree
+/// (plan 00 §9 R15).
+///
 /// This is the operation contract `data/meta/task-decomposition-invariant.lino`
 /// already demands of an atomic task ("require an observable completion contract
 /// and no pending children"), made a value instead of prose.
@@ -517,6 +554,13 @@ pub enum ObligationExpectation {
     /// The named command's observed output must hash to `sha256`.
     OutputHash { command: String, sha256: String },
     /// One of the generated checks of loop step 6 must pass.
+    ///
+    /// **reconciled: this plan's risk 2 left `check_id` undefined and asked for
+    /// it to be settled jointly with plan 12 before either lands. Settled:
+    /// `check_id = "<VerifiedAnswer::derivation_id>:<check slug>"`, owned by
+    /// plan 08, whose five self-checks each emit one `Evidence` row; plan 12's
+    /// `CandidateScore::checks` counts the satisfied rows of the same set
+    /// (plan 00 §9 R15).**
     SymbolicCheck { check_id: String },
     /// No expectation could be derived from this clause. Never discarded: such a
     /// node is split, and when it cannot be split it is reported as a gap.
@@ -529,9 +573,9 @@ pub enum ObligationOutcome {
     /// No observation has been made yet.
     Unattempted,
     /// An observation was made and did not meet the expectation.
-    Refuted { record: ExecutionRecord, mismatch: String },
+    Refuted { record: Evidence, mismatch: String },
     /// An observation was made and met the expectation.
-    Satisfied { record: ExecutionRecord },
+    Satisfied { record: Evidence },
     /// No observation is reachable and no split helped; the reason is named.
     Unsatisfiable { reason: String },
 }
@@ -587,7 +631,7 @@ impl ObligationLedger {
     /// Apply one observation to the node whose expectation it answers. Returns the
     /// discharged node id, or `None` when no node expected it — an unrelated
     /// result can never clear a step (R710-R4).
-    pub fn observe(&mut self, record: ExecutionRecord) -> Option<String>;
+    pub fn observe(&mut self, record: Evidence) -> Option<String>;
 
     /// Every obligation is `Satisfied` or `Unsatisfiable` with a named reason.
     #[must_use] pub fn every_obligation_discharged(&self) -> bool;
@@ -599,7 +643,7 @@ impl ObligationLedger {
 }
 
 /// The join: a *new* need ledger whose rows are upgraded from `Planned` to
-/// `Satisfied` exactly where an obligation carrying an `ExecutionRecord`
+/// `Satisfied` exactly where an obligation carrying an `Evidence`
 /// discharged the same need. Never mutates its input; the planning ledger stays
 /// in the log beside it.
 #[must_use]
@@ -619,7 +663,7 @@ pub(crate) fn record_obligation_ledger(
 
 `need_ledger_with_execution` is the **only** function in the tree that produces
 `NeedStatus::Satisfied`, and it can only do so from an `ObligationOutcome::Satisfied`,
-which cannot be constructed without an `ExecutionRecord`. That is the type-level guarantee
+which cannot be constructed without an `Evidence`. That is the type-level guarantee
 B5 asks for, obtained without touching `NeedStatus`.
 
 ### The execution record every obligation node must carry before `Satisfied`
@@ -718,7 +762,7 @@ step_verify_obligations
   order "14"
   id "verify_obligations"
   title "Discharge every obligation against an execution record"
-  detail "ObligationLedger::observe binds each observation to the node that expected it, so an unrelated result can never clear a step. need_ledger_with_execution then projects a second need ledger whose rows reach Satisfied only where an obligation discharged while carrying an ExecutionRecord: the command, its exit code or an explicit none, and a SHA-256 of the observed bytes. A node whose expectation is Underivable is split through split_once_checkable and re-entered; when nothing is left to split the node becomes Unsatisfiable with a named reason and the answer reports that gap instead of completion prose."
+  detail "ObligationLedger::observe binds each observation to the node that expected it, so an unrelated result can never clear a step. need_ledger_with_execution then projects a second need ledger whose rows reach Satisfied only where an obligation discharged while carrying an Evidence: the command, its exit code or an explicit none, and a SHA-256 of the observed bytes. A node whose expectation is Underivable is split through split_once_checkable and re-entered; when nothing is left to split the node becomes Unsatisfiable with a named reason and the answer reports that gap instead of completion prose."
   source_file "src/obligation_ledger.rs"
   records "record_obligation_ledger"
 ```
@@ -826,7 +870,7 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 | | `the_session_does_not_finalize_while_any_obligation_is_unattempted` | |
 | | `a_gap_is_reported_with_its_clause_and_byte_span_not_as_completion` | |
 | | `a_bare_ok_tool_result_does_not_satisfy_a_file_bytes_expectation` | replaces the `"ok"` shortcut |
-| `tests/unit/docs_requirements_issue_1138.rs` | `issue_1138_obligation_ledger_is_traceable` | grep-pins `pub struct ObligationLedger`, `fn record_obligation_ledger`, and the `crate::obligation_ledger::record_obligation_ledger` call, matching `tests/unit/docs_requirements_issue_559.rs:107-141` |
+| `tests/unit/docs_requirements/issue_1138.rs` (**reconciled: was `tests/unit/docs_requirements_issue_1138.rs`; now the directory form plans 01, 03 and 06 use, so there is one file — plan 00 §9 R11**) | `issue_1138_obligation_ledger_is_traceable` | grep-pins `pub struct ObligationLedger`, `fn record_obligation_ledger`, and the `crate::obligation_ledger::record_obligation_ledger` call, matching `tests/unit/docs_requirements_issue_559.rs:107-141` |
 | `tests/unit/specification/recursive_core_recipe.rs` (extend) | existing grounding | step 14 exists, order 1..14 contiguous, `source_file` exists, `records` binds a real recorder |
 
 ### Gates and ratchets
@@ -835,7 +879,9 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
   `satisfied_without_record "0"`, asserted across the benchmark corpus; the floor never
   rises above 0.
 - **Amended pin.** `tests/unit/specification/recipe_interpreter.rs:229-231` pins
-  `satisfied "0"` on the *planning* ledger. It stays. A sibling assertion is added: the
+  `satisfied "0"` on the *planning* ledger. It stays. **This strictly adds and is
+  not a loosened gate under plan 00 §6.7; it is the only existing assertion this
+  plan touches (plan 00 §9 X10).** A sibling assertion is added: the
   *executed* ledger for the same input reports `satisfied "0"` when no observation was
   supplied, and `satisfied "N"`, `N >= 1`, when one was. This is the one place the plan
   touches an existing assertion, and it strictly adds.
@@ -854,7 +900,7 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 - [ ] Promote `agentic_coding::tool_result::reported_exit_code` (`:78`) from `pub(super)`
       to `pub(crate)`; one line plus its doc comment, no behaviour change.
 - [ ] Add `src/execution_evidence.rs` with `ObservationKind`, `EvidenceSource`,
-      `ExecutionRecord`, `observed`, `from_tool_result`, `reports_success`,
+      `Evidence`, `observed`, `from_tool_result`, `reports_success`,
       `to_links_notation`; register in `src/lib.rs`; tests in
       `tests/unit/specification/execution_evidence.rs`.
 - [ ] Add `ObligationExpectation` and `ObligationOutcome` to a new `src/obligation_ledger.rs` with
@@ -876,6 +922,10 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
       plus `require_obligation_ledger`; extend `ExecutionContext`; parity test.
 - [ ] Add step 14 to `data/meta/recursive-core-recipe.lino`; extend
       `tests/unit/specification/recursive_core_recipe.rs` for order 1..14.
+      **This leaf changes every recorded trace, as does plan 07's
+      `SelfImprovementMode` default flip. Plan 14 orders this one first and gives
+      each its own R343 parity run, so a parity failure has exactly one cause
+      (plan 00 §9 X11).**
 - [ ] Rewrite `src/agentic_coding/task_obligations.rs` over `ObligationNode`: replace the
       `continue` at `:55`, keep `pub fn obligations` compiling.
 - [ ] Add `next_step` and `ObligationStep`; switch `src/agentic_coding/planner.rs:373-379`
@@ -887,131 +937,39 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 - [ ] Add `data/meta/obligation-evidence-ratchet.lino`; ground it.
 - [ ] Add `tests/unit/issue_1138_obligation_evidence.rs` (ten prompts, five languages);
       register in `tests/unit/mod.rs`.
-- [ ] Add `tests/unit/docs_requirements_issue_1138.rs` grep-pins.
+- [ ] Add `tests/unit/docs_requirements/issue_1138.rs` grep-pins.
 - [ ] Regenerate `data/meta/self-ast/`; run
       `rust-script scripts/assemble-requirements.rs --write`.
 - [ ] Add the `changelog.d/` fragment.
 
 ## Docs to update
 
-**`docs/requirements/issue-0559-general-meta-algorithm.md:18-26`** — replace:
+The exact quoted statements and their replacement text moved to plan 11's
+findings table on 2026-09-16, so there is one docs authority and no document
+is described in two places (plan 00 §8). This plan's entries are rows
+**D185-D197** of
+[`11-docs-consistency-audit.md`](11-docs-consistency-audit.md) §"Issue #1138
+plan doc replacements", and plan 11's leaves apply them after the ledger rows
+they cite exist (plan 00 §7).
 
-> the shared ledger runs before dispatch, so a selected method is **planned**, not
-> **satisfied**. A connected planning chain accounts for a detected need but does not prove
-> its execution. … Runtime per-need verification feedback is still open; the implemented
-> artifact rows below are not a claim that every detected obligation executes successfully.
+| row | document |
+| --- | --- |
+| D185 | `docs/requirements/issue-0559-general-meta-algorithm.md:18-26` |
+| D186 | `docs/requirements/issue-0710-repository-and-retention-continuation.md:18` |
+| D187 | `docs/requirements/issue-0710-repository-and-retention-continuation.md:13` |
+| D188 | `docs/meta-algorithm.md:144` |
+| D189 | `docs/meta-algorithm.md:172-173` |
+| D190 | `docs/meta-algorithm.md:152-153` |
+| D191 | `data/meta/recursive-core-recipe.lino:5` |
+| D192 | `data/meta/recursive-core-recipe.lino:6` |
+| D193 | `data/meta/recursive-core-recipe.lino:35` |
+| D194 | `docs/requirements-traceability.md:406` |
+| D195 | New shard `docs/requirements/issue-1138-bottleneck-audit.md` |
+| D196 | `VISION.md:192` |
+| D197 | `ROADMAP.md` |
 
-with:
-
-> the planning ledger runs before dispatch, so a selected method is **planned**, not
-> **satisfied**. A connected planning chain accounts for a detected need but does not prove
-> its execution. A second, append-only pass (`src/obligation_ledger.rs`, recipe step 14)
-> supplies the runtime per-need feedback: a row reaches **satisfied** only through
-> `need_ledger_with_execution`, whose input outcome cannot exist without an
-> `ExecutionRecord` carrying a command, an exit code or an explicit none, and a SHA-256 of
-> the observed bytes. A clause with no derivable expectation is split rather than
-> discarded, and a clause that cannot be split is reported as an unsatisfied gap with its
-> byte span.
-
-**`docs/requirements/issue-0710-repository-and-retention-continuation.md:18`** (R710-R9) —
-replace the tail:
-
-> Preserving unknown text does not interpret or execute it; complete obligation-ledger
-> execution and runtime verification feedback remain open.
-
-with:
-
-> Preserving unknown text still does not interpret it, but it is no longer discarded: an
-> unrecognized clause becomes an `Underivable` obligation node that is split and, failing
-> that, reported as a named gap with its byte span. Obligation-ledger execution and runtime
-> verification feedback are delivered by `src/obligation_ledger.rs`.
-
-**`docs/requirements/issue-0710-repository-and-retention-continuation.md:13`** (R710-R4) —
-append after the existing text:
-
-> The same binding now applies outside the recipe path: `ObligationLedger::observe` returns
-> `None` for a record whose command or path answers no expectation, so an unrelated result
-> cannot clear any obligation on any surface.
-
-**`docs/meta-algorithm.md:144`** — the heading `### The twelve steps` is already wrong: the
-recipe carries thirteen `meta_step` records (including `audit_reasoning_standard` at
-`data/meta/recursive-core-recipe.lino:100-107`), and `docs/meta-algorithm.md:21` already
-says "13 steps, 29 pinned functions" while `:172-173` say `meta_step | 12` and
-`meta_function | 25`. Replace the heading with `### The fourteen steps` and append after
-item 12 (`:165-166`):
-
-> 13. **Audit the pass against the reasoning standard, unconditionally** (R1073).
-> 14. **Discharge every obligation against an execution record** — a need reaches
->     *satisfied* only with a command, an exit code and an observed-output hash behind it;
->     an unsatisfied node is split, and a node that cannot be split is reported as a gap.
-
-**`docs/meta-algorithm.md:172-173`** — replace
-`| meta_step | 12 | ordering 1..12 is contiguous …` with
-`| meta_step | 14 | ordering 1..14 is contiguous …`, and raise the `meta_function` count
-from 25 to include `ObligationNode::build`, `ObligationLedger::observe`,
-`need_ledger_with_execution` and `record_obligation_ledger`.
-
-**`docs/meta-algorithm.md:152-153`** — step 4 currently reads "Account for every need in a
-satisfaction ledger, so a need with no method is recorded as blocked rather than silently
-dropped." Append: "Selection is not satisfaction: this ledger records planning only, and
-step 14 is what can mark a need satisfied."
-
-**`data/meta/recursive-core-recipe.lino:5`** — remove from `summary`:
-
-> Selected methods are planned, not satisfied; missing methods are blocked. Recording a
-> plan neither executes each leaf nor validates its result.
-
-replace with:
-
-> Selected methods are planned; a method becomes satisfied only when step 14 binds an
-> execution record to the obligation it discharges. Missing methods are blocked.
-
-**`data/meta/recursive-core-recipe.lino:6`** — remove from `generalization`:
-
-> The current executable recipe reproduces the native planning trace; runtime per-need
-> evidence feedback and general prerequisite recovery remain open.
-
-replace with:
-
-> The executable recipe reproduces the native planning trace and its execution pass;
-> general prerequisite recovery remains open (plan 06).
-
-**`data/meta/recursive-core-recipe.lino:35`** — after "Runtime checks must supply per-need
-evidence before satisfaction." append: "Step 14 is that runtime check."
-
-**`docs/requirements-traceability.md:406`** — the R344 row's `Automated test` column gains
-`tests/unit/specification/obligation_ledger.rs`. Add three new rows for the new shard:
-
-```
-| R1138-B5-1 | n/a | PR for #1138 | tests/unit/specification/execution_evidence.rs | not yet confirmed |
-| R1138-B5-2 | n/a | PR for #1138 | tests/unit/specification/obligation_ledger.rs | not yet confirmed |
-| R1138-B5-3 | n/a | PR for #1138 | tests/unit/issue_1138_obligation_evidence.rs | not yet confirmed |
-```
-
-**New shard `docs/requirements/issue-1138-bottleneck-audit.md`** (shared with plans 07 and
-12; this plan owns the B5 rows):
-
-```
-| R1138-B5-1 | Every obligation node must carry an execution record — command, exit code or an explicit none, and a SHA-256 of the observed output — before it may be satisfied. | … |
-| R1138-B5-2 | An observation may discharge only the node whose expectation names its command or path; an unrelated result clears nothing. | … |
-| R1138-B5-3 | A clause with no derivable expectation is split, not discarded; a clause that cannot be split is reported as an unsatisfied gap with its byte span, never as completion prose. | … |
-```
-
-**`VISION.md:192`** (Universal Problem-Solving Algorithm, step 9) currently reads:
-
-> **Verification and recursive recovery**: run the composed solution against the whole-task
-> test. On failure, record `trace:execution_failure`, descend to smaller tasks, and retry
-> upward after their tests pass.
-
-Append:
-
-> An obligation is discharged only by an observation — a command, its exit status, and the
-> hash of what it produced. A node that cannot be observed is split; a node that cannot be
-> split is reported as a gap, never as a completed step.
-
-**`ROADMAP.md`** — neither `obligation` nor `need ledger` appears anywhere in the file
-today, so nothing is retracted. Add one row to the status table at `ROADMAP.md:423`:
-`| Obligation execution evidence | Delivered for #1138 B5: satisfaction requires a command, exit code and observed-output hash; unsatisfied nodes decompose | ratcheted by data/meta/obligation-evidence-ratchet.lino |`.
+Any further document this plan's implementation touches is added as a new
+plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 
@@ -1042,7 +1000,7 @@ today, so nothing is retracted. Add one row to the status table at `ROADMAP.md:4
    changes behaviour on a live path and needs a dedicated regression over the #848 ladder
    before it lands.
 6. **Migration order.** Plan 06 (prerequisite discovery) and plan 03 (workspace protocol)
-   both want `ExecutionRecord`. If B5 lands after them, each will invent one. B5 should
+   both want `Evidence`. If B5 lands after them, each will invent one. B5 should
    land before 06 and 03, even though the issue's proposed order puts it fourth.
 7. **Unresolved:** whether `ObligationExpectation` belongs entirely in seed data. The doctrine
    prefers `.lino`; the counter-argument is that an expectation is a *type*, not a
@@ -1051,3 +1009,7 @@ today, so nothing is retracted. Add one row to the status table at `ROADMAP.md:4
 8. **`ObligationNode` duplicates part of `WorkUnit`.** Two trees over the same prompt
    invite drift. The join test must assert that every `WorkUnit` leaf span is covered by an
    obligation node span, or the two will diverge silently within a release.
+   **Reconciled ordering: plan 12 rewrites `WorkUnit::build` into a binary tree,
+   which changes the leaf set this join matches against. The join test is written
+   here, before plan 12's leaf, and must stay green through it; plan 14 orders
+   this plan before plan 12's `WorkUnit` leaf for that reason (plan 00 §9 X14).**

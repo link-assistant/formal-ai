@@ -9,6 +9,89 @@ the latest requirements and with measured reality.
 
 Nothing is fixed here. This plan is the input to the fix.
 
+## Issues addressed
+
+*(Added by the 2026-09-16 reconciliation. This plan was the only one of 01-12
+without this section; plan 13's coverage table names it as the deliverer of six
+issues, and a plan that does not list them cannot be cross-checked against that
+table — plan 00 §8.)*
+
+- **#1138 B11** — "the record of truth disagrees with itself, which starves
+  self-improvement of honest input." This plan is the exhaustive finding list and
+  the mechanism that stops the findings recurring.
+- **#957 (E105)** — "Traceability protocol: delivered / tested / confirmed
+  columns, CI-enforced on every requirement row." Delivered by L1-L3:
+  `data/meta/requirement-status-ledger.lino` plus
+  `scripts/check-requirement-status.rs`, with
+  `docs/requirements-traceability.md` becoming a generated projection. The
+  table's own header admits today that "CI enforcement of this table's freshness
+  is tracked by E105 (#957); this is the initial data population, not an
+  automated generator wired into CI yet".
+- **#958 (E106)** — "report the upstream benchmark score wherever the curated
+  number is cited." Delivered by L5 (the curated-beside-upstream assertion) and
+  L33 (the rendered README block). `NON-GOALS.md:55` already states the rule and
+  D23 records the two sites that violate it.
+- **#1089 (E111)** — "collapse the gate ecosystem: render status tables from
+  `data/meta`; at most 5 `docs_` tests." Delivered by L2 (one generated surface)
+  and **L76** (the collapse itself, added by the reconciliation). The count is 49
+  today and rose since #1089 was filed (D149).
+- **#1090 (E112)** — "finish or retire the traceability manual-confirmation
+  column." This plan measures it (743 of 805 unconfirmed) and offers both
+  branches; **the choice between them is a maintainer decision this plan records
+  rather than makes** (risk 2), so #1090 stays open — see plan 13's
+  "will not close" list.
+- **#949 (E97)** — "close the en/ru/hi/zh parity gap; add a parity lint."
+  Delivered by **L75** (the lint, added by the reconciliation) plus every plan's
+  held-out five-language corpus, `es` included. D49/D61 record that Spanish is
+  `status partial` in three places and absent from a fourth.
+- **#955 (E103)** — the 49-check runtime hand-check suite. The checklist and its
+  ledger land here (L50); a live device, a deployed demo and an upstream tracker
+  need the maintainer, so #955 stays open.
+- **#651** — "refresh vision and roadmap with status tracking." The docs half of
+  the epic lands here; the epic stays open while any child does.
+- **#1085 D5.4 / R1085-16** — one gate per justification, and the status render
+  #1085 recorded as an open sub-issue.
+
+## Root causes
+
+*(Added by the 2026-09-16 reconciliation. The findings table below is the
+evidence; these are the four mechanisms it is evidence of.)*
+
+1. **A number copied beside the thing it counts is a number that drifts.**
+   Every "stale number" finding — D27, D28, D30, D36-D38, D41, D42, D45,
+   D51-D53, D63, D81-D84, D101, D127-D130, D141, D148, D149 — is one defect
+   repeated: a count lives in prose in six documents and in a ledger in
+   `data/meta/`, and only the ledger is checked. `tests/unit/docs_requirements_issue_1021.rs:13-21`
+   already states the principle and applies it in exactly one place.
+2. **The pins are backwards.** 49 `docs_*` files carry 360 assertions that pin
+   *phrases*, and almost nothing pins *numbers*. That is why every phrase-level
+   claim has held and every numeric one has rotted.
+3. **Four documents each claim to be the single source of truth** (D26:
+   `ROADMAP.md:3`, `REQUIREMENTS.md:1524-1525`, `ARCHITECTURE.md:11`,
+   `docs/USER-JOURNEYS.md:10`), so a contradiction between them has no
+   adjudicator and no gate.
+4. **A citation to an issue is never checked against the issue's state.** 34
+   "tracked in #N" citations across the twelve documents name closed issues
+   (D154), because nothing compares a citation to a committed issue-state
+   snapshot.
+
+## Tests first
+
+*(Added by the 2026-09-16 reconciliation. The gates below are written and
+observed failing before the leaves that make them pass; they are listed here
+rather than only inside "Generation and validation" so this plan matches the
+shape of plans 01-10 and 12.)*
+
+| Test / gate | Written before | Asserts |
+| --- | --- | --- |
+| `scripts/check-requirement-status.rs` | L1 | every ID in `REQUIREMENTS.md` has a ledger entry and a generated traceability row; every ledger entry names an existing shard; a verdict of `implemented` names a test that exists on disk. Fails today on **225** IDs |
+| `scripts/render-status.rs --check` | L2 | `docs/status.md` and the two pinned regions are byte-current against the seven ledger inputs. Fails today, because the file does not exist |
+| `scripts/check-issue-citations.rs` | L4 | every "tracked in #N" names an issue open in `data/meta/issue-state.lino`. Fails today on **34** citations |
+| `tests/unit/docs_requirements/benchmarks.rs` (widened) | L5 | any line containing a curated pass ratio contains an upstream ratio in the same paragraph, across five documents rather than two. Fails today on `ROADMAP.md:144` and `ARCHITECTURE.md:1351` |
+| `scripts/check-language-parity.rs` (new) | **L75** | every meaning that declares a `lexeme` for one of en/ru/hi/zh/es declares one for all five, or carries an explicit dated `uncovered_behavior` row naming the gap. Fails today; the measured first value is the ceiling |
+| `tests/unit/docs_requirements/count.rs` (new) | **L76** | `ls tests/unit \| grep -c '^docs_'` is at or below the ceiling recorded in `data/meta/debt-ratchet.lino`, strictly downward, target 5 (#1089). Fails today at 49 |
+| `tests/unit/specification/status_render.rs` (new) | L2 | deleting `docs/status.md` and regenerating reproduces its content id — the forget-and-rediscover rule applied to the status surface itself |
+
 ## Method
 
 Read in full: `VISION.md`, `GOALS.md`, `NON-GOALS.md`, `ROADMAP.md`,
@@ -222,7 +305,7 @@ regeneration.
 | D104 | `docs/benchmarks.md:277-312` ("Honest current numbers") | the nine-row table plus the cold-cache control | **correct and current**, and derived from the ledger by test. This is the model every other status table should follow | — | none; cite it as the pattern | `tests/unit/docs_requirements/benchmarks.rs:12-70` |
 | D105 | `docs/benchmarks.md:18` | "Permissive industry slice \| #304, #317 \| … \| `minimum_pass_count` 13" | a curated floor listed 241 lines before the upstream table; `NON-GOALS.md:55` asks for the upstream number *beside* it | contradiction (minor) | add a cross-reference column or a one-line pointer to "Honest current numbers" | none |
 | D106 | `docs/benchmarks.md:24` | "External (upstream) harness \| #698, #923 \| … \| `external_benchmarks::recorded_upstream_pass_count_may_never_regress`" | the test exists at `tests/unit/specification/external_benchmarks.rs:267` | — | no change | that test |
-| D107 | `docs/benchmarks.md:144-156` | the seven recorded `benchmark_limitation` rows (irrational roots, complex roots, degenerate, identity, units, named unknowns, `Find x:` misrouted) | matches issue #1138 B8 exactly | — | no change; cite it when B8 is worked | `tests/unit/docs_requirements_issue_891.rs:60-62` |
+| D107 | `docs/benchmarks.md:144-156` | the seven recorded `benchmark_limitation` rows (irrational roots, complex roots, degenerate, identity, units, named unknowns, `Find x:` misrouted) | **corrected 2026-09-16: `data/benchmarks/equation-type-corpus.lino:891-980` holds ten `benchmark_limitation` records, not seven, verified by `grep -c 'record_type benchmark_limitation'`. The document collapses the three named-unknown routing gaps (`What is x if …`, `Calculate x for …`, `Find x: …`) into one row and omits `malformed_expression`. Plan 08 §Current state and carry-over C63 both count ten.** The last of the three is a routing bug, not a math one: `solver_terminal::try_terminal_command` claims the prompt because `Find` is a shell command name | stale number | list all ten rows, and mark `named_unknown_colon_clause` as a routing defect rather than an upstream calculator limitation | `tests/unit/docs_requirements_issue_891.rs:60-62` — **which must be widened to assert the document's row count equals the corpus's, or it will pass on seven again** |
 | D108 | `docs/benchmarks.md` (whole file) | — | never states which test pins "Honest current numbers", so a reader who edits the table does not know what will fail | missing row | name `docs_requirements::benchmarks::latest_external_rows_are_published_from_the_ledger` in the section | itself |
 
 ### docs/meta-algorithm.md
@@ -307,6 +390,1512 @@ regeneration.
 | D154 | repository-wide | — | there is no gate asserting that a "tracked in #N" / "tracked by #N" citation names an **open** issue. 34 such citations across the twelve documents name closed issues (D1-D4, D8, D31, D33-D35, D40, D42-D44, D54, D57, D69, D74, D76-D78, D82, D84, D86, D118, D151) | missing row | a `scripts/check-issue-citations.rs` gate over a committed issue-state snapshot | — |
 | D155 | repository-wide | — | numbers live in prose in six documents and in ledgers in `data/meta/`. Every stale-number finding above (D27, D28, D30, D36-D38, D41, D42, D45, D51-D53, D63, D81-D84, D101, D127-D130, D141, D148, D149) is the same defect: a number copied beside the thing it counts. `tests/unit/docs_requirements_issue_1021.rs:13-21` already states the principle — "A count copied beside the thing it counts is a count that drifts" — and applies it in exactly one place | contradiction | make the principle general (see below) | `tests/unit/docs_requirements_issue_1021.rs:22-43` |
 
+## Issue #1138 plan doc replacements (D156-D275)
+
+Every "Docs to update" entry of plans 01-10 and 12, moved here verbatim on
+2026-09-16 so that one document owns the docs audit and no statement is
+described in two places (plan 00 §8). Each plan now carries a pointer to its
+row ids instead of a body.
+
+These rows differ from D1-D155 in one way that matters: D1-D155 are statements
+that are **wrong today**, found by reading the documents. D156-D275 are
+statements that **become wrong when a plan lands**, found by reading the plans.
+Both are applied by this plan's leaves, and both are subject to plan 00 §6.4 —
+a replacement may not state a number before the run that produces it.
+
+Where a row's target already has a D1-D155 finding, the older row is the
+authority on what is wrong now and the newer row is the authority on what it
+becomes; the two are applied in one commit. The overlaps are: D5/D6/D9 with
+D156 (VISION's benchmark sentences), D27/D28/D29 with the ROADMAP rows, D104 with
+the `docs/benchmarks.md` rows, and D109-D114 with the `docs/meta-algorithm.md`
+rows.
+
+### Index
+
+| row | plan | document |
+| --- | --- | --- |
+| D156 | plan 01 | `docs/meta-algorithm.md` |
+| D157 | plan 01 | `VISION.md` |
+| D158 | plan 01 | `ROADMAP.md` |
+| D159 | plan 01 | `docs/requirements/issue-1138-live-concept-lookup.md` |
+| D160 | plan 02 | `VISION.md:343` |
+| D161 | plan 02 | `ROADMAP.md:145` |
+| D162 | plan 02 | `ROADMAP.md:492` |
+| D163 | plan 02 | `docs/benchmarks.md:284-295` |
+| D164 | plan 02 | `docs/benchmarks.md:348-368` |
+| D165 | plan 02 | `docs/benchmarks.md:16-33` |
+| D166 | plan 02 | `docs/requirements/issue-0710-dynamic-coding-discovery.md` |
+| D167 | plan 02 | New shard `docs/requirements/issue-1138-composition-from-sources.md` |
+| D168 | plan 02 | `docs/requirements-traceability.md` |
+| D169 | plan 02 | `docs/meta-algorithm.md` |
+| D170 | plan 03 | `docs/benchmarks.md:311` |
+| D171 | plan 03 | `docs/benchmarks.md:314-320` |
+| D172 | plan 03 | `docs/meta-algorithm.md:185-262` |
+| D173 | plan 03 | `ROADMAP.md:145` |
+| D174 | plan 03 | `VISION.md:343` |
+| D175 | plan 03 | `GOALS.md:96` |
+| D176 | plan 03 | `GOALS.md:111` |
+| D177 | plan 03 | `docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md` |
+| D178 | plan 03 | `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md` |
+| D179 | plan 03 | New shard `docs/requirements/issue-1138-repository-workspace-protocol.md` |
+| D180 | plan 03 | `docs/requirements-traceability.md` |
+| D181 | plan 04 | `docs/meta-algorithm.md` |
+| D182 | plan 04 | `VISION.md` |
+| D183 | plan 04 | `ROADMAP.md` |
+| D184 | plan 04 | `docs/requirements/issue-1138-formalization-depth.md` |
+| D185 | plan 05 | `docs/requirements/issue-0559-general-meta-algorithm.md:18-26` |
+| D186 | plan 05 | `docs/requirements/issue-0710-repository-and-retention-continuation.md:18` |
+| D187 | plan 05 | `docs/requirements/issue-0710-repository-and-retention-continuation.md:13` |
+| D188 | plan 05 | `docs/meta-algorithm.md:144` |
+| D189 | plan 05 | `docs/meta-algorithm.md:172-173` |
+| D190 | plan 05 | `docs/meta-algorithm.md:152-153` |
+| D191 | plan 05 | `data/meta/recursive-core-recipe.lino:5` |
+| D192 | plan 05 | `data/meta/recursive-core-recipe.lino:6` |
+| D193 | plan 05 | `data/meta/recursive-core-recipe.lino:35` |
+| D194 | plan 05 | `docs/requirements-traceability.md:406` |
+| D195 | plan 05 | New shard `docs/requirements/issue-1138-bottleneck-audit.md` |
+| D196 | plan 05 | `VISION.md:192` |
+| D197 | plan 05 | `ROADMAP.md` |
+| D198 | plan 06 | `VISION.md:163` |
+| D199 | plan 06 | `VISION.md:269` |
+| D200 | plan 06 | `ROADMAP.md:126` |
+| D201 | plan 06 | `GOALS.md:96` |
+| D202 | plan 06 | `GOALS.md`, Self-Evolution list |
+| D203 | plan 06 | `docs/meta-algorithm.md:185-262` |
+| D204 | plan 06 | `docs/benchmarks.md:356-358` |
+| D205 | plan 06 | `docs/requirements/issue-0008-telegram-bot-requirements.md` |
+| D206 | plan 06 | `docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md` |
+| D207 | plan 06 | New shard `docs/requirements/issue-1138-prerequisite-discovery.md` |
+| D208 | plan 06 | `docs/requirements-traceability.md` |
+| D209 | plan 06 | `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81` |
+| D210 | plan 07 | `docs/meta-algorithm.md:772-775` |
+| D211 | plan 07 | `docs/meta-algorithm.md:761-764` |
+| D212 | plan 07 | `docs/meta-algorithm.md:671-678` |
+| D213 | plan 07 | `docs/meta-algorithm.md:137-142` |
+| D214 | plan 07 | `docs/requirements/issue-0922-method-learning-from-experience.md:13` |
+| D215 | plan 07 | `docs/requirements/issue-0922-method-learning-from-experience.md:16` |
+| D216 | plan 07 | `docs/requirements/issue-0559-general-meta-algorithm.md:39` |
+| D217 | plan 07 | `docs/requirements/issue-0710-repository-and-retention-continuation.md:16` |
+| D218 | plan 07 | `docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md:26` |
+| D219 | plan 07 | `ROADMAP.md:369` and `:428` |
+| D220 | plan 07 | `ROADMAP.md:440` |
+| D221 | plan 07 | `ROADMAP.md:364` and `:423` |
+| D222 | plan 07 | `VISION.md:377-382` |
+| D223 | plan 07 | New shard `docs/requirements/issue-0705-anticipatory-dreaming.md` |
+| D224 | plan 07 | `docs/requirements/issue-1138-bottleneck-audit.md` |
+| D225 | plan 07 | `docs/requirements-traceability.md` |
+| D226 | plan 08 | `VISION.md:343` |
+| D227 | plan 08 | `ROADMAP.md:145` |
+| D228 | plan 08 | `ROADMAP.md:179` |
+| D229 | plan 08 | `docs/benchmarks.md:284-295` |
+| D230 | plan 08 | `docs/benchmarks.md:307-312` |
+| D231 | plan 08 | `docs/benchmarks.md:16-33` |
+| D232 | plan 08 | `docs/benchmarks.md:31` |
+| D233 | plan 08 | `docs/requirements/issue-0891-equation-corpus-ratchet.md` |
+| D234 | plan 08 | `docs/requirements/issue-0698-real-external-benchmark-harness.md` |
+| D235 | plan 08 | New shard `docs/requirements/issue-1138-verifiable-task-routing.md` |
+| D236 | plan 08 | `docs/requirements-traceability.md` |
+| D237 | plan 08 | `docs/meta-algorithm.md:144-167` |
+| D238 | plan 08 | `docs/meta-algorithm.md:214-218` |
+| D239 | plan 09 | `VISION.md:320-326` |
+| D240 | plan 09 | `ROADMAP.md:362` |
+| D241 | plan 09 | `ROADMAP.md:421` |
+| D242 | plan 09 | `ARCHITECTURE.md:181-185` |
+| D243 | plan 09 | `ARCHITECTURE.md:162-165` |
+| D244 | plan 09 | `ARCHITECTURE.md:660-673` |
+| D245 | plan 09 | `docs/requirements/issue-0559-general-meta-algorithm.md:15-16` |
+| D246 | plan 09 | `docs/requirements/issue-0918-*.md` |
+| D247 | plan 09 | `docs/requirements-traceability.md` |
+| D248 | plan 09 | `data/README.md` |
+| D249 | plan 10 | `ROADMAP.md` |
+| D250 | plan 10 | `VISION.md:337` |
+| D251 | plan 10 | `ARCHITECTURE.md:160-165` |
+| D252 | plan 10 | `docs/requirements/issue-0745-intent-routing-generalization.md` |
+| D253 | plan 10 | `docs/requirements-traceability.md` |
+| D254 | plan 10 | `experiments/issue_840_task_ladder/README.txt` |
+| D255 | plan 10 | `tests/fixtures/routing-parity.lino` |
+| D256 | plan 10 | `data/meta/learning-frontier-language-gap.lino` and
+`data/meta/language-adoption-ledger.lino` |
+| D257 | plan 12 | `docs/requirements/issue-0491-least-action-continuation.md:10` |
+| D258 | plan 12 | `docs/requirements/issue-0491-least-action-continuation.md:12` |
+| D259 | plan 12 | `data/meta/draft-portfolio-recipe.lino:61` |
+| D260 | plan 12 | `data/meta/task-decomposition-invariant.lino` |
+| D261 | plan 12 | `docs/meta-algorithm.md:150-151` |
+| D262 | plan 12 | `docs/meta-algorithm.md`, new section after the budget-search section (`:790-871`) |
+| D263 | plan 12 | `VISION.md:189` |
+| D264 | plan 12 | `VISION.md:99-100` |
+| D265 | plan 12 | `VISION.md:192` |
+| D266 | plan 12 | `ROADMAP.md` |
+| D267 | plan 12 | New shard `docs/requirements/issue-0901-triz-contradictions.md` |
+| D268 | plan 12 | New shard `docs/requirements/issue-0802-hypothesis-search.md` |
+| D269 | plan 12 | New shard `docs/requirements/issue-0453-moonshot-splitting.md` |
+| D270 | plan 12 | `docs/requirements-traceability.md` |
+| D271 | plan 12 | `docs/requirements/issue-1138-bottleneck-audit.md` |
+| D272 | plan 01 | `docs/requirements-traceability.md` |
+| D273 | plan 01 | `docs/benchmarks.md` |
+| D274 | plan 04 | `docs/requirements-traceability.md` |
+| D275 | plan 04 | `docs/benchmarks.md` |
+
+### Plan 01 — B1 live concept lookup
+
+#### D156 — `docs/meta-algorithm.md`
+
+**`docs/meta-algorithm.md`** — the "coding-discovery meta-algorithm" list at
+`:882-891` currently reads:
+
+> 2. **Discover** — `concept_discovery::discover` maps each requirement to seeded
+>    structural meanings and licensed parts from Python documentation,
+>    Wikifunctions, or a previously verified procedure.
+
+Replace with:
+
+> 2. **Understand** — `concept_lookup::lookup_surface` resolves every surface of the
+>    requirement that no seeded meaning accounts for, by walking the
+>    `need_kinds`-declaring sources of `data/seed/sources-registry.lino`
+>    (dictionary → lexicon → encyclopedia → technical) through the one bounded
+>    capture walk in `src/source_walk.rs`. A resolved sense is quoted with its
+>    license and digest and is used to reach a seeded structural meaning; it is never
+>    inlined into generated code. A surface no source defines stays `blocked`, with
+>    every consulted source and its observed outcome reported.
+> 3. **Discover** — `concept_discovery::discover_with_lookup` maps each requirement
+>    to seeded structural meanings, to the senses step 2 retrieved, and to licensed
+>    parts from Python documentation, Wikifunctions, or a previously verified
+>    procedure.
+
+(subsequent items renumbered 4–6), and a new `## The concept-lookup meta-algorithm
+(issue #1138 B1)` section in the shape of the existing recipe sections, naming
+`data/meta/concept-lookup-recipe.lino` and
+`tests/unit/specification/concept_lookup_meta_algorithm.rs`.
+
+#### D157 — `VISION.md`
+
+**`VISION.md`** — `:337` currently says:
+
+> Every interface now reads its multilingual responses, concept table, tool
+> registry, language-detection rules, prompt patterns, and intent-routing rule book
+> from the shared `data/seed/` directory through `src/seed.rs` (Rust) and
+> `src/web/seed_loader.js` (browser).
+
+Append, in the same paragraph:
+
+> Since issue #1138 the same seed directory also declares *which* trusted sources may
+> be consulted for the meaning of a word it does not know (`need_kinds` in
+> `data/seed/sources-registry.lino`), and both the universal loop and the coding path
+> consult them through one bounded, content-addressed walk. The assistant's
+> vocabulary is therefore no longer bounded by the seed; what is bounded is which
+> sources it will trust.
+
+#### D158 — `ROADMAP.md`
+
+**`ROADMAP.md`** — `:145` (row 26) currently ends:
+
+> `task_spec`, source-backed concept discovery, structural composition, bounded
+> verification, and the procedure ledger derive Python programs without benchmark
+> identifiers or canonical answers in production data.
+
+Replace the clause "source-backed concept discovery" with "live concept lookup
+through the sources registry (issue #1138 B1) followed by source-backed concept
+discovery", and append: "A requirement word absent from every seed file is resolved
+by retrieval, not by a seed edit; the held-out `isogram`/`lipogram` corpus in
+`data/benchmarks/concept-lookup-paraphrases.lino` records the honest five-language
+number."
+
+#### D159 — `docs/requirements/issue-1138-live-concept-lookup.md`
+
+**`docs/requirements/issue-1138-live-concept-lookup.md`** — new shard (assembled into
+`REQUIREMENTS.md` by `rust-script scripts/assemble-requirements.rs --write`;
+`REQUIREMENTS.md` itself is never edited by hand):
+
+```markdown
+## Issue #1138 B1 Live Concept Lookup
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1138-B1-1 | One `UnknownConceptLookup` implementation walks the sources registry and is used by the universal loop and the coding path. | … |
+| R1138-B1-2 | The lookup is bounded by declared depth, pages, services and capture age, never by a time or token budget. | … |
+| R1138-B1-3 | Every retrieved sense carries source id, exact URL, sha256, fetch time, license and depth; an offline run replays committed captures byte-identically. | … |
+| R1138-B1-4 | A retrieved gloss is quoted with attribution and never inlined into generated code. | … |
+| R1138-B1-5 | A word no source defines is reported as unresolved with every consulted source and its outcome; no floor, no guess. | … |
+| R1138-B1-6 | Settings opt-outs are authoritative for the lexical tier as they are for the procedural tier. | … |
+| R1138-B1-7 | A held-out word absent from every seed file resolves by lookup in en, ru, hi, zh and es, or is honestly reported unresolved per language. | … |
+| R1138-B1-8 | Deleting the sense ledger loses nothing: the same captures rediscover the same content ids. | … |
+| R1138-B1-9 | The native and browser runtimes execute one walk contract, held to one recorded expectation. | … |
+```
+
+#### D272 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — nine new rows, one per R1138-B1-*, each
+naming its test file and `not yet confirmed` for manual confirmation until a run is
+recorded. Also correct `:708`, which today reads
+
+> | R710-D8 | 1558 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/concepts.rs | not yet confirmed |
+
+to
+
+> | R710-D8 | 1558 | delivered 2026-09-15; PR #888 (issue #710); lookup extension point unimplemented until #1138 B1 | tests/unit/coding_discovery/concepts.rs (lookup exercised only by a test-local fake before #1138) | not yet confirmed |
+
+#### D273 — `docs/benchmarks.md`
+
+**`docs/benchmarks.md`** — add a `### Unknown-word concept lookup — issue #1138 B1`
+subsection under "Sources by suite", declaring the corpus path, the five languages,
+the two held-out words, the sources consulted with their licenses, and the honest
+current score. In `### Honest current numbers` (`:277-284`), append after the table:
+
+> The 2026-09-15 coding rows predate live concept lookup: a requirement whose
+> vocabulary fell outside the 82 seeded structural meanings could not be understood
+> at all. The unknown-word corpus records that number separately and does not alter
+> any upstream row.
+
+### Plan 02 — B2 composition from retrieved sources
+
+
+#### D160 — `VISION.md:343`
+
+**`VISION.md:343`** currently reads, in part:
+
+> "The latest committed-row summary (run of 2026-09-15) is: HumanEval 20/20; MBPP 20/20; GSM8K 2/20; MATH 0/20; BIG-bench object counting 0/20; CoEdIT 0/20; egg rewrite laws 20/20; Ascent closure assertions 5/5; and SWE-bench Lite 0/1."
+
+Replace with a sentence that names the slice beside every number and adds the
+full-suite rows:
+
+> "The latest committed-row summary is, per suite and per slice: HumanEval `<passed>/20` and `<passed>/164`; MBPP `<passed>/20` and `<passed>/500`; GSM8K `<passed>/20`; MATH `<passed>/20`; BIG-bench object counting `<passed>/20`; CoEdIT `<passed>/20`; egg rewrite laws `<passed>/20`; Ascent closure assertions `<passed>/5`; SWE-bench Lite `<passed>/1`. A first-20 score is not a suite score and is never cited without its slice."
+
+#### D161 — `ROADMAP.md:145`
+
+**`ROADMAP.md:145`** (pillar 26) currently reads, in part:
+
+> "The 2026-09-15 upstream rows are HumanEval 20/20 and MBPP 20/20 (empty source cache: 20/20 and 18/20) … `task_spec`, source-backed concept discovery, structural composition, bounded verification, and the procedure ledger derive Python programs without benchmark identifiers or canonical answers in production data."
+
+Replace with:
+
+> "Upstream rows are recorded per slice: HumanEval `<n>/20` and `<n>/164`, MBPP `<n>/20` and `<n>/500` (empty source cache: `<n>` and `<n>`). Composition no longer enumerates shapes in Rust: retrieved procedure text becomes an ordered step list, the step list becomes a language-neutral `ProgramIr`, and per-language lowerings render it. The seeded idiom catalog is a deletable bootstrap with a forget → rediscover → identical-content-id proof."
+
+#### D162 — `ROADMAP.md:492`
+
+**`ROADMAP.md:492`** currently reads:
+
+> "cleared fresh canonical coding (4/4), industry (13/13; the upstream HumanEval/MBPP slices score 0/20, see `data/benchmarks/external-results.lino`), and unit (12/12)"
+
+Replace the parenthetical with the current ledger values and the slice, or — the
+better fix, and the one #1089 asks for — replace the literal numbers with a
+pointer: "see the generated table in `docs/benchmarks.md`, rendered from
+`data/benchmarks/external-results.lino`". Same treatment for **`ROADMAP.md:570`**:
+
+> "were never compiled; upstream coding scores are 0/20 and flat; and most effort"
+
+which is stale on its face and must become "upstream coding scores are published
+per slice in `docs/benchmarks.md`".
+
+#### D163 — `docs/benchmarks.md:284-295`
+
+**`docs/benchmarks.md:284-295`** — the "Honest current numbers" table gains a
+`Slice` column and two rows (HumanEval @164, MBPP @500), and the preamble at
+`docs/benchmarks.md:279-282` ("The latest committed rows are dated `2026-09-15`
+for the coding suites") is restated to name each row's slice. The sentence at
+`docs/benchmarks.md:297-305` about the empty-source-cache control must be
+re-measured at the full slice or explicitly scoped to slice 20.
+
+#### D164 — `docs/benchmarks.md:348-368`
+
+**`docs/benchmarks.md:348-368`** — the "Running it" block gains the full-suite
+commands and the forget/rediscover round trip from the Tests-first section.
+
+#### D165 — `docs/benchmarks.md:16-33`
+
+**`docs/benchmarks.md:16-33`** — the "Suites at a glance" table gains a row:
+
+> `| Composition from retrieved sources | #1138 B2 | `coding-composition-from-sources.lino` | `coding_discovery::multilingual` | 25 |`
+
+#### D166 — `docs/requirements/issue-0710-dynamic-coding-discovery.md`
+
+**`docs/requirements/issue-0710-dynamic-coding-discovery.md`** — R710-D2 and
+R710-D3 currently read "The first 20 HumanEval cases must be run honestly …" and
+"The first 20 MBPP cases …". Replace "first 20" with "full upstream suite (164 /
+500), with the first-20 slice retained as a regression control", and update the
+Status column to cite the new rows. R710-D10 ("A verified coding procedure must
+be content-addressed, provenance-bearing, tamper-detecting, forgettable, and
+rediscoverable") gains a sibling: "R710-D17 — the *bootstrap idiom catalog* must
+be deletable and rediscoverable to the same content id."
+
+#### D167 — New shard `docs/requirements/issue-1138-composition-from-sources.md`
+
+**New shard `docs/requirements/issue-1138-composition-from-sources.md`**, with
+IDs R1138-B2-1 … R1138-B2-8 covering: retrieval-to-step-list, the IR, the
+cross-language lowering, the deletable bootstrap, the forget/rediscover hash,
+full-suite measurement, the seed-shape gate, and registry declaration of OEIS and
+Python docs. `REQUIREMENTS.md` is generated from the shards by
+`scripts/assemble-requirements.rs`, so no manual edit there.
+
+#### D168 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — add rows for every new R1138-B2-*; and
+amend the R710-D2/D3 rows at `docs/requirements-traceability.md:702-703`, which
+today cite "local upstream run recorded in docs/case-studies/issue-710/README.md"
+and "not yet confirmed", to cite the full-suite ledger rows.
+
+#### D169 — `docs/meta-algorithm.md`
+
+**`docs/meta-algorithm.md`** — the coding-discovery recipe must gain the
+procedure-text and IR stages. Concretely, the twelve-step recursive core at
+`docs/meta-algorithm.md:144-167` keeps its shape, but step 7 ("Construct the
+answer back up the tree") is the one this plan implements for coding, and the
+document must say so with a pointer to `src/coding/program_ir.rs`. The agentic
+recipe's step 2 at `docs/meta-algorithm.md:214-218`:
+
+> "**Pin the canonical plan as named constants** (`SEARCH_QUERY`, `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered literals."
+
+is flatly inconsistent with B2's doctrine and must be rewritten to:
+
+> "**Derive the plan from the task**: the search phrase comes from the formalized need, the source is selected from `data/seed/sources-registry.lino` by `coding_role`, and the knowledge-base path is derived from the task's content id. No constant names a query, a URL or a path."
+
+**reconciled: was "owned jointly with B4"; now owned solely by plan 04 L12,
+which owns `src/agentic_coding/formalization_recipe.rs`. This plan cites
+row D181 below and does not restate the replacement, because two plans rewriting one
+paragraph is how a document acquires two versions of itself (plan 00 §9 X9).**
+
+---
+
+### Plan 03 — B3 repository workspace protocol
+
+#### D170 — `docs/benchmarks.md:311`
+
+**`docs/benchmarks.md:311`** — currently:
+
+> `2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on SWE-bench Lite. The ratchet makes every number a floor that may never fall below.
+
+Replace with: *"`2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `<passed> / 23` on SWE-bench Lite, measured over the whole dev split through the repository workspace protocol (issue #1138 B3). Before that protocol the row was `0 / 1` and was structural: the case was one prompt with no clone, so the empty-patch criterion closed it before the evaluator ran. The ratchet makes every number a floor that may never fall below."*
+
+#### D171 — `docs/benchmarks.md:314-320`
+
+**`docs/benchmarks.md:314-320`** — currently states the evaluator applies "a candidate patch" and that an evaluator/Docker/parquet failure becomes `benchmark_unavailable`. Add one sentence: *"The candidate patch is now produced by cloning the instance at its `base_commit` and diffing the edited tree; Docker is used for the instance tests when it is present and is not required for the patch to exist."*
+
+#### D172 — `docs/meta-algorithm.md:185-262`
+
+**`docs/meta-algorithm.md:185-262`** — the agentic-coding recipe section. Its step 2 currently reads:
+
+> **Pin the canonical plan as named constants** (`SEARCH_QUERY`, `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered literals.
+
+Add, immediately after the eight-step list, a new subsection *"The repository workspace protocol (issue #1138)"* recording the six steps (clone, locate, read, edit, verify, diff), their `source_file`s, and the grounding test — mirroring the table at `docs/meta-algorithm.md:255-266`. Also amend the sentence at `:212-215`:
+
+> ```text
+> web_search → web_fetch → write_file(formalize) → run_command(verify) → final
+> ```
+
+to note: *"A repository task substitutes the workspace protocol for the middle three stages: the tree replaces the fetched page as the ground truth, and `run_command` runs the named tests rather than a conformance script."*
+
+#### D173 — `ROADMAP.md:145`
+
+**`ROADMAP.md:145`** (row 26) — currently:
+
+> other latest rows remain GSM8K 2/20, MATH 0/20, CoEdIT 0/20, and SWE-bench Lite 0/1.
+
+Replace the SWE-bench clause with the measured full-split number and a pointer to #1138 B3.
+
+#### D174 — `VISION.md:343`
+
+**`VISION.md:343`** — currently ends:
+
+> … and SWE-bench Lite 0/1. MBPP explicitly records `--online`.
+
+Replace `SWE-bench Lite 0/1` with the new measured row and add: *"SWE-bench is now run through the same repository workspace protocol the self-coding path uses, so the number measures repository capability rather than the absence of a clone."*
+
+#### D175 — `GOALS.md:96`
+
+**`GOALS.md:96`** — currently:
+
+> - Complete the self-coding chain: Formal AI codes itself via Agent CLI, directed by Hive Mind, with every change landing as a reviewed pull request.
+
+Replace with: *"- Complete the self-coding chain: `formal-ai solve --model formal-ai` clones at a base commit, locates the files a requirement names, edits, runs the named tests and produces the diff — the same protocol SWE-bench and both ladders use — with every change landing as a reviewed pull request carrying the four self-hosting trailers. An Agent CLI and Hive Mind drive that entry point; they do not own it."*
+
+#### D176 — `GOALS.md:111`
+
+**`GOALS.md:111`** (the "Formal AI codes itself" definition) — currently ends "Seed edits are the first rung; source edits follow through the same rule engine." Append: *"A source edit counts only when it was located from the requirement rather than from a pre-authored rule, and only when the named tests were observed to run."*
+
+#### D177 — `docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md`
+
+**`docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md`** — the R1085-9 row (rendered at `REQUIREMENTS.md:2465`) says the ratchet "records how many of the 32 leaves Formal AI actually changed (15, may only rise)". Append: *"Issue #1138 B3 adds `leaf_nodes_passing_without_authored_rules`, measured with `experiments/issue_1028_agent_cli_ladder/rules/` disabled, because a committed per-leaf rule is a memoized answer and the original number measures rule authorship as much as capability."*
+
+#### D178 — `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`
+
+**`docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`** — the R1021-22 row (rendered at `REQUIREMENTS.md:2405`) says **Not achieved.** Replace only when L17 lands, with the pull-request URL, the session id and the evidence path; until then leave it as written.
+
+#### D179 — New shard `docs/requirements/issue-1138-repository-workspace-protocol.md`
+
+**New shard `docs/requirements/issue-1138-repository-workspace-protocol.md`** with R1138-3-1 … R1138-3-9:
+
+| ID | Requirement |
+| --- | --- |
+| R1138-3-1 | A repository task carries an origin and an exact base commit; a branch name is refused. |
+| R1138-3-2 | The files a requirement names are located without the requirement naming them, by census for Rust trees and by literal or path occurrence otherwise; ambiguity resolves to nothing. |
+| R1138-3-3 | Named tests are executed and their command, exit code and output recorded before any obligation may be satisfied. |
+| R1138-3-4 | A unified diff is computed from the tree, applies cleanly to the base commit, and is the only thing offered as a patch. |
+| R1138-3-5 | SWE-bench, the #848 ladder and self-coding use one protocol document; its steps are data and are grounded against the source. |
+| R1138-3-6 | Every command is default-deny; the allowlist is seed data scoped to program plus subcommand plus argument shape. |
+| R1138-3-7 | `formal-ai solve --model formal-ai` is an authoring path: it refuses to commit by default, and when it commits it emits all four self-hosting trailers with an evidence bundle naming the exact model. |
+| R1138-3-8 | A missing prerequisite is reported as an unsatisfied need with the observed exit code, never as a pass or a skip. |
+| R1138-3-9 | The protocol document is forgettable and rediscoverable: deleting and regenerating it reproduces the committed content id. |
+
+#### D180 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — add one row per R1138-3-x with delivered-in, automated test and `not yet confirmed` for manual, following the honesty rules at `docs/requirements-traceability.md:9-18`.
+
+### Plan 04 — B4 formalization depth
+
+#### D181 — `docs/meta-algorithm.md`
+
+**`docs/meta-algorithm.md`** — the agentic-coding steps at `:214-218` currently read:
+
+> 1. **Recognise the agentic task** from the latest user turn against a small
+>    closed keyword set — a non-match yields `None`, so agentic coding stays
+>    strictly opt-in and ordinary chat is untouched.
+> 2. **Pin the canonical plan as named constants** (`SEARCH_QUERY`,
+>    `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered
+>    literals.
+
+Replace with:
+
+> 1. **Recognise the agentic task** by role from the seeded lexicon
+>    (`ROLE_AGENT_ACTION_FORMALIZE_VERB`) — a non-match yields `None`, so agentic
+>    coding stays strictly opt-in and ordinary chat is untouched.
+> 2. **Derive the plan from the task's own unresolved needs.** The source text is the
+>    one the task quotes or names; the search query is built from the surfaces
+>    `ConceptGraph::unresolved()` reports, not from a pinned literal. `KB_PATH`
+>    remains a named constant because it is an output path, not a knowledge claim;
+>    `SEARCH_QUERY` and `CANONICAL_SOURCE_URL` remain only as the regression
+>    fixture's source for the canonical tale.
+
+And the nine-primitive claim implicit in the `meta_primitive` row at `:250`:
+
+> | `meta_primitive` | 9 | each appears in `PRIMITIVE_KINDS` in `src/agentic_coding/formalize.rs`; ordering 1..9 contiguous |
+
+gains a sentence beneath the table:
+
+> Nine kinds are *declared*; how many are *observed* depends on the document, and the
+> report states the observed number (`data/seed/meanings-formalization-report.lino`).
+> Since issue #1138 B4 the report also states how many of the needs the formalizer
+> raised were grounded, so a document cannot be reported as covered while a need is
+> unresolved.
+
+Plus a new `## The deep-formalization meta-algorithm (issue #1138 B4)` section naming
+`data/meta/formalization-depth-recipe.lino` and
+`tests/unit/specification/formalization_depth_meta_algorithm.rs`.
+
+#### D182 — `VISION.md`
+
+**`VISION.md`** — `:339` currently reads:
+
+> The next step is to keep the implemented surfaces small while moving more of the
+> assistant's behavior into explicit links: requirements, source facts, traces,
+> prompts, handlers, permissions, tests, and reusable problem-solving procedures.
+
+Replace with:
+
+> The next step is to keep the implemented surfaces small while moving more of the
+> assistant's behavior into explicit links: requirements, source facts, traces,
+> prompts, handlers, permissions, tests, and reusable problem-solving procedures.
+> Since issue #1138 B4 a formalized document is a concept graph rather than a set of
+> preserved sentences: every surface the formalizer cannot ground becomes an explicit
+> need, needs are satisfied by retrieval from the trusted sources the registry
+> declares, and a need the sources cannot ground is reported as unresolved with its
+> exact source span. Preserving a sentence is recorded as preservation, never as
+> understanding.
+
+#### D183 — `ROADMAP.md`
+
+**`ROADMAP.md`** — `:145` (row 26) currently contains:
+
+> `task_spec`, source-backed concept discovery, structural composition, bounded
+> verification, and the procedure ledger derive Python programs without benchmark
+> identifiers or canonical answers in production data.
+
+Append:
+
+> Since issue #1138 B4 the requirement is first formalized to a concept graph whose
+> unresolved surfaces are retrieved rather than assumed; the graph's identity is
+> asserted equal across en, ru, hi, zh and es on the held-out corpus in
+> `data/benchmarks/formalization-depth-requirements.lino`, and the honest grounded
+> ratio is recorded per language.
+
+#### D184 — `docs/requirements/issue-1138-formalization-depth.md`
+
+**`docs/requirements/issue-1138-formalization-depth.md`** — new shard (assembled into
+`REQUIREMENTS.md` by `rust-script scripts/assemble-requirements.rs --write`;
+`REQUIREMENTS.md` is never hand-edited):
+
+```markdown
+## Issue #1138 B4 Formalization Depth
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1138-B4-1 | The formalizer emits an explicit need, with an exact source span and an origin, for every surface, relation and procedure it cannot ground. | … |
+| R1138-B4-2 | A need is satisfied by the issue #1138 B1 registry lookup; the retrieved gloss is itself formalized, bounded by a declared concept depth. | … |
+| R1138-B4-3 | A grounded result is a concept, predicate, entity or procedure link with source id, URL, sha256 and license — never a stored sentence. | … |
+| R1138-B4-4 | Preserving a source sentence is recorded as preservation and can no longer satisfy the assertion primitive; a document with an unresolved need is never reported as covered. | … |
+| R1138-B4-5 | An extracted procedure enters the procedure ledger only through the existing bounded execution and named review gate, with its source license honoured. | … |
+| R1138-B4-6 | The same unfamiliar requirement in en, ru, hi, zh and es produces one concept-graph identity, or reports per-language why it could not. | … |
+| R1138-B4-7 | Sentence segmentation is script-aware and every segment span selects exactly its own text. | … |
+| R1138-B4-8 | A custom agentic task is formalized instead of the seeded fairy tale; the tale remains a regression corpus. | … |
+| R1138-B4-9 | One need type and one need-status vocabulary serve the universal loop, the coding path and the formalizer. | … |
+| R1138-B4-10 | An offline run replays committed captures and reproduces the same graph identity; deleting the graph ledger loses nothing the captures cannot rebuild. | … |
+```
+
+#### D274 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — ten new rows, one per R1138-B4-*, each
+naming its test file and `not yet confirmed` until a run is recorded. Also amend
+`:376`, which today reads
+
+> | R314 | 867 | PR #469 (issue #468) | tests/unit/agentic_coding.rs; tests/unit/agentic_surfaces.rs | manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 (see audit finding: falls back to seeded fairy-tale KB rather than reflecting custom --task) |
+
+to
+
+> | R314 | 867 | PR #469 (issue #468); custom-task fallback repaired by #1138 B4 | tests/unit/agentic_coding.rs::a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale; tests/unit/agentic_surfaces.rs | manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 — the 2026-08-04 finding "falls back to seeded fairy-tale KB rather than reflecting custom --task" is now pinned as a regression |
+
+#### D275 — `docs/benchmarks.md`
+
+**`docs/benchmarks.md`** — add a `### Deep formalization of unfamiliar requirements
+— issue #1138 B4` subsection under "Sources by suite", declaring the corpus path,
+the five languages, the two families, the sources consulted with their licenses, and
+the honest grounded ratio and observed-primitive count per language. In
+`### Honest current numbers` (`:277-284`), append after the existing paragraph:
+
+> The observed-primitive count for an unfamiliar document is recorded separately from
+> the nine declared kinds. Before issue #1138 B4 it was 2 of 9 in every language,
+> because an unrecognised sentence became a preserved span and nothing else; the
+> deep-formalization corpus records what it is now, per language, including the
+> languages where no source served a definition.
+
+### Plan 05 — B5 obligation execution evidence
+
+
+#### D185 — `docs/requirements/issue-0559-general-meta-algorithm.md:18-26`
+
+**`docs/requirements/issue-0559-general-meta-algorithm.md:18-26`** — replace:
+
+> the shared ledger runs before dispatch, so a selected method is **planned**, not
+> **satisfied**. A connected planning chain accounts for a detected need but does not prove
+> its execution. … Runtime per-need verification feedback is still open; the implemented
+> artifact rows below are not a claim that every detected obligation executes successfully.
+
+with:
+
+> the planning ledger runs before dispatch, so a selected method is **planned**, not
+> **satisfied**. A connected planning chain accounts for a detected need but does not prove
+> its execution. A second, append-only pass (`src/obligation_ledger.rs`, recipe step 14)
+> supplies the runtime per-need feedback: a row reaches **satisfied** only through
+> `need_ledger_with_execution`, whose input outcome cannot exist without an
+> `Evidence` carrying a command, an exit code or an explicit none, and a SHA-256 of
+> the observed bytes. A clause with no derivable expectation is split rather than
+> discarded, and a clause that cannot be split is reported as an unsatisfied gap with its
+> byte span.
+
+#### D186 — `docs/requirements/issue-0710-repository-and-retention-continuation.md:18`
+
+**`docs/requirements/issue-0710-repository-and-retention-continuation.md:18`** (R710-R9) —
+replace the tail:
+
+> Preserving unknown text does not interpret or execute it; complete obligation-ledger
+> execution and runtime verification feedback remain open.
+
+with:
+
+> Preserving unknown text still does not interpret it, but it is no longer discarded: an
+> unrecognized clause becomes an `Underivable` obligation node that is split and, failing
+> that, reported as a named gap with its byte span. Obligation-ledger execution and runtime
+> verification feedback are delivered by `src/obligation_ledger.rs`.
+
+#### D187 — `docs/requirements/issue-0710-repository-and-retention-continuation.md:13`
+
+**`docs/requirements/issue-0710-repository-and-retention-continuation.md:13`** (R710-R4) —
+append after the existing text:
+
+> The same binding now applies outside the recipe path: `ObligationLedger::observe` returns
+> `None` for a record whose command or path answers no expectation, so an unrelated result
+> cannot clear any obligation on any surface.
+
+#### D188 — `docs/meta-algorithm.md:144`
+
+**`docs/meta-algorithm.md:144`** — the heading `### The twelve steps` is already wrong: the
+recipe carries thirteen `meta_step` records (including `audit_reasoning_standard` at
+`data/meta/recursive-core-recipe.lino:100-107`), and `docs/meta-algorithm.md:21` already
+says "13 steps, 29 pinned functions" while `:172-173` say `meta_step | 12` and
+`meta_function | 25`. Replace the heading with `### The fourteen steps` and append after
+item 12 (`:165-166`):
+
+> 13. **Audit the pass against the reasoning standard, unconditionally** (R1073).
+> 14. **Discharge every obligation against an execution record** — a need reaches
+>     *satisfied* only with a command, an exit code and an observed-output hash behind it;
+>     an unsatisfied node is split, and a node that cannot be split is reported as a gap.
+
+#### D189 — `docs/meta-algorithm.md:172-173`
+
+**`docs/meta-algorithm.md:172-173`** — replace
+`| meta_step | 12 | ordering 1..12 is contiguous …` with
+`| meta_step | 14 | ordering 1..14 is contiguous …`, and raise the `meta_function` count
+from 25 to include `ObligationNode::build`, `ObligationLedger::observe`,
+`need_ledger_with_execution` and `record_obligation_ledger`.
+
+#### D190 — `docs/meta-algorithm.md:152-153`
+
+**`docs/meta-algorithm.md:152-153`** — step 4 currently reads "Account for every need in a
+satisfaction ledger, so a need with no method is recorded as blocked rather than silently
+dropped." Append: "Selection is not satisfaction: this ledger records planning only, and
+step 14 is what can mark a need satisfied."
+
+#### D191 — `data/meta/recursive-core-recipe.lino:5`
+
+**`data/meta/recursive-core-recipe.lino:5`** — remove from `summary`:
+
+> Selected methods are planned, not satisfied; missing methods are blocked. Recording a
+> plan neither executes each leaf nor validates its result.
+
+replace with:
+
+> Selected methods are planned; a method becomes satisfied only when step 14 binds an
+> execution record to the obligation it discharges. Missing methods are blocked.
+
+#### D192 — `data/meta/recursive-core-recipe.lino:6`
+
+**`data/meta/recursive-core-recipe.lino:6`** — remove from `generalization`:
+
+> The current executable recipe reproduces the native planning trace; runtime per-need
+> evidence feedback and general prerequisite recovery remain open.
+
+replace with:
+
+> The executable recipe reproduces the native planning trace and its execution pass;
+> general prerequisite recovery remains open (plan 06).
+
+#### D193 — `data/meta/recursive-core-recipe.lino:35`
+
+**`data/meta/recursive-core-recipe.lino:35`** — after "Runtime checks must supply per-need
+evidence before satisfaction." append: "Step 14 is that runtime check."
+
+#### D194 — `docs/requirements-traceability.md:406`
+
+**`docs/requirements-traceability.md:406`** — the R344 row's `Automated test` column gains
+`tests/unit/specification/obligation_ledger.rs`. Add three new rows for the new shard:
+
+```
+| R1138-B5-1 | n/a | PR for #1138 | tests/unit/specification/execution_evidence.rs | not yet confirmed |
+| R1138-B5-2 | n/a | PR for #1138 | tests/unit/specification/obligation_ledger.rs | not yet confirmed |
+| R1138-B5-3 | n/a | PR for #1138 | tests/unit/issue_1138_obligation_evidence.rs | not yet confirmed |
+```
+
+#### D195 — New shard `docs/requirements/issue-1138-bottleneck-audit.md`
+
+**New shard `docs/requirements/issue-1138-bottleneck-audit.md`** (shared with plans 07 and
+12; this plan owns the B5 rows):
+
+```
+| R1138-B5-1 | Every obligation node must carry an execution record — command, exit code or an explicit none, and a SHA-256 of the observed output — before it may be satisfied. | … |
+| R1138-B5-2 | An observation may discharge only the node whose expectation names its command or path; an unrelated result clears nothing. | … |
+| R1138-B5-3 | A clause with no derivable expectation is split, not discarded; a clause that cannot be split is reported as an unsatisfied gap with its byte span, never as completion prose. | … |
+```
+
+#### D196 — `VISION.md:192`
+
+**`VISION.md:192`** (Universal Problem-Solving Algorithm, step 9) currently reads:
+
+> **Verification and recursive recovery**: run the composed solution against the whole-task
+> test. On failure, record `trace:execution_failure`, descend to smaller tasks, and retry
+> upward after their tests pass.
+
+Append:
+
+> An obligation is discharged only by an observation — a command, its exit status, and the
+> hash of what it produced. A node that cannot be observed is split; a node that cannot be
+> split is reported as a gap, never as a completed step.
+
+#### D197 — `ROADMAP.md`
+
+**`ROADMAP.md`** — neither `obligation` nor `need ledger` appears anywhere in the file
+today, so nothing is retracted. Add one row to the status table at `ROADMAP.md:423`:
+`| Obligation execution evidence | Delivered for #1138 B5: satisfaction requires a command, exit code and observed-output hash; unsatisfied nodes decompose | ratcheted by data/meta/obligation-evidence-ratchet.lino |`.
+
+### Plan 06 — B6 prerequisite and environment discovery
+
+#### D198 — `VISION.md:163`
+
+**`VISION.md:163`** — currently:
+
+> - Explicit agent autonomy: agent mode should expose actions and run them in an isolated environment such as a Docker image, a server sandbox, or a browser VM where practical.
+
+Replace with: *"- Explicit agent autonomy: agent mode exposes actions and runs them in an isolated environment — the allowlisted host sandbox, a `link-foundation/box` container, a per-conversation detached container, or a browser runtime — chosen by an observed probe rather than declared. Where no environment is available the answer says so and shows no unobserved output (issues #8, #930, #937, #1138 B6)."*
+
+#### D199 — `VISION.md:269`
+
+**`VISION.md:269`** — currently:
+
+> Code-generation tasks should be a first focus area. The assistant should generate algorithms in popular languages, compile or run generated code when the environment supports it, report execution limits honestly, and preserve logs for failed reasoning or failed execution. Browser-only mode can start with JavaScript evaluation and later experiment with WebVM.
+
+Replace the middle clause: *"… compile or run generated code when the environment supports it — and when it does not, discover the missing toolchain from its trusted publisher, install it under the workspace, and retry — report execution limits honestly from a probe rather than from a constant, and preserve logs for failed reasoning or failed execution. Browser-only mode starts with JavaScript evaluation and offers a lazily fetched Python runtime; WebVM remains an open option."*
+
+#### D200 — `ROADMAP.md:126`
+
+**`ROADMAP.md:126`** (row 7) — currently ends:
+
+> #938 unifies the coding-task handler family behind one executable meta-builder | Generalizing the shared builder beyond coding tasks remains tracked work.
+
+Append to the notes column: *"Toolchain availability is probed, not declared (#1138 B6); the fourteen hard-coded `setup_hint` strings and five hard-coded `environment` strings are seed rows with retrieved provenance."*
+
+#### D201 — `GOALS.md:96`
+
+**`GOALS.md:96`** area — add one bullet after the agent-orchestration list: *"- Treat a missing prerequisite as a requirement: observe the failure, name the program, find its procedure at the trusted publisher, install it under the workspace and never system-wide, retry the original step, and keep only the recipe — so the toolchain can be forgotten and rediscovered."*
+
+#### D202 — `GOALS.md`, Self-Evolution list
+
+**`GOALS.md`, Self-Evolution list** — add: *"- Never present unobserved output as observed. Every surface states its execution limit from a probe, in every supported language."*
+
+#### D203 — `docs/meta-algorithm.md:185-262`
+
+**`docs/meta-algorithm.md:185-262`** — the agentic-coding recipe section. After the eight-step list, add *"The prerequisite-discovery meta-algorithm (issue #1138 B6)"* recording the eight recovery steps, their `source_file`s and the grounding table, in the same shape as `docs/meta-algorithm.md:255-266`. Also amend the sentence at `:209-211`:
+
+> The loop is a pure, deterministic function of the conversation so far — no sampling, no hidden state, no neural inference (a NON-GOAL).
+
+to add: *"A step may observe that a program it needs is absent; that observation is a need, not an error, and the recovery sequence that follows is the same deterministic function of the conversation plus the observed exit code."*
+
+#### D204 — `docs/benchmarks.md:356-358`
+
+**`docs/benchmarks.md:356-358`** — currently:
+
+> ```sh
+> # Refresh every suite locally. SWE-bench additionally needs the pinned official
+> # Python harness and Docker; scheduled CI bounds it separately to one case.
+> ```
+
+Replace the comment with: *"# Refresh every suite locally. SWE-bench's pinned official Python harness and Docker are prerequisites the run now discovers and, with `--allow-install`, installs under the workspace; without a grant the run reports the missing prerequisite instead of recording a solver failure."*
+
+#### D205 — `docs/requirements/issue-0008-telegram-bot-requirements.md`
+
+**`docs/requirements/issue-0008-telegram-bot-requirements.md`** — the R8 rows that #930 merges (R8-1, R8-2, R8-4). Each currently records the docker pipeline as deferred. Replace the status column with the implemented mechanism and cite `src/execution_box/`, or, where a leaf did not land, state precisely which.
+
+#### D206 — `docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md`
+
+**`docs/requirements/issue-0195-docker-in-docker-telegram-runtime.md`** — add a row: *"The image's `FORMAL_AI_START_ISOLATION` and `FORMAL_AI_START_RUNNER` (Dockerfile:66-67) are read by the runtime, not only asserted by `scripts/verify-docker-runtime.sh`."*
+
+#### D207 — New shard `docs/requirements/issue-1138-prerequisite-discovery.md`
+
+**New shard `docs/requirements/issue-1138-prerequisite-discovery.md`** with R1138-6-1 … R1138-6-12:
+
+| ID | Requirement |
+| --- | --- |
+| R1138-6-1 | Toolchain availability is an observation. A status that was never probed is `NotProbed`, never `Unavailable`. |
+| R1138-6-2 | `check_command` is executed before an answer claims an output was observed; an unobserved output is labelled as such in every supported language. |
+| R1138-6-3 | A missing program is classified from the observed exit code and distinguished from a permission denial and from an ordinary compile error. |
+| R1138-6-4 | A missing program becomes a `PrerequisiteNeed` recorded in the need ledger, `Blocked` until a re-probe returns `Present`. |
+| R1138-6-5 | A setup procedure comes from the trusted publisher declared for that program; ranking is not authority, and a lookalike host is refused and recorded. |
+| R1138-6-6 | Installation is default-deny, granted per program, scoped to the workspace root, and never system-wide; a step writing outside the root is refused before execution. |
+| R1138-6-7 | A procedure without a postcondition probe is refused; a successful command with a failing postcondition is `StillMissing`, never success. |
+| R1138-6-8 | The ledger retains the recipe and provenance, never the installed payload; deleting both and re-running reproduces the same content id. |
+| R1138-6-9 | Code execution may run in a `link-foundation/box` container or a per-conversation detached container with snapshot-by-default and command replay as a selectable fallback; the container has no network unless the task contract requires it. |
+| R1138-6-10 | A deadline is a reported failure with the elapsed time, the deadline and the partial output; the descending-N ladder records every N it tried and its outcome. No budget silently truncates work. |
+| R1138-6-11 | The browser states which runtime could be loaded and its size, loads it only on an explicit user action, and shows observed output only when a runtime ran the program. |
+| R1138-6-12 | The absence of every execution environment is an honest refusal in the user's language, never a silent skip and never an unobserved output presented as observed. |
+
+#### D208 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — one row per R1138-6-x, following the honesty rules at `:9-18`; `not yet confirmed` for manual confirmation until a maintainer runs it.
+
+#### D209 — `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81`
+
+**`docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81`** — tick only the boxes this plan's evidence actually closes, in the commit that closes each, and leave the rest with their reason, honouring `06-repository-task-generalization.md:74-75`: *"Use `[ ]` until evidence exists; record failing command/output before fixing."*
+
+### Plan 07 — B7 learning loops that change behaviour
+
+#### D210 — `docs/meta-algorithm.md:772-775`
+
+**`docs/meta-algorithm.md:772-775`** (the #922 section, item 6) — replace:
+
+> 6. **Load adopted link data** — only the checked-in
+>    `data/seed/learned-methods.lino` reaches `MethodRegistry`. Learned records are
+>    observable in the registry event but are separate from compiled handlers, so
+>    adoption cannot silently introduce executable behavior or alter precedence.
+
+with:
+
+> 6. **Load and execute adopted link data** — only the checked-in
+>    `data/seed/learned-methods.lino` reaches `MethodRegistry`. An adopted record whose
+>    operations all bind to known recorders is compiled to a `RecipeProgram` and dispatched
+>    **after** every compiled method, so a learned abstraction may add a capability and can
+>    never pre-empt one. The answer's trace names it (`method:learned`), and adoption
+>    required a qualifying `AdoptionEffect` — an `Improved` before/after observation on
+>    held-out prompts in en, ru, hi, zh and es, with no regression anywhere.
+
+#### D211 — `docs/meta-algorithm.md:761-764`
+
+**`docs/meta-algorithm.md:761-764`** (item 3, "Infer, then withhold") — the title is now
+wrong about the second half. Replace the heading phrase **"Infer, then withhold"** with
+
+**"Infer, then validate on unseen experience"**, and append to the item:
+
+> Withholding is about *inference*, not about *use*: a candidate is withheld from the
+> traces that validate it, and is then adopted into live dispatch through the promotion
+> gate and a reviewed pull request.
+
+#### D212 — `docs/meta-algorithm.md:671-678`
+
+**`docs/meta-algorithm.md:671-678`** (the promotion preamble) — replace:
+
+> Every self-improvement loop above stops at *proposing* … and even then only as a `.lino`
+> seed edit written onto a branch — never a direct push. Draft pull requests and human
+> review stay the outer gate.
+
+with:
+
+> Every self-improvement loop above proposes; this protocol decides. A proposal that clears
+> its benchmark ratchets is materialized as a `.lino` seed edit on a local branch and, with
+> `--open-draft-pr`, published as a **draft** pull request — never a push to the default
+> branch, never a merge, never marked ready. Human review of that pull request is the outer
+> gate, which is where the gate belongs: a learned item is reviewable because it is visible
+> in a diff, not because it is inert.
+
+#### D213 — `docs/meta-algorithm.md:137-142`
+
+**`docs/meta-algorithm.md:137-142`** — replace:
+
+> Second, it is **self-improving in proposal-only form**: `src/meta_self_improvement.rs`
+> reads this recipe against the live pipeline, detects drift between the algorithm-as-data
+> and the algorithm-as-code, and proposes the additions and stale-citation removals that
+> reconcile them — gated `off` by default, never writing the recipe back, so adoption stays
+> a human review step (R340).
+
+with:
+
+> Second, it is **self-improving**: `src/meta_self_improvement.rs` reads this recipe against
+> the live pipeline, detects drift between the algorithm-as-data and the algorithm-as-code,
+> and proposes the additions and stale-citation removals that reconcile them. It proposes by
+> default and still writes nothing itself; the seed edit it feeds passes the promotion gate
+> and arrives as a reviewed draft pull request (R340).
+
+#### D214 — `docs/requirements/issue-0922-method-learning-from-experience.md:13`
+
+**`docs/requirements/issue-0922-method-learning-from-experience.md:13`** (R922-2) — replace
+"Keep all learned candidates inert until benchmark-gated, human-confirmed promotion." with:
+
+> Keep all learned candidates out of dispatch until benchmark-gated, human-confirmed
+> promotion; after promotion they execute at last precedence with their effect proved and
+> their use named in the trace.
+
+#### D215 — `docs/requirements/issue-0922-method-learning-from-experience.md:16`
+
+**`docs/requirements/issue-0922-method-learning-from-experience.md:16`** (R922-5) — replace
+"Learned records are separate from compiled handlers, so dispatch order is unchanged" with:
+
+> Learned records are appended after every compiled method, so no compiled precedence
+> changes; a learned record with an unbound operation is reported and not dispatched.
+
+#### D216 — `docs/requirements/issue-0559-general-meta-algorithm.md:39`
+
+**`docs/requirements/issue-0559-general-meta-algorithm.md:39`** (R340) — replace "It must be
+gated and proposal-only: the default `off` mode proposes nothing and it never writes the
+recipe back" with:
+
+> It must be proposal-only at the loop and gated at review: the loop proposes by default and
+> never writes the recipe back itself; the seed edit it feeds clears the promotion ratchets
+> and is published as a draft pull request for human review.
+
+#### D217 — `docs/requirements/issue-0710-repository-and-retention-continuation.md:16`
+
+**`docs/requirements/issue-0710-repository-and-retention-continuation.md:16`** (R710-R7) —
+replace the tail "End-to-end automatic source-cache reconstruction remains open." with:
+
+> `src/source_reconstruction.rs` executes the retained `rediscover:` edge on the next cache
+> miss with no human command, emits an execution record for the recovery, and reports a
+> hash divergence as `Diverged` — today's page never replaces historical evidence.
+
+#### D218 — `docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md:26`
+
+**`docs/requirements/issue-0656-benchmark-gated-promotion-protocol.md:26`** (R472) — append:
+
+> The protocol may now open a **draft** pull request (`--open-draft-pr`); it still never
+> pushes to the default branch, never merges and never marks a pull request ready, so
+> required GitHub checks on the actual head SHA and human review remain the final authority.
+
+#### D219 — `ROADMAP.md:369` and `:428`
+
+**`ROADMAP.md:369` and `:428`** both read "Anticipatory learning (predict next requests,
+pre-learn) | Not done | #705". Replace both with:
+
+> | Anticipatory learning (predict next requests, pre-learn) | Delivered by the #705 work carried forward from PR #887 into the #1138 pull request; PR #887 itself is closed as superseded | [#705](https://github.com/link-assistant/formal-ai/issues/705) |
+
+(Plan 11 owns collapsing these duplicated status tables into one generated table; this plan
+only makes both copies true.)
+
+#### D220 — `ROADMAP.md:440`
+
+**`ROADMAP.md:440`** — replace "Broader method construction and recipe mutation remain
+incremental work" with:
+
+> Adopted abstractions now execute at last precedence with a proved five-language effect;
+> broader method *construction* and recipe mutation remain incremental work.
+
+#### D221 — `ROADMAP.md:364` and `:423`
+
+**`ROADMAP.md:364` and `:423`** — both describe self-improvement as "Partial". Replace the
+parenthetical in each with:
+
+> (learned items now change the next answer across the method registry, proved by
+> before/after execution records on held-out prompts in en, ru, hi, zh and es; promotion
+> publishes a reviewed draft pull request; broader classes and frontiers remain unproven)
+
+#### D222 — `VISION.md:377-382`
+
+**`VISION.md:377-382`** currently reads:
+
+> The self-evolution frontier is explicit and benchmark-gated: proposals must pass tests and
+> benchmark ratchets before a reviewed promotion materializes them as seed edits (issues
+> #656, #701)
+
+Append:
+
+> A promoted item is not merely stored: it executes, at last precedence behind every
+> compiled method, and the trace names it. The gate is the review of the pull request that
+> carries the seed edit — learned items are reviewable because they are visible in a diff,
+> never because they are inert.
+
+#### D223 — New shard `docs/requirements/issue-0705-anticipatory-dreaming.md`
+
+**New shard `docs/requirements/issue-0705-anticipatory-dreaming.md`** carrying PR #887's 22
+`REQUIREMENTS.md` lines as R705-1..R705-6, plus a note that they arrived through the #1138
+pull request rather than through PR #887, which is closed as superseded.
+
+#### D224 — `docs/requirements/issue-1138-bottleneck-audit.md`
+
+**`docs/requirements/issue-1138-bottleneck-audit.md`** (shared shard; this plan owns the B7
+rows):
+
+```
+| R1138-B7-1 | An adopted learned item must execute in the live dispatch path and its use must be named in the trace. | … |
+| R1138-B7-2 | Adoption requires a qualifying AdoptionEffect: an Improved before/after execution-record pair on held-out prompts in en, ru, hi, zh and es, with zero regressions. | … |
+| R1138-B7-3 | The human gate is the review of a draft pull request carrying the seed edit, never the inertness of the learned item. | … |
+| R1138-B7-4 | A forgotten cache payload is refetched automatically on the next miss, and a hash divergence is reported rather than substituted. | … |
+```
+
+#### D225 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — R922-1..6 and R710-R1..R10 have **no rows at all**
+today (`grep -c "R922\|R710-R"` → 0 for both). Add them, with R922-2/R922-5 pointing at
+`tests/unit/specification/method_registry.rs` and R710-R7 at
+`tests/unit/specification/source_reconstruction.rs`. Add R705-1..6 and R1138-B7-1..4.
+
+### Plan 08 — B8 verifiable task routing
+
+#### D226 — `VISION.md:343`
+
+**`VISION.md:343`** currently reads, in part:
+
+> "The synthesis step is now **general**: instead of resolving answers from seeded handlers, the universal 11-step loop **derives** them by composing decomposed sub-results over the links network. … the solver writes HumanEval/MBPP Python functions from parsed structure, source-grounded meanings, composed schemas, and bounded execution, and computes the GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) answers."
+
+The parenthetical values are curated-slice answers being cited beside upstream
+capability, which is the confusion #1085 asked to end. Replace with:
+
+> "The synthesis step is general across task *kinds*, not only across coding: any task carrying a verifiable expectation — a number, a count, an edited text, a value for a named unknown — enters the same recognise → discover → compose → verify → remember path, and the composed program is executed to produce the answer. Upstream scores are cited per suite and per slice from `data/benchmarks/external-results.lino`; the curated 13/13 slice is named as curated wherever it appears."
+
+#### D227 — `ROADMAP.md:145`
+
+**`ROADMAP.md:145`** (pillar 26) currently reads, in part:
+
+> "other latest rows remain GSM8K 2/20, MATH 0/20, CoEdIT 0/20, and SWE-bench Lite 0/1."
+
+Replace with the re-measured values and their date, and add:
+
+> "Non-coding suites are answered by the same verifiable-task route as coding: `src/verifiable_task.rs` recognises the expectation, `src/coding/program_ir.rs` composes the derivation, and the program is executed in the bounded workspace to produce the value. The object-counting category table and the pattern-inference keyword array were deleted, not extended."
+
+#### D228 — `ROADMAP.md:179`
+
+**`ROADMAP.md:179`** currently reads:
+
+> "| E29 | #314 | #320 | Compute math/word-problem and counting answers (GSM8K, MATH, BIG-bench) deterministically rather than seeding them. |"
+
+The row is accurate about intent and misleading about outcome: the counting
+answer *was* seeded, in `OBJECT_CATEGORIES`. Append: "Superseded for the upstream
+suites by the verifiable-task route (#1138 B8), which deletes the seeded category
+table."
+
+#### D229 — `docs/benchmarks.md:284-295`
+
+**`docs/benchmarks.md:284-295`** — the "Honest current numbers" table rows for
+GSM8K, MATH, BIG-bench object counting and CoEdIT are updated with the
+re-measured values and their date, so all rows share one measurement generation.
+The preamble at `docs/benchmarks.md:279-282`:
+
+> "The latest committed rows are dated `2026-09-15` for the coding suites, use solver version `0.349.2` … Other suite rows remain at their latest `2026-09-07` measurements:"
+
+becomes a single-date statement once L22 lands, or keeps the split with the new
+date if any suite could not be re-run.
+
+#### D230 — `docs/benchmarks.md:307-312`
+
+**`docs/benchmarks.md:307-312`** currently reads, in part:
+
+> "The existing corpus rows remain recorded exactly as measured: `2 / 20` on GSM8K, `0 / 20` on the other scored core suites, and `0 / 1` on SWE-bench Lite."
+
+Replace with the measured values, and add a sentence distinguishing derivation
+gains from presentation gains:
+
+> "Where a score moved because the answer's shape now matches the upstream grader's convention rather than because a new derivation succeeded, that is stated per suite; a presentation gain is not a reasoning gain."
+
+#### D231 — `docs/benchmarks.md:16-33`
+
+**`docs/benchmarks.md:16-33`** — add a row to "Suites at a glance":
+
+> `| Verifiable-task paraphrases | #1138 B8 | `verifiable-task-paraphrases.lino` | `verifiable_task::routing` | 30 |`
+
+#### D232 — `docs/benchmarks.md:31`
+
+**`docs/benchmarks.md:31`** — the equation-corpus row's `minimum_pass_count` of
+"72 (and ≥50 distinct verified types)" rises with each promoted limitation; L1
+alone takes it to 73.
+
+#### D233 — `docs/requirements/issue-0891-equation-corpus-ratchet.md`
+
+**`docs/requirements/issue-0891-equation-corpus-ratchet.md`** — the shard must
+record that the ten limitations are now candidates for the verifiable-task route
+rather than permanent upstream constraints, and that each fix is promoted to a
+`benchmark_case` in the same commit as the code change.
+
+#### D234 — `docs/requirements/issue-0698-real-external-benchmark-harness.md`
+
+**`docs/requirements/issue-0698-real-external-benchmark-harness.md`** — R529's
+status cites `recorded_scores_are_honest_passed_over_total`; add that non-coding
+suites are re-measured at every solver generation, so a row's date is part of its
+honesty.
+
+#### D235 — New shard `docs/requirements/issue-1138-verifiable-task-routing.md`
+
+**New shard `docs/requirements/issue-1138-verifiable-task-routing.md`** with IDs
+R1138-B8-1 … R1138-B8-9 covering: the shared task type, seed-driven recognition in
+five languages, the projection onto the discovery path, execution-produces-the-answer,
+the five self-checks, derivation memory that recomputes rather than replays,
+deletion of the seeded category table, the extended no-memorization gate, and the
+re-measurement. `REQUIREMENTS.md` is generated from the shards by
+`scripts/assemble-requirements.rs`; no manual edit there.
+
+#### D236 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — add rows for every R1138-B8-*. Also
+amend the R710-D12 row's neighbours: the file has no rows at all for R710-R1..R10,
+R873, R919, R922, R924, R991 and R1085-2/3/11 (#1138 B11), and this plan's rows
+must not repeat that pattern — each lands with its evidence column filled at
+merge time, not "not yet confirmed".
+
+#### D237 — `docs/meta-algorithm.md:144-167`
+
+**`docs/meta-algorithm.md:144-167`** — the twelve-step recursive core is the
+document that should already have described this route. Step 8 reads:
+
+> "8. **Resolve each atomic leaf through registry-backed method dispatch** — the registry is the sole authority (R344)."
+
+Add a sentence: "A leaf whose task carries a verifiable expectation resolves by
+*executing* a derived program and observing its output, not by selecting a method
+that formats a string; the observation is the evidence step 9 records." That
+sentence is also B5's requirement, and this plan is the first place it becomes
+true for a non-coding leaf.
+
+#### D238 — `docs/meta-algorithm.md:214-218`
+
+**`docs/meta-algorithm.md:214-218`** — the agentic recipe's step 2 pins
+`SEARCH_QUERY`, `CANONICAL_SOURCE_URL` and `KB_PATH` as constants.
+
+**reconciled: was restated here and in plan 02; now owned solely by plan 04 L12
+and recorded once as row D181 below, because two plans rewriting one paragraph
+is how a document acquires two versions of itself (plan 00 §9 X9).**
+
+---
+
+### Plan 09 — B9 handler migration ratchet
+
+#### D239 — `VISION.md:320-326`
+
+**`VISION.md:320-326`** — currently:
+
+> "the solver reasons over Rust structures -- `MemoryStore` is a vector of
+> events, the seed is parsed into Rust tables by `src/seed.rs`, and
+> `src/solver.rs`, `src/engine.rs` and `src/main.rs` never read the doublets
+> store."
+
+Replace, at leaf 40, with:
+
+> "the solver reads the doublets store: `src/seed_links.rs` projects every seed
+> meaning, handler rule and handler promotion into content-addressed
+> `LinkRecord`s at boot, and `src/rule_interpreter.rs` resolves every routing
+> condition through `link_store::query`. The `.lino` files remain the
+> human-reviewable source and export projection. `data/meta/debt-ratchet.lino`
+> records `store_read_share`, the fraction of routing decisions resolved from
+> the store; it is the one measure in that ledger whose strict direction is
+> upward."
+
+Until leaf 40 lands, the sentence stays true and is not touched — this is a
+statement that must change *with* the code, not ahead of it.
+
+#### D240 — `ROADMAP.md:362`
+
+**`ROADMAP.md:362`** — currently:
+
+> "Partial: registry precedence/route authority is data-driven; #699 batches 1-3
+> migrated number constraints, `who_is`, `definition_merge` and the
+> `program_synthesis` dead end (now a named skill gap), ratcheting the tree at
+> 37 handler files / 48 `try_*` registry entries, with the remaining methods
+> honestly pending in the ledger"
+
+Replace with:
+
+> "Partial, with a strict single-definition ratchet: 16 of 58 registry methods
+> are migrated and 2 are justified-native; 40 remain pending, grouped into five
+> meta-method families by `docs/case-studies/issue-1138/plans/09-handler-migration-ratchet.md`.
+> The measured numbers live in `data/meta/debt-ratchet.lino` alone — 46 handler
+> files, 39 `try_*` entries, 19 promotion predicates, 9 dispatch name special
+> cases — and every one of them may only fall."
+
+#### D241 — `ROADMAP.md:421`
+
+**`ROADMAP.md:421`** — currently:
+
+> "#918 recursively classifies all 46 mixed handler sources as migration debt
+> and ratchets their 19,543 outside-core lines"
+
+Replace with the measured values and the widened scan root:
+
+> "#918 recursively classifies every handler source as migration debt and
+> ratchets its lines; the scan root now includes `src/solver_handler_how.rs`,
+> `solver_handler_how_synthesis.rs`, `solver_handler_units.rs` and
+> `solver_handler_oracle.rs`, so a migration cannot lower the count by moving a
+> file out of `src/solver_handlers/`. The current values are in
+> `data/meta/core-boundary-ledger.lino`."
+
+#### D242 — `ARCHITECTURE.md:181-185`
+
+**`ARCHITECTURE.md:181-185`** — currently:
+
+> "The browser worker mirrors the seed through `src/web/seed_loader.js`; because
+> it names its handlers differently and runs its async fetch handlers in a later
+> phase, full order-parity is impossible, so `tests/fixtures/routing-parity.lino`
+> pins the *shared* precedence invariants both surfaces must honour"
+
+Replace, at leaf 15, with:
+
+> "The browser worker reads the same `data/seed/handler-precedence.lino` it
+> fetches at startup: `src/web/seed_loader.js::parseHandlerPrecedence` supplies
+> the order and `formal_ai_worker_20.js` holds a name-keyed handler registry
+> that must be an exact permutation of it, asserted at load. Rows carry a
+> `phase async` note where the worker runs a handler in its later fetch phase,
+> and the parity test reorders a fixture row and asserts both surfaces change
+> identically."
+
+#### D243 — `ARCHITECTURE.md:162-165`
+
+**`ARCHITECTURE.md:162-165`** — "Specialized handlers (`solver_handler_units`,
+`solver_handler_how`, `solver_handlers`, `solver_handlers_policy`) are *plugged
+into* the universal solver" — `solver_handlers_policy` no longer exists (the
+policy handlers migrated to `data/seed/handler-rules.lino`); replace the list
+with the five meta-method families and note that the named files are being
+retired batch by batch.
+
+#### D244 — `ARCHITECTURE.md:660-673`
+
+**`ARCHITECTURE.md:660-673`** (Minimal Compiled Core) — add the sentence: "A
+family interpreter (`retrieval_method`, `procedure_interpreter`,
+`structural_operator`, `dialogue_state_query`) is admitted under **Generic
+interpreters**; a handler is not. The boundary ledger records which category
+each source claims, so a handler cannot be promoted by renaming it."
+
+#### D245 — `docs/requirements/issue-0559-general-meta-algorithm.md:15-16`
+
+**`docs/requirements/issue-0559-general-meta-algorithm.md:15-16`** — currently
+"Issue #699 tracks that remaining migration honestly in
+`data/meta/handler-migration-ledger.lino`." Add: "and the plan that retires it
+is `docs/case-studies/issue-1138/plans/09-handler-migration-ratchet.md`, which
+groups the 40 pending methods into five meta-method families and makes every
+ceiling strict-downward." The R344 row's status text (`:43`) must lose the
+phrase "the complete 55-method status" — the census is 58 precedence rows plus
+5 prelude methods, i.e. 63.
+
+#### D246 — `docs/requirements/issue-0918-*.md`
+
+**`docs/requirements/issue-0918-*.md`** (the minimal-core shard) — record the
+widened scan root and the single shared `source_files()` definition.
+
+#### D247 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — add rows for the #959 items, which
+have none today: one row per "what to do" clause (ledger ratchet, contextual +
+prelude migration, browser derivation, promotion seed, closure honesty,
+`data/README.md`), each naming its automated test and its manual confirmation.
+`REQUIREMENTS.md` is generated and must not be hand-edited; it regenerates from
+the shards above.
+
+#### D248 — `data/README.md`
+
+**`data/README.md`** (24 lines, documents only `data/benchmarks/`) — describe
+`data/seed/`, `data/cache/`, `data/overrides/`, `data/parity/`, `data/meta/`,
+`data/view/` and `data/training/`. This is #959 item 6 and is a single leaf.
+
+---
+
+### Plan 10 — B10 intent routing
+
+#### D249 — `ROADMAP.md`
+
+**`ROADMAP.md`** — there is no row for capability routing today (`grep -n
+"R745\|R758" ROADMAP.md REQUIREMENTS.md` returns nothing but an unrelated line
+number match). Add one to the current table:
+
+> "| Capability routing generalizes across phrasing and language (#745, #758) |
+> Measured, not asserted: `data/meta/capability-routing-ratchet.lino` records
+> intents measured, languages measured, paraphrases per intent, cases passing,
+> cross-tool misroutes and silent unknowns; the 420-case suite lives in
+> `data/benchmarks/capability-routing/`. #745 and #758 stay open until
+> misroutes and silent unknowns read 0. |
+> [#745](https://github.com/link-assistant/formal-ai/issues/745),
+> [#758](https://github.com/link-assistant/formal-ai/issues/758) |"
+
+#### D250 — `VISION.md:337`
+
+**`VISION.md:337`** — currently ends "Every interface now reads its multilingual
+responses, concept table, tool registry, language-detection rules, prompt
+patterns, and intent-routing rule book from the shared `data/seed/` directory".
+"Intent-routing rule book" names
+`data/seed/intent-routing.lino`, a 477-line phrase list. Replace, as leaf 20
+proceeds, with: "…, and its capability-routing table — the decision from object
+type, act and locus to capability, with the phrase book it replaced deleted —
+from the shared `data/seed/` directory".
+
+#### D251 — `ARCHITECTURE.md:160-165`
+
+**`ARCHITECTURE.md:160-165`** — "The pipeline runs the same way for every
+prompt … because the universal solver is intentionally domain-agnostic" is true
+of the solver and silently untrue of `src/agentic_coding/planner.rs`, which is
+845 lines of ordered arms. Add after it: "The agentic planner runs the same
+capability-routing table: `src/capability_routing.rs` derives the object type,
+the act and the locus, and `data/seed/capability-routing.lino` maps the triple
+to a capability, which `src/agentic_coding/capability_router.rs` turns into
+whichever tool name the connected client advertises. Arm order is data
+(`data/seed/planner-precedence.lino`) for the arms that remain."
+
+#### D252 — `docs/requirements/issue-0745-intent-routing-generalization.md`
+
+**`docs/requirements/issue-0745-intent-routing-generalization.md`** *(new shard;
+no `issue-0745-*` or `issue-0758-*` file exists today — `ls docs/requirements`
+confirms)* — one requirement row per #745 clause (intent not phrasing; no
+cross-tool misroutes; never silently UNKNOWN; language parity; CI variation
+matrix) and per #758 clause (route by capability; full shared set;
+grep/glob/list_dir never UNKNOWN; per-CLI matrix), each with an honest status
+and a named test. The 2026-07-25 maintainer re-measurement is quoted in the
+shard header so the closure history is visible in the requirement itself.
+
+#### D253 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — #745 and #758 have **no rows at all**
+today. Add one row per requirement created above, each naming the automated test
+(`tests/unit/issue_1138_capability_routing.rs::…`) and the manual confirmation
+(the ladder transcript, the #447 screenshots). `REQUIREMENTS.md` is generated
+and regenerates from the shard.
+
+#### D254 — `experiments/issue_840_task_ladder/README.txt`
+
+**`experiments/issue_840_task_ladder/README.txt`** — the paragraph "The
+historical v0.303.0 measurement was 8/24 … The current committed `results.json`
+is the strict all-green baseline" stays (it is honest and load-bearing); add
+that the dataset now covers five languages and the seven #1087 frontier prompts,
+and that the route-only variant runs in the ordinary CI stage.
+
+#### D255 — `tests/fixtures/routing-parity.lino`
+
+**`tests/fixtures/routing-parity.lino`** — plan 09 rewrites its header; this
+plan adds the capability-routing invariants that must hold on both surfaces, so
+a browser fix and a Rust fix cannot diverge again (#720 and #721 were reported
+against the wasm build, not the CLI).
+
+#### D256 — `data/meta/learning-frontier-language-gap.lino` and
+`data/meta/language-adoption-ledger.lino`
+
+**`data/meta/learning-frontier-language-gap.lino` and
+`data/meta/language-adoption-ledger.lino`** — both record Spanish at
+`total_prompts "7"` / `classes "2"`. After leaf 7 they must be re-derived by
+running the frontier, not hand-edited, so the Spanish numbers reflect the seven
+routed classes rather than the two concept-lookup ones.
+
+---
+
+### Plan 12 — B12 selection heuristics
+
+#### D257 — `docs/requirements/issue-0491-least-action-continuation.md:10`
+
+**`docs/requirements/issue-0491-least-action-continuation.md:10`** (R491-C1) — replace:
+
+> Partial: task-decomposition and failure-driven recursive-execution tests cover binary
+> structure and atomic leaves. Complete decomposition of arbitrary natural-language
+> obligations remains open.
+
+with:
+
+> `selection_heuristics::balanced_split` folds the n-ary output of `split_once_checkable`
+> into exactly two children per non-leaf node, preserving every segment and its byte spans,
+> and reports the achieved imbalance. `data/meta/selection-heuristic-ratchet.lino` counts
+> the remaining non-binary work-unit nodes over the benchmark corpus and turns strictly
+> downward each release. Complete decomposition of arbitrary natural-language obligations
+> remains open, and a single-clause moonshot is reported as underivable pending plan 01.
+
+#### D258 — `docs/requirements/issue-0491-least-action-continuation.md:12`
+
+**`docs/requirements/issue-0491-least-action-continuation.md:12`** (R491-C3) — replace:
+
+> Partial: existing candidate selection uses size/step costs. A shared measured-resource
+> optimizer across all reasoning and execution paths remains open.
+
+with:
+
+> `selection_heuristics::ActionCost` is the shared cost type — steps, code size,
+> deterministic resource units and leaf count — read by every ranker through the registry,
+> including the draft portfolio and discovered-algorithm ordering. Elapsed wall-clock time
+> is deliberately excluded from every ranking key and reported beside it instead, because a
+> key that depends on machine speed is not reproducible.
+
+#### D259 — `data/meta/draft-portfolio-recipe.lino:61`
+
+**`data/meta/draft-portfolio-recipe.lino:61`** — the `meta_selector` record's
+`least_action_order "cost_size, cost_steps, draft_index"` becomes a reference so there is
+one place the order lives:
+
+> `least_action_order "see data/meta/selection-heuristics.lino heuristic_least_action key_order"`
+
+#### D260 — `data/meta/task-decomposition-invariant.lino`
+
+**`data/meta/task-decomposition-invariant.lino`** — the `binary` field's reader. Add:
+
+> `binary_reader "src/selection_heuristics.rs"`
+
+and correct the existing `source_reader "src/intent_formalization/requirements.rs"` to name
+the field it actually reads (`source_integrity_reader`).
+
+#### D261 — `docs/meta-algorithm.md:150-151`
+
+**`docs/meta-algorithm.md:150-151`** — step 3 of the recursive core currently reads:
+
+> 3. **Decompose the frame as a recursive, bounded work-unit tree** (downward pass),
+>    stopping at `max_decomposition_depth`.
+
+Replace with:
+
+> 3. **Decompose the frame as a recursive, bounded, binary work-unit tree** (downward
+>    pass): every non-leaf unit has exactly two children, so a complete layer has 1, 2, 4,
+>    8, … leaves (#491, #453), the split preserves every segment and its byte spans, the
+>    achieved imbalance is reported, and the recursion stops at `max_decomposition_depth`.
+
+#### D262 — `docs/meta-algorithm.md`, new section after the budget-search section (`:790-871`)
+
+**`docs/meta-algorithm.md`, new section after the budget-search section (`:790-871`)** —
+`## Selection heuristics (issues #491, #901, #802, #453)`, describing the registry, the
+three roles, the four seeded heuristics and the seams the core calls them from, with the
+same "Running it" block convention the other sections use:
+
+```sh
+# Verify the selection-heuristic catalog still matches the live source:
+cargo test --test unit specification::selection_heuristics -- --nocapture
+```
+
+#### D263 — `VISION.md:189`
+
+**`VISION.md:189`** (Universal Problem-Solving Algorithm, step 7) currently reads:
+
+> 7. **Draft experiments and selection**: build testable drafts by (a) reusing known parts,
+>    (b) reasoning from rules, and (c) random or evolutionary search where structure and
+>    compute budget allow; select only a test-passing draft and record why it won.
+
+Append:
+
+> Selection is a registry heuristic, not a fixed rule: candidates are ranked by least action
+> — fewest steps, smallest code, fewest resources — only among those that already pass every
+> declared check; a tie in which two candidates win on different dimensions is a
+> contradiction resolved by a value on the range between them; and where a discriminating
+> probe exists, the search eliminates hypotheses by refutation instead of sampling for
+> confirmation.
+
+#### D264 — `VISION.md:99-100`
+
+**`VISION.md:99-100`** currently reads:
+
+> Split a task in two, split the halves, and continue until each leaf is directly solvable.
+> Do not rate a task before splitting it.
+
+Append:
+
+> This is enforced, not aspirational: every non-leaf work unit has exactly two children, and
+> `data/meta/selection-heuristic-ratchet.lino` counts the nodes that do not yet comply and
+> turns strictly downward each release.
+
+#### D265 — `VISION.md:192`
+
+**`VISION.md:192`** (step 10, Simplification: "Pick the smallest sufficient form") — append:
+
+> "Smallest" is `ActionCost`, and "sufficient" is checked first: an incomplete answer is
+> never a cheaper one.
+
+#### D266 — `ROADMAP.md`
+
+**`ROADMAP.md`** — the words `least action`, `TRIZ`, `2-4-6` and `moonshot` appear nowhere
+in the file today. Add one row to the status table at `ROADMAP.md:423`:
+
+> | Selection and splitting heuristics (least action, TRIZ contradictions, refutation-first hypothesis search, balanced binary splitting) | Delivered as registry heuristics for #1138 B12; the non-binary work-unit ratchet is measured and turns strictly downward | [#491](https://github.com/link-assistant/formal-ai/issues/491), [#901](https://github.com/link-assistant/formal-ai/issues/901), [#802](https://github.com/link-assistant/formal-ai/issues/802), [#453](https://github.com/link-assistant/formal-ai/issues/453) |
+
+#### D267 — New shard `docs/requirements/issue-0901-triz-contradictions.md`
+
+**New shard `docs/requirements/issue-0901-triz-contradictions.md`** — R901-1..R901-4. The ID
+`R901` is unused (`grep -n "R901" REQUIREMENTS.md docs/requirements/` → 0):
+
+```
+| R901-1 | Represent a trade-off between two criteria as a link with a selection value on the range between them, expressed in integer basis points so the record stays hashable. | … |
+| R901-2 | Derive the selection value from the requirement's own clauses or from a seeded record; an underivable contradiction is named and left unresolved, never defaulted. | … |
+| R901-3 | Hold the inventive and separation principles as seed data discoverable from a trusted source, so the catalog can be forgotten and rediscovered to the same content hash. | … |
+| R901-4 | Apply contradiction resolution wherever the meta algorithm chooses among candidates, and record the resolving link in the trace. | … |
+```
+
+#### D268 — New shard `docs/requirements/issue-0802-hypothesis-search.md`
+
+**New shard `docs/requirements/issue-0802-hypothesis-search.md`** — R802-1..R802-4:
+
+```
+| R802-1 | Maintain an explicit set of live hypotheses and eliminate them by observation, never by impression. | … |
+| R802-2 | Choose the next experiment by minimizing worst-case survivors, so each probe ideally halves the space. | … |
+| R802-3 | Prefer a probe that attempts to refute the leading hypothesis over one that would only confirm it. | … |
+| R802-4 | When survivors remain and no discriminating probe exists, report not-confirmed-not-refuted with the survivors and the blocker named. | … |
+```
+
+#### D269 — New shard `docs/requirements/issue-0453-moonshot-splitting.md`
+
+**New shard `docs/requirements/issue-0453-moonshot-splitting.md`** — the bare ID `R453` is
+
+**taken** (`REQUIREMENTS.md:1349`, the Wikontic pipeline requirement from #686), so the rows
+use the suffixed form `R453-M1..R453-M4`:
+
+```
+| R453-M1 | Split every non-leaf task into exactly two children, preserving every segment and its byte spans, so a complete layer has 1, 2, 4, 8, … leaves. | … |
+| R453-M2 | Report the achieved imbalance of every split; never discard a segment to balance a tree. | … |
+| R453-M3 | A task that cannot be split at the text level is reported as underivable with its blocker named, never certified atomic. | … |
+| R453-M4 | Draw splitting approaches from discovered sources, deduplicated to the first historical source of each idea. | Open — depends on plan 01's live concept lookup. |
+```
+
+#### D270 — `docs/requirements-traceability.md`
+
+**`docs/requirements-traceability.md`** — add rows for R491-C1..C4 (currently absent; the
+only `R491` row at `:634` is the unrelated Unlicense requirement from #834), R901-1..4,
+R802-1..4, R453-M1..M4 and R1138-B12-1..4, each pointing at the specification file that
+pins it.
+
+#### D271 — `docs/requirements/issue-1138-bottleneck-audit.md`
+
+**`docs/requirements/issue-1138-bottleneck-audit.md`** (shared shard; this plan owns the B12
+rows):
+
+```
+| R1138-B12-1 | The selection heuristics live in the one method registry as link data, are never route targets, and their precedence is a data edit. | … |
+| R1138-B12-2 | No heuristic may reorder an unsatisfying candidate above a satisfying one, and no ranking key may depend on wall-clock time. | … |
+| R1138-B12-3 | An empty heuristic table falls back to the deterministic identity ordering and says so in the trace. | … |
+| R1138-B12-4 | The count of non-binary work-unit nodes is measured, recorded and strictly decreasing. | … |
+```
+
+
 ## Vision ↔ requirements drift
 
 Five requirement blocks now say things the vision either does not say or
@@ -321,11 +1910,15 @@ doublets store" and that "The link-cli store is a write-behind projection".
 R1085-2 (`REQUIREMENTS.md:2458`) records the partial repair: `src/seed_links.rs`
 projects seed and routing documents into one links network at startup and
 precedence, cues and intent routes are link queries, with "Migration continues
-smallest-first" and 40 handlers still pending. **Reconciled wording for
+smallest-first" and 40 handlers still pending. **Corrected 2026-09-16: the census
+is 58 `handler-precedence.lino` rows plus 5 unledgered prelude methods, i.e. 63,
+of which 16 are migrated, 2 are justified-native and 40 are pending; plan 09
+leaf 5 adds the five prelude rows, which raises the recorded pending count from
+40 to 45 as a corrected undercount. "40 of 56" appears in no ledger.** **Reconciled wording for
 `VISION.md:5`:** keep the sentence, and append — "Today the network is the
 system of record for seed, routing, precedence and cue lookup
 (`src/seed_links.rs`, `src/rule_interpreter.rs`); the solver's own working state
-is still Rust structures, and 40 of 56 handlers await migration
+is still Rust structures, and 40 of 63 registry methods await migration (plan 09)
 (`data/meta/handler-migration-ledger.lino`). Closing that is the direction, not
 a claim about today."
 
@@ -425,18 +2018,30 @@ almost nothing pins *numbers*. That is exactly backwards, and it is why every
 finding in the "stale number" category exists while the phrase-level pins have
 held.
 
-### Decision: one generated status surface, ledgers as the only place status lives
+## Solution options
+
+Three ways to stop the findings above recurring. The first two differ in how much
+is generated; the third differs in what is kept at all.
 
 This is what #1089 (E111, open) and #958 (E106, open) ask for, and what
 `REQUIREMENTS.md:2472` (R1085-16) records as an open sub-issue.
 
-**Option A — render the status tables from the ledgers (recommended).**
+### Option A — render one status surface from the ledgers
 Add `scripts/render-status.rs`, modelled exactly on
-`scripts/assemble-requirements.rs`: it reads the ledgers, writes marked regions
-into the documents, and in check mode fails when a region is out of date.
+`scripts/assemble-requirements.rs`: it reads the ledgers, writes **one generated
+file, `docs/status.md`**, and in check mode fails when it is out of date.
 
-Regions are delimited the way generated blocks usually are, so the surrounding
-prose stays hand-written:
+> **reconciled: this plan's draft wrote marked regions into five narrative
+> documents. Plan 00 §4.5 asks for one file that VISION, ROADMAP and REQUIREMENTS
+> link to instead of restating, and this plan's own risk 3 asks the same question
+> — a generated region inside `VISION.md` violates `CONTRIBUTING.md:970-982`'s
+> rule that a list belongs in a file of its own. Now: one `docs/status.md`, which
+> every narrative document links; the only in-place regions retained are the two
+> whose existing pin tests require the number to stand in the document
+> (`docs/benchmarks.md` and `README.md`), fed by the same script (plan 00 §9 R18).**
+
+The two retained regions are delimited the way generated blocks usually are, so
+the surrounding prose stays hand-written:
 
 ```text
 <!-- status:begin benchmarks -->
@@ -448,12 +2053,12 @@ Inputs, all already committed:
 
 | Source | Fields consumed | Regions it feeds |
 | --- | --- | --- |
-| `data/benchmarks/external-results.lino` | `suite`, `date`, `slice`, `passed`, `total`, `solver_version` | `benchmarks` (in `docs/benchmarks.md`, `VISION.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `README.md`) |
-| `data/meta/self-hosting-ledger.lino` | last `release` block: `tag`, `percentage_basis_points`, `trailing_percentage_basis_points`, `target_percentage_basis_points` | `self-hosting` (in `README.md`, `ROADMAP.md`) |
-| `data/meta/debt-ratchet.lino` | each `ceiling` `measure`/`value` | `debt` (in `ROADMAP.md`, `ARCHITECTURE.md`) |
+| `data/benchmarks/external-results.lino` | `suite`, `date`, `slice`, `passed`, `total`, `solver_version` | `benchmarks` (generated into `docs/status.md`; the `docs/benchmarks.md` region is the one retained in place) |
+| `data/meta/self-hosting-ledger.lino` | last `release` block: `tag`, `percentage_basis_points`, `trailing_percentage_basis_points`, `target_percentage_basis_points` | `self-hosting` (generated into `docs/status.md`; the `README.md` region is the one retained in place) |
+| `data/meta/debt-ratchet.lino` | each `ceiling` `measure`/`value` | `debt` (generated into `docs/status.md`) |
 | `data/meta/core-boundary-ledger.lino` | `source_file_count_max`, `outside_core_lines_max` | `debt` |
 | `data/meta/handler-migration-ledger.lino` | counts of `status migrated` / `status pending` | `debt` |
-| `data/meta/ladder-ratchet.lino` | `leaf_nodes_selected`, `leaf_nodes_passing`, `deepest_passing_level`, `recorded_on` | `ladder` (in `ROADMAP.md`) |
+| `data/meta/ladder-ratchet.lino` | `leaf_nodes_selected`, `leaf_nodes_passing`, `deepest_passing_level`, `recorded_on` | `ladder` (generated into `docs/status.md`) |
 | `data/meta/worker-line-budget/*.lino` | per-module `ceiling` | `debt` |
 
 Proposed new ledger for the one status dimension that has no ledger — per-requirement status:
@@ -495,27 +2100,93 @@ Gates to add, all cheap `rust-script` checks registered in
    and assert that any line containing a curated pass ratio also contains an
    upstream ratio within the same paragraph. Closes D23, D29, D46, D55, D60, D85.
 
-**Option B — keep hand-written tables, add only the parity gate.** Cheaper: only
+### Option B — keep hand-written tables, add only the parity gate
+ Cheaper: only
 gate 1 above, plus a `not yet confirmed` counter in the traceability header.
 Rejected as the primary path because it fixes D95 and leaves every stale-number
 finding to recur; it is, however, the right first commit if the render script
 slips.
 
-**Option C — delete the traceability table and move delivery/test/manual into
-the shards.** Rejected: `tests/unit/docs_requirements_issue_1021.rs:1-8` records
+### Option C — delete the traceability table; move delivery, test and manual into the shards
+ Rejected: `tests/unit/docs_requirements_issue_1021.rs:1-8` records
 why the table exists ("a requirement without a row is a requirement nobody can
 check later"), and #1090 is the open issue that owns finishing rather than
 retiring it. Retiring is allowed only through #1090, explicitly, with the header
 marked aspirational — which is option C's honest form and should be offered to
 the maintainer as the alternative to filling 743 cells.
 
-**Interaction with #1089's own target.** #1089 asks for `ls tests/unit | grep -c
+## Decision
+
+**Option A is selected**, with Option B adopted as its first commit if the render
+script slips and Option C offered to the maintainer as the honest alternative to
+filling 743 manual-confirmation cells.
+
+Reasons: only Option A closes the whole "stale number" category structurally
+rather than one finding at a time — every one of the 24 stale-number findings is
+the same defect, a number copied beside the thing it counts, and a generated
+surface makes that defect unrepresentable. Only Option A gives the four
+competing "single source of truth" claims (D26) a mechanical adjudicator: the
+ledger owns numbers, and the documents link to them. And only Option A can be
+run in `--check` mode in CI, which is what turns a finding list into a gate.
+
+Rejections: **Option B** is rejected as the primary path because it fixes D95
+and leaves every stale-number finding to recur — it is a parity gate over a
+hand-written table, and a hand-written table is the thing that rotted.
+**Option C** is rejected as a unilateral decision:
+`tests/unit/docs_requirements_issue_1021.rs:1-8` records why the table exists
+("a requirement without a row is a requirement nobody can check later"), and
+#1090 is the open issue that owns finishing rather than retiring it. Retiring is
+allowed only through #1090, explicitly, with the header marked aspirational —
+which is Option C's honest form and is offered to the maintainer rather than
+taken here. That is why #1090 is **not** in plan 13's `Closes` list.
+
+## Architecture
+
+The mechanism is three files and four gates, and every one of them is modelled on
+something this repository already runs, so nothing here is a new kind of thing.
+
+### `scripts/render-status.rs`
+
+Modelled exactly on `scripts/assemble-requirements.rs` — same `--write` /
+`--check` / bare-invocation shape, same banner, same total order read from file
+names. It reads the seven ledgers tabulated below and writes **one** file,
+`docs/status.md`, plus the two in-place regions whose pin tests require the
+number to stand in the document. In `--check` mode it fails when any of the
+three is out of date, which is what `render-status.rs --check` in the Lint job
+means.
+
+### `data/meta/requirement-status-ledger.lino`
+
+The one status dimension with no ledger today: per-requirement status. Its schema
+is below. `docs/requirements-traceability.md` becomes a generated projection of
+it (id, shard, verdict, delivered, automated test, manual), and the `Line` column
+dies with D97. Each shard's status cell stays hand-written prose — the ledger
+carries the machine-checkable verdict, the shard carries the explanation — and
+`check-requirement-status.rs` asserts the two agree on the verdict word.
+
+### `data/meta/issue-state.lino`
+
+A committed snapshot of every issue's open/closed state, refreshed by a scheduled
+job, so `check-issue-citations.rs` can compare a "tracked in #N" citation against
+something. Same discipline as the benchmark ledger: the snapshot goes stale
+between refreshes, and the gate's own message says so rather than implying
+freshness it does not have.
+
+### Interaction with #1089's own target. #1089 asks for `ls tests/unit | grep -c
 docs_` ≤ 5, down from 48; it is 49 today. Options A collapses most of them:
 once numbers are generated and verdicts are ledger-backed, the per-issue prose
 pins become redundant and can be retired in one commit per issue, keeping only
 (a) the generated-region freshness check, (b) the architect-clause pins in
 `tests/unit/architect_notes.rs`, (c) the benchmark ledger parity test, (d) the
 requirement-status parity test, and (e) the issue-citation gate.
+
+## Docs to update
+
+This plan has no such section, and that is deliberate: it **is** the docs
+authority. Rows D1-D155 are the statements that are wrong today; rows D156-D275
+are the statements that become wrong when a plan lands, moved here verbatim from
+plans 01-10 and 12 by the 2026-09-16 reconciliation (plan 00 §8). Every other
+plan's "Docs to update" section is now a pointer to its rows here.
 
 ## Implementation leaves
 
@@ -681,6 +2352,33 @@ commit alone.
 - [ ] L74 `tests/issue_973_solve_flags.rs:32-37,224-234` — CONTRIBUTING, README,
       ARCHITECTURE, ROADMAP and GOALS are read for the solve-session policy; L6
       and L36 must not remove those needles.
+
+### Leaves added by the 2026-09-16 reconciliation
+
+Plan 13's coverage table lists #949 and #1089 as fully closed by this plan, and
+no leaf delivered either. An issue in a `Closes` list with no leaf behind it is
+the failure mode #710's audit named, so the leaves are added here rather than the
+issues quietly downgraded (plan 00 §8).
+
+- [ ] L75 **Language-parity lint (#949 / E97; carry-over C49, C61).** Add
+      `scripts/check-language-parity.rs` and
+      `data/meta/ci-gates/check-language-parity.lino`: every meaning that
+      declares a `lexeme` for one of en/ru/hi/zh/es must declare one for all
+      five, or carry an explicit dated `uncovered_behavior` row naming the gap.
+      Record the measured first value as the ceiling in
+      `data/meta/debt-ratchet.lino` (strictly downward, added after plan 09
+      leaves 1-5 so it enters through the strict checker). Then fix D49 and D61:
+      Spanish is `status partial` in three places and absent from a fourth, and
+      the record must say so once, in `docs/status.md`.
+- [ ] L76 **Collapse the gate ecosystem (#1089 / E111; D149).** With L1-L5
+      landed, retire the per-issue prose pins one commit per issue, keeping only
+      (a) `render-status.rs --check`, (b) the architect-clause pins in
+      `tests/unit/architect_notes.rs`, (c) the benchmark ledger parity test,
+      (d) the requirement-status parity test and (e) the issue-citation gate.
+      Add `tests/unit/docs_requirements/count.rs` asserting the `docs_*` count is
+      at or below the ceiling in `data/meta/debt-ratchet.lino`, strictly
+      downward, target 5. The count is **49** today and rose since #1089 was
+      filed; record that direction in the ledger's `note`.
 
 ## Risks and open questions
 
