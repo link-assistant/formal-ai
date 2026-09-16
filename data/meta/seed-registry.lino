@@ -447,6 +447,8 @@ seed_registry
   seed self-improvement-loop
     bundle true
     web true
+  seed setup-publishers
+    bundle true
   seed shell-intents
     bundle true
     web true

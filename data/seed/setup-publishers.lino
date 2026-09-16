@@ -1,0 +1,106 @@
+# Issue #1138 B6, plan 06 leaf L6 -- which host is authoritative for which program.
+#
+# Ranking is not authority. Issue-710 plan 07 recorded the limit directly: a
+# `.gov`/`.edu` preference does not identify a compiler's official source, and a
+# well-ranked page about a toolchain is not the toolchain's publisher. Each row
+# pins one program to the host its procedure must come from; any other host that
+# the registry walk surfaces is refused, and the refusal is recorded rather than
+# dropped.
+#
+# A program with no row here has no pinned authority, so the search is exhausted
+# and says which sources it consulted. That is the honest outcome, and it is why
+# a held-out program is not served by this table.
+setup_publishers
+  record_type "setup_publisher_registry"
+  issue "1138"
+  plan "docs/case-studies/issue-1138/plans/06-prerequisite-discovery.md"
+setup_publisher_rustc
+  record_type "setup_publisher"
+  program "rustc"
+  source_id "rust_official"
+  host "rustup.rs"
+  documentation "https://rustup.rs"
+setup_publisher_python3
+  record_type "setup_publisher"
+  program "python3"
+  source_id "python_official"
+  host "python.org"
+  documentation "https://www.python.org/downloads/"
+setup_publisher_node
+  record_type "setup_publisher"
+  program "node"
+  source_id "nodejs_official"
+  host "nodejs.org"
+  documentation "https://nodejs.org/en/download"
+setup_publisher_tsc
+  record_type "setup_publisher"
+  program "tsc"
+  source_id "typescript_official"
+  host "typescriptlang.org"
+  documentation "https://www.typescriptlang.org/download"
+setup_publisher_go
+  record_type "setup_publisher"
+  program "go"
+  source_id "go_official"
+  host "go.dev"
+  documentation "https://go.dev/dl/"
+setup_publisher_gcc
+  record_type "setup_publisher"
+  program "gcc"
+  source_id "gnu_official"
+  host "gcc.gnu.org"
+  documentation "https://gcc.gnu.org/install/"
+setup_publisher_gxx
+  record_type "setup_publisher"
+  program "g++"
+  source_id "gnu_official"
+  host "gcc.gnu.org"
+  documentation "https://gcc.gnu.org/install/"
+setup_publisher_java
+  record_type "setup_publisher"
+  program "java"
+  source_id "jdk_official"
+  host "jdk.java.net"
+  documentation "https://jdk.java.net/"
+setup_publisher_javac
+  record_type "setup_publisher"
+  program "javac"
+  source_id "jdk_official"
+  host "jdk.java.net"
+  documentation "https://jdk.java.net/"
+setup_publisher_dotnet
+  record_type "setup_publisher"
+  program "dotnet"
+  source_id "dotnet_official"
+  host "dotnet.microsoft.com"
+  documentation "https://dotnet.microsoft.com/download"
+setup_publisher_ruby
+  record_type "setup_publisher"
+  program "ruby"
+  source_id "ruby_official"
+  host "ruby-lang.org"
+  documentation "https://www.ruby-lang.org/en/downloads/"
+setup_publisher_scalac
+  record_type "setup_publisher"
+  program "scalac"
+  source_id "scala_official"
+  host "scala-lang.org"
+  documentation "https://www.scala-lang.org/download/"
+setup_publisher_kotlinc
+  record_type "setup_publisher"
+  program "kotlinc"
+  source_id "kotlin_official"
+  host "kotlinlang.org"
+  documentation "https://kotlinlang.org/docs/command-line.html"
+setup_publisher_php
+  record_type "setup_publisher"
+  program "php"
+  source_id "php_official"
+  host "php.net"
+  documentation "https://www.php.net/downloads"
+setup_publisher_docker
+  record_type "setup_publisher"
+  program "docker"
+  source_id "docker_official"
+  host "docs.docker.com"
+  documentation "https://docs.docker.com/get-docker/"

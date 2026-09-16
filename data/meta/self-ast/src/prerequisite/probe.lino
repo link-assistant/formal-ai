@@ -2,12 +2,27 @@ self_ast_census
   target src/prerequisite/probe.rs
   language rust
   fidelity signature
-  byte_len 2457
-  line_count 68
-  content_id source_module_cdb9271799e6eec0
-  symbol_count 4
+  byte_len 10414
+  line_count 294
+  content_id source_module_59e89c5ec00ed92f
+  symbol_count 19
   symbols
-    struct ToolchainProbe 15 24
-    enum ProbeVerdict 28 53
-    function probe_command 60 62
-    function seed_probes 66 68
+    const TOOLCHAINS_LINO 20 20
+    const RECORD_PROBE 23 23
+    const COMMAND_NOT_FOUND_EXIT 29 29
+    const PERMISSION_DENIED_EXIT 32 32
+    const NOT_FOUND_MARKER 36 36
+    const WORKSPACE_TOOLCHAINS 40 40
+    struct ToolchainProbe 46 55
+    function new 60 67
+    enum ProbeVerdict 72 97
+    function slug 102 109
+    function is_present 114 116
+    function workspace_bin_directories 120 142
+    function workspace_path 148 157
+    function workspace_environment 162 166
+    function probe_command 173 233
+    function seed_probes 237 259
+    function seed_probe_for_language 263 277
+    function seed_probe_for_program 281 285
+    function split_tuple 288 294

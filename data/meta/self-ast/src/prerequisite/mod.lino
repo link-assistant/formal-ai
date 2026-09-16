@@ -2,23 +2,34 @@ self_ast_census
   target src/prerequisite/mod.rs
   language rust
   fidelity signature
-  byte_len 6401
-  line_count 194
-  content_id source_module_4c330b57b961b7cc
-  symbol_count 15
+  byte_len 18110
+  line_count 496
+  content_id source_module_5589fd99eb03c9c0
+  symbol_count 26
   symbols
     module install 11 11
     module ledger 12 12
     module probe 13 13
     module publisher 14 14
-    enum Platform 26 35
-    function observed 40 42
-    function slug 46 48
-    struct PrerequisiteNeed 56 67
-    enum PrerequisiteError 71 103
-    struct RecoveryStep 107 116
-    enum RecoveryOutcome 121 148
-    function recovery_steps 152 154
-    function recover 160 168
-    function classify_failure 176 183
-    function need_status 189 194
+    const PREREQUISITE_RECIPE_LINO 25 25
+    enum Platform 30 39
+    function observed 48 50
+    function from_os 54 61
+    function slug 65 72
+    function from_slug 76 83
+    struct PrerequisiteNeed 91 102
+    enum PrerequisiteError 106 146
+    struct RecoveryStep 150 159
+    enum RecoveryOutcome 164 191
+    function recovery_steps 199 214
+    function recover 225 233
+    function recover_bounded 237 356
+    function probe_for 360 363
+    function retry_command 366 373
+    function observation 376 400
+    const PRODUCED_BY 403 403
+    function verdict_bytes 406 413
+    function classify_failure 421 462
+    const PERMISSION_DENIED_MARKER 466 466
+    function need_status 472 481
+    function to_need 486 495

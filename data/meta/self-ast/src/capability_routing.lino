@@ -2,25 +2,40 @@ self_ast_census
   target src/capability_routing.rs
   language rust
   fidelity signature
-  byte_len 6143
-  line_count 196
-  content_id source_module_d9b712e0eaa7326e
-  symbol_count 17
+  byte_len 20293
+  line_count 592
+  content_id source_module_1b474fbc97c214c2
+  symbol_count 32
   symbols
-    enum ObjectType 18 40
-    function slug 45 47
-    function from_slug 51 54
-    enum Act 61 72
-    function slug 76 78
-    function from_slug 81 84
-    enum Locus 89 97
-    function slug 101 103
-    struct RouteRow 108 119
-    enum RoutingOutcome 124 137
-    function object_type 142 145
-    function act 149 152
-    function locus 156 159
-    function routing_table 163 165
-    function routing_table_from 172 175
-    function route 180 183
-    function route_with 187 196
+    enum ObjectType 39 61
+    const OBJECT_TYPES 64 64
+    function slug 80 93
+    function from_slug 97 99
+    function rank 106 119
+    enum Act 126 137
+    const ACTS_IN_PRECEDENCE 144 144
+    function slug 158 170
+    function from_slug 174 179
+    function role 182 194
+    enum Locus 199 207
+    function slug 212 220
+    function from_slug 224 234
+    struct RouteRow 239 250
+    enum RoutingOutcome 255 268
+    function evidences 275 278
+    function is_url 281 284
+    function is_path 288 302
+    function has_clock_time 305 315
+    function has_quoted_content 318 335
+    function has_path_scope 340 348
+    function is_self_surface 351 354
+    function object_type 359 414
+    function act 418 424
+    function locus 428 441
+    function routing_table 445 447
+    const CAPABILITY_ROUTING_LINO 450 450
+    function routing_table_from 458 491
+    function route 496 509
+    function route_with 513 549
+    function readings_for 557 589
+    const DEFAULT_OUTCOME 592 592

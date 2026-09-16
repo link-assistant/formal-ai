@@ -1,0 +1,16 @@
+# Issue #1138 B6, plan 06 leaf L9 -- what was discovered, from where, and how to
+# find it again.
+#
+# Append-only, the way `data/meta/self-hosting-ledger.lino` is: a row is added
+# when a setup procedure is discovered and removed only by
+# `formal-ai learn forget --toolchain <program>`, which deletes the installed
+# bytes with it. The bytes are disposable; this record is not.
+#
+# `content_id` empty means the publisher was identified but its bytes were not
+# retrieved in that run. `observed_version` empty means no version was observed.
+# Neither is rendered as a success.
+toolchain_ledger
+  record_type "toolchain_ledger"
+  issue "1138"
+  policy "append_only"
+  forget_command "formal-ai learn forget --toolchain <program>"

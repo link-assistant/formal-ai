@@ -204,6 +204,7 @@ pub const QUESTION_NECESSITY_LINO: &str = include_str!("../../data/seed/question
 pub const RELEASE_TIMELINES_LINO: &str = include_str!("../../data/seed/release-timelines.lino");
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
     include_str!("../../data/seed/self-improvement-loop.lino");
+pub const SETUP_PUBLISHERS_LINO: &str = include_str!("../../data/seed/setup-publishers.lino");
 pub const SHELL_INTENTS_LINO: &str = include_str!("../../data/seed/shell-intents.lino");
 pub const SOURCES_REGISTRY_LINO: &str = include_str!("../../data/seed/sources-registry.lino");
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../data/seed/summary-topics.lino");
@@ -374,6 +375,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/question-necessity.lino", QUESTION_NECESSITY_LINO),
         ("data/seed/release-timelines.lino", RELEASE_TIMELINES_LINO),
         ("data/seed/self-improvement-loop.lino", SELF_IMPROVEMENT_LOOP_LINO),
+        ("data/seed/setup-publishers.lino", SETUP_PUBLISHERS_LINO),
         ("data/seed/shell-intents.lino", SHELL_INTENTS_LINO),
         ("data/seed/sources-registry.lino", SOURCES_REGISTRY_LINO),
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),

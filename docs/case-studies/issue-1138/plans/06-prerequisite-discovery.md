@@ -793,15 +793,15 @@ Record the probe table, the recovery outcome for each of the five languages, and
 
 ## Implementation leaves — ordered, each individually verifiable and commit-sized
 
-- [ ] **L1.** Add `src/prerequisite/probe.rs` with `ToolchainProbe`, `ProbeVerdict`, `probe_command`, and `data/seed/toolchains.lino` carrying the probe argv for every catalogued language. Test: missing/present/unusable/not-probed.
+- [x] **L1.** Add `src/prerequisite/probe.rs` with `ToolchainProbe`, `ProbeVerdict`, `probe_command`, and `data/seed/toolchains.lino` carrying the probe argv for every catalogued language. Test: missing/present/unusable/not-probed.
 - [ ] **L2.** Add `ExecutionStatus::NotProbed` and `from_verdict` (`src/coding/catalog/types.rs:202-214`); make `src/engine.rs:939-951` and `src/coding/guidance.rs:291-311` render it; add the missing Spanish branch. Test: an unprobed toolchain is not reported as unavailable.
 - [ ] **L3.** Delete the 14 `setup_hint` and 5 `environment` constants from `src/coding/catalog/languages.rs` in favour of seed rows; add both to `data/meta/debt-ratchet.lino` as shrink-only ceilings at their current values first, then drive them down in this commit. Test: no `ExecutionStatus::Verified`/`::Unavailable` literal remains in that file.
-- [ ] **L4.** Add `src/prerequisite/mod.rs` `PrerequisiteNeed` and the classifier that turns a `StepFailure` (`src/agentic_coding/command_reroute.rs:172-176`) or a `WorkspaceError::MissingPrerequisite` (plan 03) into one. Test: 127 vs 126 vs compile error; platform observed.
-- [ ] **L5.** Write the need into `NeedLedger` as `Blocked`, and forbid `Satisfied` without a passing re-probe. Test: the three-state lifecycle.
-- [ ] **L6.** Add `src/prerequisite/publisher.rs` `SetupProcedure`, `SetupStep`, `discover_setup_procedure` over `data/seed/sources-registry.lino` + a new `data/seed/setup-publishers.lino`, calling the plan 00 §4.2 `SourceLookup` contract (plan 01 owns its one implementation; `src/coding/concept_discovery.rs:81-91` is the trait it supersedes or adapts). Test: lookalike host, no postcondition, exhaustion, cycle, shared dependency.
-- [ ] **L7.** Add `src/prerequisite/install.rs` `WorkspaceToolchain`, `InstallGrant`, `install_scoped`, default `Refused`, `.formal-ai/toolchains/<program>/<content-id>/`. Test: the five refusal cases and the explicit-environment case.
-- [ ] **L8.** Add `data/meta/prerequisite-recipe.lino` + `recover()` + `tests/unit/specification/prerequisite_recipe.rs`. Test: grounding and rediscovery.
-- [ ] **L9.** Add `src/prerequisite/ledger.rs` `ToolchainLedger` and `data/meta/toolchain-ledger.lino`, append-only, with `formal-ai learn forget --toolchain <program>`. Test: forget-and-rediscover content id; restart reattach.
+- [x] **L4.** Add `src/prerequisite/mod.rs` `PrerequisiteNeed` and the classifier that turns a `StepFailure` (`src/agentic_coding/command_reroute.rs:172-176`) or a `WorkspaceError::MissingPrerequisite` (plan 03) into one. Test: 127 vs 126 vs compile error; platform observed.
+- [x] **L5.** Write the need into `NeedLedger` as `Blocked`, and forbid `Satisfied` without a passing re-probe. Test: the three-state lifecycle.
+- [x] **L6.** Add `src/prerequisite/publisher.rs` `SetupProcedure`, `SetupStep`, `discover_setup_procedure` over `data/seed/sources-registry.lino` + a new `data/seed/setup-publishers.lino`, calling the plan 00 §4.2 `SourceLookup` contract (plan 01 owns its one implementation; `src/coding/concept_discovery.rs:81-91` is the trait it supersedes or adapts). Test: lookalike host, no postcondition, exhaustion, cycle, shared dependency.
+- [x] **L7.** Add `src/prerequisite/install.rs` `WorkspaceToolchain`, `InstallGrant`, `install_scoped`, default `Refused`, `.formal-ai/toolchains/<program>/<content-id>/`. Test: the five refusal cases and the explicit-environment case.
+- [x] **L8.** Add `data/meta/prerequisite-recipe.lino` + `recover()` + `tests/unit/specification/prerequisite_recipe.rs`. Test: grounding and rediscovery.
+- [x] **L9.** Add `src/prerequisite/ledger.rs` `ToolchainLedger` and `data/meta/toolchain-ledger.lino`, append-only, with `formal-ai learn forget --toolchain <program>`. Test: forget-and-rediscover content id; restart reattach.
 - [ ] **L10.** Run the family-1 held-out prompt in all five languages, refused and granted, and record the outcome table. No tuning in this commit.
 - [ ] **L11.** Add `src/execution_box/mod.rs` `ExecutionBox`, `ExecutionBackend`, `BoxPolicy`, tar-on-stdin input, `--network none` default, honest deadline. Give `box_language_contract()` (`src/box_language_projects.rs:315`) its first non-test caller. Test: timeout reporting, network denial, missing-daemon refusal.
 - [ ] **L12.** Add kotlin and scala to `data/meta/box-language-projects.lino` as `box_language_project_deferred` rows with the honest `reason` that `data/meta/box-image-survey.lino:13-16` records no such image, so the box backend reports unavailable for exactly the two languages B6 names.
@@ -811,6 +811,19 @@ Record the probe table, the recovery outcome for each of the five languages, and
 - [ ] **L16.** Add the lazily-fetched Pyodide loader behind an explicit user click with the download size shown, and run the family-3 prompt in the browser with it loaded. Record whether the observed output is `55`.
 - [ ] **L17.** Recover the SWE-bench harness prerequisite through `recover()` rather than through `.github/workflows/external-benchmarks.yml:113-117`, and record whether the run still reaches the evaluator.
 - [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `VISION.md`, `ROADMAP.md`, `GOALS.md`, `docs/benchmarks.md`, `docs/meta-algorithm.md` per the next section; tick the six open boxes of `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81` that this plan actually closes, and leave the rest unticked with the reason.
+
+
+**Leaf L6 note (wave I6).** `search_setup_procedure` takes the plan 00 §4.2
+`SourceLookup` contract by generic parameter and is exercised against a fixture
+lookup; plan 01's `RegistrySourceLookup` is the one implementation it receives
+live. Nothing here constructs a second implementation.
+
+**Leaf L7 note (wave I6).** `install_scoped` performs every refusal *before*
+anything runs, prepares the workspace-scoped prefix and returns the explicit
+environment; it does **not** execute the fetched commands. Executing a retrieved
+procedure happens in `recover` through a declared `ExecutionBackend`, which is
+also where `StillMissing` is produced, so the most dangerous operation in this
+repository is never a side effect of preparing a directory.
 
 ## Docs to update — exact statements, quoted, with replacement
 

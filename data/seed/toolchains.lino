@@ -1,0 +1,142 @@
+# Issue #1138 B6, plan 06 leaf L1 -- one probe per catalogued program.
+#
+# Availability is observed, never declared. Each row says which executable a
+# catalogue language needs, the argv that proves the executable works (a version
+# check, never a compile), and which other programs it needs first. The verdict
+# is whatever the probe observed; no row states its own status.
+#
+# `setup_hint` and `environment` moved here from `src/coding/catalog/languages.rs`
+# in leaf L3, so the catalogue row no longer asserts what a human once typed.
+toolchains
+  record_type "toolchain_registry"
+  issue "1138"
+  bottleneck "B6"
+  plan "docs/case-studies/issue-1138/plans/06-prerequisite-discovery.md"
+toolchain_rust
+  record_type "toolchain_probe"
+  program "rustc"
+  language "rust"
+  argv ("--version")
+  requires ()
+  setup_hint "the Rust toolchain from https://rustup.rs"
+  environment "issue-8 local verification harness (isolated sandbox)"
+toolchain_python
+  record_type "toolchain_probe"
+  program "python3"
+  language "python"
+  argv ("--version")
+  requires ()
+  setup_hint "Python 3 from https://www.python.org/downloads/"
+  environment "issue-8 local verification harness (isolated sandbox)"
+toolchain_javascript
+  record_type "toolchain_probe"
+  program "node"
+  language "javascript"
+  argv ("--version")
+  requires ()
+  setup_hint "Node.js from https://nodejs.org/"
+  environment "issue-8 local verification harness (isolated sandbox)"
+toolchain_typescript
+  record_type "toolchain_probe"
+  program "tsc"
+  language "typescript"
+  argv ("--version")
+  requires ("node")
+  setup_hint "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`"
+  environment "the TypeScript compiler, probed rather than assumed"
+toolchain_go
+  record_type "toolchain_probe"
+  program "go"
+  language "go"
+  argv ("version")
+  requires ()
+  setup_hint "Go from https://go.dev/dl/"
+  environment "issue-8 local verification harness (isolated sandbox)"
+toolchain_c
+  record_type "toolchain_probe"
+  program "gcc"
+  language "c"
+  argv ("--version")
+  requires ()
+  setup_hint "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager"
+  environment "issue-8 local verification harness (isolated sandbox)"
+toolchain_cpp
+  record_type "toolchain_probe"
+  program "g++"
+  language "cpp"
+  argv ("--version")
+  requires ()
+  setup_hint "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager"
+  environment "the C++ toolchain, probed rather than assumed"
+toolchain_java
+  record_type "toolchain_probe"
+  program "javac"
+  language "java"
+  argv ("-version")
+  requires ("java")
+  setup_hint "a JDK from https://adoptium.net/"
+  environment "the Java toolchain, probed rather than assumed"
+toolchain_jdk_runtime
+  record_type "toolchain_probe"
+  program "java"
+  language "java_runtime"
+  argv ("-version")
+  requires ()
+  setup_hint "a JDK from https://adoptium.net/"
+  environment "the Java runtime, probed rather than assumed"
+toolchain_csharp
+  record_type "toolchain_probe"
+  program "dotnet"
+  language "csharp"
+  argv ("--version")
+  requires ()
+  setup_hint "the .NET SDK from https://dotnet.microsoft.com/download"
+  environment "the .NET toolchain, probed rather than assumed"
+toolchain_ruby
+  record_type "toolchain_probe"
+  program "ruby"
+  language "ruby"
+  argv ("--version")
+  requires ()
+  setup_hint "Ruby from https://www.ruby-lang.org/en/downloads/"
+  environment "the Ruby interpreter, probed rather than assumed"
+toolchain_scala
+  record_type "toolchain_probe"
+  program "scalac"
+  language "scala"
+  argv ("-version")
+  requires ("java")
+  setup_hint "Scala from https://www.scala-lang.org/download/ (a JDK is required as well)"
+  environment "the Scala toolchain, probed rather than assumed"
+toolchain_kotlin
+  record_type "toolchain_probe"
+  program "kotlinc"
+  language "kotlin"
+  argv ("-version")
+  requires ("java")
+  setup_hint "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)"
+  environment "the Kotlin toolchain, probed rather than assumed"
+toolchain_php
+  record_type "toolchain_probe"
+  program "php"
+  language "php"
+  argv ("--version")
+  requires ()
+  setup_hint "PHP from https://www.php.net/downloads"
+  environment "issue-8 local verification harness (isolated sandbox)"
+toolchain_laravel
+  record_type "toolchain_probe"
+  program "php"
+  language "laravel"
+  argv ("--version")
+  requires ("composer")
+  setup_hint "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)"
+  environment "issue-1021 local Laravel verification harness (experiments/issue-1021-laravel/run.sh)"
+toolchain_docker
+  record_type "toolchain_probe"
+  program "docker"
+  language "container_runtime"
+  argv ("info")
+  requires ()
+  setup_hint "Docker from https://docs.docker.com/get-docker/"
+  environment "the container runtime the execution box needs"
