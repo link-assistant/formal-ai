@@ -286,7 +286,10 @@ fn retrieved_evidence_becomes_a_candidate_part_the_composer_can_read() {
 
     assert_eq!(candidate.kind, "concept_sense");
     assert_eq!(candidate.label, "a word in which no letter is repeated");
-    assert_eq!(candidate.source_url, "https://en.wiktionary.org/wiki/isogram");
+    assert_eq!(
+        candidate.source_url,
+        "https://en.wiktionary.org/wiki/isogram"
+    );
     assert!(
         candidate.code.is_none(),
         "a definition is evidence, never a program"

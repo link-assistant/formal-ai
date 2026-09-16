@@ -8,13 +8,13 @@
 use serde_json::json;
 
 use super::formalize::{
-    coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
-    FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
+    CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, FormalizedKnowledgeBase, PRIMITIVE_KINDS,
+    coverage_line, formalize_text_to_links,
 };
 use super::lexicon::Lexicon;
 use super::planner::{
-    fetch_arguments, plan_one, tool_for, trace_route, write_arguments, AgenticPlan, Capability,
-    Progress,
+    AgenticPlan, Capability, Progress, fetch_arguments, plan_one, tool_for, trace_route,
+    write_arguments,
 };
 use crate::protocol::ChatMessage;
 
@@ -80,14 +80,16 @@ pub(super) fn plan_formalization_step(
     if inline_source.is_none() {
         // Step 1: search for the source text.
         if let Some(tool) = tool_for(tool_names, Capability::Search)
-            && !progress.done(Capability::Search) {
-                return plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string());
-            }
+            && !progress.done(Capability::Search)
+        {
+            return plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string());
+        }
         // Step 2: fetch the source text.
         if let Some(tool) = tool_for(tool_names, Capability::Fetch)
-            && !progress.done(Capability::Fetch) {
-                return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
-            }
+            && !progress.done(Capability::Fetch)
+        {
+            return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
+        }
     }
 
     // The source text for the knowledge base: the text quoted in the task if
@@ -101,23 +103,31 @@ pub(super) fn plan_formalization_step(
 
     // Step 3: write the formalized knowledge base.
     if let Some(tool) = write_tool
-        && !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(KB_PATH, &formalized.links_notation));
-        }
+        && !progress.done(Capability::Write)
+    {
+        return plan_one(tool, write_arguments(KB_PATH, &formalized.links_notation));
+    }
     // Step 4: verify by reading the file back.
     if let Some(tool) = run_tool
-        && !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {KB_PATH}") });
-            return plan_one(tool, arguments.to_string());
-        }
+        && !progress.done(Capability::Run)
+    {
+        let arguments = json!({ "command": format!("cat {KB_PATH}") });
+        return plan_one(tool, arguments.to_string());
+    }
 
     // Step 5: nothing left to do — answer with the knowledge base inline.
-    AgenticPlan::Final(final_answer(&formalized, crate::language::detect(task).slug()))
+    AgenticPlan::Final(final_answer(
+        &formalized,
+        crate::language::detect(task).slug(),
+    ))
 }
 
 /// The self-contained final answer: a natural-language summary, the coverage
 /// line, and the Links Notation knowledge base inline.
-#[allow(clippy::literal_string_with_formatting_args, reason = "bind slots in a localized seed response")]
+#[allow(
+    clippy::literal_string_with_formatting_args,
+    reason = "bind slots in a localized seed response"
+)]
 fn final_answer(formalized: &FormalizedKnowledgeBase, language: &str) -> String {
     let summary = &formalized.summary;
     let subject = if summary.doc_id == FISHERMAN_DOC_ID {
@@ -133,8 +143,11 @@ fn final_answer(formalized: &FormalizedKnowledgeBase, language: &str) -> String 
         .replace("{primitive_count}", &PRIMITIVE_KINDS.len().to_string())
         .replace("{coverage}", &coverage_line(summary))
         .replace("{path}", KB_PATH)
-        .replace("{kb}", &crate::issue_report::fenced_block(
-            crate::issue_report::LINO_FENCE_LANGUAGE,
-            &formalized.links_notation,
-        ))
+        .replace(
+            "{kb}",
+            &crate::issue_report::fenced_block(
+                crate::issue_report::LINO_FENCE_LANGUAGE,
+                &formalized.links_notation,
+            ),
+        )
 }

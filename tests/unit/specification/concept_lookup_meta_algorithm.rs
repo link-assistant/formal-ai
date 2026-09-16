@@ -16,15 +16,16 @@ fn read(relative: &str) -> String {
 }
 
 fn records(text: &str) -> Vec<String> {
-    text.lines().fold(Vec::<String>::new(), |mut records, line| {
-        if !line.starts_with(char::is_whitespace) {
-            records.push(String::new());
-        }
-        let record = records.last_mut().expect("record header");
-        record.push_str(line);
-        record.push('\n');
-        records
-    })
+    text.lines()
+        .fold(Vec::<String>::new(), |mut records, line| {
+            if !line.starts_with(char::is_whitespace) {
+                records.push(String::new());
+            }
+            let record = records.last_mut().expect("record header");
+            record.push_str(line);
+            record.push('\n');
+            records
+        })
 }
 
 fn field<'a>(record: &'a str, name: &str) -> &'a str {

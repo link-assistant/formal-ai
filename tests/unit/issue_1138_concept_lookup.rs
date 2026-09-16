@@ -16,11 +16,15 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use formal_ai::concept_lookup::{ConceptSense, LookupOutcome, RegistrySourceLookup, lookup_surface};
+use formal_ai::concept_lookup::{
+    ConceptSense, LookupOutcome, RegistrySourceLookup, lookup_surface,
+};
 use formal_ai::how_to_guide::ServicePreferences;
 use formal_ai::needs::{Need, NeedKind, NeedState};
 use formal_ai::service_accessibility::ServiceAccessibilityCache;
-use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport, FetchError, SourceTransport};
+use formal_ai::source_fetch::{
+    CachedSourceClient, CurlSourceTransport, FetchError, SourceTransport,
+};
 use formal_ai::source_walk::{LookupBounds, select_sources};
 
 /// The committed capture tree for this bottleneck (plan 00 §9 R13).
@@ -69,7 +73,11 @@ fn concept_need(subject: &str, language: &str) -> Need {
     }
 }
 
-fn offline_senses(surface: &str, language: &str, preferences: &ServicePreferences) -> LookupOutcome {
+fn offline_senses(
+    surface: &str,
+    language: &str,
+    preferences: &ServicePreferences,
+) -> LookupOutcome {
     let client = CachedSourceClient::new(fixture_dir(), CurlSourceTransport).with_online(false);
     let mut cache = availability(surface);
     let mut lookup = RegistrySourceLookup::new(
@@ -182,7 +190,10 @@ fn an_unknown_word_resolves_to_a_licensed_sense_with_exact_provenance() {
         "the sense names the exact page, not the service"
     );
     assert_eq!(sense.license_name, "CC BY 4.0");
-    assert_eq!(sense.license_url, "https://creativecommons.org/licenses/by/4.0/");
+    assert_eq!(
+        sense.license_url,
+        "https://creativecommons.org/licenses/by/4.0/"
+    );
     assert_eq!(
         sense.content_id(),
         "sense_e40eeb2676bda042",
@@ -202,7 +213,10 @@ fn an_unknown_word_resolves_to_a_licensed_sense_with_exact_provenance() {
         !sense.gloss.is_empty(),
         "a resolved sense states what the word means"
     );
-    assert!(sense.cached, "an offline replay is served from the captures");
+    assert!(
+        sense.cached,
+        "an offline replay is served from the captures"
+    );
 }
 
 #[test]
@@ -297,7 +311,11 @@ fn a_lookup_that_finds_nothing_reports_every_consulted_source_and_no_gloss() {
             );
             for row in &consulted {
                 assert!(!row.source_id.is_empty() && !row.status.is_empty());
-                assert_eq!(row.items, 0, "{} reported items but found none", row.source_id);
+                assert_eq!(
+                    row.items, 0,
+                    "{} reported items but found none",
+                    row.source_id
+                );
             }
         }
     }
@@ -318,10 +336,7 @@ fn a_language_the_endpoint_does_not_serve_is_reported_unbound_not_answered_in_en
     );
 
     assert!(
-        outcome
-            .items
-            .iter()
-            .all(|sense| sense.language == "hi"),
+        outcome.items.iter().all(|sense| sense.language == "hi"),
         "an unserved language is never answered with an English gloss"
     );
     assert!(
@@ -355,7 +370,10 @@ fn the_walk_charges_every_capture_against_the_declared_bounds() {
         u64::MAX / 2,
     );
 
-    assert_eq!(outcome.bounds, bounds, "the walk reports the bounds it ran under");
+    assert_eq!(
+        outcome.bounds, bounds,
+        "the walk reports the bounds it ran under"
+    );
     assert!(outcome.items.len() <= bounds.max_items);
     assert!(
         outcome
@@ -373,7 +391,12 @@ fn the_walk_charges_every_capture_against_the_declared_bounds() {
             .count()
             <= bounds.max_services
     );
-    assert!(outcome.items.iter().all(|sense| sense.depth < bounds.max_depth));
+    assert!(
+        outcome
+            .items
+            .iter()
+            .all(|sense| sense.depth < bounds.max_depth)
+    );
 }
 
 #[test]

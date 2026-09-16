@@ -108,7 +108,9 @@ fn seeded_response_languages() -> BTreeMap<String, BTreeSet<String>> {
             intent = unquote(value);
         } else if let Some(value) = trimmed.strip_prefix("language ") {
             if !intent.is_empty() {
-                out.entry(intent.clone()).or_default().insert(unquote(value));
+                out.entry(intent.clone())
+                    .or_default()
+                    .insert(unquote(value));
             }
         }
     }

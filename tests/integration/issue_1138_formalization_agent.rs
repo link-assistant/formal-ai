@@ -16,8 +16,7 @@ const HELD_OUT_REQUIREMENT: &str =
 
 /// A requirement naming an operation no trusted source defines, so the honest
 /// outcome is an ungrounded need rather than a confident formalization.
-const UNGROUNDABLE_REQUIREMENT: &str =
-    "Formalize this requirement: a blorptide check must reject any sequence that is not a blorptide.";
+const UNGROUNDABLE_REQUIREMENT: &str = "Formalize this requirement: a blorptide check must reject any sequence that is not a blorptide.";
 
 fn agent(task: &str) -> String {
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))

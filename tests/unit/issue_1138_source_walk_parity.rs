@@ -42,9 +42,10 @@ fn fixture_dir() -> PathBuf {
 
 fn offline_guide(task: &str) -> HowToGuide {
     let client = CachedSourceClient::new(fixture_dir(), CurlSourceTransport).with_online(false);
-    let mut availability = ServiceAccessibilityCache::new(
-        std::env::temp_dir().join(format!("formal-ai-issue-1138-walk-{}", task.replace(' ', "-"))),
-    );
+    let mut availability = ServiceAccessibilityCache::new(std::env::temp_dir().join(format!(
+        "formal-ai-issue-1138-walk-{}",
+        task.replace(' ', "-")
+    )));
     synthesize_how_to_guide(
         task,
         &client,

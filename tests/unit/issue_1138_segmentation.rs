@@ -9,7 +9,10 @@
 use formal_ai::formalization::segment::{Script, Segment, sentences};
 
 fn texts(segments: &[Segment]) -> Vec<&str> {
-    segments.iter().map(|segment| segment.text.as_str()).collect()
+    segments
+        .iter()
+        .map(|segment| segment.text.as_str())
+        .collect()
 }
 
 #[test]
@@ -30,10 +33,7 @@ fn hindi_text_segments_at_the_danda() {
     let segments = sentences(text);
     assert_eq!(
         texts(&segments),
-        vec![
-            "जाँच दोहराए गए अक्षर वाले शब्द को अस्वीकार करे।",
-            "बूलियन लौटाएँ।",
-        ],
+        vec!["जाँच दोहराए गए अक्षर वाले शब्द को अस्वीकार करे।", "बूलियन लौटाएँ।",],
         "the danda ends a sentence"
     );
     assert!(
@@ -52,7 +52,11 @@ fn spanish_inverted_punctuation_does_not_split_a_sentence() {
         vec!["¿La palabra repite una letra?", "Sí."],
         "an opening inverted mark belongs to the sentence it opens"
     );
-    assert!(segments.iter().all(|segment| segment.script == Script::Latin));
+    assert!(
+        segments
+            .iter()
+            .all(|segment| segment.script == Script::Latin)
+    );
 }
 
 #[test]
