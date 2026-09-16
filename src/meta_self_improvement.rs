@@ -37,13 +37,20 @@ const PIPELINE_SRC: &str = include_str!("meta_core.rs");
 /// Whether the meta self-improvement loop may produce a proposal.
 ///
 /// The loop is trace-only and proposal-only regardless of the mode; the mode only
-/// gates whether it runs at all, so the default leaves behaviour untouched.
+/// gates whether it runs at all.
+///
+/// The default is `Propose` (issue #1138 B7, plan 07 leaf 11). It was `Off`, and
+/// a loop that is dormant by default never observes itself -- the self-inspection
+/// that #340 asks for produced nothing in any shipped configuration. Proposing is
+/// not applying: the write path stays closed, this module writes no file, and a
+/// proposal is a record a human still has to act on.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SelfImprovementMode {
-    /// Default: the loop is dormant and proposes nothing.
-    #[default]
+    /// The loop is dormant and proposes nothing.
     Off,
-    /// The loop inspects itself and emits a proposed recipe update (never applied).
+    /// Default: the loop inspects itself and emits a proposed recipe update
+    /// (never applied).
+    #[default]
     Propose,
 }
 

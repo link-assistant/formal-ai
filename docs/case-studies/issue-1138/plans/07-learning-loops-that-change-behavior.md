@@ -823,12 +823,12 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
       `status "adopted_not_effective"` rather than forcing a delta.
 - [ ] Create `data/seed/learned-program-rules.lino` (empty with a schema header) so #364's
       destination exists; ground it.
-- [ ] Replace `issue_362_from_counts(0, 0)` at `src/self_improvement.rs:248-252` with
+- [x] Replace `issue_362_from_counts(0, 0)` at `src/self_improvement.rs:248-252` with
       absent-gate-evidence semantics; add `"no_gate_evidence"` as a rejection reason.
 - [ ] Move `canonical_ledger()` (`src/learning_ledger.rs:311`) onto a new
       `data/seed/approved-lessons.lino` containing today's single entry byte-for-byte, so
       behaviour is unchanged and a second entry becomes a data edit.
-- [ ] Flip `SelfImprovementMode` default from `Off` to `Propose`
+- [x] Flip `SelfImprovementMode` default from `Off` to `Propose`
       (`src/meta_self_improvement.rs:44-45`); update the doc comment and R340's shard text.
       **This leaf lands alone, after plan 05's recipe step 14, and carries its own
       R343 parity run: both change every recorded trace, and sharing a commit

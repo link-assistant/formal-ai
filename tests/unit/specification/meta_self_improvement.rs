@@ -19,9 +19,16 @@ use formal_ai::meta_self_improvement::{
 // The SelfImprovementMode gate.
 // ---------------------------------------------------------------------------
 
+/// Issue #1138 B7, plan 07 leaf 11: the default flipped `Off` -> `Propose`.
+///
+/// This case used to assert the opposite, and the assertion was correct for the
+/// behaviour it described: the loop was dormant by default, so the
+/// self-inspection #340 asks for produced nothing in any shipped configuration.
+/// The leaf changes that decision, not this test's standard -- `Off` still
+/// proposes nothing, and proposing still writes nothing.
 #[test]
-fn off_is_the_default_and_proposes_nothing() {
-    assert_eq!(SelfImprovementMode::default(), SelfImprovementMode::Off);
+fn propose_is_the_default_and_off_proposes_nothing() {
+    assert_eq!(SelfImprovementMode::default(), SelfImprovementMode::Propose);
     assert!(!SelfImprovementMode::Off.proposes());
     assert!(SelfImprovementMode::Propose.proposes());
 }
