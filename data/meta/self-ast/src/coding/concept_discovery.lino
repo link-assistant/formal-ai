@@ -2,51 +2,54 @@ self_ast_census
   target src/coding/concept_discovery.rs
   language rust
   fidelity signature
-  byte_len 26678
-  line_count 707
-  content_id source_module_95667b7762afeaaf
-  symbol_count 43
+  byte_len 28306
+  line_count 751
+  content_id source_module_227da2971acb6495
+  symbol_count 46
   symbols
-    const STRUCTURES 11 11
-    struct StructuralMeaning 14 18
-    struct CatalogFunction 21 26
-    struct DiscoveryCatalog 29 34
-    function new 38 49
-    function with_source_candidates 52 55
-    struct DiscoveryBounds 59 62
-    function default 65 70
-    struct ConceptEvidence 74 79
-    trait UnknownConceptLookup 81 103
-    function lookup 82 82
-    function consults_sources 92 94
-    function language 100 102
-    struct NoLookup 105 105
-    function lookup 108 110
-    const UNSERVED 119 119
-    const CONCEPT_SENSE_KIND 122 122
-    struct CandidatePart 125 138
-    struct ConceptNeed 141 146
-    struct ConceptMap 149 152
-    function structure_ids 156 162
-    function candidate_ids 165 171
-    function identity 192 208
-    function to_links_notation 211 240
-    function discover 244 246
-    function discover_with_lookup 249 328
-    function unserved_phrase 336 342
-    function structural_meanings 345 362
-    function structures_for 364 398
-    function normalized_surface_present 400 402
-    function fuzzy_single_token_present 404 411
-    function edit_distance_at_most_one 413 446
-    function discovery_query 448 458
-    function candidates_for 460 558
-    function overlap_score 560 562
-    function candidate_kind_rank 564 572
-    function stdlib_candidate 574 589
-    function token_overlap 591 595
-    function tokens 597 603
-    function unique 605 608
-    function unresolved_surfaces 621 643
-    function concept_candidate 666 686
-    function registry_licence 694 707
+    const STRUCTURES 12 12
+    struct StructuralMeaning 15 19
+    struct CatalogFunction 22 27
+    struct DiscoveryCatalog 30 35
+    function new 39 50
+    function with_source_candidates 53 56
+    struct DiscoveryBounds 60 63
+    function default 66 71
+    struct ConceptEvidence 75 80
+    trait UnknownConceptLookup 82 104
+    function lookup 83 83
+    function consults_sources 93 95
+    function language 101 103
+    struct NoLookup 106 106
+    function lookup 109 111
+    const UNSERVED 120 120
+    const CONCEPT_SENSE_KIND 123 123
+    struct CandidatePart 126 139
+    struct ConceptRequirement 155 162
+    function new 167 181
+    function phrase 185 187
+    function status 191 193
+    struct ConceptMap 197 200
+    function structure_ids 204 210
+    function candidate_ids 213 219
+    function identity 240 256
+    function to_links_notation 259 288
+    function discover 292 294
+    function discover_with_lookup 297 372
+    function unserved_phrase 380 386
+    function structural_meanings 389 406
+    function structures_for 408 442
+    function normalized_surface_present 444 446
+    function fuzzy_single_token_present 448 455
+    function edit_distance_at_most_one 457 490
+    function discovery_query 492 502
+    function candidates_for 504 602
+    function overlap_score 604 606
+    function candidate_kind_rank 608 616
+    function stdlib_candidate 618 633
+    function token_overlap 635 639
+    function tokens 641 647
+    function unique 649 652
+    function unresolved_surfaces 665 687
+    function concept_candidate 710 730
+    function registry_licence 738 751

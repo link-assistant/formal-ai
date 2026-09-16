@@ -683,7 +683,7 @@ fn render_failure_trail(
     let phrases = concepts
         .needs
         .iter()
-        .map(|need| need.phrase.as_str())
+        .map(|need| need.phrase())
         .collect::<Vec<_>>()
         .join(" | ");
     let parts = concepts.candidate_ids().join(", ");

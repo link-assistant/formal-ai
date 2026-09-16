@@ -7,6 +7,7 @@ use crate::coding::function_catalog::wikifunctions::{FunctionMatch, FunctionPart
 use crate::coding::recurrence::Recurrence;
 use crate::coding::task_spec::{CodingTaskSpec, Example};
 use crate::links_format::push_lino_node;
+use crate::needs::{NeedKind, NeedState};
 
 const STRUCTURES: &str = include_str!("../../data/seed/meanings-coding-structure.lino");
 
@@ -110,13 +111,13 @@ impl UnknownConceptLookup for NoLookup {
     }
 }
 
-/// The status a need carries when every declared source was consulted about a
+/// The state a need carries when every declared source was consulted about a
 /// surface and none of them published a sense for it.
 ///
-/// It is [`crate::needs::NeedState::Unsatisfiable`]'s slug, so the coding path
-/// and the need contract already agree on the word; plan 04 L3 merges the two
-/// records and this constant becomes the enum.
-pub const UNSERVED: &str = "unsatisfiable";
+/// Plan 04 L3 merged the coding path's free-text status into the contract
+/// enum, so this is now a name for the state rather than a second vocabulary
+/// spelling the same word.
+pub const UNSERVED: NeedState = NeedState::Unsatisfiable;
 
 /// The candidate kind a retrieved gloss carries.
 pub const CONCEPT_SENSE_KIND: &str = "concept_sense";
@@ -137,17 +138,64 @@ pub struct CandidatePart {
     pub score: f64,
 }
 
+/// The one need record in the tree (issue #1138, plan 00 leaf C1, plan 04 L3).
+///
+/// Before this the coding path declared a second `ConceptNeed` struct with a
+/// free-text `status`, so "the system lacks X" existed twice with two
+/// vocabularies. It is now the contract record, and the coding-path extras --
+/// the structures the sentence reduced to and the parts offered for them -- sit
+/// *beside* it in [`ConceptRequirement`] rather than inside the ledger row,
+/// which is what keeps `recipe_interpreter`'s event-for-event parity (R343)
+/// untouched.
+pub use crate::needs::Need as ConceptNeed;
+
+/// One requirement sentence: the need it raised, and what the coding path found
+/// for it.
 #[derive(Debug, Clone, PartialEq)]
-pub struct ConceptNeed {
-    pub phrase: String,
+pub struct ConceptRequirement {
+    /// The contract need row.
+    pub need: ConceptNeed,
+    /// Seeded structural meanings the sentence reduced to.
     pub structures: Vec<StructuralMeaning>,
+    /// Executable parts offered for it, best first.
     pub candidates: Vec<CandidatePart>,
-    pub status: String,
+}
+
+impl ConceptRequirement {
+    /// A requirement row in the state the discovery pass observed.
+    #[must_use]
+    pub fn new(
+        phrase: &str,
+        language: &str,
+        state: NeedState,
+        structures: Vec<StructuralMeaning>,
+        candidates: Vec<CandidatePart>,
+    ) -> Self {
+        let mut need = ConceptNeed::raised(NeedKind::Concept, phrase, language, "coding:discovery");
+        need.state = state;
+        Self {
+            need,
+            structures,
+            candidates,
+        }
+    }
+
+    /// The surface this requirement is about.
+    #[must_use]
+    pub fn phrase(&self) -> &str {
+        &self.need.subject
+    }
+
+    /// The seed slug of the need's state.
+    #[must_use]
+    pub const fn status(&self) -> &'static str {
+        self.need.state.slug()
+    }
 }
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct ConceptMap {
-    pub needs: Vec<ConceptNeed>,
+    pub needs: Vec<ConceptRequirement>,
     pub evidence: Vec<ConceptEvidence>,
 }
 
@@ -214,7 +262,7 @@ impl ConceptMap {
         for (index, need) in self.needs.iter().enumerate() {
             let need_id = format!("need_{}", index + 1);
             push_lino_node(&mut out, 2, "need", Some(&need_id));
-            push_lino_node(&mut out, 4, "phrase", Some(&need.phrase));
+            push_lino_node(&mut out, 4, "phrase", Some(need.phrase()));
             for structure in &need.structures {
                 push_lino_node(&mut out, 4, "structure", Some(&structure.id));
                 push_lino_node(&mut out, 6, "idiom", Some(&structure.idiom));
@@ -228,7 +276,7 @@ impl ConceptMap {
                 push_lino_node(&mut out, 6, "sha256", Some(&candidate.sha256));
             }
             push_lino_node(&mut out, 2, "need_ledger", Some(&need_id));
-            push_lino_node(&mut out, 4, "status", Some(&need.status));
+            push_lino_node(&mut out, 4, "status", Some(need.status()));
         }
         for evidence in &self.evidence {
             push_lino_node(&mut out, 2, "concept_evidence", Some(&evidence.phrase));
@@ -258,10 +306,10 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
         spec.requirement_sentences.clone()
     };
     let mut evidence = Vec::new();
-    let mut unserved: Vec<ConceptNeed> = Vec::new();
+    let mut unserved: Vec<ConceptRequirement> = Vec::new();
     let asks_sources = lookup.consults_sources();
     let asked_language = lookup.language();
-    let mut needs: Vec<ConceptNeed> = sentences
+    let mut needs: Vec<ConceptRequirement> = sentences
         .into_iter()
         .map(|phrase| {
             let normalized = crate::engine::normalize_prompt(&phrase);
@@ -290,19 +338,20 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
                     // map carries openly — an unserved language, measured
                     // rather than argued (issue #1138, plan 01 L10) — and not
                     // an absence the map is silent about.
-                    unserved.push(ConceptNeed {
-                        phrase: unserved_phrase(surface, &asked_language),
-                        structures: Vec::new(),
-                        candidates: Vec::new(),
-                        status: UNSERVED.to_owned(),
-                    });
+                    unserved.push(ConceptRequirement::new(
+                        &unserved_phrase(surface, &asked_language),
+                        &asked_language,
+                        UNSERVED,
+                        Vec::new(),
+                        Vec::new(),
+                    ));
                 }
             }
             candidates.sort_by(|left, right| {
                 candidate_kind_rank(&left.kind).cmp(&candidate_kind_rank(&right.kind))
             });
-            let status = if structures.is_empty() && candidates.is_empty() && asked == 0 {
-                // `blocked` is "nothing was tried"; `unsatisfiable` is "every
+            let state = if structures.is_empty() && candidates.is_empty() && asked == 0 {
+                // `Open` is "nothing was tried"; `Unsatisfiable` is "every
                 // declared source was asked and none of them serves this".
                 // Collapsing the two would make an honest refusal by the
                 // sources indistinguishable from a walk that never ran
@@ -310,17 +359,12 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
                 if asks_sources && !unresolved.is_empty() {
                     UNSERVED
                 } else {
-                    "blocked"
+                    NeedState::Open
                 }
             } else {
-                "satisfied"
+                NeedState::Satisfied
             };
-            ConceptNeed {
-                phrase,
-                structures,
-                candidates,
-                status: status.to_owned(),
-            }
+            ConceptRequirement::new(&phrase, &asked_language, state, structures, candidates)
         })
         .collect();
     needs.extend(unserved);

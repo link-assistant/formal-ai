@@ -6,6 +6,7 @@ use formal_ai::coding_function_catalog::python_docs::{StdlibIndex, StdlibPart};
 use formal_ai::coding_task_spec::recognise;
 use formal_ai::composition::compose;
 use formal_ai::concept_discovery::{DiscoveryCatalog, discover};
+use formal_ai::needs::NeedState;
 
 const CORPUS: &str = "data/benchmarks/coding-discovery-paraphrases.lino";
 
@@ -175,9 +176,11 @@ fn held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages(
                 case.language
             );
             assert_eq!(
-                concepts.needs[0].status, "satisfied",
+                concepts.needs[0].status(),
+                "satisfied",
                 "{}: the requirement sentence is grounded once the word is retrieved: {:?}",
-                case.language, concepts.needs
+                case.language,
+                concepts.needs
             );
         } else {
             // The amendment this leaf carried, and its reason. As written in
@@ -196,11 +199,11 @@ fn held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages(
                 case.language
             );
             let suffix = format!("@{}", case.language);
-            let unserved: Vec<&String> = concepts
+            let unserved: Vec<String> = concepts
                 .needs
                 .iter()
-                .filter(|need| need.status == "unsatisfiable")
-                .map(|need| &need.phrase)
+                .filter(|need| need.status() == "unsatisfiable")
+                .map(|need| need.phrase().to_owned())
                 .collect();
             assert!(
                 !unserved.is_empty(),
@@ -215,8 +218,11 @@ fn held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages(
             );
         }
         assert!(
-            concepts.needs.iter().all(|need| need.status != "blocked"),
-            "{}: a blocked need means the word was never grounded: {:?}",
+            concepts
+                .needs
+                .iter()
+                .all(|need| need.need.state != NeedState::Open),
+            "{}: an untried need means the word was never grounded: {:?}",
             case.language,
             concepts.needs
         );

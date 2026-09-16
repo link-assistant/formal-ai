@@ -63,7 +63,7 @@ impl DiscoveredProcedure {
             needs: concepts
                 .needs
                 .iter()
-                .map(|need| need.phrase.clone())
+                .map(|need| need.phrase().to_owned())
                 .collect(),
             parts,
             source_urls: draft.source_urls.clone(),

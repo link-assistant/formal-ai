@@ -1,8 +1,9 @@
 use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
 use formal_ai::composition::compose;
 use formal_ai::concept_discovery::{
-    CandidatePart, ConceptMap, ConceptNeed, StructuralMeaning, structural_meanings,
+    CandidatePart, ConceptMap, ConceptRequirement, StructuralMeaning, structural_meanings,
 };
+use formal_ai::needs::NeedState;
 
 fn parameter(name: &str, annotation: Option<&str>) -> Parameter {
     Parameter {
@@ -87,12 +88,13 @@ fn map(structure_ids: &[&str], candidates: Vec<CandidatePart>) -> ConceptMap {
         })
         .collect();
     ConceptMap {
-        needs: vec![ConceptNeed {
-            phrase: "fixture need".to_owned(),
+        needs: vec![ConceptRequirement::new(
+            "fixture need",
+            "en",
+            NeedState::Satisfied,
             structures,
             candidates,
-            status: "satisfied".to_owned(),
-        }],
+        )],
         evidence: Vec::new(),
     }
 }

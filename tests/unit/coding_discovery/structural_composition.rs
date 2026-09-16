@@ -1,8 +1,9 @@
 use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
 use formal_ai::composition::{VerifiedDraft, compose};
 use formal_ai::concept_discovery::{
-    ConceptMap, ConceptNeed, StructuralMeaning, structural_meanings,
+    ConceptMap, ConceptRequirement, StructuralMeaning, structural_meanings,
 };
+use formal_ai::needs::NeedState;
 
 fn task(
     name: &str,
@@ -53,12 +54,13 @@ fn concepts(ids: &[&str]) -> ConceptMap {
         })
         .collect();
     ConceptMap {
-        needs: vec![ConceptNeed {
-            phrase: "held-out structural requirement".to_owned(),
+        needs: vec![ConceptRequirement::new(
+            "held-out structural requirement",
+            "en",
+            NeedState::Satisfied,
             structures,
-            candidates: Vec::new(),
-            status: "satisfied".to_owned(),
-        }],
+            Vec::new(),
+        )],
         evidence: Vec::new(),
     }
 }

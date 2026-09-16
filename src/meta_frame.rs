@@ -44,6 +44,17 @@ fn formalize_span(span: &str, language: &str) -> IntentFormalization {
 /// trace-only projection that does not yet resolve needs. The planning ledger
 /// (root requirement R333) records method selection as `Planned`, not as a
 /// validated result. Satisfaction requires subsequent execution evidence.
+///
+/// This is the loop's projection of [`crate::needs::NeedState`], the one need
+/// vocabulary in the tree (issue #1138, plan 00 leaf C1, plan 04 L3):
+/// `Pending` is `Open`, `Planned` is `Planned`, `Satisfied` is `Satisfied` and
+/// `Blocked` is `Unsatisfiable`. [`NeedStatus::state`] is that mapping, so a
+/// row recorded here and a need raised by the formalizer can be compared
+/// without a second status table. The two variants this enum used to carry
+/// beyond the contract -- an intentional postponement and a deliberate refusal
+/// -- had no producer anywhere in the tree, and a status nothing can reach is
+/// a claim the ledger cannot make; they were removed with the merge rather
+/// than given a contract slug they never earned.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NeedStatus {
     /// Detected but not yet resolved (the only status produced in Phase 1A).
@@ -52,12 +63,8 @@ pub enum NeedStatus {
     Planned,
     /// A work unit produced a validated result for this need.
     Satisfied,
-    /// Intentionally postponed (e.g. out of scope this turn).
-    Deferred,
     /// No method or evidence is available; recorded rather than hidden.
     Blocked,
-    /// Deliberately not done, with a reason.
-    Rejected,
 }
 
 impl NeedStatus {
@@ -68,9 +75,18 @@ impl NeedStatus {
             Self::Pending => "pending",
             Self::Planned => "planned",
             Self::Satisfied => "satisfied",
-            Self::Deferred => "deferred",
             Self::Blocked => "blocked",
-            Self::Rejected => "rejected",
+        }
+    }
+
+    /// The contract state this status projects.
+    #[must_use]
+    pub const fn state(self) -> crate::needs::NeedState {
+        match self {
+            Self::Pending => crate::needs::NeedState::Open,
+            Self::Planned => crate::needs::NeedState::Planned,
+            Self::Satisfied => crate::needs::NeedState::Satisfied,
+            Self::Blocked => crate::needs::NeedState::Unsatisfiable,
         }
     }
 }

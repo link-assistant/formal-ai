@@ -1249,7 +1249,7 @@ Ordered; each individually verifiable and commit-sized.
       tokens. `data/seed/meanings-writing-systems.lino` defines the four
       writing systems and their parent concept in all five languages, and the
       honest gap returns to its reviewed value.
-- [ ] **L3 — One need type.** Move `ConceptNeed` to `src/formalization/needs.rs` as plan 00 §4.1's `Need`,
+- [x] **L3 — One need type.** Move `ConceptNeed` to `src/formalization/needs.rs` as plan 00 §4.1's `Need`,
       replace `status: String` with `NeedState`, map `meta_frame::NeedStatus` onto it, add `NeedOrigin` and
       `source_span`, re-export from `src/coding/concept_discovery.rs`. Test:
       `the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum`.
