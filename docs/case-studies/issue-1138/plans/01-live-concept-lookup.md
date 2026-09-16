@@ -1405,10 +1405,18 @@ making it reachable for a concept need.
       `OK … en, ru, hi, zh, es`.
 - [ ] **L15 — HTTP surface.** `tests/integration/issue_1138_concept_lookup_http.rs`,
       three tests through a real server process.
-- [ ] **L16 — Grounded recipe.** `data/meta/concept-lookup-recipe.lino`,
+- [x] **L16 — Grounded recipe.** `data/meta/concept-lookup-recipe.lino`,
       `tests/unit/specification/concept_lookup_meta_algorithm.rs`, and the
       `coding_discovery_step_understand` record in
       `data/meta/coding-discovery-recipe.lino`.
+
+      The recipe and its grounding test are green. The
+      `coding_discovery_step_understand` record is **not** added: inserting a
+      step renumbers every `order` after it in a recipe whose own specification
+      test asserts contiguity over the existing steps, so it belongs with
+      L10 — the leaf that actually makes the coding path *do* the step —
+      rather than ahead of it, where it would be a recipe claiming a step the
+      code does not run.
 - [ ] **L17 — Ledgers and docs.** Requirement shard
       `docs/requirements/issue-1138-live-concept-lookup.md`,
       `rust-script scripts/assemble-requirements.rs --write`, traceability rows,
