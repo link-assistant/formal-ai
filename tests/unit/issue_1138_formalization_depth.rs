@@ -16,10 +16,10 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::agentic_coding::formalize_text_to_links;
-use formal_ai::concept_lookup::{ConceptSense, LookupOutcome, RegistrySourceLookup};
 use formal_ai::coding_research_learning as research_learning;
+use formal_ai::concept_lookup::{ConceptSense, LookupOutcome, RegistrySourceLookup};
+use formal_ai::formalization::concept_links::{ConceptGraph, formalize_deeply};
 use formal_ai::formalization::concepts::concept_from_sense;
-use formal_ai::formalization::graph::{ConceptGraph, formalize_deeply};
 use formal_ai::formalization::procedures::ExtractedProcedure;
 use formal_ai::how_to_guide::ServicePreferences;
 use formal_ai::needs::{Need, NeedKind, NeedState};
@@ -145,7 +145,13 @@ fn sense(surface: &str, gloss: &str) -> ConceptSense {
 }
 
 fn graph_with(lookup: &mut FixtureLookup, text: &str, depth: usize) -> ConceptGraph {
-    formalize_deeply(text, "doc:requirement", lookup, &LookupBounds::default(), depth)
+    formalize_deeply(
+        text,
+        "doc:requirement",
+        lookup,
+        &LookupBounds::default(),
+        depth,
+    )
 }
 
 fn step(ordinal: usize, text: &str, license: &str) -> ProcedureStepRecord {
@@ -193,8 +199,10 @@ fn an_unfamiliar_requirement_raises_a_need_for_every_unresolved_surface() {
 #[test]
 fn a_need_is_satisfied_by_the_registry_lookup_and_becomes_a_grounded_concept() {
     let text = english("isogram_requirement");
-    let mut lookup =
-        FixtureLookup::with(vec![sense("isogram", "a word in which no letter is repeated")]);
+    let mut lookup = FixtureLookup::with(vec![sense(
+        "isogram",
+        "a word in which no letter is repeated",
+    )]);
     let graph = graph_with(&mut lookup, &text, 1);
 
     let concept = graph
@@ -249,7 +257,10 @@ fn an_ungrounded_need_is_reported_with_its_origin_span_and_consulted_sources() {
     let graph = graph_with(&mut lookup, &text, 1);
 
     let unresolved = graph.unresolved();
-    assert!(!unresolved.is_empty(), "an unmet need is reported, not dropped");
+    assert!(
+        !unresolved.is_empty(),
+        "an unmet need is reported, not dropped"
+    );
     for need in unresolved {
         assert_eq!(need.state, NeedState::Unsatisfiable);
         assert_eq!(need.satisfied_by, None, "nothing satisfies an unmet need");
@@ -260,7 +271,11 @@ fn an_ungrounded_need_is_reported_with_its_origin_span_and_consulted_sources() {
         let (start, end) = span.split_once(':').expect("start:end");
         let start: usize = start.parse().expect("start offset");
         let end: usize = end.parse().expect("end offset");
-        assert_eq!(&text[start..end], need.subject, "the span selects the surface");
+        assert_eq!(
+            &text[start..end],
+            need.subject,
+            "the span selects the surface"
+        );
     }
 }
 
@@ -272,7 +287,10 @@ fn a_document_with_an_unresolved_need_is_never_reported_as_covered() {
     let (grounded, total) = graph.grounded_ratio();
 
     assert!(total > 0, "an unfamiliar requirement raises needs");
-    assert!(grounded < total, "nothing was grounded, so coverage is partial");
+    assert!(
+        grounded < total,
+        "nothing was grounded, so coverage is partial"
+    );
 
     let formalized = formalize_text_to_links(&text, "doc:requirement");
     assert_eq!(formalized.summary.needs_raised, total);
@@ -329,7 +347,11 @@ fn an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure() {
     let steps = [
         step(1, "Read the text.", "CC BY-SA 4.0"),
         step(2, "Drop spacing and punctuation.", "CC BY-SA 4.0"),
-        step(3, "Confirm the forbidden letter never appears.", "CC BY-SA 4.0"),
+        step(
+            3,
+            "Confirm the forbidden letter never appears.",
+            "CC BY-SA 4.0",
+        ),
     ];
     let procedure = ExtractedProcedure::from_step_records("check a lipogram", &steps, "en")
         .expect("three ordered instructions are a procedure");
@@ -337,7 +359,10 @@ fn an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure() {
     assert_eq!(procedure.steps.len(), 3);
     assert_eq!(procedure.steps[0].position, 1);
     assert_eq!(procedure.steps[0].imperative, "Read");
-    assert_eq!(procedure.steps[2].object.as_deref(), Some("the forbidden letter"));
+    assert_eq!(
+        procedure.steps[2].object.as_deref(),
+        Some("the forbidden letter")
+    );
     assert!(
         procedure.steps.iter().all(|step| !step.verified),
         "extraction never marks a step verified; only an execution record does"
@@ -356,7 +381,11 @@ fn an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure() {
 fn an_extracted_procedure_enters_the_ledger_only_through_execution_and_review() {
     let steps = [
         step(1, "Read the text.", "CC BY-SA 4.0"),
-        step(2, "Confirm the forbidden letter never appears.", "CC BY-SA 4.0"),
+        step(
+            2,
+            "Confirm the forbidden letter never appears.",
+            "CC BY-SA 4.0",
+        ),
     ];
     let procedure = ExtractedProcedure::from_step_records("check a lipogram", &steps, "en")
         .expect("a two-step procedure");
@@ -379,7 +408,11 @@ fn an_extracted_procedure_enters_the_ledger_only_through_execution_and_review() 
 fn a_non_commercial_licensed_procedure_is_shown_but_refused_for_promotion() {
     let steps = [
         step(1, "Read the text.", "CC BY-NC-SA 3.0"),
-        step(2, "Confirm the forbidden letter never appears.", "CC BY-NC-SA 3.0"),
+        step(
+            2,
+            "Confirm the forbidden letter never appears.",
+            "CC BY-NC-SA 3.0",
+        ),
     ];
     let procedure = ExtractedProcedure::from_step_records("check a lipogram", &steps, "en")
         .expect("a two-step procedure");
@@ -442,8 +475,10 @@ fn an_offline_run_replays_the_committed_captures_and_reproduces_the_graph_identi
 fn the_native_and_browser_runtimes_produce_the_same_graph() {
     let fixture: PathBuf = Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE_DIR);
     let expected = fs::read_to_string(fixture.join(PARITY_FILE)).expect("parity expectation");
-    let mut lookup =
-        FixtureLookup::with(vec![sense("isogram", "a word in which no letter is repeated")]);
+    let mut lookup = FixtureLookup::with(vec![sense(
+        "isogram",
+        "a word in which no letter is repeated",
+    )]);
     let graph = graph_with(&mut lookup, &english("isogram_requirement"), 1);
 
     assert!(

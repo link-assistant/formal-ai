@@ -362,7 +362,7 @@ becomes a typed `ExtractedProcedure` the B2 composer and the #919 ledger can rea
                       │                                      │
                       └──────────────────┬───────────────────┘
                                          ▼
-                 src/formalization/graph.rs   ConceptGraph (links + provenance)
+                 src/formalization/concept_links.rs   ConceptGraph (links + provenance)
                                          │
              ┌───────────────────────────┼────────────────────────────┐
              ▼                           ▼                            ▼
@@ -496,7 +496,7 @@ Rejected, with reasons:
 | `src/formalization/needs.rs` | `Need`, `NeedKind`, `NeedState`, `NeedOrigin`, `emit_needs`, the bridge to `meta_frame::NeedLedger`. |
 | `src/formalization/concepts.rs` | Sense → concept/predicate/entity links with provenance. |
 | `src/formalization/procedures.rs` | Ordered source text → `ExtractedProcedure`. |
-| `src/formalization/graph.rs` | `ConceptGraph`, its Links Notation projection, its content identity. |
+| `src/formalization/concept_links.rs` | `ConceptGraph`, its Links Notation projection, its content identity. |
 | `data/seed/formalization-relations.lino` | The relation vocabulary and the cues that evidence each relation, in five languages. |
 | `data/seed/meanings-formalization-needs.lino` | Five-language response meanings for need/unresolved reporting. |
 | `data/meta/formalization-depth-recipe.lino` | The grounded meta-recipe for this step. |
@@ -735,7 +735,7 @@ impl ExtractedProcedure {
 ```
 
 ```rust
-// src/formalization/graph.rs
+// src/formalization/concept_links.rs
 /// Everything one formalization grounded, plus everything it could not.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct ConceptGraph {
@@ -864,7 +864,7 @@ meanings
     effect "Name the surface, its exact source span, its origin, the depth reached and every consulted source outcome; never report a document as covered while a need is unresolved."
     unit "count"
     example "3 of 7 needs grounded; \"isogram\" unresolved at depth 2."
-    grounding "src/formalization/graph.rs::ConceptGraph::unresolved"
+    grounding "src/formalization/concept_links.rs::ConceptGraph::unresolved"
   response_formalization_unresolved_need_en
     defined-by formalization_unresolved_need
     language en
@@ -889,7 +889,7 @@ formalization_depth_meta_recipe
   lookup src/concept_lookup.rs
   concepts src/formalization/concepts.rs
   procedures src/formalization/procedures.rs
-  graph src/formalization/graph.rs
+  concept_links src/formalization/concept_links.rs
   consumer src/agentic_coding/formalize.rs
   consumer src/coding/concept_discovery.rs
   consumer src/coding_research_learning.rs
@@ -1234,7 +1234,7 @@ Ordered; each individually verifiable and commit-sized.
 - [ ] **L7 — Bounded recursion.** `satisfy_needs` with `max_concept_depth`; a gloss's
       own surfaces become needs at depth+1. Test:
       `a_grounded_gloss_raises_its_own_needs_at_the_next_depth_and_stops_at_the_bound`.
-- [ ] **L8 — The graph.** `src/formalization/graph.rs`: `ConceptGraph`,
+- [ ] **L8 — The graph.** `src/formalization/concept_links.rs`: `ConceptGraph`,
       `identity()`, `to_links_notation()`, `structure_ids()`, `unresolved()`,
       `grounded_ratio()`, `formalize_deeply`. Test:
       `the_same_requirement_in_five_languages_produces_one_concept_graph_identity`.

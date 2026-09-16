@@ -8,7 +8,7 @@
 //! plan share.
 
 use crate::concept_lookup::ConceptSense;
-use crate::formalization::graph::ConceptGraph;
+use crate::formalization::concept_links::ConceptGraph;
 use crate::formalization::segment::Segment;
 
 /// A concept the formalizer grounded, and the exact bytes that ground it.

@@ -50,9 +50,8 @@ fn main() {
     let client = CachedSourceClient::new(FIXTURE_DIR, CurlSourceTransport).with_online(false);
     let preferences = ServicePreferences::default();
     let bounds = LookupBounds::default();
-    let mut availability = ServiceAccessibilityCache::new(
-        std::env::temp_dir().join("formal-ai-issue-1138-parity"),
-    );
+    let mut availability =
+        ServiceAccessibilityCache::new(std::env::temp_dir().join("formal-ai-issue-1138-parity"));
     let mut rows: Vec<serde_json::Value> = Vec::new();
     let mut answered = 0_usize;
     for (language, surface) in SURFACES {

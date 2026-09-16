@@ -5,8 +5,8 @@
 //! owns no cache policy, no settings reading and no source list of its own. A
 //! document with an unresolved need can never be reported as covered.
 
+pub mod concept_links;
 pub mod concepts;
-pub mod graph;
 pub mod needs;
 pub mod procedures;
 pub mod segment;

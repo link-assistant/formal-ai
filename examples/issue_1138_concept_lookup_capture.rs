@@ -72,9 +72,8 @@ fn main() {
     let preferences = ServicePreferences::default();
     let bounds = LookupBounds::default();
     let now = formal_ai::service_accessibility::unix_now();
-    let mut availability = ServiceAccessibilityCache::new(
-        std::env::temp_dir().join("formal-ai-issue-1138-capture"),
-    );
+    let mut availability =
+        ServiceAccessibilityCache::new(std::env::temp_dir().join("formal-ai-issue-1138-capture"));
 
     for (language, surfaces) in SURFACES {
         for surface in *surfaces {
@@ -98,7 +97,9 @@ fn main() {
                 println!("  sense {} :: {}", sense.source_id, sense.gloss);
             }
             if outcome.items.is_empty() {
-                println!("  unserved language: no declared source answered {surface} in {language}");
+                println!(
+                    "  unserved language: no declared source answered {surface} in {language}"
+                );
             }
         }
     }

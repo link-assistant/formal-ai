@@ -10,7 +10,7 @@
 pub use crate::needs::{Need, NeedKind, NeedState};
 
 use crate::concept_lookup::ConceptSense;
-use crate::formalization::graph::ConceptGraph;
+use crate::formalization::concept_links::ConceptGraph;
 use crate::formalization::segment::Segment;
 use crate::source_walk::{LookupBounds, SourceLookup};
 

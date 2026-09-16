@@ -16,15 +16,16 @@ fn read(relative: &str) -> String {
 }
 
 fn records(text: &str) -> Vec<String> {
-    text.lines().fold(Vec::<String>::new(), |mut records, line| {
-        if !line.starts_with(char::is_whitespace) {
-            records.push(String::new());
-        }
-        let record = records.last_mut().expect("record header");
-        record.push_str(line);
-        record.push('\n');
-        records
-    })
+    text.lines()
+        .fold(Vec::<String>::new(), |mut records, line| {
+            if !line.starts_with(char::is_whitespace) {
+                records.push(String::new());
+            }
+            let record = records.last_mut().expect("record header");
+            record.push_str(line);
+            record.push('\n');
+            records
+        })
 }
 
 fn field<'a>(record: &'a str, name: &str) -> &'a str {
@@ -66,7 +67,7 @@ fn formalization_depth_recipe_is_grounded_in_the_live_formalizer() {
         ("satisfy_needs", "src/formalization/needs.rs"),
         ("concept_from_sense", "src/formalization/concepts.rs"),
         ("procedure_from_steps", "src/formalization/procedures.rs"),
-        ("formalize_deeply", "src/formalization/graph.rs"),
+        ("formalize_deeply", "src/formalization/concept_links.rs"),
     ];
     let steps = records
         .iter()
