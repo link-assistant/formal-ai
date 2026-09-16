@@ -1,0 +1,2186 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.816Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.817Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Найди y: 7 * y = 84 --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.817Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.817Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.827Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Найди y: 7 * y = 84",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Найди y: 7 * y = 84",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.827Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.828Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.828Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.828Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.831Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.832Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.834Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 6331,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.835Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.848Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 26,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:00:50.854Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.858Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.858Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.859Z",
+  "service": "session",
+  "id": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di",
+  "title": "New session - 2026-09-16T03:00:50.859Z",
+  "time": {
+    "created": 1789527650859,
+    "updated": 1789527650859
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.860Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.860Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.860Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.860Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.860Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d70dd4ffeRT7IP4G9gjc5P5/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.860Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d70dd4ffeRT7IP4G9gjc5P5/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.863Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57d70dd4ffeRT7IP4G9gjc5P5/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.865Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.865Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.867Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.868Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.868Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.868Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.869Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.869Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.869Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.869Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.869Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:50.869Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.019Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.022Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.029Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.034Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.038Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.038Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.038Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.038Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527651442,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828f46d001ncmPGJ3k0x275v",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f2cd001u44vEiC1Ln7WjJ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527651443,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828f472002dOVPR3h5BA0B6P",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f2cd001u44vEiC1Ln7WjJ",
+    "type": "tool",
+    "callID": "call_a98b3dfdc0045ff4",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527651443,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828f4720017tIT8cuKq9B6H6",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f2cd001u44vEiC1Ln7WjJ",
+    "type": "text",
+    "text": "Поищу в интернете: y 7 y 84.",
+    "time": {
+      "start": 1789527651443,
+      "end": 1789527651443
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:51.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527651444,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828f472002dOVPR3h5BA0B6P",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f2cd001u44vEiC1Ln7WjJ",
+    "type": "tool",
+    "callID": "call_a98b3dfdc0045ff4",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "y 7 y 84"
+      },
+      "time": {
+        "start": 1789527651443
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527652311,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828f472002dOVPR3h5BA0B6P",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f2cd001u44vEiC1Ln7WjJ",
+    "type": "tool",
+    "callID": "call_a98b3dfdc0045ff4",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "y 7 y 84"
+      },
+      "output": "Title: Solve for y 7y=84\nURL: https://www.mathway.com/popular-problems/Basic%20Math/62862\nPublished: N/A\nAuthor: N/A\nHighlights:\nSolve for y 7y=84 | Mathway\n...\nSolve for y 7y=84\n...\nDivide each term in by .\n...\nSimplify the left side.\n...\nDivide by .\n\n---\n\nTitle: Solucion de 7y=84\nURL: https://www.soluciones.lat/7y=84\nPublished: N/A\nAuthor: N/A\nHighlights:\nSolucion de 7y=84\n...\n## Solución simple y rápida para la ecuación 7y=84. Nuestra respuesta es comprensible y explicada paso a paso.\n...\n## Solucion de 7y=84:\n...\n```\n7y=84\n...\nMovemos todos los personajes a la izquierda:\n...\n7y-(84)=0\n...\nMovemos todos los términos que contienen y al lado izquierdo, todos los demás términos al lado derecho\n7y=84\ny=84/7\ny=12\n    \r\n    \r\n\r\n\n```\n...\nEl resultado de la ecuación 7y=84 para usar en su tarea doméstica.\n\n---\n\nTitle: 7y-84=2y+61\nURL: https://www.symbolab.com/popular-algebra/algebra-4599\nPublished: N/A\nAuthor: N/A\nHighlights:\n7y-84=2y+61\n...\n# 7y-84=2y+61\n...\n7 y− 84= 2 y+ 61\n...\ny= 29\n...\n7 y= 2 y+ 145\n...\n5 y= 145\n...\ny= 29\n...\n- ### What is the answer to 7y-84=2y+61 ?\n...\nThe answer to 7y-84=2y+61 is y=29\n- ### Solve for y: 7y-84=2y+61\n...\nThe solution is y=29\n\n---\n\nTitle: If xy + 7y = 84 and x + 7 = 3, then what is the value of y?\nURL: https://testbook.com/question-answer/if-xy-7y-84-and-x-7-3-then-what-is-the-va--646c92f9593c0b205f24cd2d\nPublished: N/A\nAuthor: N/A\nHighlights:\n[Solved] If xy + 7y = 84 and x + 7 = 3, then what is the value of y?\n...\n# If xy + 7y = 84 and x + 7 = 3, then what is the value of y?\n...\nOption 4 : 28\n...\nGiven Data:\n\n1. xy + 7y = 84\n\n2. x + 7 = 3\n...\nTo find the value of y, we can substitute the value of x from the second equation into the first equation.\n...\nLet's solve for x and then substitute it into the first equation:\n...\nx + 7 = 3\n\n⇒ x = 3 - 7\n\n⇒ x = -4\n...\nSubstituting the value of x into the first equation:\n...\nxy + 7y = 84\n\n⇒ (-4)y + 7y = 84\n\n⇒ -4y + 7y = 84\n\n⇒ 3y = 84\n\n⇒ y = 84 / 3\n\n⇒ y = 28\n...\nTherefore, the value of y is 28. Hence, the correct answer is option 4) 28.\n\n Last updated on Jan 20, 2026 \n\n-> The WB Police Constable Interview Exam Date 2025-26 is out on the official website. The examination begin from 29th January\n...\n2026.\n\n---\n\nTitle: Решите уравнение y*7=84 (у  умножить на 7 равно 84) - Найдите корень уравнения подробно по-шагам. [Есть ответ!]\nURL: https://www.kontrolnaya-rabota.ru/s/equal-one/any-uravnenie/e/u_umnozhit_na_sem_ravno_vosem_desyat_chety_re/\nPublished: N/A\nAuthor: Ivan Petukhov\nHighlights:\nРешите уравнение y*7=84 (у умножить на 7 равно 84) - Найдите корень уравнения подробно по-шагам. [Есть ответ!]\n...\n```\ny*7 = 84\n```\n\n$$y 7 = 84$$\n\n Подробное решение \n\nДано линейное уравнение: \n\n```\ny*7 = 84\n```\n\n Разделим обе части ур-ния на 7 \n\n```\ny = 84 / (7)\n```\n\n Получим ответ: y = 12\n\n Быстрый ответ [src]\n...\n```\ny1 = 12\n...\n```\ny1 = 12.0\n\n---\n\nTitle: Suppose that y varies directly with x and that \\( y=84 \\) when \\( x=7 \\). What is the value of x when \\( y=108 \\) - SmartSolve.ai\nURL: https://smartsolve.ai/question/suppose-that-y-varies-directly-with-x-and-that-y84-when-x7-what-is-the-value-of-x-when-y108-101-12-9-10\nPublished: 2025-02-27T18:35:29.000Z\nAuthor: N/A\nHighlights:\nSuppose that y varies directly with x and that \\( y=84 \\) when \\( x=7 \\). What is the value of x when \\( y=108 \\) - SmartSolve.ai\n...\n# Suppose that y varies directly with x and that \\( y=84 \\) when \\( x=7 \\). What is the value of x when \\( y=108 \\) ? 101 12 9 10\n...\nSince \\(y\\) varies directly with \\(x\\), we can express this relationship as \\(y = kx\\), where \\(k\\) is the constant of variation. First, we need to find \\(k\\) using the given values \\(y = 84\\) and \\(x = 7\\).\n...\n1. Substitute the values into the equation: \\(84 = k(7)\\) 2. Solve for \\(k\\): \\(k = \\frac{84}{7} = 12\\) Now we have the equation \\(y = 12x\\). Next, we need to find the value of \\(x\\) when \\(y = 108\\). 3. Substitute \\(y = 108\\) into the equation: \\(108 = 12x\\) 4. Solve for \\(x\\): \\(x = \\frac{108}{12} = 9\\)\n\n---\n\nTitle: Solve linear equation -7y=84\nURL: https://www.tiger-algebra.com/en/solution/linear-equation-one-unknown/-7y%3D84/\nPublished: N/A\nAuthor: N/A\nHighlights:\n-7y=84 - Solve linear equation with one unknown | Tiger Algebra\n...\n# Solution - Linear equations with one unknown\n...\ny=−12\n...\ny=-12\n...\n### 1. Isolate the y\n...\n−7y=84\n...\nDivide both sides by -7:\n...\n(-7y)-7=84-7\n...\nCancel out the negatives:\n...\n7y7=84-7\n...\nSimplify the fraction:\n...\ny=84-7\n...\nMove the negative sign from the denominator to the numerator:\n...\ny=-847\n...\nFind the greatest common factor of the numerator and denominator:\n...\ny=(-12·7)(1·7)\n...\nFactor out and cancel the greatest common factor:\n...\ny=−12\n\n---\n\nTitle: Solve these simultaneous equations: 7x+3y=84, 2x+2y=32 | MyTutor\nURL: https://www.mytutor.co.uk/answers/56009/GCSE/Maths/Solve-these-simultaneous-equations-7x-3y-84-2x-2y-32\nPublished: N/A\nAuthor: MyTutor\nHighlights:\nx+3y=84,\n...\n2x+2y=32 | My\n...\n# Solve these simultaneous\n...\n: 7x+3y=84, 2x+2y=32\n...\nMake x the subject of either equation:x = (32-2y)/2;x = 16-yRepresent an equation as a function of y only: 7(16-y)+3y = 84;112-7y+3y = 84;112-4y = 84;-4y = -28; y = 7Use the value of y to determine value of x:2x = 32 - 2y;x=9",
+      "title": "Web search: y 7 y 84",
+      "metadata": {},
+      "time": {
+        "start": 1789527651443,
+        "end": 1789527652306
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.318Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527652318,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828f7db001KwLqRejCRTt4oe",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f2cd001u44vEiC1Ln7WjJ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8515,
+      "output": 57,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8572,
+      "headroom": 30284,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.320Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.320Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.322Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.322Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.323Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.323Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.323Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.323Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.323Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.324Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.328Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8572,
+  "providerTokens": 8572,
+  "estimatedInputTokens": 1917,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8515,
+    "cacheRead": 0,
+    "output": 57
+  },
+  "overflow": false,
+  "headroom": 30284,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.328Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.328Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.331Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.973Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527652973,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828fa6c001CAuCe0kKAp04MX",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f7e80012WLWX7GljHHtqk",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.973Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527652974,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828fa6d002YMbQYoZVJ05sw9",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f7e80012WLWX7GljHHtqk",
+    "type": "tool",
+    "callID": "call_ceb3ba9a1e58deea",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527652974,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828fa6d001kjaDx60iEQuRBJ",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f7e80012WLWX7GljHHtqk",
+    "type": "text",
+    "text": "Открою https://www.mathway.com/popular-problems/Basic%20Math/62862 и прочитаю содержимое.",
+    "time": {
+      "start": 1789527652974,
+      "end": 1789527652974
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:52.974Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527652974,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828fa6d002YMbQYoZVJ05sw9",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f7e80012WLWX7GljHHtqk",
+    "type": "tool",
+    "callID": "call_ceb3ba9a1e58deea",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.mathway.com/popular-problems/Basic%20Math/62862"
+      },
+      "time": {
+        "start": 1789527652974
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.973Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527653973,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828fa6d002YMbQYoZVJ05sw9",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f7e80012WLWX7GljHHtqk",
+    "type": "tool",
+    "callID": "call_ceb3ba9a1e58deea",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.mathway.com/popular-problems/Basic%20Math/62862"
+      },
+      "output": "Solve for y 7y=84 | Mathway\n            \n            \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n\n    \n\n\n        \n        \n        \n        \n        \n        \n        \n        \n        \n        \n        \n        \n        \n        \n\n    \n    \n    \n\n\n\n\n    \n\n    \n\n    \n        \n\n\n\n    \n        \n                \n                        Enter a problem...\n                \n                \n                \n                    \n                        \n                            \n                            \n                        \n                    \n                    \n                        \n                        \n                    \n                    \n                    \n                \n            \n        \n    \n\n\n\n\n\n    \n\n        \n            \n            \n\n                Basic Math Examples\n                        \n                    Popular Problems\n                    Basic Math\n                    Solve for y 7y=84\n            \n        \n\n\n                Step 1Divide each term in Step 2Simplify the left side.Tap for more steps...Step 2.1Cancel the common factor of Tap for more steps...Step 2.1.1Cancel the common factor.Step 2.1.2Divide Step 3Simplify the right side.Tap for more steps...Step 3.1Divide \n\n\n            \n        \n    \n\n\n\n\n\n    \n        \n            \n                \n                    \n                    \n                \n            \n        \n    \n    \n        \n            \n                \n                    \n                        \n                            \n                                \n                            \n                        \n                    \n                \n            \n        \n    \n    \n        \n    \n\n\n\n\n\n\n    \n    \n        \n        \n            \n                 \n                \n            \n        \n    \n\n\t\n    \n\n\n\n\t\n    \n    \n        Please ensure that your password is at least 8 characters and contains each of the following:\n        \n            a number\n            a letter\n            a special character: @$#!%*?&amp;",
+      "title": "https://www.mathway.com/popular-problems/Basic%20Math/62862 (text/html)",
+      "metadata": {},
+      "time": {
+        "start": 1789527652974,
+        "end": 1789527653972
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.975Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527653975,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828fe560014j9RxN5YXe6v2f",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828f7e80012WLWX7GljHHtqk",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 13756,
+      "output": 182,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 13938,
+      "headroom": 24918,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.976Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.976Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.978Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.978Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.981Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.981Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.981Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.982Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.982Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.988Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 13938,
+  "providerTokens": 13938,
+  "estimatedInputTokens": 2200,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 13756,
+    "cacheRead": 0,
+    "output": 182
+  },
+  "overflow": false,
+  "headroom": 24918,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.989Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.989Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.992Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:53.994Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527654230,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828ff55001lBFvkBkRCOdH9E",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828fe64001bO9hShFmFq8Gru",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527654230,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828ff56002vdCbWkfKbkE0F8",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828fe64001bO9hShFmFq8Gru",
+    "type": "tool",
+    "callID": "call_54d38f6e393a793d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527654230,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828ff560016bpwDHbsfWMu3R",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828fe64001bO9hShFmFq8Gru",
+    "type": "text",
+    "text": "Открою https://www.soluciones.lat/7y=84 и прочитаю содержимое.",
+    "time": {
+      "start": 1789527654230,
+      "end": 1789527654230
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527654230,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828ff56002vdCbWkfKbkE0F8",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828fe64001bO9hShFmFq8Gru",
+    "type": "tool",
+    "callID": "call_54d38f6e393a793d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.soluciones.lat/7y=84"
+      },
+      "time": {
+        "start": 1789527654230
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.670Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527654670,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a828ff56002vdCbWkfKbkE0F8",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828fe64001bO9hShFmFq8Gru",
+    "type": "tool",
+    "callID": "call_54d38f6e393a793d",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.soluciones.lat/7y=84"
+      },
+      "output": "Solucion de 7y=84 \r\n\r\n\r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n    \r\n        \r\n\r\n            \r\n                \r\n                    Toggle navigation\r\n                    \r\n                    \r\n                    \r\n                \r\n                Soluciones.lat\r\n            \r\n\r\n\t\t\t           \r\n            \r\n                \r\n\t\t\t\t\tMatemáticas\r\n\t\t\t\t\t\r\n\t\t\t\t\tSolucionador de ecuaciones\r\nSolucionador de ecuaciones cuadraticas\r\nCalculadora de porcentajes - paso a paso\r\nCalculadora de factores primos\r\nMáximo común divisor\r\nMinimo común multiplo\r\nConversión de números romanos\r\nConvertidor de números\r\n\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\tEnglish Version\r\n\t\t\t\t\t\r\n                \r\n            \r\n\r\n\t\t\t  \r\n        \r\n\r\n    \r\n\r\n\n    \n\n        \n            \n                \n\t\t\t\t\tSolucion de 7y=84                \n            \n        \n\t\t\n\t\t\n        \n            \n\n\t\t\t\n\t\t\t\tSolución simple y rápida para la ecuación 7y=84. Nuestra respuesta es comprensible y explicada paso a paso.\t\t\t\t\n\t\t\t\n\n\t\t\t\tSi no es lo que está buscando, escriba sus propios datos.\n\t\t\t\t\n\t\t\t    \t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tEcuación:\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tResolver\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\tSolucion de 7y=84: 7y=84\nMovemos todos los personajes a la izquierda:\n7y-(84)=0\nMovemos todos los términos que contienen y al lado izquierdo, todos los demás términos al lado derecho\n7y=84\ny=84/7\ny=12\n    \r\n    \r\n\r\nEl resultado de la ecuación 7y=84 para usar en su tarea doméstica.\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\n\t\t\t\t\tVer soluciones similares:\n\t\t\t\n\t\t\t| Resultado de x~8=14 |\n| Respuesta de y8+12=20 |\n| Respuesta de z+64=100 |\n| Resultado de X2+3x=-5 |\n| Respuesta de 29+p=107 |\n| Solucion de 55+n=81 |\n| Resultado de 3x²-1=0 |\n| Solucion de 20+k=42 |\n| Resultado de p²+4p-45=0 |\n| Respuesta de 2x+4x+5=53 |\n| Solucion de 4x+6=8x(–6) |\n| Solucion de 3/4x=27 |\n| Resultado de 7a+7=46 |\n| Solucion de 16x(3)-20x(2)+32x=0 |\n| Solucion de X2+7x-294=0 |\n| Resultado de 2x+5+1+x=+x–6 |\n| Solucion de 3x+1=3−(2−2x) |\n| Resultado de 6(2x-5)=# |\n| Resultado de X+13=5x+49 |\n| Solucion de 1.5*165=x/8 |\n| Respuesta de 1.5+165=x/8 |\n| Solucion de 5x-4-1+x=2x-2-4+4x |\n| Respuesta de 5x+7=2x+16 |\n| Resultado de x+12=-3x-20 |\n| Respuesta de 5x-26=x+2 |\n| Solucion de 3(x+4)-7=46-7x+8+3x |\n| Solucion de 10x-7=2x+1 |\n| Respuesta de y=4+1 |\n| Resultado de 7x-5=2x+1 |\n| Respuesta de 58q=340 |\n| Solucion de x²+11=-24 |\n| Respuesta de X-5=y |\n\t\t\t\n\t\t\t\n\n\t\t\n\t\n            \n\t\t\n\t\t\t\tCategorías de solucionadores\n\t\t\t\t\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\tSolucionador de ecuaciones\r\nSolucionador de ecuaciones cuadraticas\r\nCalculadora de porcentajes - paso a paso\r\nCalculadora de factores primos\r\nMáximo común divisor\r\nMinimo común multiplo\r\nConversión de números romanos\r\nConvertidor de números\r\n\t\t\t\t\t\r\n\r\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n            \n\n    \t\t\n\n        \n            \n                \n                    Copyright © 2019 Soluciones.lat\n\t\t\t\t\t\n\t\t\t\t\t\t\t2x-2=8\t\t\t\n\n\n\t\t\t\t\t\t\ttodas las soluciones",
+      "title": "https://www.soluciones.lat/7y=84 (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527654230,
+        "end": 1789527654669
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.670Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527654670,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a829010e001fV2iGBp6DpBn7F",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a828fe64001bO9hShFmFq8Gru",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 15926,
+      "output": 128,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 16054,
+      "headroom": 22802,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.670Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.670Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.671Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.671Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.672Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.672Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.672Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.672Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.672Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.672Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.674Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 16054,
+  "providerTokens": 16054,
+  "estimatedInputTokens": 3087,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 15926,
+    "cacheRead": 0,
+    "output": 128
+  },
+  "overflow": false,
+  "headroom": 22802,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.674Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.674Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.675Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527654852,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a82901c4001pT5NhuWph8a6wC",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290112001ssOQl6fNTB4x57",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527654852,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a82901c4003qkMrb1t0Pm5Ia3",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290112001ssOQl6fNTB4x57",
+    "type": "tool",
+    "callID": "call_23c99d86d5b23ae2",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.853Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527654853,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a82901c4002CTNPIoaIOhZRHt",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290112001ssOQl6fNTB4x57",
+    "type": "text",
+    "text": "Открою https://www.symbolab.com/popular-algebra/algebra-4599 и прочитаю содержимое.",
+    "time": {
+      "start": 1789527654853,
+      "end": 1789527654853
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:54.853Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527654853,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a82901c4003qkMrb1t0Pm5Ia3",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290112001ssOQl6fNTB4x57",
+    "type": "tool",
+    "callID": "call_23c99d86d5b23ae2",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.symbolab.com/popular-algebra/algebra-4599"
+      },
+      "time": {
+        "start": 1789527654853
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.263Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527655263,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a82901c4003qkMrb1t0Pm5Ia3",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290112001ssOQl6fNTB4x57",
+    "type": "tool",
+    "callID": "call_23c99d86d5b23ae2",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.symbolab.com/popular-algebra/algebra-4599"
+      },
+      "output": "7y-84=2y+61\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSolutionsIntegral CalculatorDerivative CalculatorAlgebra CalculatorMatrix CalculatorMore...GraphingLine Graph CalculatorExponential Graph CalculatorQuadratic Graph CalculatorSin graph CalculatorMore...CalculatorsBMI CalculatorCompound Interest CalculatorPercentage CalculatorAcceleration CalculatorMore...GeometryPythagorean Theorem CalculatorCircle Area CalculatorIsosceles Triangle CalculatorTriangles CalculatorMore...AI ChatToolsNotebookGroupsCheat SheetsWorksheetsPracticeVerifyenEnglishEspañolPortuguêsFrançaisDeutschItalianoРусский中文(简体)한국어日本語Tiếng ViệtעבריתالعربيةUpgradePopular Algebra &gt; 7y-84=2y+61Pre AlgebraAlgebraPre CalculusCalculusFunctionsLinear AlgebraTrigonometryStatisticsPhysicsChemistryFinanceEconomicsConversionsSolution7y−84=2y+61Solutiony=29Hide Steps Solution steps7y−84=2y+61Move 84to the right side7y=2y+145Move 2yto the left side5y=145Divide both sides by 5y=29GraphSorry, your browser does not support this applicationView interactive graphEnter your problemPopular Examplesfactor 10xy-4x-5y+2factor10xy−4x−5y+2simplify-7/7simplify−77​|u+3|&gt;= 2∣u+3∣≥2(60*20+80*2)/(100)10060⋅20+80⋅2​factor x^{24}-1factorx24−1Frequently Asked Questions (FAQ)What is the answer to 7y-84=2y+61 ?The answer to 7y-84=2y+61 is y=29Solve for y: 7y-84=2y+61The solution is y=29Popular topicsimaginary number calculatorratio test calculatorasymptote calculatorremainder calculatorlinear approximation calculatorrational equation calculatorabsolute value calculatorriemann sum calculatoracceleration calculatorarea between curves calculatordomain and range calculatorsequence calculatorintegration by parts calculatorslope intercept form calculatoreigenvector calculatortrig identities calculatorpower series calculatortransformation calculatorhours calculatorparabola calculatorpercentage calculatoraverage rate of change calculatorage calculatorvolume calculatorchain rule calculatorconcavity calculatorrow echelon form calculatorp value calculatorend behavior calculatorfourier transform calculatortrinomial calculatorfactor by grouping calculatorimproper integral calculatorrational number calculatormultiplying polynomials calculatorvariable calculatorpemdas calculatorpythagorean theorem calculatorfunction calculatoru substitution calculatorStudy ToolsAI Math SolverAI ChatPopular ProblemsWorksheetsStudy GuidesPracticeCheat SheetsCalculatorsGraphing CalculatorGeometry CalculatorVerify SolutionAppsSymbolab App (Android)Graphing Calculator (Android)Practice (Android)Symbolab App (iOS)Graphing Calculator (iOS)Practice (iOS)Chrome ExtensionCompanyAbout SymbolabBlogHelpContact UsLegalPrivacyService TermsCookie PolicyCookie SettingsDo Not Sell or Share My Personal InfoCopyright, Community Guidelines, DSA &amp; other Legal ResourcesLearneo Legal CenterFeedbackSocial MediaSymbolab, a Learneo, Inc. business© Learneo, Inc. 2024",
+      "title": "https://www.symbolab.com/popular-algebra/algebra-4599 (text/html;charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527654853,
+        "end": 1789527655261
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.265Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527655266,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a8290360001Frwqhv9SWFUDu4",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290112001ssOQl6fNTB4x57",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 18960,
+      "output": 170,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 19130,
+      "headroom": 19726,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.267Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.267Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.269Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.270Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.275Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.275Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.276Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.276Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.282Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.282Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.288Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 19130,
+  "providerTokens": 19130,
+  "estimatedInputTokens": 3766,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 18960,
+    "cacheRead": 0,
+    "output": 170
+  },
+  "overflow": false,
+  "headroom": 19726,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.288Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.288Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.291Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.292Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527655478,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a82904350011ji0quqyIBIyrb",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290378001M2Sl1RSPBry3ic",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527655478,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a8290436001wvOqQvPUFqMUUg",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290378001M2Sl1RSPBry3ic",
+    "type": "text",
+    "text": "Enter a problem...\n\nSource: https://www.mathway.com/popular-problems/Basic%20Math/62862\n\nSolución simple y rápida para la ecuación 7y=84. Nuestra respuesta es comprensible y explicada paso a paso. El resultado de la ecuación 7y=84 para usar en su tarea doméstica.\n\nSource: https://www.soluciones.lat/7y=84\n\n7y-84=2y+61 AI ChatToolsNotebookGroupsCheat SheetsWorksheetsPracticeVerifyenEnglishEspañolPortuguêsFrançaisDeutschItalianoРусский中文(简体)한국어日本語Tiếng ViệtעבריתالعربيةUpgradePopular Algebra &gt; 7y-84=2y+61Pre AlgebraAlgebraPre CalculusCalculusFunctionsLinear AlgebraTrigonometryStatisticsPhysicsChemistryFinanceEconomicsConversionsSolution7y−84=2y+61Solutiony=29Hide Steps Solution steps7y−84=2y+61Move 84to the right side7y=2y+145Move 2yto the left side5y=145Divide both sides by 5y=29GraphSorry, your browser does not support this applicationView interactive graphEnter your problemPopular Examplesfactor 10xy-4x-5y+2factor10xy−4x−5y+2simplify-7/7simplify−77​|u+3|&gt;= 2∣u+3∣≥2(60*20+80*2)/(100)10060⋅20+80⋅2​factor x^{24}-1factorx24−1Frequently Asked Questions (FAQ)What is the answer to 7y-84=2y+61 ? The answer to 7y-84=2y+61 is y=29Solve for y: 7y-84=2y+61The solution is y=29Popular topicsimaginary number calculatorratio test calculatorasymptote calculatorremainder calculatorlinear approximation calculatorrational equation calculatorabsolute value calculatorriemann sum calculatoracceleration calculatorarea between curves calculatordomain and range calculatorsequence calculatorintegration by parts calculatorslope intercept form calculatoreigenvector calculatortrig identities calculatorpower series calculatortransformation calculatorhours calculatorparabola calculatorpercentage calculatoraverage rate of change calculatorage calculatorvolume calculatorchain rule calculatorconcavity calculatorrow echelon form calculatorp value calculatorend behavior calculatorfourier transform calculatortrinomial calculatorfactor by grouping calculatorimproper integral calculatorrational number calculatormultiplying polynomials calculatorvariable calculatorpemdas calculatorpythagorean theorem calculatorfunction calculatoru substitution calculatorStudy ToolsAI Math SolverAI ChatPopular ProblemsWorksheetsStudy GuidesPracticeCheat SheetsCalculatorsGraphing CalculatorGeometry CalculatorVerify SolutionAppsSymbolab App (Android)Graphing Calculator (Android)Practice (Android)Symbolab App (iOS)Graphing Calculator (iOS)Practice (iOS)Chrome ExtensionCompanyAbout SymbolabBlogHelpContact UsLegalPrivacyService TermsCookie PolicyCookie SettingsDo Not Sell or Share My Personal InfoCopyright, Community Guidelines, DSA &amp; other Legal ResourcesLearneo Legal CenterFeedbackSocial MediaSymbolab, a Learneo, Inc.\n\nSource: https://www.symbolab.com/popular-algebra/algebra-4599",
+    "time": {
+      "start": 1789527655478,
+      "end": 1789527655478
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527655478,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "part": {
+    "id": "prt_0a8290436002RtN00hljXyVWMK",
+    "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+    "messageID": "msg_0a8290378001M2Sl1RSPBry3ic",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 21937,
+      "output": 2777,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 24714,
+      "headroom": 14142,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.478Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.479Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.479Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.480Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.480Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.480Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527655480,
+  "sessionID": "ses_f57d70dd4ffeRT7IP4G9gjc5P5"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.481Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.481Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.481Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.481Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.cpJduUE7di",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:55.481Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+

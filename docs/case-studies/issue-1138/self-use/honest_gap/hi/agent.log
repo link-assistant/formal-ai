@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.107Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.108Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.108Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.108Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.117Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.117Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.118Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.119Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.119Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.121Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.122Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.124Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 8445,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.124Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.139Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.143Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.144Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:03:43.144Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.148Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.148Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.149Z",
+  "service": "session",
+  "id": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx",
+  "title": "New session - 2026-09-16T03:03:43.149Z",
+  "time": {
+    "created": 1789527823149,
+    "updated": 1789527823149
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.150Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.150Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.150Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.150Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d46cd2ffetUaC003sYFgNqI/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.150Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d46cd2ffetUaC003sYFgNqI/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.153Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57d46cd2ffetUaC003sYFgNqI/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.155Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.157Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.158Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.158Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.158Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.159Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.159Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.159Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.159Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.159Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.159Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.294Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.299Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.306Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.316Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.317Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.317Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.795Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527823795,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82b95b10016mCM8mFMMmrgZg",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82b93c1001YduP3UulXPrTtf",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.795Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.796Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527823796,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82b95b3002u1opNulJpfOvJw",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82b93c1001YduP3UulXPrTtf",
+    "type": "tool",
+    "callID": "call_427d3412eb83dc1e",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.796Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527823796,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82b95b3001byShPjavg0DGZz",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82b93c1001YduP3UulXPrTtf",
+    "type": "text",
+    "text": "मैं इंटरनेट पर पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया खोजता हूँ।",
+    "time": {
+      "start": 1789527823796,
+      "end": 1789527823796
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:43.796Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527823796,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82b95b3002u1opNulJpfOvJw",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82b93c1001YduP3UulXPrTtf",
+    "type": "tool",
+    "callID": "call_427d3412eb83dc1e",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया"
+      },
+      "time": {
+        "start": 1789527823796
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527826915,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82b95b3002u1opNulJpfOvJw",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82b93c1001YduP3UulXPrTtf",
+    "type": "tool",
+    "callID": "call_427d3412eb83dc1e",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया"
+      },
+      "output": "Title: वर्षा कैलकुलेटर – संग्रहित जल मात्रा का अनुमान लगाएं - CalculatorLib\nURL: https://calculatorlib.com/hi/rainfall-calculator\nPublished: N/A\nAuthor: N/A\nHighlights:\nयह वर्षा कैलकुलेटर बताता है कि किसी बारिश के दौरान आप किसी सतह से कितना पानी इकट्ठा कर सकते हैं। आपको बस दो मान भरने हैं — मिलीमीटर (mm) में वर्षा की मात्रा और वर्ग मीटर (m²) में जल-संग्रहण क्षेत्र — और यह आपको घन मीटर (m³) में संग्रहित जल की मात्रा बता देता है,\n...\nही उतनी ही मात्रा लीटर में भी। यह मीट्रिक (SI) इकाइयों का उपयोग करता है, इसलिए यह हर उस जगह काम करता है जहाँ वर्षा मिलीमीटर में मापी जाती है — यानी अमेरिका को छोड़कर दुनिया के अधिकांश हिस्से में, जिसमें भारत भी शामिल है\n...\nहण क्षेत्र पर\n...\nमें पहुँचाया\n...\n- वर्षा की मात्रा (mm): कितनी गहराई तक बारिश हुई, जैसा कि मौसम केंद्र, पूर्वानुमान या रेन गेज (वर्षा मापी) में दिखाया जाता है। एक मिलीमीटर वर्षा का मतलब है कि हर वर्ग मीटर पर एक लीटर पानी गिरा।\n- जल-संग्रहण क्षेत्र (m²): बारिश इकट्ठा करने वाली सतह का समतल (ऊपर से दिखने वाला) क्षेत्रफल — जैसे छत का आधार-क्षेत्र, पक्का आँगन या खेत। ढलान वाली सतह का क्षेत्रफल नहीं, बल्कि क्षैतिज (horizontal) प्रक्षेपित क्षेत्रफल लें।\n...\n$$V = \\frac{\\text{वर्षा (mm)} \\times \\text{क्षेत्रफल (m}^2\\text{)}}{1000}$$\n...\n1000 से भाग देने पर मिलीमीटर, मीटर में बदल जाते हैं ताकि इकाइयाँ घन मीटर के अनुरूप हो जाएँ। परिणाम को लीटर में दिखाने के लिए टूल मात्रा को 1000 से गुणा करता है:\n...\n$$\\text{लीटर} = \\text{मात्रा (m}^3\\text{)} \\times 1000 = \\text{वर्षा (mm)} \\times \\text{क्षेत्रफल (m}^2\\text{)}$$\n...\nयानी एक आसान मानसिक तरकीब: लीटर में पानी = mm में वर्षा गुणा m² में क्षेत्रफल।\n\n आयतन वर्षा की गहराई और जलग्रहण क्षेत्र के गुणनफल के\n...\nहोता है।\n...\nमान लीजिए 80 m² आधार-क्षेत्र वाली एक छत पर 25 mm बारिश होती है।\n...\n- मात्रा $$= \\frac{25 \\times 80}{1000} = \\frac{2000}{1000} = \\mathbf{2 \\text{ m}^3}$$\n- लीटर $$= 2 \\times 1000 = \\mathbf{2000 \\text{ लीटर}}$$\n...\nतो उस छत से सिर्फ़ एक 25 mm की झमाझम बारिश ही 2,000 लीटर की टंकी भर सकती है।\n\n I don't have access to a localize_sections tool in my available tools. However, I can provide you with\n...\nHindi translation of the HTML content directly. Here it is: ```html\n...\nसंग्रह सूत्र है:\n...\n$$V = \\frac{R \\times A \\times C}{1000}$$ \n\nजहां \\(R\\) मिलीमीटर में वर्षा की गहराई है, \\(A\\) वर्ग मीटर में क्षैतिज (योजना) जलग्रहण क्षेत्र है, \\(C\\) अपवाह गुणांक है, और \\(V\\) घन मीटर में संग्रहीत मात्रा है। योजना क्षेत्र का उपयोग करें — ऊपर से देखा गया पदचिह्न — ढलान वाली सतह क्षेत्र नहीं, क्योंकि वर्षा लंबवत गिरती है।\n...\n$$V = \\frac{25 \\times 100}{1000} = 2.5\\ \\text{m}^3 = 2{,}500\\ \\text{L}$$\n...\nतो कच्ची पकड़ 2.5 m³ है। गुणांक लागू करते हुए:\n...\n$$V = \\frac{25 \\times 100 \\times 0.90}{1000} = 2.25\\ \\text{m}^3 = 2{,}250\\ \\text{L}$$\n...\nलगभग 250 L फर्स्ट फ्लश, भिगोने और बिखराव में खो जाता है। इसका व्यावहारिक तरीका: समायोजित आंकड़े से अपने टैंक का आकार निर्धारित करें, और सैद्धांतिक आंकड़े से अपने gutters और overflow का आकार निर्धारित करें।\n...\n| परिदृश्य | वर्षा (मिमी) | जलग्रहण क्षेत्र (m²) | सैद्धांतिक मात्रा | \\(C = 0.85\\) पर यथार्थवादी मात्रा |\n| --- | --- | --- | --- | --- |\n| बगीचे की शेड छत पर हल्की बारिश | 5 | 50 | 0.25 m³ (250 L) | 0.2125 m³ (212.5 L) |\n| छोटे घर की छत पर बारिश का मध्यम दिन | 25 | 80 | 2 m³ (2,000 L) | 1.7 m³ (1,700 L) |\n| पारिवारिक घर की छत पर भारी तूफान | 50 | 150 | 7.5 m³ (7,500 L) | 6.375 m³ (6,375 L) |\n| गोदाम की छत पर संक्षिप्त बारिश | 10 | 1,000 | 10 m³ (10,000 L) | 8.5 m³ (8,500 L) |\n| बड़ी छत पर मानसून-दिन की बाढ़ | 100 | 200 | 20 m³ (20,000 L) | 17 m³ (17,000 L) |\n| एक हेक्टेयर खेत पर बारिश | 20 | 10,000 | 200 m³ (200,000 L) | 170 m³ (170,000 L) |\n...\n$$V = \\frac{50 \\times 150}{1000} = \\frac{7500}{1000} = 7.5\\ \\text{m}^3$$ \n\nऔर गुणांक लागू करते हुए, \\(7.5 \\times 0.85 = 6.375\\) m³।\n\n---\n\nTitle: वर्षा जल संचयन कैलकुलेटर (गैलन में) — छत से कितना पानी जमा होगा - CalculatorLib\nURL: https://calculatorlib.com/hi/rainwater-harvesting-volume-calculator\nPublished: 2026-06-18T00:00:00.000Z\nAuthor: N/A\nHighlights:\n## परिणाम\n\n संचय योग्य वर्षा जल 529.55 गैलन जमा हुआ \n\n| मात्रा (लीटर) | 2,004.56 L |\n| --- | --- |\n| मात्रा (घन फुट) | 70.79 ft³ |\n| सैद्धांतिक अधिकतम (100% दक्षता पर) | 623 gal |\n...\nवर्षा जल संचयन मात्रा कैलकुलेटर यह अनुमान लगाता है कि एक बारिश के दौरान या कई दिनों की जमा हुई वर्षा से आप अपनी छत से कितने गैलन पानी इकट्ठा कर सकते हैं। यह भंडारण टैंक का सही आकार चुनने, सिंचाई प्रणाली की योजना बनाने और यह समझने में मददगार है कि वर्षा जल संचयन से कितना पानी बचाया जा सकता है। यहाँ इस्तेमाल किया गया \\(0.623\\) का गुणांक अमेरिकी इकाइयों (वर्ग फुट, इंच और US गैलन) पर आधारित है — भारत में जहाँ वर्ग मीटर, मिलीमीटर और लीटर चलते हैं, वहाँ इसे ध्यान में रखें।\n\n बारिश का पानी छत के संग्रहण क्षेत्र से बहकर भंडारण बैरल में जाता है।\n...\nतीन मान दर्ज करें: छत का संग्रहण क्षेत्रफल वर्ग फुट में (छत की ढलान वाली सतह नहीं, बल्कि इमारत का सीधा फुटप्रिंट लें, क्योंकि बारिश सीधी नीचे गिरती है), वर्षा की गहराई इंच में, और एक वास्तविक संग्रहण दक्षता प्रतिशत। दक्षता में छींटे, वाष्पीकरण, फर्स्ट-फ्लश डायवर्जन और नाली के ओवरफ्लो जैसी हानियाँ शामिल होती हैं — ज़्यादातर असली सिस्टम 75% से 90% के बीच काम करते हैं।\n...\nएक वर्ग फुट पर गिरने वाली एक इंच बारिश एक घन फुट का \\(1/12\\) भाग होती है। चूँकि एक घन फुट में लगभग \\(7.48\\) US गैलन पानी आता है, इसलिए प्रति वर्ग फुट प्रति इंच बारिश से करीब \\(0.623\\) गैलन पानी बनता है। इसे अपने क्षेत्रफल और वर्षा से गुणा करें, फिर दक्षता से समायोजित करें:\n...\n$$\\text{मात्रा} = \\text{क्षेत्रफल} \\times \\text{वर्षा} \\times 0.623 \\times \\frac{\\text{दक्षता}}{100}$$\n\n संग्रह की मात्रा छत के संग्रहण क्षेत्र और वर्षा की गहराई पर निर्भर करती है।\n...\n1,000 वर्ग फुट की छत पर 85% दक्षता के साथ 2 इंच बारिश के लिए:\n...\n$$1000 \\times 2 \\times 0.623 = 1{,}246 \\text{ गैलन}$$\n...\nसैद्धांतिक रूप से, और\n...\n$$1246 \\times 0.85 = \\mathbf{1{,}059.1 \\text{ गैलन}}$$\n...\nव्यावहारिक रूप से जमा होंगे। यह लगभग दो 500-गैलन टैंक भरने के लिए पर्याप्त है।\n\n---\n\nTitle: एक दिन 8 सेमी वर्षा हुई 60 मी लम्बी व 40 मी चौड़ी छत पर इस को इकटठा किया ..\nURL: https://askfilo.com/user-question-answers-smart-solutions/ek-din-8-semii-vrssaa-huii-60-mii-lmbii-v-40-mii-caudd-ii-3330373730383032\nPublished: 2026-01-10T10:39:17.000Z\nAuthor: N/A\nHighlights:\n# एक दिन 8 सेमी वर्षा हुई 60 मी लम्बी व 40 मी चौड़ी छत पर इस को इकटठा किया गया और 3.5 मी त्रिज्या के टैंक में डाल दिया। टैंक में पानी का स्तर क्या होगा?\n...\nहम पहले छत पर वर्षा के पानी की मात्रा की गणना करेंगे। छत का क्षेत्रफल = लंबाई × चौड़ाई = 60 मी × 40 मी = 2400 मी²। वर्षा की मात्रा = क्षेत्रफल × वर्षा की ऊँचाई = 2400 मी² × 0.08 मी = 192 मी³। अब हम टैंक में पानी के स्तर की गणना करेंगे। टैंक का वॉल्यूम = π × (त्रिज्या)² × ऊँचाई। टैंक की त्रिज्या 3.5 मी है, इसलिए टैंक का वॉल्यूम = π × (3.5)² × h। हमें यह पता करना है कि टैंक में पानी का स्तर h क्या होगा। टैंक में पानी की मात्रा = 192 मी³। इसलिए, 192 = π × (3.5)² × h। इसे हल करने पर, h = 192 / (π × (3.5)²) मिलेगा।\n...\nछत का क्षेत्रफल = लंबाई × चौड़ाई = 60 मी × 40 मी = 2400 मी²।\n...\nवर्षा की मात्रा = क्षेत्रफल × वर्षा की ऊँचाई = 2400 मी² × 0.08 मी = 192 मी³।\n...\nटैंक का वॉल्यूम = π × (त्रिज्या)² × ऊँचाई।\n...\nटैंक की त्रिज्या 3.5 मी है, इसलिए टैंक का वॉल्यूम = π × (3.5)² × h।\n...\n192 = π × (3.5)² × h को हल करने पर h = 192 / (π × (3.5)²) मिलेगा।\n...\nटैंक में पानी का स्तर लगभग 4.97 मीटर होगा।\n\n---\n\nTitle: घर में वर्षा जल संग्रहण की सलाह\nURL: https://indiawebzine.com/hi/rainwater-harvesting-at-home/\nPublished: 2026-07-19T23:00:00.000Z\nAuthor: Arjun Mehta\nHighlights:\nअधिकांश शहरी भारतीय घरों के लिए 50 वर्ग मीटर की छत का क्षेत्र एक भारी वर्षा में हजारों लीटर एकत्र कर सकता है। यह पानी शौचालय, बागीय पौधों, कार धोने और फर्श पोंछने के लिए अच्छा काम करता है। बहुत से परिवार मानसून के महीनों में सिर्फ इसी व्यवस्था से अपने नगर निगम के पानी के उपयोग को 30 से 40 प्रतिशत तक कम करने की सूचना देते हैं।\n...\nयह प्रत्येक वर्षा के\n...\nकुछ लीटर को\n...\nटंकी से दूर करके एक\n...\nकक्ष में भेज देता है। उस कक्ष के भरने के बाद,\n...\nपानी स्वचालित रूप से आपके\n...\nप्रत्येक वर्षा घटना\n...\nबाद आप कचरे\n...\n> घरेलू वर्षा जल संग्रहण भारत में अब एक विशिष्ट अभ्यास नहीं है। हम छत तक पहुँच वाले छोटे शहरी फ्लैटों से लेकर पेरी-शहरी क्षेत्रों के बड़े स्वतंत्र घरों तक, आवासीय खंडों में लगातार अपनाना देख रहे हैं। अर्थशास्त्र सीधा है: एक अच्छी तरह से स्थापित छत प्रणाली अपनी लागत को 2 से 3 मानसून मौसमों में कम किए गए नगर निगम पानी के बिलों और कम टैंकर निर्भरता के माध्यम से वसूल करती है। हालांकि, अधिक महत्वपूर्ण लाभ भूजल रिचार्ज है। जब एक जिले में हजारों घर पारगम्य गड्ढों या भूमिगत सम्पों को अपनाते हैं, तो स्थानीय जलभृत स्तरों पर संचयी प्रभाव मापने योग्य और महत्वपूर्ण होता है। हम यह भी देखते हैं कि जो घरेलू छत संग्रहण को एक फर्स्ट-फ्लश डायवर्टर और एक साधारण रेत फिल्टर के साथ जोड़ते हैं, वे बहुत बेहतर पानी की गुणवत्ता के परिणाम देखते हैं और घरेलू उद्देश्यों की एक विस्तृत श्रृंखला के लिए संग्रहीत पानी का उपयोग करते हैं। प्रयुक्ति की बाधा वास्तव में कम है। अधिकांश स्थापनाओं के लिए केवल एक प्लंबर और स्थानीय रूप से उपलब्ध सामग्री की आवश्यकता होती है।\n\n---\n\nTitle: बारिश को मिलीमीटर में ही क्यों मापते हैं?, जानिए इसका साइंटिफिक राज, जिसे जान चकरा जाएगा आपका दिमाग - Latest News Himachal Dastak\nURL: https://himachaldastak.com/how-and-why-is-rain-measured-in-milliliters-himachal-pradesh-news/\nPublished: 2025-09-09T08:50:56.000Z\nAuthor: vikas chauhan\nHighlights:\n#### 1 मिमी बारिश = 1 लीटर प्रति वर्ग मीटर पानी\n...\n#### जानकार बताते हैं कि बारिश को मिलीमीटर में मापने का सीधा अर्थ होता है कि यदि किसी समतल सतह पर बारिश का पानी जमा किया जाए, तो वह सतह 1 मिलीमीटर गहराई तक भर गई हो । यानी, 1 मिमी बारिश का मतलब होता है- 1 वर्ग मीटर सतह पर 1 लीटर पानी ।\n...\n#### मौसम विशेषज्ञों के अनुसार, यदि किसी घर की छत का क्षेत्रफल 100 वर्ग मीटर है और 10 मिमी बारिश होती है, तो उस छत पर कुल 1,000 लीटर पानी बरसता है। इस गणना से यह समझा जा सकता है कि सिर्फ कुछ मिमी बारिश भी कितनी भारी मात्रा में पानी ला सकती है।\n...\n#### बारिश को मापने के लिए रेनगेज\n...\nयंत्र का प्रयोग किया जाता है। यह एक बेलनाकार पात्र होता है जिसमें ऊपर से गिरने वाला पानी जमा होता है और स्केल से मापा जाता है कि कितने मिलीमीटर पानी गिरा ।\n...\n#### उदाहरण के लिए, 20 मिमी की एक सामान्य बारिश भी एक 200 वर्ग मीटर की छत पर 4,000 लीटर पानी दे सकती है, जिसे रेन वाटर हार्वेस्टिंग के ज़रिए उपयोग में लाया जा सकता है।\n...\n#### 1 मिमी बारिश = 1 लीटर प्रति वर्ग मीटर पानी 100 मिमी बारिश = 10,000 लीटर प्रति 100 m2 सतह मापन यंत्र = रेनगेज भारत में जिम्मेदार एजेंसी = IMD मिलीमीटर = अंतरराष्ट्रीय मानक इकाई\n\n---\n\nTitle: Roof Top Rain Water Harvesting – Save Water Save Nature\nURL: https://savewatersavenature.com/category/recharge/roof-top-rain-water-harvesting/\nPublished: 2026-02-22T13:21:13.000Z\nAuthor: N/A\nHighlights:\nएक ही छत पर ऊर्जा, पानी, भोजन, खाद और आराम – सब कुछ संभव है। भूमिका (Introduction) आज का युग महंगाई, बेरोज़गारी, ऊर्जा संकट और जल संकट का युग है। हर परिवार चाहता है कि उसका खर्च कम हो, आय बढ़े और जीवन स्तर सुधरे। लेकिन ज़्यादातर लोग यह नहीं जानते कि इसका समाधान उनके अपने घर की छत पर मौजूद है। हमारी छत आज भी अधिकतर घरों में खाली पड़ी रहती है—केवल धूप, गर्मी और बारिश सहने के लिए। जबकि यदि उसी छत को स्मार्ट तरीके से उपयोग किया जाए, तो वही छत: यह ब्लॉग आपको एक आदर्श “Best Combination Roof Model” से परिचित कराएगा, जिसे अपनाकर आम नागरिक स्वावलंबी (Self-Reliant) बन सकता है। आदर्श मॉडल क्या है? (What is Best Combination Roof) Best Combination Roof का अर्थ है –👉 एक ही छत पर कई उपयोगों को संतुलित रूप से अपनाना, ताकि: इस मॉडल के 5 मुख्य स्तंभ 1️⃣ Solar Panels – छत से कमाई जाने वाली बिजली Solar क्यों ज़रूरी है? बिजली का बिल हर महीने बढ़ रहा है। ऐसे में सोलर पैनल: आम घर के लिए कितना सोलर? सिस्टम उपयोग 1 kW पंखा, लाइट, टीवी 2 kW फ्रिज, मोटर, वॉशिंग मशीन 3 kW पूरा मध्यम घर आर्थिक लाभ आय कैसे हो सकती है? 👉 Solar = खर्च में कटौती + भविष्य की सुरक्षा 2️⃣ Rain Water Harvesting – छत से पानी का खजाना समस्या आज कई शहरों में: समाधान – Rain Water Harvesting छत पर गिरने वाला बारिश का पानी: के ज़रिए संग्रह किया जा सकता है। कितना पानी मिल सकता है?☔ 1000 Sq Ft Roof से Rainwater Harvesting Calculation 🔢 Step 1: Roof Area को समझें 👉1000 sq ft × 0.0929 = 92.9 sq meter 🌧 Step 2: Average Rainfall मान लें भारत के ज़्यादातर हिस्सों में average rainfall: 👉Rainfall Height = 1 meter 💧 Step 3: पानी की कुल मात्रा (Basic Formula) 📌 Formula: Water Collected (Liters) = Roof Area (sq m) × Rainfall (m) × 1000 Calculation: = 92.9 × 1 × 1000= 92,900 Liters 👉 अगर 100% पानी इकट्ठा किया जाए तो = 92,900 लीटर ⚙️ Step 4: Practical Losses को जोड़ें असल जीवन में: इसलिए हम 80% efficiency मानते हैं। 92,900 × 80% = 74,320 Liters ✅ (One Season / One Year) 👉 1000 Sq Ft Roof से ≈ 70,000 – 75,000 लीटर पानी एक मानसून सीज़न में आसानी से स्टोर किया जा सकता है। 🏠 यह पानी कितने काम आएगा? उपयोग कितने दिन 4 लोगों का घरेलू उपयोग 4–6 महीने Terrace Garden पूरा साल Toilet + Cleaning 6–8 महीने Groundwater Recharge लंबे समय तक 💡 आसान भाषा में समझें 🧠 याद रखने वाला Shortcut Formula हर 100 sq ft छत ≈ 7,000–8,000 लीटर पानी / वर्ष तो: 🌱 निष्कर्ष 👉 1000 sq ft की छत = पानी का छोटा तालाब अगर हर घर यह करे: “जो बारिश आज बह जाती है, वही कल जीवन बचा सकती है।” उपयोग आर्थिक लाभ 3️⃣ Terrace Garden – छत से ताज़ा भोजन और कमाई Terrace Garden क्यों? आज हम जो सब्ज़ियाँ खाते हैं: क्या उगा सकते हैं? खर्च और बचत आय का साधन 👉 Terrace Garden = सेहत + बचत + कमाई 4️⃣ Compost Unit – कचरे से सोना समस्या समाधान – Compost Unit 👉 30–40 दिन में जैविक खाद फायदे आय कैसे? 5️⃣ Sitting Area – छत को जीवन का हिस्सा बनाना सिर्फ आराम नहीं, मानसिक स्वास्थ्य सामाजिक लाभ 🔁 यह मॉडल कैसे एक-दूसरे को सपोर्ट करता है? 👉 पूरा सिस्टम एक चक्र में चलता है 💰 कुल आर्थिक प्रभाव (Annual Impact) स्रोत लाभ बिजली बचत ₹15,000–₹40,000 पानी बचत ₹5,000–₹15,000 सब्ज़ी बचत ₹20,000–₹40,000 अतिरिक्त आय ₹30,000–₹1,00,000 👉 कुल संभावित लाभ: ₹70,000 – ₹2,00,000 / वर्ष 🏠 किन लोगों के लिए सबसे उपयोगी? 🌍 सामाजिक और राष्ट्रीय लाभ निष्कर्ष (Conclusion) छत केवल कंक्रीट नहीं है,👉 वह आपका भविष्य है। अगर हर घर अपनी छत को: बना ले, तो भारत:\n...\nCollecting Rain Today, Sustaining Life Tomorrow In rapidly growing cities, the demand for water continues to rise — but the supply is becoming increasingly scarce. Aging infrastructure, declining groundwater levels, and erratic rainfall patterns have led to a serious urban water crisis. The solution is literally falling on our rooftops: Rooftop Rainwater Harvesting (RRWH). What is Rooftop Rainwater Harvesting? Rooftop Rainwater Harvesting is the process of collecting rainwater from rooftops and directing it into storage tanks, recharge pits, or borewells. Instead of letting precious rainwater go to waste, it is stored or absorbed into the ground for future use. Why Cities Need It Now More Than Ever RRWH offers a sustainable and decentralized solution for clean, local water availability. Benefits of Rooftop Rainwater Harvesting How It Works – Simple Setup Even small roofs can collect thousands of liters during a single rain! Did You Know? A rooftop of 100 sq. meters can collect up to 1 lakh liters of rainwater annually (based on average rainfall of 1000mm). That’s enough to meet the drinking and cooking needs of a family for months. Who Can Implement It? Many local governments now offer subsidies for RRWH systems!\n\n---\n\nTitle: घर की छत पर कितने लीटर की टंकी लगानी चाहिए? जानिए परिवार के हिसाब से सही साइज - How Much Capacity Water Tank Do You Need For Your Roof? Size Guide Explained In Hindi - Amar Ujala Hindi News Live\nURL: https://www.amarujala.com/photo-gallery/utility/how-much-capacity-water-tank-do-you-need-for-your-roof-size-guide-explained-in-hindi-2026-09-08\nPublished: 2026-09-08T00:00:00.000Z\nAuthor: N/A\nHighlights:\nWater Tank Capacity Calculation: नया मकान बनाते समय या पुरानी पानी की टंकी बदलते वक्त अक्सर लोग इस बात को लेकर उलझन में रहते हैं कि छत पर कितने लीटर की टंकी लगवाना सही रहेगा। अमूमन लोग बिना हिसाब लगाए कोई भी साइज चुन लेते हैं, जिससे बाद में पानी खत्म होने या टंकी ओवरफ्लो होने की समस्या बनी रहती है। \n\n भारतीय मानकों के अनुसार, एक सामान्य व्यक्ति को अपनी रोजमर्रा की जरूरतों के लिए एक तय मात्रा में पानी की आवश्यकता होती है। आइए इस लेख में समझते हैं कि आपके परिवार के सदस्यों की संख्या के हिसाब से छत पर कितनी बड़ी टंकी लगाना सबसे सही रहेगा।\n...\n- भारतीय मानक ब्यूरो के अनुसार, शहर या गांव में रहने वाले एक सामान्य इंसान को रोजाना करीब 135 से 150 लीटर पानी की जरूरत होती है।\n- इसमें पीने, खाना बनाने, नहाने, कपड़े-बर्तन धोने और शौचालय के इस्तेमाल का पानी शामिल होता है।\n- अगर आपके घर में 4 सदस्य हैं, तो आपके परिवार की कुल दैनिक खपत लगभग 500 से 600 लीटर के आसपास बैठती है।\n\n वॉटर टैंक - फोटो : Adobe Stock\n...\n- अगर आपके परिवार में 3 से 4 सदस्य हैं, तो छत पर 500 लीटर से लेकर 750 लीटर क्षमता वाली टंकी लगाना सबसे सही विकल्प है।\n- वहीं, अगर संयुक्त परिवार है और घर में 5 से 8 सदस्य रहते हैं, तो आपको कम से कम 1000 से 1500 लीटर की टंकी लगवानी चाहिए।\n- इससे दिनभर पानी की किल्लत का सामना नहीं करना पड़ेगा।\n\n वॉटर टैंक - फोटो : Adobe Stock\n...\n- टंकी का साइज चुनते समय सिर्फ दैनिक उपयोग ही नहीं, बल्कि आपातकालीन बैकअप का ध्यान रखना भी जरूरी है।\n- अगर आपके इलाके में पानी की सप्लाई दिन में सिर्फ एक बार आती है या बिजली कटौती ज्यादा होती है, तो हमेशा अपनी कुल जरूरत से 20% बड़ी टंकी चुनें।\n- ऐसे इलाकों के लिए 4 सदस्यों वाले परिवार को 1000 लीटर की टंकी लगानी चाहिए।\n\n वॉटर टैंक - फोटो : Adobe Stock\n\n---\n\nTitle: एमपी में बारिश का पानी बचाने की अद्भुत मिसाल, घरों में बनाए ‘अमृत कुंड’ में सालभर सहेजकर बुझा रहे प्‍यास\nURL: https://www.naidunia.com/lifestyle/news-a-remarkable-example-of-rainwater-conservation-in-mp-where-people-quenching-thirst-by-storing-it-in-amrit-kund-8459420\nPublished: 2026-08-25T00:00:00.000Z\nAuthor: N/A\nHighlights:\nशिवनगर निवासी पुलक गोयल के परिवार ने वर्षाजल संग्रहण के लिए इससे भी व्यवस्थित व्यवस्था बनाई है। तीन मंजिला मकान की छत पर वर्षाजल संग्रहण के लिए अलग साफ-सुथरा हिस्सा बनाया गया है, जहां सामान्य आवाजाही नहीं होती।\n...\nयहां गिरने वाला पानी पाइप के जरिए बेसमेंट में बने करीब 5 हजार लीटर क्षमता वाले टैंक तक पहुंचता है। परिवार ने इस टैंक को ‘अमृत कुंड’ नाम दिया है।\n...\nजनरल फिजिशियन संजय जैन और उनकी पत्नी शालिनी जैन करीब दस वर्षों से वर्षाजल का उपयोग कर रहे हैं। शालिनी जैन बताती हैं कि छत पर पानी संग्रहण की विशेष व्यवस्था के माध्यम से बारिश का पानी ड्रमों में एकत्र किया जाता है। फिल्टर करने के बाद इसका उपयोग पीने और घरेलू कार्यों में किया जाता है। उनका कहना है कि गुरुदेव प्रमाण सागर की प्रेरणा से उन्हें वर्षाजल संरक्षण की दिशा में काम करने की प्रेरणा मिली। इसके बाद उन्होंने आसपास के लोगों को भी बारिश\n...\nबूंदों को सहेजने के लिए जागरूक करना शुरू किया।\n...\nकई परिवारों ने अपने भूमिगत जल टैंकों को ‘अमृत कुंड’ नाम दिया है। शिवनगर के कुछ मकानों में करीब पांच हजार लीटर तक क्षमता वाले टैंक बनाए गए हैं। तीन मंजिला मकानों में छत के ऐसे हिस्से को वर्षाजल संग्रहण के लिए निर्धारित किया जा रहा है, जहां सामान्य आवाजाही न हो। इससे छत की साफ सतह से पानी पाइपलाइन के जरिए सीधे संग्रहण टैंक तक पहुंचाया जा सके। जैन समाज के सदस्य बताते हैं कि राजस्थान के कई क्षेत्रों में वर्षाजल को संग्रहित कर लंबे समय तक उपयोग करने की परंपरा रही है। इसी परंपरा को जबलपुर में भी परिवार अपने-अपने स्तर पर आगे बढ़ा रहे हैं। कुछ परिवार संग्रहित पानी को लंबे समय तक सुरक्षित रखने के पारंपरिक तरीकों का भी पालन करते हैं।",
+      "title": "Web search: पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया",
+      "metadata": {},
+      "time": {
+        "start": 1789527823796,
+        "end": 1789527826913
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527826917,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba1e4001YqgkH6c5zcU12r",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82b93c1001YduP3UulXPrTtf",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8576,
+      "output": 205,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8781,
+      "headroom": 30075,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.918Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.918Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.918Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.918Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.919Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.919Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.919Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.925Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8781,
+  "providerTokens": 8781,
+  "estimatedInputTokens": 6242,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8576,
+    "cacheRead": 0,
+    "output": 205
+  },
+  "overflow": false,
+  "headroom": 30075,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.926Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.928Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:46.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:47.585Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527827585,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba480001SxsVL7ul7FFGYN",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba1ed0018T0Q9FLD5xKbrM",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:47.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:47.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527827586,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba482002sPgGnGXDL4QE3z",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba1ed0018T0Q9FLD5xKbrM",
+    "type": "tool",
+    "callID": "call_649e939a2e49be27",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:47.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527827586,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba482001nmCaj1z825CaZa",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba1ed0018T0Q9FLD5xKbrM",
+    "type": "text",
+    "text": "मैं https://calculatorlib.com/hi/rainfall-calculator खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527827586,
+      "end": 1789527827586
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:47.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527827586,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba482002sPgGnGXDL4QE3z",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba1ed0018T0Q9FLD5xKbrM",
+    "type": "tool",
+    "callID": "call_649e939a2e49be27",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://calculatorlib.com/hi/rainfall-calculator"
+      },
+      "time": {
+        "start": 1789527827586
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527828100,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba482002sPgGnGXDL4QE3z",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba1ed0018T0Q9FLD5xKbrM",
+    "type": "tool",
+    "callID": "call_649e939a2e49be27",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://calculatorlib.com/hi/rainfall-calculator"
+      },
+      "output": "वर्षा कैलकुलेटर – संग्रहित जल मात्रा का अनुमान लगाएं - CalculatorLib\n    \n\n    \n    \n    \n    \n        \n        \n    \n    \n    \n    \n    \n    \n                                                                        \n            \n        \n\n            \n    \n        \n        \n        \n    \n            \n\n    \n                        \n        \n    \n                \n                \n    \n            \n\n    \n    \n    \n    \n\n\n    \n        \n            \n                \n                \n            \n            \n                \n                CalculatorLib\n            \n        \n\n        \n            \n                \n                    \n                        \n                    \n                \n                \n                ⌘&nbsp;K\n            \n        \n\n        \n            \n                \n                    \n                \n            \n            \n                हिन्दी\n                \n                                English\n    Español\n    Tiếng Việt\n    हिन्दी\n    日本語\n    한국어\n    Türkiye\n    العربية\n    Pусский\n    Français\n    中文(简体)\n    中文(繁體)\n                    \n            \n        \n    \n\n                \n        \n                                            \n                    समय और दिनांक                \n                                            \n                    वित्तीय                \n                                            \n                    स्वास्थ्य और फिटनेस                \n                                            \n                    व्यक्तिगत वित्त                \n                                            \n                    गणित और सांख्यिकी                \n                                            \n                    ज्यामिति                \n                                            \n                    शैक्षिक                \n                                            \n                    खेल और फिटनेस                \n                                            \n                    भौतिकी और इंजीनियरिंग                \n                                            \n                    रसायन विज्ञान                \n                                            \n                    मौसम और जलवायु                \n                                            \n                    व्यापार और विपणन                \n                                            \n                    उपकरण                \n                                            \n                    बैंकिंग सेवाएं                \n                                            \n                    भविष्य और उभरती तकनीक                \n                                            \n                    करियर और व्यावसायिक विकास                \n                                            \n                    स्मार्ट होम और आईओटी                \n                                            \n                    पालतू जानवर की देखभाल                \n                                            \n                    शौक और शिल्प                \n                                            \n                    स्वास्थ्य और माइंडफुलनेस                \n                                            \n                    साहसिक और यात्रा                \n                                            \n                    डिजिटल जीवन                \n                                            \n                    उद्योग-विशिष्ट                \n                                            \n                    विविध                \n                    \n    \n    \n\n    \n    \n        \n            \n                \n                    \n                \n                श्रेणियाँ\n            \n            \n                \n                    \n                \n                खोजें\n            \n            \n                \n                कैल्क्युलेटर\n            \n            \n                \n                इकाइयों कनवर्टर\n            \n            \n                \n                उपकरण\n            \n        \n    \n\n                \n        \n            \n            \n        \n                \n            खाते के साथ मुफ्त\n            \n                \n                    \n                    कैलकुलेटर सहेजें\n                \n                \n                    \n                    साइडबार अनुकूलित करें\n                \n                \n                    \n                    अपनी साइट में एम्बेड करें\n                \n                \n                    \n                    REST + MCP टोकन\n                \n                \n                    \n                    अपना उपयोग ट्रैक करें\n                \n            \n        \n        \n            \n                \n                \n                \n            \n            साइन इन करें\n        \n    \n    \n                                \n    \n    \n    CalculatorLib\n                    \n                                                            श्रेणियाँ\n                                                \n                    \n                                                            मौसम और जलवायु\n                                                \n                    \n                                    वर्षा कैलकुलेटर\n                            \n            \n                                \n    \n    \n    \n\n    \n        वर्षा कैलकुलेटर\n        \n        \n        सहेजें\n    \n        \n    \n                MCP के माध्यम से कनेक्ट करें →\n    \n\n    \n        \n            गणना दर्ज करें\n            \n                \n                                                                            \n वर्षा की मात्रा (mm): \n\n\n जल-संग्रहण क्षेत्र (m²): \n    \n                    \n                        गणना\n                        साफ़ करें\n                    \n                \n            \n        \n                            \n                सूत्र (फॉर्मूला)\n                                \n                            \n                    \n                    \n            \n                \n                                  \n                विज्ञापन\n                \n    \n    \n        \n    \n    \n        परिणाम\n                \n \n  कुल वर्षा जल मात्रा\n \n \n  1 m³\n \n \n  1000 L\n \n\n\n \n  \n   दर्ज की गई वर्षा\n   10 mm\n  \n  \n   दर्ज किया गया संग्रहण क्षेत्र\n   100 m²\n  \n  \n   गणना की गई मात्रा\n   1 m³\n  \n  \n   गणना किए गए लीटर\n   1000 L\n  \n \n                    \n        \n                        \n                \n            \n                \n                     साझा करें\n            \n                \n                     परिणामों की नकल करें\n            \n                 PDF\n        \n    \n\n\n\n    \n        \n    \n    \n        क्या यह परिणाम उपयोगी था?\n        \n            \n                \n                हाँ\n            \n            \n                \n                नहीं\n            \n        \n        \n            \n        \n    \n    \n        \n        \n            \n            \n            भेजें\n        \n    \n    \n        \n        धन्यवाद — आपकी प्रतिक्रिया हमें बेहतर बनाने में मदद करती है!\n    \n    सुधार होने पर सूचना पाने के लिए लॉग इन करें\n\n    \n                            \n                    \n                        \n                                                    \n \n  वर्षा कैलकुलेटर क्या करता है\n  यह वर्षा कैलकुलेटर बताता है कि किसी बारिश के दौरान आप किसी सतह से कितना पानी इकट्ठा कर सकते हैं। आपको बस दो मान भरने हैं — मिलीमीटर (mm) में वर्षा की मात्रा और वर्ग मीटर (m²) में जल-संग्रहण क्षेत्र — और यह आपको घन मीटर (m³) में संग्रहित जल की मात्रा बता देता है, साथ ही उतनी ही मात्रा लीटर में भी। यह मीट्रिक (SI) इकाइयों का उपयोग करता है, इसलिए यह हर उस जगह काम करता है जहाँ वर्षा मिलीमीटर में मापी जाती है — यानी अमेरिका को छोड़कर दुनिया के अधिकांश हिस्से में, जिसमें भारत भी शामिल है।\n \n \n  \n  \n   जलग्रहण क्षेत्र पर गिरने वाला वर्षा जल भंडारण टंकी में पहुँचाया जाता है।\n  \n \n \n  इनपुट को समझें\n  \n   वर्षा की मात्रा (mm): कितनी गहराई तक बारिश हुई, जैसा कि मौसम केंद्र, पूर्वानुमान या रेन गेज (वर्षा मापी) में दिखाया जाता है। एक मिलीमीटर वर्षा का मतलब है कि हर वर्ग मीटर पर एक लीटर पानी गिरा।\n   जल-संग्रहण क्षेत्र (m²): बारिश इकट्ठा करने वाली सतह का समतल (ऊपर से दिखने वाला) क्षेत्रफल — जैसे छत का आधार-क्षेत्र, पक्का आँगन या खेत। ढलान वाली सतह का क्षेत्रफल नहीं, बल्कि क्षैतिज (horizontal) प्रक्षेपित क्षेत्रफल लें।\n  \n \n \n  सूत्र\n  यह कैलकुलेटर एक सरल और सटीक संबंध का उपयोग करता है:\n  $$V = \\frac{\\text{वर्षा (mm)} \\times \\text{क्षेत्रफल (m}^2\\text{)}}{1000}$$\n  1000 से भाग देने पर मिलीमीटर, मीटर में बदल जाते हैं ताकि इकाइयाँ घन मीटर के अनुरूप हो जाएँ। परिणाम को लीटर में दिखाने के लिए टूल मात्रा को 1000 से गुणा करता है:\n  $$\\text{लीटर} = \\text{मात्रा (m}^3\\text{)} \\times 1000 = \\text{वर्षा (mm)} \\times \\text{क्षेत्रफल (m}^2\\text{)}$$\n  यानी एक आसान मानसिक तरकीब: लीटर में पानी = mm में वर्षा गुणा m² में क्षेत्रफल।\n विज्ञापन\n    \n    \n  \n  \n   आयतन वर्षा की गहराई और जलग्रहण क्षेत्र के गुणनफल के बराबर होता है।\n  \n \n \n  हल किया हुआ उदाहरण\n  मान लीजिए 80 m² आधार-क्षेत्र वाली एक छत पर 25 mm बारिश होती है।\n  \n   मात्रा $$= \\frac{25 \\times 80}{1000} = \\frac{2000}{1000} = \\mathbf{2 \\text{ m}^3}$$\n   लीटर $$= 2 \\times 1000 = \\mathbf{2000 \\text{ लीटर}}$$\n  \n  तो उस छत से सिर्फ़ एक 25 mm की झमाझम बारिश ही 2,000 लीटर की टंकी भर सकती है।\n  I don't have access to a localize_sections tool in my available tools. However, I can provide you with the Hindi translation of the HTML content directly. Here it is: ```html \n \n  सतह प्रकार द्वारा अपवाह गुणांक\n  बुनियादी कैलकुलेटर जलग्रहण क्षेत्र पर गिरने वाली सैद्धांतिक वर्षा की मात्रा की गणना करता है। व्यावहार में आप इसका पूरा संग्रह कभी नहीं करते: कुछ पानी गर्म छत से वाष्पित हो जाता है, कुछ सरंध्र सामग्री में समा जाता है, कुछ नाली, डाउनपाइप और फर्स्ट-फ्लश डायवर्टर में खो जाता है, और तीव्र वर्षा में कुछ नाली से बाहर निकल जाता है। इंजीनियर इसे एक आयामहीन अपवाह (या संग्रह दक्षता) गुणांक \\(C\\) के साथ ध्यान में रखते हैं, जिसे एक सरल गुणक के रूप में लागू किया जाता है।\n  नीचे दिए गए श्रेणियां वर्षा जल संचयन और छोटी-साइट जल निकासी डिजाइन के लिए व्यापक रूप से उपयोग की जाने वाली अंगुली के नियम हैं। ये एक एकल राष्ट्रीय मानक नहीं हैं — विभिन्न डिजाइन कोड (उदाहरण के लिए ऑस्ट्रेलिया, भारत, जर्मनी या यूएस में राष्ट्रीय वर्षा जल संचयन मार्गदर्शन) थोड़े अलग-अलग मान प्रकाशित करते हैं, इसलिए जहां आप निर्माण करते हैं वहां लागू कोड की जांच करें।\n  \n   \n    \n     सतह का प्रकार\n     विशिष्ट \\(C\\)\n     नुकसान पर नोट्स\n    \n   \n   \n    \n     धातु / नालीदार स्टील शीट छत\n     0.90 – 0.95\n     सबसे चिकनी और सर्वश्रेष्ठ प्रदर्शन करने वाली सतह; लगभग कोई अवशोषण नहीं। नुकसान मुख्य रूप से फर्स्ट-फ्लश डायवर्जन और भारी वर्षा में नाली अतिप्रवाह हैं।\n    \n    \n     कंक्रीट या मिट्टी की छत\n     0.80 – 0.90\n     अनगिलेज़्ड टाइल संतृप्त होने तक पानी को अवशोषित करती है, इसलिए हल्की बारिश कम पैदा करती है। जोड़ मलबे को फंसाते हैं; समय के साथ काई की वृद्धि \\(C\\) को कम करती है।\n    \n    \n     डामर / बिटुमेन शिंगल छत\n     0.80 – 0.85\n     खुरदरी दानेदार सतह पानी की एक पतली फिल्म को बरकरार रखती है। चकत्ते बहाव का मतलब है कि भंडारण से पहले एक फर्स्ट-फ्लश डायवर्टर की दृढ़ता से अनुशंसा की जाती है।\n    \n    \n     हरी / वनस्पति छत\n     0.25 – 0.50\n     सब्सट्रेट डिजाइन द्वारा प्रत्येक घटना के एक बड़े अंश को संग्रहित करता है। अत्यधिक परिवर्तनशील: सूखे सब्सट्रेट पर छोटी बारिश के लिए लगभग 0, संतृप्त होने के बाद अधिक।\n    \n    \n     कंक्रीट पक्की / सील किया हुआ आँगन\n     0.80 – 0.90\n     कुशल लेकिन जमीन-स्तर का पानी धूल, तेल और जैविक पदार्थ उठाता है — ठीक से फ़िल्टर किए गए के बिना गैर-पीने योग्य के रूप में व्यवहार करें।\n    \n    \n     बजरी या संघनित मिट्टी\n     0.40 – 0.60\n     रिक्त स्थान में पर्याप्त घुसपैठ; भारी रूप से इस बात पर निर्भर है कि सतह पहले से कितनी गीली है और ढलान पर।\n    \n    \n     नंगी जमीन / लॉन\n     0.10 – 0.30\n     अधिकांश वर्षा में घुसपैठ या वनस्पति द्वारा अवशोषण किया जाता है। एक बार मिट्टी संतृप्त होने या मिट्टी भारी होने पर अपवाह तीव्रता से बढ़ता है।\n    \n   \n  \n  समायोजित संग्रह सूत्र है:$$V = \\frac{R \\times A \\times C}{1000}$$ \n  जहां \\(R\\) मिलीमीटर में वर्षा की गहराई है, \\(A\\) वर्ग मीटर में क्षैतिज (योजना) जलग्रहण क्षेत्र है, \\(C\\) अपवाह गुणांक है, और \\(V\\) घन मीटर में संग्रहीत मात्रा है। योजना क्षेत्र का उपयोग करें — ऊपर से देखा गया पदचिह्न — ढलान वाली सतह क्षेत्र नहीं, क्योंकि वर्षा लंबवत गिरती है।\n  लागू उदाहरण\n  \\(C = 0.90\\) के साथ 100 m² धातु शीट छत पर 25 मिमी की वर्षा की घटना गिरती है।\n  सैद्धांतिक मात्रा (जो कैलकुलेटर लौटाता है):$$V = \\frac{25 \\times 100}{1000} = 2.5\\ \\text{m}^3 = 2{,}500\\ \\text{L}$$ \n  तो कच्ची पकड़ 2.5 m³ है। गुणांक लागू करते हुए:$$V = \\frac{25 \\times 100 \\times 0.90}{1000} = 2.25\\ \\text{m}^3 = 2{,}250\\ \\text{L}$$ \n  लगभग 250 L फर्स्ट फ्लश, भिगोने और बिखराव में खो जाता है। इसका व्यावहारिक तरीका: समायोजित आंकड़े से अपने टैंक का आकार निर्धारित करें, और सैद्धांतिक आंकड़े से अपने gutters और overflow का आकार निर्धारित करें।\n \n \n  वर्षा, क्षेत्र और आयतन इकाई रूपांतरण\n  विश्व के अधिकांश हिस्सों में वर्षा मिलीमीटर में और संयुक्त राज्य अमेरिका में इंच में रिपोर्ट की जाती है; जलग्रहण क्षेत्र वर्ग फुट, वर्ग गज, एकड़ या हेक्टेयर में आते हैं। \\(V = R \\times A / 1000\\) का उपयोग करने से पहले सब कुछ मिलीमीटर और वर्ग मीटर में परिवर्तित करें। सटीक के रूप में चिह्नित कारक अंतर्राष्ट्रीय समझौते द्वारा परिभाषित हैं; बाकी व्यावहारिक उपयोग के लिए गोल हैं।\n  वर्षा की गहराई\n  \n   \n    \n     रूपांतरण\n     कारक\n     सटीक या गोल\n    \n   \n   \n    \n     1 इंच\n     25.4 मिमी\n     सटीक (अंतर्राष्ट्रीय इंच की परिभाषा के अनुसार)\n    \n    \n     1 सेंटीमीटर\n     10 मिमी\n     सटीक\n    \n    \n     1 मिमी\n     0.03937 in\n     गोल (सटीक रूप से 1 ÷ 25.4)\n    \n   \n  \n  जलग्रहण क्षेत्र\n  \n   \n    \n     रूपांतरण\n     कारक\n     सटीक या गोल\n    \n   \n   \n    \n     1 वर्ग फुट\n     0.092903 m²\n     गोल (सटीक मान 0.09290304 m²)\n    \n    \n     1 वर्ग गज\n     0.836127 m²\n     गोल (सटीक मान 0.83612736 m²)\n    \n    \n     1 एकड़\n     4,046.86 m²\n     गोल (सटीक मान 4,046.8564224 m²)\n    \n    \n     1 हेक्टेयर\n     10,000 m²\n     सटीक\n    \n   \n  \n  आयतन\n  \n   \n    \n     रूपांतरण\n     कारक\n     सटीक या गोल\n    \n   \n   \n    \n     1 घन मीटर\n     1,000 लीटर\n     सटीक\n    \n    \n     1 घन मीटर\n     264.172 US तरल गैलन\n     गोल (1 US gal = 3.785411784 L, सटीक)\n    \n    \n     1 घन मीटर\n     219.969 शाही (UK) गैलन\n     गोल (1 imp gal = 4.54609 L, सटीक)\n    \n   \n  \n  ध्यान दें कि यूएस तरल गैलन और शाही गैलन लगभग 20% से भिन्न हैं, इसलिए हमेशा बताएं कि आप किस का मतलब रखते हैं — \"500 गैलन\" के रूप में उद्धृत एक टैंक यूएस में 1,893 L और यूके में 2,273 L रखता है।\n  वर्षा-पर-क्षेत्र शॉर्टकट\n  \n   \n    \n     नियम\n     परिणाम\n     सटीक या गोल\n    \n   \n   \n    \n     1 m² पर 1 मिमी वर्षा\n     1 लीटर (0.001 m³)\n     सटीक — सबसे उपयोगी मानसिक शॉर्टकट\n    \n    \n     1 हेक्टेयर पर 1 मिमी वर्षा\n     10 m³ (10,000 L)\n     सटीक\n    \n    \n     1 ft² पर 1 इंच वर्षा\n     0.6234 US गैलन (2.3597 L)\n     गोल\n    \n    \n     1,000 ft² पर 1 इंच वर्षा\n     623.4 US गैलन\n     गोल\n    \n   \n  \n  1 मिमी · 1 m² = 1 L की पहचान इसलिए है कि कैलकुलेटर 1,000 से विभाजित करता है: मिलीमीटर गुणा वर्ग मीटर सीधे लीटर देता है, और 1,000 से विभाजित लीटर को घन मीटर में परिवर्तित करता है।\n विज्ञापन\n    \n    \n  सामान्य परिदृश्यों में संग्रह मात्रा\n  नीचे दी गई प्रत्येक पंक्ति सीधे \\(V = R \\times A / 1000\\) से गणना की जाती है, कोई रूंडिंग शॉर्टकट के बिना। अंतिम स्तंभ \\(C = 0.85\\) का एक प्रतिनिधि अपवाह गुणांक लागू करता है — एक साफ टाइल या शिंगल छत के लिए एक उचित मध्य मान — जो दिखाता है कि क्या गिरता है और आप वास्तव में क्या संग्रहीत कर सकते हैं।\n  \n   \n    \n     परिदृश्य\n     वर्षा (मिमी)\n     जलग्रहण क्षेत्र (m²)\n     सैद्धांतिक मात्रा\n     \\(C = 0.85\\) पर यथार्थवादी मात्रा\n    \n   \n   \n    \n     बगीचे की शेड छत पर हल्की बारिश\n     5\n     50\n     0.25 m³ (250 L)\n     0.2125 m³ (212.5 L)\n    \n    \n     छोटे घर की छत पर बारिश का मध्यम दिन\n     25\n     80\n     2 m³ (2,000 L)\n     1.7 m³ (1,700 L)\n    \n    \n     पारिवारिक घर की छत पर भारी तूफान\n     50\n     150\n     7.5 m³ (7,500 L)\n     6.375 m³ (6,375 L)\n    \n    \n     गोदाम की छत पर संक्षिप्त बारिश\n     10\n     1,000\n     10 m³ (10,000 L)\n     8.5 m³ (8,500 L)\n    \n    \n     बड़ी छत पर मानसून-दिन की बाढ़\n     100\n     200\n     20 m³ (20,000 L)\n     17 m³ (17,000 L)\n    \n    \n     एक हेक्टेयर खेत पर बारिश\n     20\n     10,000\n     200 m³ (200,000 L)\n     170 m³ (170,000 L)\n    \n   \n  \n  पंक्तियों की गणना कैसे की जाती है\n  150 m² छत पर भारी तूफान:$$V = \\frac{50 \\times 150}{1000} = \\frac{7500}{1000} = 7.5\\ \\text{m}^3$$ \n  और गुणांक लागू करते हुए, \\(7.5 \\times 0.85 = 6.375\\) m³।\n  20 मिमी वर्षा के तहत एक हेक्टेयर खेत:$$V = \\frac{20 \\times 10000}{1000} = \\frac{200000}{1000} = 200\\ \\text{m}^3$$ \n  परिणामों को पढ़ना\n  \n   संबंध दोनों इनपुट में पूरी तरह से रैखिक है। वर्षा या क्षेत्र को दोगुना करने से मात्रा दोगुनी हो जाती है, इसलिए आप मानसिक रूप से किसी भी पंक्ति को स्केल कर सकते हैं: 300 m² पर 50 मिमी केवल 150 m² पंक्ति का दो गुना है, या 15 m³।\n   क्षेत्र बड़ी साइटों के लिए गहराई पर हावी है। एक गोदाम की छत पर 10 मिमी की बौछार एक घर की छत पर 50 मिमी के तूफान से अधिक पानी देती है — 10 m³ 7.5 m³ के विरुद्ध — क्योंकि गोदाम का जलग्रहण लगभग सात गुना बड़ा है।\n   छोटी घटनाएं उतनी महत्वपूर्ण नहीं हैं जितनी वे दिखती हैं। शेड पर 5 मिमी की बौछार लगभग 250 L सैद्धांतिक उत्पन्न करती है, लेकिन फर्स्ट-फ्लश डायवर्जन और सतह की भिगोने से उस का एक बड़ा शेयर खपत हो सकता है, इसलिए बहुत हल्की घटनाएं अक्सर भंडारण में लगभग कुछ भी योगदान नहीं देती हैं।\n   शिखर घटनाएं overflow का आकार देती हैं, टैंक नहीं। 100 मिमी मानसून पंक्ति एक छत पर एक दिन में 20,000 L आने को दिखाता है। यदि आपका टैंक उससे छोटा है, gutters, downpipes और overflow पथ को सुरक्षित रूप से अतिरिक्त को ले जाने में सक्षम होना चाहिए — अंडरसाइज़्ड जल निकासी जल क्षति का एक सामान्य कारण है।\n   क्षेत्र-स्केल संख्याएं बड़ी हैं लेकिन फैली हुई हैं। एक हेक्टेयर में 200 m³ केवल तभी प्रयोग योग्य पानी बनता है जब एक तालाब, swale या बांध हो इसे पकड़ने के लिए; नंगी जमीन पर प्रभावी गुणांक 0.85 नहीं, 0.1–0.3 के करीब है।\n  \n  व्यावहारिक नोट्स\n  छत का plan (पदचिह्न) क्षेत्र उपयोग करें, ढलान वाली सतह नहीं, और कोई भी क्षेत्र जो समान gutter सिस्टम में नाली करता है। यदि आप एक भंडारण टैंक का आकार निर्धारित कर रहे हैं, तो इसे एक ही तूफान के बजाय विशिष्ट मासिक वर्षा और आपकी दैनिक मांग पर आधारित करें — एक बड़ी घटना के लिए आकार का एक टैंक सूखे मौसम की जलवायु में अधिकांश वर्ष खाली बैठा होगा। वर्षा के आंकड़े भी स्थान द्वारा बहुत भिन्न होते हैं, इसलिए वैश्विक औसत के बजाय स्थानीय मौसम विज्ञान रिकॉर्ड का उपयोग करें।\n  यह सामान्य योजना सूचना है। संचित वर्षा जल स्वचालित रूप से पीने के लिए सुरक्षित नहीं है: पीनीयता छत सामग्री, निस्पंदन, कीटाणुशोधन और स्थानीय नियमों पर निर्भर करती है, और कई अधिकार क्षेत्र वर्षा जल संग्रह को प्रतिबंधित या लाइसेंस देते हैं। एक पीने योग्य या बड़े पैमाने की प्रणाली डिजाइन करने से पहले स्थानीय अधिकारियों और एक योग्य पेशेवर से सलाह लें।\n \n \n  अक्सर पूछे जाने वाले प्रश्न\n  क्या यह कैलकुलेटर नुकसान (हानि) को भी गिनता है? नहीं। यह सैद्धांतिक अधिकतम मात्रा बताता है। असल में वाष्पीकरण, छींटे उड़ना, फर्स्ट-फ्लश डायवर्जन और नालियों से पानी बहना असली संग्रहण को कम कर देते हैं। इसलिए वास्तविक आँकड़े के लिए परिणाम को एक रनऑफ गुणांक (अच्छी छत के लिए आमतौर पर 0.8–0.9) से गुणा करें।\n  अगर मुझे वर्षा सिर्फ़ सेंटीमीटर या इंच में पता हो तो? पहले बदलें: \\(1\\text{ cm} = 10\\text{ mm}\\), और \\(1\\text{ इंच} = 25.4\\text{ mm}\\)। फिर मिलीमीटर वाला मान डालें।\n  क्या मुझे ढलान वाली छत का क्षेत्रफल लेना चाहिए? नहीं — क्षैतिज आधार-क्षेत्र (जो ठीक ऊपर से देखने पर दिखे) लें। ढलान से पकड़ी जाने वाली बारिश नहीं बढ़ती, क्योंकि बारिश लंबवत (सीधी नीचे) गिरती है।\n \n                                                        \n                                \n                                    अंतिम अपडेट:\n                                    26 अगस्त 2026\n                                \n                            \n                                                \n                                                                                                \n    \n    \n                                                \n                            संबंधित कैलकुलेटर\n                            \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            हीट इंडेक्स कैलकुलेटर\n                                            \n                                                तापमान और सापेक्ष आर्द्रता डालें और सेल्सियस या फ़ारेनहाइट में हीट इंडेक्स निकालें — जानें आपके मौसम में असल में कितनी गर्मी महसूस होती है।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            विंड चिल कैलकुलेटर\n                                            \n                                                हवा का तापमान (°F) और हवा की गति (mph) डालकर विंड चिल यानी असल में कितनी ठंड महसूस होती है, यह जानें और सर्द-तेज़ हवा वाले मौसम की तैयारी करें।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            फ़ारेनहाइट से सेल्सियस बुखार कैलकुलेटर\n                                            \n                                                शरीर के तापमान को फ़ारेनहाइट और सेल्सियस में बदलें और तुरंत जानें कि रीडिंग 38 °C / 100.4 °F की बुखार सीमा तक पहुँचती है या नहीं।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            रैशनल मेथड स्टॉर्मवॉटर रनऑफ कैलकुलेटर\n                                            \n                                                रैशनल मेथड Q=CiA से पीक स्टॉर्मवॉटर रनऑफ की गणना करें। रनऑफ गुणांक, वर्षा तीव्रता और जल निकासी क्षेत्र भरें — US (cfs) या SI (m³/s) में।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            तूफान श्रेणी कैलकुलेटर (सैफिर-सिम्पसन)\n                                            \n                                                mph, नॉट या km/h में सतत हवा की गति से सैफिर-सिम्पसन तूफान श्रेणी जानें। तुरंत श्रेणी 1 से 5 तक के तूफानों को वर्गीकृत करें।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            फ़ारेनहाइट से सेल्सियस ट्रैवल कन्वर्टर\n                                            \n                                                यात्रा के लिए फ़ारेनहाइट को तुरंत सेल्सियस में बदलें। कोई भी °F तापमान डालें और C = (F − 32) × 5/9 फ़ॉर्मूले से सटीक °C मान पाएँ।\n                                            \n                                        \n                                    \n                                                            \n                        \n                                                                                                \n                            खोजें\n                            \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            बिजली दूरी कैलकुलेटर\n                                            \n                                                बिजली चमकने और गड़गड़ाहट सुनाई देने के बीच के सेकंड डालें और जानें कि बिजली कितनी दूर गिरी — 5-सेकंड नियम से किलोमीटर में गणना।\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            शंकु छिन्नक आयतन कैलकुलेटर\n                                            \n                                                शंकु छिन्नक (Conical Frustum) का आयतन इस कैलकुलेटर से तुरंत निकालें। ऊपरी त्रिज्या, निचली त्रिज्या और ऊँचाई डालें और सटीक परिणाम पाएं।\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            टॉर्क से हॉर्सपावर कैलकुलेटर\n                                            \n                                                टॉर्क और RPM से हॉर्सपावर और किलोवाट की सटीक गणना करें। lb-ft या N-m यूनिट चुनें और इंजन की पावर आउटपुट तुरंत जानें। अभी आज़माएँ!\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            फोर्स टू हॉर्सपावर कैलकुलेटर\n                                            \n                                                बल (lbs), दूरी (ft) और समय (सेकंड) डालकर अश्वशक्ति (HP) में पावर आउटपुट तुरंत और सटीक रूप से निकालें। आसान बल-से-अश्वशक्ति कनवर्टर।\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            HOMA-IR कैलकुलेटर\n                                            \n                                                फास्टिंग इंसुलिन (µIU/mL) और फास्टिंग ग्लूकोज़ (mg/dL) से स्टैंडर्ड 405 फॉर्मूले द्वारा अपना HOMA‑IR स्कोर निकालें और इंसुलिन रेज़िस्टेंस का अनुमान लगाएं।\n                                            \n                                        \n                                    \n                                                            \n                        \n                                                                        \n    \n    \n        \n    \n                \n            \n                \n                CalculatorLib\n            \n            नि:शुल्क ऑनलाइन कैलकुलेटर, इकाई परिवर्तक, और उपकरण — मानव और एआई एजेंटों के लिए निर्मित, 12 भाषाओं में उपलब्ध।\n                        \n                \n                    \n                \n                \n                    \n                \n                \n                    \n                \n            \n        \n\n                \n            ब्राउज़ करें\n            \n                वित्तीय\n                गणित\n                फिटनेस और स्वास्थ्य\n                इकाइयों कनवर्टर\n                सभी श्रेणियाँ देखें →\n            \n        \n\n                \n            संसाधन\n            \n                लोकप्रिय खोजें\n                हाल ही में जोड़े गए\n                खोज\n                MCP server\n                बग रिपोर्ट करें\n            \n        \n\n                \n            कंपनी\n            \n                हमारे बारे में\n                शर्तें\n                गोपनीयता नीति\n            \n        \n    \n\n    \n        © 2023–2026 CalculatorLib.com\n        CalculatorLib.com सहायक संदर्भों के लिए सत्यापित सूत्रों का उपयोग करता है। विवरण के लिए अस्वीकरण देखें।",
+      "title": "https://calculatorlib.com/hi/rainfall-calculator (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527827586,
+        "end": 1789527828100
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.101Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527828101,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba684001laEpWlkNFZfOSa",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba1ed0018T0Q9FLD5xKbrM",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 27245,
+      "output": 164,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 27409,
+      "headroom": 11447,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.101Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.101Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.101Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.101Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.102Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.102Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.102Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.102Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.103Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.103Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.111Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 27409,
+  "providerTokens": 27409,
+  "estimatedInputTokens": 12397,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 27245,
+    "cacheRead": 0,
+    "output": 164
+  },
+  "overflow": false,
+  "headroom": 11447,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.112Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.112Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.113Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527828431,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba7ce001A7ZW2gKOOKTBjb",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba690001pkE8Y1k0a0Pq16",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527828431,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba7cf002Z1BCjPs9qukJFD",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba690001pkE8Y1k0a0Pq16",
+    "type": "tool",
+    "callID": "call_2d70104a864868ba",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527828432,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba7cf0010f8B7qiQoTavWg",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba690001pkE8Y1k0a0Pq16",
+    "type": "text",
+    "text": "मैं https://calculatorlib.com/hi/rainwater-harvesting-volume-calculator खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527828431,
+      "end": 1789527828431
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527828432,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba7cf002Z1BCjPs9qukJFD",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba690001pkE8Y1k0a0Pq16",
+    "type": "tool",
+    "callID": "call_2d70104a864868ba",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://calculatorlib.com/hi/rainwater-harvesting-volume-calculator"
+      },
+      "time": {
+        "start": 1789527828432
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.720Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527828720,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba7cf002Z1BCjPs9qukJFD",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba690001pkE8Y1k0a0Pq16",
+    "type": "tool",
+    "callID": "call_2d70104a864868ba",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://calculatorlib.com/hi/rainwater-harvesting-volume-calculator"
+      },
+      "output": "वर्षा जल संचयन कैलकुलेटर (गैलन में) — छत से कितना पानी जमा होगा - CalculatorLib\n    \n\n    \n    \n    \n    \n        \n        \n    \n    \n    \n    \n    \n    \n                                                                        \n            \n        \n\n            \n    \n        \n        \n        \n    \n            \n\n    \n                        \n        \n    \n                \n                \n    \n            \n\n    \n    \n    \n    \n\n\n    \n        \n            \n                \n                \n            \n            \n                \n                CalculatorLib\n            \n        \n\n        \n            \n                \n                    \n                        \n                    \n                \n                \n                ⌘&nbsp;K\n            \n        \n\n        \n            \n                \n                    \n                \n            \n            \n                हिन्दी\n                \n                                English\n    Español\n    Tiếng Việt\n    हिन्दी\n    日本語\n    한국어\n    Türkiye\n    العربية\n    Pусский\n    Français\n    中文(简体)\n    中文(繁體)\n                    \n            \n        \n    \n\n                \n        \n                                            \n                    समय और दिनांक                \n                                            \n                    वित्तीय                \n                                            \n                    स्वास्थ्य और फिटनेस                \n                                            \n                    व्यक्तिगत वित्त                \n                                            \n                    गणित और सांख्यिकी                \n                                            \n                    ज्यामिति                \n                                            \n                    शैक्षिक                \n                                            \n                    खेल और फिटनेस                \n                                            \n                    भौतिकी और इंजीनियरिंग                \n                                            \n                    रसायन विज्ञान                \n                                            \n                    मौसम और जलवायु                \n                                            \n                    व्यापार और विपणन                \n                                            \n                    उपकरण                \n                                            \n                    बैंकिंग सेवाएं                \n                                            \n                    भविष्य और उभरती तकनीक                \n                                            \n                    करियर और व्यावसायिक विकास                \n                                            \n                    स्मार्ट होम और आईओटी                \n                                            \n                    पालतू जानवर की देखभाल                \n                                            \n                    शौक और शिल्प                \n                                            \n                    स्वास्थ्य और माइंडफुलनेस                \n                                            \n                    साहसिक और यात्रा                \n                                            \n                    डिजिटल जीवन                \n                                            \n                    उद्योग-विशिष्ट                \n                                            \n                    विविध                \n                    \n    \n    \n\n    \n    \n        \n            \n                \n                    \n                \n                श्रेणियाँ\n            \n            \n                \n                    \n                \n                खोजें\n            \n            \n                \n                कैल्क्युलेटर\n            \n            \n                \n                इकाइयों कनवर्टर\n            \n            \n                \n                उपकरण\n            \n        \n    \n\n                \n        \n            \n            \n        \n                \n            खाते के साथ मुफ्त\n            \n                \n                    \n                    कैलकुलेटर सहेजें\n                \n                \n                    \n                    साइडबार अनुकूलित करें\n                \n                \n                    \n                    अपनी साइट में एम्बेड करें\n                \n                \n                    \n                    REST + MCP टोकन\n                \n                \n                    \n                    अपना उपयोग ट्रैक करें\n                \n            \n        \n        \n            \n                \n                \n                \n            \n            साइन इन करें\n        \n    \n    \n                                \n    \n    \n    CalculatorLib\n                    \n                                                            श्रेणियाँ\n                                                \n                    \n                                                            ज्यामिति\n                                                \n                    \n                                    वर्षा जल संचयन मात्रा कैलकुलेटर\n                            \n            \n                                \n    \n    \n    \n\n    \n        वर्षा जल संचयन मात्रा कैलकुलेटर\n        \n        \n        सहेजें\n    \n        \n    \n                MCP के माध्यम से कनेक्ट करें →\n    \n\n    \n        \n            गणना दर्ज करें\n            \n                \n                                                                            \n \n  छत का संग्रहण क्षेत्रफल (वर्ग फुट)\n \n \n  वर्षा (इंच में)\n \n \n  संग्रहण दक्षता (%)\n \n    \n                    \n                        गणना\n                        साफ़ करें\n                    \n                \n            \n        \n                            \n                सूत्र (फॉर्मूला)\n                                \n                            \n                    \n                    \n            \n                \n                                  \n                विज्ञापन\n                \n    \n    \n        \n    \n    \n        परिणाम\n                \n \n  संचय योग्य वर्षा जल\n \n \n  529.55\n \n \n  गैलन जमा हुआ\n \n\n\n \n  \n   मात्रा (लीटर)\n   2,004.56 L\n  \n  \n   मात्रा (घन फुट)\n   70.79 ft³\n  \n  \n   सैद्धांतिक अधिकतम (100% दक्षता पर)\n   623 gal\n  \n \n                    \n        \n                        \n                \n            \n                \n                     साझा करें\n            \n                \n                     परिणामों की नकल करें\n            \n                 PDF\n        \n    \n\n\n\n    \n        \n    \n    \n        क्या यह परिणाम उपयोगी था?\n        \n            \n                \n                हाँ\n            \n            \n                \n                नहीं\n            \n        \n        \n            \n        \n    \n    \n        \n        \n            \n            \n            भेजें\n        \n    \n    \n        \n        धन्यवाद — आपकी प्रतिक्रिया हमें बेहतर बनाने में मदद करती है!\n    \n    सुधार होने पर सूचना पाने के लिए लॉग इन करें\n\n    \n                            \n                    \n                        \n                                                    \n \n  यह कैलकुलेटर क्या करता है\n  वर्षा जल संचयन मात्रा कैलकुलेटर यह अनुमान लगाता है कि एक बारिश के दौरान या कई दिनों की जमा हुई वर्षा से आप अपनी छत से कितने गैलन पानी इकट्ठा कर सकते हैं। यह भंडारण टैंक का सही आकार चुनने, सिंचाई प्रणाली की योजना बनाने और यह समझने में मददगार है कि वर्षा जल संचयन से कितना पानी बचाया जा सकता है। यहाँ इस्तेमाल किया गया \\(0.623\\) का गुणांक अमेरिकी इकाइयों (वर्ग फुट, इंच और US गैलन) पर आधारित है — भारत में जहाँ वर्ग मीटर, मिलीमीटर और लीटर चलते हैं, वहाँ इसे ध्यान में रखें।\n \n \n  \n  \n   बारिश का पानी छत के संग्रहण क्षेत्र से बहकर भंडारण बैरल में जाता है।\n  \n \n \n  इसका उपयोग कैसे करें\n  तीन मान दर्ज करें: छत का संग्रहण क्षेत्रफल वर्ग फुट में (छत की ढलान वाली सतह नहीं, बल्कि इमारत का सीधा फुटप्रिंट लें, क्योंकि बारिश सीधी नीचे गिरती है), वर्षा की गहराई इंच में, और एक वास्तविक संग्रहण दक्षता प्रतिशत। दक्षता में छींटे, वाष्पीकरण, फर्स्ट-फ्लश डायवर्जन और नाली के ओवरफ्लो जैसी हानियाँ शामिल होती हैं — ज़्यादातर असली सिस्टम 75% से 90% के बीच काम करते हैं।\n \n \n  सूत्र की व्याख्या\n  एक वर्ग फुट पर गिरने वाली एक इंच बारिश एक घन फुट का \\(1/12\\) भाग होती है। चूँकि एक घन फुट में लगभग \\(7.48\\) US गैलन पानी आता है, इसलिए प्रति वर्ग फुट प्रति इंच बारिश से करीब \\(0.623\\) गैलन पानी बनता है। इसे अपने क्षेत्रफल और वर्षा से गुणा करें, फिर दक्षता से समायोजित करें:\n  $$\\text{मात्रा} = \\text{क्षेत्रफल} \\times \\text{वर्षा} \\times 0.623 \\times \\frac{\\text{दक्षता}}{100}$$\n विज्ञापन\n    \n    \n  \n  \n   संग्रह की मात्रा छत के संग्रहण क्षेत्र और वर्षा की गहराई पर निर्भर करती है।\n  \n \n \n  हल किया हुआ उदाहरण\n  1,000 वर्ग फुट की छत पर 85% दक्षता के साथ 2 इंच बारिश के लिए:\n  $$1000 \\times 2 \\times 0.623 = 1{,}246 \\text{ गैलन}$$\n  सैद्धांतिक रूप से, और\n  $$1246 \\times 0.85 = \\mathbf{1{,}059.1 \\text{ गैलन}}$$\n  व्यावहारिक रूप से जमा होंगे। यह लगभग दो 500-गैलन टैंक भरने के लिए पर्याप्त है।\n \n \n  अक्सर पूछे जाने वाले प्रश्न\n  क्या मुझे ढलान वाली छत का क्षेत्रफल इस्तेमाल करना चाहिए? नहीं। सीधा (क्षैतिज) फुटप्रिंट (लंबाई × चौड़ाई) लें, क्योंकि वर्षा को सीधी गहराई के रूप में मापा जाता है।\n  कितनी दक्षता मान लूँ? योजना के लिए आमतौर पर 80–90% का आँकड़ा लिया जाता है। यदि आप ज़्यादा फर्स्ट-फ्लश डायवर्जन का उपयोग करते हैं या आपकी नालियाँ पुरानी हैं तो इसे कम रखें।\n  क्या मैं इसे मीट्रिक इकाइयों के लिए इस्तेमाल कर सकता हूँ? यह टूल अमेरिकी इकाइयाँ (वर्ग फुट और इंच) उपयोग करता है। सुविधा के लिए परिणाम पंक्ति में मात्रा को लीटर और घन फुट में परिवर्तित करके भी दिखाया जाता है।\n \n                                                        \n                                \n                                    अंतिम अपडेट:\n                                    18 जून 2026\n                                \n                            \n                                                \n                                                                        \n                            \n                                ज्यामिति में सबसे लोकप्रिय\n                                                                    ज्यामिति के सभी कैलकुलेटर देखें →\n                                                            \n                            \n                                                                                                        \n                                        \n                                            \n                                            घड़ी कोण कैलकुलेटर\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            घनाभ कैलकुलेटर\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            चतुर्भुज क्षेत्रफल कैलकुलेटर\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            वृत्त का क्षेत्रफल कैलकुलेटर\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            वर्ग फुट (Square Footage) कैलकुलेटर\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            गोले की त्रिज्या, आयतन, पृष्ठीय क्षेत्रफल और परिधि कैलकुलेटर\n                                        \n                                    \n                                                            \n                        \n                                                                        \n    \n    \n                                                \n                            संबंधित कैलकुलेटर\n                            \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            कुएँ का जल आयतन कैलकुलेटर\n                                            \n                                                कुएँ के व्यास और पानी की गहराई से उसमें मौजूद पानी का आयतन निकालें। नतीजा तुरंत US गैलन और घन फुट में पाएँ।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            पूल वॉल्यूम कैलकुलेटर\n                                            \n                                                लंबाई, चौड़ाई और औसत गहराई से अपने स्विमिंग पूल का वॉल्यूम US गैलन, घन फुट और लीटर में निकालें। मुफ़्त, तेज़ और सटीक।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            पानी की टंकी क्षमता कैलकुलेटर\n                                            \n                                                आयताकार या बेलनाकार पानी की टंकी की क्षमता लीटर में जानें। मीटर में माप डालें और तुरंत आयतन, लीटर व US गैलन पाएं।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            वर्षा कैलकुलेटर\n                                            \n                                                वर्षा (mm) और जल-संग्रहण क्षेत्र (m²) डालें और संग्रहित जल की मात्रा (m³) तुरंत जानें — सरल जल नियोजन के लिए आसान टूल।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            तनुकरण के लिए पानी की मात्रा कैलकुलेटर\n                                            \n                                                जानें किसी घोल को ज़्यादा सांद्रता से कम लक्ष्य तक पतला करने के लिए कितना पानी मिलाना है। सूत्र V_water = V1·(C1−C2)/C2। मुफ़्त और तुरंत।\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            वज़न से आयतन कैलकुलेटर\n                                            \n                                                घनत्व की मदद से वज़न (द्रव्यमान) को आयतन में बदलें। ग्राम, किग्रा, पाउंड या औंस और घनत्व डालें और तुरंत mL, लीटर व cm³ में आयतन पाएँ।\n                                            \n                                        \n                                    \n                                                            \n                        \n                                                                                                \n                            खोजें\n                            \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            गैलन से क्वार्ट कन्वर्टर\n                                            \n                                                गैलन को तुरंत क्वार्ट में बदलें। कोई भी गैलन मान दर्ज करें और qt = gal × 4 फ़ॉर्मूले से सटीक क्वार्ट पाएं। तेज़, मुफ़्त और भरोसेमंद।\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            कप से मिलीलीटर कन्वर्टर\n                                            \n                                                अमेरिकी कप को तुरंत मिलीलीटर (mL) में बदलें। 1 कप = 236.588 mL। खाना पकाने, बेकिंग और रेसिपी के लिए तेज़, सटीक वॉल्यूम कन्वर्टर।\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            रूफ शिंगल्स कैलकुलेटर\n                                            \n                                                जानें कि छत के लिए कितने शिंगल बंडल और रूफिंग स्क्वायर चाहिए। छत के माप और वेस्ट % डालकर अपने रूफिंग प्रोजेक्ट की सामग्री का अनुमान लगाएं।\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            घास बीज कैलकुलेटर\n                                            \n                                                लॉन के क्षेत्रफल (लंबाई × चौड़ाई) और प्रति 1,000 वर्ग फुट बीज दर के आधार पर गणना करें कि आपको कितने पाउंड घास बीज चाहिए। मुफ़्त और तुरंत।\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            Mosteller शारीरिक सतह क्षेत्र (BSA) कैलकुलेटर\n                                            \n                                                Mosteller फॉर्मूले से वज़न (kg) और लंबाई (cm) के आधार पर शारीरिक सतह क्षेत्र (BSA) m² में निकालें। तेज़, सटीक और चिकित्सा में आम।\n                                            \n                                        \n                                    \n                                                            \n                        \n                                                                        \n    \n    \n        \n    \n                \n            \n                \n                CalculatorLib\n            \n            नि:शुल्क ऑनलाइन कैलकुलेटर, इकाई परिवर्तक, और उपकरण — मानव और एआई एजेंटों के लिए निर्मित, 12 भाषाओं में उपलब्ध।\n                        \n                \n                    \n                \n                \n                    \n                \n                \n                    \n                \n            \n        \n\n                \n            ब्राउज़ करें\n            \n                वित्तीय\n                गणित\n                फिटनेस और स्वास्थ्य\n                इकाइयों कनवर्टर\n                सभी श्रेणियाँ देखें →\n            \n        \n\n                \n            संसाधन\n            \n                लोकप्रिय खोजें\n                हाल ही में जोड़े गए\n                खोज\n                MCP server\n                बग रिपोर्ट करें\n            \n        \n\n                \n            कंपनी\n            \n                हमारे बारे में\n                शर्तें\n                गोपनीयता नीति\n            \n        \n    \n\n    \n        © 2023–2026 CalculatorLib.com\n        CalculatorLib.com सहायक संदर्भों के लिए सत्यापित सूत्रों का उपयोग करता है। विवरण के लिए अस्वीकरण देखें।",
+      "title": "https://calculatorlib.com/hi/rainwater-harvesting-volume-calculator (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527828432,
+        "end": 1789527828719
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.721Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527828721,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82ba8f0001953iu3X8TmsKaU",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba690001pkE8Y1k0a0Pq16",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 56403,
+      "output": 202,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 56605,
+      "headroom": -17749,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.721Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.721Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.722Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.722Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.725Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.725Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.725Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.725Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.725Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.725Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.732Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 56605,
+  "providerTokens": 56605,
+  "estimatedInputTokens": 15206,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 56403,
+    "cacheRead": 0,
+    "output": 202
+  },
+  "overflow": true,
+  "headroom": -17749,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.733Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.736Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.736Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.738Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.739Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.739Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.740Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.740Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:48.741Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527829122,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82baa81001z8UHV3Md78lnZz",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba9030011lamuTTCGJrFAF",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.125Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.125Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.126Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527829126,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82baa85001nEhVsLy8PV7v3t",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba9030011lamuTTCGJrFAF",
+    "type": "text",
+    "text": "मैं इंटरनेट पर पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया खोजता हूँ।\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789527829126,
+      "end": 1789527829126
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527829127,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82baa86001gZUc5sUQi8lDJG",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82ba9030011lamuTTCGJrFAF",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 70680,
+      "output": 154,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 70834,
+      "headroom": -31978,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.128Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.129Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.129Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527829129,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82baa89001FyvL5eCKpba9uV",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82baa88001HiF8sn8aQ93xUX",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789527829129,
+      "end": 1789527829129
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.130Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.131Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.131Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.132Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.132Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.135Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.135Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.137Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.137Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.138Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.138Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.225Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527829225,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82baae8001PrHjoeafQ3exLb",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82baa8c0014vKjOcU0CT8e2d",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.225Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.225Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.226Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.226Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527829226,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82baaea001TIm0lZOwRl4Ty3",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82baa8c0014vKjOcU0CT8e2d",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789527829226,
+      "end": 1789527829226
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.226Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527829226,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "part": {
+    "id": "prt_0a82baaea0029gVXHq15iTT8jS",
+    "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+    "messageID": "msg_0a82baa8c0014vKjOcU0CT8e2d",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8703,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8776,
+      "headroom": 30080,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.226Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.226Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.235Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.236Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.241Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.241Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.245Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527829245,
+  "sessionID": "ses_f57d46cd2ffetUaC003sYFgNqI"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.251Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.251Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.252Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.252Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EI5E7VS8yx",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.252Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

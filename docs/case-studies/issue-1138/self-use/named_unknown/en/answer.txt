@@ -1,0 +1,27 @@
+--- cli error (claude-oauth) ---
+{"name": "ZodError", "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"}
+--- assistant text ---
+Let me search the web for y 7 y 84.
+--- step finish: tool-calls ---
+--- assistant text ---
+Let me open https://www.mathway.com/popular-problems/Basic%20Math/62862 and read what it says.
+--- step finish: tool-calls ---
+--- assistant text ---
+Let me open https://www.soluciones.lat/7y=84 and read what it says.
+--- step finish: tool-calls ---
+--- assistant text ---
+Let me open https://www.symbolab.com/popular-algebra/algebra-4599 and read what it says.
+--- step finish: tool-calls ---
+--- assistant text ---
+Enter a problem...
+
+Source: https://www.mathway.com/popular-problems/Basic%20Math/62862
+
+Solución simple y rápida para la ecuación 7y=84. Nuestra respuesta es comprensible y explicada paso a paso. El resultado de la ecuación 7y=84 para usar en su tarea doméstica.
+
+Source: https://www.soluciones.lat/7y=84
+
+7y-84=2y+61 AI ChatToolsNotebookGroupsCheat SheetsWorksheetsPracticeVerifyenEnglishEspañolPortuguêsFrançaisDeutschItalianoРусский中文(简体)한국어日本語Tiếng ViệtעבריתالعربيةUpgradePopular Algebra &gt; 7y-84=2y+61Pre AlgebraAlgebraPre CalculusCalculusFunctionsLinear AlgebraTrigonometryStatisticsPhysicsChemistryFinanceEconomicsConversionsSolution7y−84=2y+61Solutiony=29Hide Steps Solution steps7y−84=2y+61Move 84to the right side7y=2y+145Move 2yto the left side5y=145Divide both sides by 5y=29GraphSorry, your browser does not support this applicationView interactive graphEnter your problemPopular Examplesfactor 10xy-4x-5y+2factor10xy−4x−5y+2simplify-7/7simplify−77​|u+3|&gt;= 2∣u+3∣≥2(60*20+80*2)/(100)10060⋅20+80⋅2​factor x^{24}-1factorx24−1Frequently Asked Questions (FAQ)What is the answer to 7y-84=2y+61 ? The answer to 7y-84=2y+61 is y=29Solve for y: 7y-84=2y+61The solution is y=29Popular topicsimaginary number calculatorratio test calculatorasymptote calculatorremainder calculatorlinear approximation calculatorrational equation calculatorabsolute value calculatorriemann sum calculatoracceleration calculatorarea between curves calculatordomain and range calculatorsequence calculatorintegration by parts calculatorslope intercept form calculatoreigenvector calculatortrig identities calculatorpower series calculatortransformation calculatorhours calculatorparabola calculatorpercentage calculatoraverage rate of change calculatorage calculatorvolume calculatorchain rule calculatorconcavity calculatorrow echelon form calculatorp value calculatorend behavior calculatorfourier transform calculatortrinomial calculatorfactor by grouping calculatorimproper integral calculatorrational number calculatormultiplying polynomials calculatorvariable calculatorpemdas calculatorpythagorean theorem calculatorfunction calculatoru substitution calculatorStudy ToolsAI Math SolverAI ChatPopular ProblemsWorksheetsStudy GuidesPracticeCheat SheetsCalculatorsGraphing CalculatorGeometry CalculatorVerify SolutionAppsSymbolab App (Android)Graphing Calculator (Android)Practice (Android)Symbolab App (iOS)Graphing Calculator (iOS)Practice (iOS)Chrome ExtensionCompanyAbout SymbolabBlogHelpContact UsLegalPrivacyService TermsCookie PolicyCookie SettingsDo Not Sell or Share My Personal InfoCopyright, Community Guidelines, DSA &amp; other Legal ResourcesLearneo Legal CenterFeedbackSocial MediaSymbolab, a Learneo, Inc.
+
+Source: https://www.symbolab.com/popular-algebra/algebra-4599
+--- step finish: stop ---

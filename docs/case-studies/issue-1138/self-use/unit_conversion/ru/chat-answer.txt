@@ -1,0 +1,7 @@
+Поиск в интернете запрошен для `В баке 2 литра воды, из него вылили 750 миллилитров. Сколько миллилитров осталось`.
+
+В браузерной демо-версии formal-ai по умолчанию использует DuckDuckGo Instant Answer (CORS-совместимый, без ключа) и параллельно опрашивает Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews в указанном порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются через reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), поэтому URL, которые встречаются у нескольких провайдеров, всплывают вверх. Дубликаты одной и той же сущности (например, Викидата + Википедия) сворачиваются в один пункт с пометкой «Другие источники». Для произвольной страницы используйте `fetch example.com`; если прямой `fetch()` заблокирован CORS, браузер проверит frame-policy перед встроенным iframe.
+
+Provider: duckduckgo (default)
+Providers considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews
+Combined ranking: reciprocal rank fusion (k = 60)

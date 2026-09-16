@@ -33,6 +33,10 @@ CASES="$1"
 OUT_ROOT="$2"
 
 VERSION="$("$BIN" --version 2>&1 | head -1)"
+# The worktree HEAD moves while siblings commit, so it is *not* the commit the
+# binary was built from. Pass BUILD_COMMIT when building, or the record says
+# `unknown` rather than implying a provenance it does not have.
+BUILD_COMMIT="${BUILD_COMMIT:-unknown}"
 COMMIT="$(git -C "$ROOT" rev-parse HEAD)"
 
 SERVER_STATE="$(mktemp -d)"
@@ -98,15 +102,15 @@ EOF
   end=$(date +%s)
   after="$(grep -c 'POST /v1/chat/completions' "$LOG" 2>/dev/null | head -1)"
   after="${after:-0}"
-  # Only this prompt's slice of the server trace, and at most 128 KB of it —
+  # Only this prompt's slice of the server trace, and at most 32 KB of it —
   # `FORMAL_AI_TRACE_REQUESTS=1` echoes whole request bodies, so an untrimmed
   # trace is megabytes per prompt and drowns the transcript it is meant to
   # document. Truncation is stated in the file so no reader mistakes a trimmed
   # trace for a complete one.
   {
     echo "# server trace slice for $slug/$lang, from byte offset $log_offset"
-    echo "# truncated to the last 128 KB of the slice if it was longer"
-    tail -c "+$((log_offset + 1))" "$LOG" 2>/dev/null | tail -c 131072
+    echo "# truncated to the last 32 KB of the slice if it was longer"
+    tail -c "+$((log_offset + 1))" "$LOG" 2>/dev/null | tail -c 32768
   } > "$dest/server-tail.log"
   python3 "$ROOT/docs/case-studies/issue-1138/self-use/extract_answer.py" \
     "$dest/agent.log" "$dest/answer.txt" 2>/dev/null \
@@ -121,7 +125,8 @@ EOF
     echo "slug=$slug"
     echo "lang=$lang"
     echo "binary_version=$VERSION"
-    echo "commit=$COMMIT"
+    echo "binary_built_at_commit=$BUILD_COMMIT"
+    echo "worktree_commit_at_run=$COMMIT"
     echo "agent_exit=$rc"
     echo "elapsed_seconds=$((end - start))"
     echo "chat_completion_posts=$((after - before))"

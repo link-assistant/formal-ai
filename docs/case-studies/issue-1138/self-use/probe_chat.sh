@@ -17,6 +17,7 @@ while IFS=$'\t' read -r slug lang prompt; do
   case "$slug" in \#*) continue ;; esac
   dest="$OUT_ROOT/$slug/$lang"
   mkdir -p "$dest"
+  printf '%s' "$prompt" > "$dest/prompt.txt"
   echo "== chat $slug/$lang =="
   timeout 180 "$BIN" chat --silent --prompt "$prompt" < /dev/null \
     > "$dest/chat-answer.txt" 2>&1

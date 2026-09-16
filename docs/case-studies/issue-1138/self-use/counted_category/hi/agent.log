@@ -1,0 +1,2494 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.697Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.697Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.697Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.697Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.705Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.705Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.706Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.707Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.707Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.709Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.710Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.712Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 10984,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.712Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.725Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.727Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 21,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.728Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:00:01.728Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.732Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.733Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.733Z",
+  "service": "session",
+  "id": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D",
+  "title": "New session - 2026-09-16T03:00:01.733Z",
+  "time": {
+    "created": 1789527601733,
+    "updated": 1789527601733
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.734Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.734Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.734Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.734Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.734Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d7cdbaffexGe7MhqQBjIIzX/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.734Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d7cdbaffexGe7MhqQBjIIzX/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.736Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57d7cdbaffexGe7MhqQBjIIzX/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.738Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.738Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.739Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.740Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.741Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.741Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.741Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.741Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.741Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.741Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.741Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.742Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.742Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.852Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.856Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.856Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.862Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.872Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:01.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:02.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527602326,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8283494001s8fLq34J1h2esn",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a82832bf0017U3CKw2s3961Ay",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:02.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:02.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527602327,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8283496002M3S4scAE4TO7li",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a82832bf0017U3CKw2s3961Ay",
+    "type": "tool",
+    "callID": "call_940600f2ad23b066",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:02.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527602327,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8283496001pWGfYCGYTr3PIg",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a82832bf0017U3CKw2s3961Ay",
+    "type": "text",
+    "text": "मैं इंटरनेट पर मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं खोजता हूँ।",
+    "time": {
+      "start": 1789527602327,
+      "end": 1789527602327
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:02.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527602327,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8283496002M3S4scAE4TO7li",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a82832bf0017U3CKw2s3961Ay",
+    "type": "tool",
+    "callID": "call_940600f2ad23b066",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं"
+      },
+      "time": {
+        "start": 1789527602327
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.413Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527607414,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8283496002M3S4scAE4TO7li",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a82832bf0017U3CKw2s3961Ay",
+    "type": "tool",
+    "callID": "call_940600f2ad23b066",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं"
+      },
+      "output": "Title: 30+ Medical Instruments Names In Hindi & English – डॉक्टर के उपकरणों के नाम - Hindi Varnamala\nURL: https://hindivarnamala.org/medical-instruments-names\nPublished: 2026-04-05T02:48:49.000Z\nAuthor: Lokesh Yadav\nHighlights:\n| English Name | हिंदी नाम | उपयोग / विवरण |\n| --- | --- | --- |\n| Stethoscope | परिश्रावक | दिल और फेफड़ों की धड़कन सुनने हेतु |\n| Thermometer | तापमापक यंत्र | शरीर का तापमान मापने के लिए |\n| Syringe | सुई / इंजेक्शन | दवा या तरल देने के लिए |\n| Blood Pressure Monitor | रक्तचाप मापी | ब्लड प्रेशर जांचने हेतु |\n| ECG Machine | ईसीजी मशीन | हृदय की विद्युत गतिविधि रिकॉर्ड |\n| Pulse Oximeter | पल्स ऑक्सीमीटर | ऑक्सीजन स्तर मापने के लिए |\n| Nebulizer | नेबुलाइज़र | सांस की दवा भाप के रूप में देना |\n| Ventilator | वेंटिलेटर | गंभीर मरीज की श्वास सहायता |\n| Oxygen Mask | ऑक्सीजन मास्क | ऑक्सीजन प्रदान करने हेतु |\n...\n| Scalpel | शल्य छुरी | सर्जरी में कट लगाने हेतु |\n...\n| Forceps | चिमटी | पकड़ने/निकालने के लिए |\n...\n| Surgical Scissors | शल्य कैंची | सर्जरी में काटने हेतु |\n...\n| Bandage | पट्टी | घाव ढकने/बांधने हेतु |\n| Plaster Cast | प्लास्टर सांचा | हड्डी स्थिर रखने हेतु |\n| Test Tube | परखनली | लैब परीक्षण हेतु |\n| Microscope | सूक्ष्मदर्शी | सूक्ष्म जांच के लिए |\n...\n| X-Ray Machine | एक्स-रे मशीन | अंदरूनी संरचना देखने हेतु |\n...\n| Ultrasound Machine | अल्ट्रासाउंड मशीन | ध्वनि तरंगों से इमेजिंग |\n...\n| CT Scan Machine | सीटी स्कैन मशीन | विस्तृत शरीर स्कैन |\n...\n| Defibrillator | डिफिब्रिलेटर | हृदय गति सामान्य करने हेतु |\n...\n| Glucometer | ग्लूकोमीटर | शुगर\n...\n| IV Set | शिरा-सेट | नस के माध्यम से\n...\nदवा देना |\n...\n| Cannula | कैनुला | नस में प्रविष्टि\n...\n| Stretcher | स्ट्रेचर | मरीज को ले जाने हेतु |\n...\n| Wheelchair | व्हीलचेयर | चलने में असमर्थ मरीज हेतु |\n...\n| Walker | वॉकर / चल सहायक | चलने में सहारा |\n...\n| Crutches | बैसाखी | घायल पैर\n...\n|\n| Autoscope (Otoscope) | ऑटोस्कोप |\n...\nजांच के लिए |\n| Penlight | पेनलाइट | छोटी टॉर्च, जांच हेतु |\n| Rubber Gloves | रबर दस्ताने | संक्रमण से सुरक्षा |\n...\nइन उपकरणों से बीमारी की पहचान की जाती है।उदाहरण: स्टेथोस्कोप, थर्मामीटर, बीपी मॉनिटर, ईसीजी।\n...\nऑपरेशन (सर्जरी) के दौरान उपयोग किए जाते हैं।उदाहरण: स्कैल्पेल, फोर्सेप्स, शल्य कैंची।\n...\n### 1. डॉक्टर सबसे अधिक कौन-सा उपकरण उपयोग करते हैं?\n...\nस्टेथोस्कोप, थर्मामीटर और ब्लड प्रेशर मॉनिटर सबसे सामान्य हैं।\n...\nस्कैल्पेल, फोर्सेप्स, शल्य कैंची आदि।\n...\nस्टेथोस्कोप, थर्मामीटर, सिरिंज, बीपी मॉनिटर, ईसीजी मशीन, वेंटिलेटर जैसे उपकरण रोज़मर्रा की चिकित्सा में अत्यंत आवश्यक हैं। इन उपकरणों के नाम हिंदी और अंग्रेज़ी दोनों में जानना न केवल मेडिकल छात्रों और नर्सिंग अभ्यर्थियों के लिए उपयोगी है, बल्कि सामान्य पाठकों, मरीजों और देखभाल करने वालों के लिए भी ज्ञानवर्धक है।\n\n---\n\nTitle: 50+ Medical Instruments Names In Hindi - डॉक्टर के उपकरणों के नाम\nURL: https://hindivarnamala.in/medical-instruments-names\nPublished: 2024-10-19T15:59:25.000Z\nAuthor: rahuldigital\nHighlights:\n| Sr.No | Medical Instruments Names In English | Medical Equipment Names In Hindi |\n| --- | --- | --- |\n| 1. | Syringe | सुई |\n| 2. | Thermometer | ताप मापक यंत्र |\n| 3. | Ambulance | रोगी वाहन |\n| 4. | Stethoscope | परिश्रावक |\n| 5. | Test tube | परखनली |\n| 6. | Wheelchair | पहियेदार कुर्सी |\n| 7. | Band-Aid | जख़्मपट्टी |\n| 8. | First Aid kit | प्राथमिक चिकित्सा किट |\n| 9. | Bandage | पट्टी |\n| 10. | Scalpel | चिकित्सक की छुरी |\n| 11. | IV (intravenous) | शिराभ्यंतर |\n| 12. | Pills | गोलियाँ |\n| 13. | Tablet | गोली |\n| 14. | Capsule | कैप्सूल |\n| 15. | Poison | ज़हर |\n| 16. | Walker | चल सहायक |\n| 17. | Plaster cast | प्लास्टर का सांचा |\n| 18. | Crutches | बैसाखी |\n| 19. | Cane | बेंत |\n| 20. | X-ray | एक्स-रे |\n| 21. | Sling | गोफन |\n| 22. | Rubber Gloves | रबर के दास्ताने |\n| 23. | Braces | धनुकोष्ठक |\n| 24. | Stretcher | स्ट्रेचर |\n| 25. | Pinch | चिमटा |\n| 26. | Lens | लैंस |\n| 27. | Glasses | चश्मा |\n| 28. | Surgical Mask | शल्य चिकित्सा मुखौटा |\n| 29. | Face mask | पचेहरे का मुखौटा |\n| 30. | Saline bag | लवणयुक्त घोल का बैग |\n| 31. | Blood bag | रक्त थैली |\n| 32. | Scissors | कैंची |\n| 33. | Microscope | सूक्ष्मदशंक यंत्र |\n| 34. | Toothbrush | दाँतों का ब्रुश |\n| 35. | Pipette | पविंदुक |\n| 36. | Dental floss | दंत लोमक |\n| 37. | Cannula | कैनुला |\n| 38. | Nebulizer | नेबुलाइजर |\n| 39. | Autoscope | ऑटोस्कोप |\n| 40. | Penlight | पेनलाइट |\n| 41. | Electrocardiogram Machine (ECG) | इलेक्ट्रोकार्डियोग्राम मशीन (ईसीजी) |\n| 42. | Ventilator | वेंटीलेटर |\n| 43. | Ultrasound | अल्ट्रासाउंड |\n| 44. | Blood Pressure Reading Machine | ब्लडप्रेशर रीडिंग (रक्तदाब मापी) |\n| 45. | CT Scan | सी.टी.स्कैन |\n...\n1. स्टेथोस्कोप (Stethoscope)\n...\n3. ओटोस्कोप (Otoscope)\n...\n5. थर्मामीटर (Thermometer)\n...\n1. स्कैलपेल (Scalpel)\n\n---\n\nTitle: क. लघु उत्तर प्रश्न: रोगी की देखभाल के लिए आवश्यक चिकित्सा उपकरण / औजारों..\nURL: https://askfilo.com/user-question-answers-smart-solutions/k-lghu-uttr-prshn-1-rogii-kii-dekhbhaal-ke-lie-aavshyk-3430353630313439\nPublished: 2025-10-28T07:31:10.000Z\nAuthor: N/A\nHighlights:\nरोगी की देखभाल के लिए आवश्यक चिकित्सा उपकरण / औजारों की सूची:\n...\n- स्टेथोस्कोप\n- थर्मामीटर\n- ब्लड प्रेशर मापक (स्फिग्मोमैनोमीटर)\n- सिरिंज और सुई\n- पट्टी और बैंडेज\n- ऑक्सीमीटर\n- ग्लूकोमीटर\n- दस्ताने\n- मास्क\n- डिसइन्फेक्टेंट\n...\nरोगी की देखभाल के लिए शौचालय में प्रयुक्त औजारों की सूची:\n...\n- हैंड रबर (हाथ धोने के लिए)\n- डिसइन्फेक्टेंट\n- टॉयलेट ब्रश\n- टॉयलेट पेपर\n- ग्लव्स (दस्ताने)\n- वाइप्स\n- फ्लोर क्लीनर\n\n---\n\nTitle: स्टेथोस्कोप: अर्थ, प्रकार और उपयोग\nURL: https://www.moglix.com/hi/articles/stethoscope-meaning-types-and-uses\nPublished: 2022-09-11T00:00:00.000Z\nAuthor: N/A\nHighlights:\nस्टेथोस्कोप एक सरल चिकित्सा उपकरण है जो उपयोगकर्ता को किसी जानवर या मानव शरीर की आंतरिक ध्वनियों को सुनने में सक्षम बनाता है। वाद्य यंत्रस्टेथोस्कोपचिकित्सा क्षेत्र में डॉक्टरों, स्वास्थ्य देखभाल प्रदाताओं और चिकित्सकों द्वारा व्यापक रूप से उपयोग किया जाता है। इसमें एक छोटा डिस्क के साइज का अनुनादक मानव या पशु शरीर के खिलाफ रखा गया है और दो टुकड़े इयरपीस से जुड़े हैं।\n...\nस्टेथोस्कोप शरीर की आंतरिक ध्वनियों को सुनने के लिए एक ध्वनिक चिकित्सा उपकरण है। इसमें एक लकड़ी की नली शामिल थी और यह मनोहारी थी। इस क्रॉस\n...\nस्टेथोस्कोप के कार्य में तीन मुख्य घटक हैं, जैसा कि नीचे चर्चा की गई हैः -\n...\n- ट्यूबिंग\n- कान के टुकड़े\n- छाती का टुकड़ा\n...\nस्टेथोस्कोप\n...\nचिकित्सा उपकरण है जो इतिहास में एक महत्वपूर्ण आविष्कार है। इससे एक मरीज की जांच करते समय डॉक्टरों के लिए कई समस्याएं हल हो गई हैं। स्टेथोस्कोप एक महत्वपूर्ण चिकित्सा उपकरण है जिसका उपयोग चिकित्सा क्षेत्र के सभी डॉक्टर व्यापक रूप से करते हैं। स्टेथोस्कोप के कुछ मुख्य उपयोगों पर नीचे चर्चा की गई हैः\n...\n- ओमरोन संप्रग रैपपोर्ट स्टेथोस्कोप\n- 3एम लिटमैन क्लासिक III स्टेथोस्कोप\n- एमडीएफ एकोस्टिका डीलक्स स्टेथोस्कोप\n...\nस्टेथोस्कोप के\n...\nभाग क्या हैं\n...\n3 मुख्य भागों\n...\nगया हैः\n...\n- छाती का टुकड़ा।\n- ट्यूबिंग\n- एक हेडसेट\n...\nआ। स्टेथोस्कोप में ध्वनि प्राप्त करने के लिए दो पक्ष होते हैं जो इसके माध्यम से आते हैं, घंटी और डायाफ्राम। घंटी का उपयोग कम आवृत्ति ध्वनि और उच्च आवृत्ति ध्वनि का पता लगाने के लिए डायाफ्राम का पता लगाने के लिए किया जाता है।\n...\nआ। स्टेथोस्कोप का मुख्य कार्य डॉक्टर\n...\nके शरीर की\n...\nकी जांच करने में सक्षम बनाना है ताकि रोगी की बीमारियों या बीमारियों\n...\nपता लगाया जा सके।\n\n---\n\nTitle: वीणा\nURL: https://hi.wikipedia.org/wiki/%E0%A4%B5%E0%A5%80%E0%A4%A3%E0%A4%BE\nPublished: N/A\nAuthor: N/A\nHighlights:\nवीणा भारत का एक लोकप्रिय वाद्ययंत्र है, जिसका प्रयोग प्राय: शास्त्रीय संगीत में किया जाता है।\n...\nवीणा सुर ध्वनिओं के लिये भारतीय संगीत में प्रयुक्त सबसे प्राचीन वाद्ययंत्र है। समय के साथ इसके कई प्रकार विकसित हुए हैं (रुद्रवीणा, विचित्रवीणा इत्यादि)। एक-तन्त्री वीणा है। कुछ इसे गिटार का भी रूप बताते हैं। इसके इतिहास के बारे में अनेक मत हैं किंतु अपनी पुस्तक भारतीय संगीत वाद्य में प्रसिद्ध विचित्र वीणा वादक डॉ लालमणि मिश्र ने इसे प्राचीन त्रितंत्री वीणा का विकसित रूप सिद्ध किया। सितार पूर्ण भारतीय वाद्य है क्योंकि इसमें भारतीय वाद्योँ की तीनों विशेषताएं हैं। वीणा वस्तुत: तंत्री वाद्यों का सँरचनात्मक नाम है। तंत्री या तारों के अलावा इसमें घुड़च, तरब के तार तथा सारिकाएँ होती हैं।\n...\nसामान्य तौर पर इसमें चार तार होते हैं और तारों की लंबाई में किसी प्रकार का विभाजन नहीं होता (जबकि सितार में विभाजन किया जाता है)। इस कारण वीणा प्राचीन संगीत के लिये ज्यादा उपयुक्त है। वीणा में तारों की कंपन एक गोलाकार घड़े से तीव्रतर होती है तथा कई आवृत्ति की ध्वनियों के मिलने से \"harmonic\" ध्वनि का जनन होता है। सुरवाद्य होने के लिये ऐसी ध्वनियाँ आवश्यक हैं। विचित्र वीणा से प्रभावित हो कई कलाकार इसके आकार को छोटा करने का प्रयास कर चुके हैं किन्तु उससे ध्वनि का गाम्भीर्य भी परिवर्तित हो जाता है। गिटार को कुछ परिवर्तनों के साथ भारतीय संगीत हेतु उपयुक्त बना विश्वमोहन भट्ट उसे मोहन वीणा के नाम से प्रचलित कर चुके हैं यद्यपि यह चौकोर सपाट ब्रिज के अभाव में वीणा की रंजन वीणा पूरी करती है।\n\n---\n\nTitle: निम्नलिखित प्रश्नों के उत्तर विस्तार से लिखिए। कोणार्क चिकित्सा केंद्र मे..\nURL: https://askfilo.com/user-question-answers-smart-solutions/8-nimnlikhit-prshnon-ke-uttr-vistaar-se-likhie-konnaark-3432333637363336\nPublished: 2025-11-20T06:31:43.000Z\nAuthor: N/A\nHighlights:\n### कोणार्क चिकित्सा केंद्र में विभिन्न रोगों के लक्षण पता लगाने के लिए उपयुक्त मशीनें\n...\nनीचे प्रत्येक समस्या के लिए उस मशीन का नाम दिया गया है जो लक्षणों का आसानी से पता लगा सकती है:\n...\n- मशीन: इलेक्ट्रोकार्डियोग्राम (ECG या EKG)\n- विवरण: यह मशीन हृदय की विद्युत गतिविधि को रिकॉर्ड करती है और हृदय की धड़कन तथा लय की समस्याओं का पता लगाती है।\n...\nमस्तिष्क का ट्यूमर\n...\n- मशीन: मैग्नेटिक रेजोनेंस इमेजिंग (MRI)\n- विवरण: MRI मस्तिष्क के ट्यूमर और अन्य असामान्यताओं को स्पष्ट रूप से दिखाता है।\n...\nमस्तिष्क की जाँच\n...\n- मशीन: सीटी स्कैन (CT Scan) या MRI\n- विवरण: मस्तिष्क की संरचना और किसी भी चोट या रोग का पता लगाने के लिए उपयोग किया जाता है।\n...\n- मशीन: एक्स-रे (X-ray)\n- विवरण: हड्डी के फ्रैक्चर या टूटने का पता लगाने के लिए सबसे सामान्य और प्रभावी तकनीक।\n...\n- मशीन: छाती का एक्स-रे (Chest X-ray)\n- विवरण: फेफड़ों में संक्रमण, जैसे निमोनिया, का पता लगाने के लिए उपयोग किया जाता है।\n...\nरक्त के कणों की गिनती\n...\n- मशीन: ब्लड काउंटर मशीन (Complete Blood Count - CBC Analyzer)\n- विवरण: यह मशीन रक्त में विभिन्न प्रकार के कणों (जैसे लाल रक्त कण, सफेद रक्त कण, प्लेटलेट्स) की संख्या गिनती है।\n...\nगुर्दे की पथरी\n...\n- मशीन: अल्ट्रासाउंड (Ultrasound)\n- विवरण: गुर्दे में पथरी का पता लगाने के लिए अल्ट्रासाउंड स्कैन का उपयोग किया जाता है।\n\n---\n\nTitle: वीणा वाद्य यंत्र का परिचय - Veena Vadya Yantra ka Parichay - सप्त स्वर ज्ञान\nURL: https://saptswargyan.in/veena-vadya-yantra/\nPublished: 2021-07-13T11:58:20.000Z\nAuthor: Amar Vishwa\nHighlights:\nवीणा वाद्य यंत्र – वीणा भारत का ऐतिहासिक प्राचीनतम वाद्ययंत्र है जो (वाद्य यंत्रों के प्रकार वर्गीकरण Musical instrument’s Classification) में तत वाद्यों की श्रेणी में आता है । एक से सौ तार तक वाली वीणाओं की चर्चा भारतीय शास्त्रों में मिलती है । दक्षिण भारत में इसका विशेष प्रचार है ।\n...\n- वाद्य यंत्र वीणा बजाने की स्थिति Method\n- वीणा के दो तूंबे या पेट पोले होते हैं जो कद्दु के बने होते हैं ।\n- वीणा की लम्बाई लगभग 3 फीट 7 इंच होती है ।\n- पहला तुम्बा ऊपर से 10 इंच की दूरी पर होता है और दूसरा लगभग 2 फीट 11 इंच की दूरी पर ।\n- इनका व्यास 14 इंच का होता है । डाँड ( फिंगर बोर्ड ) की लंबाई 21 इंच और चौड़ाई लगभग 3 इंच होती है ।\n- इसी के ऊपर पर्दे ( चल या अचल सारिकाएँ ) लगाए जाते हैं । इनकी संख्या 16 से 22 तक रहती है ।\n- डाँड से पर्दे की ऊंचाई 1/8 इंच तक और कम से कम 7/8 तक होती है ।\n- तारों की संख्या 7 होती है जिनमें से 4 तार ( दो स्टील के तथा दो पीतल के ) घुड़च के ऊपर से जाते हैं , दो बाई ओर होते हैं और एक सीधी ओर ।\n- बाज का मुख्य तार गांधार , मध्यम या धैवत में आवश्यकतानुसार मिलाया जाता है ।\n...\n- इसमें एक ही तुंबा रहता है , परन्तु दाहिने सिरे पर लकड़ी का घट ( तुंबा ) दण्ड के साथ गूज की दृष्टि से जोड़ दिया जाता है ।\n- इसके तूंबे शीशम या कटहल की लकड़ी के बने होते हैं । कहीं – कहीं बायीं ओर कद्दू का तूंबा भी प्रयोग में लाया जाता है ।\n- इसमें 24 पीतल के पर्दे ( अचल सारिकाएँ ) मोम से जुड़े हुए होते हैं ।\n- मूल तन्त्रियाँ ( तार ) 4 होती हैं और 3 चिकारियों के तार होते हैं जो वीणा – दण्ड के पार्श्व में रहते हैं ।\n- मूल तन्त्रियों पर मुक्तावस्था में मध्य षड्ज , मन्द्र पंचम , मन्द्र षड्ज और अतिमंद्र पंचम बोलते हैं ।\n- चिकारियों पर तारस्थानीय षड्ज , पंचम और अतितारस्थानीय षड्ज बोलते हैं ।\n- मूल तन्त्रियों में पहली दो लोहे की और बाकी दो पीतल की होती हैं ।\n\n---\n\nTitle: प्राथमिक चिकित्सा किट की कितनी वस्तुओं को आप पहचान सकते हैं? – QuizDay\nURL: https://www.quizdays.com/hi/wp_quiz/%e0%a4%aa%e0%a5%8d%e0%a4%b0%e0%a4%be%e0%a4%a5%e0%a4%ae%e0%a4%bf%e0%a4%95-%e0%a4%9a%e0%a4%bf%e0%a4%95%e0%a4%bf%e0%a4%a4%e0%a5%8d%e0%a4%b8%e0%a4%be-%e0%a4%95%e0%a4%bf%e0%a4%9f-%e0%a4%95%e0%a5%80/\nPublished: 2026-09-02T08:20:07.000Z\nAuthor: N/A\nHighlights:\nचिपकने वाली पट्टियां (Adhesive bandages) छोटे घावों को गंदगी और बैक्टीरिया से बचाती हैं।गॉज़ पैड रक्त को सोखते हैं और घावों को ढंकने में मदद करते हैं।मेडिकल टेप घाव की ड्रेसिंग को त्वचा के खिलाफ सुरक्षित रूप से पकड़ने में मदद करता है।इंस्टेंट कोल्ड पैक मामूली चोटों के बाद सूजन को कम करने में मदद कर सकते हैं।चिमटी (Tweezers) का उपयोग छोटे स्प्लिंटर्स या मलबे को सावधानीपूर्वक हटाने के लिए किया जा सकता है।लोचदार पट्टियाँ मामूली मोच के लिए संपीड़न और सहायता प्रदान करती हैं।एक थर्मामीटर व्यक्ति के शरीर के तापमान को मापता है।डिस्पोजेबल दस्ताने रक्त और शरीर के अन्य तरल पदार्थों के साथ संपर्क को कम करने में मदद करते हैं।एंटीसेप्टिक वाइप्स का उपयोग आमतौर पर मामूली चोटों के आसपास की त्वचा को साफ करने के लिए किया जाता है।पट्टी काटने वाली कैंची को ड्रेसिंग, टेप और पट्टियों को सुरक्षित रूप से काटने के लिए डिज़ाइन किया गया है।एक त्रिकोणीय पट्टी को घायल हाथ को सहारा देने के लिए स्लिंग में मोड़ा जा सकता है।एक स्प्लिंट चिकित्सा सहायता उपलब्ध होने तक घायल अंग को स्थिर करने में मदद करती है।सुरक्षा पिन त्रिकोणीय या अन्य प्रकार की पट्टियों को सुरक्षित करने में मदद कर सकते हैं।जालीदार रोल घावों को ढंक सकते हैं और ड्रेसिंग को अपनी जगह पर रखने में मदद कर सकते हैं।एक आई पैड घायल आंख की सुरक्षा और उसे ढकने के लिए डिज़ाइन किया गया है।एक सीपीआर फेस शील्ड रेस्क्यू ब्रीदिंग के दौरान एक बाधा प्रदान करती है।स्पेस ब्लैंकेट आपातकालीन स्थिति में गर्मी के नुकसान को कम करने में मदद करता है।बर्न जेल मामूली जलन के लिए अस्थायी ठंडक और राहत प्रदान कर सकता है।आईवॉश का उपयोग आंखों से जलन पैदा करने वाले तत्वों या कचरे को बाहर निकालने के लिए किया जाता है।बायोहाज़र्ड बैग का उपयोग उन सामग्रियों के लिए किया जाता है जो रक्त या शरीर के तरल पदार्थों से दूषित हो सकती हैं।रुई के गोलों का उपयोग कोमल सफाई या एंटीसेप्टिक लगाने के लिए किया जा सकता है।चिपकने वाली पट्टियां उन घावों को ढंकती और सुरक्षित करती हैं जिन्हें अधिक सुरक्षा की आवश्यकता होती है।ओरल सिरिंज तरल दवा को सटीक रूप से मापने और देने में मदद करती है।बर्न ड्रेसिंग मामूली जलन को ढंकने और सुरक्षित रखने में मदद करती है।मामूली घावों को साफ करने के लिए एंटीसेप्टिक घोल का उपयोग किया जा सकता है।घावों से गंदगी और कचरे को धीरे से धोने के लिए स्टेराइल सलाइन का उपयोग किया जा सकता है।आइस बैग मामूली सूजन या चोटों के लिए कोल्ड थेरेपी प्रदान कर सकता है।टूर्निकेट किसी अंग से होने वाले जानलेवा रक्तस्राव को नियंत्रित करने में मदद कर सकता है।प्राथमिक चिकित्सा मार्गदर्शिका सामान्य आपात स्थितियों से निपटने के लिए बुनियादी निर्देश प्रदान करती है।जब किसी को सहायता की आवश्यकता होती है, तो आपातकालीन सीटी ध्यान आकर्षित करने में मदद कर सकती है। You scored 0 out of 30 You scored 1 out of 30 You scored 2 out of 30 You scored 3 out of 30 You scored 4 out of 30 You scored 5 out of 30 You scored 6 out of 30 You scored 7 out of 30 You scored 8 out of 30 You scored 9 out of 30 You scored 10 out of 30 You scored 11 out of 30 You scored 12 out of 30 You scored 13 out of 30 You scored 14 out of 30 You scored 15 out of 30 You scored 16 out of 30 You scored 17 out of 30 You scored 18 out of 30 You scored 19 out of 30 You scored 20 out of 30 You scored 21 out of 30 You scored 22 out of 30 You scored 23 out of 30 You scored 24 out of 30 You scored 25 out of 30 You scored 26 out of 30 You scored 27 out of 30 You scored 28 out of 30 You scored 29 out of 30 You scored 30 out of 30\n...\nक्या नाम है?\n\n चिपकने वाली पट्टी (Adhesive bandage) \n\n गॉज़ पैड (धुंध का टुकड़ा) \n\n मेडिकल टेप \n\n इलास्टिक बैंडेज (लचीली पट्टी) \n\nक्या आपको लगता है कि आप जानते हैं कि प्राथमिक चिकित्सा किट (First Aid Kit) में क्या होता है? इस मज़ेदार 30-प्रश्नों वाली चुनौती के साथ अपने ज्ञान का परीक्षण करें! पट्टियों और धुंध जैसी रोज़मर्रा की ज़रूरी चीज़ों से लेकर उन",
+      "title": "Web search: मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं",
+      "metadata": {},
+      "time": {
+        "start": 1789527602327,
+        "end": 1789527607411
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.417Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527607417,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284878001Y6BWbEU3GglfX1",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a82832bf0017U3CKw2s3961Ay",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8606,
+      "output": 265,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8871,
+      "headroom": 29985,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.419Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.419Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.420Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.420Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.430Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8871,
+  "providerTokens": 8871,
+  "estimatedInputTokens": 5656,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8606,
+    "cacheRead": 0,
+    "output": 265
+  },
+  "overflow": false,
+  "headroom": 29985,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.430Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.430Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.434Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:07.436Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.120Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527608120,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284b36001WnYW0Va2yKS8qX",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284886001JzHssrxbs3sRPt",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.121Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.121Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527608121,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284b39001QswzJezrG2EpZh",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284886001JzHssrxbs3sRPt",
+    "type": "tool",
+    "callID": "call_bcd698320bab686b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.121Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527608121,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284b38001CAvEEvRqjDTjHq",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284886001JzHssrxbs3sRPt",
+    "type": "text",
+    "text": "मैं https://hindivarnamala.org/medical-instruments-names खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527608121,
+      "end": 1789527608121
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527608122,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284b39001QswzJezrG2EpZh",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284886001JzHssrxbs3sRPt",
+    "type": "tool",
+    "callID": "call_bcd698320bab686b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://hindivarnamala.org/medical-instruments-names"
+      },
+      "time": {
+        "start": 1789527608122
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.831Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527608831,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284b39001QswzJezrG2EpZh",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284886001JzHssrxbs3sRPt",
+    "type": "tool",
+    "callID": "call_bcd698320bab686b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://hindivarnamala.org/medical-instruments-names"
+      },
+      "output": "30+ Medical Instruments Names In Hindi &amp; English – डॉक्टर के उपकरणों के नाम - Hindi Varnamala\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\tSkip to content\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\tHindi Varnamala\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\tMenu\t\t\n\t\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\tMenu\t\t\t\t\n\t\t\t\tHome\nHome\nBlog\nBlog\n\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\n\t\t\n\t\n\t\t\t\t\n\t\t\t\n\t\n\t\t\n\t\t\t\n\n\t\n\t\t\t\t\t\n\t\t\t\t30+ Medical Instruments Names In Hindi &amp; English – डॉक्टर के उपकरणों के नाम\t\t\n\t\t\tApril 5, 2026 by Lokesh Yadav \t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\nचिकित्सा क्षेत्र (Medical Field) में डॉक्टर, नर्स और स्वास्थ्यकर्मी कई प्रकार के मेडिकल उपकरण (Medical Instruments) का उपयोग करते हैं। ये उपकरण जांच (Diagnosis), उपचार (Treatment), सर्जरी (Surgery) और मरीजों की देखभाल (Patient Care) में महत्वपूर्ण भूमिका निभाते हैं।\n\n\n\nइस लेख में हम 30+ सामान्य डॉक्टर के उपकरणों के नाम हिंदी और अंग्रेज़ी में सरल विवरण सहित जानेंगे।\n\n\n\n\n\n\n\n मेडिकल उपकरणों के नाम (Hindi &amp; English List)\n\n\n\nEnglish Nameहिंदी नामउपयोग / विवरणStethoscopeपरिश्रावकदिल और फेफड़ों की धड़कन सुनने हेतुThermometerतापमापक यंत्रशरीर का तापमान मापने के लिएSyringeसुई / इंजेक्शनदवा या तरल देने के लिएBlood Pressure Monitorरक्तचाप मापीब्लड प्रेशर जांचने हेतुECG Machineईसीजी मशीनहृदय की विद्युत गतिविधि रिकॉर्डPulse Oximeterपल्स ऑक्सीमीटरऑक्सीजन स्तर मापने के लिएNebulizerनेबुलाइज़रसांस की दवा भाप के रूप में देनाVentilatorवेंटिलेटरगंभीर मरीज की श्वास सहायताOxygen Maskऑक्सीजन मास्कऑक्सीजन प्रदान करने हेतुScalpelशल्य छुरीसर्जरी में कट लगाने हेतुForcepsचिमटीपकड़ने/निकालने के लिएSurgical Scissorsशल्य कैंचीसर्जरी में काटने हेतुBandageपट्टीघाव ढकने/बांधने हेतुPlaster Castप्लास्टर सांचाहड्डी स्थिर रखने हेतुTest Tubeपरखनलीलैब परीक्षण हेतुMicroscopeसूक्ष्मदर्शीसूक्ष्म जांच के लिएX-Ray Machineएक्स-रे मशीनअंदरूनी संरचना देखने हेतुUltrasound Machineअल्ट्रासाउंड मशीनध्वनि तरंगों से इमेजिंगCT Scan Machineसीटी स्कैन मशीनविस्तृत शरीर स्कैनDefibrillatorडिफिब्रिलेटरहृदय गति सामान्य करने हेतुGlucometerग्लूकोमीटरशुगर स्तर मापने हेतुIV Setशिरा-सेटनस के माध्यम से तरल/दवा देनाCannulaकैनुलानस में प्रविष्टि हेतुStretcherस्ट्रेचरमरीज को ले जाने हेतुWheelchairव्हीलचेयरचलने में असमर्थ मरीज हेतुWalkerवॉकर / चल सहायकचलने में सहाराCrutchesबैसाखीघायल पैर के सहारे हेतुAutoscope (Otoscope)ऑटोस्कोपकान जांच के लिएPenlightपेनलाइटछोटी टॉर्च, जांच हेतुRubber Glovesरबर दस्तानेसंक्रमण से सुरक्षा\n\n\n\n\n\n\n\n मेडिकल उपकरणों की प्रमुख श्रेणियाँ\n\n\n\n 1. डायग्नोस्टिक उपकरण (Diagnostic Instruments)\n\n\n\nइन उपकरणों से बीमारी की पहचान की जाती है।उदाहरण: स्टेथोस्कोप, थर्मामीटर, बीपी मॉनिटर, ईसीजी।\n\n\n\n\n\n\n\n 2. सर्जिकल उपकरण (Surgical Instruments)\n\n\n\nऑपरेशन (सर्जरी) के दौरान उपयोग किए जाते हैं।उदाहरण: स्कैल्पेल, फोर्सेप्स, शल्य कैंची।\n\n\n\n\n\n\n\n 3. लाइफ-सपोर्ट उपकरण (Life Support Devices)\n\n\n\nगंभीर मरीजों की जान बचाने में सहायक।उदाहरण: वेंटिलेटर, ऑक्सीजन मास्क।\n\n\n\n\n\n\n\n 4. मरीज सहायता उपकरण (Patient Support Equipment)\n\n\n\nचलने-फिरने व स्थानांतरण में मदद।उदाहरण: व्हीलचेयर, स्ट्रेचर, वॉकर।\n\n\n\n\n\n\n\n यह जानकारी क्यों उपयोगी है?\n\n\n\n मेडिकल छात्रों के लिए नर्सिंग व पैरामेडिकल तैयारी हेतु सामान्य ज्ञान (GK) के लिए मरीज व देखभाल करने वालों हेतु अनुवाद / प्रतियोगी परीक्षा\n\n\n\n\n\n\n\n FAQs – अक्सर पूछे जाने वाले प्रश्न\n\n\n\n1. डॉक्टर सबसे अधिक कौन-सा उपकरण उपयोग करते हैं?\n\n\n\nस्टेथोस्कोप, थर्मामीटर और ब्लड प्रेशर मॉनिटर सबसे सामान्य हैं।\n\n\n\n\n\n\n\n2. स्टेथोस्कोप का हिंदी नाम क्या है?\n\n\n\nपरिश्रावक।\n\n\n\n\n\n\n\n3. कौन-से उपकरण सर्जरी में उपयोग होते हैं?\n\n\n\nस्कैल्पेल, फोर्सेप्स, शल्य कैंची आदि।\n\n\n\n\n\n\n\n4. ऑक्सीजन स्तर मापने वाला उपकरण कौन-सा है?\n\n\n\nपल्स ऑक्सीमीटर।\n\n\n\n\n\n\n\n5. क्या कुछ मेडिकल उपकरण घर पर भी उपयोग किए जा सकते हैं?\n\n\n\nहाँ — जैसे बीपी मॉनिटर, ग्लूकोमीटर, नेबुलाइज़र (डॉक्टर की सलाह से)।\n\n\n\n\n\n\n\nनिष्कर्ष (Conclusion)\n\n\n\nमेडिकल उपकरण (Medical Instruments) स्वास्थ्य सेवाओं की रीढ़ हैं। डॉक्टर और स्वास्थ्यकर्मी इन्हीं उपकरणों की मदद से सटीक जांच (Accurate Diagnosis), सुरक्षित उपचार (Safe Treatment) और प्रभावी सर्जरी (Effective Surgery) कर पाते हैं।\n\n\n\nस्टेथोस्कोप, थर्मामीटर, सिरिंज, बीपी मॉनिटर, ईसीजी मशीन, वेंटिलेटर जैसे उपकरण रोज़मर्रा की चिकित्सा में अत्यंत आवश्यक हैं। इन उपकरणों के नाम हिंदी और अंग्रेज़ी दोनों में जानना न केवल मेडिकल छात्रों और नर्सिंग अभ्यर्थियों के लिए उपयोगी है, बल्कि सामान्य पाठकों, मरीजों और देखभाल करने वालों के लिए भी ज्ञानवर्धक है।\n \t\t\n\n\t\t\t\t\n\t\t\tCategories Uncategorized \t\t\n\t\t\tMakeup Products Names In Hindi &amp; English – मेकअप के सामान की लिस्ट100+ Sweets Names In Hindi &amp; English – मिठाइयों के अंग्रेजी और हिंदी नाम\t\t\n\t\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\t\n\n\t\t\n\t\tLeave a Comment Cancel replyCommentName\nEmail\nWebsite\n Save my name, email, and website in this browser for the next time I comment.\n \n\n&#916;\n\t\n\t\tSearchSearch\n\nRecent Posts\n\n\n100+ Kitchen Item Names In Hindi &amp; English – सभी बर्तनों के अंग्रेजी और हिंदी नाम\nWeek Days Names In Hindi &amp; English – सप्ताह के 7 दिनों के नाम\nMeat Names In Hindi &amp; English – मांस के अंग्रेजी और हिंदी नाम\nMountain Names In Hindi &amp; English – पर्वतो के नाम\nTaste Names In Hindi &amp; English – स्वादो के नाम\nSeason Names In Hindi &amp; English – ऋतुओ के अंग्रेजी और हिंदी नाम\nAll City Names In Hindi – भारतीय शहरों के नाम की सूची\nConstruction Items Names In Hindi &amp; English – भवन निर्माण सामग्री\nAll Weapons Names In Hindi &amp; English – हथियारों के नाम\nSports Names In Hindi &amp; English – खेलों के नाम\nCereals Names In Hindi &amp; English – अनाजों के इंग्लिश और हिंदी नाम\nVolcano Names In Hindi – ज्वालामुखी ओं के नाम\n20+ Cartoon Names For Kids – कार्टून के नाम\nNatural Disasters Names In Hindi – प्राकृतिक आपदाओं के नाम\n20+ Metal Names In Hindi &amp; English – धातुओं के इंग्लिश और हिंदी नाम\n100+ Kirana Item Names In Hindi &amp; English – किराना सामान की लिस्ट हिंदी में\n30+ Drink Names In Hindi &amp; English – पेय पदार्थों के नाम\n50+ Fish Names In Hindi &amp; English With Pictures – मछलियों के अंग्रेजी और हिंदी नाम\n50+ Tool Names In Hindi &amp; English With Pictures – औजारों की इंग्लिश और हिंदी नाम\n100+ Herbs Names In Hindi &amp; English – जड़ी बूटियों और औषधियों के नाम \n\n\nPunjabi VarnamalaTelugu VarnamalaTamil VarnamalaUrdu VarnamalaKannada VarnamalaSanskirt VarnamalaMarathi VarnamalaArabic VarnamalaGujarati VarnamalaOdia VarnamalaMalayalam Varnamala\n\nअ की मात्रा वाले शब्दआ की मात्रा वाले शब्दछोटी इ की मात्रा वाले शब्दबड़ी ई की मात्रा वाले शब्दछोटे उ की मात्रा वाले शब्दबड़े ऊ की मात्रा वाले शब्दए की मात्रा वाले शब्दऐ की मात्रा वाले शब्दऋ की मात्रा वाले शब्दओ की मात्रा वाले शब्दऔ की मात्रा वाले शब्दअं की मात्रा वाले शब्दअः की मात्रा वाले शब्दबिना मात्रा वाले शब्ददो अक्षर वाले शब्दतीन अक्षर वाले शब्दचार अक्षर वाले शब्दपाँच अक्षर वाले शब्द\n\nअऊऔआऋअंइएअःईऐउओ\n\nकठपशखडफसगढबषघणभहचतमक्षछथयत्रजदरज्ञझधलश्रटनव\n\nPunjabi MatraTelugu MatraTamil MatraUrdu MatraKannada MatraSanskirt MatraMarathi MatraGujrati MatraOdia MatraMalayalam Matra\n\nPunjabi AlphabetTelugu AlphabetTamil AlphabetUrdu AlphabetKannada AlphabetSanskirt AlphabetRoman AlphabetMarathi AlphabetDevnagri AlphabetArabic AlphabetGujarati AlphabetOdia AlphabetMalayalam Alphabet\n\nPunjabi LettersTelugu LettersTamil LettersUrdu LettersKannada LettersSanskirt LettersRoman LettersMarathi LettersDevnagri LettersArabic LettersGujarati LettersOdia LettersMalayalam Letters\n\nPunjabi BarakhadiTelugu BarakhadiTamil BarakhadiUrdu BarakhadiKannada BarakhadiSanskrit BarakhadiMarathi BarakhadiGujarati BarakhadiBengali BarakhadiOdia barakhadiMalayalam&nbsp;barakhadi\n\nHindi Grammar For Class 1stHindi Grammar For Class 2ndHindi Grammar For Class 3rdHindi Grammar For Class 4thHindi Grammar For Class 5thHindi Grammar For Class 6thHindi Grammar For Class 7thHindi Grammar For Class 8thHindi Grammar For Class 9thHindi Grammar For Class 10thHindi Grammar For Class 11thHindi Grammar For Class 12th\n\nहिंदी वर्णमालाहिंदी भाषास्वरव्यंजनविराम चिन्हवर्णवाक्यउपसर्गप्रत्ययविलोम शब्दअनेकार्थी शब्दएकार्थक शब्दअनेक शब्दों के लिए एक शब्दपर्यावाची शब्दवाक्य-शुद्धिशब्द और पदउच्चारण और वर्तनीवाक्य परिवर्तनवाक्य विश्लेषणयुग्म शब्दलोकोक्तियांपल्लवनतत्सम एवं तद्भवदेशज एवं विदेशी शब्दपुल्लिंगस्त्रीलिंगसंकर शब्दसंज्ञाव्यक्तिवाचक संज्ञाजातिवाचक संज्ञाभाववाचक संज्ञाद्रव्यवाचक संज्ञासमूहवाचक संज्ञासर्वनामपुरुषवाचक सर्वनामनिश्चयवाचक सर्वनामअनिश्चयवाचक सर्वनामसम्बन्धवाचक सर्वनामप्रश्नवाचक सर्वनामनिजवाचक सर्वनामसकर्मक क्रियाअकर्मक क्रियासहायक क्रियापूर्वकालिक क्रियाद्विकर्मक क्रियासामान्य क्रियासंयुक्त क्रियानामधातु क्रियाप्रेरणार्थक क्रियाविशेषणगुणवाचक विशेषणसंख्यावाचक विशेषणपरिमाणवाचक विशेषणसार्वनामिक विशेषणव्यक्तिवाचक विशेषणकालवर्तमान कालभूतकालभविष्य कालअव्ययक्रिया विशेषण अव्ययसंबंधबोधक अव्ययसमुच्चयबोधक अव्ययविस्मयादिबोधक अव्ययलिंगसंधिस्वर संधिदीर्ध स्वर सन्धिगुण स्वर सन्धियण स्वर सन्धिवृद्धि स्वर सन्धिअयादि स्वर सन्धिव्यंजन सन्धिविसर्ग सन्धिसमासअव्ययी भाव समासतत्पुरुष समासकर्मधारय समासद्विगु समासद्वंद्व समासबहुब्रीहि समासकारककर्म कारककरण कारकसम्प्रदान कारकअपादान कारकसम्बन्ध कारकअधिकरण कारकसंबोधन कारकवचनएकवचनबहुवचनकाव्य शास्त्रदृश्य काव्यश्रव्य काव्यपद्य काव्यगद्य काव्यचम्पू काव्यकर्तृवाच्यकर्मवाच्यरसश्रृंगार रसहास्य रसकरुण रसवीर रसअदभूत रसभयानक रसरौद्र रसवीभत्स रसशांत रसवात्सल्य रसभक्ति रसछन्दवार्णिक छन्दमात्रिक छन्दमुक्तक छन्दवर्णिक वृत छंदरोला छंदगीतिका छंदहरिगीतिका छंदउल्लाला छंदचौपाई छंदबरवै (विषम) छंदछप्पय छंदकुंडलियाँ छंदअलंकारशब्दालंकारअनुप्रास अलंकारयमक अलंकारपुनरुक्ति अलंकारविप्सा अलंकारवक्रोक्ति अलंकारश्लेष अलंकारअर्थालंकाररूपक अलंकारउत्प्रेक्षा अलंकारद्रष्टान्त अलंकारसंदेह अलंकारअतिश्योक्ति अलंकारप्रतीप अलंकारअनन्वय अलंकारभ्रांतिमान अलंकारदीपक अलंकारअपहृति अलंकारव्यतिरेक अलंकारविभावना अलंकारअर्थान्तरन्यास अलंकारउल्लेख अलंकारविरोधाभाष अलंकारअसंगति अलंकारमानवीकरण अलंकारअन्योक्ति अलंकारकाव्यलिंग अलंकारस्वभावोती अलंकारउभयालंकारउपवाक्यलिपिदोहा छंद\n\nAnother Sites:-BDGPlayShreeWinRaxiWin ShreeWin\n\t\n\n\n\t\n\n\n\n\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t&copy; 2026 Hindi Varnamala &bull; Built with GeneratePress",
+      "title": "https://hindivarnamala.org/medical-instruments-names (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527608122,
+        "end": 1789527608830
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.832Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527608832,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284dff001vDRs7CfRKxlz2l",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284886001JzHssrxbs3sRPt",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 24609,
+      "output": 172,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 24781,
+      "headroom": 14075,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.832Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.833Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.834Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.834Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.835Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.835Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.835Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.835Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.841Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 24781,
+  "providerTokens": 24781,
+  "estimatedInputTokens": 8814,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 24609,
+    "cacheRead": 0,
+    "output": 172
+  },
+  "overflow": false,
+  "headroom": 14075,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.842Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.842Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.843Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:08.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.163Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527609164,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284f4b001736zXorROeMruZ",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284e09001FLEYI2Gdb9FwYO",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527609164,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284f4c002JPzt2WG5GMqrLS",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284e09001FLEYI2Gdb9FwYO",
+    "type": "tool",
+    "callID": "call_c7bb00e04d4ad30e",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527609164,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284f4c0010FEp8VyEAFMKJo",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284e09001FLEYI2Gdb9FwYO",
+    "type": "text",
+    "text": "मैं https://hindivarnamala.in/medical-instruments-names खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527609164,
+      "end": 1789527609164
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527609164,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284f4c002JPzt2WG5GMqrLS",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284e09001FLEYI2Gdb9FwYO",
+    "type": "tool",
+    "callID": "call_c7bb00e04d4ad30e",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://hindivarnamala.in/medical-instruments-names"
+      },
+      "time": {
+        "start": 1789527609164
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.875Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527609876,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8284f4c002JPzt2WG5GMqrLS",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284e09001FLEYI2Gdb9FwYO",
+    "type": "tool",
+    "callID": "call_c7bb00e04d4ad30e",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://hindivarnamala.in/medical-instruments-names"
+      },
+      "output": "50+ Medical Instruments Names In Hindi - डॉक्टर के उपकरणों के नाम\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\n\n\n\n\n\n\n\n\n\n\n\tSkip to content\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\tMenu\t\t\n\t\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\tMenu\t\t\t\t\n\t\t\t\tHome\nBlog\nAbout\n\n\tContact\n\tContribute\n\tAdvertise\n\tFeatured\n\n\nIN999 Login\n\n\t91 Club Login\n\tDaman Game Login\n\tOk Win Login\n\tTiranga Game Login\n\tBDG Game Login\n\tBDG Win Login\n\t82 Lottery Login\n\tGoa Games Login\n\t55 Club Login\n\tJalwa Game Login\n\tJai Club Login\n\tYaar Win Login\n\tSikkim Game Login\n\tRaja Luck Login\n\tDiuwin Login\n\n\n\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\n\t\t\n\t\n\t\t\t\t\n\t\t\t\n\t\n\t\t\n\t\t\t\n\n\t\n\t\t\t\t\t\n\t\t\t\t50+ Medical Instruments Names In Hindi &#8211; डॉक्टर के उपकरणों के नाम\t\t\n\t\t\tOctober 19, 2024March 21, 2024 by rahuldigital \t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\nAll Medical Instruments Names &#8211; जब कभी आप डॉक्टर के पास जाते हैं तो आपने डॉक्टर के पास कई सारे Medical Equipments देखे होंगे। क्या सभी उन मेडिकल इंस्ट्रूमेंट के नाम जानते हैं ? हम इस पेज के माध्यम से जिसका नाम है “Medical Instruments Names In Hindi” पर Medical Instruments Names, Medical Equipment Names इंग्लिश और हिंदी दोनों भाषा में जानेंगे। \n\n\n\nMedical Instruments Names With Pictures &#8211; मेडिकल इंस्ट्रूमेंट के नाम चित्र सहित\n\n\n\nहमने यहां पर सभी मेडिकल टूल्स के नाम के साथ उनकी तस्वीरें शेयर की हैं ताकि आप मेडिकल इंस्ट्रूमेंट के नाम के साथ उनकी पहचान भी कर सके, यहां आपको 100 से अधिक मेडिकल इंस्ट्रूमेंट चित्र सहित दिए गए .\n\n\n\nAll Medical Instruments Names list In Hindi &#8211; Medical Tools Names\n\n\n\nSr.NoMedical Instruments Names In EnglishMedical Equipment Names In Hindi1.Syringeसुई2.Thermometerताप मापक यंत्र3.Ambulanceरोगी वाहन4.Stethoscopeपरिश्रावक5.Test tubeपरखनली6.Wheelchairपहियेदार कुर्सी7.Band-Aidजख़्मपट्टी8.First Aid kitप्राथमिक चिकित्सा किट9.Bandageपट्टी10.Scalpelचिकित्सक की छुरी11.IV (intravenous)शिराभ्यंतर12.Pillsगोलियाँ13.Tabletगोली14.Capsuleकैप्सूल15.Poisonज़हर16.Walkerचल सहायक17.Plaster castप्लास्टर का सांचा18.Crutchesबैसाखी19.Caneबेंत20.X-rayएक्स-रे21.Slingगोफन22.Rubber Glovesरबर के दास्ताने23.Bracesधनुकोष्ठक24.Stretcherस्ट्रेचर25.Pinchचिमटा26.Lensलैंस27.Glassesचश्मा28.Surgical Maskशल्य चिकित्सा मुखौटा29.Face maskपचेहरे का मुखौटा30.Saline bagलवणयुक्त घोल का बैग31.Blood bagरक्त थैली32.Scissorsकैंची33.Microscopeसूक्ष्मदशंक यंत्र34.Toothbrushदाँतों का ब्रुश35.Pipetteपविंदुक36.Dental flossदंत लोमक37.Cannulaकैनुला38.Nebulizerनेबुलाइजर39.Autoscopeऑटोस्कोप40.Penlightपेनलाइट41.Electrocardiogram Machine (ECG)इलेक्ट्रोकार्डियोग्राम मशीन (ईसीजी)42.Ventilatorवेंटीलेटर43.Ultrasoundअल्ट्रासाउंड44.Blood Pressure Reading Machineब्लडप्रेशर रीडिंग (रक्तदाब मापी)45.CT Scanसी.टी.स्कैन\n\n\n\nनैदानिक उपकरण (Diagnostic Instruments)\n\n\n\n\nस्टेथोस्कोप (Stethoscope)\n\nविवरण: यह उपकरण शरीर के आंतरिक ध्वनियों, जैसे कि हृदय और फेफड़ों की ध्वनियों को सुनने के लिए प्रयोग किया जाता है।\n\n\n\nमहत्व: यह बुनियादी शारीरिक जांच में महत्वपूर्ण है और हृदय रोग और श्वसन संबंधी विकारों की पहचान में सहायक होता है।\n\n\n\n\n\nस्फिग्मोमेनोमीटर (Sphygmomanometer)\n\nविवरण: यह उपकरण रक्तचाप मापने के लिए प्रयोग होता है।\n\n\n\nमहत्व: यह उच्च और निम्न रक्तचाप का पता लगाने में सहायक होता है, जो हृदय रोग के संकेत हो सकते हैं।\n\n\n\n\n\nओटोस्कोप (Otoscope)\n\nविवरण: कान के अंदर देखने के लिए प्रयुक्त उपकरण।\n\n\n\nमहत्व: यह कान के संक्रमण, रुकावट और अन्य कान की समस्याओं की निदान में मदद करता है।\n\n\n\n\n\nऑप्थाल्मोस्कोप (Ophthalmoscope)\n\nविवरण: आंख के अंदर के भागों, जैसे रेटिना की जांच के लिए प्रयुक्त उपकरण।\n\n\n\nमहत्व: ग्लूकोमा, डायबिटिक रेटिनोपैथी और मैक्युलर डिजनरेशन जैसी बीमारियों की पहचान में अत्यंत महत्वपूर्ण।\n\n\n\n\n\nथर्मामीटर (Thermometer)\n\nविवरण: शरीर का तापमान मापने वाला उपकरण।\n\n\n\nमहत्व: संक्रमण और सूजन के सबसे सामान्य संकेत, बुखार का पता लगाने में अनिवार्य।\n\n\n\n\n\n\nशल्य चिकित्सा उपकरण (Surgical Instruments)\n\n\n\n\nस्कैलपेल (Scalpel)\n\nविवरण: यह एक छोटा और अत्यंत तेज धार वाला उपकरण है जो शल्य चिकित्सा में प्रयोग होता है।\n\n\n\nमहत्व: शल्य क्रिया के दौरान सटीकता से चीरा लगाने में महत्वपूर्ण ताकि ऊतकों की हानि कम से कम हो।\n\n\n\n\n\nफोर्सेप्स (Forceps)\n\nविवरण: ये चिमटी की तरह के उपकरण हैं जिनका प्रयोग ऊतकों और अन्य सामग्रियों को संभालने या मैनीपुलेट करने में होता है।\n\n\n\nमहत्व: शल्य प्रक्रिया के दौरान नियंत्रण और पकड़ प्रदान करने में महत्वपूर्ण, यह ऊतकों को कोमलता से संभालने में सहायक होता है।\n\n\n\n\n\nकैंची (Scissors)\n\nविवरण: शल्य चिकित्सा में शरीर के ऊतकों को काटने के लिए प्रयुक्त कैंची।\n\n\n\nमहत्व: ये साफ और सटीक कटौती सुनिश्चित करती हैं जिससे उपचार उचित रूप से हो सके।\n\n\n\n\n\nरिट्रैक्टर (Retractors)\n\nविवरण: ऊतकों और अंगों को अलग करने या पीछे धकेलने के लिए प्रयुक्त उपकरण।\n\n\n\nमहत्व: शल्य स्थल की पहुँच में सुधार करते हुए ऑपरेशन को सुगम बनाने में महत्वपूर्ण।\n\n\n\n\n\nसर्जिकल सुइयाँ और सूत्र (Surgical Needles and Sutures)\n\nविवरण: शल्य क्रिया के बाद ऊतकों को सिलने के लिए प्रयुक्त सुइयाँ और धागे।\n\n\n\nमहत्व: चीरों को बंद करने और उचित उपचार व कम स्कारिंग को सुनिश्चित करने में अनिवार्य।\n\n\n\n\n\n\nचिकित्सीय उपकरण (Therapeutic Instruments)\n\n\n\n\nइन्फ्यूजन पंप (Infusion Pump)\n\nविवरण: इलेक्ट्रॉनिक उपकरण जो रोगी के शरीर में द्रव्यों, जैसे कि पोषक तत्वों और दवाइयों को नियंत्रित मात्रा में प्रदान करता है।\n\n\n\nमहत्व: नाजुक दवा वितरण के लिए अत्यंत महत्वपूर्ण, विशेष रूप से महत्वपूर्ण देखभाल में।\n\n\n\n\n\nऑक्सीजन टैंक (Oxygen Tank)\n\nविवरण: चिकित्सा उपयोग के लिए ऑक्सीजन से भरा टैंक।\n\n\n\nमहत्व: श्वसन समस्याओं वाले रोगियों के लिए आवश्यक जो अतिरिक्त ऑक्सीजन की आवश्यकता रखते हैं।\n\n\n\n\n\nनेबुलाइज़र (Nebulizer)\n\nविवरण: दवा को मिस्ट रूप में परिवर्तित करता है जिसे आसानी से फेफड़ों में साँस के माध्यम से लिया जा सकता है।\n\n\n\nमहत्व: अस्थमा और COPD जैसी श्वसन संबंधी स्थितियों के उपचार में महत्वपूर्ण।\n\n\n\n\n\nसीपीएपी मशीन (CPAP Machine)\n\nविवरण: यह उपकरण हल्के वायु दबाव का प्रयोग करता है ताकि सोते समय रोगी की श्वसन नली खुली रहे।\n\n\n\nमहत्व: अनुपचारित स्लीप एपनिया की जटिलताओं, जैसे कि हृदय रोग को रोकने में मदद करता है।\n\n\n\n\n\nडायलिसिस मशीन (Dialysis Machine)\n\nविवरण: यह मशीन डायलिसिस के दौरान रोगी के खून को छान कर अतिरिक्त कचरा और द्रव्य को निकालती है।\n\n\n\nमहत्व: किडनी फेल होने के रोगियों के लिए जीवनरक्षक उपकरण।\n\n\n\n\n\n\nप्रयोगशाला उपकरण (Laboratory Instruments)\n\n\n\n\nमाइक्रोस्कोप (Microscope)\n\nविवरण: नंगी आंखों से देखे जाने योग्य न होने वाली वस्तुओं को देखने के लिए प्रयुक्त।\n\n\n\nमहत्व: विभिन्न क्लिनिकल लैबोरेटरी सेटिंग्स में कोशिकाओं, बैक्टीरिया और अन्य सूक्ष्मजीवों की पहचान करने में अनिवार्य।\n\n\n\n\n\nसेंट्रीफ्यूज (Centrifuge)\n\nविवरण: नमूनों को उच्च गति पर घुमाकर विभिन्न घनत्व वाले पदार्थों को अलग करता है।\n\n\n\nमहत्व: विभिन्न नैदानिक परीक्षणों में लैब नमूनों की तैयारी में प्रयुक्त।\n\n\n\n\n\nस्पेक्ट्रोफोटोमीटर (Spectrophotometer)\n\nविवरण: यह उपकरण नमूना समाधान से गुजरने के बाद प्रकाश की तीव्रता (फोटॉन) को मापता है।\n\n\n\nमहत्व: नमूनों के रासायनिक और जैविक गुणों का विश्लेषण करने में महत्वपूर्ण।\n\n\n\n\n\nपीसीआर मशीन (PCR Machine &#8211; Thermal Cycler)\n\nविवरण: डीएनए के खंडों को पॉलीमरेज़ चेन रिएक्शन के माध्यम से बढ़ाता है।\n\n\n\nमहत्व: आनुवंशिक अनुक्रमण, क्लोनिंग, और रोग निदान में आधारभूत।\n\n\n\n\n\nऑटोक्लेव (Autoclave)\n\nविवरण: उच्च-दबाव संतृप्त भाप के माध्यम से उपकरणों और सामग्रियों को स्टेरलाइज़ करने के लिए प्रयुक्त उपकरण।\n\n\n\nमहत्व: यह सुनिश्चित करता है कि सभी उपकरण और सामग्रियां जीवाणुरहित हों।\n\n\n\n\n\n\nConclusion &#8211; सुई, लेंस, स्ट्रेचर,सीटी स्कैन,थर्मामीटर जैसे Medical Instrument Ke Naam तो अधिकतर लोगों ने सुने होंगे लेकिन उनके अलावा भी कई मेडिकल टूल्स होते हैं जिनके नाम आप ऊपर टेबल के माध्यम से पढ़ सकते हैं। \n\n\n\nFAQs About Medical Instruments Names In Hindi \n\n\n\nQ1. ताप मापक यंत्र को इंग्लिश में क्या कहते हैं ?\n\n\n\nAns : Thermometer&nbsp;\n\n\n\nQ2. 10 मेडिकल इंस्ट्रूमेंट के नाम बताइए ?\n\n\n\nAns : सुई, परखनली, पेनलाइट, सी.टी.स्कैन, नेबुलाइजर, पविंदुक, कैंची, चश्मा, परिश्रावक, एक्स-रे\n\n\n\nQ3. डॉक्टर वाली सुई को इंग्लिश में क्या कहते हैं ?\n\n\n\nAns : डॉक्टर वाली सुई को इंग्लिश में Syringe कहते है।&nbsp;\n\t\t\n\n\t\t\t\t\n\t\t\tCategories Uncategorized \t\t\n\t\t\t100+ Yoga Asanas Names In Hindi &amp; English – योग आसन के नामDeformities Names In Hindi &amp; English – सभी विकृतियों के नाम \t\t\n\t\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\t\n\n\t\t\n\t\tLeave a Comment Cancel replyCommentName\nEmail\nWebsite\n Save my name, email, and website in this browser for the next time I comment.\n \n\n\t\n\t\n\n\t\t\t\n\n\t\t\t\t\t\n\t\n\n\t\n\t\n\t\tSearchSearch\n\nRecent Posts\n\n\nJalwa Game Guide\nTashan Win Guide\nSikkim Game Register\nRaja Luck Register\nIN999 Game\nLottery7 For Android &#8211; Download\nBig Mumbai\nBig Daddy Game Official App For Android\nDM Win Register\n66 Lottery Game\n\n\t\n\n\n\t\n\n\n\n\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t&copy; 2026 Hindi Varnamala &bull; Built with GeneratePress",
+      "title": "https://hindivarnamala.in/medical-instruments-names (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527609164,
+        "end": 1789527609872
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.878Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527609879,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8285215001xUlP61lboikyky",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8284e09001FLEYI2Gdb9FwYO",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 34187,
+      "output": 170,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 34357,
+      "headroom": 4499,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.880Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.880Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.882Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.883Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.886Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.887Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.888Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.888Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.902Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 34357,
+  "providerTokens": 34357,
+  "estimatedInputTokens": 11431,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 34187,
+    "cacheRead": 0,
+    "output": 170
+  },
+  "overflow": false,
+  "headroom": 4499,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.903Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.903Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.908Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:09.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527610206,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a828535d00132ddd0bKsr3x4C",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828522e001o84dg9X3U7RpdV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527610206,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a828535e002SmwsftJhTT9Ljm",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828522e001o84dg9X3U7RpdV",
+    "type": "tool",
+    "callID": "call_bc6af0360eaa3a3d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527610206,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a828535e0018POez5gRSxBwtm",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828522e001o84dg9X3U7RpdV",
+    "type": "text",
+    "text": "मैं https://askfilo.com/user-question-answers-smart-solutions/k-lghu-uttr-prshn-1-rogii-kii-dekhbhaal-ke-lie-aavshyk-3430353630313439 खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527610206,
+      "end": 1789527610206
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527610206,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a828535e002SmwsftJhTT9Ljm",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828522e001o84dg9X3U7RpdV",
+    "type": "tool",
+    "callID": "call_bc6af0360eaa3a3d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://askfilo.com/user-question-answers-smart-solutions/k-lghu-uttr-prshn-1-rogii-kii-dekhbhaal-ke-lie-aavshyk-3430353630313439"
+      },
+      "time": {
+        "start": 1789527610206
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.708Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527610708,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a828535e002SmwsftJhTT9Ljm",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828522e001o84dg9X3U7RpdV",
+    "type": "tool",
+    "callID": "call_bc6af0360eaa3a3d",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://askfilo.com/user-question-answers-smart-solutions/k-lghu-uttr-prshn-1-rogii-kii-dekhbhaal-ke-lie-aavshyk-3430353630313439"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789527610206,
+        "end": 1789527610705
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789527610708,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.711Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527610711,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8285555001Z0QB0dp9BgrOAx",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828522e001o84dg9X3U7RpdV",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 42451,
+      "output": 326,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 42777,
+      "headroom": -3921,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.712Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.713Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.715Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.720Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.720Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.720Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.721Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.722Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.722Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.728Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 42777,
+  "providerTokens": 42777,
+  "estimatedInputTokens": 11487,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 42451,
+    "cacheRead": 0,
+    "output": 326
+  },
+  "overflow": true,
+  "headroom": -3921,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.729Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.730Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.732Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.732Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.732Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.733Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.733Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:10.734Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.182Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527611182,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a828572d001jwX3ASDnY5y4pG",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828556c001aGPqQTuGL76MtC",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.183Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.183Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527611184,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a828572f001ja6Kbb2do0rNC5",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828556c001aGPqQTuGL76MtC",
+    "type": "text",
+    "text": "Conversation summary: मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है।   मैं इंटरनेट पर मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है।\n\nTitle: What did we do so\n\nUser turns:\n  1. मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है।\n  2.",
+    "time": {
+      "start": 1789527611184,
+      "end": 1789527611184
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527611184,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8285730001ybnVTMD4BGkWtW",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a828556c001aGPqQTuGL76MtC",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 34895,
+      "output": 315,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 35210,
+      "headroom": 3646,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.186Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527611186,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8285731002HEqWKPma8UlI3d",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8285731001yRN7bmQWgCqFYI",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789527611185,
+      "end": 1789527611185
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.186Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.187Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.187Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.188Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.188Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.190Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.192Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.265Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527611265,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8285781001TAcFalQSdNRAXF",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8285733001vCEQ4VlDq1TGsn",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527611266,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8285782001R2GZ28Lcv5sfK2",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8285733001vCEQ4VlDq1TGsn",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789527611266,
+      "end": 1789527611266
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527611266,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "part": {
+    "id": "prt_0a8285782002If4h43fn285KAU",
+    "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+    "messageID": "msg_0a8285733001vCEQ4VlDq1TGsn",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8864,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8937,
+      "headroom": 29919,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.267Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.267Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.267Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.267Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.268Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.268Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.268Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527611268,
+  "sessionID": "ses_f57d7cdbaffexGe7MhqQBjIIzX"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.268Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.268Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.269Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.269Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.fJkhX83S5D",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:11.269Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 10,
+  "message": "Agent exiting"
+}
+

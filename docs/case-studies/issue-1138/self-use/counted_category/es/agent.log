@@ -1,0 +1,2494 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.647Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.647Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.648Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.648Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.657Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.658Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.658Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.659Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.659Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.662Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.663Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.665Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7674,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.666Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.679Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:00:19.683Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 26,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:00:19.684Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.688Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.689Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.689Z",
+  "service": "session",
+  "id": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy",
+  "title": "New session - 2026-09-16T03:00:19.689Z",
+  "time": {
+    "created": 1789527619689,
+    "updated": 1789527619689
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.690Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.690Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.690Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.690Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.690Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d78796ffe81za9nY5GSGeqz/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.690Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d78796ffe81za9nY5GSGeqz/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.693Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57d78796ffe81za9nY5GSGeqz/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.696Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.697Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.698Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.698Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.698Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.699Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.699Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.699Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.699Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.699Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.699Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.869Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.873Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.882Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.886Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.891Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:19.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:20.483Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527620484,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8287b800015g721nU7wl6eSN",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8287920001udS86IJrGMV1Em",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:20.484Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:20.485Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527620485,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8287b84002TCwu6VepNZGu3h",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8287920001udS86IJrGMV1Em",
+    "type": "tool",
+    "callID": "call_bb7b1366be5b4e02",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:20.485Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527620485,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8287b84001YFSFimAYXsyCXw",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8287920001udS86IJrGMV1Em",
+    "type": "text",
+    "text": "Let me search the web for Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo.",
+    "time": {
+      "start": 1789527620485,
+      "end": 1789527620485
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:20.485Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527620485,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8287b84002TCwu6VepNZGu3h",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8287920001udS86IJrGMV1Em",
+    "type": "tool",
+    "callID": "call_bb7b1366be5b4e02",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo"
+      },
+      "time": {
+        "start": 1789527620485
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.594Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527623594,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8287b84002TCwu6VepNZGu3h",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8287920001udS86IJrGMV1Em",
+    "type": "tool",
+    "callID": "call_bb7b1366be5b4e02",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo"
+      },
+      "output": "Title: Cuáles son los instrumentos de un médico más comunes\nURL: https://mx.indeed.com/orientacion-profesional/como-encontrar-empleo/instrumentos-medico\nPublished: 2026-06-16T00:00:00.000Z\nAuthor: N/A\nHighlights:\nSi estás pensando en convertirte en médico, una de las primeras cosas que tendrás que conocer son los instrumentos de un médico y sus usos más comunes. Esto incluye tanto los instrumentos quirúrgicos como los no quirúrgicos. Los instrumentos quirúrgicos son los que se utilizan durante una operación y suelen incluir escalpelos, fórceps, pinzas, retractores, esponjas, agujas, jeringas y suturas. Mientras que el instrumental no quirúrgico suele incluir estetoscopios, termómetros, depresores de la lengua y martillos de reflejos.En este artículo, conocerás cuáles son los instrumentos de un médico más comunes y para qué se utilizan.\n...\n- Para poder realizar diagnósticos y tratamientos eficaces, un médico debe conocer y manejar correctamente tanto los instrumentos quirúrgicos como los no quirúrgicos.\n- Los instrumentos quirúrgicos incluyen escalpelos, fórceps, pinzas, retractores, esponjas, agujas, jeringas y suturas, mientras que los no quirúrgicos incluyen estetoscopios, termómetros, depresores de la lengua y martillos de reflejo, entre otros.\n- La mejor manera de sentirse cómodo utilizando los instrumentos de un médico es practicar con la mayor frecuencia posible e intentar encontrar oportunidades para utilizarlos en situaciones reales.\n...\nDentro de los instrumentos de un médico más importantes se encuentra el estetoscopio. Este es un dispositivo médico acústico que se utiliza para auscultar o escuchar los sonidos internos de un animal o cuerpo humano. Suele utilizarse para escuchar los sonidos del corazón, los pulmones y los intestinos. También se utiliza para escuchar el flujo sanguíneo en las arterias y las venas. En combinación con un esfigmomanómetro, este instrumento suele utilizarse para medir la presión arterial.El estetoscopio moderno suele tener dos auriculares unidos a un tubo metálico en forma de Y. El tubo en forma de Y permite que las ondas sonoras del cuerpo del paciente recorran dos caminos diferentes antes de llegar a los oídos del médico, lo que le permite escuchar tanto los sonidos graves como los agudos. Los estetoscopios se fabrican en una gran variedad de colores y diseños, y pueden comprarse por internet o en tiendas de suministros médicos.\n...\n### Termómetro\n...\nUn termómetro es un dispositivo que mide la temperatura. El tipo más común de termómetro es el de mercurio en vidrio, o mercurial. Este consiste en un tubo de vidrio con una constricción en el fondo que contiene mercurio. El mercurio se expande cuando la temperatura aumenta y se contrae cuando la temperatura disminuye. A medida que el mercurio se expande, sube en el tubo y puede leerse en una escala calibrada en grados Celsius o Fahrenheit. Los termómetros de mercurio en vidrio se utilizan en entornos clínicos para controlar la temperatura de los pacientes.\n...\nTambién se utilizan\n...\n### Bisturí\n...\nUn bisturí es un cuchillo pequeño y afilado que se utiliza para procedimientos quirúrgicos o de biopsia. El primer uso conocido del bisturí fue en el antiguo Egipto, donde se utilizaba para todo, desde la momificación hasta la circuncisión. En la actualidad, los bisturís se siguen utilizando habitualmente en procedimientos quirúrgicos que van desde la cirugía plástica hasta la cirugía cardíaca. También se utilizan con frecuencia para realizar biopsias, que consisten en tomar pequeñas muestras de tejido para su análisis en el laboratorio.Al elegir un bisturí, los cirujanos suelen tener en cuenta factores como el tamaño de la hoja, el tipo de metal utilizado y el nivel de esterilización necesario. Con los avances de la tecnología médica, los bisturís se han vuelto cada vez más especializados, con algunos diseñados específicamente para la cirugía de tejidos delicados o de huesos.Te puede interesar: Principales especialidades quirúrgicas\n...\nExiste una gran variedad de instrumentos que se emplean en el campo de la medicina, desde estetoscopios y manguitos de presión arterial hasta termómetros y depresores linguales. Antes de empezar a utilizar cualquier instrumento, es importante que entiendas para qué se utiliza y cómo funciona. De este modo, podrás determinar si es o no la herramienta adecuada para el trabajo a realizar.\n\n---\n\nTitle: Qué Herramientas Utiliza Un Médico Para Realizar Su Trabajo Diario ✅\nURL: https://comisariopantera.mx/que-herramientas-utiliza-un-medico-para-realizar-su-trabajo-diario/\nPublished: 2024-08-05T21:04:40.000Z\nAuthor: Comisario Pantera\nHighlights:\n✅ Un médico utiliza estetoscopio, tensiómetro, otoscopio, termómetro, guantes, mascarillas y software médico para diagnósticos precisos y cuidado efectivo.\n...\n- Estetoscopio: Permite escuchar los sonidos internos del cuerpo, como los latidos del corazón y los ruidos respiratorios.\n- Termómetro: Utilizado para medir la temperatura corporal, vital para detectar fiebre.\n- Esfigmomanómetro: Instrumento para medir la presión arterial, clave en la evaluación de la salud cardiovascular.\n- Oftalmoscopio: Herramienta que permite examinar el interior del ojo y detectar problemas visuales.\n...\n- Bisturí: Utilizado para realizar incisiones en la piel o en otros tejidos.\n- Tijeras quirúrgicas: Diseñadas para cortar tejidos con precisión.\n- Pinzas: Utilizadas para agarrar y manipular tejidos durante una cirugía.\n...\n### ¿Qué herramientas son esenciales para un médico general?\n...\nUn médico general suele utilizar un estetoscopio, un tensiómetro, un otoscopio y un termómetro.\n...\nEn cirugía se utilizan bisturíes, pinzas, suturas y electrobisturís, entre otros.\n...\n- Estetoscopios: Para auscultar sonidos corporales.\n- Tensiómetros: Miden la presión arterial.\n- Otoscopios: Inspección del oído.\n- Termómetros: Control de la temperatura corporal.\n- Radiografías: Diagnóstico por imagen de huesos y órganos.\n- Ultrasonidos: Visualización de órganos internos en tiempo real.\n- Tomografías: Imágenes detalladas en cortes transversales.\n- Resonancias magnéticas: Imágenes por magnetismo de tejidos blandos.\n- Bisturíes y pinzas: Herramientas quirúrgicas esenciales.\n- Desfibriladores: Para tratar paradas cardíacas.\n\n---\n\nTitle: El termómetro y el estetoscopio - Nueva Escuela Mexicana\nURL: https://nuevaescuelamexicana.sep.gob.mx/contenido/coleccion/el-termometro-y-el-estetoscopio-2/\nPublished: 2025-02-06T00:00:00.000Z\nAuthor: SEP\nHighlights:\nAlgunos de los aparatos que se utilizan para la salud, son el termómetro que sirve para conocer la temperatura y el estetoscopio para escuchar el corazón. Ambos son utilizados por los médicos para conocer qué pasa dentro del cuerpo humano. Detrás de cada uno de ellos está el trabajo e ingenio de científicos que aplican principios de la física para desarrollar herramientas e instrumentos en beneficio de la sociedad.\n...\nUn estetoscopio es un instrumento que utilizan los médicos para escuchar lo que pasa dentro de nuestro cuerpo; por ejemplo, el corazón, los pulmones o los intestinos. Este aparato usa el fenómeno físico de la resonancia.\n...\nPuedes ver que están compuestos por ojivas, auriculares, conexión en “Y”, manguera, membrana y campana.\n...\ntermómetros\n...\nhay estetoscopios electrónicos.\n...\ntienen un sensor que\n\n---\n\nTitle: ¿Cómo se llama lo que tienen los médicos?\nURL: https://todosloshechos.es/como-se-llama-lo-que-tienen-los-medicos\nPublished: N/A\nAuthor: N/A\nHighlights:\n- Báscula de grado médico. ... \n- Tallímetro de pared. ... \n- Equipo de órganos de los sentidos. ... \n- Lámpara de examinación. ... \n- Tensiómetro. ... \n- Estetoscopio o fonendoscopio.\n...\nLos básicos que todo médico debe tener\n...\n1. Estetoscopio. El estetoscopio es quizás la herramienta más icónica del médico. ... \n2. Esfigmomanómetro (Tensiómetro) ... \n3. Otoscopio. ... \n4. Termómetro digital. ... \n5. Guantes de látex o nitrilo. ... \n6. Oxímetro de pulso. ... \n7. Reloj o cronómetro. ... \n8. Glucometro.\n\n---\n\nTitle: ¿CUÁNTOS INSTRUMENTOS CONOCES? | Flashcards\nURL: https://www.goconqr.com/ficha/21065514/cuantos-instrumentos-conoces\nPublished: 2020-02-28T00:00:00.000Z\nAuthor: Estrella Roba Rodríguez\nHighlights:\n| --- |\n...\n| Image: Img 633 3b9759a995cb780d8495d0c1c51d27b0 1 (binary/octet-stream) | CLARINETE BAJO |\n| Image: índice (binary/octet-stream) | OBOE |\n| Image: Clarinet 631smto 0 (binary/octet-stream) | CLARINETE |\n| Image: 12118637 800 (binary/octet-stream) | MARIMBA |\n| Image: Instrumento Musical Clavecin (binary/octet-stream) | CLAVECÍN |\n| Image: Unnamed (binary/octet-stream) | ARPA |\n...\n12\n\n---\n\nTitle: Un reto matemático para mentes ágiles: cuánto vale cada elemento | EL COMERCIO PERÚ\nURL: https://elcomercio.pe/mag/virales/un-reto-matematico-para-mentes-agiles-cuanto-vale-cada-elemento-nnda-nnrt-noticia/\nPublished: 2024-12-20T13:40:00.000Z\nAuthor: Redacción El Comercio Perú\nHighlights:\nLlegó la hora de poner a prueba tu habilidad mental y todas tus habilidades cognitivas, pues este acertijo matemático ha causado más de un dolor de cabeza en quienes se atrevieron a resolverlo. Y es que en redes sociales abundan los desafíos en donde los números son los protagonistas y hoy te traigo uno diseñado exclusivamente para valientes y con mente ágil, ya que te daré una serie de elementos presentes en un hospital (el doctor, la ambulancia y el estetoscopio) y deberás hallar su valor en menos de 8 segundos para así cantar victoria. Para resolverlo, tendrás que aplicar las operaciones matemáticas que aprendiste en tu etapa de estudiante y te recomiendo que te concentres al máximo.\n...\nEs momento de sacar a la luz todas tus habilidades analíticas y de resolución de problemas. Lo primero que verás son la imagen de un doctor, ambulancia y estetoscopio y cada uno representa un número que luego deberás sumar para encontrar el resultado correcto y comprobar que tienes rapidez mental. No olvides que solo tienes 8 segundos y recuerda seguir las reglas básicas de la jerarquía de operaciones matemáticas. Además, hay una pequeña trampa muy bien escondida que causa confusión en varios participantes.\n...\nEl tiempo se terminó y es momento de comprobar si estás en lo correcto y tus cálculos fueron acertados o necesitas seguir practicando. Dos estetoscopios son iguales a 6, por lo que cada uno de ellos equivale a 3. Ahora, en cuanto a las ambulancias, estas son iguales a 14, por lo que cada una de ellas representa el 7. Tras esto notarás que los médicos llevan un estetoscopio, pero uno de ellos no lo tiene y acá está la trampa. Si cada elemento vale 3, los doctores en su conjunto valen 5. De esta forma, la suma quedaría así: 7+5+3. La respuesta correcta es 15, ¿tuviste éxito?\n\n---\n\nTitle: Escribe los números en los recuadros según\nURL: https://studyx.ai/questions/4m733ma/1-escribe-los-n-meros-en-los-recuadros-seg-n-la-cantidad-de-instrumentos-que-encuentres\nPublished: 2025-09-24T02:14:42.000Z\nAuthor: N/A\nHighlights:\n#### Paso 1: Ejercicio 1 - Conteo de Instrumentos\n...\nInstrucción: \"Escribe los números en los recuadros según la cantidad de instrumentos que encuentres en cada conjunto.\"\n...\nConjunto 1 (Guitarras): Se observan 2 guitarras.\n...\nConjunto 2 (Tambor): Se observa 1 tambor.\n...\nConjunto 3 (Flautas/Maracas): Se observan 3 flautas o maracas.\n...\n- Acción: Escribir el número 3 en el recuadro debajo de las flautas/maracas.\n...\n- Recuadro debajo de las guitarras: 2\n- Recuadro debajo del tambor: 1\n- Recuadro debajo de las flautas/maracas: 3\n\n---\n\nTitle: Reto matemático: ¿cuál es el número que resuelve la ecuación? - Mendoza Post\nURL: https://www.mendozapost.com/estilodevida/acertijo-visual-prueba-viral-reto-mental-matematico-intenta-llegar-a-la-solucion-de-este-desafio/\nPublished: 2024-04-05T08:01:00.000Z\nAuthor: Cinthia Molina\nHighlights:\nDos estetoscopios son iguales a 6. Por lo tanto, cada objeto equivale a 3.\n\n- Segunda ecuación:\n...\nDos ambulancias son iguales a 14. Eso quiere decir que cada ambulancia es igual a 7.\n...\n- Por última la primera ecuación:\n...\nObserva bien al médico. Cada uno de ellos lleva un estetoscopio. Por lo que aquí resulta importante haber desarrollado primero la tercera ecuación. Entonces, si cada estetoscopio vale 3, significa que el médico tiene un valor de 5.\n...\nAhora reemplazamos cada valor en la ecuación que falta:\n...\nAmbulancia + médico + estetoscopio = 7 + 5 + 3 = 15.\n...\nFuente: TyC",
+      "title": "Web search: Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo",
+      "metadata": {},
+      "time": {
+        "start": 1789527620485,
+        "end": 1789527623587
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.601Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527623601,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a82887ae001QpnQzFSwZNoVQT",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8287920001udS86IJrGMV1Em",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8606,
+      "output": 266,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8872,
+      "headroom": 29984,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.605Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.609Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.609Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.609Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.609Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.610Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.610Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.616Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8872,
+  "providerTokens": 8872,
+  "estimatedInputTokens": 3180,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8606,
+    "cacheRead": 0,
+    "output": 266
+  },
+  "overflow": false,
+  "headroom": 29984,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.617Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.618Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:23.619Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:24.469Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527624469,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288b10001iCEXFOUTCIahRP",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a82887c00012gPmxrkWAJBRwy",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:24.469Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:24.470Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527624470,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288b15002ciBnmauOvQ4y5D",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a82887c00012gPmxrkWAJBRwy",
+    "type": "tool",
+    "callID": "call_ddff7f65496ac03c",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:24.470Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527624470,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288b15001y2YoqHmITB13LL",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a82887c00012gPmxrkWAJBRwy",
+    "type": "text",
+    "text": "Let me open https://mx.indeed.com/orientacion-profesional/como-encontrar-empleo/instrumentos-medico and read what it says.",
+    "time": {
+      "start": 1789527624470,
+      "end": 1789527624470
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:24.470Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527624470,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288b15002ciBnmauOvQ4y5D",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a82887c00012gPmxrkWAJBRwy",
+    "type": "tool",
+    "callID": "call_ddff7f65496ac03c",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://mx.indeed.com/orientacion-profesional/como-encontrar-empleo/instrumentos-medico"
+      },
+      "time": {
+        "start": 1789527624470
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.271Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527625271,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288b15002ciBnmauOvQ4y5D",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a82887c00012gPmxrkWAJBRwy",
+    "type": "tool",
+    "callID": "call_ddff7f65496ac03c",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://mx.indeed.com/orientacion-profesional/como-encontrar-empleo/instrumentos-medico"
+      },
+      "output": "Cuáles son los instrumentos de un médico más comunes | Indeed.com México\n \n \n \n\n\n\n\n\n\n\n\n\n \n\n\n\n\n\n\n \n \n \n \n \n\n \n    \n        \n        \n        InicioEvaluaciones de empresaPuestos y SueldosIngresarIngresar🇲🇽País e idioma1 new updateEmpresas / Publicar empleosInicio del contenido principal\n        IndeedOrientación profesionalCómo encontrar empleoCV y cartas de presentaciónEntrevistasPago y salarioDesarrollo profesionalArtículos sobre Desarrollo profesionalComenzando un nuevo empleoCómo encontrar empleoCuáles son los instrumentos de un médico y para qué se utilizanCuáles son los instrumentos de un médico y para qué se utilizanEscrito por el Equipo editorial de IndeedActualizado el 16 de junio de 2026ASPECTOS CLAVE:La mejor manera de sentirse cómodo utilizando los instrumentos de un médico es practicar con la mayor frecuencia posible e intentar encontrar oportunidades para utilizarlos en situaciones reales.Si estás pensando en convertirte en médico, una de las primeras cosas que tendrás que conocer son los instrumentos de un médico y sus usos más comunes.Los instrumentos quirúrgicos son los que se utilizan durante una operación y suelen incluir escalpelos, fórceps, pinzas, retractores, esponjas, agujas, jeringas y suturas.Si estás pensando en convertirte en médico, una de las primeras cosas que tendrás que conocer son los instrumentos de un médico y sus usos más comunes. Esto incluye tanto los instrumentos quirúrgicos como los no quirúrgicos. Los instrumentos quirúrgicos son los que se utilizan durante una operación y suelen incluir escalpelos, fórceps, pinzas, retractores, esponjas, agujas, jeringas y suturas. Mientras que el instrumental no quirúrgico suele incluir estetoscopios, termómetros, depresores de la lengua y martillos de reflejos.En este artículo, conocerás cuáles son los instrumentos de un médico más comunes y para qué se utilizan.&amp;nbsp;Puntos importantes:Para poder realizar diagnósticos y tratamientos eficaces, un médico debe conocer y manejar correctamente tanto los instrumentos quirúrgicos como los no quirúrgicos.Los instrumentos quirúrgicos incluyen escalpelos, fórceps, pinzas, retractores, esponjas, agujas, jeringas y suturas, mientras que los no quirúrgicos incluyen estetoscopios, termómetros, depresores de la lengua y martillos de reflejo, entre otros.La mejor manera de sentirse cómodo utilizando los instrumentos de un médico es practicar con la mayor frecuencia posible e intentar encontrar oportunidades para utilizarlos en situaciones reales.&amp;nbsp;Instrumentos de un médico más comunesSi te interesa dedicarte al campo de la medicina, a continuación te presentamos una lista de algunos de los instrumentos médicos más populares y te decimos para qué se utiliza cada uno.EstetoscopioDentro de los instrumentos de un médico más importantes se encuentra el estetoscopio. Este es un dispositivo médico acústico que se utiliza para auscultar o escuchar los sonidos internos de un animal o cuerpo humano. Suele utilizarse para escuchar los sonidos del corazón, los pulmones y los intestinos. También se utiliza para escuchar el flujo sanguíneo en las arterias y las venas. En combinación con un esfigmomanómetro, este instrumento suele utilizarse para medir la presión arterial.El estetoscopio moderno suele tener dos auriculares unidos a un tubo metálico en forma de Y. El tubo en forma de Y permite que las ondas sonoras del cuerpo del paciente recorran dos caminos diferentes antes de llegar a los oídos del médico, lo que le permite escuchar tanto los sonidos graves como los agudos. Los estetoscopios se fabrican en una gran variedad de colores y diseños, y pueden comprarse por internet o en tiendas de suministros médicos.TermómetroUn termómetro es un dispositivo que mide la temperatura. El tipo más común de termómetro es el de mercurio en vidrio, o mercurial. Este consiste en un tubo de vidrio con una constricción en el fondo que contiene mercurio. El mercurio se expande cuando la temperatura aumenta y se contrae cuando la temperatura disminuye. A medida que el mercurio se expande, sube en el tubo y puede leerse en una escala calibrada en grados Celsius o Fahrenheit. Los termómetros de mercurio en vidrio se utilizan en entornos clínicos para controlar la temperatura de los pacientes.EsfigmomanómetroEl esfigmomanómetro, también conocido como tensiómetro o manguito de presión arterial, es un dispositivo médico utilizado para medir la presión arterial. Su banda se coloca alrededor de la parte superior del brazo y se infla para detener temporalmente el flujo de sangre en la arteria. A continuación se libera la presión y el profesional mide la presión en dos puntos: la presión sistólica, que es la presión máxima cuando el corazón se contrae, y la presión diastólica, que es la presión más baja cuando el corazón se relaja. Estos instrumentos son esenciales para diagnosticar y tratar la hipertensión, o presión arterial alta. También se utilizan para comprobar si hay arritmias, o ritmos cardíacos anormales.BisturíUn bisturí es un cuchillo pequeño y afilado que se utiliza para procedimientos quirúrgicos o de biopsia. El primer uso conocido del bisturí fue en el antiguo Egipto, donde se utilizaba para todo, desde la momificación hasta la circuncisión. En la actualidad, los bisturís se siguen utilizando habitualmente en procedimientos quirúrgicos que van desde la cirugía plástica hasta la cirugía cardíaca. También se utilizan con frecuencia para realizar biopsias, que consisten en tomar pequeñas muestras de tejido para su análisis en el laboratorio.Al elegir un bisturí, los cirujanos suelen tener en cuenta factores como el tamaño de la hoja, el tipo de metal utilizado y el nivel de esterilización necesario. Con los avances de la tecnología médica, los bisturís se han vuelto cada vez más especializados, con algunos diseñados específicamente para la cirugía de tejidos delicados o de huesos.Te puede interesar: Principales especialidades quirúrgicasRetractorUn retractor es un instrumento quirúrgico que ayuda a mantener los tejidos separados durante una cirugía. Hay muchos tipos diferentes de retractores, cada uno de ellos diseñado para un fin específico. Por ejemplo, algunos retractores se utilizan para retener la piel, mientras que otros se utilizan para exponer los órganos internos. Los retractores pueden estar hechos de diversos materiales, como metal, plástico y madera. Generalmente, este instrumento se debe esterilizar antes de su uso.Aunque los retractores desempeñan un papel importante en la cirugía, también pueden causar daños en los tejidos si no se utilizan correctamente. Por esta razón, es esencial que los cirujanos tengan cuidado al utilizar los retractores y solo los usen cuando sea absolutamente necesario.SuturasUna sutura es un dispositivo médico que se utiliza para mantener unidos los tejidos después de una lesión o cirugía. Las suturas pueden estar hechas de materiales naturales, como el intestino de los animales o el hilo de seda, o de materiales sintéticos, como el nylon o el polipropileno. Los médicos eligen el tipo de sutura en función de su resistencia, facilidad de uso y resistencia a las infecciones.El tipo de sutura más común es la sutura interrumpida simple, en la que cada punto realizado es independiente del siguiente y cada hebra se anuda y se corta tras la inserción. Otros tipos de suturas son las continuas, que se utilizan para cerrar incisiones o desgarros largos; las suturas de colchón, que tienen puntos adicionales en el centro para dar mayor soporte; y las suturas subcuticulares, que se colocan justo debajo de la piel y no requieren nudos.Te puede interesar:Las carreras de medicina mejor pagadasCosas que debes de saber antes de estudiar medicinaBusca empleos y empresas que estén contratando ahoraTítulo de empleo, palabras clave o empresaLocation BuscarCómo aprender a utilizar los instrumentos de un médicoSi te interesa estudiar la carrera de Medicina, aprender a utilizar el instrumental médico básico es un buen punto de partida. Aunque algunos instrumentos pueden parecer complejos al principio, con un poco de práctica podrás utilizarlos con confianza. La clave es tomarte tu tiempo y ser paciente.A continuación, te brindamos cuatro consejos que te ayudarán a empezar a emplear estos instrumentos en tu etapa de aprendizaje:1. Familiarízate con los distintos tipos de instrumentos médicosExiste una gran variedad de instrumentos que se emplean en el campo de la medicina, desde estetoscopios y manguitos de presión arterial hasta termómetros y depresores linguales. Antes de empezar a utilizar cualquier instrumento, es importante que entiendas para qué se utiliza y cómo funciona. De este modo, podrás determinar si es o no la herramienta adecuada para el trabajo a realizar.2. Lee atentamente las instruccionesUna vez que hayas encontrado el instrumento adecuado para la tarea en cuestión, cerciórate de leer las instrucciones cuidadosamente antes de utilizarlo. Esto te ayudará a asegurarte de utilizar el instrumento correctamente y a evitar posibles accidentes o lesiones.3. Pide ayuda si no estás seguroSi alguna vez no estás seguro de cómo utilizar un determinado instrumento médico, no dudes en pedir ayuda a un compañero más experimentado. Tus compañeros podrán mostrarte la forma correcta de hacerlo y responder a cualquier pregunta que puedas tener.4. Practica, practica, practicaLa mejor manera de sentirte cómodo utilizando los instrumentos de un médico es practicar con la mayor frecuencia posible. Si es posible, intenta encontrar oportunidades para utilizar los instrumentos en situaciones reales. De este modo, podrás adquirir una valiosa experiencia y aumentar tu confianza al utilizarlos.Ser un médico exitoso requiere más que tener el título de medicina y la formación adecuada. También hay que saber trabajar con los pacientes, entender sus necesidades y tener un excelente trato con ellos. Sin embargo, antes de llegar a ese punto, hay que dominar los aspectos básicos, como el conocer los diferentes instrumentos de un médico y para qué se utilizan. Con estos conocimientos, estarás bien encaminado para convertirte en un médico de éxito.Artículos relacionados:Qué debo estudiar para ser médico, estudios paso a pasoPor qué estudiar medicina: razones para elegir la carrera de médicoQué hace un tanatopractor: principales funciones&amp;nbsp;La información proporcionada en este sitio web es únicamente de carácter informativo. Indeed no es un asesor legal ni orientador vocacional y tampoco garantiza la realización de entrevistas ni la participación en las ofertas de empleo.&amp;nbsp;Compartir:XLinkedInFacebookEmailCopiar al portapapelesExplorar más artículosQué hace un auxiliar de abarrotes: salario y habilidadesCómo conseguir trabajo en los Estados Unidos para mexicanosFunciones de la enfermera quirúrgica y sus diferentes rolesQué debo estudiar para ser maestro de primariaQué hace un lavaloza: salario y habilidadesDescripción de puestos directivos: conoce en qué consisten y cuáles hayFunciones clave de un guardia de seguridadCómo ser agente de viajes: consejos útilesQué hace un chef: tipos diferentes, funciones y competencias esencialesTrabajar de noche: consejos útilesQue hace un prensista: habilidades necesarias y cuánto ganaQué son las ciencias experimentales: campo laboral\n    \n        \n        \n        Orientación profesional Buscar empleos Buscar empresas Salarios Eventos Indeed Países Acerca de Ayuda © 2026 IndeedAccesibilidad en Indeed Centro de privacidad y Preferencias de publicidad Condiciones",
+      "title": "https://mx.indeed.com/orientacion-profesional/como-encontrar-empleo/instrumentos-medico (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527624470,
+        "end": 1789527625270
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527625272,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288e37001wes47ELhoIuoaH",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a82887c00012gPmxrkWAJBRwy",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 21119,
+      "output": 243,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 21362,
+      "headroom": 17494,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.273Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.273Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.274Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.275Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.276Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.276Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.277Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.277Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.278Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.278Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.283Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 21362,
+  "providerTokens": 21362,
+  "estimatedInputTokens": 5557,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 21119,
+    "cacheRead": 0,
+    "output": 243
+  },
+  "overflow": false,
+  "headroom": 17494,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.284Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.284Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.287Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.288Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527625638,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288fa5001ve8eFAYZaFrRYW",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8288e43001gE41FjAgDw4JjR",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527625638,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288fa6002ftWnhsBK1qJkrE",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8288e43001gE41FjAgDw4JjR",
+    "type": "tool",
+    "callID": "call_b8b6d9698f55541d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527625638,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288fa6001gHigVUjPrmBt80",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8288e43001gE41FjAgDw4JjR",
+    "type": "text",
+    "text": "Let me open https://comisariopantera.mx/que-herramientas-utiliza-un-medico-para-realizar-su-trabajo-diario/ and read what it says.",
+    "time": {
+      "start": 1789527625638,
+      "end": 1789527625638
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:25.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527625638,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288fa6002ftWnhsBK1qJkrE",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8288e43001gE41FjAgDw4JjR",
+    "type": "tool",
+    "callID": "call_b8b6d9698f55541d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://comisariopantera.mx/que-herramientas-utiliza-un-medico-para-realizar-su-trabajo-diario/"
+      },
+      "time": {
+        "start": 1789527625638
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.461Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527628461,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8288fa6002ftWnhsBK1qJkrE",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8288e43001gE41FjAgDw4JjR",
+    "type": "tool",
+    "callID": "call_b8b6d9698f55541d",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://comisariopantera.mx/que-herramientas-utiliza-un-medico-para-realizar-su-trabajo-diario/"
+      },
+      "output": "Qué Herramientas Utiliza Un Médico Para Realizar Su Trabajo Diario ✅  \nSaltar al contenidoComisario PanteraInicioBlogPolítica de PrivacidadSobre NosotrosContactoFacebook\nTwitter\nInstagram\nYouTube\nSpotify\nComisario Pantera\n\nAlternar el menú\n\n\n\nOtros\t\t\tQué herramientas utiliza un médico para realizar su trabajo diario\nPorComisario Pantera\t\t\t\t\t\nHoras\n5 de agosto de 2024\t\t\t\t\t\n\nCategorías\nOtros\t\t\t\t\t\n✅ Un médico utiliza estetoscopio, tensiómetro, otoscopio, termómetro, guantes, mascarillas y software médico para diagnósticos precisos y cuidado efectivo.Los médicos utilizan una variedad de herramientas y equipos para llevar a cabo su trabajo diario, que van desde instrumentos básicos como un estetoscopio hasta tecnología avanzada como máquinas de diagnóstico por imagen. Estas herramientas son esenciales para evaluar, diagnosticar y tratar a los pacientes de manera efectiva.Exploraremos en detalle las diferentes herramientas que son indispensables en la práctica médica, clasificándolas según su uso y función. Desde los instrumentos de evaluación hasta los equipos de tratamiento, cada uno juega un papel crucial en el proceso de atención al paciente.Herramientas de EvaluaciónLas herramientas de evaluación son fundamentales para el diagnóstico preciso. Algunas de las más comunes incluyen:Estetoscopio: Permite escuchar los sonidos internos del cuerpo, como los latidos del corazón y los ruidos respiratorios.Termómetro: Utilizado para medir la temperatura corporal, vital para detectar fiebre.Esfigmomanómetro: Instrumento para medir la presión arterial, clave en la evaluación de la salud cardiovascular.Oftalmoscopio: Herramienta que permite examinar el interior del ojo y detectar problemas visuales.Equipos de DiagnósticoAdemás de las herramientas tradicionales, los médicos también dependen de equipos de diagnóstico que les ayudan a obtener una imagen más clara de la salud del paciente:Ultrasonido: Utiliza ondas sonoras para crear imágenes de los órganos internos, muy útil en la obstetricia y ginecología.Rayos X: Proporciona imágenes de estructuras internas, particularmente huesos, para detectar fracturas o enfermedades.Resonancia Magnética (RM): Ofrece imágenes detalladas de los tejidos blandos mediante el uso de campos magnéticos y ondas de radio.Instrumentos QuirúrgicosPara los médicos que realizan procedimientos quirúrgicos, es crucial contar con una serie de instrumentos especializados:Bisturí: Utilizado para realizar incisiones en la piel o en otros tejidos.Tijeras quirúrgicas: Diseñadas para cortar tejidos con precisión.Pinzas: Utilizadas para agarrar y manipular tejidos durante una cirugía.Herramientas de Registro y ComunicaciónAdemás de las herramientas físicas, los médicos también utilizan tecnologías para gestionar la información del paciente:Sistemas de registros electrónicos: Permiten a los médicos acceder y actualizar la información médica del paciente de manera eficiente.Aplicaciones de telemedicina: Facilitan consultas a distancia, lo que se ha vuelto esencial en la atención médica moderna.&nbsp; Quién canta la canción original de CAN&#039;T take my eyes off youCada una de estas herramientas es vital para garantizar que los médicos puedan ofrecer la mejor atención posible a sus pacientes, asegurando diagnósticos precisos y tratamientos efectivos. En la práctica médica, la combinación de habilidades humanas y tecnología avanzada es lo que permite a los médicos enfrentar los desafíos de la salud de manera competente.Equipo de diagnóstico esencial en la práctica médica cotidianaEl diagnóstico es una parte crucial del ejercicio médico, y para ello, los médicos emplean una variedad de herramientas y equipos que les permiten realizar una evaluación precisa del estado de salud de sus pacientes. A continuación, se detallan algunos de los instrumentos más utilizados en la práctica diaria.1. EstetoscopioEl estetoscopio es uno de los instrumentos más icónicos en la medicina. Permite a los médicos escuchar los sonidos internos del cuerpo, como los latidos del corazón y los ruidos respiratorios. Su uso es fundamental para evaluar la salud cardiovascular y pulmonar del paciente.2. EsfigmomanómetroEste instrumento se utiliza para medir la presión arterial. Es esencial en la evaluación de la salud cardiovascular de un paciente e identifica condiciones como la hipertensión. Se puede encontrar en versiones manuales y digitales, ofreciendo así diferentes opciones para los médicos.Tipo de EsfigmomanómetroCaracterísticasManualesRequieren un fonendoscopio y habilidad para inflar el manguito.DigitalesFáciles de usar y autoajustados, ideales para el uso en casa.3. TermómetroEl termómetro es una herramienta básica pero esencial que permite medir la temperatura corporal. Existen varios tipos, como los digitales, infrarrojos y de mercurio, cada uno con sus propias ventajas y desventajas.Termómetros digitales: Rápidos y fáciles de leer.Termómetros infrarrojos: Miden la temperatura sin contacto, ideal para niños.Termómetros de mercurio: Menos comunes hoy en día, pero todavía utilizados en algunos contextos.4. OtoscopioEl otoscopio es un instrumento que permite la visualización del conducto auditivo y la tímpano. Es esencial para la evaluación de condiciones como infecciones de oído y otras patologías auditivas.5. GlucómetroEl glucómetro es fundamental para el diagnóstico y monitoreo de pacientes con diabetes. Permite medir los niveles de glucosa en sangre de manera rápida y precisa, lo que es vital para la gestión de esta enfermedad crónica.&nbsp; Cuál es el tipo de voz de José JoséConsejos prácticos para el uso eficaz de equipos de diagnósticoMantén el equipo calibrado: Asegúrate de que todos los instrumentos estén correctamente calibrados para obtener resultados precisos.Capacitación continua: Los profesionales de la salud deben estar actualizados en el uso de nuevas tecnologías y herramientas.Higiene y cuidado: Es fundamental desinfectar todos los equipos para prevenir infecciones y asegurar la salud de los pacientes.Estas herramientas no solo permiten un diagnóstico más exacto, sino que también ayudan a los médicos a brindar un mejor cuidado y atención a sus pacientes, lo que es fundamental en la práctica médica cotidiana.Dispositivos de monitoreo vital cruciales para el cuidado del pacienteLos dispositivos de monitoreo vital son esenciales en la práctica médica moderna, ya que permiten a los médicos evaluar y mantener la salud del paciente en tiempo real. Estos dispositivos son utilizados para medir funciones vitales como la frecuencia cardíaca, la presión arterial y la oxigenación de la sangre, entre otros.Importancia de los dispositivos de monitoreoEl uso de tecnología avanzada en el monitoreo de pacientes ha demostrado tener un impacto significativo en la calidad de atención médica y en los resultados de salud. Por ejemplo, estudios han demostrado que el monitoreo continuo reduce la mortalidad en unidades de cuidados intensivos en un 30%.Ejemplos de dispositivos de monitoreoMonitores de signos vitales: Estos dispositivos proporcionan datos en tiempo real sobre la frecuencia cardíaca, la presión arterial, la temperatura y la frecuencia respiratoria.Oxímetros de pulso: Miden la saturación de oxígeno en la sangre, lo que es crucial para pacientes con enfermedades respiratorias.Electrocardiógrafos (ECG): Registran la actividad eléctrica del corazón y son fundamentales para detectar arritmias.Monitores de presión arterial: Permiten un seguimiento continuo de la presión arterial, lo que es vital en pacientes con hipertensión.Ventajas del monitoreo vitalDetección temprana de problemas: La monitorización continua ayuda a identificar complicaciones antes de que se conviertan en emergencias.Mejora de la toma de decisiones clínicas: Los datos precisos y actualizados permiten a los médicos tomar decisiones informadas rápidamente.Atención personalizada: Los dispositivos permiten una atención más adaptada a las necesidades individuales del paciente.Reducción de costos hospitalarios: Al prevenir complicaciones, se pueden reducir estancias prolongadas y tratamientos costosos.&nbsp; Qué ideas de regalos de cumpleaños son perfectas para un hombreEstadísticas relevantesDispositivoUso comúnBeneficioMonitor de signos vitalesHospitales y clínicasMonitoreo en tiempo realOxímetro de pulsoCuidado domiciliario y hospitalarioDetección temprana de problemas respiratoriosElectrocardiógrafoUrgencias y consultas médicasDiagnóstico de arritmiasMonitor de presión arterialConsultas y seguimientoManejo de hipertensiónLa implementación de estos dispositivos de monitoreo vital no solo mejora la atención médica, sino que también contribuye a un cuidado más seguro y eficiente para los pacientes. Es fundamental que los profesionales de la salud estén capacitados en el uso de estas herramientas para maximizar sus beneficios en el tratamiento y cuidado diario.Preguntas frecuentes¿Qué herramientas son esenciales para un médico general?Un médico general suele utilizar un estetoscopio, un tensiómetro, un otoscopio y un termómetro.¿Cómo se llaman las herramientas para diagnóstico por imagen?Las herramientas incluyen radiografías, ultrasonidos, tomografías computarizadas y resonancias magnéticas.¿Qué equipo se usa en procedimientos quirúrgicos?En cirugía se utilizan bisturíes, pinzas, suturas y electrobisturís, entre otros.¿Cuál es el papel de la tecnología en la medicina actual?La tecnología mejora el diagnóstico, tratamiento y seguimiento de los pacientes mediante software y equipos avanzados.¿Qué herramientas son útiles para la atención en emergencias?Un desfibrilador, un kit de reanimación, y medicamentos de emergencia son fundamentales en situaciones críticas.Puntos clave sobre las herramientas médicasEstetoscopios: Para auscultar sonidos corporales.Tensiómetros: Miden la presión arterial.Otoscopios: Inspección del oído.Termómetros: Control de la temperatura corporal.Radiografías: Diagnóstico por imagen de huesos y órganos.Ultrasonidos: Visualización de órganos internos en tiempo real.Tomografías: Imágenes detalladas en cortes transversales.Resonancias magnéticas: Imágenes por magnetismo de tejidos blandos.Bisturíes y pinzas: Herramientas quirúrgicas esenciales.Desfibriladores: Para tratar paradas cardíacas.¡Déjanos tus comentarios y comparte tu opinión! También te invitamos a revisar otros artículos en nuestra web que podrían interesarte.Navegación de entradasAnterior\nAnteriorQué canciones de rap son ideales para dedicarle a mi hijoSiguienteContinuar\nQué instrumentos de cuerda son similares al laúd y sus característicasPublicaciones Similares\n\n\n\n\nOtros\t\t\tCómo Hacer un Proyecto Electrónico Fácil y Divertido en Casa\nPorComisario Pantera\t\t\t\t\t\n16 de julio de 2024\t\t\t\t\tConstruye un circuito simple con LEDs y resistencias. Usa una protoboard y baterías para explorar conexiones. ¡Inicia tu aventura electrónica hoy!\n\nLeer más Cómo Hacer un Proyecto Electrónico Fácil y Divertido en CasaContinuar\n\t\t\t\n\n\n\n\nOtros\t\t\tCuántas versiones hay de Fly Me to the Moon\nPorComisario Pantera\t\t\t\t\t\n11 de enero de 202418 de enero de 2024\t\t\t\t\t«Fly Me to the Moon» brilla con más de 300 versiones únicas, interpretadas por leyendas como Sinatra y Armstrong. ¡Un clásico eterno!\n\nLeer más Cuántas versiones hay de Fly Me to the MoonContinuar\n\t\t\t\n\n\n\n\nOtros\t\t\tQuién es el verdadero autor de la canción Si nos dejan\nPorComisario Pantera\t\t\t\t\t\n10 de enero de 202418 de enero de 2024\t\t\t\t\tLuis Demetrio es el genio detrás del clásico de la música ranchera «Si Nos Dejan», un himno al amor sin barreras.\n\nLeer más Quién es el verdadero autor de la canción Si nos dejanContinuar\n\t\t\t\n\n\n\n\nOtros\t\t\tCuánto mide Guillermo del Toro y cuántos premios ha ganado\nPorComisario Pantera\t\t\t\t\t\n26 de julio de 2024\t\t\t\t\tGuillermo del Toro mide 1.78 m y ha ganado 2 premios Oscar, destacando en la dirección y producción cinematográfica.\n\nLeer más Cuánto mide Guillermo del Toro y cuántos premios ha ganadoContinuar\n\t\t\t\n\n\n\n\nOtros\t\t\tCómo elegir los mejores adornos navideños colgantes para el techo\nPorComisario Pantera\t\t\t\t\t\n4 de enero de 2025\t\t\t\t\tElige adornos colgantes navideños con diseño único, color vibrante, y materiales duraderos. Considera el espacio y el tema para crear una atmósfera mágica.\n\nLeer más Cómo elegir los mejores adornos navideños colgantes para el techoContinuar\n\t\t\t\n\n\n\n\nOtros\t\t\tCómo quitar lo pegajoso del plástico de forma efectiva y rápida\nPorComisario Pantera\t\t\t\t\t\n20 de julio de 2024\t\t\t\t\tUsa alcohol isopropílico y un paño suave: disuelve residuos pegajosos rápidamente, sin dañar el plástico. ¡Solución eficaz y sencilla!\n\nLeer más Cómo quitar lo pegajoso del plástico de forma efectiva y rápidaContinuar\n\t\t\tDeja una respuesta Cancelar la respuestaTu dirección de correo electrónico no será publicada. Los campos obligatorios están marcados con *Comentario *Nombre *Correo electrónico * Guarda mi nombre, correo electrónico y web en este navegador para la próxima vez que comente. \nBuscarBuscarNuevoCómo puedo registrar una canción en México de forma sencilla y rápidaQué frecuencia utilizan los infrarrojos en un mando a distanciaDe qué trata la canción «A pesar de todo» en versión acústicaPor qué el DJ elige la música que pone en sus sets en vivoCómo puedo grabar videos de YouTube en un DVD fácilmenteQué es una cámara de eco y cómo afecta al sonido en grabacionesCuáles son las diferencias entre audífonos on ear e in earCómo hacer que el flash de mi celular prenda al recibir llamadasCategoríasAudioBandasEducaciónGeneralHistoriaIluminaciónInstrumentosMúsicaOtrosSonidoTecnologíaVariosPágina de información de Comisario PanteraMilpa Alta, MéxicoInformaciónInicioAviso LegalBlogContactoPolítica de CookiesPolítica de PrivacidadSobre NosotrosCategoríasBandasGeneralHistoriaMúsica¡Creemos juntos!CONTACTOComisario Pantera 2026 &copy; Todos los derechos reservadosFacebook\nFacebookTwitter\nTwitterInstagram\nInstagramYouTube\nYouTubeSpotify\nSpotify Scroll hacia arriba\nScroll hacia arriba\n\n\n\n\nInicioBlogPolítica de PrivacidadSobre Nosotros",
+      "title": "https://comisariopantera.mx/que-herramientas-utiliza-un-medico-para-realizar-su-trabajo-diario/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527625638,
+        "end": 1789527628460
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.461Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527628461,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289aad001oW2hQQv1deYFSz",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8288e43001gE41FjAgDw4JjR",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 32764,
+      "output": 259,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33023,
+      "headroom": 5833,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.462Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.462Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.462Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.462Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.463Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.463Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.463Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.463Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.463Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.463Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.467Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 33023,
+  "providerTokens": 33023,
+  "estimatedInputTokens": 8544,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 32764,
+    "cacheRead": 0,
+    "output": 259
+  },
+  "overflow": false,
+  "headroom": 5833,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.467Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.467Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.468Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.469Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527628805,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289c04001zscsrDPG85Uiuh",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289ab3001OIBTXgK4JqlQlp",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527628805,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289c05002oa32OO2Ev5Qu94",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289ab3001OIBTXgK4JqlQlp",
+    "type": "tool",
+    "callID": "call_2d405618e33390a8",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527628805,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289c05001SLEfoaDQJFaTyw",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289ab3001OIBTXgK4JqlQlp",
+    "type": "text",
+    "text": "Let me open https://nuevaescuelamexicana.sep.gob.mx/contenido/coleccion/el-termometro-y-el-estetoscopio-2/ and read what it says.",
+    "time": {
+      "start": 1789527628805,
+      "end": 1789527628805
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527628805,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289c05002oa32OO2Ev5Qu94",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289ab3001OIBTXgK4JqlQlp",
+    "type": "tool",
+    "callID": "call_2d405618e33390a8",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://nuevaescuelamexicana.sep.gob.mx/contenido/coleccion/el-termometro-y-el-estetoscopio-2/"
+      },
+      "time": {
+        "start": 1789527628805
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527628807,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289c05002oa32OO2Ev5Qu94",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289ab3001OIBTXgK4JqlQlp",
+    "type": "tool",
+    "callID": "call_2d405618e33390a8",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://nuevaescuelamexicana.sep.gob.mx/contenido/coleccion/el-termometro-y-el-estetoscopio-2/"
+      },
+      "error": "Error: Unable to connect. Is the computer able to access the url?",
+      "time": {
+        "start": 1789527628805,
+        "end": 1789527628806
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789527628807,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "Error: Unable to connect. Is the computer able to access the url?",
+  "error": "Error: Unable to connect. Is the computer able to access the url?"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527628807,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289c07001tXeg2yPmpFkpP3",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289ab3001OIBTXgK4JqlQlp",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 46857,
+      "output": 257,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 47114,
+      "headroom": -8258,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.808Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.808Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.808Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.808Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.809Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.809Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.811Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 47114,
+  "providerTokens": 47114,
+  "estimatedInputTokens": 8584,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 46857,
+    "cacheRead": 0,
+    "output": 257
+  },
+  "overflow": true,
+  "headroom": -8258,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.812Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.812Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.812Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.813Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.813Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.813Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.813Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.814Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:28.814Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.284Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527629284,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289de3001AyYUvwALSeY9AK",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289c0d001uJw4VHJnoEdSl7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.285Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.285Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.285Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.286Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527629286,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289de5001iB15my43z6XNct",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289c0d001uJw4VHJnoEdSl7",
+    "type": "text",
+    "text": "Conversation summary: Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro.   Let me search the web for Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro.\n\nTitle: What did we do so\n\nUser turns:\n  1. Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro.\n  2.",
+    "time": {
+      "start": 1789527629285,
+      "end": 1789527629285
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.286Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527629286,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289de6001cotEWT4ta6cZtB",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289c0d001uJw4VHJnoEdSl7",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 39289,
+      "output": 320,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 39609,
+      "headroom": -753,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.286Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.286Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.287Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.287Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.287Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527629287,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289de7002pmAGmZXv3we1Cq",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289de700120W1sqfHzXE0Cd",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789527629287,
+      "end": 1789527629287
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.287Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.288Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.288Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.288Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.288Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.290Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.291Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.292Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.292Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.292Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.292Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527629370,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289e390011UHSecdb4VlqhU",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289de8001C2WfU4wFOSo2vr",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527629370,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289e3a0027ZJSxT03F5Q6rp",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289de8001C2WfU4wFOSo2vr",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789527629370,
+      "end": 1789527629370
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.370Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527629370,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "part": {
+    "id": "prt_0a8289e3a0031p7zIi9bFw1tQW",
+    "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+    "messageID": "msg_0a8289de8001C2WfU4wFOSo2vr",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8869,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8942,
+      "headroom": 29914,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.371Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.371Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.371Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.371Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.372Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.372Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.372Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527629373,
+  "sessionID": "ses_f57d78796ffe81za9nY5GSGeqz"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.373Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.373Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.373Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.373Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.PRXhNHG1vy",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:29.373Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 10,
+  "message": "Agent exiting"
+}
+

@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.257Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.257Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.258Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.258Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.266Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.266Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.267Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.268Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.268Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.271Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.271Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.274Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 1738,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.274Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.287Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:03:20.291Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:03:20.292Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.296Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.296Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.297Z",
+  "service": "session",
+  "id": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A",
+  "title": "New session - 2026-09-16T03:03:20.297Z",
+  "time": {
+    "created": 1789527800297,
+    "updated": 1789527800297
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.298Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.299Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.299Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d4c616ffePsPYORWanyMB2B/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.299Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d4c616ffePsPYORWanyMB2B/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.302Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57d4c616ffePsPYORWanyMB2B/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.304Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.305Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.305Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.306Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.307Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.307Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.307Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.308Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.308Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.308Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.308Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.308Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.308Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.468Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.472Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.473Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.480Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.486Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.490Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.490Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.490Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:20.491Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:21.064Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527801065,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b3ce60010XU96lpbKfCigS",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b3a97001cZkXulNy8d1JWJ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:21.065Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:21.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527801066,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b3ce9002k39ZG88f8Phxv2",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b3a97001cZkXulNy8d1JWJ",
+    "type": "tool",
+    "callID": "call_e65f9e06d8354b62",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:21.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527801066,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b3ce9001Cuu6O8wlHbHVqd",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b3a97001cZkXulNy8d1JWJ",
+    "type": "text",
+    "text": "Let me search the web for Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan.",
+    "time": {
+      "start": 1789527801066,
+      "end": 1789527801066
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:21.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527801066,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b3ce9002k39ZG88f8Phxv2",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b3a97001cZkXulNy8d1JWJ",
+    "type": "tool",
+    "callID": "call_e65f9e06d8354b62",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan"
+      },
+      "time": {
+        "start": 1789527801066
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527803022,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b3ce9002k39ZG88f8Phxv2",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b3a97001cZkXulNy8d1JWJ",
+    "type": "tool",
+    "callID": "call_e65f9e06d8354b62",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan"
+      },
+      "output": "Title: Medición de la capacidad mediante el sistema métrico | Estudyando\nURL: https://estudyando.com/medicion-de-la-capacidad-mediante-el-sistema-metrico/\nPublished: 2020-11-23T05:14:04.000Z\nAuthor: N/A\nHighlights:\n1 litro = 1.000 mililitros1 mililitro = 0,001 litros\n...\n- De litros a mililitros → multiplica por 1.000\n- De mililitros a litros → divide entre 1.000\n...\n- 2,5 L = 2,5 × 1.000 = 2.500 mL\n- 750 mL = 750 ÷ 1.000 = 0,75 L\n...\nRegla: mL = L × 1.000\n...\nRegla: L = mL ÷ 1.000\n\n---\n\nTitle: Imagina que tienes una garrafa de agua de 4 litros. Si ya has bebido 750\nURL: https://careers.montgomeryadvertiser.com/question/51061684.html\nPublished: 2024-05-21T20:45:03.000Z\nAuthor: N/A\nHighlights:\nImagina que tienes una garrafa de agua de 4 litros. Si ya has bebido 750 ml, ¿cuántos mililitros te quedan por beber?\n...\nImagine que tienes una garrafa de agua de 4 litros. Si ya has bebido 750 ml, primero convierte los 4 litros a mililitros:1. 1 litro equivale a 1000 mililitros, entonces 4 litros equivalen a 4 x 1000 = 4000 mililitros.Si ya has bebido 750 ml, para determinar cuántos mililitros te quedan por beber, realiza la siguiente resta:2. 4000 mililitros (total en la garrafa) - 750 mililitros (ya bebidos) = ¿Cuántos mililitros te quedan por beber?\n\n---\n\nTitle: Unidades de Medida de Capacidad\nURL: https://pacoelchato.com/paco-te-explica/matematicas/unidades-de-medida-de-capacidad-estudia-aprende-facil\nPublished: N/A\nAuthor: N/A\nHighlights:\n1. Convierte 2 litros a mililitros.\n...\nConvierte 500 mililitros a litros.\n...\n3. Convierte\n...\n.5 litros a mililitros.\n...\n4. Convierte 750 mililitros a litros.\n...\n5. Convierte 3 litros a mililitros.\n...\n6. Convierte 1200 mil\n...\nros a litros\n...\n7. Convierte\n...\nConvierte\n...\n. Convierte\n...\n4 litros a\n...\n1. 2 litros a mililitros: 2 L × 1000 = 2000 ml\n...\n4. 750 mililitros a litros: 750 ml ÷ 1000 = 0.75 L\n...\nagua tiene una capacidad de\n...\n00 mililit\n...\n. ¿Cuánt\n...\nagua puede contener?:\n\n---\n\nTitle: PROBLEMAS DE CAPACIDAD\nURL: https://quintojuanvalera.blogspot.com/2025/04/problemas-de-capacidad.html\nPublished: 2025-04-02T11:55:00.000Z\nAuthor: N/A\nHighlights:\nEl acuario: Un acuario tiene una capacidad de 120 litros. Si se llena hasta la mitad, ¿cuántos mililitros de agua hay en el acuario? La jarra de limonada: Una jarra contiene 2 litros de limonada. Si se sirven 8 vasos de 200 mililitros cada uno, ¿cuántos mililitros de limonada quedan en la jarra? El depósito de gasolina: El depósito de gasolina de un coche tiene una capacidad de 50 litros. Si se han consumido 3/4 del depósito, ¿cuántos decilitros de gasolina quedan? La receta de la tarta: Una receta de tarta requiere 500 mililitros de leche, 250 mililitros de aceite y 150 mililitros de zumo de naranja. ¿Cuántos litros de líquido se necesitan en total para la tarta? El bidón de agua: Un bidón de agua tiene una capacidad de 20 litros. Si se llenan botellas de 500 mililitros cada una, ¿cuántas botellas se pueden llenar con el agua del bidón?\n\n---\n\nTitle: Desafío 12 Quinto Grado: Litros y Mililitros en Ejemplos\nURL: https://matematrix.net/dibujos-de-litros/\nPublished: N/A\nAuthor: N/A\nHighlights:\nPara hacer más explícita esta convertibilidad, aquí hay un pequeño ejercicio para los lectores: si tienes un envase que mide 750 ml, ¿cuántos litros tendrías? Para resolverlo, sólo necesitamos recordar que un litro tiene 1,000 mililitros. Por lo tanto, para encontrar cuántos litros son 750 ml, se dividen 750 entre 1,000, lo que resulta en 0.75 litros. Esto confirma que 750 ml es igual a 0.75 litros, reafirmando la naturaleza de la convertibilidad entre estas dos unidades.\n\n---\n\nTitle: Resolución de problemas II - Nueva Escuela Mexicana Digital\nURL: https://nuevaescuelamexicana.sep.gob.mx/contenido/coleccion/resolucion-de-problemas-ii/\nPublished: 2025-02-06T00:00:00.000Z\nAuthor: SEP\nHighlights:\nBien, como ya tenemos la equivalencia de 5 kilolitros en litros, entonces se puede realizar la conversión de litros a mililitros. Para hacerlo, realizamos un registro tabular que nos va a permitir ordenar nuestros datos y observar tanto el factor de conversión como la de regla de tres.\n...\nEs así como establecemos que 1 litro equivale a 1000 mililitros, entonces 5 000 litros, equivalen a “x” mililitros. Observemos que el factor de conversión es 1 000 mililitros sobre 1 litro.\n...\nAl efectuar esta operación se obtiene 5 000 000 de mililitros entre 1. Entonces, podemos afirmar que 5 000 litros equivalen a 5 000 000 de mililitros.\n...\nComo ya tenemos las unidades de medida en mililitros ahora, podemos dividir 5 000 000 de mililitros entre 500 mililitros para conocer cuántos envases de 500 mililitros se pueden llenar.\n...\nEsto también equivale a que, con 5 kilolitros de jugo se pueden llenar 10 000 envases de 500 mililitros.\n\n---\n\nTitle: Resolución de problemas II - Nueva Escuela Mexicana Digital\nURL: https://nemd.aprende.gob.mx/contenido/coleccion/resolucion-de-problemas-ii/\nPublished: N/A\nAuthor: SEP\nHighlights:\nBien, como ya tenemos la equivalencia de 5 kilolitros en litros, entonces se puede realizar la conversión de litros\n...\nmililitros. Para hacerlo, realizamos un registro tabular que nos va a permitir ordenar nuestros datos y observar tanto el factor de conversión\n...\nregla de tres.\n...\nEs así como establecemos que 1 litro equivale a 1000 mililitros, entonces 5 000 litros, equivalen a “x” mililitros. Observemos que el factor de conversión es 1 000 mililitros sobre 1 litro.\n...\nAl efectuar esta operación se obtiene 5 000 000 de mililitros entre 1. Entonces, podemos afirmar que 5 000 litros equivalen a 5 000 000 de mililitros.\n...\nComo ya tenemos las unidades de medida en mililitros ahora, podemos dividir 5 000 000 de mililitros entre 500 mililitros para conocer cuántos envases de 500 mililitros se pueden llenar.\n...\nEsto también equivale a que, con 5 kilolitros de jugo se pueden llenar 10 000 envases de 500 mililitros.\n\n---\n\nTitle: Problemas 2º Ciclo\nURL: https://centros.edu.xunta.gal/ceipmanuelsueiro/aulavirtual/pluginfile.php/3003/mod_folder/content/0/Problemas%203%C2%BA%204%C2%BA.pdf?forcedownload=1\nPublished: N/A\nAuthor: N/A\nHighlights:\nPIENSO Y RESUELVO 1.- En un recipiente de 5 litros echas 2 litros y 3 cuartos de litro de agua. ¿Cuánto te falta para llenarlo?\n...\n.- En una cuba había 98 litros de agua y se han sacado 53. Calcula los litros que quedan.",
+      "title": "Web search: Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan",
+      "metadata": {},
+      "time": {
+        "start": 1789527801066,
+        "end": 1789527803020
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527803024,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b448f001iqdfLRvuFJQoAl",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b3a97001cZkXulNy8d1JWJ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8590,
+      "output": 234,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8824,
+      "headroom": 30032,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.025Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.025Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.027Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.027Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.028Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.028Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.028Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.028Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.028Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.028Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.031Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8824,
+  "providerTokens": 8824,
+  "estimatedInputTokens": 1965,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8590,
+    "cacheRead": 0,
+    "output": 234
+  },
+  "overflow": false,
+  "headroom": 30032,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.032Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.032Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.033Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.034Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527803809,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b47a0001DN7pv5z4ULLtOE",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b4497001PxSxUa3qIw7qhH",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527803810,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b47a2002WTjo2CE1YDuKb1",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b4497001PxSxUa3qIw7qhH",
+    "type": "tool",
+    "callID": "call_d3e6c6e714a9526c",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527803810,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b47a2001hbiZl3xw65WgQK",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b4497001PxSxUa3qIw7qhH",
+    "type": "text",
+    "text": "Let me open https://estudyando.com/medicion-de-la-capacidad-mediante-el-sistema-metrico/ and read what it says.",
+    "time": {
+      "start": 1789527803810,
+      "end": 1789527803810
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:23.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527803810,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b47a2002WTjo2CE1YDuKb1",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b4497001PxSxUa3qIw7qhH",
+    "type": "tool",
+    "callID": "call_d3e6c6e714a9526c",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://estudyando.com/medicion-de-la-capacidad-mediante-el-sistema-metrico/"
+      },
+      "time": {
+        "start": 1789527803810
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.118Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527804118,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b47a2002WTjo2CE1YDuKb1",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b4497001PxSxUa3qIw7qhH",
+    "type": "tool",
+    "callID": "call_d3e6c6e714a9526c",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://estudyando.com/medicion-de-la-capacidad-mediante-el-sistema-metrico/"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789527803810,
+        "end": 1789527804115
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789527804118,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.121Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527804121,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b48d8001yp2R4a6sROGgZC",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b4497001PxSxUa3qIw7qhH",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 15056,
+      "output": 221,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15277,
+      "headroom": 23579,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.122Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.124Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.126Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.126Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.128Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.128Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.130Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 15277,
+  "providerTokens": 15277,
+  "estimatedInputTokens": 1996,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 15056,
+    "cacheRead": 0,
+    "output": 221
+  },
+  "overflow": false,
+  "headroom": 23579,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.131Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.131Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.134Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.136Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.417Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527804417,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b4a01001cTpKZwKz10W0r2",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b48e2001hj05jK5anXGoTP",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527804418,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b4a01002d48wWZZP7BgtYn",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b48e2001hj05jK5anXGoTP",
+    "type": "text",
+    "text": "The command failed: Error: Request failed with status code: 403\n\nDetecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe del problema con el contexto de diagnóstico? Responde `Report issue`.",
+    "time": {
+      "start": 1789527804418,
+      "end": 1789527804418
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527804418,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "part": {
+    "id": "prt_0a82b4a02001evbuXf22whREjk",
+    "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+    "messageID": "msg_0a82b48e2001hj05jK5anXGoTP",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 15210,
+      "output": 221,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15431,
+      "headroom": 23425,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.419Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.419Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.420Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.420Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.420Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527804420,
+  "sessionID": "ses_f57d4c616ffePsPYORWanyMB2B"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.421Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.421Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.421Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.421Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.EVUSE7c59A",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.421Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}
+
