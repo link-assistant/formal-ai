@@ -25,7 +25,7 @@ const HOW_TO_GUIDE_BOUNDS = {
   maxDepth: 2,
   maxPagesPerService: 4,
   maxServices: 4,
-  maxSteps: 12,
+  maxItems: 12,
   maxCaptureAgeSeconds: 60 * 60 * 24 * 60,
 };
 
@@ -564,7 +564,7 @@ async function howToCaptureService(record, task, entryUrl, bounds, outcome, now)
     }
     const payload = howToClassifyPayload(capture.text);
     if (payload.kind === "parse") {
-      const found = howToExtractSteps(payload.html, bounds.maxSteps);
+      const found = howToExtractSteps(payload.html, bounds.maxItems);
       if (found.length === 0 && depth < bounds.maxDepth) {
         for (const title of howToWikiLinkTitles(payload.html, bounds.maxPagesPerService)) {
           if (howToMatchesTask(task, title)) {
@@ -585,7 +585,7 @@ async function howToCaptureService(record, task, entryUrl, bounds, outcome, now)
       if (relevant.length === 0) outcome.detail = `no_relevant_result url=${url}`;
       const before = steps.length;
       for (const entry of relevant) {
-        howToPushSteps(record, capture, depth, howToExtractSteps(entry.body, bounds.maxSteps), steps);
+        howToPushSteps(record, capture, depth, howToExtractSteps(entry.body, bounds.maxItems), steps);
       }
       if (steps.length === before && depth < bounds.maxDepth) {
         // A question body states the problem; the procedure is in the answers.
@@ -688,7 +688,7 @@ function howToApplyConflictPolicy(steps, guide) {
  * service answered directly is more direct evidence than one reached by
  * following a search result), then source id and the source's own order.
  */
-function howToOrderSteps(steps, maxSteps) {
+function howToOrderSteps(steps, maxItems) {
   return steps
     .slice()
     .sort((left, right) => {
@@ -698,7 +698,7 @@ function howToOrderSteps(steps, maxSteps) {
       if (left.sourceId !== right.sourceId) return left.sourceId < right.sourceId ? -1 : 1;
       return left.position - right.position;
     })
-    .slice(0, maxSteps);
+    .slice(0, maxItems);
 }
 
 /** Whether the run found enough corroborated procedure to answer with. */
@@ -738,14 +738,14 @@ async function synthesizeHowToGuide(task, preferences, bounds, now) {
   }
   collected = howToApplyCopiedSourcePolicy(collected, guide);
   collected = howToApplyConflictPolicy(collected, guide);
-  guide.steps = howToOrderSteps(collected, limits.maxSteps);
+  guide.steps = howToOrderSteps(collected, limits.maxItems);
   return guide;
 }
 
 // --- Projections (mirror of src/how_to_guide/render.rs)
 
 function howToBoundsTracePayload(bounds) {
-  return `max_depth=${bounds.maxDepth} max_pages_per_service=${bounds.maxPagesPerService} max_services=${bounds.maxServices} max_steps=${bounds.maxSteps} max_capture_age_seconds=${bounds.maxCaptureAgeSeconds}`;
+  return `max_depth=${bounds.maxDepth} max_pages_per_service=${bounds.maxPagesPerService} max_services=${bounds.maxServices} max_items=${bounds.maxItems} max_capture_age_seconds=${bounds.maxCaptureAgeSeconds}`;
 }
 
 function howToStepProvenance(step) {

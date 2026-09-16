@@ -14,7 +14,9 @@ use crate::relative_meta_logic::SourceTier;
 use crate::seed::SourceRecord;
 use crate::service_accessibility::ServiceAccessibilityCache;
 use crate::source_fetch::{CachedSourceClient, SourceCapture, SourceTransport};
-use crate::source_walk::{CaptureExtractor, LookupBounds, SourceLookup, WalkOutcome, WalkSourceOutcome};
+use crate::source_walk::{
+    CaptureExtractor, Extracted, LookupBounds, SourceLookup, WalkOutcome, WalkSourceOutcome,
+};
 
 /// One retrieved sense of one surface form, with the provenance of the exact
 /// bytes it was read from.
@@ -80,21 +82,18 @@ impl SenseExtractor {
 impl CaptureExtractor for SenseExtractor {
     type Item = ConceptSense;
 
-    fn extract(
+    fn entry_url(&self, _record: &SourceRecord, _subject: &str) -> Option<String> {
+        todo!("plan 01 leaf L5")
+    }
+
+    fn read(
         &self,
         _record: &SourceRecord,
         _capture: &SourceCapture,
         _depth: usize,
-        _limit: usize,
-    ) -> Vec<Self::Item> {
-        todo!("plan 01 leaf L5")
-    }
-
-    fn follow(&self, _record: &SourceRecord, _capture: &SourceCapture, _limit: usize) -> Vec<String> {
-        todo!("plan 01 leaf L5")
-    }
-
-    fn entry_url(&self, _record: &SourceRecord, _subject: &str) -> Option<String> {
+        _produced: usize,
+        _bounds: &LookupBounds,
+    ) -> Extracted<Self::Item> {
         todo!("plan 01 leaf L5")
     }
 }

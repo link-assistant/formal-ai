@@ -2,52 +2,50 @@ self_ast_census
   target src/how_to_guide.rs
   language rust
   fidelity signature
-  byte_len 31103
-  line_count 828
-  content_id source_module_8d72d792abea88c3
-  symbol_count 44
+  byte_len 26342
+  line_count 688
+  content_id source_module_e574d759f4b7e683
+  symbol_count 42
   symbols
     module extract 19 19
     module render 20 20
-    const MIN_ACCEPTED_STEPS 35 35
-    struct GuideBounds 40 53
-    function default 56 64
-    function trace_payload 70 84
-    struct ServicePreferences 93 95
-    function from_pairs 100 106
-    function with 110 113
-    function allows 117 122
-    struct GuideStep 127 152
-    function provenance 157 169
-    struct GuideSourceOutcome 174 185
-    function new 188 196
-    function trace_payload 200 208
-    struct GuideConflict 213 222
-    struct HowToGuide 226 239
-    function is_sufficient 244 246
-    function contributing_sources 250 258
-    function trace 262 264
-    function record 267 269
-    function markdown 273 275
-    function markdown_in 282 284
-    function select_sources 296 318
-    function synthesize_how_to_guide 325 385
-    function skipped_sources 389 414
-    function entry_url 419 427
-    function page_title 432 439
-    function capitalize 441 446
-    function search_url 453 459
-    function answers_url 462 473
-    function parse_url 476 482
-    const TOPIC_STOPWORDS 487 490
-    function matches_task 499 506
-    function topic_words 510 517
-    function singular 519 524
-    struct Walk 527 531
-    function capture_service 534 666
-    function observe_failure 668 694
-    function push_steps 696 723
-    function apply_copied_source_policy 729 758
-    function apply_conflict_policy 762 794
-    function action_key 798 810
-    function order_steps 814 828
+    const MIN_ACCEPTED_STEPS 39 39
+    struct ServicePreferences 57 59
+    function from_pairs 64 70
+    function with 74 77
+    function allows 81 86
+    struct GuideStep 91 116
+    function provenance 121 133
+    struct GuideSourceOutcome 138 149
+    function from_walk 154 162
+    function new 164 172
+    function trace_payload 176 184
+    struct GuideConflict 189 198
+    struct HowToGuide 202 215
+    function is_sufficient 220 222
+    function contributing_sources 226 234
+    function trace 238 240
+    function record 243 245
+    function markdown 249 251
+    function markdown_in 258 260
+    function select_sources 270 276
+    function synthesize_how_to_guide 283 344
+    function skipped_sources 348 353
+    function entry_url 360 362
+    function page_title 367 369
+    function search_url 376 382
+    function answers_url 385 396
+    function parse_url 399 405
+    const TOPIC_STOPWORDS 410 413
+    function matches_task 422 429
+    function topic_words 433 440
+    function singular 442 447
+    struct StepExtractor 457 459
+    type Item 462 462
+    function entry_url 464 466
+    function read 468 553
+    function push_steps 556 583
+    function apply_copied_source_policy 589 618
+    function apply_conflict_policy 622 654
+    function action_key 658 670
+    function order_steps 674 688

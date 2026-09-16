@@ -119,7 +119,7 @@ fn chat_completions_answers_a_how_to_request_from_the_committed_captures() {
         "the guide should cite the exact source URL it captured: {answer}"
     );
     assert!(
-        answer.contains("Bounds: max_depth=2 max_pages_per_service=4 max_services=4 max_steps=12"),
+        answer.contains("Bounds: max_depth=2 max_pages_per_service=4 max_services=4 max_items=12"),
         "the guide should state the bounds it ran under: {answer}"
     );
 }

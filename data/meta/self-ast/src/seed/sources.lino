@@ -2,22 +2,28 @@ self_ast_census
   target src/seed/sources.rs
   language rust
   fidelity signature
-  byte_len 8810
-  line_count 221
-  content_id source_module_6f0a0ff0c5ab4464
-  symbol_count 14
+  byte_len 13280
+  line_count 325
+  content_id source_module_9ebf12ba0c1c2845
+  symbol_count 20
   symbols
-    const EXTERNAL_TRUSTED_GROUP 31 31
-    enum HowToRole 35 43
-    function slug 48 54
-    function from_seed 56 62
-    function contributes 66 68
-    struct SourceRecord 73 114
-    function is_external_trusted 119 121
-    function api_url 129 135
-    function host 139 145
-    function source_registry 150 180
-    function external_trusted_sources 184 189
-    function source_record 193 195
-    function external_service_settings_keys 199 207
-    function percent_encode 211 221
+    const EXTERNAL_TRUSTED_GROUP 32 32
+    enum HowToRole 36 44
+    function slug 49 55
+    function from_seed 57 63
+    function contributes 67 69
+    struct SourceRecord 74 138
+    function need_kinds 143 145
+    function answers 153 155
+    function registry_index 159 161
+    function serves_language 169 175
+    function is_external_trusted 179 181
+    function api_url 189 195
+    function host 199 205
+    function seed_list 213 222
+    function source_registry 226 265
+    function external_trusted_sources 269 274
+    function sources_for_need_kind 286 293
+    function source_record 297 299
+    function external_service_settings_keys 303 311
+    function percent_encode 315 325

@@ -1217,17 +1217,47 @@ Honest expectations, recorded whatever they are:
 
 Ordered; each individually verifiable and commit-sized.
 
-- [ ] **L1 — Refactor guard first.** Add `tests/unit/issue_1138_source_walk_parity.rs`
+**Three deviations from L2 and L3 as written, recorded rather than silent.**
+
+1. `CaptureExtractor` has two methods, `entry_url` and `read`, not the three
+   (`extract` / `follow` / `entry_url`) the Architecture section sketches.
+   Every payload shape the how-to extractor recognises decides all three
+   questions at once — what it produced, whether one more page is worth
+   spending, and why it produced nothing — so three independent calls would have
+   made the kernel classify the same bytes three times and still not know why a
+   page was empty. `read` returns one `Extracted { items, follow, detail }`, and
+   `detail` is the third thing the sketch had no place for: the outcome row's
+   reason, which `capture_service` used to set through a `&mut` outcome.
+2. `GuideBounds::max_steps` is `LookupBounds::max_items`. The alias L2 requires
+   makes the two one type, and the field is named for what it bounds rather than
+   for the one need kind that first bounded it.
+   `src/web/worker/formal_ai_worker_how_to_guide.js` and the two tests that
+   named it move in the same commit, so the Rust and browser bounds payloads
+   stay one string.
+3. `LookupBounds::default()` is the how-to default (`max_services 4`,
+   `max_items 12`, 60-day staleness), not the wave T skeleton's invented
+   numbers. The guard requires the shared kernel and the how-to path to select
+   the same sources; two different defaults would be two different walks again.
+
+**L3 declares `need_kinds` on every registry source, not only the seven the
+plan lists.** `how_to_role` was the only axis a selector had, so
+`select_sources(NeedKind::Procedure, …)` can only reproduce today's how-to
+selection if every source with a contributing `how_to_role` also declares
+`procedure`. The lexical tier joins `external_trusted` with
+`how_to_role none`, which is what keeps it out of the procedure walk while
+making it reachable for a concept need.
+
+- [x] **L1 — Refactor guard first.** Add `tests/unit/issue_1138_source_walk_parity.rs`
       asserting today's `how_to_guide` output equals
       `tests/fixtures/issue-991/expected-guides.json` when replayed from
       `tests/fixtures/issue-991/source-cache`. Green before any refactor.
-- [ ] **L2 — Extract the kernel.** Create `src/source_walk.rs` with `NeedKind`,
+- [x] **L2 — Extract the kernel.** Create `src/source_walk.rs` with `NeedKind`,
       `LookupBounds`, `CaptureExtractor`, `WalkSourceOutcome`, `WalkOutcome`,
       `select_sources`, `walk_sources`, moving `Walk`, `capture_service`,
       `skipped_sources` and the depth/page accounting out of `src/how_to_guide.rs:296-388,527-…`.
       `GuideBounds` becomes `pub use source_walk::LookupBounds as GuideBounds`.
       L1 must stay green byte-for-byte; `src/how_to_guide.rs` drops below 900 lines.
-- [ ] **L3 — Second selection axis in the registry.** Add `NeedKind` and
+- [x] **L3 — Second selection axis in the registry.** Add `NeedKind` and
       `SourceRecord::need_kinds` to `src/seed/sources.rs`; add `sources_for_need_kind()`;
       add `need_kinds`, `service_group`, `settings_key`, `extractor`, `api_language`
       to the lexical tier in `data/seed/sources-registry.lino`; `select_sources`

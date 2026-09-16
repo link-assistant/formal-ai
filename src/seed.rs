@@ -136,6 +136,7 @@ pub use shell_intents::{
 pub use sources::{
     EXTERNAL_TRUSTED_GROUP, HowToRole, SourceRecord, external_service_settings_keys,
     external_trusted_sources, percent_encode, source_record, source_registry,
+    sources_for_need_kind,
 };
 pub use summary_topics::{SummaryTopic, SummaryTopicSeeds, summary_topic_seeds};
 pub use terminal_commands::{TerminalCommandVocabulary, terminal_command_vocabulary};

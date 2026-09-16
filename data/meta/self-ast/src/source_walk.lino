@@ -2,21 +2,34 @@ self_ast_census
   target src/source_walk.rs
   language rust
   fidelity signature
-  byte_len 3736
-  line_count 115
-  content_id source_module_a7db546e9cbee6f9
-  symbol_count 13
+  byte_len 18158
+  line_count 495
+  content_id source_module_638d129caf4583d9
+  symbol_count 26
   symbols
-    struct LookupBounds 20 26
-    function default 29 37
-    trait CaptureExtractor 42 56
-    type Item 43 43
-    function extract 45 51
-    function follow 53 53
-    function entry_url 55 55
-    struct WalkSourceOutcome 60 68
-    struct WalkOutcome 71 76
-    trait SourceLookup 80 86
-    function lookup 81 85
-    function walk_sources 91 102
-    function select_sources 108 115
+    struct LookupBounds 34 48
+    function default 58 66
+    function trace_payload 72 86
+    struct Extracted 98 105
+    function default 108 114
+    trait CaptureExtractor 119 138
+    type Item 121 121
+    function entry_url 125 125
+    function read 130 137
+    struct WalkSourceOutcome 142 154
+    function new 159 167
+    struct WalkOutcome 173 182
+    trait SourceLookup 186 190
+    function lookup 188 189
+    function page_title 195 202
+    function capitalize 204 209
+    function entry_url 219 221
+    function entry_url_in 225 238
+    function select_sources 249 268
+    function candidates 273 278
+    function skipped_sources 286 311
+    struct Walk 314 321
+    function walk_source 328 395
+    function walk_sources 400 454
+    function observe_failure 458 486
+    function trusted_sources 493 495
