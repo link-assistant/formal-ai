@@ -252,6 +252,8 @@ meanings
       surface
         text "the net"
       surface
+        text "google"
+      surface
         text "in the world"
       surface
         text "headlines"
@@ -267,11 +269,19 @@ meanings
       surface
         text "в сети"
       surface
+        text "сеть"
+      surface
+        text "сетью"
+      surface
         text "вебе"
       surface
         text "онлайн"
       surface
         text "в мире"
+      surface
+        text "загугли"
+      surface
+        text "гугл"
       surface
         text "новост"
       surface
@@ -289,6 +299,8 @@ meanings
         text "ऑनलाइन"
       surface
         text "नेट"
+      surface
+        text "गूगल"
       surface
         text "दुनिया"
       surface
@@ -309,6 +321,8 @@ meanings
       surface
         text "网上"
       surface
+        text "谷歌"
+      surface
         text "世界上"
       surface
         text "头条"
@@ -320,11 +334,17 @@ meanings
       surface
         text "la web"
       surface
+        text "búsqueda web"
+      surface
+        text "web"
+      surface
         text "internet"
       surface
         text "en línea"
       surface
         text "la red"
+      surface
+        text "googlea"
       surface
         text "el mundo"
       surface
@@ -935,3 +955,103 @@ meanings
         text "con el contenido"
       surface
         text "que diga"
+  content_assignment
+    defined-by concept
+    role capability_content_assignment
+    lexeme en
+      surface
+        text " to "
+      surface
+        text " as "
+      surface
+        text " with "
+    lexeme ru
+      surface
+        text " в "
+      surface
+        text " на "
+      surface
+        text " со значением "
+    lexeme hi
+      surface
+        text " में "
+      surface
+        text " के रूप में "
+    lexeme zh
+      surface
+        text "为"
+      surface
+        text "设为"
+      surface
+        text "改为"
+    lexeme es
+      surface
+        text " en "
+      surface
+        text " a "
+      surface
+        text " como "
+  web_host_suffix
+    defined-by concept
+    role capability_web_host_suffix
+    lexeme en
+      surface
+        text "com"
+      surface
+        text "org"
+      surface
+        text "net"
+      surface
+        text "edu"
+      surface
+        text "gov"
+      surface
+        text "info"
+      surface
+        text "biz"
+      surface
+        text "in"
+      surface
+        text "co"
+      surface
+        text "ru"
+      surface
+        text "de"
+      surface
+        text "uk"
+      surface
+        text "fr"
+      surface
+        text "es"
+      surface
+        text "it"
+      surface
+        text "nl"
+      surface
+        text "cn"
+      surface
+        text "jp"
+      surface
+        text "br"
+      surface
+        text "au"
+      surface
+        text "ca"
+      surface
+        text "mx"
+      surface
+        text "ai"
+      surface
+        text "app"
+      surface
+        text "dev"
+      surface
+        text "xyz"
+      surface
+        text "shop"
+      surface
+        text "store"
+      surface
+        text "online"
+      surface
+        text "site"

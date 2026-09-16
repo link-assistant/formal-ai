@@ -26,13 +26,14 @@ use crate::seed::{
     self, ROLE_ASSISTANT_MECHANISM_INQUIRY, ROLE_CALENDAR_DAY_REFERENCE,
     ROLE_CAPABILITY_ACT_COMPOSE, ROLE_CAPABILITY_ACT_DEMONSTRATE, ROLE_CAPABILITY_ACT_ENUMERATE,
     ROLE_CAPABILITY_ACT_EXPLAIN, ROLE_CAPABILITY_ACT_RECORD, ROLE_CAPABILITY_ACT_RETRIEVE,
-    ROLE_CAPABILITY_ACT_SCHEDULE, ROLE_CAPABILITY_ACT_TRANSFORM,
-    ROLE_CAPABILITY_CLOCK_REFERENCE, ROLE_CAPABILITY_CONTAINER_SCOPE,
+    ROLE_CAPABILITY_ACT_SCHEDULE, ROLE_CAPABILITY_ACT_TRANSFORM, ROLE_CAPABILITY_CLOCK_REFERENCE,
+    ROLE_CAPABILITY_CONTAINER_SCOPE, ROLE_CAPABILITY_CONTENT_ASSIGNMENT,
     ROLE_CAPABILITY_CONTENT_INTRODUCER, ROLE_CAPABILITY_FRESHNESS_LIVE,
     ROLE_CAPABILITY_LANGUAGE_REFERENCE, ROLE_CAPABILITY_PRIOR_TURN_REFERENCE,
     ROLE_CAPABILITY_QUANTITY_INTERROGATIVE, ROLE_CAPABILITY_SELF_SURFACE_NOUN,
-    ROLE_CAPABILITY_WEB_SCOPE, ROLE_CAPABILITY_WORKSPACE_SCOPE, ROLE_LOCAL_PATH_SCOPE_CURRENT,
-    ROLE_LOCAL_PATH_SCOPE_DESKTOP, ROLE_LOCAL_PATH_SCOPE_HOME, ROLE_TRANSLATION_LANGUAGE,
+    ROLE_CAPABILITY_WEB_HOST_SUFFIX, ROLE_CAPABILITY_WEB_SCOPE, ROLE_CAPABILITY_WORKSPACE_SCOPE,
+    ROLE_LOCAL_PATH_SCOPE_CURRENT, ROLE_LOCAL_PATH_SCOPE_DESKTOP, ROLE_LOCAL_PATH_SCOPE_HOME,
+    ROLE_TRANSLATION_LANGUAGE,
 };
 use crate::web_engine_core::normalize_prompt;
 
@@ -98,7 +99,9 @@ impl ObjectType {
     /// Read an object type back from its seed slug.
     #[must_use]
     pub fn from_slug(slug: &str) -> Option<Self> {
-        OBJECT_TYPES.into_iter().find(|object| object.slug() == slug)
+        OBJECT_TYPES
+            .into_iter()
+            .find(|object| object.slug() == slug)
     }
 
     /// Where this object sits when a prompt carries several.
@@ -318,9 +321,22 @@ fn is_path(token: &str) -> bool {
     token.rsplit_once('.').is_some_and(|(stem, extension)| {
         !stem.is_empty()
             && (1..=5).contains(&extension.chars().count())
-            && extension.chars().all(|character| character.is_alphanumeric())
+            && extension
+                .chars()
+                .all(|character| character.is_alphanumeric())
             && extension.chars().any(char::is_alphabetic)
+            && !is_web_host_suffix(extension)
     })
+}
+
+/// Whether `extension` is a registrable domain suffix rather than a file
+/// extension, so `amazon.in` is a site and `main.rs` is a file.
+fn is_web_host_suffix(extension: &str) -> bool {
+    let extension = extension.to_lowercase();
+    seed::lexicon()
+        .words_for_role(ROLE_CAPABILITY_WEB_HOST_SUFFIX)
+        .iter()
+        .any(|suffix| *suffix == extension)
 }
 
 /// Whether the prompt carries a clock time: digits, a colon, digits.
@@ -330,9 +346,7 @@ fn has_clock_time(prompt: &str) -> bool {
         *character == ':'
             && index > 0
             && characters[index - 1].is_ascii_digit()
-            && characters
-                .get(index + 1)
-                .is_some_and(char::is_ascii_digit)
+            && characters.get(index + 1).is_some_and(char::is_ascii_digit)
     })
 }
 
@@ -395,6 +409,18 @@ fn has_web_scope(normalized: &str) -> bool {
     evidences(ROLE_CAPABILITY_WEB_SCOPE, normalized) || is_freshness_live(normalized)
 }
 
+/// Whether the request names the open web itself -- the web, the internet, a
+/// search engine, or what is true right now.
+///
+/// The planner asks this before letting the table answer a bare term at the end
+/// of its cascade: at that position every route that reads the conversation and
+/// the workspace has already declined, and a request that never mentioned the
+/// open web is one the symbolic engine should still get its turn at.
+#[must_use]
+pub fn names_open_web(prompt: &str) -> bool {
+    has_web_scope(&normalize_prompt(prompt))
+}
+
 /// The `freshness: live` qualifier: the request is about what is true at the
 /// moment it is asked, so a stored answer cannot satisfy it (issue #720).
 #[must_use]
@@ -419,6 +445,144 @@ fn is_self_surface(normalized: &str) -> bool {
 #[must_use]
 pub fn is_prior_turn_reference(normalized: &str) -> bool {
     evidences(ROLE_CAPABILITY_PRIOR_TURN_REFERENCE, normalized)
+}
+
+/// The literal content a request hands over, and the path it hands it to.
+///
+/// Both halves are read from the same two sources the `quoted_content` object
+/// is derived from -- a balanced quoted span, or a seeded content introducer --
+/// so the planner writes what the table said was there rather than guessing
+/// again with a second rule.
+#[must_use]
+pub fn explicit_content(prompt: &str) -> Option<String> {
+    if let Some(span) = quoted_span(prompt) {
+        return Some(span);
+    }
+    let characters: Vec<char> = prompt.chars().collect();
+    let lowered: Vec<char> = prompt
+        .chars()
+        .flat_map(|character| character.to_lowercase())
+        .collect();
+    if lowered.len() != characters.len() {
+        // A case fold that changes the character count would misplace every
+        // offset below, so the request is left to the planner's own extractor.
+        return None;
+    }
+    let mut best: Option<usize> = None;
+    for surface in seed::lexicon().words_for_role(ROLE_CAPABILITY_CONTENT_INTRODUCER) {
+        let needle: Vec<char> = surface.chars().collect();
+        if needle.is_empty() || needle.len() > lowered.len() {
+            continue;
+        }
+        for start in 0..=lowered.len() - needle.len() {
+            if lowered[start..start + needle.len()] == needle[..] {
+                let end = start + needle.len();
+                if best.is_none_or(|current| end > current) {
+                    best = Some(end);
+                }
+            }
+        }
+    }
+    let Some(end) = best else {
+        return assigned_content(prompt);
+    };
+    let tail: String = characters[end..].iter().collect();
+    let tail = tail.trim().trim_matches(|character: char| {
+        matches!(
+            character,
+            ':' | '"' | '\u{201c}' | '\u{201d}' | '.' | '\u{3002}'
+        )
+    });
+    (!tail.trim().is_empty()).then(|| tail.trim().to_owned())
+}
+
+/// The content of a request that names its destination first: the text after
+/// the assignment connector that follows the destination path.
+///
+/// "set the contents of note.txt to hello" and "pon el contenido de note.txt en
+/// hello" are the same request, and neither quotes its content nor introduces
+/// it. The connector is only read *after* the path, because on its own it is
+/// far too common a word to be evidence of anything.
+fn assigned_content(prompt: &str) -> Option<String> {
+    let path = first_path(prompt)?;
+    let after = prompt.split_once(path.as_str()).map(|(_, tail)| tail)?;
+    let lowered = after.to_lowercase();
+    let mut best: Option<usize> = None;
+    for surface in seed::lexicon().words_for_role(ROLE_CAPABILITY_CONTENT_ASSIGNMENT) {
+        if let Some(position) = lowered.find(surface.as_str()) {
+            let end = position + surface.len();
+            if best.is_none_or(|current| end < current) && after.is_char_boundary(end) {
+                best = Some(end);
+            }
+        }
+    }
+    let content = after[best?..].trim().trim_matches('"');
+    (!content.is_empty()).then(|| content.to_owned())
+}
+
+/// The first balanced quoted span of more than one token, if any.
+fn quoted_span(prompt: &str) -> Option<String> {
+    for delimiter in ['"', '\u{201c}', '\u{00ab}'] {
+        let closing = match delimiter {
+            '\u{201c}' => '\u{201d}',
+            '\u{00ab}' => '\u{00bb}',
+            other => other,
+        };
+        if let Some(open) = prompt.find(delimiter) {
+            let rest = &prompt[open + delimiter.len_utf8()..];
+            if let Some(close) = rest.find(closing) {
+                let inner = &rest[..close];
+                if inner.split_whitespace().count() > 1 {
+                    return Some(inner.to_owned());
+                }
+            }
+        }
+    }
+    None
+}
+
+/// The first token of `prompt` that reads as a workspace path.
+#[must_use]
+pub fn first_path(prompt: &str) -> Option<String> {
+    prompt
+        .split_whitespace()
+        .find(|token| is_path(token))
+        .map(|token| {
+            token
+                .trim_matches(|character: char| {
+                    matches!(character, ',' | ';' | '"' | '\'' | '(' | ')' | '\u{3002}')
+                })
+                .to_owned()
+        })
+}
+
+/// The first token of `prompt` that parses as an absolute URL.
+#[must_use]
+pub fn first_url(prompt: &str) -> Option<String> {
+    prompt
+        .split_whitespace()
+        .find(|token| is_url(token))
+        .map(|token| {
+            token
+                .trim_matches(|character: char| matches!(character, ',' | ';' | '"' | '\'' | '.'))
+                .to_owned()
+        })
+}
+
+/// Whether the shipped table is the routing authority (plan 10 leaves 9 and 11).
+///
+/// A data field rather than a Rust constant, so turning the table off to compare
+/// it against the cue-phrase path it replaces is a seed edit like every other
+/// routing change.
+#[must_use]
+pub fn table_routing_enabled() -> bool {
+    let tree = parse_lino(CAPABILITY_ROUTING_LINO);
+    for document in &tree.children {
+        if document.find_child_value("routing_enabled") == "false" {
+            return false;
+        }
+    }
+    true
 }
 
 /// Every object the prompt carries, ranked; the table is consulted for the
@@ -605,10 +769,9 @@ pub fn routing_table_from(text: &str) -> Result<Vec<RouteRow>, String> {
             let locus_slug = record.find_child_value("locus");
             let object = ObjectType::from_slug(object_slug)
                 .ok_or_else(|| format!("route:object:{object_slug}"))?;
-            let act =
-                Act::from_slug(act_slug).ok_or_else(|| format!("route:act:{act_slug}"))?;
-            let locus = Locus::from_slug(locus_slug)
-                .ok_or_else(|| format!("route:locus:{locus_slug}"))?;
+            let act = Act::from_slug(act_slug).ok_or_else(|| format!("route:act:{act_slug}"))?;
+            let locus =
+                Locus::from_slug(locus_slug).ok_or_else(|| format!("route:locus:{locus_slug}"))?;
             let capability = record.find_child_value("capability").to_owned();
             if capability.is_empty() {
                 return Err(format!("route:{object_slug}:{act_slug}:capability"));
@@ -707,12 +870,7 @@ fn readings_for(
     locus: Locus,
     matched: &[&RouteRow],
 ) -> Vec<String> {
-    let mut readings = vec![format!(
-        "{}:{}:{}",
-        object.slug(),
-        act.slug(),
-        locus.slug()
-    )];
+    let mut readings = vec![format!("{}:{}:{}", object.slug(), act.slug(), locus.slug())];
     for row in matched {
         let reading = row.capability.clone();
         if !readings.contains(&reading) {

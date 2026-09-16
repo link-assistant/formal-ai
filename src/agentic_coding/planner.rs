@@ -23,8 +23,8 @@ use super::general_execution::plan_general_change_step;
 use super::general_planner::{
     compose_general_change_plan, has_authoritative_literal_write, objective_text,
 };
-use super::google_trends_catalog;
 use super::git_commit;
+use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::harness_envelope;
 use super::intent_router;
@@ -46,8 +46,8 @@ use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
-use super::structured_edit;
 use super::structured_document;
+use super::structured_edit;
 use super::task_obligations;
 use super::task_structure;
 use super::tool_result;
@@ -263,17 +263,17 @@ fn plan_chat_step_routes(
     }
     // Bind a program's semantic operands before treating its source path as a
     // destination for a report about the rest of the request.
-    if let Some(mut answer) = crate::coding::program_contract::answer(
-        &task, &mut crate::event_log::EventLog::default(),
-    ) {
+    if let Some(mut answer) =
+        crate::coding::program_contract::answer(&task, &mut crate::event_log::EventLog::default())
+    {
         if let Some(recipe) = answer.execution_recipe.as_mut()
             && super::ci_workflow::requested_in(&task)
         {
             super::ci_workflow::attach(recipe);
         }
-        if let Some(plan) = super::command_reroute::plan_symbolic_command_reroute(
-            messages, tool_names, &answer,
-        ) {
+        if let Some(plan) =
+            super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+        {
             return Some(plan);
         }
     }
@@ -594,6 +594,30 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = task_structure::plan_task_structure_step(messages, task) {
         return Some(plan);
     }
+    // The decision table of `data/seed/capability-routing.lino` (issue #1138 B10,
+    // plan 10 leaves 9-11). Capability is a function of the object in the
+    // request, the act asked for, and where the effect lands, and a triple with
+    // no row declines here rather than guessing -- so the research routers below
+    // answer only what the table did not claim.
+    //
+    // It sits *here*, and not ahead of `plan_shared_capability_step` where plan
+    // 10 leaf 9 first put it, because that is the position the #745 and #758
+    // misroutes were actually made from: every one of them was a request the
+    // routes above declined and a research router then claimed on the strength
+    // of its sentence shape alone. Ahead of those routes the table preempts the
+    // ones that read the conversation and the workspace, which was measured at
+    // 239 failing tests -- the recipe driver, the ladder capability suite and
+    // the agentic surfaces among them. Moving it earlier is leaf 11's work,
+    // once the 280 memorized cues below are gone and the routes above can be
+    // read as capabilities rather than as a cascade.
+    if let Some(plan) = capability_router::plan_routed_capability_step(
+        task,
+        messages,
+        tool_names,
+        capability_router::RoutingStage::NamedOrLocal,
+    ) {
+        return Some(plan);
+    }
     // An instruction that edits a named file is never a web question -- when
     // no edit route above could compose it, the honest answer is that nothing
     // was planned, not a search for the sentence (issues #1115, #1133).
@@ -649,6 +673,18 @@ pub(super) fn plan_settled_routes(
     if let Some(query) = web_research::unresolved_web_research_query_for(messages)
         && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
     {
+        return Some(plan);
+    }
+    // The open-web half of the decision table, last: the research routers above
+    // own a bare term the web has to answer, and the table speaks only for the
+    // requests they declined -- which is where #745's "trawl the web for rust
+    // ownership" ended in nothing at all.
+    if let Some(plan) = capability_router::plan_routed_capability_step(
+        task,
+        messages,
+        tool_names,
+        capability_router::RoutingStage::OpenWeb,
+    ) {
         return Some(plan);
     }
     None
@@ -713,7 +749,6 @@ pub(super) fn fetch_arguments(url: &str) -> String {
     })
     .to_string()
 }
-
 
 /// Whether a turn is nothing but a continuation cue (issue #1095).
 ///

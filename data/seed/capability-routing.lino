@@ -1,5 +1,7 @@
 capability_routing
   issue 1138
+  routing_enabled true
+  routing_note "Plan 10 leaf 9 wired the table ahead of the cue-phrase path behind this field, and leaf 11 flipped it on. Setting it to false returns routing to data/seed/agentic-tool-capabilities.lino cue matching, which is how the two are compared without a Rust edit."
   purpose "Capability is a function of the object in the request, the act asked for, and where the effect lands. Verbs select the act; they never select the capability. A triple with no row asks rather than guesses."
   route
     object url

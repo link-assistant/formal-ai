@@ -83,6 +83,20 @@ roles
     kind predicate
   capability_act_transform
     kind predicate
+  capability_clock_reference
+    kind predicate
+  capability_container_scope
+    kind predicate
+  capability_content_assignment
+    kind predicate
+  capability_content_introducer
+    kind predicate
+  capability_freshness_live
+    kind predicate
+  capability_language_reference
+    kind predicate
+  capability_prior_turn_reference
+    kind predicate
   capability_quantity_interrogative
     kind predicate
   capability_query
@@ -90,6 +104,12 @@ roles
   capability_query_more
     kind meaning
   capability_self_surface_noun
+    kind predicate
+  capability_web_host_suffix
+    kind predicate
+  capability_web_scope
+    kind predicate
+  capability_workspace_scope
     kind predicate
   cardinal_number_word
     kind predicate

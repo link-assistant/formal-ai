@@ -2,9 +2,9 @@ self_ast_census
   target src/recursive_execution.rs
   language rust
   fidelity signature
-  byte_len 12780
+  byte_len 12778
   line_count 346
-  content_id source_module_fb219a3785cb9091
+  content_id source_module_3d2de998d93b6c27
   symbol_count 23
   symbols
     struct RecursiveTask 26 33

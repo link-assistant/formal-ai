@@ -859,10 +859,10 @@ Ordered; each independently verifiable and commit-sized.
 - [x] 8. `data/seed/capability-routing.lino` with the nine seed rows plus
       `default ask`; `src/capability_routing.rs::route()`;
       `tests/unit/specification/capability_routing_table.rs`.
-- [ ] 9. Wire `route()` ahead of `capability_router::plan_shared_capability_step`
+- [x] 9. Wire `route()` ahead of `capability_router::plan_shared_capability_step`
       (`src/agentic_coding/planner.rs:532`) behind a config flag, with every
       `tests/unit/issue_745.rs` assertion green on both paths.
-- [ ] 10. Implement the four outcomes (routed / lowered / honest gap / ask) and
+- [x] 10. Implement the four outcomes (routed / lowered / honest gap / ask) and
       `tests/integration/issue_1138_no_silent_unknown.rs`.
 - [ ] 11. Flip the flag to default; delete the 280 cue phrases from
       `data/seed/agentic-tool-capabilities.lino` and `task_matches`

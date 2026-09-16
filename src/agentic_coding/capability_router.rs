@@ -3,7 +3,8 @@
 use serde_json::json;
 
 use super::general_planner::compose_edit_request;
-use super::planner::{plan_one, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one};
+use crate::capability_routing::RoutingOutcome;
 use crate::protocol::ChatMessage;
 use crate::seed;
 
@@ -252,6 +253,212 @@ pub(super) fn is_workspace_creation_tool(name: &str) -> bool {
     classify_tool(name) == Some(Capability::Edit) && leaf.to_ascii_lowercase().contains("patch")
 }
 
+/// Where in the planner a routed request is answered.
+///
+/// The decision table speaks about every request, but not at the same moment
+/// about all of them. A request whose effect lands in the *workspace*, or whose
+/// object is a URL, a path, a container or a literal, names something the
+/// research routers cannot know better -- and letting them claim it on the
+/// strength of the sentence's shape is precisely the #745 and #758 defect. Such
+/// a request is answered before them. Everything else -- a bare term the open
+/// web has to answer -- is the research routers' own subject, and the table
+/// answers it only once they have declined, so a multi-turn research recipe is
+/// never cut short by a single search.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum RoutingStage {
+    /// Before the research routers: the workspace and the named objects.
+    NamedOrLocal,
+    /// After them: a bare term whose answer is on the open web.
+    OpenWeb,
+}
+
+/// Whether the request names a filesystem container and asks nothing of it.
+///
+/// `acts` appends `retrieve` to every request, because a request that evidences
+/// no narrower act is a retrieval -- which is the right default for an object
+/// the request *named*, and the wrong one for a container it merely mentioned.
+/// "Execute everything in the workspace" names a workspace and asks for no act
+/// the seed knows, and answering it with a bare `ls` is passing prose through
+/// as a command (issue #907).
+fn names_a_container_without_an_act(task: &str) -> bool {
+    use crate::capability_routing::{Act, ObjectType, acts, object_type};
+    object_type(task).first().copied() == Some(ObjectType::PathScope)
+        && acts(task) == [Act::Retrieve]
+}
+
+/// Which stage a request belongs to, read from the derivations rather than from
+/// the capability the table happens to name.
+fn stage_of(task: &str) -> RoutingStage {
+    use crate::capability_routing::{Locus, ObjectType, locus, object_type};
+    let highest = object_type(task).first().copied().unwrap_or_default();
+    let named = matches!(
+        highest,
+        ObjectType::Url | ObjectType::Path | ObjectType::PathScope | ObjectType::QuotedContent
+    );
+    if named || locus(task) == Locus::Workspace {
+        RoutingStage::NamedOrLocal
+    } else {
+        RoutingStage::OpenWeb
+    }
+}
+
+/// The capability slugs `data/seed/capability-routing.lino` names, paired with
+/// the client capability that answers each. A slug with no pairing here is one
+/// the decision table routes to but no advertised tool provides -- the calendar,
+/// the response-language demonstration, the measurement lookup -- and the table
+/// reports an honest gap for it rather than a tool call.
+const ROUTED_CAPABILITIES: [(&str, Capability); 7] = [
+    ("web_fetch", Capability::Fetch),
+    ("web_search", Capability::Search),
+    ("read_file", Capability::Read),
+    ("write_file", Capability::Write),
+    ("list_dir", Capability::ListDir),
+    ("grep", Capability::Grep),
+    ("shell", Capability::Run),
+];
+
+/// Route one request through the decision table of
+/// `data/seed/capability-routing.lino` (issue #1138 B10, plan 10 leaves 9-11).
+///
+/// This runs *ahead* of [`plan_shared_capability_step`], so the table answers
+/// first and the 280 memorized cue phrases answer only what the table declines.
+/// A triple with no row returns [`None`] and the older path runs unchanged,
+/// which is what makes the two comparable: the table never has to guess in
+/// order to be consulted.
+///
+/// Only the capabilities a tool can actually satisfy are advertised to
+/// [`crate::capability_routing::route`], so a row naming a capability this
+/// client has no tool for produces an honest gap there rather than a tool call
+/// here.
+pub(super) fn plan_routed_capability_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    stage: RoutingStage,
+) -> Option<AgenticPlan> {
+    if !crate::capability_routing::table_routing_enabled() || stage_of(task) != stage {
+        return None;
+    }
+    // At the open-web position every route that reads the conversation and the
+    // workspace has declined, and a request that never named the open web is
+    // one the symbolic engine should still answer. "What is Links Notation?" is
+    // not a search just because nothing above claimed it (issue #989).
+    if stage == RoutingStage::OpenWeb && !crate::capability_routing::names_open_web(task) {
+        return None;
+    }
+    let advertised: Vec<&str> = ROUTED_CAPABILITIES
+        .iter()
+        .filter(|(_, capability)| tool_for(tool_names, *capability).is_some())
+        .map(|(slug, _)| *slug)
+        .collect();
+    let (slug, lowered_from) = match crate::capability_routing::route(task, &advertised) {
+        RoutingOutcome::Routed { capability } => (capability, None),
+        RoutingOutcome::Lowered {
+            preferred,
+            capability,
+        } => (capability, Some(preferred)),
+        RoutingOutcome::HonestGap { .. } | RoutingOutcome::Ask { .. } => return None,
+    };
+    let capability = ROUTED_CAPABILITIES
+        .iter()
+        .find(|(name, _)| *name == slug)
+        .map(|(_, capability)| *capability)?;
+    if names_a_container_without_an_act(task) {
+        return None;
+    }
+    if super::tool_result::has_latest_turn_result(messages) {
+        return super::tool_result::latest_turn_answer(messages, tool_names, task)
+            .map(AgenticPlan::Final);
+    }
+    // A sentence that *governs* commands is not one that requests one: "Never
+    // run chmod on files outside the workspace" names a workspace and a file and
+    // asks for neither (issues #907, #916). The shell route already draws this
+    // boundary and it is drawn here for the same capabilities, not a second way.
+    if capability == Capability::Run
+        && super::shell_command_policy::governs_commands_rather_than_requesting_one(task)
+    {
+        return None;
+    }
+    // A file the request asks to *create* cannot be read: the target does not
+    // exist yet, so reading it is always the wrong tool (issue #681). This is
+    // the rule `file_read_task_for` already applies, reused rather than
+    // re-derived.
+    if capability == Capability::Read && super::write_request::states_write_action(task) {
+        return None;
+    }
+    let tool = tool_for(tool_names, capability)?;
+    let arguments = routed_arguments(capability, lowered_from.as_deref(), task)?;
+    Some(plan_one(tool, arguments))
+}
+
+/// The command a `grep` lowered to the shell runs when the shell vocabulary
+/// does not recognise the request as a search.
+///
+/// The table has already decided this is code navigation -- the object is a
+/// bare term and the locus is the workspace -- so the cue that
+/// [`super::shell_command::shell_command_for_task`] looks for has nothing left
+/// to decide, and a code-shaped token is enough. Without this, a Spanish code
+/// search fell through to a web search, which is the #758 defect in the one
+/// language the cue vocabulary had not been given (issue #1138 B10).
+fn lowered_search_command(preferred: Capability, task: &str) -> Option<String> {
+    if preferred != Capability::Grep {
+        return None;
+    }
+    let query = super::shell_command::code_shaped_query(task)
+        .or_else(|| super::shell_command::code_search_query_for_task(task))?;
+    Some(format!("rg -n {}", shell_quote(&query)))
+}
+
+/// The call the routed capability is made with.
+///
+/// A lowering builds the command for the capability it lowered *from*, so
+/// `list_dir` lowered to the shell still runs `ls` and code navigation lowered
+/// to the shell still greps -- the shape #758 asked for, now stated by the row's
+/// `fallback` field rather than by a Rust cascade.
+fn routed_arguments(
+    capability: Capability,
+    lowered_from: Option<&str>,
+    task: &str,
+) -> Option<String> {
+    if capability == Capability::Run {
+        let preferred = lowered_from
+            .and_then(|slug| {
+                ROUTED_CAPABILITIES
+                    .iter()
+                    .find(|(name, _)| *name == slug)
+                    .map(|(_, capability)| *capability)
+            })
+            .unwrap_or(Capability::Run);
+        let command = shell_fallback(preferred, task)
+            .or_else(|| super::shell_command::shell_command_for_task(task))
+            .or_else(|| lowered_search_command(preferred, task))?;
+        return Some(json!({ "command": command }).to_string());
+    }
+    match capability {
+        Capability::Fetch => {
+            let url = crate::capability_routing::first_url(task)?;
+            Some(super::planner::fetch_arguments(&url))
+        }
+        Capability::Search => {
+            let query = super::stated_request::request_blocks(task)
+                .into_iter()
+                .find_map(crate::solver_handlers::web_search_query_for)
+                .unwrap_or_else(|| task.to_owned());
+            Some(json!({ "query": query }).to_string())
+        }
+        Capability::Read => {
+            let path = crate::capability_routing::first_path(task)?;
+            Some(json!({"path": path, "filePath": path, "file_path": path}).to_string())
+        }
+        Capability::Write => {
+            let path = crate::capability_routing::first_path(task)?;
+            let content = crate::capability_routing::explicit_content(task)?;
+            Some(super::planner::write_arguments(&path, &content))
+        }
+        _ => Some(arguments_for(capability, task)),
+    }
+}
+
 pub(super) fn plan_shared_capability_step(
     task: &str,
     messages: &[ChatMessage],
@@ -276,9 +483,10 @@ pub(super) fn plan_shared_capability_step(
         return Some(plan_one(tool, arguments_for(capability, task)));
     }
     if let Some(tool) = tool_for(tool_names, Capability::Run)
-        && let Some(command) = shell_fallback(capability, task) {
-            return Some(plan_one(tool, json!({"command": command}).to_string()));
-        }
+        && let Some(command) = shell_fallback(capability, task)
+    {
+        return Some(plan_one(tool, json!({"command": command}).to_string()));
+    }
     None
 }
 

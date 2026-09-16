@@ -107,7 +107,7 @@ pub trait TaskExecutor {
     /// implementation can spend a shrinking budget; the controller enforces its
     /// own bound regardless.
     ///
-    /// The default is [`balanced_split`] (issue #1138 B12, plan 12 leaf 10). It
+    /// The default is `balanced_split` (issue #1138 B12, plan 12 leaf 10). It
     /// used to be `Vec::new()`, which meant a failing task with no children
     /// stopped silently even when its own goal named two obligations; now the
     /// same `Split` heuristic the inspected tree uses cuts it into exactly two

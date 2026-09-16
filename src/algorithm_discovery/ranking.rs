@@ -27,11 +27,7 @@ pub(super) fn rank_survivors(candidates: Vec<AlgorithmCandidate>) -> Vec<Algorit
         .map(|candidate| CandidateScore {
             candidate_id: candidate.id.clone(),
             checks: (
-                candidate
-                    .held_out
-                    .iter()
-                    .filter(|test| test.passed)
-                    .count(),
+                candidate.held_out.iter().filter(|test| test.passed).count(),
                 candidate.held_out.len(),
             ),
             cost: ActionCost {
@@ -53,8 +49,7 @@ pub(super) fn rank_survivors(candidates: Vec<AlgorithmCandidate>) -> Vec<Algorit
         .unwrap_or_default();
     let ranked = LeastActionRanker.rank(&scores, &parameters);
 
-    let mut ordered: Vec<Option<AlgorithmCandidate>> =
-        candidates.into_iter().map(Some).collect();
+    let mut ordered: Vec<Option<AlgorithmCandidate>> = candidates.into_iter().map(Some).collect();
     let mut out: Vec<AlgorithmCandidate> = Vec::with_capacity(ordered.len());
     for index in ranked {
         if let Some(candidate) = ordered[index].take() {

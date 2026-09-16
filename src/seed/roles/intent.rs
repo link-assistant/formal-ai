@@ -633,7 +633,7 @@ pub const ROLE_CAPABILITY_PRIOR_TURN_REFERENCE: &str = "capability_prior_turn_re
 /// Semantic role: a name for a human language used to ask for a reply *in* it.
 ///
 /// "по-русски", "में", "用中文", "en español" — the surfaces
-/// [`ROLE_TRANSLATION_LANGUAGE`] does not carry because they are adverbial
+/// `ROLE_TRANSLATION_LANGUAGE` does not carry because they are adverbial
 /// rather than nominal, kept beside it so a demonstration request names a
 /// language object in every one of the five locales.
 pub const ROLE_CAPABILITY_LANGUAGE_REFERENCE: &str = "capability_language_reference";
@@ -644,3 +644,20 @@ pub const ROLE_CAPABILITY_LANGUAGE_REFERENCE: &str = "capability_language_refere
 /// quotation marks are one way to hand over a literal and this is the other, so
 /// both derive the same object.
 pub const ROLE_CAPABILITY_CONTENT_INTRODUCER: &str = "capability_content_introducer";
+/// Semantic role: the connector that assigns literal content to a destination
+/// the request has already named.
+///
+/// "to", "в", "में", "为", "en" — read only *after* the destination path, so
+/// "set the contents of note.txt to hello" hands over `hello` while nothing
+/// else in the sentence is mistaken for content. Deliberately not consulted by
+/// the object derivation: these words are too common to be evidence on their
+/// own, and they are evidence only in the position this names.
+pub const ROLE_CAPABILITY_CONTENT_ASSIGNMENT: &str = "capability_content_assignment";
+/// Semantic role: a registrable domain suffix, so `amazon.in` is read as a host
+/// and not as a file with an `in` extension.
+///
+/// A dotted token splits into a stem and a short alphabetic tail whether it
+/// names a file or a site, so the tail is the whole of the difference and it
+/// has to be written down. Only suffixes that are *not* also workspace file
+/// extensions are listed -- `rs`, `py`, `js`, `md` stay paths.
+pub const ROLE_CAPABILITY_WEB_HOST_SUFFIX: &str = "capability_web_host_suffix";

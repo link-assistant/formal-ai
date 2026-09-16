@@ -60,7 +60,9 @@ fn field(record: &[&str], wanted: &str) -> String {
 fn cases() -> Vec<Case> {
     let mut cases = Vec::new();
     for language in ["en", "ru", "hi", "zh", "es"] {
-        let path = repo_root().join(format!("data/benchmarks/capability-routing/{language}.lino"));
+        let path = repo_root().join(format!(
+            "data/benchmarks/capability-routing/{language}.lino"
+        ));
         let text = fs::read_to_string(&path).expect("routing partition readable");
         let mut record: Vec<&str> = Vec::new();
         let mut records: Vec<Vec<&str>> = Vec::new();
@@ -97,6 +99,20 @@ fn resolved(outcome: &RoutingOutcome) -> Option<String> {
 }
 
 fn main() {
+    let arguments: Vec<String> = std::env::args().collect();
+    if let Some(position) = arguments.iter().position(|value| value == "--prompt") {
+        for prompt in &arguments[position + 1..] {
+            let objects = object_type(prompt);
+            let highest = objects.first().copied().unwrap_or_default();
+            println!(
+                "{prompt:?}\n  objects={objects:?}\n  acts={:?}\n  locus={:?}\n  outcome={:?}",
+                acts(prompt),
+                locus_of(highest, prompt),
+                route(prompt, ADVERTISED),
+            );
+        }
+        return;
+    }
     let verbose = std::env::args().any(|argument| argument == "--verbose");
     let cases = cases();
     let mut passing = 0usize;
@@ -151,7 +167,10 @@ fn main() {
             }
         }
     }
-    println!("capability_routing_cases_passing {passing} / {}", cases.len());
+    println!(
+        "capability_routing_cases_passing {passing} / {}",
+        cases.len()
+    );
     println!("cross_tool_misroutes {misroutes}");
     println!("silent_unknowns {silent}");
     for (cell, failures) in &per_cell {
