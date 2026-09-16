@@ -1048,7 +1048,7 @@ the checker.
 - [x] 7. Create `data/meta/closure-audit.lino` with the measured honest N;
       convert `tests/unit/total_closure.rs` to the strict two-sided rule; add
       `data/meta/ci-gates/check-closure-audit.lino`.
-- [ ] 8. Delete the 16 `closure-generated-*.lino` files (17,791 lines) and their
+- [x] 8. Delete the 16 `closure-generated-*.lino` files (17,791 lines) and their
       `unregistered` block at `data/meta/seed-registry.lino:457-459`; re-point
       `scripts/close-total.py` to emit a work list; drop the step at
       `scripts/regenerate-derived-artifacts.sh:43`.
@@ -1073,6 +1073,25 @@ generated glosses were standing in for; `data/meta/closure-audit.lino` is where
 it shrinks, and the script's exit code keeps its historical meaning so no step
 that runs it as a pass/fail verification flips on the day the honest number is
 first reported.
+
+**What leaf 8 moved, beyond the files it names (wave I1).** Deleting the 16
+shards removed 3,555 of the 4,250 rows
+`tests/unit/issue_918.rs::coding_path_has_complete_metadata_and_every_other_gap_is_data`
+counted, because a generated record carries `defined-by` and an English
+`lexeme` and none of the five reviewed metadata fields, so every one of them was
+a gap by construction. That floor now reads **695**, the hand-written gaps the
+audit has always been about, and the comment beside it says the drop is the
+leaf's doing and not progress. `data/meta/seed-metadata-gaps-*.lino` are
+regenerated in the same commit.
+`total_closure::generated_closure_shards_are_content_addressed` is deleted with
+its subject — it pinned that each meaning sat in the shard its own digest
+selects, an invariant about files that no longer exist — and a comment in its
+place says so. `data/meta/merge-conflict-policy.lino`'s `seed_total_closure`
+artifact keeps its 261 measured conflicts and its `.gitattributes` union driver
+(a branch still carrying the deleted files must merge cleanly against this one)
+and gains a `retired` note. The honest closure number settles at **3,569** over
+6,342 occurrences: the first run measured 3,585, and 16 of those tokens occurred
+only inside the generator's own output.
 
 **Move promotion and dispatch specialisation into data.**
 

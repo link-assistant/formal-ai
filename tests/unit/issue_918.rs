@@ -509,5 +509,19 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // Issue #710 moved the total from 4,062 to 4,250: the generalized coding
     // structures, discoverable runtime templates, and source-backed recurrence
     // vocabulary entered the total closure instead of remaining Rust literals.
-    assert_eq!(expected_gaps.len(), 4_250);
+    //
+    // Issue #1138 B9, plan 09 leaf 8 moved it from 4,250 to 695, and the drop is
+    // the point of the leaf rather than progress against this floor. 3,555 of
+    // those 4,250 rows were records in `data/seed/closure-generated-*.lino` --
+    // files `scripts/close-total.py` wrote and `scripts/audit-total-closure.py`
+    // then read back as definitions, so the closure metric reported zero while
+    // 17,791 lines of English-only glosses no runtime loads stood in for
+    // grounding. Every one of them was a metadata gap by construction: a
+    // generated record carries `defined-by` and an English `lexeme` and none of
+    // the five reviewed fields. Deleting the generator's output did not ground
+    // anything, and the grounding work it was standing in for is now counted
+    // honestly, in one place, by `data/meta/closure-audit.lino` -- 3,569 distinct
+    // tokens as measured on 2026-09-16. The 695 rows that remain are the
+    // hand-written gaps this audit has always been about.
+    assert_eq!(expected_gaps.len(), 695);
 }

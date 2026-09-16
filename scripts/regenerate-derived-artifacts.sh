@@ -40,8 +40,13 @@ run_step "trusted-source recurrence cache (src/web/source-cache/wikifunctions-re
   cargo run --quiet --example generate_recurrence_source_cache -- --write
 run_step "requirements document (REQUIREMENTS.md)" \
   rust-script scripts/assemble-requirements.rs --write
-run_step "total closure (data/seed/closure-generated-*.lino)" \
-  python3 scripts/close-total.py
+# Issue #1138 B9, plan 09 leaf 8: `python3 scripts/close-total.py` used to run
+# here and write `data/seed/closure-generated-*.lino`, which
+# `scripts/audit-total-closure.py` then read back as definitions -- so the
+# closure metric measured this pipeline's own output. The script now prints a
+# grounding work list and writes nothing, so it is not a derived artifact and
+# has no step here. The honest number it reports is ratcheted by
+# `data/meta/closure-audit.lino`.
 run_step "seed metadata gaps (data/meta/seed-metadata-gaps-*.lino)" \
   rust-script scripts/audit-seed-metadata.rs --write
 run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt)" \
