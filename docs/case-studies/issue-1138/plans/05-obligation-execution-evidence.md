@@ -941,7 +941,7 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
       route `:271` and `:274` through `ObligationLedger::observe`.
 - [ ] Replace the `"ok"` tool-result shortcut at
       `tests/unit/issue_1099_multiple_obligations.rs:56-58` with real observed bytes.
-- [ ] Add `data/meta/obligation-evidence-ratchet.lino`; ground it.
+- [x] Add `data/meta/obligation-evidence-ratchet.lino`; ground it.
 - [ ] Add `tests/unit/issue_1138_obligation_evidence.rs` (ten prompts, five languages);
       register in `tests/unit/mod.rs`.
 - [ ] Add `tests/unit/docs_requirements/issue_1138.rs` grep-pins.
