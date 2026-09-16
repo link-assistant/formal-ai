@@ -344,7 +344,7 @@ measurement of B2 and publishing it is the point.
 
 | leaf | deliverable | files | test | gate | depends on |
 | --- | --- | --- | --- | --- | --- |
-| **05-1** | `es` / `hi` / `zh` enumeration-cue surfaces | `data/seed/meanings-conversation.lino` | multilingual specification test | `check-hardcoded-language.rs` must not grow | — |
+| **05-1** ✅ | `es` / `hi` / `zh` enumeration-cue surfaces | `data/seed/meanings-conversation.lino` | multilingual specification test | `check-hardcoded-language.rs` must not grow | — |
 | **05-4** | `ObligationExpectation`, `ObligationOutcome` | `src/obligation_ledger.rs` | `satisfied_is_unconstructible_without_an_execution_record` | — | 05-3 |
 | **05-5** | `ObligationNode` with `build` / `discharged` / `next_open` | `src/obligation_ledger.rs` | node tests | — | 05-4 |
 | **05-6** | the derivation rules as data | `data/meta/obligation-evidence-contract.lino` | rule-set grounding | — | 05-5 |

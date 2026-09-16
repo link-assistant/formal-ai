@@ -653,6 +653,8 @@ meanings
         text "также"
       surface
         text "наконец"
+      surface
+        text "после этого"
     lexeme hi
       surface
         text "पहले"
@@ -673,6 +675,8 @@ meanings
         text 然后
       surface
         text 接着
+      surface
+        text 之后
       surface
         text 最后
     lexeme es

@@ -894,9 +894,14 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 
 ## Implementation leaves
 
-- [ ] Add the `es`, `hi`, `zh` `enumeration_cue` surfaces to
+- [x] Add the `es`, `hi`, `zh` `enumeration_cue` surfaces to
       `data/seed/meanings-conversation.lino`; pin them in a multilingual specification
-      test. No Rust change.
+      test. No Rust change. **The `es`, `hi` and `zh` rows were already seeded; the
+      two the ten prompts actually need and the file did not have — `после этого`
+      and `之后` — were added, and
+      `specification::obligation_ledger::the_enumeration_cues_are_seeded_in_five_languages`
+      reads each surface back out of the lexicon and splits a request built from
+      it, so the pin cannot pass against a cue the splitter does not consult.**
 - [x] Promote `agentic_coding::tool_result::reported_exit_code` (`:78`) from `pub(super)`
       to `pub(crate)`; one line plus its doc comment, no behaviour change.
 - [x] Add `src/execution_evidence.rs` with `ObservationKind`, `EvidenceSource`,

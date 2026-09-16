@@ -15,7 +15,7 @@ use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_frame::ProblemFrame;
 use formal_ai::obligation_ledger::{
     ObligationExpectation, ObligationLedger, ObligationNode, ObligationOutcome, ObligationStep,
-    next_step,
+    clauses_with_spans, next_step,
 };
 use formal_ai::recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND;
 use formal_ai::translation::formalize_prompt;
@@ -54,7 +54,10 @@ fn src_files() -> Vec<(String, String)> {
             .display()
             .to_string()
             .replace('\\', "/");
-        files.push((relative, fs::read_to_string(entry.path()).unwrap_or_default()));
+        files.push((
+            relative,
+            fs::read_to_string(entry.path()).unwrap_or_default(),
+        ));
     }
     files
 }
@@ -198,7 +201,10 @@ fn a_clause_with_no_derivable_expectation_becomes_a_node_not_a_discard() {
 fn an_underivable_node_is_split_before_it_is_called_unsatisfiable() {
     let step = next_step(REQUEST, &[]).expect("a two-clause request leaves work to do");
     assert!(
-        matches!(step, ObligationStep::Observe(_) | ObligationStep::Decompose(_)),
+        matches!(
+            step,
+            ObligationStep::Observe(_) | ObligationStep::Decompose(_)
+        ),
         "an underivable clause is decomposed before any gap is reported, got {step:?}"
     );
     assert!(
@@ -256,6 +262,45 @@ fn a_refuted_observation_reopens_the_node_instead_of_finishing_it() {
         !ledger.every_obligation_discharged(),
         "a refuted node keeps the session from finalizing"
     );
+}
+
+/// Plan 05 leaf 1: the cues that cut a multi-clause request into its clauses are
+/// seed rows in all five languages, never Rust literals — and each of them
+/// actually cuts.
+///
+/// The clause splitter is the only thing standing between an enumerated second
+/// obligation and the first clause swallowing it, so a language whose cue is
+/// missing has no second obligation at all. The surfaces are read back out of
+/// the lexicon and used to build the request the assertion splits, so the pin
+/// cannot pass against a cue the splitter does not consult.
+#[test]
+fn the_enumeration_cues_are_seeded_in_five_languages() {
+    const REQUIRED: &[(&str, &[&str])] = &[
+        ("en", &["first", "second", "then", "after that"]),
+        ("ru", &["сначала", "затем", "после этого"]),
+        ("hi", &["पहले", "फिर", "उसके बाद"]),
+        ("zh", &["首先", "然后", "之后"]),
+        ("es", &["primero", "después", "luego"]),
+    ];
+    for (language, surfaces) in REQUIRED {
+        let seeded = formal_ai::seed::lexicon()
+            .words_for_role_in_languages(formal_ai::seed::ROLE_ENUMERATION_CUE, &[language]);
+        for surface in *surfaces {
+            assert!(
+                seeded.iter().any(|word| word == surface),
+                "{language}: the enumeration cue {surface:?} must be a seed row, \
+                 not a literal in src/; the language has {seeded:?}"
+            );
+        }
+        let opening = surfaces[0];
+        let following = surfaces[surfaces.len() - 1];
+        let request = format!("{opening} alpha. {following} beta.");
+        let clauses = clauses_with_spans(&request);
+        assert!(
+            clauses.len() >= 2,
+            "{language}: {request:?} must cut into at least two clauses, got {clauses:?}"
+        );
+    }
 }
 
 /// The session may not finish while anything is unattempted.
