@@ -916,11 +916,18 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
       record.
 - [x] Add `need_ledger_with_execution`; prove by test it is the only producer of
       `NeedStatus::Satisfied` in `src/`.
-- [ ] Add `record_obligation_ledger` and `meta_core::record_meta_core_execution`; call it
-      from `src/solver.rs` after `meta_method_dispatch`.
-- [ ] Register `"record_obligation_ledger"` in `src/recipe_interpreter.rs::run_recorder`
+- [x] Add `record_obligation_ledger` and `meta_core::record_meta_core_execution`; ~~call it
+      from `src/solver.rs` after `meta_method_dispatch`~~ — **struck, with the reason**:
+      `meta_method_dispatch::try_dispatch` *returns the answer*
+      (`src/solver.rs:551-560`), so there is no seam after it that every path
+      reaches; wiring one would change the answer path, which this plan is
+      forbidden to touch. The recorder instead runs as recipe step 14 inside
+      `record_meta_core`, where it honestly reports that nothing has been
+      observed yet, and the surface an observation actually arrives on is the
+      agentic transcript, which reaches the ledger through `next_step`.
+- [x] Register `"record_obligation_ledger"` in `src/recipe_interpreter.rs::run_recorder`
       plus `require_obligation_ledger`; extend `ExecutionContext`; parity test.
-- [ ] Add step 14 to `data/meta/recursive-core-recipe.lino`; extend
+- [x] Add step 14 to `data/meta/recursive-core-recipe.lino`; extend
       `tests/unit/specification/recursive_core_recipe.rs` for order 1..14.
       **This leaf changes every recorded trace, as does plan 07's
       `SelfImprovementMode` default flip. Plan 14 orders this one first and gives

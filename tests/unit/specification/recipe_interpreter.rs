@@ -37,19 +37,19 @@ const SELECTION_MODES: &[SelectionMode] = &[SelectionMode::Off, SelectionMode::R
 const SKILL_MODES: &[SkillMode] = &[SkillMode::Off, SkillMode::Accumulate];
 
 #[test]
-fn the_program_parses_thirteen_contiguously_ordered_steps() {
+fn the_program_parses_fourteen_contiguously_ordered_steps() {
     let program = RecipeProgram::from_repo();
     assert_eq!(
         program.step_count(),
-        13,
-        "the recipe declares the thirteen-step recursive meta core"
+        14,
+        "the recipe declares the fourteen-step recursive meta core"
     );
     let mut orders: Vec<u8> = program.steps.iter().map(|step| step.order).collect();
     orders.sort_unstable();
     assert_eq!(
         orders,
-        (1..=13).collect::<Vec<_>>(),
-        "the parsed program preserves the thirteen contiguous step orders"
+        (1..=14).collect::<Vec<_>>(),
+        "the parsed program preserves the fourteen contiguous step orders"
     );
     // Steps must come back sorted by order so execution follows the declared plan.
     let as_parsed: Vec<u8> = program.steps.iter().map(|step| step.order).collect();
@@ -74,11 +74,11 @@ fn the_recorder_sequence_matches_the_live_pipeline_order() {
         "the recorder primitives the recipe drives must match, in order, the \
          stages the live pipeline actually invokes"
     );
-    // The ten trace-recorded stages; the other three steps are external.
+    // The eleven trace-recorded stages; the other three steps are external.
     assert_eq!(
         data_order.len(),
-        10,
-        "ten of the thirteen steps record trace events"
+        11,
+        "eleven of the fourteen steps record trace events"
     );
 }
 
@@ -146,9 +146,11 @@ fn external_stages_are_skipped_and_recorder_stages_run() {
         );
     }
 
-    // In the quiet modes seven recorder stages emit events; upward construction,
+    // In the quiet modes eight recorder stages emit events; upward construction,
     // selection, and the skill ledger are gated off and skipped. The reasoning
-    // standard audit takes no mode, so it runs here too (issue #1073).
+    // standard audit takes no mode, so it runs here too (issue #1073), and
+    // neither does the obligation-discharge pass, which reports honestly that
+    // nothing has been observed yet (issue #1138 B5, plan 05 leaf 12).
     assert_eq!(
         trace.executed,
         vec![
@@ -159,6 +161,7 @@ fn external_stages_are_skipped_and_recorder_stages_run() {
             "reason_white_box",
             "record_evidence",
             "audit_reasoning_standard",
+            "verify_obligations",
         ],
         "the executed recorder stages, in order, for the quiet modes"
     );
@@ -170,7 +173,7 @@ fn external_stages_are_skipped_and_recorder_stages_run() {
     }
     assert_eq!(
         trace.executed.len() + trace.skipped.len(),
-        13,
+        14,
         "every step is accounted for as executed or skipped"
     );
 }
@@ -311,9 +314,9 @@ fn the_program_serializes_as_links_notation() {
     let program = RecipeProgram::from_repo();
     let lino = program.to_links_notation();
     assert!(lino.contains("recipe_program"), "header record present");
-    assert!(lino.contains("step_count \"13\""), "step count serialized");
+    assert!(lino.contains("step_count \"14\""), "step count serialized");
     assert!(
-        lino.contains("recorder_count \"10\""),
+        lino.contains("recorder_count \"11\""),
         "recorder count serialized"
     );
     assert!(

@@ -6,10 +6,14 @@
 //! [`need_ledger_with_execution`] is the single place `NeedStatus::Satisfied`
 //! may be produced.
 //!
-//! Wave T lands the shapes only; every body is `todo!` until wave I5's leaves
-//! 05-4 through 05-14.
+//! The tree is built from the clauses a request enumerates, an expectation is
+//! derived per clause from the rules of
+//! `data/meta/obligation-evidence-contract.lino`, and a clause no expectation
+//! can be read out of is split rather than dropped — R710-R9's "unknown clauses
+//! cannot be silently discarded", as a type rather than as a review note.
 
 use crate::engine::stable_id;
+use crate::event_log::EventLog;
 use crate::execution_evidence::Evidence;
 use crate::links_format::format_lino_record;
 use crate::meta_frame::{NeedLedger, NeedStatus, ProblemFrame};
@@ -447,11 +451,10 @@ impl ObligationNode {
                                 ("{command}", command),
                                 (
                                     "{observed}",
-                                    &record
-                                        .exit_code
-                                        .map_or_else(|| String::from("none"), |code| {
-                                            code.to_string()
-                                        }),
+                                    &record.exit_code.map_or_else(
+                                        || String::from("none"),
+                                        |code| code.to_string(),
+                                    ),
                                 ),
                                 ("{expected}", &expected_exit.to_string()),
                             ],
@@ -686,6 +689,36 @@ impl ObligationLedger {
     }
 }
 
+/// Emit the obligation ledger and the executed need ledger as append-only
+/// events, and return the executed ledger (plan 05 leaf 10).
+///
+/// The planning ledger stays in the log beside it, untouched: a reader sees both
+/// what was planned and what was observed, and the difference between them is
+/// the whole of bottleneck B5.
+pub(crate) fn record_obligation_ledger(
+    log: &mut EventLog,
+    frame: &ProblemFrame,
+    planned: &NeedLedger,
+    obligations: &ObligationLedger,
+) -> NeedLedger {
+    let executed = need_ledger_with_execution(planned, obligations);
+    log.append("obligation_ledger", obligations.to_links_notation());
+    log.append(
+        "obligation_ledger:discharged",
+        obligations.every_obligation_discharged().to_string(),
+    );
+    log.append("need_ledger:executed", executed.to_links_notation());
+    log.append(
+        "need_ledger:executed_satisfied",
+        executed.count_with(NeedStatus::Satisfied).to_string(),
+    );
+    debug_assert_eq!(
+        frame.frame_id, obligations.frame_id,
+        "the obligation ledger and the frame it discharges must be the same frame"
+    );
+    executed
+}
+
 /// The five-language sentences that say what an observation did not match.
 const MISMATCH_LINO: &str = include_str!("../data/seed/obligation-mismatch.lino");
 
@@ -700,8 +733,7 @@ const RECORD_MISMATCH: &str = "obligation_mismatch";
 pub fn mismatch_template(id: &str, language: &str) -> String {
     let root = crate::seed::parser::parse_lino(MISMATCH_LINO);
     let Some(record) = root.children.iter().find(|node| {
-        node.find_child_value("record_type") == RECORD_MISMATCH
-            && node.find_child_value("id") == id
+        node.find_child_value("record_type") == RECORD_MISMATCH && node.find_child_value("id") == id
     }) else {
         return String::new();
     };

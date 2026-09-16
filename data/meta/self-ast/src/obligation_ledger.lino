@@ -2,46 +2,47 @@ self_ast_census
   target src/obligation_ledger.rs
   language rust
   fidelity signature
-  byte_len 31991
-  line_count 835
-  content_id source_module_8aa7095832b8e3e3
-  symbol_count 38
+  byte_len 33356
+  line_count 867
+  content_id source_module_3ec4a881b8fa5043
+  symbol_count 39
   symbols
-    enum ObligationExpectation 24 60
-    function slug 66 74
-    function is_observable 81 83
-    function to_links_notation 91 121
-    enum ObligationOutcome 126 146
-    function slug 151 158
-    function record 165 170
-    function to_links_notation 174 199
-    struct ObligationNode 204 223
-    function build 236 264
-    function leaf 267 289
-    function discharged 301 309
-    function next_open 313 318
-    function collect_leaves 321 329
-    function expand 341 380
-    function leaves_mut 383 391
-    function judge 397 504
-    function mismatch_sentence 512 519
-    function to_links_notation 523 559
-    struct ObligationLedger 564 569
-    function for_frame 577 588
-    function observe 597 610
-    function every_obligation_discharged 614 616
-    function satisfied_count 620 622
-    function unsatisfiable_count 626 628
-    function unattempted_count 632 634
-    function refuted_count 638 640
-    function count_of 642 649
-    function satisfied_need_ids 653 664
-    function to_links_notation 669 686
-    const MISMATCH_LINO 690 690
-    const RECORD_MISMATCH 693 693
-    function mismatch_template 700 714
-    function need_for_clause 717 726
-    enum ObligationStep 730 746
-    function need_ledger_with_execution 755 770
-    function next_step 781 829
-    module derivation 831 831
+    enum ObligationExpectation 28 64
+    function slug 70 78
+    function is_observable 85 87
+    function to_links_notation 95 125
+    enum ObligationOutcome 130 150
+    function slug 155 162
+    function record 169 174
+    function to_links_notation 178 203
+    struct ObligationNode 208 227
+    function build 240 268
+    function leaf 271 293
+    function discharged 305 313
+    function next_open 317 322
+    function collect_leaves 325 333
+    function expand 345 384
+    function leaves_mut 387 395
+    function judge 401 507
+    function mismatch_sentence 515 522
+    function to_links_notation 526 562
+    struct ObligationLedger 567 572
+    function for_frame 580 591
+    function observe 600 613
+    function every_obligation_discharged 617 619
+    function satisfied_count 623 625
+    function unsatisfiable_count 629 631
+    function unattempted_count 635 637
+    function refuted_count 641 643
+    function count_of 645 652
+    function satisfied_need_ids 656 667
+    function to_links_notation 672 689
+    function record_obligation_ledger 698 720
+    const MISMATCH_LINO 723 723
+    const RECORD_MISMATCH 726 726
+    function mismatch_template 733 746
+    function need_for_clause 749 758
+    enum ObligationStep 762 778
+    function need_ledger_with_execution 787 802
+    function next_step 813 861
+    module derivation 863 863
