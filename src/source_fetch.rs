@@ -297,6 +297,75 @@ impl<T: SourceTransport> CachedSourceClient<T> {
         Ok(capture)
     }
 
+    /// `fetch`, plus the one question the plain read path could not ask: was
+    /// this payload *forgotten* under a `rediscover:` edge, and can it be
+    /// brought back (issue #1138 B7, plan 07 leaf 15, R710-R7)?
+    ///
+    /// A cache miss is exactly where a forgotten payload is next needed, so
+    /// recovery belongs in the read path rather than in a maintenance command
+    /// somebody has to remember to run. The reconstruction names the content
+    /// address the edge was authorized to reacquire; this method then looks for
+    /// that object in the content-addressed store, because a forgotten *event*
+    /// does not mean a forgotten *object*. When the object is not there the
+    /// original miss is returned unchanged — the reconstruction never invents a
+    /// payload out of a fingerprint.
+    ///
+    /// # Errors
+    /// Returns the underlying fetch failure when the miss could not be
+    /// recovered, or the reconstruction's own refusal when the edge declined.
+    pub fn fetch_with_reconstruction(
+        &self,
+        url: &str,
+        tool: &str,
+        events: &[crate::memory::MemoryEvent],
+    ) -> Result<SourceCapture, FetchError> {
+        let miss = match self.fetch(url) {
+            Ok(capture) => return Ok(capture),
+            Err(error) => error,
+        };
+        let Some(outcome) =
+            crate::source_reconstruction::reconstruct_on_miss(events, tool, !self.online)
+        else {
+            return Err(miss);
+        };
+        match outcome {
+            crate::source_reconstruction::ReconstructionOutcome::Recovered { record } => {
+                let (cache_root, _) = self.paths(url);
+                let path = content_path(&cache_root, &record.observed_output_sha256);
+                let Ok(bytes) = fs::read(&path) else {
+                    return Err(miss);
+                };
+                // The object is only a recovery if it still hashes to the
+                // address the edge named; anything else is a different payload
+                // wearing its name.
+                let observed = sha256_hex(&bytes);
+                if observed != record.observed_output_sha256 {
+                    return Err(FetchError::Cache(format!(
+                        "reconstruction_object_diverged:{observed}"
+                    )));
+                }
+                Ok(SourceCapture {
+                    source_url: url.to_owned(),
+                    fetched_at: format_timestamp((self.now)()),
+                    sha256: observed,
+                    cached: true,
+                    bytes,
+                })
+            }
+            // R710-R7: today's bytes never replace historical evidence. The
+            // divergence is reported and the stub is left exactly as it was.
+            crate::source_reconstruction::ReconstructionOutcome::Diverged {
+                retained_sha256,
+                observed_sha256,
+            } => Err(FetchError::Cache(format!(
+                "reconstruction_diverged:{retained_sha256}:{observed_sha256}"
+            ))),
+            crate::source_reconstruction::ReconstructionOutcome::Unavailable { reason } => {
+                Err(FetchError::Cache(reason))
+            }
+        }
+    }
+
     fn paths(&self, url: &str) -> (PathBuf, PathBuf) {
         let root = self.cache_dir.join("source-cache");
         let key = cache_key(url);

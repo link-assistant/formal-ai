@@ -2,10 +2,10 @@ self_ast_census
   target src/source_fetch.rs
   language rust
   fidelity signature
-  byte_len 15745
-  line_count 481
-  content_id source_module_e633004bf507b8f2
-  symbol_count 42
+  byte_len 18965
+  line_count 550
+  content_id source_module_a04261700cd2d49f
+  symbol_count 43
   symbols
     const CACHE_FORMAT_VERSION 21 21
     const LEGACY_CACHE_FORMAT_VERSION 22 22
@@ -35,17 +35,18 @@ self_ast_census
     function with_clock 258 261
     function with_ttl_seconds 264 267
     function fetch 269 298
-    function paths 300 305
-    function validate_url 308 322
-    function read_capture 324 377
-    function field 379 392
-    function write_capture 394 419
-    function content_path 421 423
-    function is_sha256_hex 425 430
-    function unique_temp_path 432 439
-    function cache_error 441 443
-    function cache_diagnostic 445 447
-    function sha256_hex 450 452
-    function hex_lower 464 470
-    function unix_now 472 476
-    function format_timestamp 478 481
+    function fetch_with_reconstruction 316 367
+    function paths 369 374
+    function validate_url 377 391
+    function read_capture 393 446
+    function field 448 461
+    function write_capture 463 488
+    function content_path 490 492
+    function is_sha256_hex 494 499
+    function unique_temp_path 501 508
+    function cache_error 510 512
+    function cache_diagnostic 514 516
+    function sha256_hex 519 521
+    function hex_lower 533 539
+    function unix_now 541 545
+    function format_timestamp 547 550

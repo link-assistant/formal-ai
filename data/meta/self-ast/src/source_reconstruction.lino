@@ -2,11 +2,22 @@ self_ast_census
   target src/source_reconstruction.rs
   language rust
   fidelity signature
-  byte_len 1965
-  line_count 55
-  content_id source_module_e57960ae43429c99
-  symbol_count 3
+  byte_len 9122
+  line_count 227
+  content_id source_module_da9f522034f031ce
+  symbol_count 14
   symbols
-    enum ReconstructionOutcome 20 31
-    function reconstruct 35 42
-    function reconstruct_on_miss 48 55
+    const STUB_KIND 28 28
+    const OBSERVED_KIND 31 31
+    enum ReconstructionOutcome 35 46
+    function reconstruct 50 60
+    function reconstruct_on_miss 71 80
+    function is_stub 84 86
+    function execute_edge 89 141
+    function recovery_record 154 175
+    function edge_of 178 184
+    function observed_hash_for 187 194
+    function retained_length 197 199
+    function provenance_length 205 211
+    function evidence_value 214 220
+    function unavailable 223 227

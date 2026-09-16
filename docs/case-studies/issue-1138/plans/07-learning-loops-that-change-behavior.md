@@ -855,7 +855,7 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
 - [ ] Make `dreaming_runtime::write_learning_cycle_record` (`:133-145`) readable: either
       wire its record into the next promotion run's proposal input, or delete it. Decide
       in the leaf; do not leave a file nobody reads.
-- [ ] Add `src/source_reconstruction.rs` with `ReconstructionOutcome`, `reconstruct`,
+- [x] Add `src/source_reconstruction.rs` with `ReconstructionOutcome`, `reconstruct`,
       `reconstruct_on_miss`; wire `reconstruct_on_miss` into the source-cache read path.
 - [ ] Add `data/meta/adoption-effect-ratchet.lino` and the two ratchet tests.
 - [ ] **PR #887 carry:** create the branch, cherry-pick the 24 new-path files, re-add the
