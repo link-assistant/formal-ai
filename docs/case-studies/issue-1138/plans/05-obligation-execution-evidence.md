@@ -903,18 +903,18 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
       `Evidence`, `observed`, `from_tool_result`, `reports_success`,
       `to_links_notation`; register in `src/lib.rs`; tests in
       `tests/unit/specification/execution_evidence.rs`.
-- [ ] Add `ObligationExpectation` and `ObligationOutcome` to a new `src/obligation_ledger.rs` with
+- [x] Add `ObligationExpectation` and `ObligationOutcome` to a new `src/obligation_ledger.rs` with
       `to_links_notation` for both; test the type-level `Satisfied` guarantee.
-- [ ] Add `ObligationNode` with `build`, `discharged`, `next_open`, `collect_leaves`,
+- [x] Add `ObligationNode` with `build`, `discharged`, `next_open`, `collect_leaves`,
       `to_links_notation`; `build` derives expectations, no recursion yet.
-- [ ] Add the derivation rules to `data/meta/obligation-evidence-contract.lino` and read
+- [x] Add the derivation rules to `data/meta/obligation-evidence-contract.lino` and read
       them in `build`, so a new expectation shape is a data edit.
-- [ ] Wire `build` to `task_decomposition::split_once_checkable` for `Underivable` clauses,
+- [x] Wire `build` to `task_decomposition::split_once_checkable` for `Underivable` clauses,
       bounded by `recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND`.
-- [ ] Add `ObligationLedger` with `for_frame`, `observe`, `every_obligation_discharged`,
+- [x] Add `ObligationLedger` with `for_frame`, `observe`, `every_obligation_discharged`,
       the three counts and `to_links_notation`; `observe` returns `None` for an unrelated
       record.
-- [ ] Add `need_ledger_with_execution`; prove by test it is the only producer of
+- [x] Add `need_ledger_with_execution`; prove by test it is the only producer of
       `NeedStatus::Satisfied` in `src/`.
 - [ ] Add `record_obligation_ledger` and `meta_core::record_meta_core_execution`; call it
       from `src/solver.rs` after `meta_method_dispatch`.

@@ -181,6 +181,22 @@ impl Evidence {
         }
     }
 
+    /// Whether this observation names `needle` — as its command, as one of its
+    /// arguments, or inside the command line it was issued as.
+    ///
+    /// This is the binding rule R710-R4 states: a tool result counts as evidence
+    /// for an obligation only when it names the path, command or check that
+    /// obligation expects. A result that names none of them discharges nothing.
+    #[must_use]
+    pub fn names(&self, needle: &str) -> bool {
+        if needle.is_empty() {
+            return false;
+        }
+        self.command == needle
+            || self.command.contains(needle)
+            || self.argv.iter().any(|argument| argument == needle)
+    }
+
     /// Links Notation projection, appended to the event log as kind `evidence`.
     ///
     /// `recorded_at` is projected last and is the one field outside the

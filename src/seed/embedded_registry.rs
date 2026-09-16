@@ -192,6 +192,7 @@ pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-thinking-narrative.lino");
 pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
     include_str!("../../data/seed/numeric-list-operations.lino");
+pub const OBLIGATION_MISMATCH_LINO: &str = include_str!("../../data/seed/obligation-mismatch.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../data/seed/operation-vocabulary.lino");
 pub const PERSONAS_LINO: &str = include_str!("../../data/seed/personas.lino");
@@ -371,6 +372,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
         ),
         ("data/seed/numeric-list-operations.lino", NUMERIC_LIST_OPERATIONS_LINO),
+        ("data/seed/obligation-mismatch.lino", OBLIGATION_MISMATCH_LINO),
         ("data/seed/operation-vocabulary.lino", OPERATION_VOCABULARY_LINO),
         ("data/seed/personas.lino", PERSONAS_LINO),
         ("data/seed/program-cst-grammars.lino", PROGRAM_CST_GRAMMARS_LINO),

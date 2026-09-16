@@ -424,6 +424,8 @@ seed_registry
   seed numeric-list-operations
     bundle true
     web true
+  seed obligation-mismatch
+    bundle true
   seed operation-vocabulary
     bundle true
     web true

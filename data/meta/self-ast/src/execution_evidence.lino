@@ -2,10 +2,10 @@ self_ast_census
   target src/execution_evidence.rs
   language rust
   fidelity signature
-  byte_len 10141
-  line_count 284
-  content_id source_module_ad0aa4dd8129f842
-  symbol_count 13
+  byte_len 10816
+  line_count 300
+  content_id source_module_6bf4a74481ec8853
+  symbol_count 14
   symbols
     enum ObservationKind 10 19
     function slug 24 31
@@ -17,6 +17,7 @@ self_ast_census
     function observed 117 152
     function from_tool_result 160 171
     function reports_success 177 182
-    function to_links_notation 190 236
-    function fingerprint_id 242 259
-    function argv_of 263 284
+    function names 191 198
+    function to_links_notation 206 252
+    function fingerprint_id 258 275
+    function argv_of 279 300

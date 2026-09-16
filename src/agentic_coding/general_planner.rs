@@ -33,7 +33,10 @@ pub enum GeneralPlanMode {
     RepositoryWorkItem,
 }
 impl GeneralPlanMode {
-    const fn slug(self) -> &'static str {
+    /// The mode's stable slug, which is also the vocabulary the obligation
+    /// contract's `general_plan_mode` rule rows are keyed by (plan 05 leaf 6).
+    #[must_use]
+    pub const fn slug(self) -> &'static str {
         match self {
             Self::LiteralFile => "literal_file",
             Self::CommandOutput => "command_output",
