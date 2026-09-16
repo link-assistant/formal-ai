@@ -1,0 +1,4 @@
+total 8
+drwx------@     3 konard  staff      96 Sep 16 10:28 .
+drwx------@ 28169 konard  staff  901408 Sep 16 10:28 ..
+-rw-r--r--@     1 konard  staff     358 Sep 16 10:28 opencode.json

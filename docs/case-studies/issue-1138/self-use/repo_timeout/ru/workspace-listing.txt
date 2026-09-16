@@ -1,0 +1,7 @@
+total 32
+drwx------@     6 konard  staff     192 Sep 16 10:33 .
+drwx------@ 28169 konard  staff  901408 Sep 16 10:33 ..
+-rw-r--r--@     1 konard  staff      73 Sep 16 10:33 api.py
+-rw-r--r--@     1 konard  staff     117 Sep 16 10:33 client.py
+-rw-r--r--@     1 konard  staff     358 Sep 16 10:33 opencode.json
+-rw-r--r--@     1 konard  staff     194 Sep 16 10:33 test_client.py

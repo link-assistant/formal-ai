@@ -1,0 +1,1 @@
+En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista.

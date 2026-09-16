@@ -1,0 +1,19 @@
+Создать событие «Коммите» на 16 число (2026-09-16). Время: 23:43, часовой пояс: UTC. Длительность 60 минут.
+Импортируйте этот файл .ics в любой календарь:
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//formal-ai//calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:20260916T234300-UTC@formal-ai
+DTSTAMP:20260916T033450Z
+DTSTART;TZID=UTC:20260916T234300
+DTEND;TZID=UTC:20260917T004300
+SUMMARY:Коммите
+END:VEVENT
+END:VCALENDAR
+
+Или откройте в Google Календаре (вход не требуется):
+https://calendar.google.com/calendar/render?action=TEMPLATE&text=%D0%9A%D0%BE%D0%BC%D0%BC%D0%B8%D1%82%D0%B5&dates=20260916T234300/20260917T004300&ctz=UTC
+Ответьте «да», чтобы подтвердить.

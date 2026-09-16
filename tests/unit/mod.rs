@@ -315,3 +315,5 @@ mod issue_1138_uniform_dispatch;
 mod issue_1138_self_use_concept_lookup;
 mod issue_1138_self_use_verifiable_task;
 mod issue_1138_self_use_intent_routing;
+mod issue_1138_self_use_repository_workspace;
+mod issue_1138_self_use_toolchain;
