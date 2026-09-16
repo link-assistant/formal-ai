@@ -96,6 +96,9 @@ impl ProgramLanguage {
 
     /// Probe this language's toolchain on this machine, right now.
     #[must_use]
+    // Read by plan 06 leaf L13 (the Telegram execution surface) and leaf L15
+    // (the browser probe), which hold a live verdict rather than a seed row.
+    #[allow(dead_code)]
     pub fn probe_now(&self, root: &std::path::Path) -> crate::prerequisite::probe::ProbeVerdict {
         crate::prerequisite::probe::seed_probe_for_language(self.slug).map_or_else(
             || crate::prerequisite::probe::ProbeVerdict::NotProbed {
@@ -281,6 +284,10 @@ impl ExecutionStatus {
     /// is why a caller that has not executed anything keeps `NotProbed` until it
     /// has an observation to point at.
     #[must_use]
+    // Read by plan 06 leaf L13 and leaf L15, and by the `environments --probe`
+    // command of leaf L10's benchmark list, each of which observes the
+    // toolchain itself instead of reading what a harness run recorded.
+    #[allow(dead_code)]
     pub const fn from_verdict(verdict: &crate::prerequisite::probe::ProbeVerdict) -> Self {
         match verdict {
             crate::prerequisite::probe::ProbeVerdict::Present { .. } => Self::Verified,

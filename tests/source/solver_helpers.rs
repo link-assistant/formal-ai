@@ -874,16 +874,15 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
             )
         },
     );
-    let status = program.language.execution_status();
-    let output_label = if matches!(status, ExecutionStatus::Verified) {
+    let output_label = if matches!(execution.status, ExecutionStatus::Verified) {
         "Output"
     } else {
         "Expected output after verification"
     };
     format!(
         "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
-        status.label(),
-        program.language.environment(),
+        execution.status.label(),
+        execution.environment,
         cmd,
         output_label,
         expected_output,

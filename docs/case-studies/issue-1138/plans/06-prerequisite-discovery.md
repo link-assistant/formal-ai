@@ -803,15 +803,29 @@ Record the probe table, the recovery outcome for each of the five languages, and
 - [x] **L8.** Add `data/meta/prerequisite-recipe.lino` + `recover()` + `tests/unit/specification/prerequisite_recipe.rs`. Test: grounding and rediscovery.
 - [x] **L9.** Add `src/prerequisite/ledger.rs` `ToolchainLedger` and `data/meta/toolchain-ledger.lino`, append-only, with `formal-ai learn forget --toolchain <program>`. Test: forget-and-rediscover content id; restart reattach.
 - [ ] **L10.** Run the family-1 held-out prompt in all five languages, refused and granted, and record the outcome table. No tuning in this commit.
-- [ ] **L11.** Add `src/execution_box/mod.rs` `ExecutionBox`, `ExecutionBackend`, `BoxPolicy`, tar-on-stdin input, `--network none` default, honest deadline. Give `box_language_contract()` (`src/box_language_projects.rs:315`) its first non-test caller. Test: timeout reporting, network denial, missing-daemon refusal.
+- [x] **L11.** Add `src/execution_box/mod.rs` `ExecutionBox`, `ExecutionBackend`, `BoxPolicy`, tar-on-stdin input, `--network none` default, honest deadline. Give `box_language_contract()` (`src/box_language_projects.rs:315`) its first non-test caller. Test: timeout reporting, network denial, missing-daemon refusal.
 - [ ] **L12.** Add kotlin and scala to `data/meta/box-language-projects.lino` as `box_language_project_deferred` rows with the honest `reason` that `data/meta/box-image-survey.lino:13-16` records no such image, so the box backend reports unavailable for exactly the two languages B6 names.
 - [ ] **L13.** Wire Telegram (#930): add `"code_execution"` to `data/seed/environments.lino:67-75`, route `src/telegram_runtime.rs` through `ExecutionBox`, implement the descending-N ladder with every N recorded and the ten-minute verbose hard fail. Test: family-3 prompts with and without a backend.
-- [ ] **L14.** Add `src/execution_box/container.rs` `ConversationContainer`, `SnapshotPolicy`, idle stop, reattach, restart recovery (#937). Test: idle-and-restore; replay/snapshot divergence reported.
+- [x] **L14.** Add `src/execution_box/container.rs` `ConversationContainer`, `SnapshotPolicy`, idle stop, reattach, restart recovery (#937). Test: idle-and-restore; replay/snapshot divergence reported.
 - [ ] **L15.** Make `src/web/worker/formal_ai_worker_14.js:519-545` probe instead of assert: state which runtime could be loaded and its size, keep the worker binary under `MAX_WASM_BYTES`, move the five-language strings into `src/web/i18n-catalog-messages.lino`. Test: the worker binary is byte-unchanged; the honesty sentence resolves in five languages.
 - [ ] **L16.** Add the lazily-fetched Pyodide loader behind an explicit user click with the download size shown, and run the family-3 prompt in the browser with it loaded. Record whether the observed output is `55`.
 - [ ] **L17.** Recover the SWE-bench harness prerequisite through `recover()` rather than through `.github/workflows/external-benchmarks.yml:113-117`, and record whether the run still reaches the evaluator.
 - [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `VISION.md`, `ROADMAP.md`, `GOALS.md`, `docs/benchmarks.md`, `docs/meta-algorithm.md` per the next section; tick the six open boxes of `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81` that this plan actually closes, and leave the rest unticked with the reason.
 
+
+**Leaf L11/L14 note (wave I6).** The deadline bounds the *program*, so the box
+widens it by the interpreter start-up it measured on this machine (at least a
+250 ms backstop) before killing anything — the distinction `src/agent.rs`'s
+`PYTHON_TIME_BUDGET_FLOOR` already draws, and without it start-up latency
+decides whether a program that would have printed something is reported as
+having printed nothing. `ExecutionBox::run` takes `&self` and
+`ConversationContainer::attach` returns an owned box, so no box has to be kept
+alive in a process-global slot; the two redundant `let mut` bindings in
+`tests/unit/issue_1138_execution_box.rs` were dropped, which re-points the test
+and changes no assertion in it. A conversation's durable state is its workspace
+directory, which is why an idle stop and a reattach observe the same bytes with
+no container runtime present — and why the backend actually used is recorded
+rather than claimed to be a container.
 
 **Leaf L2/L3 note (wave I6).** `ExecutionStatus` now has three variants and
 `from_verdict`; `execution_output_label` takes the status rather than a boolean

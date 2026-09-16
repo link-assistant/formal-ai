@@ -23,7 +23,7 @@ fn host_policy(deadline: Duration) -> BoxPolicy {
 /// silent truncation.
 #[test]
 fn a_timeout_is_a_reported_failure_with_both_numbers() {
-    let mut boxed = ExecutionBox::open(
+    let boxed = ExecutionBox::open(
         &ExecutionBackend::HostSandbox,
         &host_policy(Duration::from_millis(50)),
     )
@@ -60,7 +60,7 @@ fn a_timeout_is_a_reported_failure_with_both_numbers() {
 /// out and which N stopped timing out. Nothing is hidden.
 #[test]
 fn the_halving_ladder_records_every_n_it_tried() {
-    let mut boxed = ExecutionBox::open(
+    let boxed = ExecutionBox::open(
         &ExecutionBackend::HostSandbox,
         &host_policy(Duration::from_millis(100)),
     )

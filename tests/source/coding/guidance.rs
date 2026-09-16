@@ -289,7 +289,7 @@ pub fn program_test_instructions(
     };
 
     let mut steps: Vec<String> = Vec::new();
-    let setup_hint = spec.language.setup_hint();
+    let setup_hint = spec.language.setup_hint;
     steps.push(match language {
         Language::Russian => format!("Установите инструментарий: {setup_hint}."),
         Language::Hindi => format!("टूलचेन इंस्टॉल करें: {setup_hint}।"),

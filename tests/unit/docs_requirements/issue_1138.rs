@@ -166,7 +166,7 @@ fn an_implemented_verdict_names_a_test_that_exists() {
     let mut failures: Vec<String> = Vec::new();
     let mut checked = 0usize;
 
-    let mut close = |id: &Option<String>,
+    let close = |id: &Option<String>,
                      verdict: &Option<String>,
                      automated: &Option<String>,
                      failures: &mut Vec<String>,

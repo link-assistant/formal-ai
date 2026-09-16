@@ -2,19 +2,25 @@ self_ast_census
   target src/execution_box/container.rs
   language rust
   fidelity signature
-  byte_len 3634
-  line_count 111
-  content_id source_module_2538c95a9abef5ae
-  symbol_count 11
+  byte_len 11017
+  line_count 276
+  content_id source_module_e2e7b4ea525a9ca4
+  symbol_count 17
   symbols
-    enum SnapshotPolicy 15 21
-    function default 24 26
-    enum ContainerLifecycle 31 38
-    struct RestoreComparison 42 49
-    struct ConversationContainer 53 64
-    function attach 72 74
-    function stop_if_idle 80 82
-    function restore 88 90
-    function lifecycle 94 96
-    function compare_restores 102 104
-    function from_ledger 108 110
+    const CONVERSATIONS_DIR 19 19
+    const RUNNING_MARKER 22 22
+    enum SnapshotPolicy 26 32
+    function default 35 37
+    enum ContainerLifecycle 42 49
+    struct RestoreComparison 53 60
+    struct ConversationContainer 64 75
+    function workspace 80 84
+    function attach 95 125
+    function stop_if_idle 131 141
+    function idle_for 152 160
+    function restore 166 168
+    function lifecycle 172 181
+    function compare_restores 193 222
+    function from_ledger 226 244
+    function tree_digest 251 256
+    function collect 259 276
