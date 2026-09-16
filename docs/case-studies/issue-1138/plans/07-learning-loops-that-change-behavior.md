@@ -816,11 +816,25 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
       `src/method_registry.rs`, reusing `recipe_interpreter::RecipeProgram`.
 - [x] Add the fourth loop to `ordered_method_names_for_relevants` (learned methods last)
       plus the `method:learned` trace event; keep the signature and name unchanged.
-- [ ] Teach `meta_method_dispatch::try_dispatch` to execute a learned name through
+- [x] Teach `meta_method_dispatch::try_dispatch` to execute a learned name through
       `to_recipe_program()`; the first production caller of `learned_method`.
-- [ ] Prove and record the `AdoptionEffect` for `learned_recursive_core_e17957243eaaf6db`
+- [ ] ~~Prove and record the `AdoptionEffect` for `learned_recursive_core_e17957243eaaf6db`
       in five languages; if it does not qualify, record that honestly and mark the record
-      `status "adopted_not_effective"` rather than forcing a delta.
+      `status "adopted_not_effective"` rather than forcing a delta.~~ **Struck 2026-09-16.**
+      The effect was measured, in all five languages, with leaf 6 landed: the selection
+      changes in every one of them (`answer_changed` is true five times over) and the
+      verdict is `ChangedUnverified` five times over, because the adopted record's
+      operations are the meta-core recorders and the held-out class is a counted scan.
+      Nothing the record executes can produce a count, so no expectation the after side
+      satisfies exists without inventing one — and inventing one is exactly the forced
+      delta this leaf forbids. The leaf's own escape hatch,
+      `status "adopted_not_effective"`, is not available either: `parse_learned_methods`
+      admits only `adopted`, and the wave T test
+      `specification::method_registry::an_adopted_learned_method_is_dispatchable`
+      requires the shipped record to stay dispatchable, so writing the status would turn
+      one red test into two. `issue_1138_learned_items_change_answers::the_adopted_method_changes_the_answer_to_a_held_out_prompt`
+      therefore stays red, un-ignored and un-weakened, until a learned record exists whose
+      operations answer the class it is measured on.
 - [ ] Create `data/seed/learned-program-rules.lino` (empty with a schema header) so #364's
       destination exists; ground it.
 - [x] Replace `issue_362_from_counts(0, 0)` at `src/self_improvement.rs:248-252` with

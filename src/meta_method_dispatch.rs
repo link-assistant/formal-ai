@@ -114,6 +114,15 @@ pub fn try_dispatch(
                 "pattern_inference",
             ));
         }
+        // Issue #1138 B7, plan 07 leaf 6: a learned name is executed as the
+        // recipe program its operations project onto, instead of through
+        // `handler_for_method` -- there is no compiled handler behind it. This
+        // is `MethodRegistry::learned_method`'s first production caller.
+        if let Some(answer) =
+            try_learned_method(solver, &registry, &name, prompt, intent_formalization, log)
+        {
+            return Some(answer);
+        }
         if let Some(handler) = handler_for_method(&name)
             && let Some(answer) = handler.call(prompt, &normalized, log)
         {
@@ -144,6 +153,76 @@ pub fn try_dispatch(
         }
     }
     None
+}
+
+/// Execute one adopted learned method as the recipe program its learned
+/// operations project onto (issue #1138 B7, plan 07 leaf 6).
+///
+/// A learned abstraction has no compiled handler: its `operations` are the
+/// recorder event kinds `crate::recipe_interpreter` already dispatches on, so
+/// the method runs by executing that program rather than by calling Rust that
+/// was written for it. A name that is not a learned record, an operation that
+/// binds to no recorder, and a misordered program are all reported in the trace
+/// under `method:learned` and then declined, never silently skipped.
+fn try_learned_method(
+    solver: &UniversalSolver,
+    registry: &MethodRegistry,
+    name: &str,
+    prompt: &str,
+    intent_formalization: &IntentFormalization,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let learned = registry.learned_method(name)?;
+    let program = match learned.to_recipe_program() {
+        Ok(program) => program,
+        Err(reason) => {
+            log.append("method:learned", format!("{name}:{reason}"));
+            return None;
+        }
+    };
+    let trace = match program.execute(
+        intent_formalization,
+        solver.config.max_decomposition_depth,
+        solver.config.recursion_mode,
+        solver.config.selection_mode,
+        solver.config.skill_mode,
+    ) {
+        Ok(trace) => trace,
+        Err(reason) => {
+            log.append("method:learned", format!("{name}:{reason}"));
+            return None;
+        }
+    };
+    log.append("method:learned", name.to_owned());
+    let mut rendered = program.to_links_notation();
+    for id in &trace.executed {
+        let _ = write!(rendered, "\n  executed {id}");
+    }
+    for id in &trace.skipped {
+        let _ = write!(rendered, "\n  skipped {id}");
+    }
+    let intent = format!("learned_method:{name}");
+    log.append("intent", intent.clone());
+    let response_link = format!("response:learned_method:{name}");
+    log.append("response", response_link.clone());
+    let trace_id = log.append("trace", intent.clone());
+    let evidence_links = build_evidence_links(prompt, log, &response_link);
+    let links_notation = answer_links_notation(prompt, &intent, &rendered, log, &trace_id);
+    let thinking_steps = log.thinking_steps_for_answer(&rendered);
+    Some(record_method_answer(
+        prompt,
+        log,
+        SymbolicAnswer {
+            intent,
+            answer: rendered,
+            execution_recipe: None,
+            confidence: solver.config.guess_probability,
+            evidence_links,
+            thinking_steps,
+            links_notation,
+        },
+        name,
+    ))
 }
 
 #[derive(Clone, Copy)]
