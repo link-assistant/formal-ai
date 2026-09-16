@@ -88,11 +88,16 @@ const ADVERTISED: &[&str] = &[
 fn routing_cases() -> Vec<RoutingCase> {
     let mut cases = Vec::new();
     for language in ["en", "ru", "hi", "zh", "es"] {
-        let path = repo_root().join(format!("data/benchmarks/capability-routing/{language}.lino"));
+        let path = repo_root().join(format!(
+            "data/benchmarks/capability-routing/{language}.lino"
+        ));
         let text = fs::read_to_string(&path)
             .unwrap_or_else(|error| panic!("missing {language} routing partition: {error}"));
         for record in lino_records(&text) {
-            assert_eq!(lino_field(&record, "record_type"), "capability_routing_case");
+            assert_eq!(
+                lino_field(&record, "record_type"),
+                "capability_routing_case"
+            );
             assert_eq!(lino_field(&record, "language"), language);
             cases.push(RoutingCase {
                 id: lino_field(&record, "id"),
@@ -118,8 +123,9 @@ fn resolved_capability(outcome: &RoutingOutcome) -> Option<&str> {
 
 #[test]
 fn the_routing_corpus_is_four_hundred_and_twenty_held_out_cases() {
-    let header = fs::read_to_string(repo_root().join("data/benchmarks/capability-routing-suite.lino"))
-        .expect("capability-routing-suite.lino readable");
+    let header =
+        fs::read_to_string(repo_root().join("data/benchmarks/capability-routing-suite.lino"))
+            .expect("capability-routing-suite.lino readable");
     let records = lino_records(&header);
     assert_eq!(lino_field(&records[0], "minimum_pass_count"), "420");
     assert_eq!(lino_field(&records[0], "languages"), "en|ru|hi|zh|es");
@@ -198,7 +204,9 @@ fn every_triple_resolves_to_a_row_or_asks() {
             RoutingOutcome::Routed { capability } if capability.is_empty() => {
                 silent.push(case.id.clone());
             }
-            RoutingOutcome::HonestGap { needed, missing } if needed.is_empty() || missing.is_empty() => {
+            RoutingOutcome::HonestGap { needed, missing }
+                if needed.is_empty() || missing.is_empty() =>
+            {
                 silent.push(case.id.clone());
             }
             RoutingOutcome::Ask { readings } if readings.len() < 2 => {
@@ -313,7 +321,9 @@ fn a_verb_synonym_never_changes_the_capability() {
         for (language, prompt) in ["en", "ru", "hi", "zh", "es"].iter().zip(prompts) {
             let outcome = route(prompt, ADVERTISED);
             if resolved_capability(&outcome) != Some(expected) {
-                failures.push(format!("{language}: {prompt:?} -> {outcome:?}, expected {expected}"));
+                failures.push(format!(
+                    "{language}: {prompt:?} -> {outcome:?}, expected {expected}"
+                ));
             }
         }
     }
