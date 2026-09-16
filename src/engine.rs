@@ -7,9 +7,8 @@
 
 pub(crate) use crate::coding::{
     ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramLanguage, ProgramSpec,
-    WRITE_PROGRAM_INTENT,
-    program_language_by_alias, program_spec, program_template_count, supported_program_languages,
-    supported_program_tasks,
+    WRITE_PROGRAM_INTENT, program_language_by_alias, program_spec, program_template_count,
+    supported_program_languages, supported_program_tasks,
 };
 
 use std::sync::OnceLock;
@@ -904,7 +903,10 @@ fn execution_report(
     let status_phrase = execution_status_phrase(status, language);
     let output_label = execution_output_label(status, language);
     let status_line = match language {
-        Language::Russian => format!("Статус выполнения: {status_phrase} в среде «{}».", environment),
+        Language::Russian => format!(
+            "Статус выполнения: {status_phrase} в среде «{}».",
+            environment
+        ),
         Language::Hindi => format!("निष्पादन स्थिति: {status_phrase} ({} में)।", environment),
         Language::Chinese => format!("执行状态：{status_phrase}（{}）。", environment),
         _ => format!("Execution status: {status_phrase} in {}.", environment),

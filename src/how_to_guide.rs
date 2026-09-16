@@ -504,8 +504,10 @@ impl CaptureExtractor for StepExtractor<'_> {
                     entries.iter().collect()
                 };
                 if relevant.is_empty() {
-                    read.detail =
-                        Some(trace_record::line("no_relevant_result", &[("url", url.clone())]));
+                    read.detail = Some(trace_record::line(
+                        "no_relevant_result",
+                        &[("url", url.clone())],
+                    ));
                 }
                 for entry in &relevant {
                     let found = extract_steps(&entry.body, bounds.max_items);
@@ -520,8 +522,10 @@ impl CaptureExtractor for StepExtractor<'_> {
                 }
             }
             Payload::Compressed => {
-                read.detail =
-                    Some(trace_record::line("compressed_payload", &[("url", url.clone())]));
+                read.detail = Some(trace_record::line(
+                    "compressed_payload",
+                    &[("url", url.clone())],
+                ));
             }
             Payload::OpenSearch { titles, .. } | Payload::Search { titles } => {
                 let relevant: Vec<&String> = titles
@@ -530,8 +534,10 @@ impl CaptureExtractor for StepExtractor<'_> {
                     .take(bounds.max_pages_per_service)
                     .collect();
                 if relevant.is_empty() {
-                    read.detail =
-                        Some(trace_record::line("no_relevant_result", &[("url", url.clone())]));
+                    read.detail = Some(trace_record::line(
+                        "no_relevant_result",
+                        &[("url", url.clone())],
+                    ));
                 }
                 for title in relevant {
                     read.follow.push(parse_url(record, title));
