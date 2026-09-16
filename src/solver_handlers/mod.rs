@@ -709,10 +709,7 @@ pub fn try_write_script(
         "execution_status",
         program.language.execution_status().label().to_owned(),
     );
-    log.append(
-        "execution_environment",
-        program.language.environment(),
-    );
+    log.append("execution_environment", program.language.environment());
     Some(finalize_simple(
         prompt,
         log,

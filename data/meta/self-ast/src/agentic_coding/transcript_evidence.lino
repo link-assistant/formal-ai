@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/transcript_evidence.rs
   language rust
   fidelity full_ast
-  byte_len 3749
+  byte_len 3712
   line_count 102
-  content_id source_module_f5ddca3a7224bc40
+  content_id source_module_55ab211683a783cd
   symbol_count 4
   symbols
     const NAMING_KEYS 24 24

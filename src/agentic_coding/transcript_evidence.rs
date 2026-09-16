@@ -4,9 +4,9 @@
 //! transcript rather than remembered. `progress` reads it as "an attempt of this
 //! capability succeeded"; this module reads the same transcript as the thing an
 //! obligation can actually be discharged against — an
-//! [`Evidence`](crate::execution_evidence::Evidence) carrying the command that
-//! was issued, the exit status the harness reported (or an honest `None`) and a
-//! digest of the bytes that came back.
+//! [`Evidence`] carrying the command that was issued, the exit status the
+//! harness reported (or an honest `None`) and a digest of the bytes that came
+//! back.
 //!
 //! The distinction is the whole of bottleneck B5. "A write tool call returned
 //! success" is an attempt; the bytes a read-back observed are evidence. A record

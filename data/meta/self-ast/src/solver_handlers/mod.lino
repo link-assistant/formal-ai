@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/mod.rs
   language rust
   fidelity signature
-  byte_len 38051
-  line_count 941
-  content_id source_module_76b5131fd508fd06
+  byte_len 38028
+  line_count 938
+  content_id source_module_acbfe6797c301798
   symbol_count 19
   symbols
     function try_arithmetic 81 197
@@ -18,11 +18,11 @@ self_ast_census
     function try_network_query 417 473
     function try_translation 475 675
     function render_translation_gap 677 689
-    function try_write_script 691 727
-    function try_algorithm 729 753
-    function try_execution_failure 755 784
-    function try_source_refresh 786 811
-    function try_learn_from_source 824 850
-    function learning_source_summary 857 876
-    function try_source_conflict 878 904
-    function finalize_simple 906 941
+    function try_write_script 691 724
+    function try_algorithm 726 750
+    function try_execution_failure 752 781
+    function try_source_refresh 783 808
+    function try_learn_from_source 821 847
+    function learning_source_summary 854 873
+    function try_source_conflict 875 901
+    function finalize_simple 903 938
