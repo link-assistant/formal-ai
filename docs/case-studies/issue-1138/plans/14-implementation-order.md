@@ -1223,3 +1223,203 @@ docs_requirements::issue_1138::issue_1138_requirements_have_at_least_one_shard
    `check-worker-handler-registry.lino` belong to the leaves that write their
    checkers (09-7, 09-15, 09-39, 10-3); adding a gate row with no script behind
    it would break `check-ci-gate-registry` for no gain.
+
+---
+
+## Wave F report — the Formal AI self-use loop
+
+Executed 2026-09-16 in the issue-1138 worktree, concurrently with two sibling
+sessions implementing plans 01, 05, 07, 09, 10 and 12. Toolchain `1.98.1`,
+shared `CARGO_TARGET_DIR`, no docker, no image pulled. Everything below came
+from a run.
+
+### The rule this wave is bound by
+
+`docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:80-81`.
+Nothing here was repaired by hand and counted as the system's work; no compiler
+was installed manually; no read-back plan was counted as executed semantics. The
+two held-out toolchains, `zig` and `gleam`, were absent from the tree **and from
+the machine** before and after every run, and were checked both times.
+
+### How the system was driven
+
+Two harnesses, both under `docs/case-studies/issue-1138/self-use/`:
+
+| script | drives | gives |
+| --- | --- | --- |
+| `run_self_use_batch.sh` | the real `@link-assistant/agent` 0.26.0 against a local `formal-ai serve --agent-mode` on port 8911 | the client-level observation: tool calls, fetched pages, files written |
+| `probe_chat.sh` | `formal-ai chat` (`solver::solve`, the entry point the HTTP surface uses) | the library-level observation, which is what a unit test can assert |
+
+Both read the same tab-separated case files, so the two halves of an observation
+always come from the identical prompt string. The server ran with a private
+empty memory per batch and `FORMAL_AI_DREAMING=0`, so no run could teach the next
+one its answer.
+
+### What was run
+
+| area | plan | prompts | runs | languages |
+| --- | --- | --- | --- | --- |
+| held-out concept lookup | 01 | 10 | 20 | en ru hi zh es |
+| verifiable tasks | 08 | 30 | 60 | en ru hi zh es |
+| intent routing: 7 reported frontier prompts, 35 held-out class paraphrases, 6 Spanish #745 variations | 10 | 48 | 61 | en ru hi zh es |
+| prerequisite discovery (F-6) | 06 | 15 | 30 | en ru hi zh es |
+| repository workspace (F-1) | 03 | 10 | 20 | en ru hi zh es |
+| **total** | | **113** | **191** | |
+
+Plus the #840 task ladder (leaf F-5), 24 nodes, once.
+
+### Outcomes
+
+| class | count |
+| --- | --- |
+| solved | **6** |
+| honest refusal, but naming no source consulted | 5 |
+| honest refusal that misstates its own input | 5 |
+| wrong answer or wrong route | 87 |
+| silent unknown (neither an answer nor a refusal) | 8 |
+
+The six that were solved: `counted_category/en` → `5`;
+`frontier_869_schedule/ru` → a real `VCALENDAR` event at 20:00 `Asia/Tbilisi`;
+`frontier_721/zh` → the clarification answer; `class_local_search/{en,ru}` → a
+real filesystem search with an honest negative and its scope stated;
+`spanish_routing_list_dir/es` → `ls`.
+
+### The five findings that matter most
+
+1. **Describing retrieval is not retrieval.** 22 of 30 plan 08 prompts, and most
+   of plan 10's, were answered with a canned description of the search machinery
+   — the provider list and the reciprocal-rank-fusion formula — with no search
+   performed and no question answered. This is the retrieval analogue of the rule
+   above: reciting how search would work is not search.
+2. **A wrong number carried the authority of a source.** `Find y: 7 * y = 84`
+   (answer 12) was sent to `websearch`; three algebra pages were fetched; and the
+   raw scraped text of one of them reached the answer channel containing `y=29`,
+   the solution to a different equation printed on the same page. No derivation,
+   no check. Worse than a refusal and worse than a wrong sum.
+3. **Prose reached `/bin/sh -c`.** `Запусти это и скажи точно, что оно печатает:
+   print(sum(range(1, 11)))` had its leading verb stripped and the remainder
+   executed as a shell command; the transcript records
+   `/bin/sh: -c: line 0: syntax error near unexpected token '('` and the reply
+   calling the command `выполнена`. Two defects in three lines: prose in a
+   shell, and a shell error reported as a completed run. Recorded **uncovered** —
+   the command is built by a crate-private function on the agent-mode path, so no
+   test in this wave reaches it. `tests/unit/issue_1138_command_allowlist.rs` is
+   where it belongs.
+4. **The two closed frontier issues are closed as literals.** #721 answers
+   `我不明白` and misroutes four of five held-out paraphrases of the same act to
+   dictionary pages *about the idiom*. #869 makes a real calendar event for
+   `Назначь…` — the verb has since been added to the list — and makes none for
+   any of five paraphrases. Plan 10 predicted this shape; the run measured it.
+5. **Spanish is not a supported language on most routes.** Of the 94 response
+   intents in `data/seed/multilingual-responses.lino`, **93 carry an `en` row and
+   no `es` row**; one intent is seeded in Spanish. Spanish prompts on those routes
+   are answered *"I detected an unsupported language and am falling back to
+   English"*. Separately, Spanish is absent from `tests/unit/issue_745.rs` and
+   from all 280 capability cue phrases, and four of six Spanish routing
+   variations misroute — including `Lee https://example.com y dime qué dice.`,
+   which carries the URL in the prompt and was answered by searching the web for
+   the sentence.
+
+### Leaf F-5 — the #840 ladder
+
+Run at port 8921 with the committed offline fixtures, results written into
+`docs/case-studies/issue-1138/self-use/ladder-840/` so the committed
+`results.json` is untouched:
+
+```
+TOTAL 24/24 passed    L1 3/3  L2 6/6  L3 7/7  L4 8/8    #826 7/7  #827 7/7  #838 10/10
+```
+
+0 review-gated learning candidates; the committed baseline reproduced exactly.
+
+The ladder has 24 nodes in **two** languages (10 en, 14 ru) and none of the seven
+frontier prompts. Appending them is plan 10 leaf 10-21's deliverable, which F-5
+depends on and which has not landed, and `experiments/` is outside this session's
+namespace — so **the five-language and frontier half of F-5 is not run, not
+delivered**.
+
+The pair of numbers is the point:
+
+| measurement | prompts | passed |
+| --- | --- | --- |
+| #840 ladder, committed nodes, committed fixtures | 24 | **24 (100 %)** |
+| wave F held-out prompts, live | 113 | **6 (5 %)** |
+
+Same binary, same afternoon. A ladder at 100 % is not evidence of capability; it
+is evidence that the ladder stopped being a question.
+
+### Tests added
+
+Five files, **22 tests: 21 red, 1 green guard**, each observed failing before it
+was committed and none weakened afterwards.
+
+| file | tests | observed |
+| --- | --- | --- |
+| `tests/unit/issue_1138_self_use_concept_lookup.rs` | 4 | 4 red |
+| `tests/unit/issue_1138_self_use_verifiable_task.rs` | 5 | 5 red |
+| `tests/unit/issue_1138_self_use_intent_routing.rs` | 5 | 5 red |
+| `tests/unit/issue_1138_self_use_toolchain.rs` | 4 | 4 red |
+| `tests/unit/issue_1138_self_use_repository_workspace.rs` | 4 | 3 red, 1 green guard |
+
+Two of them are pure seed properties needing no binary and no network —
+`every_seeded_response_intent_serves_all_five_languages` (93 of 94 intents short)
+and `the_unverified_execution_honesty_sentence_is_seeded_in_five_languages` (the
+sentence plan 06 quotes occurs in no seed file at all). Three carry standing
+green guards inside a red test, so a future fabrication is reported as new rather
+than lost in a known failure: `55` must never appear without an observation
+record, the reported #869 prompt must keep making an event, and the Python
+fixture must keep its pre-edit value.
+
+### Corpora added
+
+| file | families | prompts |
+| --- | --- | --- |
+| `data/benchmarks/self-use-concept-lookup.lino` | 3 | 11 |
+| `data/benchmarks/self-use-verifiable-task.lino` | 6 | expectations only; prompts stay in the plan 08 corpus |
+| `data/benchmarks/self-use-intent-routing.lino` | 5 | 27 |
+| `data/benchmarks/self-use-prerequisite.lino` | 3 | 15 |
+| `data/benchmarks/self-use-repository-workspace.lino` | 2 | 10 |
+
+Every prompt was checked absent from `data/seed/**` and `src/**` before its file
+was committed. `isogram`, `lipogram`, `zig` and `gleam` occur nowhere in either
+tree. The seven reported frontier prompts are deliberately *not* held out — two
+of them are in `data/seed/` today, which is the defect plan 10 exists to delete.
+
+### Re-measurement
+
+The binary was rebuilt three times across the session, at `dc9b0574`,
+`74875c1b` and `6458a6fa`, picking up eight sibling commits. Previously failing
+tasks were re-run at `6458a6fa` (30 prompts, three case files) and every answer
+came back **byte-identical**; all 21 red tests are still red.
+
+**No previously failing task passes at any commit reached during this session.**
+The sibling work that landed is plan 09's handler-migration ratchet and the
+shared `Need` / `Evidence` records, neither of which touches these routes. The
+re-run is recorded because the absence of movement is a measurement, and because
+the next session can re-run the same case files and compare files rather than
+memories: `docs/case-studies/issue-1138/self-use/rerun-6458a6fa/`.
+
+### Leaves not run
+
+`F-2`, `F-3`, `F-4`, `F-7`, `F-8`, `F-9`, `F-10`, `F-11`, `F-12` — they depend on
+waves I6–I8 or on outward-facing actions (landing an attributed pull request,
+filing upstream issues, cutting a release). Recorded as **not run**. `F-5` is
+half-run, as set out above.
+
+### Machine footprint
+
+Three release builds (45–53 s each) into the shared `CARGO_TARGET_DIR`; no other
+target directory was used and no build raced a sibling's lock. One server at a
+time on ports 8911 and 8921, killed after each batch. 191 Agent CLI and `chat`
+invocations, one at a time. No docker, no image pulled. Free space on `/` stayed
+between 38 and 39 GiB throughout. The committed evidence is about 18 MB, of which
+11 MB is unedited `agent.log` transcripts; server request traces are trimmed to
+32 KB each with the truncation stated inside every file.
+
+### One gate note
+
+`rust-script scripts/check-hardcoded-language.rs` was run before each of this
+wave's commits. It reports one offender throughout —
+`src/selection_heuristics/splitting.rs`, `"{head} {text}"` — which belongs to a
+concurrent sibling's uncommitted work, not to this wave. No prompt added by this
+wave lives in `src/` or `data/seed/`.

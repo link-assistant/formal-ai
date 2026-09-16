@@ -1,0 +1,3 @@
+I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.
+
+Say what the program should do and which language it should be written in, and I will derive it.

@@ -1,0 +1,1 @@
+Clone this project at the given commit, find where the default timeout is defined, raise it to sixty seconds, and run only the test that asserts the default.

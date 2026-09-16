@@ -1,0 +1,1 @@
+Escribe la función Python is_isogram(word) que devuelva True cuando la palabra sea un isograma.

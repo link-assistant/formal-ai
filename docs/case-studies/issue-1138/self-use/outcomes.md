@@ -84,5 +84,5 @@ every run; nothing installed by hand, nothing installed by the system.
 outward-facing actions — landing a pull request, filing upstream issues, cutting
 a release. Recorded here as **not run**, not as delivered.
 
-`F-5` (the #840 task ladder in five languages) was checked for a cheap harness;
-see the wave F report in plan 14 for what was found.
+`F-5` was run: 24/24 on the committed nodes, and its five-language and frontier
+half recorded as not run. See `ladder-840/README.md`.
