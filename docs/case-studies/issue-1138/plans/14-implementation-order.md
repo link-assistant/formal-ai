@@ -2415,3 +2415,261 @@ were run again after each commit and the findings never named a file here.
 4. **Plan 07 leaves 6, 7, 13, 15 and plan 09 leaves 10-42 are untouched by this
    pass.** Nothing was started and abandoned; the files named in those leaves
    are as the wave I9 report above left them.
+
+---
+
+## Wave I2 tail / I3 report
+
+Written from runs in this worktree on 2026-09-16, resuming plan 01 at the
+remainders the Wave I2/I3 continuation report left open. Every number below is a
+paste of a command's output. Three sibling sessions were editing the same
+worktree throughout; where the lib transiently failed to compile it was their
+in-flight work and the run was retried rather than their files touched.
+
+### The two decisions this session was authorised to take, and what they cost
+
+**(a) `concept_senses_rank_below_retrieved_implementations`.** The previous
+report said the repair was "one line in the test's own fixture". It was two, and
+the second one is the more interesting: the catalog offered no `source_program`
+candidate *and*, after plan 01 L8, the case's requirement sentence offered no
+`concept_sense` either, because every word of
+"Return the greatest common divisor of the two integers." is accounted for by
+the structures that sentence matches and a sense now reaches a need only through
+`unresolved_surfaces`. Two observed panics, in order: `(None, Some(3))` against
+the pre-L8 code, then `(Some(1), None)` once the catalog offered the program.
+The setup now offers a retrieved Rosetta Code program and one word nobody has
+seeded; the assertion is untouched and green. Plan 01 L9 is un-struck.
+
+**(b) The five-language identity (plan 01 L10).** Taken by measuring, not by
+arguing. Every per-language endpoint the registry's `api_language` allows was
+tried live against both held-out surfaces:
+
+| endpoint | `hi` | `zh` |
+| --- | --- | --- |
+| Wikipedia REST summary | HTTP 404, both surfaces | HTTP 404, both surfaces |
+| Wikipedia `list=search` | zero hits, both surfaces | — |
+| Wiktionary, MediaWiki `extracts` | `missing`, both; zero search hits | **one surface answered**; the other `missing` |
+| Wikidata `wbsearchentities` `type=lexeme` | empty, both | empty |
+| Wikidata `wbsearchentities` `type=item` | empty, both | one item, whose `zh` label reaches a `zhwiki` article for the *other* surface |
+
+Two of those endpoints are now declared in `data/seed/sources-registry.lino`, so
+the attempt is rediscoverable from the tree rather than only from this report:
+`wiktionary.language_api` and `wikidata.lexeme_api`.
+
+**Re-measured coverage**, captured live through the production path and then
+replayed offline and reproduced exactly — 6 of 10 `(language, surface)` pairs,
+9 senses, against the previous run's 5 and 7:
+
+| language | first held-out surface | second |
+| --- | --- | --- |
+| en | 2 (wordnet, wikipedia) | 2 (wordnet, wikipedia) |
+| ru | **0** — no article (404); the ru Wiktionary entry exists and publishes no definition | 1 (wikipedia) |
+| hi | **0** — unserved by every endpoint above | **0** |
+| zh | **2 (wiktionary, through `language_api`)** | **0** |
+| es | 1 (wikipedia) | 1 (wikipedia) |
+
+The wave T case is amended, not weakened. It now asserts **one identity across
+all five languages**, retrieval evidence in every served language (en, zh, es),
+and for the rest an explicit `status "unsatisfiable"` need naming the surface and
+the language nobody served it in. The measured table is written at the case, with
+the command that re-measures it.
+
+### Leaves landed, one commit each
+
+| leaf | state | commit |
+| --- | --- | --- |
+| **01-L9** (remainder) | done — the ranking case is green and un-struck | `test(issue-1138): the ranking case offers the program and the sense it compares (plan 01 L9)` |
+| CI lint, out of band | done — `src/formalization/graph.rs` renamed `concept_links.rs`; the two capture examples reformatted | `fix(issue-1138): the formalization links module is named after the links network` |
+| **01-L10** | done | `feat(issue-1138): the coding path asks, and an unserved language says so (plan 01 L10)` |
+| **01-L6** | re-measured; the coverage table in the plan is rewritten | with L10 |
+| **01-L16** (remainder) | done — `coding_discovery_step_understand` added now that the coding path runs it | `feat(issue-1138): the coding recipe names the step it now runs (plan 01 L16)` |
+| **04-L1** | done — wave T wrote the four cases failing | with 04-L2 |
+| **04-L2** | done | `feat(issue-1138): five scripts end a sentence, and a span names only itself (plan 04 L1, L2)` |
+
+### Changes no leaf named, each with the defect it repairs
+
+1. **An endpoint's failure spoke for its whole service.** The accessibility cache
+   was keyed by source id, so the Free Dictionary API answering HTTP 522 for the
+   held-out words blanked Wiktionary for the seven-day TTL — including the
+   per-language endpoint, which was therefore never requested in any language.
+   The first capture run measured exactly that: `wiktionary unreachable_cached`
+   in ru, hi, zh and es. `source_walk::endpoint_key` keys accessibility by source
+   id *and* answering host, and the `known_unreachable` check moved after the
+   entry URL is known, because the endpoint has to exist before a fact about it
+   can be looked up. This is L6's "a 404 does not speak for a service" finding,
+   one level down.
+2. **`language_api` is a second endpoint on one record, not a second record.** A
+   second registry row consumed a fifth of the four `max_services` slots a
+   concept walk has, dropped `stackexchange`, and broke
+   `the_registry_selects_dictionaries_before_encyclopedias_and_technical_sources`.
+   `max_services` counts *services*, and one project reached through two of its
+   own surfaces is one service. `SourceRecord::api_template_for` picks the
+   surface by language; `wiktionary_entry_v1` reads both of its own payload
+   shapes.
+3. **`ConceptMap::identity()` no longer folds retrieved senses in.** A
+   `concept_sense` candidate is named for the surface it answered, which is
+   precisely the language-dependent part; including it made one identity across
+   five languages unreachable by construction, however well retrieval worked.
+   Identity is over the structures a sentence reduced to and the executable parts
+   offered for them; *that retrieval happened* is carried by `evidence` and the
+   need rows, and the L10 case asserts both separately.
+4. **`blocked` and `unsatisfiable` became different facts.** `blocked` is
+   "nothing was tried"; `unsatisfiable` is "every declared source was asked and
+   none serves this". `UnknownConceptLookup::consults_sources` — defaulted
+   `false`, so no implementation written before the distinction changed — is what
+   separates them.
+5. **The Wiktionary extract reader is deliberately narrow, and the reason is at
+   the code.** It takes only the lines an entry states directly under its first
+   section heading. A reader that took "the first non-heading line" would publish
+   a hyphenation string or a morphology sentence *as the meaning of the
+   headword*, which is a fabricated gloss dressed in real bytes; a reader that
+   knew each edition's definition heading would be a list of Russian, Chinese and
+   Hindi words in the runtime. Editions that nest the definition deeper yield
+   nothing, and nothing is the honest answer.
+6. **Four seed tokens were grounded rather than exempted.** `latin`, `cyrillic`,
+   `devanagari` and `han` were values no meanings file defined, so the closure
+   audit counted four new unresolved tokens.
+   `data/seed/meanings-writing-systems.lino` defines the four writing systems and
+   their parent concept in all five languages, and the honest gap returns to its
+   reviewed value.
+
+### Tests now green (focused runs, result lines pasted)
+
+```
+$ cargo test --all-features --test unit issue_1138_concept_lookup
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 3809 filtered out
+
+$ cargo test --all-features --test unit concept_sense_ledger
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 3816 filtered out
+
+$ cargo test --all-features --test unit issue_1138_universal_loop_lookup
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 3815 filtered out
+
+$ cargo test --all-features --test unit issue_1138_source_walk_parity
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3817 filtered out
+
+$ cargo test --all-features --test unit issue_1138_segmentation
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 3814 filtered out
+
+$ cargo test --all-features --test unit coding_discovery::multilingual::held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3818 filtered out
+
+$ cargo test --all-features --test unit coding_discovery::concepts
+test result: FAILED. 6 passed; 1 failed
+# the one failure is plan 04 L3, named below; the ranking case is now among the six
+
+$ cargo test --all-features --test unit specification::coding_discovery_meta_algorithm
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3817 filtered out
+
+$ cargo test --all-features --test unit issue_991
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 3805 filtered out
+
+$ cargo test --all-features --test unit data_files
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 3801 filtered out
+
+$ cargo test --all-features --test unit total_closure
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 3811 filtered out
+
+$ cargo test --all-features --test unit coding_discovery::no_memorization::issue_1138
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3818 filtered out
+```
+
+`issue_991`, `issue_1138_source_walk_parity` and `data_files` are pasted because
+this session changed `entry_url_in`, the accessibility key, the registry schema
+and the seed inventory underneath them: green *after* the change is the claim,
+not green at all. `coding_discovery::no_memorization::issue_1138…` is pasted for
+the same reason in the other direction — it caught this session putting the
+held-out surfaces into `data/seed/sources-registry.lino` and into three `src`
+doc comments, and the notes were rewritten to name "the held-out corpus" instead.
+
+### Tests still red in this session's area, and exactly why
+
+| test | why |
+| --- | --- |
+| `coding_discovery::concepts::the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum` | plan 04 L3, not started. It needs `ConceptNeed` to become a re-export of `needs::Need` and `status: String` to become `NeedState` — a refactor across `src/coding/concept_discovery.rs`, `src/coding/composition.rs`, `src/coding/synthesis_runtime.rs` and `src/meta_frame.rs`. The `unsatisfiable` status this session introduced is already `NeedState::Unsatisfiable`'s slug, so the merge is a type change and not a vocabulary change. |
+| `issue_1138_formalization_depth` (all 12) | plan 04 L4–L8. `src/formalization/concept_links.rs::formalize_deeply` is still the wave T `todo!`. |
+| `agentic_coding::a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale` | plan 04 L11–L12. |
+| `coding_discovery::procedure_text` (3) | plan 04 L9. |
+| `specification::formalization_depth_meta_algorithm` | plan 04 L17. |
+| `tests/web/issue-1138-formalization-depth.test.mjs` (2) | plan 04 L14. |
+| `tests/web/issue-1138-concept-lookup.test.mjs` (3) | plan 01 L13, not attempted. `tests/fixtures/issue-1138-b1/expected-senses.json` is the contract and is regenerated by this session: **9 senses over 6 of 10 pairs**, so the two workers must now reach the zh senses through `language_api` as well. |
+| `tests/integration/issue_1138_concept_lookup_http.rs` (3) | plan 01 L15, **and it carries a decision the next session must take before it can pass honestly.** `chat_completions_resolves_an_unknown_word_from_the_committed_captures` asserts the answer contains `https://en.wiktionary.org/`, and the measurement says no Wiktionary surface answers for either held-out word in `en` — the Free Dictionary endpoint returns HTTP 522 and the en Wiktionary MediaWiki extract nests its definition too deep to read. The sources that *do* answer in `en` are `wordnet` and `wikipedia`. This is L6's decision again, at the HTTP surface: either the case asserts the first declared source that answered, as the unit case now does, or the word changes. L15 also depends on the remaining half of L11. |
+| `issue_538_agentic::committed_self_ast_*` (2) | **not this session's.** `src/agentic_coding/planner.rs` changed in `ec321cbf1` (plan 10) without the committed Agent CLI session being regenerated. |
+
+### Plan 01 leaves still open, and what the next session needs for each
+
+1. **L11's remaining half** — ranking the retrieved senses inside
+   `answer_unknown_prompt`. Still the precondition for L14 and L15: the senses
+   are retrieved, logged with source, digest and licence, and *not* rendered into
+   the reply body. `UnknownReasoningConfig` is the natural carrier, and its
+   struct-literal construction sites decide how invasive that is.
+2. **L13** — the two browser workers. `expected-senses.json` is committed and
+   regenerated; it now contains the zh senses too.
+3. **L14** — the six intents × five languages of outcome prose. Do it *with* the
+   L11 remainder, not before it: a `data/seed/meanings-concept-lookup.lino` that
+   nothing renders is prose claiming behaviour the tree does not have, and the
+   closure audit will count its tokens. Note that plan 01's own example for this
+   file quotes a held-out word; it must not be copied verbatim, or
+   `no_memorization` fails — this session hit exactly that when the registry
+   notes named the held-out surfaces, and rewrote them to say "the held-out
+   corpus" instead.
+4. **L15** — after L11 and after the decision above.
+5. **L17** — the requirement shard; nothing blocks it.
+6. **L18** — last leaf of the whole plan set, unchanged.
+
+### Plan 04: what is under the next session
+
+L1 and L2 are done. L3 is the natural next leaf — it is red in a file plan 01
+also owns, it unblocks L4's need emission, and this session's `UNSERVED`
+constant is already the slug the merged enum will carry. The segmenter L4–L11
+will consume is in place, with `clauses()` implemented alongside `sentences()`.
+
+### Gates, pasted
+
+```
+$ rust-script scripts/check-hardcoded-language.rs
+No new hardcoded natural language; allowlist is in sync (1286 entries).
+
+$ rust-script scripts/check-file-size.rs
+All checked files are within their line limits
+
+$ rust-script scripts/generate-seed-registry.rs --check
+The seed registry and every file generated from it agree.
+
+$ rust-script scripts/check-cache-budget.rs
+All cache buckets are within their record budget
+
+$ rust-script scripts/check-associative-terminology.rs
+No new graph-named public API routes or modules found
+
+$ python3 scripts/check-closure-audit.py
+  unresolved_distinct_honest: measured 3569 / reviewed 3569
+closure audit holds
+
+$ RUSTFLAGS=-Dwarnings cargo check --lib --all-features
+Finished `dev` profile
+```
+
+Three gates are red in the shared worktree and **none of them moves under this
+session's files**, which was checked rather than assumed:
+
+- `check-hardcoded-language.rs` reported six new strings in
+  `src/obligation_ledger.rs` at one point during the session, and
+  `check-file-size.rs` reported that file at 1061 lines. Both belong to plan 05's
+  sibling and both were green again by the end of the session.
+- `check-minimal-core-boundary.rs` — `src/solver_handlers/mod.rs shrank from 941
+  to 938 lines; lower its reviewed baseline`. That shrink is `cargo fmt --all`,
+  which the coordinator asked for, applied to a sibling's file. The file is not
+  staged by this session; whoever commits it lowers the baseline with it.
+- `check-debt-ratchet.rs --base origin/main` — unchanged from the previous
+  report's finding; `literal_predicates` is over its ceiling from a sibling's
+  work.
+
+Two CI failures the coordinator reported are **not** repaired here, because they
+are in files this session was told not to edit, and they are named so they can be
+routed: `rustdoc -D warnings` fails on three broken intra-doc links —
+`src/recursive_execution.rs:110` (`balanced_split`, plan 12),
+`src/seed/roles/intent.rs:636` (`ROLE_TRANSLATION_LANGUAGE`, plan 10) and
+`src/agentic_coding/transcript_evidence.rs:7` (a redundant explicit link target,
+plan 05/07). Every doc link this session wrote resolves; `cargo doc` reports no
+error in any file it touched.
