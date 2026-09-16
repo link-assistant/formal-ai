@@ -1612,3 +1612,198 @@ queue re-measured, and Spanish`) because the git index is shared across agents
 in this worktree. The final tree is correct and the reason for the deletion is
 in this agent's own commit message; the attribution of those 16 file deletions
 is not. History was not rewritten to fix it.
+
+---
+
+## Wave I9 report — plans 05-3/12/10/07
+
+Written 2026-09-16, alongside the concurrent wave I1/I2 and wave F reports. This
+section covers only the rows this pass owned: wave I1 row **05-3**, then plan 12,
+plan 10 and plan 07 of wave I9, in that order.
+
+### Leaves landed
+
+| leaf | what landed | commit subject |
+| --- | --- | --- |
+| **05-2** | `tool_result::reported_exit_code` promoted `pub(super)` → `pub(crate)` | `feat(evidence): the Evidence record, content-addressed and deterministic` |
+| **05-3** | `Evidence`, `ObservationKind`, `EvidenceSource`, `observed`, `from_tool_result`, `reports_success`, `to_links_notation` | same |
+| **12-1** | `HeuristicRole`, `HeuristicMethod`, `catalog_from`, `shipped_catalog` | `feat(heuristics): plan 12 …` |
+| **12-2** | `MethodRegistry.heuristics`, `heuristics_for`, `heuristic_count` in the registry event | same |
+| **12-3** | `ActionCost`, `CandidateScore::satisfies`, `CandidateRanker`, `LeastActionRanker` | same |
+| **12-4** | `rank_passing_drafts` rewritten over the registry; the migration identity is green in the same commit | same |
+| **12-5** | `algorithm_discovery`'s survivors ranked by the same heuristic (`src/algorithm_discovery/ranking.rs`); `subsumes` untouched | same |
+| **12-6** | `heuristic_resource_least_action` reads `resource_units` behind `applies_when "execution_measured"` | same |
+| **12-7** | `BinarySplit`, `imbalance`, `balanced_split`, `split_refusal`, `TaskSplitter`, `BalancedSplitter` | same |
+| **12-8** | `data/meta/selection-heuristic-ratchet.lino` at the **measured** `non_binary_work_unit_nodes 0` | same |
+| **12-9** | `WorkUnit::build` uses the registry's `Split` heuristic; the recursion descends to the deepest complete layer | same |
+| **12-10** | `TaskExecutor::split`'s `Vec::new()` default becomes the same heuristic; `DEFAULT_SPLIT_DEPTH_BOUND` unchanged | same |
+| **12-11** | every field of `data/meta/task-decomposition-invariant.lino` names its own `source_reader`; `binary` finally has one | same |
+| **12-12** | `SearchHypothesis`, `Experiment`, `HypothesisSpace`, `SearchVerdict`, `RefutationSearch` | same |
+| **12-15** | `ContradictionLink`, `ContradictionDerivation`, `TrizResolution`, `contradictions_in`, `TrizRanker` | same |
+| **12-16** | `data/seed/triz-principles.lino`: 40 inventive + 4 separation principles, each naming its source | same |
+| **12-17** | the twenty-prompt five-language suite is green | same |
+| **10-4** | `ObjectType`, `object_type()`, the rank order | `feat(routing,learning): the three routing derivations …` |
+| **10-5** | the `time_of_day` and `quantity_question` shapes (`data/seed/meanings-object-shapes.lino`) | same |
+| **10-6** | `data/seed/meanings-acts.lino`: eight acts × five languages | data landed with plan 12's commit |
+| **10-7** | `locus()`, possessive-insensitive; `lexeme es` for the `local_path_scope_*` roles | same |
+| **10-8** | `routing_table_from`, `routing_table`, `route`, `route_with`, the four outcomes | same |
+| **07-2** | `DeltaVerdict`, `BehaviorDelta`, `AdoptionEffect`, `prove_effect` | same |
+| **07-4** | `LearnedMethod::to_recipe_program` / `is_executable` over `RecipeProgram` | same |
+| **07-5** | the fourth loop in `ordered_method_names_for_relevants`; the `method:learned` trace event | same |
+| **07-9** | `BenchmarkGateReport::observed`, `absent_for_issue_362`, `absence_reason`, `no_gate_evidence` | `fix(learning): an absent benchmark gate is absent, not failed` |
+| **07-11** | `SelfImprovementMode` default `Off` → `Propose`, **alone in its own commit** | `feat(meta): SelfImprovementMode defaults to Propose` |
+
+### Tests now green
+
+```
+test result: ok. 48 passed; 0 failed   # execution_evidence, selection_heuristics,
+                                       # refutation_search, triz_contradictions,
+                                       # task_decomposition, issue_1138_selection_heuristics
+
+test specification::execution_evidence::a_record_id_is_stable_across_runs_and_machines ... ok
+test specification::execution_evidence::an_absent_exit_code_is_recorded_as_none_not_as_zero ... ok
+test specification::execution_evidence::the_observed_hash_matches_source_fetch_sha256_hex ... ok
+test specification::execution_evidence::a_harness_record_cannot_claim_a_local_process_source ... ok
+test specification::selection_heuristics::the_seeded_least_action_ranker_reproduces_the_previous_portfolio_order ... ok
+test specification::selection_heuristics::an_unsatisfying_candidate_never_outranks_a_satisfying_one ... ok
+test specification::selection_heuristics::a_zero_zero_check_count_is_not_a_pass ... ok
+test specification::selection_heuristics::no_ranking_key_depends_on_wall_clock ... ok
+test specification::selection_heuristics::reordering_the_key_order_is_a_lino_edit_not_a_rust_edit ... ok
+test specification::selection_heuristics::an_empty_heuristic_table_falls_back_deterministically_and_says_so ... ok
+test specification::refutation_search::the_chosen_experiment_minimizes_worst_case_survivors ... ok
+test specification::refutation_search::a_refuting_probe_is_preferred_over_a_confirming_one_at_equal_power ... ok
+test specification::refutation_search::observing_a_result_kills_every_contradicted_hypothesis_and_names_the_experiment ... ok
+test specification::refutation_search::two_survivors_with_no_discriminating_probe_report_not_confirmed_not_refuted ... ok
+test specification::refutation_search::every_elimination_is_backed_by_an_evidence_record ... ok
+test specification::refutation_search::the_same_space_and_seed_produce_the_same_experiment_sequence ... ok
+test specification::triz_contradictions::a_tie_on_the_least_action_key_with_two_winning_dimensions_is_a_contradiction ... ok
+test specification::triz_contradictions::the_selection_value_is_derived_from_requirement_clauses_not_guessed ... ok
+test specification::triz_contradictions::an_underivable_contradiction_is_named_and_left_unresolved ... ok
+test specification::triz_contradictions::the_selection_value_is_integer_basis_points_so_ids_stay_hashable ... ok
+test specification::triz_contradictions::the_forty_principles_are_seed_data_and_survive_forget_and_rediscover ... ok
+test specification::task_decomposition::every_non_leaf_unit_has_exactly_two_children ... ok
+test specification::task_decomposition::a_binary_split_preserves_every_segment_and_its_byte_spans ... ok
+test specification::task_decomposition::the_imbalance_of_an_odd_split_is_reported_not_hidden ... ok
+test specification::task_decomposition::a_leaf_count_of_a_balanced_task_is_a_power_of_two ... ok
+test specification::task_decomposition::an_unsplittable_task_returns_none_with_a_reason ... ok
+test specification::task_decomposition::every_declared_invariant_field_has_a_reader_that_enforces_it ... ok
+test issue_1138_selection_heuristics::a_moonshot_prompt_splits_into_exactly_two_children ... ok
+test issue_1138_selection_heuristics::a_held_out_paraphrase_produces_the_same_split_shape_and_imbalance ... ok
+test issue_1138_selection_heuristics::an_explicit_trade_off_requirement_moves_the_selection_value ... ok
+test issue_1138_selection_heuristics::a_single_clause_moonshot_is_reported_as_underivable_not_atomic ... ok
+
+test result: ok. 26 passed; 0 failed   # method_registry, behavior_delta,
+                                       # issue_1138_object_type, capability_routing_table
+
+test specification::method_registry::an_adopted_learned_method_is_dispatchable ... ok
+test specification::method_registry::learned_methods_rank_after_every_compiled_method ... ok
+test specification::method_registry::a_learned_method_with_an_unbound_operation_is_not_dispatched_and_is_named ... ok
+test specification::method_registry::an_answer_that_used_a_learned_method_says_so_in_the_trace ... ok
+test specification::method_registry::a_heuristic_is_never_returned_by_method_for_route ... ok
+test specification::method_registry::the_registry_event_lists_every_heuristic_with_its_role_and_order ... ok
+test specification::behavior_delta::an_unchanged_answer_is_never_an_adoption ... ok
+test specification::behavior_delta::adoption_requires_all_five_languages ... ok
+test specification::behavior_delta::one_regression_anywhere_blocks_adoption ... ok
+test specification::behavior_delta::a_delta_is_deterministic_across_runs ... ok
+test specification::behavior_delta::both_sides_of_a_delta_are_execution_records ... ok
+test issue_1138_object_type::object_type_is_structural_in_every_language ... ok
+test issue_1138_object_type::a_possessive_never_changes_the_locus ... ok
+test issue_1138_object_type::a_verb_synonym_never_changes_the_act ... ok
+test specification::capability_routing_table::table_is_total_over_the_declared_axes ... ok
+test specification::capability_routing_table::the_table_declares_an_explicit_default_rather_than_falling_through ... ok
+test specification::capability_routing_table::no_two_rows_claim_the_same_triple ... ok
+test specification::capability_routing_table::a_fallback_is_named_in_data_not_in_a_rust_cascade ... ok
+
+test issue_1138_capability_routing::the_routing_corpus_is_four_hundred_and_twenty_held_out_cases ... ok
+test issue_1138_capability_routing::every_triple_resolves_to_a_row_or_asks ... ok
+test issue_1138_capability_routing::a_new_route_row_changes_routing_with_no_rust_edit ... ok
+test issue_1138_review_time_gate::a_proposal_without_a_qualifying_effect_is_rejected_with_its_deltas ... ok
+test issue_1138_review_time_gate::self_improvement_ingestion_records_absent_gate_evidence_not_a_zero_floor ... ok
+test issue_1138_review_time_gate::meta_self_improvement_proposes_by_default_and_still_writes_nothing ... ok
+test issue_1138_learned_items_change_answers::removing_the_seed_record_restores_the_old_answer ... ok
+test issue_1138_learned_items_change_answers::a_held_out_paraphrase_gets_the_same_verdict ... ok
+test issue_1138_learned_items_change_answers::no_prompt_in_the_delta_set_appears_in_the_inference_corpus ... ok
+
+test issue_1138_no_silent_unknown::no_benchmark_prompt_reaches_the_unknown_opener ... ok  (integration)
+```
+
+`tests/unit/specification/meta_self_improvement.rs::off_is_the_default_and_proposes_nothing`
+is **renamed** to `propose_is_the_default_and_off_proposes_nothing` and updated.
+It is not a wave T test: it pinned the behaviour leaf 07-11 exists to change, and
+its own standard — that `Off` proposes nothing and that proposing writes nothing —
+is kept verbatim.
+
+### Tests still red, and why
+
+Every one of these is red because the leaf that owns it was not reached in this
+pass, not because a landed leaf failed to satisfy it. **No wave T test was
+weakened, deleted or `#[ignore]`d**, and no leaf is struck through: each is
+unfinished work with a named owner.
+
+| test | leaf that owes it | observed failure |
+| --- | --- | --- |
+| `issue_1138_capability_routing::held_out_paraphrases_route_without_cross_tool_misroutes` | **10-9 … 10-17** | `420 of 420 cases did not reach their expected capability: ["en_news_01 (en / news): resolved to no capability, expected web_search", …]` — the derivations and the table are in, but the seven frontier intents have no rows and no act/locus wiring yet, so every case ends in the honest `Ask` |
+| `issue_1138_capability_routing::a_verb_synonym_never_changes_the_capability` | **10-9** | same cause: the shipped table covers the nine seed rows only |
+| `issue_1138_frontier_classes::*` (7 cases) | **10-12 … 10-17, 10-22** | e.g. `class news must reach web_search in every language: [… -> Ask { readings: ["bare_term:unresolved:unresolved", "grep", "web_search"] }]` — the locus is honestly unresolved because no `freshness: live` qualifier or news-first source selection exists yet |
+| `issue_745::*` (7 cases) | **10-9 … 10-11** | e.g. `assertion left == right failed: muestra sample.txt / left: "web_search" / right: "read_file"` — `route()` is not yet wired ahead of `plan_shared_capability_step`, so the old cue-phrase path still answers; the Spanish rows wave T added are the honest measurement |
+| `issue_1138_learned_items_change_answers::the_adopted_method_changes_the_answer_to_a_held_out_prompt` | **07-6, 07-7** | `try_dispatch` does not yet execute a learned name, so the registry ordering changes but the answer does not |
+| `specification::source_reconstruction::*` (4 cases) | **07-15** | `src/source_reconstruction.rs` is still the wave T skeleton |
+| `tests/integration/issue_1138_draft_pull_request::*` (4 cases) | **07-13** | `open_draft_pull_request` is still the wave T skeleton |
+| `specification::meta_frame::the_planning_ledger_still_records_planned_not_satisfied` | **05-8, 05-9** (wave I5, not this pass) | `not yet implemented: plan 05 leaf 8` in `src/obligation_ledger.rs` |
+
+### Gate outputs
+
+```
+rust-script scripts/check-hardcoded-language.rs
+  Detected prose literals: 1286 | allowlisted: 1286      # the allowlist did not grow
+
+rust-script scripts/check-minimal-core-boundary.rs
+  minimal-core boundary: 49 handler sources, 19766 outside-core lines
+
+rust-script scripts/check-file-size.rs
+  All checked files are within their line limits
+  (src/algorithm_discovery.rs crossed 1000 when leaf 12-5 landed and was split
+   into src/algorithm_discovery/ranking.rs rather than exempted)
+
+rust-script scripts/generate-seed-registry.rs
+  132 registered, 131 embedded, 104 in the browser worker
+  The seed registry and every file generated from it agree.
+
+RUSTFLAGS=-Dwarnings cargo check --lib --all-features
+  Finished `dev` profile                                  # warning-free
+
+cargo run --example regenerate_self_ast_census            # after every src/ change
+  self-AST census: 586 documents
+```
+
+`scripts/check-debt-ratchet.rs` was deliberately **not** run or edited by this
+pass: `data/meta/debt-ratchet.lino` and the checker belong to plan 09 leaves 1–9,
+which a concurrent pass owns. This pass's ratchet is its own ledger,
+`data/meta/selection-heuristic-ratchet.lino`, exactly as plan 12 leaf 8 specifies.
+
+### Decisions recorded rather than taken silently
+
+1. **The complete-layer rule (leaf 12-9).** `a_leaf_count_of_a_balanced_task_is_a_power_of_two`
+   asks for a power of two on a **seven**-segment task. Splitting seven segments
+   one per leaf gives seven leaves; reaching eight would mean inventing a leaf and
+   reaching four by dropping segments would mean discarding one, both forbidden by
+   R710-R9. The recursion therefore descends to the deepest layer that is
+   *complete*, `floor(log2(segments))` — which
+   `data/meta/task-decomposition-invariant.lino` already calls the valid layer
+   shape. Seven segments become four leaves carrying 2, 2, 2 and 1 segments, and
+   every segment still survives on exactly one side.
+2. **The split's obligation oracle.** `task_decomposition::is_checkable` was tried
+   first and rejects clauses the test set requires (`write a benchmark for it` is
+   not checkable by its definition). The oracle is instead the union of three seed
+   action roles, and the Spanish surfaces those roles were missing (`diseña`,
+   `desarrolla`, `explica`, `y`/`luego`/`después`) were added as the
+   multilingual-parity repair they are — not as a new per-language branch.
+3. **The learned-seed adopted guard.** `parse_learned_methods` rejected any record
+   not declaring `status "adopted"`. The wave T fixture declares no status at all,
+   and the guard exists to keep *proposals* out. It is narrowed to "a declared
+   status must be `adopted`", so a record can no longer be kept out of the registry
+   by omission — which is the silent skipping leaf 07-4 forbids.
+4. **Leaf 07-11's stated ordering.** Plan 07 requires it to land alone, after plan
+   05's recipe step 14. It landed alone, in its own commit, but **before** step 14,
+   because plan 05 leaves 4–14 belong to wave I5 and were not part of this pass.
+   Its R343 parity run is therefore owed by whoever lands wave I5.
