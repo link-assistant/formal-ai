@@ -1,0 +1,53 @@
+capability_routing
+  issue 1138
+  purpose "Capability is a function of the object in the request, the act asked for, and where the effect lands. Verbs select the act; they never select the capability. A triple with no row asks rather than guesses."
+  route
+    object url
+    act retrieve
+    locus web
+    capability web_fetch
+    because "issue 745: a concrete URL is unambiguous whatever the verb"
+  route
+    object path
+    act retrieve
+    locus workspace
+    capability read_file
+  route
+    object bare_term
+    act retrieve
+    locus workspace
+    capability grep
+    fallback shell
+    because "issue 758: code navigation must never reach web_search"
+  route
+    object bare_term
+    act retrieve
+    locus web
+    capability web_search
+  route
+    object path_scope
+    act enumerate
+    locus workspace
+    capability list_dir
+    fallback shell
+  route
+    object time_expression
+    act schedule
+    locus dialogue
+    capability calendar_create_event
+  route
+    object language_name
+    act demonstrate
+    locus dialogue
+    capability response_language_demonstration
+  route
+    object quantity_question
+    act retrieve
+    locus web
+    capability concept_measurement_lookup
+  route
+    object self_surface
+    act record
+    locus self
+    capability report_issue
+  default ask

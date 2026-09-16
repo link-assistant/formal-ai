@@ -1,0 +1,13 @@
+self_ast_census
+  target src/verifiable_task/quantities.rs
+  language rust
+  fidelity signature
+  byte_len 1663
+  line_count 44
+  content_id source_module_ba47d4c5cc22439e
+  symbol_count 4
+  symbols
+    struct Quantity 12 21
+    struct Entity 25 32
+    function extract_quantities 36 38
+    function extract_entities 42 44

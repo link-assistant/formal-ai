@@ -2,10 +2,10 @@ self_ast_census
   target src/coding_research_learning.rs
   language rust
   fidelity signature
-  byte_len 29193
-  line_count 850
-  content_id source_module_09537a1ee351c0a7
-  symbol_count 55
+  byte_len 29858
+  line_count 865
+  content_id source_module_ed47ae8bc2bbd069
+  symbol_count 56
   symbols
     const SEARCH_PAGE_LIMIT 27 27
     const SOURCE_HEADER 28 28
@@ -62,3 +62,4 @@ self_ast_census
     function root_named 830 835
     function required 837 844
     function parse_usize 846 850
+    function adopt_extracted_procedure 859 865

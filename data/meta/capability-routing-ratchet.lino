@@ -1,0 +1,68 @@
+capability_routing_ratchet
+  issue 1138
+  purpose "Routing quality is measured, not asserted. Seven intents, five languages, twelve paraphrases each, against data/benchmarks/capability-routing/."
+  checker "rust-script scripts/check-capability-routing.rs"
+  plan "docs/case-studies/issue-1138/plans/10-intent-routing.md leaves 1-3"
+  direction_note "Six of these measures ratchet upward, which plan 00 section 6.7 admits as a declared exception. Each states its direction in its own `direction` field, and the checker fails in both directions either way (plan 00 section 9 X6)."
+  baseline "not yet measured. Plan 10 leaf 1 runs the seven frontier prompts and the maintainer's three on today's main in both runtimes, commits the transcripts to docs/case-studies/issue-1138/frontier-baseline/, and replaces every value below with the honest starting number."
+  placeholder_note "Every value written here in wave T is the plan's declared target, not a measurement. Writing a measured-looking number that no run produced is what plan 00 section 6.2 forbids, so each placeholder says so in its own note and the tests that read this file stay red until leaf 1 lands."
+  ceiling
+    measure intents_measured
+    value 11
+    direction up
+    how "distinct intents covered by data/benchmarks/capability-routing/, target is the full issue 758 shared set"
+    note "placeholder target, not a measurement; the measured start is 7"
+  ceiling
+    measure languages_measured
+    value 5
+    direction up
+    how "distinct language partitions of every routing suite under data/benchmarks/"
+    note "placeholder target, not a measurement; the measured start is 4"
+  ceiling
+    measure paraphrases_per_intent_per_language
+    value 20
+    direction up
+    how "the assert_routes floor in tests/unit/issue_745.rs"
+    note "placeholder target, not a measurement; the measured start is 15"
+  ceiling
+    measure capability_routing_cases_passing
+    value 420
+    direction up
+    how "cases of data/benchmarks/capability-routing/ whose expected_capability is the capability actually routed to"
+    note "placeholder target, not a measurement; plan 10 leaf 2 records the honest first run"
+  ceiling
+    measure cross_tool_misroutes
+    value 0
+    direction down
+    how "cases routed to a capability outside their intent"
+    note "placeholder target, not a measurement; plan 10 leaf 1 records the honest first count"
+  ceiling
+    measure silent_unknowns
+    value 0
+    direction down
+    how "cases that reach the unknown opener without naming a gap, a lowering or a question"
+    note "placeholder target, not a measurement; plan 10 leaf 1 records the honest first count"
+  ceiling
+    measure memorized_capability_cues
+    value 0
+    direction down
+    how "cue phrase rows in data/seed/agentic-tool-capabilities.lino"
+    note "placeholder target, not a measurement; the measured start is 280"
+  ceiling
+    measure intent_routing_phrase_rows
+    value 0
+    direction down
+    how "phrase and keyword rows of data/seed/intent-routing.lino"
+    note "placeholder target, not a measurement; the measured start is 477"
+  ceiling
+    measure planner_route_arms
+    value 0
+    direction down
+    how "named routing arms in src/agentic_coding/planner.rs"
+    note "placeholder target, not a measurement; the measured start is 45"
+  ceiling
+    measure frontier_prompts_open
+    value 0
+    direction down
+    how "issue 1087 frontier classes with no passing class test"
+    note "placeholder target, not a measurement; the measured start is 7"

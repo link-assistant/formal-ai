@@ -166,3 +166,85 @@ fn normalize(text: &str) -> String {
         .collect::<Vec<_>>()
         .join(" ")
 }
+
+// Issue #1138, plans 01, 02 L16 and 04 L5: the held-out vocabulary the new
+// corpora ask about may never enter the runtime or the seed, and no seed
+// template may be a whole algorithm — otherwise the corpora measure recall of
+// the seed rather than retrieval from a source.
+
+/// The words the issue #1138 corpora are built from, in five languages.
+const ISSUE_1138_HELD_OUT_VOCABULARY: [&str; 9] = [
+    "isogram",
+    "изограмма",
+    "आइसोग्राम",
+    "isograma",
+    "lipogram",
+    "липограмма",
+    "lipograma",
+    "लिपोग्राम",
+    "blorptide",
+];
+
+/// The runtime template seed plan 02 L15 empties of whole algorithms.
+const RUNTIME_TEMPLATE_SEED: &str = "data/seed/coding-discovery-runtime.lino";
+
+#[test]
+fn issue_1138_held_out_vocabulary_is_absent_from_runtime_and_seed() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let mut violations = Vec::new();
+    for path in source_and_seed_files(root) {
+        let Ok(text) = fs::read_to_string(&path) else {
+            continue;
+        };
+        let lowered = text.to_lowercase();
+        for word in ISSUE_1138_HELD_OUT_VOCABULARY {
+            if lowered.contains(&word.to_lowercase()) {
+                violations.push(format!("{} contains held-out word {word}", path.display()));
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "held-out vocabulary entered runtime or seed:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn no_seed_template_is_a_whole_algorithm() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let seed = fs::read_to_string(root.join(RUNTIME_TEMPLATE_SEED))
+        .unwrap_or_else(|error| panic!("{RUNTIME_TEMPLATE_SEED}: {error}"));
+
+    let mut offenders = Vec::new();
+    for line in seed.lines() {
+        let trimmed = line.trim();
+        let Some(body) = trimmed.strip_prefix("text ") else {
+            continue;
+        };
+        let body = body.trim().trim_matches('"');
+        let statements = body
+            .split("\\n")
+            .map(str::trim)
+            .filter(|statement| !statement.is_empty())
+            .collect::<Vec<_>>();
+        let loops = statements
+            .iter()
+            .filter(|statement| statement.starts_with("for ") || statement.starts_with("while "))
+            .count();
+        let returns = statements
+            .iter()
+            .filter(|statement| statement.starts_with("return"))
+            .count();
+        if statements.len() > 1 && loops > 0 && returns > 0 {
+            offenders.push(body.to_owned());
+        }
+    }
+
+    assert!(
+        offenders.is_empty(),
+        "a seed template is a bootstrap fragment, never a whole algorithm; \
+         these carry a loop and a return:\n{}",
+        offenders.join("\n")
+    );
+}

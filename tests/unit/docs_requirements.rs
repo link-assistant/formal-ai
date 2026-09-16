@@ -5,6 +5,8 @@ use formal_ai::{environment_records, supported_languages};
 use walkdir::{DirEntry, WalkDir};
 
 mod benchmarks;
+mod count;
+mod issue_1138;
 
 #[test]
 fn issue_12_vision_documents_are_present_and_traceable() {

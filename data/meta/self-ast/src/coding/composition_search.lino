@@ -1,0 +1,12 @@
+self_ast_census
+  target src/coding/composition_search.rs
+  language rust
+  fidelity signature
+  byte_len 1196
+  line_count 38
+  content_id source_module_dcf798103f938c04
+  symbol_count 3
+  symbols
+    struct SearchBounds 15 18
+    function default 21 26
+    function search 32 38

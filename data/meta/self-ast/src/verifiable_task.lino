@@ -1,0 +1,20 @@
+self_ast_census
+  target src/verifiable_task.rs
+  language rust
+  fidelity signature
+  byte_len 4805
+  line_count 143
+  content_id source_module_24ab84a02ed2ca79
+  symbol_count 11
+  symbols
+    module ledger 14 14
+    module quantities 15 15
+    enum TaskExpectation 28 61
+    function to_obligation_expectation 68 73
+    function slug 77 79
+    enum AnswerShape 84 93
+    struct VerifiableTask 97 112
+    function identity 118 120
+    function to_links_notation 124 126
+    function render 130 132
+    function recognise_verifiable 141 143

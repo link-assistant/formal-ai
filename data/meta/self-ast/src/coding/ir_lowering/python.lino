@@ -1,0 +1,12 @@
+self_ast_census
+  target src/coding/ir_lowering/python.rs
+  language rust
+  fidelity signature
+  byte_len 705
+  line_count 21
+  content_id source_module_47126ea19c3999a8
+  symbol_count 3
+  symbols
+    struct PythonLowering 11 11
+    function language 14 16
+    function lower 18 20

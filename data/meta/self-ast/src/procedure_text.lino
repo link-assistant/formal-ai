@@ -1,0 +1,15 @@
+self_ast_census
+  target src/procedure_text.rs
+  language rust
+  fidelity signature
+  byte_len 2845
+  line_count 73
+  content_id source_module_70a573c55d33e078
+  symbol_count 6
+  symbols
+    const MIN_PROCEDURE_STEPS 17 17
+    struct ProcedureStepRecord 21 31
+    enum StepShape 35 44
+    function steps_from_capture 48 54
+    function reuse_mode 59 61
+    function retrieve_procedure 65 73

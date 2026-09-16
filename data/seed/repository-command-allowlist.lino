@@ -1,0 +1,51 @@
+repository_command_allowlist
+  record_type "command_allowlist"
+  issue "1138"
+  topic "repository_workspace"
+  default "deny"
+  summary "Issue #1138 B7 (plan 03 L3): the repository protocol's permitted commands as reviewable data, each with its program, subcommand, argument shape and pre- and postconditions. The default-deny arm in the agent's program resolver survives unchanged; what changes is that widening the set is an edit to this document rather than an edit to Rust."
+  command git_clone
+    program "git"
+    subcommand "clone"
+    arguments ("--no-checkout" "--filter=blob:none" "{origin}" "{root}")
+    mutating "true"
+    precondition "root does not exist"
+    postcondition "root/.git exists"
+  command git_checkout_commit
+    program "git"
+    subcommand "checkout"
+    arguments ("-C" "{root}" "{base_commit}")
+    mutating "true"
+    precondition "base_commit is a 40-character object name"
+    postcondition "the checked-out HEAD equals base_commit"
+  command git_rev_parse
+    program "git"
+    subcommand "rev-parse"
+    arguments ("-C" "{root}" "HEAD")
+    mutating "false"
+    postcondition "one 40-character object name on standard output"
+  command git_diff
+    program "git"
+    subcommand "diff"
+    arguments ("-C" "{root}" "{base_commit}")
+    mutating "false"
+    postcondition "a unified diff, possibly empty"
+  command git_apply_check
+    program "git"
+    subcommand "apply"
+    arguments ("-C" "{root}" "--check" "{patch}")
+    mutating "false"
+    precondition "patch is a unified diff produced against base_commit"
+    postcondition "exit zero only when the patch applies cleanly"
+  command cargo_test_named
+    program "cargo"
+    subcommand "test"
+    arguments ("--manifest-path" "{root}/Cargo.toml" "--test" "{suite}" "{name}")
+    mutating "false"
+    postcondition "one pass or fail verdict per named test"
+  command python_test_named
+    program "python3"
+    subcommand "-m"
+    arguments ("pytest" "{root}" "-k" "{name}")
+    mutating "false"
+    postcondition "one pass or fail verdict per named test"

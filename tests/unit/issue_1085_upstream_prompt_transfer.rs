@@ -55,6 +55,8 @@ fn the_upstream_humaneval_prompt_shape_is_answered_and_graded_by_the_upstream_te
         return;
     }
     let case = BenchmarkCase {
+        repository: None,
+        tests: None,
         id: "HumanEval/0".to_owned(),
         prompt: format!(
             "Complete this Python function. Reply with the full implementation in a ```python code block.\n\n{HUMANEVAL_0_PROMPT}"
@@ -94,6 +96,8 @@ fn the_upstream_mbpp_prompt_shape_in_english_does_not_mistake_an_assertion_for_a
         "assert similar_elements((11, 12, 14, 13),(17, 15, 14, 13)) == (13, 14)".to_owned(),
     ];
     let case = BenchmarkCase {
+        repository: None,
+        tests: None,
         id: "MBPP/2".to_owned(),
         prompt: format!(
             "Write a function to find the similar elements from the given two tuple lists.\nReply with the Python code in a ```python code block. It must pass these tests:\n{}",
@@ -145,6 +149,8 @@ fn mbpp_case_in(language: &str) -> BenchmarkCase {
         }
     };
     BenchmarkCase {
+        repository: None,
+        tests: None,
         id: format!("MBPP/2-{language}"),
         prompt: format!("{wording}\n{}", MBPP_2_ASSERTS.join("\n")),
         expectation: Expectation::PythonAsserts {

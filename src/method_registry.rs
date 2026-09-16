@@ -89,6 +89,29 @@ pub struct LearnedMethod {
 }
 
 impl LearnedMethod {
+    /// The learned operations as a recipe program the existing interpreter runs
+    /// (issue #1138 B7, plan 07 leaf 4).
+    ///
+    /// A `LearnedMethod`'s `operations` are already the recorder event-kind
+    /// vocabulary `src/recipe_interpreter.rs` dispatches on, so no second
+    /// interpreter is written.
+    ///
+    /// # Errors
+    /// Returns the unbound operation's name when one of the learned operations
+    /// binds to no recorder.
+    pub fn to_recipe_program(&self) -> Result<crate::recipe_interpreter::RecipeProgram, String> {
+        todo!("plan 07 leaf 4 -- project the learned operations onto a recipe program")
+    }
+
+    /// Whether every learned operation binds to a known recorder. A method that
+    /// does not bind stays in the registry event as data, is never dispatched,
+    /// and the unbound operation is named in the trace. Silent skipping is
+    /// forbidden.
+    #[must_use]
+    pub fn is_executable(&self) -> bool {
+        todo!("plan 07 leaf 4 -- an unbound operation is named, never silently skipped")
+    }
+
     fn to_links_notation(&self) -> String {
         let mut pairs = vec![
             ("record_type", "learned_method".to_owned()),
@@ -128,6 +151,15 @@ pub struct MethodRegistry {
     /// Promoted learned abstractions, kept out of compiled dispatch until an
     /// implementation supplies an executable handler.
     pub learned_methods: Vec<LearnedMethod>,
+    /// Selection heuristics, loaded from `data/meta/selection-heuristics.lino`
+    /// (issue #1138 B12, plan 12 leaf 2).
+    ///
+    /// A heuristic is never a route target: [`Self::method_for_route`] never
+    /// returns one. One registry with three collections keeps R344's single
+    /// dispatch authority true — plan 07 owns the execution of
+    /// `learned_methods` and plan 12 owns `heuristics`, and neither grows the
+    /// struct without the other's declaration (plan 00 section 9 R16).
+    pub heuristics: Vec<crate::selection_heuristics::HeuristicMethod>,
 }
 
 impl MethodRegistry {
@@ -182,7 +214,28 @@ impl MethodRegistry {
         Ok(Self {
             methods,
             learned_methods,
+            // Wave T: the collection exists so there is one declaration of the
+            // registry; plan 12 leaf 2 loads `data/meta/selection-heuristics.lino`
+            // into it. Behaviour is unchanged until it does.
+            heuristics: Vec::new(),
         })
+    }
+
+    /// The heuristics for `role`, in declared precedence order, filtered by
+    /// `situation`.
+    ///
+    /// Empty is a reportable state: the core then falls back to the
+    /// deterministic identity ordering and says so in the trace, emitting
+    /// `heuristic:none` with the role and the situation. It never silently
+    /// falls back (issue #1138 B12, plan 12 leaf 2).
+    #[must_use]
+    pub fn heuristics_for(
+        &self,
+        role: crate::selection_heuristics::HeuristicRole,
+        situation: &str,
+    ) -> Vec<&crate::selection_heuristics::HeuristicMethod> {
+        let _ = (role, situation);
+        todo!("plan 12 leaf 2 -- heuristics_for over the seeded catalog")
     }
 
     /// Total number of method records.

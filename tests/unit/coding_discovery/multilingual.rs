@@ -88,6 +88,142 @@ fn held_out_sentences_are_not_seed_lexemes() {
     }
 }
 
+// Issue #1138, plan 01 L10 and plan 02 L20: the five-language invariant must
+// hold for families whose key word is in no seed file, which is what makes the
+// identity a property of retrieval rather than of memorisation.
+
+/// The held-out corpora this bottleneck adds, none of whose sentences may enter
+/// the seed.
+const ISSUE_1138_CORPORA: [&str; 3] = [
+    "data/benchmarks/concept-lookup-paraphrases.lino",
+    "data/benchmarks/formalization-depth-requirements.lino",
+    "data/benchmarks/coding-composition-from-sources.lino",
+];
+
+fn corpus(relative: &str) -> Vec<Paraphrase> {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    paraphrases(&fs::read_to_string(root.join(relative)).expect("held-out corpus"))
+}
+
+#[test]
+fn held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages() {
+    let catalog = catalog();
+    let mut identities: BTreeMap<String, String> = BTreeMap::new();
+    let cases = corpus(ISSUE_1138_CORPORA[0])
+        .into_iter()
+        .filter(|case| case.family == "isogram")
+        .collect::<Vec<_>>();
+    assert_eq!(cases.len(), 5, "five languages for the held-out family");
+
+    for case in cases {
+        let spec = recognise(&case.prompt)
+            .unwrap_or_else(|| panic!("{} {} did not parse", case.family, case.language));
+        let concepts = discover(&spec, &catalog);
+        // The identity must be shared *because the word was resolved*, not
+        // because every language understood equally little: an empty map has a
+        // stable identity too, and that would prove nothing.
+        assert!(
+            !concepts.evidence.is_empty(),
+            "{}: the held-out word must be resolved through retrieval, not skipped",
+            case.language
+        );
+        assert!(
+            concepts
+                .needs
+                .iter()
+                .all(|need| need.status != "blocked"),
+            "{}: a blocked need means the word was never grounded: {:?}",
+            case.language,
+            concepts.needs
+        );
+        let identity = concepts.identity();
+        if let Some(english) = identities.get(&case.family) {
+            assert_eq!(
+                &identity, english,
+                "{} {} must share the family identity",
+                case.family, case.language
+            );
+        } else {
+            assert_eq!(case.language, "en", "English must lead each family");
+            identities.insert(case.family.clone(), identity);
+        }
+    }
+}
+
+#[test]
+fn composition_from_sources_holds_in_five_languages() {
+    let cases = corpus(ISSUE_1138_CORPORA[2]);
+    assert_eq!(cases.len(), 25, "five cases, five languages");
+    let catalog = catalog();
+    let mut identities: BTreeMap<String, String> = BTreeMap::new();
+
+    for case in cases {
+        let spec = recognise(&case.prompt)
+            .unwrap_or_else(|| panic!("{} {} did not parse", case.family, case.language));
+        let concepts = discover(&spec, &catalog);
+        let identity = format!("{}|{}", spec.signature_identity(), concepts.identity());
+        if let Some(english) = identities.get(&case.family) {
+            assert_eq!(
+                &identity, english,
+                "{} {} must reduce to the family's identity",
+                case.family, case.language
+            );
+        } else {
+            assert_eq!(case.language, "en", "English must lead each family");
+            identities.insert(case.family.clone(), identity);
+        }
+
+        let outcome = compose(&spec, &concepts);
+        if case.family == "undefined_operation" {
+            assert!(
+                outcome.selected.is_none(),
+                "{} names an operation no source defines and must stay an honest gap",
+                case.language
+            );
+            assert!(
+                !outcome.research_trail.is_empty(),
+                "{} must report the trail it followed before refusing",
+                case.language
+            );
+        } else {
+            let selected = outcome.selected.unwrap_or_else(|| {
+                panic!(
+                    "{} {} did not compose: {}",
+                    case.family, case.language, outcome.research_trail
+                )
+            });
+            assert!(
+                !selected.source.trim().is_empty(),
+                "{} {} composed an empty program",
+                case.family,
+                case.language
+            );
+        }
+    }
+    assert_eq!(identities.len(), 5, "five held-out families");
+}
+
+#[test]
+fn issue_1138_held_out_sentences_are_not_seed_lexemes() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let seed = fs::read_dir(root.join("data/seed"))
+        .expect("seed directory")
+        .filter_map(Result::ok)
+        .filter_map(|entry| fs::read_to_string(entry.path()).ok())
+        .map(|text| normalize(&text))
+        .collect::<Vec<_>>()
+        .join("\n");
+    for relative in ISSUE_1138_CORPORA {
+        for case in corpus(relative) {
+            assert!(
+                !seed.contains(&normalize(&case.prompt)),
+                "held-out sentence entered seed: {}",
+                case.prompt
+            );
+        }
+    }
+}
+
 fn assertions(family: &str) -> &'static str {
     match family {
         "gcd" => {

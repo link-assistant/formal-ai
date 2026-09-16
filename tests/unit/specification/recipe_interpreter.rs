@@ -325,3 +325,65 @@ fn the_program_serializes_as_links_notation() {
         "external stages are marked as non-recording"
     );
 }
+
+/// Issue #1138 B5 (plan 05, leaf 11): the execution pass is a bound recorder.
+///
+/// Recipe step 14 names `record_obligation_ledger`. Without the binding in
+/// `run_recorder` the data-driven path errors with "recipe binds unknown
+/// recorder"; with it the program resolves fourteen contiguous steps and names
+/// the recorder it drives.
+#[test]
+fn the_execution_pass_is_bound_to_a_known_recorder() {
+    let program = RecipeProgram::from_repo();
+    let lino = program.to_links_notation();
+    assert!(
+        lino.contains("step_count \"14\""),
+        "the recipe gains step 14, the obligation-discharge pass:\n{lino}"
+    );
+    assert!(
+        lino.contains("executes \"record_obligation_ledger\""),
+        "step 14 must bind the obligation-ledger recorder:\n{lino}"
+    );
+}
+
+/// Issue #1138 B5 (plan 05, leaf 11): R343 parity survives the new stage.
+///
+/// Executing the recipe must still reproduce the native log event for event
+/// across every mode combination, and the executed trace must carry the
+/// obligation ledger the new stage records.
+#[test]
+fn native_and_data_driven_execution_produce_the_same_events() {
+    for prompt in PROMPTS {
+        let formalization = formalize(prompt);
+        for recursion in RECURSION_MODES {
+            for selection in SELECTION_MODES {
+                for skill in SKILL_MODES {
+                    let program = RecipeProgram::from_repo();
+                    assert!(
+                        program.reproduces_pipeline(
+                            &formalization,
+                            4,
+                            *recursion,
+                            *selection,
+                            *skill,
+                        ),
+                        "parity must hold for {prompt:?} at {recursion:?}/{selection:?}/{skill:?}"
+                    );
+                    let trace = program
+                        .execute(&formalization, 4, *recursion, *selection, *skill)
+                        .expect("the recipe must execute");
+                    let obligations = trace
+                        .log
+                        .first_of("obligation_ledger")
+                        .expect("the execution pass records an obligation ledger");
+                    assert!(
+                        obligations.payload.contains("unattempted")
+                            || obligations.payload.contains("satisfied"),
+                        "the obligation ledger reports its counts: {}",
+                        obligations.payload
+                    );
+                }
+            }
+        }
+    }
+}

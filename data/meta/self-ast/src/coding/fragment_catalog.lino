@@ -1,0 +1,23 @@
+self_ast_census
+  target src/coding/fragment_catalog.rs
+  language rust
+  fidelity signature
+  byte_len 3475
+  line_count 112
+  content_id source_module_901e89a76d501123
+  symbol_count 14
+  symbols
+    enum FragmentOrigin 17 22
+    struct Fragment 26 39
+    struct FragmentCatalog 42 44
+    function bootstrap 50 52
+    function bootstrap_from 57 59
+    function with_rediscovered 63 65
+    function get 68 70
+    function producing 74 76
+    function fragments 80 82
+    function content_id 87 89
+    struct FragmentLedger 95 97
+    function new 101 103
+    function recall 105 107
+    function remember 109 111

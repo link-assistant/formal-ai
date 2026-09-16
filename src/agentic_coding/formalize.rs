@@ -76,6 +76,12 @@ pub struct FormalizationSummary {
     pub annotations: usize,
     /// The distinct primitive kinds present, in [`PRIMITIVE_KINDS`] order.
     pub covered: Vec<String>,
+    /// Needs the formalizer raised, and how many it grounded (issue #1138, plan
+    /// 04 L4). A document with unresolved needs can never be reported as fully
+    /// covered.
+    pub needs_raised: usize,
+    pub needs_grounded: usize,
+    pub max_depth_reached: usize,
 }
 
 impl FormalizationSummary {
@@ -250,6 +256,9 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
         modals: modals.len(),
         annotations: annotations.len(),
         covered: Vec::new(),
+        needs_raised: 0,
+        needs_grounded: 0,
+        max_depth_reached: 0,
     };
 
     let mut document = String::new();

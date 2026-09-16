@@ -1,0 +1,37 @@
+self_ast_census
+  target src/repository_workspace/mod.rs
+  language rust
+  fidelity signature
+  byte_len 8208
+  line_count 261
+  content_id source_module_67909773844fceab
+  symbol_count 28
+  symbols
+    module clone 12 12
+    module diff 13 13
+    module edit 14 14
+    module locate 15 15
+    module verify 16 16
+    enum WorkspaceError 28 61
+    struct RepositoryWorkspace 65 71
+    function open 78 80
+    function adopt 87 89
+    function root 93 95
+    function spec 99 101
+    function base_commit 105 107
+    function source_files 113 115
+    function read 121 123
+    function write 129 131
+    function diff 137 139
+    struct ProtocolStep 145 154
+    struct RepositoryTask 158 165
+    struct ProtocolOutcome 169 182
+    struct WorkspaceProtocol 187 189
+    function load 194 196
+    function parse 200 202
+    function steps 206 208
+    function execute 215 221
+    function regenerate_document 226 228
+    struct AllowedCommand 233 248
+    function command_allowlist 253 255
+    function allows 259 261

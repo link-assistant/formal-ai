@@ -1,0 +1,16 @@
+self_ast_census
+  target src/needs.rs
+  language rust
+  fidelity signature
+  byte_len 2893
+  line_count 93
+  content_id source_module_82b31177d9826281
+  symbol_count 7
+  symbols
+    enum NeedKind 28 37
+    function slug 42 44
+    function from_seed 48 50
+    enum NeedState 57 62
+    struct Need 66 78
+    function to_links_notation 83 85
+    function from_links_notation 90 92

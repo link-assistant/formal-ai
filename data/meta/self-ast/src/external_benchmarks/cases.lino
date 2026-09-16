@@ -2,17 +2,17 @@ self_ast_census
   target src/external_benchmarks/cases.rs
   language rust
   fidelity signature
-  byte_len 9074
-  line_count 252
-  content_id source_module_f223c3aacb691ecb
+  byte_len 9974
+  line_count 275
+  content_id source_module_bb0ff8bdbea9065c
   symbol_count 9
   symbols
-    enum Expectation 11 25
-    struct BenchmarkCase 29 33
-    function parse_cases 37 53
-    function parse_case 55 168
-    function string_field 170 186
-    function number_field 188 203
-    function string_array_field 205 227
-    function target_field 230 245
-    function grading_for 250 252
+    enum Expectation 13 27
+    struct BenchmarkCase 31 40
+    function parse_cases 44 60
+    function parse_case 62 191
+    function string_field 193 209
+    function number_field 211 226
+    function string_array_field 228 250
+    function target_field 253 268
+    function grading_for 273 275

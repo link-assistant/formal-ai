@@ -848,3 +848,18 @@ fn parse_usize(node: &LinoNode, name: &str) -> Result<usize, CodingResearchError
         .parse::<usize>()
         .map_err(|_| error(format!("coding_research_invalid_{name}")))
 }
+
+/// Accept an extracted procedure as a second typed input shape, under the same
+/// execution + review gate the researched path already passes through (issue
+/// #1138, plan 04 L10).
+///
+/// A procedure that has not been executed, or whose license forbids commercial
+/// reuse, is shown to the user but refused for promotion; the refusal names the
+/// license it refused on.
+pub fn adopt_extracted_procedure(
+    _procedure: &crate::formalization::procedures::ExtractedProcedure,
+    _execution: Option<&CodingResearchExecution>,
+    _approval: &CodingResearchApproval,
+) -> Result<ResearchedCodingProcedure, CodingResearchError> {
+    todo!("plan 04 leaf L10")
+}

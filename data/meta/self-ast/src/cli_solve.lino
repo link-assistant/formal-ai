@@ -1,0 +1,13 @@
+self_ast_census
+  target src/cli_solve.rs
+  language rust
+  fidelity signature
+  byte_len 2788
+  line_count 76
+  content_id source_module_92f1b434a32420a9
+  symbol_count 4
+  symbols
+    struct SolveArgs 18 35
+    function default 38 49
+    struct SolveOutcome 54 65
+    function run_solve 74 76

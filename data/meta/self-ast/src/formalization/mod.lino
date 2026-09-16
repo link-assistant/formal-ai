@@ -1,0 +1,14 @@
+self_ast_census
+  target src/formalization/mod.rs
+  language rust
+  fidelity signature
+  byte_len 464
+  line_count 12
+  content_id source_module_713c1eeb1a442f47
+  symbol_count 5
+  symbols
+    module concepts 8 8
+    module graph 9 9
+    module needs 10 10
+    module procedures 11 11
+    module segment 12 12

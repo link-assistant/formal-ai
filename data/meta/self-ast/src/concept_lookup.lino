@@ -1,0 +1,28 @@
+self_ast_census
+  target src/concept_lookup.rs
+  language rust
+  fidelity signature
+  byte_len 5839
+  line_count 186
+  content_id source_module_7619bc1d349093ce
+  symbol_count 19
+  symbols
+    struct ConceptSense 22 38
+    function content_id 44 46
+    function to_links_notation 49 51
+    enum LookupOutcome 56 63
+    struct SenseExtractor 68 71
+    function new 75 77
+    type Item 81 81
+    function extract 83 91
+    function follow 93 95
+    function entry_url 97 99
+    struct RegistrySourceLookup 103 112
+    function new 116 125
+    function outcomes 129 131
+    function lookup 135 137
+    struct RegistryConceptLookup 143 145
+    function new 149 151
+    function lookup 157 163
+    function lookup_surface 168 178
+    function unknown_surfaces 184 186

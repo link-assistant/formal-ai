@@ -878,3 +878,60 @@ fn write_count(out: &mut String, depth: usize, key: &str, value: usize) {
     }
     let _ = writeln!(out, "{key} \"{value}\"");
 }
+
+// ---------------------------------------------------------------------------
+// Issue #1138 B7, plan 07 leaf 13: the draft pull request.
+//
+// The protocol stops one step short of the review it exists to produce: it
+// prints the `git`/`gh` commands and a human runs them. `open_draft_pull_request`
+// is that last step, opt-in behind `--open-draft-pr`, and it is the step that
+// must never target the default branch, never merge, and never be marked ready.
+//
+// Wave T skeleton: the shapes the tests name exist, the behaviour does not.
+
+/// A draft pull request the promotion protocol opened for human review.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DraftPullRequest {
+    /// The promotion run this draft reviews.
+    pub run_id: String,
+    /// The branch the promotion landed on. Never the default branch.
+    pub head: String,
+    /// The branch it is opened against.
+    pub base: String,
+    /// Always `true`: the protocol opens drafts and never marks them ready.
+    pub draft: bool,
+    /// Always `false`: the protocol never merges.
+    pub merge: bool,
+    /// The rendered title a reviewer sees.
+    pub title: String,
+    /// The rendered body a reviewer sees.
+    pub body: String,
+}
+
+impl DraftPullRequest {
+    /// The append-only events publishing this draft records, including the
+    /// `promotion_published` event kind.
+    #[must_use]
+    pub fn memory_events(&self) -> Vec<MemoryEvent> {
+        todo!("plan 07 leaf 13 -- record the published draft append-only")
+    }
+
+    /// Links Notation projection, so the draft round-trips like every other
+    /// promotion artifact.
+    #[must_use]
+    pub fn links_notation(&self) -> String {
+        todo!("plan 07 leaf 13 -- DraftPullRequest links notation")
+    }
+}
+
+/// Open a draft pull request for a promotion run that actually promoted
+/// something.
+///
+/// # Errors
+/// Returns the refusal when the run promoted nothing, when the head branch
+/// would be the default branch, or when the protocol is not permitted to reach
+/// the network.
+pub fn open_draft_pull_request(run: &PromotionRun) -> Result<DraftPullRequest, String> {
+    let _ = run;
+    todo!("plan 07 leaf 13 -- open the draft, never the default branch, never ready")
+}

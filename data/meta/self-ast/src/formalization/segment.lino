@@ -1,0 +1,13 @@
+self_ast_census
+  target src/formalization/segment.rs
+  language rust
+  fidelity signature
+  byte_len 1442
+  line_count 43
+  content_id source_module_59bc3c57e2bb3088
+  symbol_count 4
+  symbols
+    struct Segment 12 17
+    enum Script 22 28
+    function sentences 34 36
+    function clauses 41 43

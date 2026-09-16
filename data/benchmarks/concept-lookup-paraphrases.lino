@@ -1,0 +1,41 @@
+concept_lookup_paraphrases
+  paraphrase isogram_en
+    family isogram
+    language en
+    prompt "Write a Python function is_isogram(word) that returns True when the word is an isogram."
+  paraphrase isogram_ru
+    family isogram
+    language ru
+    prompt "Напиши функцию Python is_isogram(word), которая возвращает True, если слово — изограмма."
+  paraphrase isogram_hi
+    family isogram
+    language hi
+    prompt "Python फ़ंक्शन is_isogram(word) लिखें जो True लौटाए यदि शब्द एक आइसोग्राम है।"
+  paraphrase isogram_zh
+    family isogram
+    language zh
+    prompt "编写 Python 函数 is_isogram(word),当 word 是 isogram 时返回 True。"
+  paraphrase isogram_es
+    family isogram
+    language es
+    prompt "Escribe la función Python is_isogram(word) que devuelva True cuando la palabra sea un isograma."
+  paraphrase lipogram_en
+    family lipogram
+    language en
+    prompt "Is the sentence ""quick brown fox"" a lipogram in e?"
+  paraphrase lipogram_ru
+    family lipogram
+    language ru
+    prompt "Является ли фраза «quick brown fox» липограммой на букву e?"
+  paraphrase lipogram_hi
+    family lipogram
+    language hi
+    prompt "क्या वाक्य ""quick brown fox"" e का लिपोग्राम है?"
+  paraphrase lipogram_zh
+    family lipogram
+    language zh
+    prompt "句子 ""quick brown fox"" 是不是关于字母 e 的 lipogram?"
+  paraphrase lipogram_es
+    family lipogram
+    language es
+    prompt "¿La frase ""quick brown fox"" es un lipograma en e?"

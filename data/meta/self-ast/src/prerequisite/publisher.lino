@@ -1,0 +1,17 @@
+self_ast_census
+  target src/prerequisite/publisher.rs
+  language rust
+  fidelity signature
+  byte_len 3935
+  line_count 110
+  content_id source_module_02af9517ad02d5c2
+  symbol_count 8
+  symbols
+    struct SetupProcedure 17 32
+    struct SetupStep 36 44
+    struct SetupPublisher 49 56
+    function seed_publishers 60 62
+    struct PublisherRefusal 66 73
+    struct PublisherSearch 77 86
+    function discover_setup_procedure 95 101
+    function search_setup_procedure 104 110

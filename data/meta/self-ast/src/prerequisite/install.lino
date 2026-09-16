@@ -1,0 +1,13 @@
+self_ast_census
+  target src/prerequisite/install.rs
+  language rust
+  fidelity signature
+  byte_len 2189
+  line_count 62
+  content_id source_module_497400378aea071e
+  symbol_count 4
+  symbols
+    struct WorkspaceToolchain 17 28
+    enum InstallGrant 32 42
+    function default 45 47
+    function install_scoped 57 62

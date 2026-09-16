@@ -454,6 +454,9 @@ seed_registry
     web true
   seed unknown-openers
     web true
+  unregistered capability-routing
+    owner "src/capability_routing.rs"
+    reason "Wave T skeleton for issue 1138 plan 10 leaf 8: the decision table is read from disk by the routing module and its tests. Leaf 8 moves it into the bundle and regenerates the embedded registry."
   unregistered closure-generated-*
     owner "python3 scripts/close-total.py"
     reason "Derived from the other seed files by the total-closure pass, so embedding a snapshot of them would embed the same statements twice."
@@ -463,9 +466,15 @@ seed_registry
   unregistered google-trends-*
     owner "src/google_trends_catalog.rs"
     reason "The Google Trends catalog embeds its own prompts and snapshot; the capability owns the data rather than the shared bundle."
+  unregistered handler-promotions
+    owner "src/handler_promotion.rs"
+    reason "Wave T skeleton for issue 1138 plan 09 leaf 10: the promotion rows are read from disk by the promotion module and its tests. Leaf 10 moves the file into the bundle and regenerates the embedded registry."
   unregistered question-generation-lexicon
     owner "src/question_generation.rs"
     reason "Question generation embeds its own lexicon so the words it may use are scoped to the one module that may use them."
+  unregistered repository-command-allowlist
+    owner "src/repository_workspace/mod.rs"
+    reason "Wave T skeleton for issue 1138 plan 03 leaf L3: the allowlist rows are read from disk by the repository-workspace module and its tests. Leaf L3 routes the agent's program resolver through it and regenerates the embedded registry."
   unregistered roles
     owner "scripts/generate-role-registry.py"
     reason "The reserved-role registry is generated from the other seed files and read from disk by the audits, never bundled."

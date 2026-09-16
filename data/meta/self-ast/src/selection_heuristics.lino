@@ -1,0 +1,57 @@
+self_ast_census
+  target src/selection_heuristics.rs
+  language rust
+  fidelity signature
+  byte_len 13194
+  line_count 371
+  content_id source_module_d405148f900c4486
+  symbol_count 48
+  symbols
+    enum HeuristicRole 16 20
+    function slug 24 26
+    function from_slug 29 32
+    struct HeuristicMethod 37 46
+    function to_links_notation 50 52
+    function catalog_from 59 62
+    struct ActionCost 70 79
+    struct CandidateScore 83 90
+    function satisfies 95 97
+    function to_links_notation 100 102
+    trait CandidateRanker 107 112
+    function slug 108 108
+    function rank 111 111
+    struct LeastActionRanker 116 116
+    function slug 119 121
+    function rank 123 126
+    trait TaskSplitter 130 135
+    function slug 131 131
+    function split 134 134
+    struct BinarySplit 139 148
+    function imbalance 154 156
+    function to_links_notation 159 161
+    function balanced_split 172 175
+    enum SplitRefusal 179 185
+    function split_refusal 189 192
+    struct ContradictionLink 196 211
+    enum ContradictionDerivation 215 222
+    enum TrizResolution 226 235
+    enum SeparationAxis 239 244
+    function contradictions_in 249 252
+    struct TrizRanker 257 257
+    function slug 260 262
+    function rank 264 267
+    struct SearchHypothesis 273 280
+    struct Experiment 284 292
+    function worst_case_survivors 298 300
+    function attempts_refutation_of 304 307
+    struct HypothesisSpace 312 318
+    function alive 322 324
+    function observe 328 331
+    function verdict 335 337
+    enum SearchVerdict 341 350
+    trait ExperimentChooser 352 357
+    function slug 353 353
+    function next_experiment 356 356
+    struct RefutationSearch 360 360
+    function slug 363 365
+    function next_experiment 367 370

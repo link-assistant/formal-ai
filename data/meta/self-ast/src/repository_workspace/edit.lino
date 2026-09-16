@@ -1,0 +1,11 @@
+self_ast_census
+  target src/repository_workspace/edit.rs
+  language rust
+  fidelity signature
+  byte_len 1033
+  line_count 30
+  content_id source_module_2c2908dd949f4ab0
+  symbol_count 2
+  symbols
+    struct Change 14 19
+    function apply_change 25 30

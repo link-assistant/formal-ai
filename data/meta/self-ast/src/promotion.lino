@@ -2,10 +2,10 @@ self_ast_census
   target src/promotion.rs
   language rust
   fidelity signature
-  byte_len 32101
-  line_count 880
-  content_id source_module_3b97ba279eb7d7e0
-  symbol_count 55
+  byte_len 34325
+  line_count 937
+  content_id source_module_39ac07cd11cff90b
+  symbol_count 59
   symbols
     module gates 37 37
     module materialize 38 38
@@ -62,3 +62,7 @@ self_ast_census
     function quote 859 866
     function push_field 868 873
     function write_count 875 880
+    struct DraftPullRequest 894 909
+    function memory_events 915 917
+    function links_notation 922 924
+    function open_draft_pull_request 934 937

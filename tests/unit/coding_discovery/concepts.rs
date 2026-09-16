@@ -231,3 +231,130 @@ fn an_unknown_phrase_triggers_one_bounded_lookup_and_is_recorded() {
     assert_eq!(map.evidence.len(), 1);
     assert!(map.to_links_notation().contains("florpquux"));
 }
+
+// Issue #1138, plan 01 L8–L9 and plan 04 L3: the coding path must ask about the
+// words it does not know even when the rest of the sentence was understood, a
+// retrieved sense must become a candidate the composer can read, and the
+// coding path and the formalizer must share one need record.
+
+#[test]
+fn a_partially_understood_sentence_still_asks_about_its_unresolved_words() {
+    let catalog = discovery_catalog();
+    let sentence = "Return true when the word is an isogram.";
+    let understood = discover(&spec("is_isogram", sentence, "en"), &catalog);
+
+    let surfaces = formal_ai::concept_discovery::unresolved_surfaces(
+        sentence,
+        &understood
+            .needs
+            .iter()
+            .flat_map(|need| need.structures.clone())
+            .collect::<Vec<_>>(),
+    );
+    assert_eq!(
+        surfaces,
+        vec![String::from("isogram")],
+        "a sentence whose verb is understood still has an unresolved noun"
+    );
+
+    let mut lookup = CountingLookup::default();
+    let asked = discover_with_lookup(
+        &spec("is_isogram", sentence, "en"),
+        &catalog,
+        &mut lookup,
+        DiscoveryBounds {
+            max_depth: 2,
+            max_pages: 8,
+        },
+    );
+    assert_eq!(
+        lookup.calls, 1,
+        "the unresolved surface is asked about once, not the whole sentence"
+    );
+    assert_eq!(asked.evidence.len(), 1);
+}
+
+#[test]
+fn retrieved_evidence_becomes_a_candidate_part_the_composer_can_read() {
+    let evidence = ConceptEvidence {
+        phrase: "isogram".to_owned(),
+        definition: "a word in which no letter is repeated".to_owned(),
+        source_url: "https://en.wiktionary.org/wiki/isogram".to_owned(),
+        depth: 0,
+    };
+    let candidate = formal_ai::concept_discovery::concept_candidate(&evidence);
+
+    assert_eq!(candidate.kind, "concept_sense");
+    assert_eq!(candidate.label, "a word in which no letter is repeated");
+    assert_eq!(candidate.source_url, "https://en.wiktionary.org/wiki/isogram");
+    assert!(
+        candidate.code.is_none(),
+        "a definition is evidence, never a program"
+    );
+    assert!(
+        !candidate.license.is_empty() && candidate.sha256.len() == 64,
+        "a candidate part carries the provenance of the bytes it came from"
+    );
+}
+
+#[test]
+fn concept_senses_rank_below_retrieved_implementations() {
+    let catalog = discovery_catalog();
+    let mut lookup = CountingLookup::default();
+    let map = discover_with_lookup(
+        &spec(
+            "greatest_common_divisor",
+            "Return the greatest common divisor of the two integers.",
+            "en",
+        ),
+        &catalog,
+        &mut lookup,
+        DiscoveryBounds {
+            max_depth: 2,
+            max_pages: 8,
+        },
+    );
+
+    let kinds: Vec<String> = map
+        .needs
+        .iter()
+        .flat_map(|need| need.candidates.iter().map(|part| part.kind.clone()))
+        .collect();
+    let sense = kinds.iter().position(|kind| kind == "concept_sense");
+    let program = kinds.iter().position(|kind| kind == "source_program");
+    match (program, sense) {
+        (Some(program), Some(sense)) => assert!(
+            program < sense,
+            "a retrieved definition never outranks a retrieved implementation: {kinds:?}"
+        ),
+        other => panic!("both a program and a sense must be offered: {other:?} in {kinds:?}"),
+    }
+}
+
+#[test]
+fn the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let discovery = std::fs::read_to_string(root.join("src/coding/concept_discovery.rs"))
+        .expect("the coding discovery module");
+    assert!(
+        discovery.contains("pub use crate::needs::Need as ConceptNeed"),
+        "`ConceptNeed` is a re-export of the one need record, not a second struct"
+    );
+    assert!(
+        !discovery.contains("pub status: String"),
+        "a need's state is the contract enum, never a free-text string"
+    );
+
+    let meta_frame =
+        std::fs::read_to_string(root.join("src/meta_frame.rs")).expect("the meta frame");
+    assert!(
+        meta_frame.contains("NeedState"),
+        "`meta_frame::NeedStatus` maps onto the one need-state vocabulary"
+    );
+    for producerless in ["Deferred", "Rejected"] {
+        assert!(
+            !meta_frame.contains(&format!("    {producerless},")),
+            "`{producerless}` has no producer and must be removed with the merge"
+        );
+    }
+}

@@ -412,3 +412,68 @@ fn evaluate_case(case: &Case) -> Result<(), String> {
     }
     Ok(())
 }
+
+/// Issue #1138 B8 (plan 08, L1 and L12): a limitation that is fixed is promoted
+/// in the same commit, never quietly left as a limitation record.
+///
+/// Plan 08 L1 fixes the `Find x:` misroute — `Find` is a shell command name, so
+/// the agent router claims the prompt before the calculator sees it — and raises
+/// `minimum_pass_count` from 72 to 73 in the same commit. Plan 08 L12 adds unit
+/// consistency, which promotes the `unit_carrying_*` class. This test is the
+/// ratchet that makes "promoted in the same commit" checkable rather than
+/// aspirational.
+#[test]
+fn every_limitation_is_still_honest_or_promoted() {
+    const PROMOTED_BY_PLAN_08: &[&str] = &[
+        "named_unknown_colon_clause",
+        "named_unknown_if_clause",
+        "named_unknown_for_clause",
+        "unit_carrying_unknown",
+        "unit_carrying_constant",
+    ];
+
+    let suite = load_suite();
+    let case_ids: BTreeSet<&str> = suite.cases.iter().map(|case| case.id.as_str()).collect();
+    let limitation_ids: BTreeSet<&str> = suite
+        .limitations
+        .iter()
+        .map(|limitation| limitation.id.as_str())
+        .collect();
+
+    for id in PROMOTED_BY_PLAN_08 {
+        assert!(
+            !limitation_ids.contains(id),
+            "`{id}` is fixed by plan 08; it must be promoted into a benchmark_case in the \
+             same commit rather than left as a limitation"
+        );
+        assert!(
+            case_ids.contains(id),
+            "`{id}` must appear as a verified benchmark_case carrying the answer the solver \
+             actually produced"
+        );
+    }
+
+    assert!(
+        suite.minimum_pass_count >= 73,
+        "promoting a limitation raises the pass-count floor; it stands at {}",
+        suite.minimum_pass_count
+    );
+    assert!(
+        suite.minimum_pass_count <= suite.cases.len(),
+        "the floor may never exceed the number of cases"
+    );
+    assert!(
+        suite.minimum_verified_types >= 50,
+        "the verified-type floor may only rise, it stands at {}",
+        suite.minimum_verified_types
+    );
+
+    // Whatever is still recorded as a limitation must still fail loudly.
+    for limitation in &suite.limitations {
+        assert_ne!(
+            limitation.observed_intent, "calculation",
+            "limitation {} records a solved case; promote it instead",
+            limitation.id
+        );
+    }
+}

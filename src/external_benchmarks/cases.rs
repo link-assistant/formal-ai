@@ -5,6 +5,8 @@
 //! the upstream task text; nothing is rewritten to make a case easier.
 
 use super::manifest::{Grading, SuiteManifest};
+use crate::repository_workspace::clone::WorkspaceSpec;
+use crate::repository_workspace::verify::RunCommand;
 
 /// What a produced answer is checked against.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -30,6 +32,11 @@ pub struct BenchmarkCase {
     pub id: String,
     pub prompt: String,
     pub expectation: Expectation,
+    /// The tree this case is defined against, when its suite supplies one
+    /// (issue #1138, plan 03 L10). Every non-repository suite leaves it `None`.
+    pub repository: Option<WorkspaceSpec>,
+    /// The named tests that must pass, when the suite supplies them.
+    pub tests: Option<RunCommand>,
 }
 
 /// Turn `slice` upstream records into executable cases, preserving upstream
@@ -62,6 +69,8 @@ fn parse_case(
             let task_id = string_field(value, "task_id", manifest, index)?;
             let prompt = string_field(value, "prompt", manifest, index)?;
             Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
                 id: task_id,
                 prompt: format!(
                     "Complete this Python function. Reply with the full implementation in a ```python code block.\n\n{prompt}"
@@ -77,6 +86,8 @@ fn parse_case(
             let text = string_field(value, "text", manifest, index)?;
             let asserts = string_array_field(value, "test_list", manifest, index)?;
             Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
                 id: format!("MBPP/{task_id}"),
                 prompt: format!(
                     "{text}\nReply with the Python code in a ```python code block. It must pass these tests:\n{}",
@@ -102,6 +113,8 @@ fn parse_case(
                 .trim()
                 .replace(',', "");
             Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
                 id: format!("GSM8K/{index}"),
                 prompt: question,
                 expectation: Expectation::Value { expected },
@@ -114,6 +127,8 @@ fn parse_case(
                 .and_then(serde_json::Value::as_str)
                 .map_or_else(|| format!("MATH/{index}"), ToString::to_string);
             Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
                 id: unique_id,
                 prompt: problem,
                 expectation: Expectation::Value {
@@ -122,6 +137,8 @@ fn parse_case(
             })
         }
         "object_counting" => Ok(BenchmarkCase {
+            repository: None,
+            tests: None,
             id: format!("object_counting/{index}"),
             prompt: string_field(value, "input", manifest, index)?,
             expectation: Expectation::Value {
@@ -135,6 +152,8 @@ fn parse_case(
                 .trim_matches('"')
                 .to_string();
             Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
                 id: format!("CoEdIT/{id}"),
                 prompt: string_field(value, "src", manifest, index)?,
                 expectation: Expectation::Value {
@@ -143,6 +162,8 @@ fn parse_case(
             })
         }
         "egg_math" | "ascent_transitive_closure" => Ok(BenchmarkCase {
+            repository: None,
+            tests: None,
             id: string_field(value, "id", manifest, index)?,
             prompt: string_field(value, "prompt", manifest, index)?,
             expectation: Expectation::Value {
@@ -154,6 +175,8 @@ fn parse_case(
             let statement = string_field(value, "problem_statement", manifest, index)?;
             let repository = string_field(value, "repo", manifest, index)?;
             Ok(BenchmarkCase {
+                repository: None,
+                tests: None,
                 id: instance,
                 prompt: format!(
                     "Repository {repository}. Resolve this issue and reply with the fix as a unified diff patch.\n\n{statement}"
