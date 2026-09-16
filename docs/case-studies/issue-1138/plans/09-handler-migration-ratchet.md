@@ -979,7 +979,7 @@ Ordered; each is independently verifiable and commit-sized.
 
 **Repair the ratchet (no behaviour change).**
 
-- [ ] 1. Widen `scripts/check-minimal-core-boundary.rs`'s scan root to include
+- [x] 1. Widen `scripts/check-minimal-core-boundary.rs`'s scan root to include
       `src/solver_handler_how.rs`, `solver_handler_how_synthesis.rs`,
       `solver_handler_units.rs`, `solver_handler_oracle.rs`; add their ledger
       rows; record the new `source_file_count_max` / `source_lines_max`.

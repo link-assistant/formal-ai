@@ -24,6 +24,19 @@ use walkdir::WalkDir;
 
 const LEDGER_PATH: &str = "data/meta/core-boundary-ledger.lino";
 const HANDLER_ROOT: &str = "src/solver_handlers";
+/// Handler files that live one directory up from `HANDLER_ROOT`.
+///
+/// Issue #1138 B9, plan 09 leaf 1: four handlers sit in `src/` itself, so a
+/// scan root of `src/solver_handlers` alone counted 42 where the tree has 46 and
+/// a migration could have lowered a ratchet by moving a file out of the scanned
+/// directory. They are named explicitly rather than matched by prefix so a new
+/// file cannot join the set without a reviewed edit here.
+const HANDLERS_OUTSIDE_ROOT: [&str; 4] = [
+    "src/solver_handler_how.rs",
+    "src/solver_handler_how_synthesis.rs",
+    "src/solver_handler_units.rs",
+    "src/solver_handler_oracle.rs",
+];
 /// The generated `mod` list issue #991 split out of each `mod.rs`.
 ///
 /// It holds one `mod` line per sibling file and nothing else, rewritten by
@@ -164,6 +177,15 @@ pub fn source_files(root: &Path) -> Result<BTreeMap<String, usize>, String> {
         let content =
             fs::read_to_string(path).map_err(|error| format!("read {relative}: {error}"))?;
         files.insert(relative, content.lines().count());
+    }
+    for outside in HANDLERS_OUTSIDE_ROOT {
+        let path = root.join(outside);
+        if !path.is_file() {
+            continue;
+        }
+        let content =
+            fs::read_to_string(&path).map_err(|error| format!("read {outside}: {error}"))?;
+        files.insert(outside.to_owned(), content.lines().count());
     }
     Ok(files)
 }

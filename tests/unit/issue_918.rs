@@ -211,13 +211,20 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     assert_eq!(active, actual);
     // 46 until issue #1085 moved `github_repository_traffic.rs` into
     // `data/seed/handler-rules.lino`; the ledger and the tree dropped together.
-    assert_eq!(actual.len(), 45);
+    // 45 until issue #1138 B9, plan 09 leaf 1: the gate scanned
+    // `src/solver_handlers` only, so `solver_handler_how.rs`,
+    // `solver_handler_how_synthesis.rs`, `solver_handler_units.rs` and
+    // `solver_handler_oracle.rs` — four handler files one directory up — were
+    // neither counted nor ledgered, and a migration could have lowered the
+    // ratchet by moving a file out of the scanned directory. The rise to 49 is a
+    // corrected undercount recorded in the ledger's `note`, not new debt.
+    assert_eq!(actual.len(), 49);
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        45
+        49
     );
     assert_eq!(
         entries
