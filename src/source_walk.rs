@@ -185,8 +185,11 @@ pub struct WalkOutcome<I> {
 /// registry order for the need's kind, honoring settings opt-outs and licenses.
 pub trait SourceLookup {
     /// Resolve one need, or report honestly which sources were consulted.
-    fn lookup(&mut self, need: &Need, bounds: &LookupBounds)
-    -> crate::concept_lookup::LookupOutcome;
+    fn lookup(
+        &mut self,
+        need: &Need,
+        bounds: &LookupBounds,
+    ) -> crate::concept_lookup::LookupOutcome;
 }
 
 /// The subject as a wiki page title: `install docker` becomes `Install-Docker`
@@ -262,7 +265,7 @@ pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Opt
     if !language.is_empty() {
         bindings.push(("language", language));
     }
-    let url = record.api_url(&bindings);
+    let url = record.api_url_in(language, &bindings);
     (!url.contains('{')).then_some(url)
 }
 
@@ -411,7 +414,7 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
         };
         outcome.pages += 1;
         availability.observe(
-            &record.id,
+            &endpoint_key(record, &url),
             ServiceStatus::Reachable,
             trace_record::line("captured", &[("url", url.clone())]),
             now,
@@ -458,16 +461,6 @@ pub fn walk_sources<T: SourceTransport, E: CaptureExtractor>(
         bounds: *bounds,
     };
     for record in select_sources(kind, &subject, preferences, bounds) {
-        if availability.known_unreachable(&record.id, now) {
-            walked.outcomes.push(WalkSourceOutcome::new(
-                &record.id,
-                "unreachable_cached",
-                availability
-                    .record(&record.id)
-                    .map_or_else(String::new, |entry| entry.detail.clone()),
-            ));
-            continue;
-        }
         // `select_sources` drops the templates the subject alone cannot bind
         // and reports them. An extractor may refuse a source for a reason the
         // selector cannot see — a language the endpoint does not serve, above
@@ -481,6 +474,26 @@ pub fn walk_sources<T: SourceTransport, E: CaptureExtractor>(
             ));
             continue;
         };
+        // The accessibility fact is about the *endpoint*, and it is checked
+        // after the endpoint is known for exactly that reason. A source can
+        // publish its material through more than one surface (issue #1138,
+        // plan 01 L10: the Free Dictionary API for the language Wiktionary's
+        // registry entry leads with, each language edition's own MediaWiki API
+        // for the rest). Keyed by source id alone, one endpoint answering
+        // HTTP 522 blanked the other endpoint of the same source for the whole
+        // seven-day TTL, and the language it served was never requested — the
+        // same defect as a 404 speaking for a service, one level down.
+        let endpoint = endpoint_key(&record, &url);
+        if availability.known_unreachable(&endpoint, now) {
+            walked.outcomes.push(WalkSourceOutcome::new(
+                &record.id,
+                "unreachable_cached",
+                availability
+                    .record(&endpoint)
+                    .map_or_else(String::new, |entry| entry.detail.clone()),
+            ));
+            continue;
+        }
         let mut outcome = WalkSourceOutcome::new(&record.id, "no_items", url.clone());
         let items = walk_source(
             &record,
@@ -502,6 +515,28 @@ pub fn walk_sources<T: SourceTransport, E: CaptureExtractor>(
         walked.items.extend(items);
     }
     walked
+}
+
+/// The accessibility key of one source *endpoint*: the source id and the host
+/// that answered for it.
+///
+/// A source with one endpoint keys the same string every time, so this changes
+/// nothing for the twelve single-endpoint sources. A source that publishes two
+/// surfaces gets one record per surface, which is what makes "this endpoint is
+/// down" stop meaning "this project is down".
+#[must_use]
+pub fn endpoint_key(record: &SourceRecord, url: &str) -> String {
+    let host = url
+        .split_once("://")
+        .map_or(url, |(_, rest)| rest)
+        .split('/')
+        .next()
+        .unwrap_or_default();
+    if host.is_empty() {
+        record.id.clone()
+    } else {
+        format!("{}@{host}", record.id)
+    }
 }
 
 /// Classify one fetch failure without letting a fallback endpoint's failure
@@ -528,7 +563,7 @@ pub fn observe_failure(
             "no_entry"
         } else {
             availability.observe(
-                &record.id,
+                &endpoint_key(record, url),
                 ServiceStatus::Unreachable,
                 error.to_string(),
                 now,

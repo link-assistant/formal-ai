@@ -104,6 +104,19 @@ pub struct SourceRecord {
     pub asserted_tier: Option<SourceTier>,
     /// API template with `{placeholder}` slots.
     pub api: String,
+    /// The same source's own endpoint for every language `api` does not serve.
+    ///
+    /// Issue #1138, plan 01 L10. A project can publish its material through two
+    /// surfaces: Wiktionary's content reaches English through the Free
+    /// Dictionary API and every other language through that language edition's
+    /// MediaWiki `extracts` API. Declaring the second endpoint on the same
+    /// record — rather than as a second registry row — is what keeps one
+    /// *service* occupying one of the `max_services` slots the bounds allow,
+    /// which is what `max_services` counts.
+    ///
+    /// Empty when the source has one endpoint. When it is set, `api` serves the
+    /// language `api_language` leads with and `language_api` serves the rest.
+    pub language_api: String,
     /// License the retrieved bytes carry.
     pub license_name: String,
     /// Canonical URL of that license.
@@ -187,7 +200,36 @@ impl SourceRecord {
     /// malformed URL.
     #[must_use]
     pub fn api_url(&self, parameters: &[(&str, &str)]) -> String {
-        let mut url = self.api.clone();
+        self.bind_template(&self.api, parameters)
+    }
+
+    /// The endpoint that serves `language`, template unbound.
+    ///
+    /// The primary `api` for the language `api_language` leads with, and
+    /// [`SourceRecord::language_api`] for every other declared language when the
+    /// source publishes a second endpoint. One service, two published surfaces
+    /// (issue #1138, plan 01 L10).
+    #[must_use]
+    pub fn api_template_for(&self, language: &str) -> &str {
+        if self.language_api.is_empty() || language.is_empty() {
+            return &self.api;
+        }
+        let primary = self.api_language.first().map_or("", String::as_str);
+        if language == primary {
+            &self.api
+        } else {
+            &self.language_api
+        }
+    }
+
+    /// Fill the slots of the endpoint that serves `language`.
+    #[must_use]
+    pub fn api_url_in(&self, language: &str, parameters: &[(&str, &str)]) -> String {
+        self.bind_template(self.api_template_for(language), parameters)
+    }
+
+    fn bind_template(&self, template: &str, parameters: &[(&str, &str)]) -> String {
+        let mut url = template.to_owned();
         for (name, value) in parameters {
             url = url.replace(&format!("{{{name}}}"), &percent_encode(value));
         }
@@ -246,6 +288,7 @@ pub fn source_registry() -> Vec<SourceRecord> {
                 primacy,
                 asserted_tier: tier_from_slug(entry.find_child_value("source_tier")),
                 api: entry.find_child_value("api").to_owned(),
+                language_api: entry.find_child_value("language_api").to_owned(),
                 license_name: entry.find_child_value("license_name").to_owned(),
                 license_url: entry.find_child_value("license_url").to_owned(),
                 cache_path: entry.find_child_value("cache_path").to_owned(),
@@ -288,7 +331,12 @@ pub fn sources_for_need_kind(kind: NeedKind) -> Vec<SourceRecord> {
         .into_iter()
         .filter(|record| record.answers(kind))
         .collect();
-    selected.sort_by_key(|record| (u8::MAX - record.tier.weight_percent(), record.registry_index));
+    selected.sort_by_key(|record| {
+        (
+            u8::MAX - record.tier.weight_percent(),
+            record.registry_index,
+        )
+    });
     selected
 }
 

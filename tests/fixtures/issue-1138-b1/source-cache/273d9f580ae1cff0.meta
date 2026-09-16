@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://es.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=lipograma
+fetched_at=1789540441
+sha256=4589ceba2c22e2b74442e08d3f2f2c8cd4485f25640598ae8b3476d3745dc61c

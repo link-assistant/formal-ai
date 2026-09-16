@@ -2,9 +2,9 @@ self_ast_census
   target src/formalization/concepts.rs
   language rust
   fidelity signature
-  byte_len 2647
+  byte_len 2655
   line_count 73
-  content_id source_module_c86a04486acbf41e
+  content_id source_module_d6a8086d78a5c954
   symbol_count 5
   symbols
     struct ExtractedConcept 16 32

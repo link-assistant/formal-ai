@@ -1276,15 +1276,17 @@ making it reachable for a concept need.
       for both held-out words in every language the sources actually serve. Record
       the honest coverage in the manifest — a language with no capture gets no row.
 
-      **The measured coverage, from the live run on 2026-09-16.** Ten
-      `(language, surface)` pairs asked, **five answered**, 7 senses:
+      **The measured coverage, re-measured by L10 on 2026-09-16 after the
+      per-language endpoints were declared.** Ten `(language, surface)` pairs
+      asked, **six answered**, 9 senses (the first run, before
+      `wiktionary.language_api` existed, answered five pairs with 7 senses):
 
       | language | isogram | lipogram |
       | --- | --- | --- |
       | en | 2 (wordnet, wikipedia) | 2 (wordnet, wikipedia) |
-      | ru | 0 — `изограмма`: wikipedia `no_entry` (HTTP 404) | 1 (wikipedia) |
+      | ru | 0 — wikipedia `no_entry` (HTTP 404); the ru Wiktionary entry exists and publishes no definition | 1 (wikipedia) |
       | hi | 0 — unserved | 0 — unserved |
-      | zh | 0 — unserved | 0 — unserved |
+      | zh | **2 (wiktionary, through `language_api`)** | 0 — unserved |
       | es | 1 (wikipedia) | 1 (wikipedia) |
 
       No row was written for an unserved language and no gloss was fabricated.
@@ -1371,9 +1373,74 @@ making it reachable for a concept need.
       resolves the licence from the sources registry entry whose id the evidence
       URL names, and `sha256` is the digest of the quoted gloss the candidate
       actually carries rather than of a page it does not.
-- [ ] **L10 — Wire the coding path.** `discover_and_compose` builds the lookup and
+- [x] **L10 — Wire the coding path.** `discover_and_compose` builds the lookup and
       calls `discover_with_lookup`. Test:
       `held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages`.
+
+      **The per-language endpoints were tried for real before the test was
+      amended, and two of them are now declared.** The previous session recorded
+      `hi` and `zh` as served by nothing and left the leaf as a decision. That
+      decision was taken by measuring, not by arguing, against every endpoint
+      the registry's `api_language` field allows:
+
+      | endpoint | held-out surfaces in `hi` | in `zh` |
+      | --- | --- | --- |
+      | `hi`/`zh` Wikipedia REST summary | HTTP 404 for both | HTTP 404 for both |
+      | `hi`/`zh` Wikipedia `list=search` | zero hits for both | — |
+      | `hi`/`zh` Wiktionary, MediaWiki `extracts` | `missing` for both, zero search hits | **one surface answered**, the other `missing` |
+      | Wikidata `wbsearchentities` `type=lexeme` | empty for both | empty |
+      | Wikidata `wbsearchentities` `type=item` | empty for both | one item, whose `zh` label reaches a `zhwiki` article for the *other* surface |
+
+      Two endpoints joined the registry so the attempt is rediscoverable rather
+      than recorded only in a report: `wiktionary.language_api` — the same
+      project's per-language MediaWiki surface, which is what now answers `zh` —
+      and `wikidata.lexeme_api`, the surface-addressable endpoint the `api`
+      template's `{id}` slot makes unreachable. The coverage table under L6 is
+      re-measured with them.
+
+      **`language_api` is a second endpoint on one record rather than a second
+      record, and that is a bound, not a style.** A second registry row took a
+      fifth of the four `max_services` slots a concept walk has, which dropped
+      `stackexchange` and broke
+      `the_registry_selects_dictionaries_before_encyclopedias_and_technical_sources`.
+      `max_services` counts *services*, and Wiktionary reached through two of
+      its own surfaces is one service; `SourceRecord::api_template_for` chooses
+      the surface by language and `wiktionary_entry_v1` reads both of its own
+      payload shapes.
+
+      **A third defect surfaced and is repaired: an endpoint's failure spoke for
+      its whole service.** The accessibility cache was keyed by source id, so
+      the Free Dictionary API's HTTP 522 for the held-out words blanked
+      Wiktionary entirely — including the per-language endpoint, which was
+      therefore never requested in any language. `source_walk::endpoint_key`
+      keys the record by source id *and answering host*, and the check moved
+      after the entry URL is known. This is the 404-does-not-speak-for-a-service
+      finding of L6, one level down.
+
+      **What the test now asserts, and why.** `hi` and `ru` are served by no
+      declared endpoint for the held-out family — measured, not assumed — so a
+      shared five-language identity *through retrieval* is unreachable against
+      these sources, and inventing a gloss to reach it is the single thing this
+      bottleneck exists to stop. The case therefore asserts **one identity
+      across all five languages**, retrieval evidence in every served language
+      (`en`, `zh`, `es`), and, for the rest, an explicit
+      `status "unsatisfiable"` need naming the surface and the language nobody
+      served it in. The measured table is written at the case so the next reader
+      re-measures rather than trusts it.
+
+      **`ConceptMap::identity()` stops folding retrieved senses in.** A
+      `concept_sense` candidate is named for the surface it answered, which is
+      the language-dependent part; including it made a shared identity
+      impossible by construction however well retrieval worked. Identity is over
+      the structures the sentence reduced to and the executable parts offered
+      for them; *that retrieval happened* is carried by `evidence` and by the
+      need rows, and the case asserts both.
+
+      **`blocked` and `unsatisfiable` are now different facts.** `blocked` is
+      "nothing was tried"; `unsatisfiable` is "every declared source was asked
+      and none serves this". `UnknownConceptLookup::consults_sources` (defaulted
+      `false`, so no existing implementation changed) is what separates them,
+      and it is why a `NoLookup` run still reports `blocked`.
 - [x] **L11 — Wire the universal loop.** Replace `requires_external_lookup`
       (`src/solver_helpers/mod.rs:104-111`) with `unresolved_surfaces_present`;
       `record_external_search` performs the lookup and returns senses; delete

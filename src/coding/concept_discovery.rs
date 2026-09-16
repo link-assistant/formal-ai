@@ -80,6 +80,26 @@ pub struct ConceptEvidence {
 
 pub trait UnknownConceptLookup {
     fn lookup(&mut self, phrase: &str, depth: usize) -> Option<ConceptEvidence>;
+
+    /// Whether this lookup actually consults declared sources.
+    ///
+    /// A `None` from a lookup that consulted nothing means *unasked*; a `None`
+    /// from a lookup that walked the registry means *no declared source
+    /// answered*, which is a fact worth recording against the need (issue
+    /// #1138, plan 01 L10). Defaulted to `false` so the trait keeps its
+    /// one-method shape for every implementation written before the
+    /// distinction existed.
+    fn consults_sources(&self) -> bool {
+        false
+    }
+
+    /// The language this lookup asks in, when it asks in one.
+    ///
+    /// Empty for a lookup that has no language, which is why an unserved-need
+    /// row records whatever the caller knew rather than inventing a code.
+    fn language(&self) -> String {
+        String::new()
+    }
 }
 
 pub struct NoLookup;
@@ -89,6 +109,17 @@ impl UnknownConceptLookup for NoLookup {
         None
     }
 }
+
+/// The status a need carries when every declared source was consulted about a
+/// surface and none of them published a sense for it.
+///
+/// It is [`crate::needs::NeedState::Unsatisfiable`]'s slug, so the coding path
+/// and the need contract already agree on the word; plan 04 L3 merges the two
+/// records and this constant becomes the enum.
+pub const UNSERVED: &str = "unsatisfiable";
+
+/// The candidate kind a retrieved gloss carries.
+pub const CONCEPT_SENSE_KIND: &str = "concept_sense";
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct CandidatePart {
@@ -139,11 +170,35 @@ impl ConceptMap {
         )
     }
 
+    /// What this map says the program must compute, independent of the language
+    /// the requirement was written in.
+    ///
+    /// **Retrieved senses are deliberately not part of it (issue #1138, plan 01
+    /// L10).** A `concept_sense` candidate is named for the surface it
+    /// answered — `concept_sense:<surface as that language writes it>` —
+    /// because that surface is what was asked about and what the provenance
+    /// attaches to. Folding those ids into the identity
+    /// would make the identity a function of *which language asked* and of
+    /// *which source happened to answer*, so five paraphrases of one task could
+    /// never share one identity however well retrieval worked: the property
+    /// plan 01 L10 exists to establish would be unreachable by construction.
+    ///
+    /// The identity is therefore over the structures the sentence reduced to
+    /// and the executable parts offered for them. That retrieval *happened* is
+    /// a separate claim, carried by [`ConceptMap::evidence`] and by the need
+    /// rows, and the L10 case asserts both: one identity, and non-empty
+    /// evidence in every language a source serves.
     #[must_use]
     pub fn identity(&self) -> String {
         let mut structures = self.structure_ids();
         structures.sort();
-        let mut parts = self.candidate_ids();
+        let mut parts: Vec<String> = unique(
+            self.needs
+                .iter()
+                .flat_map(|need| need.candidates.iter())
+                .filter(|candidate| candidate.kind != CONCEPT_SENSE_KIND)
+                .map(|candidate| candidate.id.clone()),
+        );
         parts.sort();
         format!(
             "structures={};parts={}",
@@ -203,7 +258,10 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
         spec.requirement_sentences.clone()
     };
     let mut evidence = Vec::new();
-    let needs = sentences
+    let mut unserved: Vec<ConceptNeed> = Vec::new();
+    let asks_sources = lookup.consults_sources();
+    let asked_language = lookup.language();
+    let mut needs: Vec<ConceptNeed> = sentences
         .into_iter()
         .map(|phrase| {
             let normalized = crate::engine::normalize_prompt(&phrase);
@@ -226,13 +284,34 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
                     candidates.push(concept_candidate(&found));
                     evidence.push(found);
                     asked += 1;
+                } else if asks_sources {
+                    // Every declared source was consulted about this surface
+                    // and none published a sense for it. That is a need the
+                    // map carries openly — an unserved language, measured
+                    // rather than argued (issue #1138, plan 01 L10) — and not
+                    // an absence the map is silent about.
+                    unserved.push(ConceptNeed {
+                        phrase: unserved_phrase(surface, &asked_language),
+                        structures: Vec::new(),
+                        candidates: Vec::new(),
+                        status: UNSERVED.to_owned(),
+                    });
                 }
             }
             candidates.sort_by(|left, right| {
                 candidate_kind_rank(&left.kind).cmp(&candidate_kind_rank(&right.kind))
             });
             let status = if structures.is_empty() && candidates.is_empty() && asked == 0 {
-                "blocked"
+                // `blocked` is "nothing was tried"; `unsatisfiable` is "every
+                // declared source was asked and none of them serves this".
+                // Collapsing the two would make an honest refusal by the
+                // sources indistinguishable from a walk that never ran
+                // (issue #1138, plan 01 L10).
+                if asks_sources && !unresolved.is_empty() {
+                    UNSERVED
+                } else {
+                    "blocked"
+                }
             } else {
                 "satisfied"
             };
@@ -244,7 +323,22 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
             }
         })
         .collect();
+    needs.extend(unserved);
     ConceptMap { needs, evidence }
+}
+
+/// The phrase an unserved need carries: the surface, and the language nobody
+/// served it in.
+///
+/// `"<surface>" in <language>` is not prose: it is the pair the need is about,
+/// and it is what a reader of the map's Links Notation needs in order to go and
+/// check the claim.
+fn unserved_phrase(surface: &str, language: &str) -> String {
+    if language.is_empty() {
+        surface.to_owned()
+    } else {
+        format!("{surface}@{language}")
+    }
 }
 
 #[must_use]
@@ -472,7 +566,7 @@ fn candidate_kind_rank(kind: &str) -> usize {
         "stdlib" => 0,
         "wikifunctions_definition" => 1,
         "source_program" => 2,
-        "concept_sense" => 4,
+        CONCEPT_SENSE_KIND => 4,
         _ => 3,
     }
 }
@@ -573,7 +667,7 @@ pub fn concept_candidate(evidence: &ConceptEvidence) -> CandidatePart {
     let (source_id, license) = registry_licence(&evidence.source_url);
     CandidatePart {
         id: format!("concept_sense:{}", evidence.phrase),
-        kind: "concept_sense".to_owned(),
+        kind: CONCEPT_SENSE_KIND.to_owned(),
         label: evidence.definition.clone(),
         language: None,
         // A gloss is evidence, never a program.
@@ -600,7 +694,9 @@ pub fn concept_candidate(evidence: &ConceptEvidence) -> CandidatePart {
 fn registry_licence(source_url: &str) -> (String, String) {
     let host = source_url
         .split_once("://")
-        .map_or(source_url, |(_, rest)| rest.split('/').next().unwrap_or(rest));
+        .map_or(source_url, |(_, rest)| {
+            rest.split('/').next().unwrap_or(rest)
+        });
     crate::seed::source_registry()
         .into_iter()
         .find(|record| record.host() == host || host.contains(&record.id))

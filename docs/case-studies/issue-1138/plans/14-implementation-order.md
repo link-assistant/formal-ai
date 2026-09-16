@@ -282,7 +282,7 @@ MBPP are unchanged; the handler ledger did not move.
 | **04-L5** | eight relations × five languages, and the domain-noun ban | `data/seed/formalization-relations.lino`, `tests/unit/coding_discovery/no_memorization.rs` | `no_memorization` extension | `check-hardcoded-language.rs` | 04-L2 |
 | **04-L6** | `concept_from_sense`, `relations_in` | `src/formalization/concepts.rs` | `a_need_is_satisfied_by_the_registry_lookup…` + gloss-not-code | gloss-not-code | 01-L7, 04-L5 |
 | **04-L7** | bounded recursion with `max_concept_depth` | `src/formalization/needs.rs` | `a_grounded_gloss_raises_its_own_needs…` | no budget, only a bound | 04-L6 |
-| **04-L8** | `ConceptGraph` and `formalize_deeply` | `src/formalization/graph.rs` | `the_same_requirement_in_five_languages_produces_one_identity` | — | 04-L7 |
+| **04-L8** | `ConceptGraph` and `formalize_deeply` | `src/formalization/concept_links.rs` | `the_same_requirement_in_five_languages_produces_one_identity` | — | 04-L7 |
 | **04-L9** | `src/procedure_text.rs::ProcedureStepRecord`; `ExtractedProcedure::from_step_records`; `GuideStep::to_step_record` | `src/procedure_text.rs`, `src/formalization/procedures.rs`, `src/how_to_guide.rs` | `an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure` | `check-file-size.rs` | 04-L8 |
 | **04-L10** | a typed route into the #919 ledger, under its existing gate | `src/coding_research_learning.rs`, `src/formalization/procedures.rs` | two cases incl. the non-commercial refusal | #919 review gate | 04-L9 |
 | **04-L11** | rewire the agentic formalizer; `pred:states` output becomes `preserved_span` | `src/agentic_coding/formalize.rs` | two cases; the tale keeps nine primitives | `check-file-size.rs` (≤ 450 lines) | 04-L8 |

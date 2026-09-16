@@ -12,11 +12,13 @@ sources_registry
       upstream "the external references cited on each statement"
       basis "Wikidata:Verifiability, the project's own policy, requires each statement to cite a source outside Wikidata, so an item is a synthesis one hop from the references it names."
     api "https://www.wikidata.org/wiki/Special:EntityData/{id}.json"
+    lexeme_api "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&type=lexeme&search={lemma}&language={language}&uselang={language}&limit=5"
+    api_language en ru hi zh es
     license_name "CC0 1.0"
     license_url "https://creativecommons.org/publicdomain/zero/1.0/"
     cache_path data/cache/wikidata/
     id_pattern ("Q" "P" "L")
-    note "Entities (Q), properties (P), and lexemes (L). Public-domain dump and EntityData API; one raw .json plus a compact .lino projection per id under entity/property/lexeme folders."
+    note "Entities (Q), properties (P), and lexemes (L). Public-domain dump and EntityData API; one raw .json plus a compact .lino projection per id under entity/property/lexeme folders. `api` binds {id}, which a bare surface cannot supply, so this source never enters a concept walk; `lexeme_api` is the surface-addressable endpoint plan 01 L10 measured against and is declared here so the attempt is rediscoverable. Measured 2026-09-16 against the held-out corpus: it returns an empty `search` array for both held-out surfaces in en, hi and ru, and one Spanish lexeme for one of them."
   source wiktionary
     name "Wiktionary"
     kind dictionary
@@ -30,11 +32,12 @@ sources_registry
       upstream "the durably archived usages each entry attests"
       basis "Wiktionary's criteria for inclusion require an entry to be attested from durably archived sources, so an entry stands one hop from the usage record it summarises."
     api "https://api.dictionaryapi.dev/api/v2/entries/{language}/{lemma}"
-    api_language en
+    language_api "https://{language}.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles={lemma}"
+    api_language en ru hi zh es
     license_name "CC BY-SA 3.0"
     license_url "https://creativecommons.org/licenses/by-sa/3.0/"
     cache_path data/cache/wiktionary/
-    note "Free Dictionary API serving Wiktionary content; one verified entry per English lemma as .json plus a lossless .lino projection."
+    note "Free Dictionary API serving Wiktionary content; one verified entry per English lemma as .json plus a lossless .lino projection. `language_api` is the same project's own per-language endpoint, added by plan 01 L10 after the coverage measurement: the Free Dictionary surface serves only the language `api_language` leads with, so every other language is asked through its own Wiktionary's MediaWiki extracts API. It binds {lemma} and not {title} because Wiktionary alone among the wikis is first-letter case-sensitive, so a capitalised title misses every lowercase entry. Measured 2026-09-16 against the held-out corpus: it answers zh for one of the two held-out surfaces, and it is the endpoint on which hi was measured unserved for both."
   source wordnet
     name "Open English WordNet 2024"
     kind lexical_database

@@ -1,5 +1,5 @@
 self_ast_census
-  target src/formalization/graph.rs
+  target src/formalization/concept_links.rs
   language rust
   fidelity signature
   byte_len 2329

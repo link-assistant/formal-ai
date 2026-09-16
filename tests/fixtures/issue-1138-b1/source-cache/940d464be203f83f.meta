@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://zh.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=lipogram
+fetched_at=1789540440
+sha256=22fc8a3431bc9ad6cd3b7b1dedf91599a8ece8a27d30d5082a57550d1748fb19

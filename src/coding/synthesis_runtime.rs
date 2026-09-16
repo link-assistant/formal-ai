@@ -5,7 +5,7 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::coding::composition;
-use crate::coding::concept_discovery::{CatalogFunction, ConceptMap, DiscoveryCatalog, discover};
+use crate::coding::concept_discovery::{CatalogFunction, ConceptMap, DiscoveryCatalog};
 use crate::coding::discovered_procedures::DiscoveredProcedureLedger;
 use crate::coding::function_catalog::oeis::discover_programs;
 use crate::coding::function_catalog::python_docs::{StdlibIndex, fetch_index};
@@ -219,16 +219,65 @@ pub fn discover_and_compose(
     live: bool,
 ) -> (ConceptMap, composition::CompositionOutcome) {
     let mut catalog = discovery_catalog(spec, log, live);
-    let mut concepts = discover(spec, &catalog);
+    let mut concepts = discover_over_registry(spec, &catalog, log, live);
     let mut outcome = composition::compose(spec, &concepts);
     if outcome.selected.is_none() {
         catalog = extend_with_sequence_programs(catalog, spec, log, live);
         if !catalog.source_candidates.is_empty() {
-            concepts = discover(spec, &catalog);
+            concepts = discover_over_registry(spec, &catalog, log, live);
             outcome = composition::compose(spec, &concepts);
         }
     }
     (concepts, outcome)
+}
+
+/// Discover with the registry lookup under it, so a word the seed does not
+/// contain is *asked about* rather than skipped (issue #1138, plan 01 L10).
+///
+/// The lookup is the same one the universal loop builds — one cache root, one
+/// registry, one set of bounds — and every source it consulted is written to
+/// the event log, including the ones that could not serve the language, so an
+/// absent gloss stays attributable.
+pub fn discover_over_registry(
+    spec: &CodingTaskSpec,
+    catalog: &DiscoveryCatalog,
+    log: &mut EventLog,
+    live: bool,
+) -> ConceptMap {
+    let client =
+        CachedSourceClient::new(source_cache_root(), CurlSourceTransport).with_online(live);
+    let preferences = crate::how_to_guide::ServicePreferences::default();
+    let mut availability = crate::service_accessibility::ServiceAccessibilityCache::new(
+        std::path::Path::new(&source_cache_root()).join("cache/service-accessibility"),
+    );
+    let bounds = crate::source_walk::LookupBounds::default();
+    let now = crate::service_accessibility::unix_now();
+    let mut lookup = crate::concept_lookup::RegistryConceptLookup::new(
+        crate::concept_lookup::RegistrySourceLookup::new(
+            &client,
+            &preferences,
+            &mut availability,
+            bounds,
+            &spec.prose_language,
+            now,
+        ),
+    );
+    let map = crate::coding::concept_discovery::discover_with_lookup(
+        spec,
+        catalog,
+        &mut lookup,
+        crate::coding::concept_discovery::DiscoveryBounds::default(),
+    );
+    for row in lookup.outcomes() {
+        log.append(
+            "concept_lookup:source",
+            format!(
+                "source={};status={};detail={}",
+                row.source_id, row.status, row.detail
+            ),
+        );
+    }
+    map
 }
 
 /// Preserve a verified artifact as a typed execution recipe so every agent

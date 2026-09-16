@@ -281,6 +281,15 @@ fn read_glosses(extractor: &str, bytes: &[u8], surface: &str) -> Vec<RawGloss> {
 /// The Free Dictionary API's Wiktionary entry: an array of entries, each with
 /// `meanings[].definitions[].definition`.
 fn wiktionary_entry(value: &Value, surface: &str) -> Vec<RawGloss> {
+    // One source, two published surfaces (plan 01 L10). The Free Dictionary
+    // API answers English as an array of entries; every other language is asked
+    // through that language edition's own MediaWiki `extracts` endpoint, which
+    // answers an object. The registry says they are one service, so one reader
+    // recognises both of its own payloads rather than a second registry row
+    // taking a second `max_services` slot.
+    if !value.is_array() {
+        return wiktionary_extract(value, surface);
+    }
     let mut out = Vec::new();
     for entry in value.as_array().map(Vec::as_slice).unwrap_or_default() {
         let lemma = string_at(entry, "word").unwrap_or_else(|| surface.to_owned());
@@ -340,6 +349,104 @@ fn mediawiki_summary(value: &Value, surface: &str) -> Vec<RawGloss> {
         part_of_speech: String::new(),
         synonyms: Vec::new(),
     }]
+}
+
+/// A per-language Wiktionary entry, read through the MediaWiki `extracts` API:
+/// `query.pages.<id>.extract`, a plain-text rendering of the wiki page.
+///
+/// **What counts as a gloss here, and why the rule is this narrow.** The
+/// extract is a whole wiki page, not a definition record: it carries
+/// hyphenation, morphology, pronunciation, etymology and translation sections,
+/// and which heading holds the definition is named differently in every
+/// language edition. A reader that took "the first line that is not a heading"
+/// would publish a hyphenation string, or `Существительное, неодушевлённое,
+/// женский род`, as the *meaning* of the headword — a fabricated gloss dressed
+/// in real bytes. A reader
+/// that knew the definition heading of each edition would be a list of Russian,
+/// Chinese and Hindi words in Rust, which
+/// `scripts/check-hardcoded-language.rs` exists to forbid.
+///
+/// So the rule is the one thing the wikitext conventions guarantee without
+/// naming a language: **the lines an entry states directly under its first
+/// section heading, before any further heading.** An edition that puts the
+/// sense there (zh.wiktionary writes the target-language equivalents straight
+/// under `== 英語 ==`) is read; an edition that nests the definition inside a
+/// deeper section (ru.wiktionary's `==== Значение ====`, en.wiktionary's
+/// `=== Noun ===`) yields **nothing**, and nothing is the honest answer rather
+/// than the first line that happened to be there. The headword itself is never
+/// a gloss, however the entry respells it.
+fn wiktionary_extract(value: &Value, surface: &str) -> Vec<RawGloss> {
+    let mut out = Vec::new();
+    let Some(pages) = value
+        .get("query")
+        .and_then(|query| query.get("pages"))
+        .and_then(Value::as_object)
+    else {
+        return out;
+    };
+    for page in pages.values() {
+        if page.get("missing").is_some() {
+            continue;
+        }
+        let lemma = string_at(page, "title").unwrap_or_else(|| surface.to_owned());
+        let Some(extract) = page.get("extract").and_then(Value::as_str) else {
+            continue;
+        };
+        let mut seen_heading = false;
+        for line in extract.lines().map(str::trim) {
+            if line.is_empty() {
+                continue;
+            }
+            if is_wikitext_heading(line) {
+                if seen_heading {
+                    break;
+                }
+                seen_heading = true;
+                continue;
+            }
+            if !seen_heading {
+                continue;
+            }
+            let gloss = compact(line);
+            if gloss.is_empty()
+                || is_respelling_of(&gloss, &lemma)
+                || is_respelling_of(&gloss, surface)
+            {
+                continue;
+            }
+            out.push(RawGloss {
+                lemma: lemma.clone(),
+                gloss,
+                part_of_speech: String::new(),
+                synonyms: Vec::new(),
+            });
+        }
+    }
+    out
+}
+
+/// A plain-text extract keeps wikitext's `=` heading markers.
+fn is_wikitext_heading(line: &str) -> bool {
+    line.starts_with('=') && line.ends_with('=') && line.len() > 1
+}
+
+/// Whether `candidate` is the headword again, however the entry respells it.
+///
+/// Entries repeat the headword with hyphenation dots, syllable breaks and
+/// stress marks; none of those make it a definition. Comparing the letters
+/// alone is language-neutral: everything that is not a letter or a digit is
+/// dropped, and so is every combining mark.
+fn is_respelling_of(candidate: &str, headword: &str) -> bool {
+    let letters = |value: &str| -> String {
+        value
+            .chars()
+            .filter(|character| character.is_alphanumeric())
+            .filter(|character| !matches!(u32::from(*character), 0x0300..=0x036F))
+            .flat_map(char::to_lowercase)
+            .collect()
+    };
+    let candidate = letters(candidate);
+    !candidate.is_empty() && candidate == letters(headword)
 }
 
 /// Wikidata's `Special:EntityData` snapshot: the entity's description in the
@@ -552,6 +659,14 @@ impl<'a, T: SourceTransport> RegistryConceptLookup<'a, T> {
 impl<T: SourceTransport> crate::coding::concept_discovery::UnknownConceptLookup
     for RegistryConceptLookup<'_, T>
 {
+    fn consults_sources(&self) -> bool {
+        true
+    }
+
+    fn language(&self) -> String {
+        self.inner.language.clone()
+    }
+
     fn lookup(
         &mut self,
         phrase: &str,

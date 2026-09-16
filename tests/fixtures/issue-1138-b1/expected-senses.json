@@ -75,6 +75,36 @@
     "tier": "independent_corroboration"
   },
   {
+    "contentId": "sense_c155cd24bea2c1a6",
+    "depth": 0,
+    "gloss": "等值线",
+    "language": "zh",
+    "lemma": "isogram",
+    "licenseName": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "partOfSpeech": "",
+    "sha256": "becbe09bb91419f937a4b359eeecd74aa2bb47443cb6110bffe253498189d9d6",
+    "sourceId": "wiktionary",
+    "sourceUrl": "https://zh.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=isogram",
+    "surface": "isogram",
+    "tier": "independent_corroboration"
+  },
+  {
+    "contentId": "sense_d312859240395648",
+    "depth": 0,
+    "gloss": "等值线图",
+    "language": "zh",
+    "lemma": "isogram",
+    "licenseName": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "partOfSpeech": "",
+    "sha256": "becbe09bb91419f937a4b359eeecd74aa2bb47443cb6110bffe253498189d9d6",
+    "sourceId": "wiktionary",
+    "sourceUrl": "https://zh.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=isogram",
+    "surface": "isogram",
+    "tier": "independent_corroboration"
+  },
+  {
     "contentId": "sense_1c77c733f1ea2e34",
     "depth": 0,
     "gloss": "Un heterograma es una palabra o frase que no contiene ninguna letra repetida. Esta propiedad fue descrita por Dmitri Borgmann en su libro Language on Vacation: An Olio of Orthographical Oddities, donde intentó encontrar la palabra más larga que cumpliera esta condición.",

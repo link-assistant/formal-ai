@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/concept_discovery.rs
   language rust
   fidelity signature
-  byte_len 22060
-  line_count 611
-  content_id source_module_186f12b6ecfd8387
-  symbol_count 38
+  byte_len 26678
+  line_count 707
+  content_id source_module_95667b7762afeaaf
+  symbol_count 43
   symbols
     const STRUCTURES 11 11
     struct StructuralMeaning 14 18
@@ -16,32 +16,37 @@ self_ast_census
     struct DiscoveryBounds 59 62
     function default 65 70
     struct ConceptEvidence 74 79
-    trait UnknownConceptLookup 81 83
+    trait UnknownConceptLookup 81 103
     function lookup 82 82
-    struct NoLookup 85 85
-    function lookup 88 90
-    struct CandidatePart 94 107
-    struct ConceptNeed 110 115
-    struct ConceptMap 118 121
-    function structure_ids 125 131
-    function candidate_ids 134 140
-    function identity 143 153
-    function to_links_notation 156 185
-    function discover 189 191
-    function discover_with_lookup 194 248
-    function structural_meanings 251 268
-    function structures_for 270 304
-    function normalized_surface_present 306 308
-    function fuzzy_single_token_present 310 317
-    function edit_distance_at_most_one 319 352
-    function discovery_query 354 364
-    function candidates_for 366 464
-    function overlap_score 466 468
-    function candidate_kind_rank 470 478
-    function stdlib_candidate 480 495
-    function token_overlap 497 501
-    function tokens 503 509
-    function unique 511 514
-    function unresolved_surfaces 527 549
-    function concept_candidate 572 592
-    function registry_licence 600 611
+    function consults_sources 92 94
+    function language 100 102
+    struct NoLookup 105 105
+    function lookup 108 110
+    const UNSERVED 119 119
+    const CONCEPT_SENSE_KIND 122 122
+    struct CandidatePart 125 138
+    struct ConceptNeed 141 146
+    struct ConceptMap 149 152
+    function structure_ids 156 162
+    function candidate_ids 165 171
+    function identity 192 208
+    function to_links_notation 211 240
+    function discover 244 246
+    function discover_with_lookup 249 328
+    function unserved_phrase 336 342
+    function structural_meanings 345 362
+    function structures_for 364 398
+    function normalized_surface_present 400 402
+    function fuzzy_single_token_present 404 411
+    function edit_distance_at_most_one 413 446
+    function discovery_query 448 458
+    function candidates_for 460 558
+    function overlap_score 560 562
+    function candidate_kind_rank 564 572
+    function stdlib_candidate 574 589
+    function token_overlap 591 595
+    function tokens 597 603
+    function unique 605 608
+    function unresolved_surfaces 621 643
+    function concept_candidate 666 686
+    function registry_licence 694 707
