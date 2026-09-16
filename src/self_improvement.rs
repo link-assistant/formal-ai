@@ -103,7 +103,24 @@ pub struct BenchmarkGateReport {
     pub failed: usize,
     /// Minimum pass count recorded by the ratchet.
     pub minimum_pass_count: usize,
+    /// Whether a gate run actually produced these counts.
+    ///
+    /// Issue #1138 B7, plan 07 leaf 9: ingestion used to judge a proposal
+    /// against a report of a run that never happened, and a reader could not
+    /// tell "the benchmark ran and blocked it" from "no benchmark ran". Those
+    /// are different facts and only one of them is evidence. An absent report is
+    /// `observed: false`, its status is `absent`, and the reason a proposal was
+    /// not adopted is [`NO_GATE_EVIDENCE`].
+    pub observed: bool,
 }
+
+/// The reason a proposal was judged against no gate run at all.
+pub const NO_GATE_EVIDENCE: &str = "no_gate_evidence";
+
+/// The count an absent report carries on both sides: nothing was observed, so
+/// neither a pass nor a failure can be claimed. `observed: false` is what makes
+/// it readable as absent rather than as a run that scored zero.
+const ABSENT_COUNT: usize = 0;
 
 impl BenchmarkGateReport {
     /// Construct a gate report from explicit counts.
@@ -121,6 +138,29 @@ impl BenchmarkGateReport {
             passed,
             failed,
             minimum_pass_count,
+            observed: true,
+        }
+    }
+
+    /// The report for an ingestion path that could not run the gate.
+    ///
+    /// It carries the suite's own identity and floor, so a reader can see which
+    /// gate is missing, and no observed counts -- because none were observed.
+    #[must_use]
+    pub fn absent_for_issue_362() -> Self {
+        let mut report = Self::issue_362_from_counts(ABSENT_COUNT, ABSENT_COUNT);
+        report.observed = false;
+        report
+    }
+
+    /// Why this report permits nothing, when it permits nothing because it is
+    /// absent rather than because it failed.
+    #[must_use]
+    pub const fn absence_reason(&self) -> Option<&'static str> {
+        if self.observed {
+            None
+        } else {
+            Some(NO_GATE_EVIDENCE)
         }
     }
 
@@ -148,12 +188,18 @@ impl BenchmarkGateReport {
     }
 
     /// Whether the gate allows learned-rule adoption.
+    ///
+    /// A report nothing produced permits nothing: an absent gate is not a
+    /// passing one, and it is not a failing one either.
     #[must_use]
     pub const fn permits_adoption(&self) -> bool {
-        self.passed >= self.minimum_pass_count
+        self.observed && self.passed >= self.minimum_pass_count
     }
 
     const fn status_slug(&self) -> &'static str {
+        if !self.observed {
+            return "absent";
+        }
         if self.permits_adoption() {
             "passed"
         } else {
@@ -245,11 +291,14 @@ pub fn learn_from_reported_conversation(context: &serde_json::Value) -> Option<R
         }
     }
     let trace = UnknownTrace::from_event_log(&prompt, "unknown", &log)?;
-    // Ingestion never claims that CI ran. A real benchmark result is supplied
-    // later when a maintainer constructs and approves the repair case.
+    // Ingestion never claims that CI ran, and it no longer reports a run that
+    // did not happen: the gate evidence is *absent*, which is a different fact
+    // from a gate that ran and blocked (plan 07 leaf 9). A real benchmark result
+    // is supplied later, when a maintainer constructs and approves the repair
+    // case.
     let learning = learn_rules_from_unknown_traces(
         std::slice::from_ref(&trace),
-        BenchmarkGateReport::issue_362_from_counts(0, 0),
+        BenchmarkGateReport::absent_for_issue_362(),
     );
     Some(ReportedLearning {
         trace,
