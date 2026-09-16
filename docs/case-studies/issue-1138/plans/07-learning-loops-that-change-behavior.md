@@ -858,7 +858,7 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
 - [x] Add `src/source_reconstruction.rs` with `ReconstructionOutcome`, `reconstruct`,
       `reconstruct_on_miss`; wire `reconstruct_on_miss` into the source-cache read path.
 - [ ] Add `data/meta/adoption-effect-ratchet.lino` and the two ratchet tests.
-- [ ] **PR #887 carry:** create the branch, cherry-pick the 24 new-path files, re-add the
+- [x] **PR #887 carry:** create the branch, cherry-pick the 24 new-path files, re-add the
       three registry lines, write
       `docs/requirements/issue-0705-anticipatory-dreaming.md`, regenerate
       `REQUIREMENTS.md` and `data/meta/self-ast/`, re-apply the six semantic edits, re-apply

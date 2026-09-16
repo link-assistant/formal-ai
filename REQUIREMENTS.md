@@ -1459,6 +1459,28 @@ conflating model confidence with authority.
 | R703-11 | Learn from completed orchestration while retaining review and promotion gates. | `observe_orchestration_session` projects canonical evidence into the existing client-contract learner; `formal-ai agent learn` emits proposal-only Links Notation. It cannot mutate the registry or approve promotion, consistent with the repository's human gate. |
 | R703-12 | Prove the controller through Formal AI and the real Agent CLI, preserve failures honestly, and meet the self-authorship policy. | `docs/case-studies/issue-703/` records the six-client matrix, original self-hosted leaf, and a three-turn same-native-session correction chain. Commit `70848eb3` carries `Formal-AI-Session` and `Formal-AI-Evidence` trailers; the focused suite pins every canonical byte, parent digest, resume argv, and final artifact hash. |
 
+## Issue #705 Anticipatory Dreaming
+
+Issue [#705](https://github.com/link-assistant/formal-ai/issues/705) (E63)
+extends the idle dreaming loop from learning about requests already seen to
+preparing for likely next request classes. PR
+[#887](https://github.com/link-assistant/formal-ai/pull/887) implements a
+bounded symbolic model, exhaustive offline probes, proposal-only frontier
+integration, consented source capture, offline recall, and later-hit accounting.
+The design and preserved source evidence live in
+`docs/case-studies/issue-705/`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R705-1 | Build inspectable Markov-style transitions over formalized request intent classes from append-only memory, with probability and exact-event provenance rather than raw-text or neural states. | `src/anticipation.rs::plan_anticipation` counts adjacent user-request classes, records `ProbabilityEvidence::MarkovTransition`, and ranks the top three with a stable tie break. Covered by `append_only_intent_transitions_predict_three_next_request_classes`. |
+| R705-2 | Expand every top class from the meaning lexicon, operation vocabulary, and observed parameters, probe every member offline, and file every unknown or failed probe on the adoption frontier. | `src/anticipation/expansion.rs` derives bounded variants; `plan_anticipation` uses an offline zero-compute solver and sends the exact failed set through `run_learning_cycle("anticipation", ...)`. Covered by `class_expansion_uses_meaning_operation_and_parameter_evidence` and `every_unknown_or_failed_offline_probe_reaches_the_adoption_frontier`. |
+| R705-3 | Prelearn external sources only at idle/lowest priority and with fetch consent, retaining standard source provenance and TTL so future requests can answer offline. | `run_core_dreaming_once` calls `run_idle_anticipation` after its foreground cancellation point; `prelearn_predictions` denies transport without consent and retains URL, fetched time, SHA-256, cache status, and expiry. Covered by `source_prelearning_is_consent_gated_and_uses_cache_provenance_and_ttl`, `idle_dreaming_persists_the_ledger_and_later_live_usage_records_a_hit`, and the held-out capability-delta test. |
+| R705-4 | Prediction must never mutate behaviour directly; every proposed rule or seed extension uses the issue-#656 human-gated promotion shape. | Failed probes use the shared issue-#701 cycle and remain `proposal_only` and `human_gated`; no anticipation path writes seed data. Covered by `every_unknown_or_failed_offline_probe_reaches_the_adoption_frontier`. |
+| R705-5 | Persist predictions, probes, prelearned captures, and later `prediction_hit` links in an anticipation ledger whose hit rate may honestly begin at 0%. | `AnticipationLedger`, `apply_anticipation`, and `memory_sync::SyncStore` append the records and link a later actual request to its prediction. Covered by `prediction_hits_link_later_actual_requests_and_zero_percent_is_honest` and the idle-runtime integration test. |
+| R705-6 | The same history must yield byte-identical predictions and expose why each class was prepared. | Planning uses ordered collections, stable class ids, bounded expansion, and no clock; `why_prediction` and Links Notation expose transition counts and evidence. Covered by `the_same_history_produces_byte_identical_predictions_and_ledger`. |
+| R705-7 | A held-out member of a predicted class must change from offline unknown to a correct offline answer after prelearning, without a later fetch, through both compatible response surfaces. | `dreaming_application` consults exact, unexpired anticipation aliases only after ordinary solving stays unknown. Covered end to end by `a_held_out_predicted_prompt_becomes_answerable_offline_after_prelearning`. |
+| R705-8 | Add the prediction stages to the grounded dreaming recipe and retain issue research, transition design, honest same-task Agent CLI evidence, and release metadata. | `data/meta/dreaming-recipe.lino` now has seventeen contiguous stages; `docs/case-studies/issue-705/`, its byte-pinned self-hosting artifact, `examples/issue_705_anticipatory_dreaming.rs`, and `changelog.d/20260801_140000_anticipatory_dreaming.md` preserve the review trail. Covered by `dreaming_meta_algorithm`, `docs_requirements_issue_705`, and `tests/unit/issue_705_anticipation.rs`. |
+
 ## Issue #706 Any-Language Protocol
 
 Issue [#706](https://github.com/link-assistant/formal-ai/issues/706) (E64)

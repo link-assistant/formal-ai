@@ -5,7 +5,7 @@ use std::collections::BTreeSet;
 use crate::links_format::format_lino_record;
 use crate::memory::MemoryEvent;
 
-use super::{AnticipationPlan, PrelearningRun, PREDICTION_HIT_KIND};
+use super::{AnticipationPlan, PREDICTION_HIT_KIND, PrelearningRun};
 
 pub struct AnticipationLedger<'a> {
     plan: &'a AnticipationPlan,

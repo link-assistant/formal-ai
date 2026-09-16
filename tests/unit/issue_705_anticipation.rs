@@ -6,20 +6,20 @@
 //! the whole held-out/offline capability delta through both production surfaces.
 
 use std::fs;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use formal_ai::anticipation::{
-    answer_from_prelearned_cache_at, apply_anticipation, plan_anticipation, prediction_hit_event,
-    prelearn_predictions, AnticipationConfig, AnticipationConsent, AnticipationLedger,
-    PrelearningRun, PrelearningStatus, ProbeStatus, ANTICIPATION_FRONTIER,
+    ANTICIPATION_FRONTIER, AnticipationConfig, AnticipationConsent, AnticipationLedger,
+    PrelearningRun, PrelearningStatus, ProbeStatus, answer_from_prelearned_cache_at,
+    apply_anticipation, plan_anticipation, prediction_hit_event, prelearn_predictions,
 };
 use formal_ai::probability::ProbabilityModel;
 use formal_ai::{
+    CachedSourceClient, ChatCompletionRequest, ChatMessage, FetchError, MemoryEvent, MemoryStore,
+    ResponsesRequest, SolverConfig, SourceTransport, SyncStore, UniversalSolver,
     create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
-    run_core_dreaming_once, CachedSourceClient, ChatCompletionRequest, ChatMessage, FetchError,
-    MemoryEvent, MemoryStore, ResponsesRequest, SolverConfig, SourceTransport, SyncStore,
-    UniversalSolver,
+    run_core_dreaming_once,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -125,10 +125,12 @@ fn append_only_intent_transitions_predict_three_next_request_classes() {
             transition.evidence.transition_from.as_deref(),
             Some(transition.from.id.as_str())
         );
-        assert!(transition
-            .evidence_links
-            .iter()
-            .all(|link| link.starts_with("memory:")));
+        assert!(
+            transition
+                .evidence_links
+                .iter()
+                .all(|link| link.starts_with("memory:"))
+        );
         assert!(!transition.to.id.contains(' '), "a state is not raw prose");
     }
     let why = plan
@@ -193,17 +195,20 @@ fn every_unknown_or_failed_offline_probe_reaches_the_adoption_frontier() {
     assert_eq!(plan.learning_cycle.frontier, ANTICIPATION_FRONTIER);
     assert_eq!(plan.learning_cycle.frontier_items, failures.len());
     for failure in failures {
-        assert!(plan
-            .frontier
-            .iter()
-            .any(|item| item.prompt == failure.prompt));
+        assert!(
+            plan.frontier
+                .iter()
+                .any(|item| item.prompt == failure.prompt)
+        );
     }
     let cycle = plan.learning_cycle.links_notation();
     assert!(cycle.contains("mode \"proposal_only\""));
     assert!(cycle.contains("human_gated \"true\""));
-    assert!(plan.learning_cycle.proposals.iter().all(|proposal| proposal
-        .source
-        .starts_with("learning_frontier:anticipation:")));
+    assert!(plan.learning_cycle.proposals.iter().all(|proposal| {
+        proposal
+            .source
+            .starts_with("learning_frontier:anticipation:")
+    }));
 }
 
 #[test]
@@ -228,10 +233,12 @@ fn source_prelearning_is_consent_gated_and_uses_cache_provenance_and_ttl() {
         0,
         "denial must perform no fetch"
     );
-    assert!(denied
-        .attempts
-        .iter()
-        .all(|attempt| attempt.status == PrelearningStatus::ConsentRequired));
+    assert!(
+        denied
+            .attempts
+            .iter()
+            .all(|attempt| attempt.status == PrelearningStatus::ConsentRequired)
+    );
 
     let granted = prelearn_predictions(
         &plan,
@@ -265,10 +272,11 @@ fn prediction_hits_link_later_actual_requests_and_zero_percent_is_honest() {
         .expect("arithmetic was predicted after greeting");
     assert_eq!(hit.kind.as_deref(), Some("prediction_hit"));
     assert!(hit.evidence.iter().any(|link| link == "actual-request"));
-    assert!(hit
-        .evidence
-        .iter()
-        .any(|link| link.starts_with("anticipation_prediction:")));
+    assert!(
+        hit.evidence
+            .iter()
+            .any(|link| link.starts_with("anticipation_prediction:"))
+    );
     store.append(hit);
 
     let after = AnticipationLedger::new(&plan, &denied, store.events()).links_notation();
@@ -318,14 +326,18 @@ fn changed_transition_evidence_appends_a_new_prediction_revision() {
 
     let outcome = apply_anticipation(&mut store, &updated, &PrelearningRun::default());
     assert!(outcome.prediction_records > 0);
-    assert!(store
-        .events()
-        .iter()
-        .any(|event| event.id == first_calculation.id));
-    assert!(store
-        .events()
-        .iter()
-        .any(|event| event.id == updated_calculation.id));
+    assert!(
+        store
+            .events()
+            .iter()
+            .any(|event| event.id == first_calculation.id)
+    );
+    assert!(
+        store
+            .events()
+            .iter()
+            .any(|event| event.id == updated_calculation.id)
+    );
 }
 
 #[test]
@@ -378,14 +390,16 @@ fn idle_dreaming_persists_the_ledger_and_later_live_usage_records_a_hit() {
         .iter()
         .find(|event| event.kind.as_deref() == Some("prediction_hit"))
         .expect("the live memory path links the request to its prediction");
-    assert!(hit
-        .evidence
-        .iter()
-        .any(|link| link.starts_with("anticipation_prediction:")));
-    assert!(hit
-        .evidence
-        .iter()
-        .any(|link| link.starts_with("chat_user_")));
+    assert!(
+        hit.evidence
+            .iter()
+            .any(|link| link.starts_with("anticipation_prediction:"))
+    );
+    assert!(
+        hit.evidence
+            .iter()
+            .any(|link| link.starts_with("chat_user_"))
+    );
 
     fs::remove_dir_all(dir).expect("remove runtime fixture");
 }
@@ -431,13 +445,17 @@ fn a_held_out_predicted_prompt_becomes_answerable_offline_after_prelearning() {
     let recalled = answer_from_prelearned_cache_at(&held_out, store.events(), fixed_time() + 1)
         .expect("the held-out paraphrase is answered from the prelearned class");
     assert_eq!(recalled.intent, "anticipation_cache");
-    assert!(recalled
-        .answer
-        .contains("deterministic anticipation fixture"));
-    assert!(recalled
-        .evidence_links
-        .iter()
-        .any(|link| link.starts_with("source:http:")));
+    assert!(
+        recalled
+            .answer
+            .contains("deterministic anticipation fixture")
+    );
+    assert!(
+        recalled
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("source:http:"))
+    );
     assert!(
         answer_from_prelearned_cache_at(&held_out, store.events(), fixed_time() + 3_601,).is_none(),
         "expired prelearning must not be recalled"

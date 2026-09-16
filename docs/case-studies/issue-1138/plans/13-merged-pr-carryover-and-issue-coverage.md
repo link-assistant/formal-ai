@@ -514,6 +514,27 @@ fully close it by implementing plans 01–12, and why not when it cannot.
 | #652 — Plan the critical missing features as tracked sub-issues; refresh vision and roadmap (#651) | 2026-07-12 | 2026-07-12 | +6,238 / −324 across 27 files | CONFLICTING | **close with reason; its live output is already merged** | Its purpose was to file E35–E55 as sub-issues and refresh the vision and roadmap. The sub-issues exist and most are closed; the doc refresh it proposed is superseded by plan 11, which audits against measurements this branch will take rather than against July's. Closing it removes a 27-file conflicting diff that would otherwise have to be reconciled with plan 11's rewrites of the same files. #651 stays open as the parent epic |
 | #644 — Add experimental formalization model fallback (#483) | 2026-07-08 | 2026-07-09 | +4,164 / −56 across 45 files | CONFLICTING | **close pending a maintainer decision on #483** | The branch adds a neural fallback, which the standing NON-GOAL on neural inference forbids and which #469 explicitly declined for the same reason ("needs neural inference — a project NON-GOAL"). Neither rebasing nor re-implementing is defensible until the maintainer rules on whether #483 overrides the NON-GOAL. Recommending a close rather than a merge is the honest position; the requirement stays filed on #483 |
 
+**Carried 2026-09-16 (plan 07 leaf 17).** #887 is carried, not re-implemented,
+and the recommendation above is now discharged: its 24 new-path files
+(`src/anticipation*`, `tests/unit/issue_705_anticipation.rs`,
+`tests/unit/docs_requirements_issue_705.rs`, the example, the two experiment
+scripts and the sixteen case-study files, byte-pinned artifact included) were
+cherry-picked onto this branch; the one `src/lib.rs` line and the two
+`tests/unit/mod.rs` lines were re-added; the six semantic edits to
+`src/dreaming_application.rs`, `src/dreaming_runtime.rs`, `src/memory_sync.rs`,
+`data/meta/dreaming-recipe.lino`, `tests/unit/issue_540_agent_cli.rs` and
+`tests/unit/specification/dreaming_meta_algorithm.rs` were re-applied against
+today's code; the `REQUIREMENTS.md` delta became the shard
+`docs/requirements/issue-0705-anticipatory-dreaming.md` and `REQUIREMENTS.md`
+was regenerated from it; and `src/anticipation.rs`, which arrived at 934 lines,
+was split rather than exempted. The twenty-two carried tests pass.
+**#887 can now be closed with a pointer at this pull request.** The plan's
+original reason for preferring re-implementation -- that B7's criterion, a
+dreamt item must demonstrably change the next answer, postdates #887 -- is not
+a reason to discard the 484 lines of behavioural tests and the 20 % CLI
+authorship evidence that carry forward unchanged; the criterion is owed by plan
+07's own leaves, which are measured separately.
+
 Two further open pull requests are outside the three named in the task but are
 listed for completeness, because leaving them unmentioned would repeat exactly
 the silent-omission failure this plan exists to catch:

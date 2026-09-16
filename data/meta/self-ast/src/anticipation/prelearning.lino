@@ -1,0 +1,17 @@
+self_ast_census
+  target src/anticipation/prelearning.rs
+  language rust
+  fidelity signature
+  byte_len 7263
+  line_count 199
+  content_id source_module_b32f03993ba59e62
+  symbol_count 8
+  symbols
+    enum AnticipationConsent 17 20
+    enum PrelearningStatus 23 28
+    function slug 31 38
+    struct PrelearningAttempt 42 47
+    struct PrelearnedSource 50 64
+    struct PrelearningRun 67 70
+    function links_notation 74 91
+    function prelearn_predictions 94 199

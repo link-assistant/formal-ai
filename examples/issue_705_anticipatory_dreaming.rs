@@ -2,8 +2,8 @@
 //!
 //! Run with: `cargo run --example issue_705_anticipatory_dreaming`
 
-use formal_ai::anticipation::{plan_anticipation, AnticipationConfig, ProbeStatus};
 use formal_ai::MemoryEvent;
+use formal_ai::anticipation::{AnticipationConfig, ProbeStatus, plan_anticipation};
 
 fn request(id: &str, prompt: &str, intent: &str) -> MemoryEvent {
     MemoryEvent {
