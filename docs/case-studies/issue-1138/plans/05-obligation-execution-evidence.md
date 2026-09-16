@@ -897,9 +897,9 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 - [ ] Add the `es`, `hi`, `zh` `enumeration_cue` surfaces to
       `data/seed/meanings-conversation.lino`; pin them in a multilingual specification
       test. No Rust change.
-- [ ] Promote `agentic_coding::tool_result::reported_exit_code` (`:78`) from `pub(super)`
+- [x] Promote `agentic_coding::tool_result::reported_exit_code` (`:78`) from `pub(super)`
       to `pub(crate)`; one line plus its doc comment, no behaviour change.
-- [ ] Add `src/execution_evidence.rs` with `ObservationKind`, `EvidenceSource`,
+- [x] Add `src/execution_evidence.rs` with `ObservationKind`, `EvidenceSource`,
       `Evidence`, `observed`, `from_tool_result`, `reports_success`,
       `to_links_notation`; register in `src/lib.rs`; tests in
       `tests/unit/specification/execution_evidence.rs`.

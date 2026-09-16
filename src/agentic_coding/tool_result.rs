@@ -75,7 +75,7 @@ pub(super) fn failed_verification(
 /// Callers that build their own report of a stopped step need the status the
 /// workspace answered with, not a rendering of it: a recipe that stops on a
 /// precondition says which check stopped it and with what code (issue #944).
-pub(super) fn reported_exit_code(raw: &str) -> Option<i64> {
+pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
     normalize(raw).exit_code
 }
 

@@ -1,10 +1,9 @@
 //! The observation that turns a planned obligation into a satisfied one (#1138 B5).
 //!
-//! Plan 00 §4.3 owns the contract; plan 05 owns this module. Wave T lands the
-//! record shape only: every body is `todo!` until wave I5's leaves 05-3 and
-//! 05-10 fill them in. Nothing here may carry a wall clock, a pid or a machine
-//! identity into the fingerprint, which is why `recorded_at` is an event-log
-//! field beside the record rather than a field inside its id.
+//! Plan 00 §4.3 owns the contract; plan 05 owns this module. Nothing here may
+//! carry a wall clock, a pid or a machine identity into the fingerprint, which
+//! is why `recorded_at` is an event-log field beside the record rather than a
+//! field inside its id.
 
 /// What kind of observation the record holds.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -21,12 +20,14 @@ pub enum ObservationKind {
 
 impl ObservationKind {
     /// Stable slug used in the Links Notation trace.
-    ///
-    /// Declared without `const` in wave T only because a `todo!` message is not
-    /// const-evaluable; wave I5 leaf 05-3 restores `const` with the real body.
     #[must_use]
-    pub fn slug(self) -> &'static str {
-        todo!("plan 05 leaf 3")
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::CommandExit => "command_exit",
+            Self::FileBytes => "file_bytes",
+            Self::ToolResult => "tool_result",
+            Self::SymbolicCheck => "symbolic_check",
+        }
     }
 }
 
@@ -44,8 +45,12 @@ pub enum EvidenceSource {
 impl EvidenceSource {
     /// Stable slug used in the Links Notation trace.
     #[must_use]
-    pub fn slug(self) -> &'static str {
-        todo!("plan 05 leaf 3")
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::Harness => "harness",
+            Self::LocalProcess => "local_process",
+            Self::Engine => "engine",
+        }
     }
 }
 
@@ -110,33 +115,170 @@ impl Evidence {
     /// Record one observation from the bytes it actually produced.
     #[must_use]
     pub fn observed(
-        _command: impl Into<String>,
-        _argv: Vec<String>,
-        _exit_code: Option<i64>,
-        _observed: &[u8],
-        _kind: ObservationKind,
-        _source: EvidenceSource,
+        command: impl Into<String>,
+        argv: Vec<String>,
+        exit_code: Option<i64>,
+        observed: &[u8],
+        kind: ObservationKind,
+        source: EvidenceSource,
     ) -> Self {
-        todo!("plan 05 leaf 3")
+        let command = command.into();
+        let observed_output_sha256 = crate::source_fetch::sha256_hex(observed);
+        let observed_byte_length = observed.len();
+        let evidence_id = fingerprint_id(
+            &command,
+            &argv,
+            exit_code,
+            &observed_output_sha256,
+            observed_byte_length,
+            kind,
+            source,
+        );
+        Self {
+            evidence_id,
+            for_need: String::new(),
+            produced_by: String::new(),
+            command,
+            argv,
+            exit_code,
+            observed_output_sha256,
+            observed_byte_length,
+            source_ids: Vec::new(),
+            kind,
+            source,
+            detail: EvidenceDetail::None,
+            recorded_at: None,
+        }
     }
 
     /// Read a record out of one client-owned tool result, reusing the exit-code
     /// parser that already exists.
+    ///
+    /// `source` is the call site's claim. A transcript that *says* it ran a local
+    /// process is still whatever the caller declared: nothing in `raw` upgrades it.
     #[must_use]
-    pub fn from_tool_result(_command: &str, _raw: &str, _source: EvidenceSource) -> Self {
-        todo!("plan 05 leaf 3")
+    pub fn from_tool_result(command: &str, raw: &str, source: EvidenceSource) -> Self {
+        let exit_code = crate::agentic_coding::tool_result::reported_exit_code(raw);
+        let argv = argv_of(command);
+        Self::observed(
+            command,
+            argv,
+            exit_code,
+            raw.as_bytes(),
+            ObservationKind::ToolResult,
+            source,
+        )
     }
 
-    /// Whether the record itself reports success. It says nothing about whether
-    /// an expectation was met — that is the ledger's judgement.
+    /// Whether the record itself reports success: a reported zero exit, or a
+    /// non-empty observation for kinds that carry no exit code. It says nothing
+    /// about whether an expectation was met — that is the ledger's judgement.
     #[must_use]
-    pub fn reports_success(&self) -> bool {
-        todo!("plan 05 leaf 3")
+    pub const fn reports_success(&self) -> bool {
+        match self.exit_code {
+            Some(code) => code == 0,
+            None => self.observed_byte_length > 0,
+        }
     }
 
     /// Links Notation projection, appended to the event log as kind `evidence`.
+    ///
+    /// `recorded_at` is projected last and is the one field outside the
+    /// fingerprint: the reader sees when the observation was logged without the
+    /// id ever depending on it.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
-        todo!("plan 05 leaf 3")
+        let mut pairs: Vec<(&str, String)> = vec![("record_type", String::from("evidence"))];
+        if !self.for_need.is_empty() {
+            pairs.push(("for_need", self.for_need.clone()));
+        }
+        if !self.produced_by.is_empty() {
+            pairs.push(("produced_by", self.produced_by.clone()));
+        }
+        pairs.push(("command", self.command.clone()));
+        for argument in &self.argv {
+            pairs.push(("argv", argument.clone()));
+        }
+        if let Some(code) = self.exit_code {
+            pairs.push(("exit_code", code.to_string()));
+        }
+        pairs.push((
+            "observed_output_sha256",
+            self.observed_output_sha256.clone(),
+        ));
+        pairs.push((
+            "observed_byte_length",
+            self.observed_byte_length.to_string(),
+        ));
+        for source_id in &self.source_ids {
+            pairs.push(("source_id", source_id.clone()));
+        }
+        pairs.push(("kind", self.kind.slug().to_owned()));
+        pairs.push(("source", self.source.slug().to_owned()));
+        if let EvidenceDetail::Tests {
+            passed,
+            failed,
+            timed_out,
+        } = &self.detail
+        {
+            for name in passed {
+                pairs.push(("passed", name.clone()));
+            }
+            for name in failed {
+                pairs.push(("failed", name.clone()));
+            }
+            pairs.push(("timed_out", timed_out.to_string()));
+        }
+        if let Some(recorded_at) = &self.recorded_at {
+            pairs.push(("recorded_at", recorded_at.clone()));
+        }
+        crate::links_format::format_lino_record(&self.evidence_id, &pairs)
     }
+}
+
+/// The content address of an observation: command, argv, exit, output hash,
+/// output length, kind and source. Never a wall clock, a pid or a machine name,
+/// so the same observation fingerprints identically on every machine.
+fn fingerprint_id(
+    command: &str,
+    argv: &[String],
+    exit_code: Option<i64>,
+    observed_output_sha256: &str,
+    observed_byte_length: usize,
+    kind: ObservationKind,
+    source: EvidenceSource,
+) -> String {
+    let exit = exit_code.map_or_else(|| String::from("none"), |code| code.to_string());
+    let arguments = argv.join("\u{1e}");
+    let fingerprint = format!(
+        "{command}\u{1f}{arguments}\u{1f}{exit}\u{1f}{observed_output_sha256}\u{1f}{observed_byte_length}\u{1f}{}\u{1f}{}",
+        kind.slug(),
+        source.slug()
+    );
+    crate::engine::stable_id("evidence", &fingerprint)
+}
+
+/// Split a rendered command line on whitespace so a record built from a tool
+/// result is still inspectable unparsed. A quoted argument stays whole.
+fn argv_of(command: &str) -> Vec<String> {
+    let mut argv = Vec::new();
+    let mut current = String::new();
+    let mut quote: Option<char> = None;
+    for character in command.chars() {
+        match quote {
+            Some(open) if character == open => quote = None,
+            Some(_) => current.push(character),
+            None if character == '\'' || character == '"' => quote = Some(character),
+            None if character.is_whitespace() => {
+                if !current.is_empty() {
+                    argv.push(std::mem::take(&mut current));
+                }
+            }
+            None => current.push(character),
+        }
+    }
+    if !current.is_empty() {
+        argv.push(current);
+    }
+    argv
 }
