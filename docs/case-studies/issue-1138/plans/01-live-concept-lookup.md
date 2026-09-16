@@ -1265,17 +1265,65 @@ making it reachable for a concept need.
 - [ ] **L4 — Settings surface.** Two rows in
       `src/web/app/main.jsx:1063-1068`, i18n labels, and the settings-parity test
       extended to six keys. Test: `a_settings_opt_out_silences_a_dictionary_and_is_reported_as_disabled`.
-- [ ] **L5 — Extractors.** `src/concept_lookup.rs` with `ConceptSense`,
+- [x] **L5 — Extractors.** `src/concept_lookup.rs` with `ConceptSense`,
       `SenseExtractor` and the four registry-bound extractors
       (`wiktionary_entry_v1`, `wordnet_sense_v1`, `mediawiki_summary_v1`,
       `wikidata_entity_v1`), each reading either live JSON or the committed
       `data/cache/**/*.lino` projection. Tests: one per extractor against a committed
       capture.
-- [ ] **L6 — Capture the fixtures.** `examples/issue_1138_concept_lookup_capture.rs`;
+- [x] **L6 — Capture the fixtures.** `examples/issue_1138_concept_lookup_capture.rs`;
       commit `tests/fixtures/issue-1138-b1/source-cache/` and `capture-manifest.lino`
       for both held-out words in every language the sources actually serve. Record
       the honest coverage in the manifest — a language with no capture gets no row.
-- [ ] **L7 — `lookup_surface` and `RegistryConceptLookup`.** The public entry plus the
+
+      **The measured coverage, from the live run on 2026-09-16.** Ten
+      `(language, surface)` pairs asked, **five answered**, 7 senses:
+
+      | language | isogram | lipogram |
+      | --- | --- | --- |
+      | en | 2 (wordnet, wikipedia) | 2 (wordnet, wikipedia) |
+      | ru | 0 — `изограмма`: wikipedia `no_entry` (HTTP 404) | 1 (wikipedia) |
+      | hi | 0 — unserved | 0 — unserved |
+      | zh | 0 — unserved | 0 — unserved |
+      | es | 1 (wikipedia) | 1 (wikipedia) |
+
+      No row was written for an unserved language and no gloss was fabricated.
+      The offline replay reproduces exactly these five pairs and these seven
+      senses, so `expected-senses.json` is a record of what services published
+      and not of what the plan hoped for.
+
+      **The decision this leaf carried, and its reason.** `wiktionary` — the
+      registry's Free Dictionary API endpoint — answers `HTTP 522` for *both*
+      held-out words while answering `mass` and the lemmas the committed
+      `data/cache/wiktionary/en/` corpus was built from. The word this plan is
+      judged by is a word that endpoint does not have. Rather than change the
+      held-out words (which would destroy the "absent from every seed file"
+      property the corpus depends on),
+      `an_unknown_word_resolves_to_a_licensed_sense_with_exact_provenance` now
+      asserts **the first source the registry declares that actually answered**,
+      with that source's exact provenance — id, url, license and content id —
+      pinned. Registry ordering is what decides it, so changing the order
+      changes the expectation with it. The reason is written at the test.
+
+      **Three changes this leaf forced, recorded rather than silent.**
+      1. `wordnet`'s registry `api` is now `https://en-word.net/api/lemma/{lemma}`.
+         The declared `/lemma/` path 303-redirects to a 33 KB HTML page whose
+         synsets only a browser can read; `/api/lemma/` is the same site's own
+         machine-readable endpoint for the same data under the same licence.
+      2. `wikinews` declares `need_kinds (evidence)`, not `(concept)`. A news
+         wiki records what happened; it does not say what a word means. Because
+         original journalism outranks every dictionary on the trust axis it had
+         taken the first of the four consultation slots for *every* concept
+         need and pushed a dictionary out.
+      3. `FetchError::HttpStatus` exists, and a 404 no longer speaks for a
+         service. The accessibility cache treats an unreachable service as a
+         seven-day fact; one absent Russian article was therefore blanking
+         Wikipedia for every language and every subject, and the first capture
+         run measured exactly that. `page_title` was cutting `लिपोग्राम` into
+         two words for the same class of reason — a Devanagari virama is not
+         `char::is_alphanumeric` — and now splits only on whitespace and ASCII
+         punctuation.
+- [x] **L7 — `lookup_surface` and `RegistryConceptLookup`.** The public entry plus the
       `UnknownConceptLookup` impl, over `walk_sources`. Tests:
       `an_unknown_word_resolves_to_a_licensed_sense_with_exact_provenance`,
       `a_lookup_that_finds_nothing_reports_every_consulted_source_and_no_gloss`,
@@ -1297,7 +1345,7 @@ making it reachable for a concept need.
       `record_external_search` performs the lookup and returns senses; delete
       `policy:no_fetch_capability`; rank senses in `answer_unknown_prompt`. Tests:
       `tests/unit/issue_1138_universal_loop_lookup.rs` (all three).
-- [ ] **L12 — Sense ledger.** `src/concept_sense_ledger.rs`; forget/rediscover and
+- [x] **L12 — Sense ledger.** `src/concept_sense_ledger.rs`; forget/rediscover and
       tamper-rejection tests.
 - [ ] **L13 — Browser parity.** `formal_ai_worker_source_walk.js`,
       `formal_ai_worker_concept_lookup.js`, two `data/meta/worker-line-budget/` files,

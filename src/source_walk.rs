@@ -194,11 +194,24 @@ pub trait SourceLookup {
 #[must_use]
 pub fn page_title(subject: &str, hyphenated: bool) -> String {
     let words: Vec<String> = subject
-        .split(|character: char| !character.is_alphanumeric())
+        .split(is_word_boundary)
         .filter(|word| !word.is_empty())
         .map(capitalize)
         .collect();
     words.join(if hyphenated { "-" } else { " " })
+}
+
+/// Where one written word ends, in any script the seed serves.
+///
+/// Whitespace, and ASCII punctuation. Deliberately *not* `!is_alphanumeric()`:
+/// a Devanagari virama and every other combining mark is a non-alphanumeric
+/// character in the middle of a word, so that test cut `लिपोग्राम` into
+/// `लिपोग` and `राम` and asked Wikipedia for a title with a space in it. A
+/// non-ASCII character is part of the word unless it is whitespace.
+#[must_use]
+pub fn is_word_boundary(character: char) -> bool {
+    character.is_whitespace()
+        || (character.is_ascii() && !character.is_ascii_alphanumeric() && character != '_')
 }
 
 fn capitalize(word: &str) -> String {
@@ -221,8 +234,24 @@ pub fn entry_url(record: &SourceRecord, subject: &str) -> Option<String> {
 }
 
 /// [`entry_url`], with a language code for the templates that serve one.
+///
+/// An empty `language` means "whichever language this endpoint leads with":
+/// the first code the registry's `api_language` declares. A source that
+/// declares no `api_language` has no language to bind, so a `{language}` slot
+/// stays literal and the template is reported unbound rather than requested in
+/// a language nobody said it serves. A `language` the record does not serve
+/// binds nothing at all — that is the honest `unbound_template` outcome, and it
+/// is what keeps an English gloss from being handed back for a Hindi question.
 #[must_use]
 pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Option<String> {
+    if !language.is_empty() && !record.serves_language(language) {
+        return None;
+    }
+    let language = if language.is_empty() {
+        record.api_language.first().map_or("", String::as_str)
+    } else {
+        language
+    };
     let hyphenated = record.host().contains("wikihow");
     let title = page_title(subject, hyphenated);
     let mut bindings: Vec<(&str, &str)> = vec![
@@ -256,13 +285,27 @@ pub fn select_sources(
         .into_iter()
         .filter(|record| preferences.allows(record) && entry_url(record, subject).is_some())
         .collect();
-    selected.sort_by_key(|record| {
-        (
-            record.how_to_role,
-            u8::MAX - record.tier.weight_percent(),
-            record.id.clone(),
-        )
-    });
+    if kind == NeedKind::Procedure {
+        // `how_to_role` survives as the ordering hint *inside* the procedure
+        // kind, which is what keeps the #991 guide byte-identical. It is not a
+        // second axis: for every other kind the registry's declared order is
+        // the consultation order, so a dictionary is consulted before an
+        // encyclopedia because the file says so and not because Rust does.
+        selected.sort_by_key(|record| {
+            (
+                record.how_to_role,
+                u8::MAX - record.tier.weight_percent(),
+                record.id.clone(),
+            )
+        });
+    } else {
+        selected.sort_by_key(|record| {
+            (
+                u8::MAX - record.tier.weight_percent(),
+                record.registry_index(),
+            )
+        });
+    }
     selected.truncate(bounds.max_services);
     selected
 }
@@ -425,9 +468,17 @@ pub fn walk_sources<T: SourceTransport, E: CaptureExtractor>(
             ));
             continue;
         }
-        // `select_sources` already dropped every template this subject cannot
-        // bind, and reported it; the fallback keeps the walk total.
+        // `select_sources` drops the templates the subject alone cannot bind
+        // and reports them. An extractor may refuse a source for a reason the
+        // selector cannot see — a language the endpoint does not serve, above
+        // all — and that refusal is recorded rather than swallowed, so the
+        // absence of a gloss stays attributable to a named source.
         let Some(url) = extractor.entry_url(&record, &subject) else {
+            walked.outcomes.push(WalkSourceOutcome::new(
+                &record.id,
+                "unbound_template",
+                record.api.clone(),
+            ));
             continue;
         };
         let mut outcome = WalkSourceOutcome::new(&record.id, "no_items", url.clone());
@@ -469,6 +520,12 @@ pub fn observe_failure(
             // An offline replay without this capture says nothing about whether
             // the service is up, so it must not poison the accessibility record.
             "offline_cache_miss"
+        } else if !error.speaks_for_the_service() {
+            // The service answered and said it has no such page. That is a fact
+            // about this subject in this language, not about the service: one
+            // absent Russian article must not blank Wikipedia for every
+            // language for the seven-day accessibility TTL.
+            "no_entry"
         } else {
             availability.observe(
                 &record.id,

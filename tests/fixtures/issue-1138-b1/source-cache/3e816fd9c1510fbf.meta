@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=isograma&site=stackoverflow&filter=withbody
+fetched_at=1789533804
+sha256=665f671935d30c84a9d938c3855d9ab90c2eecbf5337d86e211cacb67d13d615
