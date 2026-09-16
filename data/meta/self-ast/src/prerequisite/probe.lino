@@ -1,0 +1,13 @@
+self_ast_census
+  target src/prerequisite/probe.rs
+  language rust
+  fidelity signature
+  byte_len 2457
+  line_count 68
+  content_id source_module_cdb9271799e6eec0
+  symbol_count 4
+  symbols
+    struct ToolchainProbe 15 24
+    enum ProbeVerdict 28 53
+    function probe_command 60 62
+    function seed_probes 66 68

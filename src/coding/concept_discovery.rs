@@ -502,3 +502,20 @@ fn unique(values: impl Iterator<Item = String>) -> Vec<String> {
     let mut seen = BTreeSet::new();
     values.filter(|value| seen.insert(value.clone())).collect()
 }
+
+/// Unresolved surfaces of one requirement sentence, in sentence order — the
+/// words the coding path must ask about even when the rest of the sentence was
+/// understood (issue #1138, plan 01 L8).
+#[must_use]
+pub fn unresolved_surfaces(_normalized: &str, _structures: &[StructuralMeaning]) -> Vec<String> {
+    todo!("plan 01 leaf L8")
+}
+
+/// A retrieved sense, as a candidate the composer can read. The candidate's
+/// kind is `concept_sense`, which ranks *after* `source_program`, so a
+/// retrieved definition never outranks a retrieved implementation (issue #1138,
+/// plan 01 L9).
+#[must_use]
+pub fn concept_candidate(_evidence: &ConceptEvidence) -> CandidatePart {
+    todo!("plan 01 leaf L9")
+}

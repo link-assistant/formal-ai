@@ -759,3 +759,467 @@ decision no plan made:
    directly. Wave F delivers the five undelivered items either way; whether the
    issue is reopened so the record shows it was never finished is not this
    document's call.
+
+---
+
+## Wave T report — plans 05/06/03/08
+
+Executed 2026-09-16 in the issue-1138 worktree, concurrently with the wave T
+passes for plans 00/01/04/02 and 09/10/12/07/11. Toolchain `1.98.1`, shared
+`CARGO_TARGET_DIR`, no network, no docker.
+
+### Test files created
+
+| file | from plan | tests | observed |
+| --- | --- | --- | --- |
+| `tests/unit/specification/execution_evidence.rs` | 05 leaf 3 | 4 | 4 red |
+| `tests/unit/specification/obligation_ledger.rs` | 05 leaves 4–9 | 8 | 8 red |
+| `tests/unit/issue_1138_obligation_evidence.rs` | 05 leaf 18 | 5 | 5 red |
+| `tests/unit/issue_1138_toolchain_probe.rs` | 06 L1–L3 | 4 | 4 red |
+| `tests/unit/issue_1138_prerequisite_need.rs` | 06 L4–L5 | 5 | 5 red |
+| `tests/unit/issue_1138_setup_publisher.rs` | 06 L6 | 5 | 5 red |
+| `tests/unit/issue_1138_install_scope.rs` | 06 L7 | 6 | 6 red |
+| `tests/unit/issue_1138_toolchain_ledger.rs` | 06 L9 | 3 | 3 red |
+| `tests/unit/issue_1138_execution_box.rs` | 06 L11 | 4 | 4 red |
+| `tests/unit/issue_1138_conversation_container.rs` | 06 L14 | 2 | 2 red |
+| `tests/unit/issue_1138_surface_honesty.rs` | 06 L13, L15 | 2 | 2 red |
+| `tests/unit/issue_1138_held_out_toolchain.rs` | 06 L10 | 1 | **green by design** |
+| `tests/unit/specification/prerequisite_recipe.rs` | 06 L8 | 2 | 2 red |
+| `tests/unit/issue_1138_repository_workspace.rs` | 03 L2, L4, L5 | 5 | 5 red |
+| `tests/unit/issue_1138_locate_targets.rs` | 03 L6 | 3 | 3 red |
+| `tests/unit/issue_1138_named_tests.rs` | 03 L7 | 2 | 2 red |
+| `tests/unit/issue_1138_command_allowlist.rs` | 03 L3 | 3 | 3 red |
+| `tests/unit/issue_1138_solve_cli.rs` | 03 L12–L13 | 3 | 3 red |
+| `tests/unit/specification/repository_workspace_protocol.rs` | 03 L8 | 2 | 2 red |
+| `tests/unit/verifiable_task/mod.rs` | 08 | corpus reader | — |
+| `tests/unit/verifiable_task/recognition.rs` | 08 L2, L5 | 3 | 2 red, 1 green guard |
+| `tests/unit/verifiable_task/quantities.rs` | 08 L4 | 2 | 2 red |
+| `tests/unit/verifiable_task/identity.rs` | 08 L3 | 2 | 2 red |
+| `tests/unit/verifiable_task/execution.rs` | 08 L9–L11 | 4 | 4 red |
+| `tests/unit/verifiable_task/ledger.rs` | 08 L13–L14 | 3 | 3 red |
+| `tests/unit/verifiable_task/routing.rs` | 08 L8, L17' | 3 | 2 red, 1 green guard |
+| `tests/unit/verifiable_task/no_memorization.rs` | 08 L16, L19 | 2 | 1 red, 1 green guard |
+| `tests/integration/issue_1138_recovery_live.rs` | 06 L10 | 1 | `#[ignore = "network: plan 06 L10"]` |
+| `tests/integration/issue_1138_swebench_case.rs` | 03 L10–L11 | 2 | 1 red, 1 `#[ignore]` (network) |
+| `tests/source/repository_workspace.rs` + `source_tests/repository_workspace/tests.rs` | 03 | 2 | green placement guards |
+| `tests/source/verifiable_task.rs` + `source_tests/verifiable_task/tests.rs` | 08 | 2 | green placement guards |
+
+### Test files extended
+
+| file | from plan | added | observed |
+| --- | --- | --- | --- |
+| `tests/unit/specification/meta_frame.rs` | 05 leaf 9 | `the_planning_ledger_still_records_planned_not_satisfied` | red |
+| `tests/unit/specification/recipe_interpreter.rs` | 05 leaves 11–12 | `the_execution_pass_is_bound_to_a_known_recorder`, `native_and_data_driven_execution_produce_the_same_events` | 2 red |
+| `tests/unit/specification/equation_corpus.rs` | 08 L1, L12 | `every_limitation_is_still_honest_or_promoted` | red |
+
+The pre-existing `satisfied "0"` pin at
+`tests/unit/specification/recipe_interpreter.rs` is untouched; the new pass adds
+a strictly stronger sibling about the *executed* ledger (plan 00 §9 X10).
+
+### Corpus
+
+`data/benchmarks/verifiable-task-paraphrases.lino` — six families × five
+languages = **30 held-out prompts**, cases 1–5 verbatim from plan 08's "Held-out
+cases" section, case 6 (the honest gap) authored here. Every one of the 30
+strings was checked absent from `data/seed/**` and `src/**` before the file was
+written: **0 leaks**.
+
+### Compile skeletons
+
+Created with the exact public signatures the plans declare and bodies of
+`todo!("plan NN leaf LX")`; no behaviour is implemented and no existing
+production function changed behaviour.
+
+- plan 05: `src/execution_evidence.rs`, `src/obligation_ledger.rs`
+- plan 06: `src/prerequisite/{mod,probe,publisher,install,ledger}.rs`,
+  `src/execution_box/{mod,container}.rs`
+- plan 03: `src/repository_workspace/{mod,clone,locate,edit,verify,diff}.rs`,
+  `src/cli_solve.rs`
+- plan 08: `src/verifiable_task.rs`, `src/verifiable_task/{quantities,ledger}.rs`
+- data: `data/meta/prerequisite-recipe.lino` (8 ordered recovery steps),
+  `data/meta/repository-workspace-protocol.lino` (6 ordered protocol steps),
+  `data/seed/repository-command-allowlist.lino` (7 rows, `default "deny"`)
+- `src/lib.rs`: seven module registrations appended
+- `src/external_benchmarks/cases.rs`: `BenchmarkCase` gains
+  `repository: Option<WorkspaceSpec>` and `tests: Option<RunCommand>` (plan 03
+  L10's declaration). Every existing construction site passes `None`, so no
+  suite's behaviour changed; the SWE-bench branch deliberately still passes
+  `None`, which is what keeps `swebench_case_carries_a_clone_spec` red.
+
+### Counts
+
+| measure | value |
+| --- | --- |
+| test files created | 31 (27 unit, 2 integration, 2 source-placement pairs) |
+| test files extended | 3 |
+| test functions written | 99 |
+| observed failing | 89 |
+| green by design (anti-memorization and placement guards) | 8 |
+| `#[ignore]` (network) | 2 |
+| `src/` skeleton files created | 19 |
+| `.lino` files created | 4 |
+
+The eight green tests are guards, not behaviour claims: the held-out-toolchain
+absence scan (06 L10), `the_solver_never_imports_the_benchmark_grader`,
+`no_existing_handler_loses_a_prompt_it_answers_today`,
+`recognition_names_no_english_literal` and the four source-placement /
+file-size assertions. Each of them is a gate that must be green in wave T and
+must stay green through waves I5–I8; a red one would mean the corpus or the
+module tree was already compromised.
+
+### Observed failing output
+
+```
+$ cargo test --all-features --test unit issue_1138_obligation_evidence
+thread '…::the_session_does_not_finalize_while_any_obligation_is_unattempted'
+  panicked at src/obligation_ledger.rs:170: not yet implemented: plan 05 leaf 8
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 3785 filtered out
+
+$ cargo test --all-features --test unit specification::obligation_ledger
+test result: FAILED. 0 passed; 8 failed; 0 ignored; 3782 filtered out
+
+$ cargo test --all-features --test unit specification::execution_evidence
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 3786 filtered out
+
+$ cargo test --all-features --test unit -- issue_1138_toolchain_probe … issue_1138_held_out_toolchain
+test issue_1138_held_out_toolchain::the_held_out_program_is_absent_from_the_repository ... ok
+test result: FAILED. 1 passed; 31 failed; 0 ignored; 3758 filtered out
+
+$ cargo test --all-features --test unit -- issue_1138_repository_workspace … issue_1138_solve_cli
+test result: FAILED. 0 passed; 16 failed; 0 ignored; 3774 filtered out
+
+$ cargo test --all-features --test unit verifiable_task::
+test verifiable_task::no_memorization::object_categories_are_absent_from_the_runtime ... FAILED
+  category membership is retrieved, never authored:
+  ["src/solver_synthesis.rs still names the authored category table",
+   "src/solver_synthesis.rs:355 holds a 19-entry natural-language noun list",
+   "src/solver_synthesis.rs:380 holds a 14-entry natural-language noun list"]
+test result: FAILED. 3 passed; 16 failed; 0 ignored; 3771 filtered out
+
+$ cargo test --all-features --test integration issue_1138_swebench
+test …::one_lite_instance_runs_the_whole_protocol ... ignored, network: plan 03 L11
+thread '…::swebench_case_carries_a_clone_spec' panicked:
+  a SWE-bench case is defined against a repository
+test result: FAILED. 0 passed; 1 failed; 1 ignored; 385 filtered out
+```
+
+Every red test fails at **run time**, either at a `todo!("plan NN leaf LX")` or
+at the assertion the leaf has to satisfy; none fails to compile.
+
+### Gates run locally
+
+- `RUSTUP_TOOLCHAIN=1.98.1 … cargo check --all-features --tests` — clean.
+- `rust-script scripts/check-hardcoded-language.rs` — "No new hardcoded natural
+  language; allowlist is in sync (**1,286** entries)". The allowlist did not
+  grow: every held-out prompt lives in `data/benchmarks/` or under `tests/`.
+- `rust-script scripts/check-seed-registry.rs` does not exist; the equivalent is
+  `rust-script scripts/generate-seed-registry.rs`, which fails when a
+  `data/seed/*.lino` is neither registered nor excluded. The new allowlist file
+  is declared there as `unregistered repository-command-allowlist` with its
+  owner and the leaf that bundles it, and the checker reports "The seed registry
+  and every file generated from it agree."
+- `rust-script scripts/check-file-size.rs` — "All checked files are within their
+  line limits".
+
+### Deviations, recorded rather than silent
+
+1. **`tests/unit/docs_requirements/issue_1138.rs` was not written in this pass.**
+   Plan 00 §9 R11 makes it *one* file shared by plans 01, 03, 05, 06, 07 and 12,
+   i.e. by all three concurrent wave-T passes; writing it from three sides would
+   clobber. It needs a single owner, and the `R1138-*` shards it grep-pins are
+   wave D deliverables.
+2. **`ObservationKind::slug`, `EvidenceSource::slug` and `Evidence::reports_success`
+   are declared without `const` in wave T.** A `todo!("…")` message is not
+   const-evaluable; `const` is restored with the body in wave I5 leaf 05-3.
+3. **No `Command::Solve` clap variant was added.** The three `solve_cli` cases
+   drive `cli_solve::run_solve(&SolveArgs)` directly, so `src/main.rs` is
+   untouched until wave I7 leaf 03-L12 needs the subcommand for real.
+4. **Plan 08's `VerifiedAnswer` and `try_verifiable_task` were not declared.**
+   `src/solver_handlers` is `pub(crate)`, so a test cannot name them. The
+   `execution` and `routing` suites are written against the public
+   `FormalAiEngine::answer` surface and its evidence links instead, which is
+   strictly harder to satisfy by construction.
+5. **`object_categories_are_absent_from_the_runtime` scopes its noun-list scan**
+   to `src/solver_synthesis.rs` and `src/verifiable_task*`. A tree-wide version
+   fires on twenty pre-existing lists in unrelated modules and would be
+   unsatisfiable by wave I8; the tree-wide ratchet is plan 08's gate 2 on
+   `scripts/check-hardcoded-language.rs`, not this test.
+6. **`tests/unit/data_files.rs::lino_data_files_are_parseable_human_readable_and_bounded`
+   is red on `data/meta/capability-routing-ratchet.lino`** (a plan 10 wave-T
+   file that opens with `#` comment lines the canonical parser rejects). The four
+   `.lino` files this pass added are not implicated — all four were parsed
+   individually through `links_notation::parse_lino` and all four are clean —
+   and the fix belongs to the pass that owns that file.
+
+---
+
+## Wave T report — plans 00/01/04/02
+
+Written 2026-09-16 by the wave-T pass that owns plan 00 C1, plan 01, plan 04 and
+plan 02. Every file below was created or extended, registered, compiled
+(`cargo check --all-features --tests` green with these changes in place) and
+**observed failing**; the one-line summary per file is the observed output.
+
+### Unit tests
+
+| file | tests | observed |
+| --- | --- | --- |
+| `tests/unit/specification/needs.rs` *(new)* | 3 | 3 failed — `Need::to_links_notation` / `NeedKind::slug` are `todo!("plan 00 leaf C1")`, and `data/meta/need-contract.lino` declares no vocabulary yet |
+| `tests/unit/issue_1138_source_walk_parity.rs` *(new)* | 1 | 1 failed — `not yet implemented: plan 01 leaf L2` from `source_walk::select_sources`; the byte-identity half of the guard is green before it |
+| `tests/unit/issue_1138_concept_lookup.rs` *(new)* | 9 | 9 failed — `not yet implemented: plan 01 leaf L7` (`RegistrySourceLookup::new`, `lookup_surface`) and leaf L2 (`select_sources`) |
+| `tests/unit/concept_sense_ledger.rs` *(new)* | 2 | 2 failed — `not yet implemented: plan 01 leaf L12` |
+| `tests/unit/issue_1138_universal_loop_lookup.rs` *(new)* | 3 | 3 failed — `unknown_surfaces` is `todo!`, and the src scan reports `src/solver.rs` still carries `policy:no_fetch_capability` |
+| `tests/unit/issue_1138_segmentation.rs` *(new)* | 4 | 4 failed — `not yet implemented: plan 04 leaf L2` |
+| `tests/unit/issue_1138_formalization_depth.rs` *(new)* | 12 | 12 failed — `formalize_deeply`, `from_step_records`, `adopt_extracted_procedure` are `todo!`; `preserved_sentences_…` fails on the live `pred:states` output |
+| `tests/unit/coding_discovery/concepts.rs` *(extend)* | +4 | 4 failed — `unresolved_surfaces` / `concept_candidate` are `todo!`; the need-type test fails because `ConceptNeed` is still a second struct with `status: String` |
+| `tests/unit/coding_discovery/multilingual.rs` *(extend)* | +3 | 2 failed (`…share_one_concept_map_identity…` after tightening to require retrieved evidence, `composition_from_sources_holds_in_five_languages`: `run_length en did not compose`); the held-out-sentence gate is green by design |
+| `tests/unit/coding_discovery/procedure_text.rs` *(new)* | 3 | 3 failed — `not yet implemented: plan 02 leaf L10` |
+| `tests/unit/coding_discovery/program_ir.rs` *(new)* | 3 | 3 failed — `not yet implemented: plan 02 leaf L2` / `L3` |
+| `tests/unit/coding_discovery/ir_lowering.rs` *(new)* | 2 | 2 failed — `not yet implemented: plan 02 leaf L6` |
+| `tests/unit/coding_discovery/fragment_catalog.rs` *(new)* | 3 | 3 failed — `not yet implemented: plan 02 leaf L4` |
+| `tests/unit/coding_discovery/composition_search.rs` *(new)* | 2 | 2 failed — `not yet implemented: plan 02 leaf L7` |
+| `tests/unit/coding_discovery/no_memorization.rs` *(extend)* | +2 | 1 failed (`no_seed_template_is_a_whole_algorithm` lists the seven algorithm-shaped runtime templates); the held-out-vocabulary gate is green by design |
+| `tests/unit/agentic_coding.rs` *(extend)* | +2 | 1 failed (`a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale`: "an unfamiliar requirement raises needs instead of reporting silent coverage"); `the_canonical_tale_still_formalizes_to_nine_primitives` is the regression guard and is green |
+| `tests/unit/specification/concept_lookup_meta_algorithm.rs` *(new)* | 1 | 1 failed — `data/meta/concept-lookup-recipe.lino` is an empty-but-valid stub (01 L16 fills it) |
+| `tests/unit/specification/formalization_depth_meta_algorithm.rs` *(new)* | 1 | 1 failed — `data/meta/formalization-depth-recipe.lino` is an empty-but-valid stub (04 L17 fills it) |
+
+### Integration, web and source-placement tests
+
+| file | tests | observed |
+| --- | --- | --- |
+| `tests/integration/issue_1138_concept_lookup_http.rs` *(new)* | 3 | 3 failed — the committed captures `tests/fixtures/issue-1138-b1/` are plan 01 L6's deliverable |
+| `tests/integration/issue_1138_formalization_agent.rs` *(new)* | 2 | 2 failed — a real `formal-ai agent` run reports neither a grounded concept nor its needs |
+| `tests/web/issue-1138-concept-lookup.test.mjs` *(new)* | 3 | red by construction — `src/web/worker/formal_ai_worker_concept_lookup.js` and the b1 fixtures land in 01 L13/L6; not run here (no browser suite in this pass) |
+| `tests/web/issue-1138-formalization-depth.test.mjs` *(new)* | 2 | red by construction — `formal_ai_worker_formalization.js` and the b4 fixtures land in 04 L14 |
+| `tests/source/source_tests/coding/program_ir/tests.rs` *(new)*, mounted from `tests/source/coding/program_ir.rs` | 4 | 1 failed (`no_new_module_ships_an_unimplemented_leaf`, listing every `todo!` in the four plan-02 modules); the three placement rules — file-size ceiling, no inline `#[cfg(test)]`, registered and re-exported — are green |
+
+### Benchmark corpora
+
+`data/benchmarks/concept-lookup-paraphrases.lino` (10 prompts: `isogram`,
+`lipogram` × en/ru/hi/zh/es), `data/benchmarks/formalization-depth-requirements.lino`
+(10: `isogram_requirement`, `lipogram_procedure`) and
+`data/benchmarks/coding-composition-from-sources.lino` (25: `run_length`,
+`find_position`, `edit_steps`, `run_length_rust`, `undefined_operation`). Every
+held-out word was grepped absent from `data/seed/**` and `src/**` **before** the
+corpora were written, and the new
+`coding_discovery::no_memorization::issue_1138_held_out_vocabulary_is_absent_from_runtime_and_seed`
+gate keeps it that way.
+
+### Compile skeletons added (no behaviour)
+
+`src/needs.rs`, `src/source_walk.rs`, `src/concept_lookup.rs`,
+`src/concept_sense_ledger.rs`, `src/procedure_text.rs`,
+`src/formalization/{mod,segment,needs,concepts,procedures,graph}.rs`,
+`src/coding/{program_ir,fragment_catalog,composition_search}.rs`,
+`src/coding/ir_lowering/{mod,python,rust}.rs`, all registered in `src/lib.rs` and
+`src/coding/mod.rs`; plus `unresolved_surfaces` / `concept_candidate` in
+`src/coding/concept_discovery.rs`, `adopt_extracted_procedure` in
+`src/coding_research_learning.rs`, and the three `needs_raised` /
+`needs_grounded` / `max_depth_reached` fields on `FormalizationSummary`. Every
+body is `todo!("plan NN leaf LX")`; no existing function changed behaviour. The
+`.lino` files a test reads were added empty-but-valid:
+`data/meta/need-contract.lino`, `data/meta/concept-lookup-recipe.lino`,
+`data/meta/formalization-depth-recipe.lino`.
+
+### Gates
+
+`rust-script scripts/check-hardcoded-language.rs`: 1,286 detected / 1,286
+allowlisted, unchanged — the allowlist did not grow (`todo!` messages are not
+prose literals, and every held-out prompt lives in `data/benchmarks/`).
+`rust-script scripts/check-file-size.rs`: all files within their limits.
+
+### Deviations, recorded rather than silent
+
+1. **Three tests are green on purpose.** The `source_walk` guard's byte-identity
+   half (plan 01 L1 requires it green *before* the refactor; the red half is the
+   shared-kernel assertion added beside it), the extended held-out-sentence gate
+   and the held-out-vocabulary gate (plan 14's "gate wave T must keep green"),
+   and `the_canonical_tale_still_formalizes_to_nine_primitives` (plan 04's
+   explicit no-regression corpus).
+2. **`tests/unit/docs_requirements/issue_1138.rs` was not written by this pass**
+   either, for the same one-owner reason the sibling pass recorded above.
+3. **`tests/source/coding/program_ir.rs` is a placement anchor, not a full
+   mirror.** The IR module's dependency closure (`task_spec`, `procedure_text`,
+   `source_walk`, `source_fetch`) is not mirrored, so a faithful copy would not
+   compile in the mirror crate today; the anchor carries the placement rules and
+   the module is mirrored properly by the leaf that gives it behaviour (02-L2).
+4. **`the_same_ir_lowers_to_python_and_rust` asserts `def run_length` /
+   `fn run_length`** as the lowering evidence; if wave I4 chooses another
+   surface the assertion is updated with the leaf, never deleted.
+
+---
+
+## Wave T report — plans 09/10/12/07/11
+
+Written 2026-09-16, alongside the two sibling wave-T reports. Nothing here is a
+new decision: every file is a row of the wave T tables above, and every leaf
+named in a failure message is a leaf its plan already owns.
+
+### Files created
+
+**Benchmark corpora (checked held out before they were committed).**
+
+| file | cases | shape |
+| --- | --- | --- |
+| `data/benchmarks/handler-family-paraphrases/{en,ru,hi,zh,es}.lino` | **300** (5 families × 5 languages × 12) | `handler_family_case`, after `data/benchmarks/local-path-discovery/en.lino` |
+| `data/benchmarks/handler-family-paraphrases-suite.lino` | header | after `local-path-discovery-suite.lino:1-18` |
+| `data/benchmarks/capability-routing/{en,ru,hi,zh,es}.lino` | **420** (7 intents × 5 languages × 12) | `capability_routing_case`, same shape |
+| `data/benchmarks/capability-routing-suite.lino` | header | same shape |
+
+All **720** prompts are distinct, and a scan over `data/seed/**` and `src/**`
+found **zero** of them present before the corpora were written. The plans' own
+wording is kept verbatim where a plan gave it (plan 09's five family exemplars
+per language; plan 10's three per intent per language, including the two pinned
+regressions `Назначь мне встречу с Александром на 20:00 по Грузии` and
+`Какого размера средний корень яблони?` and the maintainer's three
+`hive-mind-control-center` prompts); the remaining nine per cell are authored
+variations of the same class.
+
+**Test files, unit.** `issue_1138_handler_promotions.rs` (3),
+`issue_1138_uniform_dispatch.rs` (3), `issue_1138_family_migration.rs` (3),
+`issue_1138_store_read_path.rs` (2), `issue_1138_object_type.rs` (3),
+`issue_1138_capability_routing.rs` (5), `issue_1138_frontier_classes.rs` (8),
+`issue_1138_selection_heuristics.rs` (4),
+`issue_1138_learned_items_change_answers.rs` (4),
+`issue_1138_review_time_gate.rs` (3),
+`specification/capability_routing_table.rs` (4),
+`specification/selection_heuristics.rs` (6),
+`specification/refutation_search.rs` (6),
+`specification/triz_contradictions.rs` (5),
+`specification/behavior_delta.rs` (5),
+`specification/source_reconstruction.rs` (4),
+`specification/status_render.rs` (4), `docs_requirements/count.rs` (3),
+`docs_requirements/issue_1138.rs` (4).
+
+**Test files, integration.** `issue_1138_family_behaviour.rs` (2),
+`issue_1138_no_silent_unknown.rs` (1), `issue_1138_draft_pull_request.rs` (4).
+
+### Files extended or rewritten
+
+| file | what changed | plan leaf |
+| --- | --- | --- |
+| `tests/unit/total_closure.rs` *(rewrite)* | `seed_has_total_reference_closure` becomes `seed_closure_gap_only_shrinks`, strict two-sided against `data/meta/closure-audit.lino` and reading `unresolved_distinct_honest`. The other seven tests are untouched. | 09-6, 09-7 |
+| `tests/unit/specification/routing_precedence.rs` *(rewrite)* | the parity test becomes a **reorder** test over both surfaces; the `str::find` substring search of the worker source is replaced by a read of the worker's registry keys; two cases added (`worker_handler_registry_is_a_permutation_of_the_seed`, `the_parity_fixture_no_longer_claims_order_parity_is_impossible`). Seven pre-existing cases kept verbatim. | 09-13, 09-14, 09-15 |
+| `tests/unit/issue_699_handler_migration.rs` *(rewrite)* | `RECORDED_SPECIALIZED_HANDLER_FILES_MAX` and `RECORDED_TRY_DISPATCH_ENTRIES_MAX` deleted; ceilings read from `data/meta/debt-ratchet.lino`, strict two-sided; one recursive `handler_files()` definition including the four files outside `src/solver_handlers/`; the census widens to precedence **+** prelude. Five pre-existing cases kept. | 09-3, 09-4, 09-5 |
+| `tests/unit/issue_745.rs` *(extend)* | every existing assertion kept; a fifth language (es) added to all five variation matrices, each matrix raised to 20 rows, `VARIATION_FLOOR` 15 → 20; Spanish rows added to the collision and attachment cases. | 10-11 |
+| `tests/unit/specification/task_decomposition.rs` *(extend)* | six cases for the binary-split invariant, appended; the 17 pre-existing cases untouched. | 12-7 … 12-11 |
+| `tests/unit/specification/method_registry.rs` *(extend)* | six cases: learned methods executable and last, an unbound operation named not skipped, heuristics never route targets, the registry event lists them. The eight pre-existing cases untouched. | 07-4 … 07-6, 12-2 |
+
+### Compile skeletons (no behaviour, `todo!` naming the leaf that owes it)
+
+`src/handler_promotion.rs`, `src/capability_routing.rs`,
+`src/selection_heuristics.rs`, `src/behavior_delta.rs`,
+`src/source_reconstruction.rs` — all registered in `src/lib.rs`.
+`src/method_registry.rs` gains the `heuristics` collection with
+`heuristics_for` (plan 12's authoritative three-field declaration, §9 R16) and
+`LearnedMethod::{to_recipe_program, is_executable}`; `src/promotion.rs` gains
+`DraftPullRequest` and `open_draft_pull_request`. No existing function's
+behaviour changed: the new registry field is initialised empty.
+
+Data and script skeletons: `data/seed/handler-promotions.lino`,
+`data/seed/capability-routing.lino` (both registered in
+`data/meta/seed-registry.lino` as `unregistered` with an owner and a reason
+until leaves 09-10 and 10-8 bundle them), `data/meta/closure-audit.lino`,
+`data/meta/capability-routing-ratchet.lino`,
+`data/meta/selection-heuristics.lino`,
+`data/meta/requirement-status-ledger.lino`, `scripts/render-status.rs`.
+
+Every placeholder value in the two new ratchets says so in its own `note`
+field: the numbers plan 09 leaf 7 and plan 10 leaf 1 must **measure** are not
+guessed here, so the tests that read them stay red rather than passing against
+an invented baseline (plan 00 §6.2). **No ceiling in
+`data/meta/debt-ratchet.lino` was changed.**
+
+### Counts and the observed failing run
+
+104 test functions were added or rewritten across 24 files. **98 of them fail at
+runtime**, not at compile time; the six that pass are structural guards that are
+correct today and must stay correct (the two corpus-shape checks, the
+`default ask` row, the anti-memorization scan over the inference corpus, the
+ledger-input existence check, and the family suite's unknown-opener guard). The
+widened `issue_745` matrices additionally turn 7 of that file's 9 pre-existing
+cases red, which is the honest measurement plan 10 leaf 1 records.
+
+Representative failures, one per plan:
+
+```
+issue_1138_handler_promotions::no_handler_name_appears_in_prompt_relevants
+  src/intent_formalization/prompt_relevants.rs still names 19 handlers as
+  literals; plan 09 leaf 11 moves every one into data/seed/handler-promotions.lino
+
+issue_699_handler_migration::handler_migration_ratchet
+  specialized handler files grew from 42 to 46; the reviewed ceiling is
+  data/meta/debt-ratchet.lino     # exactly the 42 -> 46 correction leaf 1 predicts
+
+total_closure::seed_closure_gap_only_shrinks
+  scripts/audit-total-closure.py does not report `unresolved_distinct_honest`.
+  Report keys: ["defined", "distinct_value_tokens", …, "unresolved_distinct", …]
+
+issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter
+  300 of 300 held-out family paraphrases did not reach their family interpreter.
+  First offenders: ["en_retrieval_method_01 (en): expected family
+  `retrieval_method`, reached `summarize_topic`", …]
+
+specification::routing_precedence::worker_handler_registry_is_a_permutation_of_the_seed
+  plan 09 leaf 14 owes src/web/worker/formal_ai_worker_20.js a name-keyed
+  `const workerHandlers = { … }` registry; the file still declares an array literal
+
+issue_1138_capability_routing::held_out_paraphrases_route_without_cross_tool_misroutes
+  not yet implemented: plan 10 leaves 8-10 -- route over the decision table
+
+issue_745::reported_object_type_collisions_choose_the_right_capability
+  assertion `left == right` failed: muestra sample.txt
+    left: "web_search"   right: "read_file"
+
+specification::selection_heuristics::the_seeded_least_action_ranker_reproduces_the_previous_portfolio_order
+  not yet implemented: plan 12 leaf 2 -- read data/meta/selection-heuristics.lino
+
+specification::task_decomposition::every_non_leaf_unit_has_exactly_two_children
+  not yet implemented: plan 12 leaf 7 -- balanced binary split
+
+specification::behavior_delta::adoption_requires_all_five_languages
+  not yet implemented: plan 07 leaf 2 -- the adoption contract
+
+issue_1138_review_time_gate::self_improvement_ingestion_records_absent_gate_evidence_not_a_zero_floor
+  src/self_improvement.rs still judges an ingested proposal against a benchmark
+  report that was never produced; a gate that did not run is absent, not failed
+
+specification::status_render::check_mode_is_green_against_the_committed_ledgers
+  render-status: not implemented. Plan 11 leaf L2 owns docs/status.md and the
+  2 pinned regions (docs/benchmarks.md:benchmarks, README.md:self-hosting)
+
+docs_requirements::count::the_docs_requirements_suite_count_is_at_or_below_its_ceiling
+  data/meta/debt-ratchet.lino names no `docs_requirements_suites` ceiling;
+  plan 11 leaf L76 adds it through plan 09's strict two-sided checker
+
+docs_requirements::issue_1138::issue_1138_requirements_have_at_least_one_shard
+  no docs/requirements/issue-1138-*.md shard exists (wave D writes them)
+```
+
+### Gates run
+
+- `RUSTUP_TOOLCHAIN=1.98.1 … cargo check --all-features --tests` — **Finished**,
+  no errors; the only warnings are four pre-existing dead-field warnings.
+- `rust-script scripts/check-hardcoded-language.rs` — *"Detected prose literals:
+  1286 | allowlisted: 1286 … allowlist is in sync"*. **The allowlist did not
+  grow**: every held-out prompt lives under `data/benchmarks/`, which the
+  checker does not scan, and none is in `src/` or `data/seed/`.
+- `rust-script scripts/check-file-size.rs` — all files within their limits
+  (`src/promotion.rs` is now 937 of 1,000 lines and is in the warn band; plan 07
+  leaf 13 should split it rather than approach the limit).
+- `rust-script scripts/generate-seed-registry.rs` — the two new seed files are
+  accounted for.
+- `cargo test --test unit data_files` — 17 passed, 0 failed: every new `.lino`
+  file parses as canonical Links Notation and is within the 1,500-line cap.
+
+### Two things this wave deliberately did not do
+
+1. **`data/meta/self-ast/` was not regenerated.** Five new `src/` modules mean
+   `tests/unit/issue_673_self_ast_census.rs` is stale, and the sibling waves add
+   more. `cargo run --example regenerate_self_ast_census` must run **once**, at
+   the end of wave T, before the commit — not three times concurrently.
+2. **No ci-gate file was added.** `check-capability-routing.lino`,
+   `check-closure-audit.lino`, `check-condition-source-parity.lino` and
+   `check-worker-handler-registry.lino` belong to the leaves that write their
+   checkers (09-7, 09-15, 09-39, 10-3); adding a gate row with no script behind
+   it would break `check-ci-gate-registry` for no gain.

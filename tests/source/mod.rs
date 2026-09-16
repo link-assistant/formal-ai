@@ -67,6 +67,8 @@ pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
+pub(crate) mod repository_workspace;
+pub(crate) mod verifiable_task;
 
 pub use agent::{
     AgentAction, AgentActionKind, AgentActionStatus, AgentCommandResult, AgentError, AgentRun,

@@ -1,0 +1,20 @@
+self_ast_census
+  target src/execution_evidence.rs
+  language rust
+  fidelity signature
+  byte_len 5123
+  line_count 142
+  content_id source_module_595bec4109415b07
+  symbol_count 11
+  symbols
+    enum ObservationKind 11 20
+    function slug 28 30
+    enum EvidenceSource 35 42
+    function slug 47 49
+    enum EvidenceDetail 54 66
+    struct ObservedOutput 70 75
+    struct Evidence 79 107
+    function observed 112 121
+    function from_tool_result 126 128
+    function reports_success 133 135
+    function to_links_notation 139 141

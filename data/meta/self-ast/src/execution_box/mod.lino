@@ -1,0 +1,27 @@
+self_ast_census
+  target src/execution_box/mod.rs
+  language rust
+  fidelity signature
+  byte_len 5817
+  line_count 201
+  content_id source_module_9202d539ae7b5b12
+  symbol_count 18
+  symbols
+    module container 12 12
+    enum ExecutionBackend 18 41
+    enum NetworkPolicy 45 50
+    function default 53 55
+    struct BoxPolicy 60 65
+    function default 68 73
+    struct BoxObservation 78 89
+    struct LadderRung 93 100
+    enum BoxError 104 122
+    struct BoxHandle 126 131
+    struct ExecutionBox 135 139
+    function open 148 150
+    function backend 154 156
+    function network 160 162
+    function deadline 166 168
+    function run 174 180
+    function halving_ladder 186 192
+    function detach 198 200

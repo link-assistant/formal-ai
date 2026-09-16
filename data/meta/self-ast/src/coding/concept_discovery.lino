@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/concept_discovery.rs
   language rust
   fidelity signature
-  byte_len 16870
-  line_count 504
-  content_id source_module_1f25e165f36a01df
-  symbol_count 35
+  byte_len 17577
+  line_count 521
+  content_id source_module_14956a6ba0314536
+  symbol_count 37
   symbols
     const STRUCTURES 11 11
     struct StructuralMeaning 14 18
@@ -42,3 +42,5 @@ self_ast_census
     function token_overlap 487 491
     function tokens 493 499
     function unique 501 504
+    function unresolved_surfaces 510 512
+    function concept_candidate 519 521

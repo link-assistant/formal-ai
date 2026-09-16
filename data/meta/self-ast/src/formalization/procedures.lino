@@ -1,0 +1,15 @@
+self_ast_census
+  target src/formalization/procedures.rs
+  language rust
+  fidelity signature
+  byte_len 2335
+  line_count 73
+  content_id source_module_d80470f26a2c7154
+  symbol_count 6
+  symbols
+    struct ExtractedProcedure 12 24
+    struct ProcedureStep 27 35
+    function procedure_from_steps 41 47
+    function from_step_records 53 59
+    function to_coding_procedure_source 65 67
+    function to_links_notation 70 72

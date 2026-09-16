@@ -1,0 +1,12 @@
+self_ast_census
+  target src/source_reconstruction.rs
+  language rust
+  fidelity signature
+  byte_len 1965
+  line_count 55
+  content_id source_module_e57960ae43429c99
+  symbol_count 3
+  symbols
+    enum ReconstructionOutcome 20 31
+    function reconstruct 35 42
+    function reconstruct_on_miss 48 55

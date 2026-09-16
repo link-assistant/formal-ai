@@ -1,0 +1,30 @@
+self_ast_census
+  target src/obligation_ledger.rs
+  language rust
+  fidelity signature
+  byte_len 8400
+  line_count 249
+  content_id source_module_7c096e9fc77a78ef
+  symbol_count 21
+  symbols
+    enum ObligationExpectation 22 58
+    function to_links_notation 63 65
+    enum ObligationOutcome 70 90
+    function to_links_notation 95 97
+    struct ObligationNode 102 121
+    function build 128 130
+    function discharged 135 137
+    function next_open 141 143
+    function collect_leaves 146 148
+    function to_links_notation 152 154
+    struct ObligationLedger 159 164
+    function for_frame 169 171
+    function observe 176 178
+    function every_obligation_discharged 182 184
+    function satisfied_count 188 190
+    function unsatisfiable_count 194 196
+    function unattempted_count 200 202
+    function to_links_notation 206 208
+    enum ObligationStep 213 229
+    function need_ledger_with_execution 238 243
+    function next_step 247 249

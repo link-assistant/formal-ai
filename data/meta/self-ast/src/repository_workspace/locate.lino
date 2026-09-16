@@ -1,0 +1,14 @@
+self_ast_census
+  target src/repository_workspace/locate.rs
+  language rust
+  fidelity signature
+  byte_len 2294
+  line_count 66
+  content_id source_module_42be843ff2a91990
+  symbol_count 5
+  symbols
+    struct Location 15 22
+    enum LocationEvidence 26 33
+    struct AmbiguityReport 37 40
+    function locate_targets 49 54
+    function locate_ambiguity 61 66

@@ -1,0 +1,13 @@
+closure_audit
+  issue 1138
+  purpose "The honest count of distinct seed value tokens that resolve to no defined meaning, no grounded source and no override, with the generator's own output excluded from the definition set."
+  plan "docs/case-studies/issue-1138/plans/09-handler-migration-ratchet.md leaves 6-8"
+  defect "The total-closure metric is self-satisfying today. scripts/close-total.py writes data/seed/closure-generated-NN.lino and scripts/audit-total-closure.py then counts those generated glosses as definitions, so the gap it reports is zero by construction while 3,555 English-only glosses no runtime loads stand in for grounding."
+  checker "tests/unit/total_closure.rs::seed_closure_gap_only_shrinks"
+  measure_source "python3 scripts/audit-total-closure.py --json . reporting unresolved_distinct_honest"
+  strict_direction "down. A value above the ceiling fails with grew; a value below it fails with improved, lower the reviewed ceiling. The rule is copied from scripts/check-minimal-core-boundary.rs lines 286-290."
+  ceiling
+    measure unresolved_distinct_honest
+    value 0
+    how "distinct unresolved value tokens reported by scripts/audit-total-closure.py once data/seed/closure-generated- is excluded from the definition set"
+    note "placeholder, not a measurement. Plan 09 leaf 6 emits the honest number and leaf 7 records the first honest run here with its date. Wave T leaves the test red on purpose rather than guessing a value no run produced."

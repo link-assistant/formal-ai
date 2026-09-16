@@ -41,31 +41,86 @@ fn run_python(args: &[&str]) -> (String, String, bool) {
     )
 }
 
-/// Total closure: the seed must have zero unresolved value tokens. On failure,
-/// name the offending tokens so the gap is actionable — never a bare count.
+/// The reviewed closure ceiling, read from `data/meta/closure-audit.lino`.
+///
+/// Issue #1138 B9, plan 09 leaves 6-7. The number lives in one ledger so a
+/// grounding commit touches one file and cannot leave a second copy stale.
+fn reviewed_closure_ceiling() -> u64 {
+    let path = repo_root().join("data/meta/closure-audit.lino");
+    let text = std::fs::read_to_string(&path)
+        .unwrap_or_else(|err| panic!("{} readable: {err}", path.display()));
+    let mut measure: Option<&str> = None;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if let Some(rest) = trimmed.strip_prefix("measure ") {
+            measure = Some(rest.trim().trim_matches('"'));
+            continue;
+        }
+        if let Some(rest) = trimmed.strip_prefix("value ") {
+            if measure.take() == Some("unresolved_distinct_honest") {
+                return rest
+                    .trim()
+                    .trim_matches('"')
+                    .parse()
+                    .unwrap_or_else(|err| panic!("closure-audit.lino value: {err}"));
+            }
+        }
+    }
+    panic!("data/meta/closure-audit.lino names no `unresolved_distinct_honest` ceiling");
+}
+
+/// Total closure, measured honestly and ratcheted strictly in **both**
+/// directions (issue #1138 B9, plan 09 leaves 6-8; renamed from
+/// `seed_has_total_reference_closure`).
+///
+/// The old assertion was self-satisfying: `scripts/close-total.py` wrote
+/// `data/seed/closure-generated-*.lino`, and `scripts/audit-total-closure.py`
+/// then counted those generated glosses as definitions, so the gap it reported
+/// was zero by construction while 3,555 English-only glosses no runtime loads
+/// stood in for grounding. Leaf 6 excludes the generated prefix from the audit's
+/// definition set and emits `unresolved_distinct_honest`; leaf 7 records the
+/// measured value in `data/meta/closure-audit.lino` and this test adopts the
+/// strict two-sided rule of `scripts/check-minimal-core-boundary.rs:286-290`:
+/// above the ceiling fails ("grew"), below it also fails ("improved; lower the
+/// reviewed ceiling").
 #[test]
-fn seed_has_total_reference_closure() {
+fn seed_closure_gap_only_shrinks() {
     let (stdout, stderr, _) = run_python(&["scripts/audit-total-closure.py", "--json", "."]);
     let report: Value = serde_json::from_str(&stdout).unwrap_or_else(|err| {
         panic!("audit did not emit JSON ({err}); stderr: {stderr}\nstdout: {stdout}")
     });
 
-    let distinct = report["unresolved_distinct"].as_u64().unwrap_or(u64::MAX);
-    if distinct != 0 {
-        let unresolved = report["unresolved"]
-            .as_object()
-            .cloned()
-            .unwrap_or_default();
-        let sample: Vec<String> = unresolved.keys().take(40).cloned().collect();
+    let honest = report["unresolved_distinct_honest"].as_u64().unwrap_or_else(|| {
         panic!(
-            "total reference-closure is not at zero: {distinct} distinct tokens \
-             ({} occurrences) resolve to no defined meaning, grounded source, or \
-             override. Define or ground them (e.g. `python3 scripts/close-total.py`, \
-             `scripts/ground-wordnet.py`, `scripts/ground-wiktionary.py`). \
-             First offenders: {sample:?}",
-            report["unresolved_occurrences"].as_u64().unwrap_or(0)
-        );
-    }
+            "scripts/audit-total-closure.py does not report `unresolved_distinct_honest`. \
+             Plan 09 leaf 6 excludes the `closure-generated-` prefix from the audit's \
+             definition set and emits the honest number beside the old one, so the gate \
+             measures grounding rather than the generator's own output. Report keys: {:?}",
+            report.as_object().map(|map| map.keys().cloned().collect::<Vec<_>>())
+        )
+    });
+    let ceiling = reviewed_closure_ceiling();
+
+    let unresolved = report["unresolved"]
+        .as_object()
+        .cloned()
+        .unwrap_or_default();
+    let sample: Vec<String> = unresolved.keys().take(40).cloned().collect();
+
+    assert!(
+        honest <= ceiling,
+        "the honest closure gap grew from {ceiling} to {honest} distinct tokens \
+         ({} occurrences) that resolve to no defined meaning, grounded source, or \
+         override. Ground them in an authored meanings file the runtime loads; the \
+         generator may propose work, never satisfy the gate. First offenders: {sample:?}",
+        report["unresolved_occurrences"].as_u64().unwrap_or(0)
+    );
+    assert!(
+        honest >= ceiling,
+        "the honest closure gap improved from {ceiling} to {honest}; lower the reviewed \
+         ceiling in data/meta/closure-audit.lino in this commit, so the ratchet records \
+         the improvement instead of quietly allowing a later regression back to {ceiling}"
+    );
 }
 
 /// The total-closure backbone counts must not silently collapse: a healthy seed

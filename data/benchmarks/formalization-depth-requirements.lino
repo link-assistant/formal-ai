@@ -1,0 +1,41 @@
+formalization_depth_requirements
+  paraphrase isogram_requirement_en
+    family isogram_requirement
+    language en
+    prompt "Formalize this requirement: an isogram check must reject any word that repeats a letter."
+  paraphrase isogram_requirement_ru
+    family isogram_requirement
+    language ru
+    prompt "Формализуй требование: проверка на изограмму должна отклонять слово с повторяющейся буквой."
+  paraphrase isogram_requirement_hi
+    family isogram_requirement
+    language hi
+    prompt "इस आवश्यकता को औपचारिक करें: आइसोग्राम जाँच किसी भी दोहराए गए अक्षर वाले शब्द को अस्वीकार करे।"
+  paraphrase isogram_requirement_zh
+    family isogram_requirement
+    language zh
+    prompt "请把这个需求形式化:isogram 检查必须拒绝任何含有重复字母的单词。"
+  paraphrase isogram_requirement_es
+    family isogram_requirement
+    language es
+    prompt "Formaliza este requisito: una comprobación de isograma debe rechazar cualquier palabra que repita una letra."
+  paraphrase lipogram_procedure_en
+    family lipogram_procedure
+    language en
+    prompt "Formalize this requirement: to check a lipogram, read the text, drop spacing and punctuation, then confirm the forbidden letter never appears."
+  paraphrase lipogram_procedure_ru
+    family lipogram_procedure
+    language ru
+    prompt "Формализуй требование: чтобы проверить липограмму, прочитай текст, убери пробелы и знаки препинания, затем убедись, что запрещённая буква не встречается."
+  paraphrase lipogram_procedure_hi
+    family lipogram_procedure
+    language hi
+    prompt "इस आवश्यकता को औपचारिक करें: लिपोग्राम जाँचने के लिए पाठ पढ़ें, रिक्ति और विराम चिह्न हटाएँ, फिर पुष्टि करें कि वर्जित अक्षर कभी नहीं आता।"
+  paraphrase lipogram_procedure_zh
+    family lipogram_procedure
+    language zh
+    prompt "请把这个需求形式化:要检查 lipogram,先读取文本,去掉空格与标点,然后确认被禁止的字母从不出现。"
+  paraphrase lipogram_procedure_es
+    family lipogram_procedure
+    language es
+    prompt "Formaliza este requisito: para comprobar un lipograma, lee el texto, elimina espacios y puntuación, y confirma que la letra prohibida nunca aparece."

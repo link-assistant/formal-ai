@@ -1,0 +1,14 @@
+self_ast_census
+  target src/formalization/needs.rs
+  language rust
+  fidelity signature
+  byte_len 2396
+  line_count 68
+  content_id source_module_1abdbdefaaf6f71c
+  symbol_count 5
+  symbols
+    enum NeedOrigin 21 30
+    struct NeedContext 34 39
+    function emit_needs 43 50
+    function satisfy_needs 55 62
+    function need_contexts 66 68

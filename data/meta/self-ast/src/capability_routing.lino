@@ -1,0 +1,26 @@
+self_ast_census
+  target src/capability_routing.rs
+  language rust
+  fidelity signature
+  byte_len 6143
+  line_count 196
+  content_id source_module_d9b712e0eaa7326e
+  symbol_count 17
+  symbols
+    enum ObjectType 18 40
+    function slug 45 47
+    function from_slug 51 54
+    enum Act 61 72
+    function slug 76 78
+    function from_slug 81 84
+    enum Locus 89 97
+    function slug 101 103
+    struct RouteRow 108 119
+    enum RoutingOutcome 124 137
+    function object_type 142 145
+    function act 149 152
+    function locus 156 159
+    function routing_table 163 165
+    function routing_table_from 172 175
+    function route 180 183
+    function route_with 187 196

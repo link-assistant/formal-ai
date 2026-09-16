@@ -210,6 +210,8 @@ fn new_dependency_is_optional_and_both_external_scores_are_registered() {
 #[test]
 fn external_proof_grading_requires_the_structured_solver_trace() {
     let case = BenchmarkCase {
+        repository: None,
+        tests: None,
         id: String::from("proof/status"),
         prompt: String::from("Prove a symbolic claim"),
         expectation: Expectation::Value {

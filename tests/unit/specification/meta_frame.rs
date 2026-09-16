@@ -419,3 +419,48 @@ fn need_ids_are_stable_and_unique() {
         "need ids must be unique within a frame"
     );
 }
+
+/// Issue #1138 B5 (plan 05, leaf 9): the planning ledger stays a planning
+/// ledger.
+///
+/// `need_ledger_with_execution` produces a *new* ledger and never mutates its
+/// input, so the projection recorded beside it in the log still reports
+/// `Planned` and `satisfied "0"` — plan 05 strictly adds a sibling assertion
+/// about the *executed* ledger rather than weakening this one (plan 00 §9 X10).
+#[test]
+fn the_planning_ledger_still_records_planned_not_satisfied() {
+    const REQUEST: &str = "Two things. First, create file notes/attribution.md containing \
+Gemfile.lock. Second, confirm the first line of that file is exactly Gemfile.lock.";
+
+    let (frame, planned) = ledger_for(REQUEST);
+    let before = planned.clone();
+    let obligations = formal_ai::obligation_ledger::ObligationLedger::for_frame(
+        &frame,
+        REQUEST,
+        formal_ai::recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND,
+    );
+    let executed = formal_ai::obligation_ledger::need_ledger_with_execution(&planned, &obligations);
+
+    assert_eq!(
+        planned, before,
+        "the planning ledger is never mutated by the execution join"
+    );
+    assert_eq!(
+        planned.count_with(NeedStatus::Satisfied),
+        0,
+        "planning alone may never record a satisfied need"
+    );
+    assert!(
+        planned.count_with(NeedStatus::Planned) >= 1,
+        "a routed need is recorded as planned"
+    );
+    assert_eq!(
+        executed.count_with(NeedStatus::Satisfied),
+        0,
+        "with no observation supplied the executed ledger also reports satisfied zero"
+    );
+    assert_eq!(
+        executed.frame_id, planned.frame_id,
+        "the executed ledger is a projection of the same frame"
+    );
+}

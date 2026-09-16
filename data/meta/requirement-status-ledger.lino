@@ -1,0 +1,21 @@
+requirement_status_ledger
+  issue 1138
+  generated_by "rust-script scripts/render-status.rs --write"
+  schema_version 1
+  plan "docs/case-studies/issue-1138/plans/11-docs-consistency-audit.md leaf L1"
+  purpose "The one status dimension with no ledger today, per-requirement status. docs/requirements-traceability.md becomes a generated projection of this file (id, shard, verdict, delivered, automated test, manual) and the Line column dies with row D97."
+  division_of_labour "Each shard's status cell stays hand-written prose. The ledger carries the machine-checkable verdict, the shard carries the explanation, and scripts/check-requirement-status.rs asserts the two agree on the verdict word."
+  verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
+  seeded_from "REQUIREMENTS.md ids and docs/requirements-traceability.md rows"
+  coverage "1 of 1030 ids. Plan 11 leaf L1 seeds the rest from the 1,030 ids and the 805 existing traceability rows, 225 of them new, one commit per shard, never 225 copies of not yet confirmed."
+  wave_t_note "Wave T ships the schema and one row transcribed from an existing traceability row, so scripts/render-status.rs has a shape to read and tests/unit/specification/status_render.rs has a document to fail against."
+  requirement
+    id "R710-D2"
+    shard "docs/requirements/issue-0710-dynamic-coding-discovery.md"
+    verdict "implemented"
+    delivered "2026-09-15"
+    pull_request "888"
+    issue "710"
+    tracker ""
+    automated_test "tests/unit/coding_discovery/mod.rs::humaneval_first_twenty"
+    manual "not yet confirmed"

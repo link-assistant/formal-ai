@@ -1,0 +1,31 @@
+handler_promotions
+  issue 1138
+  purpose "Which handlers a prompt hoists ahead of data/seed/handler-precedence.lino. Conditions use the handler-rules grammar and are evaluated by the same interpreter, so a promotion is a seed edit, never a Rust edit."
+  promotion web_search
+    rank 50
+    when
+      any
+        role web_search_action of cleaned
+        all
+          role web_search_news_subject of padded
+          role web_search_news_recency of padded
+        all
+          role web_search_records_subject of padded
+          role web_search_topic_marker of padded
+    because "issue 745: an explicit search act, a news request, or a records request"
+  promotion calendar_create_event
+    rank 30
+    when
+      all
+        any
+          role calendar_day_reference of padded
+          shape digit of trimmed
+        any
+          role calendar_schedule_action of padded
+          role calendar_event of padded
+          all
+            role calendar_date_marker of padded
+            any
+              role temporal_preposition of padded
+              shape time_separator of trimmed
+    because "issue 869: a date signal conjoined with a scheduling act"

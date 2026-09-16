@@ -1,0 +1,20 @@
+self_ast_census
+  target src/coding/program_ir.rs
+  language rust
+  fidelity signature
+  byte_len 4706
+  line_count 163
+  content_id source_module_2ce82e60b4a45d97
+  symbol_count 11
+  symbols
+    enum ReuseMode 17 22
+    enum IrType 26 36
+    enum IrNode 40 102
+    struct ProgramIr 106 115
+    function action_cost 120 122
+    function type_check 126 128
+    function to_links_notation 132 134
+    function from_links_notation 138 140
+    function content_id 144 146
+    struct ElaborationBounds 150 153
+    function elaborate 156 163

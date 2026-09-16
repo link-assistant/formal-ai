@@ -1,0 +1,22 @@
+self_ast_census
+  target src/source_walk.rs
+  language rust
+  fidelity signature
+  byte_len 3736
+  line_count 115
+  content_id source_module_a7db546e9cbee6f9
+  symbol_count 13
+  symbols
+    struct LookupBounds 20 26
+    function default 29 37
+    trait CaptureExtractor 42 56
+    type Item 43 43
+    function extract 45 51
+    function follow 53 53
+    function entry_url 55 55
+    struct WalkSourceOutcome 60 68
+    struct WalkOutcome 71 76
+    trait SourceLookup 80 86
+    function lookup 81 85
+    function walk_sources 91 102
+    function select_sources 108 115
