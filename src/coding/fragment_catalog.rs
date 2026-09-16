@@ -93,6 +93,9 @@ impl FragmentCatalog {
 /// `FORMAL_AI_CACHE_DIR`.
 #[derive(Debug, Clone)]
 pub struct FragmentLedger {
+    // Read by plan 02 leaf L4 once the ledger persists fragments; until that
+    // leaf lands the skeleton keeps the field so the signature is fixed.
+    #[allow(dead_code)]
     path: PathBuf,
 }
 
