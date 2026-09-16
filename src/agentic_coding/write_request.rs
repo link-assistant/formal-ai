@@ -16,24 +16,57 @@ pub(super) struct Token<'a> {
     pub(super) start: usize,
     pub(super) end: usize,
 }
-/// Split a request into whitespace tokens, recording each token's byte span.
+/// Split a request into tokens, recording each token's byte span.
+///
+/// The separators are whitespace *and* the ideographic punctuation marks, for
+/// the same reason the clause splitter knows `。`: a script that does not space
+/// its words still separates its clauses, and a whitespace-only split glues the
+/// punctuation and everything after it onto the token before. `创建文件
+/// notes/attribution.md，内容为 Gemfile.lock。` produced the single token
+/// `notes/attribution.md，内容为`, which is not a safe relative path, so the
+/// Chinese wording of a write request named no target at all.
 pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
-    let mut cursor = 0;
-    request
-        .split_whitespace()
-        .map(|word| {
-            let start = request[cursor..]
-                .find(word)
-                .map_or(cursor, |offset| cursor + offset);
-            let end = start + word.len();
-            cursor = end;
-            Token {
-                text: word,
-                start,
-                end,
+    let mut out = Vec::new();
+    let mut start: Option<usize> = None;
+    for (index, character) in request.char_indices() {
+        if character.is_whitespace() || is_ideographic_punctuation(character) {
+            if let Some(from) = start.take() {
+                out.push(Token {
+                    text: &request[from..index],
+                    start: from,
+                    end: index,
+                });
             }
-        })
-        .collect()
+            continue;
+        }
+        if start.is_none() {
+            start = Some(index);
+        }
+    }
+    if let Some(from) = start {
+        out.push(Token {
+            text: &request[from..],
+            start: from,
+            end: request.len(),
+        });
+    }
+    out
+}
+
+/// Whether a character is one of the ideographic punctuation marks that
+/// separate words and clauses in a script written without spaces.
+fn is_ideographic_punctuation(character: char) -> bool {
+    matches!(character,
+        '\u{3001}'..='\u{3003}'
+            | '\u{3008}'..='\u{3011}'
+            | '\u{3014}'..='\u{301f}'
+            | '\u{ff01}'
+            | '\u{ff08}'
+            | '\u{ff09}'
+            | '\u{ff0c}'
+            | '\u{ff1a}'
+            | '\u{ff1b}'
+            | '\u{ff1f}')
 }
 /// The bare (whole-word) surface forms for a role, lowercased for token matching.
 pub(super) fn bare_surfaces(role: &str) -> Vec<String> {
@@ -73,9 +106,19 @@ pub(super) fn looks_like_file_path(path: &str) -> bool {
             .is_some_and(|file_name| file_name.contains('.'))
 }
 /// Lowercase a token stripped of edge punctuation, for cue/action comparison.
+///
+/// The Devanagari full stop `।` ends a Hindi sentence exactly as `.` ends an
+/// English one, so a cue that closes a clause — `लिखो।` — is the same cue as
+/// `लिखो`. Without it the verb of every sentence-final Hindi request went
+/// unrecognised.
 pub(super) fn clean_cue_token(word: &str) -> String {
-    word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';' | '.' | '!' | '?'))
-        .to_lowercase()
+    word.trim_matches(|c: char| {
+        matches!(
+            c,
+            '`' | '"' | '\'' | ',' | ':' | ';' | '.' | '!' | '?' | '\u{0964}' | '\u{0965}'
+        )
+    })
+    .to_lowercase()
 }
 /// The byte span just past the leftmost `file_write_content_lead` marker in the
 /// lowercased request, honouring whole-word boundaries for space-delimited
@@ -83,16 +126,49 @@ pub(super) fn clean_cue_token(word: &str) -> String {
 pub(super) fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
     first_prefix_lead_end(lowered, seed::ROLE_FILE_WRITE_CONTENT_LEAD)
 }
+/// Where the payload a circumfix content marker opened has to stop.
+///
+/// "जिसमें Gemfile.lock हो" states its content between two literals, and so does
+/// "把 Gemfile.lock 写入": the closing literal is a grammatical boundary, not
+/// part of the bytes. Returns [`None`] when the marker that ended at `from` was
+/// not a circumfix one, which is every marker in the languages that put their
+/// content last.
+pub(super) fn content_lead_close(lowered: &str, from: usize) -> Option<usize> {
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+        .iter()
+        .filter(|form| form.slot() == Slot::Circumfix)
+        .filter_map(|form| {
+            let opener = form.before_slot().trim().to_lowercase();
+            let closer = form.after_slot().trim().to_lowercase();
+            if opener.is_empty()
+                || closer.is_empty()
+                || !lowered.get(..from)?.trim_end().ends_with(&opener)
+            {
+                return None;
+            }
+            lowered
+                .get(from..)?
+                .find(&closer)
+                .map(|relative| from + relative)
+        })
+        .min()
+}
 pub(super) fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
-    let markers: Vec<String> = seed::lexicon()
+    let markers: Vec<(String, String)> = seed::lexicon()
         .role_word_forms(role)
         .iter()
-        .filter(|form| form.slot() == Slot::Prefix)
-        .map(|form| form.before_slot().trim().to_lowercase())
-        .filter(|marker| !marker.is_empty())
+        .filter(|form| matches!(form.slot(), Slot::Prefix | Slot::Circumfix))
+        .map(|form| {
+            (
+                form.before_slot().trim().to_lowercase(),
+                form.after_slot().trim().to_lowercase(),
+            )
+        })
+        .filter(|(marker, _)| !marker.is_empty())
         .collect();
     let mut best: Option<(usize, usize)> = None;
-    for marker in &markers {
+    for (marker, closer) in &markers {
         let mut from = 0;
         while let Some(relative) = lowered[from..].find(marker.as_str()) {
             let start = from + relative;
@@ -110,7 +186,13 @@ pub(super) fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize,
                     .chars()
                     .next()
                     .is_some_and(|c| c.is_whitespace() || c.is_ascii_punctuation());
-            if before_ok && after_ok {
+            // A circumfix form holds its subject *between* two literals, so its
+            // opener means nothing on its own: "把" opens a Chinese object
+            // phrase only when the verb that closes it follows. Requiring the
+            // closer keeps a one-character opener from claiming every sentence
+            // that happens to contain it.
+            let closed = closer.is_empty() || lowered[end..].contains(closer.as_str());
+            if before_ok && after_ok && closed {
                 if best.is_none_or(|(best_start, best_end)| {
                     start < best_start || (start == best_start && end > best_end)
                 }) {
@@ -123,21 +205,119 @@ pub(super) fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize,
     }
     best
 }
-/// The target file of a write, as `(token index, path)`: the first safe,
-/// file-looking token that directly follows a target cue, a destination cue, or
-/// an action cue. Requiring a cue keeps an incidental dotted token (a version,
-/// an abbreviation) out of the write path.
+/// Which family of cue named a path, which decides what the rest of the
+/// sentence is allowed to mean.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum CueFamily {
+    /// A `file_write_target_cue` — the file the work is about.
+    Target,
+    /// A `file_write_destination_cue` — somewhere to deliver bytes.
+    Destination,
+    /// A bare `file_write_action_cue`, which names a file only incidentally.
+    Action,
+}
+
+/// One path a sentence names, together with the cue that named it.
+#[derive(Debug, Clone)]
+pub(super) struct WriteBinding {
+    /// Token index of the path.
+    pub(super) index: usize,
+    /// The cleaned, safe relative path.
+    pub(super) path: String,
+    /// Byte offset at which the binding cue begins.
+    pub(super) cue_start: usize,
+    /// Byte offset just past the binding cue.
+    pub(super) cue_end: usize,
+    /// Which family of cue bound it.
+    pub(super) family: CueFamily,
+    /// Whether the cue stands *before* the path. A postposition stands after it.
+    pub(super) cue_precedes: bool,
+}
+
+/// The target file of a write, as `(token index, path)`.
+///
+/// A sentence can offer more than one file-shaped token behind a cue, and which
+/// one it *delivers to* is not the leftmost: "Write Gemfile.lock into
+/// notes/attribution.md" names the content first, behind the bare action cue
+/// *Write*, and the destination second, behind *into*. Binding the leftmost
+/// bound the content as the target, the destination-led branch below then failed
+/// its `action_end <= clause_start` test, and the whole clause composed to
+/// nothing — in all five languages.
+///
+/// So the candidates are ranked by what named them rather than by where they
+/// stand: a path a *target* or *destination* cue points at outranks one only an
+/// action cue stands beside, and a cue that follows its path (a postposition)
+/// ranks last. A sentence that offers exactly one candidate is unaffected, which
+/// is every sentence the earlier rule read correctly.
 pub(super) fn cued_write_target(toks: &[Token<'_>]) -> Option<(usize, String)> {
-    cued_write_targets(toks).into_iter().next()
+    preferred_binding(toks).map(|binding| (binding.index, binding.path))
+}
+
+/// Every candidate binding, best first.
+///
+/// A cue that stands *between* two file-shaped tokens could belong to either of
+/// them, and no ranking settles that on its own: `notes/attribution.md में
+/// Gemfile.lock लिखो` puts the destination postposition after the path it marks,
+/// so the same rule that reads `into notes/attribution.md` correctly reads the
+/// Hindi sentence backwards. The reading is settled by the rest of the sentence
+/// instead — the caller takes these in order and keeps the first that yields a
+/// payload — so the ranking only has to decide which reading is *tried* first.
+pub(super) fn ranked_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
+    let mut bindings = write_bindings(toks);
+    bindings.sort_by_key(binding_rank);
+    bindings
+}
+
+/// The binding a write request is read through: the highest-ranked candidate.
+pub(super) fn preferred_binding(toks: &[Token<'_>]) -> Option<WriteBinding> {
+    ranked_bindings(toks).into_iter().next()
+}
+
+/// Lower ranks are preferred. Token order breaks a tie, which `min_by_key`
+/// preserves because the bindings are produced in token order.
+const fn binding_rank(binding: &WriteBinding) -> u8 {
+    match (binding.cue_precedes, binding.family) {
+        (true, CueFamily::Target | CueFamily::Destination) => 0,
+        (true, CueFamily::Action) => 1,
+        (false, _) => 2,
+    }
 }
 
 /// Every cued target in token order, so a caller that has a further question to
 /// ask about a candidate can go on to the next one instead of losing the
 /// sentence with it.
 pub(super) fn cued_write_targets(toks: &[Token<'_>]) -> Vec<(usize, String)> {
+    write_bindings(toks)
+        .into_iter()
+        .filter(|binding| binding.cue_precedes)
+        .map(|binding| (binding.index, binding.path))
+        .collect()
+}
+
+/// Every path a cue binds, in token order.
+///
+/// A cue stands before its path in the languages that put it there and after it
+/// in the languages that do not: Hindi writes `notes/attribution.md फ़ाइल` and
+/// `notes/attribution.md में`, so a reader that only ever looks one token back
+/// finds no target in a Hindi request at all. A postposition is therefore read
+/// too, but only for the target and destination families — an action cue after a
+/// path closes the clause rather than naming the file — and only when the path
+/// has no cue in front of it.
+fn write_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
     let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
     let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+    // The fused reading is for the nouns and particles that a script without
+    // spaces writes against their neighbour — `创建文件` is "create" and "file",
+    // `文件` is the cue. A verb is not read that way: `输出内容 sample.txt` opens
+    // with the write verb `输出` and means "output the contents of", a read, and
+    // reading the verb out of the fused token claimed the file the request asked
+    // to be shown.
+    let families = [
+        (CueFamily::Destination, &dest_cues, true),
+        (CueFamily::Target, &target_cues, true),
+        (CueFamily::Action, &action_cues, false),
+    ];
     toks.iter()
         .enumerate()
         .filter_map(|(index, token)| {
@@ -145,14 +325,73 @@ pub(super) fn cued_write_targets(toks: &[Token<'_>]) -> Vec<(usize, String)> {
             if !looks_like_file_path(cleaned) || !safe_relative_path(cleaned) {
                 return None;
             }
-            let previous = index.checked_sub(1).map(|i| &toks[i])?;
-            let previous_word = clean_cue_token(previous.text);
-            (target_cues.contains(&previous_word)
-                || dest_cues.contains(&previous_word)
-                || action_cues.contains(&previous_word))
-            .then(|| (index, cleaned.to_owned()))
+            let path = cleaned.to_owned();
+            if let Some(previous) = index.checked_sub(1).map(|before| &toks[before])
+                && let Some((family, cue_start, cue_end)) =
+                    families.iter().find_map(|(family, cues, fused)| {
+                        trailing_cue(previous, cues, *fused).map(|span| (*family, span.0, span.1))
+                    })
+            {
+                return Some(WriteBinding {
+                    index,
+                    path,
+                    cue_start,
+                    cue_end,
+                    family,
+                    cue_precedes: true,
+                });
+            }
+            let next = toks.get(index + 1)?;
+            families
+                .iter()
+                .take(2)
+                .find_map(|(family, cues, fused)| {
+                    leading_cue(next, cues, *fused).map(|span| (*family, span.0, span.1))
+                })
+                .map(|(family, cue_start, cue_end)| WriteBinding {
+                    index,
+                    path,
+                    cue_start,
+                    cue_end,
+                    family,
+                    cue_precedes: false,
+                })
         })
         .collect()
+}
+
+/// The span of a cue standing at the *end* of `token`, if one does.
+///
+/// An unspaced script writes the cue and the word before it as one token —
+/// `创建文件` is "create" and "file" with nothing between them — so for a cue in
+/// such a script the token's tail is the boundary the language actually has.
+fn trailing_cue(token: &Token<'_>, cues: &[String], fused: bool) -> Option<(usize, usize)> {
+    let cleaned = clean_cue_token(token.text);
+    cues.iter().find_map(|cue| {
+        if cleaned == *cue {
+            return Some((token.start, token.end));
+        }
+        (fused && is_unspaced_surface(cue) && cleaned.ends_with(cue.as_str()))
+            .then(|| (token.end.saturating_sub(cue.len()), token.end))
+    })
+}
+
+/// The span of a cue standing at the *start* of `token`, if one does.
+fn leading_cue(token: &Token<'_>, cues: &[String], fused: bool) -> Option<(usize, usize)> {
+    let cleaned = clean_cue_token(token.text);
+    cues.iter().find_map(|cue| {
+        if cleaned == *cue {
+            return Some((token.start, token.end));
+        }
+        (fused && is_unspaced_surface(cue) && cleaned.starts_with(cue.as_str()))
+            .then(|| (token.start, token.start + cue.len()))
+    })
+}
+
+/// Whether a surface belongs to a script that does not separate its words with
+/// spaces, so a token boundary is not where the word ends.
+fn is_unspaced_surface(surface: &str) -> bool {
+    crate::coding::catalog::contains_cjk(surface)
 }
 
 /// Whether a token is written as a double-quoted literal.
@@ -164,9 +403,7 @@ pub(super) fn cued_write_targets(toks: &[Token<'_>]) -> Vec<(usize, String)> {
 /// Both can be file-shaped, and `clean_path_token` peels either quoting away, so
 /// the distinction has to be read before the peeling.
 fn quoted_as_value(word: &str) -> bool {
-    let bare = peel_sentence_punctuation(word, |token| {
-        token.trim_end_matches([',', ':', ';'])
-    });
+    let bare = peel_sentence_punctuation(word, |token| token.trim_end_matches([',', ':', ';']));
     bare.len() >= 2 && bare.starts_with('"') && bare.ends_with('"')
 }
 /// The path a request names as the destination of a write, whether or not it
@@ -256,9 +493,7 @@ pub(super) fn delivered_write_target(sentence: &str) -> Option<String> {
     let action = first_action_cue_start(&toks)?;
     cued_write_targets(&toks)
         .into_iter()
-        .find(|(index, _)| {
-            toks[*index].start > action && !quoted_as_value(toks[*index].text)
-        })
+        .find(|(index, _)| toks[*index].start > action && !quoted_as_value(toks[*index].text))
         .map(|(_, path)| path)
 }
 
@@ -333,9 +568,8 @@ fn unquoted_machine_first_line(raw: &str) -> Option<&str> {
             let marker = format!(" {separator} ");
             lowered.find(&marker).and_then(|boundary| {
                 let candidate = raw.get(..boundary)?.trim();
-                (!candidate.contains(char::is_whitespace)
-                    && candidate.contains(['=', ':']))
-                .then_some(candidate)
+                (!candidate.contains(char::is_whitespace) && candidate.contains(['=', ':']))
+                    .then_some(candidate)
             })
         })
         .min_by_key(|candidate| candidate.len())
@@ -398,17 +632,30 @@ fn without_pinning_sentences(content: &str) -> String {
         .collect::<Vec<_>>()
         .join(" ")
 }
-/// The first `file_write_action_cue` token, with its span.
-fn first_action_cue<'a, 'b>(toks: &'a [Token<'b>]) -> Option<&'a Token<'b>> {
+/// The span of the first `file_write_action_cue` in the request.
+fn first_action_cue(toks: &[Token<'_>]) -> Option<(usize, usize)> {
     let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
     toks.iter()
-        .find(|token| actions.contains(&clean_cue_token(token.text)))
+        .find_map(|token| leading_cue(token, &actions, false))
 }
 /// The byte offset just past the first `file_write_action_cue` token.
 pub(super) fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
-    first_action_cue(toks).map(|token| token.end)
+    first_action_cue(toks).map(|(_, end)| end)
 }
-/// The byte offset at which the first `file_write_action_cue` token begins.
+/// Where the first `file_write_action_cue` at or after `from` begins.
+///
+/// A language that closes its clause with the verb states the action *after* the
+/// destination it was given, so the payload is what stands between them. The
+/// prepositional shape reads the same span from the other side — see
+/// `parse_write_request`.
+pub(super) fn action_cue_start_after(toks: &[Token<'_>], from: usize) -> Option<usize> {
+    let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+    toks.iter()
+        .filter(|token| token.start >= from)
+        .find_map(|token| leading_cue(token, &actions, false))
+        .map(|(start, _)| start)
+}
+/// The byte offset at which the first `file_write_action_cue` begins.
 ///
 /// [`first_action_cue_end`] answers where a payload may start; this answers
 /// where the delivery clause does, and the two questions have different callers.
@@ -418,7 +665,7 @@ pub(super) fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
 /// reader that hands the whole sentence to delivery throws the work away with
 /// it (issue #1066).
 pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
-    first_action_cue(toks).map(|token| token.start)
+    first_action_cue(toks).map(|(start, _)| start)
 }
 /// Trim a recovered content span down to its literal payload, dropping the
 /// leading clause separator ("… the following: hello") and any surrounding
@@ -505,7 +752,11 @@ pub(super) fn safe_relative_path(path: &str) -> bool {
 /// to `limit`, exactly as the marker-only spelling always was. The sentence bound
 /// still governs a payload that stays on one line, so "write the following: hello
 /// to `x.txt`" is unaffected -- there is no continuation to find.
-pub(super) fn payload_continues_past_its_first_line(request: &str, from: usize, sentence_end: usize) -> bool {
+pub(super) fn payload_continues_past_its_first_line(
+    request: &str,
+    from: usize,
+    sentence_end: usize,
+) -> bool {
     let Some(tail) = request.get(from..) else {
         return false;
     };
@@ -516,6 +767,5 @@ pub(super) fn payload_continues_past_its_first_line(request: &str, from: usize, 
     // newline has to fall inside the sentence being cut, and real content has to
     // follow it. Otherwise the sentence bound is already returning the whole
     // payload and there is nothing to widen.
-    from + break_at < sentence_end
-        && tail[break_at..].chars().any(char::is_alphanumeric)
+    from + break_at < sentence_end && tail[break_at..].chars().any(char::is_alphanumeric)
 }

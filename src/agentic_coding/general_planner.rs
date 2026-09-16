@@ -7,9 +7,10 @@
 use super::planner::{Capability, trace_route};
 use super::shell_command_policy::prose_sentences;
 use super::write_request::{
-    bare_surfaces, clean_cue_token, clean_content, clean_path_token, cued_write_target,
-    first_action_cue_end, first_content_lead_end, first_prefix_lead_end,
-    honouring_pinned_first_line, looks_like_file_path, payload_continues_past_its_first_line,
+    CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_cue_token,
+    clean_content, clean_path_token, content_lead_close, first_action_cue_end,
+    first_content_lead_end, first_prefix_lead_end, honouring_pinned_first_line,
+    looks_like_file_path, payload_continues_past_its_first_line, ranked_bindings,
     safe_relative_path, tokens,
 };
 use crate::engine::stable_id;
@@ -487,13 +488,35 @@ pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
 /// for en/ru/hi/zh, so the same offsets slice the original request and the
 /// recovered content keeps its case and punctuation.
 fn parse_write_request(request: &str) -> Option<(String, String)> {
-    let lowered = request.to_lowercase();
     let toks = tokens(request);
+    // A cue between two file-shaped tokens can belong to either of them, and the
+    // ranking only says which reading to try first. The reading that recovers a
+    // payload is the one the sentence supports, so the candidates are taken in
+    // order and the first that parses is the answer. A sentence that offers one
+    // candidate reaches exactly the branch it always did.
+    ranked_bindings(&toks)
+        .into_iter()
+        .find_map(|binding| parse_write_request_bound(request, &toks, &binding))
+}
+
+/// Read `request` as a write delivered through one particular binding.
+fn parse_write_request_bound(
+    request: &str,
+    toks: &[Token<'_>],
+    binding: &WriteBinding,
+) -> Option<(String, String)> {
+    let lowered = request.to_lowercase();
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
-    let (file_index, target) = cued_write_target(&toks)?;
-    let cue = &toks[file_index - 1];
-    let clause_start = cue.start;
-    let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
+    let file_index = binding.index;
+    let target = binding.path.clone();
+    // The clause is the cue and its path together, so it begins at whichever of
+    // them the language puts first.
+    let clause_start = if binding.cue_precedes {
+        binding.cue_start
+    } else {
+        toks[file_index].start
+    };
+    let cue_is_destination = binding.family == CueFamily::Destination;
     // Marker-led content. The payload sits after the marker, bounded by the file
     // clause when the marker comes first ("write the following: hello to x.txt")
     // and running to the end when the clause comes first ("store file x.txt
@@ -518,12 +541,19 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         && positions_share_statement(request, marker_end, clause_start)
     {
         let marker_leads = marker_end <= clause_start;
-        let marker_span = if marker_leads {
-            request.get(marker_end..end_of_statement(request, marker_end, clause_start))
+        let statement_end = if marker_leads {
+            end_of_statement(request, marker_end, clause_start)
         } else {
-            request.get(marker_end..end_of_statement(request, marker_end, request.len()))
+            end_of_statement(request, marker_end, request.len())
         };
-        if (!marker_leads || first_action_cue_end(&toks).is_some())
+        // A circumfix marker states where its payload ends as well as where it
+        // begins, and the closing literal is grammar rather than bytes: the
+        // Hindi "जिसमें Gemfile.lock हो" would otherwise write the verb into the
+        // file with the content.
+        let payload_end = content_lead_close(&lowered, marker_end)
+            .map_or(statement_end, |close| close.min(statement_end));
+        let marker_span = request.get(marker_end..payload_end);
+        if (!marker_leads || first_action_cue_end(toks).is_some())
             && let Some(content) = marker_span
                 .and_then(clean_content)
                 .filter(|content| {
@@ -539,11 +569,21 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
                 return Some((target, content));
             }
     }
-    let content_span = if cue_is_destination {
-        let action_end = first_action_cue_end(&toks)?;
+    let content_span = if cue_is_destination && binding.cue_precedes {
+        let action_end = first_action_cue_end(toks)?;
         (action_end <= clause_start
             && positions_share_statement(request, action_end, clause_start))
         .then(|| request.get(action_end..clause_start))?
+    } else if cue_is_destination {
+        // The same shape read from the other side. A language that marks its
+        // destination with a postposition and closes the clause with the verb —
+        // "notes/attribution.md में Gemfile.lock लिखो" — states the payload
+        // between the two, exactly as the prepositional wording states it
+        // between the verb and the preposition.
+        let action_start = action_cue_start_after(toks, binding.cue_end)?;
+        (binding.cue_end <= action_start
+            && positions_share_statement(request, binding.cue_end, action_start))
+        .then(|| request.get(binding.cue_end..action_start))?
     } else if let Some(value_lead) = toks
         .iter()
         .skip(file_index + 1)
@@ -553,7 +593,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         // cue identifies the file object and a following destination cue
         // introduces its literal value. Requiring a write action before the
         // file keeps an unrelated "contents of FILE" read request out.
-        let action_end = first_action_cue_end(&toks)?;
+        let action_end = first_action_cue_end(toks)?;
         (action_end <= clause_start
             && positions_share_statement(request, action_end, clause_start)
             && positions_share_statement(request, clause_start, value_lead.start))

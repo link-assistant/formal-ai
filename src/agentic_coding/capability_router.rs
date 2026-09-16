@@ -383,7 +383,16 @@ pub(super) fn plan_routed_capability_step(
     // exist yet, so reading it is always the wrong tool (issue #681). This is
     // the rule `file_read_task_for` already applies, reused rather than
     // re-derived.
-    if capability == Capability::Read && super::write_request::states_write_action(task) {
+    // The rule is about a file the request asks to *create*, so it needs the
+    // file as well as the verb. A request that states a write verb and names no
+    // destination is asking for something to be shown, not made: Spanish
+    // "escribe el contenido de sample.txt" and Chinese "输出内容 sample.txt" both
+    // head their read with a verb the seed also knows as a write action, and
+    // refusing the read on the verb alone left them with no route at all.
+    if capability == Capability::Read
+        && super::write_request::states_write_action(task)
+        && super::write_request::stated_write_target(task).is_some()
+    {
         return None;
     }
     let tool = tool_for(tool_names, capability)?;

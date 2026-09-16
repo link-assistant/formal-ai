@@ -2,120 +2,145 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 24828
-  line_count 521
-  content_id source_module_d0deb97ab8f9a509
-  symbol_count 30
+  byte_len 35787
+  line_count 771
+  content_id source_module_dbd45e523a014cd2
+  symbol_count 42
   symbols
     struct Token 14 18
-    function tokens 20 37
-    function bare_surfaces 39 46
-    function clean_path_token 52 58
-    function looks_like_file_path 67 74
-    function clean_cue_token 76 79
-    function first_content_lead_end 83 85
-    function first_prefix_lead_end 86 125
-    function cued_write_target 130 132
-    function cued_write_targets 137 156
-    function quoted_as_value 166 171
-    function stated_write_target 180 182
-    function typed_write_target 186 196
-    function states_write_action 202 204
-    function delivered_write_target 254 263
-    function is_stated_write_target 279 284
-    function pinned_first_line 292 305
-    function delimited_first_line 312 320
-    function unquoted_machine_first_line 328 342
-    function pinned_first_line_of_request 349 353
-    function honouring_pinned_first_line 378 389
-    function without_pinning_sentences 392 400
-    function first_action_cue 402 406
-    function first_action_cue_end 408 410
-    function first_action_cue_start 420 422
-    function clean_content 429 445
-    function strip_clause_lead 454 465
-    function strip_leading_qualifier 470 481
-    function safe_relative_path 482 489
-    function payload_continues_past_its_first_line 508 521
+    function tokens 28 54
+    function is_ideographic_punctuation 58 70
+    function bare_surfaces 72 79
+    function clean_path_token 85 91
+    function looks_like_file_path 100 107
+    function clean_cue_token 114 122
+    function first_content_lead_end 126 128
+    function content_lead_close 136 156
+    function first_prefix_lead_end 157 207
+    enum CueFamily 211 218
+    struct WriteBinding 222 235
+    function cued_write_target 252 254
+    function ranked_bindings 265 269
+    function preferred_binding 272 274
+    function binding_rank 278 284
+    function cued_write_targets 289 295
+    function write_bindings 306 361
+    function trailing_cue 368 377
+    function leading_cue 380 389
+    function is_unspaced_surface 393 395
+    function quoted_as_value 405 408
+    function stated_write_target 417 419
+    function typed_write_target 423 433
+    function states_write_action 439 441
+    function delivered_write_target 491 498
+    function is_stated_write_target 514 519
+    function pinned_first_line 527 540
+    function delimited_first_line 547 555
+    function unquoted_machine_first_line 563 576
+    function pinned_first_line_of_request 583 587
+    function honouring_pinned_first_line 612 623
+    function without_pinning_sentences 626 634
+    function first_action_cue 636 640
+    function first_action_cue_end 642 644
+    function action_cue_start_after 651 657
+    function first_action_cue_start 667 669
+    function clean_content 676 692
+    function strip_clause_lead 701 712
+    function strip_leading_qualifier 717 728
+    function safe_relative_path 729 736
+    function payload_continues_past_its_first_line 755 771
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13102
-    named_node_count 2864
-    distinct_node_kinds 73
+    total_link_count 18702
+    named_node_count 4044
+    distinct_node_kinds 86
     node_kinds
-      arguments 219
-      array_expression 7
-      array_type 6
+      arguments 290
+      array_expression 8
+      array_type 12
       assignment_expression 4
-      binary_expression 53
-      block 58
-      boolean_literal 2
+      attribute 2
+      attribute_item 2
+      binary_expression 64
+      block 81
+      boolean_literal 12
       break_expression 1
-      call_expression 219
-      char_literal 56
-      closure_expression 43
-      closure_parameters 43
-      crate 1
-      doc_comment 216
+      call_expression 290
+      char_literal 71
+      closure_expression 58
+      closure_parameters 58
+      continue_expression 1
+      crate 2
+      doc_comment 296
       else_clause 4
+      enum_item 1
+      enum_variant 3
+      enum_variant_list 1
       escape_sequence 4
-      expression_statement 21
-      field_declaration 3
-      field_declaration_list 1
-      field_expression 184
-      field_identifier 188
-      field_initializer 1
-      field_initializer_list 1
-      for_expression 1
-      function_item 29
+      expression_statement 39
+      field_declaration 9
+      field_declaration_list 2
+      field_expression 255
+      field_identifier 268
+      field_initializer 8
+      field_initializer_list 4
+      for_expression 2
+      function_item 39
+      function_modifiers 1
       generic_function 1
-      generic_type 28
-      identifier 480
-      if_expression 10
-      index_expression 13
+      generic_type 41
+      identifier 699
+      if_expression 18
+      index_expression 15
       inner_doc_comment_marker 9
-      integer_literal 13
-      let_condition 1
-      let_declaration 45
-      lifetime 16
-      lifetime_parameter 4
-      line_comment 220
+      integer_literal 21
+      let_chain 1
+      let_condition 5
+      let_declaration 52
+      lifetime 17
+      lifetime_parameter 2
+      line_comment 311
       loop_expression 1
-      macro_invocation 8
-      mutable_specifier 4
-      outer_doc_comment_marker 207
-      parameter 38
-      parameters 29
-      parenthesized_expression 5
-      primitive_type 56
-      range_expression 13
-      reference_expression 15
-      reference_type 41
-      return_expression 6
-      scoped_identifier 22
+      macro_invocation 10
+      match_arm 3
+      match_block 1
+      match_expression 1
+      match_pattern 3
+      mutable_specifier 6
+      or_pattern 1
+      outer_doc_comment_marker 287
+      parameter 54
+      parameters 39
+      parenthesized_expression 6
+      primitive_type 79
+      range_expression 17
+      reference_expression 20
+      reference_type 51
+      return_expression 10
+      scoped_identifier 35
       scoped_use_list 2
       self 1
-      shorthand_field_initializer 2
+      shorthand_field_initializer 10
       source_file 1
       string_content 9
       string_literal 8
-      struct_expression 1
-      struct_item 1
-      super 27
-      token_tree 8
-      try_expression 10
-      tuple_expression 2
-      tuple_pattern 7
-      tuple_struct_pattern 3
-      tuple_type 5
-      type_arguments 29
-      type_identifier 45
-      type_parameters 3
-      unary_expression 18
+      struct_expression 4
+      struct_item 2
+      super 39
+      token_tree 13
+      try_expression 12
+      tuple_expression 14
+      tuple_pattern 20
+      tuple_struct_pattern 7
+      tuple_type 9
+      type_arguments 42
+      type_identifier 72
+      type_parameters 2
+      unary_expression 25
       use_declaration 3
       use_list 2
-      visibility_modifier 26
+      visibility_modifier 38
       while_expression 1
