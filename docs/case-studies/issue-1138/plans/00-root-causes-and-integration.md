@@ -480,7 +480,7 @@ reconciliation ran before implementation and is recorded in section 9.
 
 ### Contract leaf C1 — the one leaf this plan owns
 
-- [ ] **C1.** Add `src/needs.rs` with `NeedKind`, `NeedState`, `Need` and
+- [x] **C1.** Add `src/needs.rs` with `NeedKind`, `NeedState`, `Need` and
       `Need::to_links_notation`, and the `need` record shape in
       `data/meta/need-contract.lino`. No behaviour, no caller. Test:
       `tests/unit/specification/needs.rs::the_need_record_round_trips_through_links_notation`

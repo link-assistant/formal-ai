@@ -1,1 +1,82 @@
 need_contract
+  record_type contract
+  issue 1138
+  plan docs/case-studies/issue-1138/plans/00-root-causes-and-integration.md
+  section 4.1
+  home src/needs.rs
+  projection to_links_notation
+  reader from_links_notation
+  note "One record for every -I lack X- in the tree. A need is a link in the associative store, so it can be remembered, forgotten and rediscovered; it is never a Rust-only struct."
+need_record_shape
+  record_type shape
+  field need_id
+  field kind
+  field subject
+  field language
+  field raised_by
+  field source_span
+  field depth
+  field state
+  field satisfied_by
+need_kind_concept
+  record_type need_kind
+  order 1
+  kind concept
+  answers "what a surface form means"
+  consulted_by src/concept_lookup.rs
+need_kind_procedure
+  record_type need_kind
+  order 2
+  kind procedure
+  answers "how a task is carried out step by step"
+  consulted_by src/how_to_guide.rs
+need_kind_part
+  record_type need_kind
+  order 3
+  kind part
+  answers "which reusable component performs a subtask"
+  consulted_by src/coding/composition.rs
+need_kind_prerequisite
+  record_type need_kind
+  order 4
+  kind prerequisite
+  answers "which missing tool or environment a failing command requires"
+  consulted_by src/concept_lookup.rs
+need_kind_evidence
+  record_type need_kind
+  order 5
+  kind evidence
+  answers "which observation would discharge an obligation"
+  consulted_by src/execution_evidence.rs
+need_kind_decision
+  record_type need_kind
+  order 6
+  kind decision
+  answers "which option a selection between alternatives takes"
+  consulted_by src/selection_heuristics.rs
+need_kind_none
+  record_type need_kind
+  order 7
+  kind none
+  answers "nothing; the absence of a declared kind"
+  consulted_by none
+need_state_open
+  record_type need_state
+  order 1
+  state open
+  meaning "raised and not yet addressed"
+need_state_planned
+  record_type need_state
+  order 2
+  state planned
+  meaning "a method is selected but has not produced evidence"
+need_state_satisfied
+  record_type need_state
+  order 3
+  state satisfied
+  meaning "an evidence record references this need; satisfied_by names it"
+need_state_unsatisfiable
+  record_type need_state
+  order 4
+  state unsatisfiable
+  meaning "an honest terminal state the answer must report, never silently dropped"
