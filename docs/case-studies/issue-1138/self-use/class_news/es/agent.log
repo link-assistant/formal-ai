@@ -1,0 +1,2156 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.016Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.016Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt ¿Qué está pasando en el mundo ahora mismo? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.016Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.017Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.026Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "¿Qué está pasando en el mundo ahora mismo?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "¿Qué está pasando en el mundo ahora mismo?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.026Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.027Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.027Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.027Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.030Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.031Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.033Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4508,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.033Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.046Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 23,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:16:06.050Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.054Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.054Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.055Z",
+  "service": "session",
+  "id": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev",
+  "title": "New session - 2026-09-16T03:16:06.055Z",
+  "time": {
+    "created": 1789528566055,
+    "updated": 1789528566055
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.055Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.056Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.056Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c916d8ffeHpLGASLOULhSZR/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.056Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c916d8ffeHpLGASLOULhSZR/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.058Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57c916d8ffeHpLGASLOULhSZR/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.061Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.062Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.063Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.063Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.063Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.063Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.063Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.063Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.064Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.064Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.064Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.190Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.193Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.193Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.200Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.210Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.210Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528566658,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836eb80001sUB4NHJttrYa0s",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836e9b00010eXHiev0k6tEz9",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.659Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528566659,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836eb82002MEY4x35HcgrBKI",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836e9b00010eXHiev0k6tEz9",
+    "type": "tool",
+    "callID": "call_5f42e0dbbecd3f9e",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.659Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528566659,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836eb82001O0HEVADuhMwItZ",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836e9b00010eXHiev0k6tEz9",
+    "type": "text",
+    "text": "Let me search the web for ¿Qué está pasando en el mundo ahora mismo.",
+    "time": {
+      "start": 1789528566659,
+      "end": 1789528566659
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:06.659Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528566659,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836eb82002MEY4x35HcgrBKI",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836e9b00010eXHiev0k6tEz9",
+    "type": "tool",
+    "callID": "call_5f42e0dbbecd3f9e",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "¿Qué está pasando en el mundo ahora mismo"
+      },
+      "time": {
+        "start": 1789528566659
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.545Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528568545,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836eb82002MEY4x35HcgrBKI",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836e9b00010eXHiev0k6tEz9",
+    "type": "tool",
+    "callID": "call_5f42e0dbbecd3f9e",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "¿Qué está pasando en el mundo ahora mismo"
+      },
+      "output": "Title: Noticias del mundo: última hora y actualidad internacional ...\nURL: https://cnnespanol.cnn.com/mundo\nPublished: N/A\nAuthor: N/A\nHighlights:\nNoticias del mundo: última hora y actualidad internacional, hoy | CNN\n...\n# Mundo\n...\n- • MINUTO A MINUTO \n\n • MINUTO A MINUTO \n\nStringer/Reuters\n\n MINUTO A MINUTO 45 min ago Guerra de EE.UU. con Irán, en vivo: ataques, noticias del estrecho de Ormuz y más \n- Zain Jaafar/AFP/Getty Images\n\n Atrapadas y aisladas: familias palestinas bajo el asedio de colonos en la Ribera Occidental \n- Airbus/Reuters\n\n Gran derrame de petróleo frente a la costa de Omán se extiende cientos de kilómetros cuadrados; alertan daño ecológico \n- • Video 2:18 \n\n Video 2:18 \n\nGetty Images\n\n Video Dueños de restaurantes locales en Colombia ven una esperanza al recibir ayuda de una organización que alimenta a damnificados 2:18 \n- Alexander Zemlianichenko/AP\n\n Este político antiguerra acaba de huir de Rusia y afirma que Putin sabe que la guerra le está costando el apoyo de la gente \n\n- Video Ad Feedback\n...\nImágenes muestran momentos de pánico durante tiroteo escolar en Tailandia \n\n 01:02 • Fuente: CNN \n\n Video Imágenes muestran momentos de pánico durante tiroteo escolar en Tailandia 1:02 \n- Yuriy Lashov/AFP/Getty Images\n...\nAtaque con bomba en Crimea mata a un excomandante ucraniano que desertó a Rusia \n- Laura Arnold\n...\nOnce personas heridas tras descarrilamiento de un tren de pasajeros en el sur de Inglaterra \n- ANDREJ ISAKOVIC/AFP/AFP via Getty Images\n...\nSi venden a Ucrania el 10 % de los Patriot de EE.UU., \"destruiremos todos los misiles balísticos rusos\", dice Zelensky a CNN \n- • Video 2:26 \n\n Video 2:26 \n\nGetty Images/CNN\n\n Video Zelensky explica la escasez de misiles interceptores balísticos en Ucrania 2:26 \n- • MINUTO A MINUTO \n\nAli Saeedi/Getty Images\n\n MINUTO A MINUTO Resumen de noticias de la guerra de EE.UU. con Irán del 12 de agosto de 2026\n\n---\n\nTitle: Noticias - BBC News Mundo\nURL: https://www.bbc.com/mundo\nPublished: N/A\nAuthor: N/A\nHighlights:\n- ### Cuál es la agenda de gobierno de De la Espriella y qué contrapesos tendrá como presidente de Colombia\n...\nDe la Espriella se ha posicionado fuerte en seguridad y política exterior y quiere librar una batalla cultural\n...\npero su capacidad\n...\nejecución es limitada.\n...\n- ### Por qué Bogotá dejará de ser la sede única del gobierno de Colombia con De la Espriella como presidente\n...\nentrante anunció que habrá \"sedes alternas\" de la Presidencia en Medellín, Cali y Barranquilla. ¿\n...\npara lograr mayor descentralización?\n...\n- ### Cuál es el origen de la histórica alianza entre EE.UU. y Marruecos y qué papel juega en la crisis migratoria en el enclave español de Ceuta\n...\n- ### Un alumno de 14 años es sospechoso de matar a tiros a 5 maestros y a sus abuelos en Tailandia\n...\n- ### \"Mi app de fitness sabía que estaba embarazada antes que yo\"\n...\n- ### Quiénes son los presuntos líderes del Cartel Jalisco Nueva Generación por los que EE.UU. ofrece más de US$100 millones en recompensas\n\nEl gobierno de EE.UU. identificó a Juan Carlos Valencia como sucesor de \"El Mencho\" en\n...\nliderazgo del Cartel Jalisco Nueva Generación. También a otros siete líderes por los que ofreció altas recompensas.\n...\n- ### El escándalo por acusaciones de plagio que llevó a la renuncia de un profesor estrella de la Universidad de Cambridge\n...\n- ### Cómo los buques varados en el estrecho de Ormuz pueden desencadenar una \"superpropagación\" de especies marinas invasoras\n...\nbarcos varados en el estrecho\n...\ntransportar especies invasoras por todo el mundo\n...\nel transporte marítimo vuelva a la normalidad.\n...\n- ### Atrapados en la guerra: los soldados heridos que Rusia vuelve a enviar al frente de batalla con Ucrania \n\nBBC News Rusia tuvo acceso a documentos judiciales que revelan reiteradas acusaciones de que los soldados heridos volvían a ser enviados al combate en Ucrania en lugar de someterlos a las evaluaciones médicas legalmente requeridas. \n\n6\n...\n2026\n...\n- ### \"Milei y Trump comparten su antipatía hacia Lula y estarían encantados de que Flávio Bolsonaro resultara electo\"\n...\n- ### Cómo afronta la izquierda de Colombia la oposición a De la Espriella tras lograr el mejor resultado de su historia\n...\nLa izquierda de Iván Cepeda y Gustavo Petro no pudo revalidar su victoria de 2022 en Colombia, pero está más fuerte que nunca.\n...\n- ### 3 maneras en las que Petro marcó un antes y un después en Colombia (y cuál será su rol tras dejar la presidencia)\n\nGuste más o menos a simpatizantes o detractores, el mandato de Petro rompió moldes y hereda legados.\n...\n- ### \"Pasé de diseñar ropa artesanal a hacer bolsas mortuorias\": los venezolanos que asisten a las víctimas del doble terremoto con sus propios recursos\n...\nRestaurar juguetes, repartir almuerzos en hospitales, reciclar ropa o fabricar bolsas mortuorias son algunas de las tareas que emprendieron voluntarios para aliviar los efectos de la devastación.\n...\n- ### \"Siento compasión por mi madre, hizo lo que pudo\": el hombre abandonado al nacer que encontró a su familia biológica 65 años después\n...\n- ### Quien es Abdul El-Sayed, el candidato musulmán de izquierda que ganó las primarias de Michigan y hace temblar al Partido Demócrata \n\nAbdul El-Sayed, hijo de inmigrantes egipcios, sería el primer senador musulmán de la historia de Estados Unidos si resulta elegido en noviembre.\n...\n- ### La histórica sequía que afecta al Rin y al Danubio, los principales ríos de Europa (y que amenaza con provocar un shock económico y energético)\n\nLos bajos niveles de agua en el Rin y el Danubio han restringido el transporte de mercancías y reducido la producción de electricidad.\n...\n026\n\n---\n\nTitle: La ofensiva relámpago con la que los hutíes se apoderaron de un corredor petrolero crucial | Internacional\nURL: https://www.elmundo.es/internacional/2026/09/16/6aa94556e4d4d89f588b4588.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nTras mantenerse al margen durante meses de la guerra de Irán, los rebeldes hutíes de Yemen, respaldados por Teherán, se apoderaron durante el fin de semana de un cuello de botella marítimo crucial mediante una ofensiva relámpago que puso en mayor peligro el suministro energético mundial e introdujo al grupo en cualquier intento por resolver el conflicto.\n...\nEl año pasado, los hutíes sobrevivieron a una intensa campaña de bombardeos estadounidenses con tácticas feroces que agotaron a la Armada en un prolongado despliegue, anticipando la dificultad actual para contener a Irán. Este verano, aprovecharon las divisiones entre sus oponentes internos y sus patrocinadores árabes en medio de la distracción que supuso una guerra más amplia para expandir su dominio. El viernes tomaron la isla de Perim, situada en medio del estratégico estrecho de Bab el Mandeb: un paso de 18 millas de ancho (unos 29 kilómetros) que representa para el mar Rojo lo que el Estrecho de Ormuz para el Golfo Pérsico.\n...\nLlevaban meses preparándose para el asalto. A mediados de agosto, trasladaron armamento y miles de soldados a posiciones en torno a la ciudad portuaria de Moca, amenazando las líneas de suministro de sus adversarios. Utilizaron el control que ejercen sobre las redes de telecomunicaciones yemeníes para interceptar las llamadas de sus enemigos, sembrar la confusión e intimidar a sus rivales para que se rindieran.\n...\nEl mundo prestó escasa atención al grupo incluso después de que capturara la capital yemení, Saná, en 2014. Ahora controla uno de los corredores energéticos más importantes del planeta y es una fuerza ineludible a tener en cuenta.\n...\nRepelieron la intervención de Arabia Saudí y los Emiratos Árabes Unidos\n...\nla guerra civil yemení -empleando tecnología de drones y misiles de bajo coste con financiación y apoyo de Irán- y consolidaron su control sobre cerca de un tercio del país.\n...\nTras movilizarse en las últimas semanas, los hutíes tomaron Moca el jueves. Al día siguiente se hicieron con la estratégica isla de Perim. Interrumpir el flujo de crudo que sale por esa vía fluvial paralizaría las exportaciones petroleras saudíes, ya bloqueadas en Ormuz, con el riesgo añadido de disparar los precios mundiales del petróleo.\n...\nDurante años se mantuvo un\n...\nel fuego de facto\n...\nThe Wall Street\n...\nAl romperse ese entendimiento, Arabia Saudí, con la atención puesta en Irán, titubeó. A los dirigentes saudíes les preocupaba volver a enredarse en Yemen después de que miles de incursiones aéreas durante la guerra civil no lograran desalojar al grupo y derivaran en ataques contra sus propias infraestructuras energéticas.\n...\nLa presión sobre los saudíes se ha intensificado. La semana pasada, un ataque con drones que Riad atribuye a Irak impactó en el oleoducto Este-Oeste, un activo vital para el reino. Con el Estrecho de Ormuz bajo fuego iraní y los hutíes al mando de Bab el Mandeb, los frentes de Arabia Saudí siguen multiplicándose.\n...\nArrebatar de nuevo a los rebeldes el dominio de la isla de Perim, en la entrada del mar Rojo, podría arrastrar a las potencias internacionales de lleno a la prolongada guerra yemení.\n...\nPor ahora, Estados Unidos no parece proclive a intervenir tras haber bombardeado a los hutíes durante más de 50 días en el marco de la Operación Rough Rider en 2025. El presidente Trump afirmó el sábado que los rebeldes habían solicitado a Washington que se mantuviera al margen y que la situación terminaría resolviéndose.\n...\nIncluso si se expulsa a los hutíes de la isla o se los aleja del mar Rojo, conservan un arsenal de drones y misiles capaz de mantener en jaque esa vía marítima. La maniobra calca la estrategia empleada por Irán en el actual estancamiento del Estrecho de Ormuz.\n...\n\"Siempre van a tener la capacidad de chantajear tramos enteros del mar Rojo\", advirtió Kendall. \"El mundo sólo reacciona cuando le tocan el bolsillo\".\n\n---\n\nTitle: Internacional en EL PAÍS\nURL: https://elpais.com/internacional/\nPublished: N/A\nAuthor: Ediciones EL PAÍS\nHighlights:\n## Más de 390 muertos y 1.400 desaparecidos por la monstruosa riada y el deslizamiento masivo de tierra entre Nepal y Tíbet\n...\nLos equipos de rescate siguen sin poder acceder a algunas de las zonas más devastadas. Hay cuatro españoles sin localizar\n...\n## El colapso de un glaciar y una gigantesca riada: qué sabemos de la tragedia de Nepal y qué falta por aclarar\n...\n## Muere Ratko Mladic, el ‘carnicero de Bosnia’\n...\n## Trump firma una orden para llamar al lago Ontario “lago América”\n...\n## Un tribunal absuelve por motivos psiquiátricos al israelí que agredió a una monja en Jerusalén\n...\n## Un testigo de la devastación en Nepal y Tíbet: “No se puede ver nada, está todo cubierto de lodo”\n...\n## EE UU reafirma su compromiso con la OTAN pero insta a Europa a hacer más en defensa\n...\n## Cometas infantiles llegadas desde Gaza: el nuevo motivo para las amenazas de Israel\n...\nNetanyahu acusa a Hamás de estar detrás del fenómeno. Niños y adultos palestinos rompen los juguetes, entre enfadados e incrédulos, después de que el ministro de Defensa advirtiese de que expulsará a la población allí donde se originen\n...\n## España, Suecia, Países Bajos y Polonia presionan para reabrir el debate de los activos rusos congelados y ayudar así a Ucrania\n...\nde 90.\n...\nno basta y recl\n...\n## Rusia amenaza al Reino Unido y a Francia por ayudar a Ucrania con misiles y drones: “Están jugando con fuego”\n...\nLa prensa estadounidense revela que la CIA tiene información de que Rusia se plantea un ataque contra los países bálticos e incluso el uso de armas nucleares\n...\n## Estados Unidos, cada vez más una fortaleza contra la inmigración\n...\n## La casa real de Noruega informa de que el rey Harald está “muy grave”\n...\nEl monarca, el más longevo de Europa, lleva varios días ingresado en Oslo por una infección bacteriana\n...\n## Un conductor mata a dos personas en un atropello múltiple en el norte de Francia\n...\n## Una nueva oleada de tiroteos desata la ira ciudadana y política en Bruselas\n...\n### Estados Unidos, cada vez más una fortaleza contra la inmigración\n...\nhan suspendido temporalmente sus\n...\npara visados\n...\ntrabajo debido a una\n...\niniciativa de formación” para filtrar a\n...\nuna carga para el país\n...\n### Canadá impone nuevos aranceles de entre el 15% y el 50% a Estados Unidos como represalia a los de Trump\n\n---\n\nTitle: Noticias internacionales hoy. Noticias del mundo\nURL: https://www.elespectador.com/mundo/\nPublished: N/A\nAuthor: El Espectador\nHighlights:\n## Torre de Tokio: corrupción sísmica\n...\n## La inundación repentina en Nepal abre nuevas preguntas sobre los glaciares del Himalaya\n...\n## Milo Yiannopoulos, comentarista de extrema derecha, es deportado de Estados Unidos\n...\n## La ONU debe prevenir conflictos y resolverlos con eficacia\n\n---\n\nTitle: Últimas noticias en español de Estados Unidos y el mundo\nURL: https://news.google.com/home?ceid=US%3Aes-419&gl=US&hl=es-419\nPublished: N/A\nAuthor: N/A\nHighlights:\nAsesinan a Jonathan Meléndez y a su familia en México chevron_right\n...\n¿Quién era Ana Paula, esposa embarazada de Jonathan Meléndez, tecladista de Camilo Séptimo? Fue hallada junto a su hija de 3 años tras ser asesinadas\n...\nQuién era Jonathan \"Honas\" Meléndez, el integrante de la banda mexicana Camilo Séptimo que fue asesinado junto a su pareja e hija de 3 años\n...\nUna disputa entre socios y un niño de 6 años sobreviviente: lo que sabemos de la masacre de un músico y su familia en México\n...\nCamilo Séptimo lamenta asesinato de tecladista y familia, investigación apunta a pleito por dinero\n...\nMachado dice que el acuerdo petrolero de Venezuela y EE.UU. debería firmarse con \"un gobierno serio y democrático\"\n...\nEl orgullo venezolano, herido por acuerdo que da a EEUU una quinta de sus reservas de petróleo\n...\nLos acuerdos petroleros de Estados Unidos y Venezuela: opacos y millonarios\n...\nQuién es Alejandro Betancourt, el polémico \"bolichico\" multimillonario detrás del acuerdo petrolero entre EE.UU. y Venezuela\n...\nMuere Gloria Steinem, ícono del feminismo, a los 92 años\n...\nEstados Unidos sanciona a un nieto de Raúl Castro y a sectores clave de la economía cubana\n\n---\n\nTitle: Internacional. Noticias internacionales. Última hora\nURL: https://www.elmundo.es/internacional.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Turquía extiende su dominio por el Cuerno de África y pone en alerta a Israel y las potencias del Golfo\n\n- Redacción: LARA VILLALÓN Estambul\n\nTurquía extiende su dominio por el Cuerno de África y pone en alerta a Israel y las potencias del Golfo\n...\n## Putin se agarra al milagro de un príncipe incorrupto del siglo XIV para levantar la moral de su alicaída soldadesca en Ucrania\n\n- Redacción: EDUARDO ÁLVAREZ\n...\nPutin se agarra al milagro de un príncipe incorrupto del siglo XIV para levantar la moral de su alicaída soldadesca en Ucrania\n...\nAmérica Latina se blinda contra el crimen organizado bajo la sombra de Trump\n...\nDel centro comercial ucraniano al almacén ruso: la guerra se aleja del frente\n...\nEl eje antioccidental de Xi, Putin y Kim se juega en un pequeño río de Asia\n...\nEl Tribunal Supremo autoriza a Trump continuar de forma temporal con las obras en la Casa Blanca\n...\nLa maniobra de Trump con Kim aumenta las dudas sobre la fiabilidad de EEUU en un momento clave para Asia\n...\n## Rusia: dos niños mueren en un ataque con drones ucranianos\n\n- Redacción: AFP Moscú\n...\n## Macron corteja al despiadado Bin Salman para mantener la influencia francesa en Oriente Próximo y hacer negocios\n\n- Redacción: EDUARDO ÁLVAREZ\n\nMacron corteja al despiadado Bin Salman para mantener la influencia francesa en Oriente Próximo y hacer negocios\n\nGETTY\n...\n## Autobuses, viviendas, taxis... Tsunami de UAVs rusos en Jersón\n\n- Redacción: JAVIER ESPINOSA(Enviado Especial Jersón)\n...\n- Redacción: EL MUNDO(Vídeo)\n...\n## Jersón, la vida cotidiana bañada a diario en sangre\n...\n## Al menos 30 muertos y 22 heridos tras un deslizamiento en un vertedero de Guinea Conakry\n\n- Redacción: EFE Nairobi\n\nAl menos 30 muertos y 22 heridos tras un deslizamiento en un vertedero de Guinea Conakry\n...\n## Empeora el estado de salud del rey Harald de Noruega, quien padece una enfermedad de la sangre\n...\n## Glucksmann se postula a las presidenciales francesas para \"refundar la izquierda\" y desafía a Mélenchon\n\n- Redacción: EFE París\n\nGlucksmann se postula a las presidenciales francesas para \"refundar la izquierda\" y desafía a Mélenchon\n\n AP\n...\n## Grecia traslada a Creta misiles antiaéreos Patriot ante el riesgo de un ataque de Irán\n\n- Redacción: EFE Atenas\n...\n## Dos adolescentes israelíes agreden a un palestino amputado en Cisjordania\n...\n## Zelenski afirma que unas elecciones serían \"un tsunami\" que \"fracturaría Ucrania\"\n\n- Redacción: AFP Kiev\n...\n## Un oso ataca y muerde a un turista junto a uno de los lagos más populares de Japón\n...\n## Un terremoto de magnitud 5,9 sacude el este de Japón, golpea Tokio y deja al menos 37 heridos\n\n- Redacción: AGENCIAS Tokio\n\nUn terremoto de magnitud 5,9 sacude el este de Japón, golpea Tokio y deja al menos 37 heridos\n...\n## Irán dice que considerará \"enemigo\" a cualquier país que participe en la \"guerra económica\" de EEUU\n\n- Redacción: AFP Teherán\n\nIrán dice que considerará \"enemigo\" a cualquier país que participe en la \"guerra económica\" de EEUU\n...\n## Francia acelera el envío de misiles interceptores a Ucrania tras la última oleada de ataques rusos\n\n- Redacción: EL MUNDO, AGENCIAS \n\nFrancia acelera el envío de misiles interceptores a Ucrania tras la última oleada de ataques rusos\n...\n## Un tribunal federal anula la suspensión de visados ordenada por Trump para 75 países\n\n- Redacción: EFE Washington\n\nUn tribunal federal anula la suspensión de visados ordenada por Trump para 75 países\n...\n## Venezuela investiga a un diputado opositor por proponer la dolarización del país\n\n- Redacción: AFP Caracas\n...\n## Lecciones del frente ucraniano para un Taiwan que quiere abrir más la cartera y blindarse ante China\n\n- Redacción: LUCAS DE LA CAL(Corresponsal) Shanghai\n...\n## Una joven menor de 17 años es la víctima mortal del ataque con espada en un colegio de Suecia\n\n-\n...\n## Al menos 19 muertos y casi un centenar de heridos en un ataque ruso contra un centro comercial en Ucrania a plena luz del día\n\n- Redacción: AFP \n\nAl menos 19 muertos y casi un centenar de heridos en un ataque ruso contra un centro comercial en Ucrania a plena luz del día\n...\n## El tablero en Siria profundiza la brecha entre Israel y Turquía\n\n- Redacción: SAL EMERGUI Jerusalén\n...\n## El ministro de Justicia de Marruecos reivindica el \"derecho histórico\" sobre Ceuta y Melilla\n\n-\n...\n## Al menos un muerto y múltiples heridos en un colegio de Suecia por un ataque con espada justo después de las vacaciones de verano\n\n- Redacción: AFP Estocolmo\n...\n## Bikinis, playas y drones: la segunda batalla del Mar Negro\n...\n## Robots bailando al ritmo de K-pop, el nuevo modelo de negocio surcoreano\n...\n## De La Espriella dice que \"Dios en su sabiduría\" provocó el terremoto justo el primer día de su mandato\n\n- Redacción: EL MUNDO(Ví\n...\n## Alemania investiga un posible plan ruso para cometer atentados tras hallar un arsenal clandestino cerca de Berlín\n\n- Redacción: EFE Berlín\n...\n## Dos náufragos se salvan al mantenerse a flote durante cinco días gracias a una nevera portátil\n...\n## Al menos cinco desaparecidos y 19 heridos tras dos incendios en Suiza\n\n- Redacción: AFP Ginebra\n\nAl menos cinco desaparecidos y 19 heridos tras dos incendios en Suiza\n...\n## ¿Ha perdido Irán el control del Estrecho de Ormuz? Filas de petroleros atraviesan el paso marítimo escoltados por barcos de EEUU\n\n- Redacción: GRETA PRIVITERA (Corriere della Sera)\n...\niesan el\n...\n## Rescatan a dos pescadores en México después de estar cinco días en altamar sobre una nevera sin agua ni comida\n\n- Redacción: EFE Tapachula (México)\n\nRescatan a dos pescadores en México después de estar cinco días en altamar sobre\n...\n## Muere a los 92 años Nancy Kissinger, viuda y consejera del histórico ex secretario de Estado Henry Kissinger\n\n- Redacción: EL MUNDO \n\nMuere a los 92 años Nancy Kissinger, viuda y consejera del histórico ex secretario de Estado Henry Kissinger\n...\n## Mueren ocho personas tras estrellarse un avión chárter en una base militar en Alaska\n\n- Redacción: AP Alaska\n\nMueren ocho personas tras estrellarse un avión chárter en una base militar en Alaska\n...\n## ¿Puede Trump ahogar realmente a Irán? Las dudas sobre la efectividad de la nueva presión económica\n\n- Redacción: LARA VILLALÓN \n\n¿Puede Trump ahogar realmente a Irán? Las dudas sobre la efectividad de la nueva presión económica\n...\n## El FBI arresta a una mujer por planear un ataque con bomba en el Capitolio de Nueva York en nombre del Estado Islámico\n\n- Redacción: EFE Nueva York\n\nEl FBI arresta a una mujer por planear un ataque con bomba en el Capitolio de Nueva York en nombre del Estado Islámico\n...\n## Hong Kong condena a los guardianes de la memoria de Tiananmen por pedir el fin de la \"dictadura de partido único\" en China\n\n- Redacción: LUCAS DE LA CAL(Corresponsal) Shanghai\n\nHong Kong condena a los guardianes de la memoria de Tiananmen por pedir el fin de la \"dictadura de partido único\" en China\n...\n## Un terremoto de magnitud 7.2 sacude la región peruana de Ayacucho\n\n- Redacción: AGENCIAS \n\nUn terremoto de magnitud 7.2 sacude la región peruana de Ayacucho\n...\n## La Liga se revuelve contra Salvini ante el avance del ultra Vannacci\n\n- Redacción: MANUEL TORI Roma\n\nLa Liga se revuelve contra Salvini ante el avance del ultra Vannacci\n...\n## Venezuela y la justicia del voto: transformar el Poder Judicial para recuperar la integridad electoral\n\n- Redacción: JUAN MIGUEL MATHEUS* \n\nVenezuela y la justicia del voto: transformar el Poder Judicial para recuperar la integridad electoral\n...\n## La aparatosa caída de un grupo de agentes que se disponían a detener a un sospechoso tras romperse un deck\n\n- Redacción: EL MUNDO\n\nLa aparatosa caída de un grupo de agentes que se disponían a detener a un sospechoso tras romperse un deck\n\n- Redacción: AP Kiev, Ucrania\n...\n## 12 muertos y 34 heridos en un ataque nocturno ruso contra Kiev\n\n- Redacción: EFE Berlín\n\n---\n\nTitle: Nepal: buscan sobrevivientes de riada a 80 mts bajo tierra\nURL: https://www.dw.com/es/nepal-buscan-sobrevivientes-de-riada-a-80-metros-bajo-la-tierra/a-79284712\nPublished: 2026-09-16T00:00:00.000Z\nAuthor: N/A\nHighlights:\nNepal: buscan sobrevivientes de riada a 80 mts bajo tierra\n...\nLa crecida dejó al menos 1.300 muertos y mantiene bloqueado el paso fronterizo de Rasuwagadhi, un punto clave para el comercio entre Nepal y China.\n...\nLos equipos de rescate de Nepal lograron avanzar el martes (15.09.2026) hasta 80 metros de profundidad en el túnel de una central, donde creen que seis trabajadores podrían haber sobrevivido resguardados en bolsas de aire, casi tres semanas después de la riada que acabó con la vida de más de 1.300 personas.\n...\nEl túnel pertenece a la central hidroélectrica Chilime Hydropower Company Limited, en el distrito nepalí de Rasuwa, el más golpeado por la catástrofe, ubicado en un estrecho desfiladero que quedó completamente inaccesible por vía terrestre.\n...\nPara llegar al lugar, los rescatistas y los suministros han sido trasladados en helicóptero, aunque las autoridades han enfrentado graves dificultades para aterrizar debido a la inestabilidad del terreno.\n...\n\"Nos han informado de que\n...\nhay 92 baterías grandes, mientras que la sección inferior cuenta con una cocina, alimentos como arroz, lentejas, azúcar y té, además de un tanque de agua de unos 1.000 litros\", detalló Neupane en una publicación en Facebook.\n...\n\"Si el aire (oxígeno) atrapado en la parte superior se ha mantenido intacto tras la riada, no se descarta que hayan podido sobrevivir durante un período prolongado\", señaló el ingeniero, estimando que las reservas permitirían la supervivencia entre tres y cuatro semanas.\n...\nLos seis operarios permanecen incomunicados desde el 26 de agosto, cuando el desbordamiento del río Bhote Koshi los sorprendió mientras trabajaban.\n...\nEl desastre ha afectado gravemente a la infraestructura de la zona y mantiene bloqueado el paso fronterizo de Rasuwagadhi, un punto clave para el comercio entre Nepal y China.\n...\nSegún el último balance oficial, se han podido recuperar los restos de 1.399 personas, aunque cerca de 520 corresponden a partes del cuerpo, dificultando así su identificación y la consolidación de un conteo definitivo de personas fallecidas.\n...\nHasta el momento, solo se han entregado 103 cuerpos a familiares, y miles de personas siguen desaparecidas.",
+      "title": "Web search: ¿Qué está pasando en el mundo ahora mismo",
+      "metadata": {},
+      "time": {
+        "start": 1789528566659,
+        "end": 1789528568544
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.547Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528568547,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f2e20015zBEZNjX3Cukg4",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836e9b00010eXHiev0k6tEz9",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8538,
+      "output": 130,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8668,
+      "headroom": 30188,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.547Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.548Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.549Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.549Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.549Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.555Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8668,
+  "providerTokens": 8668,
+  "estimatedInputTokens": 6158,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8538,
+    "cacheRead": 0,
+    "output": 130
+  },
+  "overflow": false,
+  "headroom": 30188,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.556Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.556Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.557Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:08.558Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.216Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528569216,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f57f001w9L3P8ueghH2FZ",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f2eb001ZGHx9319QiWVZ6",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.217Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.217Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528569217,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f581001rvUrBZF79m1yt4",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f2eb001ZGHx9319QiWVZ6",
+    "type": "tool",
+    "callID": "call_b522d31de9706fd9",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.217Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528569217,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f580001D16382tDdLYNUb",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f2eb001ZGHx9319QiWVZ6",
+    "type": "text",
+    "text": "Let me open https://cnnespanol.cnn.com/mundo and read what it says.",
+    "time": {
+      "start": 1789528569217,
+      "end": 1789528569217
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.217Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528569217,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f581001rvUrBZF79m1yt4",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f2eb001ZGHx9319QiWVZ6",
+    "type": "tool",
+    "callID": "call_b522d31de9706fd9",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://cnnespanol.cnn.com/mundo"
+      },
+      "time": {
+        "start": 1789528569217
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528569677,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f581001rvUrBZF79m1yt4",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f2eb001ZGHx9319QiWVZ6",
+    "type": "tool",
+    "callID": "call_b522d31de9706fd9",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://cnnespanol.cnn.com/mundo"
+      },
+      "output": "Noticias del mundo: última hora y actualidad internacional, hoy | CNN\n\n\n  \n\n\n\n\n  \n  \n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n\n\n  \n  \n  \n\n  \n\n\n  \n\n\n\n  \n    \n\n\n  \n    \n    \n      \n  \n  \n  \n  \n  \n\n\n    \n\n\n  \n\n\n  \n        \n        \n    \n      \n          \n        \n            \n                    \n        \n            \n        \n    \n\n            \n        \n    \n\n  \n  \n    \n      \n        \n            \n            \n\n          \n          \n            Close icon\n\n          \n            \n\t  \n\t\t\n\t\t\t\t\n  \n  \n  \n  \n  \n  \n  \n  \n  \n\n\n\t\t\n\t\t\n\t\n\t\t\tMundo\n\t\n\n\n          \n            \n              \n                \n                  \n                  Rusia\n                \n              \n              \n                \n                  \n                  Israel\n                \n              \n              \n                \n                  \n                  China\n                \n              \n              \n                \n                  \n                  Ucrania\n                \n              \n              \n                \n                  \n                  Europa\n                \n              \n              \n                \n                  \n                  Asia\n                \n              \n              \n                \n                  \n                  Medio Oriente\n                \n              \n              \n                \n                  \n                  África\n                \n              \n              \n                \n                  \n                  Oceanía\n                \n              \n              \n                \n                    \n                      Más\n                    \n                \n                \n                  \n                    \n                      Rusia\n                    \n                    \n                      Israel\n                    \n                    \n                      China\n                    \n                    \n                      Ucrania\n                    \n                    \n                      Europa\n                    \n                    \n                      Asia\n                    \n                    \n                      Medio Oriente\n                    \n                    \n                      África\n                    \n                    \n                      Oceanía\n                    \n                  \n                \n              \n            \n          \n        \n        \n          \n                \n\n          \n        \n      \n      \n      \n        \n            \n  \n    \n    \n    \n  \n\n\n          \n            \n              \n                Edición\n              \n              \n                \n                  Estados Unidos\n                \n              \n              \n                \n                  Internacional\n                \n              \n              \n                \n                  Español\n                \n              \n              \n                \n                  Árabe\n                \n              \n            \n            \n              \n                Edición\n\n              \n              \n              \n                \n                  Estados Unidos\n                \n              \n              \n                \n                  Internacional\n                \n              \n              \n                \n                  Español\n                \n              \n              \n                \n                  Árabe\n                \n              \n              \n            \n          \n          \n          \n            \n              \n                \n                  Rusia\n                \n              \n              \n                \n                  Israel\n                \n              \n              \n                \n                  China\n                \n              \n              \n                \n                  Ucrania\n                \n              \n              \n                \n                  Europa\n                \n              \n              \n                \n                  Asia\n                \n              \n              \n                \n                  Medio Oriente\n                \n              \n              \n                \n                  África\n                \n              \n              \n                \n                  Oceanía\n                \n              \n            \n            \n              \n                  \n\t\tSIGUE A CNN EN ESPAÑOL\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\n\t\t\t\n\t\t\n\t\n\n\n              \n            \n          \n            \n  \n    \n      \n        EE.UU.\n      \n      \n        \n          \n            Donald Trump\n          \n        \n        \n          \n            Inmigración\n          \n        \n        \n          \n            Elecciones\n          \n        \n        \n          \n            Economía EE.UU.\n          \n        \n        \n          \n            Visas\n          \n        \n        \n          \n            Puerto Rico\n          \n        \n      \n    \n    \n      \n        Mundo\n      \n      \n        \n          \n            Rusia\n          \n        \n        \n          \n            Israel\n          \n        \n        \n          \n            China\n          \n        \n        \n          \n            Ucrania\n          \n        \n        \n          \n            Europa\n          \n        \n        \n          \n            Asia\n          \n        \n        \n          \n            Medio Oriente\n          \n        \n        \n          \n            África\n          \n        \n        \n          \n            Oceanía\n          \n        \n      \n    \n    \n      \n        México\n      \n      \n        \n          \n            Claudia Sheinbaum\n          \n        \n      \n    \n    \n      \n        Colombia\n      \n      \n        \n          \n            Abelardo de la Espriella\n          \n        \n      \n    \n    \n      \n        Argentina\n      \n      \n        \n          \n            Javier Milei\n          \n        \n        \n          \n            Lionel Messi\n          \n        \n      \n    \n    \n      \n        España\n      \n      \n        \n          \n            Pedro Sánchez\n          \n        \n      \n    \n    \n      \n        Venezuela\n      \n      \n        \n          \n            Nicolás Maduro\n          \n        \n        \n          \n            Elecciones en Venezuela\n          \n        \n      \n    \n    \n      \n        Centroamérica\n      \n      \n        \n          \n            Guatemala\n          \n        \n        \n          \n            Costa Rica\n          \n        \n        \n          \n            Cuba\n          \n        \n        \n          \n            República Dominicana\n          \n        \n        \n          \n            Honduras\n          \n        \n        \n          \n            Nicaragua\n          \n        \n        \n          \n            El Salvador\n          \n        \n        \n          \n            Puerto Rico\n          \n        \n      \n    \n    \n      \n        Sudamérica\n      \n      \n        \n          \n            Perú\n          \n        \n        \n          \n            Chile\n          \n        \n        \n          \n            Ecuador\n          \n        \n        \n          \n            Brasil\n          \n        \n        \n          \n            Bolivia\n          \n        \n        \n          \n            Paraguay\n          \n        \n        \n          \n            Panamá\n          \n        \n        \n          \n            Uruguay\n          \n        \n      \n    \n    \n      \n        Economía y Dinero\n      \n      \n        \n          \n            Dólar\n          \n        \n      \n    \n    \n      \n        Clima y Tiempo\n      \n      \n        \n          \n            Cambio climático\n          \n        \n        \n          \n            Tormentas\n          \n        \n        \n          \n            Huracanes\n          \n        \n      \n    \n    \n      \n        Entretenimiento\n      \n      \n        \n          \n            Cine\n          \n        \n        \n          \n            Televisión\n          \n        \n        \n          \n            Música\n          \n        \n        \n          \n            Celebridades\n          \n        \n      \n    \n    \n      \n        Cultura\n      \n      \n        \n          \n            Estilo\n          \n        \n        \n          \n            Arte\n          \n        \n        \n          \n            Literatura\n          \n        \n        \n          \n            Videojuegos\n          \n        \n      \n    \n    \n      \n        Deportes\n      \n      \n        \n          \n            Mundial 2026\n          \n        \n        \n          \n            Fútbol\n          \n        \n        \n          \n            Lionel Messi\n          \n        \n        \n          \n            Tenis\n          \n        \n        \n          \n            Boxeo\n          \n        \n        \n          \n            Deporte Motor\n          \n        \n      \n    \n    \n      \n        Salud\n      \n      \n        \n          \n            Enfermedades\n          \n        \n        \n          \n            Alimentos\n          \n        \n      \n    \n    \n      \n        Viajes\n      \n      \n      \n    \n    \n      \n        Ciencia y Tecnología\n      \n      \n        \n          \n            Tecnología\n          \n        \n      \n    \n    \n      \n        Video\n      \n      \n        \n          \n            Señal en vivo\n          \n        \n        \n          \n            YouTube\n          \n        \n      \n    \n    \n      \n        Programas\n      \n      \n        \n          \n            Presentadores\n          \n        \n        \n          \n            Programación\n          \n        \n      \n    \n  \n\n\n        \n      \n    \n  \n\n\n\n      \n    \n    \n      \n      \n\n\n      \n      \n        \n            \n            \n        \n            \n  \n      \n      \n    \n      Mundo\n    \n\n  \n    \n      \n              \n      \n      \n      \n    \n\n\n\n      \n      \n      \n      \n      \n          \n  \n    \n        \n    \n        \n  \n\n\n\n    \n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n      \n        \n      \n          \n          \n\n    \n      \n  \n                        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n       \n    \n    \n    \n      \n        \n        \n        AP\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nPolonia refuerza la frontera con Ucrania ante los crecientes temores por la seguridad en Europa\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        1:13\n      \n    \n    \n      \n        \n        Video\n        1:13\n      \n    \n    \n      \n        \n        \n        CNN\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Esta marca china de calzado deportivo llevo a Steph Curry a China\n                        1:13\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Ahmed Albam/AP\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nEl aumento de los precios del combustible desata protestas en todo el mundo\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        2:07\n      \n    \n    \n      \n        \n        Video\n        2:07\n      \n    \n    \n      \n        \n        \n        CNN\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Alex Saab, un estrecho aliado de Nicolás Maduro, se declara culpable en una corte de EE.UU.\n                        2:07\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Anna Moneymaker/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n¿Por qué los problemas de Trump con el diésel están beneficiando directamente a Rusia?\n            \n        \n    \n\n\n                \n      \n    \n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n      \n        \n      \n          \n          \n\n    \n      \n  \n                        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n                        \n        \n                                    \n\n\n    \n    \n\n    \n    \n\n\n\n\n                    \n\n\n\n\n    \n        \n                \n      \n    \n       \n    \n    \n    \n    \n\n\n        \n    \n\n\n                    \n                        \n  \n    Video Ad Feedback\n  \n                    \n                \n                    ¿Es este el “hombre más peligroso” de Alemania? Conoce a Ulrich Sigmund, candidato de la extrema derecha\n                \n                    \n                            \n                                        \n        \n        01:45\n                            \n                                 • Fuente:\n                \n                    CNN\n        \n                    \n                \n        \n                    \n        \n            \n                \n                    \n\n                \n                \n                    \n                        ¿Es este el “hombre más peligroso” de Alemania? Conoce a Ulrich Sigmund, candidato de la extrema derecha\n                    \n                            \n        \n        01:45\n         \n        \n \n                \n            \n        \n    \n        \n\n\n        \n    \n                                    \n                            \n            \n                            \n    Video\n                    ¿Es este el “hombre más peligroso” de Alemania? Conoce a Ulrich Sigmund, candidato de la extrema derecha\n                        1:45\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Dilara Senkaya/Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nAutoridades turcas detienen al menos a 150 personas en una protesta por arrestos contra la comunidad LGBTQ+\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Gonzalo Fuentes/Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nCanadá busca una \"alianza única\" con la UE mientras la relación con Estados Unidos sigue tensa\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Richard A. Brooks/AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nPor primera vez, Japón supera las 100.000 personas de más de cien años\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        4:03\n      \n    \n    \n      \n        \n        Video\n        4:03\n      \n    \n    \n      \n        \n        \n        CNN\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    ¿Por qué falló la planta nuclear de Cuba? La historia detrás de la crisis actual\n                        4:03\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Spencer Platt/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nLas 5 cosas que debes saber este 15 de septiembre\n            \n        \n    \n\n\n                \n      \n    \n\n\n\n\n\n\n  \n      \n            \n        \n            \n        \n    \n\n      \n      \n              \n  \n\n\n    \n  \n\n\n  \n  \n\n\n\n          Últimos videos\n    \n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n      \n        \n      \n          \n          \n\n    \n      \n  \n                        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        1:54\n      \n    \n    \n      \n        \n        Video\n        1:54\n      \n    \n    \n      \n        \n        \n        Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nAnthropic propone regular la IA con un modelo de cooperación similar a los tratados nucleares\n                        1:54\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        0:29\n      \n    \n    \n      \n        \n        Video\n        0:29\n      \n    \n    \n      \n        \n        \n        Vatican Media\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nAsí celebró su cumpleaños 71 el papa León XIV\n                        0:29\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        0:39\n      \n    \n    \n      \n        \n        Video\n        0:39\n      \n    \n    \n      \n        \n        \n        Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nImágenes muestran llamas tras ataque de dron ruso a un tren de Ucrania\n                        0:39\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        1:31\n      \n    \n    \n      \n        \n        Video\n        1:31\n      \n    \n    \n      \n        \n        \n        Basarnas vía Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n\"No hubo alarmas ni anuncios\": sobrevivientes del ferry en Indonesia hablan del naufragio\n                        1:31\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        0:25\n      \n    \n    \n      \n        \n        Video\n        0:25\n      \n    \n    \n      \n        \n        \n        CCTV\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nChina insta a la cooperación internacional frente a las alertas por la inteligencia artificial\n                        0:25\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        0:26\n      \n    \n    \n      \n        \n        Video\n        0:26\n      \n    \n    \n      \n        \n        \n        Instagram/meghan\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nLas primeras imágenes de la vida privada de Harry y Meghan tras su regreso a Reino Unido\n                        0:26\n            \n        \n    \n\n\n                \n      \n    \n\n\n\n\n\n    \n      \n            \n        \n            \n        \n    \n\n      \n  \n\n\n  \n  \n\n\n\n    \n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n      \n        \n      \n          \n          \n\n    \n      \n  \n                        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Suhaimi Abdullah/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nEste país paga a su gente por leer. ¿Podrá así frenar el deterioro cognitivo?\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nEl estrecho de Bab el-Mandeb en Yemen: cómo otra vía fluvial crucial se convirtió en la carta comodín de Irán\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Hollie Adams/Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nHarry y Meghan cambian de colegio a sus hijos a los pocos días de empezar el curso\n            \n        \n    \n\n\n                \n      \n    \n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n      \n        \n      \n          \n          \n\n    \n      \n  \n                        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Majid Asgaripour/WANA/Reuters/Archivo\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nEl Gobierno de Trump sanciona a uno de los mayores bancos de Rusia por apoyar a Irán\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Ore Huiying/Bloomberg/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nTras desmantelar una red de lavado de dinero de US$ 2.400 millones, Singapur ahora tiene que vender cientos de bolsos de lujo\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nExjefe de la CIA estaba en una estación ucraniana cuando un dron ruso atacó un tren\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Noah Berger para AWS/Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nLas 5 cosas que debes saber este 14 de septiembre\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Getty Images/Getty Images Europe/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nIrán informa que un buque comercial fue atacado en el estrecho de Ormuz\n            \n        \n    \n\n\n                \n      \n    \n\n\n\n\n\n\n  \n      \n            \n        \n            \n        \n    \n\n      \n      \n              \n  \n\n\n    \n      \n            \n        \n            \n        \n    \n\n      \n  \n\n\n  \n  \n\n\n\n          Más noticias\n    \n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n      \n        \n      \n          \n          \n\n    \n      \n  \n                        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        1:32\n      \n    \n    \n      \n        \n        Video\n        1:32\n      \n    \n    \n      \n        \n        \n        Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Polonia entra en \"alerta máxima\" por el ataque de un dron ruso en la frontera con Ucrania\n                        1:32\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Atta Kenare/AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nAplazan la reunión de Irán con países del Golfo para discutir reapertura del estrecho de Ormuz sin la participación de EE.UU.\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        INFUZ/AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nAl menos seis muertos y más de 100 desaparecidos tras volcar un barco indonesio en medio de un fuerte oleaje\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        0:55\n      \n    \n    \n      \n        \n        Video\n        0:55\n      \n    \n    \n      \n        \n        \n        ARTHUR CARRON/AFP/AFP via Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Manifestaciones contra Trump durante su visita a Irlanda\n                        0:55\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        AP\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n¿Por qué Arabia Saudita tiene pocas opciones en su conflicto con los hutíes?\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        0:35\n      \n    \n    \n      \n        \n        Video\n        0:35\n      \n    \n    \n      \n        \n        \n        INFUZ/AFP/AFP via Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Barco indonesio pierde contacto y se hunde con cientos de pasajeros a bordo\n                        0:35\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        .\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nRusia ataca la zona fronteriza entre Polonia y Ucrania en medio de una ofensiva contra gasolineras, según Kyiv\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Darko Bandic/AP\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nUn embajador en Liubliana, pero no en Londres: la política exterior de Israel se aleja de sus aliados históricos\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Guillaume Saligot/AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nUn tren descarrila en Francia y deja 44 heridos mientras las autoridades investigan un posible sabotaje\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        AP Photo/Aaron Favila\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nAumenta a 76 la cifra de muertos por el incendio de un ferry en Filipinas\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        0:36\n      \n    \n    \n      \n        \n        Video\n        0:36\n      \n    \n    \n      \n        \n        \n        Clipped From Video\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Marcha masiva en Berlín contra el avance de la extrema derecha y el ascenso de AfD\n                        0:36\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Vahid Salemi/AP\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n¿Puede el mercado petrolero sobrevivir a una guerra eterna con Irán?\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        3:59\n      \n    \n    \n      \n        \n        Video\n        3:59\n      \n    \n    \n      \n        \n        \n        ALEXANDER KAZAKOV/AFP/POOL/AFP via Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Cumbre BRICS pide contención en Medio Oriente y cuestiona el liderazgo de EE.UU.\n                        3:59\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n          &bull;\n          Video\n        \n        2:28\n      \n    \n    \n      \n        \n        Video\n        2:28\n      \n    \n    \n      \n        \n        \n        MOHAMMED HUWAIS/AFP/AFP via Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n                            \n    Video\n                    Los hutíes, respaldados por Irán, ganan influencia en el Mar Rojo\n                        2:28\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Kylie Cooper/Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nTrump se mete en un tema pantanoso durante su visita a Dublín y afirma que la unificación de Irlanda sería \"fantástica\"\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Denis Balibouse/Reuters\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nLas elecciones en Suecia podrían llevar a la extrema derecha al corazón del Gobierno\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Brendan Smialowski/AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nTrump afirma que probablemente Irán sea el responsable del ataque que provocó el cierre de un oleoducto saudita\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Guillaume Saligot/AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nInvestigan posible sabotaje a un tren que descarriló en Francia y dejó 44 heridos\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Ilustración fotográfica de Alberto Mier/CNN/Vlad Smilianets/Reuters/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \nUcrania está luchando contra Rusia dondequiera que puede, incluso en los desiertos de África\n            \n        \n    \n\n\n                    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n        \n        \n        \n    \n                                    \n        \n                        \n      \n    \n       \n    \n    \n    \n      \n        \n        \n        Mohammed Huwais/AFP/Getty Images\n      \n    \n\n\n        \n    \n    \n                    \n                            \n            \n\"Desastre de proporciones épicas\": búsqueda de culpables tras rápido avance de los hutíes a lo largo de la costa del mar Rojo\n            \n        \n    \n\n\n                \n      \n    \n\n\n\n\n\n    \n  \n\n\n\n\n    \n\n\n    \n  \n\n\n\n        \n      \n      \n  \n  \n        \n  \n    \n    \n    \n  \n\n\n    \n      \n      \n          \n  \n    \n      \n        EE.UU.\n      \n      \n        \n          \n            Donald Trump\n          \n        \n        \n          \n            Inmigración\n          \n        \n        \n          \n            Elecciones\n          \n        \n        \n          \n            Economía EE.UU.\n          \n        \n        \n          \n            Visas\n          \n        \n        \n          \n            Puerto Rico\n          \n        \n      \n    \n    \n      \n        Mundo\n      \n      \n        \n          \n            Rusia\n          \n        \n        \n          \n            Israel\n          \n        \n        \n          \n            China\n          \n        \n        \n          \n            Ucrania\n          \n        \n        \n          \n            Europa\n          \n        \n        \n          \n            Asia\n          \n        \n        \n          \n            Medio Oriente\n          \n        \n        \n          \n            África\n          \n        \n        \n          \n            Oceanía\n          \n        \n      \n    \n    \n      \n        México\n      \n      \n        \n          \n            Claudia Sheinbaum\n          \n        \n      \n    \n    \n      \n        Colombia\n      \n      \n        \n          \n            Abelardo de la Espriella\n          \n        \n      \n    \n    \n      \n        Argentina\n      \n      \n        \n          \n            Javier Milei\n          \n        \n        \n          \n            Lionel Messi\n          \n        \n      \n    \n    \n      \n        España\n      \n      \n        \n          \n            Pedro Sánchez\n          \n        \n      \n    \n    \n      \n        Venezuela\n      \n      \n        \n          \n            Nicolás Maduro\n          \n        \n        \n          \n            Elecciones en Venezuela\n          \n        \n      \n    \n    \n      \n        Centroamérica\n      \n      \n        \n          \n            Guatemala\n          \n        \n        \n          \n            Costa Rica\n          \n        \n        \n          \n            Cuba\n          \n        \n        \n          \n            República Dominicana\n          \n        \n        \n          \n            Honduras\n          \n        \n        \n          \n            Nicaragua\n          \n        \n        \n          \n            El Salvador\n          \n        \n        \n          \n            Puerto Rico\n          \n        \n      \n    \n    \n      \n        Sudamérica\n      \n      \n        \n          \n            Perú\n          \n        \n        \n          \n            Chile\n          \n        \n        \n          \n            Ecuador\n          \n        \n        \n          \n            Brasil\n          \n        \n        \n          \n            Bolivia\n          \n        \n        \n          \n            Paraguay\n          \n        \n        \n          \n            Panamá\n          \n        \n        \n          \n            Uruguay\n          \n        \n      \n    \n    \n      \n        Economía y Dinero\n      \n      \n        \n          \n            Dólar\n          \n        \n      \n    \n    \n      \n        Clima y Tiempo\n      \n      \n        \n          \n            Cambio climático\n          \n        \n        \n          \n            Tormentas\n          \n        \n        \n          \n            Huracanes\n          \n        \n      \n    \n    \n      \n        Entretenimiento\n      \n      \n        \n          \n            Cine\n          \n        \n        \n          \n            Televisión\n          \n        \n        \n          \n            Música\n          \n        \n        \n          \n            Celebridades\n          \n        \n      \n    \n    \n      \n        Cultura\n      \n      \n        \n          \n            Estilo\n          \n        \n        \n          \n            Arte\n          \n        \n        \n          \n            Literatura\n          \n        \n        \n          \n            Videojuegos\n          \n        \n      \n    \n    \n      \n        Deportes\n      \n      \n        \n          \n            Mundial 2026\n          \n        \n        \n          \n            Fútbol\n          \n        \n        \n          \n            Lionel Messi\n          \n        \n        \n          \n            Tenis\n          \n        \n        \n          \n            Boxeo\n          \n        \n        \n          \n            Deporte Motor\n          \n        \n      \n    \n    \n      \n        Salud\n      \n      \n        \n          \n            Enfermedades\n          \n        \n        \n          \n            Alimentos\n          \n        \n      \n    \n    \n      \n        Viajes\n      \n      \n      \n    \n    \n      \n        Ciencia y Tecnología\n      \n      \n        \n          \n            Tecnología\n          \n        \n      \n    \n    \n      \n        Video\n      \n      \n        \n          \n            Señal en vivo\n          \n        \n        \n          \n            YouTube\n          \n        \n      \n    \n    \n      \n        Programas\n      \n      \n        \n          \n            Presentadores\n          \n        \n        \n          \n            Programación\n          \n        \n      \n    \n  \n\n\n      \n      \n    \n        \n            \n\t  \n\t\t\n\t\t\t\t\n  \n  \n  \n  \n  \n  \n  \n  \n  \n\n\n\t\t\n\t\t\n\t\n\t\n\n\n        \n      \n              \n\t\tSIGUE A CNN EN ESPAÑOL\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\n\t\t\t\n\t\t\n\t\n\n\n      \n    \n      \n    \n        \n          Condiciones de uso\n        \n        \n          Anúnciate\n        \n        \n          Privacidad\n        \n        \n          \n        \n        \n          Contáctanos\n        \n        \n          Elecciones de anuncios\n        \n    \n    &copy; 2026 Cable News Network. A Warner Bros. Discovery Company. All Rights Reserved.  CNN Sans ™ & © 2016 Cable News Network.\n  \n\n\n\n\n    \n        \n            \n\n            Download the CNN app\n        \n\n        \n            Scan the QR code to download the CNN app on Google Play.\n        \n\n        \n            \n            \n\n  \n  \n    \n  \n  \n  \n    \n    \n    \n    \n    \n    \n    \n  \n  \n  \n    \n    \n    \n    \n  \n\n        \n    \n    \n        \n\n    \n\n\n\n    \n        \n            \n\n            Download the CNN app\n        \n\n        \n            Scan the QR code to download the CNN app from the Apple Store.",
+      "title": "https://cnnespanol.cnn.com/mundo (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528569217,
+        "end": 1789528569676
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528569677,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f74d0015K1kVFme5TnysL",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f2eb001ZGHx9319QiWVZ6",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 33112,
+      "output": 133,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33245,
+      "headroom": 5611,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.678Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.679Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.679Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.679Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.679Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.679Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.679Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.687Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 33245,
+  "providerTokens": 33245,
+  "estimatedInputTokens": 11411,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 33112,
+    "cacheRead": 0,
+    "output": 133
+  },
+  "overflow": false,
+  "headroom": 5611,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.687Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.689Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.689Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528569913,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f839001lK28S0L598aYaf",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f757001Gs1zvS2xJusM1W",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528569914,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f83a0016ggosCP6Xjd5MS",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f757001Gs1zvS2xJusM1W",
+    "type": "tool",
+    "callID": "call_b0f44bf3af137617",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528569914,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f839002Hiv9ZQNYYj1AHZ",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f757001Gs1zvS2xJusM1W",
+    "type": "text",
+    "text": "Let me open https://www.bbc.com/mundo and read what it says.",
+    "time": {
+      "start": 1789528569914,
+      "end": 1789528569914
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528569914,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f83a0016ggosCP6Xjd5MS",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f757001Gs1zvS2xJusM1W",
+    "type": "tool",
+    "callID": "call_b0f44bf3af137617",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.bbc.com/mundo"
+      },
+      "time": {
+        "start": 1789528569914
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528569915,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f83a0016ggosCP6Xjd5MS",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f757001Gs1zvS2xJusM1W",
+    "type": "tool",
+    "callID": "call_b0f44bf3af137617",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.bbc.com/mundo"
+      },
+      "error": "Error: Unable to connect. Is the computer able to access the url?",
+      "time": {
+        "start": 1789528569914,
+        "end": 1789528569915
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528569915,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "Error: Unable to connect. Is the computer able to access the url?",
+  "error": "Error: Unable to connect. Is the computer able to access the url?"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528569916,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f83b001cKEQ70rTn4RiLB",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f757001Gs1zvS2xJusM1W",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 75602,
+      "output": 119,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 75721,
+      "headroom": -36865,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.916Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.917Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.917Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.917Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.920Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 75721,
+  "providerTokens": 75721,
+  "estimatedInputTokens": 11428,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 75602,
+    "cacheRead": 0,
+    "output": 119
+  },
+  "overflow": true,
+  "headroom": -36865,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.920Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.920Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.920Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.921Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.921Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.922Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.922Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:09.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528570243,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f983001XeSMH5o5bqr2Y3",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f842001rFKE6r0QJ1OBz5",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528570244,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f984001Cuq3oULp20Vsj2",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f842001rFKE6r0QJ1OBz5",
+    "type": "text",
+    "text": "Let me search the web for ¿Qué está pasando en el mundo ahora mismo.\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789528570244,
+      "end": 1789528570244
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528570244,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f984002K8xyJZJZ8osfQV",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f842001rFKE6r0QJ1OBz5",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 67965,
+      "output": 117,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 68082,
+      "headroom": -29226,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528570245,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f985002NVhPKJPawSej5z",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f985001bKnprtiRSHXC5t",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528570245,
+      "end": 1789528570245
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.245Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.246Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.246Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.246Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.246Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.247Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.247Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.247Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.248Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528570309,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f9c5001r8LPYnUYG30LA3",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f986001VK079KgpAMbRoP",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528570310,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f9c6001DuyapUr0rR4Pfe",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f986001VK079KgpAMbRoP",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528570310,
+      "end": 1789528570310
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528570310,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "part": {
+    "id": "prt_0a836f9c6002jNoNrNFkkhiE4l",
+    "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+    "messageID": "msg_0a836f986001VK079KgpAMbRoP",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8666,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8739,
+      "headroom": 30117,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.312Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.313Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.313Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.314Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528570314,
+  "sessionID": "ses_f57c916d8ffeHpLGASLOULhSZR"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.314Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.314Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.314Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.315Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.RIlHAWxnev",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.315Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+

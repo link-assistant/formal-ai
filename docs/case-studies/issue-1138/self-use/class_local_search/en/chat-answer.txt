@@ -1,0 +1,5 @@
+It looks like you want to run a terminal command: `Find hive-mind-control center folder on my desktop`.
+
+Running shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.
+
+ Use the mode radio in the toolbar to pick "Agent" (or "Full Auto" to run commands automatically).

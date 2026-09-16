@@ -1,0 +1,2489 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.851Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.852Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 在我的桌面上找 hive-mind-control-center 文件夹。 --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.852Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.852Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.861Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "在我的桌面上找 hive-mind-control-center 文件夹。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "在我的桌面上找 hive-mind-control-center 文件夹。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.861Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.861Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.862Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.862Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.865Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.865Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.868Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 13292,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.868Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.880Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 24,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:20:11.885Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.889Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.889Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.890Z",
+  "service": "session",
+  "id": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6",
+  "title": "New session - 2026-09-16T03:20:11.890Z",
+  "time": {
+    "created": 1789528811890,
+    "updated": 1789528811890
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.890Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.890Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.890Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c5568dffeFe2jZRuZHxcy7s/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.890Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c5568dffeFe2jZRuZHxcy7s/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.893Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c5568dffeFe2jZRuZHxcy7s/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.896Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.897Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.897Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.898Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.898Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.898Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.898Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.898Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.898Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.898Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.030Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.033Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.034Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.040Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.046Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.050Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.593Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528812593,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aac2b001CcTVcuXsjdvbBr",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83aaa01001gtYIjoycrN1A0w",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528812596,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aac33001XK5nzogDpXLNyW",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83aaa01001gtYIjoycrN1A0w",
+    "type": "tool",
+    "callID": "call_736f73455ebf7f4c",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528812596,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aac32001PmRchKZ9Q8315D",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83aaa01001gtYIjoycrN1A0w",
+    "type": "text",
+    "text": "我来上网搜索 在我的桌面上找 hive-mind-control-center 文件夹。",
+    "time": {
+      "start": 1789528812596,
+      "end": 1789528812596
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:12.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528812597,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aac33001XK5nzogDpXLNyW",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83aaa01001gtYIjoycrN1A0w",
+    "type": "tool",
+    "callID": "call_736f73455ebf7f4c",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "在我的桌面上找 hive-mind-control-center 文件夹"
+      },
+      "time": {
+        "start": 1789528812596
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.067Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528814067,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aac33001XK5nzogDpXLNyW",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83aaa01001gtYIjoycrN1A0w",
+    "type": "tool",
+    "callID": "call_736f73455ebf7f4c",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "在我的桌面上找 hive-mind-control-center 文件夹"
+      },
+      "output": "Title: hivemind/apps/hivemind-desktop at main · hivemind-os/hivemind · GitHub\nURL: https://github.com/hivemind-os/hivemind/tree/main/apps/hivemind-desktop\nPublished: 2026-04-12T20:44:48.000Z\nAuthor: hivemind-os\nHighlights:\nhivemind/apps/hivemind-desktop at main · hivemind-os/hivemind · GitHub\n...\n# hivemind-desktop\n...\n# hivemind-desktop\n...\nCross-platform desktop UI for HiveMind OS, a privacy-aware desktop AI agent. Built with Tauri v2 and SolidJS.\n...\n## Project Structure\n...\n```\nhivemind-desktop/\n├── package.json          # Frontend deps (solid-js, @tauri-apps/api)\n├── vite.config.ts\n├── tsconfig.json\n├── src/\n│   ├── index.tsx         # Entry point\n│   ├── App.tsx           # Root component\n│   └── styles.css\n└── src-tauri/\n    ├── Cargo.toml        # Tauri + hivemind bridging crates\n    └── src/\n        ├── main.rs       # Tauri window bootstrapping\n        └── lib.rs        # Command handlers (~40 invokable commands)\n\n```\n\n---\n\nTitle: link-assistant/hive-mind\nURL: http://github.com/link-assistant/hive-mind\nPublished: 2025-07-28T19:19:18.000Z\nAuthor: N/A\nHighlights:\n# On the host, create the directories used by the current Docker workflow:\nmkdir -p /root/.hive-mind/claude /root/.hive-mind/codex /root/.hive-mind/gh\ntouch -a /root/.hive-mind/claude.json\n...\n# In our Docker images HOME=/home/box, so Codex stores its data in /home/box/.codex.\n# Mount the full Codex directory so auth.json, config.toml, and sessions survive restarts.\ndocker run -dit --user box --name hive-mind --restart unless-stopped \\\n  -v /root/.hive-mind/claude:/home/box/.claude \\\n  -v /root/.hive-mind/codex:/home/box/.codex \\\n  -v /root/.hive-mind/claude.json:/home/box/.claude.json \\\n  -v /root/.hive-mind/gh:/home/box/.config/gh \\\n  konard/hive-mind:latest bash -l -c 'bash /home/box/start-bot.sh'\n...\nfirst start, fix ownership to match the box user inside the container:\nBOX_UID=$(docker exec hive-mind id -u box)\nchown -R $BOX_UID:$BOX_UID /root/.hive-mind/claude /root/.hive-mind/codex /root/.hive-mind/gh\nchown $BOX_UID:$BOX_UID /root/.hive-mind/claude.json\n...\nThe Docker image itself now registers Playwright MCP for both Claude and Codex during build, and CI verifies those registrations in the built container. If `codex mcp list` is still empty in a running container, the usual cause is not the published image itself but a mounted `/home/box/.codex` directory from the host that replaces the image's default Codex configuration.\n\n---\n\nTitle: Hivemind MCP - Obsidian插件集成AI防火墙，借时间线图谱防AI幻觉\nURL: https://mcp.aibase.com/zh/server/1639702971132682563\nPublished: N/A\nAuthor: N/A\nHighlights:\nObsidian中安装\n...\n添加MCP服务器配置\n...\n您的知识库 4\n...\n在Obsidian中安装Hivemind插件，并选择适合您的模板（世界构建、研究等）。\n...\n- 核心MCP功能（工具、资源、提示、查询模式、最佳实践）\n- Obsidian库功能（文件夹结构、模板、元数据模式、关系建模）\n- AI上下文交付（特定任务上下文、角色一致性、位置/时间线上下文、资产引用）\n- 规范管理（草稿→审批工作流程、版本控制、冲突解决、验证）\n- 资产来源（ComfyUI工作流程、元数据跟踪、可重复性）\n- 功能优先级（MVP功能、0.2版本及以上的可选功能、1.0版本及以上的未来功能、超出范围的功能）\n\n---\n\nTitle: documentation/zh-tw/modules/README.md\nURL: https://github.com/him6794/hivemind/blob/3cd77eee/documentation/zh-tw/modules/README.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n- **[Master Node](master-node.md)** - 主控節點\n - Web 管理界面\n - VPN 網路管理\n - 系統監控和報告\n - 任務協調和分發\n...\n- [Node Pool](node-pool.md) - 中央調度服務\n- [Master Node](master-node.md) - 系統控制台\n- [Worker Node](worker-node.md) - 計算執行單元\n\n---\n\nTitle: him6794/hivemind\nURL: https://github.com/him6794/hivemind\nPublished: N/A\nAuthor: N/A\nHighlights:\n** | **\n...\nStarted** | **Development** |\n...\n|:---:|:---:|:---:|\n...\n中心](web/DOC\n...\nContributing](CONTRIBUTING.md) |\n...\nEnglish Docs](documentation/en\n...\n| [Docker\n...\nAPI Reference](documentation/\n...\n/api.md\n...\n|\n|\n...\n| [Installation](#\n...\nCHANGELOG\n...\nModule Docs](documentation\n...\n```bash\n# Clone the repository\ngit clone https://github.com/him6794/hivemind.git\ncd hivemind\n...\n```bash\n# Clone with full development tools\ngit clone --recurse-submodules https://github.com/him6794/hivemind.git\ncd hivemind\n...\n### Deployment Options\n\n \n\n| **Component** | **Launch Command** | **Description** |\n|:---:|:---:|:---:|\n| **Node Pool** | `cd node_pool && python node_pool_server.py` | Central management with trust-based scheduling |\n| **Worker Node** | `cd worker && python worker_node.py` | Computational worker with resource monitoring |\n| **Master Node** | `cd master && python master_node.py` | Web interface & orchestration |\n| **TaskWorker** | `cd taskworker && python worker.py` | Lightweight task executor |\n\n \n\n### Docker Deployment\n...\n```bash\n# Step 1: Download & Install\ngit clone https://github.com/him6794/hivemind.git\ncd hivemind && pip install -r requirements.txt\n...\n# Step 2: Choose Your Role\n# Resource Provider: cd worker && python worker_node.py\n# Task Creator: cd master && python master_node.py\n# Network Admin: cd node_pool && python node_pool_server.py\n...\n# Step 3: Access the Dashboard\n# Open your browser to http://localhost:5000\n```\n\n---\n\nTitle: docs/CONFIGURATION.zh.md\nURL: https://github.com/link-assistant/hive-mind/blob/master/docs/CONFIGURATION.zh.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n- [环境变量](#environment-variables)\n - [超时配置](#1-timeout-configurations)\n - [自动继续设置](#2-auto-continue-settings)\n - [限额重置设置](#22-limit-reset\n...\nsettings)\n - [GitHub API 限制](#3-github-api-limits)\n - [系统资源限制](#4-system-resource-limits)\n - [Docker 隔离设置](#41-docker-isolation-settings)\n - [重试配置](#5-retry-configurations)\n - [缓存 TTL 配置](#51-cache-ttl\n...\nconfigurations)\n - [Claude Code CLI 配置](#52-claude-code-cli-configurations)\n - [文件和路径设置](#6-file-and-path-settings)\n - [文本处理](#7-text-processing)\n - [显示设置](#8-display-settings)\n - [Sentry 错误跟踪](#9-sentry-error-tracking)\n - [外部 URL](#10-external-urls)\n - [模型配置](#11-model-configuration)\n - [版本设置](#12-version-settings)\n - [合并队列配置](#121-merge-queue-configurations)\n - [Telegram Bot](#13-telegram-bot)\n - [YouTrack 集成](#14-youtrack-integration)\n - [工具路径](#15-tool-paths)\n - [调试和开发](#16-debug-and-development)\n - [Playwright MCP](#17-playwright-mcp)\n\n---\n\nTitle: documentation/zh-tw/modules/web.md\nURL: https://github.com/him6794/hivemind/blob/3cd77eee/documentation/zh-tw/modules/web.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n# documentation/zh-tw/modules/\n...\n## 🗂️ 檔案結構\n...\n```\nweb/\n├── app.py                     # Flask 主應用程式\n├── vpn_service.py            # VPN 服務管理\n├── wireguard_server.py       # WireGuard 伺服器\n├── __pycache__/              # Python 緩存\n├── static/                   # 靜態資源\n│   ├── css/                  # 樣式表\n│   ├── js/                   # JavaScript 腳本\n│   └── images/               # 圖片資源\n└── templates/                # HTML 模板\n    ├── base.html             # 基礎模板\n    ├── index.html            # 首頁\n    ├── dashboard.html        # 儀表板\n    ├── nodes.html            # 節點管理\n    ├── tasks.html            # 任務管理\n    └── vpn.html              # VPN 管理\n```\n\n---\n\nTitle: xuhongxin/hive\nURL: https://github.com/xuhongxin/hive\nPublished: N/A\nAuthor: N/A\nHighlights:\nBrowser-native hive\n...\nCLI coding agents — Claude Code, Codex, Gemini,\n...\nOpenCode collaborate\n...\nTY processes via a team protocol.\n...\n## README\n\n \n \n \n\n# Hive\n\n \n \n \n\n**Hive 是浏览器里的 Agent 协作工作台——一群 Agent 在你本机各自开工，一个当 Orchestrator 派活、归总进展，其余各司其职。** Orchestrator 本身就是一个真实的 `claude` / `codex` / `opencode` / `gemini` 进程——不是你、也不是脚本——它派单的 Worker 同样是真 CLI agent。所有 agent 都是本机真实的 PTY 进程，通过 Hive 注入到 shell 里的小型 `team` 协议互相通信，共享 ` /.hive/tasks.md` 这份 markdown 任务图。\n...\n127\n...\n1. 选择一个项目目录作为 workspace。\n2. 挑一个 Orchestrator 预设。\n3. Hive 会创建 ` /.hive/tasks.md`，启动 Orchestrator 的 PTY，把内部的 `team` 命令注入这个 agent 会话。\n4. 在 Team Members 面板里添加 Worker。\n5. 跟 Orchestrator 说一声让它派活，它会用 `team send \" \"` 发任务，Worker 完事后用 `team report` 回报。\n...\nWorkspace 任务图：\n...\n<workspace>/.hive/tasks.md\n...\n- Workspace 侧边栏，方便在多个本机项目之间切换。\n- Orchestrator 和 Worker 终端都是真实 PTY 支撑的。\n- Add Worker 预置 coder / reviewer / tester 等角色模板，也支持完全自定义 prompt 与命令——把任何 CLI agent 编排成你需要的角色。\n- `.hive/tasks.md` 编辑器，带外部文件冲突处理。\n- PTY 后台保留 + 尽力使用各 CLI 原生 session 恢复。\n- 元数据存在本机 SQLite，默认在 `~/.config/hive`，或者通过 `$HIVE_DATA_DIR` 指定。\n...\n| 数据 | 位置 |\n| --- | --- |\n| Runtime 元数据 | `~/.config/hive` 或 `$HIVE_DATA_DIR` |\n| Workspace 任务图 | ` /.hive/tasks.md` |\n| 内部 `team` 命令 | 包内 `dist/bin/`，通过 PATH 注入 PTY |\n| Web UI 资源 | 由 runtime 从包内 `web/dist` 直接服务 |",
+      "title": "Web search: 在我的桌面上找 hive-mind-control-center 文件夹",
+      "metadata": {},
+      "time": {
+        "start": 1789528812596,
+        "end": 1789528814065
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.071Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528814071,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ab1f5001jG5dQR8zOHFgdi",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83aaa01001gtYIjoycrN1A0w",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8533,
+      "output": 101,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8634,
+      "headroom": 30222,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.072Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.072Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.074Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.074Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.074Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.075Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.075Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.075Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.075Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.083Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8634,
+  "providerTokens": 8634,
+  "estimatedInputTokens": 2841,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8533,
+    "cacheRead": 0,
+    "output": 101
+  },
+  "overflow": false,
+  "headroom": 30222,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.084Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.084Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.087Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.781Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528814781,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ab4b8001nxtu7SgjCj7lNy",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab203001cHOuN3NFOa67kS",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.782Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528814784,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ab4bf001DuFnSPu81QtQ76",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab203001cHOuN3NFOa67kS",
+    "type": "tool",
+    "callID": "call_266bad39d7e0bdef",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528814784,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ab4bd001z2cMAewm9XU18z",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab203001cHOuN3NFOa67kS",
+    "type": "text",
+    "text": "我来打开 https://github.com/hivemind-os/hivemind/tree/main/apps/hivemind-desktop，读取其中的内容。",
+    "time": {
+      "start": 1789528814784,
+      "end": 1789528814784
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:14.785Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528814785,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ab4bf001DuFnSPu81QtQ76",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab203001cHOuN3NFOa67kS",
+    "type": "tool",
+    "callID": "call_266bad39d7e0bdef",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/hivemind-os/hivemind/tree/main/apps/hivemind-desktop"
+      },
+      "time": {
+        "start": 1789528814784
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528815887,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ab4bf001DuFnSPu81QtQ76",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab203001cHOuN3NFOa67kS",
+    "type": "tool",
+    "callID": "call_266bad39d7e0bdef",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/hivemind-os/hivemind/tree/main/apps/hivemind-desktop"
+      },
+      "output": "hivemind/apps/hivemind-desktop at main · hivemind-os/hivemind · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n      \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n    \n\n      \n  \n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n\n\n    \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        hivemind-os\n    \n    /\n    \n      hivemind\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    0\n\n  \n\n  \n        \n            \n    \n\n          Star\n          5\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Discussions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Discussions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n     FilesExpand file treemainBreadcrumbshivemind/apps/hivemind-desktop/Copy pathDirectory actionsMore optionsMore optionsDirectory actionsMore optionsMore optionsLatest commit HistoryHistoryHistorymainBreadcrumbshivemind/apps/hivemind-desktop/Copy pathTopFolders and filesNameNameLast commit messageLast commit dateparent directory..src-taurisrc-tauri  srcsrc  teststests  .gitignore.gitignore  README.mdREADME.md  index.htmlindex.html  package-lock.jsonpackage-lock.json  package.jsonpackage.json  playwright.cdp.config.tsplaywright.cdp.config.ts  playwright.config.tsplaywright.config.ts  playwright.integration.config.tsplaywright.integration.config.ts  postcss.config.jspostcss.config.js  tailwind.config.jstailwind.config.js  test-config.yamltest-config.yaml  tsconfig.jsontsconfig.json  vite.config.tsvite.config.ts  vitest.config.tsvitest.config.ts  View all filesREADME.mdOutlinehivemind-desktop\nCross-platform desktop UI for HiveMind OS, a privacy-aware desktop AI agent. Built with Tauri v2 and SolidJS.\nThe desktop app is a thin client — all intelligence lives in the HiveMind OS daemon. Communication happens over HTTP (not IPC), which keeps the architecture portable and enables future CLI/web clients.\nTechnology Stack\n\n\n\nLayer\nTechnology\n\n\n\n\nFrontend\nSolidJS + TypeScript + Vite\n\n\nBackend\nTauri v2 (webview wrapper) + Rust\n\n\nBuild\nnpm/pnpm + cargo\n\n\n\nProject Structure\nhivemind-desktop/\n├── package.json          # Frontend deps (solid-js, @tauri-apps/api)\n├── vite.config.ts\n├── tsconfig.json\n├── src/\n│   ├── index.tsx         # Entry point\n│   ├── App.tsx           # Root component\n│   └── styles.css\n└── src-tauri/\n    ├── Cargo.toml        # Tauri + hivemind bridging crates\n    └── src/\n        ├── main.rs       # Tauri window bootstrapping\n        └── lib.rs        # Command handlers (~40 invokable commands)\n\nTauri Commands\nAll commands are defined in src-tauri/src/lib.rs and are async (via tauri::async_runtime::spawn_blocking). The frontend invokes them through @tauri-apps/api/core::invoke().\nDaemon Control\n\n\n\nCommand\nDescription\n\n\n\n\ndaemon_status\nCheck if the daemon is alive\n\n\ndaemon_start\nStart the daemon process\n\n\ndaemon_stop\nStop the daemon process\n\n\nconfig_show\nShow current configuration\n\n\napp_context\nGet application context\n\n\n\nChat\n\n\n\nCommand\nDescription\n\n\n\n\nchat_list_sessions\nList all chat sessions\n\n\nchat_create_session\nCreate a new chat session\n\n\nchat_get_session\nGet a specific session\n\n\nchat_send_message\nSend a message in a session\n\n\nchat_interrupt\nInterrupt an ongoing response\n\n\nchat_resume\nResume a paused session\n\n\nchat_get_session_memory\nGet memory for a session\n\n\nchat_list_risk_scans\nList risk scans for a session\n\n\nmemory_search\nSearch across session memory\n\n\n\nModel Management\n\n\n\nCommand\nDescription\n\n\n\n\nmodel_router_snapshot\nGet model router state\n\n\n\nMCP (Model Context Protocol)\n\n\n\nCommand\nDescription\n\n\n\n\nmcp_list_servers\nList available MCP servers\n\n\nmcp_connect_server\nConnect to an MCP server\n\n\nmcp_disconnect_server\nDisconnect from an MCP server\n\n\nmcp_list_tools\nList tools from MCP servers\n\n\nmcp_list_resources\nList resources from MCP servers\n\n\nmcp_list_prompts\nList prompts from MCP servers\n\n\nmcp_list_notifications\nList MCP notifications\n\n\n\nTools\n\n\n\nCommand\nDescription\n\n\n\n\ntools_list\nList available tools\n\n\n\nLocal Models\n\n\n\nCommand\nDescription\n\n\n\n\nlocal_models_list\nList installed local models\n\n\nlocal_models_get\nGet details of a local model\n\n\nlocal_models_install\nInstall a local model\n\n\nlocal_models_remove\nRemove an installed model\n\n\nlocal_models_search\nSearch available models\n\n\nlocal_models_hardware\nGet hardware capabilities\n\n\nlocal_models_resource_usage\nGet current resource usage\n\n\nlocal_models_storage\nGet model storage information\n\n\n\nArchitecture\n\nThin client — the desktop app contains no business logic; the HiveMind OS daemon owns all AI, tool, and model operations.\nHTTP transport — Tauri commands call the daemon over HTTP via reqwest::blocking::Client, not Tauri IPC. This decouples the UI from the runtime and allows the same daemon API to serve CLI or web frontends.\nAsync commands — every Tauri command spawns blocking work on the async runtime, keeping the UI thread responsive.\nGraceful degradation — on launch the app checks daemon status and starts it automatically if needed.\nReactive frontend — SolidJS reactive primitives drive the UI; state updates flow through signals and effects rather than a virtual DOM.\n\nDevelopment\nPrerequisites\n\nNode.js (LTS)\nRust toolchain\nTauri v2 prerequisites (platform-specific guide)\n\nGetting Started\n# Install frontend dependencies\nnpm install\n\n# Run in development mode (starts both Vite dev server and Tauri window)\nnpm run tauri:dev\nBuilding for Production\nnpm run tauri:build\nThe compiled application bundle will be placed in src-tauri/target/release/bundle/.\nFrontend Patterns\nThese notes document patterns that are already in use in the current desktop app. Prefer matching them when adding features or refactoring existing code.\n1. State management patterns\n\nApp.tsx owns most app-wide state with createSignal() for daemon status, selected session, screen/tab selection, modal visibility, error banners, and busy state.\nDomain state in src/stores/ is usually exposed as a factory function that returns Solid accessors, setters, memos, and actions:\n\ncreateWorkflowStore()\ncreateBotStore()\ncreateInteractionStore()\ncreateAgentKitStore()\ncreateConfigStore(...)\ncreateWorkspaceStore(...)\n\n\nStores mainly use createSignal, createMemo, and createEffect. No createStore() usage was found in src/.\nComponents usually consume state through typed props (Accessor, Setter, or a typed store object), not global context.\nThe main exception is themeStore.ts, which exports a module-scope singleton signal for theme state.\nsrc/ui/sidebar.tsx uses createContext() internally for the sidebar primitive, but app feature state is not organized around context providers.\n\nExample from App.tsx:\nconst [activeScreen, setActiveScreen] = createSignal&lt;'session' | 'bots' | 'scheduler' | 'workflows' | 'settings' | 'agent-kits'&gt;('session');\nconst [activeTab, setActiveTab] = createSignal&lt;'chat' | 'workspace' | 'stage' | 'workflows' | 'events' | 'processes' | 'config' | 'mcp'&gt;('chat');\nconst workflowStore = createWorkflowStore();\nconst botStore = createBotStore();\nconst interactionStore = createInteractionStore();\n2. Navigation model\n\nNavigation is signal-driven, not URL/router-driven.\nApp.tsx uses a top-level activeScreen() signal plus &lt;Switch&gt; / &lt;Match&gt; to choose the current screen.\nMain screens currently are:\n\nsession\nbots\nscheduler\nworkflows\nsettings\nagent-kits\n\n\nInside the session/bot detail view there is a second navigation layer via activeTab() for:\n\nchat\nworkspace\nstage\nworkflows\nevents\nprocesses\nconfig (bot-only)\nmcp\n\n\nThe sidebar drives navigation by receiving activeScreen and setActiveScreen as props. Selecting a session explicitly switches back to the session screen.\n\nExample:\n&lt;Switch&gt;\n  &lt;Match when={activeScreen() === 'scheduler'}&gt;\n    &lt;SchedulerPage ... /&gt;\n  &lt;/Match&gt;\n  &lt;Match when={activeScreen() === 'workflows'}&gt;\n    &lt;WorkflowsPage ... /&gt;\n  &lt;/Match&gt;\n  &lt;Match when={activeScreen() === 'settings'}&gt;\n    &lt;SettingsModal ... /&gt;\n  &lt;/Match&gt;\n&lt;/Switch&gt;\n3. Backend communication\nThe frontend talks to the daemon in three main ways:\nTauri commands via invoke()\n\nCommand-style operations use invoke() from @tauri-apps/api/core.\nCommands are defined in src-tauri/src/lib.rs with #[tauri::command] and include areas like chat, config, workflows, tools, MCP, workspace, and local models.\nTypical examples:\n\nconfig_get\nchat_send_message\nworkspace_list_files\ntools_list\nworkflow_subscribe_events\n\n\n\nHTTP daemon calls via authFetch()\n\nREST-style daemon endpoints should go through src/lib/authFetch.ts.\nauthFetch() does not call the daemon directly from the browser. It proxies through the Tauri daemon_fetch command so production builds avoid mixed-content problems and reuse daemon auth handling.\nFeature code often adds a small domain wrapper on top of authFetch() (for example kgFetch() in knowledge-graph code).\n\nExample:\nconst resp = await authFetch(`${url}${path}`, init);\nif (!resp.ok) throw new Error(await resp.text());\nreturn resp.json();\nReal-time updates via daemon SSE -&gt; Tauri events\n\nThe daemon exposes SSE streams, but the frontend usually does not create a browser EventSource directly.\nInstead, Rust subscribes to SSE and re-emits Tauri events such as:\n\nworkflow:event\ninteraction:event\nstage:event\n\n\nFrontend stores/components then subscribe with listen() from @tauri-apps/api/event.\nsrc/lib/useSSESubscription.ts exists as a lifecycle-safe helper, but many existing stores currently call listen() directly.\n\nPractical rule:\n\nUse invoke() for explicit command handlers.\nUse authFetch() for daemon HTTP endpoints.\nUse Tauri listen() for live event streams.\n\n4. Component organization\n\nsrc/components/ contains feature and page components.\n\nTop-level screens include things like ChatView, WorkspaceView, BotsPage, SchedulerPage, WorkflowsPage, AgentKitsPage, and SettingsModal.\nThere is clear feature grouping in subfolders such as:\n\ncomponents/settings/\ncomponents/setup/\ncomponents/connectors/\ncomponents/workflow/\ncomponents/flight-deck/\ncomponents/shared/\ncomponents/plugins/\n\n\n\n\nsrc/ui/ contains reusable UI primitives such as Button, Dialog, Tabs, Popover, Sidebar, Table, and Tooltip.\nsrc/lib/ contains non-visual helpers and integration code such as:\n\nauthFetch.ts\nuseSSESubscription.ts\nsyntax-highlighting helpers\nrouting/grouping utilities\nMCP helpers\nsmall focused unit tests for utility modules\n\n\n\nIn practice:\n\nPut feature behavior in components/ or stores/.\nPut reusable presentational primitives in ui/.\nPut transport/helpers/hooks/utilities in lib/.\n\n5. UI framework\n\nThe app is built with SolidJS and leans heavily on Solid primitives:\n\ncreateSignal\ncreateEffect\ncreateMemo\nShow\nFor\nSwitch / Match\n\n\ncreateResource() is used occasionally for component-local async loading, but signals + explicit async functions are the dominant pattern.\nThe component primitive layer is built on Kobalte (@kobalte/core) for accessible primitives (e.g. Dialog, DropdownMenu, Select) and wrapped locally in src/ui/. Not all components use Kobalte — many are plain SolidJS components.\nStyling is a mix of:\n\nTailwind-style utility classes directly in class=\"...\"\nshared UI variants with class-variance-authority\nclsx + tailwind-merge via cn() in src/lib/utils.ts\nglobal CSS variables and app-level styles in src/styles.css\n\n\nNo CSS modules or styled-components files were found in this app.\n\n6. Important conventions\nDialog dismissal\n\nMany dialogs intentionally prevent accidental dismissal with:\n\n&lt;DialogContent onInteractOutside={(e) =&gt; e.preventDefault()} /&gt;\n\nSome long-running flows also block Escape until the action completes.\nFollow this pattern for destructive, multi-step, or in-progress dialogs.\n\nError handling\n\nMost async actions use try/catch and either:\n\nset a local error signal (error, hubSearchError, configLoadError, etc.), or\nlog non-fatal issues with console.warn / console.error.\n\n\nApp.tsx centralizes many user-facing action failures through runAction(), which sets busyAction and errorMessage.\nErrorBanner.tsx special-cases HuggingFace token/license errors instead of treating them as generic failures.\n\nLoading states\n\nLoading is usually explicit and local to the feature:\n\nloading\nhubSearchLoading\ninstallInProgress\nworkspaceLoading\nfileSaving\nauditRunning\n\n\nThe common pattern is setLoading(true) before async work and reset it in finally.\n\nTypeScript strictness\n\ntsconfig.json has \"strict\": true.\nThe codebase also leans on explicit union types for screen/tab state and typed Accessor / Setter props.\n\nContributor guidance\nWhen adding frontend code, prefer to:\n\nStart with local createSignal() state.\nExtract a store factory in src/stores/ when state/actions are shared across a feature.\nPass accessors, setters, and store objects down through typed props.\nUse invoke() for Tauri commands and authFetch() for daemon HTTP endpoints.\nRoute new top-level views through activeScreen() in App.tsx instead of adding a router.\nMatch the existing dialog, loading, and error-handling conventions.\n\n   \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/hivemind-os/hivemind/tree/main/apps/hivemind-desktop (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528814784,
+        "end": 1789528815886
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528815889,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ab910001aaBoAUROPSv5v9",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab203001cHOuN3NFOa67kS",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 16735,
+      "output": 190,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 16925,
+      "headroom": 21931,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.893Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.897Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.897Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.897Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.899Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.899Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.908Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 16925,
+  "providerTokens": 16925,
+  "estimatedInputTokens": 6517,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 16735,
+    "cacheRead": 0,
+    "output": 190
+  },
+  "overflow": false,
+  "headroom": 21931,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.909Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.912Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:15.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:16.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528816244,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aba740010jDcSQSnXkhUp6",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab9240018yJ7hosDsYJl58",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:16.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:16.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528816245,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aba740039loka3zuTd30Pn",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab9240018yJ7hosDsYJl58",
+    "type": "tool",
+    "callID": "call_d5e7b5f02db353f5",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:16.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528816245,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aba74002OfCpvemcm1Itjz",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab9240018yJ7hosDsYJl58",
+    "type": "text",
+    "text": "我来打开 http://github.com/link-assistant/hive-mind，读取其中的内容。",
+    "time": {
+      "start": 1789528816245,
+      "end": 1789528816245
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:16.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528816245,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aba740039loka3zuTd30Pn",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab9240018yJ7hosDsYJl58",
+    "type": "tool",
+    "callID": "call_d5e7b5f02db353f5",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "http://github.com/link-assistant/hive-mind"
+      },
+      "time": {
+        "start": 1789528816245
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528817238,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83aba740039loka3zuTd30Pn",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab9240018yJ7hosDsYJl58",
+    "type": "tool",
+    "callID": "call_d5e7b5f02db353f5",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "http://github.com/link-assistant/hive-mind"
+      },
+      "output": "GitHub - link-assistant/hive-mind: The AI that controls AIs to do the automation of automation. · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n      \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n    \n\n      \n  \n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n\n\n    \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        link-assistant\n    \n    /\n    \n      hive-mind\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    17\n\n  \n\n  \n        \n            \n    \n\n          Star\n          86\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          86\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          69\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n     mainBranchesTagsGo to fileCodeOpen more actions menuLatest commit History7,677 Commits7,677 CommitsFolders and filesNameNameLast commit messageLast commit date.changeset.changeset  .github.github  .husky.husky  case-studies/issue-661-session-resume-cost-optimizationcase-studies/issue-661-session-resume-cost-optimization  ci-logsci-logs  coolifycoolify  data/case-studiesdata/case-studies  dev/log/issuesdev/log/issues  docsdocs  eslint-ruleseslint-rules  examplesexamples  experimentsexperiments  helm/hive-mindhelm/hive-mind  scriptsscripts  srcsrc  teststests  .dockerignore.dockerignore  .env.example.env.example  .gitattributes.gitattributes  .gitignore.gitignore  .gitkeep.gitkeep  .gitpod.Dockerfile.gitpod.Dockerfile  .gitpod.yml.gitpod.yml  .jscpd.json.jscpd.json  .lenv.example.lenv.example  .lycheeignore.lycheeignore  .npmrc.npmrc  .prettierignore.prettierignore  .prettierrc.prettierrc  .secretlintignore.secretlintignore  .secretlintrc.json.secretlintrc.json  CHANGELOG.mdCHANGELOG.md  DockerfileDockerfile  Dockerfile.dindDockerfile.dind  Dockerfile.formal-aiDockerfile.formal-ai  LICENSELICENSE  README.hi.mdREADME.hi.md  README.mdREADME.md  README.ru.mdREADME.ru.md  README.zh.mdREADME.zh.md  analyze-issue.mdanalyze-issue.md  claude-runtime.mjsclaude-runtime.mjs  cleanup-test-repos.mjscleanup-test-repos.mjs  create-test-repo.mjscreate-test-repo.mjs  cspell.jsoncspell.json  do.mjsdo.mjs  docker-compose.ymldocker-compose.yml  docker-restore-auth.shdocker-restore-auth.sh  docker-solve.shdocker-solve.sh  eslint.config.mjseslint.config.mjs  gitpod-backup-auth.shgitpod-backup-auth.sh  gitpod-restore-auth.shgitpod-restore-auth.sh  package-lock.jsonpackage-lock.json  package.jsonpackage.json  View all filesRepository files navigationREADMEContributingUnlicense licenseMore items\n\n\n\n\nHive Mind 🧠 (languages: en • zh • hi • ru)\nThe master mind AI that controls hive of AI. The orchestrator AI that controls AIs. The HIVE MIND. The SWARM MIND.\nIt is also possible to connect this AI to collective human intelligence, meaning this system can communicate with humans for requirements, expertise, feedback.\n\nInspired by konard/problem-solving\nWhy Hive Mind?\nHive Mind is the most autonomous, cloud-ready AI issue solver that eliminates developer babysitting while maintaining human oversight on critical decisions.\nHive Mind is a generalist AI (mini-AGI) capable of working on a wide range of tasks - not just programming. Almost anything that can be done with files in a repository can be automated.\n\n\n\nFeature\nWhat It Means For You\n\n\n\n\nNo Babysitting\nFull autonomous mode with sudo access. AI has creative freedom like a real programmer.\n\n\nCloud Isolation\nRuns on dedicated VMs or Docker. Easy to restore if broken.\n\n\nFull Internet + Sudo\nAI can install packages, fetch docs, and configure the system as needed.\n\n\nPre-installed Toolchain\n25GB+ ready: 10 language runtimes, 2 theorem provers, build tools. Can install more.\n\n\nToken Efficiency\nRoutine tasks automated in code, so AI tokens focus on creative problem-solving.\n\n\nTime Freedom\nWhat takes humans 2-8 hours, AI completes each working session in 10-25 minutes. Mass execution of tasks in repository is possible. \"The code is written while you sleep.\"\n\n\nScale with Orchestration\nParallel workers feel like a team of developers. Pair Claude MAX and ChatGPT Pro ($200 each) for two independent unlimited budgets.\n\n\nHuman Control\nAI creates draft PRs - you decide what merges. Quality gates where they matter.\n\n\nAny Device Programming\nManage AI from any device with /solve and /hive via Telegram bot. No PC, IDE, or laptop required.\n\n\n100% Open Source\nUnlicense (public domain). Full transparency, no vendor lock-in.\n\n\n\nCost: Hive Mind supports two $200/month subscriptions as full-featured \"unlimited\" options:\n\n\n\nSubscription\nPairs with --tool\nDefault model\nBest for\n\n\n\n\nAnthropic Claude MAX (~$200/month, often 50% off = $400 value)\nclaude (default)\nOpus\nHighest creativity, strongest general code reasoning\n\n\nOpenAI ChatGPT Pro ($200/month, includes Codex)\ncodex\ngpt-5.6-sol\nStrong deterministic refactors and fast iteration loops\n\n\n\nBoth tools can be combined in the same hive. Workers can run different tools in parallel, and /codex or /solve --tool codex routes tasks to ChatGPT Pro while the default routes to Claude MAX. There is no requirement to pick one: either single subscription is enough to operate, and using both unlocks per-tool/model concurrency mode (#1474).\nHive Mind has high creativity indistinguishable from average programmers. It asks questions if requirements are unclear, and you can clarify on the go via PR comments.\nFor the project's vision and example user journeys, see docs/VISION.md. For detailed features and comparisons, see docs/FEATURES.md and docs/COMPARISON.md.\n⚠️ WARNING\nIt is UNSAFE to run this software on your developer machine.\nIt is recommended to use Docker for installation (both locally and on servers). See the Docker installation section below.\nThis software runs supported AI tools such as Claude Code and Codex in full autonomous mode, which means they are free to execute any commands they see fit.\nThat means it can lead to unexpected side effects.\nThere is also a known issue of space leakage. So you need to make sure you are able to reinstall your virtual machine to clear space and/or any damage to the virtual machine.\n⚠️ CRITICAL: Token and Sensitive Data Security\nTHIS SOFTWARE CANNOT GUARANTEE ANY SAFETY FOR YOUR TOKENS OR OTHER SENSITIVE DATA ON THE VIRTUAL MACHINE.\nThere are infinite ways to extract tokens from a virtual machine connected to the internet. This includes but is not limited to:\n\nClaude MAX tokens and/or ChatGPT Pro (Codex) tokens - Required for AI operations; you can run with either or both\nGitHub tokens - Required for repository access\nAPI keys and credentials - Any sensitive data on the system\n\nIMPORTANT SECURITY CONSIDERATIONS:\n\nRunning on a developer machine is ABSOLUTELY UNSAFE\nRunning on a virtual machine is LESS UNSAFE but still has risks\nEven though your developer machine data isn't directly exposed, the VM still contains sensitive tokens\nAny token stored on an internet-connected system can potentially be compromised\n\nUSE THIS SOFTWARE ENTIRELY AT YOUR OWN RISK AND RESPONSIBILITY.\nWe strongly recommend:\n\nUsing dedicated, isolated virtual machines\nRotating tokens regularly\nMonitoring token usage for suspicious activity\nNever using production tokens or credentials\nBeing prepared to revoke and replace all tokens used with this system\n\nHive Mind sanitizes recognized credentials in its maintained terminal, log, telemetry, upload, and GitHub publication paths. Publication is blocked if the scanner fails, but this does not prevent an autonomous tool from using an unrelated exfiltration path. See Credential sanitization for the masking contract, supported formats, maintenance process, and incident-response guidance.\nDocker-isolated tasks receive the operator's Claude/Codex credentials by default. --use-router withholds them and routes model traffic through a hive-mind-router sidecar instead, giving each task its own scoped token and its own request log — see Router isolation (experimental) and Collecting logs.\nMinimum system requirements to run hive.mjs:\n1 CPU Core\n1 GB RAM\n&gt; 4 GB SWAP\n50 GB disk space\n\n🚀 Quick Start\nGlobal Installation\nUsing Bun (Recommended)\nbun install -g @link-assistant/hive-mind\nUsing Node.js\nnpm install -g @link-assistant/hive-mind\nInstalling Docker\nIf you don't have Docker installed yet, follow these steps to install Docker Engine on Ubuntu:\n# Install prerequisites\nsudo apt update\nsudo apt install ca-certificates curl\n\n# Add Docker's official GPG key\nsudo install -m 0755 -d /etc/apt/keyrings\nsudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc\nsudo chmod a+r /etc/apt/keyrings/docker.asc\n\n# Add Docker repository\nsudo tee /etc/apt/sources.list.d/docker.sources &lt;&lt;EOF\nTypes: deb\nURIs: https://download.docker.com/linux/ubuntu\nSuites: $(. /etc/os-release &amp;&amp; echo \"${UBUNTU_CODENAME:-$VERSION_CODENAME}\")\nComponents: stable\nSigned-By: /etc/apt/keyrings/docker.asc\nEOF\n\n# Install Docker\nsudo apt update\nsudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin\n\n# Verify installation\nsudo docker run hello-world\nFor other operating systems or detailed instructions, see the official Docker documentation.\nUsing Docker\nRun the Hive Mind using Docker for safer local installation - no manual setup required:\nNote: Docker is much safer for local installation and can be used to install multiple isolated instances on a server or Kubernetes cluster. For Kubernetes deployments, see the Helm chart installation section below.\n# Pull the latest image from Docker Hub\ndocker pull konard/hive-mind:latest\n\n# Start hive-mind container\ndocker run -dit --name hive-mind konard/hive-mind:latest\n\n# Verify container started\ndocker ps -a\n\n# Enter additional terminal process to do installation\ndocker exec -it hive-mind /bin/bash\n\n# Inside the container, authenticate with GitHub\ngh-setup-git-identity\n\n# Authenticate with Claude (if you have Claude MAX)\nclaude\n\n# Optionally set configuration like this:\n# Use /config command and set:\n# Reduce motion                             true # Will save your ssh trafic, and make Claude Code more responsive (less latency)\n# Thinking mode                             false # Anthropic models perform better and cheaper without thinking\n# Model                                     haiku # chepear for connection testing manually\n# Claude in Chrome enabled by default       false # No need for Chrome support on server\n\n# Optionally test Claude connection\nclaude -p hi --model haiku\n\n# Authenticate with Codex (if you have ChatGPT Pro)\ncodex login --device-auth\n\n# Optionally test Codex connection. codex exec refuses to run unless\n# either cwd is a git repo it trusts or --skip-git-repo-check is passed.\n# It prints the refusal to STDOUT but still exits 0, so do not skip the flag.\ncodex exec --skip-git-repo-check --model gpt-5.4-mini \"reply with only OK\"\n\n# Verify Playwright MCP is registered for both CLIs in this container image\nclaude mcp list | grep playwright\ncodex mcp list | grep playwright\n\n# You might need to update hive-mind and agent to latest versions:\nbun install -g @link-assistant/hive-mind\nbun install -g @link-assistant/agent\n\n# Now you can use hive and solve commands\nsolve https://github.com/owner/repo/issues/123\n\n# Or you can run telegram bot:\n\n# Exit from additional bash session\nexit\n\n# Attach to main bash process\ndocker attach hive-mind\n\n# Run bot here\n\n# Press Ctrl + P, Ctrl + Q to detach without destroying the container (no stopping of main bash process)\n\n# --- Persisting auth data across restarts ---\n\n# On the host, create the directories used by the current Docker workflow:\nmkdir -p /root/.hive-mind/claude /root/.hive-mind/codex /root/.hive-mind/agents/skills /root/.hive-mind/gh\ntouch -a /root/.hive-mind/claude.json\n\n# In our Docker images HOME=/home/box, so Codex stores its data in /home/box/.codex.\n# Mount the full Codex directory so auth.json, config.toml, and sessions survive restarts.\ndocker run -dit --user box --name hive-mind --restart unless-stopped \\\n  -v /root/.hive-mind/claude:/home/box/.claude \\\n  -v /root/.hive-mind/codex:/home/box/.codex \\\n  -v /root/.hive-mind/agents:/home/box/.agents \\\n  -v /root/.hive-mind/claude.json:/home/box/.claude.json \\\n  -v /root/.hive-mind/gh:/home/box/.config/gh \\\n  konard/hive-mind:latest bash -l -c 'bash /home/box/start-bot.sh'\n\n# After the first start, fix ownership to match the box user inside the container:\nBOX_UID=$(docker exec hive-mind id -u box)\nchown -R $BOX_UID:$BOX_UID /root/.hive-mind/claude /root/.hive-mind/codex /root/.hive-mind/agents /root/.hive-mind/gh\nchown $BOX_UID:$BOX_UID /root/.hive-mind/claude.json\n\n# Important: mounted ~/.codex data overrides the image-baked Codex config.\n# If the host directory was created before Playwright MCP was added to the image,\n# re-register it once inside the running container:\ndocker exec -it hive-mind bash -lc 'codex mcp list &amp;&amp; codex mcp add playwright -- npx -y @playwright/mcp@latest --isolated --headless --no-sandbox --timeout-action=600000 --viewport-size 1920x1080'\nBenefits of Docker:\n\n✅ Pre-configured Ubuntu 24.04 environment\n✅ All dependencies pre-installed\n✅ Isolated from your host system\n✅ Easy to run multiple instances with different GitHub accounts\n✅ Consistent environment across different machines\n\nThe Docker image itself now registers Playwright MCP for both Claude and Codex during build, and CI verifies those registrations in the built container. If codex mcp list is still empty in a running container, the usual cause is not the published image itself but a mounted /home/box/.codex directory from the host that replaces the image's default Codex configuration.\nBefore codex exec, Hive Mind scans the issue and its comments for explicit required plugin selectors and Agent Skill names. It resolves skill providers from Codex's marketplace catalog and installs them under /home/box/.codex/hive-mind/repositories/&lt;owner&gt;/&lt;repo&gt;, so enablement persists across restarts without affecting other repositories. Since issue #2190, Docker-isolated tasks receive only the credential file and the session directories, never the whole .codex/.claude folder or /home/box/.agents; the global configuration is audited and trimmed to a minimal profile on every start (--no-agent-config-auto-repair to opt out). An unavailable requirement stops before the AI session with the exact capability and a catalog remediation command.\nSee docs/DOCKER.md for advanced Docker usage.\nStoping and removing docker container\n# Attach to main docker process to stop the container\ndocker attach hive-mind\n\n^C # stop the telegram bot\n\nexit # exit/stop the container\n\ndocker ps -a # show list of docker containers\n# CONTAINER ID   IMAGE                     COMMAND       CREATED      STATUS                        PORTS     NAMES\n# fd0fd4470ec3   konard/hive-mind:latest   \"/bin/bash\"   5 days ago   Exited (130) 16 seconds ago             hive-mind\n\n\ndf -h # check disk space\n# Filesystem      Size  Used Avail Use% Mounted on\n# tmpfs           1.2G  1.1M  1.2G   1% /run\n# /dev/sda1        96G   87G  9.8G  90% /\n# tmpfs           5.9G     0  5.9G   0% /dev/shm\n# tmpfs           5.0M     0  5.0M   0% /run/lock\n# /dev/sda16      881M  117M  703M  15% /boot\n# /dev/sda15      105M  6.2M   99M   6% /boot/efi\n# tmpfs           1.2G   12K  1.2G   1% /run/user/0\n\ndocker rm hive-mind # remove docker container frees space used by the container, does not delete image\n\ndf -h # check disk space (to confirm space is freed)\n# Filesystem      Size  Used Avail Use% Mounted on\n# tmpfs           1.2G  1.1M  1.2G   1% /run\n# /dev/sda1        96G   26G   71G  27% /\n# tmpfs           5.9G     0  5.9G   0% /dev/shm\n# tmpfs           5.0M     0  5.0M   0% /run/lock\n# /dev/sda16      881M  117M  703M  15% /boot\n# /dev/sda15      105M  6.2M   99M   6% /boot/efi\n# tmpfs           1.2G   12K  1.2G   1% /run/user/0\n\nHelm Installation (Kubernetes) (Experimental)\n\n⚠️ EXPERIMENTAL: The Helm/Kubernetes installation method is experimental and may not be fully stable.\nFor a more reliable installation, we recommend using Docker instead.\nSee docs/HELM.md for the full Helm installation instructions and configuration options.\n\nInstallation on Ubuntu 24.04 server (Deprecated)\n\n⚠️ DEPRECATED: This installation method is no longer recommended.\nWe now recommend using Docker for all installations, both on developer machines and servers.\nDocker provides better isolation, easier management, and consistent environments.\nPlease use the Docker installation method above.\nFor Kubernetes deployments, see the Helm installation section.\nThe legacy bare-metal installation instructions have been moved to docs/UBUNTU-SERVER.md for reference.\n\nCore Operations\n# Solve using maximum power\nsolve https://github.com/Veronika89-lang/index.html/issues/1 --attach-logs --verbose --model opus --think max\n\n# Solve GitHub issues automatically\nsolve https://github.com/owner/repo/issues/123 --model sonnet\n\n# Solve issue with PR to custom branch (manual fork mode)\nsolve https://github.com/owner/repo/issues/123 --base-branch develop --fork\n\n# Continue working on existing PR\nsolve https://github.com/owner/repo/pull/456 --model opus\n\n# Solve every open issue of a repository with one pull request (repository mode)\nsolve https://github.com/owner/repo\n\n# Resume from Claude session when limit is reached\nsolve https://github.com/owner/repo/issues/123 --resume session-id\n\n# Start hive orchestration (monitor and solve issues automatically)\nhive https://github.com/owner/repo --monitor-tag \"help wanted\" --concurrency 3\n\n# Monitor all issues in organization\nhive https://github.com/microsoft --all-issues --max-issues 10\n\n# Run collaborative review process\nreview --repo owner/repo --pr 456\n\n# Multiple AI reviewers for consensus\n./reviewers-hive.mjs --agents 3 --consensus-threshold 0.8\n📋 Core Components\n\n\n\nScript\nPurpose\nKey Features\n\n\n\n\nsolve.mjs (stable)\nGitHub issue solver\nAuto fork, branch creation, PR generation, resume sessions, fork support\n\n\nhive.mjs (stable)\nAI orchestration &amp; monitoring\nMulti-repo monitoring, concurrent workers, issue queue management\n\n\nreview.mjs (alpha)\nCode review automation\nCollaborative AI reviews, automated feedback\n\n\nreviewers-hive.mjs (alpha / experimental)\nReview team management\nMulti-agent consensus, reviewer assignment\n\n\ntelegram-bot.mjs (stable)\nTelegram bot interface\nRemote command execution, group chat support, diagnostic tools\n\n\n\n🔧 solve Options\nsolve &lt;issue-url&gt; [options]\n\n📦 Repository mode: pass a repository URL instead of an issue URL and solve collects every open issue of that repository (oldest first, at most 100 — GitHub's sub-issue limit per parent), creates one combined issue that lists them as GitHub native sub-issues, and solves that issue — so a single pull request can close all of them at once. It also turns on --deep-analysis and --ensure-all-sub-issues-addressed. See docs/CONFIGURATION.md.\n\nMost frequently used options:\n\n\n\nOption\nAlias\nDescription\nDefault\n\n\n\n\n--model\n-m\nAI model to use (sonnet, opus, haiku)\nopus\n\n\n--think\n\nThinking level (low, medium, high, max)\n-\n\n\n--base-branch\n-b\nTarget branch for PR\n(default)\n\n\n\nOther useful options:\n\n\n\nOption\nAlias\nDescription\nDefault\n\n\n\n\n--tool\n\nAI tool (claude, opencode, codex, agent, qwen, gemini)\nclaude\n\n\n--verbose\n-v\nEnable verbose logging\nfalse\n\n\n--attach-logs\n\nAttach logs to PR (⚠️ may expose sensitive data)\nfalse\n\n\n--auto-init-repository\n\nAuto-initialize empty repos (creates README.md)\nfalse\n\n\n--help\n-h\nShow all available options\n-\n\n\n\n\n📖 Full options list: See docs/CONFIGURATION.md for all available options including forking, auto-continue, watch mode, and experimental features.\n\n🔧 hive Options\nhive &lt;github-url&gt; [options]\nMost frequently used options:\n\n\n\nOption\nAlias\nDescription\nDefault\n\n\n\n\n--model\n-m\nAI model to use (sonnet, opus, haiku)\nopus\n\n\n--think\n\nThinking level (low, medium, high, max)\n-\n\n\n--all-issues\n-a\nMonitor all issues (ignore labels)\nfalse\n\n\n--once\n\nSingle run (don't monitor continuously)\nfalse\n\n\n\nOther useful options:\n\n\n\nOption\nAlias\nDescription\nDefault\n\n\n\n\n--tool\n\nAI tool (claude, opencode, codex, agent, qwen, gemini)\nclaude\n\n\n--concurrency\n-c\nNumber of parallel workers\n2\n\n\n--skip-issues-with-prs\n-s\nSkip issues with existing PRs\nfalse\n\n\n--verbose\n-v\nEnable verbose logging\nfalse\n\n\n--attach-logs\n\nAttach logs to PRs (⚠️ may expose sensitive data)\nfalse\n\n\n--help\n-h\nShow all available options\n-\n\n\n\n\n📖 Full options list: See docs/CONFIGURATION.md for all available options including project monitoring, YouTrack integration, and experimental features.\n\n🤖 Telegram Bot\nThe Hive Mind includes a Telegram bot interface (SwarmMindBot) for remote command execution.\n🚀 Test Drive\nWant to see the Hive Mind in action? Request a free demo or get faster support by messaging the developer directly on Telegram:\nMessage @drakonard on Telegram\nSetup\n\n\nGet Bot Token\n\nTalk to @BotFather on Telegram\nCreate a new bot and get your token\nAdd the bot to your group chat and make it an admin\n\n\n\nConfigure Environment\n# Copy the example configuration\ncp .env.example .env\n\n# Edit and add your bot token\necho \"TELEGRAM_BOT_TOKEN=your_bot_token_here\" &gt;&gt; .env\n\n# Optional: Restrict to specific chats\n# Get chat ID using /help command, then add:\necho \"TELEGRAM_ALLOWED_CHATS=123456789,987654321\" &gt;&gt; .env\n\n\nStart the Bot\nhive-telegram-bot\nRecommended: Capture logs with tee\nWhen running the bot for extended periods, it's recommended to capture logs to a file using tee. This ensures you can review logs later even if the terminal buffer overflows:\nhive-telegram-bot 2&gt;&amp;1 | tee -a logs/bot-$(date +%Y%m%d).log\nOr create a logs directory and start with automatic log rotation:\nmkdir -p logs\nhive-telegram-bot 2&gt;&amp;1 | tee -a \"logs/bot-$(date +%Y%m%d-%H%M%S).log\"\nExperimental: live terminal watch\nhive-telegram-bot --auto-start-screen-watch-message\nThis opt-in flag starts a separate live terminal message for public /solve\nsessions. Private or unknown-visibility repositories never auto-start a\nwatch message.\n\n\nBot Commands\nMost operational commands work in group chats only (not in private messages with the bot). Commands that intentionally deliver private updates, such as /terminal_watch, may also be used in direct messages:\n/solve - Solve GitHub Issues\n/solve &lt;github-url&gt; [options]\n\nExamples:\n/solve https://github.com/owner/repo/issues/123 --model sonnet\n/solve https://github.com/owner/repo/issues/123 --model opus --think max\n\nAliases:\n/do and /continue are equivalent to /solve\n/claude is equivalent to /solve --tool claude\n/codex is equivalent to /solve --tool codex\n/opencode is equivalent to /solve --tool opencode\n/agent is equivalent to /solve --tool agent\n/qwen is equivalent to /solve --tool qwen\n/gemini is equivalent to /solve --tool gemini\n\nTool alias examples:\n/codex https://github.com/owner/repo/issues/123 --model gpt-5.5\n/opencode https://github.com/owner/repo/issues/123 --model grok-code-fast-1\n/agent https://github.com/owner/repo/issues/123 --model nemotron-3-super-free\n/gemini https://github.com/owner/repo/issues/123 --model flash\n/qwen https://github.com/owner/repo/issues/123 --model qwen3-coder-plus\n/gemini https://github.com/owner/repo/issues/123 --model gemini-2.5-flash\n\nFree Models (with --tool agent):\n/solve https://github.com/owner/repo/issues/123 --tool agent --model nemotron-3-super-free\n/solve https://github.com/owner/repo/issues/123 --tool agent --model opencode/nemotron-3-super-free\n/solve https://github.com/owner/repo/issues/123 --tool agent --model minimax-m2.5-free\n/solve https://github.com/owner/repo/issues/123 --tool agent --model gpt-5-nano\n\nFree Models via Kilo Gateway (with --tool agent):\n/solve https://github.com/owner/repo/issues/123 --tool agent --model kilo/glm-5-free\n/solve https://github.com/owner/repo/issues/123 --tool agent --model kilo/glm-4.5-air-free\n/solve https://github.com/owner/repo/issues/123 --tool agent --model kilo/deepseek-r1-free\n\n# Route any supported agentic CLI through Formal AI\n/solve https://github.com/owner/repo/issues/123 --tool agent --model formal-ai\n/solve https://github.com/owner/repo/issues/123 --tool codex --model formal-ai\n/solve https://github.com/owner/repo/issues/123 --tool claude --model formal-ai\n\nCurrent tool defaults in Hive Mind:\n\n\n\nTool\nDefault model\nDefault reasoning behavior\n\n\n\n\nclaude\nopus\nDefaults to --think off: zero budget when supported, otherwise the lowest effort\n\n\ncodex\ngpt-5.6-sol preferred, with runtime fallback to local catalog (gpt-5.5)\nDefaults to --think off, mapped to reasoning_effort=none\n\n\nopencode\ngrok-code-fast-1\nDefaults to --think off; no positive thinking prompt is added\n\n\nagent\nnemotron-3-super-free\nDefaults to --think off; no positive thinking prompt is added\n\n\ngemini\nflash\nDefaults to --think off; no positive thinking prompt is added\n\n\nqwen\nqwen3-coder-plus\nDefaults to --think off; no positive thinking prompt is added\n\n\ngemini\ngemini-2.5-flash\nDefaults to --think off; no positive thinking prompt is added\n\n\n\nSee docs/CONFIGURATION.md for the full per-tool defaults and reasoning mappings.\n\n📖 Free Models Guide: See docs/FREE_MODELS.md for comprehensive information about all free models including OpenCode Zen and Kilo Gateway providers.\n\n\n📖 Live model list: run hive-models (or /models in Telegram) to see which models are reachable right now, including ones released after this installation was published. See docs/MODELS.md.\n\n/hive - Run Hive Orchestration\n/hive &lt;github-url&gt; [options]\n\nExamples:\n/hive https://github.com/owner/repo\n/hive https://github.com/owner/repo --all-issues --max-issues 10\n/hive https://github.com/microsoft --all-issues --concurrency 3\n\n/merge - Merge Ready Pull Requests\n/merge &lt;repository-url|issue-url|pull-request-url&gt; [--auto-resolve]\n\nExamples:\n/merge https://github.com/owner/repo\n/merge https://github.com/owner/repo/issues/123\n/merge https://github.com/owner/repo/pull/456\n\nRepository targets process PRs with the ready label sequentially. Issue and\npull request targets process only the linked or selected PR. You can also reply\nwith /merge to a message containing one GitHub repository, issue, or pull\nrequest link, such as a previous /codex ...issues/123 command.\nIf a target PR is not finished yet, /merge waits for it to become mergeable\nbefore merging. Merge-conflict skips still work with --auto-resolve.\n/fix - Auto-Remediate CI/CD and Dependencies\n/fix &lt;github-repository-url&gt; --ci-cd [options]\n/fix &lt;github-repository-url&gt; --update-all-dependencies [options]\n\nExamples:\n/fix https://github.com/owner/repo --ci-cd\n/fix owner/repo --ci-cd --tool codex --model gpt-5.5 --think max\n/fix owner/repo --ci-cd --dry-run\n/fix owner/repo --ci-cd --no-solve\n/fix https://github.com/owner/repo --update-all-dependencies\n/fix owner/repo --update-all-dependencies --dry-run\n\n/fix --ci-cd detects the target repository's languages, inspects the latest\ndefault-branch commit and its CI/CD runs, and automatically creates a CI/CD\nremediation issue (using the standard prompt and the templates from\ndocs/CI-CD-BEST-PRACTICES.md, sorted by the\ndetected languages). It then hands the issue off to\n/solve --development-log --deep-analysis --auto-merge. Every option /fix\ndoes not consume itself (e.g. --tool, --model, --think) is forwarded to\n/solve. Use --dry-run to preview the issue without creating it, or\n--no-solve to create the issue without starting /solve. See\nAutomatic CI/CD Remediation\nfor details.\n/fix --update-all-dependencies runs the same flow for dependencies. It detects\nthe repository's languages and every dependency manifest committed to the\ndefault branch, maps both onto package ecosystems, and creates a Task issue\n(labelled dependencies) listing each ecosystem with the manifests found, the\nlockfiles to regenerate, and the command that actually crosses major versions\nthere. It then hands the issue off to\n/solve --development-log --deep-analysis --auto-merge --update-all-dependencies.\nSee\nAutomatic Dependency Remediation\nfor details. Exactly one mode is required per run: /fix with no mode, or with\nboth, is rejected.\nIf the full /fix workflow is unavailable, /task --ci-cd &lt;repository&gt; and\n/task --update-all-dependencies &lt;repository&gt; run only the same\nissue-generation step. They return the created issue URL; reply with\n/solve --development-log --deep-analysis --auto-merge (adding\n--update-all-dependencies for the dependency issue) to continue through the\nnormal solve workflow.\n/organize - Classify Open Issues\n/organize https://github.com/owner/repository\n/organize https://github.com/owner/repository --dry-run\n\n/organize reviews every open issue and applies only existing GitHub Issue\nTypes and labels. It never edits issue text, closes issues, creates taxonomy,\nchanges code, or creates a pull request. Reply to a message containing the\nrepository URL, or put optional classification guidance on a new line. Apply is\nthe default; use --dry-run for a complete no-write preview. See\nOrganizing open issues for permissions, safety, and exact\nfield behavior.\n/limits - Show Usage Limits\n/limits\n\nShows:\n- CPU usage and load average\n- RAM usage (used vs total)\n- Disk space usage\n- GitHub API rate limits\n- Claude and ChatGPT subscription usage windows\n- Non-zero Codex weekly limits and credits\n- Solve queue status\n\n/terminal_watch - Live Session Log\n/terminal_watch &lt;uuid&gt; [--size 120x25]\n\nExamples:\n/terminal_watch 4d934f71-4cdb-4b8c-b474-582116d12c12\n/terminal_watch 4d934f71-4cdb-4b8c-b474-582116d12c12 --width 100 --height 20\n\nYou can also reply to a bot session message with /terminal_watch. The command\nupdates a separate Telegram message with the latest lines from the session log\nreported by $ --status &lt;uuid&gt; and attaches the full log file when the session\nfinishes. Public repository logs can be watched in the chat; private or\nunknown-visibility repository logs are delivered by direct message only.\n/help - Get Help and Diagnostic Info\n/help\n\nShows:\n- Chat ID (needed for TELEGRAM_ALLOWED_CHATS)\n- Chat type\n- Available commands\n- Usage examples\n\nFeatures\n\n✅ Group Chat Execution: /solve and /hive workflows run from authorized group chats\n✅ Full Options Support: All command-line options work in Telegram\n✅ Screen Sessions: Commands run in detached screen sessions\n✅ Live Terminal Watch: /terminal_watch and opt-in auto-start show live session logs\n✅ Chat Restrictions: Optional whitelist of allowed chat IDs\n✅ Private Auth Check: Experimental /auth --status &lt;gh|claude|codex&gt; and /auth --login &lt;gh|claude|codex&gt; for owners of allowlisted chats\n✅ Diagnostic Tools: Get chat ID and configuration info\n\nLive Terminal Watch\nWhen enabled with --auto-start-screen-watch-message, the bot automatically starts a separate live terminal watch message for public /solve sessions:\n\nManual Watch: /terminal_watch &lt;uuid&gt; or reply with /terminal_watch\nReal-time Updates: See live session log output as commands execute\nAuto-freeze: Message freezes when command completes\nLog Attachment: Full logs attached automatically when session ends\nSecurity: Auto-start is disabled for private or unknown-visibility repositories\nSmart Updates: Only updates when actual changes detected (rate-limited to avoid API limits)\n\nSecurity Notes\n\nOnly works in group chats where the bot is admin\nOptional chat ID restrictions via TELEGRAM_ALLOWED_CHATS\nPrivate /auth is disabled unless TELEGRAM_ALLOWED_CHATS is set and only\nowners of listed chats can use it\nCommands run as the system user running the bot\nEnsure proper authentication (gh auth login, claude-profiles)\n\n🏆 Best Practices\nHive Mind works even better when repositories have strong CI/CD pipelines and clear issue requirements. See:\n\nBEST-PRACTICES.md — Universal prompts, issue writing guidelines, architecture improvement, and subagent patterns\nCI-CD-BEST-PRACTICES.md — CI/CD pipeline setup, recommended templates, and enforcement strategies\nDEPENDENCY-UPDATE-BEST-PRACTICES.md — updating every dependency of every ecosystem, and keeping it current\n\nKey benefits of proper CI/CD:\n\nAI solvers iterate until all checks pass\nConsistent quality regardless of human/AI team composition\nFile size limits ensure code is readable by both AI and humans\n\nReady-to-use templates are available for JavaScript, Rust, Python, Go, C#, and Java.\n🏗️ Architecture\nThe Hive Mind operates on three layers:\n\nOrchestration Layer (hive.mjs) - Coordinates multiple AI agents\nExecution Layer (solve.mjs, review.mjs) - Performs specific tasks\nHuman Interface Layer - Enables human-AI collaboration\n\nData Flow\nMode 1: Issue → Pull Request Flow\n\n  \n    \n      sequenceDiagram\n    participant H as Human\n    participant GH as GitHub\n    participant AI as AI Agent\n    participant HM as Hive Mind\n\n    H-&gt;&gt;GH: Creates Issue\n    Note over H,GH: Primary human input\n\n    GH-&gt;&gt;HM: Issue Available\n    HM-&gt;&gt;AI: Assigns Issue\n    AI-&gt;&gt;GH: Analyzes Issue\n    AI-&gt;&gt;AI: Develops Solution\n    AI-&gt;&gt;GH: Creates Draft PR\n\n    Note over H,GH: Human decision point\n    GH-&gt;&gt;H: Notifies PR Created\n    H-&gt;&gt;GH: Reviews PR\n\n    alt Approve &amp; Merge\n        H-&gt;&gt;GH: Merges PR\n        GH-&gt;&gt;HM: PR Merged\n    else Request Changes\n        H-&gt;&gt;GH: Adds Comments\n        Note over H,GH: Secondary human input\n        GH-&gt;&gt;HM: Comments Added\n        HM-&gt;&gt;AI: Process Feedback\n        AI-&gt;&gt;GH: Updates PR\n    else Close PR\n        H-&gt;&gt;GH: Closes PR\n        GH-&gt;&gt;HM: PR Closed\n    end\n\n    \n  \n  \n    \n  \n    \n    \n    Loading\n\n  \n\n\nMode 2: Pull Request → Comments Flow\n\n  \n    \n      sequenceDiagram\n    participant H as Human\n    participant GH as GitHub\n    participant AI as AI Agent\n    participant HM as Hive Mind\n\n    Note over GH: Existing PR\n    H-&gt;&gt;GH: Adds Comment\n    Note over H,GH: Primary human input\n\n    GH-&gt;&gt;HM: New Comment Available\n    HM-&gt;&gt;AI: Processes Comment\n    AI-&gt;&gt;GH: Analyzes Feedback\n    AI-&gt;&gt;AI: Updates Solution\n    AI-&gt;&gt;GH: Pushes Changes\n\n    Note over H,GH: Human decision point\n    GH-&gt;&gt;H: Notifies Changes\n    H-&gt;&gt;GH: Reviews Updates\n\n    alt Approve &amp; Merge\n        H-&gt;&gt;GH: Merges PR\n        GH-&gt;&gt;HM: PR Merged\n    else More Changes Needed\n        H-&gt;&gt;GH: Adds More Comments\n        Note over H,GH: Continued human input\n        GH-&gt;&gt;HM: Comments Added\n    else Close PR\n        H-&gt;&gt;GH: Closes PR\n        GH-&gt;&gt;HM: PR Closed\n    end\n\n    \n  \n  \n    \n  \n    \n    \n    Loading\n\n  \n\n\n📖 For comprehensive data flow documentation including human feedback integration points, see docs/flow.md\n📊 Usage Examples\nAutomated Issue Resolution\n# Solve issue (automatically forks if no write access)\nsolve https://github.com/owner/repo/issues/123 --model opus\n\n# Manual fork and solve issue (works for both public and private repos)\nsolve https://github.com/owner/repo/issues/123 --fork --model opus\n\n# Continue work on existing PR\nsolve https://github.com/owner/repo/pull/456 --verbose\n\n# Solve with detailed logging and solution attachment\nsolve https://github.com/owner/repo/issues/123 --verbose --attach-logs\n\n# Dry run to see what would happen\nsolve https://github.com/owner/repo/issues/123 --dry-run\nMulti-Repository Orchestration\n# Monitor single repository with specific label\nhive https://github.com/owner/repo --monitor-tag \"bug\" --concurrency 4\n\n# Monitor all issues in an organization\nhive https://github.com/microsoft --all-issues --max-issues 20 --once\n\n# Monitor user repositories with high concurrency\nhive https://github.com/username --all-issues --concurrency 8 --interval 120\n\n# Skip issues that already have PRs\nhive https://github.com/org/repo --skip-issues-with-prs --verbose\n\n# Auto-cleanup temporary files\nhive https://github.com/org/repo --auto-cleanup --concurrency 5\nSession Management\n# Resume when Claude hits limit\nsolve https://github.com/owner/repo/issues/123 --resume 657e6db1-6eb3-4a8d\n\n# Continue session interactively in Claude Code\n(cd /tmp/gh-issue-solver-123456789 &amp;&amp; claude --resume session-id)\nKilled sessions recover themselves. With --on-session-kill=resume (the\ndefault) a working session killed by the out-of-memory killer, a full disk or a\nforced kill is restarted automatically, bounded by\n--session-kill-resume-attempts. When the isolation backend allows it and $\n(start-command) is at least 0.33.0, the recovery session re-enters the same\ncontainer instead of starting from scratch, so the clone, the caches and the\nhalf-finished branch survive.\nA bot restart never orphans in-flight work. On startup the Telegram bot\nreconciles the isolation backend's own view of still-running executions\n($ --resume-all): what is still alive gets its completion watcher back, what\ndied unsupervised is finalized and reported. See\ndocs/CONFIGURATION.md for --on-session-kill and\n--session-kill-resume-attempts.\nDisk Cleanup\nhive-cleanup frees disk space by removing stale hive-mind temporary\ndirectories/files (per-task clones like /tmp/gh-issue-solver-*, MCP config\nfiles, log download dirs, …) while keeping folders that belong to\ncurrently-running tasks, protected system paths, and any clone with\nuncommitted or unpushed work. It detects active tasks from running processes and\nlive isolation sessions and matches clones to tasks by branch name using the\nsame logic as solve (issue → issue-{n}-{hex}; PR → its resolved head\nbranch).\n# Preview: list kept folders and folders that would be deleted (deletes nothing)\nhive-cleanup --dry-run\n\n# Actually delete stale temp artifacts (asks for confirmation first)\nhive-cleanup\n\n# Delete without the confirmation prompt\nhive-cleanup --force\n\n# Also consider non-hive-mind temp entries (more aggressive)\nhive-cleanup --all --dry-run\n\n# Allow deleting /tmp/start-command (kept by default; holds isolation logs)\nhive-cleanup --force-start-command\n\n# Ubuntu / system cleanup (apt caches, journald logs, npm cache)\nhive-cleanup --system --sudo\n\n# Map live/stuck agent PIDs back to hive/start-command task sessions\nhive-cleanup --processes\n\n# Trace a specific non-agent PID, for example a browser child or shell\nhive-cleanup --pid 94445\n\n# Preview orphaned terminal-session agents that can be stopped\nhive-cleanup --kill-orphaned-agents --dry-run\n\n# Stop orphaned agent process trees after reviewing the preview\nhive-cleanup --kill-orphaned-agents --force\n\n# Disable active-task detection (only protected paths are kept)\nhive-cleanup --no-keep-active-tasks-folders --dry-run\nRun hive-cleanup --help for the full list of options. The command is dry-run\nfriendly and writes a timestamped cleanup-*.log for every run. Process\ndiagnostic output redacts common token shapes before printing command lines.\n🔍 Monitoring &amp; Logging\nFind resume commands in logs:\ngrep -E '\\(cd /tmp/gh-issue-solver-[0-9]+ &amp;&amp; claude --resume [0-9a-f-]{36}\\)' hive-*.log\n🔧 Configuration\nAuthentication:\n\ngh auth login - GitHub CLI authentication\nclaude-profiles - Claude authentication profile migration to server\n\nOpenRouter Integration:\nUse OpenRouter to access 500+ AI models from 60+ providers with a single API key. See docs/OPENROUTER.md for setup instructions covering both Claude Code CLI and @link-assistant/agent.\nEnvironment Variables &amp; Advanced Options:\nFor comprehensive configuration including environment variables, timeouts, retry limits, Telegram bot settings, YouTrack integration, and all CLI options, see docs/CONFIGURATION.md.\n🐛 Reporting Issues\nHive Mind Issues\nIf you encounter issues with Hive Mind (this project), please report them on our GitHub Issues page:\n\nRepository: https://github.com/link-assistant/hive-mind\nIssues: https://github.com/link-assistant/hive-mind/issues\n\nClaude Code CLI Issues\nIf you encounter issues with the Claude Code CLI itself (e.g., claude command errors, installation problems, or CLI bugs), please report them to the official Claude Code repository:\n\nRepository: https://github.com/anthropics/claude-code\nIssues: https://github.com/anthropics/claude-code/issues\n\n🛡️ File Size Enforcement\nAll documentation files are automatically checked:\nfind docs/ -name \"*.md\" -exec wc -l {} + | awk '$1 &gt; 1000 {print \"ERROR: \" $2 \" has \" $1 \" lines (max 1000)\"}'\nServer diagnostics\nPrefer the built-in process diagnostic command when connecting a busy\nclaude, codex, gemini, qwen, or opencode PID back to the hive task\nthat launched it:\n# Show agent PIDs, start-command session IDs, GitHub task URLs, workspaces,\n# match reasons, and possible orphaned terminal-session agents.\nhive-cleanup --processes\n\n# Include an arbitrary PID in the same report.\nhive-cleanup --pid 62220\n\n# Kill only agents whose matched start-command task is already terminal.\nhive-cleanup --kill-orphaned-agents --dry-run\nhive-cleanup --kill-orphaned-agents --force\nManual fallback: identify screens that are parents of processes that are eating\nthe resources.\nTARGETS=\"62220 65988 63094 66606 1028071 4127023\"\n\n# build screen PID -&gt; session name map\ndeclare -A NAME\nwhile read -r id; do spid=${id%%.*}; NAME[$spid]=\"$id\"; done \\\n  &lt; &lt;(screen -ls | awk '/(Detached|Attached)/{print $1}')\n\n# check each PID's environment for STY and map back to session\nfor p in $TARGETS; do\n  sty=$(tr '\\0' '\\n' &lt; /proc/$p/environ 2&gt;/dev/null | awk -F= '$1==\"STY\"{print $2}')\n  if [ -n \"$sty\" ]; then\n    spid=${sty%%.*}\n    echo \"$p  -&gt;  ${NAME[$spid]:-$sty}\"\n  else\n    echo \"$p  -&gt;  (no STY; not from screen or env cleared / double-forked)\"\n  fi\ndone\nShow details about the proccess\nprocinfo() {\n  local pid=$1\n  if [ -z \"$pid\" ]; then\n    echo \"Usage: procinfo &lt;pid&gt;\"\n    return 1\n  fi\n  if [ ! -d \"/proc/$pid\" ]; then\n    echo \"Process $pid not found.\"\n    return 1\n  fi\n\n  echo \"=== Process $pid ===\"\n  # Basic process info\n  ps -p \"$pid\" -o user=,uid=,pid=,ppid=,c=,stime=,etime=,tty=,time=,cmd=\n\n  echo\n  # Working directory\n  echo \"CWD: $(readlink -f /proc/$pid/cwd 2&gt;/dev/null)\"\n\n  # Executable path\n  echo \"EXE: $(readlink -f /proc/$pid/exe 2&gt;/dev/null)\"\n\n  # Root directory of the process\n  echo \"ROOT: $(readlink -f /proc/$pid/root 2&gt;/dev/null)\"\n\n  # Command line (full, raw)\n  echo \"CMDLINE:\"\n  tr '\\0' ' ' &lt; /proc/$pid/cmdline 2&gt;/dev/null\n  echo\n\n  # Environment variables\n  echo\n  echo \"ENVIRONMENT (key=value):\"\n  tr '\\0' '\\n' &lt; /proc/$pid/environ 2&gt;/dev/null | head -n 20\n\n  # Open files (first few)\n  echo\n  echo \"OPEN FILES:\"\n  ls -l /proc/$pid/fd 2&gt;/dev/null | head -n 10\n\n  # Child processes\n  echo\n  echo \"CHILDREN:\"\n  ps --ppid \"$pid\" -o pid=,cmd= 2&gt;/dev/null\n}\nprocinfo 62220\nMaintenance\nEnter latest screen\ns=$(screen -ls | awk '/Detached/ {print $1; exit}'); echo \"Entering $s\"; screen -r \"$s\"; echo \"Left $s\";\nEnter oldest screen\ns=$(screen -ls | awk '/Detached/ {last=$1} END{print last}'); echo \"Entering $s\"; screen -r \"$s\"; echo \"Left $s\";\nScript for managing screens\nThe legacy hive-screens.sh script has been promoted to a first-class command:\nhive-screens. It ships with @link-assistant/hive-mind, so once the package is\ninstalled (globally, through npx, or in a project) it is available on PATH.\nIt scans detached GNU screen sessions, looks for solve runs that are done and\nmergeable (scrollback contains both process completed and PR is mergeable!\nor PR merged!), and then either lists, enters, or closes them. --list,\n--enter, and --close share the same matching predicate, so anything\nyou see under --list is guaranteed to be the same set --close will act on\n— use --list first to debug, then rerun with --close.\n# Safe preview — show every finished, mergeable solve session.\nhive-screens --list\n\n# Close the oldest finished session (same as the legacy script's default).\nhive-screens --close\n\n# Attach to the newest finished session.\nhive-screens --enter --newest\n\n# Close every finished session.\nhive-screens --close --all\n\n# Print diagnostic output while scanning (useful when matching fails).\nhive-screens --list --verbose\n--list defaults to --all so a bare hive-screens --list shows every match.\n--enter and --close default to --oldest because they are destructive.\nSupply --oldest, --newest, or --all to override. Run\nhive-screens --help for the full option list.\nReboot server.\nsudo reboot\nThat will remove all dangling unused proccesses and screens, which will in turn free the RAM and reduce CPU load. Also reboot may clear all temporary files, so next step can do nothing if reboot was done.\nCleanup disk space.\ndf -h\n\nrm -rf /tmp\n\ndf -h\nThese commands should be executed under hive user. If you have accidentally removed the /tmp folder itself under root user, you will need to restore it like this:\nsudo mkdir -p /tmp\nsudo chown root:root /tmp\nsudo chmod 1777 /tmp\nClose all screens to free up RAM\n# close all (Attached or Detached) sessions\nscreen -ls | awk '/(Detached|Attached)/{print $1}' \\\n| while read s; do screen -S \"$s\" -X quit; done\n\n# remove any zombie sockets\nscreen -wipe\n\n# verify\nscreen -ls\nTop with full arguments of each command\ntop -c\nSee the full tree of processes\nps -eo pid,ppid,user,args --forest\nor\nps axjf\nKill process and its children\npkill -P 476729\nKill all commands spawned by specific task\npkill -f gh-issue-solver-1773073065743\nKill all headless browsers spawned by ms-playwright\npkill -f ms-playwright/chromium_headless_shell-1200\nThat can be done, but not recommended as reboot have better effect.\n📄 License\nUnlicense License - see LICENSE\n🤖 Contributing\nThis project uses AI-driven development. See CONTRIBUTING.md for human-AI collaboration guidelines.\nAboutThe AI that controls AIs to do the automation of automation.ResourcesReadmeUnlicenseContributingContributingActivityCustom propertiesStars86 starsWatchers1 watchingForks17 forksReport repositoryReleasesPackagesUsed byContributorsLanguages   \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "http://github.com/link-assistant/hive-mind (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528816245,
+        "end": 1789528817237
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528817238,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83abe560014wA0DOLS4bVQwW",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ab9240018yJ7hosDsYJl58",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 34586,
+      "output": 132,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 34718,
+      "headroom": 4138,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.238Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.240Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.241Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.241Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.241Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.247Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 34718,
+  "providerTokens": 34718,
+  "estimatedInputTokens": 18888,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 34586,
+    "cacheRead": 0,
+    "output": 132
+  },
+  "overflow": false,
+  "headroom": 4138,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.247Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.247Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.248Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.249Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528817595,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83abfba0015griVwB1PcmJ5T",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83abe5f001yAm9bkOOm4LpYO",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528817596,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83abfbb002ZZ8RKPMPXvnj51",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83abe5f001yAm9bkOOm4LpYO",
+    "type": "tool",
+    "callID": "call_5dc46f27bebe9fcb",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528817596,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83abfbb00101RCdgXhihKode",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83abe5f001yAm9bkOOm4LpYO",
+    "type": "text",
+    "text": "我来打开 https://mcp.aibase.com/zh/server/1639702971132682563，读取其中的内容。",
+    "time": {
+      "start": 1789528817596,
+      "end": 1789528817596
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:17.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528817596,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83abfbb002ZZ8RKPMPXvnj51",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83abe5f001yAm9bkOOm4LpYO",
+    "type": "tool",
+    "callID": "call_5dc46f27bebe9fcb",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://mcp.aibase.com/zh/server/1639702971132682563"
+      },
+      "time": {
+        "start": 1789528817596
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.878Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528818878,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83abfbb002ZZ8RKPMPXvnj51",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83abe5f001yAm9bkOOm4LpYO",
+    "type": "tool",
+    "callID": "call_5dc46f27bebe9fcb",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://mcp.aibase.com/zh/server/1639702971132682563"
+      },
+      "output": "Hivemind MCP - Obsidian插件集成AI防火墙，借时间线图谱防AI幻觉\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n首页AI 资讯AI 产品库GEO 平台MCP 服务模型算力广场 VIP会员ZH探索HivemindHivemind MCP提交Hivemind是一个Obsidian插件，为虚构世界构建、研究和知识管理提供AI防火墙功能。它通过时间线视图、关系图谱和规范工作流，确保AI工具基于用户笔记中的真实信息进行协作，防止AI幻觉。知识管理与记忆笔记工具#AI防火墙#知识管理#Obsidian插件#世界构建.TypeScript评分 : 2.5分下载量 : 9.3K更新时间 : 2026-03-12 MCP提交 打开站点概述工具列表内容详情替代品什么是Hivemind MCP Server?Hivemind MCP Server是一个连接您的Obsidian知识库与AI助手的桥梁。它遵循Model Context Protocol标准，允许AI工具（如Claude Desktop、GitHub Copilot）在回答您的问题时，直接参考您Obsidian笔记中的真实内容，而不是依赖AI的记忆或可能产生幻觉的信息。\n\n简单来说，它让AI成为您知识库的『智能搜索引擎』，确保所有回答都基于您已确认的事实和数据。如何使用Hivemind MCP Server?使用Hivemind MCP Server非常简单：\n1. 在Obsidian中安装并配置Hivemind插件\n2. 在您的AI客户端（如Claude Desktop）中添加MCP服务器配置\n3. 启动服务器后，AI助手就能访问您的知识库\n4. 在AI对话中，您可以询问关于您笔记内容的问题，AI会基于真实数据回答\n\n整个过程在本地运行，您的数据不会离开您的设备。适用场景Hivemind MCP Server特别适合以下场景：\n• 小说创作和世界构建：AI基于您已建立的角色设定、时间线和世界观进行创作协助\n• 学术研究和知识管理：AI准确引用您收集的研究论文、笔记和概念\n• 团队管理和项目规划：AI参考会议记录、人员档案和项目文档提供建议\n• 软件开发：AI基于您的架构决策文档（ADRs）和系统设计提供代码建议\n\n任何需要AI基于准确、一致的知识库进行工作的场景都适用。主要功能安全的本地数据访问MCP服务器完全在本地运行，您的Obsidian笔记数据永远不会离开您的设备。AI通过安全的本地连接查询数据，确保隐私和安全。多AI客户端支持支持所有兼容MCP协议的AI客户端，包括Claude Desktop、GitHub Copilot、Cursor等。一次配置，多处使用。智能实体识别自动识别笔记中的实体类型（人物、地点、事件等），让AI能够理解您知识库的结构，进行更精准的查询。模板化知识结构提供预定义模板（世界构建、研究、人员管理等），帮助您标准化笔记结构，让AI更容易理解和查询。Canon工作流集成AI能够区分草稿、待审核和已确认的内容，确保回答基于您已确认的『正典』信息，避免引用未经验证的内容。自然语言查询使用自然语言询问关于您知识库的问题，如『显示所有与魔法系统相关的笔记』或『找出主角的所有盟友』。优势消除AI幻觉：确保AI回答基于您的真实数据，而非虚构内容保持一致性：AI始终引用最新、已确认的笔记内容提升效率：快速从大量笔记中提取相关信息，无需手动搜索保护隐私：所有数据处理在本地完成，数据不出设备易于集成：与现有Obsidian工作流无缝集成，无需改变笔记习惯跨平台支持：支持Windows、macOS、Linux系统局限性需要配置：初次使用需要进行客户端配置依赖笔记质量：AI回答质量取决于您的笔记结构和完整性仅限文本：目前主要处理文本内容，对图片等多媒体支持有限需要Obsidian：必须使用Obsidian作为知识管理工具本地资源占用：运行MCP服务器需要一定的系统资源如何使用安装Hivemind Obsidian插件在Obsidian中安装Hivemind插件，并选择适合您的模板（世界构建、研究等）。配置AI客户端根据您使用的AI客户端，添加MCP服务器配置。以下是Claude Desktop的配置示例。启动MCP服务器确保Hivemind插件已启用，MCP服务器会自动启动。您可以在Obsidian中查看服务器状态。开始与AI对话在AI客户端中，您现在可以询问关于您知识库的问题。AI会自动查询您的笔记来回答问题。使用案例小说创作辅助当您在创作小说时，需要确保AI助手基于您已建立的角色设定和世界观提供建议，避免出现矛盾。研究论文整理在撰写研究论文时，需要AI准确引用您收集的文献和笔记，而不是基于通用知识。项目管理在管理项目时，需要AI基于真实的会议记录和任务分配提供状态更新和建议。常见问题MCP服务器安全吗？我的数据会被上传吗？完全安全。MCP服务器在您的本地设备上运行，所有数据查询都在本地处理。您的笔记数据永远不会离开您的设备，也不会被上传到任何服务器。我需要改变现有的笔记结构吗？不需要完全改变。Hivemind支持标准的Markdown和YAML frontmatter。但使用推荐的模板和实体类型标注可以让AI更好地理解和查询您的笔记。支持哪些AI客户端？支持所有兼容MCP协议的客户端，包括：Claude Desktop、GitHub Copilot、Cursor、Windsurf等。具体配置方法请参考各客户端的文档。如果AI找不到相关信息怎么办？首先检查：1) MCP服务器是否正常运行 2) 您的笔记是否有正确的实体类型标注 3) 尝试更具体的关键词。您也可以在Obsidian中使用Hivemind的搜索功能测试查询。可以同时连接多个知识库吗？目前每个MCP服务器实例连接一个Obsidian仓库。如果您有多个仓库，可以配置多个MCP服务器实例，或在AI客户端中切换配置。需要编程知识来配置吗？不需要。基本的配置只需要编辑JSON配置文件。我们提供了详细的配置示例和图形界面配置工具（开发中）。相关资源官方文档详细的MCP服务器配置指南，包含各平台的配置示例Obsidian插件页面Obsidian社区插件页面，查看用户评价和更新日志Model Context Protocol官网MCP协议官方文档和规范示例知识库各种使用场景的示例Obsidian仓库问题反馈与讨论GitHub讨论区，提问和分享使用经验安装复制以下命令到你的Client进行配置注意：您的密钥属于敏感信息，请勿与任何人分享。🚀 Hivemind研究文档索引\nHivemind是一个MCP服务器，它通过Obsidian为AI工具提供规范的世界构建上下文。本目录包含了关于Hivemind的全面研究和规划文档。\n关键洞察：Hivemind是Obsidian（世界构建者工作的地方）和Claude/AI工具（需要一致上下文的工具）之间的“桥梁”，并非要取代其中任何一方。\n\n📄 文档介绍\n1. 📋 FEATURES.md（40 KB - 主要研究文档）\n全面的功能研究文档\n涵盖内容：\n\n核心MCP功能（工具、资源、提示、查询模式、最佳实践）\nObsidian库功能（文件夹结构、模板、元数据模式、关系建模）\nAI上下文交付（特定任务上下文、角色一致性、位置/时间线上下文、资产引用）\n规范管理（草稿→审批工作流程、版本控制、冲突解决、验证）\n资产来源（ComfyUI工作流程、元数据跟踪、可重复性）\n功能优先级（MVP功能、0.2版本及以上的可选功能、1.0版本及以上的未来功能、超出范围的功能）\n\n阅读时机：想要全面了解系统设计和功能时。\n阅读时长：30 - 45分钟\n\n2. 🎯 RESEARCH_SUMMARY.md（8 KB - 快速参考文档）\n关键研究结果的执行摘要\n包含内容：\n\n各主要领域的高层次研究结果\n设计决策及理由\n风险评估与缓解措施\n实施路线图阶段\n来源验证\n\n阅读时机：想快速了解研究验证的内容及原因时。\n阅读时长：5 - 10分钟\n\n3. ✅ IMPLEMENTATION_CHECKLIST.md（12 KB - 可操作文档）\n分阶段实施指南\n包含内容：\n\nMVP清单（0.1版本）\n第一阶段详细任务（第1 - 2周）\n第二阶段扩展任务（第3 - 4周）\n第三阶段完善任务（第5周及以后）\n可复制的代码模式\n成功标准\n\n阅读时机：想了解要构建的内容及构建顺序时。\n阅读时长：10 - 15分钟\n\n4. 🏗️ ARCHITECTURE.md（在库中）\n系统设计和组件图\n查看路径：.planning/research/ARCHITECTURE.md\n\n5. 📚 STACK.md（在库中）\n技术选择及理由\n查看路径：.planning/research/STACK.md\n\n按角色快速导航\n👨‍💻 开发者：“我如何构建这个项目？”\n\n起步：阅读RESEARCH_SUMMARY.md（了解范围）\n深入研究：阅读FEATURES.md中的“核心MCP功能”和“Obsidian库功能”部分\n开始构建：参考IMPLEMENTATION_CHECKLIST.md\n参考资料：阅读FEATURES.md中的“查询模式”部分以进行API设计\n\n🏛️ 架构师：“整体设计是怎样的？”\n\n总体了解：阅读RESEARCH_SUMMARY.md\n设计细节：阅读ARCHITECTURE.md\n功能范围：阅读FEATURES.md中的“功能优先级”部分\n约束条件：阅读FEATURES.md中的“超出范围”部分\n\n🧪 测试人员：“我应该测试什么？”\n\n测试范围：阅读IMPLEMENTATION_CHECKLIST.md中的“测试与验证”部分\n成功标准：参考IMPLEMENTATION_CHECKLIST.md\n数据格式：阅读FEATURES.md中的“Obsidian库功能”部分\n边缘情况：阅读FEATURES.md中的“风险与缓解措施”部分\n\n📝 产品经理：“项目愿景是什么？”\n\n快速概览：阅读RESEARCH_SUMMARY.md\nMVP范围：阅读FEATURES.md中的“功能优先级”部分→MVP\n路线图：阅读RESEARCH_SUMMARY.md中的“实施路线图”部分\n风险：阅读RESEARCH_SUMMARY.md中的“风险与缓解措施”部分\n\n🎨 设计师：“用户体验是怎样的？”\n\n系统概述：阅读FEATURES.md中的“MCP是什么”部分\n用户工作流程：阅读FEATURES.md中的“规范管理”部分\n数据模板：阅读FEATURES.md中的“笔记类型与模板”部分\n上下文示例：阅读FEATURES.md中的“AI上下文交付”部分\n\n\n关键研究结果（简版）\n✅ 已验证的内容\n\nMCP可以在不修改Obsidian的情况下公开世界构建数据\nObsidian的YAML和维基链接足以进行关系建模\nClaude的200K令牌上下文窗口足以提供世界上下文\n现有工具（ComfyUI、Dataview）无需重新实现即可集成\n基于Git的审批工作流程适用于协作式世界构建\n\n🎯 已做出的设计决策\n\n单一事实来源：Obsidian库（而非外部数据库）\n架构：MCP服务器作为只读桥梁\n关系：通过维基链接和YAML元数据实现双向关系\n审批：基于Git（主分支 = 规范，功能分支 = 提案）\n资产：在图像中嵌入元数据；版本工作流程\n\n📊 功能范围\n\nMVP（0.1版本）：基本查询、模板、手动审批\n0.2 - 0.3版本：过滤查询、一致性检查、ComfyUI集成\n1.0版本及以上：多世界、Web UI、协作功能\n\n🚫 超出范围的内容\n\n取代Obsidian（它不是编辑器）\n外部存储（库是事实来源）\n任意代码执行\n自动生成完整世界\n实时多人编辑\n\n\n整体架构\n用户（世界构建者）\n        ↓\nObsidian库（事实来源）\n        ↓\nGit仓库（版本控制）\n        ↓\nHivemind MCP服务器（桥梁）\n        ↓\nClaude / AI工具（上下文消费者）\n\n数据流：\n\n世界构建者在Obsidian中编辑角色/地点\n更改提交到Git\nHivemind MCP服务器从Git读取数据\nClaude向MCP查询上下文\nClaude生成一致的内容（对话、图像、情节）\n结果返回给世界构建者\n\n\n研究来源\n2025年1月进行的研究使用了以下资源：\n\n1000多个MCP服务器示例（MCPMarket.io）\n5个以上的Obsidian世界构建库模板\n官方MCP文档（modelcontextprotocol.io）\nClaude API文档（platform.claude.com）\nComfyUI工作流程文档\n领先的世界构建工具（World Anvil、Reality Forge、Urdr）\n\n\n实施时间表（预估）\n\n\n\n阶段\n周数\n重点\n交付成果\n\n\n\n\n研究\n1\n验证\n✓ 本目录\n\n\nMVP\n1 - 2\n核心MCP服务器\n基本查询、模板\n\n\n扩展\n3 - 4\n增强功能\n一致性检查、ComfyUI\n\n\n完善\n5周及以后\n性能\nWeb UI、分析\n\n\n\n\n成功指标\nMVP成功标准\n\n✅ Claude可以查询角色数据\n✅ 上下文保持在令牌限制内\n✅ 一致性检查正常工作\n✅ 模板易于使用\n✅ 审批工作流程正常运行\n\n1.0版本成功标准\n\n✅ 多用户协作式世界构建\n✅ 平稳处理1000多个实体\n✅ 用于浏览的Web界面\n✅ 完整的资产来源跟踪\n✅ 社区采用（外部库）\n\n\n实施中的开放性问题\n\n\nMCP运行时选择（TypeScript、Python、Rust？）\n\n决策点：语言专业知识、部署目标\n\n\n\n如何处理库更改（Git钩子、轮询、文件监视器？）\n\n设计点：延迟与系统负载\n\n\n\n缓存位置（进程内、Redis、持久文件？）\n\n性能点：内存与响应性\n\n\n\n如何验证一致性（严格规则还是警告？）\n\n用户体验点：有用与烦人\n\n\n\n何时集成ComfyUI（0.1版本、0.2版本、1.0版本？）\n\n范围点：复杂性与达到MVP的时间\n\n\n\n答案可查看IMPLEMENTATION_CHECKLIST.md中的“要创建的关键文件”部分。\n\n贡献文档\n更新文档时：\n\n保持FEATURES.md作为规范的详细参考文档\n将摘要同步到RESEARCH_SUMMARY.md\n范围更改时更新清单\n将新发现添加到适当的部分\n保证代码示例与实现保持同步\n\n\n最后更新时间：2025年1月\n状态：✅ 完成研究阶段\n下一步：实施规划和第一阶段开发\nsearch_vault使用混合搜索（关键词+语义+图）在所有世界构建内容中搜索参数query : string*描述搜索查询文本参数filters : object*描述过滤条件，可按类型和状态筛选参数limit : number*描述最大结果数（1-100）参数includeContent : boolean*描述是否在结果中包含内容片段参数contentLimit : number*描述每个结果的最大字符数rebuild_index强制完全重建保险库索引。当文件在正常检测之外被添加或修改时使用此命令get_vault_stats获取保险库统计信息和使用MCP的上下文节省情况。显示保险库大小、潜在的令牌节省和效率指标query_asset通过ID获取特定资产及其生成设置和元数据参数id : string*描述要查询的资产IDlist_assets列出资产，可按实体、类型、状态或工作流进行筛选参数depicts : string*描述按资产中描绘的实体ID筛选参数assetType : string*描述按资产类型筛选参数status : string*描述按批准状态筛选参数workflowId : string*描述按使用的工作流筛选参数limit : number*描述要返回的最大结果数get_canon_status按规范状态（草稿、待审核、规范、非规范、归档）分组获取实体参数status : string*描述筛选特定状态参数type : string*描述按实体类型筛选submit_for_review提交实体进行审核，将其状态从草稿更改为待审核参数id : string*描述要提交审核的实体ID参数notes : string*描述给审核者的可选备注validate_consistency检查保险库中的一致性问题（重复名称、损坏的链接、冲突的数据）参数id : string*描述要验证的特定实体ID，省略则进行完整保险库检查参数type : string*描述将验证限制为特定类型store_workflow将ComfyUI工作流定义存储在保险库中参数id : string*描述唯一工作流标识符参数name : string*描述人类可读的工作流名称参数description : string*描述工作流描述参数workflow : object*描述ComfyUI工作流JSON参数contextFields : array*描述要从上下文注入的字段（例如：外观、个性）参数outputPath : string*描述生成图像的自定义输出路径list_workflows列出所有存储的ComfyUI工作流get_workflow通过ID获取特定的ComfyUI工作流参数id : string*描述要检索的工作流IDgenerate_image使用ComfyUI和保险库上下文生成图像参数workflowId : string*描述要执行的工作流ID参数contextId : string*描述用作上下文的角色/位置ID参数contextType : string*描述上下文实体的类型参数seed : number*描述生成的随机种子参数overrides : object*描述额外的工作流参数覆盖store_asset将生成的资产（图像）与元数据一起存储在保险库中参数assetType : string*描述资产类型参数filePath : string*描述保险库中资产文件的路径参数depicts : array*描述资产中描绘的实体ID参数workflowId : string*描述用于生成资产的工作流参数prompt : string*描述生成提示词参数parameters : object*描述生成参数（种子、步数、cfg等）替代品AirweaveAirweave是一个开源的人工智能代理和RAG系统的上下文检索层，它连接并同步各种应用程序、工具和数据库的数据，通过统一的搜索接口为AI代理提供相关、实时、多源的上下文信息。Python 24.8K 5分VestigeVestige是一个基于认知科学的AI记忆引擎，通过实现预测误差门控、FSRS-6间隔重复、记忆梦境等29个神经科学模块，为AI提供长期记忆能力。包含3D可视化仪表板和21个MCP工具，完全本地运行，无需云端。Rust 19.1K 4.5分MMoltbrainMoltBrain是一个为OpenClaw、MoltBook和Claude Code设计的长期记忆层插件，能够自动学习和回忆项目上下文，提供智能搜索、观察记录、分析统计和持久化存储功能。TypeScript 18.4K 4.5分Bm.md一个功能丰富的Markdown排版工具，支持多种样式主题和平台适配，提供实时编辑预览、图片导出和API集成能力TypeScript 24.4K 5分HHaiku.ragHaiku RAG是一个基于LanceDB、Pydantic AI和Docling构建的智能检索增强生成系统，支持混合搜索、重排序、问答代理、多代理研究流程，并提供本地优先的文档处理和MCP服务器集成。Python 24.7K 5分CipherCipher是一个专为编程AI代理设计的开源记忆层框架，通过MCP协议与各种IDE和AI编码助手集成，提供自动记忆生成、团队记忆共享和双系统记忆管理等核心功能。TypeScript 0 5分Apple Notes MCP一个为Claude桌面端提供本地Apple Notes数据库访问的服务器，支持读取和搜索笔记内容。Python 20.7K 4.3分MCP Server Weread微信读书MCP服务器是一个桥接微信读书数据和AI客户端的轻量级服务，实现阅读笔记与AI的深度交互。TypeScript 26.1K 4分Duckduckgo MCP Server已认证DuckDuckGo搜索MCP服务器，为Claude等LLM提供网页搜索和内容抓取服务Python 115.6K 4.3分Firecrawl MCP ServerFirecrawl MCP Server是一个集成Firecrawl网页抓取能力的模型上下文协议服务器，提供丰富的网页抓取、搜索和内容提取功能。TypeScript 194.1K 5分Figma Context MCPFramelink Figma MCP Server是一个为AI编程工具（如Cursor）提供Figma设计数据访问的服务器，通过简化Figma API响应，帮助AI更准确地实现设计到代码的一键转换。TypeScript 95.6K 4.5分Edgeone Pages MCP ServerEdgeOne Pages MCP是一个通过MCP协议快速部署HTML内容到EdgeOne Pages并获取公开URL的服务TypeScript 42.5K 4.8分Exa Web Search已认证Exa MCP Server是一个为AI助手（如Claude）提供网络搜索功能的服务器，通过Exa AI搜索API实现实时、安全的网络信息获取。TypeScript 82.4K 5分Baidu Map已认证百度地图MCP Server是国内首个兼容MCP协议的地图服务，提供地理编码、路线规划等10个标准化API接口，支持Python和Typescript快速接入，赋能智能体实现地图相关功能。Python 67.5K 4.5分Minimax MCP ServerMiniMax Model Context Protocol (MCP) 是一个官方服务器，支持与强大的文本转语音、视频/图像生成API交互，适用于多种客户端工具如Claude Desktop、Cursor等。Python 87.7K 4.8分Context7Context7 MCP是一个为AI编程助手提供实时、版本特定文档和代码示例的服务，通过Model Context Protocol直接集成到提示中，解决LLM使用过时信息的问题。TypeScript 136.4K 4.7分智启未来，您的人工智能解决方案智库English简体中文繁體中文にほんご© 2026AIBase",
+      "title": "https://mcp.aibase.com/zh/server/1639702971132682563 (text/html;charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528817596,
+        "end": 1789528818878
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.878Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528818878,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac4be0017Y1xojPrmxA1bV",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83abe5f001yAm9bkOOm4LpYO",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 84978,
+      "output": 152,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 85130,
+      "headroom": -46274,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.878Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.879Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.879Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.879Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.880Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.880Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.880Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.880Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.880Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.880Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.893Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 85130,
+  "providerTokens": 85130,
+  "estimatedInputTokens": 24054,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 84978,
+    "cacheRead": 0,
+    "output": 152
+  },
+  "overflow": true,
+  "headroom": -46274,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.895Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.895Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.897Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.897Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.897Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.897Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.897Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:18.898Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528819310,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac66e001wXZRkLv8qWuaxg",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ac4d1001rr7Z8ZbWVz9opB",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528819311,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac66f001ACY5KjjqJFB7Ry",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ac4d1001rr7Z8ZbWVz9opB",
+    "type": "text",
+    "text": "Conversation summary: 在我的桌面上找 hive-mind-control-center 文件夹。  我来上网搜索 在我的桌面上找 hive-mind-control-center 文件夹。\n\nTitle: What did we do so\n\nUser turns:\n  1. 在我的桌面上找 hive-mind-control-center 文件夹。\n  2.",
+    "time": {
+      "start": 1789528819311,
+      "end": 1789528819311
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528819311,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac66f002euMCAw9WZ3bWik",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ac4d1001rr7Z8ZbWVz9opB",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 86785,
+      "output": 192,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 86977,
+      "headroom": -48121,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528819312,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac670002sHCt86QHdJK17n",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ac670001nCZlY2YUk2C5Ad",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528819312,
+      "end": 1789528819312
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.312Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.313Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.313Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.313Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.314Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.315Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528819394,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac6c10017n3eaZQbeW0VXq",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ac671001UANhgeqeFsW8e7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528819394,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac6c2002v6mwbdPzczcK0L",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ac671001UANhgeqeFsW8e7",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528819394,
+      "end": 1789528819394
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528819394,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "part": {
+    "id": "prt_0a83ac6c2003FTdLD3deqC8Bq0",
+    "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+    "messageID": "msg_0a83ac671001UANhgeqeFsW8e7",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8741,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8814,
+      "headroom": 30042,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.395Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.395Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.395Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.396Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.396Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.396Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.396Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528819396,
+  "sessionID": "ses_f57c5568dffeFe2jZRuZHxcy7s"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.397Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.397Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.397Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.397Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.YSqD6tSsS6",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:19.397Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

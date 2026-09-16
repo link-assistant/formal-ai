@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.089Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.090Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Какого размера средний корень яблони? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.090Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.090Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.099Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Какого размера средний корень яблони?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Какого размера средний корень яблони?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.099Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.100Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.101Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.101Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.103Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.104Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.106Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 669,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.106Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.119Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:14:06.123Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 24,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:14:06.124Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.128Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.128Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.129Z",
+  "service": "session",
+  "id": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox",
+  "title": "New session - 2026-09-16T03:14:06.129Z",
+  "time": {
+    "created": 1789528446129,
+    "updated": 1789528446129
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.129Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.129Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.129Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.129Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.129Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57caeb4effeeuYh0PuUV9lb8S/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.129Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57caeb4effeeuYh0PuUV9lb8S/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.132Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57caeb4effeeuYh0PuUV9lb8S/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.134Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.135Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.135Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.136Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.137Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.137Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.137Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.138Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.138Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.138Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.138Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.138Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.138Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.285Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.289Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.289Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.299Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.304Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.311Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.726Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528446726,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a83516ff00110FudZrSGPmmhd",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351550001Do2MysHg9dHNJy",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528446727,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351707001rSp0I72wd1q0pV",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351550001Do2MysHg9dHNJy",
+    "type": "tool",
+    "callID": "call_03b27fea936c4d36",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528446727,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a83517060015NDVShDP8dGj39",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351550001Do2MysHg9dHNJy",
+    "type": "text",
+    "text": "Поищу в интернете: ого размера средний корень яблони.",
+    "time": {
+      "start": 1789528446727,
+      "end": 1789528446727
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:06.728Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528446728,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351707001rSp0I72wd1q0pV",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351550001Do2MysHg9dHNJy",
+    "type": "tool",
+    "callID": "call_03b27fea936c4d36",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "ого размера средний корень яблони"
+      },
+      "time": {
+        "start": 1789528446727
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.281Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528448282,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351707001rSp0I72wd1q0pV",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351550001Do2MysHg9dHNJy",
+    "type": "tool",
+    "callID": "call_03b27fea936c4d36",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "ого размера средний корень яблони"
+      },
+      "output": "Title: Расчетный метод определения геометрических параметров корневой системы яблони для обоснования способов полива – тема научной статьи по сельскому хозяйству, лесному хозяйству, рыбному хозяйству читайте бесплатно текст научно-исследовательской работы в электронной библиотеке КиберЛенинка\nURL: https://cyberleninka.ru/article/n/raschetnyy-metod-opredeleniya-geometricheskih-parametrov-kornevoy-sistemy-yabloni-dlya-obosnovaniya-sposobov-poliva\nPublished: N/A\nAuthor: N/A\nHighlights:\nЦелью данного исследования является разработка методики определения и (или) прогнозирования геометрических параметров корневой системы яблоневых растений, которая может быть использована при разработке проектов капельного орошения плодоносящих садов. Зная геометрические размеры основной части корневой системы, можно определить зону локального орошения и внесения удобрений для яблоневых растений. Для систем капельного орошения полученные данные могут послужить обоснованием размещения капельниц в подкроновом пространстве растения и их количества. Разработанная методика представлена виде алгоритма расчета таких параметров, как глубина расположения основной части корневой системы яблони в горизонте почвы, средний радиус (диаметр) корневой системы яблоневого растения, плановая удаленность от штамба растения границы зоны расположения основной части корней корневой системы по трем замерным параметрам: количеству корней, протяженности корней и весу корней, площадь горизонтальной проекции зоны расположения основной части корневой системы на плоскость поверхности земли, объем почвенного пространства, в пределах которого располагается основная часть горизонтальных и вертикальных корней яблоневого растения. Итоги расчетов представляются в виде площадных и объемных геометрических характеристик. Сопоставление расчетных и опытных данных по определению удаленности корней яблони от штамба показало, что отклонение от опытного значения составляет для условий Московской области 0,30-16,3 %, Сумской области 5,14-5,87 %, Крыма 8,30-12,50 %, Краснодарского края 2,80-6,00 %, Ростовской области 0,80-4,33 %.\n...\nВ соответствии с современными представлениями о локальном (капельном или внутрипочвенном) орошении и локальной фертигации садовых древесных насаждений поливную воду и растворенные в ней удобрения необходимо подавать в корнеосвоенное почвенное пространство, в пределах которого сосредоточивается основная часть корневой системы растения. Подлежащее искусственному увлажнению и искусственному насыщению элементами питания (удобрениями) почвенное пространство характеризуется такими геометрическими показателями корневых систем яблоневых растений, как расчетная глубина расположения основной части корней корневой системы в почвогрунтовую толщу (^ко/ч), расчетная плановая удаленность от штамба растения границы зоны расположения основной части корней корневой системы (R^), площадь горизонтальной проекции зоны расположения основной части корневой системы на плоскость поверхности земли (юко/ч), объем почвенного пространства, в пределах которого располагается основная часть горизонтальных и вертикальных корней яблоневого растения (^ко/ч). Схема определяемых геометрических параметров корневых систем яблоневых растений приведена на рисунке 1.\n...\nПод термином «основная часть корней» предлагается понимать количество, вес и (или) протяженность корней на уровне 80 % этих показателей по всей корневой системе или ее части, сосредоточенной в определенном (измеряемом) пространстве (глубине проникновения корней в почвог-рунтовую толщу или удаленности корней от штамба).\n...\n2 Определяется средний радиус (диаметр) корневой системы яблоневого растения с использованием двух нижеприведенных зависимостей:\n...\nпривоя и подвоя: для среднерослых растений Пр = 0,95-1,05; для карликовых видов (сортов) Пр= 0,7-0,9 и для сильнорослых Пр = 1,15-1,25; Вк - диаметр кроны яблоневого\n...\nПо значению Вк определяется средний радиус корневой системы.\n...\nОкончательное значение среднего радиуса корневой системы (удаленности корневой системы от штамба яблони) определяется как среднее\n...\n3 Определяется удаленность основной части корней корневой системы яблони от штамба растения (Rко/ч, м) по нижеприведенным зависимостям:\n...\nВ вышеприведенных зависимостях приняты обозначения: t - возраст яблоневого растения (годы); tшl - возраст вступления растения в плодоношение; я к - средний радиус удаления (удаленность) корней (корневой системы) от штамба растения (при расчете отдельных корней рассматривается удаленность их окончаний от штамба, а при расчете всей корневой системы дерева - среднее значение радиуса (удаленности) корней корневой системы от штамба растения).\n...\nсоставит юкпит = 0,75лКк•Ик, а объем почвенного пространства, охваченный основной частью корневой системы яблоневого растения, будет юко/ч =лКк2о/ч • Ик. Зная геометрические размеры основной части корневой\n\n---\n\nTitle: Яблоня - Семечковые - Плодовые и ягодные культуры - GreenInfo.ru\nURL: https://www.greeninfo.ru/fruits/malus_domestica.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nОбычно это деревья высотой от 3 до 15 м с шириной кроны 10-12 м или более, реже кустарники высотой 3-5 м. Корневая система у яблони сильно разветвленная, основная масса корней располагается на глубине 0,75-1,0 метра, отдельные корни могут уходить на глубину до 2 метров. Ветви у яблони двух типов - укороченные (или плодущие) - на них закладываются цветочные почки, и удлинённые (или ростовые). У дикорастущих видов на ветвях колючки.\n\n---\n\nTitle: Особенности строения корневой системы деревьев яблони на подвоях разной силы роста в интенсивном саду – тема научной статьи по сельскому хозяйству, лесному хозяйству, рыбному хозяйству читайте бесплатно текст научно-исследовательской работы в электронной библиотеке КиберЛенинка\nURL: https://cyberleninka.ru/article/n/osobennosti-stroeniya-kornevoy-sistemy-dereviev-yabloni-na-podvoyah-raznoy-sily-rosta-v-intensivnom-sadu\nPublished: N/A\nAuthor: N/A\nHighlights:\nях 6\n...\n545\n...\n0. Вы\n...\nвзаимовлияние\n...\nУстановлено,\n...\nс диаметром менее\n...\n88 - 9\n...\nполовина всех\n...\nсм, а\n...\n3 от общего числа в\n...\nдо 3\n...\nРезультаты и обсуждение. В результате проведенных раскопок было установлено, что общее число корней на срезе почвы на расстоянии 0,5м от штамба дерева сорта Орлик на подвое Р16 составило 258 штук. Из них около половины залегало на глубине до 20 см, а 2/3 от общего количества корней в слое почвы до 30 см (табл.). У данной сорто-подвойной комбинации корневая система характеризовалась наиболее поверхностным распределением по глубине почвы. В слое 50-60 см число корней было не более 2%. Корни с диаметром от 1 до 2 мм составили 7% от общего количества корней, от 2,1 до 5мм - 1,2%, с диаметром 5,1 - 8мм - 0,4%. Наиболее распространенными оказались корни до 1 мм (91,4%). Такая же закономерность наблюдалась по всем изучаемым комбинациям.\n...\n43 4\n...\n7 12\n...\n88 10\n...\n83 5\n...\nМаксимальным ростом среди всех изучаемых вариантов отличалась корневая система деревьев сорта\n...\nнап орловский, привитого на подвое 57-545. Здесь общее число корней при срезе почвы на расстоянии\n...\n0,5 м от штамба дерева составило 751 шт., из них 93,9% с диаметром корней до 1 мм, 4,0% с диаметром от 1 до 2 мм, 1,5% с диаметром 2,1-5 мм, 0,\n...\n% с диаметром 5,1-8 мм и 0,3% с диаметром более 8 мм. На глубине 90 см были обнаружены корни с диаметром до\n...\nмм, а число корней с диаметром до\n...\n2-\n...\nсравнению с другими вариантами.\n...\nнаходилась в слое\n...\n30 см.\n...\n1. Общее число корней на срезах почвы на расстоянии 0,5м от штамба дерева у всех изучаемых сорто-подвойных комбинаций прямо пропорционально силе роста подвоя и привитого на него сорта. Половина всех корней располагалась на глубине до 20см, а 2/3 от общего количества в слое почвы до 30см, корни с диаметром менее 1мм составляли 88 - 98%.\n\n---\n\nTitle: Корневая система яблони.\nURL: http://xn--90augd6fe.xn----7sbabggic4ag6ardffh1a8y.xn--p1ai/korni.htm\nPublished: N/A\nAuthor: N/A\nHighlights:\nМаксимальная толщина корней у яблони составляет 10 - 12 см, а максимальная длина 12 м.\n\n---\n\nTitle: Корневая система яблони: структура и особенности\nURL: https://mksegment.ru/c/kornevaya-sistema-yabloni-struktura-i-osobennosti\nPublished: 2013-02-13T22:49:55.000Z\nAuthor: Редакция mksegment.ru\nHighlights:\nКорневая система яблони состоит из множества корней различного размера и формы. Они располагаются в земле и выполняют несколько важных функций. Во-первых, они закрепляют растение в почве и обеспечивают его устойчивость. Во-вторых, корни поглощают воду, минеральные вещества и другие полезные элементы, необходимые для нормального роста и развития яблони.\n...\nСамые крупные корни яблони называются главными корнями или стволовыми корнями. Они происходят от зародыша и идут вниз почти вертикально. Побеги и листья яблони питаются благодаря ассимиляционным корням, которые отходят от главных. Они имеют более мелкую ветвистую структуру и способны поглощать вещества из почвы.\n...\n| Корень | Описание |\n| --- | --- |\n| Главный корень | Это основной вертикальный корень, который проникает глубоко в почву и обеспечивает закрепление растения. Он также является основным источником питания для яблони. |\n| Боковые корни | Это корни, которые отходят от главного корня и распространяются в стороны. Они выполняют функцию поглощения влаги и питательных веществ из почвы. |\n| Мелкие корешки | Это очень тонкие корни, которые впитывают влагу и питательные вещества. Они имеют огромную поверхность, что позволяет максимально усваивать необходимые компоненты. |\n| Корневые волоски | Это самые мелкие элементы корневой системы, которые имеют бездонную структуру. Они осуществляют активное поглощение влаги и минеральных веществ. |\n...\n- Главный корень - это первичный корень, который возникает из семени. Он обладает сильной проникающей способностью и является основным основанием для формирования дополнительных корней.\n...\n- Дополнительные корни - это корни, которые развиваются из главного корня и укрепляют растение в почве. Они также поглощают влагу и питательные вещества.\n...\n- Корневой волосок - это мелкий корень, который служит для увеличения поглощающей поверхности корней и усиления поглощения воды и минеральных веществ.\n\n---\n\nTitle: корневая система яблонь в диаметре\nURL: https://derevy.baikal24-nauka.ru/kornevaya-sistema-yablon-v-diametre/\nPublished: 2020-10-19T00:00:00.000Z\nAuthor: N/A\nHighlights:\nПодавляющая часть корней имеет малую длину. Например, у яблони корни длиной от долей миллиметра до 5 мм составляют 65,1%, у груши — 43%; корни длиной от 6 до 10 мм — соответственно 18,7 и 28%. Остальные корни имеют длину от 1 — 2 см до 0,5 м, но их гораздо меньше (у яблони 16,2%). Средняя длина корня у однолетних сеянцев плодовых пород довольно постоянная: у яблони 6 — 7 мм, у груши и черешни 8 — 9, у вишни 8, у антипки 14 мм. У плодоносящих деревьев плодовых пород средняя длина корня в 2 раза меньше (у яблони 3,5 мм), чем у однолетних саженцев.\n...\nвсю последующую\n...\nв 1,5 —\n...\nбольше диаметра\n...\nпроекции) кроны\n...\nзонах воз\n\n---\n\nTitle: Все о корневой системе яблонь\nURL: https://stroy-podskazka.ru/yabloni/kornevaja-sistema/\nPublished: 2026-04-04T00:00:00.000Z\nAuthor: N/A\nHighlights:\nНа Северном Кавказе они доходят до 6-7 м при диаметре кроны 1,5 м. Сеть мелких корневых отростков при этом не превышает 60 см, а боковых раз\n...\nвлений – 5 м.\n...\nДерево может иметь скелетные и полускелетные корни с длиной в несколько метров и толщиной более 10 см. Если корневая система формируется с сильным развитием вертикального корня и слабым боковым корнем, ее именуют стержневой.\n...\nДлина обра\n...\nней может варьироваться\n...\nдесятых долей мм до нескольких см. Диаметр обычно не превышает 1-3 мм.\n...\nВ зависимости от сорта и места произрастания однолетний сеянец может иметь до 40000 корней с их суммарной величиной до 230 м. Длина корней у взрослой яблони может исчисляться десятками километров. Число корешков превышает несколько миллионов.\n\n---\n\nTitle: особенности строения яблони домашней\nURL: https://derevy.baikal24-nauka.ru/osobennosti-stroeniya-yabloni-domashney/\nPublished: 2020-10-20T04:25:30.000Z\nAuthor: N/A\nHighlights:\nКорневая система. По происхождению различают главные и придаточные корни. Главные корни развиваются из корешка зародыша семени, придаточные — возникают на стеблях. Корни, отходящие непосредственно от главного, или стержневого, корня, называются корнями первого порядка; от них отходят корни второго порядка и т.д. Размеры корневой системы зависят от породы, особенностей надземной части плодового дерева, подвоя, почвенных условий и агротехники выращивания.\n...\nПо величине и выполняемым функциям различают скелетные, полускелетные и обрастающие корни. Скелетные и полускелетные корни достигают длины нескольких метров и имеют толщину до 10 см и более. По характеру распространения в почве они могут быть вертикальными и горизонтальными. Корневая система с сильно развитым вертикальным корнем и слабыми боковыми скелетными корнями называется стержневой.\n...\nкорни яблони\n...\nдостигать глубины 7 м. Горизонтальные корни\n...\nняются в верхних плодородных слоях почвы и выходят далеко за пределы горизонтальной проекции\n...\nны. Обрастающие корни образуются на\n...\nных корнях. Они тон\n...\n(диаметром 1-3 мм)\n...\nкороткие, длиной\n...\nметра до нескольких сантиметров.\n...\nветвленные\n...\nмочкой.\n...\nФорма кроны (редкая, средняя, густая) бывает пирамидальной (скелетные ветки растут почти вертикально), округлой (скелетные ветки отходят от ствола под углом менее 45 С), раскидистой (скелетные ветки отходят от ствола под углом до 60 С) или плакучей (скелетные ветки отходят от ствола под углом более 60 С).",
+      "title": "Web search: ого размера средний корень яблони",
+      "metadata": {},
+      "time": {
+        "start": 1789528446727,
+        "end": 1789528448279
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.286Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528448286,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351d1c001DGyPAMwMbKEooL",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351550001Do2MysHg9dHNJy",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8533,
+      "output": 107,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8640,
+      "headroom": 30216,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.287Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.287Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.289Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.289Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.290Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.290Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.290Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.291Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.291Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.291Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.307Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8640,
+  "providerTokens": 8640,
+  "estimatedInputTokens": 3991,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8533,
+    "cacheRead": 0,
+    "output": 107
+  },
+  "overflow": false,
+  "headroom": 30216,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.308Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.310Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.901Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528448901,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351f81001R33h4VdrOz3DZP",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351d33001SydnAnybowfMM2",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528448902,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351f86001oaAko0AYgosRTE",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351d33001SydnAnybowfMM2",
+    "type": "tool",
+    "callID": "call_8634dcdd3ce162ad",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.903Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528448903,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351f850019rLk1cO2ybdjJE",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351d33001SydnAnybowfMM2",
+    "type": "text",
+    "text": "Открою https://cyberleninka.ru/article/n/raschetnyy-metod-opredeleniya-geometricheskih-parametrov-kornevoy-sistemy-yabloni-dlya-obosnovaniya-sposobov-poliva и прочитаю содержимое.",
+    "time": {
+      "start": 1789528448903,
+      "end": 1789528448903
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528448904,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351f86001oaAko0AYgosRTE",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351d33001SydnAnybowfMM2",
+    "type": "tool",
+    "callID": "call_8634dcdd3ce162ad",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://cyberleninka.ru/article/n/raschetnyy-metod-opredeleniya-geometricheskih-parametrov-kornevoy-sistemy-yabloni-dlya-obosnovaniya-sposobov-poliva"
+      },
+      "time": {
+        "start": 1789528448904
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528448912,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351f86001oaAko0AYgosRTE",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351d33001SydnAnybowfMM2",
+    "type": "tool",
+    "callID": "call_8634dcdd3ce162ad",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://cyberleninka.ru/article/n/raschetnyy-metod-opredeleniya-geometricheskih-parametrov-kornevoy-sistemy-yabloni-dlya-obosnovaniya-sposobov-poliva"
+      },
+      "error": "Error: Unable to connect. Is the computer able to access the url?",
+      "time": {
+        "start": 1789528448904,
+        "end": 1789528448911
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528448912,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "message": "Error: Unable to connect. Is the computer able to access the url?",
+  "error": "Error: Unable to connect. Is the computer able to access the url?"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528448914,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a8351f91001c87VNhu5uj1C1V",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351d33001SydnAnybowfMM2",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 22188,
+      "output": 362,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 22550,
+      "headroom": 16306,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.914Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.915Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.915Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.916Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.916Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.917Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 22550,
+  "providerTokens": 22550,
+  "estimatedInputTokens": 4051,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 22188,
+    "cacheRead": 0,
+    "output": 362
+  },
+  "overflow": false,
+  "headroom": 16306,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.917Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.919Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:08.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528449082,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a835203a001uTbfso5NZo7cov",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351f95001q9w0AcNo2KVGHz",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528449083,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a835203a0021OSSdJabvEjWnf",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351f95001q9w0AcNo2KVGHz",
+    "type": "text",
+    "text": "Команда завершилась с ошибкой: Error: Unable to connect. Is the computer able to access the url?\n\nЯ обнаружил сбой при выполнении этого запроса. Хотите, чтобы я подготовил отчёт о проблеме с диагностическим контекстом? Ответьте `Report issue`.",
+    "time": {
+      "start": 1789528449083,
+      "end": 1789528449083
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528449083,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "part": {
+    "id": "prt_0a835203b001nfRy3rNT3215T7",
+    "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+    "messageID": "msg_0a8351f95001q9w0AcNo2KVGHz",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 22432,
+      "output": 243,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 22675,
+      "headroom": 16181,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.084Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.084Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.085Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.085Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.085Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.085Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.085Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.085Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528449086,
+  "sessionID": "ses_f57caeb4effeeuYh0PuUV9lb8S"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Wnnm3TbOox",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:09.086Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 3,
+  "message": "Agent exiting"
+}
+

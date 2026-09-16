@@ -1,0 +1,1813 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.095Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.096Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए। --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.096Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.096Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.107Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.107Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.108Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.108Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.109Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.112Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.113Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.115Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 6217,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.115Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.129Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:17:29.133Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 26,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:17:29.134Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.138Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.138Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.139Z",
+  "service": "session",
+  "id": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta",
+  "title": "New session - 2026-09-16T03:17:29.139Z",
+  "time": {
+    "created": 1789528649139,
+    "updated": 1789528649139
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.140Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.140Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.140Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.140Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.140Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c7d24cffeeGM1B4Z8qR8yTR/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.140Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c7d24cffeeGM1B4Z8qR8yTR/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.143Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c7d24cffeeGM1B4Z8qR8yTR/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.145Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.146Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.146Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.147Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.148Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.148Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.148Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.149Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.149Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.149Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.149Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.149Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.149Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.315Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.319Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.320Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.329Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.338Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.338Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.338Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.338Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.815Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528649815,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383052001q36YuGyn6L793Y",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8382e660010bilqzwSpPEfPA",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.815Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.816Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528649816,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383057002Nor1tJNJ3AueCV",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8382e660010bilqzwSpPEfPA",
+    "type": "tool",
+    "callID": "call_9293dbfd76cc6a5d",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.816Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528649816,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383057001tPRdyX4eJwQRZP",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8382e660010bilqzwSpPEfPA",
+    "type": "text",
+    "text": "मैं इंटरनेट पर क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए। खोजता हूँ।",
+    "time": {
+      "start": 1789528649816,
+      "end": 1789528649816
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:29.816Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528649817,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383057002Nor1tJNJ3AueCV",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8382e660010bilqzwSpPEfPA",
+    "type": "tool",
+    "callID": "call_9293dbfd76cc6a5d",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।"
+      },
+      "time": {
+        "start": 1789528649816
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.232Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528652232,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383057002Nor1tJNJ3AueCV",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8382e660010bilqzwSpPEfPA",
+    "type": "tool",
+    "callID": "call_9293dbfd76cc6a5d",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।"
+      },
+      "output": "Title: प्रमात्रा यान्त्रिकी - विकिपीडिया\nURL: https://hi.wikipedia.org/wiki/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BE_%E0%A4%AF%E0%A4%BE%E0%A4%A8%E0%A5%8D%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BF%E0%A4%95%E0%A5%80\nPublished: N/A\nAuthor: N/A\nHighlights:\nप्रमात्रा यान्त्रिकी (अंग्रेज़ी: Quantum Mechanics, क्वांटम मैकेनिक्स) भौतिकी में एक मौलिक सिद्धान्त है जो परमाण्वों और उपापरमाण्विक कणों के स्तर पर प्रकृति के भौतिक गुणों का विवरण प्रदान करता है। [1] यह प्रमात्रा रसायनिकी, प्रमात्रा क्षेत्र सिद्धान्त, प्रमात्रा प्रौद्योगिकी और प्रमात्रा सूचना विज्ञान सहित सभी प्रमात्रा भौतिकी का आधार है।\n...\nन्यूटन के गति नियम के आधार पर विकसित चिरसम्मत यान्त्रिकी द्वारा स्थूल पदार्थों (जैसे- गिरते हुए पत्थर, चक्कर लगाते हुए ग्रह आदि), जिनका व्यवहार जैसा होता है, की गति का साफल्यपूर्वक किया जा सकता है, किन्तु जब इसे अति सूक्ष्म कणों (जैसे इलेक्ट्रॉनों अण्वों और परमाण्वों) पर लागू किया जाता है तो यह विफल हो जाता है। ऐसा होने का कारण यह है कि यात्रीक कणों के दोहरे व्यवहार की संकल्पना तथा अनिश्चय सिद्धान्त की उपेक्षा करती है। द्रव्य के दोहरे व्यवहार को ध्यान में रखकर प्रमात्रा यान्त्रिकी को विकसित किया गया।\n...\nप्रमात्रा यान्त्रिकी एक सैद्धान्तिक विज्ञान है, जिसमें उन अति सूक्ष्म वस्तुओं की गतियों का अध्ययन किया जाता है, जो तरंग और कण दोनों के गुण दर्शाती हैं। यह ऐसी वस्तुओं को गति के नियमों को निश्चित करती है। जब प्रमात्रा यान्त्रिकी को स्थूल वस्त्वों (जिनके हेतु तरंगीय गुण अतिन्यून होते हैं) पर लागू किया जाता है तब चिरसम्मत यान्त्रिकी के परिणामों जैसे ही परिणाम प्राप्त होते हैं।\n...\nसन् 1926 में हाइज़न्बर्ग और श्रोडिङर द्वारा विभिन्न प्रमात्रा यान्त्रिकी विकास किया गया। प्रमात्रा यान्त्रिकी का मूल श्रोडिङर समीकरण द्वारा प्रतिपादित किया गया। इसके हेतु उन्हें सन् 1933 में भौतिकी में नोबेल पुरस्कार प्रदान किया गया।\n...\nपरमाणु का प्रमात्रा यान्त्रिकीय परमाणु संरचना का वह चित्र है जो परमाण्वों पर समीकरण लागू करने से प्राप्त होता है, परमाणु के प्रमात्रा यान्त्रिकीय मॉडल के महत्वपूर्ण लक्षण निम्नोल्लेखित हैं: \n\n- परमाण्वों में इलेक्ट्रॉनों की ऊर्जा प्रमात्रित होती है इसके कुछ विशेष मान ही हो सकते हैं। उदाहरणार्थ, जब परमाण्वों में इलेक्ट्रॉननाभिक से बन्धे होते हैं।\n...\n- किसी परमाणु में इलेक्ट्रॉन के तरंग-फलन Ψ को 'परमाणु कक्षक' कहते हैं। जब एक तरंग-फलन द्वारा किसी इलेक्ट्रॉन की व्याख्या की जाती है तो यह कहा जाता है कि इलेक्ट्रॉन उस कक्षक में उपस्थित है। किसी इलेक्ट्रॉन हेतु बहुत से तरंग-फलन हो सकते हैं, अतः परमाणु में कई कक्षक होते हैं। परमाण्वों की वैद्युतिक संरचना इन 'एक इलेक्ट्रॉन कक्षक तरंग- फलनों' पर ही आधारित है। प्रत्येक कक्षक में इलेक्ट्रॉन की ऊर्जा निश्चित होती है। किसी भी कक्षक में द्व्यधिक इलक्ट्रॉन नहीं रह सकते हैं। किसी बह्विलेक्ट्रॉन परमाणु में ऊर्जा के बढ़ते हुए क्रम में विभिन्न कक्षकों में इलेक्ट्रॉन भरे जाते हैं। अतः बह्विलेक्ट्रॉन परमाणु में प्रत्येक इलेक्ट्रॉन हेतु एक कक्षक तरंग-फलन होता है, जो उस कक्षक का अभिलाक्षणिक होता है, जिसमें इलेक्ट्रॉन उपस्थित होता है। परमाणु में इलेक्ट्रॉन के बारे में सारी तथ्य, उस कक्षक तरंग-फलन Ψ में उपस्थित होती है तथा प्रमात्रा यान्त्रिकी के द्वारा Ψ से तथ्य प्राप्त करना सम्भव होता है।\n...\n- किसी परमाणु में किसी बिन्दु पर इलेक्ट्रॉन के उपस्थिति की प्रायिकता उस बिन्दु पर कक्षक तरंग-फलन के वर्ग के समानुपाती होती है, अर्थात् उस बिन्दु पर |Ψ²| को प्रायिकता घनत्व कहा जाता है। यह सदा धनात्मक होता है। किसी परमाणु के विभिन्न बिन्दुओं पर |Ψ²| के मान से नाभिक के परितः उस क्षेत्र का पता लगाना सम्भव है, जहाँ पर इलेक्ट्रॉन के प्राप्ति की सम्भावना अधिक होगी।\n...\nण के कुछ\n\n---\n\nTitle: क्वांटम यांत्रिकी का परिचय\nURL: https://hi.wikipedia.org/wiki/%E0%A4%95%E0%A5%8D%E0%A4%B5%E0%A4%BE%E0%A4%82%E0%A4%9F%E0%A4%AE_%E0%A4%AF%E0%A4%BE%E0%A4%82%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BF%E0%A4%95%E0%A5%80_%E0%A4%95%E0%A4%BE_%E0%A4%AA%E0%A4%B0%E0%A4%BF%E0%A4%9A%E0%A4%AF\nPublished: 2022-11-19T00:00:00.000Z\nAuthor: N/A\nHighlights:\nक्वांटम यांत्रिकी का परिचय\n...\nक्वांटम यांत्रिकी उन परिघटनाओं की व्याख्या करने वाला भौतिकी का क्षेत्र है क्रिया प्लांक स्थिरांक की कोटि की हो।\n\n---\n\nTitle: क्वांटम भौतिकी के 115 वर्ष – विज्ञान विश्व\nURL: https://vigyanvishwa.in/2015/12/14/qp115/\nPublished: 2015-12-14T08:52:07.000Z\nAuthor: N/A\nHighlights:\nलगभग 115 वर्ष पहले 14 दिसंबर 1900 मे मैक्स प्लैंक(Max Plank) ने क्वांटम भौतिकी(Quantum Physics) की नींव डाली थी।\n...\nप्लांक ने ब्लैक बॉडी रेडियेशन पर कार्य करते हुए एक नियम दिया जिसे वीन-प्लांक नियम के नाम से जाना जाता है। बाद में उन्होने पाया कि बहुत से प्रयोगों के परिणाम इससे अलग आते हैं। उन्होने अपने नियम का पुनर्विश्लेषण किया और एक आश्चर्यजनक नई खोज पर पहुंचे, जिसे प्लांक की क्वांटम परिकल्पना कहते हैं। इन पैकेट्स को क़्वान्टा कहा जाता है। हर क़्वान्टा की ऊर्जा निश्चित होती है तथा केवल प्रकाश (विकिरण) की आवृत्ति (रंग) पर निर्भर करती है। (सूत्र E = hν जहाँ h प्लांक नियतांक तथा ν आवृत्ति है।)\n...\nप्लांक की इस परिकल्पना ने भौतिक जगत में हलचल मचा दी। यहीं से जन्म हुआ भौतिकी की नई शाखा क्वांटम भौतिकी का। बाद में इसी परिकल्पना का उपयोग करते हुए आइन्स्टीन ने प्रकाश विद्युत प्रभाव की व्याख्या की, जिसके लिए उसे नोबेल पुरस्कार से सम्मानित किया गया। इस परिकल्पना के अनुसार प्रकाश तथा अन्य विद्युत चुम्बकीय विकिरण ऊर्जा का सतत प्रवाह न होकर ऊर्जा के छोटे छोटे पैकेट के रूप में चलता है।\n...\nक्वांटम सिद्धांत का जन्म 20वीं शताब्दी के शुरुआती दशकों में हुआ जब परंपरागत भौतिकी कई महत्वपूर्ण भौतिक अवधारणाओं की ब्याख्या करने में असफल सिद्ध हुई। पहले के सिद्धांतों के अनुसार परमाणु किसी भी आवृत्ति (frequency) पर कंपन कर सकते थे। इस गलत अवधारणा की वजह से वैज्ञानिकों ने यह गलत निष्कर्ष निकाला कि परमाणु अनंत मात्रा की का ऊर्जा उत्सर्जन कर सकते हैं। तब इसे पराबैंगनी प्रलय(Ultraviolet catastrophe)का नाम दिया गया था।\n...\nक्वांटम भौतिकी के लिए सन 1900 इस मायने में एक युगांतकारी वर्ष था कि मैक्स प्लैंक ने इस समस्या का यह समाधान सुझाया कि परमाणु केवल विशिष्ट या क्वांटीकृत आवृत्तियों(frequencies) पर ही कंपन कर सकते हैं। इसके बाद सन 1905 में अल्बर्ट आइंस्टीन ने प्रकाशविद्युत(Photoelectric) प्रभाव के रहस्य को उजागर कर दिया। प्रकाशविद्युत प्रभाव में धातुओं पर गिरने वाला प्रकाश विशिष्ट ऊर्जा के इलेक्ट्रॉनों का उत्सर्जन करते हैं। तत्कालीन समय में तरंगों के रूप में प्रकाश का सिद्धांत प्रकाशविद्युत प्रभाव के सिद्धांत को समझा पाने में असफल सिद्ध हो चुका था। इसके लिए आइंस्टीन ने सुझाया कि प्रकाश फोटॉन के पैकेटों के रूप में होता है। आइंस्टीन को प्रकाश के फोटॉन सिद्धांत के लिए नोबेल पुरस्कार प्रदान किया गया।\n...\nप्रकाश की कल्पना द्रव्यमानरहित कणों के एक गैस (जिसे अब फोटॉन गैस कहते हैं) के रूप में की। बोस को यह प्रदर्शित करने में सफलता मिली कि गैस के कण बोल्ट्ज्मैन सांख्यिकी(boltzmann statistics) के चिरसम्मत नियमों का पालन न कर अपनी अविभेद्य प्रकृति के कारण एक सर्वथा भिन्न सांख्यिकी के अनुरूप व्यवहार करते हैं। बोस के सैद्धांतिक तर्क को फोटॉनों से भिन्न कणों पर लगाकर आइंस्टीन को यह प्रदर्शित करने में सफलता मिली कि वे बोस द्वारा विकसित सांख्यिकी का ही पालन करते हैं। बोस और आइंस्टीन के नाम पर ही इसे अब बोस-आइंस्टीन सांख्यिकी कहते हैं।\n...\nजनवरी 1925 से जनवरी 1928 के बीच के तीन वर्र्षों की समयावधि में क्वांटम सिद्धांत के क्षेत्र में अचानक नई खोजों की बाढ़ सी आ गई। सन 1925 में वुल्फगैंग पॉली ने अपना अपवर्जन (Pauli Exclusion Priniciple) सिद्धांत दिया, जिसके अनुसार कोई भी दो इलेक्ट्रॉन एक ही क्वांटम अवस्था में नहीं रह सकते हैं। उसी वर्ष वर्नर हाइजेनबर्ग ने मैक्स बॉर्न और पास्कल जॉर्डन के साथ मिलकर आव्यूह यांत्रिकी (Metric Mechanics) की खोज की। सन 1926 में एर्विन श्रोडिंगर(Erwin Schrodinger) ने क्वांटम जगत की व्यवस्था के लिए एक वैकल्पिक सिद्धांत को प्रस्तावित किया जिसे तरंग यांत्रिकी(Wave Mechanics) का नाम दिया गया।\n\n---\n\nTitle: क्वांटम यांत्रिकी: कितना यथार्थ, कितनी पहेली? – जनचौक\nURL: https://www.janchowk.com/quantum-mechanics-how-real-how-much-puzzle/\nPublished: N/A\nAuthor: N/A\nHighlights:\nक्वांटम क्रान्ति के संपूर्ण विस्फोट की कथा पर बात करते हैं, जिसे सन् 1925 में चंद अत्यन्त मेधावी तरुणों ने अंजाम दिया। यहां तक कि इस नए सिद्धांत को ‘लड़कों की भौतिकी’ (German-Knaben-Physik) का उपनाम प्राप्त हो गया, हालांकि कुछ प्रौढ़ और प्रसिद्ध भौतिक-शास्त्रियों ने भी इस सिद्धांत को अन्तिम रूप देने में महत्त्वपूर्ण भूमिका निभाई। सन् 1927 तक पहुंचते-पहुंचते यह क्रान्ति सम्पन्न हो चुकी थी।\n...\nक्लासिकीय भौतिकी की असफलताओं और पुरानी क्वांटम थियोरी की विसंगतियों का निवारण हो चुका था। अब एक सर्वथा नया और आंतरिक संगति वाला सिद्धांत हाथ में था, जो पदार्थ के स्थायित्व की पहेली की तथा परमाणुओं के सूक्ष्म-जगत की सभी परिघटनाओं की व्याख्या में समर्थ था।\n...\nलेकिन, सफलताओं के बावजूद, नये सिद्धांत के दार्शनिक और अवधारणात्मक अर्थ को लेकर विवाद खड़े हो गए। भौतिकी के दो सबसे बड़े दिग्गजों, अल्बर्ट आइंस्टाइन और नील्स बोर, के बीच महान बहस का सूत्रपात हुआ। क्लासिकीय भौतिकी के निर्धारणवाद का अंत हो गया था और प्रकृति के मूलभूत नियमों में ‘संभाविता’ (Probabilty) को जगह मिल गई थी।\n...\nक्वांटम यथार्थ तब तक अनिर्धारित प्रतीत हो रहा था, जब तक कि उसका मापन या प्रेक्षण न कर लिया जाए। यही नहीं, क्वांटम के सूक्ष्म-जगत में यथार्थ की प्रकृति के निर्धारण में माप या प्रेक्षण की क्रिया स्वयं एक निर्धारक की भूमिका निभाती थी।\n...\nस्टाइन को स्वीकार\n...\nथा। उन्होंने पूछा, “जब कोई नहीं देख\n...\nहोता तो क्या चांद का वजूद नहीं होता\n\n---\n\nTitle: क्वांटम मैकेनिक्स का रोमांचक इतिहास\nURL: https://www.agyanibheja.in/2026/06/History%20of%20Quantum%20Mechanics.html\nPublished: 2026-06-14T00:00:00.000Z\nAuthor: Prayagraj HUB\nHighlights:\nसन् 1900 के आसपास की बात है। उस ज़माने के बड़े-बड़े वैज्ञानिक एक अजीब-से सुकून में बैठे थे। उन्हें लगता था कि भौतिकी का काम अब लगभग पूरा हो चुका है। न्यूटन ने बता दिया था कि सेब क्यों गिरता है और ग्रह क्यों घूमते हैं। मैक्सवेल नाम के एक प्रतिभाशाली वैज्ञानिक ने बिजली, चुम्बक और रोशनी — तीनों को एक ही सूत्र की डोर में बाँध दिया था।\n...\nकहते हैं उस दौर के एक मशहूर वैज्ञानिक ने नौजवानों को सलाह दी थी — \"भौतिकी में अब कुछ नया खोजने को बचा नहीं।\" पर उन्हीं वैज्ञानिक ने एक बात और कही, जो अमर हो गई — कि आसमान बिल्कुल साफ़ है, बस दूर क्षितिज पर दो छोटे-छोटे बादल तैर रहे हैं। उन्हें क्या पता था कि वो \"दो छोटे बादल\" असल में दो तूफ़ान थे — और उनमें से एक तूफ़ान पूरी भौतिकी की इमारत को जड़ से हिलाकर एक नई दुनिया को जन्म देने वाला था, जिसका नाम है क्वांटम मैकेनिक्स। तो चलिए, पहले बादल के पास चलते हैं।\n...\nजैसे आप 10 या 11 रुपये तो दे सकते हैं, पर 27.3 पैसे नहीं — पैसे की एक सबसे छोटी इकाई होती है। प्लांक ने कहा, ऊर्जा की भी एक सबसे छोटी इकाई है। उन्होंने इस पैकेट को नाम दिया — \"क्वांटम\"। और कमाल! जैसे ही ऊर्जा को पैकेटों में बाँधा, सारी \"आपदा\" ग़ायब हो गई।\n...\nउन्होंने प्लांक की वो बात उठाई जिसे ख़ुद प्लांक \"बस एक जुगाड़\" मान चुके थे, और कहा — रोशनी, सच में, टुकड़ों में बनी होती है। इन कणों को नाम मिला — फ़ोटॉन। सबूत था \"फ़ोटोइलेक्ट्रिक इफ़ेक्ट\": कुछ धातुओं पर तेज़ लाल रोशनी से कुछ नहीं होता, पर हल्की नीली रोशनी से इलेक्ट्रॉन फ़ौरन उछल पड़ते हैं। आइंस्टाइन ने समझाया — यह टक्कर की बात है; नीले फ़ोटॉन में ताक़त ज़्यादा, लाल में कम। एक अकेला ताक़तवर नीला फ़ोटॉन एक ही धक्के में इलेक्ट्रॉन को बाहर फेंक देता है।\n...\nयहाँ आते हैं एक गहरी, शांत आँखों वाले डेनिश नौजवान — नील्स बोर। उन्होंने कहा कि शायद परमाणु के अंदर पुराने नियम चलते ही नहीं। उन्होंने एक चौंकाने वाली बात कही: इलेक्ट्रॉन कहीं भी नहीं, बस कुछ ख़ास, तय \"पटरियों\" पर ही चक्कर लगा सकता है — जैसे सीढ़ी के पायदान, बीच में कहीं नहीं। और ऊर्जा मिलते ही वो ऊपर के पायदान पर छलाँग लगा देता है — बीच का रास्ता तय किए बिना! इसे कहते हैं क्वांटम छलाँग।\n...\nऔर इस एक विचार ने बोर की पहेली का जवाब दे दिया! अगर इलेक्ट्रॉन एक लहर है, तो परमाणु में वो लहर एक घेरे में बंध जाती है — ठीक गिटार की तार की तरह, जिस पर सिर्फ़ कुछ ख़ास \"सुर\" ही बनते हैं। इलेक्ट्रॉन सिर्फ़ उन्हीं पटरियों पर रह सकता है जहाँ उसकी लहर एक पूरा, साफ़ सुर बना ले। बोर ने जो नियम बस घोषित किया था, दे ब्रॉय ने उसके पीछे का असली कारण खोज निकाला।\n...\nरखूँगा जो\n...\nपर उनके गणित में एक अजीब बात थी। हम जानते हैं कि 3×5 वही होता है जो 5×3 — पर हाइज़नबर्ग की तालिकाओं में क्रम से फ़र्क़ पड़ता था! \"A गुणा B\" का जवाब \"B गुणा A\" से अलग आता था। यह छोटी-सी अजीब बात ब्रह्मांड का एक गहरा राज़ खोलने वाली थी।\n...\nसन् 1925-26 की सर्दियाँ। आल्प्स के पहाड़ों की एक झोपड़ी में एक खुशमिज़ाज, रोमानी ऑस्ट्रियन वैज्ञानिक छुट्टियाँ मना रहे हैं — एरविन श्रोडिंगर। उन्होंने सोचा — \"अगर इलेक्ट्रॉन एक लहर है, तो हर लहर का एक समीकरण होता है। तो इलेक्ट्रॉन की लहर का समीकरण क्या है?\" और उन्होंने वो समीकरण लिख डाला — आज इसे श्रोडिंगर समीकरण कहते हैं। यह क्वांटम मैकेनिक्स का दिल है।\n...\nसन् 1927 में हाइज़नबर्ग ने समझा कि उनके गणित के उस अजीब \"क्रम वाले फ़र्क़\" के पीछे प्रकृति का एक गहरा नियम छिपा है — अनिश्चितता का सिद्धांत। यह कहता है: आप किसी कण की स्थिति (वो कहाँ है) और गति (कितनी तेज़ कहाँ जा रहा है) — दोनों को एक साथ बिल्कुल सटीक नहीं जान सकते। एक जितनी साफ़, दूसरी उतनी धुंधली।\n\n---\n\nTitle: क्वांटम इलेक्ट्रोकैमिस्ट्री - Vigyanwiki\nURL: https://www.vigyanwiki.in/wiki/%E0%A4%95%E0%A5%8D%E0%A4%B5%E0%A4%BE%E0%A4%82%E0%A4%9F%E0%A4%AE_%E0%A4%87%E0%A4%B2%E0%A5%87%E0%A4%95%E0%A5%8D%E0%A4%9F%E0%A5%8D%E0%A4%B0%E0%A5%8B%E0%A4%95%E0%A5%88%E0%A4%AE%E0%A4%BF%E0%A4%B8%E0%A5%8D%E0%A4%9F%E0%A5%8D%E0%A4%B0%E0%A5%80\nPublished: N/A\nAuthor: N/A\nHighlights:\nक्वांटम इलेक्ट्रोकैमिस्ट्री रासायनिक विद्या की वैज्ञानिक शैक्षणिक परम्परा रेवाज़ डोगोनादज़े के नेतृत्व में 1960 दशक में शुरू हुई। सामान्य रूप से इस क्षेत्र में विद्यमान धारणाओं में विद्युतगत विद्युत, क्वांटम यांत्रिकी और रासायनिक विद्या सम्मलित हैं; और इसे विभिन्न विभिन्न व्यवसायी शोधकर्ताओं द्वारा अध्ययन किया जाता है। वे जिन क्षेत्रों में रहते हैं उनमें केमिकल इंजीनियरिंग, विद्युत अभियन्त्रण और यांत्रिक इंजीनियरिंग, रसायन विज्ञान और भौतिकी सम्मलित हैं।\n...\nविशिष्ट रूप से क्वांटम वैद्युत रासायनिक विद्या, घनत्व कार्यकारी तेरह सिद्धांत जैसे क्वांटम यांत्रिकी विधियों के अनुप्रयोग को वैद्युत रासायनिक प्रक्रियाओं, समेकन पर विचार करने में है, जिसमें इलेक्ट्रॉन पार्टा विद्युत चलाना भी सम्मलित है। [1] इसमें मार्कस सिद्धांत और क्वांटम दर सिद्धांत भी सम्मलित है, उत्तरार्द्ध पहले सिद्धांत क्वांटम यांत्रिकी और प्रवाहकत्त्व क्वांटम और क्वांटम समाई की अवधारणाओं का उपयोग करके इलेक्ट्रोकैमिस्ट्री का वर्णन करने का एक विधि है।\n...\n\"क्वांटम वैद्युत रासायनिक विज्ञान\" के पहले विकास को स्पष्ट रूप से पहचाना थोड़ा कठिनाई है। यह बहुत आश्चर्य की बात नहीं है, क्योंकि क्वांटम यांत्रिकी के रसायन विज्ञान के विकास को परमाणुओं और अणुओं के लिए श्रोडिंगर समीकरण मॉडल के अनुप्रयोग के रूप में संक्षेपित किया जा सकता है। इसका अर्थ है, इलेक्ट्रोकैमिस्ट्री, जो विशेष रूप से किसी विशेष प्रणाली के इलेक्ट्रॉनिक राज्यों से संबंधित है, पहले से ही, इसकी प्रकृति से, क्वांटम रसायन विज्ञान में इलेक्ट्रॉनिक राज्य क्वांटम मैकेनिकल मॉडल में बंधा हुआ है। \"क्वांटम वैद्युत रासायनिक विज्ञान\" के प्रोत्साहक थे, जिन्होंने इलेक्ट्रोकैमिस्ट्री के लिए क्वांटम यांत्रिकी को असामान्य उत्साह, स्पष्टता और सटीकता के साथ लागू किया। इनमें रेवाज़ डोगोनैडेज़ और उनके सहकर्मी थे। उन्होंने रासायनिक प्रणालियों में प्रोटॉन स्थानांतरण रासायनिक प्रतिक्रिया के लिए प्रारंभिक क्वांटम मैकेनिकल मॉडल विकसित किया था। डोगोनैडेज़ क्वांटम इलेक्ट्रोकैमिस्ट्री के एक विशेष रूप से प्रसिद्ध प्रवर्तक हैं, और उन्हें यूगोस्लाविया में केंद्रित क्वांटम इलेक्ट्रोकैमिस्ट्री के एक अंतरराष्ट्रीय समर स्कूल बनाने का श्रेय भी दिया जाता है। वह ध्रुवीय तरल पदार्थों में रासायनिक, विद्युत रासायनिक और जैव रासायनिक प्रक्रियाओं के प्राथमिक अधिनियम के कैनेटीक्स के क्वांटम-मैकेनिकल सिद्धांत के मुख्य लेखक थे। एक अन्य महत्वपूर्ण योगदानकर्ता रूडोल्फ ए. मार्कस हैं, जिन्होंने 1992 में रासायनिक प्रणालियों में इलेक्ट्रॉन स्थानांतरण प्रतिक्रियाओं के अपने सिद्धांत के लिए रसायन विज्ञान में नोबेल पुरस्कार जीता था। हाल ही में, मार्कस सिद्धांत को क्वांटम दर सिद्धांत से जुड़ी एक अधिक सामान्य अवधारणा का भाग दिखाया गया है, एक सिद्धांत जो चालकता क्वांटम और क्वांटम कैपेसिटेंस की अवधारणाओं का उपयोग करके इलेक्ट्रॉन हस्तांतरण की दर (इलेक्ट्रोकैमिस्ट्री एक विशेष विषय है) की भविष्यवाणी करता है।\n\n---\n\nTitle: Origins of Quantum Physics\nURL: https://www.tgc.ac.in/pdf/study-material/physics/Emergence_of_Quantum_Theory.pdf\nPublished: N/A\nAuthor: N/A\nHighlights:\nThe failure of classical physics to explain several microscopic phenomena—such as black body radiation, the photoelectric effect, atomic stability, and atomic spectroscopy—had cleared the way for seeking new ideas outside its purview. The first real breakthrough came in 1900 when Max Planck introduced the concept of the quantum of energy. In his efforts to explain the phenomenon of blackbody radiation, he suc ceeded in reproducing the experimental results only after postulating that the energy exchange between radiation and its surroundings takes place in discrete, or quantized, amounts. He ar gued that the energy exchange between an electromagnetic wave of frequency F and matter occurs only in integer multiples of hF, which he called the energy of a quantum, where h is a fundamental constant called Planck’s constant. The quantization of electromagnetic radiation turned out to be an idea with far-reaching consequences. Planck’s idea, which gave an accurate explanation of blackbody radiation, prompted new thinking and triggered an avalanche of new discoveries that yielded solutions to the most out standing problems of the time. In 1905 Einstein provided a powerful consolidation to Planck’s quantum concept. In trying to understand the photoelectric effect, Einstein recognized that Planck’s idea of the quantization of the electromagnetic waves must be valid for light as well. So, following Planck’s approach, he posited that light itself is made of discrete bits of energy (or tiny particles), called photons, each of energy hF, F being the frequency of the light. The introduction of the photon concept enabled Einstein to give an elegantly accurate explanation to the photoelectric problem, which had been waiting for a solution ever since its first experimental observation by Hertz in 1887. Another seminal breakthrough was due to Niels Bohr. Right after Rutherford’s experimental discovery of the atomic nucleus in 1911, and combining Rutherford’s atomic model, Planck’s quantum concept, and Einstein’s photons, Bohr introduced in 1913 his model of the hydrogen atom. In this work, he argued that atoms can be found only in discrete states of energy and that the interaction of atoms with radiation, i.e., the emission or absorption of radiation by atoms, takes place only in discrete amounts of hF because it results from transitions of the atom between its various discrete energy states. This work provided a satisfactory explanation to several outstanding problems such as atomic stability and atomic spectroscopy. Then in 1923 Compton made an important discovery that gave the most conclusive confir mation for the corpuscular aspect of light. By scattering X-rays with electrons, he confirmed that the X-ray photons behave like particles with momenta hF c; F is the frequency of the X-rays. This series of breakthroughs—due to Planck, Einstein, Bohr, and Compton—gave both the theoretical foundations as well as the conclusive experimental confirmation for the particle aspect of waves; that is, the concept that waves exhibit particle behavior at the microscopic scale. At this scale, classical physics fails not only quantitatively but even qualitatively and conceptually. As if things were not bad enough for classical physics, de Broglie introduced in 1923 an other powerful new concept that classical physics could not reconcile: he postulated that not only does radiation exhibit particle-like behavior but, conversely, material particles themselves display wave-like behavior. This concept was confirmed experimentally in 1927 by Davisson and Germer; they showed that interference patterns, a property of waves, can be obtained with material particles such as electrons. Although Bohr’s model for the atom produced results that agree well with experimental spectroscopy, it was criticized for lacking the ingredients of a theory. Like the “quantization” scheme introduced by Planck in 1900, the postulates and assumptions adopted by Bohr in 1913\n...\n1.1. HISTORICAL NOTE 3 were quite arbitrary and do not follow from the first principles of a theory. It was the dissatis faction with the arbitrary nature of Planck’s idea and Bohr’s postulates as well as the need to fit them within the context of a consistent theory that had prompted Heisenberg and Schrödinger to search for the theoretical foundation underlying these new ideas. By 1925 their efforts paid off: they skillfully welded the various experimental findings as well as Bohr’s postulates into a refined theory: quantum mechanics. In addition to providing an accurate reproduction of the existing experimental data, this theory turned out to possess an astonishingly reliable predic tion power which enabled it to explore and unravel many uncharted areas of the microphysical world. This new theory had put an end to twenty five years (1900–1925) of patchwork which was dominated by the ideas of Planck and Bohr and which later became known as the old quantum theory. Historically, there were two independent formulations of quantum mechanics. The first formulation, called matrix mechanics, was developed by Heisenberg (1925) to describe atomic structure starting from the observed spectral lines. Inspired by Planck’s quantization of waves and by Bohr’s model of the hydrogen atom, Heisenberg founded his theory on the notion that the only allowed values of energy exchange between microphysical systems are those that are discrete: quanta. Expressing dynamical quantities such as energy, position, momentum and angular momentum in terms of matrices, he obtained an eigenvalue problem that describes the dynamics of microscopic systems; the diagonalization of the Hamiltonian matrix yields the energy spectrum and the state vectors of the system. Matrix mechanics was very successful in accounting for the discrete quanta of light emitted and absorbed by atoms. The second formulation, called wave mechanics, was due to Schrödinger (1926); it is a generalization of the de Broglie postulate. This method, more intuitive than matrix mechan ics, describes the dynamics of microscopic matter by means of a wave equation, called the Schrödinger equation; instead of the matrix eigenvalue problem of Heisenberg, Schrödinger obtained a differential equation. The solutions of this equation yield the energy spectrum and the wave function of the system under consideration. In 1927 Max Born proposed his proba bilistic interpretation of wave mechanics: he took the square moduli of the wave functions that are solutions to the Schrödinger equation and he interpreted them as probability densities. These two ostensibly different formulations—Schrödinger’s wave formulation and Heisen berg’s matrix approach—were shown to be equivalent. Dirac then suggested a more general formulation of quantum mechanics which deals with abstract objects such as kets (state vec tors), bras, and operators. The representation of Dirac’s formalism in a continuous basis—the position or momentum representations—gives back Schrödinger’s wave mechanics. As for Heisenberg’s matrix formulation, it can be obtained by representing Dirac’s formalism in a discrete basis. In this context, the approaches of Schrödinger and Heisenberg represent, re spectively, the wave formulation and the matrix formulation of the general theory of quantum mechanics. Combining special relativity with quantum mechanics, Dirac derived in 1928 an equation which describes the motion of electrons. This equation, known as Dirac’s equation, predicted the existence of an antiparticle, the positron, which has similar properties, but opposite charge, with the electron; the positron was discovered in 1932, four years after its prediction by quan tum mechanics. In summary, quantum mechanics is the theory that describes the dynamics of matter at the microscopic scale. Fine! But is it that important to learn? This is no less than an otiose question, for quantum mechanics\n\n---\n\nTitle: The Rise of Quantum Mechanics\nURL: https://doi.org/10.48550/arxiv.0806.4515\nPublished: 2008-06-27T00:00:00.000Z\nAuthor: S. Boffi\nHighlights:\nof man: in its con ceptions it made a complete break with the past and fashioned a new worldview about the structure of matter and radia tion and many of the fundamental forces of nature.” With such emphatic words Jagdish Mehra starts a cyclopical enter prise together with Helmuth Rechenberg describing the historical development of quantum theory [1]. In fact, quantum mechanics has com pletely reoriented the way of looking at physical phenomena that emerged af ter more than three centuries of intense investigation of nature. Around the year 1900 the nowadays so-called classi cal physics was well organized in differ ent sectors. Within each sector a closed and coherent system of concepts and laws was able to satisfactorily account for the corresponding phenomenology. Some re markable syntheses, such as the unifica tion of electric and magnetic phenomena or the kinetic theory of matter, were sug gesting that mechanics, thermodynam ics, electromagnetism were only different branches of physics on the road towards a global unified description of physical phe nomena. Analytical mechanics would in any case play a privileged role because the three Newton’s laws were at the ori gin of the scientific paradigm of an objec tive world governed by the causality law, where the global behaviour can be lead back to the knowledge of the mutual in teraction of constituents. With the advent of quantum mechan ics as a result of accounting for new facts and discoveries, this paradigm was turned over. Objectivity, determinism and locality were substituted by a pic ture where the observer plays an essential role in determining the phenomenon, the description of phenomena can only be ac complished in terms of probability of oc currence, and\n...\nIn about one year from mid 1925 to mid 1926 as a result of an intensive work in G¨ottingen, Z¨urich, Cambridge and Copenhagen the situation changed dramatically. New formalisms were pro posed and successfully applied to solve the problems left open by the old quan tum theory. The different approaches were soon found to be equivalent, so that a complete and consistent formalism could be developed.\n...\nA breakthrough came with the paper conceived in June 1925 by Werner Karl Heisenberg (1901–1976) on the rocky is land in the North Sea called Helgoland, where he spent a two-week vacation to recover from a hay fever attack [9]. He noticed that the formal rules in quan tum theory make use of relationships be tween unobservable quantities, such as, e.g., the position and time of revolution of the electron. One has rather to fo cus on the observable quantities during emission and absorption, i.e. the radia tion frequency and intensity. According to Bohr the radiation frequency ν is iden tified by assigning the energy of the ini tial and final stationary states, W(n) and W(n − α), respectively:\n...\nTogether with Heisenberg they ex tended the scheme to include sys tems having arbitrarily many degrees of freedom and developed a quantum mechanical perturbation theory. Their paper was soon cited as the Dreim¨anner arbeit (three-men’s paper), and the the ory they developed was called matrix me chanics [10]. In particular, in complete analogy with the classical Hamilton Jacobi equation they found that the en ergy levels could be derived by transform ing the Hamiltonian matrix H to its diag onal form W by using a (unitary) trans formation matrix S:\n...\nOn a different side, the new elec tromagnetism wished by De Broglie was formulated by Erwin Schr¨odinger (1887– 1961) in four papers produced between January and June 1926 where quantiza tion was developed as an eigenvalue prob lem [12]. Schr¨odinger took advantage of the analogy between the wave propaga tion and the motion of a particle already explored by de Broglie in his thesis and even earlier by William Rowan Hamil ton (1805-1865) in 1824. Wave propaga tion of light can be visualized according to Christian Huyghens (1629–1695) by looking at the motion of the wave front, i.e. the surface with constant wave phase perpendicular to the wave vector; alter natively, according to Pierre de Fermat (1601–1665) one can describe the prop agation in terms of a light ray always tangent to the wave vector. The bend ing of the ray and the distortion of the phase wave are both due to local varia tions of the refractive index. In quite a similar way the motion of a particle in terms of its trajectory, always tangent to the particle momentum, can also be visu alized in terms of an action wave, always perpendicular to the particle momentum. Modulations of the potential affect the momentum just like the refractive index modifies the wavelength. These similarities were already sum marized in the Einstein-Planck formula E = hν and the de Broglie’s hypothe sis p = h/λ, where particle quantities, such as the energy E and momentum p, were connected through Planck’s con stant with wave quantities, such as the frequency ν and wavelength λ. Assuming relativistic kinematics, as also de Broglie did, Schr¨odinger first derived an equation which is nowadays known as the Klein-Gordon equation, but he gave it up because it did not yield the right fine-structure of the hydrogen atom. In fact, the equation entitled after Oskar Benjamin Klein (1894–1977) and Walter Gordon (1893–c.1940) has many fathers [13] and was recovered a few years later by Pauli and Victor Frederick Weis skopf (1908–2002) who gave it the correct interpretation within a newly developing quantum field theory [14]. Confining himself to nonrelativistic kinematics, in the first paper of the se ries [12] Schr¨odinger considered an elec tron bound in the hydrogen atom. In this case the Bohr-Sommerfeld quantization rules imply stationary waves with wave length tuned to the orbit length. Then the Hamilton-Jacobi equation of analyti cal mechanics becomes\n...\nIn order to account for the periodic system of elements, something was still missing. At the time, electrons in an atom were divided in two groups, one of which living in the passive atomic core and the other defining the position of that atom in a series of the periodic sys tem. Such series electrons were consid ered responsible for all atomic proper ties including magneto-mechanical effects and radiative processes. Their distribu tion among atomic levels could explain, e.g., the ground state structure of noble gases [39]. However, in the attempt to explain the multiplet structure and the selection rules of the anomalous Zeeman effect by refining Sommerfeld’s approach, Alfred Land´e (1888–1975) and Werner Heisenberg already in 1921-1922 realized that half-integral quantum numbers had to be used for the series electrons. Also Pauli during his stay in Copenhagen by Bohr in 1923 convinced himself that for elements that follow each other in the pe riodic table the values of the magnetic quantum number are alternatively half integral and integral. He then speculated that this was caused “by a peculiar, clas sically not describable kind of duplicity of quantum-theoretical properties of the series electron” [40] demanding the intro duction of a fourth quantum number in the classification of electron orbits. In the following discussion of the problem of equivalent electrons, i.e. electrons hav ing the same binding energy (or the same principal quantum number), he arrived at the conclusion that “there can never exist two or more equivalence electrons in the atom for which . . . the values of all [four] quantum numbers . . . coincide”. The Pauli exclusion principle was imme diately accepted by the physicists work ing in the field and became clearer when George Eugene Uhlenbeck (1900–1988) and Samuel Abraham Goudsmit (1902– 1978) formulated the spin hypothesis as sociating Pauli’s fourth quantum number with “an intrinsic rotation of the elec tron” [41]. According to Uhlenbeck and Goudsmit an intrinsic magnetic moment has to be associated with each electron,",
+      "title": "Web search: क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।",
+      "metadata": {},
+      "time": {
+        "start": 1789528649816,
+        "end": 1789528652226
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528652241,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a83839cd001eIJbw721u68Tm1",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8382e660010bilqzwSpPEfPA",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8549,
+      "output": 153,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8702,
+      "headroom": 30154,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.247Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.247Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.248Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.248Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.248Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.249Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.249Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.249Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.267Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8702,
+  "providerTokens": 8702,
+  "estimatedInputTokens": 8634,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8549,
+    "cacheRead": 0,
+    "output": 153
+  },
+  "overflow": false,
+  "headroom": 30154,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.268Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.268Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.270Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.271Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528652809,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383c07001xCJI3nQ49ravTL",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83839eb001LnES8wNG0a8sdj",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528652810,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383c09002pdG9S0WcphqjQG",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83839eb001LnES8wNG0a8sdj",
+    "type": "tool",
+    "callID": "call_d9d682262c1dea6f",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528652810,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383c09001MT53xN1LESyt7U",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83839eb001LnES8wNG0a8sdj",
+    "type": "text",
+    "text": "मैं https://hi.wikipedia.org/wiki/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BE_%E0%A4%AF%E0%A4%BE%E0%A4%A8%E0%A5%8D%E0%A4%A4%E0… खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528652810,
+      "end": 1789528652810
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:32.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528652810,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383c09002pdG9S0WcphqjQG",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83839eb001LnES8wNG0a8sdj",
+    "type": "tool",
+    "callID": "call_d9d682262c1dea6f",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://hi.wikipedia.org/wiki/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BE_%E0%A4%AF%E0%A4%BE%E0%A4%A8%E0%A5%8D%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BF%E0%A4%95%E0%A5%80"
+      },
+      "time": {
+        "start": 1789528652810
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528654245,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8383c09002pdG9S0WcphqjQG",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83839eb001LnES8wNG0a8sdj",
+    "type": "tool",
+    "callID": "call_d9d682262c1dea6f",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://hi.wikipedia.org/wiki/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BE_%E0%A4%AF%E0%A4%BE%E0%A4%A8%E0%A5%8D%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BF%E0%A4%95%E0%A5%80"
+      },
+      "output": "प्रमात्रा यान्त्रिकी - विकिपीडिया\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nसामग्री पर जाएँ\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nमुख्य मेन्यू\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tमुख्य मेन्यू\n\tसाइडबार पर ले जाएँ\n\tछिपाएँ\n\n\n\t\n\n\t\n\t\tपरिभ्रमण\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tमुखपृष्ठचौपालहाल में हुए परिवर्तनहाल की घटनाएँसामुदायिक प्रवेशद्वारदूतावास (Embassy)निर्वाचित विषयवस्तुयादृच्छिक लेख\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tयोगदान\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tप्रयोगपृष्ठअनुरोध\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tसहायता\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tसहायतास्वशिक्षाअक्सर पूछे जाने वाले प्रश्नदेवनागरी कैसे टाइप करेंविशेष पृष्ठ\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nखोजें\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tखोजें\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nदिखावट\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tदान करें\n\nखाता बनाएँ\n\nलॉग-इन करें\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nव्यक्तिगत उपकरण\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nदान करें\n\n\n\nखाता बनाएँ\n\n\n\nलॉग-इन करें\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tसामग्री\n\tसाइडबार पर ले जाएँ\n\tछिपाएँ\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tशुरुआत\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tप्रमात्रा यान्त्रिकीय मॉडल के प्रमुख लक्षण\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tइतिहास\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tदर्शनीय उलझाव\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tइन्हें भी देखें\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5\n\t\t\t\tसन्दर्भ\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t6\n\t\t\t\tबाहरी कड़ियाँ\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nविषयसूची को टॉगल करें\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tप्रमात्रा यान्त्रिकी\n\t\t\t\n\n\t\n\t\n\n143 भाषाएँ\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tAfrikaansAlemannischAragonésअंगिकाالعربيةمصرىঅসমীয়াAsturianuAzərbaycancaتۆرکجهБашҡортсаBasa BaliBoarischŽemaitėškaBikol CentralБеларуская (тарашкевіца)БеларускаяБългарскиभोजपुरीပအိုဝ်ႏဘာႏသာႏবাংলাBrezhonegBosanskiБуряадCatalà閩東語 / Mìng-dĕ̤ng-ngṳ̄کوردیČeštinaЧӑвашлаCymraegDanskDeutschΕλληνικάEnglishEsperantoEspañolEestiEuskaraEstremeñuفارسیSuomiVõroFrançaisNordfriiskGaeilgeKriyòl gwiyannenGàidhligGalegoAvañe&#039;ẽHausaעבריתFiji HindiHrvatskiKreyòl ayisyenMagyarՀայերենԱրեւմտահայերէնInterlinguaBahasa IndonesiaIgboIdoÍslenskaItaliano日本語PatoisქართულიQaraqalpaqshaKabɩyɛҚазақшаಕನ್ನಡ한국어KurdîКыргызчаLatinaLimburgsLombardLietuviųLatviešuМакедонскиമലയാളംМонголमराठीBahasa MelayuMaltiမြန်မာဘာသာمازِرونیPlattdüütschनेपालीनेपाल भाषाNederlandsNorsk nynorskNorsk bokmålOccitanਪੰਜਾਬੀPolskiPiemontèisپنجابیپښتوPortuguêsရခိုင်RomânăРусскийРусиньскыйसंस्कृतम्Саха тылаSicilianuScotsسنڌيSrpskohrvatski / српскохрватскиTaclḥitසිංහලSimple EnglishSlovenčinaSlovenščinaShqipСрпски / srpskiSundaSvenskaKiswahiliŚlůnskiதமிழ்తెలుగుТоҷикӣไทยTagalogToki ponaTürkçeТатарча / tatarçaУкраїнськаاردوOʻzbekcha / ўзбекчаVènetoVepsän kel’Tiếng ViệtWinaray吴语ייִדישⵜⴰⵎⴰⵣⵉⵖⵜ ⵜⴰⵏⴰⵡⴰⵢⵜ文言閩南語 / Bân-lâm-gí粵語中文IsiZulu\n\t\t\t\n\t\t\tकड़ियाँ संपादित करें\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tलेख\n\nसंवाद\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tहिन्दी\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tपढ़ें\n\nसम्पादित करें\n\nइतिहास देखें\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nउपकरण\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tउपकरण\n\tसाइडबार पर ले जाएँ\n\tछिपाएँ\n\n\n\t\n\n\t\n\t\tक्रियाएँ\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nपढ़ें\n\n\n\nसम्पादित करें\n\n\n\nइतिहास देखें\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tसामान्य\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tयहाँ क्या जुड़ता हैपृष्ठ से जुड़े बदलावफ़ाइल अपलोड करेंस्थायी कड़ीपृष्ठ की जानकारीयह लेख उद्धृत करेंसंक्षिप्त URL प्राप्त करेंविरासती पार्सर में बदलें\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tमुद्रण/निर्यात\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tपुस्तक बनाएँपीडीएफ़ रूप डाउनलोड करेंप्रिन्ट करने लायक\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tदूसरी परियोजनाओं में\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tAbstract Wikipediaविकिमीडिया कॉमन्सविकिडेटा आयटम\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tदिखावट\n\tसाइडबार पर ले जाएँ\n\tछिपाएँ\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tमुक्त ज्ञानकोश विकिपीडिया से\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tइस विषय के अधिक सुलभ और कम तकनीकी परिचय के लिए, क्वांटम यांत्रिकी का परिचय देखें।प्रमात्रा यान्त्रिकीतरंग-कण द्वैतता\nपरिचय शब्दावली · इतिहास\n\nपृष्ठभूमि\nब्रै–केट संकेत लेखन\nचिरसम्मत यान्त्रिकी\nहैमिल्टनी\nव्यतिकरण\n\nमूलभूत अवधारणाएँ\nपूरक\nअसम्बद्धता\nअदेशीयता\nक्वांटम अवस्था\nअध्यारोपण\nसुरंगन\nअनिश्चितता\nतरंग फलन\n\nप्रयोग\nBell's inequality\nडेविसन–जर्मर\nDelayed choice quantum eraser\nDouble-slit\nFranck–Hertz experiment\nMach-Zehnder व्यतिकरणमापी\nElitzur–Vaidman\nपॉपर\nक्वांटम व्यामार्जक\nश्रोडिङ्गरके विडाल\nस्टर्न-गर्लेक\nWheeler's delayed choice\n\nसूत्रीकरण\nसूत्रीकरण\nहाइजेनबर्ग\nअन्योन्य क्रिया\nमैट्रिक्स यांत्रिकी\nश्रोडिन्गर\nइतिहास का योग\nकला समष्टि\nआपेक्षिक क्वांटम यांत्रिकी\n\nसमीकरण\nडिराक\nक्लाइन-गॉर्डन\nपाउली\nरिडबर्ग\nश्रोडिंगर\n\nविवेचना\nविवेचना\nConsciousness-caused\nConsistent histories\nCopenhagen\nde Broglie–Bohm\nEnsemble\nHidden variables\nMany-worlds\nObjective collapse\nPondicherry\nQuantum logic\nRelational\nStochastic\nTransactional\n\nउन्नत विषय\nQuantum chaos\nप्रमात्रा क्षेत्र सिद्धान्त\nQuantum information science\nप्रकीर्णन सिद्धांत\nFractional quantum mechanics\n\nवैज्ञानिक\nBell\nब्लाकेट\nBogolyubov\nBohm\nबोर\nबर्दीन\nबोर्न\nबसु\nडी ब्रोगली\nकॉम्पटन\nकूपर\nडिराक\nDyson\nडेविसन\nDuarte\nDebye\nEhrenfest\nआइन्स्टीन\nEverett\nFock\nफर्मी\nफाइनमेन\nहर्ट्ज़\nहाइजनबर्ग\nहिल्बर्ट\nJordan\nKlitzing\nKusch\nKramers\nvon Neumann\nपाउली\nलैम्ब\nलो\nलाफलिन\nMoseley\nमिल्लिकन\nऑन्स\nप्लांक\nरमन\nRydberg\nसलाम\nश्रोडिन्गर\nस्टोर्मर\nशोक्ले\nSchrieffer\nShull\nSommerfeld\nथॉमसन\nTsui\nतोमोनागा\nWeyl\nWard\nवियेन\nविग्नर\nज़ीमान\nZeilinger\nvte\n\nप्रमात्रा यान्त्रिकी (अंग्रेज़ी: Quantum Mechanics, क्वांटम मैकेनिक्स) भौतिकी में एक मौलिक सिद्धान्त है जो परमाण्वों और उपापरमाण्विक कणों के स्तर पर प्रकृति के भौतिक गुणों का विवरण प्रदान करता है।[1] यह प्रमात्रा रसायनिकी, प्रमात्रा क्षेत्र सिद्धान्त, प्रमात्रा प्रौद्योगिकी और प्रमात्रा सूचना विज्ञान सहित सभी प्रमात्रा भौतिकी का आधार है।\n\nन्यूटन के गति नियम के आधार पर विकसित चिरसम्मत यान्त्रिकी द्वारा स्थूल पदार्थों (जैसे- गिरते हुए पत्थर, चक्कर लगाते हुए ग्रह आदि), जिनका व्यवहार जैसा होता है, की गति का साफल्यपूर्वक किया जा सकता है, किन्तु जब इसे अति सूक्ष्म कणों (जैसे इलेक्ट्रॉनों अण्वों और परमाण्वों) पर लागू किया जाता है तो यह विफल हो जाता है। ऐसा होने का कारण यह है कि यात्रीक कणों के दोहरे व्यवहार की संकल्पना तथा अनिश्चय सिद्धान्त की उपेक्षा करती है। द्रव्य के दोहरे व्यवहार को ध्यान में रखकर प्रमात्रा यान्त्रिकी को विकसित किया गया।\n\nप्रमात्रा यान्त्रिकी एक सैद्धान्तिक विज्ञान है, जिसमें उन अति सूक्ष्म वस्तुओं की गतियों का अध्ययन किया जाता है, जो तरंग और कण दोनों के गुण दर्शाती हैं। यह ऐसी वस्तुओं को गति के नियमों को निश्चित करती है। जब प्रमात्रा यान्त्रिकी को स्थूल वस्त्वों (जिनके हेतु तरंगीय गुण अतिन्यून होते हैं) पर लागू किया जाता है तब चिरसम्मत यान्त्रिकी के परिणामों जैसे ही परिणाम प्राप्त होते हैं।\n\nसन् 1926 में हाइज़न्बर्ग और श्रोडिङर द्वारा विभिन्न प्रमात्रा यान्त्रिकी विकास किया गया। प्रमात्रा यान्त्रिकी का मूल श्रोडिङर समीकरण द्वारा प्रतिपादित किया गया। इसके हेतु उन्हें सन् 1933 में भौतिकी में नोबेल पुरस्कार प्रदान किया गया।\n\nप्रमात्रा यान्त्रिकीय मॉडल के प्रमुख लक्षण[संपादित करें]\nपरमाणु का प्रमात्रा यान्त्रिकीय परमाणु संरचना का वह चित्र है जो परमाण्वों पर समीकरण लागू करने से प्राप्त होता है, परमाणु के प्रमात्रा यान्त्रिकीय मॉडल के महत्वपूर्ण लक्षण निम्नोल्लेखित हैं: \nपरमाण्वों में इलेक्ट्रॉनों की ऊर्जा प्रमात्रित होती है इसके कुछ विशेष मान ही हो सकते हैं। उदाहरणार्थ, जब परमाण्वों में इलेक्ट्रॉन नाभिक से बन्धे होते हैं।\n\nइलेक्ट्रॉनों के तरंग जैसे गुणों के कारण प्रमात्रित वैद्युतिक ऊर्जा-स्तरों का अस्तित्व होता है और श्रोडिङर समीकरण के अनुमत हल होते हैं।\n\nकिसी परमाणु में इलेक्ट्रॉन को सही स्थिति तथा वेग को एक साथ ज्ञात नहीं किया जा सकता। (अनैश्चित्य सिद्धान्त) किसी परमाणु में इलेक्ट्रॉन के पथ को सुनिश्चित ज्ञात नहीं किया जा सकता है। इसलिए परमाणु के विभिन्न बिन्द्वों पर इलेक्ट्रॉन के होने की प्रायिकता की संकल्पना के बारे में बात करते हैं।\n\nकिसी परमाणु में इलेक्ट्रॉन के तरंग-फलन Ψ को 'परमाणु कक्षक' कहते हैं। जब एक तरंग-फलन द्वारा किसी इलेक्ट्रॉन की व्याख्या की जाती है तो यह कहा जाता है कि इलेक्ट्रॉन उस कक्षक में उपस्थित है। किसी इलेक्ट्रॉन हेतु बहुत से तरंग-फलन हो सकते हैं, अतः परमाणु में कई कक्षक होते हैं। परमाण्वों की वैद्युतिक संरचना इन 'एक इलेक्ट्रॉन कक्षक तरंग- फलनों' पर ही आधारित है। प्रत्येक कक्षक में इलेक्ट्रॉन की ऊर्जा निश्चित होती है। किसी भी कक्षक में द्व्यधिक इलक्ट्रॉन नहीं रह सकते हैं। किसी बह्विलेक्ट्रॉन परमाणु में ऊर्जा के बढ़ते हुए क्रम में विभिन्न कक्षकों में इलेक्ट्रॉन भरे जाते हैं। अतः बह्विलेक्ट्रॉन परमाणु में प्रत्येक इलेक्ट्रॉन हेतु एक कक्षक तरंग-फलन होता है, जो उस कक्षक का अभिलाक्षणिक होता है, जिसमें इलेक्ट्रॉन उपस्थित होता है। परमाणु में इलेक्ट्रॉन के बारे में सारी तथ्य, उस कक्षक तरंग-फलन Ψ में उपस्थित होती है तथा प्रमात्रा यान्त्रिकी के द्वारा  Ψ से तथ्य प्राप्त करना सम्भव होता है।\n\nकिसी परमाणु में किसी बिन्दु पर इलेक्ट्रॉन के उपस्थिति की प्रायिकता उस बिन्दु पर कक्षक तरंग-फलन के वर्ग के समानुपाती होती है, अर्थात् उस बिन्दु पर |Ψ²| को प्रायिकता घनत्व कहा जाता है। यह सदा धनात्मक होता है। किसी परमाणु के विभिन्न बिन्दुओं पर |Ψ²| के मान से नाभिक के परितः उस क्षेत्र का पता लगाना सम्भव है, जहाँ पर इलेक्ट्रॉन के प्राप्ति की सम्भावना अधिक होगी।\nइतिहास[संपादित करें]\nरॉबर्ट हुक, क्रिस्टियान ह्युजेंस और लिओनहार्ड यूलर जैसे वैज्ञानिकों प्रयोगात्मक टिप्पणियों के आधार पर प्रकाश की एक लहर सिद्धांत का प्रस्ताव किया गया , जब प्रकाश की तरंगी स्वभाव पर वैज्ञानिक जांच जो 17 वीं और 18 वीं शताब्दी में शुरू हुआ। 1803 में, थॉमस यंग, एक अंग्रेजी बहुश्रुत , उनकी \"प्रकाश और रंग की स्वभाव पर\" शीर्षक से एक पेपर में वर्णित है प्रसिद्ध दो छेद प्रयोग का प्रदर्शन। इस प्रयोग ने प्रकाश के तरंग सिद्धांत के सामान्य स्वीकृति में एक प्रमुख भूमिका निभाई है।\n\nदर्शनीय उलझाव[संपादित करें]\nअपनी स्थापना के बाद से, कई असहज पहलुओं और क्वांटम यांत्रिकी के परिणामों दार्शनिक वाद-विवाद और व्याख्यावौं को उकसाया है। ऐसे पहलू जैसे कि संभावना और प्रायिकता वितरण के विषय में मैक्स बौर्न की बुनियादी नियम के रूप में आया। यहां तक कि बुनियादी मुद्दों, समाज और कई प्रमुख वैज्ञानिकों द्वारा सराहना की जा करने के लिए कई दशक लग गऐ। रिचर्ड फेनमैन ने एक बार कहा \"मुझे लगता है मैं सुरक्षित रूप से कह सकता हुं कि कोई भी क्वांटम यांत्रिकी समझता नही है।\" स्टीवन वेनबर्ग के अनुसार, \"मेरी राय में क्वांटम यांत्रिकी की कोई व्याख्या पूरी तरह से संतोषजनक व्याख्या नहीं है।\"\n\nकोपेनहेगन व्याख्या - बडे पैमाने पर डेनमार्क के सैद्धांतिक भौतिक विज्ञानी नील्स बोह्र कि है - आज सबसे व्यापक रूप से भौतिक विज्ञानियों के बीच स्वीकार किया , क्वांटम यांत्रिक कि रीति बनी हुई है, जो इसके निरूपण के कुछ 75 साल बाद हुवा था। इस व्याख्या के अनुसार, क्वांटम यांत्रिकी के संभाव्य प्रकृति समय के साथ एक नियतात्मक सिद्धांत किजगह मे बदल दिया जाएगा ,जो एक अस्थायी सुविधा है।\n\nइन्हें भी देखें[संपादित करें]\nतरंग-कण द्वैतता\nक्वाण्टम उलझाव\nक्वांटीकरण\nसन्दर्भ[संपादित करें]\n\n↑ \"The Feynman Lectures on Physics Vol. III Ch. 1: Quantum Behavior\". www.feynmanlectures.caltech.edu. अभिगमन तिथि: 2023-04-07.\n\nबाहरी कड़ियाँ[संपादित करें]\nक्वाण्टम सिद्धान्त का आरम्भ\n\nसामान्य\nभौतिकी में आधुनिक क्रांति (The Modern Revolution in Physics) - ऑनलाइन विषय वस्तु।\nJ. O'Connor and E. F. Robertson: A history of quantum mechanics.\nIntroduction to Quantum Theory at AtomsTalk.\nQuantum Physics Made Relatively Simple: three video lectures by Hans Bethe\nH is for h-bar.\nQuantum Mechanics Books Collection: Collection of free books\nपाठ्यक्रम योग्य सामग्री\nDoron Cohen: Lecture notes in Quantum Mechanics (comprehensive, with advanced topics).\nMIT OpenCourseWare: Chemistry. See 5.61, 5.73, and 5.74\nMIT OpenCourseWare: Physics. See 8.04, 8.05, and 8.06\nStanford Continuing Education PHY 25: Quantum Mechanics by Leonard Susskind, see course description[मृत कड़ियाँ] Fall 2007\n5½ Examples in Quantum Mechanics\nImperial College Quantum Mechanics Course.\nSpark Notes - Quantum Physics.\nQuantum Physics Online : interactive introduction to quantum mechanics (RS applets).\nExperiments to the foundations of quantum physics with single photons.\nMotion Mountain, Volume IV - A modern introduction to quantum theory, with several animations.\n\nप्रायपूछे गये प्रशन (FAQs)\nMany-worlds or relative-state interpretation.\nMeasurement in Quantum mechanics.\n\nसंचार माध्यम\nEverything you wanted to know about the quantum world — archive of articles from New Scientist.\nQuantum Physics Research from Science Daily\n\"Quantum Trickery: Testing Einstein's Strangest Theory\". The New York Times. December 27, 2005. 26 नवंबर 2011 को मूल से पुरालेखित. अभिगमन तिथि: 20 जुलाई 2011. {{cite news}}: Italic or bold markup not allowed in: |publisher= (help)\n\nदर्शन\nसाँचा:Sep\nसाँचा:Sep\nvteभौतिकी के सामान्य उपविषयश्रेणीव्यावहारिक भौतिकी • प्रायोगिक भौतिकी • सैद्धान्तिक भौतिकीगति और ऊर्जाचिरसम्मत यांत्रिकी (लाग्रांजीय यांत्रिकी • हेमिल्टोनीय यांत्रिकी)  •  सांतत्यक यांत्रिकी • खगोलीय यांत्रिकी • सांख्यिकीय यांत्रिकी • उष्मागतिकी • तरल यांत्रिकी • क्वांटम यांत्रिकीतरंग और क्षेत्रगुरुत्वाकर्षण • विद्युतचुम्बकत्व • क्वाण्टम क्षेत्र सिद्धान्त • आपेक्षिकता(विशिष्ट आपेक्षिकता • सामान्य आपेक्षिकता)भौतिक विज्ञान और गणितत्वरक भौतिकी • ध्वनिकी • खगोलभौतिकी(नाभिकीय खगोलभौतिकी • सौर भौतिकी • अंतरिक्ष भौतिकी • तारकीय भौतिकी • परमाणु, अणु और प्रकाशिय भौतिकी) • रासायनिक भौतिकी • अभिकलनी भौतिकी • संघनित पदार्थ भौतिकी • (ठोस अवस्था भौतिकी) • अंकीय भौतिकी • अभियांत्रिक भौतिकी • पदार्थ भौतिकी • गणितीय भौतिकी • नाभिकीय भौतिकी • प्रकाशिकी(अरैखिक प्रकाशिकी • क्वांटम प्रकाशिकी) • कण भौतिकी(खगोलकण भौतिकी • घटनाविज्ञान) • बहुलक भौतिकी • प्लाज़्मा • सांख्यिकीय भौतिकीभौतिकी और जीव विज्ञान/भूविज्ञान/अर्थशास्त्रजैव भौतिकी (जैव यांत्रिकी • चिकित्सा भौतिकी • तन्त्रिका भौतिकी) • कृषिभौतिकी(मृदा भौतिकी) • वायुमंडलीय भौतिकी • अर्थभौतिकी • भूभौतिकी • मनोभौतिकी\n\n\n\n\n\n\n\n\n\n\n\n\"https://hi.wikipedia.org/w/index.php?title=प्रमात्रा_यान्त्रिकी&amp;oldid=6461770\" से प्राप्त\n\t\t\t\t\tश्रेणियाँ: Articles with separate introductionsCS1 errors: markupक्वाण्टम यान्त्रिकीसैद्धांतिक भौतिकीभौतिकीछुपी हुई श्रेणियाँ: सुधार योग्य सभी लेखलेख जिनमें जून 2020 से मृत कड़ियाँ हैंमृत कड़ियों वाले लेख\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t अन्तिम परिवर्तन 11:30, 4 अगस्त 2025।\n\tपृष्ठ को Parsoid की मदद से रेंडर किया गया है।\n\tयह सामग्री क्रियेटिव कॉमन्स ऍट्रीब्यूशन/शेयर-अलाइक लाइसेंस के तहत उपलब्ध है;\nअन्य शर्ते लागू हो सकती हैं।\nविस्तार से जानकारी हेतु देखें उपयोग की शर्तें\n\n\n\t\t\t\t\n\tगोपनीयता नीति\n\tविकिपीडिया के बारे में\n\tअस्वीकरण\n\tकानूनी एवं सुरक्षा संपर्क\n\tआचार संहिता\n\tविकासक\n\tसांख्यिकी\n\tकुकी अभिव्यक्ति\n\tमोबाइल दृश्य\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nखोजें\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tखोजें\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nविषयसूची को टॉगल करें\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tप्रमात्रा यान्त्रिकी\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n143 भाषाएँ\n\t\t\t\n\t\t\t\n\nविषय जोड़ें",
+      "title": "https://hi.wikipedia.org/wiki/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BE_%E0%A4%AF%E0%A4%BE%E0%A4%A8%E0%A5%8D%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%BF%E0%A4%95%E0%A5%80 (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528652810,
+        "end": 1789528654245
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528654246,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a83841a60010ILBtcFB5RhORw",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83839eb001LnES8wNG0a8sdj",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 39909,
+      "output": 431,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 40340,
+      "headroom": -1484,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.247Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.247Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.248Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.248Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.248Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.249Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.249Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.249Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.260Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 40340,
+  "providerTokens": 40340,
+  "estimatedInputTokens": 13811,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 39909,
+    "cacheRead": 0,
+    "output": 431
+  },
+  "overflow": true,
+  "headroom": -1484,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.263Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.264Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.264Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.265Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.265Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.265Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 4,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.265Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.265Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.266Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528654675,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8384352001hZN9q0SyykhgGg",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83841b9001rRIpOFMaAyfG7I",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528654676,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8384353002OTF3NaJH2Vb9Os",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83841b9001rRIpOFMaAyfG7I",
+    "type": "text",
+    "text": "Conversation summary: क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।  मैं इंटरनेट पर क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।\n\nTitle: What did we do so\n\nUser turns:\n  1. क्वांटम यांत्रिकी की शुरुआत पर कुछ पन्ने तैयार कीजिए।\n  2.",
+    "time": {
+      "start": 1789528654676,
+      "end": 1789528654676
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528654676,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8384354001YCYIjxlN8bSFHN",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a83841b9001rRIpOFMaAyfG7I",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 46771,
+      "output": 248,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 47019,
+      "headroom": -8163,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528654677,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8384355001savUqOeWQnYZLA",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8384354002L1DZt9yXRWoeE4",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528654677,
+      "end": 1789528654677
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.677Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.677Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.677Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.678Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.678Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.679Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528654744,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8384397001jFcyCjtJVNFaoI",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8384356001xzLXomClm1pARJ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528654744,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8384398002rodfSWnycxKmHG",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8384356001xzLXomClm1pARJ",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528654744,
+      "end": 1789528654744
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528654744,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "part": {
+    "id": "prt_0a8384398003s2P54LmMFTMyPz",
+    "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+    "messageID": "msg_0a8384356001xzLXomClm1pARJ",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8797,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8870,
+      "headroom": 29986,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.745Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.745Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.745Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.746Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.746Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.746Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.746Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.746Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528654746,
+  "sessionID": "ses_f57c7d24cffeeGM1B4Z8qR8yTR"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.748Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.748Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.748Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.748Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.KjVMEntEta",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:17:34.748Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

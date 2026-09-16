@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.140Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.140Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt How far down do oak roots usually reach? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.140Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.141Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.151Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "How far down do oak roots usually reach?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "How far down do oak roots usually reach?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.151Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.152Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.152Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.153Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.156Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.156Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.159Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 11013,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.159Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.173Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:19:17.177Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 26,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:19:17.178Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.182Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.182Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.183Z",
+  "service": "session",
+  "id": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL",
+  "title": "New session - 2026-09-16T03:19:17.183Z",
+  "time": {
+    "created": 1789528757183,
+    "updated": 1789528757183
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.183Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.183Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.184Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.184Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.184Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c62c40ffeKBgV60ApUr2b6Z/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.184Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c62c40ffeKBgV60ApUr2b6Z/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.187Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c62c40ffeKBgV60ApUr2b6Z/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.191Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.192Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.192Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.192Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.193Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.193Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.193Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.193Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.193Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.193Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.340Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.343Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.351Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.361Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.361Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.726Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528757726,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839d5cd001vYHV62WG3H1EYK",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839d45e001Oyb2HPXWFH3F1z",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.727Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528757727,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839d5df001dD1IhxWuUhDB6l",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839d45e001Oyb2HPXWFH3F1z",
+    "type": "tool",
+    "callID": "call_aa7404752944fde0",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.728Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528757728,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839d5de001b4HHfdkAiaHAw9",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839d45e001Oyb2HPXWFH3F1z",
+    "type": "text",
+    "text": "Let me search the web for far down do oak roots usually reach.",
+    "time": {
+      "start": 1789528757728,
+      "end": 1789528757728
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:17.728Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528757728,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839d5df001dD1IhxWuUhDB6l",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839d45e001Oyb2HPXWFH3F1z",
+    "type": "tool",
+    "callID": "call_aa7404752944fde0",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "far down do oak roots usually reach"
+      },
+      "time": {
+        "start": 1789528757728
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528759637,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839d5df001dD1IhxWuUhDB6l",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839d45e001Oyb2HPXWFH3F1z",
+    "type": "tool",
+    "callID": "call_aa7404752944fde0",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "far down do oak roots usually reach"
+      },
+      "output": "Title: Root System Architecture of Quercus pubescens Trees Growing on Different Sloping Conditions\nURL: https://doi.org/10.1093/aob/mci033\nPublished: 2004-11-26T00:00:00.000Z\nAuthor: Antonino Di Iorio, Bruno Lasserre, Gabriella Stefania Scippa, Donato Chiatante\nHighlights:\nAll downy oak had a taproot plus shallow horizontal roots. The major portion of the below-ground biomass in the sampled trees was located immediately below the trunk base, in the root crown. Most of the roots, in fact, were found at a depth less than 0Á6 m. The horizontal extension of the whole root system, i.e. including roots thinner than 1 cm, is unknown. Root grafts were occasionally observed between roots of the same tree, but never between roots of different trees. Taproots and all horizontally orientated roots tapered quite rapidly. Only a small number of sinker roots with a small diameter reached the rooting depth of 1 m. The deepest root CSA measured was 6-10 % of the trunkroot base, thus we feel that only a minor part of the root system was left out by restricting the excavation to 1 m depth.\n...\nIn both broadleaved (Lyford, 1980) and conifer (Preisig et al., 1979; Gruber, 1994) tree species, the architecture of the root system, depending on soil conditions, can be modified from taproot-type to sinker and superficial root systems. However, in a taproot system, the laterals that grow from the upper part of the taproot (frequently termed surface roots) are-under genetic control-programmed to a plagiogravitropic growth direction (at different angles from the vertical; Coutts and Nicoll, 1991) . These laterals are gravi-responsive and in slope condition there is evidence of negative gravitropic growth in those growing up-slope (Marler and Discekici, 1997) . On the downhill side of a steep slope, there is evidence to suggest that these roots could grow out from the soil; to avoid death by desiccation, they are obliged to change the growth direction (Coutts and Nicoll, 1991) , bending their apex back into the deeper soil layers or beneath the soil surface. A similar behaviour has frequently been observed in partly exposed surface roots of mature Q. pubescens trees growing on steep slopes, which curve right back to the deeper soil layers (A. Di Iorio, pers. obs.). As a consequence of this adaptive growth, the down-slope biomass becomes lower than the up-slope one. From a biomechanical point of view, the up-slope roots' resistance to pull-out and shear stress might become the main component of tree anchorage in this growth condition. Root system architecture, in fact, can be considered as the network of directions followed by 'self-loading' forces during their transfer to the ground (Ennos, 1994) . For fallen trees, Abe and Ziemer (1991a, b) reported that most of the roots broke near their tips, where the diameter is less than 1-2 cm. This suggests that most roots were pulled out leaving the finest distal portions still embedded in the soil. In general, it was assumed that roots crossing a shear zone generate tensile strength, are elongated in tension, and break at the tips, not in the shear zone. Thus, the mode of root failure is similar to that occurring during a pull-out test (O'Loughlin and Watson, 1979; Abe and Ziemer, 1991a, b) . The pull-out resistance increases with the number, radius and length of the roots (Abe and Ziemer, 1991a, b; Ennos, 1993) . Consequently, on a steep slope, the optimal architecture might consist of an increase of the total root cross-section and a displacement of the centre of mass (asymmetry indicator) toward the up-slope side of the tree. The results of this study for the steep-slope trees support this hypothesis. In these trees, roots facing down-slope at their emergence from the taproot bent towards up-slope in the younger portion. Even though measurements of nutrients in this work are absent, there was no evidence of uneven nutrition around trees on this site, which could have affected the growth direction of these laterals, as the study trees were all unrelated individuals grown from seed. In this soil type, similar bending could also be due to deformations induced by the tensile or bending stresses following slides, or the response of the plant to ameliorate the tree stability. The numerous crown-shaped cracks observed in the waterlogged soil around the trees after prolonged rainfall led us to favour the slides hypothesis.\n...\nor, on a\n...\nlarge roots as\n...\nthe turning moment\n...\nthat the response\n\n---\n\nTitle: Belowground strategies of beech, oak, pine and Douglas fir on Pleistocene sandy soils: Deep rooting, root functional traits, and the significance of root embolism\nURL: https://doi.org/10.53846/goediss-11994\nPublished: 2026-01-01T00:00:00.000Z\nAuthor: Katrin Pietig\nHighlights:\nIn recent years, Germany’s forests have been increasingly affected by severe heat and drought events, leading to reduced tree vitality and widespread forest dieback. Limited soil water availability due to climatic extremes can cause drought stress in trees and increase the risk of hydraulic failure. The xylem hydraulic function of trees is threatened under such conditions, and the likelihood of embolism formation increases. Roots play a crucial role in this context, as they are located at the critical interface between the plant and the soil. They are involved in many essential functions, primarily the absorption of water and nutrients and the transport of these to the rest of the plant. To cope with spatial and/or temporal variability in water and nutrient availability, roots can exhibit remarkable adaptation strategies - e.g., in terms of rooting depth patterns, morphology, anatomy, physiology, and associations with mycorrhizal fungi. Therefore, it is important to consider not only the aboveground, but also the belowground components of trees for a more accurate assessment of the drought resistance and resilience of trees under changing climatic conditions. This thesis contributes to expanding our understanding of the 'hidden half' of trees by investigating the belowground strategies of four major temperate tree species in Germany: Fagus sylvatica, Quercus petraea, Pinus sylvestris and Pseudotsuga menziesii. The primary objectives were to i) characterize deep rooting in a quantitatively way by analyzing root distribution patterns across different root diameter classes (fine roots ≤ 2 mm and larger roots) and relate these to gradients of soil physical and chemical properties ii) investigate the functional variation of fine root traits along a deep vertical soil gradient with its associated changes in local soil properties iii) evaluate the significance of fine root embolism as an indicator of belowground sensitivity of tree saplings to varying soil water availability. To address these objectives, different innovative methods were employed across three complementary studies, with the first two involving the excavation of mature tree root systems to a depth of 380 cm in deep Pleistocene sandy soils in the Lüneburg Heath region in northern Germany. The third study utilized micro-computed X-ray tomography (µCT) to observe embolism formation in fine roots and their potential refilling of tree saplings in vivo, employing specially designed double-chamber pots to scan intact roots under varying soil moisture conditions. Deep rooting was observed in all four investigated tree species, with roots of each species found to persist even at a soil depth of 380 cm. The total root mass of fine roots and large roots in the profile decreased in the following order Fagus sylvatica ≈ Quercus petraea > Pseudotsuga menziesii > Pinus sylvestris. However, the rooting depth to which 99 % of fine root mass was found decreased in the sequence Quercus petraea > Fagus sylvatica > Pinus sylvestris > Pseudotsuga menziesii (218, 208, 164 and 114 cm, respectively), indicating deepest rooting for Quercus petraea and shallowest for Pseudotsuga menziesii. Vertical soil moisture gradients and the downward decrease in the available nitrogen content are discussed as putative drivers of the exponential decrease in fine root mass with soil depth. Fine roots along the soil profile exhibited an arc-shaped pattern of functional trait variation across all studied species. Traits associated with enhanced resource acquisition - such as higher specific root length (SRL), specific root area (SRA), root nitrogen content (root N), and specific root tip abundance (SRTA) - were prominent in both the topsoil (0-50 cm) and very deep subsoil (> 300 cm). Roots in the subsoil (ca. 50–300 cm) exhibited distinct trait expressions that leaned more towards conservative traits. Species-specific morphological differences were observed, with conifers displaying less variation than broad-leaved species. The variability of the local soil properties provided important insights into the ways functional root traits are shaped across the depth gradient. Here, some positive correlations were identified - notably between the available water capacity and fine root traits across the entire soil profile, as well as between bulk density and root traits within the top 100 cm of soil. Until now, not much is known about the embolism resistance of tree fine roots. Direct visualization via µCT scanning revealed that severe soil desiccation led to notable differences in embolism formation of living fine roots among the four species. Fagus sylvatica and Pseudotsuga menziesii showed embolism in 50-100% of their conduits, accompanied by very low leaf water potentials. In contrast, only minor embolism (0-25%) was observed in fine roots of P. sylvestris and Q. petraea. These findings indicate that the embolism vulnerability was apparently not markedly higher in fine roots than in other organs of gymnosperm and angiosperm trees, and that the differences were unrelated to the association with the angiosperm or gymnosperm classes. Moreover, a refilling of embolized conduits was observed after re-watering in two saplings of Pseudotsuga menziesii, but its role in functional recovery remains unclear. In conclusion, a comprehensive assessment of belowground drought vulnerability in trees should encompass several key aspects of the root system, including rooting depth extension, a quantitative analysis of the fine root distribution in the soil profile and variations of functional fine root traits. Belowground trait variation along the soil profile highlights the potential role of deep roots in accessing soil resources that may become temporarily limited in the topsoil during drought conditions. Additionally, the hydraulic strategies of trees within their fine root systems may range from effective embolism prevention to tolerance of partial root embolism and subsequent recovery. These findings, along with future research efforts, will contribute to a deeper understanding of the belowground strategies of temperate tree species, which will help to evaluate the resilience of forest ecosystems and ensure the long-term sustainability of forests under changing environmental conditions.\n\n---\n\nTitle: Deep rooting revisited: comparing the rooting patterns of European beech, Sessile oak, Scots pine, and Douglas fir in sandy soil to 3.8 m depth\n      -  Macquarie University\nURL: https://researchers.mq.edu.au/en/publications/deep-rooting-revisited-comparing-the-rooting-patterns-of-european/\nPublished: 2025-11-03T00:00:00.000Z\nAuthor: N/A\nHighlights:\nDeep rooting is an important element in the strategy of trees to cope with drought, but the depth distribution of the absorbing fine root system is not well known for most of the common tree species. With the aim to compare the deep rooting of the economically important species Fagus sylvatica, Quercus petraea, Pinus sylvestris and Pseudotsuga menziesii on deep sandy soil in a quantitative way, we excavated the root system of mature trees to 380 cm depth and analyzed the depth dependence of fine (≤ 2 mm) and larger roots and related the patterns to gradients in soil physical and chemical conditions. All four species rooted to 380 cm depth; the total mass of fine roots and large roots in the profile decreased in the sequence Fagus sylvatica ≈ Quercus petraea > Pseudotsuga menziesii > Pinus sylvestris, whereas the depth to which 99 % of fine root mass was found decreased in the sequence Quercus petraea > Fagus sylvatica > Pinus sylvestris > Pseudotsuga menziesii (218, 208, 164 and 114 cm, respectively), indicating deepest rooting for oak and shallowest for Douglas fir. Vertical soil moisture gradients, the downward increase in soil bulk density and the decrease in N are discussed as putative drivers of the exponential decrease in fine root mass with soil depth. We conclude that assessing the belowground drought vulnerability of trees should include both records of observed maximum rooting depth and the quantitative analysis of fine root distribution in the top- and subsoil.\n\n---\n\nTitle: Understanding Tree Roots | CSU Extension\nURL: https://extension.colostate.edu/resource/understanding-tree-roots/\nPublished: 2025-08-01T00:00:00.000Z\nAuthor: N/A\nHighlights:\n- Tap Root – A primary root that grows downward from the seed radical. Some\n...\nexhibit taproots when younger but by the time they reach maturity few trees have a true deep taproot due to low soil oxygen levels deeper in the soil.\n...\n– Roots that\n...\nA mature tree’s root\n...\na much wider area\n...\nits canopy. Depending on the\n...\nthe spread of a trees’ root systems may be two to five times the width of its canopy or even greater in some cases.\n...\nThe depth of a tree’s root system is governed by the availability of water, mineral nutrients, soil oxygen and the species of tree. In clayey, compacted or perpetually wet soils (soils with a shallow water table) roots tend to be shallower due to low soil oxygen levels in the deeper layers of such soils. In sandy soils, roots also tend to be massed near the soil’s surface. Sandy soils have low levels of mineral nutrients and having a large concentration of roots near the surface allows trees to capture nutrients released from decomposing leaf litter. In loamy soils, tree roots tend to be deeper as there is sufficient oxygen and nutrients to support their growth.\n...\nThe rule of thumb for estimating rooting depth in clayey, compacted, or perpetually wet soils is that 90-95% of roots will be in the top twelve inches and 50% will be in the top four inches of soil. In favorable soils conditions 90-95% of roots will be in the top thirty-six inches and 50% will be in the top twelve inches of soil.\n\n---\n\nTitle: Do Oak Trees Have Deep Roots? And How Far They Spread - Biology Insights\nURL: https://biologyinsights.com/do-oak-trees-have-deep-roots-and-how-far-they-spread/\nPublished: 2025-08-09T20:45:32.000Z\nAuthor: N/A\nHighlights:\nAs the oak tree matures, its root system undergoes a transformation. The prominent taproot often becomes less dominant, outgrown by an extensive network of lateral roots that spread horizontally. These lateral roots are responsible for absorbing most of the water and nutrients, typically within the top three feet of soil. They can extend significantly beyond the tree’s canopy, sometimes reaching two to three times the width of the crown or even up to 90-100 feet from the trunk. In some mature oaks, particularly in drier conditions, deep-growing vertical roots, known as sinker roots, may form off the lateral roots, usually within ten feet of the trunk, to access deeper moisture and provide additional stability.\n...\nSeveral environmental factors influence how deep and wide an oak tree’s roots will grow. Soil type and its compaction play a role. Loose, well-drained soils allow roots to penetrate deeper, while compacted or heavy clay soils can restrict vertical growth, forcing roots to spread more horizontally in shallower layers.\n...\nWater availability also dictates root behavior. In arid conditions, roots tend to grow deeper in search of consistent water sources, enhancing drought resistance. Conversely, if water is consistently available near the surface, roots may remain shallower, as there is less need to extend deeply. Different oak species vary in their rooting patterns, with some maintaining a more pronounced taproot.\n...\nEstablishing a root protection zone (RPZ) around an oak, often extending one and a half times the tree’s drip line, is a recommended practice to prevent disturbance. Within this zone, it is best to avoid any soil disturbance, including digging or trenching. The use of herbicides or harsh chemicals near the root zone should also be avoided, as these can be detrimental to root health. Unnecessary root pruning should be avoided, as it can cause significant stress to the tree; if root pruning becomes necessary, consulting a certified arborist is advisable to ensure it is done correctly and minimizes harm.\n\n---\n\nTitle: How Long Are Oak Tree Roots? Unearthing The Truth\nURL: https://guidedreview.com/how-long-are-oak-tree-roots/\nPublished: 2026-01-18T18:33:31.000Z\nAuthor: Alex Wright\nHighlights:\n- Drought Conditions: In regions prone to drought or during dry spells, oak roots will actively seek out deeper water sources. This can drive the taproot and lateral roots to grow much deeper than they would otherwise, sometimes reaching depths of several meters.\n...\nThis is the million-dollar question, and the answer is both impressive and highly variable. A common rule of thumb, often cited in arboriculture, is that a tree’s root system can extend two to three times the width of its canopy (drip line).\n...\nFor a mature oak tree with a canopy diameter of 50 feet, this would mean its roots could spread 100 to 150 feet horizontally from the trunk. This vast spread is essential for anchoring such a large tree and for capturing sufficient water and nutrients from a wide area.\n...\n- General Depth: For many mature oak species in average soil conditions, the main mass of the root system might be found in the top 1 to 3 feet of soil. This zone is rich in oxygen and nutrients.\n...\n- Taproot Penetration: The taproot, particularly in younger trees or in drier climates, can penetrate much deeper. It’s not uncommon for taproots to reach depths of 10 to 20 feet, and in some cases, even more, especially if they encounter a reliable water source underground.\n...\n- Exploring Lower Horizons: Even lateral roots can explore significant depths, especially if they follow soil cracks or find more favorable soil conditions deeper down. Some studies have indicated that oak roots can explore soil layers down to 40 feet or more in exceptionally favorable conditions, though this is less common.\n...\nSo, how long are oak tree roots? The answer is a resounding ‘impressively long,’ often extending two to three times the width of the canopy and reaching significant depths, sometimes over 20 feet for taproots. This vast underground network is a testament to the oak’s resilience, enabling it to anchor firmly, access vital water and nutrients, and survive for centuries. Understanding this hidden infrastructure is key to appreciating and protecting these majestic trees, especially when considering construction, landscaping, or simply admiring their enduring presence.\n\n---\n\nTitle: How Deep Do Tree Roots Grow? | DeepRoot Blog\nURL: https://www.deeproot.com/blog/blog-entries/how-deep-do-tree-roots-grow/\nPublished: 2010-10-19T06:41:25.000Z\nAuthor: admin\nHighlights:\nDeep Tree Roots: The mollisols (deep >20 feet [6 meters] prairie soil — all O/A soil horizons) have 2 broadleaf tree root depths in columns #2 & #4: 11 feet (Black Walnut) & 15 feet [4.5 meters] deep (White Oak). Both the Walnut & Oak have the least drought stress. The loams in the Silva Cell are functionally equivalent to mollisols. So, a 4 foot [1.2 meter] deep rooting space in O/A in Silva Cells will easily be utilized by tree roots.\n...\nOrjan Stahl has investigated roots and, while field investigating tree roots in Stockholm, has found over 300 instances of tree roots at 7 feet [2.1 meters] deep & over 170 instances of tree roots at 9 feet [2.7 meters] deep. Of the >500 trees investigated for root depth, roots at 7 and 9 feet [2.1 and 2.7 meters] deep were the most common depth. One tree had roots 23 feet [7 meters] deep. This is the largest root depth study to date, in terms of total numbers and variety of species. Based on this study, one can safely say that no trees will have any difficulty growing down 4 feet [1.2 meters], the approximate depth of a 3 Silva Cell-deep system, in oxygen rich soils.\n\n---\n\nTitle: Oak Tree Care | Oakland FL\nURL: https://oaklandfl.gov/224/Oak-Tree-Care\nPublished: N/A\nAuthor: N/A\nHighlights:\nOur native oaks have developed survival adaptations to the long, dry summers. Primary to this survival is the development and characteristics of its root system. When an acorn first sprouts, there is rapid root development and very little growth above ground. This initial root is a taproot extending deep underground for dependable moisture. In fact, the tree's first few years are focused on establishing a deep sustaining root system. Once this has happened, greater foliage and above ground growth takes place. As the oak grows, the tap root is outgrown by an extensive lateral root system that spreads horizontally out from the trunk to and well beyond the drip line, sometimes as much as 90 feet.\n...\nFor a mature oak, this horizontal root system is the primary supporter of the tree for the rest of its life. It includes the important fine roots, which absorb moisture and nutrients. Most of the root system occurs within the top three feet of soil. In shallower soil, the root system is concentrated in an even shallower zone, typically one to two feet below the surface. As the oak matures, particularly in areas naturally dry in summer, deep-growing vertical roots form off the laterals, usually within ten feet of the trunk. These sinker roots exploit deeper soil moisture and add stability to an increasingly massive tree. By the time a mature oak has established its elaborate root system so well designed for its environment and particular site conditions it has lost the vigor of youth. It is less tolerant of change and can less easily recover to support a fully developed living structure. To protect a mature oak, pay particular attention to drainage, and avoid filling, trenching, or paving near its root zone.",
+      "title": "Web search: far down do oak roots usually reach",
+      "metadata": {},
+      "time": {
+        "start": 1789528757728,
+        "end": 1789528759634
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.645Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528759645,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839dd58001htWktoaqadCh7G",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839d45e001Oyb2HPXWFH3F1z",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8536,
+      "output": 118,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8654,
+      "headroom": 30202,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.645Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.646Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.653Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.653Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.657Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.670Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.670Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.712Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8654,
+  "providerTokens": 8654,
+  "estimatedInputTokens": 4848,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8536,
+    "cacheRead": 0,
+    "output": 118
+  },
+  "overflow": false,
+  "headroom": 30202,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.713Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.713Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.722Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:19.725Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:20.334Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528760335,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e006001idbAW3BvKA33Gk",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839dda100135TZQssFpv5GtK",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:20.336Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:20.337Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528760337,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e010001WFQ0Z1Iib3RqU7",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839dda100135TZQssFpv5GtK",
+    "type": "tool",
+    "callID": "call_07ab8dbdfeb4ceab",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:20.338Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528760338,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e00f001pb5mbtcwzSJjGa",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839dda100135TZQssFpv5GtK",
+    "type": "text",
+    "text": "Let me open https://extension.colostate.edu/resource/understanding-tree-roots/ and read what it says.",
+    "time": {
+      "start": 1789528760338,
+      "end": 1789528760338
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:20.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528760339,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e010001WFQ0Z1Iib3RqU7",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839dda100135TZQssFpv5GtK",
+    "type": "tool",
+    "callID": "call_07ab8dbdfeb4ceab",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://extension.colostate.edu/resource/understanding-tree-roots/"
+      },
+      "time": {
+        "start": 1789528760338
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.643Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528761643,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e010001WFQ0Z1Iib3RqU7",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839dda100135TZQssFpv5GtK",
+    "type": "tool",
+    "callID": "call_07ab8dbdfeb4ceab",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://extension.colostate.edu/resource/understanding-tree-roots/"
+      },
+      "output": "Understanding Tree Roots | CSU Extension\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\n\t\n\n\n\n\n\n\t\n\n\t\n\t\n\n\n\n\n\n\n\n\t\t\n\t\t\n\tSkip to content\n\n\t\n\n\n\n\t\n\t\t\n\t\t\t\n\n\n\t\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\n\n\t\n\n\n\t\n\t\tSearch:\n\n\t\t\n\t\n\n\t\n\n\n\n\t\t\t\n\n\n\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\n\t\t\t\n\n\t\n\t\t\n\t\t\t\t\t\t\n\n\t\n\n\n\t\n\t\tSearch:\n\n\t\t\n\t\n\n\t\n\n\n\n\t\t\t\n\n\tBack\n\n\n\tTopics\n\n\tAll Topics\n\tAgriculture\n\tCommunity &amp; Economic Development\n\tEmergency Planning\n\tFood &amp; Nutrition\n\tGarden &amp; Landscape\n\tHealth &#038; Well-being\n\tInsects &amp; Pests\n\tNatural Resources\n\tYouth Development\n\n\nPrograms & Services\n\n\tAll Programs &#038; Services\n\tAgrAbility\n\tColorado 4-H\n\tColorado Building Farmers\n\tColorado Master Gardener\n\tCottage Food Safety Training\n\tExtension Internship Program\n\tFamily Leadership Training Institute\n\tGrow &#038; Give\n\tLandscape for Life\n\tLawncheck\n\tNative Bee Watch\n\tNative Plant Master\n\tRamCorps\n\tRocky Mountain Naturalist\n\n\nResources\nEvents\nOffices\nAbout\n\n\tAbout CSU Extension\n\tOur Work &amp; Impact\n\tDirectory\n\n\n\n\t\t\t\n\n\n\t\t\t\n\n\tAsk Us\n\t\n\t\t\t\n\n\tGive\n\t\n\t\n\n\t\t\n\t\n\n\n\n\t\n\n\t\n\t\t\n\n\t\t\t\n\n\n\n\t\t\t\n\t\t\n\t\t\tHome / Resources / Garden &amp; Landscape / Understanding Tree Roots\t\t\n\t\n\t\n\n\n\t\n\n\t\n\t\tBack to Garden &amp; Landscape\t\n\n\n\n\n\t\t\t\n\t\t\tPeer-Reviewed\t\t\n\t\n\t\t\t\n\t\t\tGarden Notes\t\t\n\t\n\n\n\n\t\n\t\tUnderstanding Tree Roots\t\n\n\t\t\t\n\t\t\t\n\t\t\t\tPrint\n\t\t\t\n\t\t\n\t\n\n\n\n\n\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\tPublished: October 2017\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\tReviewed: August 2025\n\t\t\t\t\n\t\t\t\t\t\n\n\t\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tEric Hammond\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\n\n\n\n\n\t\n\t\t\nTable of ContentsFunctions of Tree RootsDescribing Tree RootsSize And Extent of the Root SystemConditions That Adversely Affect RootsConditions Leading to Low Soil Oxygen LevelsOther Common Root IssuesWhat Can Be DoneTalking With Clients About Tree Roots\n\n\n\n\n\nFunctions of Tree Roots\n\n\n\nSupport/Anchorage\n\n\n\nA tree’s root system keeps its trunk and canopy upright against the forces of wind and gravity. The strength of anchorage provided by a tree’s root system depends on a variety of factors including soil type, soil moisture levels, tree species, root health and the depth and width of a tree’s root plate. Sandy and overly wet soils provide worse anchorage.&nbsp;\n\n\n\nFigure 1. Upended tree shows extent of root plate.&nbsp;\n\n\n\n\n\n\n\nAbsorption of Water and Mineral Nutrients\n\n\n\nRoots absorb water and nutrients for use by the plant. Mineral nutrients are only absorbed from forms dissolved in the soil solution. In some species, the architecture of the tree’s vascular system is such that specific roots supply correspondingly specific branches with water and nutrients. For example, in ring porous species such as the oaks (Quercus spp.), a given root or suite of roots supplies a specific branch or suite of branches which are often on the same side of the tree as the root. Similarly, in many conifers, water and nutrients move up the trunk in a spiral pattern supplying branches along the way. In this case damage to a root manifests in branches along the spiral the root supplied. The specific vascular architecture of many species is not known.\n\n\n\nProduction of Plant Growth Hormones\n\n\n\nCytokinins, gibberellins, and abscisic acid are all produced by roots. Cytokinins are involved in cell division, cell differentiation, axillary bud growth, and leaf senescence.&nbsp;\n\n\n\nGibberellins are involved in stem elongation, bud break and other processes. Abscisic acid is involved in drought stress response, maintaining apical dominance, suppressing stem elongation, and promoting dormancy.&nbsp;\n\n\n\nStorage of Energy As Sugars and Starches\n\n\n\nEnergy created through photosynthesis can be transported to the roots of a tree as sugars, and then is stored as starch.&nbsp;\n\n\n\n\n\nDescribing Tree Roots\n\n\n\nThere are larger roots that may be up to 1 cm to 30 cm (0.4 to 12 inches) or more in diameter in some cases. These roots provide anchorage, serve as storage sites for starches and sugars and are part of the system that transports water, nutrients, and other compounds through the tree from fine feeder roots to leaves. They absorb very little water or mineral nutrients from the soil. [Figure 2]\n\n\n\nSpecialized Woody Roots\n\n\n\n\nTap Root – A primary root that grows downward from the seed radical. Some species exhibit taproots when younger but by the time they reach maturity few trees have a true deep taproot due to low soil oxygen levels deeper in the soil.&nbsp;\n\n\n\nSinker Roots – Roots that grow downward from lateral woody roots. Formation of these roots is species and soil dependent. They are not common in landscape trees.\n\n\n\n\nFigure 2. Example of woody roots.\n\n\n\n\n\n\n\nFine Feeder Roots (Absorptive Roots)\n\n\n\nThese are smaller roots that are 2 mm (0.4 to .008inches) or less in diameter. These roots are the primary sites of water and mineral nutrient absorption. They are often short lived and can be killed or suppressed by low soil oxygen levels, drought, or fluctuations in soil temperature. Such events are stressful but healthy trees rapidly reproduce fine feeder roots.&nbsp;\n\n\n\nFine feeder roots are commonly colonized by symbiotic fungi. These fungi can help extend the reach of the root system, aid in the mineralization of plant nutrients, increase the trees’ drought tolerance and help it to resist some diseases.&nbsp;\n\n\n\nIt is common for fine feeder roots to form grafts with the fine feeder roots of other members of the same species.&nbsp;\n\n\n\n\n\nSize And Extent of the Root System\n\n\n\nWidth\n\n\n\nA mature tree’s root system often occupies a much wider area than its canopy. Depending on the species of tree and soil conditions the spread of a trees’ root systems may be two to five times the width of its canopy or even greater in some cases.&nbsp;\n\n\n\nDepth\n\n\n\nThe depth of a tree’s root system is governed by the availability of water, mineral nutrients, soil oxygen and the species of tree. In clayey, compacted or perpetually wet soils (soils with a shallow water table) roots tend to be shallower due to low soil oxygen levels in the deeper layers of such soils. In sandy soils, roots also tend to be massed near the soil’s surface. Sandy soils have low levels of mineral nutrients and having a large concentration of roots near the surface allows trees to capture nutrients released from decomposing leaf litter. In loamy soils, tree roots tend to be deeper as there is sufficient oxygen and nutrients to support their growth.&nbsp;\n\n\n\nThe rule of thumb for estimating rooting depth in clayey, compacted, or perpetually wet soils is that 90-95% of roots will be in the top twelve inches and 50% will be in the top four inches of soil. In favorable soils conditions 90-95% of roots will be in the top thirty-six inches and 50% will be in the top twelve inches of soil.&nbsp;\n\n\n\nSurface Area\n\n\n\nThe surface area of a root system is likely larger than that of the plants’ leaves BEFORE you take into account symbiotic fungi.&nbsp;&nbsp;&nbsp;\n\n\n\n\n\nConditions That Adversely Affect Roots\n\n\n\nSoil Compaction\n\n\n\nSoil compaction occurs when soil is compressed, pushing soil particles closer together. This reduces the overall volume of pore space in a soil and particularly reduces the volume of larger air holding pores. In landscapes, compaction can be caused by foot traffic, maintenance equipment or other vehicle traffic and other factors. Many soils are compacted during construction. [Figure 3]\n\n\n\nFigure 3. Heavy equipment like skid steers can compact soil.\n\n\n\n\n\n\n\nCompaction affects tree roots in several negative ways. It can lower soil oxygen levels which adversely affect root and tree health (see below). Compaction also increases the strength of soil making it physically harder for roots to grow through it. This can slow the establishment and growth of a tree.\n\n\n\nLow Soil Oxygen Levels\n\n\n\nRoots require oxygen to perform respiration (the process that turns the products of photosynthesis into usable energy). As roots (and other soil life) consume oxygen it is replenished though diffusion from the atmosphere. When adequate oxygen is not in the soil, root growth slows. Low soil oxygen levels also leads to stomata (located on plant leaves) closing which reduces water and nutrient uptake, reduces translocation of water, nutrients and hormones within the plant and can potentially led to wilting. Low soil oxygen can also lead to root cells “self-poisoning” due to accumulation of the byproducts of anaerobic respiration.&nbsp;\n\n\n\n\n\nConditions Leading to Low Soil Oxygen Levels\n\n\n\nOverwatering/Waterlogged Soils\n\n\n\nIn soils that are perpetually wet, soil pores are mostly filled with water (soil solution). Relatively few pores are filled with air. There also may be few clear contiguous pathways from the air-filled pores to the soil surface, slowing the rate of diffusion of oxygen between the atmosphere and the soil.&nbsp;\n\n\n\nCompaction\n\n\n\nCompaction reduces the overall volume of pore space in a soil and especially reduces the volume of “large” pore spaces. The “large” pores are those that tend to be filled with air after gravitational water has drained. They are also the easiest pathways for diffusion of gases. So, compaction reduces the volume of air-holding pores in soil and can reduce the rate of diffusion between the atmosphere and the soil.&nbsp;\n\n\n\nImproper Mulching\n\n\n\nApplying organic mulch too thickly can slow diffusion of gases, including oxygen, from the atmosphere into the soil. Generally, no more than four inches of organic mulch should be applied to avoid this. Plastic sheet or fabric mulches limit the exchange of gases between the atmosphere and the soil.&nbsp;\n\n\n\nGrade Changes\n\n\n\nAdding soil over the top of an established root system can have the same effect as adding a mulch layer that is too thick.&nbsp;\n\n\n\n\n\nOther Common Root Issues\n\n\n\nGirdling Roots\n\n\n\nGirdling roots are roots that are wrapped around other parts of the plant. Stem girdling roots are roots wrapped around or growing across the stem of a tree. [Figure 4] Root girdling roots are wrapped around another root (somewhat less of a concern). Stems girdling roots compress newly produced phloem (and eventually xylem) which impairs the ability of the tree to move material through these tissues. This leads to stress and potentially, decline.\n\n\n\nFigure 4. Girdling roots.\n\n\n\n\n\n\n\nSymptoms&nbsp;\n\n\n\n\nFlat sections of a tree’s trunk where it enters the soil (non-flared).&nbsp;\n\n\n\nSwelling above and below the girdling root.&nbsp;\n\n\n\nGenerally poor health or dieback without any obvious cause.\n\n\n\n\nCauses of Girdling Roots&nbsp;\n\n\n\n\nRoot deflection and circling at the edge of a container.&nbsp;\n\n\n\n\n\nRoot deflection at edge of planting hole.&nbsp;\n\n\n\n\n\nTrees placed too deeply in nursery containers. This leads to roots growing upward and potentially to circling roots in a container above the root flare.\n\n\n\nUpward growing roots as the result of low soil oxygen due to deep planting, root pruning in the field during nursery production, or combination of the two.&nbsp;\n\n\n\nMulch over the root ball or root flare.\n\n\n\n\nDealing With Girdling Roots\n\n\n\nA root collar excavation, which is the process of removing the soil from the base of the tree, can be performed to expose the root flare and any girdling or potentially girdling roots. Girdling roots can then be removed, preferably back to a point where they will grow outward from the trunk. Some roots may be too in-grown to remove and may result in greater damage to the tree if removal is attempted. A certified arborist can be contacted to consult on and remove circling roots.&nbsp;\n\n\n\nProper management and pruning of root systems in nurseries and at planting as well as proper planting practices can prevent girdling roots from forming.\n\n\n\nSurface Roots\n\n\n\nTrees roots may develop at or partially above the soil surface creating a nuisance in turf and a potential health risk for the tree as exposed roots are often wounded by mowers or other landscape maintenance activities. [Figure 5]\n\n\n\nFigure 5. Surface roots.\n\n\n\n\n\n\n\nSome trees are prone to developing surface roots. However, their formation is encouraged by low soil oxygen levels that are caused by compaction or overwatering or both.&nbsp;\n\n\n\nOnce surface roots develop, little can be done. A soil of coarser texture can be added over the surface roots but it is likely a short term solution. As roots increase in diameter they will surface again. Adding too much soil or too fine a soil can reduce soil oxygen levels and harm the tree. Mulching the area so that it no longer needs to be maintained as intensively is the best management option.&nbsp;\n\n\n\nInstallation and maintenance practices that promote better soil aeration can help prevent surface roots. Such practices include amending soil with organic matter and regular core aeration of turf.&nbsp;\n\n\n\nSuckering\n\n\n\nRoots may produce adventitious shoots known as suckers. Suckers arise from adventitious or latent buds along a trees’ root system. (They are different from seedlings with the result of seeds created through sexual reproduction.) Production of suckers is partially species dependent, and some species are more prone to suckering. Damage to roots from trenching, flooding, or other causes can also encourage suckering. Removing a tree can cause its remaining root system to sucker. Suckering can also be a response to general stress. [Figure 6]\n\n\n\nFigure 6. Suckers growing around base of tree.\n\n\n\n\n\nWhat Can Be Done?\n\n\n\n\nAvoid planting species that are prone to suckering.&nbsp;\n\n\n\nAvoid damaging tree root systems.&nbsp;\n\n\n\nTry “Sucker Stopper” which is an artificial plant growth hormone that prevents buds from opening. Read label directions before using as it works better on some species than others.&nbsp;\n\n\n\nTry herbicides if you do not care about the health of the tree that is producing the suckers, herbicides can be used.&nbsp;\n\n\n\nTolerate suckers.&nbsp;\n\n\n\n\n\n\nKey Points for Talking With Clients About Tree Roots\n\n\n\n\nTree root systems are much wider than their canopies, if space permits.&nbsp;\n\n\n\nTree root systems are relatively shallow.&nbsp;\n\n\n\nProper planting practices and species selection are the&nbsp;best way to avoid common root issues.\n\n\n\n\n\n\n\n\nThis publication, reference GardenNotes #659, is developed as part of the Colorado State University Extension Master Gardener Program.&nbsp;\n\n\n\n\n\n\t\n\n\t\n\n\t\n\n\n\n\t\t\n\n\t\n\n\n\t\n\n\t\n\t\t\n\n\n\t\n\t\t\n\n\n\t\n\t\t\tFind Your Energy\n\t\n\t\t\t\t\n\n\t\t\n\n\t\n\n\t\t\n\t\t\tGet Connected\n\t\t\tOffice of Engagement and Extension\nCSU Professional Education\nCSU Spur\nColorado State Forest Service\nColorado Water Center\n\t\t\n\n\t\t\t\t\t\n\t\t\t\tResources\n\t\t\t\tNewsroom &#038; Social Media\nContact\nDirectory\nCareers\nStaff Resources\n\t\t\t\n\t\t\n\t\n\n\t\n\n\n\n\n\t\n\t\t\n\t\t\t&copy; 2026 Colorado State University, Fort Collins, Colorado 80523 USA\t\t\n\n\t\tDisclaimer\nAccessibility Statement\nEqual Opportunity\nNon-Discrimination Statement\nPrivacy Statement\nSitemap",
+      "title": "https://extension.colostate.edu/resource/understanding-tree-roots/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528760338,
+        "end": 1789528761642
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.643Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528761643,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e52b001eEKCcFdRTxSVKW",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839dda100135TZQssFpv5GtK",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 31016,
+      "output": 201,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 31217,
+      "headroom": 7639,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.643Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.644Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.658Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.678Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.679Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.679Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.679Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.680Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.687Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 31217,
+  "providerTokens": 31217,
+  "estimatedInputTokens": 7986,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 31016,
+    "cacheRead": 0,
+    "output": 201
+  },
+  "overflow": false,
+  "headroom": 7639,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.688Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.704Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528761960,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e666001Mg9ZHjn1xxs3oj",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839e557001nLGXpSAfCdNZMF",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.961Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528761965,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e66b001Rc9oBT5fevjSY2",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839e557001nLGXpSAfCdNZMF",
+    "type": "tool",
+    "callID": "call_98f9652f8f2102ea",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528761965,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e668001EHeHIj7y9vQJhP",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839e557001nLGXpSAfCdNZMF",
+    "type": "text",
+    "text": "Let me open https://doi.org/10.53846/goediss-11994 and read what it says.",
+    "time": {
+      "start": 1789528761965,
+      "end": 1789528761965
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:21.966Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528761966,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e66b001Rc9oBT5fevjSY2",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839e557001nLGXpSAfCdNZMF",
+    "type": "tool",
+    "callID": "call_98f9652f8f2102ea",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://doi.org/10.53846/goediss-11994"
+      },
+      "time": {
+        "start": 1789528761966
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.366Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528763366,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839e66b001Rc9oBT5fevjSY2",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839e557001nLGXpSAfCdNZMF",
+    "type": "tool",
+    "callID": "call_98f9652f8f2102ea",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://doi.org/10.53846/goediss-11994"
+      },
+      "output": ", & Pietig, K. Belowground strategies of beech, oak, pine and Douglas fir on Pleistocene sandy soils: Deep rooting, root functional traits, and the significance of root embolism. https://doi.org/10.53846/goediss-11994\n",
+      "title": "https://doi.org/10.53846/goediss-11994 (text/plain)",
+      "metadata": {},
+      "time": {
+        "start": 1789528761966,
+        "end": 1789528763365
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528763367,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839ebe60017MyIHfIbl43sLK",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839e557001nLGXpSAfCdNZMF",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 45896,
+      "output": 145,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 46041,
+      "headroom": -7185,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.383Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.383Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.415Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.419Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.419Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.424Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 46041,
+  "providerTokens": 46041,
+  "estimatedInputTokens": 8067,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 45896,
+    "cacheRead": 0,
+    "output": 145
+  },
+  "overflow": true,
+  "headroom": -7185,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.427Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.430Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.430Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.448Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.449Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.449Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.450Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.450Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.451Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.899Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528763899,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839edfa0018lSrF91N0YVUBY",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839ec390011pQ9RKDIgKGC3d",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.900Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.900Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.900Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.900Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528763900,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839edfc00173net6svKpU3R2",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839ec390011pQ9RKDIgKGC3d",
+    "type": "text",
+    "text": "Let me search the web for far down do oak roots usually reach.\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789528763900,
+      "end": 1789528763900
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.901Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528763901,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839edfd001TmGiR07EClmPGG",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839ec390011pQ9RKDIgKGC3d",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 38425,
+      "output": 111,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 38536,
+      "headroom": 320,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.901Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.901Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.903Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528763903,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839edfe002t0dfEq5N3BHBZ4",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839edfe0016M78OyKBeNakxl",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528763902,
+      "end": 1789528763902
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.903Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.905Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.905Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.905Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.906Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.908Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.911Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.911Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.911Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:23.911Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.011Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528764011,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839ee6a001NWNqmpW3zuTu7q",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839ee010016hC9PqUWLp8Dgc",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.012Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.012Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.013Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.014Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528764014,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839ee6c0014qn1F1NhDEALVW",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839ee010016hC9PqUWLp8Dgc",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528764013,
+      "end": 1789528764013
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.015Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528764015,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "part": {
+    "id": "prt_0a839ee6e001wQsibXX4HNbUi7",
+    "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+    "messageID": "msg_0a839ee010016hC9PqUWLp8Dgc",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8660,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8733,
+      "headroom": 30123,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.015Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.015Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.016Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.016Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.018Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.019Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.022Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528764022,
+  "sessionID": "ses_f57c62c40ffeKBgV60ApUr2b6Z"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.023Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.023Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.023Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.024Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.NpFkeMuwkL",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.024Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

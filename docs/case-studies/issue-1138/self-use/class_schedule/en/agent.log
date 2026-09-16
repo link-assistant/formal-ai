@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.642Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.642Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Put me down with Alexander at eight tonight, Tbilisi time. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.642Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.642Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.651Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Put me down with Alexander at eight tonight, Tbilisi time.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Put me down with Alexander at eight tonight, Tbilisi time.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.651Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.652Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.653Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.653Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.655Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.656Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.658Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 8079,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.658Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.671Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.673Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 21,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.674Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:18:28.674Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.679Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.679Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.680Z",
+  "service": "session",
+  "id": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL",
+  "title": "New session - 2026-09-16T03:18:28.680Z",
+  "time": {
+    "created": 1789528708680,
+    "updated": 1789528708680
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.680Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.680Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.681Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c6e9b8ffeuAh41CwHEAEzU7/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.681Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c6e9b8ffeuAh41CwHEAEzU7/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.683Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57c6e9b8ffeuAh41CwHEAEzU7/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.686Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.687Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.688Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.688Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.688Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.688Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.688Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.688Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.688Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.689Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.689Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.813Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.815Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.816Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.823Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.833Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.833Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.833Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:28.834Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:29.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528709306,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a83918b8001gSLC9C7wa03rUA",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a83916cf001RuvZlm3w70Eh1W",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:29.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:29.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528709308,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a83918bb002lHeKGv7DN5zAj0",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a83916cf001RuvZlm3w70Eh1W",
+    "type": "tool",
+    "callID": "call_24ed20a8d47319bb",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:29.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528709308,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a83918bb0016DPbC3baAmtMal",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a83916cf001RuvZlm3w70Eh1W",
+    "type": "text",
+    "text": "Let me search the web for Put me down with Alexander at eight tonight, Tbilisi time.",
+    "time": {
+      "start": 1789528709308,
+      "end": 1789528709308
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:29.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528709308,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a83918bb002lHeKGv7DN5zAj0",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a83916cf001RuvZlm3w70Eh1W",
+    "type": "tool",
+    "callID": "call_24ed20a8d47319bb",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Put me down with Alexander at eight tonight, Tbilisi time"
+      },
+      "time": {
+        "start": 1789528709308
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528710679,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a83918bb002lHeKGv7DN5zAj0",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a83916cf001RuvZlm3w70Eh1W",
+    "type": "tool",
+    "callID": "call_24ed20a8d47319bb",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Put me down with Alexander at eight tonight, Tbilisi time"
+      },
+      "output": "Title: Current Local Time in Tbilisi, Georgia\nURL: https://www.timeanddate.com/worldclock/georgia/tbilisi\nPublished: N/A\nAuthor: N/A\nHighlights:\nCurrent Local Time in Tbilisi, Georgia\n...\n11:06:12 pm GET\n...\nWednesday, April 1, 2026\n...\nGET (Georgia Standard Time)UTC/GMT +4 hours\n...\n11:0612pm\n...\nWednesday, April 1, 2026\n\n---\n\nTitle: KICK: ALEKSANDER | IOTHAM B2B REVI in Tbilisi ᐉ Events Schedule | YOLO | Yolo\nURL: https://yolo.ge/en/poster/kick-aleksander-iotham-b2b-revi\nPublished: N/A\nAuthor: N/A\nHighlights:\n# KICK: ALEKSANDER | IOTHAM B2B REVI\n\n Tickets are sold online for 30 GEL [eventer.ge] and at the event door for 40 GEL. Face control and age restriction of 21+ apply in the clubStart - 23:30Geronti Kikodze 8 \n\n KICK: ALEKSANDER | IOTHAM B2B REVI 8 G. Kikodze St., Tbilisi \n\n English, Georgian, Russian \n\n## Description\n...\n✦ Local artists will play a B2B set at KICK on Saturday: DJ focused on progressive house and trance music of the 2000s - 𝐈𝐎𝐓𝐇𝐀𝐌 and 303hz graduate, new generation artist - 𝐑𝐄𝐕𝐈. A DJ focused on electro / techno sound will take the stage with them - 𝐀𝐋𝐄𝐊𝐒𝐀𝐍𝐃𝐄𝐑\n...\n## Location \n\n Kick \n\n 8 G. Kikodze St., Tbilisi \n\n Night club in Tbilisi \n\n Contacts \n\n 20 Anton Purtseladze Street, Tbilisi \n\n- +995 550 50 30 30 (+995550503030)\n\n---\n\nTitle: Eight Lounge in Tbilisi 🌃 Hookahs, cocktails and European cuisine | Read reviews and see photos\n        \n      \n      \n        \n        — Madloba\nURL: https://madloba.info/en/tbilisi/hookah-bars/eight-lounge/\nPublished: 2026-04-10T00:00:00.000Z\nAuthor: N/A\nHighlights:\nOpen until 2:00am Updated at: Jul 13, 2026 4.9/ 48 reviews\n...\nAlexander Kazbegi Ave., 8, Tbilisi, Georgia\n...\n⏰ Working hours\n...\n- Mon–Sun: 13:00–02:00\n...\nEight Lounge is a lounge bar in Tbilisi that combines a cozy atmosphere, aromatic hookahs and a variety of drinks. Located on Alexander Kazbegi Street, 8.\n...\nThe menu offers\n...\nideal place for an evening of relaxation or\n...\nmeeting with friends\n\n---\n\nTitle: Learn English with Alexander - Tbilisi: Hi, Alexander here, an...\nURL: https://www.tutoroo.co/tutor/english/tbilisi/english-made-easy-alexander\nPublished: N/A\nAuthor: N/A\nHighlights:\nLearn English with Alexander - Tbilisi: Hi, Alexander here, an...\n...\nLives in Tbilisi, Georgia\n...\nThis tutor usually responds within 11 hours\n...\n## Private English Tutor in Tbilisi and Online\n...\nHi, Alexander here, and I am a polyglot, I speak English, French, Deutsch, and Georgian (intermediate). I have got a knack for learning new languages and I believe I have learned over the years how to unbundle complex languages into its most basic form. English is an ever-evolving language and this is tied to region and purpose. Our lessons will be hinged on your purpose of learning and what region you plan on using the language. I have got a cool persona and promise a fun time learning. So let’s get started!\n...\nTutor available for 3 more students only!\n...\nTutor available for online lessons or in-person private lessons in the following areas:\n...\nTbilisi is a small city, so private residence, cafes, office spaces, I can meet up the student practically anywhere. Plus I always give my paying customers the privilege of choosing where is most convenient for them to learn provided it’s safe for the both of us.\n...\nContact Alexander Now\n\n---\n\nTitle: Hans Zimmer By Mystery Ensemble in Tbilisi ᐉ Events Schedule | YOLO | Yolo\nURL: https://yolo.ge/en/poster/edzghvneba-hans-zimers-mystery-ensemble\nPublished: N/A\nAuthor: N/A\nHighlights:\nThe concert organisers are the creative agency RED EVENTS & Distribution ltd, which makes exceptional cultural events in ancient mansions, on rooftops, in greenhouses and in other most atmospheric venues throughout Georgia, EU, United Kingdom and other countries. Also in the repertoire – a collection of concerts by candlelight and with complete immersion in the space of video art and sound. Official website: www.redevents.ge. Start at 8:00 pm. Address: Tbilisi State Conservatoire, Georgia, Tbilisi, Alexander Griboedov Street, bld. 10 PERFORMERS 🎻 Mystery Ensemble Mystery Ensemble is a unique group that performs the most current music. This is the live sound of acoustic string instruments, unique arrangements, and virtuoso keyboards, as well as artistry and drive from professionals passionate about their work. The orchestra creates a magical mood in the most atmospheric halls of Georgia. PROGRAMME • He’s a pirate • Now we are free • This land • Mermaids • Interstellar • Madagascar • Time • Circle of life • I see dead people in boats • The battle • Jack sparrow • Chevaliers • Can you feel the love tonight • Davy Jones • The medallion calls *Please note that the programme is subject to changes \n\n Hans Zimmer By Mystery Ensemble Akaki Beliashvili 68, Tbilisi \n\n English, Georgian, Russian\n...\n✨ А unique concert on May 18th will take place at 20:00 in a grandiose hall of Tbilisi State Conservatoire in the heart of Tbilisi. The program of the evening includes music by the world-famous composer Hans Zimmer in the most colorful performance by the modern orchestra Mystery Ensemble. Delight for the whole family is guaranteed.\n...\n## Location \n\n Vakhtang Salaridze Concert Hall \n\n Akaki Beliashvili 68, Tbilisi \n\n On January 11, 2020, the Vakhtang Salaridze Concert Hall was opened at 68 Beliashvili Street in Tbilisi, which is located in a multifunctional building of modern standards. The concert hall is designed for 400 people. Its vestibule and office area provide a wide range of exhibitions as well as conferences and corporate events. The hall is named after the People’s Artist of Georgia, Vakhtang Salaridze, an honorary citizen of Tbilisi, who worked at the Vaso Abashidze Musical Comedy Theater in Tbilisi for many years. Many of the successes of this theater are connected with the name of Vakhtang Salaridze. The hall is equipped with the latest centralized and computer-controlled systems, which provide high quality acoustics and lighting effects. \n\n Contacts \n\n 20 Anton Purtseladze Street, Tbilisi \n\n- +995 550 50 30 30 (+995550503030)\n\n---\n\nTitle: VFY B2B Mocongo | Aleksander || Zion Showcase: Buba | DJ Shoda | Soyl in Tbilisi ᐉ Events Schedule | YOLO | Yolo\nURL: https://yolo.ge/en/poster/vfy-b2b-mocongo-aleksander-zion-showcase-buba-dj-shoda-soyl\nPublished: N/A\nAuthor: N/A\nHighlights:\n# VFY B2B Mocongo | Aleksander || Zion Showcase: Buba | DJ Shoda | Soyl\n\n VFY B2B Mocongo | Aleksander || Zion Showcase: Buba | DJ Shoda | Soyl \n\n Nikoloz Baratashvili Left Bank, Tbilisi \n\n Ticket price from 15 ₾ \n\n English, Georgian, Russian \n\n## Description \n\n ▾ Main Room • VFY B2B Mocongo soundcloud.com/tobakotween soundcloud.com/mocongo • Aleksander soundcloud.com/alekssannder ▾ Zion Showcase in Small Room • Buba soundcloud.com/666uba • DJ Shoda soundcloud.com/djshoda • Soyl soundcloud.com/gigigabadze \n\n## Photos and videos \n\n## Location \n\n MTKVARZE \n\n Nikoloz Baratashvili Left Bank, Tbilisi \n\n Mtkvarze is a small club with a big heart located in on the left bank of the river in Tbilisi \n\n Contacts \n\n 20 Anton Purtseladze Street, Tbilisi \n\n- +995 550 50 30 30 (+995550503030)\n\n---\n\nTitle: ALEXANDER MALOFEEV in Tbilisi ᐉ Events Schedule | YOLO | Yolo\nURL: https://yolo.ge/en/poster/alexander-malofeev\nPublished: N/A\nAuthor: N/A\nHighlights:\n# ALEXANDER MALOFEEV\n\n ALEXANDER MALOFEEV Tsinandali Estate \n\n Ticket price from 45 ₾ \n\n 13.09.2026 \n\n English, Georgian, Russian \n\n## Schedule \n\n 13.09.2026 \n\n Sunday \n\n 12:00 \n\n 45 ₾ - 60 ₾ \n\n 45 ₾ - 60 ₾ \n\n## Description \n\n13.09 | 12:00 PM — Amphitheater\n...\nAlexander Malofeev — Piano\n...\n## Location \n\n Tsinandali Estate \n\n Tsinandali Estate\n...\nSince 19th Century, Tsinandali\n...\nhas been and continues to be an exclusive\n...\n.\n\n Contacts \n\n 20 Anton Purtseladze Street, Tbilisi \n\n- +995 550 50 30 30 (+995550503030)\n\n---\n\nTitle: Converting EST to Tbilisi Time\nURL: https://www.worldtimebuddy.com/est-to-georgia-tbilisi\nPublished: N/A\nAuthor: N/A\nHighlights:\n+8\n...\n# Converting EST to Tbilisi Time\n...\nThis time zone converter lets you visually and very quickly convert EST to Tbilisi, Georgia time and vice-versa. Simply mouse over the colored hour-tiles and glance at the hours selected by the column... and done!\n...\nEST stands for Eastern Standard Time. Tbilisi, Georgia time is 8 hours ahead of EST. So, when it is \n\n# Getting Started\n...\n| Eastern Standard Time (EST) to Tbilisi, Georgia ( in Tbilisi) | | |\n| --- | --- | --- |\n| 12 am EST | is | 8 am in Tbilisi |\n| 1 am EST | is | 9 am in Tbilisi |\n| 2 am EST | is | 10 am in Tbilisi |\n| 3 am EST | is | 11 am in Tbilisi |\n| 4 am EST | is | 12 pm in Tbilisi |\n| 5 am EST | is | 1 pm in Tbilisi |\n| 6 am EST | is | 2 pm in Tbilisi |\n| 7 am EST | is | 3 pm in Tbilisi |\n| 8 am EST | is | 4 pm in Tbilisi |\n| 9 am EST | is | 5 pm in Tbilisi |\n| 10 am EST | is | 6 pm in Tbilisi |\n| 11 am EST | is | 7 pm in Tbilisi |\n...\n| Eastern Standard Time (EST) to Tbilisi, Georgia ( in Tbilisi) | | |\n| --- | --- | --- |\n| 12 pm EST | is | 8 pm in Tbilisi |\n| 1 pm EST | is | 9 pm in Tbilisi |\n| 2 pm EST | is | 10 pm in Tbilisi |\n| 3 pm EST | is | 11 pm in Tbilisi |\n| 4 pm EST | is | 12 am in Tbilisi |\n| 5 pm EST | is | 1 am in Tbilisi |\n| 6 pm EST | is | 2 am in Tbilisi |\n| 7 pm EST | is | 3 am in Tbilisi |\n| 8 pm EST | is | 4 am in Tbilisi |\n| 9 pm EST | is | 5 am in Tbilisi |\n| 10 pm EST | is | 6 am in Tbilisi |\n| 11 pm EST | is | 7 am in Tbilisi |",
+      "title": "Web search: Put me down with Alexander at eight tonight, Tbilisi time",
+      "metadata": {},
+      "time": {
+        "start": 1789528709308,
+        "end": 1789528710677
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.681Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528710681,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a8391e18001O1R3LNnAJEEntv",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a83916cf001RuvZlm3w70Eh1W",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8554,
+      "output": 162,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8716,
+      "headroom": 30140,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.681Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.686Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.692Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.692Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.692Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.692Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.693Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.696Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.696Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.702Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8716,
+  "providerTokens": 8716,
+  "estimatedInputTokens": 2773,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8554,
+    "cacheRead": 0,
+    "output": 162
+  },
+  "overflow": false,
+  "headroom": 30140,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.702Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.702Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.706Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:30.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:31.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528711755,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a83922490013vg3C1SMu33eNZ",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8391e2e001XT9hfdTeuLZw9s",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:31.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:31.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528711756,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839224b0026l2QfXbRJe1Nvy",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8391e2e001XT9hfdTeuLZw9s",
+    "type": "tool",
+    "callID": "call_ca4bf1cdafe8de49",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:31.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528711756,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839224b0014wbStWehLNeMu2",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8391e2e001XT9hfdTeuLZw9s",
+    "type": "text",
+    "text": "Let me open https://www.timeanddate.com/worldclock/georgia/tbilisi and read what it says.",
+    "time": {
+      "start": 1789528711756,
+      "end": 1789528711756
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:31.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528711756,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839224b0026l2QfXbRJe1Nvy",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8391e2e001XT9hfdTeuLZw9s",
+    "type": "tool",
+    "callID": "call_ca4bf1cdafe8de49",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.timeanddate.com/worldclock/georgia/tbilisi"
+      },
+      "time": {
+        "start": 1789528711756
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.044Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528712044,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839224b0026l2QfXbRJe1Nvy",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8391e2e001XT9hfdTeuLZw9s",
+    "type": "tool",
+    "callID": "call_ca4bf1cdafe8de49",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.timeanddate.com/worldclock/georgia/tbilisi"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789528711756,
+        "end": 1789528712044
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528712044,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.045Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528712045,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839236d0011H2BEZQO3rQ7Cv",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8391e2e001XT9hfdTeuLZw9s",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 18025,
+      "output": 177,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 18202,
+      "headroom": 20654,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.045Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.045Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.046Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.046Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.047Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.047Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.047Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.047Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.047Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.047Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.048Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 18202,
+  "providerTokens": 18202,
+  "estimatedInputTokens": 2796,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 18025,
+    "cacheRead": 0,
+    "output": 177
+  },
+  "overflow": false,
+  "headroom": 20654,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.048Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.048Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.049Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.588Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528712592,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839258c0013KrwA66Xs76zn8",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8392370001qd3wuqe3IzasMM",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.593Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.593Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528712593,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839259100121O6uHVaz7uctI",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8392370001qd3wuqe3IzasMM",
+    "type": "text",
+    "text": "The command failed: Error: Request failed with status code: 403\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+    "time": {
+      "start": 1789528712593,
+      "end": 1789528712593
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.594Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528712594,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "part": {
+    "id": "prt_0a839259100240itqEzJI0a8wu",
+    "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+    "messageID": "msg_0a8392370001qd3wuqe3IzasMM",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 18157,
+      "output": 212,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 18369,
+      "headroom": 20487,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.594Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.594Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.594Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.594Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.595Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.596Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.596Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.596Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.597Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528712597,
+  "sessionID": "ses_f57c6e9b8ffeuAh41CwHEAEzU7"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.597Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.597Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.597Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.597Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Rd3xJyBoBL",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:32.597Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}
+

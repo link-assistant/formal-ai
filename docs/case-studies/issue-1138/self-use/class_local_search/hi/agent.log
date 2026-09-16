@@ -1,0 +1,2813 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.112Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.113Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt मेरे डेस्कटॉप पर hive-mind-control-center फ़ोल्डर ढूँढिए। --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.113Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.113Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.144Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "मेरे डेस्कटॉप पर hive-mind-control-center फ़ोल्डर ढूँढिए।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "मेरे डेस्कटॉप पर hive-mind-control-center फ़ोल्डर ढूँढिए।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.144Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.146Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.147Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.147Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.160Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.162Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.182Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 1967,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.183Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.211Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:19:58.229Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.229Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.229Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.229Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.229Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.229Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.230Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.230Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 84,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.230Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:19:58.230Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.253Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.253Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.256Z",
+  "service": "session",
+  "id": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS",
+  "title": "New session - 2026-09-16T03:19:58.256Z",
+  "time": {
+    "created": 1789528798256,
+    "updated": 1789528798256
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.257Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.257Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.258Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 5,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.265Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.267Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c58bcfffeIuNpKXOD7IiReT/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.267Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c58bcfffeIuNpKXOD7IiReT/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.280Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 13,
+  "method": "POST",
+  "path": "/session/ses_f57c58bcfffeIuNpKXOD7IiReT/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.287Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.288Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.289Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.291Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.294Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.294Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.294Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.295Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.295Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.296Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.296Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.296Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.296Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.528Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.536Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.537Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.554Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.560Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.568Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.569Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.569Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.994Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528798994,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a770f001R1zsetEPrtqQY1",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a7546001OiWw2ziLPs3TjH",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.994Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.996Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528798996,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a7713001A08weXlDSWfrHU",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a7546001OiWw2ziLPs3TjH",
+    "type": "tool",
+    "callID": "call_3757d105b03f9ce7",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.996Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528798996,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a7712001ciaL9ho92OkPSu",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a7546001OiWw2ziLPs3TjH",
+    "type": "text",
+    "text": "मैं इंटरनेट पर मेरे डेस्कटॉप खोजता हूँ।",
+    "time": {
+      "start": 1789528798996,
+      "end": 1789528798996
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:58.997Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528798997,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a7713001A08weXlDSWfrHU",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a7546001OiWw2ziLPs3TjH",
+    "type": "tool",
+    "callID": "call_3757d105b03f9ce7",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "मेरे डेस्कटॉप"
+      },
+      "time": {
+        "start": 1789528798996
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528804078,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a7713001A08weXlDSWfrHU",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a7546001OiWw2ziLPs3TjH",
+    "type": "tool",
+    "callID": "call_3757d105b03f9ce7",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "मेरे डेस्कटॉप"
+      },
+      "output": "Title: Windows Desktop in Hindi की पूरी जानकारी - TutorialPandit.\nURL: https://www.tutorialpandit.com/windows-desktop/\nPublished: 2018-10-08T00:00:00.000Z\nAuthor: N/A\nHighlights:\n# डेस्कटॉप क्या हैं विंडॉज डेस्कटॉप की पूरी जानकारी हिंदी में\n...\nWindows Operating System को जब शुरु किया जाता हैं. तब User के सामने जो स्क्रीन दिखाई देती हैं, उसे सामुहिक रूप से Desktop कहा जाता हैं.\n...\nWindows Desktop एक मेज की ऊपरी परत की तरह कार्य करता हैं. जिस पर सामान को रखा जाता हैं. जब किसी Folder, File, Program या अन्य Item को Run किया जाता है तो वह Desktop पर ही Run होता हैं.\n...\nDesktop पर User Files, Folders, Pictures, Musics आदि Data को भी रख सकते हैं. और उसे अपने हिसाब से Arrange भी कर सकते हैं.\n...\nDesktop की बनावट और दिखावट Windows Version पर निर्भर करती हैं क्योंकि Windows के अलग-अलग संस्करण में Desktop में कुछ बदलाव किये जाते हैं. जिन्हे बहुत ही आसानी से पहचाना जा सकता हैं.\n...\nऊपर स्क्रीनशॉट में आप देख रहे है कि कुछ नम्बर लिखे हुए हैं. ये नम्बर Desktop के अलग-अलग भागों को Represent कर रहे हैं. जिनके बारे में हम नीचे बता रहे हैं. वास्तव में windows Desktop के तीन मुख्य भाग होते हैं.\n...\n1. Desktop Icon\n2. The Taskbar\n3. Desktop Background\n...\n## Desktop Icon\n...\nDesktop Shortcut कम्प्युटर में स्थित कोई दस्तावेज, फाईल या अन्य कोई Item, जो कम्प्युटर में है, उसकि link होती है. Users को पहली बार Window Start करने पर केवल एक ही Icon (Recycle Bin) दिखाई देता हैं. लेकिन, कुछ Manufactures एक से ज्यादा Icons भी Desktop पर छोड देते हैं.\n...\nDesktop Icons को Shortcut भी कहा जाता हैं. ये Shortcut उस प्रोग्राम, फाईल, फोल्डर का होता हैं जो कम्प्युटर में स्थित होता हैं. Shortcut Icon पर डबल क्लिक करके संबंधित Item को Open किया जा सकता हैं.\n...\nDesktop Icons के द्वारा Items की Location पर भी पहुँचा जा सकता हैं. तथा कुछ अतिरिक्त जानकारी के बारे में भी पता लगाया जा सकता हैं.\n...\n## The Taskbar\n...\nTaskbar एक आडि आयताकार पट्टी होती हैं. जो By Default Desktop में नीचे की तरफ होती हैं. Taskbar Desktop का सबसे महत्वपूर्ण हिस्सा होती हैं.\n...\nTaskbar पर Windows Items को Navigation करने के लिए कई अलग-अलग भागों में बांटा जाता हैं. जिसमें Start Button, Icons, Notification Area और Show Desktop Button आदि शामिल होते हैं.\n...\n## Desktop Background\n...\nजो Picture आपको Desktop पर दिख रही हैं उसे Desktop Background कहा जाता हैं. Windows OS में Picture और Theme दो प्रकार के Background लगाये जा सकते हैं.\n...\nBackground से Desktop को Personalize किया जाता हैं. यहाँ Users अपनी पसंद के अनुसार कोई भी Picture को इस्तेमाल कर सकते हैं. Users ख़ुद की फोटो को भी Desktop Background बना सकते हैं.\n...\nइस Lesson में हमने आपको Windows Desktop के बारे में पूरी जानकारी दी हैं. और आपने Desktop के विभिन्न भागों के बारे में भी जाना हैं. हमे उम्मीद है कि यह Lesson आपके लिए उपयोगी साबित होगा.\n\n---\n\nTitle: Desktop Kya Hai ? डेस्कटॉप के प्रमुख कार्य - DailyTechReview\nURL: https://dailytechreview.com/desktop-kya-hai/\nPublished: 2023-12-27T11:12:04.000Z\nAuthor: siya\nHighlights:\nDesktop Kya Hai -डेस्कटॉप कंप्यूटर स्क्रीन होती है जो यूजर को कार्य करने के लिए Graphical user interface (GUI)प्लेटफार्म उपलब्ध कराता है। इसमें आप फाइल , फोल्डर , एप्लीकेशन , शॉर्टकट आदि स्टोर कर सकते है। जब भी आप कंप्यूटर को स्टार्ट करते है तो कंप्यूटर मॉनिटर पर आपको Desktop पर ही आपको स्क्रीन दिखाई देती है।\n...\nडेस्कटॉप आमतौर पर एक वर्चुअल वर्क सरफेस होता है, जिस पर आप फाइलों को स्टोर कर सकते हैं, एप्लिकेशन को लॉन्च कर सकते हैं, या शॉर्टकट के माध्यम से डाटा एक्सेस कर सकते हैं। यह यूज़र्स को यूजर फ्रेंडली प्लेटफार्म प्रदान करता है।\n...\nडेस्कटॉप पर आप अपने कंप्यूटर के बैकग्राउंड वॉलपेपर, आइकन, टास्कबार और अन्य एलिमेंट्स को कस्टमाइज़ कर सकते हैं। इसके अलावा, डेस्कटॉप पर कुछ विजेट जैसे घड़ी, कैलेंडर, मौसम आदि ऐड कर सकते है।\n...\nकुल मिलाकर, डेस्कटॉप एक कंप्यूटर यूज़र्स के के लिए सेंट्रल कण्ट्रोल पॉइंट होता है जहा से आप कंप्यूटर के विभिन्न कार्यो को आसानी से कर सकते है।\n...\nDesktop में निम्नलिखित कॉम्पोनेन्ट शामिल रहते है।\n...\n- Icons: डेस्कटॉप में आपको फ़ाइल , फ़ोल्डर और एप्लीकेशन आदि के आइकॉन देखने को मिल सकते है।\n- Taskbar : टास्कबार आमतौर पर स्क्रीन के बॉटम (विंडोज में) या कार्नर में स्थित होता है, जिसमे रनिंग प्रोग्राम या Quick Access प्रोग्राम को देखा जा सकता है।\n- Wallpaper: डेस्कटॉप के बैकग्राउंड में एक इमेज या पिक्चर देखने को मिल सकती है।\n...\nडेस्कटॉप में आपको फाइल्स ,फ़ोल्डर्स एप्लिकेशन आइकन, टास्कबार, स्टार्ट मेनू, वॉलपेपर, शॉर्टकट और विजेट या गैजेट देखने को मिल जाते है।\n...\nहाँ यूजर अपने सुविधा अनुसार डेस्कटॉप के वॉलपेपर , आइकॉन को अरेंज कर सकता है , डेस्कटॉप में शॉर्टकट बना सकते है , सेटिंग को मैनेज कर सकते है। के ऑपरेटिंग सिस्टम में यूज़र्स डेस्कटॉप को अपने जरुरत के अनुसार कस्टमाइज भी कर सकता है।\n...\nटास्कबार डेस्कटॉप स्क्रीन के नीचे एक हॉरिजॉन्टल बार होती है। Taskbaar में आप रनिंग प्रोग्राम को देख सकते है , स्टार्ट मेनू को फ़ास्ट तरीके से एक्सेस कर सकते है , सिस्टम नोटिफिकेशन , सिस्टम सर्च बार , डेट -टाइम , नेटवर्क जैसे प्रोग्राम को एक्सेस कर सकते है।\n...\nडेस्कटॉप पर शॉर्टकट बनाने के लिए , फाइल , फोल्डर और एप्लीकेशन पर राइट क्लिक करें और Send To मेनू में जाकर Desktop (Create shortcut) पर क्लिक करके शॉर्टकट बनाया जा सकता है ।\n...\nआप डेस्कटॉप पर राइट क्लिक करके “Personalize” या “Properties,” को सेलेक्ट करने के बाद न्यू बैकग्राउंड या कलर को अपने अनुसार बदल सकते है।\n...\nबहुत से ऑपरेटिंग सिस्टम में डेस्कटॉप आइकॉन को टेम्पररी हाईड किया जा सकता है। विंडोज कंप्यूटर में डेस्कटॉप आइकॉन को हाईड करने के लिए डेस्कटॉप पर राइट क्लिक करे और View ऑप्शन में जाकर Show Desktop Icon को चेक अनचेक करके डेस्कटॉप आइकॉन को show या hide किया जा सकता है।\n...\nडेस्कटॉप विजेट या गैजेट छोटे एप्लिकेशन होते हैं जो स्पेसिफिक फंक्शन या इनफार्मेशन को उपलब्ध कराने का कार्य करते हैं, जैसे क्लॉक , कैलेंडर, मौसम अपडेट या सिस्टम मॉनिटरिंग टूल। क्विक एक्सेस के लिए इन्हें डेस्कटॉप पर ऐड किया जा सकता है।\n...\nस्टार्ट मेनू डेस्कटॉप पर एक सेंट्रलाइज लोकेशन है जहां आप इंस्टॉल किए गए एप्लिकेशन, डॉक्यूमेंट , सेटिंग्स तक आसानी से पहुंच सकते हैं और अपने कंप्यूटर को शटडाउन , रीस्टार्ट , लॉक आदि कर सकते हैं। यह विभिन्न कार्यों को नेविगेट करने और लॉन्च करने का एक आसान तरीका होता है।\n\n---\n\nTitle: DESKTOP का हिन्दी अनुवाद | कोलिन्स अंग्रेज़ी-हिन्दी शब्दकोश\nURL: https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop\nPublished: N/A\nAuthor: N/A\nHighlights:\n# desktop का हिन्दी अनुवाद\n \nशब्द आवृत्ति\nShare\n×\n[](https://www.facebook.com/sharer.php?u=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop)[](https://twitter.com/intent/tweet?url=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop&via=collinsdict)\nCredits\n×\n## desktop\n/ˈdesktɒp 'डेस्कटॉप्/\n[](https://www.facebook.com/sharer.php?u=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop)[](https://twitter.com/intent/tweet?url=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop&via=collinsdict)\n**शब्द प्रारूप: **desktops\n1. गणनीय संज्ञा\nThe desktop of a computer is the display of icons that you see on the screen when the computer is ready to use.\n[computing]डेस्कटॉप mn\n2. गणनीय संज्ञा\nA desktop or a desktop computer is a computer that is small enough to fit onto a desk but too big to carry around with you.\nडेस्कटॉप mn\n...\nCopyright © 2014 by HarperCollins Publishers. All rights reserved\n...\nADJECTIVE /ˈdɛskˌtɒp/\n...\n*Desktop* computers are a convenient size for using on a desk or table, but are not designed to be portable.\nWhen launched, this computer was the smallest desktop computer ever produced.\n* अमेरिकन अंग्रेजी: [desktop](https://www.collinsdictionary.com/hi/dictionary/english/desktop-version)\n/ˈdɛsktɒp/\n...\n* ब्राजीली पुर्तगाली\n...\n* चीनी: 台式的\n...\nNOUN /ˈdɛskˌtɒp/\n...\nA *desktop* is a desktop computer.\n* अमेरिकन अंग्रेजी: [desktop](https://www.collinsdictionary.com/hi/dictionary/english/desktop-version)\n/ˈdɛsktɒp/\n...\n](https://www\n\n---\n\nTitle: Desktop Meaning in Hindi: डेस्कटॉप का हिंदी अर्थ और पूरी जानकारी\nURL: https://skilledenglish.com/desktop-meaning-in-hindi/\nPublished: 2026-03-30T01:51:39.000Z\nAuthor: Emma Collins\nHighlights:\nकंप्यूटर की दुनिया में “डेस्कटॉप” एक बहुत ही आम और महत्वपूर्ण शब्द है। अगर आप “desktop meaning in hindi” खोज रहे हैं, तो इसका सीधा और सरल अर्थ है “डेस्क पर रखा जाने वाला” या फिर “डेस्क पर रखने योग्य कंप्यूटर”। यह शब्द दो अंग्रेजी शब्दों “डेस्क” (मेज़) और “टॉप” (ऊपर) से मिलकर बना है। आज के डिजिटल युग में, इस शब्द के दो प्रमुख अर्थ हैं – एक तो भौतिक कंप्यूटर सिस्टम को संदर्भित करता है और दूसरा कंप्यूटर स्क्रीन पर दिखने वाले ग्राफिकल इंटरफेस को। यह लेख डेस्कटॉप के हिंदी अर्थ, इसके प्रकार, घटकों, फायदों और इससे जुड़े सभी पहलुओं पर गहन चर्चा प्रस्तुत करेगा।\n...\nहिंदी में डेस्कटॉप का अर्थ सीधे तौर पर “मेज़ का ऊपरी भाग” या “मेज़ के ऊपर रखी जाने वाली वस्तु” होता है। कंप्यूटिंग के संदर्भ में, यह एक ऐसे कंप्यूटर को दर्शाता है जिसे स्थायी रूप से एक डेस्क या टेबल पर रखा जाता है, जिसके विपरीत लैपटॉप होता है जो पोर्टेबल होता है। इसके अलावा, ऑपरेटिंग सिस्टम के ग्राफिकल यूजर इंटरफेस (GUI) के मुख्य स्क्रीन को भी डेस्कटॉप कहा जाता है, जहाँ आइकन, विंडोज़, और टास्कबार दिखाई देते हैं।\n...\nएक डेस्कटॉप कंप्यूटर एक पर्सनल कंप्यूटर है जो एक निश्चित स्थान पर उपयोग के लिए डिज़ाइन किया गया है। इसमें आमतौर पर एक अलग मॉनिटर, कीबोर्ड, माउस और एक सिस्टम यूनिट (CPU टावर) शामिल होते हैं। यह लैपटॉप की तुलना में आमतौर पर अधिक शक्तिशाली, अपग्रेड करने में आसान और बेहतर शीतलन प्रदान करता है, जिससे यह गेमिंग, ग्राफिक डिजाइन, और विडियो एडिटिंग जैसे भारी कार्यों के लिए आदर्श बन जाता है।\n...\nऑपरेटिंग सिस्टम (जैसे Windows, macOS, Linux) के शुरू होने के बाद जो मुख्य स्क्रीन दिखती है, उसे डेस्कटॉप इंटरफेस कहते हैं। यह उपयोगकर्ता के लिए प्राथमिक कार्य क्षेत्र है। इस पर एप्लिकेशन आइकन, फाइलें, फोल्डर और एक टास्कबार या डॉक स्थित होता है। यह एक डिजिटल डेस्क की तरह काम करता है जहाँ से उपयोगकर्ता सभी कार्यों को व्यवस्थित और एक्सेस कर सकता है।\n...\nडेस्कटॉप का हिंदी में सीधा अर्थ “मेज़ के ऊपर” या “डेस्क पर रखा जाने वाला” होता है। कंप्यूटर के संदर्भ में, इसका दोहरा अर्थ है: (1) एक ऐसा कंप्यूटर जो डेस्क पर स्थायी रूप से रखा जाता है, और (2) ऑपरेटिंग सिस्टम का मुख्य ग्राफिकल इंटरफेस स्क्रीन।\n...\nकंप्यूटर में, डेस्कटॉप दो चीजों को संदर्भित कर सकता है। पहला, भौतिक डेस्कटॉप कंप्यूटर सिस्टम जिसमें मॉनिटर, CPU टावर, कीबोर्ड और माउस शामिल हैं। दूसरा, सॉफ्टवेयर इंटरफेस – वह पहली स्क्रीन जो कंप्यूटर चालू करने के बाद दिखती है, जहाँ आपके आइकन, फाइलें और स्टार्ट मेनू होते हैं।\n...\nमुख्य अंतर पोर्टेबिलिटी, प्रदर्शन और अपग्रेडेबिलिटी में है। डेस्कटॉप स्थिर, अधिक शक्तिशाली और आसानी से अपग्रेड किए जा सकने वाले होते हैं लेकिन पोर्टेबल नहीं होते। लैपटॉप पोर्टेबल, सभी-इन-वन डिवाइस होते हैं लेकिन प्रदर्शन और अपग्रेड विकल्पों में थोड़ा समझौता करते हैं और आमतौर पर समान कॉन्फ़िगरेशन पर अधिक महंगे होते हैं।\n...\nडेस्कटॉप चुनने के लिए सबसे पहले अपनी आवश्यकता (गेमिंग, ऑफिस कार्य, डिजाइनिंग आदि) तय करें। फिर बजट के अनुसार प्रोसेसर (CPU), रैम (कम से कम 8GB), स्टोरेज (SSD अवश्य लें), और ग्राफिक्स कार्ड (यदि गेमिंग या डिजाइन कार्य है तो) का चयन करें। प्री-बिल्ट सिस्टम या कस्टम-बिल्ट PC के विकल्पों पर विचार करें।\n...\n“Desktop meaning in hindi” की खोज केवल एक शब्द का अनुवाद नहीं है, बल्कि आधुनिक कंप्यूटिंग के एक मूलभूत पहलू की गहरी समझ की ओर ले जाती है। डेस्कटॉप, चाहे वह एक भौतिक कंप्यूटर सिस्टम के रूप में हो या एक डिजिटल कार्यक्षेत्र के रूप में, आज भी शक्ति, नियंत्रण और अनुकूलन क्षमता का प्रतीक है। लैपटॉप\n\n---\n\nTitle: Desktop ka matlab | Filo\nURL: https://askfilo.com/user-question-answers-smart-solutions/desktop-ka-matlab-3437363036323438\nPublished: 2026-03-06T02:56:57.000Z\nAuthor: N/A\nHighlights:\nडेस्कटॉप (Desktop) का अर्थ:\n...\nकंप्यूटर की शब्दावली में डेस्कटॉप के मुख्य रूप से दो अर्थ होते हैं:\n...\nसॉफ्टवेयर के संदर्भ में: जब हम कंप्यूटर को चालू (Switch on) करते हैं, तो ऑपरेटिंग सिस्टम (जैसे Windows) लोड होने के बाद जो सबसे पहली मुख्य स्क्रीन दिखाई देती है, उसे डेस्कटॉप कहते हैं। इसमें नीचे की तरफ टास्कबार और स्क्रीन पर विभिन्न आइकन्स (Icons) जैसे My Computer, Recycle Bin आदि होते हैं।\n...\nहार्डवेयर के संदर्भ में: डेस्कटॉप एक प्रकार का पर्सनल कंप्यूटर (PC) है जिसे किसी मेज या डेस्क पर रखकर चलाया जाता है। यह लैपटॉप की तरह पोर्टेबल नहीं होता और इसमें अलग से CPU कैबिनेट, मॉनिटर, कीबोर्ड और माउस जुड़े होते हैं।\n...\nडेस्कटॉप के मुख्य भाग: (i) आइकन्स (Icons): प्रोग्राम्स के छोटे चित्र। (ii) टास्कबार (Taskbar): स्क्रीन के नीचे स्थित पट्टी। (iii) वॉलपेपर (Wallpaper): डेस्कटॉप की बैकग्राउंड इमेज। (iv) स्टार्ट बटन (Start Button): प्रोग्राम्स को एक्सेस करने के लिए।\n\n---\n\nTitle: डेस्कटॉप कंप्यूटर - Vigyanwiki\nURL: https://www.vigyanwiki.in/wiki/%E0%A4%A1%E0%A5%87%E0%A4%B8%E0%A5%8D%E0%A4%95%E0%A4%9F%E0%A5%89%E0%A4%AA_%E0%A4%95%E0%A4%82%E0%A4%AA%E0%A5%8D%E0%A4%AF%E0%A5%82%E0%A4%9F%E0%A4%B0\nPublished: N/A\nAuthor: N/A\nHighlights:\nडेस्कटॉप कंप्यूटर एक व्यक्तिगत कंप्यूटर है जिसे अपने आकार और बिजली की आवश्यकताओं के कारण एक डेस्क पर या उसके पास एक ही स्थान पर नियमित उपयोग के लिए डिज़ाइन किया गया है। सबसे आम कॉन्फ़िगरेशन में एककंप्यूटर पेटिकाहोता है जिसमेंबिजली आपूर्ति इकाई (कंप्यूटर),मदरबोर्ड(केंद्रीय प्रसंस्करण इकाई के रूप में एकमाइक्रोप्रोसेसरके साथ एकमुद्रित सर्किट बोर्ड,मेमोरी,बस (कंप्यूटिंग), कुछ परिधीय और अन्य इलेक्ट्रॉनिक घटक), डिस्क होती है। भंडारण (सामान्यतः एक या अधिकहार्ड डिस्क ड्राइव,सॉलिड स्टेट ड्राइव,ऑप्टिकल डिस्क ड्राइव, और पहली मॉडल में एकफ्लॉपी डिस्क ड्राइव); एककंप्यूटर कीबोर्डऔर इनपुट के लिएकम्प्यूटर का माउस(कंप्यूटर विज्ञान); और एककंप्यूटर मॉनीटर,कंप्यूटर स्पीकर, और, अधिकांशतः, आउटपुट के लिए एक प्रिंटर (कंप्यूटिंग) है। घटनाक्षैतिज और लंबवतउन्मुख हो सकती है और या तो नीचे, बगल में या डेस्क के शीर्ष पर रखा जा सकता है।\n...\nएक ऑल-इन-वन (एआईओ) डेस्कटॉप कंप्यूटर सिस्टम के आंतरिक घटकों को डिस्प्ले के समान स्थितियों में एकीकृत करता है, इस प्रकार एक टावर को सम्मिलित करने वाले डेस्कटॉप की तुलना में एक छोटे पदचिह्न (कम केबल के साथ) पर नियन्त्रण कर लेता है।[36] ऑल-इन-वन सिस्टम को संभवतः ही कभी डेस्कटॉप कंप्यूटर के रूप में लेबल किया जाता है।\n...\nगेमिंग कंप्यूटर उच्च प्रदर्शन सेंट्रल प्रोसेसिंग यूनिट,ग्राफ़िक्स प्रोसेसिंग युनिटऔर उच्च रिज़ॉल्यूशन औरफ्रेम दरपर वीडियो गेम खेलने के लिए अनुकूलितयादृच्छिक अभिगम स्मृतिवाले डेस्कटॉप कंप्यूटर हैं। गेमिंग कंप्यूटर की परिधि में सामान्यतः तेज प्रतिक्रिया समय के लिएकीबोर्ड तकनीकसम्मिलित होती है,[40] और एक गेमिंग कंप्यूटर माउस जो उच्च डॉट्स प्रति इंच गति को ट्रैक कर सकता है।[41]\n...\nलैपटॉपपर डेस्कटॉप का एक लाभ यह है कि स्पेयर पार्ट्स और एक्सटेंशन को मानकीकृत किया जाता है, जिसके परिणामस्वरूप कम कीमत और अधिक उपलब्धता होती है। उदाहरण के लिए, मदरबोर्ड के आकार और माउंटिंग को एटीएक्स,माइक्रोएटीएक्स,बीटीएक्स (फॉर्म फैक्टर)या अन्यकंप्यूटर फॉर्म फैक्टरमें मानकीकृत किया गया है। डेस्कटॉप में कई मानकीकृत विस्तार स्लॉट होते हैं, जैसेपारंपरिक पीसीआईयापीसीआई एक्सप्रेस, जबकि लैपटॉप में केवल एकमिनी पीसीआईस्लॉट और एकपीसी कार्डस्लॉट (याएक्सप्रेस कार्डस्लॉट) होता है। डेस्कटॉप को असेंबल करने और अलग करने की प्रक्रिया सरल और मानकीकृत भी होती है। लैपटॉप के स्थितियों में ऐसा नहीं होता है, चूंकि कुछ हिस्सों को जोड़ना या बदलना, जैसेऑप्टिकल ड्राइव,हार्ड डिस्क, या अतिरिक्तमेमोरी मॉड्यूलजोड़ना अधिकांशतःकाफी सरल होता है। इसका मतलब है कि एक डेस्कटॉप कंप्यूटर कॉन्फ़िगरेशन, सामान्यतः एकटावर बॉक्स, को लैपटॉप की तुलना में अधिक सीमा तक अनुकूलित और उन्नत किया जा सकता है। इस अनुकूलन ने टॉवर स्थितियों को गेमिंग कंप्यूटर और उत्साही कंप्यूटिंग के बीच लोकप्रिय बनाए रखा है।\n...\nएक डेस्कटॉप कंप्यूटर को कम बाधा, ब्लैकआउट और स्पाइक्स जैसी विद्युत गड़बड़ी को संभालने के लिए एक निर्बाध बिजली की आपूर्ति की आवश्यकता होती है; एक डेस्कटॉप पीसी के लिए 20-30 मिनट से अधिक का ऑन-बैटरी समय प्राप्त करने के लिए एक बड़े और महंगे यूपीएस की आवश्यकता होती है।[49][50] पर्याप्त रूप से चार्ज की\n...\nएक डेस्कटॉप कंप्यूटर को अधिकांशतःकम्प्यूटेशनल क्षमता में तुलनीय लैपटॉप पर फायदा होता है। लैपटॉप की तुलना में डेस्कटॉप पर ओवरक्लॉकिंग अधिकांशतःअधिक संभव है; इसी तरह, हार्डवेयर ऐड-ऑन जैसे असतत ग्राफिक्स सह-प्रोसेसर केवल एक डेस्कटॉप में स्थापित करना संभव हो सकता है।[51]\n\n---\n\nTitle: अपने डेस्कटॉप स्क्रीन को हमेशा कैसे रखें व्यवस्थित? यहां जानिए तरीका\nURL: https://hindi.newsbytesapp.com/news/science/how-to-keep-your-desktop-screen-always-organized-know-tips-and-tricks/story\nPublished: 2025-05-29T00:00:00.000Z\nAuthor: N/A\nHighlights:\nअपने डेस्कटॉप स्क्रीन को हमेशा कैसे रखें व्यवस्थित? यहां जानिए तरीका \n\nडेस्कटॉप को हमेशा सलीके से सजाकर रखें\n...\nअपने कंप्यूटर या लैपटॉप पर डेस्कटॉप स्क्रीन को व्यवस्थित रखना हमारे लिए बहुत उपयोगी होता है। स्क्रीन पर जब आइकॉन साफ-सुथरे ढंग से होते हैं तो हमें जरूरी चीजें जल्दी मिल जाती हैं। इससे गलती से किसी और चीज पर क्लिक नहीं होता और काम में रुकावट नहीं आती। जब स्क्रीन अव्यवस्थित होती है तो हमारा ध्यान भटकता है और समय भी बर्बाद होता है। इसलिए जरूरी है कि हम डेस्कटॉप को हमेशा सलीके से सजाकर रखें।\n...\nअगर आप अपने डेस्कटॉप को सही तरीके से व्यवस्थित रखना चाहते हैं तो सबसे पहले आइकनों को समूह में रखें। जैसे ऑफिस के टूल्स, फोटो वाले ऐप्स और मीडिया से जुड़ी चीजें एक साथ हों।\n...\nइसके अलावा, आप फोल्डर बनाकर प्रोजेक्ट, डॉक्यूमेंट्स या इमेज जैसी चीजें अलग-अलग रख सकते हैं। इससे स्क्रीन पर भीड़ नहीं लगती और जरूरत के समय चीजें जल्दी मिल जाती हैं।\n...\nग्रुपिंग और फोल्डर सिस्टम आपको हर दिन का समय बचा सकता है।\n...\nआपके डेस्कटॉप पर जितनी कम चीजें होंगी, उतना अच्छा रहेगा।\n\nइसलिए हमेशा कोशिश करें कि जो फाइल या शॉर्टकट रोज इस्तेमाल नहीं होते, उन्हें डिलीट कर दें या किसी फोल्डर में डाल दें। इससे न सिर्फ आपका डेस्कटॉप साफ रहेगा बल्कि आपकी नजर भी बार-बार इधर-उधर नहीं जाएगी।\n...\nहर हफ्ते कुछ मिनट देकर पुराने और बेकार आइकन हटाएं। इससे डेस्कटॉप हल्का बनेगा और आपको काम करने में अधिक आराम मिलेगा।\n...\nकुछ खास सॉफ्टवेयर टूल्स होते हैं, जो डेस्कटॉप को ऑटोमैटिक तरीके से सजा देते हैं।\n\nआप चाहें तो ऐसे टूल्स का इस्तेमाल करके वर्चुअल डेस्कटॉप बना सकते हैं या आइकनों को पसंद के हिसाब से सेट कर सकते हैं।\n\nइसके साथ ही, समय-समय पर डेस्कटॉप की जांच करते रहें और देखें कि क्या सबकुछ अभी भी जरूरी है।\n...\nइस तरह की नियमित सफाई से आपका कंप्यूटर तेज चलेगा और आप बिना किसी रुकावट के अपना काम कर सकेंगे।\n\n---\n\nTitle: Computer Laptop में Desktop Background (Wallpaper) Change कैसे करें - TutorialPandit.\nURL: https://www.tutorialpandit.com/change-desktop-background/\nPublished: 2026-05-17T02:30:40.000Z\nAuthor: N/A\nHighlights:\nComputer Laptop में Desktop Background (Wallpaper) Change कैसे करें - TutorialPandit.\n...\n# Computer Laptop में Desktop Background (Wallpaper) Change कैसे करें?\n...\nComputerका Desktop Background Change करना बहुत ही आसान है. आप कुछ आसान Steps को Follow करके अपनेकम्प्युटरका Wallpaper बदल सकते है.\n...\nDesktop Background बदलकर हम Windows Desktop को और ज्यादा रूचिकर और सुंदर बना सकते है. आप अपने मन पसंद Photo Picture को Desktop Wallpaper के लिए Set कर सकते है. और Windows Colors, Sounds, Desktop Icons, Mouse Pointers को भी Customized कर सकते है.\n...\nWindows 7 और इससे High Versions में Desktop Background के लिए Themes (Pictures, Sounds, Colors का Mix Combination) का उपयोग किया जाता है. Windows 7 में बहुत सारी Themes दी होती है. आप इनमें से अपनी पसंद की Theme को Desktop Background पर Set कर सकते है.\n...\nइस Tutorial में हम आपको Windows 7 में Desktop Background Change करना के बारे में बताऐंगे. क्योंकि Windows के हर Version में Desktop Background बदलने का तरीका लगभग एक जैसा ही रहता है. बस दिखावट और Options में थोडा बदलाव रहता है. यदि आप Windows 7 में Desktop Background बदलना सीख गए तो आप Windows के किसी भी Version में Desktop Background बदल सकते है.\n...\n## Computer में Desktop Background Change करने का तरीका\n...\n1. सबसे पहले Desktop पर खाली जगह पर कहीं भी Mouse से Right Click कीजिए. अब आपके सामने एक Menu Open होगी. जिसमे से आपको Personalize पर क्लिक करनी है.\n...\n2. अब आपके सामने Windows Personalization Settings Open हो गई है. यहाँ से आप चाहे तो अपने लिए Theme चुनकर Desktop Background बदल सकते है. आप किसी भी Theme (Point Number 1) पर क्लिक कीजिए. और वही Theme आपके Computer का Background बन जाएगी. यदि आप Theme को Desktop Background नही बनाना चाहते है. तो नीचे दिख रहे “Desktop Background” (Point Number 2) पर क्लिक कीजिए.\n...\n3. अब आपके सामने Desktop Background Window खुल गई है. यहाँ से अपनी मन पसंद का Photo चुनकर Desktop Background बना सकते है. अपनी पसंद की Photo को Wallpaper बनाने के लिए. पहले Browse पर जाकर अपनी Picture ढूंढे. इसके बाद Picture Position मे जाकर Wallpaper की Position Set कीजीए. और इसके बाद Save Changes पर क्लिक कर दीजिए.\n...\n4. ऐसा करते ही आपका Desktop Background बदल जाएगा. और अब आपका मन पसंद फोटो आपका Desktop Wallpaper बन गया है.\n...\n## Computer में Wallpaper Set करने का Shortcut तरीका\n...\nआप ऊपर बताए गए तरीके से तो अपने Computer का Background Change कर ही सकते है. इसके अलावा आप अन्य तरीकों से भी अपने Computer का Desktop Background बदल सकते है. और वो भी एक ही क्लिक में.\n...\nतो इसके बारे में हम नीचे Step-by-Step तरीके से बता रहे है. आप नीचे दिए गए Steps को Follow कीजिए.\n...\n1. सबसे पहले आप जिस Photo Picture को अपने Computer का Wallpaper Set करना चाहते है. पहले उस Photo Picture की Location पर जाए.\n...\n2. इसके बाद उस Photo Picture पर Mouseकी Left क्लिक एक बार दबाकर. Right Click को भी दबाएं. ऐसा करने पर आपके सामने Right Click Menu खुलेगी. यहाँ से आपको Set as desktop background पर क्लिक कीजिए. नीचे Screenshot देंखे.\n...\n3. अब आपकी मन पसंद फोटो आपके कम्प्युटर का Wallpaper बन चुकी है. जिसे आप Desktop पर जाकर देख सकते है.\n...\nइस Tutorial में आपने जाना कि Computer Desktop Background कैसे Change करते है. हमने आपको बताया कि कैसे आप अपने खुद के फोटो को भी Wallpaper बना सकते है. हमे उम्मीद है कि यह Tutorial आपके लिए उपयोगी साबित होगा और आप आसानी से अपने कम्प्युटर का Background Change कर सकते है.",
+      "title": "Web search: मेरे डेस्कटॉप",
+      "metadata": {},
+      "time": {
+        "start": 1789528798996,
+        "end": 1789528804076
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528804083,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a8af1001CitCyojOQbjOjV",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a7546001OiWw2ziLPs3TjH",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8553,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8626,
+      "headroom": 30230,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.084Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.084Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.085Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.086Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.087Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.087Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.087Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.087Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.087Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.088Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.103Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8626,
+  "providerTokens": 8626,
+  "estimatedInputTokens": 6364,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8553,
+    "cacheRead": 0,
+    "output": 73
+  },
+  "overflow": false,
+  "headroom": 30230,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.104Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.104Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.106Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.107Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.824Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528804824,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a8dd7001LlUoNmTclzHeAT",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a8b07001vvVF4ZWthOrd72",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.824Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.824Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528804824,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a8dd8002t2J39TcRfQG3Lq",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a8b07001vvVF4ZWthOrd72",
+    "type": "tool",
+    "callID": "call_20fcaae9ecafcf28",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.824Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528804824,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a8dd80010GdquW7fLRfpFv",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a8b07001vvVF4ZWthOrd72",
+    "type": "text",
+    "text": "मैं https://www.tutorialpandit.com/windows-desktop/ खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528804824,
+      "end": 1789528804824
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:04.824Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528804824,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a8dd8002t2J39TcRfQG3Lq",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a8b07001vvVF4ZWthOrd72",
+    "type": "tool",
+    "callID": "call_20fcaae9ecafcf28",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.tutorialpandit.com/windows-desktop/"
+      },
+      "time": {
+        "start": 1789528804824
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.602Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528805602,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a8dd8002t2J39TcRfQG3Lq",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a8b07001vvVF4ZWthOrd72",
+    "type": "tool",
+    "callID": "call_20fcaae9ecafcf28",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.tutorialpandit.com/windows-desktop/"
+      },
+      "output": "Windows Desktop in Hindi की पूरी जानकारी - TutorialPandit.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n\r\nClose This Ads\r\n\r\n\r\n\r\n\n\n\n\n\n\n\n\tSkip to content\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tMenu\t\t\t\t\n\t\t\t\tHome\nLatest News\nTutorials\n\n\tComputer\n\tCSS\n\tHTML\n\tMS Excel\n\tMS Paint\n\tMS PowerPoint\n\tMS Word\n\tNotepad\n\tInternet\n\tChrome\n\tWindows\n\tGmail\n\tWordPad\n\tAndroid\n\tCyber Security\n\tFirefox\n\n\nTech News\n\n\tTelegram\n\tPaytm\n\tPhonePe\n\tSignal App\n\tWhatsApp\n\n\nMake Money\n\n\tWordPress\n\tBlogger\n\tYouTube\n\tFacebook\n\n\nTips and Tricks\n\t\n\t\t\n\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\t\t\t\n\t\t\t\n\t\n\t\t\n\t\t\t\n\n\n\n\n\nWindows\n\n\n\nडेस्कटॉप क्या हैं विंडॉज डेस्कटॉप की पूरी जानकारी हिंदी में\n\n\n\n\n\n\n\n\n\nby Girraj Prasad\n\n\nUpdated On: November 10, 2021 8:03 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWindows Operating System को जब शुरु किया जाता हैं. तब User के सामने जो स्क्रीन दिखाई देती हैं, उसे सामुहिक रूप से Desktop कहा जाता हैं.\n\n\n\nWindows Desktop एक मेज की ऊपरी परत की तरह कार्य करता हैं. जिस पर सामान को रखा जाता हैं. जब किसी Folder, File, Program या अन्य Item को Run किया जाता है तो वह Desktop पर ही Run होता हैं.\n\nDesktop पर User Files, Folders, Pictures, Musics आदि Data को भी रख सकते हैं. और उसे अपने हिसाब से Arrange भी कर सकते हैं.\n\n\n\nDesktop की बनावट और दिखावट Windows Version पर निर्भर करती हैं क्योंकि Windows के अलग-अलग संस्करण में Desktop में कुछ बदलाव किये जाते हैं. जिन्हे बहुत ही आसानी से पहचाना जा सकता हैं.\n\n\n\nनीचे आप एक Desktop की शुरुआत की Picture देख रहे हैं जो पहली बार Windows को शुरु करने पर दिखाई देती हैं. यह Windows 7 की Desktop Screen हैं. जो अन्य संस्करणों में भी लगभग इसी के समान हैं.\n\n\n\n\n\n\n\nऊपर स्क्रीनशॉट में आप देख रहे है कि कुछ नम्बर लिखे हुए हैं. ये नम्बर Desktop के अलग-अलग भागों को Represent कर रहे हैं. जिनके बारे में हम नीचे बता रहे हैं. वास्तव में windows Desktop के तीन मुख्य भाग होते हैं.\n\n\n\nDesktop IconThe TaskbarDesktop Background\n\n\n\nDesktop Icon\n\n\n\nDesktop Shortcut कम्प्युटर में स्थित कोई दस्तावेज, फाईल या अन्य कोई Item, जो कम्प्युटर में है, उसकि link होती है. Users को पहली बार Window Start करने पर केवल एक ही Icon (Recycle Bin) दिखाई देता हैं. लेकिन, कुछ Manufactures एक से ज्यादा Icons भी Desktop पर छोड देते हैं.\n\n\n\nDesktop Icons को Shortcut भी कहा जाता हैं. ये Shortcut उस प्रोग्राम, फाईल, फोल्डर का होता हैं जो कम्प्युटर में स्थित होता हैं. Shortcut Icon पर डबल क्लिक करके संबंधित Item को Open किया जा सकता हैं.\n\nDesktop Icons के द्वारा Items की Location पर भी पहुँचा जा सकता हैं. तथा कुछ अतिरिक्त जानकारी के बारे में भी पता लगाया जा सकता हैं.\n\n\n\nThe Taskbar\n\n\n\nTaskbar एक आडि आयताकार पट्टी होती हैं. जो By Default Desktop में नीचे की तरफ होती हैं. Taskbar Desktop का सबसे महत्वपूर्ण हिस्सा होती हैं.\n\n\n\nTaskbar पर Windows Items को Navigation करने के लिए कई अलग-अलग भागों में बांटा जाता हैं. जिसमें Start Button, Icons, Notification Area और Show Desktop Button आदि शामिल होते हैं.\n\n\n\nTaskbar के बारे में विस्तार से हमने Taskbar Tutorial में बताया हैं. क्योंकि यहाँ इसके बारे में पूरी जानकारी नही दी जा सकती हैं.\n\n\n\nDesktop Background\n\n\n\nजो Picture आपको Desktop पर दिख रही हैं उसे Desktop Background कहा जाता हैं.&nbsp; Windows OS में Picture और Theme दो प्रकार के Background लगाये जा सकते हैं.\n\n\n\nBackground से Desktop को Personalize किया जाता हैं. यहाँ Users अपनी पसंद के अनुसार कोई भी Picture को इस्तेमाल कर सकते हैं. Users ख़ुद की फोटो को भी Desktop Background बना सकते हैं.\n\n\n\nआपने क्या सीखा?\n\n\n\nइस Lesson में हमने आपको Windows Desktop के बारे में पूरी जानकारी दी हैं. और आपने Desktop के विभिन्न भागों के बारे में भी जाना हैं. हमे उम्मीद है कि यह Lesson आपके लिए उपयोगी साबित होगा.\n\n\n\n #BeDigital \n\n\n\n\n\n\n\n\n\n\nLatest Stories\n\n\n\n\n\n\n\n\nComputer Laptop में Desktop Background (Wallpaper) Change कैसे करें?\n\n\n\n\n\n\n\nWindows 11 में PNG को PDF में Convert कैसे करें &#8211; How to Convert a PNG to PDF on Windows 11\n\n\n\n\n\n\n\nWindows 11 में Timer Set कैसे करें &#8211; How to Set Times in Windows 11 in Hindi?\n\n\n\n\n\n\n\t\t\t\n\t\t\t\t\n\n\t4 thoughts on &ldquo;डेस्कटॉप क्या हैं विंडॉज डेस्कटॉप की पूरी जानकारी हिंदी में&rdquo;\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tGoverdhan\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tAugust 29, 2020 at 12:19 am\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\tThanks sir lakin mere computer ka desktop background change nahi ho raha h kya Kare\nReply\t\t\t\t\n\t\t\t\n\t\t\t\n\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tTP Staff\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tAugust 29, 2020 at 8:07 pm\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\tगोवर्धन जी, आपको क्या दिक्कत आ रही है? कृपया यहां पर बताइए.\nReply\t\t\t\t\n\t\t\t\n\t\t\t\n\n\n\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tNayan Mehra\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tNovember 27, 2019 at 8:48 pm\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\tThanks\nReply\t\t\t\t\n\t\t\t\n\t\t\t\n\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tNitin Kumar Jhariya\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tDecember 11, 2019 at 10:07 pm\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\tTqsm sir\nReply\t\t\t\t\n\t\t\t\n\t\t\t\n\n\n\t\t\n\n\t\t\t\n\t\tLeave a Comment Cancel replyCommentName\nEmail\nWebsite\n \n\n\t\n\t\n\n\t\t\t\n\n\t\t\t\n\n\n\t\n\t\t\n\n\n    Latest News\n\n\n\n\n\n\n\n\n       September 12, 2026\n\nFree Apps Video Calling- online video call app\n\n\n\n\n\n\n\n\n\n\n\n7 Best Video Calling Apps Name for Android Mobile in Hindi &#8211; 7 बेस्ट वीडियो कॉलिंग एप्स के नाम\n\nJune 4, 2026\n\n\n\n\n\n\n\n\n\n\n\nAadhaar कब और कहां हुआ इस्तेमाल? ऐसे चेक करें पूरी हिस्ट्री\n\nMay 24, 2026\n\n\n\n\n\n\n\n\n\n\n\nTelegram से पैसे कैसे कमाएं 8 धांसू तरीके जो आपको टेलिग्राम से ऑनलाइन पैसा कमाकर देंगे\n\nMay 23, 2026\n\n\n\n\n\n\n\n\n\n\n\nFacebook पर वीडियो अपलोड करके पैसे कैसे कमाएं\n\nMay 22, 2026\n\n\n\n\n\n\n\n\n\n\n\nCoindcx Download\n\nMay 22, 2026\n\n\n\n\n\n\n\n\n\n\t\n\n\n\t\n\n\n\n\n\t\n\n\n\n\n\n\n\n\nTutorialPandit एक Online Tutorial Portal (OTP) है, यहाँ पर आप कहीं भी, कैसे भी और कभी भी अपनी भाषा में सीख एवं सिखा सकतें है. अभी TutorialPandit पर हम Computer fundamentals, Windows, MS Office, MS Word, Excel, PowerPoint, Notepad, WordPad, Paint, Android, WordPress, Blogger आदि के Tutorials आपकी भाषा (हिंदी) में मुफ्त ऑनलाईन उपलब्ध करवाते है. आप, कुछ वेब संबंधित तकनीक जैसे HTML तथा CSS भी अपनी भाषा में सीख सकते है. आने वाले समय में हम TutorialPandit पर अन्य विषयों के Tutorials भी उपलब्ध करवाएंगे.\n\n\n\n\n\nCategories\n\n\n\nIndia News\n\n\n\nWorld News\n\n\n\nBusiness News\n\n\n\nSports News\n\n\n\n\n\nImportant Links\n\n\n\nAbout Us\n\n\n\nContact Us\n\n\n\nAdvertise With Us\n\n\n\nPrivacy policy\n\n\n\n\n\n\n\n© tutorialpandit.com • All rights reserved\n\n\n\n\n\n\n\n\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\nHome\nLatest News\nTutorials\n\n\tComputer\n\tCSS\n\tHTML\n\tMS Excel\n\tMS Paint\n\tMS PowerPoint\n\tMS Word\n\tNotepad\n\tInternet\n\tChrome\n\tWindows\n\tGmail\n\tWordPad\n\tAndroid\n\tCyber Security\n\tFirefox\n\n\nTech News\n\n\tTelegram\n\tPaytm\n\tPhonePe\n\tSignal App\n\tWhatsApp\n\n\nMake Money\n\n\tWordPress\n\tBlogger\n\tYouTube\n\tFacebook\n\n\nTips and Tricks\n\t\t\t\n\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\tClose\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\t\n\t\tSearch for:",
+      "title": "https://www.tutorialpandit.com/windows-desktop/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528804824,
+        "end": 1789528805601
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528805603,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a90e2001zEcs35uROCQrmJ",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a8b07001vvVF4ZWthOrd72",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 29370,
+      "output": 162,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 29532,
+      "headroom": 9324,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.605Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.606Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.607Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.607Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.607Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.612Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 29532,
+  "providerTokens": 29532,
+  "estimatedInputTokens": 8069,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 29370,
+    "cacheRead": 0,
+    "output": 162
+  },
+  "overflow": false,
+  "headroom": 9324,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.613Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.613Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.615Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:05.616Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:06.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528806100,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a92d3001N34Pc3ZvC0Aa3T",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a90ec001U93qXnGXKLgIQO",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:06.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:06.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528806100,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a92d4002gtSe3JOf0sh5YY",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a90ec001U93qXnGXKLgIQO",
+    "type": "tool",
+    "callID": "call_c5c4ccc23143f331",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:06.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528806100,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a92d4001MAWtu1uVFPbP6K",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a90ec001U93qXnGXKLgIQO",
+    "type": "text",
+    "text": "मैं https://dailytechreview.com/desktop-kya-hai/ खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528806100,
+      "end": 1789528806100
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:06.101Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528806101,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a92d4002gtSe3JOf0sh5YY",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a90ec001U93qXnGXKLgIQO",
+    "type": "tool",
+    "callID": "call_c5c4ccc23143f331",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://dailytechreview.com/desktop-kya-hai/"
+      },
+      "time": {
+        "start": 1789528806101
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.768Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528807768,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a92d4002gtSe3JOf0sh5YY",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a90ec001U93qXnGXKLgIQO",
+    "type": "tool",
+    "callID": "call_c5c4ccc23143f331",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://dailytechreview.com/desktop-kya-hai/"
+      },
+      "output": "Desktop Kya Hai ? डेस्कटॉप के प्रमुख कार्य - DailyTechReview\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n        \n\t\t\t\n\n\t\n\t\n\t\n\n\t\tSkip to content\n\n\t\t\n\t\t\n\n\t\t\t\n\t\t\t\n\n\n\t\n\t\t\t\t\t\n\t\t\t\n\n\t\t\t\t\n\t\t\t\t\n\n\n\n\t\n\t\n\n\t\t\t\t\t\tDailyTechReview\n\t\t\t\t\n\t\n\n\t\n\t\n\n\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\n\t\t\t\tTech News\n\n\tTech Viral News\tProduct Review\tSocial Media\tGoogle\nTutorials\n\n\tBasic Computer Topics\tHardware Tutorials\tNetworking Tutorials\tSoftware Tutorials\tLinux Tutorials\tWindows Server Tutorials\tM S Office Tutorials\n\t\n\t\tMS Excel\t\tMS Word\t\tPowerpoint\t\n\tWindows 10\tWindows 10\tWindows Command Prompt\tSecurity Tutorials\nOS Instalattion\n\n\tWindows 7 Installation\tWindows 8.1 Installation\tWindows 10 Insallation\tLinux Installation\tWindows 11 Installation\tUbuntu Installation\tDebian Installation\tKali Linux Installation\nWeb-development\n\n\tWordPress\tSEO\tDomain Name Tutorials\tWeb Hosting Tutorials\nCareers/Make Money\n\n\tComputer Courses\tCareer &#038; Jobs\tMake Money\nHow ToHistory of TechnologyQuestions &amp; AnswersSoftwareBooksGKFull FormTop 10Buying GuideMisc\n\n\tAndroid\tDatabase\nToggle website search\n\n\t\n\t\n\t\n\t\t\n\n\n\t\t\t\n\n\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\t\t\t\t\n\t\n\t\n\n\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tMenu\n\t\t\t\tClose\n\t\t\t\t\t\t\n\n\t\t\n\t\t\n\t\t\n\t\n\n\t\n\n\t\t\t\n\n\t\t\t\n\n\n\t\n\n\t\tTech News\n\n\tTech Viral News\n\tProduct Review\n\tSocial Media\n\tGoogle\n\n\nTutorials\n\n\tBasic Computer Topics\n\tHardware Tutorials\n\tNetworking Tutorials\n\tSoftware Tutorials\n\tLinux Tutorials\n\tWindows Server Tutorials\n\tM S Office Tutorials\n\t\n\t\tMS Excel\n\t\tMS Word\n\t\tPowerpoint\n\t\n\n\tWindows 10\n\tWindows 10\n\tWindows Command Prompt\n\tSecurity Tutorials\n\n\nOS Instalattion\n\n\tWindows 7 Installation\n\tWindows 8.1 Installation\n\tWindows 10 Insallation\n\tLinux Installation\n\tWindows 11 Installation\n\tUbuntu Installation\n\tDebian Installation\n\tKali Linux Installation\n\n\nWeb-development\n\n\tWordPress\n\tSEO\n\tDomain Name Tutorials\n\tWeb Hosting Tutorials\n\n\nCareers/Make Money\n\n\tComputer Courses\n\tCareer &#038; Jobs\n\tMake Money\n\n\nHow To\nHistory of Technology\nQuestions &amp; Answers\nSoftware\nBooks\nGK\nFull Form\nTop 10\nBuying Guide\nMisc\n\n\tAndroid\n\tDatabase\n\n\nToggle website search\n\n\t\n\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\n\n\t\n\n\n\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\n\n\n\t\t\t\n\t\t\t\n\n\t\t\t\t\r\n\r\n\r\n\r\n\t\r\n\t\r\n\r\n\t\t\r\n\t\t\tDektop Kya Hai ? डेस्कटॉप के प्रमुख कार्य\r\n\r\n\t\t\t\r\n\t\t\r\n\t\tHome>windows>Dektop Kya Hai ? डेस्कटॉप के प्रमुख कार्य\r\n\t\r\n\r\n\t\r\n\t\r\n\r\n\r\n\n\t\n\t\n\n\t\t\n\t\t\n\n\t\t\t\n\t\t\t\n\n\t\t\t\t\n\t\t\t\t\n\n\n\n\t\n\n\n\t\n\tDektop Kya Hai ? डेस्कटॉप के प्रमुख कार्य\n\n\n\n\n\n\t\n\n\n            \n\n    \n\n            \n            \n\n\n        \n            \n            \n\n\n        \n            \n            \n\n\n        \n            \n            \n\n\n        \n            \n            \n\n\n        \n    \n    \n\n            \n            \n\n\n        \n            \n            \n\n\n        \n            \n            \n\n\n        \n            \n            \n\n\n        \n            \n            \n\n\n        \n    \n\n                \n\n\n            Rate this post\n    \n    \n\nDesktop Kya Hai -डेस्कटॉप कंप्यूटर स्क्रीन होती है जो यूजर को कार्य करने के लिए Graphical user interface (GUI) प्लेटफार्म उपलब्ध कराता है। इसमें आप फाइल , फोल्डर , एप्लीकेशन , शॉर्टकट आदि स्टोर कर सकते है। जब भी आप कंप्यूटर को स्टार्ट करते है तो कंप्यूटर मॉनिटर पर आपको Desktop पर ही आपको स्क्रीन दिखाई देती है।\n\n\n\nडेस्कटॉप आमतौर पर एक वर्चुअल वर्क सरफेस होता है, जिस पर आप फाइलों को स्टोर कर सकते हैं, एप्लिकेशन को लॉन्च कर सकते हैं, या शॉर्टकट के माध्यम से डाटा  एक्सेस कर सकते हैं। यह यूज़र्स को यूजर फ्रेंडली प्लेटफार्म  प्रदान करता  है।\n\n\n\nडेस्कटॉप पर आप अपने कंप्यूटर के बैकग्राउंड वॉलपेपर, आइकन, टास्कबार और अन्य एलिमेंट्स को कस्टमाइज़ कर सकते हैं। इसके अलावा, डेस्कटॉप पर कुछ विजेट&nbsp; जैसे घड़ी, कैलेंडर, मौसम आदि ऐड कर सकते है।\n\n\n\n\n\nकुल मिलाकर, डेस्कटॉप एक कंप्यूटर यूज़र्स के&nbsp; के लिए सेंट्रल कण्ट्रोल पॉइंट होता है&nbsp; जहा से आप कंप्यूटर के विभिन्न कार्यो को आसानी से कर सकते है।\n\n\n\nDesktop में निम्नलिखित कॉम्पोनेन्ट शामिल रहते है।\n\n\n\n\nIcons:  डेस्कटॉप में आपको फ़ाइल , फ़ोल्डर और एप्लीकेशन आदि के आइकॉन देखने को मिल सकते है।\n\n\n\nTaskbar :  टास्कबार  आमतौर पर स्क्रीन के बॉटम  (विंडोज में) या कार्नर  में स्थित होता है, जिसमे रनिंग प्रोग्राम या Quick Access प्रोग्राम को देखा जा सकता है।\n\n\n\nWallpaper: डेस्कटॉप के बैकग्राउंड में एक इमेज या पिक्चर देखने को मिल सकती है।\n\n\n\n\nDesktop FAQ : डेस्कटॉप से सम्बंधित पूछे जाने वाले सवाल\n\n\n\nQ1 : डेस्कटॉप में किस तरह के कॉम्पोनेन्ट देखने को मिलते है डेस्कटॉप में आपको  फाइल्स ,फ़ोल्डर्स  एप्लिकेशन आइकन, टास्कबार, स्टार्ट मेनू, वॉलपेपर, शॉर्टकट और विजेट या गैजेट  देखने को मिल जाते है।  Q2 : क्या डेस्कटॉप को अपने अनुसार कस्टमाइज किया जा सकता है हाँ यूजर अपने सुविधा अनुसार डेस्कटॉप के वॉलपेपर , आइकॉन को अरेंज कर सकता है , डेस्कटॉप में शॉर्टकट बना सकते है , सेटिंग को मैनेज कर सकते है। के ऑपरेटिंग सिस्टम में यूज़र्स  डेस्कटॉप को अपने जरुरत के अनुसार कस्टमाइज भी कर सकता है।  Q3 : डेस्कटॉप पर टास्कबार का  क्या कार्य होता  है? टास्कबार डेस्कटॉप स्क्रीन के नीचे एक हॉरिजॉन्टल बार होती है। Taskbaar में आप  रनिंग  प्रोग्राम को देख सकते है , स्टार्ट मेनू को फ़ास्ट तरीके से एक्सेस कर सकते है , सिस्टम नोटिफिकेशन , सिस्टम सर्च बार , डेट -टाइम , नेटवर्क जैसे प्रोग्राम को एक्सेस कर सकते है।    Q4 : डेस्कटॉप पर फाइल फोल्डर और  एप्लीकेशन का शॉर्टकट कैसे बनाये डेस्कटॉप पर शॉर्टकट बनाने के लिए , फाइल , फोल्डर और एप्लीकेशन पर राइट क्लिक करें  और Send To मेनू में जाकर  Desktop (Create shortcut) पर क्लिक करके  शॉर्टकट बनाया जा सकता है ।  Q5 : कंप्यूटर डेस्कटॉप का बैकग्राउंड बदल सकते है। आप डेस्कटॉप पर राइट क्लिक करके &#8220;Personalize&#8221; या  &#8220;Properties,&#8221; को सेलेक्ट करने के बाद न्यू बैकग्राउंड या कलर को अपने अनुसार बदल सकते है।  Q6 : डेस्कटॉप आइकॉन हाईड कर सकते है।  बहुत से ऑपरेटिंग सिस्टम में डेस्कटॉप आइकॉन को टेम्पररी  हाईड किया जा सकता है। विंडोज कंप्यूटर में डेस्कटॉप आइकॉन को हाईड करने के लिए डेस्कटॉप पर राइट क्लिक करे और View ऑप्शन में जाकर Show Desktop Icon  को चेक अनचेक करके डेस्कटॉप आइकॉन को show या  hide किया जा सकता है।  Q7 : डेस्कटॉप विजेट या गैजेट क्या हैं? डेस्कटॉप विजेट या गैजेट छोटे एप्लिकेशन होते हैं जो स्पेसिफिक फंक्शन या इनफार्मेशन को उपलब्ध कराने का कार्य  करते हैं, जैसे क्लॉक , कैलेंडर, मौसम अपडेट या सिस्टम मॉनिटरिंग टूल। क्विक एक्सेस  के लिए इन्हें डेस्कटॉप पर ऐड किया  जा सकता है।  Q8 : डेस्कटॉप पर स्टार्ट मेनू का क्या कार्य है? स्टार्ट मेनू डेस्कटॉप पर एक सेंट्रलाइज लोकेशन   है जहां आप इंस्टॉल किए गए एप्लिकेशन, डॉक्यूमेंट , सेटिंग्स तक आसानी से  पहुंच सकते हैं और अपने कंप्यूटर को शटडाउन , रीस्टार्ट , लॉक आदि  कर सकते हैं। यह विभिन्न कार्यों को नेविगेट करने और लॉन्च करने का एक आसान  तरीका होता  है।  \n\n\n\nसम्बंधित जानकारी\n\n\nGuest Account क्या है और विंडोज़ 10 में गेस्ट अकाउंट कैसे बनाये\nDektop Kya Hai ? डेस्कटॉप के प्रमुख कार्य\nBatch File क्या है ? बैच फाइल के उपयोग और कैसे चलाए\nComputer में New Drive Create और Format कैसे बनाये\nपीडीएफ क्या है? कम्प्यूटर से PDF File कैसे बनाये।\nऑपरेटिंग सिस्टम में Virtual Memory क्या है ? फ़ायदे , नुक़सान और कैसे कार्य करता है\nComputer और Laptop में Alarm Clock कैसे सेट करे\nComputer Hosts Files क्या है ? उपयोग और Edit कैसे करें\nWindows 10 Computer में New User Account कैसे बनाये\n\n\n\n\n\n\n\n\t\n\t\t\n\t\t\tPlease Share This\n\t\t\tShare this content\n\t\t\n\n\t\n\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tOpens in a new window\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tOpens in a new window\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tOpens in a new window\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tOpens in a new window\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tOpens in a new window\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\n\t\n\n\n\n\n\n\n\n\n\t\n\n\t\t\n\n\t\t\t\n\t\t\t\t\n\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tsiya\t\t\t\t\n\t\t\t\n\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tनमस्कार ! मै Simi Kaithal इस वेबसाइट का Owner और Founder हु। हम  इस वेबसाइट में एक प्रोफेशनल ब्लॉगर की तरह कार्य करते है , जहा पर रीडर को  Technical Blogging , web Development ,SEO, Software , GK एवं अन्‍य जानकारी दी जाती है । इस वेबसाइट  का पूर्ण  मकसद अधिक से अधिक लोगो को फ्री में जानकारी देना है।\r\n\r\nकिसी भी प्रकार के सवाल या डाउट जिसका अभी तक हल न मिला हो बेझिझक हमसे पूछ सकते है ।\t\t\t\t\n\n\t\t\t\n\t\t\n\n\t\n\n\n\n\n\t\n\n\t\t\n\t\t\tYou Might Also Like\n\t\t\n\n\t\t\n\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\tWindows 10/11 में Programs और Setting ओपन करने के 101 Shortcut ट्रिक\n\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tOctober 18, 2023\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\tpen drive को bootable कैसे बनाये\n\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tFebruary 18, 2021\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\tUsername kya hota hai? यूजरनेम का उपयोग औरआईडी कैसे बनाएं\n\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\tSeptember 19, 2023\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\n\t\t\n\n\t\n\n\n\n\n\n\n\t\n\t\n\t\t\n\t\tLeave a Reply Cancel replyCommentEnter your name or username to comment\nEnter your email address to comment\nEnter your website URL (optional)\n Save my name, email, and website in this browser for the next time I comment.\n \n\n\t\n\t\n\n\n\n\n\n\n\n\t\n\t\n\n\t\tSearchSearch\n\nलेटेस्ट 5G मोबाइल फोन्स\n\n\n\n5000 रुपये में बेस्ट मोबाइल फोन्स\n\n\n\n10000 रुपये में बेस्ट मोबाइल फोन्स\n\n\n\n15000 रुपये में बेस्ट मोबाइल फोन्स\n\n\n\n20000 रुपये में बेस्ट मोबाइल फोन्स\n\n\n\n25000 रुपये में बेस्ट मोबाइल फोन्स\n\n\n\n30000 रुपये में बेस्ट मोबाइल फोन्स\n\n\nLatest Post\nकंप्यूटर को वायरस से कैसे बचाएं? बचने के 10 बेहतरीन उपाय\nडिवाइस ड्राइवर क्या है? फ़ीचर, प्रकार और कैसे काम करता है?\nभारत में सफल होने वाले टॉप 100 बिजनेस आईडियाज\nप्रिंटर क्या है? प्रिंटर का इतिहास, प्रिंटर के प्रकार, विशेषताएं और उपयोग\nड्रॉपशिपिंग बिजनेस क्या है? फायदे, नुकसान और कैसे शुरू करें\nडोमेन पार्किंग क्या है? डोमेन पार्किंग के प्रकार, फायदे और नुकसान\n\t\n\n\t\n\n\n\n\t\n\n\t\n\r\n\t\r\n\r\n\t\r\n\t\r\n\t\r\n\t\t\n\n\n\t\n\t\n\n\t\t\n\n\n\n\t\n\t\n\n\t\t\t\t\t\n\t\t\t\t\nInstagram\n\nLinkedIn\n\nPinterest\n\nTwitter\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tSitemap\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tGuest Post\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\nOTHER GROUP SITES\n\nSimitech.inSimiservice.combestwomendress.insiyaservice.com\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tJOIN OUR COMMUNITY\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\tSubscribe to get updates on the latest in professional and interactive technologies, IT news and special offers from DialyTechreview.\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\t\t\r\n\r\n\t\t\t\t\t\r\n\t\t\t\t\t\r\n\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\tEmail is required\r\n\t\t\t\t\t\tEmail is not valid\r\n\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\tThanks for your subscription.\r\n\t\t\t\t\t\tFailed to subscribe, please contact admin.\r\n\t\t\t\t\t\r\n\r\n\t\t\t\t\r\n\r\n\t\t\t\r\n\r\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\n\n\t\n\n\n\n\n\n\n\t\n\t\n\n\t\t\n\t\t\t\n\n\t\t\t\tGuest Post\nContact Us\nAbout Us\nPrivacy Policy\nDISCLAIMER\nSitemap\n\n\t\t\t\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t© 2023 dailytechreview.com  | All Rights Reserved",
+      "title": "https://dailytechreview.com/desktop-kya-hai/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528806101,
+        "end": 1789528807766
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.769Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528807769,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9958001M1Fai2ZYPkJN8y",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a90ec001U93qXnGXKLgIQO",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 36159,
+      "output": 156,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 36315,
+      "headroom": 2541,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.769Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.770Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.771Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.771Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.773Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.773Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.774Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.774Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.774Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.775Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.784Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 36315,
+  "providerTokens": 36315,
+  "estimatedInputTokens": 11027,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 36159,
+    "cacheRead": 0,
+    "output": 156
+  },
+  "overflow": false,
+  "headroom": 2541,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.785Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.785Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.787Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:07.789Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.277Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528808278,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9b4e001kLVkwwV0cWeQSy",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9968001Pv5vCoZh5Ar8e8",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.278Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.278Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528808278,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9b56002kHHDWtwm5pdWyO",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9968001Pv5vCoZh5Ar8e8",
+    "type": "tool",
+    "callID": "call_01f751f366e5fbec",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.278Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528808278,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9b56001IMh8kxgIRdM0xr",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9968001Pv5vCoZh5Ar8e8",
+    "type": "text",
+    "text": "मैं https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528808278,
+      "end": 1789528808278
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.278Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528808278,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9b56002kHHDWtwm5pdWyO",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9968001Pv5vCoZh5Ar8e8",
+    "type": "tool",
+    "callID": "call_01f751f366e5fbec",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop"
+      },
+      "time": {
+        "start": 1789528808278
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528808432,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9b56002kHHDWtwm5pdWyO",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9968001Pv5vCoZh5Ar8e8",
+    "type": "tool",
+    "callID": "call_01f751f366e5fbec",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789528808278,
+        "end": 1789528808430
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528808432,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528808433,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9bf0001Y2qGOXm0j9TZhd",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9968001Pv5vCoZh5Ar8e8",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 46704,
+      "output": 206,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 46910,
+      "headroom": -8054,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.434Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.437Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.438Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.438Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.443Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 46910,
+  "providerTokens": 46910,
+  "estimatedInputTokens": 11053,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 46704,
+    "cacheRead": 0,
+    "output": 206
+  },
+  "overflow": true,
+  "headroom": -8054,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.445Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.445Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.449Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.449Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.449Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.450Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.451Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:08.452Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.151Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528809151,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9ebe001179XEgwRWTu1Tv",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9c02001BZ381o82hpppj7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.152Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.153Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.153Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.153Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528809153,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9ec1001hvq0jmP4emgI4V",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9c02001BZ381o82hpppj7",
+    "type": "text",
+    "text": "Conversation summary: मेरे डेस्कटॉप पर hive-mind-control-center फ़ोल्डर ढूँढिए।  मैं इंटरनेट पर मेरे डेस्कटॉप खोजता हूँ।\n\nTitle: What did we do so\n\nUser turns:\n  1. मेरे डेस्कटॉप पर hive-mind-control-center फ़ोल्डर ढूँढिए।\n  2.",
+    "time": {
+      "start": 1789528809153,
+      "end": 1789528809153
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.154Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528809154,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9ec1002lUtnPEN1sG1qeS",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9c02001BZ381o82hpppj7",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 39088,
+      "output": 227,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 39315,
+      "headroom": -459,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.154Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.154Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.154Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.155Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.155Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528809155,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83a9ec3001cjccSYw18q12xP",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9ec2001du7seRIBs1YzHx",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528809155,
+      "end": 1789528809155
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.155Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.156Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.156Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.156Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.158Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.159Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.160Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.161Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.161Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.622Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528809622,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa094001uU5sgHVa83DKcj",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9ec4001K9mIxU4zueqEpy",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.623Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.623Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528809623,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa097001tJPJIHSArPXp1z",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9ec4001K9mIxU4zueqEpy",
+    "type": "tool",
+    "callID": "call_d27743f0f1cd5b53",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.624Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528809624,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa096001RV361LSUR4WpMu",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9ec4001K9mIxU4zueqEpy",
+    "type": "text",
+    "text": "Let me search the web for मेरे डेस्कटॉप.",
+    "time": {
+      "start": 1789528809623,
+      "end": 1789528809623
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:09.624Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528809624,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa097001tJPJIHSArPXp1z",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9ec4001K9mIxU4zueqEpy",
+    "type": "tool",
+    "callID": "call_d27743f0f1cd5b53",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "मेरे डेस्कटॉप"
+      },
+      "time": {
+        "start": 1789528809624
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528810628,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa097001tJPJIHSArPXp1z",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9ec4001K9mIxU4zueqEpy",
+    "type": "tool",
+    "callID": "call_d27743f0f1cd5b53",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "मेरे डेस्कटॉप"
+      },
+      "output": "Title: Windows Desktop in Hindi की पूरी जानकारी - TutorialPandit.\nURL: https://www.tutorialpandit.com/windows-desktop/\nPublished: 2018-10-08T00:00:00.000Z\nAuthor: N/A\nHighlights:\n# डेस्कटॉप क्या हैं विंडॉज डेस्कटॉप की पूरी जानकारी हिंदी में\n...\nWindows Operating System को जब शुरु किया जाता हैं. तब User के सामने जो स्क्रीन दिखाई देती हैं, उसे सामुहिक रूप से Desktop कहा जाता हैं.\n...\nWindows Desktop एक मेज की ऊपरी परत की तरह कार्य करता हैं. जिस पर सामान को रखा जाता हैं. जब किसी Folder, File, Program या अन्य Item को Run किया जाता है तो वह Desktop पर ही Run होता हैं.\n...\nDesktop पर User Files, Folders, Pictures, Musics आदि Data को भी रख सकते हैं. और उसे अपने हिसाब से Arrange भी कर सकते हैं.\n...\nDesktop की बनावट और दिखावट Windows Version पर निर्भर करती हैं क्योंकि Windows के अलग-अलग संस्करण में Desktop में कुछ बदलाव किये जाते हैं. जिन्हे बहुत ही आसानी से पहचाना जा सकता हैं.\n...\nऊपर स्क्रीनशॉट में आप देख रहे है कि कुछ नम्बर लिखे हुए हैं. ये नम्बर Desktop के अलग-अलग भागों को Represent कर रहे हैं. जिनके बारे में हम नीचे बता रहे हैं. वास्तव में windows Desktop के तीन मुख्य भाग होते हैं.\n...\n1. Desktop Icon\n2. The Taskbar\n3. Desktop Background\n...\n## Desktop Icon\n...\nDesktop Shortcut कम्प्युटर में स्थित कोई दस्तावेज, फाईल या अन्य कोई Item, जो कम्प्युटर में है, उसकि link होती है. Users को पहली बार Window Start करने पर केवल एक ही Icon (Recycle Bin) दिखाई देता हैं. लेकिन, कुछ Manufactures एक से ज्यादा Icons भी Desktop पर छोड देते हैं.\n...\nDesktop Icons को Shortcut भी कहा जाता हैं. ये Shortcut उस प्रोग्राम, फाईल, फोल्डर का होता हैं जो कम्प्युटर में स्थित होता हैं. Shortcut Icon पर डबल क्लिक करके संबंधित Item को Open किया जा सकता हैं.\n...\nDesktop Icons के द्वारा Items की Location पर भी पहुँचा जा सकता हैं. तथा कुछ अतिरिक्त जानकारी के बारे में भी पता लगाया जा सकता हैं.\n...\n## The Taskbar\n...\nTaskbar एक आडि आयताकार पट्टी होती हैं. जो By Default Desktop में नीचे की तरफ होती हैं. Taskbar Desktop का सबसे महत्वपूर्ण हिस्सा होती हैं.\n...\nTaskbar पर Windows Items को Navigation करने के लिए कई अलग-अलग भागों में बांटा जाता हैं. जिसमें Start Button, Icons, Notification Area और Show Desktop Button आदि शामिल होते हैं.\n...\n## Desktop Background\n...\nजो Picture आपको Desktop पर दिख रही हैं उसे Desktop Background कहा जाता हैं. Windows OS में Picture और Theme दो प्रकार के Background लगाये जा सकते हैं.\n...\nBackground से Desktop को Personalize किया जाता हैं. यहाँ Users अपनी पसंद के अनुसार कोई भी Picture को इस्तेमाल कर सकते हैं. Users ख़ुद की फोटो को भी Desktop Background बना सकते हैं.\n...\nइस Lesson में हमने आपको Windows Desktop के बारे में पूरी जानकारी दी हैं. और आपने Desktop के विभिन्न भागों के बारे में भी जाना हैं. हमे उम्मीद है कि यह Lesson आपके लिए उपयोगी साबित होगा.\n\n---\n\nTitle: Desktop Kya Hai ? डेस्कटॉप के प्रमुख कार्य - DailyTechReview\nURL: https://dailytechreview.com/desktop-kya-hai/\nPublished: 2023-12-27T11:12:04.000Z\nAuthor: siya\nHighlights:\nDesktop Kya Hai -डेस्कटॉप कंप्यूटर स्क्रीन होती है जो यूजर को कार्य करने के लिए Graphical user interface (GUI)प्लेटफार्म उपलब्ध कराता है। इसमें आप फाइल , फोल्डर , एप्लीकेशन , शॉर्टकट आदि स्टोर कर सकते है। जब भी आप कंप्यूटर को स्टार्ट करते है तो कंप्यूटर मॉनिटर पर आपको Desktop पर ही आपको स्क्रीन दिखाई देती है।\n...\nडेस्कटॉप आमतौर पर एक वर्चुअल वर्क सरफेस होता है, जिस पर आप फाइलों को स्टोर कर सकते हैं, एप्लिकेशन को लॉन्च कर सकते हैं, या शॉर्टकट के माध्यम से डाटा एक्सेस कर सकते हैं। यह यूज़र्स को यूजर फ्रेंडली प्लेटफार्म प्रदान करता है।\n...\nडेस्कटॉप पर आप अपने कंप्यूटर के बैकग्राउंड वॉलपेपर, आइकन, टास्कबार और अन्य एलिमेंट्स को कस्टमाइज़ कर सकते हैं। इसके अलावा, डेस्कटॉप पर कुछ विजेट जैसे घड़ी, कैलेंडर, मौसम आदि ऐड कर सकते है।\n...\nकुल मिलाकर, डेस्कटॉप एक कंप्यूटर यूज़र्स के के लिए सेंट्रल कण्ट्रोल पॉइंट होता है जहा से आप कंप्यूटर के विभिन्न कार्यो को आसानी से कर सकते है।\n...\nDesktop में निम्नलिखित कॉम्पोनेन्ट शामिल रहते है।\n...\n- Icons: डेस्कटॉप में आपको फ़ाइल , फ़ोल्डर और एप्लीकेशन आदि के आइकॉन देखने को मिल सकते है।\n- Taskbar : टास्कबार आमतौर पर स्क्रीन के बॉटम (विंडोज में) या कार्नर में स्थित होता है, जिसमे रनिंग प्रोग्राम या Quick Access प्रोग्राम को देखा जा सकता है।\n- Wallpaper: डेस्कटॉप के बैकग्राउंड में एक इमेज या पिक्चर देखने को मिल सकती है।\n...\nडेस्कटॉप में आपको फाइल्स ,फ़ोल्डर्स एप्लिकेशन आइकन, टास्कबार, स्टार्ट मेनू, वॉलपेपर, शॉर्टकट और विजेट या गैजेट देखने को मिल जाते है।\n...\nहाँ यूजर अपने सुविधा अनुसार डेस्कटॉप के वॉलपेपर , आइकॉन को अरेंज कर सकता है , डेस्कटॉप में शॉर्टकट बना सकते है , सेटिंग को मैनेज कर सकते है। के ऑपरेटिंग सिस्टम में यूज़र्स डेस्कटॉप को अपने जरुरत के अनुसार कस्टमाइज भी कर सकता है।\n...\nटास्कबार डेस्कटॉप स्क्रीन के नीचे एक हॉरिजॉन्टल बार होती है। Taskbaar में आप रनिंग प्रोग्राम को देख सकते है , स्टार्ट मेनू को फ़ास्ट तरीके से एक्सेस कर सकते है , सिस्टम नोटिफिकेशन , सिस्टम सर्च बार , डेट -टाइम , नेटवर्क जैसे प्रोग्राम को एक्सेस कर सकते है।\n...\nडेस्कटॉप पर शॉर्टकट बनाने के लिए , फाइल , फोल्डर और एप्लीकेशन पर राइट क्लिक करें और Send To मेनू में जाकर Desktop (Create shortcut) पर क्लिक करके शॉर्टकट बनाया जा सकता है ।\n...\nआप डेस्कटॉप पर राइट क्लिक करके “Personalize” या “Properties,” को सेलेक्ट करने के बाद न्यू बैकग्राउंड या कलर को अपने अनुसार बदल सकते है।\n...\nबहुत से ऑपरेटिंग सिस्टम में डेस्कटॉप आइकॉन को टेम्पररी हाईड किया जा सकता है। विंडोज कंप्यूटर में डेस्कटॉप आइकॉन को हाईड करने के लिए डेस्कटॉप पर राइट क्लिक करे और View ऑप्शन में जाकर Show Desktop Icon को चेक अनचेक करके डेस्कटॉप आइकॉन को show या hide किया जा सकता है।\n...\nडेस्कटॉप विजेट या गैजेट छोटे एप्लिकेशन होते हैं जो स्पेसिफिक फंक्शन या इनफार्मेशन को उपलब्ध कराने का कार्य करते हैं, जैसे क्लॉक , कैलेंडर, मौसम अपडेट या सिस्टम मॉनिटरिंग टूल। क्विक एक्सेस के लिए इन्हें डेस्कटॉप पर ऐड किया जा सकता है।\n...\nस्टार्ट मेनू डेस्कटॉप पर एक सेंट्रलाइज लोकेशन है जहां आप इंस्टॉल किए गए एप्लिकेशन, डॉक्यूमेंट , सेटिंग्स तक आसानी से पहुंच सकते हैं और अपने कंप्यूटर को शटडाउन , रीस्टार्ट , लॉक आदि कर सकते हैं। यह विभिन्न कार्यों को नेविगेट करने और लॉन्च करने का एक आसान तरीका होता है।\n\n---\n\nTitle: DESKTOP का हिन्दी अनुवाद | कोलिन्स अंग्रेज़ी-हिन्दी शब्दकोश\nURL: https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop\nPublished: N/A\nAuthor: N/A\nHighlights:\n# desktop का हिन्दी अनुवाद\n \nशब्द आवृत्ति\nShare\n×\n[](https://www.facebook.com/sharer.php?u=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop)[](https://twitter.com/intent/tweet?url=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop&via=collinsdict)\nCredits\n×\n## desktop\n/ˈdesktɒp 'डेस्कटॉप्/\n[](https://www.facebook.com/sharer.php?u=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop)[](https://twitter.com/intent/tweet?url=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop&via=collinsdict)\n**शब्द प्रारूप: **desktops\n1. गणनीय संज्ञा\nThe desktop of a computer is the display of icons that you see on the screen when the computer is ready to use.\n[computing]डेस्कटॉप mn\n2. गणनीय संज्ञा\nA desktop or a desktop computer is a computer that is small enough to fit onto a desk but too big to carry around with you.\nडेस्कटॉप mn\n...\nCopyright © 2014 by HarperCollins Publishers. All rights reserved\n...\nADJECTIVE /ˈdɛskˌtɒp/\n...\n*Desktop* computers are a convenient size for using on a desk or table, but are not designed to be portable.\nWhen launched, this computer was the smallest desktop computer ever produced.\n* अमेरिकन अंग्रेजी: [desktop](https://www.collinsdictionary.com/hi/dictionary/english/desktop-version)\n/ˈdɛsktɒp/\n...\n* ब्राजीली पुर्तगाली\n...\n* चीनी: 台式的\n...\nNOUN /ˈdɛskˌtɒp/\n...\nA *desktop* is a desktop computer.\n* अमेरिकन अंग्रेजी: [desktop](https://www.collinsdictionary.com/hi/dictionary/english/desktop-version)\n/ˈdɛsktɒp/\n...\n](https://www\n\n---\n\nTitle: Desktop Meaning in Hindi: डेस्कटॉप का हिंदी अर्थ और पूरी जानकारी\nURL: https://skilledenglish.com/desktop-meaning-in-hindi/\nPublished: 2026-03-30T01:51:39.000Z\nAuthor: Emma Collins\nHighlights:\nकंप्यूटर की दुनिया में “डेस्कटॉप” एक बहुत ही आम और महत्वपूर्ण शब्द है। अगर आप “desktop meaning in hindi” खोज रहे हैं, तो इसका सीधा और सरल अर्थ है “डेस्क पर रखा जाने वाला” या फिर “डेस्क पर रखने योग्य कंप्यूटर”। यह शब्द दो अंग्रेजी शब्दों “डेस्क” (मेज़) और “टॉप” (ऊपर) से मिलकर बना है। आज के डिजिटल युग में, इस शब्द के दो प्रमुख अर्थ हैं – एक तो भौतिक कंप्यूटर सिस्टम को संदर्भित करता है और दूसरा कंप्यूटर स्क्रीन पर दिखने वाले ग्राफिकल इंटरफेस को। यह लेख डेस्कटॉप के हिंदी अर्थ, इसके प्रकार, घटकों, फायदों और इससे जुड़े सभी पहलुओं पर गहन चर्चा प्रस्तुत करेगा।\n...\nहिंदी में डेस्कटॉप का अर्थ सीधे तौर पर “मेज़ का ऊपरी भाग” या “मेज़ के ऊपर रखी जाने वाली वस्तु” होता है। कंप्यूटिंग के संदर्भ में, यह एक ऐसे कंप्यूटर को दर्शाता है जिसे स्थायी रूप से एक डेस्क या टेबल पर रखा जाता है, जिसके विपरीत लैपटॉप होता है जो पोर्टेबल होता है। इसके अलावा, ऑपरेटिंग सिस्टम के ग्राफिकल यूजर इंटरफेस (GUI) के मुख्य स्क्रीन को भी डेस्कटॉप कहा जाता है, जहाँ आइकन, विंडोज़, और टास्कबार दिखाई देते हैं।\n...\nएक डेस्कटॉप कंप्यूटर एक पर्सनल कंप्यूटर है जो एक निश्चित स्थान पर उपयोग के लिए डिज़ाइन किया गया है। इसमें आमतौर पर एक अलग मॉनिटर, कीबोर्ड, माउस और एक सिस्टम यूनिट (CPU टावर) शामिल होते हैं। यह लैपटॉप की तुलना में आमतौर पर अधिक शक्तिशाली, अपग्रेड करने में आसान और बेहतर शीतलन प्रदान करता है, जिससे यह गेमिंग, ग्राफिक डिजाइन, और विडियो एडिटिंग जैसे भारी कार्यों के लिए आदर्श बन जाता है।\n...\nऑपरेटिंग सिस्टम (जैसे Windows, macOS, Linux) के शुरू होने के बाद जो मुख्य स्क्रीन दिखती है, उसे डेस्कटॉप इंटरफेस कहते हैं। यह उपयोगकर्ता के लिए प्राथमिक कार्य क्षेत्र है। इस पर एप्लिकेशन आइकन, फाइलें, फोल्डर और एक टास्कबार या डॉक स्थित होता है। यह एक डिजिटल डेस्क की तरह काम करता है जहाँ से उपयोगकर्ता सभी कार्यों को व्यवस्थित और एक्सेस कर सकता है।\n...\nडेस्कटॉप का हिंदी में सीधा अर्थ “मेज़ के ऊपर” या “डेस्क पर रखा जाने वाला” होता है। कंप्यूटर के संदर्भ में, इसका दोहरा अर्थ है: (1) एक ऐसा कंप्यूटर जो डेस्क पर स्थायी रूप से रखा जाता है, और (2) ऑपरेटिंग सिस्टम का मुख्य ग्राफिकल इंटरफेस स्क्रीन।\n...\nकंप्यूटर में, डेस्कटॉप दो चीजों को संदर्भित कर सकता है। पहला, भौतिक डेस्कटॉप कंप्यूटर सिस्टम जिसमें मॉनिटर, CPU टावर, कीबोर्ड और माउस शामिल हैं। दूसरा, सॉफ्टवेयर इंटरफेस – वह पहली स्क्रीन जो कंप्यूटर चालू करने के बाद दिखती है, जहाँ आपके आइकन, फाइलें और स्टार्ट मेनू होते हैं।\n...\nमुख्य अंतर पोर्टेबिलिटी, प्रदर्शन और अपग्रेडेबिलिटी में है। डेस्कटॉप स्थिर, अधिक शक्तिशाली और आसानी से अपग्रेड किए जा सकने वाले होते हैं लेकिन पोर्टेबल नहीं होते। लैपटॉप पोर्टेबल, सभी-इन-वन डिवाइस होते हैं लेकिन प्रदर्शन और अपग्रेड विकल्पों में थोड़ा समझौता करते हैं और आमतौर पर समान कॉन्फ़िगरेशन पर अधिक महंगे होते हैं।\n...\nडेस्कटॉप चुनने के लिए सबसे पहले अपनी आवश्यकता (गेमिंग, ऑफिस कार्य, डिजाइनिंग आदि) तय करें। फिर बजट के अनुसार प्रोसेसर (CPU), रैम (कम से कम 8GB), स्टोरेज (SSD अवश्य लें), और ग्राफिक्स कार्ड (यदि गेमिंग या डिजाइन कार्य है तो) का चयन करें। प्री-बिल्ट सिस्टम या कस्टम-बिल्ट PC के विकल्पों पर विचार करें।\n...\n“Desktop meaning in hindi” की खोज केवल एक शब्द का अनुवाद नहीं है, बल्कि आधुनिक कंप्यूटिंग के एक मूलभूत पहलू की गहरी समझ की ओर ले जाती है। डेस्कटॉप, चाहे वह एक भौतिक कंप्यूटर सिस्टम के रूप में हो या एक डिजिटल कार्यक्षेत्र के रूप में, आज भी शक्ति, नियंत्रण और अनुकूलन क्षमता का प्रतीक है। लैपटॉप\n\n---\n\nTitle: Desktop ka matlab | Filo\nURL: https://askfilo.com/user-question-answers-smart-solutions/desktop-ka-matlab-3437363036323438\nPublished: 2026-03-06T02:56:57.000Z\nAuthor: N/A\nHighlights:\nडेस्कटॉप (Desktop) का अर्थ:\n...\nकंप्यूटर की शब्दावली में डेस्कटॉप के मुख्य रूप से दो अर्थ होते हैं:\n...\nसॉफ्टवेयर के संदर्भ में: जब हम कंप्यूटर को चालू (Switch on) करते हैं, तो ऑपरेटिंग सिस्टम (जैसे Windows) लोड होने के बाद जो सबसे पहली मुख्य स्क्रीन दिखाई देती है, उसे डेस्कटॉप कहते हैं। इसमें नीचे की तरफ टास्कबार और स्क्रीन पर विभिन्न आइकन्स (Icons) जैसे My Computer, Recycle Bin आदि होते हैं।\n...\nहार्डवेयर के संदर्भ में: डेस्कटॉप एक प्रकार का पर्सनल कंप्यूटर (PC) है जिसे किसी मेज या डेस्क पर रखकर चलाया जाता है। यह लैपटॉप की तरह पोर्टेबल नहीं होता और इसमें अलग से CPU कैबिनेट, मॉनिटर, कीबोर्ड और माउस जुड़े होते हैं।\n...\nडेस्कटॉप के मुख्य भाग: (i) आइकन्स (Icons): प्रोग्राम्स के छोटे चित्र। (ii) टास्कबार (Taskbar): स्क्रीन के नीचे स्थित पट्टी। (iii) वॉलपेपर (Wallpaper): डेस्कटॉप की बैकग्राउंड इमेज। (iv) स्टार्ट बटन (Start Button): प्रोग्राम्स को एक्सेस करने के लिए।\n\n---\n\nTitle: डेस्कटॉप कंप्यूटर - Vigyanwiki\nURL: https://www.vigyanwiki.in/wiki/%E0%A4%A1%E0%A5%87%E0%A4%B8%E0%A5%8D%E0%A4%95%E0%A4%9F%E0%A5%89%E0%A4%AA_%E0%A4%95%E0%A4%82%E0%A4%AA%E0%A5%8D%E0%A4%AF%E0%A5%82%E0%A4%9F%E0%A4%B0\nPublished: N/A\nAuthor: N/A\nHighlights:\nडेस्कटॉप कंप्यूटर एक व्यक्तिगत कंप्यूटर है जिसे अपने आकार और बिजली की आवश्यकताओं के कारण एक डेस्क पर या उसके पास एक ही स्थान पर नियमित उपयोग के लिए डिज़ाइन किया गया है। सबसे आम कॉन्फ़िगरेशन में एककंप्यूटर पेटिकाहोता है जिसमेंबिजली आपूर्ति इकाई (कंप्यूटर),मदरबोर्ड(केंद्रीय प्रसंस्करण इकाई के रूप में एकमाइक्रोप्रोसेसरके साथ एकमुद्रित सर्किट बोर्ड,मेमोरी,बस (कंप्यूटिंग), कुछ परिधीय और अन्य इलेक्ट्रॉनिक घटक), डिस्क होती है। भंडारण (सामान्यतः एक या अधिकहार्ड डिस्क ड्राइव,सॉलिड स्टेट ड्राइव,ऑप्टिकल डिस्क ड्राइव, और पहली मॉडल में एकफ्लॉपी डिस्क ड्राइव); एककंप्यूटर कीबोर्डऔर इनपुट के लिएकम्प्यूटर का माउस(कंप्यूटर विज्ञान); और एककंप्यूटर मॉनीटर,कंप्यूटर स्पीकर, और, अधिकांशतः, आउटपुट के लिए एक प्रिंटर (कंप्यूटिंग) है। घटनाक्षैतिज और लंबवतउन्मुख हो सकती है और या तो नीचे, बगल में या डेस्क के शीर्ष पर रखा जा सकता है।\n...\nएक ऑल-इन-वन (एआईओ) डेस्कटॉप कंप्यूटर सिस्टम के आंतरिक घटकों को डिस्प्ले के समान स्थितियों में एकीकृत करता है, इस प्रकार एक टावर को सम्मिलित करने वाले डेस्कटॉप की तुलना में एक छोटे पदचिह्न (कम केबल के साथ) पर नियन्त्रण कर लेता है।[36] ऑल-इन-वन सिस्टम को संभवतः ही कभी डेस्कटॉप कंप्यूटर के रूप में लेबल किया जाता है।\n...\nगेमिंग कंप्यूटर उच्च प्रदर्शन सेंट्रल प्रोसेसिंग यूनिट,ग्राफ़िक्स प्रोसेसिंग युनिटऔर उच्च रिज़ॉल्यूशन औरफ्रेम दरपर वीडियो गेम खेलने के लिए अनुकूलितयादृच्छिक अभिगम स्मृतिवाले डेस्कटॉप कंप्यूटर हैं। गेमिंग कंप्यूटर की परिधि में सामान्यतः तेज प्रतिक्रिया समय के लिएकीबोर्ड तकनीकसम्मिलित होती है,[40] और एक गेमिंग कंप्यूटर माउस जो उच्च डॉट्स प्रति इंच गति को ट्रैक कर सकता है।[41]\n...\nलैपटॉपपर डेस्कटॉप का एक लाभ यह है कि स्पेयर पार्ट्स और एक्सटेंशन को मानकीकृत किया जाता है, जिसके परिणामस्वरूप कम कीमत और अधिक उपलब्धता होती है। उदाहरण के लिए, मदरबोर्ड के आकार और माउंटिंग को एटीएक्स,माइक्रोएटीएक्स,बीटीएक्स (फॉर्म फैक्टर)या अन्यकंप्यूटर फॉर्म फैक्टरमें मानकीकृत किया गया है। डेस्कटॉप में कई मानकीकृत विस्तार स्लॉट होते हैं, जैसेपारंपरिक पीसीआईयापीसीआई एक्सप्रेस, जबकि लैपटॉप में केवल एकमिनी पीसीआईस्लॉट और एकपीसी कार्डस्लॉट (याएक्सप्रेस कार्डस्लॉट) होता है। डेस्कटॉप को असेंबल करने और अलग करने की प्रक्रिया सरल और मानकीकृत भी होती है। लैपटॉप के स्थितियों में ऐसा नहीं होता है, चूंकि कुछ हिस्सों को जोड़ना या बदलना, जैसेऑप्टिकल ड्राइव,हार्ड डिस्क, या अतिरिक्तमेमोरी मॉड्यूलजोड़ना अधिकांशतःकाफी सरल होता है। इसका मतलब है कि एक डेस्कटॉप कंप्यूटर कॉन्फ़िगरेशन, सामान्यतः एकटावर बॉक्स, को लैपटॉप की तुलना में अधिक सीमा तक अनुकूलित और उन्नत किया जा सकता है। इस अनुकूलन ने टॉवर स्थितियों को गेमिंग कंप्यूटर और उत्साही कंप्यूटिंग के बीच लोकप्रिय बनाए रखा है।\n...\nएक डेस्कटॉप कंप्यूटर को कम बाधा, ब्लैकआउट और स्पाइक्स जैसी विद्युत गड़बड़ी को संभालने के लिए एक निर्बाध बिजली की आपूर्ति की आवश्यकता होती है; एक डेस्कटॉप पीसी के लिए 20-30 मिनट से अधिक का ऑन-बैटरी समय प्राप्त करने के लिए एक बड़े और महंगे यूपीएस की आवश्यकता होती है।[49][50] पर्याप्त रूप से चार्ज की\n...\nएक डेस्कटॉप कंप्यूटर को अधिकांशतःकम्प्यूटेशनल क्षमता में तुलनीय लैपटॉप पर फायदा होता है। लैपटॉप की तुलना में डेस्कटॉप पर ओवरक्लॉकिंग अधिकांशतःअधिक संभव है; इसी तरह, हार्डवेयर ऐड-ऑन जैसे असतत ग्राफिक्स सह-प्रोसेसर केवल एक डेस्कटॉप में स्थापित करना संभव हो सकता है।[51]\n\n---\n\nTitle: अपने डेस्कटॉप स्क्रीन को हमेशा कैसे रखें व्यवस्थित? यहां जानिए तरीका\nURL: https://hindi.newsbytesapp.com/news/science/how-to-keep-your-desktop-screen-always-organized-know-tips-and-tricks/story\nPublished: 2025-05-29T00:00:00.000Z\nAuthor: N/A\nHighlights:\nअपने डेस्कटॉप स्क्रीन को हमेशा कैसे रखें व्यवस्थित? यहां जानिए तरीका \n\nडेस्कटॉप को हमेशा सलीके से सजाकर रखें\n...\nअपने कंप्यूटर या लैपटॉप पर डेस्कटॉप स्क्रीन को व्यवस्थित रखना हमारे लिए बहुत उपयोगी होता है। स्क्रीन पर जब आइकॉन साफ-सुथरे ढंग से होते हैं तो हमें जरूरी चीजें जल्दी मिल जाती हैं। इससे गलती से किसी और चीज पर क्लिक नहीं होता और काम में रुकावट नहीं आती। जब स्क्रीन अव्यवस्थित होती है तो हमारा ध्यान भटकता है और समय भी बर्बाद होता है। इसलिए जरूरी है कि हम डेस्कटॉप को हमेशा सलीके से सजाकर रखें।\n...\nअगर आप अपने डेस्कटॉप को सही तरीके से व्यवस्थित रखना चाहते हैं तो सबसे पहले आइकनों को समूह में रखें। जैसे ऑफिस के टूल्स, फोटो वाले ऐप्स और मीडिया से जुड़ी चीजें एक साथ हों।\n...\nइसके अलावा, आप फोल्डर बनाकर प्रोजेक्ट, डॉक्यूमेंट्स या इमेज जैसी चीजें अलग-अलग रख सकते हैं। इससे स्क्रीन पर भीड़ नहीं लगती और जरूरत के समय चीजें जल्दी मिल जाती हैं।\n...\nग्रुपिंग और फोल्डर सिस्टम आपको हर दिन का समय बचा सकता है।\n...\nआपके डेस्कटॉप पर जितनी कम चीजें होंगी, उतना अच्छा रहेगा।\n\nइसलिए हमेशा कोशिश करें कि जो फाइल या शॉर्टकट रोज इस्तेमाल नहीं होते, उन्हें डिलीट कर दें या किसी फोल्डर में डाल दें। इससे न सिर्फ आपका डेस्कटॉप साफ रहेगा बल्कि आपकी नजर भी बार-बार इधर-उधर नहीं जाएगी।\n...\nहर हफ्ते कुछ मिनट देकर पुराने और बेकार आइकन हटाएं। इससे डेस्कटॉप हल्का बनेगा और आपको काम करने में अधिक आराम मिलेगा।\n...\nकुछ खास सॉफ्टवेयर टूल्स होते हैं, जो डेस्कटॉप को ऑटोमैटिक तरीके से सजा देते हैं।\n\nआप चाहें तो ऐसे टूल्स का इस्तेमाल करके वर्चुअल डेस्कटॉप बना सकते हैं या आइकनों को पसंद के हिसाब से सेट कर सकते हैं।\n\nइसके साथ ही, समय-समय पर डेस्कटॉप की जांच करते रहें और देखें कि क्या सबकुछ अभी भी जरूरी है।\n...\nइस तरह की नियमित सफाई से आपका कंप्यूटर तेज चलेगा और आप बिना किसी रुकावट के अपना काम कर सकेंगे।\n\n---\n\nTitle: Computer Laptop में Desktop Background (Wallpaper) Change कैसे करें - TutorialPandit.\nURL: https://www.tutorialpandit.com/change-desktop-background/\nPublished: 2026-05-17T02:30:40.000Z\nAuthor: N/A\nHighlights:\nComputer Laptop में Desktop Background (Wallpaper) Change कैसे करें - TutorialPandit.\n...\n# Computer Laptop में Desktop Background (Wallpaper) Change कैसे करें?\n...\nComputerका Desktop Background Change करना बहुत ही आसान है. आप कुछ आसान Steps को Follow करके अपनेकम्प्युटरका Wallpaper बदल सकते है.\n...\nDesktop Background बदलकर हम Windows Desktop को और ज्यादा रूचिकर और सुंदर बना सकते है. आप अपने मन पसंद Photo Picture को Desktop Wallpaper के लिए Set कर सकते है. और Windows Colors, Sounds, Desktop Icons, Mouse Pointers को भी Customized कर सकते है.\n...\nWindows 7 और इससे High Versions में Desktop Background के लिए Themes (Pictures, Sounds, Colors का Mix Combination) का उपयोग किया जाता है. Windows 7 में बहुत सारी Themes दी होती है. आप इनमें से अपनी पसंद की Theme को Desktop Background पर Set कर सकते है.\n...\nइस Tutorial में हम आपको Windows 7 में Desktop Background Change करना के बारे में बताऐंगे. क्योंकि Windows के हर Version में Desktop Background बदलने का तरीका लगभग एक जैसा ही रहता है. बस दिखावट और Options में थोडा बदलाव रहता है. यदि आप Windows 7 में Desktop Background बदलना सीख गए तो आप Windows के किसी भी Version में Desktop Background बदल सकते है.\n...\n## Computer में Desktop Background Change करने का तरीका\n...\n1. सबसे पहले Desktop पर खाली जगह पर कहीं भी Mouse से Right Click कीजिए. अब आपके सामने एक Menu Open होगी. जिसमे से आपको Personalize पर क्लिक करनी है.\n...\n2. अब आपके सामने Windows Personalization Settings Open हो गई है. यहाँ से आप चाहे तो अपने लिए Theme चुनकर Desktop Background बदल सकते है. आप किसी भी Theme (Point Number 1) पर क्लिक कीजिए. और वही Theme आपके Computer का Background बन जाएगी. यदि आप Theme को Desktop Background नही बनाना चाहते है. तो नीचे दिख रहे “Desktop Background” (Point Number 2) पर क्लिक कीजिए.\n...\n3. अब आपके सामने Desktop Background Window खुल गई है. यहाँ से अपनी मन पसंद का Photo चुनकर Desktop Background बना सकते है. अपनी पसंद की Photo को Wallpaper बनाने के लिए. पहले Browse पर जाकर अपनी Picture ढूंढे. इसके बाद Picture Position मे जाकर Wallpaper की Position Set कीजीए. और इसके बाद Save Changes पर क्लिक कर दीजिए.\n...\n4. ऐसा करते ही आपका Desktop Background बदल जाएगा. और अब आपका मन पसंद फोटो आपका Desktop Wallpaper बन गया है.\n...\n## Computer में Wallpaper Set करने का Shortcut तरीका\n...\nआप ऊपर बताए गए तरीके से तो अपने Computer का Background Change कर ही सकते है. इसके अलावा आप अन्य तरीकों से भी अपने Computer का Desktop Background बदल सकते है. और वो भी एक ही क्लिक में.\n...\nतो इसके बारे में हम नीचे Step-by-Step तरीके से बता रहे है. आप नीचे दिए गए Steps को Follow कीजिए.\n...\n1. सबसे पहले आप जिस Photo Picture को अपने Computer का Wallpaper Set करना चाहते है. पहले उस Photo Picture की Location पर जाए.\n...\n2. इसके बाद उस Photo Picture पर Mouseकी Left क्लिक एक बार दबाकर. Right Click को भी दबाएं. ऐसा करने पर आपके सामने Right Click Menu खुलेगी. यहाँ से आपको Set as desktop background पर क्लिक कीजिए. नीचे Screenshot देंखे.\n...\n3. अब आपकी मन पसंद फोटो आपके कम्प्युटर का Wallpaper बन चुकी है. जिसे आप Desktop पर जाकर देख सकते है.\n...\nइस Tutorial में आपने जाना कि Computer Desktop Background कैसे Change करते है. हमने आपको बताया कि कैसे आप अपने खुद के फोटो को भी Wallpaper बना सकते है. हमे उम्मीद है कि यह Tutorial आपके लिए उपयोगी साबित होगा और आप आसानी से अपने कम्प्युटर का Background Change कर सकते है.",
+      "title": "Web search: मेरे डेस्कटॉप",
+      "metadata": {},
+      "time": {
+        "start": 1789528809624,
+        "end": 1789528810627
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.630Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528810630,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa485001ejkVu75uMU8TW7",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83a9ec4001K9mIxU4zueqEpy",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8776,
+      "output": 74,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8850,
+      "headroom": 30006,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.633Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.636Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.641Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "step": 8,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.641Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.645Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "currentTokens": 8850,
+  "providerTokens": 8850,
+  "estimatedInputTokens": 6425,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8776,
+    "cacheRead": 0,
+    "output": 74
+  },
+  "overflow": false,
+  "headroom": 30006,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.646Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.647Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.651Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.655Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:10.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.319Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528811319,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa735001YOeARDScTHdYme",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83aa49600169P9614WEpWhuS",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.320Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.321Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528811321,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa737001QUSp1u9VI8nDa2",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83aa49600169P9614WEpWhuS",
+    "type": "text",
+    "text": "`web_search` कमांड पूरी हुई। परिणाम:\n\n```text\nTitle: Windows Desktop in Hindi की पूरी जानकारी - TutorialPandit.\nURL: https://www.tutorialpandit.com/windows-desktop/\nPublished: 2018-10-08T00:00:00.000Z\nAuthor: N/A\nHighlights:\n# डेस्कटॉप क्या हैं विंडॉज डेस्कटॉप की पूरी जानकारी हिंदी में\n...\nWindows Operating System को जब शुरु किया जाता हैं. तब User के सामने जो स्क्रीन दिखाई देती हैं, उसे सामुहिक रूप से Desktop कहा जाता हैं.\n...\nWindows Desktop एक मेज की ऊपरी परत की तरह कार्य करता हैं. जिस पर सामान को रखा जाता हैं. जब किसी Folder, File, Program या अन्य Item को Run किया जाता है तो वह Desktop पर ही Run होता हैं.\n...\nDesktop पर User Files, Folders, Pictures, Musics आदि Data को भी रख सकते हैं. और उसे अपने हिसाब से Arrange भी कर सकते हैं.\n...\nDesktop की बनावट और दिखावट Windows Version पर निर्भर करती हैं क्योंकि Windows के अलग-अलग संस्करण में Desktop में कुछ बदलाव किये जाते हैं. जिन्हे बहुत ही आसानी से पहचाना जा सकता हैं.\n...\nऊपर स्क्रीनशॉट में आप देख रहे है कि कुछ नम्बर लिखे हुए हैं. ये नम्बर Desktop के अलग-अलग भागों को Represent कर रहे हैं. जिनके बारे में हम नीचे बता रहे हैं. वास्तव में windows Desktop के तीन मुख्य भाग होते हैं.\n...\n1. Desktop Icon\n2. The Taskbar\n3. Desktop Background\n...\n## Desktop Icon\n...\nDesktop Shortcut कम्प्युटर में स्थित कोई दस्तावेज, फाईल या अन्य कोई Item, जो कम्प्युटर में है, उसकि link होती है. Users को पहली बार Window Start करने पर केवल एक ही Icon (Recycle Bin) दिखाई देता हैं. लेकिन, कुछ Manufactures एक से ज्यादा Icons भी Desktop पर छोड देते हैं.\n...\nDesktop Icons को Shortcut भी कहा जाता हैं. ये Shortcut उस प्रोग्राम, फाईल, फोल्डर का होता हैं जो कम्प्युटर में स्थित होता हैं. Shortcut Icon पर डबल क्लिक करके संबंधित Item को Open किया जा सकता हैं.\n...\nDesktop Icons के द्वारा Items की Location पर भी पहुँचा जा सकता हैं. तथा कुछ अतिरिक्त जानकारी के बारे में भी पता लगाया जा सकता हैं.\n...\n## The Taskbar\n...\nTaskbar एक आडि आयताकार पट्टी होती हैं. जो By Default Desktop में नीचे की तरफ होती हैं. Taskbar Desktop का सबसे महत्वपूर्ण हिस्सा होती हैं.\n...\nTaskbar पर Windows Items को Navigation करने के लिए कई अलग-अलग भागों में बांटा जाता हैं. जिसमें Start Button, Icons, Notification Area और Show Desktop Button आदि शामिल होते हैं.\n...\n## Desktop Background\n...\nजो Picture आपको Desktop पर दिख रही हैं उसे Desktop Background कहा जाता हैं. Windows OS में Picture और Theme दो प्रकार के Background लगाये जा सकते हैं.\n...\nBackground से Desktop को Personalize किया जाता हैं. यहाँ Users अपनी पसंद के अनुसार कोई भी Picture को इस्तेमाल कर सकते हैं. Users ख़ुद की फोटो को भी Desktop Background बना सकते हैं.\n...\nइस Lesson में हमने आपको Windows Desktop के बारे में पूरी जानकारी दी हैं. और आपने Desktop के विभिन्न भागों के बारे में भी जाना हैं. हमे उम्मीद है कि यह Lesson आपके लिए उपयोगी साबित होगा.\n\n---\n\nTitle: Desktop Kya Hai ? डेस्कटॉप के प्रमुख कार्य - DailyTechReview\nURL: https://dailytechreview.com/desktop-kya-hai/\nPublished: 2023-12-27T11:12:04.000Z\nAuthor: siya\nHighlights:\nDesktop Kya Hai -डेस्कटॉप कंप्यूटर स्क्रीन होती है जो यूजर को कार्य करने के लिए Graphical user interface (GUI)प्लेटफार्म उपलब्ध कराता है। इसमें आप फाइल , फोल्डर , एप्लीकेशन , शॉर्टकट आदि स्टोर कर सकते है। जब भी आप कंप्यूटर को स्टार्ट करते है तो कंप्यूटर मॉनिटर पर आपको Desktop पर ही आपको स्क्रीन दिखाई देती है।\n...\nडेस्कटॉप आमतौर पर एक वर्चुअल वर्क सरफेस होता है, जिस पर आप फाइलों को स्टोर कर सकते हैं, एप्लिकेशन को लॉन्च कर सकते हैं, या शॉर्टकट के माध्यम से डाटा एक्सेस कर सकते हैं। यह यूज़र्स को यूजर फ्रेंडली प्लेटफार्म प्रदान करता है।\n...\nडेस्कटॉप पर आप अपने कंप्यूटर के बैकग्राउंड वॉलपेपर, आइकन, टास्कबार और अन्य एलिमेंट्स को कस्टमाइज़ कर सकते हैं। इसके अलावा, डेस्कटॉप पर कुछ विजेट जैसे घड़ी, कैलेंडर, मौसम आदि ऐड कर सकते है।\n...\nकुल मिलाकर, डेस्कटॉप एक कंप्यूटर यूज़र्स के के लिए सेंट्रल कण्ट्रोल पॉइंट होता है जहा से आप कंप्यूटर के विभिन्न कार्यो को आसानी से कर सकते है।\n...\nDesktop में निम्नलिखित कॉम्पोनेन्ट शामिल रहते है।\n...\n- Icons: डेस्कटॉप में आपको फ़ाइल , फ़ोल्डर और एप्लीकेशन आदि के आइकॉन देखने को मिल सकते है।\n- Taskbar : टास्कबार आमतौर पर स्क्रीन के बॉटम (विंडोज में) या कार्नर में स्थित होता है, जिसमे रनिंग प्रोग्राम या Quick Access प्रोग्राम को देखा जा सकता है।\n- Wallpaper: डेस्कटॉप के बैकग्राउंड में एक इमेज या पिक्चर देखने को मिल सकती है।\n...\nडेस्कटॉप में आपको फाइल्स ,फ़ोल्डर्स एप्लिकेशन आइकन, टास्कबार, स्टार्ट मेनू, वॉलपेपर, शॉर्टकट और विजेट या गैजेट देखने को मिल जाते है।\n...\nहाँ यूजर अपने सुविधा अनुसार डेस्कटॉप के वॉलपेपर , आइकॉन को अरेंज कर सकता है , डेस्कटॉप में शॉर्टकट बना सकते है , सेटिंग को मैनेज कर सकते है। के ऑपरेटिंग सिस्टम में यूज़र्स डेस्कटॉप को अपने जरुरत के अनुसार कस्टमाइज भी कर सकता है।\n...\nटास्कबार डेस्कटॉप स्क्रीन के नीचे एक हॉरिजॉन्टल बार होती है। Taskbaar में आप रनिंग प्रोग्राम को देख सकते है , स्टार्ट मेनू को फ़ास्ट तरीके से एक्सेस कर सकते है , सिस्टम नोटिफिकेशन , सिस्टम सर्च बार , डेट -टाइम , नेटवर्क जैसे प्रोग्राम को एक्सेस कर सकते है।\n...\nडेस्कटॉप पर शॉर्टकट बनाने के लिए , फाइल , फोल्डर और एप्लीकेशन पर राइट क्लिक करें और Send To मेनू में जाकर Desktop (Create shortcut) पर क्लिक करके शॉर्टकट बनाया जा सकता है ।\n...\nआप डेस्कटॉप पर राइट क्लिक करके “Personalize” या “Properties,” को सेलेक्ट करने के बाद न्यू बैकग्राउंड या कलर को अपने अनुसार बदल सकते है।\n...\nबहुत से ऑपरेटिंग सिस्टम में डेस्कटॉप आइकॉन को टेम्पररी हाईड किया जा सकता है। विंडोज कंप्यूटर में डेस्कटॉप आइकॉन को हाईड करने के लिए डेस्कटॉप पर राइट क्लिक करे और View ऑप्शन में जाकर Show Desktop Icon को चेक अनचेक करके डेस्कटॉप आइकॉन को show या hide किया जा सकता है।\n...\nडेस्कटॉप विजेट या गैजेट छोटे एप्लिकेशन होते हैं जो स्पेसिफिक फंक्शन या इनफार्मेशन को उपलब्ध कराने का कार्य करते हैं, जैसे क्लॉक , कैलेंडर, मौसम अपडेट या सिस्टम मॉनिटरिंग टूल। क्विक एक्सेस के लिए इन्हें डेस्कटॉप पर ऐड किया जा सकता है।\n...\nस्टार्ट मेनू डेस्कटॉप पर एक सेंट्रलाइज लोकेशन है जहां आप इंस्टॉल किए गए एप्लिकेशन, डॉक्यूमेंट , सेटिंग्स तक आसानी से पहुंच सकते हैं और अपने कंप्यूटर को शटडाउन , रीस्टार्ट , लॉक आदि कर सकते हैं। यह विभिन्न कार्यों को नेविगेट करने और लॉन्च करने का एक आसान तरीका होता है।\n\n---\n\nTitle: DESKTOP का हिन्दी अनुवाद | कोलिन्स अंग्रेज़ी-हिन्दी शब्दकोश\nURL: https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop\nPublished: N/A\nAuthor: N/A\nHighlights:\n# desktop का हिन्दी अनुवाद\n \nशब्द आवृत्ति\nShare\n×\n[](https://www.facebook.com/sharer.php?u=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop)[](https://twitter.com/intent/tweet?url=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop&via=collinsdict)\nCredits\n×\n## desktop\n/ˈdesktɒp 'डेस्कटॉप्/\n[](https://www.facebook.com/sharer.php?u=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop)[](https://twitter.com/intent/tweet?url=https://www.collinsdictionary.com/hi/dictionary/english-hindi/desktop&via=collinsdict)\n**शब्द प्रारूप: **desktops\n1. गणनीय संज्ञा\nThe desktop of a computer is the display of icons that you see on the screen when the computer is ready to use.\n[computing]डेस्कटॉप mn\n2. गणनीय संज्ञा\nA desktop or a desktop computer is a computer that is small enough to fit onto a desk but too big to carry around with you.\nडेस्कटॉप mn\n...\nCopyright © 2014 by HarperCollins Publishers. All rights reserved\n...\nADJECTIVE /ˈdɛskˌtɒp/\n...\n*Desktop* computers are a convenient size for using on a desk or table, but are not designed to be portable.\nWhen launched, this computer was the smallest desktop computer ever produced.\n* अमेरिकन अंग्रेजी: [desktop](https://www.collinsdictionary.com/hi/dictionary/english/desktop-version)\n/ˈdɛsktɒp/\n...\n* ब्राजीली पुर्तगाली\n...\n* चीनी: 台式的\n...\nNOUN /ˈdɛskˌtɒp/\n...\nA *desktop* is a desktop computer.\n* अमेरिकन अंग्रेजी: [desktop](https://www.collinsdictionary.com/hi/dictionary/english/desktop-version)\n/ˈdɛsktɒp/\n...\n](https://www\n\n---\n\nTitle: Desktop Meaning in Hindi: डेस्कटॉप का हिंदी अर्थ और पूरी जानकारी\nURL: https://skilledenglish.com/desktop-meaning-in-hindi/\nPublished: 2026-03-30T01:51:39.000Z\nAuthor: Emma Collins\nHighlights:\nकंप्यूटर की दुनिया में “डेस्कटॉप” एक बहुत ही आम और महत्वपूर्ण शब्द है। अगर आप “desktop meaning in hindi” खोज रहे हैं, तो इसका सीधा और सरल अर्थ है “डेस्क पर रखा जाने वाला” या फिर “डेस्क पर रखने योग्य कंप्यूटर”। यह शब्द दो अंग्रेजी शब्दों “डेस्क” (मेज़) और “टॉप” (ऊपर) से मिलकर बना है। आज के डिजिटल युग में, इस शब्द के दो प्रमुख अर्थ हैं – एक तो भौतिक कंप्यूटर सिस्टम को संदर्भित करता है और दूसरा कंप्यूटर स्क्रीन पर दिखने वाले ग्राफिकल इंटरफेस को। यह लेख डेस्कटॉप के हिंदी अर्थ, इसके प्रकार, घटकों, फायदों और इससे जुड़े सभी पहलुओं पर गहन चर्चा प्रस्तुत करेगा।\n...\nहिंदी में डेस्कटॉप का अर्थ सीधे तौर पर “मेज़ का ऊपरी भाग” या “मेज़ के ऊपर रखी जाने वाली वस्तु” होता है। कंप्यूटिंग के संदर्भ में, यह एक ऐसे कंप्यूटर को दर्शाता है जिसे स्थायी रूप से एक डेस्क या टेबल पर रखा जाता है, जिसके विपरीत लैपटॉप होता है जो पोर्टेबल होता है। इसके अलावा, ऑपरेटिंग सिस्टम के ग्राफिकल यूजर इंटरफेस (GUI) के मुख्य स्क्रीन को भी डेस्कटॉप कहा जाता है, जहाँ आइकन, विंडोज़, और टास्कबार दिखाई देते हैं।\n...\nएक डेस्कटॉप कंप्यूटर एक पर्सनल कंप्यूटर है जो एक निश्चित स्थान पर उपयोग के लिए डिज़ाइन किया गया है। इसमें आमतौर पर एक अलग मॉनिटर, कीबोर्ड, माउस और एक सिस्टम यूनिट (CPU टावर) शामिल होते हैं। यह लैपटॉप की तुलना में आमतौर पर अधिक शक्तिशाली, अपग्रेड करने में आसान और बेहतर शीतलन प्रदान करता है, जिससे यह गेमिंग, ग्राफिक डिजाइन, और विडियो एडिटिंग जैसे भारी कार्यों के लिए आदर्श बन जाता है।\n...\nऑपरेटिंग सिस्टम (जैसे Windows, macOS, Linux) के शुरू होने के बाद जो मुख्य स्क्रीन दिखती है, उसे डेस्कटॉप इंटरफेस कहते हैं। यह उपयोगकर्ता के लिए प्राथमिक कार्य क्षेत्र है। इस पर एप्लिकेशन आइकन, फाइलें, फोल्डर और एक टास्कबार या डॉक स्थित होता है। यह एक डिजिटल डेस्क की तरह काम करता है जहाँ से उपयोगकर्ता सभी कार्यों को व्यवस्थित और एक्सेस कर सकता है।\n...\nडेस्कटॉप का हिंदी में सीधा अर्थ “मेज़ के ऊपर” या “डेस्क पर रखा जाने वाला” होता है। कंप्यूटर के संदर्भ में, इसका दोहरा अर्थ है: (1) एक ऐसा कंप्यूटर जो डेस्क पर स्थायी रूप से रखा जाता है, और (2) ऑपरेटिंग सिस्टम का मुख्य ग्राफिकल इंटरफेस स्क्रीन।\n...\nकंप्यूटर में, डेस्कटॉप दो चीजों को संदर्भित कर सकता है। पहला, भौतिक डेस्कटॉप कंप्यूटर सिस्टम जिसमें मॉनिटर, CPU टावर, कीबोर्ड और माउस शामिल हैं। दूसरा, सॉफ्टवेयर इंटरफेस – वह पहली स्क्रीन जो कंप्यूटर चालू करने के बाद दिखती है, जहाँ आपके आइकन, फाइलें और स्टार्ट मेनू होते हैं।\n...\nमुख्य अंतर पोर्टेबिलिटी, प्रदर्शन और अपग्रेडेबिलिटी में है। डेस्कटॉप स्थिर, अधिक शक्तिशाली और आसानी से अपग्रेड किए जा सकने वाले होते हैं लेकिन पोर्टेबल नहीं होते। लैपटॉप पोर्टेबल, सभी-इन-वन डिवाइस होते हैं लेकिन प्रदर्शन और अपग्रेड विकल्पों में थोड़ा समझौता करते हैं और आमतौर पर समान कॉन्फ़िगरेशन पर अधिक महंगे होते हैं।\n...\nडेस्कटॉप चुनने के लिए सबसे पहले अपनी आवश्यकता (गेमिंग, ऑफिस कार्य, डिजाइनिंग आदि) तय करें। फिर बजट के अनुसार प्रोसेसर (CPU), रैम (कम से कम 8GB), स्टोरेज (SSD अवश्य लें), और ग्राफिक्स कार्ड (यदि गेमिंग या डिजाइन कार्य है तो) का चयन करें। प्री-बिल्ट सिस्टम या कस्टम-बिल्ट PC के विकल्पों पर विचार करें।\n...\n“Desktop meaning in hindi” की खोज केवल एक शब्द का अनुवाद नहीं है, बल्कि आधुनिक कंप्यूटिंग के एक मूलभूत पहलू की गहरी समझ की ओर ले जाती है। डेस्कटॉप, चाहे वह एक भौतिक कंप्यूटर सिस्टम के रूप में हो या एक डिजिटल कार्यक्षेत्र के रूप में, आज भी शक्ति, नियंत्रण और अनुकूलन क्षमता का प्रतीक है। लैपटॉप\n\n---\n\nTitle: Desktop ka matlab | Filo\nURL: https://askfilo.com/user-question-answers-smart-solutions/desktop-ka-matlab-3437363036323438\nPublished: 2026-03-06T02:56:57.000Z\nAuthor: N/A\nHighlights:\nडेस्कटॉप (Desktop) का अर्थ:\n...\nकंप्यूटर की शब्दावली में डेस्कटॉप के मुख्य रूप से दो अर्थ होते हैं:\n...\nसॉफ्टवेयर के संदर्भ में: जब हम कंप्यूटर को चालू (Switch on) करते हैं, तो ऑपरेटिंग सिस्टम (जैसे Windows) लोड होने के बाद जो सबसे पहली मुख्य स्क्रीन दिखाई देती है, उसे डेस्कटॉप कहते हैं। इसमें नीचे की तरफ टास्कबार और स्क्रीन पर विभिन्न आइकन्स (Icons) जैसे My Computer, Recycle Bin आदि होते हैं।\n...\nहार्डवेयर के संदर्भ में: डेस्कटॉप एक प्रकार का पर्सनल कंप्यूटर (PC) है जिसे किसी मेज या डेस्क पर रखकर चलाया जाता है। यह लैपटॉप की तरह पोर्टेबल नहीं होता और इसमें अलग से CPU कैबिनेट, मॉनिटर, कीबोर्ड और माउस जुड़े होते हैं।\n...\nडेस्कटॉप के मुख्य भाग: (i) आइकन्स (Icons): प्रोग्राम्स के छोटे चित्र। (ii) टास्कबार (Taskbar): स्क्रीन के नीचे स्थित पट्टी। (iii) वॉलपेपर (Wallpaper): डेस्कटॉप की बैकग्राउंड इमेज। (iv) स्टार्ट बटन (Start Button): प्रोग्राम्स को एक्सेस करने के लिए।\n\n---\n\nTitle: डेस्कटॉप कंप्यूटर - Vigyanwiki\nURL: https://www.vigyanwiki.in/wiki/%E0%A4%A1%E0%A5%87%E0%A4%B8%E0%A5%8D%E0%A4%95%E0%A4%9F%E0%A5%89%E0%A4%AA_%E0%A4%95%E0%A4%82%E0%A4%AA%E0%A5%8D%E0%A4%AF%E0%A5%82%E0%A4%9F%E0%A4%B0\nPublished: N/A\nAuthor: N/A\nHighlights:\nडेस्कटॉप कंप्यूटर एक व्यक्तिगत कंप्यूटर है जिसे अपने आकार और बिजली की आवश्यकताओं के कारण एक डेस्क पर या उसके पास एक ही स्थान पर नियमित उपयोग के लिए डिज़ाइन किया गया है। सबसे आम कॉन्फ़िगरेशन में एककंप्यूटर पेटिकाहोता है जिसमेंबिजली आपूर्ति इकाई (कंप्यूटर),मदरबोर्ड(केंद्रीय प्रसंस्करण इकाई के रूप में एकमाइक्रोप्रोसेसरके साथ एकमुद्रित सर्किट बोर्ड,मेमोरी,बस (कंप्यूटिंग), कुछ परिधीय और अन्य इलेक्ट्रॉनिक घटक), डिस्क होती है। भंडारण (सामान्यतः एक या अधिकहार्ड डिस्क ड्राइव,सॉलिड स्टेट ड्राइव,ऑप्टिकल डिस्क ड्राइव, और पहली मॉडल में एकफ्लॉपी डिस्क ड्राइव); एककंप्यूटर कीबोर्डऔर इनपुट के लिएकम्प्यूटर का माउस(कंप्यूटर विज्ञान); और एककंप्यूटर मॉनीटर,कंप्यूटर स्पीकर, और, अधिकांशतः, आउटपुट के लिए एक प्रिंटर (कंप्यूटिंग) है। घटनाक्षैतिज और लंबवतउन्मुख हो सकती है और या तो नीचे, बगल में या डेस्क के शीर्ष पर रखा जा सकता है।\n...\nएक ऑल-इन-वन (एआईओ) डेस्कटॉप कंप्यूटर सिस्टम के आंतरिक घटकों को डिस्प्ले के समान स्थितियों में एकीकृत करता है, इस प्रकार एक टावर को सम्मिलित करने वाले डेस्कटॉप की तुलना में एक छोटे पदचिह्न (कम केबल के साथ) पर नियन्त्रण कर लेता है।[36] ऑल-इन-वन सिस्टम को संभवतः ही कभी डेस्कटॉप कंप्यूटर के रूप में लेबल किया जाता है।\n...\nगेमिंग कंप्यूटर उच्च प्रदर्शन सेंट्रल प्रोसेसिंग यूनिट,ग्राफ़िक्स प्रोसेसिंग युनिटऔर उच्च रिज़ॉल्यूशन औरफ्रेम दरपर वीडियो गेम खेलने के लिए अनुकूलितयादृच्छिक अभिगम स्मृतिवाले डेस्कटॉप कंप्यूटर हैं। गेमिंग कंप्यूटर की परिधि में सामान्यतः तेज प्रतिक्रिया समय के लिएकीबोर्ड तकनीकसम्मिलित होती है,[40] और एक गेमिंग कंप्यूटर माउस जो उच्च डॉट्स प्रति इंच गति को ट्रैक कर सकता है।[41]\n...\nलैपटॉपपर डेस्कटॉप का एक लाभ यह है कि स्पेयर पार्ट्स और एक्सटेंशन को मानकीकृत किया जाता है, जिसके परिणामस्वरूप कम कीमत और अधिक उपलब्धता होती है। उदाहरण के लिए, मदरबोर्ड के आकार और माउंटिंग को एटीएक्स,माइक्रोएटीएक्स,बीटीएक्स (फॉर्म फैक्टर)या अन्यकंप्यूटर फॉर्म फैक्टरमें मानकीकृत किया गया है। डेस्कटॉप में कई मानकीकृत विस्तार स्लॉट होते हैं, जैसेपारंपरिक पीसीआईयापीसीआई एक्सप्रेस, जबकि लैपटॉप में केवल एकमिनी पीसीआईस्लॉट और एकपीसी कार्डस्लॉट (याएक्सप्रेस कार्डस्लॉट) होता है। डेस्कटॉप को असेंबल करने और अलग करने की प्रक्रिया सरल और मानकीकृत भी होती है। लैपटॉप के स्थितियों में ऐसा नहीं होता है, चूंकि कुछ हिस्सों को जोड़ना या बदलना, जैसेऑप्टिकल ड्राइव,हार्ड डिस्क, या अतिरिक्तमेमोरी मॉड्यूलजोड़ना अधिकांशतःकाफी सरल होता है। इसका मतलब है कि एक डेस्कटॉप कंप्यूटर कॉन्फ़िगरेशन, सामान्यतः एकटावर बॉक्स, को लैपटॉप की तुलना में अधिक सीमा तक अनुकूलित और उन्नत किया जा सकता है। इस अनुकूलन ने टॉवर स्थितियों को गेमिंग कंप्यूटर और उत्साही कंप्यूटिंग के बीच लोकप्रिय बनाए रखा है।\n...\nएक डेस्कटॉप कंप्यूटर को कम बाधा, ब्लैकआउट और स्पाइक्स जैसी विद्युत गड़बड़ी को संभालने के लिए एक निर्बाध बिजली की आपूर्ति की आवश्यकता होती है; एक डेस्कटॉप पीसी के लिए 20-30 मिनट से अधिक का ऑन-बैटरी समय प्राप्त करने के लिए एक बड़े और महंगे यूपीएस की आवश्यकता होती है।[49][50] पर्याप्त रूप से चार्ज की\n...\nएक डेस्कटॉप कंप्यूटर को अधिकांशतःकम्प्यूटेशनल क्षमता में तुलनीय लैपटॉप पर फायदा होता है। लैपटॉप की तुलना में डेस्कटॉप पर ओवरक्लॉकिंग अधिकांशतःअधिक संभव है; इसी तरह, हार्डवेयर ऐड-ऑन जैसे असतत ग्राफिक्स सह-प्रोसेसर केवल एक डेस्कटॉप में स्थापित करना संभव हो सकता है।[51]\n\n---\n\nTitle: अपने डेस्कटॉप स्क्रीन को हमेशा कैसे रखें व्यवस्थित? यहां जानिए तरीका\nURL: https://hindi.newsbytesapp.com/news/science/how-to-keep-your-desktop-screen-always-organized-know-tips-and-tricks/story\nPublished: 2025-05-29T00:00:00.000Z\nAuthor: N/A\nHighlights:\nअपने डेस्कटॉप स्क्रीन को हमेशा कैसे रखें व्यवस्थित? यहां जानिए तरीका \n\nडेस्कटॉप को हमेशा सलीके से सजाकर रखें\n...\nअपने कंप्यूटर या लैपटॉप पर डेस्कटॉप स्क्रीन को व्यवस्थित रखना हमारे लिए बहुत उपयोगी होता है। स्क्रीन पर जब आइकॉन साफ-सुथरे ढंग से होते हैं तो हमें जरूरी चीजें जल्दी मिल जाती हैं। इससे गलती से किसी और चीज पर क्लिक नहीं होता और काम में रुकावट नहीं आती। जब स्क्रीन अव्यवस्थित होती है तो हमारा ध्यान भटकता है और समय भी बर्बाद होता है। इसलिए जरूरी है कि हम डेस्कटॉप को हमेशा सलीके से सजाकर रखें।\n...\nअगर आप अपने डेस्कटॉप को सही तरीके से व्यवस्थित रखना चाहते हैं तो सबसे पहले आइकनों को समूह में रखें। जैसे ऑफिस के टूल्स, फोटो वाले ऐप्स और मीडिया से जुड़ी चीजें एक साथ हों।\n...\nइसके अलावा, आप फोल्डर बनाकर प्रोजेक्ट, डॉक्यूमेंट्स या इमेज जैसी चीजें अलग-अलग रख सकते हैं। इससे स्क्रीन पर भीड़ नहीं लगती और जरूरत के समय चीजें जल्दी मिल जाती हैं।\n...\nग्रुपिंग और फोल्डर सिस्टम आपको हर दिन का समय बचा सकता है।\n...\nआपके डेस्कटॉप पर जितनी कम चीजें होंगी, उतना अच्छा रहेगा।\n\nइसलिए हमेशा कोशिश करें कि जो फाइल या शॉर्टकट रोज इस्तेमाल नहीं होते, उन्हें डिलीट कर दें या किसी फोल्डर में डाल दें। इससे न सिर्फ आपका डेस्कटॉप साफ रहेगा बल्कि आपकी नजर भी बार-बार इधर-उधर नहीं जाएगी।\n...\nहर हफ्ते कुछ मिनट देकर पुराने और बेकार आइकन हटाएं। इससे डेस्कटॉप हल्का बनेगा और आपको काम करने में अधिक आराम मिलेगा।\n...\nकुछ खास सॉफ्टवेयर टूल्स होते हैं, जो डेस्कटॉप को ऑटोमैटिक तरीके से सजा देते हैं।\n\nआप चाहें तो ऐसे टूल्स का इस्तेमाल करके वर्चुअल डेस्कटॉप बना सकते हैं या आइकनों को पसंद के हिसाब से सेट कर सकते हैं।\n\nइसके साथ ही, समय-समय पर डेस्कटॉप की जांच करते रहें और देखें कि क्या सबकुछ अभी भी जरूरी है।\n...\nइस तरह की नियमित सफाई से आपका कंप्यूटर तेज चलेगा और आप बिना किसी रुकावट के अपना काम कर सकेंगे।\n\n---\n\nTitle: Computer Laptop में Desktop Background (Wallpaper) Change कैसे करें - TutorialPandit.\nURL: https://www.tutorialpandit.com/change-desktop-background/\nPublished: 2026-05-17T02:30:40.000Z\nAuthor: N/A\nHighlights:\nComputer Laptop में Desktop Background (Wallpaper) Change कैसे करें - TutorialPandit.\n...\n# Computer Laptop में Desktop Background (Wallpaper) Change कैसे करें?\n...\nComputerका Desktop Background Change करना बहुत ही आसान है. आप कुछ आसान Steps को Follow करके अपनेकम्प्युटरका Wallpaper बदल सकते है.\n...\nDesktop Background बदलकर हम Windows Desktop को और ज्यादा रूचिकर और सुंदर बना सकते है. आप अपने मन पसंद Photo Picture को Desktop Wallpaper के लिए Set कर सकते है. और Windows Colors, Sounds, Desktop Icons, Mouse Pointers को भी Customized कर सकते है.\n...\nWindows 7 और इससे High Versions में Desktop Background के लिए Themes (Pictures, Sounds, Colors का Mix Combination) का उपयोग किया जाता है. Windows 7 में बहुत सारी Themes दी होती है. आप इनमें से अपनी पसंद की Theme को Desktop Background पर Set कर सकते है.\n...\nइस Tutorial में हम आपको Windows 7 में Desktop Background Change करना के बारे में बताऐंगे. क्योंकि Windows के हर Version में Desktop Background बदलने का तरीका लगभग एक जैसा ही रहता है. बस दिखावट और Options में थोडा बदलाव रहता है. यदि आप Windows 7 में Desktop Background बदलना सीख गए तो आप Windows के किसी भी Version में Desktop Background बदल सकते है.\n...\n## Computer में Desktop Background Change करने का तरीका\n...\n1. सबसे पहले Desktop पर खाली जगह पर कहीं भी Mouse से Right Click कीजिए. अब आपके सामने एक Menu Open होगी. जिसमे से आपको Personalize पर क्लिक करनी है.\n...\n2. अब आपके सामने Windows Personalization Settings Open हो गई है. यहाँ से आप चाहे तो अपने लिए Theme चुनकर Desktop Background बदल सकते है. आप किसी भी Theme (Point Number 1) पर क्लिक कीजिए. और वही Theme आपके Computer का Background बन जाएगी. यदि आप Theme को Desktop Background नही बनाना चाहते है. तो नीचे दिख रहे “Desktop Background” (Point Number 2) पर क्लिक कीजिए.\n...\n3. अब आपके सामने Desktop Background Window खुल गई है. यहाँ से अपनी मन पसंद का Photo चुनकर Desktop Background बना सकते है. अपनी पसंद की Photo को Wallpaper बनाने के लिए. पहले Browse पर जाकर अपनी Picture ढूंढे. इसके बाद Picture Position मे जाकर Wallpaper की Position Set कीजीए. और इसके बाद Save Changes पर क्लिक कर दीजिए.\n...\n4. ऐसा करते ही आपका Desktop Background बदल जाएगा. और अब आपका मन पसंद फोटो आपका Desktop Wallpaper बन गया है.\n...\n## Computer में Wallpaper Set करने का Shortcut तरीका\n...\nआप ऊपर बताए गए तरीके से तो अपने Computer का Background Change कर ही सकते है. इसके अलावा आप अन्य तरीकों से भी अपने Computer का Desktop Background बदल सकते है. और वो भी एक ही क्लिक में.\n...\nतो इसके बारे में हम नीचे Step-by-Step तरीके से बता रहे है. आप नीचे दिए गए Steps को Follow कीजिए.\n...\n1. सबसे पहले आप जिस Photo Picture को अपने Computer का Wallpaper Set करना चाहते है. पहले उस Photo Picture की Location पर जाए.\n...\n2. इसके बाद उस Photo Picture पर Mouseकी Left क्लिक एक बार दबाकर. Right Click को भी दबाएं. ऐसा करने पर आपके सामने Right Click Menu खुलेगी. यहाँ से आपको Set as desktop background पर क्लिक कीजिए. नीचे Screenshot देंखे.\n...\n3. अब आपकी मन पसंद फोटो आपके कम्प्युटर का Wallpaper बन चुकी है. जिसे आप Desktop पर जाकर देख सकते है.\n...\nइस Tutorial में आपने जाना कि Computer Desktop Background कैसे Change करते है. हमने आपको बताया कि कैसे आप अपने खुद के फोटो को भी Wallpaper बना सकते है. हमे उम्मीद है कि यह Tutorial आपके लिए उपयोगी साबित होगा और आप आसानी से अपने कम्प्युटर का Background Change कर सकते है.\n```",
+    "time": {
+      "start": 1789528811320,
+      "end": 1789528811320
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.322Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528811322,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "part": {
+    "id": "prt_0a83aa739001GJa5e2Iqg7tKn1",
+    "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+    "messageID": "msg_0a83aa49600169P9614WEpWhuS",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 29594,
+      "output": 20828,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 50422,
+      "headroom": -11566,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.322Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.323Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.324Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.324Z",
+  "service": "session.prompt",
+  "step": 8,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.325Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.326Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.327Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528811327,
+  "sessionID": "ses_f57c58bcfffeIuNpKXOD7IiReT"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.327Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.328Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.328Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.328Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.Ds0gJS1odS",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:20:11.328Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 14,
+  "message": "Agent exiting"
+}
+

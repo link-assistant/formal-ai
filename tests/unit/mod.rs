@@ -314,3 +314,4 @@ mod issue_1138_store_read_path;
 mod issue_1138_uniform_dispatch;
 mod issue_1138_self_use_concept_lookup;
 mod issue_1138_self_use_verifiable_task;
+mod issue_1138_self_use_intent_routing;

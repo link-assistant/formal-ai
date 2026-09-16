@@ -1,0 +1,2489 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.177Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.178Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 用印地语说一句吧。 --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.178Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.178Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.186Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "用印地语说一句吧。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "用印地语说一句吧。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.186Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.187Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.188Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.188Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.190Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.191Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.193Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7716,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.193Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.207Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:18:12.210Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 24,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:18:12.211Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.214Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.214Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.215Z",
+  "service": "session",
+  "id": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6",
+  "title": "New session - 2026-09-16T03:18:12.215Z",
+  "time": {
+    "created": 1789528692215,
+    "updated": 1789528692215
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.215Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.216Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.216Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.216Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c72a08ffeKXMxj1FmhCJ6qB/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.216Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c72a08ffeKXMxj1FmhCJ6qB/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.218Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57c72a08ffeKXMxj1FmhCJ6qB/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.221Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.222Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.223Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.223Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.223Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.223Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.223Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.223Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.223Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.224Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.224Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.337Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.341Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.341Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.347Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.352Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.356Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.797Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528692797,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838d835001QeGUUhyv0EIPSh",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838d674001ZTr1iNEGWxHziX",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.801Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528692801,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838d83f001UUDDyeJnflk8pd",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838d674001ZTr1iNEGWxHziX",
+    "type": "tool",
+    "callID": "call_4e02b5bfe1216a28",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.801Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528692801,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838d83d001FUKveKdZgGHKK9",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838d674001ZTr1iNEGWxHziX",
+    "type": "text",
+    "text": "我来上网搜索 用印地语说一句吧。",
+    "time": {
+      "start": 1789528692801,
+      "end": 1789528692801
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:12.802Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528692802,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838d83f001UUDDyeJnflk8pd",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838d674001ZTr1iNEGWxHziX",
+    "type": "tool",
+    "callID": "call_4e02b5bfe1216a28",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "用印地语说一句吧"
+      },
+      "time": {
+        "start": 1789528692802
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.621Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528694621,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838d83f001UUDDyeJnflk8pd",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838d674001ZTr1iNEGWxHziX",
+    "type": "tool",
+    "callID": "call_4e02b5bfe1216a28",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "用印地语说一句吧"
+      },
+      "output": "Title: 印地语问候语与常用表达（अभिवादन और अभिव्यक्ति）学习指南 — शुक्रिया | 印地语 Grammar\nURL: https://www.settemilalingue.com/zh/languages/hi/grammar/greetings-and-expressions\nPublished: N/A\nAuthor: N/A\nHighlights:\n学习印地语时，问候语与常用表达（अभिवादन और अभिव्यक्ति）是语言基础的重要组成部分。这是 A1（入门）级别的学习内容。核心表达包括 नमस्ते（你好／再见）、शुक्रिया/धन्यवाद（谢谢）、माफ़ कीजिए（劳驾／对不起）、कृपया（请）以及 ठीक है（好的）。\n...\n这些表达常用于打招呼、表达感谢、请求他人注意、礼貌道歉或结束对话。很多短语本身就承载语气和礼貌程度，因此需要整体记忆。\n...\n| हिन्दी | 含义 |\n| --- | --- |\n| नमस्ते! आप कैसे हैं? | 你好！您好吗？ |\n| शुक्रिया / धन्यवाद। | 谢谢。（前者更偏乌尔都语风格，后者更偏梵语化） |\n| माफ़ कीजिए。 | 劳驾。／对不起。 |\n...\n| हिन्दी | 中文 | 备注 |\n| --- | --- | --- |\n| नमस्ते! आप कैसे हैं? | 你好！您好吗？ | 展示基本问候语 |\n| शुक्रिया / धन्यवाद。 | 谢谢。 | 展示常见感谢表达 |\n| माफ़ कीजिए。 | 劳驾。／对不起。 | 注意礼貌打断或道歉时的使用 |\n| （参考教材中的更多例句） | （对应翻译） | 问候语与常用表达在日常对话中的运用 |\n| （参考教材中的更多例句） | （对应翻译） | 正式场合中问候语与常用表达的使用 |\n| （参考教材中的更多例句） | （对应翻译） | 问候语与常用表达与其他语法点的结合 |\n| （参考教材中的更多例句） | （对应翻译） | 注意这些表达的变化形式 |\n| （参考教材中的更多例句） | （对应翻译） | 口语中常见的简化用法 |\n...\n语原文材料，注意\n...\n笔记卡片\n\n---\n\nTitle: 轻松学习印地语中最常用的短语\nURL: https://first-words.com/cmn-CN/hi-IN/common-phrases\nPublished: N/A\nAuthor: N/A\nHighlights:\n## 日常对话的基本短语 (印地语)\n...\nनमस्ते, आप कैसे हैं? 你好吗？\n...\nशुभ प्रभात। 早上好。\n...\nशुभ दोपहर। 下午好。\n...\nशुभ संध्या। 晚上好。\n...\nशुभ रात्रि। 晚安。\n...\nअलविदा। 再见。\n...\nबाद में मिलते हैं। 回头见。\n...\nजल्द ही फिर मिलेंगे। 再见。\n...\nकल मिलते हैं। 明天见。\n...\nकृपया। 请。\n...\nधन्यवाद। 谢谢。\n...\nआपका स्वागत है। 不客气。\n...\nमाफ़ करें। 打扰一下。\n...\nमुझे माफ़ करें। 对不起。\n...\nकोई बात नहीं। 没问题。\n...\nमुझे ज़रूरत है... 我需要...\n...\nमुझे चाहिए... 我想...\n...\nमेरे पास है... 我有...\n...\nक्या आपके पास है...? 你有...？\n...\nमुझे लगता है... 我认为...\n...\nमुझे नहीं लगता... 我不认为...\n...\nमुझे पता है... 我知道...\n...\nमुझे भूख लगी है। 我饿了。\n...\nमुझे प्यास लगी है। 我口渴。\n...\nमैं थक गया हूं। 我累了。\n...\nमैं बीमार हूं। 我病了。\n...\nमैं ठीक हूं धन्यवाद। 我很好，谢谢你。\n...\nआपको कैसा लगता है? 你感觉如何？\n...\nमैं अच्छा महसूस कर रहा हूँ। 我感觉很好。\n...\nक्या मैं आपकी मदद कर सकता हूं? 我可以帮你吗？\n...\nक्या आप मेरी मदद कर सकते हैं? 你能帮助我吗？\n...\nकृपया आप यह दोहरा सकते हैं? 你再说一遍，好吗？\n...\nतुम्हारा नाम क्या है? 你叫什么名字？\n...\nमेरा नाम एलेक्स है 我的名字叫亚历克斯\n...\nआपसे मिलकर अच्छा लगा। 很高兴见到你。\n...\nआप कहाँ से हैं? 你从哪来？\n...\nक्या आप अंग्रेज़ी बोलते हैं? 你会说英语吗？\n...\nआप क्या करते हैं? 你做什么工作？\n...\nआप कैसे हैं? 你好吗？\n...\nमैं ठीक हूं धन्यवाद। और आप? 我很好，谢谢你。你呢？\n...\nकृपया क्या आप मेरी मदद कर सकते हैं? 你能帮我吗？\n...\nक्या आप इसे दौहरा सकते हैं? 请你再说一遍？\n...\nक्या एक गिलास पानी ले सकते हैं? 可以给我一杯水吗？\n...\nमौसम कैसा है? 天气如何？\n...\nमैं एक किताब पढ़ रहा हूं। 我在读一本书。\n...\nक्या आप आना चाहते हैं? 你想来吗？\n...\nआपका जन्मदिन कब है? 你的生日是什么时候？\n...\nआपने अंग्रेजी कहाँ सीखी है? 你在哪里学英语？\n...\nआपका पसंदीदा भोजन क्या है? 你最爱吃什么？\n...\nक्या आप कभी लंदन हो कर आए हैं? 你曾经去过伦敦吗？\n...\nआपका दिन शुभ हो। 祝你有美好的一天。\n...\nआपका फोन नंबर क्या है? 你的电话号码是什么？\n...\nक्या मैं आपको कॉल कर सकता हूँ? 我可以打电话给你吗？\n...\nक्या हम कल मिल सकते हैं? 我们明天可以见面吗？\n...\nक्या यह दूर है? 远吗？\n...\nक्या मुझे आपक फोन इस्तेमाल करने की आज्ञा है? 我可以使用你的手机吗？\n...\nमुझे डॉक्टर की जरूरत है। 我需要一个医生。\n...\nमुझे मदद की ज़रूरत है। 我需要帮助。\n...\nमैं अपने दोस्त की तलाश कर रहा हूं. 我在找我的朋友。\n...\nसकते हैं? 你能在地图上指给我看吗？\n...\nआज तिथि क्या है? 今天几号？\n...\nअभी जल्दी है। 现在还早。\n...\nआपके लिए कौन सा समय काम करता है? 你什么时间合适？\n...\nक्या मैं एक दोस्त ला सकता हूँ? 我可以带一个朋友吗？\n...\nमैं यहाँ हूँ। 我在这。\n...\nआप कहां हैं? 你在哪里？\n...\nवापसी पर स्वागत है! 欢迎回来！\n...\nक्या आप इसे मेरे लिए लिख सकते हैं? 你能为我写下来吗\n...\nमैं दो लोगों के लिए एक टेबल बुक करना चाहूंगा। 我想预订一张两人桌。\n...\nशुभ प्रभात! 早上好！\n...\nमैं तुम्हारी किसी चीज़ में मदद कर सकता हूँ क्या? 我可以帮你什么忙吗？\n...\nआप क्या सोचते हैं? 你怎么认为？\n...\nमैं आपकी सहायता कैसे कर सकता हूँ? 我该如何帮助您？\n...\nमेरा निवास एक शहर में है। 我住在一个城市。\n...\nआप क्या काम करते हैं? 你做什么工作？\n...\nमैं नौकरी की तलाश कर रहा हुँ। 我在找工作。\n...\nक्या आपके पास कोई पालतु पशु है? 你有什么宠物？\n...\nशुभकामनाएं। 最好的祝愿。\n...\nक्या आप मुझे यह समझा सकते हैं? 你能向我解释一下吗？\n...\nमैं एक आरक्षण करना चाहता हूँ। 我想预订。\n...\nक्या मुझे कृपया एक गिलास पानी मिल सकता है? 请给我\n...\n水好吗\n...\nकृपया क्या आप मेरी मदद कर सकते हैं? 请问你能帮帮我吗？\n...\nमैं अपनी नियुक्ति के लिए यहां हूं. 我是来赴约的。\n...\nकृपया क्या मैं एक रसीद ले सकता हूँ? 请问可以给我收据吗？\n...\nकृपया मुझे एक कॉफ़ी चाहिए। 请给我一杯咖啡。\n...\nमैं यहां छुट्टियों पर आया हूं। 我来这里度假。\n...\nआपका क्या सुझाव हैं? 你有什么建议吗？\n...\nमैं यह पता ढूंढ रहा हूं. 我正在找这个地址。\n...\nकृपया मुझे बिल दे दीजिए? 能给我支票吗谢谢？\n...\nमैं यहां व्यापार के लिए आया हूं। 我是来出差的。\n...\nक्या आप कोई अच्छा रेस्टोरेंट सुझा सकते हैं? 你能推荐一家好的餐厅吗？\n...\nमुझे कुछ टिकट खरीदने हैं. 我需要买一些邮票。\n...\nमैं एक कार किराये पर लेना चाहूँगा. 我想租车。\n...\nमैं बस ब्राउज़ कर रहा हूं, धन्यवाद। 我只是浏览一下，谢谢。\n...\nमुझे अपॉइंटमेंट लेने की जरूरत है. 我需要预约。\n\n---\n\nTitle: 印地语/日常用语 - 华夏公益教科书，开放的书籍，为开放的世界\nURL: https://wikibooks.cn/wiki/Hindi/Everyday_Phrases\nPublished: N/A\nAuthor: N/A\nHighlights:\n- 你好 - नमस्कार (namaskar) 或 namaste (नमस्ते)\n- 再见 -अलविदा (Alvida), चलता/चलती/चलते हूँ/है (chaltā/chalti/chalte hū n /hai) [chaltā hū n 用于男孩，而 chalti hū 用于女孩。chalte hai 用于一群人]\n- 请坐- पधारिये। (Padhāriye.)\n- 再会。 - फिर मिलेंगे। (Phir mileṅge.)\n- 谢谢 - धन्यवाद (dhanyavād)\n- 很高兴认识你，见到你很高兴。 - आप से मिल के ख़ुशी हुई, आप से मिल के अच्छा लगा। (Āp se mil ke xuśī huī, āp se mil ke acchā lagā.)\n...\n- 请送我去我的酒店。 - कृप्या मुझे मेरे होटल ले चलिये। (kripyā mujhe mere hoṭel le caliye.)\n...\n- 洗手间在哪里？ - शौंचालय किधर है? (Śau n cālay kidhar hai?)\n...\n- 这个多少钱？ - यह कितने का है? (Yah kitne kā hai?)\n...\n- 身体好吗？怎么样？发生什么事了？ - क्या हाल है? कैसे हो/हैं? क्या चल रहा है? (Kyā hāl hai? Kaise ho/hai n? Kyā chal rahā hai?\n...\n- 电话在哪？ - फ़ोन कहाँ है? (Fon kahā n hai?)\n...\n- 你在哪里？ - किधर हो तुम? / कहाँ हो तुम? / कहाँ हैं आप? (Kidhar ho tum? / Kahā n ho tum? / Kahā n hai n āp?)\n...\n- 我可以坐在这里吗？（说话者是男性） - क्या मैं यहाँ बैठ सकता हूँ? (Kyā mai n yahā n baiṭh saktā hū n?)\n...\n- 我可以坐在这里吗？（说话者是女性） - क्या मैं यहाँ बैठ सकती हूँ? (Kyā mai n yahā n bai\n...\nh saktī hū n?)\n...\n- 我需要一个（出租车、汽车、电话、笔）。 - मुझे एक (टैक्सी, कार/गाड़ी, फ़ोन, क़लम/पेन) चाहिये। (Mujhe ek (ṭaiksī, kār/gaṛī, fon, qalam/pen) cāhiye.)\n...\n- 我需要去/我必须去。- मुझे जाना है mujhe jāna hai / मुझे जाना पड़ेगा mujhe jānā paṛegā / मुझे जाना होगा mujhe jānā hogā\n...\n- 你需要/必须去 - आपको जाना है āpko jānā hai / आपको जाना पड़ेगा āpko jānā pa\n...\negā / आपको जाना होगा āpko jānā hogā / तुम्हें जाना है tumhe jānā hai / तुझे जाना है tujhe jānā hai\n...\n| 翻译 | 短语 | 音译 |\n| --- | --- | --- |\n| 印地语 | हिन्दी | hindī |\n| 你好/再见（印度教，北方） | नमस्ते | namaste |\n| 你好/再见（印度教，南方） | नमस्कार | namaskār |\n| 你好/再见（锡克教） | सत श्री अकाल | sat śrī akāl |\n| 你好（穆斯林） | अस्सलाम अलैकुम | assalām alaikum |\n| 你好（穆斯林回复） | वालैकुम अस्सलाम | vālaikum assalām |\n| 再见（穆斯林） | ख़ुदा हाफ़िज़ | kh uda hāfiz |\n| 请*（乌尔都语） | मेहरबानी करके | mehrbānī karke |\n| 请* | कृपया | kṛipaya |\n| 谢谢*（梵语起源） | धन्यवाद | dhanyavād |\n| 谢谢*（阿拉伯语起源） | शुक्रिया | śukriyā |\n| 非常感谢 | बहुत बहुत धन्यवाद/शुक्रिया | bahut bahut dhanyavād/śukriyā |\n| 不客气（不用谢） | कोई बात नहीं | koī bāt nahī n |\n| 对不起，抱歉，请原谅我 | माफ़ कीजिये | māf kījiye |\n| 打扰一下（意思是请听一下） | ज़रा सुनिये | zarā suniye |\n| 是的 | जी हाँ | jī hā n |\n| 不/不是 | जी नहीं | jī nahī n |\n| 好！/太棒了！/哦.../真的吗？！/好吧！ | अच्छा! | acchā! |\n| （万能形容词/感叹词） | | |\n| 你好吗？ | आप कैसे/कैसी हैं? | āp kaise/kaisī hai? |\n| | | （男性/女性应答者） |\n...\n| 好的！ | ठीक है! | ṭhīk hai! |\n| 一分钟！（意思是“等一下”；感叹词） | एक मिनट | ek minaṭ |\n| 我不明白 | मैं नहीं समझा/समझी | mai n nahī n samjha/samjhī (m/f) |\n| 我不知道 | मैं नहीं जानता/जानती हूँ | mai n nahī n jāntā/jāntī hu n (m/f) |\n| 英语 | अंग्रेज़ी | angrezī |\n| 你叫什么名字？ | आप का नाम क्या है? | āp kā nām kyā hai? |\n| 我的名字是... | मेरा नाम ... है | mera nām ... hai |\n| 很高兴认识你 | आप से मिलकर बहुत ख़ुशी हुई | āp se milkar bahut kh uśī huī |\n| 我也很高兴认识你（意思是对我也是） | मुझे भी | mujhe bhī |\n| 你会说英语吗？ | क्या आप अंग्रेज़ी बोलते/बोलती है? | kyā āp angrezī bolte/boltī (m\n...\nf) hai n? |\n...\n印地语使用者通常在所有场合使用“namaste”或“namaskar”（意思是早上好/下午好/晚上好/白天好/晚上好），特别是尊称。虽然这些也可能在纯印地语中使用\n...\nनमस्ते (namaste) - 标准问候（字面意思是“我向你鞠躬”）\n...\nनमस्कार (namaskār) - 标准问候\n...\nआप कैसे हैं? (Āp kaise hai n?) - 你好吗？\n...\nआप का नाम क्या है? (Āp kā nām kyā hai?) - 你叫什么名字？\n...\nआप कहाँ जा रहे हैं? (Āp kahā n jā rahe hai n?) - 你要去哪里？\n...\nशुक्रिया (shukriyā) - 谢谢\n...\nबहुत बहुत शुक्रिया (bahut bahut shukriyā) - 非常感谢\n...\nआपका बहुत बहुत शुक्रिया (āpka bahut bahut shukriyā) - 太感谢你了\n...\nप्रणाम (\n...\nसही (sahī) - 好的，对的，不错\n...\nबहुत सही (bahut sahī) - 非常好\n...\nआप का नाम (āp kā nām) - 你的名字\n...\nआप का पता (āp kā patā) - 你的地址\n...\nआज का मौसम कैसा है? (Āj ka mausam kaisā hai?) - 今天的天气怎么样？\n...\nबैठिये (bathiye) - 请坐\n...\nऔर सबज़ी लेंगे? (Aur sabzī le n ge?) - 您还要蔬菜吗？\n...\nऔर चावल लीजिये। (Aur chāwal lījiye.) - 再吃点米饭。\n...\nथोड़ी देर इन्तज़ार कीजिये। (Thoṛī der intzār kījiye.) - 请稍等。\n...\nठहरिये (ṭhahriye) - 等一下\n...\nसमय क्या है? (Samay kyā hai?) - 现在几点了？ Kya hal he apka\n...\nनीरजः मैं विद्यालय /पाठशाला /स्कूल जा रहा हूँ। (Nīraj: Main n vidhyalay/paathshaala/skūl jā rahā hū n.) 尼拉杰：我要去学校。\n...\nमाँः ठीक है बेटा। (Mā n: Ṭīk hai beṭā.) 妈妈：好的，儿子。\n...\nनीरजः आज डिब्बे में क्या दिया है? (Nīraj: Āj dibbe me n kyā diyā hai?) 你给我带了什么午饭？ \n\nमाँः आज मैं ने सैंडविच और कुछ लड्डू दिये हैं। (Mā n: Āj mai n ne sai n ḍwic aur kuch ladū diye hai n.) 我给你带了三明治和一些名为“拉杜”的甜点。\n...\nनीरजः वाह! (Nīraj: Wāh!) 太好了！\n...\nनीरजः हाँ माता जी! स्कूल ख़त्म होते सीधा घर आऊँगा। (Nīraj: Hā n Mātā-jī! Skūl ḫatm hote sidhā ghar āū n gā.) 好的，妈妈！我下课后直接回家。\n\n---\n\nTitle: 印地语/迷你教程 - 华夏公益教科书，开放的书籍，为一个开放的世界\nURL: https://wikibooks.cn/wiki/Hindi/Mini-tutorial_Lesson\nPublished: N/A\nAuthor: N/A\nHighlights:\n- हाँ। - 是\n- नहीं। - 否\n- कृपया।- 请\n- धन्यवाद।- 谢谢\n- आपकी कृपा है। - 多亏了你（字面意思是：因为你）\n- माफ़ कीजिये।- 对不起\n- मुझे क्षमा कीजिये। 请原谅我。\n- नमस्ते।- 你好（表示尊重）\n- क्या आप अंग्रेज़ी बोलते हैं? - 你会说英语吗？\n- क्या यहां कोई अंग्रेज़ी बोलता है? - 这里有人会说英语吗？\n- मैं बस थोड़ी सी हिंदी बोलती हूँ।\n- आपका नाम क्या है? 你叫什么名字\n- मेरा नाम नीना है।- 我叫妮娜\n- आप कैसे हैं?- 你好吗\n- मैं ठीक हूँ, धन्यवाद।- 我很好，谢谢\n- आपसे मिलकर बहुत खुशी हुई। - 很高兴认识你。（字面意思是：我很高兴遇见你。）\n- मैं समझी नहीं।- 我听不懂\n- आपने क्या कहा? - 你说什么？（尊敬地）\n- क्या आप थोड़ा धीरे बोल सकते हैं?- 你能慢点说吗？\n- मैंने बिल्कुल ठीक समझ लिया। -\n\n---\n\nTitle: 100​個​必備​印地​語​短語​（含​音頻） - Nemo Apps\nURL: https://nemoapps.com/zh-Hant/phrasebooks/hindi/\nPublished: N/A\nAuthor: N/A\nHighlights:\n# 印地​語\n...\n本短語集是LingoPix應用中印地語內容的示例。\n...\nNamastē\n...\nहाइ!\n...\nHāi!\n...\nShukriyā\n...\nमाफ़ कीजिए\n...\nMāf kījiē\n...\nKripayā\n...\nBahut atchhā\n...\nयह कितने का है?\n...\nYaha kitanē kā hei?\n...\nबिल ले आइए\n...\nBil lē āiē\n...\nबाथरूम कहाँ है?\n...\nBāthrūm kahāmn hei?\n...\nHāmn\n...\nमुझे यह पसंद है\n...\nMujhē yeh pasanda hei\n...\nठीक है?\n...\nThīk hei?\n...\nसब ठीक है\n...\nSab thīk hei\n...\nअच्छी बात है\n...\nAtchhī bāt hei\n...\n… कहाँ है?\n...\n… kahāmn hei?\n...\nKyā?\n...\nआपका स्वागत है!\n...\nĀpkā svāgat hei!\n...\nDhanyavād\n...\nबहुत-बहुत धन्यवाद\n...\nBahut-bahut dhanyavād\n...\nकोई बात नहीं\n...\nमैं तुमसे प्यार करता (करती) हूँ\n...\nMaemn tumsē pyār kartā (kartī\n...\nhūmn\n...\nबधाई हो!\n...\nBadhāī hō!\n...\nमुझे माफ़ कर दो\n...\nmāf kar dō\n...\nआप क्या सलाह देंगे (देंगी)?\n...\nक्या यहाँ फ़ोटो खींच सकते हैं?\n...\nवह क्या है?\n...\nVaha kyā hei?\n...\nआप कहाँ से हैं?\n...\nĀp kahāmn sē heimn?\n...\nमैं … से हूँ\n...\nMaemn … s\n...\nhūmn\n...\nक्या हाल है?\n...\nKyā hāl hei?\n...\nमैं ठीक हूँ\n...\nMaemn thīk hūmn\n...\nआपका नाम क्या है?\n...\nĀpkā nām kyā hei?\n...\nमेरा नाम … है\n...\nआपसे मिलकर खुशी हुई\n...\nYahāmn\n...\nVahāmn\n...\nVāh!\n...\nमैं सहमत हूँ\n...\nमैं समझता (समझती) हूँ\n...\nज़रा इसे दोहराइए\n...\nक्या आप अंग्रेज़ी बोल सकते हैं?\n...\nमैं थोड़ी-बहुत हिंदी बोल लेता (लेती) हूँ\n...\n… को हिंदी में कैसे\n...\nक्या मुझे यहाँ इंटरनेट एक्सेस मिल सकता है?\n...\nक्या आप यहाँ आस-पास कोई अच्छा रेस्तरां बता सकते हैं?\n...\nhā rēstrāmn batā saktē (sakt\n...\n) heimn?\n...\nक्या कुछ कम कर सकते हैं?\n...\nमुझे नहीं चाहिए\n...\nबचाओ!\n...\nमैं रास्ता भूल गया (गई) हूँ\n...\nMaemn rā\n...\nक्या आपके पास … है?\n...\nबहुत बढ़िया\n\n---\n\nTitle: 在印度合十禮和打招呼 - Asuna的旅行工作室\nURL: https://zh.asuna.work/zh-TW/travel/miwa/how-to-say-hello-in-hindi-1458397\nPublished: N/A\nAuthor: N/A\nHighlights:\n印度次大陸有一千多種語言，但幸運的是，我們只需要學習一種用印地語打招呼的方法：合十禮。\n...\n印度和尼泊爾最常見、最通用的問候語是合十禮（聽起來像“nuhm-uh-stay”）。\n...\n印度的問候並不像在一天中的時間那樣印度尼西亞和馬來語。一個簡單的合十禮適合白天或晚上的所有場合。將雙手合攏，做出調息姿勢，以示尊重。\n...\n雖然合十禮最初是一種表達深深敬意的方式，現在已成為陌生人和各種年齡和地位的朋友之間的常見問候語。在某些情況下，合十禮也用來表達誠摯的謝意。\n...\n## 如何正確發音合十禮\n...\n雖然說合十禮在印度以外的其他國家，這已成為一種趨勢，但人們常常用錯誤的方式表達它。別擔心：當你試圖禮貌地打招呼時，印度人糾正你發音的機會很小。\n...\n的發音合十禮印度各地略有不同，但前兩個音節的發音應更多地是“uh”音，而不是西方經常聽到的“ah”音。\n...\n“Nah-mah-stay”是最常見的錯誤發音合十禮。不要想像“nah”來開始這個詞，而是想“num”，剩下的就會自然而然地發生。第二個音節聽起來就像“呃”，然後用“stay”結束這個詞。\n...\n一個友善的合十禮打招呼通常伴隨著類似祈禱的手勢，稱為“祈禱”呼吸法。手掌相似地併攏，但比手掌低一點水在泰國使用的。雙手應放在胸前，指尖向上，象徵性地位於心輪上方，拇指輕觸胸部。輕微的低頭表示額外的尊重。\n...\n合十禮源自兩個梵語單詞：納瑪（弓）這（對你）。兩者結合起來就構成了“我向你鞠躬”。在這種情況下，“你”是內在的“真實的你”——神聖的。\n...\n問候語的第一部分——通過——大致意思是“不是我”或“不是我的”。換句話說，你正在減少你的自我意識，或者將自己置於與你打招呼的人之後。這就像口頭上的鞠躬。\n...\n- “好吧，好吧”\n- “我明白你在說什麼”\n- “我同意”\n- “是的”\n- “謝謝”\n- “我承認你的存在”\n- “很高興見到你”\n- “當然，無論如何”\n...\n在印度，搖頭是一種無聲的打招呼方式。它也被用作承認他人存在的禮貌。\n...\n搖頭。\n...\n，搖頭可能是\n...\n接近“謝謝”的動作。向他人表達口頭感謝並不像在西方那麼普遍。\n\n---\n\nTitle: 学习印地语. 第2课: 请和谢谢您 - LingoHut\nURL: https://www.lingohut.com/zh/v522489/%E5%8D%B0%E5%9C%B0%E8%AF%AD%E8%AF%BE%E7%A8%8B-%E8%AF%B7%E5%92%8C%E8%B0%A2%E8%B0%A2%E6%82%A8\nPublished: N/A\nAuthor: N/A\nHighlights:\n用印地语怎么说？ 请; 谢谢; 是; 不是; _____用中文怎么说？; 请说慢一点; 请重复一遍; 再说一遍; 逐字的; 慢一点; 你刚才说什么？; 我不明白; 你明白吗？; 那是什么意思？; 我不知道; 你会说英语吗？; 会，会说一点;\n...\n### 请和谢谢您 :: 印地语词汇\n...\n_____用中文怎么说？ आप कैसे कहते हैं?\n...\n请说慢一点 धीरे धीरे बोलो\n...\n请重复一遍 कृपया, दोहराएँ\n...\n再说一遍 दोबारा\n...\n逐字的 शब्द के लिए शब्द\n...\n慢一点 धीरे - धीरे\n...\n你刚才说什么？ तुमने क्या कहा?\n...\n我不明白 मैं नही समझता\n...\n你明白吗？ क्या तुम समझते हो?\n...\n那是什么意思？ इसका क्या मतलब है?\n...\n我不知道 मैं नहीं जानता कि\n...\n你会说英语吗？ क्या आप अंग्रेज़ी बोलते हैं?\n...\n会，会说一点 हाँ, थोडी बहुत\n\n---\n\nTitle: 探索印度风情：如何地道地说“你好”？ - 达人家族\nURL: https://www.darenjiazu.com/news/202503/182851.html\nPublished: 2025-03-15T00:00:00.000Z\nAuthor: N/A\nHighlights:\n当我们谈论印度语时，首先需要明确一个概念：印度并没有一种统一的“印度语”。在日常生活中，人们可能使用印地语、泰卢固语、孟加拉语、马拉提语等多种语言进行交流。但为了方便国际交流和理解，印地语作为印度的官方语言之一，被广泛应用于政府、教育、媒体等领域。因此，当我们想要学习一句印度的“你好”时，印地语中的“नमस्ते”（Namaste）便成为了首选。\n...\n“नमस्ते”（Namaste）这个词，不仅仅是一句简单的问候语，它蕴含着深厚的文化和宗教内涵。在梵语中，“नमस्”（Namah）意为“鞠躬”或“致敬”，“ते”（te）则是对第二人称的尊称。因此，“नमस्ते”（Namaste）的字面意思是“向你致敬”。在印度文化中，这是一种表示尊敬、友好和和平的方式。当你向别人说出“नमस्ते”时，不仅是在问候对方，更是在表达你对他们的尊重和善意。\n...\n在印度，人们见面时通常会双手合十，微微低头，然后说出“नमस्ते”。这个动作和问候语一起，构成了一种独特的礼仪文化。它体现了印度人民对于和谐、尊重和平等的追求。无论是在繁华的城市街头，还是在宁静的乡村小巷，你都能看到人们用这种方式彼此问候，传递着温暖和善意。\n...\n在印度旅行或学习时，学会一两句当地的问候语是非常有必要的。这不仅能够帮助你更好地融入当地的文化氛围，还能让你在与人交往中感受到更多的热情和友好。想象一下，当你走进一家印度餐馆，用一句地道的“नमस्ते”向服务员问好时，他们脸上的笑容和热情的服务一定会让你感到宾至如归。\n...\n总之，“你好”这句简单的问候语，在印度语中却蕴含着丰富的文化内涵和情感表达。通过学习和使用印度的问候语，我们可以更好地融入当地的文化氛围，感受印度人民的热情和友好。同时，这也是一种跨文化交流和理解的尝试，能够帮助我们拓宽视野、增进对不同文化的认识和尊重。在未来的日子里，不妨让我们一起用一句地道的印度问候语，打开通往这个神秘国度的大门吧！",
+      "title": "Web search: 用印地语说一句吧",
+      "metadata": {},
+      "time": {
+        "start": 1789528692802,
+        "end": 1789528694614
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528694628,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838df61001fn1G8Dd76XVjhK",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838d674001ZTr1iNEGWxHziX",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8505,
+      "output": 45,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8550,
+      "headroom": 30306,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.630Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.630Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.632Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.636Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.637Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.637Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.649Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8550,
+  "providerTokens": 8550,
+  "estimatedInputTokens": 7047,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8505,
+    "cacheRead": 0,
+    "output": 45
+  },
+  "overflow": false,
+  "headroom": 30306,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.649Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.653Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:14.654Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:15.345Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528695345,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e22e001jkbQJFTDz4jnXn",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838df79001SWSsXzMjGLCQMP",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:15.345Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:15.345Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528695345,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e231002H9rf0AiQMeZcvx",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838df79001SWSsXzMjGLCQMP",
+    "type": "tool",
+    "callID": "call_8ccc2529e17b2096",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:15.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528695346,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e231001vQtQw9V1sdVmXO",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838df79001SWSsXzMjGLCQMP",
+    "type": "text",
+    "text": "我来打开 https://www.settemilalingue.com/zh/languages/hi/grammar/greetings-and-expressions，读取其中的内容。",
+    "time": {
+      "start": 1789528695345,
+      "end": 1789528695345
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:15.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528695346,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e231002H9rf0AiQMeZcvx",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838df79001SWSsXzMjGLCQMP",
+    "type": "tool",
+    "callID": "call_8ccc2529e17b2096",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.settemilalingue.com/zh/languages/hi/grammar/greetings-and-expressions"
+      },
+      "time": {
+        "start": 1789528695346
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.228Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528696228,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e231002H9rf0AiQMeZcvx",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838df79001SWSsXzMjGLCQMP",
+    "type": "tool",
+    "callID": "call_8ccc2529e17b2096",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.settemilalingue.com/zh/languages/hi/grammar/greetings-and-expressions"
+      },
+      "output": "印地语问候语与常用表达（अभिवादन और अभिव्यक्ति）学习指南 — शुक्रिया | 印地语 Grammar\nSettemilaLingue为你正在学习的任何语言提供精准练习练习这个概念语言/印地语/印地语问候语与常用表达（अभिवादन और अभिव्यक्ति）学习指南A1印地语问候语与常用表达（अभिवादन और अभिव्यक्ति）学习指南अभिवादन और अभिव्यक्ति本文属于 Settemila Lingue 上的 印地语 语法树。概述\n学习印地语时，问候语与常用表达（अभिवादन और अभिव्यक्ति）是语言基础的重要组成部分。这是 A1（入门）级别的学习内容。核心表达包括 नमस्ते（你好／再见）、शुक्रिया/धन्यवाद（谢谢）、माफ़ कीजिए（劳驾／对不起）、कृपया（请）以及 ठीक है（好的）。\n对于中文母语者来说，学习印地语的问候语与常用表达时需要特别注意其与中文的不同之处。印地语在这方面有其独特的规则和模式，理解这些差异将帮助你更快掌握这一语法要点。\n这一语法点虽然需要时间来掌握，但一旦理解就会发现它非常实用。\n用法说明\n问候语与常用表达（अभिवादन और अभिव्यक्ति）是印地语语法中的一个核心概念。以下是其主要用法规则：\n基本规则\n这些表达常用于打招呼、表达感谢、请求他人注意、礼貌道歉或结束对话。很多短语本身就承载语气和礼貌程度，因此需要整体记忆。\n基本形式\n\n\n\nहिन्दी\n含义\n\n\n\nनमस्ते! आप कैसे हैं?\n你好！您好吗？\n\n\nशुक्रिया / धन्यवाद।\n谢谢。（前者更偏乌尔都语风格，后者更偏梵语化）\n\n\nमाफ़ कीजिए。\n劳驾。／对不起。\n\n\n使用要点\n\n学习问候语时，要同时留意礼貌程度和使用场景。\n注意不同表达在正式与非正式语境中的自然程度。\n在真实交流中，这些短语往往比完整句子更高频。\n\n语境中的例句\n\n\n\n\nहिन्दी\n中文\n备注\n\n\n\nनमस्ते! आप कैसे हैं?\n你好！您好吗？\n展示基本问候语\n\n\nशुक्रिया / धन्यवाद。\n谢谢。\n展示常见感谢表达\n\n\nमाफ़ कीजिए。\n劳驾。／对不起。\n注意礼貌打断或道歉时的使用\n\n\n（参考教材中的更多例句）\n（对应翻译）\n问候语与常用表达在日常对话中的运用\n\n\n（参考教材中的更多例句）\n（对应翻译）\n正式场合中问候语与常用表达的使用\n\n\n（参考教材中的更多例句）\n（对应翻译）\n问候语与常用表达与其他语法点的结合\n\n\n（参考教材中的更多例句）\n（对应翻译）\n注意这些表达的变化形式\n\n\n（参考教材中的更多例句）\n（对应翻译）\n口语中常见的简化用法\n\n\n常见错误\n混淆问候语与常用表达的基本形式\n\n错误： 在使用अभिवादन और अभिव्यक्ति时选择了错误的形式\n正确： 根据语境选择अभिवादन और अभिव्यक्ति的正确形式\n原因： 很多表达看似简单，但礼貌程度和语气差异明显。\n\n直接从中文翻译问候结构\n\n错误： 按照中文的语序和结构使用अभिवादन और अभिव्यक्ति\n正确： 按照印地语的习惯使用这些固定表达\n原因： 问候语往往是约定俗成的，不能逐字直译。\n\n忽略问候语的使用语境\n\n错误： 在所有情况下都使用同一种अभिवादन और अभिव्यक्ति形式\n正确： 根据正式程度和语境选择合适表达\n原因： 同一句问候在朋友、陌生人和正式场合中的合适程度不同。\n\n使用注意事项\n在正式场合（如商务会议、学术写作）中，问候语与常用表达的选择通常更加严格和规范。\n非正式场合下，母语者可能会使用更简短、更口语化的变体。了解这些有助于听懂日常会话。\n练习建议\n\n阅读印地语原文材料，注意常见问候语在真实语境中的使用方式。\n制作专门的语法笔记卡片，把表达和使用场景配对记忆。\n与语伴一起练习，从打招呼、致谢到道歉，模拟完整的短对话。\n\n相关概念\n\n本概念目前没有关联的上级或子概念。\n\n更多 A1 级概念印地语天城文元音（देवनागरी स्वर）学习指南देवनागरी स्वर印地语天城文辅音（देवनागरी व्यंजन）学习指南देवनागरी व्यंजन印地语语法性别（लिंग）学习指南लिंग印地语数（单数/复数）（वचन）学习指南वचन印地语人称代词（पुरुषवाचक सर्वनाम）学习指南पुरुषवाचक सर्वनाम此概念的其他语言版本瑞典语Hälsningar och Grundläggande Uttryck斯瓦希里语Salamu na Maneno ya Heshima菲律宾语Mga Pangunahing Pagbati at Ekspresyon土耳其语Selamlaşma ve İfadeler乌尔都语سلام اور مہذب الفاظ约鲁巴语Ìkíni àti Àwọn Ọ̀rọ̀ Ọlọ́wọ̀粤语基本問候語中文问候语跨所有语言比较问候与表达19种语言使用免费的 Settemila Lingue 账户练习印地语中的अभिवादन और अभिव्यक्ति。我们会设置印地语 · A1，并生成专门针对这一语法概念的卡片。练习这个概念最后更新 : 2026年8月10日首页语言语法指南团队隐私条款© 2026 Settemila Lingue",
+      "title": "https://www.settemilalingue.com/zh/languages/hi/grammar/greetings-and-expressions (text/html;charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528695346,
+        "end": 1789528696226
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528696230,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e5a4001Q3Hj6pEv0ktR7t",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838df79001SWSsXzMjGLCQMP",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 22654,
+      "output": 210,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 22864,
+      "headroom": 15992,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.230Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.231Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.233Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.233Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.236Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.237Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.238Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.238Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.246Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 22864,
+  "providerTokens": 22864,
+  "estimatedInputTokens": 8475,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 22654,
+    "cacheRead": 0,
+    "output": 210
+  },
+  "overflow": false,
+  "headroom": 15992,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.247Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.247Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.248Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.248Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.537Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528696537,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e6d80019XI5H656AXb71A",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838e5b6001DkPuayzMsOAoZ5",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.537Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.537Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528696537,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e6d9002JMQXuWaAM9g1QC",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838e5b6001DkPuayzMsOAoZ5",
+    "type": "tool",
+    "callID": "call_cfad02ae7b87ba0b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.538Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528696538,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e6d9001Iyb7g37yzFGBFw",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838e5b6001DkPuayzMsOAoZ5",
+    "type": "text",
+    "text": "我来打开 https://first-words.com/cmn-CN/hi-IN/common-phrases，读取其中的内容。",
+    "time": {
+      "start": 1789528696537,
+      "end": 1789528696537
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:16.538Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528696538,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e6d9002JMQXuWaAM9g1QC",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838e5b6001DkPuayzMsOAoZ5",
+    "type": "tool",
+    "callID": "call_cfad02ae7b87ba0b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://first-words.com/cmn-CN/hi-IN/common-phrases"
+      },
+      "time": {
+        "start": 1789528696538
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.671Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528697671,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838e6d9002JMQXuWaAM9g1QC",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838e5b6001DkPuayzMsOAoZ5",
+    "type": "tool",
+    "callID": "call_cfad02ae7b87ba0b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://first-words.com/cmn-CN/hi-IN/common-phrases"
+      },
+      "output": "轻松学习印地语中最常用的短语🇨🇳汉语 (普通话)cmn-CN🇮🇳 掌握常用 印地语 短语学习 印地语 中最流行短语的有效技术是基于肌肉记忆和间隔重复技术。定期练习输入这些短语可以提高您的回忆能力。每天分配 10 分钟进行这项练习可以让您在短短两到三个月内掌握所有关键短语。— 输入这一行:输入这一行Latin characters盲打培训报告错误为什么学习印地语中最流行的短语很重要出于多种原因，在初级 (A1) 学习 印地语 中最常见的短语是语言习得的关键一步。为进一步学习打下坚实的基础通过掌握最常用的短语，您实质上是在学习该语言的构建块。随着学习的进步，这将使您更容易理解更复杂的句子和对话。基本沟通即使词汇量有限，了解常用短语也能让您表达基本需求、提出简单问题并理解简单的回答。如果您前往以 印地语 为主要语言的国家/地区旅行或与说 印地语 的人互动，此功能会特别有用。有助于理解通过熟悉常用短语，您将能够更好地理解口语和书面语 印地语。这可以让您更轻松地用 印地语 跟踪对话、阅读文本，甚至观看电影或电视节目。有助于建立信心学习一门新语言可能令人畏惧，但能够成功使用和理解常用短语可以提供急需的信心提升。这可以激励您继续学习和提高您的语言技能。文化洞察力许多常用短语是特定语言所独有的，可以帮助您深入了解该语言使用者的文化和习俗。通过学习这些短语，您不仅可以提高语言技能，还可以更深入地了解 文化。在初级 (A1) 水平学习 印地语 中最常见的短语是语言学习的重要一步。它为进一步学习奠定了基础，实现基本沟通，帮助理解，建立信心，并提供文化洞察力。日常对话的基本短语 (印地语)नमस्ते, आप कैसे हैं? 你好吗？शुभ प्रभात। 早上好。शुभ दोपहर। 下午好。शुभ संध्या। 晚上好。शुभ रात्रि। 晚安。अलविदा। 再见。बाद में मिलते हैं। 回头见。जल्द ही फिर मिलेंगे। 再见。कल मिलते हैं। 明天见。कृपया। 请。धन्यवाद। 谢谢。आपका स्वागत है। 不客气。माफ़ करें। 打扰一下。मुझे माफ़ करें। 对不起。कोई बात नहीं। 没问题。मुझे ज़रूरत है... 我需要...मुझे चाहिए... 我想...मेरे पास है... 我有...मेरे पास नहीं है 我没有क्या आपके पास है...? 你有...？मुझे लगता है... 我认为...मुझे नहीं लगता... 我不认为...मुझे पता है... 我知道...मुझें नहीं पता... 我不知道...मुझे भूख लगी है। 我饿了。मुझे प्यास लगी है। 我口渴。मैं थक गया हूं। 我累了。मैं बीमार हूं। 我病了。मैं ठीक हूं धन्यवाद। 我很好，谢谢你。आपको कैसा लगता है? 你感觉如何？मैं अच्छा महसूस कर रहा हूँ। 我感觉很好。मुझे बुरा लगता है। 我心情不好。क्या मैं आपकी मदद कर सकता हूं? 我可以帮你吗？क्या आप मेरी मदद कर सकते हैं? 你能帮助我吗？मैं नहीं समझता। 我不明白。कृपया आप यह दोहरा सकते हैं? 你再说一遍，好吗？तुम्हारा नाम क्या है? 你叫什么名字？मेरा नाम एलेक्स है 我的名字叫亚历克斯आपसे मिलकर अच्छा लगा। 很高兴见到你。आपकी आयु कितनी है? 你今年多大？मेरी उम्र तीस वर्ष है। 我今年30岁。आप कहाँ से हैं? 你从哪来？मैं लंदन से हूं 我从伦敦来क्या आप अंग्रेज़ी बोलते हैं? 你会说英语吗？मुझे थोड़ी - बहुत अंग्रेजी बोलनी आती है। 我会说一点点英语。मैं अंग्रेजी अच्छी तरह से नहीं बोल पाता. 我英语说得不好。आप क्या करते हैं? 你做什么工作？मैं पढ़ता हूं। 我是一名学生。मैं एक शिक्षक हूं। 我是一名教师。मुझे यह पसंद है। 我喜欢。मुझे यह पसंद नहीं है. 我不喜欢它。यह क्या है? 这是什么？वह एक किताब है. 那是一本书。यह कितने का है? 这个多少钱？यह बहुत महंगा है। 太贵。आप कैसे हैं? 你好吗？मैं ठीक हूं धन्यवाद। और आप? 我很好，谢谢你。你呢？मैं लंदन से हूँ 我来自伦敦हां, मैं थोड़ा बोलता हूं. 是的，我讲一点。मैं 30 साल का हूँ। 我今年30岁了。मैं एक छात्र हूँ। 我是一名学生。मैं एक शिक्षक हूं। 我是一名教师。यह एक पुस्तक है। 这是一本书。कृपया क्या आप मेरी मदद कर सकते हैं? 你能帮我吗？हाँ बिल्कुल। 是的当然。नहीं मुझे माफ कर दो। मैं व्यस्त हूं। 不，我很抱歉。我很忙。बाथरूम कहां है? 厕所在哪里？यह वहाँ पर है। 就在那里。ये वक़्त क्या है? 现在是几奌？यह तीन बजे हैं। 现在是三点钟。चलो कुछ खा लो। 我们吃点东西吧。क्या आप कॉफ़ी लेंगे? 你想喝点咖啡吗？जी कहिये। 是的，请。नहीं धन्यवाद। 不，谢谢。यह कितने का है? 多少钱？यह दस डॉलर है. 这是十美元。क्या मै कार्ड से भुकतान कर सकता हूँ? 我可以用卡支付吗？क्षमा करें, केवल नकद। 抱歉，只能现金。क्षमा करें, निकटतम बैंक कहाँ है? 打扰一下，最近的银行在哪里？यह सड़क के नीचे बायीं ओर है। 它就在街道的左边。क्या आप इसे दौहरा सकते हैं? 请你再说一遍？क्या आप कृपया धीरे बोल सकते हैं? 请你说慢一点好吗？इसका क्या मतलब है? 这意味着什么？आप इसे किस प्रकार उच्चारित करेंगे? 怎么拼写？क्या एक गिलास पानी ले सकते हैं? 可以给我一杯水吗？और ये हो गया। 给你。आपका बहुत-बहुत धन्यवाद। 非常感谢。वह ठीक है। 没关系。मौसम कैसा है? 天气如何？धूप निकली हुई है. 今天是晴天。बारिश हो रही है। 下雨了。आप क्या कर रहे हो? 你在干什么？मैं एक किताब पढ़ रहा हूं। 我在读一本书。मैं टीवी देख रहा हूँ। 我在看电视。मैं स्टोर जा रहा हूं। 我正要去商店。क्या आप आना चाहते हैं? 你想来吗？हाँ, मैं चाहूँगा। 是的，我很乐意。नहीं, मैं नहीं कर सकता. 不，我不能。आपने कल क्या किया? 你昨天做了什么？मैं समुद्र तट पर चला गया। 我去了海边。मैंने घर पर ही रूकना ठीक समझा। 我呆在家里了。आपका जन्मदिन कब है? 你的生日是什么时候？बात 4 जुलाई की है. 时间是 7 月 4 日。क्या आप ड्राइव कर सकते हैं? 你会开车吗？हाँ, मेरे पास ड्राइवर का लाइसेंस है। 是的，我有驾照。नहीं, मैं गाड़ी नहीं चला सकता. 不，我不会开车。मैं गाड़ी चलाना सीख रहा हूं. 我正在学开车。आपने अंग्रेजी कहाँ सीखी है? 你在哪里学英语？मैंने इसे स्कूल में सीखा। 我在学校学到的。मैं इसे ऑनलाइन सीख रहा हूं। 我正在网上学习。आपका पसंदीदा भोजन क्या है? 你最爱吃什么？मुझे पिज्जा प्यारा है। 我喜欢披萨。मुझे मछली पसंद नहीं है. 我不喜欢鱼。क्या आप कभी लंदन हो कर आए हैं? 你曾经去过伦敦吗？हां, मैंने पिछले साल दौरा किया था। 是的，我去年访问过。नहीं, लेकिन मैं जाना चाहूँगा. 不，但我想去。मैं सोने जा रहा हूँ। 我去睡觉了。अच्छे से सो। 睡得好。आपका दिन शुभ हो। 祝你有美好的一天。अपना ध्यान रखना। 小心。आपका फोन नंबर क्या है? 你的电话号码是什么？मेरा नंबर ... है 我的号码是...क्या मैं आपको कॉल कर सकता हूँ? 我可以打电话给你吗？हाँ, मुझे कभी भी कॉल करें। 是的，随时给我打电话。माफ करना मेरे से आपकी कॉल छूट गई। 抱歉，我错过了你的电话。क्या हम कल मिल सकते हैं? 我们明天可以见面吗？हम कहाँ मिले? 我们应该在哪里见面？चलो कैफे में मिलते हैं. 我们在咖啡馆见面吧。कितने बजे? 什么时候？3 बजे। 下午 3 点。क्या यह दूर है? 远吗？बांए मुड़िए। 左转。दांए मुड़िए। 右转。आगे सीधे बढ़ो। 一直往前走。पहला बायां मोड़ लें। 第一个路口左拐。दूसरे ओर दाहिनी लो। 第二个路口右转。बैंक के बगल में ही है। 它就在银行旁边。यह सुपरमार्केट के सामने है। 就在超市对面。यह डाकघर के पास है. 它靠近邮局。यह यहाँ से बहुत दूर है. 离这里很远。क्या मुझे आपक फोन इस्तेमाल करने की आज्ञा है? 我可以使用你的手机吗？क्या आपका वाईफाई है? 你有无线网络吗？पासवर्ड क्या है? 密码是什么？मेरा फोन खराब है। 我的手机没电了。क्या मैं यहाँ अपना फ़ोन चार्ज कर सकता हूँ? 我可以在这里给手机充电吗？मुझे डॉक्टर की जरूरत है। 我需要一个医生。ऐम्बुलेंस बुलाएं. 打电话叫救护车。मुझे चक्कर आ रहा है. 我感觉头昏眼花。मुझे सिर दर्द है। 我头疼。मेरे पेट में दर्द है। 我肚子疼。मुझे एक फार्मेसी की जरूरत है. 我需要药房。निकटतम अस्पताल कहाँ है? 最近的医院在哪里？मेरा बैग खो गया. 我丢了包。क्या आप पुलिस को बुला सकते हैं? 你可以报警吗？मुझे मदद की ज़रूरत है। 我需要帮助。मैं अपने दोस्त की तलाश कर रहा हूं. 我在找我的朋友。क्या आपने ये व्यक्ति देखा है? 你见过这个人吗？मैं हार गया हूं। 我迷路了。क्या आप मुझे नक्शे पर दिखा सकते हैं? 你能在地图上指给我看吗？मुझे दिशानिर्देश चाहिए. 我需要指示。आज तिथि क्या है? 今天几号？समय क्या हुआ है? 几点了？अभी जल्दी है। 现在还早。उसे देर हो गई है. 现在已经晚了。मैं समय पर हूँ. 我准时。मैं जल्दी हूं। 我来早了मुझे देर हो गई। 我来晚了。क्या हम पुनर्निर्धारित कर सकते हैं? 我们可以重新安排吗？मुझे रद्द करना होगा. 我需要取消。मैं सोमवार को उपलब्ध हूं. 我周一有空。आपके लिए कौन सा समय काम करता है? 你什么时间合适？ये मेरे लिए सही है। 这对我行得通。मैं तो व्यस्त हूँ. 那我很忙。क्या मैं एक दोस्त ला सकता हूँ? 我可以带一个朋友吗？मैं यहाँ हूँ। 我在这。आप कहां हैं? 你在哪里？मैं अपने रास्ते पर हूँ। 我正在路上。मैं 5 मिनट में वहाँ पहुँच जाऊँगा। 我 5 分钟后到。माफ करना, मुझे आने में देरी हुई। 不好意思我迟到了。तुम्हारा सफ़र अच्छा था? 你的旅途愉快吗？हां, यह बहुत अच्छा था। 是的，太好了。नहीं, यह थका देने वाला था. 不，那很累。वापसी पर स्वागत है! 欢迎回来！क्या आप इसे मेरे लिए लिख सकते हैं? 你能为我写下来吗？मुझे अच्छा महसूस नहीं हो रहा है. 我感觉不太舒服。मुझे लगता है यह एक अच्छा विचार है। 我认为这是个好主意。मुझे नहीं लगता कि यह कोई अच्छा विचार है. 我认为这不是一个好主意。क्या आप मुझे इसके बारे में और बता सकते हैं? 你能告诉我更多吗？मैं दो लोगों के लिए एक टेबल बुक करना चाहूंगा। 我想预订一张两人桌。यह पहली मई है. 这是五月一号。क्या इसे मैं भी कोशिश करूँ? 我可以试试这个吗？कपड़े बनवाने का कमरा कहाँ है? 试衣间在哪？यह बहुत छोटा है. 这太小了。ये बहुत बड़ा है. 这太大了。शुभ प्रभात! 早上好！आपका दिन अच्छा रहे! 祝你有美好的一天！क्या चल रहा है? 这是怎么回事？मैं तुम्हारी किसी चीज़ में मदद कर सकता हूँ क्या? 我可以帮你什么忙吗？आपका बहुत-बहुत धन्यवाद। 太感谢了。उसे सुनने के लिए मुझे माफ करें। 听到这个消息我很遗憾。बधाई हो! 恭喜！वह बहुत अच्छा लगता है। 听起来不错。क्या आप इसे दोहरा सकते हैं? 能否请你再说一遍吗？मैं उसे समझ नहीं पाया. 我没听清。आइए जल्द ही मिलें। 让我们尽快赶上吧。आप क्या सोचते हैं? 你怎么认为？मैं आपको बता दूँगा। 我会告诉你。क्या मुझे इस पर आपकी राय मिल सकती है? 我可以听听你对此的看法吗？मैं इसकी राह देख रहा हूं। 我对此很期待。मैं आपकी सहायता कैसे कर सकता हूँ? 我该如何帮助您？मेरा निवास एक शहर में है। 我住在一个城市。मैं एक छोटे से शहर में रहता हूँ। 我住在一个小镇。मैं ग्रामीण इलाकों में रहते हैं। 我住在郊区。मैं समुद्र तट के पास रहता हूँ. 我住在海滩附近。आप क्या काम करते हैं? 你做什么工作？मैं नौकरी की तलाश कर रहा हुँ। 我在找工作。मैं एक शिक्षक हूँ। 我是一名教师。मेरी नौकरी एक अस्पताल में है। 我在医院工作。मैं सेवानिवृत्त हो चुका हूं। 我退休了。क्या आपके पास कोई पालतु पशु है? 你有什么宠物？यह समझ आता है। 这就说得通了。तुम्हारी सहायता सराहनीय है। 我感谢您的帮助。आपसे मिल कर अच्छा लगा। 很高兴见到你。संपर्क में रहते हैं। 让我们保持联系。आशा है आपकी यात्रा सुखद हो! 安全旅行！शुभकामनाएं। 最好的祝愿。मुझे यकीन नहीं है। 我不知道。क्या आप मुझे यह समझा सकते हैं? 你能向我解释一下吗？मैं वास्तव में माफी चाहता हूँ। 我真的很抱歉。इस की कीमत क्या होगी? 这个多少钱？क्या मुझे बिल मिल सकता है? 请问可以给我账单吗？क्या आप एक अच्छे रेस्तरां की सिफारिश कर सकते हैं? 你能推荐一家好餐馆？क्या आप मुझे दिशानिर्देश दे सकते हैं? 你能给我指路吗？टॉयलेट कहां है? 洗手间在哪里？मैं एक आरक्षण करना चाहता हूँ। 我想预订。क्या हमें मेनू मिल सकता है, कृपया? 请给我们菜单好吗？मुझे इससे एलर्जी है... 我对...过敏इसमें कितना समय लगेगा? 它需要多长时间？क्या मुझे कृपया एक गिलास पानी मिल सकता है? 请给我一杯水好吗？क्या यह सीट दे दी गई है? 这个座位有人吗？मेरा नाम है... 我的名字是...कृपया थोड़ा धीरे बोलेंगे? 请你说慢一点好吗？कृपया क्या आप मेरी मदद कर सकते हैं? 请问你能帮帮我吗？मैं अपनी नियुक्ति के लिए यहां हूं. 我是来赴约的。मैं कहां पार्क कर सकता हूं? 我可以在哪里停车？मैं इसे वापस करना चाहता हूं. 我想退掉这个。क्या आप उद्धार करते हैं? 你送货吗？वाई-फ़ाई पासवर्ड क्या है? Wi-Fi 密码是多少？मैं अपना ऑर्डर रद्द करना चाहूंगा. 我想取消订单。कृपया क्या मैं एक रसीद ले सकता हूँ? 请问可以给我收据吗？विनिमय दर क्या है? 汇率是多少？क्या आप आरक्षण लेते हैं? 你们接受预订吗？क्या कोई छूट है? 有折扣吗？खुलने का समय क्या है? 营业时间是几点？क्या मैं दो लोगों के लिए एक टेबल बुक कर सकता हूँ? 我可以预订两人餐桌吗？निकटतम एटीएम कहाँ है? 最近的自动取款机在哪里？एयरपोर्ट कैसे जाया जा सकता है? 我怎么去机场？क्या आप मुझे टैक्सी बुला सकते हैं? 你能为我叫一辆出租车吗？कृपया मुझे एक कॉफ़ी चाहिए। 请给我一杯咖啡。क्या मुझे कुछ और मिल सकता है...? 我可以再要一些吗...？इस शब्द का क्या मतलब है? 这个单词什么意思？क्या हम बिल को विभाजित कर सकते हैं? 我们可以分摊账单吗？मैं यहां छुट्टियों पर आया हूं। 我来这里度假。आपका क्या सुझाव हैं? 你有什么建议吗？मैं यह पता ढूंढ रहा हूं. 我正在找这个地址。यह कितनी दूर है? 有多远？कृपया मुझे बिल दे दीजिए? 能给我支票吗谢谢？क्या आपके यहां पद खाली हैं? 你们有空缺吗？मुझे चेक आउट करना है. 我想退房。क्या मैं अपना सामान यहाँ छोड़ सकता हूँ? 我可以把行李寄存在这里吗？पहुंचने का सबसे अच्छा तरीका क्या है...? 到达...的最佳方式是什么？मुझे एक एडाप्टर चाहिए. 我需要一个适配器。क्या मुझे एक नक्शा मिल सकता है? 我可以要一张地图吗？एक अच्छी स्मारिका क्या है? 有什么好的纪念品？क्या मैं एक तस्वीर ले सकता हूँ? 我可以拍照吗？क्या आप जानते हैं कि मैं कहां से खरीद सकता हूं...? 你知道哪里可以买到吗...?मैं यहां व्यापार के लिए आया हूं। 我是来出差的。क्या मैं देर से चेकआउट कर सकता हूँ? 我可以延迟退房吗？मैं कार कहाँ किराये पर ले सकता हूँ? 我可以在哪里租车？मुझे अपनी बुकिंग बदलनी होगी. 我需要更改我的预订。स्थानीय विशेषता क्या है? 当地有什么特产？क्या मुझे खिड़की वाली सीट मिल सकती है? 可以给我一个靠窗的座位吗？क्या इसमें नाश्ता शामिल है? 包含早餐吗？मैं वाई-फ़ाई से कैसे जुड़ूँ? 如何连接 Wi-Fi？क्या मुझे धूम्रपान रहित कमरा मिल सकता है? 我可以要一间无烟房吗？मुझे फार्मेसी कहां मिल सकती है? 我在哪里可以找到药房？क्या आप किसी भ्रमण की अनुशंसा कर सकते हैं? 你能推荐一个旅游吗？ट्रेन स्टेशन जाने का मार्ग क्या है? 我怎么到火车站？यातायात बत्ती पर बाएं मुड़ें। 在红绿灯处左转。सीधे आगे बढ़ते रहो. 继续直行。यह सुपरमार्केट के बगल में है. 它就在超市旁边。मैं मिस्टर स्मिथ की तलाश कर रहा हूं। 我在找史密斯先生。क्या मैं एक संदेश छोड़ सकता हूं? 我可以留言吗？क्या सेवा समलित होगी? 包含服务吗？यह वह नहीं है जो मैंने ऑर्डर किया था। 这不是我订购的。मुझे लगता है कि कोई गलती है. 我认为有一个错误。मुझे नट्स से एलर्जी है. 我对坚果过敏。क्या हमें कुछ और रोटी मिल सकती है? 我们可以再吃点面包吗？वाई-फ़ाई का पासवर्ड क्या है? Wi-Fi 的密码是多少？मेरे फोन की बैटरी खत्म हो गई है. 我的手机电池没电了。क्या आपके पास कोई चार्जर है जिसका मैं उपयोग कर सकूं? 你有我可以使用的充电器吗？क्या आप कोई अच्छा रेस्टोरेंट सुझा सकते हैं? 你能推荐一家好的餐厅吗？मुझे कौन से दृश्य देखने चाहिए? 我应该看什么景点？क्या आस-पास कोई फार्मेसी है? 附近有药房吗？मुझे कुछ टिकट खरीदने हैं. 我需要买一些邮票。मैं यह पत्र कहां पोस्ट कर सकता हूं? 我可以把这封信寄到哪里？मैं एक कार किराये पर लेना चाहूँगा. 我想租车。क्या आप कृपया अपना बैग हिला सकते हैं? 请你搬一下你的包好吗？ट्रेन भरी हुई है. 火车满了。ट्रेन किस प्लेटफार्म से छूटती है? 火车从哪个站台出发？क्या यह लंदन जाने वाली ट्रेन है? 这是到伦敦的火车吗？इस यात्रा में कितना समय लगता है? 旅程需要多长时间？क्या मैं खिड़की खोल सकता हूं? 我可以开窗吗？कृपया मुझे विंडो सीट दीजिए. “我想要一个靠窗的座位。”मैं बीमार महसूस कर रहा हूं। 我觉得恶心。मेरा पासपोर्ट खो गया है. 我弄丢了我的护照。क्या आप मेरे लिए टैक्सी बुला सकते हैं? 你能帮我叫一辆出租车吗？यह हवाई अड्डे से कितनी दूर है? 到机场有多远？यह संग्रहालय किस समय खुलता है? 博物馆什么时间开放？प्रवेश शुल्क कितना है? 入场费是多少？क्या मैं तस्वीरें ले सकता हूं? 我可以拍照吗？मैं टिकट कहाँ से खरीद सकता हूँ? 我在哪里可以买到票？यह क्षतिग्रस्त है. 它已损坏。क्या मुझे धनवापसी प्राप्त हो सकती है? 我可以获得退款吗？मैं बस ब्राउज़ कर रहा हूं, धन्यवाद। 我只是浏览一下，谢谢。मैं एक उपहार की तलाश में हूँ. 我正在寻找一份礼物。क्या आपके पास यह दूसरे रंग में है? 你有其他颜色的吗？क्या मैं किश्तों में भुगतान कर सकता हूँ? 我可以分期付款吗？यह एक उपहार है। क्या आप इसे मेरे लिए लपेट सकते हैं? 这是一个礼物。你能帮我包一下吗？मुझे अपॉइंटमेंट लेने की जरूरत है. 我需要预约。मेरा एक आरक्षण है। 我预订了座位。मैं अपनी बुकिंग रद्द करना चाहूंगा. 我想取消我的预订。मैं सम्मेलन के लिए यहां हूं. 我是来参加会议的。पंजीकरण डेस्क कहाँ है? 登记处在哪里？क्या मुझे शहर का नक्शा मिल सकता है? 我可以要一张城市地图吗？मैं पैसे का आदान-प्रदान कहाँ कर सकता हूँ? 我可以在哪里兑换货币？मुझे निकासी करने की आवश्यकता है. 我需要提款。मेरा कार्ड काम नहीं कर रहा है. 我的卡无法使用。मैं अपना पिन भूल गया. 我忘记了 pin 码。नाश्ता किस समय परोसा जाता है? 早餐供应时间是几点？क्या आपके पास जिम है? 你有健身房吗？क्या पूल गर्म है? 泳池有温水吗？मुझे एक अतिरिक्त तकिया चाहिए. 我需要一个额外的枕头。एयर कंडीशनिंग काम नहीं कर रहा है. 空调不工作。मैं अपने प्रवास का आनंद लिया. 逗留期间我很愉快。क्या आप कोई अन्य होटल सुझा सकते हैं? 您能推荐另一家酒店吗？मुझे एक कीड़े ने काट लिया है. 我被虫子咬了मैंने अपनी चाबी खो दी है. 我丢了钥匙。क्या मुझे वेक-अप कॉल मिल सकती है? 我可以叫醒电话吗？मैं पर्यटक सूचना कार्यालय की तलाश कर रहा हूं। 我在找旅游信息办公室。क्या मैं यहाँ टिकट खरीद सकता हूँ? 我可以在这里买票吗？सिटी सेंटर के लिए अगली बस कब है? 下一班去市中心的巴士什么时候？मैं इस टिकट मशीन का उपयोग कैसे करूँ? 如何使用该售票机？क्या छात्रों के लिए कोई छूट है? 学生有折扣吗？मैं अपनी सदस्यता नवीनीकृत करना चाहूंगा. 我想续订我的会员资格。क्या मैं अपनी सीट बदल सकता हूँ? 我可以换座位吗？मेरी उड़ान छूट गई है. 我错过了我的航班。मैं अपने सामान का दावा कहां कर सकता हूं? 我可以在哪里领取行李？क्या होटल के लिए कोई शटल है? 有班车到酒店吗？मुझे कुछ घोषित करना है. 我需要声明一些事情。मैं एक बच्चे के साथ यात्रा कर रहा हूं. 我带着孩子旅行。क्या आप मेरे बैग में मेरी मदद कर सकते हैं? 你能帮我拿行李吗？💬学习流行单词 (印地语)学习其他语言🇿🇦 非洲人🇪🇹 阿姆哈拉语🇧🇬 保加利亚语🇮🇳 孟加拉语🇪🇸 加泰罗尼亚语🇨🇿 捷克语🇩🇰 丹麦语🇩🇪 德语🇬🇷 希腊语🇦🇺 澳大利亚英语🇬🇧 英式英语🇮🇳 印度语 英语🇺🇸 美式英语🇪🇸 西班牙语🇪🇸 西班牙语（美国）🇪🇸 巴斯克🇫🇮 芬兰语🇵🇭 菲律宾人🇨🇦 法语（加拿大）🇫🇷 法语🇪🇸 加利西亚语🇮🇳 古吉拉特语🇮🇱 希伯来语🇭🇺 匈牙利🇮🇩 印度尼西亚🇮🇸 冰岛的🇮🇹 意大利语🇯🇵 日本人🇮🇳 卡纳达语🇰🇷 韩国人🇱🇹 立陶宛语🇱🇻 拉脱维亚语🇮🇳 马拉雅拉姆语🇮🇳 马拉地语🇲🇾 马来语🇳🇴 挪威博克马尔语🇧🇪 荷兰语（比利时）🇳🇱 荷兰语🇮🇳 旁遮普语🇵🇱 抛光🇧🇷 葡萄牙语 (巴西)🇵🇹 葡萄牙语🇷🇴 罗马尼亚语🇷🇺 俄语🇸🇰 斯洛伐克语🇷🇸 塞尔维亚🇸🇪 瑞典🇮🇳 泰米尔语🇮🇳 泰卢固语🇹🇭 泰国🇹🇷 土耳其🇺🇦 乌克兰🇻🇳 越南语🇿🇦 Afrikaans - Hindi🇪🇹 አማርኛ - ሂንዲ🇧🇬 Български - хинди🇮🇳 বাংলা - হিন্দি🇪🇸 Català - hindi🇨🇿 Čeština - hindština🇩🇰 Dansk - hindi🇩🇪 Deutsch - Hindi🇬🇷 Ελληνικά - Χίντι🇦🇺 Australian English - Hindi🇬🇧 British English - Hindi🇮🇳 Indian English - Hindi🇺🇸 American English - Hindi🇪🇸 Español - hindi🇪🇸 Español (Estados Unidos) - hindi🇪🇸 Euskara - Hindia🇫🇮 Suomi - hindi🇵🇭 Filipino - Hindi🇨🇦 Français (Canada) - hindi🇫🇷 Français - hindi🇪🇸 Galego - Hindi🇮🇳 ગુજરાતી - હિન્દી🇮🇱 עברית - הינדי🇮🇳 हिन्दी🇭🇺 Magyar - hindi🇮🇩 Bahasa Indonesia - Hindi🇮🇸 Íslenska - hindí🇮🇹 Italiano - hindi🇯🇵 日本語 - ヒンディー語🇮🇳 ಕನ್ನಡ - ಹಿಂದಿ🇰🇷 한국어 - 힌디 어🇱🇹 Lietuvių - hindi🇱🇻 Latviešu - hindi🇮🇳 മലയാളം - ഹിന്ദി🇮🇳 मराठी - हिंदी🇲🇾 Bahasa Melayu - Hindi🇳🇴 Norsk bokmål - Hindi🇧🇪 Nederlands (België) - Hindi🇳🇱 Nederlands - Hindi🇮🇳 ਪੰਜਾਬੀ - ਹਿੰਦੀ🇵🇱 Polski - hinduski🇧🇷 Português (Brasil) - hindi🇵🇹 Português - hindi🇷🇴 Română - hindi🇷🇺 Русский - хинди🇸🇰 Slovenčina - hindčina🇷🇸 Српски - Хинди🇸🇪 Svenska - hindi🇮🇳 தமிழ் - ஹிந்தி🇮🇳 తెలుగు - హిందీ🇹🇭 ไทย - ฮินดี🇹🇷 Türkçe - Hintçe🇺🇦 Українська - Хінді🇻🇳 Tiếng Việt - Tiếng Hindi© 2026 First-Words.comContacts",
+      "title": "https://first-words.com/cmn-CN/hi-IN/common-phrases (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528696538,
+        "end": 1789528697670
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.672Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528697672,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838eb47001dZd49OILR4pYf7",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838e5b6001DkPuayzMsOAoZ5",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 25000,
+      "output": 150,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 25150,
+      "headroom": 13706,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.672Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.673Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.673Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.673Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.675Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.675Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.675Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.675Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.685Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 25150,
+  "providerTokens": 25150,
+  "estimatedInputTokens": 15250,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 25000,
+    "cacheRead": 0,
+    "output": 150
+  },
+  "overflow": false,
+  "headroom": 13706,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.685Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.686Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528697926,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838ec46001z6UfNKRnn0PgaB",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838eb55001Z0pnefYUrd6o5j",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528697927,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838ec47001jvPTjrz6Mf7rZU",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838eb55001Z0pnefYUrd6o5j",
+    "type": "tool",
+    "callID": "call_846340d70594a5f2",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528697927,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838ec46002W4PKWRwPYe1Wj3",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838eb55001Z0pnefYUrd6o5j",
+    "type": "text",
+    "text": "我来打开 https://wikibooks.cn/wiki/Hindi/Everyday_Phrases，读取其中的内容。",
+    "time": {
+      "start": 1789528697927,
+      "end": 1789528697927
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:17.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528697927,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838ec47001jvPTjrz6Mf7rZU",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838eb55001Z0pnefYUrd6o5j",
+    "type": "tool",
+    "callID": "call_846340d70594a5f2",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://wikibooks.cn/wiki/Hindi/Everyday_Phrases"
+      },
+      "time": {
+        "start": 1789528697927
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.198Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528699198,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838ec47001jvPTjrz6Mf7rZU",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838eb55001Z0pnefYUrd6o5j",
+    "type": "tool",
+    "callID": "call_846340d70594a5f2",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://wikibooks.cn/wiki/Hindi/Everyday_Phrases"
+      },
+      "output": "印地语/日常用语 - 华夏公益教科书，开放的书籍，为开放的世界\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n跳转到内容\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nMain menu\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tMain menu\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tNavigation\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tMain PageHelpBrowseCookbookWikijuniorFeatured booksRecent changesRandom bookUsing Wikibooks\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\tCommunity\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tReading room forumCommunity portalBulletin BoardHelp out!Policies and guidelinesContact us\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nSearch\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tSearch\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tDonations\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nAppearance\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tCreate account\n\nLog in\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nPersonal tools\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t Create account Log in\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tPages for logged out editors learn more\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tContributionsDiscussion for this IP address\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\t目录\n\t移至侧边栏\n\t隐藏\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t开始\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1 短语\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2 动作\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3 简单词语\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4 短语\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5 对话\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t 切换目录\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\t印地语/日常用语\n\t\t\t\t\t\t\t\n\n\t\n\t\n\nAdd languages\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\tAdd links\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tBookDiscussion\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tEnglish\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tReadEditEdit sourceView history\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\tTools\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tTools\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tActions\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tReadEditEdit sourceView history\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tGeneral\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWhat links hereRelated changesUpload fileSpecial pagesPermanent linkPage informationCite this pageGet shortened URLDownload QR code\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tSister projects\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWikipediaWikiversityWiktionaryWikiquoteWikisourceWikinewsWikivoyageCommonsWikidataMediaWikiMeta-Wiki\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tPrint/export\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tCreate a collectionDownload as PDFPrintable version\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tIn other projects\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\t外观\n\t移至侧边栏\n\t隐藏\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\t来自华夏公益教科书，开放的书籍，为开放的世界\n\t\t\t\t\t\n\t\t\t\t\t&lt; 印地语\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t你典型的一天是什么样的？\n\n短语[编辑 | 编辑源代码]\n你好 - नमस्कार (namaskar) 或 namaste (नमस्ते)\n再见 -अलविदा (Alvida), चलता/चलती/चलते हूँ/है (chaltā/chalti/chalte hūn/hai) [chaltā hūn 用于男孩，而 chalti hū 用于女孩。chalte hai 用于一群人]\n请坐- पधारिये। (Padhāriye.)\n再会。 - फिर मिलेंगे। (Phir mileṅge.)\n谢谢 - धन्यवाद (dhanyavād)\n很高兴认识你，见到你很高兴。 - आप से मिल के ख़ुशी हुई, आप से मिल के अच्छा लगा। (Āp se mil ke xuśī huī, āp se mil ke acchā lagā.)\n请送我去我的酒店。 - कृप्या मुझे मेरे होटल ले चलिये। (kripyā mujhe mere hoṭel le caliye.)\n洗手间在哪里？ - शौंचालय किधर है? (Śauncālay kidhar hai?)\n这个多少钱？ - यह कितने का है? (Yah kitne kā hai?)\n身体好吗？怎么样？发生什么事了？ - क्या हाल है? कैसे हो/हैं? क्या चल रहा है? (Kyā hāl hai? Kaise ho/hain? Kyā chal rahā hai?\n电话在哪？ - फ़ोन कहाँ है? (Fon kahān hai?)\n你在哪里？ - किधर हो तुम? / कहाँ हो तुम? / कहाँ हैं आप? (Kidhar ho tum? / Kahān ho tum? / Kahān hain āp?)\n我可以坐在这里吗？（说话者是男性） - क्या मैं यहाँ बैठ सकता हूँ? (Kyā main yahān baiṭh saktā hūn?)\n我可以坐在这里吗？（说话者是女性） - क्या मैं यहाँ बैठ सकती हूँ? (Kyā main yahān baiṭh saktī hūn?)\n我需要一个（出租车、汽车、电话、笔）。 - मुझे एक (टैक्सी, कार/गाड़ी, फ़ोन, क़लम/पेन) चाहिये। (Mujhe ek (ṭaiksī, kār/gaṛī, fon, qalam/pen) cāhiye.)\n我需要去/我必须去。- मुझे जाना है mujhe jāna hai / मुझे जाना पड़ेगा mujhe jānā paṛegā / मुझे जाना होगा mujhe jānā hogā\n你需要/必须去 - आपको जाना है āpko jānā hai / आपको जाना पड़ेगा āpko jānā paṛegā / आपको जाना होगा āpko jānā hogā / तुम्हें जाना है tumhe jānā hai / तुझे जाना है tujhe jānā hai\n\n\n\n翻译\n短语\n音译\n\n印地语\nहिन्दी\nhindī\n\n\n\n你好/再见（印度教，北方）\nनमस्ते\nnamaste\n\n\n\n你好/再见（印度教，南方）\nनमस्कार\nnamaskār\n\n\n\n你好/再见（锡克教）\nसत श्री अकाल\nsat śrī akāl\n\n\n\n你好（穆斯林）\nअस्सलाम अलैकुम\nassalām alaikum\n\n\n\n你好（穆斯林回复）\nवालैकुम अस्सलाम\nvālaikum assalām\n\n\n\n再见（穆斯林）\nख़ुदा हाफ़िज़\nkhuda hāfiz\n\n\n\n请*（乌尔都语）\nमेहरबानी करके\nmehrbānī karke\n\n\n\n请*\nकृपया\nkṛipaya\n\n\n\n谢谢*（梵语起源）\nधन्यवाद\ndhanyavād\n\n\n\n谢谢*（阿拉伯语起源）\nशुक्रिया\nśukriyā\n\n\n\n非常感谢\nबहुत बहुत धन्यवाद/शुक्रिया\nbahut bahut dhanyavād/śukriyā\n\n\n\n不客气（不用谢）\nकोई बात नहीं\nkoī bāt nahīn\n\n\n\n对不起，抱歉，请原谅我\nमाफ़ कीजिये\nmāf kījiye\n\n\n\n打扰一下（意思是请听一下）\nज़रा सुनिये\nzarā suniye\n\n\n\n是的\nजी हाँ\njī hān\n\n\n\n不/不是\nजी नहीं\njī nahīn \n\n好！/太棒了！/哦.../真的吗？！/好吧！\nअच्छा!\nacchā!\n\n\n\n（万能形容词/感叹词）\n\n\n\n你好吗？\nआप कैसे/कैसी हैं?\nāp kaise/kaisī hai?\n\n\n\n\n\n（男性/女性应答者）\n\n好的！\nठीक है!\nṭhīk hai!\n\n\n\n一分钟！（意思是“等一下”；感叹词）\nएक मिनट\nek minaṭ\n\n\n\n我不明白\nमैं नहीं समझा/समझी\nmain nahīn samjha/samjhī (m/f)\n\n\n\n我不知道\nमैं नहीं जानता/जानती हूँ\nmain nahīn jāntā/jāntī hun (m/f)\n\n\n\n英语\nअंग्रेज़ी\nangrezī\n\n\n\n你叫什么名字？\nआप का नाम क्या है?\nāp kā nām kyā hai?\n\n\n\n我的名字是...\nमेरा नाम ... है\nmera nām ... hai\n\n\n\n很高兴认识你\nआप से मिलकर बहुत ख़ुशी हुई\nāp se milkar bahut khuśī huī\n\n\n\n我也很高兴认识你（意思是对我也是）\nमुझे भी\nmujhe bhī\n\n\n\n你会说英语吗？\nक्या आप अंग्रेज़ी बोलते/बोलती है?\nkyā āp angrezī bolte/boltī (m/f) hain?\n\n*这些在印地语和乌尔都语中不像西方语言那样随意使用。 कृपया 尤其是在真正重要或紧急的情况下使用，否则会听起来非常僵硬和正式。相反，礼貌是通过适当的称呼、动词形式以及肢体语言/语气来实现的。\n动作[编辑 | 编辑源代码]\n打电话：PHONE KAR-NAA。\n印地语使用两种称呼方式。一种是尊称，另一种是普通称呼。尊称用于与初识的人、陌生人和长辈（关系和年龄）交谈...... 例如\n你在哪里？=&gt; aap kahan hain你叫什么名字？=&gt; aapka naam kya hai , aapka naam jaan sakta hoon?请坐。=&gt; kripya baithiye, virajiye\n普通称呼用于与朋友和熟悉的人交谈，他们年龄相同...... 例如\n 你在哪里？=&gt; kahan ho?你叫什么名字？=&gt; tumhara naam kya hai,请坐。=&gt; baitho, baith.\n对于印地语学习者来说，最好坚持使用第一种称呼方式。印地语使用者通常在所有场合使用“namaste”或“namaskar”（意思是早上好/下午好/晚上好/白天好/晚上好），特别是尊称。虽然这些也可能在纯印地语中使用\n早上好 =&gt; su-pra-bhaa't晚上好 =&gt; shubh-sun-dhyaa晚安 =&gt; shubh raat-ri\n简单词语[编辑 | 编辑源代码]\n帮助：मदद (madad), सहायता (sahāyata)\n医生：डाक्टर (ḍākṭar), चिकित्सक, (cikitsak)\n警察：पोलिस (polis)\n药店：दवाख़ाना (davāḫānā), चिकित्सालय (cikitsālaya)\n出租车：टैक्सी (ṭaiksī)\n火车：ट्रेन (ṭren), रेल (rel), रेलगाड़ी (relgāṛī)\n地铁：सबवे (sabwe), भूमिगत पैदल पार पथ (bhūmigat paidal pār path)\n公共汽车：बस (bas)\n街道：सड़क (sadak)\n路：रास्ता (rāstā), राह (rāh), मार्ग (mārg)\n左边：बायाँ (bāyān)\n向左：बाएँ (bāen)\n右边：दायाँ (dāyān)\n向右：दाएँ (dāen)\n中间：बीच (bīc), मध्य (madhya)\n在中间：बीच में (bīc men), बीचों बीच (bīcon bīc)\n下面，下方：नीचे (nīce) (发音为 NEE-CHE，不像英语“nice”)\n牛肉：गाय का गोश्त (gāe kā gośt)\n鸡肉：चिकन (cikan), मुर्ग़ (murġ)\n鱼：मछली (machlī)\n猪肉：सुअर का गोश्त (suar kā gośt)\n小牛肉：बछडे (bachde)\n烤：भूनना (bhūnnā)\n烤（动词）：सेकना (seknā)\n烤的：सिका (sikā), सेंका (senkā)\n煮沸（动词）：उबालना (ubālnā)\n煮沸的：उबला (ublā)\n油炸（动词）：तलना (talnā)\n油炸的：तला (talā)\n蔬菜：सबज़ी (sabzī)\n沙拉：सलाद (salād)\n面包：रोटी (roṭī)\n奶酪：पनीर (panīr) (一种新鲜奶酪，更接近凝乳。真正的熟成奶酪在印度很少见。)\n米饭：चावल (cāwal)\n土豆：आलू (ālū)\n鹰嘴豆：चना (canā)\n腌菜：अचार (achār)\n汤：सूप (sūp)\n巧克力：चाकलेट (cākaleṭ)\n甜点：मिठाई (miṭhāī)\n咖啡：काफ़ी (kāfī)\n茶：चाय (chāi)\n牛奶：दूध (dūdh)\n水：पानी (pānī), जल (jal)\n短语[编辑 | 编辑源代码]\nनमस्ते (namaste) - 标准问候（字面意思是“我向你鞠躬”）नमस्कार (namaskār) - 标准问候आप कैसे हैं? (Āp kaise hain?) - 你好吗？आप का नाम क्या है? (Āp kā nām kyā hai?) - 你叫什么名字？आप कहाँ जा रहे हैं? (Āp kahān jā rahe hain?) - 你要去哪里？शुक्रिया (shukriyā) - 谢谢बहुत बहुत शुक्रिया (bahut bahut shukriyā) - 非常感谢आपका बहुत बहुत शुक्रिया (āpka bahut bahut shukriyā) - 太感谢你了प्रणाम (pranām) - 类似于 नमस्ते (namaste) 的问候，但用于年长或值得尊敬的人सही (sahī) - 好的，对的，不错बहुत सही (bahut sahī) - 非常好आप की उम्र (āp kī umr) - 你的年龄आप का नाम (āp kā nām) - 你的名字आप का पता (āp kā patā) - 你的地址आज का मौसम कैसा है? (Āj ka mausam kaisā hai?) - 今天的天气怎么样？बैठिये (bathiye) - 请坐और सबज़ी लेंगे? (Aur sabzī lenge?) - 您还要蔬菜吗？और चावल लीजिये। (Aur chāwal lījiye.) - 再吃点米饭。थोड़ी देर इन्तज़ार कीजिये। (Thoṛī der intzār kījiye.) - 请稍等。ठहरिये (ṭhahriye) - 等一下समय क्या है? (Samay kyā hai?) - 现在几点了？ Kya hal he apka\n对话[编辑 | 编辑源代码]\n以下是印地语的完整对话नीरजः मैं विद्यालय /पाठशाला /स्कूल जा रहा हूँ। (Nīraj: Mainn vidhyalay/paathshaala/skūl jā rahā hūn.)尼拉杰：我要去学校。\nमाँः ठीक है बेटा। (Mān: Ṭīk hai beṭā.)妈妈：好的，儿子。\nनीरजः आज डिब्बे में क्या दिया है? (Nīraj: Āj dibbe men kyā diyā hai?)你给我带了什么午饭？\nमाँः आज मैं ने सैंडविच और कुछ लड्डू दिये हैं। (Mān: Āj main ne sainḍwic aur kuch ladū diye hain.)我给你带了三明治和一些名为“拉杜”的甜点。\nनीरजः वाह! (Nīraj: Wāh!)太好了！\nमाँः बेटा समय से वापस आ जाना। (Mān: Beṭā samay se wāpas ā jānā.)儿子，按时回来。 或 亲爱的，准时回来。नीरजः हाँ माता जी! स्कूल ख़त्म होते सीधा घर आऊँगा। (Nīraj: Hān Mātā-jī! Skūl ḫatm hote sidhā ghar āūngā.)好的，妈妈！我下课后直接回家。\n检索自 \"https://wikibooks.cn/w/index.php?title=Hindi/Everyday_Phrases&amp;oldid=4337497\"\n\t\t\t\t\t类别: 书籍：印地语\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\n\t\n\t This page was last edited on 29 October 2023, at 05:23.\n\tText is available under the Creative Commons Attribution-ShareAlike License; additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy.\n\n\n\t\n\tPrivacy policy\n\tAbout Wikibooks\n\tDisclaimers\n\tCode of Conduct\n\tDevelopers\n\tStatistics\n\tCookie statement\n\tMobile view\n\n\n\t\n\t\n\t\n\n\n\n\n\t\t\n\t \n \n\n\t\n\r\n  &copy; 2026 wikibooks.cn.\r\n  Text is translated from wikibooks.org under the CC BY-SA 4.0 License.",
+      "title": "https://wikibooks.cn/wiki/Hindi/Everyday_Phrases (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528697927,
+        "end": 1789528699197
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.199Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528699199,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f13e00193t4br0CxhJKYZ",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838eb55001Z0pnefYUrd6o5j",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 39281,
+      "output": 144,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 39425,
+      "headroom": -569,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.200Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.200Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.201Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.201Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.204Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.205Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.205Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.216Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 39425,
+  "providerTokens": 39425,
+  "estimatedInputTokens": 19103,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 39281,
+    "cacheRead": 0,
+    "output": 144
+  },
+  "overflow": true,
+  "headroom": -569,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.217Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.217Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.218Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.219Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.219Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.219Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.220Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.702Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528699702,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f334001oVqIsV0Xb0TFJ7",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838f153001kf2YSuUOYEDPSo",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528699703,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f337001bSD4ncjeLprpeF",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838f153001kf2YSuUOYEDPSo",
+    "type": "text",
+    "text": "Conversation summary: 用印地语说一句吧。  我来上网搜索 用印地语说一句吧。\n\nTitle: What did we do so\n\nUser turns:\n  1. 用印地语说一句吧。\n  2.",
+    "time": {
+      "start": 1789528699703,
+      "end": 1789528699703
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.704Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528699704,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f337002rSqcIAVN0EAZLw",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838f153001kf2YSuUOYEDPSo",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 40483,
+      "output": 108,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 40591,
+      "headroom": -1735,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.704Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.704Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.705Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.705Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.705Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528699705,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f339002fI5sOxA6g0YTgV",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838f339001520vlXGzEX1QLs",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528699705,
+      "end": 1789528699705
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.705Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.706Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.706Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.706Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.712Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.714Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.721Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.722Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.722Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.722Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.796Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528699796,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f394001i0EWwfzdku9Uik",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838f33a001CNr3HnB0JMRjcZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.797Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.797Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528699798,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f395001NXhybThqDuUXIG",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838f33a001CNr3HnB0JMRjcZ",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528699798,
+      "end": 1789528699798
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528699798,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "part": {
+    "id": "prt_0a838f396001P4iZG2275kRcXa",
+    "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+    "messageID": "msg_0a838f33a001CNr3HnB0JMRjcZ",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8657,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8730,
+      "headroom": 30126,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.799Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.800Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.800Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.801Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.801Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.801Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528699801,
+  "sessionID": "ses_f57c72a08ffeKXMxj1FmhCJ6qB"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.801Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.801Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.801Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.802Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.08j2DQoyM6",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:19.802Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

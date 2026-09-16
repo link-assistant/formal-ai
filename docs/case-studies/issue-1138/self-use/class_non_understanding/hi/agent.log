@@ -1,0 +1,2489 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.362Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.362Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt यह मेरे सिर के ऊपर से चला गया। --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.363Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.363Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.371Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "यह मेरे सिर के ऊपर से चला गया।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "यह मेरे सिर के ऊपर से चला गया।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.372Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.372Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.373Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.373Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.376Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.376Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.379Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 596,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.379Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.392Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:16:16.394Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 23,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:16:16.395Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.400Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.400Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.401Z",
+  "service": "session",
+  "id": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8",
+  "title": "New session - 2026-09-16T03:16:16.401Z",
+  "time": {
+    "created": 1789528576401,
+    "updated": 1789528576401
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.401Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.401Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.401Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.402Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.402Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c8ee6effeCSqAzw9hfP6Tv8/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.402Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c8ee6effeCSqAzw9hfP6Tv8/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.404Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57c8ee6effeCSqAzw9hfP6Tv8/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.406Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.406Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.407Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.408Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.409Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.409Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.409Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.410Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.410Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.410Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.410Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.410Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.410Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.545Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.548Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.555Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.561Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.566Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.566Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.566Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.566Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528576982,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83713d30015FDsQLRaKsnscQ",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371223001VzLwiRO6OfN8Xu",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528576983,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83713d6002maWuC0ATkYqaeS",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371223001VzLwiRO6OfN8Xu",
+    "type": "tool",
+    "callID": "call_b4566bc3a4765e11",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528576983,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83713d6001PVREHZk6xX1B9V",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371223001VzLwiRO6OfN8Xu",
+    "type": "text",
+    "text": "मैं इंटरनेट पर यह मेरे सिर के ऊपर से चला गया। खोजता हूँ।",
+    "time": {
+      "start": 1789528576983,
+      "end": 1789528576983
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:16.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528576983,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83713d6002maWuC0ATkYqaeS",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371223001VzLwiRO6OfN8Xu",
+    "type": "tool",
+    "callID": "call_b4566bc3a4765e11",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "यह मेरे सिर के ऊपर से चला गया।"
+      },
+      "time": {
+        "start": 1789528576983
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528579073,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83713d6002maWuC0ATkYqaeS",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371223001VzLwiRO6OfN8Xu",
+    "type": "tool",
+    "callID": "call_b4566bc3a4765e11",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "यह मेरे सिर के ऊपर से चला गया।"
+      },
+      "output": "Title: सिर के ऊपर से गुजर जाना मुहावरे का अर्थ | Meaning Of The Idiom 'To Go Over One's Head' | Storiespub\nURL: https://storiespub.com/sira-ke-upar-se-guzar-jana-muhavre-ka-arth-vakya-prayog/\nPublished: 2025-08-29T23:06:45.000Z\nAuthor: N/A\nHighlights:\nकई बार हम ऐसी परिस्थितियों का सामना करते हैं जहाँ कुछ बातें या घटनाएँ हमारी समझ से परे होती हैं। ऐसे में हम कहते हैं कि ‘सिर के ऊपर से गुजर जाना’। यह मुहावरा उन स्थितियों को दर्शाता है जब कोई बात, विचार या घटना इतनी जटिल होती है कि उसे समझना मुश्किल हो जाता है।\n...\nTo go over one\n...\nवाक्य प्रयोग – जब प्रोफेसर ने जटिल गणित के सिद्धांत समझाए, तो सभी छात्रों के लिए वह सिर के ऊपर से गुजर गया।\n...\nवाक्य प्रयोग – उस फिल्म की कहानी इतनी जटिल थी कि मुझे समझ में नहीं आया, पूरी फिल्म मेरे सिर के ऊपर से गुजर गई।\n...\nवाक्य प्रयोग – जब उसने तकनीकी शब्दों में बात की, तो मुझे लगा कि यह सब मेरे सिर के ऊपर से गुजर रहा है।\n\n---\n\nTitle: Go Over Someone's Head इडियम - अर्थ और वाक्यों में उदाहरण सहित उपयोग - अंग्रेज़ी पाठ\nURL: https://englishteststore.net/lesson/hi/english-idioms/go-over-someones-head-idiom-meaning-and-example-usage-in-sentences/\nPublished: 2025-02-04T22:34:21.000Z\nAuthor: Amit Sharma\nHighlights:\nजब हम कहते हैं कि कुछ ‘goes over someone’s head’, इसका मतलब है कि वह व्यक्ति उसे समझ नहीं पाता या ग्रहण नहीं कर पाता। जानकारी या अवधारणा उनके लिए बहुत जटिल या अपरिचित होती है। यह ऐसा है जैसे कोई विचार उनके सिर के ऊपर उड़ रहा हो, जो उनकी पहुँच से बाहर हो।\n...\nइस मुहावरे की उत्पत्ति एक वस्तु के शारीरिक रूप से किसी के सिर के ऊपर जाने की छवि से हुई है। समय के साथ, यह एक रूपक अभिव्यक्ति बन गई, जो समझ की कमी को दर्शाती है। इसके विकास का सटीक समय ज्ञात नहीं है, लेकिन मुहावरे अक्सर धीरे-धीरे अर्थ में बदलाव से गुजरते हैं।\n...\nयह मुहावरा कई वार्तालापों में, औपचारिक और अनौपचारिक दोनों में, उपयोग होता है। यहाँ कुछ उदाहरण हैं: 1. ‘I tried explaining the concept to him, but it went completely over his head.’ (मैंने उसे अवधारणा समझाने की कोशिश की, लेकिन यह पूरी तरह से उसके सिर के ऊपर चला गया।) 2. ‘The professor’s lecture was so advanced that it went over most of the students’ heads.’ (प्रोफेसर का व्याख्यान इतना उन्नत था कि यह अधिकांश छात्रों के समझ से बाहर था।) 3. ‘The technical jargon in the manual went over my head, so I sought help.’ (मैनुअल की तकनीकी भाषा मेरे समझ से बाहर थी, इसलिए मैंने मदद मांगी।) ये वाक्य ऐसे हालात दर्शाते हैं जहाँ जानकारी या विचार श्रोता के लिए बहुत जटिल था।\n\n---\n\nTitle: 2 Special English Sentence | English for beginners | engishkilearning.in\nURL: https://englishkilearning.in/special-english-sentence/\nPublished: 2022-07-15T00:00:00.000Z\nAuthor: Englishki\nHighlights:\n# तुम्हारी बात मेरे सर के ऊपर से जाती है।\n...\nसब कुछ मेरे सिर के ऊपर से चला गया|\n\nEverything went over my head.\n...\nअंग्रेजी मेरे सिर के ऊपर से जाती है।\n...\nEnglish goes over my head.\n...\nउसने जो कुछ भी कहा वह मेरे सिर के ऊपर से चला गया । \n\nWhatever he said wen over my head.\n...\n### Exercise (\n...\nमेरी बात उसके सिर के ऊपर से चली गयी । उसकी बात तुम्हारे सिर के ऊपर से चली जाती है ।\n\n आशा करता हूँ कि आपको पहला स्ट्रक्चर | Advanced Structure in English | अच्छे से समझ आ गया होगा। दूसरा स्ट्रक्चर भी महत्वपूर्ण है और रोज कि बोलचाल में बहुत प्रयोग होता है। आइये देखते है दूसरा स्ट्रक्चर ।\n\n---\n\nTitle: How to say “ PANI SIR SE UPAR CHALA GYA HAI”in English... 👍# Shorts#Wait For End#youtubeshorts\nURL: https://www.youtube.com/watch?v=mlysi2P3TuM\nPublished: 2021-09-11T16:50:16.000Z\nAuthor: LK Shorts\nHighlights:\nझाल का पानी सिर से ऊपर चला गया है तो फ्रेंड्स जब भी कोई बहुत ज्यादा बढ़ जाती है और फिर याद आणी चली जाती है तो बोलते हैं कि अब पानी सिर से ऊपर चला गया है तो इंग्लिश में कैसे बोलेंगे तो आज हम उसका इनवेस्ट करेंगे तो मिलेंगी वॉटर हुआ है थे हेवनस कि गोन मेरे को वर्कर में द थे हेड थे वॉटर हस गोन ओवर द हेड ओके फ्रेंड्स अब\n\n---\n\nTitle: ?a) b) c) d) Correct answer is option 'D'. Can you explain this answer? | EduRev Class 9 Question\nURL: https://edurev.in/question/5319286/a-b-c-d-Correct-answer-is-option-D-Can-you-explain-this-answer\nPublished: N/A\nAuthor: N/A\nHighlights:\n'वह जल्दी से चला गया' में कौन सी क्रिया है?\n...\n'चला गया' एक पूर्वकालिक क्रिया है क्योंकि पहली क्रिया की समाप्ति के साथ दूसरी क्रिया शुरू होती है।\n\n---\n\nTitle: वह गुब्बारा जो बहुत, बहुत ऊपर उड़ गया - कहानी भावनाओं पर | Runruneando\nURL: https://runruneando.com/hi-in/kahaniyan/vaha-gabbra-ja-bhata-bhata-uupara-uugdha-gaya\nPublished: 2026-03-22T12:51:00.000Z\nAuthor: Sergio Falcón & Inés Bosovsky\nHighlights:\nनन्हा कबीर अपना गुब्बारा खो देता है और सपने में देखता है कि वह 'खोए हुए गुब्बारों के देश' में खुशी से उड़ रहा है। यह कहानी बच्चों को कल्पना के ज़रिए अपनी भावनाओं को समझना सिखाती है।\n...\nकबीर खुशी-खुशी चल रहा था। गुब्बारा उसके सिर के ऊपर तैर रहा था।\n...\nऊपर, ऊपर... नीचे, नीचे। ऊपर, ऊपर... नीचे, नीचे।\n...\nधागा हाथ से फिसल गया। गुब्बारा उड़ गया।\n...\nऊपर, ऊपर... और ऊपर, और ऊपर...\n...\n\"यह तो बहुत बुरा हुआ, मेरे बच्चे... लेकिन सुनो: अब तुम्हारा गुब्बारा 'खोए हुए गुब्बारों के देश' की यात्रा पर जा रहा है।\"\n...\n\"बहुत ऊपर, बादलों के बीच। वहाँ वे सभी गुब्बारे रहते हैं जो उड़ जाते हैं। वे खेलते हैं, उड़ते हैं और बहुत सारे दोस्त बनाते हैं।\"\n...\nकबीर ने एक सपना\n...\nउसका गुब्बारा उड़ते-उड़ते नीले आसमान में पहुँच गया।\n...\nऊपर, ऊपर... बहुत ऊपर...\n...\nक्योंकि उसका गुब्बारा था... बहुत ऊपर... और बहुत खुश। 🐶🎈✨\n...\nनन्हा कबीर अपने नए पिल्ले वाले गुब्बारे के साथ खुशी-खुशी घूम रहा है, लेकिन एक छोटी सी चूक में गुब्बारा उसके हाथ से छूटकर बहुत ऊपर उड़ जाता है। कबीर बहुत उदास हो जाता है, लेकिन उसकी दादी बड़ी संवेदनशीलता के साथ उसे एक जादुई सांत्वना देती हैं: उसका गुब्बारा खोया नहीं है, बल्कि 'खोए हुए गुब्बारों के देश' की यात्रा पर गया है। यह छोटी और काव्यात्मक कहानी दर्शाती है कि कैसे कल्पना एक छोटे से नुकसान को रोमांच में बदल सकती है, जिसका अंत बच्चे के दिल को सुकून और शांति देता है।\n...\n\"यह तो बहुत बुरा हुआ, मेरे बच्चे... लेकिन सुनो: अब तुम्हारा गुब्बारा 'खोए हुए गुब्बारों के देश' की यात्रा पर जा रहा है।\"\n...\n\"क्योंकि उसका गुब्बारा था... बहुत ऊपर... और बहुत खुश। 🐶🎈✨\"\n\n---\n\nTitle: Lost Frequencies — X Ambassadors - Back To You अंग्रेजी गीत & हिंदी अनुवाद | Şarkıyla Dil Dersi\nURL: https://cevirce.com/learn/tr/lost-frequencies-elley-duh-x-ambassadors-back-to-you-200831\nPublished: N/A\nAuthor: çevirce\nHighlights:\nHeaven wide above my head, sand beneath my shoes\n...\nमेरे सिर के ऊपर स्वर्ग चौड़ा, मेरे जूते के नीचे रेत\n...\nI walked a million miles before I came to you\n...\nमैं तुम्हारे पास आने से पहले एक लाख मील चला गया\n...\nHeaven wide above my head, sand beneath my shoes\n\nमेरे सिर के ऊपर स्वर्ग चौड़ा, मेरे जूते के नीचे रेत\n\n---\n\nTitle: “वो इधर से निकला, उधर चला गया” यह बात कौन किसे बता रहा होगा? | Shaalaa.com\nURL: https://www.shaalaa.com/hin/question-bank-solutions/vo-idhr-se-niklaa-udhr-chlaa-gayaa-yh-baat-kaun-kise-btaa-rhaa-hogaaa_325665\nPublished: 2022-08-24T00:00:00.000Z\nAuthor: Shaalaa.com\nHighlights:\n“वो इधर से निकला, उधर चला गया” यह बात कौन\n...\nरहा होगा? | Sha\n...\n# “वो इधर से निकला, उधर चला गया” यह बात कौन\n...\nबता रहा होगा?\n...\n“वो इधर से निकला, उधर चला गया”\n...\nयह बात कौन किसे बता रहा होगा?\n...\nयह बात बेटू-छोटू को बता रहा होगा।\n...\nबाघ आया उस रात \n\n त्रुटि की\n...\nकरें क्या इस\n...\nमें कोई त्रुटि है?",
+      "title": "Web search: यह मेरे सिर के ऊपर से चला गया।",
+      "metadata": {},
+      "time": {
+        "start": 1789528576983,
+        "end": 1789528579072
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.075Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528579075,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8371c03001FJ6famJJ8UGGna",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371223001VzLwiRO6OfN8Xu",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8526,
+      "output": 107,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8633,
+      "headroom": 30223,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.076Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.076Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.077Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.077Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.077Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.078Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.089Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8633,
+  "providerTokens": 8633,
+  "estimatedInputTokens": 2258,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8526,
+    "cacheRead": 0,
+    "output": 107
+  },
+  "overflow": false,
+  "headroom": 30223,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.090Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.099Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.100Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528579743,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8371e9e0019kTVhLQsDLqRrA",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371c12001GIniru2DXnOAHg",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528579744,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8371ea0001TM2fc7k60aNk54",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371c12001GIniru2DXnOAHg",
+    "type": "tool",
+    "callID": "call_4514493ffd112aba",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528579744,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8371e9f001TNUZ3OXqAnn6Mr",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371c12001GIniru2DXnOAHg",
+    "type": "text",
+    "text": "मैं https://storiespub.com/sira-ke-upar-se-guzar-jana-muhavre-ka-arth-vakya-prayog/ खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528579744,
+      "end": 1789528579744
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:19.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528579744,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8371ea0001TM2fc7k60aNk54",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371c12001GIniru2DXnOAHg",
+    "type": "tool",
+    "callID": "call_4514493ffd112aba",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://storiespub.com/sira-ke-upar-se-guzar-jana-muhavre-ka-arth-vakya-prayog/"
+      },
+      "time": {
+        "start": 1789528579744
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.165Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528581165,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8371ea0001TM2fc7k60aNk54",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371c12001GIniru2DXnOAHg",
+    "type": "tool",
+    "callID": "call_4514493ffd112aba",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://storiespub.com/sira-ke-upar-se-guzar-jana-muhavre-ka-arth-vakya-prayog/"
+      },
+      "output": "सिर के ऊपर से गुजर जाना मुहावरे का अर्थ | Meaning Of The Idiom &#039;To Go Over One&#039;s Head&#039; | Storiespub\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n\r\n\r\n\r\n\n\t\t\t\n\n\n\n\n\n\t\n\t\n\t\n\n\t\tSkip to content\n\n\t\t\n\t\t\n\n\t\t\t\n\t\t\t\t\t\n\t\t\tStoriespub\n\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tMenu\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tHome\nEasy Drawing\n\n\tA to Z Alphabet Drawing\n\n\nKids Story\n\n\tHindi Stories\n\t\n\t\tPanchatantra Stories in Hindi\n\t\n\n\tEnglish Stories\n\t\n\t\tFascinating Stories\n\t\tMysterious Stories\n\t\tPrince and Princess story\n\t\tArabian Nights Stories\n\t\tAnimal Stories\n\t\tPanchatantra Stories\n\t\tMoral Stories\n\t\tshort stories\n\t\tBible Stories\n\t\tHitopadesha Tales\n\t\tTenali Raman Stories\n\t\tFamous kids stories\n\t\n\n\tMythological stories\n\t\n\t\tChinese Mythology\n\t\tRoman Mythology\n\t\tEgyptian Mythology\n\t\tGreek Mythology\n\t\tHindu Mythology\n\t\tMythological stories\n\t\tNorse mythology\n\t\n\n\tAkbar Birbal Stories\n\tbedtime stories\n\tScary Stories For Kids\n\tAesop Fables\n\tFairy Tales Stories\n\n\nMore\n\n\tAI In Education\n\tFull Forms\n\tBiographies\n\t\n\t\tCorporate Sagas\n\t\n\n\tEssay Writing\n\tPoem\n\tBest Hindi Muhavare\n\tParyayvachi Shabd\n\tBritish Emperor\n\tKids Essentials\n\t\n\t\tBaby Products\n\t\n\n\tChinese emperor\n\tPainting\n\tVideos\n\tEgypt Emperor\n\tIndian emperors\n\tJapanese emperor\n\tMongol Emperor\n\tRoman emperor\n\n\nColoring page\n \n\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tHome\nEasy Drawing\n\n\tA to Z Alphabet Drawing\n\n\nKids Story\n\n\tHindi Stories\n\t\n\t\tPanchatantra Stories in Hindi\n\t\n\n\tEnglish Stories\n\t\n\t\tFascinating Stories\n\t\tMysterious Stories\n\t\tPrince and Princess story\n\t\tArabian Nights Stories\n\t\tAnimal Stories\n\t\tPanchatantra Stories\n\t\tMoral Stories\n\t\tshort stories\n\t\tBible Stories\n\t\tHitopadesha Tales\n\t\tTenali Raman Stories\n\t\tFamous kids stories\n\t\n\n\tMythological stories\n\t\n\t\tChinese Mythology\n\t\tRoman Mythology\n\t\tEgyptian Mythology\n\t\tGreek Mythology\n\t\tHindu Mythology\n\t\tMythological stories\n\t\tNorse mythology\n\t\n\n\tAkbar Birbal Stories\n\tbedtime stories\n\tScary Stories For Kids\n\tAesop Fables\n\tFairy Tales Stories\n\n\nMore\n\n\tAI In Education\n\tFull Forms\n\tBiographies\n\t\n\t\tCorporate Sagas\n\t\n\n\tEssay Writing\n\tPoem\n\tBest Hindi Muhavare\n\tParyayvachi Shabd\n\tBritish Emperor\n\tKids Essentials\n\t\n\t\tBaby Products\n\t\n\n\tChinese emperor\n\tPainting\n\tVideos\n\tEgypt Emperor\n\tIndian emperors\n\tJapanese emperor\n\tMongol Emperor\n\tRoman emperor\n\n\nColoring page\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tSearch\n\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tSearch\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\n\t\n\t\t\t\n\t\t\t\n\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tSummarize this Article with:ClaudeChatGPTX (Twitter)LinkedInसिर के ऊपर से गुजर जाना मुहावरे का अर्थ | Meaning of the Idiom &#8216;To Go Over One&#8217;s Head&#8217;\nकई बार हम ऐसी परिस्थितियों का सामना करते हैं जहाँ कुछ बातें या घटनाएँ हमारी समझ से परे होती हैं। ऐसे में हम कहते हैं कि &#8216;सिर के ऊपर से गुजर जाना&#8217;। यह मुहावरा उन स्थितियों को दर्शाता है जब कोई बात, विचार या घटना इतनी जटिल होती है कि उसे समझना मुश्किल हो जाता है।\nसिर के ऊपर से गुजर जाना मुहावरे का अर्थ\n\nसमझ से परे होना\nकिसी बात का अर्थ न समझ पाना\nजटिलता के कारण असमर्थता\nबातों का प्रभाव न समझ पाना\n\nसिर के ऊपर से गुजर जाना मुहावरे का अर्थ in English\n\nTo be beyond understanding\nUnable to grasp the meaning of something\nInability due to complexity\nNot comprehending the impact of words\n\nसिर के ऊपर से गुजर जाना Idioms Meaning in English\nTo go over one&#8217;s head\nसिर के ऊपर से गुजर जाना मुहावरे का वाक्य प्रयोग\nवाक्य प्रयोग – जब प्रोफेसर ने जटिल गणित के सिद्धांत समझाए, तो सभी छात्रों के लिए वह सिर के ऊपर से गुजर गया।\nवाक्य प्रयोग – उस फिल्म की कहानी इतनी जटिल थी कि मुझे समझ में नहीं आया, पूरी फिल्म मेरे सिर के ऊपर से गुजर गई।\nवाक्य प्रयोग – जब उसने तकनीकी शब्दों में बात की, तो मुझे लगा कि यह सब मेरे सिर के ऊपर से गुजर रहा है।\nनिष्कर्ष\nसिर के ऊपर से गुजर जाना एक महत्वपूर्ण मुहावरा है, जिसका प्रयोग हम तब करते हैं जब कोई बात हमारी समझ से परे होती है। इस मुहावरे का सही उपयोग करके हम अपनी भावनाओं और विचारों को प्रभावी ढंग से व्यक्त कर सकते हैं। आप भी इस मुहावरे का प्रयोग अपने वाक्यों में कर सकते हैं ताकि आपकी भाषा और भी अधिक प्रभावशाली लगे।\nSummarize this Article with:ClaudeChatGPTX (Twitter)LinkedIn\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tAbout Me\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tWelcome to StoriesPub.com We started in 2019 with a simple idea to provide our readers with useful and interesting information. Our team is dedicated to curating a wide range of captivating content in different categories, including inspirational stories, funny tales, Parenting, Kids’ products, Educational AI content, Tech content, coloring books, how to draw, and more.\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tFacebook\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tInstagram\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tLinkedin\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tPinterest\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tThe Ghostly Inn: A Ghost Story\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tकंगाली में आटा गीला मुहावरे का अर्थ | Meaning of &#8216;Kangali Mein Aata Geela&#8217; Idiom\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tJ.R.R. Tolkien Biography &#8211; The Man Behind Middle-earth\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tआम का पर्यायवाची शब्द (Synonyms of आम in Hindi)\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tHow to Draw a Vase &#8211; A to Z Alphabet Drawing\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tHow to Draw Marker in Simple and easy steps guide\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tJohn The Baptist, And Jesus | Bible Story\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tAladdin and Magic Lamp Full story\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tHow to Draw Iphone in Simple and easy step by step guide\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tचंद का पर्यायवाची शब्द (Synonyms of चंद in Hindi)\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tश्री कृष्ण की दिव्य रास लीला &#8211; गोपियों के साथ\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tThe Lost Camel | Arabian Nights\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tHow to Draw Lizard &#8211; Step by Step\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tComedian Tenali Raman | Tenali Raman Stories\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tवह्न बनना मुहावरे का अर्थ | Meaning of Vahn Banana Idiom\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tThe Strange Visitor: A Mysterious Story\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tHow to play snakes and ladders board game\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\tA Complete List of Greek Goddesses, Their Influence, and Their Power\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\tRead More »\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\r\n\t\r\n\r\n\t\r\n\t\r\n\t\r\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\tWelcome to StoriesPub.com We started in 2019 with a simple idea to provide our readers with useful and interesting information. Our team is dedicated to curating a wide range of captivating content in different categories, including inspirational stories, funny tales, Parenting, Kids’ products, Educational AI content, Tech content, coloring books, how to draw, and more.\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tFacebook\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tYoutube\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tLinkedin\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tPinterest\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tInstagram\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tOur Contacts\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tinfo@storiespub.com\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tImportant Links\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\tAbout Us\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\tPrivacy Policy\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tFacebook\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tYoutube\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tLinkedin\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tPinterest\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tInstagram",
+      "title": "https://storiespub.com/sira-ke-upar-se-guzar-jana-muhavre-ka-arth-vakya-prayog/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528579744,
+        "end": 1789528581164
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.165Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528581165,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a837242d001E8uSepkd5hmK2Q",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8371c12001GIniru2DXnOAHg",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 15549,
+      "output": 226,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15775,
+      "headroom": 23081,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.166Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.166Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.166Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.166Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.168Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.168Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.168Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.171Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 15775,
+  "providerTokens": 15775,
+  "estimatedInputTokens": 4392,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 15549,
+    "cacheRead": 0,
+    "output": 226
+  },
+  "overflow": false,
+  "headroom": 23081,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.171Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.171Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.173Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528581359,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83724ee001e23NUdXHsXFZnr",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372433001OFIFce1WHlSHAf",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.359Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528581359,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83724ef002OBZ4jhRpBkPRvA",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372433001OFIFce1WHlSHAf",
+    "type": "tool",
+    "callID": "call_cbaa5ad111f6aab7",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.360Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528581360,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83724ef001276KgC18kDtQ6B",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372433001OFIFce1WHlSHAf",
+    "type": "text",
+    "text": "मैं https://englishteststore.net/lesson/hi/english-idioms/go-over-someones-head-idiom-meaning-and-example-usage-in-sentences/ खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528581359,
+      "end": 1789528581359
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:21.360Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528581360,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83724ef002OBZ4jhRpBkPRvA",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372433001OFIFce1WHlSHAf",
+    "type": "tool",
+    "callID": "call_cbaa5ad111f6aab7",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://englishteststore.net/lesson/hi/english-idioms/go-over-someones-head-idiom-meaning-and-example-usage-in-sentences/"
+      },
+      "time": {
+        "start": 1789528581360
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528582443,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83724ef002OBZ4jhRpBkPRvA",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372433001OFIFce1WHlSHAf",
+    "type": "tool",
+    "callID": "call_cbaa5ad111f6aab7",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://englishteststore.net/lesson/hi/english-idioms/go-over-someones-head-idiom-meaning-and-example-usage-in-sentences/"
+      },
+      "output": "Go Over Someone&#039;s Head इडियम - अर्थ और वाक्यों में उदाहरण सहित उपयोग - अंग्रेज़ी पाठ\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nसामग्री पर जाएं\n\n\n\n\n\nअंग्रेज़ी पाठ\n\n\n\n\nMở menu\n\n\n&times;\n\n\nHome\n\n\nLessons\n\n\n\nEnglish for Your Jobs\n\n\nDaily English Conversations\n\n\nAdvanced English for Business\n\n\nEnglish for Informatics\n\n\nEnglish Idioms A-Z\n\n\nB1 Vocabulary\n\n\nB2 Vocabulary\n\n\nIELTS 5.5 Vocabulary\n\n\nIELTS 6.5 Vocabulary\n\n\nIELTS 8.0 Vocabulary\n\n\nIELTS 9.0 Vocabulary\n\n\nSAT Vocabulary\n\n\nGRE Vocabulary\n\n\n\n\n\nTest\n\n\n\nListening\n\n\nGrammar\n\n\nSpeaking\n\n\nReading\n\n\nWriting\n\n\nVocabulary\n\n\n\n\n\nGrade 6-12\n\n\nB1 B2 C1\n\n\nDownload\n\n\n🇬🇧 English\n\n\n\n🇸🇦 العربية\n\n\n🇧🇩 বাংলা\n\n\n🇨🇳 中文\n\n\n🇬🇧 English\n\n\n🇵🇭 Filipino\n\n\n🇫🇷 Français\n\n\n🇬🇪 ქართული\n\n\n🇮🇳 हिन्दी\n\n\n🇮🇩 Bahasa Indonesia\n\n\n🇮🇹 Italiano\n\n\n🇯🇵 日本語\n\n\n🇰🇷 한국어\n\n\n🇵🇱 Polski\n\n\n🇵🇹 Português\n\n\n🇷🇺 Русский\n\n\n🇪🇸 Español\n\n\n🇹🇭 ไทย\n\n\n🇹🇷 Türkçe\n\n\n🇵🇰 اردو\n\n\n🇻🇳 Tiếng Việt\n\n\n\n\n\n\n\n\n\n\n\n\nGo Over Someone&#8217;s Head इडियम &#8211; अर्थ और वाक्यों में उदाहरण सहित उपयोग\n\n\n\n\n\t\n\t\n\t\tफरवरी 4, 2025\n\n\t\t\n\t\t—\n\t\t\n\n\t\t\n\t\tby\n\t\t\n\n\t\tAmit Sharma\n\n\t\tin अंग्रेज़ी मुहावरे\n\n\t\n\t\n\n\n\n\n\n\n\n\n\n\n\nGo Over Someone&#8217;s Head &#x907;&#x921;&#x93F;&#x92F;&#x92E; &#8211; &#x905;&#x930;&#x94D;&#x925; &#x914;&#x930; &#x935;&#x93E;&#x915;&#x94D;&#x92F;&#x94B;&#x902; &#x92E;&#x947;&#x902; &#x909;&#x926;&#x93E;&#x939;&#x930;&#x923; &#x938;&#x939;&#x93F;&#x924; &#x909;&#x92A;&#x92F;&#x94B;&#x917;\n&#x92A;&#x930;&#x93F;&#x91A;&#x92F;: &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x94B;&#x902; &#x915;&#x940; &#x930;&#x94B;&#x91A;&#x915; &#x926;&#x941;&#x928;&#x93F;&#x92F;&#x93E;\n&#x928;&#x92E;&#x938;&#x94D;&#x924;&#x947;, &#x92D;&#x93E;&#x937;&#x93E; &#x92A;&#x94D;&#x930;&#x947;&#x92E;&#x93F;&#x92F;&#x94B;&#x902;! &#x906;&#x91C; &#x939;&#x92E; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x94B;&#x902; &#x915;&#x940; &#x906;&#x915;&#x930;&#x94D;&#x937;&#x915; &#x926;&#x941;&#x928;&#x93F;&#x92F;&#x93E; &#x92E;&#x947;&#x902; &#x90F;&#x915; &#x92F;&#x93E;&#x924;&#x94D;&#x930;&#x93E; &#x92A;&#x930; &#x928;&#x93F;&#x915;&#x932;&#x947;&#x902;&#x917;&#x947;&#x964; &#x92F;&#x947; &#x935;&#x93E;&#x915;&#x94D;&#x92F;&#x93E;&#x902;&#x936;, &#x91C;&#x94B; &#x905;&#x915;&#x94D;&#x938;&#x930; &#x930;&#x942;&#x92A;&#x915; &#x939;&#x94B;&#x924;&#x947; &#x939;&#x948;&#x902;, &#x939;&#x92E;&#x93E;&#x930;&#x940; &#x92D;&#x93E;&#x937;&#x93E; &#x915;&#x94B; &#x930;&#x902;&#x917;&#x940;&#x928; &#x914;&#x930; &#x917;&#x939;&#x930;&#x93E; &#x92C;&#x928;&#x93E;&#x924;&#x947; &#x939;&#x948;&#x902;&#x964; &#x906;&#x91C; &#x939;&#x92E; &#x91C;&#x93F;&#x938; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x915;&#x93E; &#x905;&#x927;&#x94D;&#x92F;&#x92F;&#x928; &#x915;&#x930;&#x947;&#x902;&#x917;&#x947; &#x935;&#x939; &#x939;&#x948; &#8216;Go Over Someone&#8217;s Head&#8217;&#x964; &#x91A;&#x932;&#x93F;&#x90F; &#x936;&#x941;&#x930;&#x942; &#x915;&#x930;&#x924;&#x947; &#x939;&#x948;&#x902;!&#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x915;&#x93E; &#x905;&#x930;&#x94D;&#x925; &#x938;&#x92E;&#x91D;&#x928;&#x93E;: &#8216;Go Over Someone&#8217;s Head&#8217; &#x915;&#x93E; &#x915;&#x94D;&#x92F;&#x93E; &#x92E;&#x924;&#x932;&#x92C; &#x939;&#x948;?\n&#x91C;&#x92C; &#x939;&#x92E; &#x915;&#x939;&#x924;&#x947; &#x939;&#x948;&#x902; &#x915;&#x93F; &#x915;&#x941;&#x91B; &#8216;goes over someone&#8217;s head&#8217;, &#x907;&#x938;&#x915;&#x93E; &#x92E;&#x924;&#x932;&#x92C; &#x939;&#x948; &#x915;&#x93F; &#x935;&#x939; &#x935;&#x94D;&#x92F;&#x915;&#x94D;&#x924;&#x93F; &#x909;&#x938;&#x947; &#x938;&#x92E;&#x91D; &#x928;&#x939;&#x940;&#x902; &#x92A;&#x93E;&#x924;&#x93E; &#x92F;&#x93E; &#x917;&#x94D;&#x930;&#x939;&#x923; &#x928;&#x939;&#x940;&#x902; &#x915;&#x930; &#x92A;&#x93E;&#x924;&#x93E;&#x964; &#x91C;&#x93E;&#x928;&#x915;&#x93E;&#x930;&#x940; &#x92F;&#x93E; &#x905;&#x935;&#x927;&#x93E;&#x930;&#x923;&#x93E; &#x909;&#x928;&#x915;&#x947; &#x932;&#x93F;&#x90F; &#x92C;&#x939;&#x941;&#x924; &#x91C;&#x91F;&#x93F;&#x932; &#x92F;&#x93E; &#x905;&#x92A;&#x930;&#x93F;&#x91A;&#x93F;&#x924; &#x939;&#x94B;&#x924;&#x940; &#x939;&#x948;&#x964; &#x92F;&#x939; &#x910;&#x938;&#x93E; &#x939;&#x948; &#x91C;&#x948;&#x938;&#x947; &#x915;&#x94B;&#x908; &#x935;&#x93F;&#x91A;&#x93E;&#x930; &#x909;&#x928;&#x915;&#x947; &#x938;&#x93F;&#x930; &#x915;&#x947; &#x90A;&#x92A;&#x930; &#x909;&#x921;&#x93C; &#x930;&#x939;&#x93E; &#x939;&#x94B;, &#x91C;&#x94B; &#x909;&#x928;&#x915;&#x940; &#x92A;&#x939;&#x941;&#x901;&#x91A; &#x938;&#x947; &#x92C;&#x93E;&#x939;&#x930; &#x939;&#x94B;&#x964;\n\n\n\n\n\n&#x909;&#x924;&#x94D;&#x92A;&#x924;&#x94D;&#x924;&#x93F; &#x914;&#x930; &#x935;&#x93F;&#x915;&#x93E;&#x938;: &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x915;&#x940; &#x91C;&#x921;&#x93C;&#x947;&#x902; &#x916;&#x94B;&#x91C;&#x928;&#x93E;\n&#x907;&#x938; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x915;&#x940; &#x909;&#x924;&#x94D;&#x92A;&#x924;&#x94D;&#x924;&#x93F; &#x90F;&#x915; &#x935;&#x938;&#x94D;&#x924;&#x941; &#x915;&#x947; &#x936;&#x93E;&#x930;&#x940;&#x930;&#x93F;&#x915; &#x930;&#x942;&#x92A; &#x938;&#x947; &#x915;&#x93F;&#x938;&#x940; &#x915;&#x947; &#x938;&#x93F;&#x930; &#x915;&#x947; &#x90A;&#x92A;&#x930; &#x91C;&#x93E;&#x928;&#x947; &#x915;&#x940; &#x91B;&#x935;&#x93F; &#x938;&#x947; &#x939;&#x941;&#x908; &#x939;&#x948;&#x964; &#x938;&#x92E;&#x92F; &#x915;&#x947; &#x938;&#x93E;&#x925;, &#x92F;&#x939; &#x90F;&#x915; &#x930;&#x942;&#x92A;&#x915; &#x905;&#x92D;&#x93F;&#x935;&#x94D;&#x92F;&#x915;&#x94D;&#x924;&#x93F; &#x92C;&#x928; &#x917;&#x908;, &#x91C;&#x94B; &#x938;&#x92E;&#x91D; &#x915;&#x940; &#x915;&#x92E;&#x940; &#x915;&#x94B; &#x926;&#x930;&#x94D;&#x936;&#x93E;&#x924;&#x940; &#x939;&#x948;&#x964; &#x907;&#x938;&#x915;&#x947; &#x935;&#x93F;&#x915;&#x93E;&#x938; &#x915;&#x93E; &#x938;&#x91F;&#x940;&#x915; &#x938;&#x92E;&#x92F; &#x91C;&#x94D;&#x91E;&#x93E;&#x924; &#x928;&#x939;&#x940;&#x902; &#x939;&#x948;, &#x932;&#x947;&#x915;&#x93F;&#x928; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x905;&#x915;&#x94D;&#x938;&#x930; &#x927;&#x940;&#x930;&#x947;-&#x927;&#x940;&#x930;&#x947; &#x905;&#x930;&#x94D;&#x925; &#x92E;&#x947;&#x902; &#x92C;&#x926;&#x932;&#x93E;&#x935; &#x938;&#x947; &#x917;&#x941;&#x91C;&#x930;&#x924;&#x947; &#x939;&#x948;&#x902;&#x964;&#x926;&#x948;&#x928;&#x93F;&#x915; &#x935;&#x93E;&#x930;&#x94D;&#x924;&#x93E;&#x932;&#x93E;&#x92A; &#x92E;&#x947;&#x902; &#x909;&#x92A;&#x92F;&#x94B;&#x917;: &#x915;&#x908; &#x909;&#x926;&#x93E;&#x939;&#x930;&#x923;\n&#x92F;&#x939; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x93E; &#x915;&#x908; &#x935;&#x93E;&#x930;&#x94D;&#x924;&#x93E;&#x932;&#x93E;&#x92A;&#x94B;&#x902; &#x92E;&#x947;&#x902;, &#x914;&#x92A;&#x91A;&#x93E;&#x930;&#x93F;&#x915; &#x914;&#x930; &#x905;&#x928;&#x94C;&#x92A;&#x91A;&#x93E;&#x930;&#x93F;&#x915; &#x926;&#x94B;&#x928;&#x94B;&#x902; &#x92E;&#x947;&#x902;, &#x909;&#x92A;&#x92F;&#x94B;&#x917; &#x939;&#x94B;&#x924;&#x93E; &#x939;&#x948;&#x964; &#x92F;&#x939;&#x93E;&#x901; &#x915;&#x941;&#x91B; &#x909;&#x926;&#x93E;&#x939;&#x930;&#x923; &#x939;&#x948;&#x902;: 1. &#8216;I tried explaining the concept to him, but it went completely over his head.&#8217;(&#x92E;&#x948;&#x902;&#x928;&#x947; &#x909;&#x938;&#x947; &#x905;&#x935;&#x927;&#x93E;&#x930;&#x923;&#x93E; &#x938;&#x92E;&#x91D;&#x93E;&#x928;&#x947; &#x915;&#x940; &#x915;&#x94B;&#x936;&#x93F;&#x936; &#x915;&#x940;, &#x932;&#x947;&#x915;&#x93F;&#x928; &#x92F;&#x939; &#x92A;&#x942;&#x930;&#x940; &#x924;&#x930;&#x939; &#x938;&#x947; &#x909;&#x938;&#x915;&#x947; &#x938;&#x93F;&#x930; &#x915;&#x947; &#x90A;&#x92A;&#x930; &#x91A;&#x932;&#x93E; &#x917;&#x92F;&#x93E;&#x964;) 2. &#8216;The professor&#8217;s lecture was so advanced that it went over most of the students&#8217; heads.&#8217;(&#x92A;&#x94D;&#x930;&#x94B;&#x92B;&#x947;&#x938;&#x930; &#x915;&#x93E; &#x935;&#x94D;&#x92F;&#x93E;&#x916;&#x94D;&#x92F;&#x93E;&#x928; &#x907;&#x924;&#x928;&#x93E; &#x909;&#x928;&#x94D;&#x928;&#x924; &#x925;&#x93E; &#x915;&#x93F; &#x92F;&#x939; &#x905;&#x927;&#x93F;&#x915;&#x93E;&#x902;&#x936; &#x91B;&#x93E;&#x924;&#x94D;&#x930;&#x94B;&#x902; &#x915;&#x947; &#x938;&#x92E;&#x91D; &#x938;&#x947; &#x92C;&#x93E;&#x939;&#x930; &#x925;&#x93E;&#x964;) 3. &#8216;The technical jargon in the manual went over my head, so I sought help.&#8217;(&#x92E;&#x948;&#x928;&#x941;&#x905;&#x932; &#x915;&#x940; &#x924;&#x915;&#x928;&#x940;&#x915;&#x940; &#x92D;&#x93E;&#x937;&#x93E; &#x92E;&#x947;&#x930;&#x947; &#x938;&#x92E;&#x91D; &#x938;&#x947; &#x92C;&#x93E;&#x939;&#x930; &#x925;&#x940;, &#x907;&#x938;&#x932;&#x93F;&#x90F; &#x92E;&#x948;&#x902;&#x928;&#x947; &#x92E;&#x926;&#x926; &#x92E;&#x93E;&#x902;&#x917;&#x940;&#x964;) &#x92F;&#x947; &#x935;&#x93E;&#x915;&#x94D;&#x92F; &#x910;&#x938;&#x947; &#x939;&#x93E;&#x932;&#x93E;&#x924; &#x926;&#x930;&#x94D;&#x936;&#x93E;&#x924;&#x947; &#x939;&#x948;&#x902; &#x91C;&#x939;&#x93E;&#x901; &#x91C;&#x93E;&#x928;&#x915;&#x93E;&#x930;&#x940; &#x92F;&#x93E; &#x935;&#x93F;&#x91A;&#x93E;&#x930; &#x936;&#x94D;&#x930;&#x94B;&#x924;&#x93E; &#x915;&#x947; &#x932;&#x93F;&#x90F; &#x92C;&#x939;&#x941;&#x924; &#x91C;&#x91F;&#x93F;&#x932; &#x925;&#x93E;&#x964;\n&#x930;&#x942;&#x92A;&#x93E;&#x902;&#x924;&#x930;&#x923; &#x914;&#x930; &#x92A;&#x930;&#x94D;&#x92F;&#x93E;&#x92F;&#x935;&#x93E;&#x91A;&#x940;: &#x938;&#x92E;&#x93E;&#x928; &#x935;&#x93F;&#x91A;&#x93E;&#x930; &#x935;&#x94D;&#x92F;&#x915;&#x94D;&#x924; &#x915;&#x930;&#x928;&#x93E;\n&#x939;&#x93E;&#x932;&#x93E;&#x902;&#x915;&#x93F; &#8216;go over someone&#8217;s head&#8217; &#x90F;&#x915; &#x906;&#x92E; &#x909;&#x92A;&#x92F;&#x94B;&#x917; &#x935;&#x93E;&#x932;&#x93E; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x93E; &#x939;&#x948;, &#x910;&#x938;&#x947; &#x905;&#x928;&#x94D;&#x92F; &#x935;&#x93E;&#x915;&#x94D;&#x92F;&#x93E;&#x902;&#x936; &#x92D;&#x940; &#x939;&#x948;&#x902; &#x91C;&#x94B; &#x938;&#x92E;&#x93E;&#x928; &#x905;&#x930;&#x94D;&#x925; &#x935;&#x94D;&#x92F;&#x915;&#x94D;&#x924; &#x915;&#x930;&#x924;&#x947; &#x939;&#x948;&#x902;&#x964; &#x907;&#x928;&#x92E;&#x947;&#x902; &#x936;&#x93E;&#x92E;&#x93F;&#x932; &#x939;&#x948;&#x902; &#8216;be beyond someone&#8217;, &#8216;be over someone&#8217;s head&#8217;, &#x92F;&#x93E; &#8216;be too much for someone&#8217;&#x964; &#x92F;&#x947; &#x938;&#x92D;&#x940; &#x905;&#x92D;&#x93F;&#x935;&#x94D;&#x92F;&#x915;&#x94D;&#x924;&#x93F;&#x92F;&#x93E;&#x901; &#x92F;&#x939; &#x926;&#x930;&#x94D;&#x936;&#x93E;&#x924;&#x940; &#x939;&#x948;&#x902; &#x915;&#x93F; &#x915;&#x941;&#x91B; &#x92C;&#x939;&#x941;&#x924; &#x91C;&#x91F;&#x93F;&#x932; &#x92F;&#x93E; &#x938;&#x92E;&#x91D;&#x928;&#x947; &#x92E;&#x947;&#x902; &#x915;&#x920;&#x93F;&#x928; &#x939;&#x948;&#x964;&#x938;&#x902;&#x92C;&#x902;&#x927;&#x93F;&#x924; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x93E; &#x92A;&#x93E;&#x920;\n\n\n\n&#x907;&#x938; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x938;&#x947; &#x938;&#x902;&#x92C;&#x902;&#x927;&#x93F;&#x924; &#x914;&#x930; &#x92A;&#x93E;&#x920; &#x938;&#x940;&#x916;&#x947;&#x902;: go over someones head:\n\n\n\n\nGo OverGo Over To The MajorityGo To Someones HeadGo Soak Your HeadGo A Long Way\n&#x928;&#x93F;&#x937;&#x94D;&#x915;&#x930;&#x94D;&#x937;: &#x92D;&#x93E;&#x937;&#x93E; &#x92E;&#x947;&#x902; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x94B;&#x902; &#x915;&#x940; &#x936;&#x915;&#x94D;&#x924;&#x93F;\n&#8216;Go Over Someone&#8217;s Head&#8217; &#x915;&#x940; &#x939;&#x92E;&#x93E;&#x930;&#x940; &#x916;&#x94B;&#x91C; &#x938;&#x92E;&#x93E;&#x92A;&#x94D;&#x924; &#x915;&#x930;&#x924;&#x947; &#x939;&#x941;&#x90F;, &#x939;&#x92E;&#x947;&#x902; &#x92F;&#x93E;&#x926; &#x906;&#x924;&#x93E; &#x939;&#x948; &#x915;&#x93F; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x939;&#x92E;&#x93E;&#x930;&#x940; &#x92C;&#x93E;&#x924;&#x91A;&#x940;&#x924; &#x915;&#x94B; &#x915;&#x93F;&#x924;&#x928;&#x93E; &#x938;&#x92E;&#x943;&#x926;&#x94D;&#x927; &#x92C;&#x928;&#x93E;&#x924;&#x947; &#x939;&#x948;&#x902;&#x964; &#x92F;&#x947; &#x938;&#x93E;&#x902;&#x938;&#x94D;&#x915;&#x943;&#x924;&#x93F;&#x915; &#x938;&#x902;&#x926;&#x930;&#x94D;&#x92D;, &#x910;&#x924;&#x93F;&#x939;&#x93E;&#x938;&#x93F;&#x915; &#x92A;&#x943;&#x937;&#x94D;&#x920;&#x92D;&#x942;&#x92E;&#x93F; &#x914;&#x930; &#x938;&#x93E;&#x91D;&#x93E; &#x905;&#x928;&#x941;&#x92D;&#x935;&#x94B;&#x902; &#x915;&#x94B; &#x938;&#x92E;&#x947;&#x91F;&#x947; &#x939;&#x941;&#x90F; &#x939;&#x948;&#x902;&#x964; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x94B;&#x902; &#x915;&#x93E; &#x905;&#x927;&#x94D;&#x92F;&#x92F;&#x928; &#x915;&#x930;&#x915;&#x947; &#x939;&#x92E; &#x928; &#x915;&#x947;&#x935;&#x932; &#x905;&#x92A;&#x928;&#x940; &#x92D;&#x93E;&#x937;&#x93E; &#x915;&#x94C;&#x936;&#x932; &#x92C;&#x922;&#x93C;&#x93E;&#x924;&#x947; &#x939;&#x948;&#x902;, &#x92C;&#x932;&#x94D;&#x915;&#x93F; &#x92E;&#x93E;&#x928;&#x935; &#x938;&#x902;&#x91A;&#x93E;&#x930; &#x915;&#x947; &#x935;&#x93F;&#x935;&#x93F;&#x927; &#x92A;&#x939;&#x932;&#x941;&#x913;&#x902; &#x915;&#x94B; &#x92D;&#x940; &#x938;&#x92E;&#x91D;&#x924;&#x947; &#x939;&#x948;&#x902;&#x964; &#x924;&#x94B; &#x91A;&#x932;&#x93F;&#x90F;, &#x90F;&#x915;-&#x90F;&#x915; &#x92E;&#x941;&#x939;&#x93E;&#x935;&#x930;&#x947; &#x915;&#x947; &#x938;&#x93E;&#x925; &#x905;&#x92A;&#x928;&#x940; &#x92D;&#x93E;&#x937;&#x93E;&#x908; &#x92F;&#x93E;&#x924;&#x94D;&#x930;&#x93E; &#x91C;&#x93E;&#x930;&#x940; &#x930;&#x916;&#x947;&#x902;&#x964; &#x905;&#x917;&#x932;&#x940; &#x92C;&#x93E;&#x930; &#x924;&#x915;, &#x936;&#x941;&#x92D; &#x905;&#x927;&#x94D;&#x92F;&#x92F;&#x928;!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n←Previous:  Go Over मुहावरा &#8211; अर्थ और वाक्यों में उदाहरण सहित उपयोग\n\nNext:  Go Over to the Majority मुहावरा &#8211; अर्थ और वाक्यों में उदाहरण उपयोग→\n\n\n\n\n\n\n\n\n\n\n\nनवीनतम पाठ\n\n\nType 2 conditional (दूसरा conditional) का सरल मार्गदर्शन\nSecond conditional sentences: क्या है, नियम और आसान उदाहरण\nConditional Sentences Type 2: नियम, उपयोग और उदाहरण\nzero conditional sentences: सरल नियम और रोज़मर्रा उपयोग\nType 1 conditional sentences सीखें: उपयोग, नियम और उदाहरण\n\n\n\n\n\n\n\n\n\n\n\n\n\nअंग्रेज़ी स्तर परीक्षण\n\n\n\n\n\n\n\nTOEIC TestTOEFL TestA2 TestB1, B2, C1 TestPET B1 Test\n\n\n\n\n\n\n\n\nSearch the website\n\n\nSearchSearch\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nअंग्रेज़ी पाठ\n\n\n\n\n\n\n\n\n\n\n\n\n\nAbout\n\n\n\nContact usTerms of use\n\n\n\n\n\nPrivacy\n\n\n\nPrivacy PolicyCopyright notice\n\n\n\n\n\nSocial\n\n\n\nFacebookTwitter/X\n\n\n\n\n\n\n\n\nCopyright EnglishTestStore. All rights reserved.",
+      "title": "https://englishteststore.net/lesson/hi/english-idioms/go-over-someones-head-idiom-meaning-and-example-usage-in-sentences/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528581360,
+        "end": 1789528582443
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528582444,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a837292b001kpSU6D8NYh4lZ1",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372433001OFIFce1WHlSHAf",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 24527,
+      "output": 310,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 24837,
+      "headroom": 14019,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.444Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.446Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.446Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.446Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.446Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.446Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.446Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.448Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 24837,
+  "providerTokens": 24837,
+  "estimatedInputTokens": 10975,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 24527,
+    "cacheRead": 0,
+    "output": 310
+  },
+  "overflow": false,
+  "headroom": 14019,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.449Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.449Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.450Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.451Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528582730,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8372a49001xZ7J5x9N8LQVmu",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372931001BfpdarsZcX9dSh",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528582730,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8372a4a002hyNoOZZ121jVVb",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372931001BfpdarsZcX9dSh",
+    "type": "tool",
+    "callID": "call_50b31b424581350d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528582730,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8372a4a001NGyoToswPQ8deW",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372931001BfpdarsZcX9dSh",
+    "type": "text",
+    "text": "मैं https://englishkilearning.in/special-english-sentence/ खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528582730,
+      "end": 1789528582730
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:22.730Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528582730,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8372a4a002hyNoOZZ121jVVb",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372931001BfpdarsZcX9dSh",
+    "type": "tool",
+    "callID": "call_50b31b424581350d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://englishkilearning.in/special-english-sentence/"
+      },
+      "time": {
+        "start": 1789528582730
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.859Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528583859,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8372a4a002hyNoOZZ121jVVb",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372931001BfpdarsZcX9dSh",
+    "type": "tool",
+    "callID": "call_50b31b424581350d",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://englishkilearning.in/special-english-sentence/"
+      },
+      "output": "2 Special English Sentence | English for beginners | engishkilearning.in\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n\r\n\n\n\n\r\n\t\r\n\t\r\n\t\r\n\r\n\t\r\n\t\t\t\r\n\t\t\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tengishkilearning.in\t\t\t\t\r\n\t\t\t\t\t\t\t\t\tLearn English\r\n\t\t\t\t\t\t\t\r\n\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\t\t\r\n\t\t\t\t\t\r\n\t\r\n\t\r\n\t\t\t\r\n\t\t\r\n\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\r\n\t\t\tHome\n500 Advance English Structures\n1000+ Daily Use Sentences\nBasic Grammar\n\n\tArticles A/An/The\n\tSentence | Types of Sentence\n\t\n\t\tNoun\n\t\tPreposition\n\t\tPronoun\n\t\n\n\n\nBiography\nIdioms\nTense (टेंस)\n\n\tPresent Tense |प्रेजेंट टेंस |\n\t\n\t\tPresent Indefinite Tense (प्रेजेंट इंडेफिनिट टेंस)\n\t\tPresent Continuous Tense | प्रेजेंट कंटीन्यूअस टेंस |\n\t\tPresent Perfect Tense (प्रेजेंट परफेक्ट टेंस)\n\t\tPresent Perfect Continuous Tense (प्रेजेंट परफेक्ट कंटीन्यूअस टेंस)\n\t\n\n\tPast Tense पास्ट टेंस\n\t\n\t\tPast Indefinite Tense | पास्ट इंडेफिनिट टेंस | 2021\n\t\tPast Continuous Tense |2021\n\t\tPast Perfect Tense | पास्ट परफेक्ट टेंस |\n\t\tPast Perfect Continuous Tense | 2021\n\t\n\n\tफ्यूचर टेंस Future Tense\n\t\n\t\tFuture Indefinite Tense (फ्यूचर इंडेफिनिट टेंस)\n\t\tFuture Continuous Tense |फ्यूचर कंटीन्यूअस टेंस |\n\t\tFuture Perfect Continuous Tense |फ्यूचर परफेक्ट कंटीन्यूअस टेंस\n\t\tFuture Perfect Tense | फ्यूचर परफेक्ट टेंस | 2021\n\t\n\n\n\nAbout us\n1000+ Word Meaning with Sentence\n\r\n\t\t\t\t\t\r\n\t\r\n\t\r\n\r\n\r\n\r\n\r\n\t\r\n\t\r\n\t\r\n\t\r\n\t\t\t\t\t\r\n\r\n\r\n\r\n\r\n\t\t2 Special English Sentence | English for beginners\r\n\t\r\n\r\n\r\n\t\r\n\t\t\t\r\n\t\t\t\t\t\tEnglishki\r\n\t\t\r\n\t\r\n\t\t\t\r\n\t\t\t15/07/2022\r\n\t\t\r\n\t\r\n\t\t\t\r\n\t\t\tUncategorized\t\t\r\n\t\r\n\t\t\t\r\n\t\t\tComments\r\n\t\t\r\n\t\r\n\t\r\n\t\r\n\r\n\r\n\t\r\n\t\r\n\t\nSpecial English Sentence | English speaking course | Advanced English Sentence | How to speak English | angrezi kaise bole | jaisa ki hum sochte  hain | Advance Structure  \n\n\n\nतुम्हारी बात मेरे सिर के ऊपर से जाती है।मैं उसके बारे में सोच सोच कर थक गया हूँ।\n\n\n\n हम अपने रोज की बोलचाल में अक्सर इस तरह इस तरह के वाक्यों का प्रयोग करते हैं। और उस समय भ्रम हो जाता है ये स्पेशल वाक्य कैसे बोलें। क्योंकि&nbsp;टेंस&nbsp;इत्यादि अच्छे से समझने के बाद भी बहुत सारे ऐसे वाक्य होते हैं जो समझ नहीं आते कि कैसे बोलें। तो दोस्तों मैं आपको ये स्ट्रक्चर इस तरह से समझाऊंगा कि आप कभी भी बिना घबराये इन वाक्यों को आसानी से बोल पाएंगे और दोस्तों के बीच अच्छा प्रभाव जमा पाएंगे तो आर्टिकल अंत तक पढ़ें और साथ ही अभ्यास भी करें | ये अंग्रेजी सीखने का काफी आसान तरीका है | \n\n\n\nआइये देखते हैं पहले वाक्य का स्ट्रक्चर:  \n\n\n\n     तुम्हारी बात मेरे सर के ऊपर से जाती है। \n\n\n\n\n\n\n\n Sub. + HV + go over + one&#8217;s head + other wordsFormula for sentence\n\n\n\nअगर tense बदलता है आप &#8220;go&#8221; की फॉर्म बदल सकते हैं\n\n\n\nExample (Special English Sentence)\n\n\n\nसब कुछ मेरे सिर के ऊपर से चला गया|\n\n\n\nEverything went over my head.\n\n\n\nअंग्रेजी मेरे सिर के ऊपर से जाती है।\n\n\n\nEnglish goes over my head.\n\n\n\nउसने जो कुछ भी कहा वह मेरे सिर के ऊपर से चला गया । \n\n\n\nWhatever he said wen over my head.\n\n\n\nहिंदी के अलावा दूसरी भाषा हमारे सिर के ऊपर से चली जाती है।\n\n\n\nOther languages except hindi go over our heads.\n\n\n\nExercise (Advance English Structure)\n\n\n\nमेरी बात उसके सिर के ऊपर से चली गयी ।उसकी बात तुम्हारे सिर के ऊपर से चली जाती है ।\n\n\n\n   आशा करता हूँ कि आपको पहला स्ट्रक्चर | Advanced Structure in English | अच्छे से समझ आ गया होगा। दूसरा स्ट्रक्चर भी महत्वपूर्ण है और रोज कि बोलचाल में बहुत प्रयोग होता है। आइये देखते है दूसरा स्ट्रक्चर ।    \n\n\n\n\n\n\n\n        मैं उसके बारे में सोच सोच कर थक गया हूँ ।\n\n\n\nSub + HV + tired of + verb + ing + other words Formula for Structure\n\n\n\nHV आपको सब्जेक्ट के हिसाब लगानी है\n\n\n\nExample (Advance English Structure)\n\n\n\nमैं उसके बारे में सोच सोच कर थक गया हूँ।\n\n\n\nI am tired of thinking about her.\n\n\n\nमैं रोज़ एक जैसा हाना खा खा कर थक गया हूँ ।\n\n\n\nI am tired of having the same food everyday.\n\n\n\nमैं से समझा समझा कर थक गया हूँ ।\n\n\n\nI am tired of explaining to her.\n\n\n\nमैं तुमसे पूछ पूछ कर थक गया हूँ ।\n\n\n\nI am tired of asking him.\n\n\n\n\n\n\n\nExercise\n\n\n\nमैं पानी पीते पीते थक गया हूँ ।मैं नौकरी ढूंढ ढूंढ कर थक गया हूँ ।\n\n\n\n\n\n\n\nआशा करता हूँ की आपको ये स्ट्रक्चर (Advanced English Structure) अच्छे से समझ आ गए होंगे। और जरूरत पढ़ने पर इसे सही से प्रयोग कर पाएंगे बिना किसी हिचकिचाहट के। ज्यादा से ज्यादा प्रैक्टिस करें । आपको हमारा ये आर्टिकल कैसा लगा कमेंट करके जरूर बताएं और आप वाक्य की अंग्रेज़ी बना के भी कमेंट में लिख सकते हैं। \n\n\n\nऔर इंग्लिश एडवांस इंग्लिश स्ट्रक्चर:\n\n\n\nदोनों में से किसी को अंदाज़ा नहीं था कि उसके दिमाग में क्या चल रहा है। \n\n\n\nज़ाहिर तौर पर,&nbsp;अगर मुझे नौकरी नहीं मिलेगी&nbsp;तो निराशा होगी।&nbsp;&nbsp;\n\n\n\nमैं हैरान हूँ&nbsp;चींटी अपने वजन से अधिक कैसे उठा सकती है।\n\n\n\nप्रैक्टिस करने के लिए हमारे यूट्यूब चैनल को सब्सक्राइब करें।\n\n\n\nhttps://youtube.com/c/EnglishLearningk\n\r\n\t\r\n\t\r\n\t\r\n\t\r\n\r\n\r\n\t\r\n\t\t\t\r\n\t\t\tUpdated: 19/07/2022 &mdash; 1:38 AM\t\t\r\n\t\r\n\t\t\t\r\n\t\r\n\t\r\n\r\n\r\n\r\n\r\n\r\n\t\r\n\t\t&#8592; Previous PostNext Post &#8594;\t\r\n\r\n\t\t\t\r\n\r\n\t\r\n\t\t\n\t\tLeave a Reply Cancel replyYour email address will not be published. Required fields are marked *Comment * Name * \nEmail * \nWebsite \n Save my name, email, and website in this browser for the next time I comment.\n \n\n&#916;\r\n\t\t\r\n\r\n\t\t\t\t\tThe Search Box\n\t\t\t\t\n\t\t\t\t\tSearch for:\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\tRecent Posts\n\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t100 English Sentences for Students\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t50 English Riddles with Answers: Easy, Funny &amp; Tricky Riddles\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t100 Daily Use English Sentences for Beginners\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t50 Articles (A, An, The) MCQ Questions with Answers\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\tHow to Propose a Girl in English: 100 Romantic Sentences (With Hindi Meaning)\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\tRecent CommentsShawej siddiqui on 500 Advance English StructuresSk king on 1000+ Verb Forms with Hindi Meaning for 2025 | Popular Daily Use Verb formsyoutube video download -- mp3 y2mate on Harnaaz Sandhu MIss Universe 2021 | Biography of Harnaaz Sandhu100 Daily English Sentences to Impress a Girl | engishkilearning.in on 100 Popular Idioms / English to HindiTRY TO on Frugal in a Sentence | Frugal MeaningMeta\n\t\t\n\t\t\t\t\t\tLog in\n\t\t\tEntries feed\n\t\t\tComments feed\n\n\t\t\tWordPress.org\n\t\t\n\n\t\t\t\t\r\n\t\r\n\t\r\n\r\n\r\n\r\n\t\r\n\t\t\tengishkilearning.in &copy; 2022",
+      "title": "https://englishkilearning.in/special-english-sentence/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528582730,
+        "end": 1789528583858
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.860Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528583860,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a8372eb3001gc8miB5gHO48vV",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372931001BfpdarsZcX9dSh",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 38841,
+      "output": 176,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 39017,
+      "headroom": -161,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.860Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.860Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.861Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.861Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.863Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.863Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.863Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.864Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.864Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.864Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.870Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 39017,
+  "providerTokens": 39017,
+  "estimatedInputTokens": 12625,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 38841,
+    "cacheRead": 0,
+    "output": 176
+  },
+  "overflow": true,
+  "headroom": -161,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.871Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.871Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.871Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.873Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.873Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.873Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.874Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.874Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:23.875Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.371Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528584371,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83730b3001EzJzKTjchgw2ru",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372ec1001685z1F9ersSch6",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528584372,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83730b4001O1r1YKyuPrd0bz",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372ec1001685z1F9ersSch6",
+    "type": "text",
+    "text": "Conversation summary: यह मेरे सिर के ऊपर से चला गया।  मैं इंटरनेट पर यह मेरे सिर के ऊपर से चला गया। खोजता हूँ।\n\nTitle: What did we do so\n\nUser turns:\n  1. यह मेरे सिर के ऊपर से चला गया।\n  2.",
+    "time": {
+      "start": 1789528584372,
+      "end": 1789528584372
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528584372,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83730b4002KDwJ3KMODE1x7M",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a8372ec1001685z1F9ersSch6",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 37079,
+      "output": 190,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 37269,
+      "headroom": 1587,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528584374,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83730b6002xHsWZEOTAmHzH5",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a83730b6001wCn4rqtoGQ6yl2",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528584374,
+      "end": 1789528584374
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.374Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.375Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.375Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.375Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.375Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.376Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.377Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.377Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.377Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.377Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.377Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528584441,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83730f90016Nf47gLba4O56B",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a83730b7001xbXSuxVPdF9rgW",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528584442,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83730fa002kneoz4tAb2GnRv",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a83730b7001xbXSuxVPdF9rgW",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528584442,
+      "end": 1789528584442
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528584442,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "part": {
+    "id": "prt_0a83730fa003GzyJrcjIhUuv93",
+    "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+    "messageID": "msg_0a83730b7001xbXSuxVPdF9rgW",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8739,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8812,
+      "headroom": 30044,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.443Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.443Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.444Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.444Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.444Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528584444,
+  "sessionID": "ses_f57c8ee6effeCSqAzw9hfP6Tv8"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.445Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.445Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.445Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.445Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8R9qBKKVG8",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:24.445Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

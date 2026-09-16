@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.129Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.129Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Busca en la web qué es la notación de enlaces --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.129Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.130Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.138Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Busca en la web qué es la notación de enlaces",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Busca en la web qué es la notación de enlaces",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.139Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.139Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.140Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.140Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.143Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.143Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.146Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 1056,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.146Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.159Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.163Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 24,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.164Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:14:36.164Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.167Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.167Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.168Z",
+  "service": "session",
+  "id": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi",
+  "title": "New session - 2026-09-16T03:14:36.168Z",
+  "time": {
+    "created": 1789528476168,
+    "updated": 1789528476168
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.169Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.169Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.169Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57ca75f7ffeua1yI76hsW9EV4/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.169Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57ca75f7ffeua1yI76hsW9EV4/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.171Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57ca75f7ffeua1yI76hsW9EV4/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.175Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.176Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.176Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.176Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.177Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.177Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.177Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.177Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.177Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.177Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.312Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.316Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.322Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.328Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.332Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.332Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.771Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528476771,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a8358c60001ZQDzx9gDUeD4GD",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8358a9b001b1dc5eKBIQqX65",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.772Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.772Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528476772,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a8358c64001t2u4zfsmlkwSbv",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8358a9b001b1dc5eKBIQqX65",
+    "type": "tool",
+    "callID": "call_2ab66ffae41bf491",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.772Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528476772,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a8358c630015ElTb5FY9ghxYv",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8358a9b001b1dc5eKBIQqX65",
+    "type": "text",
+    "text": "Let me search the web for Busca en la web qué es la notación de enlaces.",
+    "time": {
+      "start": 1789528476772,
+      "end": 1789528476772
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:36.773Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528476773,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a8358c64001t2u4zfsmlkwSbv",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8358a9b001b1dc5eKBIQqX65",
+    "type": "tool",
+    "callID": "call_2ab66ffae41bf491",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Busca en la web qué es la notación de enlaces"
+      },
+      "time": {
+        "start": 1789528476772
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.047Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528481047,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a8358c64001t2u4zfsmlkwSbv",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8358a9b001b1dc5eKBIQqX65",
+    "type": "tool",
+    "callID": "call_2ab66ffae41bf491",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Busca en la web qué es la notación de enlaces"
+      },
+      "output": "Title: ¿Qué son los hipervínculos? - Aprende desarrollo web | MDN\nURL: https://developer.mozilla.org/es/docs/Learn_web_development/Howto/Web_mechanics/What_are_hyperlinks\nPublished: N/A\nAuthor: N/A\nHighlights:\nLos hipervínculos, generalmente llamados enlaces, son un concepto fundamental detrás de la Web. Para explicar qué son los enlaces, debemos retroceder a los conceptos básicos de la arquitectura web.\n...\nAntes de la Web, era bastante difícil acceder a los documentos y pasar de uno a otro. Al ser legibles por humanos, las URL ya facilitaron las cosas, pero es difícil escribir una URL larga cada vez que desee acceder a un documento. Aquí es donde los hipervínculos revolucionaron todo. Los enlaces pueden correlacionar cualquier cadena de texto con una URL, de modo que el usuario pueda alcanzar instantáneamente el documento de destino activando el enlace.\n...\nLos enlaces se destacan del texto circundante al estar subrayados y en texto azul. Toque o haga clic en un enlace para activarlo, o si usa un teclado, presione Tab hasta que el enlace esté enfocado y presione Entrar o la barra espaciadora.\n...\nComo dijimos, un enlace es una cadena de texto vinculada a una URL, y usamos enlaces para permitir saltar fácilmente de un documento a otro. Dicho esto, hay algunos matices que vale la pena considerar:\n...\n: Un enlace entre dos páginas web, donde ambas páginas pertenecen al mismo sitio web, se denomina enlace interno. Sin enlaces internos, no existe un sitio web (a menos, por supuesto, que sea un sitio web de una página).\n...\nweb de otra\n...\nenlaces externos, no hay Web,\n...\nuna red de\n...\nUtilice enlaces externos para proporcionar\n...\ndisponible a través\n...\n: Un enlace desde la página web de otra persona a su sitio. Es lo contrario de un enlace externo. Tenga en cuenta que no tiene que volver a vincular cuando alguien vincula a su sitio.\n...\nLa mayoría de los enlaces vinculan dos páginas web. Las anclas unen dos secciones de un documento. Cuando sigue un enlace que apunta a un ancla, su navegador salta a otra parte del documento actual en lugar de cargar un nuevo documento. Sin embargo, crea y utiliza anclajes de la misma manera que otros enlaces.\n...\nLos enlaces son importantes tanto para los usuarios como para los motores de búsqueda. Cada vez que los motores de búsqueda rastrean una página web, indexan el sitio web siguiendo los enlaces disponibles en la página web. Los motores de búsqueda no solo siguen enlaces para descubrir las distintas páginas del sitio web, sino que también usan el texto visible del enlace para determinar qué consultas de búsqueda son apropiadas para llegar a la página web de destino.\n...\n- El texto visible de un enlace influye en qué consultas de búsqueda encontrarán una URL determinada.\n- Cuantos más enlaces entrantes pueda presumir una página web, más alto se ubica en los resultados de búsqueda.\n- Los enlaces externos influyen en el ranking de búsqueda de las páginas web de origen y destino, pero no está claro cuánto.\n\n---\n\nTitle: Hiperenlace\nURL: https://es.wikipedia.org/wiki/Hiperv%C3%ADnculo\nPublished: N/A\nAuthor: N/A\nHighlights:\nEn informática, un hipervínculo o hiperenlace (del inglés: hyperlink), también conocido simplemente como enlace o vínculo (link), es una referencia unidireccional en un documento electrónico que entrelaza diferentes documentos o secciones entre sí. Los usuarios tienen la oportunidad de seguir estos enlaces con tan solo un clic en el texto ancla(texto enlazado) para navegar a los documentos o las secciones correspondientes. Se dice que un usuario que sigue los hiperenlaces navega o recorre el hipertexto (texto con hiperenlaces). Un sistema de software utilizado para ver y crear hipertexto es un sistema de hipertexto, y crear un hiperenlace es hacer un hiperenlace (o simplemente enlazar).\n...\nEl documento que contiene un hiperenlace se conoce como su documento fuente. Por ejemplo, en una obra de referencia en línea como Wikipedia o Bing. Muchas palabras y términos del texto están enlazados a las definiciones de esos términos. Los hiperenlaces se utilizan a menudo para implementar mecanismos de referencia como tablas de contenido, notas a pie de página, bibliografías, índices, cartas y glosarios.\n...\nUn navegador web normalmente muestra un hiperenlace de alguna forma distintiva, por ejemplo, en un color, letra o estilo diferente. El comportamiento y estilo de los enlaces se puede especificar utilizando lenguaje CSS.\n...\nEl puntero del ratón también puede cambiar a forma de mano para indicar el enlace. En muchos navegadores, los enlaces se muestran en texto azul subrayado cuando no han sido visitados, y en texto púrpura subrayado cuando han sido visitados. Cuando el usuario activa el enlace (por ejemplo, pinchando sobre él con el ratón) el navegador mostrará el destino del enlace. Si el destino no es un archivo HTML, dependiendo del tipo de archivo y del navegador y sus plugins, se puede activar otro programa para abrir el archivo.\n...\nEl código HTML contiene todas las características principales de un enlace\n...\n- link target (URL) (destino) o (ubicación)\n- link label (etiqueta)\n- link title (título)\n- link class or link id (clase)\n...\nCuando el puntero se sitúa sobre un enlace, dependiendo del navegador, se muestra un texto informativo acerca del enlace:\n...\n- Un texto emergente, que desaparece cuando el puntero se vuelve mover (a veces desaparece igualmente pasados unos segundos). Internet Explorer y Mozilla Firefox muestran el título, Opera muestra también el URL.\n- Además, el URL puede ser mostrado en la barra de estado.\n...\nEl término «enlace» a menudo se utiliza para el ancla origen, mientras que al ancla destino se denomina enlace de destino (link target). El enlace de destino más común es un URL, utilizado en la World Wide Web. Puede invocar a un documento, por ejemplo, una página web, a otro recurso, o a una posición determinada en una página web. Este último se consigue asignando a un elemento HTML el atributo \"name\" o \"id\" en esa posición del documento HTML. El URL de la posición es el URL de la página con \"atributo name\" añadido.\n...\n- Hipervínculo de texto: Este hipervínculo de texto es un enlace que se encuentra asociado a un texto, de forma que al hacer clic sobre ese texto se carga la página donde indique el hipervínculo.\n...\nvínculo local o interno: Un hipervínculo local o interno es un vínculo\n...\npágina que se encuentra en el mismo sitio\n...\n(sitio local).\n...\n- Hipervínculo externo: Un hipervínculo externo es un vínculo a otro sitio web en Internet (sitio externo). Es un vínculo a cualquier otro lugar fuera del sitio actual.\n...\n- Hipervínculo a\n...\ncorreo electrónico:\n...\nvínculo a una dirección de correo electrónico es un vínculo que contiene una dirección de correo. Al pulsar en él, automáticamente se abre el programa de correo que tenga el\n...\ninstalado para poder escribir a esa dirección\n...\nde teléfono: Un\n...\na un número de teléfono permite que apare\n...\nel cuadro de diálogo para iniciar una llamada. Especialmente útil cuando se visualiza la página desde un dispositivo móvil.\n\n---\n\nTitle: Notación de Lewis (artículo)\nURL: https://es.khanacademy.org/science/3-secundaria-cyt/x2972e7ae3b16ef5b:enlaces-y-reacciones-quimicas/x2972e7ae3b16ef5b:simbolos-de-lewis/a/notacin-de-lewis\nPublished: N/A\nAuthor: N/A\nHighlights:\nKhan Academy\n\n---\n\nTitle: El texto central de HTML - Enlaces HTML: ¡construimos una web!\nURL: https://mosaic.uoc.edu/ac/le/es/m4/ud4/index.html\nPublished: N/A\nAuthor: Universitat Oberta de Catalunya\nHighlights:\nEn este apartado encontraréis información sobre uno de los inventos más revolucionarios de toda la historia de Internet: los enlaces. Los enlaces permiten que el lector de un documento los siga para ir hacia otro documento y pueda pasar de un servidor a otro sin necesidad de desconectarse y volver a conectarse cada vez. Desde que se inventaron han pasado muchas cosas, pero hay una que no ha cambiado nada: los enlaces son una parte muy importante de la experiencia en Internet, y según cómo los utilicéis podéis poner las cosas fáciles o difíciles a las personas que visiten vuestra web.\n...\n## 18.1. ¿Qué son los enlaces?\n...\nLos enlaces son partes de un sitio web (normalmente creado con HTML, pero no siempre) que apuntan hacia otros recursos, como por ejemplo otros documentos HTML, archivos de texto, PDF, etc. Hay enlaces que el navegador debe seguir automáticamente y que se crean con elementos `link` (ya habéis encontrado algunos en apartados anteriores, que se utilizaban para importar archivos CSS a un documento HTML) y también hay enlaces que el usuario puede activar opcionalmente. Éstos se conocen como anclas y podéis añadirlos al documento con el elemento `a`. \n\n## 18.2. La anatomía de un enlace ancla\n...\nPodéis convertir cualquier elemento insertado en el documento en un enlace ancla añadiendo un elemento `a` delante y detrás.\n...\nEl ancla tiene varios atributos que podéis añadir: \n\n- `href`: el recurso hacia el que apunta (ya sea un archivo externo o un ID de ancla).\n- `id`: el ID de ancla si el ancla es un destino y no un enlace.\n- `title`: información adicional sobre el recurso externo.\n...\nUn elemento `a` puede tener varias funciones según los atributos que defináis. El atributo más habitual que utilizaréis es `href`, que define el recurso al que apunta el enlace. Este atributo puede contener diferentes valores:\n...\nCualquiera de estos valores lo convertirá en un enlace, ya que apuntará hacia otro lugar. Por otra parte, un atributo `id` lo convertirá en un ancla dentro de la página; algo a lo que apunta otro enlace. Esto puede ser un poco confuso, ya que ambos utilizan el elemento de ancla (`a`). Para poder recordarlo más fácilmente, podéis verlo de la manera siguiente: un atributo `id` convierte un enlace en un ancla y lo podéis utilizar para enlazar con secciones específicas del documento.\n...\nVeréis que si activáis cualquiera de los enlaces\n...\nla primera lista, pasaréis a la sección correspondiente del documento. Esto es así porque\n...\nel mismo identificador de fragmento; el primer enlace de la lista, por ejemplo, tiene un atributo `href` de `#sec1`, que coincide con el valor ID del enlace que hay en el interior del primer elemento `h2` del contenido. Esto es todo lo que necesitáis para conectar dos elementos de ancla en un documento; utilizad el mismo valor precedido por una almohadilla si lo enlazáis en un atributo `href`. También puede que os\n...\náis dado cuenta de que\n...\nURL de la barra de ubicación\n...\nnavegador ha cambiado y que ahora muestra\n...\nde segmento al final, lo cual significa que los visitantes\n...\ndirecciones de interés o enviar el\n...\npor correo electrónico a otras personas para indicarles exactamente dónde deben ir.\n...\nLo más importante que deb\n...\nrecordar sobre los enlaces es que son una parte básica para\n...\npersonas que os\n...\nen. Estas personas se fían de que cuando les ofrezc\n...\nenlace podrán seguirlo y acceder a información de\n...\npertinente. Si\n...\nno funcionan porque el\n...\nal que apuntan no está disponible o se\n...\nleer, hab\n...\nYa hemos hablado un poco de ellos en\n...\nsubapartado sobre los enlaces hacia recursos no HTML, pero\n...\nes bueno recordar que los enlaces no sólo son parte\n...\ntexto de la página, sino\n...\nse comete\n...\nel de los\n...\n\"haced\n...\nse describen, por\n...\ncomo \"Para descargar\n...\n, \"Podéis descargar\n\n---\n\nTitle: Enlaces\nURL: http://www.hipertexto.info/documentos/enlaces.htm\nPublished: N/A\nAuthor: María Jesús Lamarca Lapuente\nHighlights:\nLos enlaces, links o vínculos, son los elementos más característicos de un hipertexto ya que a ellos se debe la posibilidad de de conectar la información. El World Web Consortium en Hypertext Terms, define un enlace como:\n...\n\"Una relación entre dos anclas (anchors), guardadas en la misma o diferente base de datos\".\n...\nLos enlaces interconectan nodos o bloques de información de todo tipo y morfologías(texto, imágenes, audio, vídeo, etc.) y cada enlace puede conducir a un documento, parte de él, a un índice, al resultado de una búsqueda indexada, etc. Los enlaces son los que permiten una estructura no secuencial o multisecuencial del hipertexto al ofrecer la posibilidad de ir de un nodo a otro. Así, es posible saltar de un nodo A a un nodo C sin pasar por el nodo B, al contrario de lo que ocurre en una estructura secuencial que, inevitablemente, obliga a pasar del nodo A al nodo B y del nodo B al C.\n...\nAl activar un enlace se puede dar lugar a una gran variedad de resultados, como son: trasladarse a un nuevo tema; mostrar una referencia, una definición o una anotación; presentar un esquema o una ilustración; ver un índice o una tabla de datos; activar un sonido o un vídeo, etc.\n...\nUn enlace no es más que el vínculo que se establece entre distintos segmentos de información contenidos en los nodos. Hay distintos tipos de enlaces y se clasifican de muy distintos modos.\n...\n- Enlaces de expansión (nos presentan, a modo de sumario, un resumen que se va a ir expandiendo de forma progresiva según vayamos activando enlaces por medio de los sucesivos iconos o botones)\n- Enlaces de referencia (enlazan nodos y llevan a otra página o a otra sección de la misma página)\n- Enlaces de nota informativa (permiten la apertura de una ventana que nos proporciona información en un momento determinado y que se cierra cuando ha cumplido su propósito)\n- Enlaces de comando (permiten la ejecución de una rutina informática externa al sistema del hipertexto, suelen activar un programa)\n- Enlaces de trayectoria: establecen recorridos por el sitio\n- Enlaces de mapeado: establecen mapas del sitio\n...\nque contienen enlaces a\n\n---\n\nTitle: Enlace (notación) - Foro de Wikipedia\nURL: https://es.forums.wiki/viewtopic.php?t=24218\nPublished: 2025-11-07T10:10:25.000Z\nAuthor: Post \n\t\t\t\t\t\t\t\t by  Anonymous  »  Fri Nov 07, 2025 10:10 am\nHighlights:\nEnlace (notación) - Foro de Wikipedia\n...\n## Enlace (notación) ⇐ Proyectos de artículos \n\nEnlace (notación)\n\n Post by Anonymous » Fri Nov 07, 2025 10:10 am\n...\n#### '''Vinculum''' (en latín \"banda\" o \"grillete\") en notación matemática se refiere a una barra transversal encima o debajo de un término. En\n...\nperíodo moderno temprano, se usaba un \"vinculum\" para indicar la clasificación del operador, es decir: se escribía, por ejemplo, \\overline{2+5} \\cdot 3 o\n...\nunderline{2+5} \\cdot 3, en la notación actual (2+5) \\cdot 3, para\n...\nque la suma\n...\nse debe realizar 2+5. La notación fue introdu\n...\n''r''. En números romanos, se utilizaban ''vincula'' para marcar una multiplicación por 1000.\n...\nNotas == Categoría\n\n---\n\nTitle: Hiperenlace\nURL: https://es.wikipedia.org/wiki/hyperlink\nPublished: N/A\nAuthor: N/A\nHighlights:\nEn informática, un hipervínculo o hiperenlace (del inglés: hyperlink), también conocido simplemente como enlace o vínculo (link), es una referencia unidireccional en un documento electrónico que entrelaza diferentes documentos o secciones entre sí. Los usuarios tienen la oportunidad de seguir estos enlaces con tan solo un clic en el texto ancla(texto enlazado) para navegar a los documentos o las secciones correspondientes. Se dice que un usuario que sigue los hiperenlaces navega o recorre el hipertexto (texto con hiperenlaces). Un sistema de software utilizado para ver y crear hipertexto es un sistema de hipertexto, y crear un hiperenlace es hacer un hiperenlace (o simplemente enlazar).\n...\nEl documento que contiene un hiperenlace se conoce como su documento fuente. Por ejemplo, en una obra de referencia en línea como Wikipedia o Bing. Muchas palabras y términos del texto están enlazados a las definiciones de esos términos. Los hiperenlaces se utilizan a menudo para implementar mecanismos de referencia como tablas de contenido, notas a pie de página, bibliografías, índices, cartas y glosarios.\n...\nUn navegador web normalmente muestra un hiperenlace de alguna forma distintiva, por ejemplo, en un color, letra o estilo diferente. El comportamiento y estilo de los enlaces se puede especificar utilizando lenguaje CSS.\n...\nEl puntero del ratón también puede cambiar a forma de mano para indicar el enlace. En muchos navegadores, los enlaces se muestran en texto azul subrayado cuando no han sido visitados, y en texto púrpura subrayado cuando han sido visitados. Cuando el usuario activa el enlace (por ejemplo, pinchando sobre él con el ratón) el navegador mostrará el destino del enlace. Si el destino no es un archivo HTML, dependiendo del tipo de archivo y del navegador y sus plugins, se puede activar otro programa para abrir el archivo.\n...\nEl código HTML contiene todas las características principales de un enlace\n...\n- link target (URL) (destino) o (ubicación)\n- link label (etiqueta)\n- link title (título)\n- link class or link id (clase)\n...\nCuando el puntero se sitúa sobre un enlace, dependiendo del navegador, se muestra un texto informativo acerca del enlace:\n...\n- Un texto emergente, que desaparece cuando el puntero se vuelve mover (a veces desaparece igualmente pasados unos segundos). Internet Explorer y Mozilla Firefox muestran el título, Opera muestra también el URL.\n- Además, el URL puede ser mostrado en la barra de estado.\n...\nEl término «enlace» a menudo se utiliza para el ancla origen, mientras que al ancla destino se denomina enlace de destino (link target). El enlace de destino más común es un URL, utilizado en la World Wide Web. Puede invocar a un documento, por ejemplo, una página web, a otro recurso, o a una posición determinada en una página web. Este último se consigue asignando a un elemento HTML el atributo \"name\" o \"id\" en esa posición del documento HTML. El URL de la posición es el URL de la página con \"atributo name\" añadido.\n...\n- Hipervínculo de texto: Este hipervínculo de texto es un enlace que se encuentra asociado a un texto, de forma que al hacer clic sobre ese texto se carga la página donde indique el hipervínculo.\n...\nínculo local\n...\nvínculo\n...\n- Hipervínculo externo: Un hipervínculo externo es un vínculo a otro sitio web en Internet (sitio externo). Es un vínculo a cualquier otro lugar fuera del sitio actual.\n...\nvínculo a\n...\n: Un hipervín\n...\na una dirección de correo electrónico es un vínculo que contiene una dirección de correo\n...\nAl pulsar en él, automáticamente se abre el programa de correo que tenga el\n...\ninstalado para poder escribir a esa dirección de\n...\nteléfono permite que apare\n...\ndiálogo para iniciar una llamada. Especialmente útil cuando se visualiza la página desde un dispositivo móvil.\n\n---\n\nTitle: Enlace profundo\nURL: https://es.wikipedia.org/wiki/Deep_linking\nPublished: N/A\nAuthor: N/A\nHighlights:\nEnlazar en profundidad (en inglés, deep linking) consiste en hacer un hiperenlace que lleva un contenido específico sin tener que pasar por la entrada principal. Los enlaces de ese tipo se denominan enlaces profundos (deep links).\n...\nCuando hacemos enlaces profundos en la web lo que hacemos es enlazar a un contenido que no es el de la página de inicio del sitio web. Cuando el usuario le hace clic se le dirige directamente al contenido que quiere ver, y no tiene que navegar dentro de la web para acceder a él.\n...\nDesde el punto de vista tecnológico no hay ninguna distinción dentro de los enlaces web entre lo enlaces profundos y el resto. La posibilidad del llamado \"deep\" linking está presente en la tecnología Web del HTTP y del URL por defecto. Aunque un sitio puede intentar restringir tales enlaces, hacerlo requiere un esfuerzo extra. De acuerdo con el Technical Architecture Group del World Wide Web Consortium, \"cualquier tentativa de prohibir la práctica del deep linking se basa en un malentendido sobre la tecnología, y amenaza con minar el funcionamiento de la Web como conjunto\". Una forma de prevenir el deep linking es configurar el servidor web para comprobar la URL correspondiente usando un Rewrite engine.\n...\nLos enlaces profundos en apps (en inglés app deep links) son enlaces que llevan al usuario a un lugar específico de una app. Esos enlaces no sólo abren la app, sino que llevan al usuario a un lugar concreto de la misma.\n...\nLa existencia de enlaces profundos a apps ha producido la necesidad de crear la indexación de apps en los buscadores. Se han creado distintas técnicas para indicar al buscador que tipo de contenidos tiene cierto enlace profunda a una app (XML Sitemap, Schema.org ,",
+      "title": "Web search: Busca en la web qué es la notación de enlaces",
+      "metadata": {},
+      "time": {
+        "start": 1789528476772,
+        "end": 1789528481044
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.051Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528481051,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a8359d1a001Ar2TqNbtEJ1fu2",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8358a9b001b1dc5eKBIQqX65",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8541,
+      "output": 138,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8679,
+      "headroom": 30177,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.052Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.054Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.054Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.057Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.057Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.057Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.057Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.058Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.058Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.072Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8679,
+  "providerTokens": 8679,
+  "estimatedInputTokens": 4679,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8541,
+    "cacheRead": 0,
+    "output": 138
+  },
+  "overflow": false,
+  "headroom": 30177,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.073Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.077Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.080Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.865Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528481865,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a045001cOn35LedeDwiay",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8359d30001k9zYDu9ZWBZVHQ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528481866,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a04a0011qP93YiYcdG0Le",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8359d30001k9zYDu9ZWBZVHQ",
+    "type": "tool",
+    "callID": "call_68eec9a41e7d72a5",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528481866,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a049001ScW7qjg5FQ6iJO",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8359d30001k9zYDu9ZWBZVHQ",
+    "type": "text",
+    "text": "Let me open https://mosaic.uoc.edu/ac/le/es/m4/ud4/index.html and read what it says.",
+    "time": {
+      "start": 1789528481866,
+      "end": 1789528481866
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:41.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528481866,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a04a0011qP93YiYcdG0Le",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8359d30001k9zYDu9ZWBZVHQ",
+    "type": "tool",
+    "callID": "call_68eec9a41e7d72a5",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://mosaic.uoc.edu/ac/le/es/m4/ud4/index.html"
+      },
+      "time": {
+        "start": 1789528481866
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.043Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528483043,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a04a0011qP93YiYcdG0Le",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8359d30001k9zYDu9ZWBZVHQ",
+    "type": "tool",
+    "callID": "call_68eec9a41e7d72a5",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://mosaic.uoc.edu/ac/le/es/m4/ud4/index.html"
+      },
+      "output": "El texto central de HTML - Enlaces HTML: �construimos una web!\n\n\n\n\n\n\t\n    \n\tEl texto central de HTML\n\tEnlaces HTML: �construimos una web!\n\n\t\n\t\tAccesibilidad : \n\t\t : \n\t\t : \n\t\t\n\t\n\n\t\n\n\n\t18. Enlaces HTML: �construimos una web!\n\n  Christian Heilmann. 8 de julio del 2008. �ltima modificaci�n: 9 de marzo de 2017 (equipo docente del grado de Multimedia). Publicado en: alt, href, ancla, t�tulo, enlace\n  \n  En este apartado encontrar�is informaci�n sobre uno de los inventos m�s revolucionarios de toda la historia de Internet: los enlaces. Los enlaces permiten que el lector de un documento los siga para ir hacia otro documento y pueda pasar de un servidor a otro sin necesidad de desconectarse y volver a conectarse cada vez. Desde que se inventaron han pasado muchas cosas, pero hay una que no ha cambiado nada: los enlaces son una parte muy importante de la experiencia en Internet, y seg�n c�mo los utilic�is pod�is poner las cosas f�ciles o dif�ciles a las personas que visiten vuestra web. \n  \n  Cuando hay�is le�do este apartado, sabr�is c�mo crear enlaces que sean f�ciles de entender y que funcionen en cualquier entorno. Adem�s, tambi�n aprender�is c�mo los enlaces afectan a vuestra popularidad en los motores de b�squeda y recibir�is algunos consejos sobre su descripci�n. \n  \n  \n  Nota\n  Como ya es habitual, este apartado va acompa�ado de un archivo \"links_code.zip\" que contiene varios archivos a los que iremos haciendo referencia. \n  \n  \n  Los contenidos de este apartado son los siguientes:\n  \n  \n\t18.1. �Qu� son los enlaces?\n  18.2. La anatom�a de un enlace ancla\n  18.3. �Enlace o destino? Los atributos id y href\n  18.4. No permit�is ninguna ambig�edad en los enlaces\n     \n\t18.4.1. Ofrecer informaci�n adicional con un atributo title\n  18.4.2. Enlaces a recursos no HTML: no obligu�is a los visitantes a hacer conjeturas\n  18.4.3. Enlaces externos y enlaces internos\n  \n\t18.5. Marcos y ventanas emergentes: �ni hablar!\n  18.6. Ventajas de los enlaces de salida y de los enlaces de entrada\n  18.7. Descripci�n de los enlaces\n  18.8. Estilos de los enlaces\n  Resumen \n  Preguntas de repaso \n  \n                        \n  18.1. �Qu� son los enlaces?\n  \n  Los enlaces son partes de un sitio web (normalmente creado con HTML, pero no siempre) que apuntan hacia otros recursos, como por ejemplo otros documentos HTML, archivos de texto, PDF, etc. Hay enlaces que el navegador debe seguir autom�ticamente y que se crean con elementos link (ya hab�is encontrado algunos en apartados anteriores, que se utilizaban para importar archivos CSS a un documento HTML) y tambi�n hay enlaces que el usuario puede activar opcionalmente. �stos se conocen como anclas y pod�is a�adirlos al documento con el elemento a. \n\n  18.2. La anatom�a de un enlace ancla\n  \n  \n  Pod�is convertir cualquier elemento insertado en el documento en un enlace ancla a�adiendo un elemento\na delante y detr�s. \n  \n  \n  Por ejemplo, en el siguiente documento HTML el texto Yahoo Developer Network se convierte en un enlace.\n                      \n  &lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;meta charset=utf-8\"&gt;\n&lt;title&gt;Link Example&lt;/title&gt;\n&lt;link rel=\"stylesheet\" href=\"styles.css\"&gt;\n&lt;/head&gt;\n&lt;body&gt;\n   &lt;h1&gt;A link to the YDN&lt;/h1&gt;\n   &lt;p&gt;&lt;a href=\"http://developer.yahoo.com\"&gt;Yahoo Developer Network&lt;/a&gt;&lt;/p&gt;\n&lt;/body&gt;\n&lt;/html&gt; \n\nArchivo fuente: \"linkexample.html\"\n\n  Las personas que visiten la web y activen este enlace (al hacer clic con el rat�n o al activarlo con el teclado o, en algunos casos, con la voz) dejar�n el lugar actual y pasar�n a la YDN. El enlace en s� experimenta otros cambios, que ya veremos cuando hablemos de los estilos de los enlaces.\n  \n  El ancla tiene varios atributos que pod�is a�adir: \n  \n  \n\thref: el recurso hacia el que apunta (ya sea un archivo externo o un ID de ancla).\n  \n  id: el ID de ancla si el ancla es un destino y no un enlace.\n  \n  title: informaci�n adicional sobre el recurso externo.\n   \n\n  Ahora veremos en primer lugar los atributos m�s importantes y despu�s hablaremos sobre lo que pod�is hacer a fin de que todo sea m�s comprensible para las personas que visiten vuestra web.   \n\n  18.3. �Enlace o destino? Los atributos id y href\n  \n  Un elemento a puede tener varias funciones seg�n los atributos que defin�is. El atributo m�s habitual que utilizar�is es href, que define el recurso al que apunta el enlace. Este atributo puede contener diferentes valores: \n  \n  \n\tUna URL en la misma carpeta (help.html), relativa a la carpeta actual (por ejemplo \"../../help/help.html\"; los 2 puntos significan \"sube un nivel dentro de la jerarqu�a de carpetas del sitio\") o absoluta en la ra�z del servidor. Por ejemplo \"/help/help.html\"; una barra inclinada al principio de la direcci�n significa que �sta empieza en la ra�z del ordenador en el que se encuentra la p�gina.\n  \n  Una URL en un servidor totalmente diferente. Por ejemplo \"http://wait-till-i.com\" o \"ftp://ftp.opera.com/\" o \"http://developer.yahoo.com/yui\".\n  \n  Un identificador de fragmento o un nombre de ancla precedido de una almohadilla. �ste apunta a un destino dentro del mismo documento. Por ejemplo \"#menu\".\n  \n  Una combinaci�n de URL e identificadores de fragmentos: pod�is enlazar directamente con una secci�n de un documento diferente haciendo que el atributo href apunte hacia una URL seguida de un identificador de fragmento. Por ejemplo, \"http://developer.yahoo.com/yui/#cheatsheets\".\n\t\n  \n  Cualquiera de estos valores lo convertir� en un enlace, ya que apuntar� hacia otro lugar. Por otra parte, un atributo id lo convertir� en un ancla dentro de la p�gina; algo a lo que apunta otro enlace. Esto puede ser un poco confuso, ya que ambos utilizan el elemento de ancla (a). Para poder recordarlo m�s f�cilmente, pod�is verlo de la manera siguiente: un atributo id convierte un enlace en un ancla y lo pod�is utilizar para enlazar con secciones espec�ficas del documento. \n  \n  El siguiente bloque de c�digo HTML contiene ejemplos de todos los tipos diferentes de enlaces:                                                                                          \n\n  &lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;meta charset=utf-8\"&gt;\n&lt;title&gt;Different Link Example&lt;/title&gt;\n&lt;link rel=\"stylesheet\" href=\"linkexamplestyles.css\"&gt;\n&lt;/head&gt;\n&lt;body&gt;\n   &lt;h1&gt;Different Link examples&lt;/h1&gt;\n\n   &lt;h2&gt;Example of in-page navigation with fragment identifiers, links and anchors&lt;/h2&gt;\n   &lt;div id=\"nav\"&gt;\n      &lt;ul id=\"toc\"&gt;\n         &lt;li&gt;&lt;a href=\"#sec1\"&gt;Section One&lt;/a&gt;&lt;/li&gt;\n         &lt;li&gt;&lt;a href=\"#sec2\"&gt;Section Two&lt;/a&gt;&lt;/li&gt;\n         &lt;li&gt;&lt;a href=\"#sec3\"&gt;Section Three&lt;/a&gt;&lt;/li&gt;\n         &lt;li&gt;&lt;a href=\"#sec4\"&gt;Section Four&lt;/a&gt;&lt;/li&gt;\n         &lt;li&gt;&lt;a href=\"#sec5\"&gt;Section Five&lt;/a&gt;&lt;/li&gt;\n      &lt;/ul&gt;\n   &lt;/div&gt;  \n\n   &lt;div id=\"content\"&gt;\n      &lt;div&gt;\n         &lt;h2&gt;&lt;a id=\"sec1\"&gt;Section #1&lt;/a&gt;&lt;/h2&gt;\n         &lt;p&gt;&lt;a href=\"#toc\"&gt;Back to menu&lt;/a&gt;&lt;/p&gt;\n      &lt;/div&gt;\n      &lt;div&gt;\n         &lt;h2&gt;&lt;a id=\"sec2\"&gt;Section #2&lt;/a&gt;&lt;/h2&gt;\n         &lt;p&gt;&lt;a href=\"#toc\"&gt;Back to menu&lt;/a&gt;&lt;/p&gt;\n      &lt;/div&gt;\n      &lt;div&gt;\n         &lt;h2&gt;&lt;a id=\"sec3\"&gt;Section #3&lt;/a&gt;&lt;/h2&gt;\n         &lt;p&gt;&lt;a href=\"#toc\"&gt;Back to menu&lt;/a&gt;&lt;/p&gt;\n      &lt;/div&gt;\n      &lt;div&gt;\n         &lt;h2&gt;&lt;a id=\"sec4\"&gt;Section #4&lt;/a&gt;&lt;/h2&gt;\n         &lt;p&gt;&lt;a href=\"#toc\"&gt;Back to menu&lt;/a&gt;&lt;/p&gt;\n      &lt;/div&gt;\n      &lt;div&gt;\n         &lt;h2&gt;&lt;a id=\"sec5\"&gt;Section #5&lt;/a&gt;&lt;/h2&gt;\n         &lt;p&gt;&lt;a href=\"#toc\"&gt;Back to menu&lt;/a&gt;&lt;/p&gt;\n      &lt;/div&gt;\n   &lt;/div&gt;\n\n   &lt;h2&gt;Some other link examples&lt;/h2&gt;\n   &lt;ul&gt;\n      &lt;li&gt;&lt;a href=\"http://developer.yahoo.com\"&gt;Yahoo Developer Network&lt;/a&gt;&lt;/li&gt;\n      &lt;li&gt;&lt;a href=\"http://dev.opera.com/articles/view/the-freelancing-\n       business-part-1-pricing/#marketing\"&gt;Tips on marketing yourself&lt;/a&gt;&lt;/li&gt;\n      &lt;li&gt;&lt;a href=\"ftp://get.opera.com/pub/opera/win/\"&gt;Download different\n       Opera versions&lt;/a&gt;&lt;/li&gt;\n      &lt;li&gt;&lt;a href=\"http://farm1.static.flickr.com/56/188791635_0b8bdd808d.jpg?v=0\"&gt;\n       Photo of my book&lt;/a&gt;&lt;/li&gt;\n   &lt;/ul&gt;\n&lt;/body&gt;\n&lt;/html&gt;   \n\nArchivo fuente: \"linkexamples.html\"\n\n  Abrid este archivo en el navegador y experimentad. Ver�is que si activ�is cualquiera de los enlaces de la primera lista, pasar�is a la secci�n correspondiente del documento. Esto es as� porque est�n conectados por el mismo identificador de fragmento; el primer enlace de la lista, por ejemplo, tiene un atributo href de #sec1, que coincide con el valor ID del enlace que hay en el interior del primer elemento h2 del contenido. Esto es todo lo que necesit�is para conectar dos elementos de ancla en un documento; utilizad el mismo valor precedido por una almohadilla si lo enlaz�is en un atributo href. Tambi�n puede que os hay�is dado cuenta de que la URL de la barra de ubicaci�n del navegador ha cambiado y que ahora muestra un identificador de segmento al final, lo cual significa que los visitantes pueden a�adir esta secci�n a las direcciones de inter�s o enviar el enlace por correo electr�nico a otras personas para indicarles exactamente d�nde deben ir. \n  \n  No obstante, si activ�is cualquiera de los enlaces \"Back to menu\" (volver al men�) ocurrir� lo mismo. �C�mo puede ser? Los identificadores de fragmento pueden ser cualquier elemento con un ID.\n  \n  Para recapitular: \n  \n  \n\t\tLos enlaces de ancla pueden tener un identificador de fragmento como valor del atributo href; este identificador de fragmento debe empezar con una almohadilla (#).\n  \n  Al activarlo, este enlace llevar� hacia cualquier elemento HTML con un id de este valor. Estos ID de cada p�gina deben ser �nicos.\n  \n  Los ID siguen algunas convenciones con respecto a los nombres. Las m�s importantes es que deben empezar con un car�cter alfanum�rico y que no pueden contener espacios.\n    \n\n  Todo esto cubre el men� y las diferentes secciones del ejemplo, pero �qu� sucede con los otros enlaces? Si los prob�is, ver�is que apuntan hacia destinos diferentes: uno va a otro sitio, otro muestra una fotograf�a y el tercero muestra una secci�n concreta de otra p�gina web (que se encuentra pasando a un ID espec�fico). Si todo ha funcionado bien, �perfecto! Pero �qu� sucede si no hab�is entendido, o el navegador no ha entendido, algunos de estos recursos? \n\n\n  18.4. No permit�is ninguna ambig�edad en los enlaces\n  \n  Lo m�s importante que deb�is recordar sobre los enlaces es que son una parte b�sica para vuestra relaci�n con las personas que os visiten. Estas personas se f�an de que cuando les ofrezc�is un enlace podr�n seguirlo y acceder a informaci�n de calidad y pertinente. Si vuestros enlaces no funcionan porque el recurso al que apuntan no est� disponible o se encuentra en un formato que el visitante no puede leer, habr�is traicionado su confianza y habr�is perdido credibilidad. No deb�is permitir nunca que esto suceda.\n                         \n  18.4.1. Ofrecer informaci�n adicional con un atributo title\n  \n  \n  Igual que con cualquier otro elemento HTML, pod�is a�adir un atributo title a un elemento a para a�adir informaci�n adicional. Los navegadores mostrar�n lo que se conoce como un indicador de funci�n cuando los visitantes pasen el cursor del rat�n sobre el enlace. Este indicador de funci�n les indica la naturaleza de este enlace. \n  \n  \n  Por ejemplo, pod�is escribir una peque�a introducci�n al contenido y la ubicaci�n del documento enlazado:\n                      \n\n  &lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;meta charset=utf-8\"&gt;\n&lt;title&gt;Adding extra information with a title attribute&lt;/title&gt;\n&lt;link rel=\"stylesheet\" href=\"linkexamplestyles.css\"&gt;\n&lt;/head&gt;\n&lt;body&gt;\n   &lt;h1&gt;Adding extra information with a title attribute&lt;/h1&gt;\n   &lt;ul&gt;\n      &lt;li&gt;Find more information on the &lt;a title=\"The Yahoo Developer\n       Network is the main hub for all the developer tools Yahoo offers,\n       including the Yahoo User Interface Library (YUI) and the Design\n       Patterns repository\" href=\"http://developer.yahoo.com\"&gt;Yahoo\n       Developer Network&lt;/a&gt;.&lt;/li&gt;\n   &lt;/ul&gt;\n&lt;/body&gt;\n&lt;/html&gt;  \n\nArchivo fuente: \"titleexample.html\"\n                                    \n\t\n\t\t\t\n\t\t\tFigura 1. A�adir un atributo de t�tulo para mostrar la informaci�n como un indicador de funci�n cuando los visitantes pasen por encima el enlace.\n\t\t\n\n  Pero no pod�is esperar que los visitantes tengan la suficiente paciencia y coordinaci�n mano-ojo para poder fiaros de este recurso para dar informaci�n crucial. Es muy probable que los usuarios con alguna discapacidad visual, que no pueden ver la p�gina, no puedan acceder a esta informaci�n. Aunque los lectores de pantalla incluyen la opci�n de leer en voz alta los atributos\ntitle para el usuario final, esta opci�n est� desactivada por defecto; por este motivo, no deber�ais utilizar nunca el atributo title para dar informaci�n crucial sobre el enlace. Esa informaci�n crucial podr�a ser: \n  \n  Enlazar con recursos no HTML, como archivos PDF, im�genes, v�deos, archivos de sonido o descargas.\n  \n  Hacer que salgamos del sitio actual y que pasemos a otro servidor (enlaces externos versus enlaces internos).\n  \n  Enlazar con un documento que se abrir� en un marco diferente o en una ventana emergente.\n\t                         \n\t\n  18.4.2. Enlaces a recursos no HTML: no obligu�is a los visitantes a hacer conjeturas\n  \n  Puede ser muy molesto hacer clic en un enlace y que el navegador no sepa qu� hacer con aquello a lo que apunta el. No obstante, no es nada extra�o ver sitios web que enlazan con im�genes, documentos PDF y v�deos sin avisar a los visitantes para que est�n preparados. Los v�deos son una causa muy habitual de problemas de los navegadores. Adem�s, tambi�n es posible que el recurso tenga un volumen muy grande (un PDF de 20 MB, por ejemplo), lo que significa que quiz� los visitantes preferir�an descargarlo en lugar de abrirlo dentro del navegador y a�adirlo as� a un consumo de memoria que ya es considerable; o quiz� incluso decidir�an no acceder a �l. \n  \n  \n  Uno de los factores principales del �xito de un producto web es el hecho de no obligar a las personas que lo visitan a hacer conjeturas sobre qu� pasar� cuando hagan algo; siempre se debe explicar claramente qu� efectos tendr�n sus acciones. En el caso de los enlaces, todo lo que deb�is hacer para evitar muchas frustraciones es explicar bien a los visitantes qu� es el recurso al que lleva el enlace. \n  \n  \n  Aqu� encontrar�is algunos ejemplos:\n  \n  &lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;meta charset=utf-8\"&gt;\n&lt;title&gt;Linking non-HTML resources&lt;/title&gt;\n&lt;link rel=\"stylesheet\" href=\"linkexamplestyles.css\"&gt;\n&lt;/head&gt;\n&lt;body&gt;\n   &lt;h1&gt;Linking non-HTML resources&lt;/h1&gt;\n  \n   &lt;ul&gt;\n      &lt;li&gt;Find more information on the &lt;a href=\"http://developer.yahoo\n       .com\"&gt;Yahoo Developer Network site (external)&lt;/a&gt;&lt;/li&gt;\n      &lt;li&gt;Download the &lt;a href=\"http://www.wait-till-i.com/stuff/JavaScript\n       -DOM-Cheatsheet.pdf\"&gt;Dom Cheatsheet (PDF, 85KB)&lt;/a&gt;&lt;/li&gt;\n      &lt;li&gt;Pick and &lt;a href=\"ftp://get.opera.com/pub/opera/win/\"&gt;download\n       different Opera versions from their FTP (external)&lt;/a&gt;&lt;/li&gt;\n      &lt;li&gt;Check out a &lt;a href=\"http://farm1.static.flickr.com/56/188791635_\n       0b8bdd808d.jpg?v=0\"&gt;Photo of my book (JPG, 200KB)&lt;/a&gt;&lt;/li&gt;\n   &lt;/ul&gt;\n&lt;/body&gt;\n&lt;/html&gt;   \n\nArchivo fuente: \"linkingnonhtml.html\"\n\n  Si ofrec�is toda esta informaci�n sobre el archivo enlazado y el espacio que ocupa, los visitantes podr�n decidir qu� har�n y no deber�is suponer que tienen el navegador configurado de una manera concreta o algunos programas instalados. Si lo combin�is con unos estilos inteligentes, incluso podr�is conseguir que tenga un buen aspecto y que todo sea muy intuitivo. Si os quer�is asegurar del todo, tambi�n pod�is ofrecer una secci�n de ayuda que explique qu� son los diferentes formatos de archivo y d�nde se pueden conseguir los programas necesarios para abrirlos. \n\n\n  18.4.3. Enlaces externos y enlaces internos\n  \n  Una de las cosas que m�s temen los responsables de los negocios con respecto a los sitios web de sus compa��as es que la gente que los visite salga de ellos prematuramente. �sta es a menudo la raz�n para no ofrecer nunca enlaces hacia terceros (a menos que �stos terceros paguen dinero por el privilegio del redireccionamiento del tr�fico hacia ellos). M�s adelante ya volveremos a hablar de este criterio tan equivocado; de momento, hablaremos de lo que hace la gente para evitar que los visitantes abandonen su sitio y las consecuencias que tienen estas medidas para el �xito del sitio web.   \n\n  18.5. Marcos y ventanas emergentes: �ni hablar!\n  \n  El temor a perder visitantes que van hacia otros sitios web, combinado con el deseo de seguir enlazando con estos otros sitios, nos ha tra�do algunos inventos en el desarrollo de las webs que se han convertido durante a�os en un verdadero problema para la usabilidad de los sitios: los marcos y las ventanas emergentes. \n  \n  El uso de marcos HTML significa que est�is separando la p�gina que aparece en el navegador en diferentes documentos. La ventaja es que el documento sigue siendo aparentemente el mismo incluso al cargar partes de �ste, ya sea desde el servidor propio o desde servidores de terceros. Pero aqu� es donde acaba su utilidad; los marcos son una experiencia terrible para el usuario y, de hecho,  perniciosos: \n  \n  \n\t\tLos motores de b�squeda no pueden indexar nunca toda la p�gina, sino que en los resultados de la b�squeda s�lo muestran partes que no tienen ning�n sentido fuera de contexto.\n  \n  Los visitantes no pueden a�adir la p�gina a la lista de direcciones de inter�s; la pr�xima vez que abran la p�gina desde esta lista ver�n el estado inicial del conjunto de marcos y no la p�gina tal como la dejaron la �ltima vez.\n  \n  Los visitantes que dependan de tecnolog�as de asistencia lo tienen muy dif�cil para navegar por conjuntos de marcos.\n  \n  Es posible que los sitios web de terceros no quieran aparecer dentro de un conjunto de marcos y que utilicen scripts \"rompedores de marcos\", que sustituir�n a los conjuntos de marcos para la URL real cuando intent�is incrustarlos. Esto se hace, por ejemplo, para evitar que los delincuentes consigan con enga�os que los usuarios de Internet introduzcan informaci�n como el n�mero de la tarjeta de cr�dito en un sitio web que aparentemente parece de un banco (lo que se conoce como phishing).\n\t\n  \n  \n  Los enlaces dentro de un conjunto de marcos utilizan el atributo target del ancla para dirigirse al marco correcto. Cada uno de los marcos de un conjunto de marcos tiene un nombre concreto y al activar el enlace se abre el documento definido en el atributo href de este marco. Si el conjunto de marcos no est� disponible (por ejemplo, cuando un visitante ha encontrado el documento con los enlaces por medio de un motor de b�squeda), cada uno de los enlaces se abre en una nueva instancia del navegador. \n  \n  \n  Abrir una nueva instancia del navegador es otra de las maneras habituales de enlazar con sitios web de terceros, ya sea con una ventana emergente de scripts o con un atributo target con el valor _blank. El hecho de que todos los navegadores modernos tengan un bloqueador de ventanas emergentes ya es toda una indicaci�n de si es seguro o no fiarse de esta t�cnica... �No lo es en absoluto!\n  \n  Claro y conciso: no utilic�is el atributo target para crear enlaces a no ser que sep�is exactamente qu� est�is haciendo. De todas maneras, �sta ya es una idea anticuada; actualmente la mayor�a de los navegadores tienen interfaces con pesta�as, con lo cual los usuarios pueden abrir sitios de terceros en el fondo para volver a ellos m�s tarde y mientras tanto quedarse en vuestro sitio web. En algunas circunstancias, es posible que quer�is indicar la diferencia entre los enlaces externos e internos, pero deb�is dejar siempre que sea el visitante quien decida qu� har� con ellos.\n\n\n  18.6. Ventajas de los enlaces de salida y de los enlaces de entrada\n  \n  Hay algunas buenas razones para enlazar con sitios de terceros incluso cuando �stos son de la competencia.\n  \n  Os da credibilidad ante vuestros visitantes; est�is tan seguros de la calidad de vuestro contenido, que no os asust�is ante la competencia.\n  \n  \n  Es una oportunidad para ofrecer un servicio completo; os pod�is vincular al contenido y a art�culos o incluso a productos de otros sitios web que vosotros no ofrec�is pero que pueden ser de inter�s para los visitantes que quieren ampliar m�s en el tema en cuesti�n.\n  \n  \n  Pod�is demostrar que ten�is raz�n mencionando un art�culo anterior de un tercero y ofreciendo una soluci�n mejor o diferente y hacer referencia a este art�culo mediante un enlace.\n  \n  \n\n  La utilidad de los enlaces de entrada (los enlaces que apuntan desde el sitio web de un tercero hacia el vuestro) genera mucho menos debate. Cuantos m�s sitios web v�lidos y de alta calidad se enlacen con el vuestro con las palabras clave pertinentes, m�s arriba aparecer�is en los motores de b�squeda como Google. Pero antes de que eso suceda, deb�is demostrar que no ten�is miedo de enlazaros con otros sitios. \n  \n  Las palabras clave pertinentes nos llevan hacia otra parte muy importante de la creaci�n de unos buenos enlaces: c�mo describirlos.         \n\n  18.7. Descripci�n de los enlaces\n  \n  Ya hemos hablado un poco de ellos en el subapartado sobre los enlaces hacia recursos no HTML, pero siempre es bueno recordar que los enlaces no s�lo son parte del texto de la p�gina, sino que tambi�n son unos elementos interactivos del documento. \n  \n  Algunas tecnolog�as de asistencia ofrecen una lista de los enlaces en vez de todo el documento con el fin de permitir a los usuarios que puedan navegar r�pidamente por �l, lo que significa que deb�is comprobar que los textos de vuestros enlaces tengan sentido fuera del contexto en el que se encuentran. Pod�is comprobarlo muy f�cilmente en Opera abriendo cualquier sitio web y seleccionando \"Tools\" &gt; \"Links\" (herramientas > enlaces) en el men� o presionando \"Ctrl\" + \"May�sculas\" + \"L\". Se abrir� una pesta�a nueva en la que podr�is ver todos los enlaces del documento y hacia d�nde apuntan. \n  \n  Esto significa que deb�is comprobar no s�lo que todos los textos de los enlaces tengan sentido, sino tambi�n que no haya varios enlaces con la misma descripci�n pero que apunten hacia recursos diferentes. El error cl�sico que se comete es el de los enlaces \"haced clic aqu�\" que se describen, por ejemplo, como \"Para descargar la �ltima versi�n de nuestra herramienta, haced clic aqu�\". Es mucho mejor utilizar un texto de enlace que explique hacia d�nde apunta; en este caso, \"Pod�is descargar y probar la �ltima versi�n de nuestra herramienta\".\n  \n  Esto mismo tambi�n se aplica a los enlaces \"m�s\". Los encontrar�is en los sitios de noticias, en los que ver�is un titular y un texto resumido y un enlace \"m�s\" o \"noticia completa\" que se debe seguir. La soluci�n a este problema es utilizar una imagen \"m�s\" enlazada y darle un texto alternativo �nico o a�adir un espacio dentro del enlace despu�s de \"m�s\" y ocultarlo con el CSS. Explicaremos todos estos trucos m�s detalladamente en el apartado sobre los men�s y la navegaci�n, que encontrar�is m�s adelante en este curso. \n  \n  \n  Ved tambi�n\n  \n  Pod�is ver el apartado 23 de este m�dulo.\n             \n\n  18.8. Estilos de los enlaces\n  \n  Todav�a no ha llegado el momento de hablar del CSS, pero en este punto es �til tener en cuenta que el aspecto de los enlaces es muy importante y que hay varios y diferentes estados de enlaces que hay que considerar. Los estados de los enlaces (que m�s adelante se relacionan con los pseudoselectores del CSS; puede sonar complejo, pero no lo es) son: \n  \n  \n\t\tlink: es el estado por defecto; define el aspecto que deben tener los enlaces en una parte concreta del documento. Por defecto, los enlaces no visitados son de color azul.\n  \n  visited: el estilo de un enlace que ya se ha visitado (y que quiz� ya se encuentra en la memoria cach� del navegador). Por defecto, los enlaces ya visitados son de color p�rpura.\n  \n  hover: el estilo de un enlace mientras el cursor del rat�n se encuentra sobre �l.\n  \n  active: el estilo del enlace mientras est� activado; es decir, mientras est� en curso la conexi�n con el otro sitio; tambi�n es el estilo del �ltimo enlace activado cuando lleg�is al documento al ir atr�s en el navegador.            \n\t\n  \n  Resumen \n  \n  Esta vez hemos explicado muchas cosas, pero es muy importante recordar el funcionamiento de los enlaces y qu� deben hacer. A lo largo de vuestra trayectoria profesional como desarrolladores web, aprender�is muchos trucos y t�cnicas para anular estos comportamientos por defecto, y esperamos que os par�is a pensar si lo que quer�is hacer es realmente necesario. \n  \n  Hemos hablado de:\n  \n  La anatom�a del elemento a y sus atributos (no desaprobados).\n  \n  La diferencia entre los elementos a como enlaces (con un atributo  href) y como anclas (con un atributo name).\n  \n  La necesidad de que el nombre de un ancla sea �nico.\n  \n  La necesidad de explicar a los visitantes qu� pueden esperar cuando siguen un enlace (el formato del archivo y si es muy grande). \n  \n  C�mo a�adir informaci�n con el atributo de t�tulo que se muestra como un indicador de funci�n; y por qu� �sta no es una manera segura de ofrecer informaci�n crucial.\n  \n  La diferencia entre los enlaces externos (que apuntan hacia sitios web de terceros) y los internos (que apuntan hacia documentos del mismo servidor).\n  \n  Las pr�cticas anticuadas, como las ventanas emergentes y los marcos, y por qu� hay que evitarlas.\n  \n  Las ventajas de enlazarse con otros sitios y que otros sitios se enlacen con el vuestro.\n  \n  C�mo describir adecuadamente los enlaces de manera que tengan sentido fuera de contexto, y por qu� es necesario.\n  \n  Los antecedentes de los estilos b�sicos de los enlaces.\n\t\n  \n  Con todos estos conocimientos, deber�ais ser capaces de escribir documentos HTML que se enlacen adecuadamente, y ya est�is preparados para empezar a pensar en los men�s y la navegaci�n del sitio.\n  \n  \n\tPreguntas de repaso \n  \n  \n\t\t�Qu� problema tiene el enlace siguiente: &lt;a href=\"report.pdf\" title=\"report as PDF, 2.3MB\"&gt;get our latest report&lt;/a&gt;?\n    �Para qu� sirve el atributo target en los enlaces? �Se puede utilizar de alguna manera positiva?\n    Hemos hablado sobre las relaciones de los enlaces y las conexiones entre los enlaces y las anclas. �Hay alg�n atributo para los enlaces que describa tambi�n las relaciones entre documentos?\n    �C�mo se puede escribir un enlace que env�e a los visitantes hacia un elemento que hay m�s abajo de la p�gina al hacer clic en �l? �Qu� hay que comprobar de antemano?\n\n\n\nLos contenidos recogidos en este art�culo est�n sujetos a una licencia Creative Commons Reconocimiento, No comercial - Compartir bajo la misma licencia 3.0 No adaptada.\n\n\n\n\n\t\t :\n\t\t :",
+      "title": "https://mosaic.uoc.edu/ac/le/es/m4/ud4/index.html (text/html)",
+      "metadata": {},
+      "time": {
+        "start": 1789528481866,
+        "end": 1789528483042
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.043Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528483043,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a4e3001Tf3rDwnnlJeW7B",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a8359d30001k9zYDu9ZWBZVHQ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 28938,
+      "output": 167,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 29105,
+      "headroom": 9751,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.044Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.044Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.049Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.054Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.054Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.057Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.057Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.068Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 29105,
+  "providerTokens": 29105,
+  "estimatedInputTokens": 11772,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28938,
+    "cacheRead": 0,
+    "output": 167
+  },
+  "overflow": false,
+  "headroom": 9751,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.069Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.069Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.079Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.081Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.395Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528483396,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a642001cwwYAuh6h1Fnkp",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a4fc001lXoRU2t1oX26A3",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.396Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.396Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528483396,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a644002BgG1F2LCvJd5YS",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a4fc001lXoRU2t1oX26A3",
+    "type": "tool",
+    "callID": "call_4396e1caa674daf3",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.396Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528483396,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a644001tTW7tgsaJjwhQp",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a4fc001lXoRU2t1oX26A3",
+    "type": "text",
+    "text": "Let me open https://es.wikipedia.org/wiki/Hiperv%C3%ADnculo and read what it says.",
+    "time": {
+      "start": 1789528483396,
+      "end": 1789528483396
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.396Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528483396,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a644002BgG1F2LCvJd5YS",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a4fc001lXoRU2t1oX26A3",
+    "type": "tool",
+    "callID": "call_4396e1caa674daf3",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://es.wikipedia.org/wiki/Hiperv%C3%ADnculo"
+      },
+      "time": {
+        "start": 1789528483396
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528483972,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a644002BgG1F2LCvJd5YS",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a4fc001lXoRU2t1oX26A3",
+    "type": "tool",
+    "callID": "call_4396e1caa674daf3",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://es.wikipedia.org/wiki/Hiperv%C3%ADnculo"
+      },
+      "output": "Hiperenlace - Wikipedia, la enciclopedia libre\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIr al contenido\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nMenú principal\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tMenú principal\n\tmover a la barra lateral\n\tocultar\n\n\n\t\n\n\t\n\t\tNavegación\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tPortadaPortal de la comunidadActualidadCambios recientesPáginas nuevasPágina aleatoriaAyudaNotificar un errorPáginas especiales\n\t\t\n\t\t\n\t\n\n\n\t\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nBuscar\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tBuscar\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nApariencia\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tDonaciones\n\nCrear una cuenta\n\nAcceder\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nHerramientas personales\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nDonaciones\n\n\n\nCrear una cuenta\n\n\n\nAcceder\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tContenidos\n\tmover a la barra lateral\n\tocultar\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tInicio\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tPartes del hiperenlace\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tAlternar subsección Partes del hiperenlace\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t1.1\n\t\t\t\t\tComportamiento de los enlaces en los navegadores web\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tUn enlace cuenta con dos extremos\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tTipos de hiperenlaces\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tVéase también\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5\n\t\t\t\tReferencias\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t6\n\t\t\t\tEnlaces externos\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nCambiar a la tabla de contenidos\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tHiperenlace\n\t\t\t\n\n\t\n\t\n\n87 idiomas\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tAfrikaansالعربيةAzərbaycancaBoarischBetawiБългарскиभोजपुरीবাংলাBrezhonegBosanskiCatalàکوردیČeštinaKaszëbscziDanskDeutschΕλληνικάEnglishEsperantoEestiEuskaraفارسیSuomiFrançaisFryskGaeilgeGalegoעבריתहिन्दीHrvatskiMagyarՀայերենBahasa IndonesiaIdoItaliano日本語JawaҚазақша한국어KurdîКыргызчаLatinaLëtzebuergeschLatviešuОлык марийМакедонскиമലയാളംमराठीBahasa MelayuNedersaksiesPlattdüütschNederlandsNorsk nynorskNorsk bokmålOccitanPolskiPortuguêsRuna SimiRomânăРусскийРусиньскыйSarduSicilianuSrpskohrvatski / српскохрватскиසිංහලSimple EnglishSlovenčinaSlovenščinaShqipСрпски / srpskiSvenskaKiswahiliதமிழ்తెలుగుไทยTürkçeТатарча / tatarçaУкраїнськаاردوOʻzbekcha / ўзбекчаTiếng ViệtWalonWolof吴语粵語中文IsiZulu\n\t\t\t\n\t\t\tEditar enlaces\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tArtículo\n\nDiscusión\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tespañol\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tLeer\n\nEditar\n\nVer historial\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nHerramientas\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tHerramientas\n\tmover a la barra lateral\n\tocultar\n\n\n\t\n\n\t\n\t\tAcciones\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nLeer\n\n\n\nEditar\n\n\n\nVer historial\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tGeneral\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tLo que enlaza aquíCambios en enlazadasSubir archivoEnlace permanenteInformación de la páginaCitar esta páginaObtener URL acortadoCambiar al analizador antiguo\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tImprimir/exportar\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tCrear un libroDescargar como PDFVersión para imprimir\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tEn otros proyectos\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWikimedia CommonsElemento de Wikidata\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tApariencia\n\tmover a la barra lateral\n\tocultar\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tDe Wikipedia, la enciclopedia libre\n\t\t\t\t\t\n\t\t\t\t\t(Redirigido desde «Hipervínculo»)\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\n\n\nEste artículo o sección tiene referencias, pero necesita más para complementar su verificabilidad. \nBusca fuentes: «Hiperenlace» – noticias · libros · académico · imágenesEste aviso fue puesto el 19 de febrero de 2015.\n\n\nUn ejemplo de un hipervínculo con un puntero del ratón sobre él.\nDefinición gráfica del funcionamiento de un sistema hipertextual\nEn informática, un hipervínculo o hiperenlace (del inglés: hyperlink), también conocido simplemente como enlace o vínculo (link), es una referencia unidireccional en un documento electrónico que entrelaza diferentes documentos o secciones entre sí. Los usuarios tienen la oportunidad de seguir estos enlaces con tan solo un clic en el texto ancla (texto enlazado) para navegar a los documentos o las secciones correspondientes.[1] Se dice que un usuario que sigue los hiperenlaces navega o recorre el hipertexto (texto con hiperenlaces). Un sistema de software utilizado para ver y crear hipertexto es un sistema de hipertexto, y crear un hiperenlace es hacer un hiperenlace (o simplemente enlazar). \n\nEl documento que contiene un hiperenlace se conoce como su documento fuente. Por ejemplo, en una obra de referencia en línea como Wikipedia o Bing. Muchas palabras y términos del texto están enlazados a las definiciones de esos términos. Los hiperenlaces se utilizan a menudo para implementar mecanismos de referencia como tablas de contenido, notas a pie de página, bibliografías, índices, cartas y glosarios.\n\nEn algunos hipertextos, los hiperenlaces pueden ser bidireccionales: pueden seguirse en dos direcciones, por lo que ambos extremos actúan como anclas y objetivos. Existen disposiciones más complejas, como los enlaces de muchos a muchos.\n\nEl efecto de seguir un hiperenlace puede variar con el sistema de hipertexto y a veces puede depender del propio enlace. Por ejemplo, en la World Wide Web, la mayoría de los hiperenlaces hacen que el documento de destino sustituya al documento mostrado, pero algunos están marcados para hacer que el documento de destino se abra en una nueva ventana (o en una nueva pestaña).[2] Otra posibilidad es la transclusión, en la que el objetivo del enlace es un fragmento del documento que sustituye al ancla del enlace dentro del documento de origen. \n\nPartes del hiperenlace[editar]\nUn enlace cuenta con dos extremos, denominados anclas (nautilus), y una dirección.         \n\nEl enlace comienza en el ancla origen y apunta al ancla destino. Sin embargo, el término \"enlace\" a menudo se utiliza para el ancla origen, mientras que al ancla destino se denomina enlace de destino (link target).\n\t\t\t\nEl enlace de destino más utilizado es la World Wide Web. Puede invocar a un documento, por ejemplo, una página web, a otro recurso, o a una posición determinada en una página web. Este último se consigue asignando a un elemento HTML el atributo \"name\" o \"id\" en esa posición del documento HTML. El URL de la posición es el url de la página con \"#atributo name\" añadido.\n\nCuando los enlaces de destino invocan, además de texto, elementos multimedia (audio, video, imágenes, etc. ), puede decirse que estamos navegando en un espacio hipermedia, un ámbito de interacción humana que intensifica la densidad de los mensajes, dentro de la gama exhaustiva de supuestos funcionales que aporta la Red, como, por ejemplo: comunicación en tiempo real y en tiempo diferido, comunicación de una persona a una persona, de varias a una, de una a varias, de varias a varias, etc.\n\nComportamiento de los enlaces en los navegadores web[editar]\nUn navegador web normalmente muestra un hiperenlace de alguna forma distintiva, por ejemplo, en un color, letra o estilo diferente. El comportamiento y estilo de los enlaces se puede especificar utilizando lenguaje CSS.\n\nEl puntero del ratón también puede cambiar a forma de mano para indicar el enlace. En muchos navegadores, los enlaces se muestran en texto azul subrayado cuando no han sido visitados, y en texto púrpura subrayado cuando han sido visitados. Cuando el usuario activa el enlace (por ejemplo, pinchando sobre él con el ratón) el navegador mostrará el destino del enlace. Si el destino no es un archivo HTML, dependiendo del tipo de archivo y del navegador y sus plugins, se puede activar otro programa para abrir el archivo.\n\nEl código HTML contiene todas las características principales de un enlace:\nlink target (URL) (destino) o (ubicación)\nlink label (etiqueta)\nlink title (título)\nlink class or link id (clase)\n\nUtiliza el elemento \"a\" de HTML con el atributo \"href\" y opcionalmente otros atributos como “title”, “class”, “style”, “target” o “id”:\n&lt;a href=\"URL\" title=\"título del enlace\" class=\"clase del enlace\">etiqueta del enlace&lt;/a>\nCuando el puntero se sitúa sobre un enlace, dependiendo del navegador, se muestra un texto informativo acerca del enlace:\nUn texto emergente, que desaparece cuando el puntero se vuelve mover (a veces desaparece igualmente pasados unos segundos). Internet Explorer y Mozilla Firefox muestran el título, Opera muestra también el URL.\nAdemás, el URL puede ser mostrado en la barra de estado.\n\nUn enlace cuenta con dos extremos[editar]\nEl término «enlace» a menudo se utiliza para el ancla origen, mientras que al ancla destino se denomina enlace de destino (link target). El enlace de destino más común es un URL, utilizado en la World Wide Web. Puede invocar a un documento, por ejemplo, una página web, a otro recurso, o a una posición determinada en una página web. Este último se consigue asignando a un elemento HTML el atributo \"name\" o \"id\" en esa posición del documento HTML. El URL de la posición es el URL de la página con \"atributo name\" añadido.\n\nCuando los enlaces de destino invocan, además de texto, elementos multimedia (audio, video, imágenes, etc.), puede decirse que estamos navegando en un espacio hipermedia, un ámbito de interacción humana que intensifica la densidad de los mensajes, dentro de la gama exhaustiva de supuestos funcionales que aporta la internet, como, por ejemplo: comunicación en tiempo real y en tiempo diferido, comunicación de una persona a una persona, de varias a una, de una a varias, de varias a varias, etc.\n\nTipos de hiperenlaces[editar]\nHipervínculo de texto: Este hipervínculo de texto es un enlace que se encuentra asociado a un texto, de forma que al hacer clic sobre ese texto se carga la página donde indique el hipervínculo.\nHipervínculo de imagen: Un hipervínculo de imagen es un enlace que se encuentra asociado a una imagen, de forma que si se hace clic sobre esa imagen se carga la página que indique el hipervínculo.\nHipervínculo local o interno: Un hipervínculo local o interno es un vínculo a una página que se encuentra en el mismo sitio web (sitio local).\nHipervínculo externo: Un hipervínculo externo es un vínculo a otro sitio web en Internet (sitio externo). Es un vínculo a cualquier otro lugar fuera del sitio actual.\nHipervínculo a una dirección de correo electrónico: Un hipervínculo a una dirección de correo electrónico es un vínculo que contiene una dirección de correo. Al pulsar en él, automáticamente se abre el programa de correo que tenga el usuario instalado para poder escribir a esa dirección de correo.\nHipervínculo a un número de teléfono: Un hipervínculo a un número de teléfono permite que aparezca al usuario el cuadro de diálogo para iniciar una llamada. Especialmente útil cuando se visualiza la página desde un dispositivo móvil.\n\nVéase también[editar]\nHTML\nHipertexto\nA (elemento HTML)\nLexia\nPageRank\nPágina de hiperenlaces\nAnillo web\n\nReferencias[editar]\n↑ «Hipervínculos: definición, estructura y tipos». IONOS Digitalguide. Consultado el 21 de abril de 2022. \n↑ «What is Tabbed Browsing?». Computer Hope (en inglés). Consultado el 17 de junio de 2025. \n\n\nEnlaces externos[editar]\n Wikcionario  tiene definiciones y otra información sobre hiperenlace.\n\nEl Diccionario de la Real Academia Española tiene una definición para hiperenlace.\n\nControl de autoridades\nProyectos Wikimedia\n Datos: Q102014\n Multimedia: Category:Hyperlinks / Q102014\n\n\nIdentificadores\nGND: 4617682-2\n\nDiccionarios y enciclopedias\nBritannica: url\nOntologías\nNúmero IEV: 171-09-06\n\n\n Datos: Q102014\n Multimedia: Category:Hyperlinks / Q102014\n\n\n\n\n\n\n\n\n\n\nObtenido de «https://es.wikipedia.org/w/index.php?title=Hiperenlace&amp;oldid=174325875»\n\t\t\t\t\tCategoría: HTMLCategorías ocultas: Wikipedia:Artículos que necesitan referencias adicionalesWikipedia:Referenciar informáticaWikipedia:Artículos con identificadores GND\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t Esta página se editó por última vez el 11 jul 2026 a las 04:45.\n\tLa página fue renderizada con Parsoid.\n\tEl texto está disponible bajo la Licencia Creative Commons Atribución-CompartirIgual 4.0; pueden aplicarse cláusulas adicionales. Al usar este sitio aceptas nuestros términos de uso y nuestra política de privacidad.Wikipedia&#174; es una marca registrada de la Fundación Wikimedia, una organización sin ánimo de lucro.\n\n\n\t\t\t\t\n\tPolítica de privacidad\n\tAcerca de Wikipedia\n\tLimitación de responsabilidad\n\tContacto legal y de seguridad\n\tCódigo de conducta\n\tDesarrolladores\n\tEstadísticas\n\tDeclaración de cookies\n\tVersión para móviles\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nBuscar\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tBuscar\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nCambiar a la tabla de contenidos\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tHiperenlace\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n87 idiomas\n\t\t\t\n\t\t\t\n\nAñadir tema",
+      "title": "https://es.wikipedia.org/wiki/Hiperv%C3%ADnculo (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528483396,
+        "end": 1789528483971
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.972Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528483972,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835a884001Vydqqt6C4S1e22",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a4fc001lXoRU2t1oX26A3",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 56566,
+      "output": 163,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 56729,
+      "headroom": -17873,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.972Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.972Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.975Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.975Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.983Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.984Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.984Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.997Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 56729,
+  "providerTokens": 56729,
+  "estimatedInputTokens": 14952,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 56566,
+    "cacheRead": 0,
+    "output": 163
+  },
+  "overflow": true,
+  "headroom": -17873,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:43.999Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.001Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.002Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.011Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.011Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.012Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.014Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.014Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.016Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.470Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528484470,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835aa75001Hc6C5XOmmXTvD4",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a8ad0019EPWtJWK0twhpW",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.471Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.471Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.471Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.472Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528484472,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835aa770013XBfgjvNLQNjQD",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a8ad0019EPWtJWK0twhpW",
+    "type": "text",
+    "text": "Conversation summary: Busca en la web qué es la notación de enlaces.  Let me search the web for Busca en la web qué es la notación de enlaces.\n\nTitle: What did we do so\n\nUser turns:\n  1. Busca en la web qué es la notación de enlaces\n  2.",
+    "time": {
+      "start": 1789528484471,
+      "end": 1789528484471
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.472Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528484472,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835aa780011hFjujbK4m2Nhj",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835a8ad0019EPWtJWK0twhpW",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 61996,
+      "output": 237,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 62233,
+      "headroom": -23377,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.472Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.473Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.473Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.474Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.474Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528484474,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835aa7a0015QPP42YT5bUN1c",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835aa79001PCXWVp7o6Qb2Or",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528484474,
+      "end": 1789528484474
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.474Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.476Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.476Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.477Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.479Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.480Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.543Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528484543,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835aabf001wVZiL7aBpg6yMw",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835aa7d001BmiSj2NLGhHwIi",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528484544,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835aac0002tsU5nhs657jcQt",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835aa7d001BmiSj2NLGhHwIi",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528484544,
+      "end": 1789528484544
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.545Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528484545,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "part": {
+    "id": "prt_0a835aac0003e7Amifcb7HFkhi",
+    "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+    "messageID": "msg_0a835aa7d001BmiSj2NLGhHwIi",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8786,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8859,
+      "headroom": 29997,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.545Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.545Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.546Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.546Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.548Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.548Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.549Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528484549,
+  "sessionID": "ses_f57ca75f7ffeua1yI76hsW9EV4"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.550Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.550Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.551Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.551Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.SWi88LoQFi",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:44.551Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 9,
+  "message": "Agent exiting"
+}
+

@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.035Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.036Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Busca en el código RouteIntent --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.036Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.036Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.051Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Busca en el código RouteIntent",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Busca en el código RouteIntent",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.051Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.052Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.053Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.053Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.060Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.061Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.067Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 8593,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.067Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.084Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:14:45.091Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.091Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.091Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.091Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.092Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.092Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.092Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.092Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 40,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.092Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:14:45.092Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.097Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.097Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.098Z",
+  "service": "session",
+  "id": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U",
+  "title": "New session - 2026-09-16T03:14:45.098Z",
+  "time": {
+    "created": 1789528485098,
+    "updated": 1789528485098
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.099Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.099Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.099Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.100Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.100Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57ca5315ffeLuk85WyvemNWCN/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.100Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57ca5315ffeLuk85WyvemNWCN/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.103Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57ca5315ffeLuk85WyvemNWCN/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.107Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.108Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.109Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.110Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.112Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.112Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.113Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.113Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.113Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.113Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.113Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.113Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.113Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.283Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.286Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.286Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.297Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.301Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.307Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.699Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528485699,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835af40001JGyh7h0x8GXRRL",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835ada5001KrGrwea8YEuula",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.700Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.700Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528485700,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835af44001JcDxIYCIeJSNEJ",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835ada5001KrGrwea8YEuula",
+    "type": "tool",
+    "callID": "call_c4f7d003ced0cfb1",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.700Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528485701,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835af43001XmMVRrqb8XiAsN",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835ada5001KrGrwea8YEuula",
+    "type": "text",
+    "text": "Let me search the web for Busca en el código RouteIntent.",
+    "time": {
+      "start": 1789528485700,
+      "end": 1789528485700
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:45.701Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528485701,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835af44001JcDxIYCIeJSNEJ",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835ada5001KrGrwea8YEuula",
+    "type": "tool",
+    "callID": "call_c4f7d003ced0cfb1",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Busca en el código RouteIntent"
+      },
+      "time": {
+        "start": 1789528485701
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528487441,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835af44001JcDxIYCIeJSNEJ",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835ada5001KrGrwea8YEuula",
+    "type": "tool",
+    "callID": "call_c4f7d003ced0cfb1",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Busca en el código RouteIntent"
+      },
+      "output": "Title: packages/adaptive-routing/engine.ts\nURL: https://github.com/ifiokjr/oh-pi/blob/main/packages/adaptive-routing/engine.ts\nPublished: N/A\nAuthor: N/A\nHighlights:\nimport type {\n AdaptiveRoutingConfig,\n NormalizedRouteCandidate,\n PromptRouteClassification,\n ProviderUsageState,\n RouteCandidateScore,\n RouteDecision,\n RouteExplanation,\n RouteIntent,\n RouteLock,\n RouteQuotaSnapshot,\n RouteThinkingLevel,\n RouteTier,\n} from \"./types.js\";\n\nimport\n...\n.js\";\n...\nPolicy = config.\n...\nclassification.intent];\n\n const ranking\n...\n) => matches\n...\n, candidate));\n...\n0 - ranking\n...\n3);\n reasons\n...\n}\n\n if (\n...\ncandidate))) {\n...\n28;\n reasons\n...\nRequestedThinking(\n config: Adaptive\n...\nexport function buildFallbackClassification(intent: RouteIntent): PromptRouteClassification {\n return {\n classifierMode: \"heuristic\",\n complexity: intent === \"design\" || intent === \"architecture\" ? 4 : 3,\n confidence: 0.35,\n contextBreadth: intent === \"architecture\" ? \"large\" : \"medium\",\n expectedTurns: intent === \"quick-qna\" ? \"one\" : \"few\",\n intent,\n reason: \"Fallback classification applied.\",\n recommendedThinking: intent === \"quick-qna\" ? \"minimal\" : \"medium\",\n recommendedTier: intent === \"design\" || intent === \"architecture\" ? \"premium\" : \"balanced\",\n risk: intent === \"quick-qna\" ? \"low\" : \"medium\",\n toolIntensity: intent === \"implementation\" || intent === \"debugging\" ? \"high\" : \"medium\",\n };\n}\n\n---\n\nTitle: MacWulf/adaptive-zero-token-router\nURL: https://github.com/MacWulf/adaptive-zero-token-router\nPublished: N/A\nAuthor: N/A\nHighlights:\n```ts\nimport { routeIntent } from \"adaptive-zero-token-router\";\n\nconst result = routeIntent({\n  prompt: \"Reply exactly OK. Do not create, edit, delete, or move files.\"\n});\n\nconsole.log(result.route);  // \"chat\"\nconsole.log(result.family); // \"chat-small\"\n```\n...\nPositive work outside a negated clause\n...\n```ts\nrouteIntent({ prompt: \"Do not explain, fix the bug.\" }).route;\n// \"coding\"\n...\nThe router returns two levels:\n...\n| Field | Values | Meaning |\n| --- | --- | --- |\n| `route` | `chat`, `tooling`, `coding` | Execution lane |\n| `family` | `chat-small`, `planning`, `agentic-tooling`, `code-edit`, `code-refactor`, `debugging` | More specific model/policy bucket |\n| `intent` | `conversation`, `planning`, `tooling`, `coding` | User intent |\n...\n```ts\nconst previous = routeIntent({ prompt: \"Refactor the router into smaller files.\" });\n\nconst next = routeIntent({\n  prompt: \"go ahead\",\n  previous\n});\n...\nconsole.log(next.route); // \"coding\"\n...\n```ts\nrouteIntent({\n  prompt: \"Reply OK. Do not write code or touch files.\",\n  previous\n}).route;\n// \"chat\"\n\n---\n\nTitle: lib/agent/intents/route-mapping.ts\nURL: https://github.com/erp-mafia/accounted/blob/main/lib/agent/intents/route-mapping.ts\nPublished: N/A\nAuthor: N/A\nHighlights:\n// Route → intent dispatch for the floating \"Fråga [namn]\" trigger.\n...\nthe FAB the same situational awareness: it inspect\n...\nthe\n// pathname and picks the intent + intentArgs that\n...\nequivalent on-page\n...\nexport interface RouteIntent {\n intentId: string\n intentArgs: Record<string, unknown>\n // Persisted on agent_conversations.context_ref so /chat can back-link.\n contextRef?: string\n // Short suffix appended to the FAB label (\"Fråga [namn] om denna faktura\").\n // null → just \"Fråga [namn]\".\n labelSuffix: string | null\n}\n...\nconst GENERAL_HELP = (route: string | null): RouteIntent => ({\n intentId: 'general.help',\n intentArgs: { route: route ?? undefined },\n labelSuffix: null,\n})\n...\nexport function routeToIntent(pathname: string | null | undefined): RouteIntent {\n if (!pathname) return GENERAL_HELP(null)\n\n const segments = pathname.split('/').filter(Boolean)\n const [first, second] = segments\n\n // /invoices/new: drafting a brand-new invoice (no entity id yet).\n if (first === 'invoices' && second === 'new') {\n return {\n intentId: 'invoice.draft',\n intentArgs: {},\n labelSuffix: 'om denna faktura',\n }\n }\n\n // /invoices/[id] and /invoices/[id]/credit: entity in focus.\n if (first === 'invoices' && second && second !== 'new') {\n return {\n intentId: 'invoice.draft',\n intentArgs: { invoice_id: second },\n contextRef: `invoice:${second}`,\n labelSuffix: 'om denna faktura',\n }\n }\n\n // /supplier-invoices/[id]: review/attest flow.\n // /supplier-invoices/new has no entity to review yet: fall through to\n // general.help so the agent doesn't load a heavy Opus intent on an empty\n // capture.\n if (first === 'supplier-invoices' && second && second !== 'new') {\n return {\n intentId: 'supplier_invoice.review',\n intentArgs: { supplier_invoice_id: second },\n contextRef: `supplier_invoice:${second}`,\n labelSuffix: 'om denna leverantörsfaktura',\n }\n }\n\n // /bookkeeping/year-end: the bokslut wizard. Match the page's \"Fråga om\n // bokslutet\" button (bokslut.step) instead of general.help, so the FAB and the\n // page button open the SAME assistant here rather than two different ones.\n if (first === 'bookkeeping' && second === 'year-end') {\n return {\n intentId: 'bokslut.step',\n intentArgs: { step_id: null },\n contextRef: 'bokslut:overview',\n labelSuffix: 'om bokslutet',\n }\n }\n\n // /bookkeeping/[id] (single verifikation) is intentionally NOT mapped\n // here: AgentTrigger suppresses the FAB on that route entirely. The\n // verifikation editor is a dense regulatory surface and the floating\n // pill earned its way off the page.\n\n // /kpi: nyckeltal dashboard. Match the page's \"Fråga om nyckeltalen\" button\n // (kpi.explain) so the FAB and the page button agree on this page.\n if (first === 'kpi') {\n return {\n intentId: 'kpi.explain',\n intentArgs: { kpi_key: 'översikt' },\n contextRef: 'kpi:översikt',\n labelSuffix: 'om nyckeltalen',\n }\n }\n\n // Note: /transactions and /reports intentionally fall through to general.help.\n // Their on-page triggers are entity/view-specific (a transaction row needs a\n // transaction_id; the VAT report button needs the selected period/view): the\n // FAB only knows the pathname, so page-level help is the honest default there.\n\n // /settings/ [/...]: settings.help captures which panel is active.\n // Uses the second segment as panel slug so /settings/invoicing/templates\n // still surfaces panel=invoicing.\n if (first === 'settings' && second) {\n return {\n intentId: 'settings.help',\n intentArgs: { panel: second },\n labelSuffix: null,\n }\n }\n\n return GENERAL_HELP(pathname)\n}\n\n---\n\nTitle: GPT-ACTION.md\nURL: https://github.com/Polaris899/agent-protocol/blob/main/GPT-ACTION.md\nPublished: N/A\nAuthor: N/A\nHighlights:\nGPT automatically gains a `routeIntent` action, called as:\n...\n```json\nPOST https://api.agent-trust-protocol.org/api/route\n{\n  \"intent\": \"<user's natural language intent>\"\n}\n...\n```json\n{\n  \"matched\": true,\n  \"top_match\": {\n    \"name\": \"Financial Statement Analyzer\",\n    \"description\": \"Deep financial analysis with DuPont decomposition and fraud detection\",\n    \"score\": 0.44\n  },\n  \"alternatives\": [\n    { \"name\": \"Financial Planner v36\", \"score\": 0.21 }\n  ],\n  \"total_matches\": 20\n}\n...\n```\n## External Capability (AMP Intent Router)\n...\nYou are connected to an external skill routing network (AMP) with discovery access to 13,078 registered Skills.\n...\nRouting Rules:\n...\n1. After receiving a user intent, if it falls within your core capability, handle it directly\n2. If the user's request exceeds your capability (e.g., user wants financial analysis but your strength is writing),\n   call routeIntent to find the best-matching Skill\n3. Present the result to the user:\n   \"I can ask my colleague [Skill Name] to handle this — it has [Skill Description]. Shall I forward it?\"\n4. If the user confirms, retrieve the Skill's full details via the routing center and execute on their behalf\n```\n...\n**Your GPT (assuming it's a general writing assistant):**\n...\n→ Calls `routeIntent(\"analyze this financial report\")`\n→ Returns `top_match = {\"name\": \"Financial Statement Analyzer\", \"score\": 0.44}`\n...\n→ Replies:\n \"While I'm good at writing, I'd recommend consulting my colleague 'Financial Statement Analyzer' for professional financial analysis. It specializes in deep financial analysis with DuPont decomposition and fraud detection. Shall I forward it?\"\n...\n\"analyze this financial report\"  → Financial Planner v36     (0.44) ✅\n...\n\"what's the weather in\n...\n\"    → Weather\n...\n0.8\n...\n├── \"create\n...\n\"search latest\n...\n├── \"convert\n...\n\"       →\n...\nToolkit               (\n\n---\n\nTitle: gpt-action.yaml\nURL: https://github.com/Polaris899/agent-protocol/blob/main/gpt-action.yaml\nPublished: N/A\nAuthor: N/A\nHighlights:\npaths:\n /api/route:\n post:\n operationId: routeIntent\n summary: Find matching AI Skill for a user intent\n description: Semantic search across 5,051 indexed Skills. Returns top-3 matches.\n requestBody:\n required: true\n content:\n application/json:\n schema:\n type: object\n required: [intent]\n properties:\n intent:\n type: string\n description: 'User intent, e.g. \"帮我分析财务报表\" or \"what is the weather in Tokyo\"'\n user_id:\n type: string\n description: Optional user identifier for tracking\n responses:\n \"200\":\n description: Successful routing result\n content:\n application/json:\n schema:\n type: object\n properties:\n matched:\n type: boolean\n intent:\n type: string\n top_match:\n type: object\n alternatives:\n type: array\n total_matches:\n type: integer\n\n---\n\nTitle: README.md\nURL: https://github.com/MacWulf/adaptive-zero-token-router/blob/main/README.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n```ts\nimport { routeIntent } from \"adaptive-zero-token-router\";\n\nconst result = routeIntent({\n  prompt: \"Reply exactly OK. Do not create, edit, delete, or move files.\"\n});\n\nconsole.log(result.route);  // \"chat\"\nconsole.log(result.family); // \"chat-small\"\n```\n...\nPositive work outside a negated clause still routes upward:\n...\n```ts\nrouteIntent({ prompt: \"Do not explain, fix the bug.\" }).route;\n// \"coding\"\n...\nThe router returns\n...\n| Field | Values | Meaning |\n| --- | --- | --- |\n| `route` | `chat`, `tooling`, `coding` | Execution lane |\n| `family` | `chat-small`, `planning`, `agentic-tooling`, `code-edit`, `code-refactor`, `debugging` | More specific model/policy bucket |\n| `intent` | `conversation`, `planning`, `tooling`, `coding` | User intent |\n...\n```ts\nconst previous = routeIntent({ prompt: \"Refactor the router into smaller files.\" });\n\nconst next = routeIntent({\n  prompt: \"go ahead\",\n  previous\n});\n\nconsole.log(next.route); // \"coding\"\n...\nExplicit no-code/no-tool instructions still win:\n...\n```ts\nrouteIntent({\n  prompt: \"Reply OK. Do not write code or touch files.\",\n  previous\n}).route;\n// \"chat\"\n\n---\n\nTitle: Rimi12/adaptive-zero-token-router\nURL: https://github.com/Rimi12/adaptive-zero-token-router\nPublished: N/A\nAuthor: N/A\nHighlights:\n```ts\nimport { routeIntent } from \"adaptive-zero-token-router\";\n\nconst result = routeIntent({\n  prompt: \"Reply exactly OK. Do not create, edit, delete, or move files.\"\n});\n\nconsole.log(result.route);  // \"chat\"\nconsole.log(result.family); // \"chat-small\"\n```\n...\nPositive work outside a negated clause still\n...\n```ts\nrouteIntent({ prompt: \"Do not explain, fix the bug.\" }).route;\n// \"coding\"\n...\nThe router returns two levels:\n...\n| Field | Values | Meaning |\n| --- | --- | --- |\n| `route` | `chat`, `tooling`, `coding` | Execution lane |\n| `family` | `chat-small`, `planning`, `agentic-tooling`, `code-edit`, `code-refactor`, `debugging` | More specific model/policy bucket |\n| `intent` | `conversation`, `planning`, `tooling`, `coding` | User intent |\n...\n```ts\nconst previous = routeIntent({ prompt: \"Refactor the router into smaller files.\" });\n\nconst next = routeIntent({\n  prompt: \"go ahead\",\n  previous\n});\n\nconsole.log(next.route); // \"coding\"\n...\n-code/\n...\n```ts\nrouteIntent({\n  prompt: \"Reply OK. Do not write code or touch files.\",\n  previous\n}).route;\n// \"chat\"\n\n---\n\nTitle: packages/adaptive-routing/classifier.ts\nURL: https://github.com/ifiokjr/oh-pi/blob/main/packages/adaptive-routing/classifier.ts\nPublished: N/A\nAuthor: N/A\nHighlights:\nimport type {\n\tAdaptiveRoutingConfig,\n\tNormalizedRouteCandidate,\n\tPromptRouteClassification,\n\tRouteIntent,\n\tRouteThinkingLevel,\n} from \"./types.js\";\n...\nexport function classifyPromptHeuristically(prompt: string): PromptRouteClassification {\n\tconst text = prompt.toLowerCase();\n\tconst intent = detectIntent(text);\n\tconst complexity = detectComplexity(text, intent);\n\tconst recommendedTier = detectTier(intent, complexity);\n\tconst recommendedThinking = detectThinking(recommendedTier);\n\n\treturn {\n\t\tclassifierMode: \"heuristic\",\n\t\tcomplexity,\n\t\tconfidence:\n...\n0.5,\n...\ncontextBreadth: complexity >=\n...\n4 || intent === \"\n...\n? \"large\n...\n: complexity >= 3 ?\n...\nmedium\" :\n...\nquick-qna\" ? \"one\" : complexity >= 4 ? \"many\" : \"few\",\n\t\tintent,\n\t\treason: `heuristic ${intent} classification\n...\nrecommendedThinking,\n...\nrisk: intent === \"\n...\n-qna\" ? \"low\" : complexity >=\n...\n4 ? \"high\" : \"medium\n...\ntoolIntensity: [\"implementation\", \"\n...\n\", \"refactor\", \"autonomous\"].includes(intent)\n...\n? \"high\n...\n: intent === \"quick\n...\nqna\"\n\t\t\t\t? \"low\"\n\t\t\t\t: \"medium\n...\nfunction detectIntent(text: string): RouteIntent {\n\tif (/(design|ui|ux|layout|visual|styling|theme|color|aesthetic)/.test(text)) {\n\t\treturn \"design\";\n\t}\n\n\tif (/(architecture|system design|tradeoff|approach|deep refactor|cross-cutting)/.test(text)) {\n\t\treturn \"architecture\";\n\t}\n\n\tif (/(debug|failing|error|stack trace|why is|broken|fix)/.test(text)) {\n\t\treturn \"debugging\";\n\t}\n\n\tif (/(review|audit|look over|inspect this change|code review)/.test(text)) {\n\t\treturn \"review\";\n\t}\n\n\tif (/(refactor|clean up|restructure)/.test(text)) {\n\t\treturn \"refactor\";\n\t}\n\n\tif (/(plan|roadmap|spec|outline|break down|approach this)/.test(text)) {\n\t\treturn \"planning\";\n\t}\n\n\tif (/(research|investigate|compare|look up|search)/.test(text)) {\n\t\treturn \"research\";\n\t}\n\n\tif (/(autonomous|work through|handle all of|keep going until)/.test(text)) {\n\t\treturn \"autonomous\";\n\t}\n\n\tif (/(implement|build|add|create|wire up|integrate)/.test(text)) {\n\t\treturn \"implementation\";\n\t}\n\n\treturn text.split(/\\s+/).length < 18 ? \"quick-qna\" : \"implementation\";\n}\n...\nfunction detectComplexity(text: string, intent: RouteIntent): 1 | 2 | 3 | 4 | 5 {\n\tlet score = 1;\n\tconst { length } = text.split(/\\s+/);\n\n\tif (length > 20) {\n\t\tscore += 1;\n\t}\n\n\tif (length > 50) {\n\t\tscore += 1;\n\t}\n\n\tif (/(multiple|across|migration|all of these|thoroughly|deeply|telemetry|fallback|quota|policy)/.test(text)) {\n\t\tscore += 1;\n\t}\n\n\tif ([\"architecture\", \"autonomous\", \"design\"].includes(intent)) {\n\t\tscore += 1;\n\t}\n\n\treturn Math.min(score, 5) as 1 | 2 | 3 | 4 | 5;\n}\n...\nfunction detectTier(intent: RouteIntent, complexity: number) {\n\tif (intent === \"quick-qna\" && complexity <= 2) {\n\t\treturn \"cheap\" as const;\n\t}\n\n\tif ((intent === \"design\" || intent === \"architecture\" || intent === \"autonomous\") && complexity >= 4) {\n\t\treturn \"peak\" as const;\n\t}\n\n\tif (complexity >= 4 || intent === \"debugging\" || intent === \"refactor\") {\n\t\treturn \"premium\" as const;\n\t}\n\n\treturn complexity <= 2 ? (\"cheap\" as const) : (\"balanced\" as const);\n}",
+      "title": "Web search: Busca en el código RouteIntent",
+      "metadata": {},
+      "time": {
+        "start": 1789528485701,
+        "end": 1789528487424
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.449Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528487449,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835b6170011UbVUVYqyzyzWB",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835ada5001KrGrwea8YEuula",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8526,
+      "output": 108,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8634,
+      "headroom": 30222,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.454Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.455Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.462Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.462Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.464Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.465Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.466Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.478Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8634,
+  "providerTokens": 8634,
+  "estimatedInputTokens": 3873,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8526,
+    "cacheRead": 0,
+    "output": 108
+  },
+  "overflow": false,
+  "headroom": 30222,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.479Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.479Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.498Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:47.501Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:48.176Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528488176,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835b8ed001JndYuNrJn33Zr4",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835b636001pQ3uVbbeR8vECs",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:48.177Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:48.178Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528488178,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835b8f1001HFe9QBjJCM3zMC",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835b636001pQ3uVbbeR8vECs",
+    "type": "tool",
+    "callID": "call_f01a7d86a118cec1",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:48.178Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528488178,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835b8f0001pkPvih8rSDaCwN",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835b636001pQ3uVbbeR8vECs",
+    "type": "text",
+    "text": "Let me open https://github.com/ifiokjr/oh-pi/blob/main/packages/adaptive-routing/engine.ts and read what it says.",
+    "time": {
+      "start": 1789528488178,
+      "end": 1789528488178
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:48.178Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528488178,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835b8f1001HFe9QBjJCM3zMC",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835b636001pQ3uVbbeR8vECs",
+    "type": "tool",
+    "callID": "call_f01a7d86a118cec1",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/ifiokjr/oh-pi/blob/main/packages/adaptive-routing/engine.ts"
+      },
+      "time": {
+        "start": 1789528488178
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.115Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528489115,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835b8f1001HFe9QBjJCM3zMC",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835b636001pQ3uVbbeR8vECs",
+    "type": "tool",
+    "callID": "call_f01a7d86a118cec1",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/ifiokjr/oh-pi/blob/main/packages/adaptive-routing/engine.ts"
+      },
+      "error": "Error: Request failed with status code: 404",
+      "time": {
+        "start": 1789528488178,
+        "end": 1789528489113
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528489115,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "message": "Error: Request failed with status code: 404",
+  "error": "Error: Request failed with status code: 404"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.117Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528489117,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835bc9c001cTeIUv7Vb3QKAk",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835b636001pQ3uVbbeR8vECs",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 23471,
+      "output": 225,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 23696,
+      "headroom": 15160,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.117Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.117Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.135Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.135Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.186Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.186Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.187Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.194Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.194Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.196Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 23696,
+  "providerTokens": 23696,
+  "estimatedInputTokens": 3903,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 23471,
+    "cacheRead": 0,
+    "output": 225
+  },
+  "overflow": false,
+  "headroom": 15160,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.197Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.197Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.201Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.405Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528489405,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835bdbc001cA14k3EdlGGbvJ",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835bcec001rNYZyW3Hcws1B2",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.406Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.406Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528489406,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835bdbd001n3wku2LCv2Amb4",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835bcec001rNYZyW3Hcws1B2",
+    "type": "text",
+    "text": "The command failed: Error: Request failed with status code: 404\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+    "time": {
+      "start": 1789528489406,
+      "end": 1789528489406
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.407Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528489407,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "part": {
+    "id": "prt_0a835bdbe001EgrpjbwRQcUuAp",
+    "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+    "messageID": "msg_0a835bcec001rNYZyW3Hcws1B2",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 23627,
+      "output": 212,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 23839,
+      "headroom": 15017,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.407Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.407Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.408Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.408Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.412Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.412Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.412Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.412Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.413Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.414Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.415Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528489415,
+  "sessionID": "ses_f57ca5315ffeLuk85WyvemNWCN"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.416Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.416Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.417Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.417Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.xPdyBv661U",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:49.417Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+
