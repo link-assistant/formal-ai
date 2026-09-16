@@ -52,7 +52,7 @@ sources_registry
     license_name "CC BY 4.0"
     license_url "https://creativecommons.org/licenses/by/4.0/"
     cache_path data/cache/wordnet/
-    note "OEWN 2024 lexicon imported offline via the wn library; one compact per-lemma synset projection (.json + .lino) under en/. Source database is fetched on demand and stays out of git per the small-seed principle. The api is the site's own machine-readable per-lemma endpoint: /lemma/ redirects to a 33 KB HTML page whose synsets only a browser can read, /api/lemma/ serves the same synsets as JSON."
+    note "OEWN 2024 lexicon imported offline via the wn library; one compact per-lemma synset projection (.json + .lino) under en/. Source database is fetched on demand and stays out of git per the small-seed principle."
   source wikipedia
     name "Wikipedia"
     kind encyclopedia
@@ -226,4 +226,4 @@ sources_registry
     license_name "CC BY 2.5"
     license_url "https://creativecommons.org/licenses/by/2.5/"
     cache_path data/cache/wikinews/
-    note "Answers an evidence need — what happened — and not a concept need: a news wiki records events, it does not state what a word means. It declared `concept` when issue #1138 plan 01 L3 gave every source a need kind, and because original journalism outranks every dictionary on the trust axis it took the first consultation slot for 'what does this word mean' and pushed a dictionary out of the four the bounds allow. Original journalism — events reported first-hand by Wikinews reporters. This is the original-first-source / original-journalism tier the document-verification handler weighs statements against (issue #535): reposts and unoriginal aggregations are ignored, original coverage is trusted. Reuses the Wikipedia action=parse path and shares the MediaWiki-family settings toggle."
+    note "Original journalism — events reported first-hand by Wikinews reporters. This is the original-first-source / original-journalism tier the document-verification handler weighs statements against (issue #535): reposts and unoriginal aggregations are ignored, original coverage is trusted. Reuses the Wikipedia action=parse path and shares the MediaWiki-family settings toggle."

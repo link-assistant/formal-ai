@@ -1065,6 +1065,13 @@ const EXTERNAL_TRUSTED_SERVICES = [
   { key: "externalServiceStackExchange", label: "settings.externalServiceStackExchange" },
   { key: "externalServiceMediawikiFamily", label: "settings.externalServiceMediawikiFamily" },
   { key: "externalServiceGithub", label: "settings.externalServiceGithub" },
+  // Issue #1138 plan 01 L4: the lexical tier joined the live, opt-out-able
+  // group when it gained a `need_kinds`, so the two settings keys that silence
+  // a dictionary belong here too. Without them a user could opt out of every
+  // procedural source and still have no way to opt out of the ones that answer
+  // "what does this word mean".
+  { key: "externalServiceWiktionary", label: "settings.externalServiceWiktionary" },
+  { key: "externalServiceWordnet", label: "settings.externalServiceWordnet" },
 ];
 
 const LEGACY_EXPANDED_SIDEBAR_KEYS = [

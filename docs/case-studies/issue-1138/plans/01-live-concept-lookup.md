@@ -1262,7 +1262,7 @@ making it reachable for a concept need.
       add `need_kinds`, `service_group`, `settings_key`, `extractor`, `api_language`
       to the lexical tier in `data/seed/sources-registry.lino`; `select_sources`
       dispatches on `NeedKind`. Test: dictionary-before-encyclopedia ordering.
-- [ ] **L4 — Settings surface.** Two rows in
+- [x] **L4 — Settings surface.** Two rows in
       `src/web/app/main.jsx:1063-1068`, i18n labels, and the settings-parity test
       extended to six keys. Test: `a_settings_opt_out_silences_a_dictionary_and_is_reported_as_disabled`.
 - [x] **L5 — Extractors.** `src/concept_lookup.rs` with `ConceptSense`,

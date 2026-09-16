@@ -150,6 +150,10 @@ en
       label "Wikifunctions, Rosetta Code & Wikimedia guides"
     externalServiceGithub
       label "GitHub project docs"
+    externalServiceWiktionary
+      label "Wiktionary definitions"
+    externalServiceWordnet
+      label "Open English WordNet senses"
     language
       label "Language"
       auto "Auto"
@@ -381,6 +385,10 @@ ru
       label "Wikifunctions, Rosetta Code и справочники Wikimedia"
     externalServiceGithub
       label "Документация проектов GitHub"
+    externalServiceWiktionary
+      label "Определения Викисловаря"
+    externalServiceWordnet
+      label "Значения Open English WordNet"
     language
       label "Язык"
       auto "Авто"
@@ -602,6 +610,10 @@ zh
       label "Wikifunctions、Rosetta Code 和 Wikimedia 指南"
     externalServiceGithub
       label "GitHub 项目文档"
+    externalServiceWiktionary
+      label "维基词典释义"
+    externalServiceWordnet
+      label "Open English WordNet 词义"
     language
       label "语言"
       auto "自动"
@@ -829,6 +841,10 @@ hi
       label "Wikifunctions, Rosetta Code और Wikimedia गाइड"
     externalServiceGithub
       label "GitHub प्रोजेक्ट दस्तावेज़"
+    externalServiceWiktionary
+      label "विक्षनरी परिभाषाएँ"
+    externalServiceWordnet
+      label "Open English WordNet अर्थ"
     language
       label "भाषा"
       auto "ऑटो"
