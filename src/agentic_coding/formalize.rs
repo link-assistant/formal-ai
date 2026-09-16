@@ -85,9 +85,17 @@ pub struct FormalizationSummary {
 }
 
 impl FormalizationSummary {
+    /// Whether every one of the nine primitives is realised **and** every need
+    /// this document raised was grounded.
+    ///
+    /// The second clause is the coverage-honesty rule of issue #1138 plan 04:
+    /// a document whose key concept nobody could define is not a document the
+    /// formalizer understood, however many record kinds happen to be non-empty.
+    /// Reporting it as covered is the defect the two hand-run probes of the
+    /// issue #710 case study recorded.
     #[must_use]
     pub const fn covers_all_nine(&self) -> bool {
-        self.covered.len() == PRIMITIVE_KINDS.len()
+        self.covered.len() == PRIMITIVE_KINDS.len() && self.needs_raised == self.needs_grounded
     }
 
     #[must_use]
@@ -123,7 +131,14 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
     let resolved_doc_id = resolve_doc_id(doc_id, work);
 
     let sentences = segment_sentences(text);
-    let language = if has_cyrillic(text) { "ru" } else { "en" };
+    // Which language a document is written in is a question the tree already
+    // answers from seeded script ranges and markers, in every registered
+    // language. What stood here was `has_cyrillic(text) { "ru" } else { "en" }`
+    // — a two-language test that labelled a Hindi, Chinese or Spanish document
+    // English and wrote that claim into every annotation row (issue #1138,
+    // plan 04).
+    let detected = crate::language::detect(text);
+    let language = detected.slug();
 
     let mut annotations: Vec<Annotation> = Vec::new();
     let mut assertions: Vec<Assertion> = Vec::new();
@@ -133,6 +148,7 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
     let mut temporals: BTreeMap<String, Temporal> = BTreeMap::new();
     let mut modals: BTreeMap<String, Modal> = BTreeMap::new();
 
+    let mut preserved: Vec<usize> = Vec::new();
     for (index, sentence) in sentences.iter().enumerate() {
         let annotation_id = format!("ann:{index}");
         annotations.push(Annotation {
@@ -195,7 +211,9 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
                     natural_language: None,
                 });
             }
-            None => assertions.push(Assertion {
+            None => {
+                preserved.push(index);
+                assertions.push(Assertion {
                 id: format!("a:{index}"),
                 subject: Term::literal("—"),
                 predicate: PredicateUse {
@@ -209,7 +227,8 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
                 annotation: annotation_id,
                 provenance,
                 natural_language: Some(sentence.text.clone()),
-            }),
+                });
+            }
         }
     }
 
@@ -244,6 +263,28 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
     }
     concept_records.sort_by(|left, right| left.id.cmp(&right.id));
 
+    // Every surface the document leaves unresolved becomes a need, and a
+    // document with an unresolved need is never reported as covered (issue
+    // #1138, plan 04 L4). The work catalogue is what grounds the canonical
+    // tale: its lexicon terms are concepts this formalization already has, so
+    // a recognised work raises nothing and an unfamiliar requirement raises
+    // one need per word nobody has seeded.
+    // Only the sentences this pass *preserved* raise needs. A sentence the
+    // work catalogue reduced to a grounded subject/predicate/object triple was
+    // understood; a sentence that fell back to a preserved span was not, and
+    // that is exactly the distinction plan 04 exists to make visible. The
+    // canonical tale therefore raises nothing and stays the regression corpus,
+    // while an unfamiliar requirement raises one need per word nobody has
+    // seeded.
+    let grounded = grounded_graph(&concept_records, &used_entities);
+    let byte_segments = crate::formalization::segment::sentences(text);
+    let unread: Vec<crate::formalization::segment::Segment> = preserved
+        .iter()
+        .filter_map(|index| byte_segments.get(*index).cloned())
+        .collect();
+    let raised =
+        crate::formalization::needs::emit_needs(&resolved_doc_id, &unread, &grounded, 0);
+
     let summary = FormalizationSummary {
         doc_id: resolved_doc_id.clone(),
         concepts: concept_records.len(),
@@ -256,7 +297,7 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
         modals: modals.len(),
         annotations: annotations.len(),
         covered: Vec::new(),
-        needs_raised: 0,
+        needs_raised: raised.len(),
         needs_grounded: 0,
         max_depth_reached: 0,
     };
@@ -510,9 +551,46 @@ fn segment_sentences(text: &str) -> Vec<Sentence> {
         .collect()
 }
 
-fn has_cyrillic(text: &str) -> bool {
-    text.chars()
-        .any(|character| ('\u{0400}'..='\u{04FF}').contains(&character))
+/// The concepts and entities this formalization has already grounded, as the
+/// graph [`crate::formalization::needs::emit_needs`] consults.
+///
+/// A recognised work's lexicon terms are grounded by definition — that is what
+/// a catalogue *is* — so the canonical tale raises no needs and stays the
+/// regression corpus plan 04 keeps it as.
+fn grounded_graph(
+    concepts: &[ConceptDecl],
+    entities: &BTreeMap<String, String>,
+) -> crate::formalization::concept_links::ConceptGraph {
+    use crate::formalization::concepts::{ExtractedConcept, ExtractedEntity};
+    crate::formalization::concept_links::ConceptGraph {
+        concepts: concepts
+            .iter()
+            .map(|concept| ExtractedConcept {
+                id: concept.id.clone(),
+                label: concept.label.clone(),
+                language: String::new(),
+                gloss: String::new(),
+                genus: None,
+                differentiae: Vec::new(),
+                structures: Vec::new(),
+                source_id: concept.source.clone(),
+                source_url: String::new(),
+                sha256: String::new(),
+                license_name: String::new(),
+                depth: 0,
+            })
+            .collect(),
+        entities: entities
+            .iter()
+            .map(|(id, label)| ExtractedEntity {
+                id: id.clone(),
+                label: label.clone(),
+                language: String::new(),
+                source_span: String::new(),
+            })
+            .collect(),
+        ..crate::formalization::concept_links::ConceptGraph::default()
+    }
 }
 
 fn slugify(text: &str) -> String {

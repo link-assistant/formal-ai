@@ -9,7 +9,7 @@
 use crate::formalization::concepts::{ExtractedConcept, ExtractedEntity, ExtractedRelation};
 use crate::formalization::procedures::ExtractedProcedure;
 use crate::formalization::segment::Segment;
-use crate::needs::Need;
+use crate::needs::{Need, NeedState};
 use crate::source_walk::{LookupBounds, SourceLookup};
 
 /// Everything one formalization grounded, plus everything it could not.
@@ -43,16 +43,44 @@ impl ConceptGraph {
         todo!("plan 04 leaf L8")
     }
 
+    /// Whether `surface` is already accounted for by something this graph
+    /// grounded, so a second pass does not ask about it again.
+    #[must_use]
+    pub fn grounds(&self, surface: &str) -> bool {
+        self.concepts
+            .iter()
+            .any(|concept| concept.label.eq_ignore_ascii_case(surface))
+            || self
+                .entities
+                .iter()
+                .any(|entity| entity.label.eq_ignore_ascii_case(surface))
+    }
+
+    /// Every need no source grounded, in the order they were raised.
     #[must_use]
     pub fn unresolved(&self) -> Vec<&Need> {
-        todo!("plan 04 leaf L8")
+        self.needs
+            .iter()
+            .filter(|need| need.state != NeedState::Satisfied)
+            .collect()
     }
 
     /// `(grounded, total needs)` — a document with an unresolved need can never
     /// be reported as covered.
     #[must_use]
     pub fn grounded_ratio(&self) -> (usize, usize) {
-        todo!("plan 04 leaf L8")
+        let grounded = self
+            .needs
+            .iter()
+            .filter(|need| need.state == NeedState::Satisfied)
+            .count();
+        (grounded, self.needs.len())
+    }
+
+    /// The deepest recursion this formalization actually reached.
+    #[must_use]
+    pub fn max_depth_reached(&self) -> usize {
+        self.needs.iter().map(|need| need.depth).max().unwrap_or(0)
     }
 }
 

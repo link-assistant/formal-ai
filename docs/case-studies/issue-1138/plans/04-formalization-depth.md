@@ -1253,7 +1253,7 @@ Ordered; each individually verifiable and commit-sized.
       replace `status: String` with `NeedState`, map `meta_frame::NeedStatus` onto it, add `NeedOrigin` and
       `source_span`, re-export from `src/coding/concept_discovery.rs`. Test:
       `the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum`.
-- [ ] **L4 — Need emission.** `emit_needs`; `FormalizationSummary` gains
+- [x] **L4 — Need emission.** `emit_needs`; `FormalizationSummary` gains
       `needs_raised`/`needs_grounded`/`max_depth_reached`. Tests:
       `an_unfamiliar_requirement_raises_a_need_for_every_unresolved_surface`,
       `a_document_with_an_unresolved_need_is_never_reported_as_covered`.

@@ -2,13 +2,17 @@ self_ast_census
   target src/formalization/needs.rs
   language rust
   fidelity signature
-  byte_len 2404
-  line_count 68
-  content_id source_module_75b72e1f2c27d23a
-  symbol_count 5
+  byte_len 7969
+  line_count 208
+  content_id source_module_fea2e6ae921c3a5b
+  symbol_count 9
   symbols
-    enum NeedOrigin 21 30
-    struct NeedContext 34 39
-    function emit_needs 43 50
-    function satisfy_needs 55 62
-    function need_contexts 66 68
+    enum NeedOrigin 36 45
+    function slug 50 57
+    struct NeedContext 62 67
+    function emit_needs 77 103
+    function span 107 114
+    struct Satisfaction 119 123
+    function satisfy_needs 132 139
+    function satisfy 142 190
+    function need_contexts 195 208

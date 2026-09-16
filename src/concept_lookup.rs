@@ -740,14 +740,80 @@ pub fn unknown_surfaces(normalized: &str, language: &str) -> Vec<String> {
         .filter(|token| !token.is_empty())
     {
         let folded = token.to_lowercase();
-        if token.chars().count() < 3
-            || token.chars().all(|character| character.is_numeric())
-            || seeded_surfaces().contains(&folded)
-            || out.contains(&folded)
-        {
+        if !is_unknown_surface(token) || out.contains(&folded) {
             continue;
         }
         out.push(folded);
+    }
+    out
+}
+
+/// Whether one token is a surface no seeded meaning accounts for.
+///
+/// The rule lives here rather than in each caller so the coding path, which
+/// asks about a normalized sentence, and the deep formalizer, which asks about
+/// an exact span of the user's own bytes, agree on what "unknown" means. A
+/// token shorter than three characters or made only of digits is a fragment
+/// rather than a concept; everything the seed lexicon already declares is
+/// known by definition.
+#[must_use]
+pub fn is_unknown_surface(token: &str) -> bool {
+    let folded = token.to_lowercase();
+    token.chars().count() >= 3
+        && !token.chars().all(|character| character.is_numeric())
+        && !seeded_surfaces().contains(&folded)
+}
+
+/// Every unresolved surface in `text`, with the exact byte span it occupies.
+///
+/// Spans are relative to `text`, so a caller that segmented a document adds the
+/// segment's own offset and reaches a span that selects exactly the surface in
+/// the original bytes. Quoted spans are skipped for the same reason
+/// [`unknown_surfaces`] skips them: a quoted example is the subject of the
+/// question, not a concept the system is missing.
+#[must_use]
+pub fn unknown_surface_spans(text: &str) -> Vec<(String, usize, usize)> {
+    const PAIRS: [(char, char); 5] = [
+        ('"', '"'),
+        ('«', '»'),
+        ('\u{201c}', '\u{201d}'),
+        ('\u{2018}', '\u{2019}'),
+        ('\u{300c}', '\u{300d}'),
+    ];
+    let mut out: Vec<(String, usize, usize)> = Vec::new();
+    let mut closing: Option<char> = None;
+    let mut start: Option<usize> = None;
+    let push = |start: usize, end: usize, out: &mut Vec<(String, usize, usize)>| {
+        let token = &text[start..end];
+        if is_unknown_surface(token) {
+            out.push((token.to_owned(), start, end));
+        }
+    };
+    for (offset, character) in text.char_indices() {
+        match closing {
+            Some(close) if character == close => {
+                closing = None;
+                start = None;
+            }
+            Some(_) => {}
+            None => {
+                if let Some((_, close)) = PAIRS.iter().find(|(open, _)| *open == character) {
+                    if let Some(begin) = start.take() {
+                        push(begin, offset, &mut out);
+                    }
+                    closing = Some(*close);
+                } else if crate::source_walk::is_word_boundary(character) {
+                    if let Some(begin) = start.take() {
+                        push(begin, offset, &mut out);
+                    }
+                } else if start.is_none() {
+                    start = Some(offset);
+                }
+            }
+        }
+    }
+    if let Some(begin) = start {
+        push(begin, text.len(), &mut out);
     }
     out
 }
