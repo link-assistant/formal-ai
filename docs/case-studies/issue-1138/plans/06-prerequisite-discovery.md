@@ -813,6 +813,16 @@ Record the probe table, the recovery outcome for each of the five languages, and
 - [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `VISION.md`, `ROADMAP.md`, `GOALS.md`, `docs/benchmarks.md`, `docs/meta-algorithm.md` per the next section; tick the six open boxes of `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81` that this plan actually closes, and leave the rest unticked with the reason.
 
 
+**Leaf L10 note (wave I6), recorded rather than silent.**
+`tests/unit/issue_1138_held_out_toolchain.rs::the_held_out_program_is_absent_from_the_repository`
+is red, and it is red because two committed specifications disagree, not because
+this wave leaked a name. The guard scans `data/` for `zig` and `gleam`; wave F's
+own held-out corpus, `data/benchmarks/self-use-prerequisite.lino`, names both,
+and `tests/unit/issue_1138_self_use_toolchain.rs` reads that exact path. Neither
+test was weakened, deleted or ignored here. The resolution — scope the guard to
+`data/seed`, which is what the runtime reads, or move the self-use corpora out
+of `data/` — belongs to whoever owns both files.
+
 **Leaf L11/L14 note (wave I6).** The deadline bounds the *program*, so the box
 widens it by the interpreter start-up it measured on this machine (at least a
 250 ms backstop) before killing anything — the distinction `src/agent.rs`'s

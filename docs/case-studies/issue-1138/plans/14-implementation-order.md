@@ -374,20 +374,20 @@ trace-changing leaves.
 
 | leaf | deliverable | files | test | gate | depends on |
 | --- | --- | --- | --- | --- | --- |
-| **06-L1** | the probe that actually runs `check_command` | `src/prerequisite/probe.rs`, `data/seed/toolchains.lino` | four verdict cases | — | 00-C1 |
-| **06-L2** | `ExecutionStatus::NotProbed` and `from_verdict`; the Spanish branch | `src/coding/catalog/types.rs`, `src/engine.rs`, `src/coding/guidance.rs` | `an_unprobed_toolchain_is_not_reported_as_unavailable`, `guidance_has_a_spanish_branch` | five-language coverage | 06-L1 |
-| **06-L3** | 14 `setup_hint` and 5 `environment` constants leave Rust for seed | `src/coding/catalog/languages.rs`, `data/seed/toolchains.lino`, `data/meta/debt-ratchet.lino` | `catalog_status_comes_from_a_probe_not_a_constant` | `check-debt-ratchet.rs` strict (09-2) | 06-L2, 09-4 |
-| **06-L4** | `PrerequisiteNeed` and the exit-code classifier | `src/prerequisite/mod.rs`, `src/agentic_coding/command_reroute.rs` | four classification cases | — | 06-L1 |
-| **06-L5** | the need is `Blocked` until a re-probe returns `Present` | `src/meta_frame.rs`, `src/prerequisite/mod.rs` | `a_prerequisite_need_is_blocked_until_the_reprobe_passes` | 05's satisfaction rule | 05-9, 06-L4 |
-| **06-L6** | the publisher lookup over the contract trait | `src/prerequisite/publisher.rs`, `data/seed/setup-publishers.lino` | five refusal/exhaustion cases | trusted-source policy | 01-L7, 06-L5 |
-| **06-L7** | workspace-scoped install under a default-deny grant | `src/prerequisite/install.rs` | six refusal cases | **default-deny; nothing outside the workspace root** | 06-L6 |
-| **06-L8** | the recovery sequence as data, and `recover()` | `data/meta/prerequisite-recipe.lino`, `src/prerequisite/mod.rs` | `specification::prerequisite_recipe` | recipe grounding + rediscovery | 06-L7 |
-| **06-L9** | the toolchain ledger and `learn forget --toolchain` | `src/prerequisite/ledger.rs`, `data/meta/toolchain-ledger.lino` | forget/rediscover; restart reattach | append-only | 06-L8 |
+| **06-L1** ✅ | the probe that actually runs `check_command` | `src/prerequisite/probe.rs`, `data/seed/toolchains.lino` | four verdict cases | — | 00-C1 |
+| **06-L2** ✅ | `ExecutionStatus::NotProbed` and `from_verdict`; the Spanish branch | `src/coding/catalog/types.rs`, `src/engine.rs`, `src/coding/guidance.rs` | `an_unprobed_toolchain_is_not_reported_as_unavailable`, `guidance_has_a_spanish_branch` | five-language coverage | 06-L1 |
+| **06-L3** ✅ | 14 `setup_hint` and 5 `environment` constants leave Rust for seed | `src/coding/catalog/languages.rs`, `data/seed/toolchains.lino`, `data/meta/debt-ratchet.lino` | `catalog_status_comes_from_a_probe_not_a_constant` | `check-debt-ratchet.rs` strict (09-2) | 06-L2, 09-4 |
+| **06-L4** ✅ | `PrerequisiteNeed` and the exit-code classifier | `src/prerequisite/mod.rs`, `src/agentic_coding/command_reroute.rs` | four classification cases | — | 06-L1 |
+| **06-L5** ✅ | the need is `Blocked` until a re-probe returns `Present` | `src/meta_frame.rs`, `src/prerequisite/mod.rs` | `a_prerequisite_need_is_blocked_until_the_reprobe_passes` | 05's satisfaction rule | 05-9, 06-L4 |
+| **06-L6** ✅ | the publisher lookup over the contract trait | `src/prerequisite/publisher.rs`, `data/seed/setup-publishers.lino` | five refusal/exhaustion cases | trusted-source policy | 01-L7, 06-L5 |
+| **06-L7** ✅ | workspace-scoped install under a default-deny grant | `src/prerequisite/install.rs` | six refusal cases | **default-deny; nothing outside the workspace root** | 06-L6 |
+| **06-L8** ✅ | the recovery sequence as data, and `recover()` | `data/meta/prerequisite-recipe.lino`, `src/prerequisite/mod.rs` | `specification::prerequisite_recipe` | recipe grounding + rediscovery | 06-L7 |
+| **06-L9** ✅ | the toolchain ledger and `learn forget --toolchain` | `src/prerequisite/ledger.rs`, `data/meta/toolchain-ledger.lino` | forget/rediscover; restart reattach | append-only | 06-L8 |
 | **06-L10** | **run family 1 in five languages, refused and granted; record the table** | `docs/case-studies/issue-1138/` | `issue_1138_held_out_toolchain` | no tuning in this commit | 06-L9 |
-| **06-L11** | `ExecutionBox`, `ExecutionBackend`, tar-on-stdin, `--network none`, honest deadline | `src/execution_box/mod.rs`, `src/box_language_projects.rs` | four box cases | `check-disk-usage-policy`; Docker optional | 06-L10 |
+| **06-L11** ✅ | `ExecutionBox`, `ExecutionBackend`, tar-on-stdin, `--network none`, honest deadline | `src/execution_box/mod.rs`, `src/box_language_projects.rs` | four box cases | `check-disk-usage-policy`; Docker optional | 06-L10 |
 | **06-L12** | kotlin and scala as `box_language_project_deferred` with the honest reason | `data/meta/box-language-projects.lino` | grounding | — | 06-L11 |
 | **06-L13** | Telegram execution (#930) and the descending-N ladder | `data/seed/environments.lino`, `src/telegram_runtime.rs` | family-3 prompts with and without a backend | every N recorded, no silent truncation | 06-L11 |
-| **06-L14** | `ConversationContainer`, snapshot/replay, idle stop, restart recovery (#937) | `src/execution_box/container.rs` | idle-and-restore; divergence reported | — | 06-L13 |
+| **06-L14** ✅ | `ConversationContainer`, snapshot/replay, idle stop, restart recovery (#937) | `src/execution_box/container.rs` | idle-and-restore; divergence reported | — | 06-L13 |
 | **06-L15** | the browser probes instead of asserting; strings move to seed | `src/web/worker/formal_ai_worker_14.js`, `src/web/i18n-catalog-messages.lino` | `an_unverified_answer_says_so_in_five_languages` | **`MAX_WASM_BYTES` unchanged**; worker binary byte-identical | 06-L13 |
 | **06-L16** | the lazily fetched browser runtime behind an explicit click | `src/web/` loader | record whether the observed output is `55` | WASM size ceiling untouched | 06-L15 |
 | **06-L17** | recover the SWE-bench harness prerequisite through `recover()` | `src/external_benchmarks/grade.rs` | record whether the evaluator is reached | `benchmark_unavailable` stays honest | 06-L9 |
@@ -404,13 +404,13 @@ installed bytes are disposable and the recipe is durable.
 | leaf | deliverable | files | test | gate | depends on |
 | --- | --- | --- | --- | --- | --- |
 | **03-L1** | `WorkspaceCensus::of_directory` | `src/self_ast_census.rs` | a three-file fixture censuses identically to `compile` | census 1:1 | — |
-| **03-L2** | `WorkspaceSpec` and `clone_at_base` | `src/repository_workspace/clone.rs` | exact commit; branch refusal; deterministic tree | — | 03-L1 |
-| **03-L3** | the command allowlist as seed; the default-deny arm survives | `data/seed/repository-command-allowlist.lino`, `src/agent.rs` | four allowlist cases | **default-deny** | 03-L2 |
-| **03-L4** | `RepositoryWorkspace::{open,adopt,read,write,source_files}` | `src/repository_workspace/mod.rs` | `workspace_is_isolated_from_the_ambient_checkout` | — | 03-L3 |
-| **03-L5** | `unified_diff` and `diff()` | `src/repository_workspace/diff.rs` | empty diff; `git apply` round trip | thin dependency tree | 03-L4 |
+| **03-L2** ✅ | `WorkspaceSpec` and `clone_at_base` | `src/repository_workspace/clone.rs` | exact commit; branch refusal; deterministic tree | — | 03-L1 |
+| **03-L3** ✅ | the command allowlist as seed; the default-deny arm survives | `data/seed/repository-command-allowlist.lino`, `src/agent.rs` | four allowlist cases | **default-deny** | 03-L2 |
+| **03-L4** ✅ | `RepositoryWorkspace::{open,adopt,read,write,source_files}` | `src/repository_workspace/mod.rs` | `workspace_is_isolated_from_the_ambient_checkout` | — | 03-L3 |
+| **03-L5** ✅ | `unified_diff` and `diff()` | `src/repository_workspace/diff.rs` | empty diff; `git apply` round trip | thin dependency tree | 03-L4 |
 | **03-L6** | `locate_targets` | `src/repository_workspace/locate.rs` | five held-out prompts; ambiguity; a Python tree | ambiguity resolves to nothing | 00-C1, 03-L5 |
-| **03-L7** | `RunCommand`, `run_named_tests`, `MissingPrerequisite` | `src/repository_workspace/verify.rs` | missing interpreter; timeout; pass/fail split | uses plan 05's `Evidence` and plan 06's `ExecutionBackend` | 05-3, 06-L11, 03-L6 |
-| **03-L8** | the protocol as data | `data/meta/repository-workspace-protocol.lino`, `src/repository_workspace/mod.rs` | `specification::repository_workspace_protocol` | grounding + rediscovery | 03-L7 |
+| **03-L7** ✅ | `RunCommand`, `run_named_tests`, `MissingPrerequisite` | `src/repository_workspace/verify.rs` | missing interpreter; timeout; pass/fail split | uses plan 05's `Evidence` and plan 06's `ExecutionBackend` | 05-3, 06-L11, 03-L6 |
+| **03-L8** ✅ | the protocol as data | `data/meta/repository-workspace-protocol.lino`, `src/repository_workspace/mod.rs` | `specification::repository_workspace_protocol` | grounding + rediscovery | 03-L7 |
 | **03-L9** | per-step observations become `NeedLedger` rows | `src/meta_frame.rs`, `src/repository_workspace/mod.rs` | a step that did not run leaves its need `Planned` | 05's satisfaction rule | 05-9, 03-L8 |
 | **03-L10** | `BenchmarkCase` gains `repository` / `tests`; the SWE-bench branch | `src/external_benchmarks/{cases,mod}.rs` | `swebench_case_carries_a_clone_spec` | every other suite still `None` | 03-L9 |
 | **03-L11** | **run one SWE-bench Lite instance end to end; append the honest row** | `data/benchmarks/external-results.lino` | — | **no tuning in this commit** | 03-L10 |
@@ -2027,3 +2027,150 @@ four locale blocks.
 5. **Plan 04 from L1**, taking
    `the_coding_path_and_the_formalizer_share_one_need_type…` first, since it is
    already red in a file plan 01 also touches.
+
+## Wave I6/I7 report — prerequisites, execution boxes and the repository protocol
+
+Executed 2026-09-16 in the issue-1138 worktree, concurrently with two sibling
+sessions implementing plans 01, 07, 10 and 12. Toolchain `1.98.1`, shared
+`CARGO_TARGET_DIR`, no docker image pulled, no container started. Every result
+line below came from a run in this worktree.
+
+### Leaves delivered
+
+| leaf | deliverable |
+| --- | --- |
+| **06-L1** | `src/prerequisite/probe.rs` — `ToolchainProbe`, three-verdict `ProbeVerdict`, `probe_command`, `data/seed/toolchains.lino` with one probe row per catalogued program. The probe puts workspace-scoped toolchains ahead of the ambient `PATH`, so the probe that observed an absence is the probe that observes the recovery. |
+| **06-L2** | `ExecutionStatus::NotProbed` and `from_verdict`; `execution_output_label` takes the status rather than a boolean and renders the unprobed case as *"Output, not observed in this environment"* instead of the promise *"Expected output after verification"*. `src/coding/guidance.rs` gains a Spanish arm wherever it has a Russian one — twenty of them — served from `data/seed/coding-guidance.lino`, and `src/language.rs` gains `Language::Spanish`, which the tree did not have. |
+| **06-L3** | The fourteen `setup_hint` strings, the five `environment` strings and the per-row `status` left `src/coding/catalog/languages.rs` for `data/seed/toolchains.lino`. No catalogue row states its own availability. |
+| **06-L4/L5** | `PrerequisiteNeed`, `Platform::observed`, `classify_failure` (127 is a need, 126 is not installation consent, a compiler diagnostic is not a prerequisite) and `need_status` (`Blocked` → `Planned` → `Satisfied` only after a re-probe returns `Present`). |
+| **06-L6** | `src/prerequisite/publisher.rs` and `data/seed/setup-publishers.lino`: authority is pinned per program, a lookalike host is refused with the refusal recorded, an exhausted search names every source in consultation order, and a dependency cycle terminates with the cycle named. |
+| **06-L7** | `src/prerequisite/install.rs`: default-deny, and six refusals **before** anything runs. |
+| **06-L8** | `data/meta/prerequisite-recipe.lino` — the eight-stage recovery sequence as data — and `recover()`, which walks it. |
+| **06-L9** | `src/prerequisite/ledger.rs` and `data/meta/toolchain-ledger.lino`: append-only, `forget` deletes the record and the disposable bytes together, and a restart reattaches from the ledger alone. |
+| **06-L11** | `src/execution_box/mod.rs`: `ExecutionBox`, `ExecutionBackend`, `BoxPolicy`, `--network none` by default, honest deadline reporting, and `BackendNotConfigured` / `NoDaemon` refusals by name. |
+| **06-L13 (half)** | #930's descending-N ladder, as `ExecutionBox::halving_ladder`: every N tried is a recorded rung with its outcome. The Telegram wiring itself is **not** done. |
+| **06-L14** | `src/execution_box/container.rs`: `ConversationContainer`, `SnapshotPolicy`, idle stop, reattach, and `compare_restores`, which digests snapshot and replay and reports the divergence rather than choosing a winner. |
+| **03-L2** | `clone_at_base`: a branch name is refused before anything is created; the tree is checked out detached at the exact forty-character commit and HEAD is verified against the spec. |
+| **03-L3** | `data/seed/repository-command-allowlist.lino`, scoped to program *and* subcommand *and* argument shape, default-deny, with `src/agent.rs`'s `other =>` arm routed through it so the set widens only through data. **This is the wave F defect fix** (below). |
+| **03-L4** | `RepositoryWorkspace::{open, adopt, root, base_commit, source_files, read, write}`; the ambient checkout is byte-identical after a workspace write. |
+| **03-L5** | `unified_diff` and `RepositoryWorkspace::diff`; the diff round-trips through `git apply` onto a second clone at the same base. |
+| **03-L7** | `run_named_tests`: the runner is probed **before** the allowlist is consulted, because a program that is not on the machine cannot be granted and calling that a policy refusal would hide a requirement behind a permission. A missing interpreter is `MissingPrerequisite` with the observed 127 and stderr; a deadline reached is `TimedOut` with both numbers. The deadline is declared per command shape in the seed row. |
+| **03-L8** | `data/meta/repository-workspace-protocol.lino` and `WorkspaceProtocol::{load, parse, execute, regenerate_document}`. `execute` stops where the protocol stops: a `locate` step that resolves nothing records the requirement as open and returns rather than editing a file it guessed at. |
+
+### The wave F defect, closed
+
+The wave F report recorded it **uncovered**: the Russian prompt *"Запусти это и
+скажи точно, что оно печатает: print(sum(range(1, 11)))"* had its leading verb
+stripped and the remainder handed to `/bin/sh -c`; the shell answered
+`syntax error near unexpected token '('`; and the reply called the command
+`выполнена` — completed. The command was built by a crate-private function on
+the agent-mode path, so no test in that wave reached it.
+
+Two things had to be true for that to happen, and both are now false.
+
+1. **Prose had to be runnable.** The allowlist is the seed table, scoped to
+   program *and* subcommand *and* argument shape, default-deny. The first word of
+   a stripped sentence names no program, so nothing reaches a shell to fail there.
+2. **A non-zero exit had to be renderable as a completion.** `CommandOutcome` has
+   no variant that carries a non-zero exit and renders as one — `of_exit` has two
+   answers, not three — and the sentences are seed rows in five languages in
+   `data/seed/command-outcome.lino`, not a `match` in Rust.
+
+Three tests added to `tests/unit/issue_1138_command_allowlist.rs`, each observed
+failing before the fix and passing after it: `prose_is_never_a_command` (five
+languages), `a_non_zero_exit_is_never_reported_as_completed` (five languages),
+`the_outcome_sentences_are_seeded_in_five_languages`.
+
+The same seed file carries plan 06's honesty sentence — *"this code was not
+tested, not compiled, not checked"* — in five languages, which turns wave F's
+`the_unverified_execution_honesty_sentence_is_seeded_in_five_languages` green.
+Wave F measured that sentence as occurring in **no** seed file at all.
+
+### Tests now green — focused result lines
+
+```
+issue_1138_toolchain_probe          4 passed   issue_1138_prerequisite_need    5 passed
+issue_1138_setup_publisher          5 passed   issue_1138_install_scope        6 passed
+issue_1138_toolchain_ledger         3 passed   issue_1138_execution_box        4 passed
+issue_1138_conversation_container   2 passed   specification::prerequisite_recipe   2 passed
+issue_1138_repository_workspace     5 passed   issue_1138_named_tests          2 passed
+issue_1138_command_allowlist        6 passed   specification::repository_workspace_protocol   2 passed
+issue_1138_surface_honesty::guidance_has_a_spanish_branch                                     passed
+issue_1138_self_use_toolchain::the_unverified_execution_honesty_sentence_is_seeded_in_five_languages   passed
+issue_1138_self_use_repository_workspace::the_python_fixture_still_holds_the_value_the_prompts_ask_to_change   passed (standing guard)
+```
+
+**48 of the 62 tests these two waves own are green.** Regression controls run
+beside them and did not move: `issue_1021_behaviour_range`,
+`coding_discovery::rosetta`, `specification::{code_generation, agent_isolation}`
+— 111 passed; `specification::agent_isolation`, `agentic_surfaces`, `tool_scope`
+— 43 passed; `data_files` — both passed.
+
+### Tests still red, with the reason
+
+| test | why |
+| --- | --- |
+| `issue_1138_locate_targets` (3) | **03-L6 not done.** Resolving *"the list of trusted search providers"* / *"список доверенных поисковых провайдеров"* to `WEB_SEARCH_PROVIDERS` needs a cross-lingual concept-to-identifier path through the seed meaning lexicon and the self-AST census. It is the largest single leaf in plan 03 and was not reached. |
+| `issue_1138_solve_cli` (3) | **03-L12/L13 not done.** `formal-ai solve` and the four self-hosting trailers were not reached. |
+| `issue_1138_self_use_repository_workspace` (3) | Depend on 03-L6 and on the routing that carries a base commit into the protocol. |
+| `issue_1138_self_use_toolchain` (3) | Depend on the solver routing a toolchain request to the prerequisite path (06-L13/L15), not on the prerequisite kernel, which is green. |
+| `issue_1138_surface_honesty::an_unverified_answer_says_so_in_five_languages` | "Run this code" is still routed to `web_search`, so no surface emits the `execution:not_observed` marker. That is 06-L13 and 06-L15. |
+| `issue_1138_held_out_toolchain::the_held_out_program_is_absent_from_the_repository` | **A conflict between two committed specifications, not a defect this wave introduced.** The guard scans `data/` for `zig` and `gleam`; wave F's own held-out corpus, `data/benchmarks/self-use-prerequisite.lino`, names both and is required verbatim by `tests/unit/issue_1138_self_use_toolchain.rs`. Neither test was weakened, deleted or ignored. Resolving it is a reconciliation decision — scope the guard to `data/seed` (what the runtime reads) or move the self-use corpora out of `data/` — and it belongs to whoever owns both files, not to one wave. |
+| `total_closure::seed_closure_gap_only_shrinks` | 3577 against a reviewed ceiling of 3572. Measured with every file this wave added removed, the tree already reads 3577; the five over the ceiling are a concurrent sibling's uncommitted `data/seed/*.lino` edits. This wave's own contribution was +83, was measured file by file, and was removed. |
+
+### Leaves not done, recorded as not done
+
+`06-L10` (run the held-out family in five languages and record the table),
+`06-L12` (kotlin and scala as `box_language_project_deferred`), `06-L13`'s
+Telegram wiring, `06-L15`, `06-L16`, `06-L17`, `06-L18`; `03-L1`, `03-L6`,
+`03-L9` through `03-L18`. None of them is claimed, and no test of theirs was
+touched.
+
+### Three decisions worth stating, because a reader will otherwise assume otherwise
+
+1. **`install_scoped` does not execute the fetched text.** It performs every
+   refusal before anything runs, prepares the workspace-scoped prefix and returns
+   the environment bindings explicitly; running the steps and re-probing is
+   `recover`'s, through a declared `ExecutionBackend`, which is also where
+   `StillMissing` is produced. Executing a retrieved procedure is the most
+   dangerous thing this repository does, and it should not be a side effect of
+   preparing a directory.
+2. **The deadline bounds the program, not the interpreter's start-up.** The box
+   widens it by the start-up it measured on this machine, with a 250 ms backstop,
+   before killing anything — the distinction `src/agent.rs`'s
+   `PYTHON_TIME_BUDGET_FLOOR` already draws. Without it, start-up latency decides
+   whether a program that would have printed something is reported as having
+   printed nothing, which is exactly the fabrication these tests exist to catch.
+3. **The catalogue's `execution_status` is a seed row, and the probe is beside
+   it.** `ExecutionStatus::Verified` claims *the output shown was observed*,
+   which a recorded harness run established and which the presence of a toolchain
+   on some other machine does not. So the constant left Rust for
+   `data/seed/toolchains.lino` beside the probe argv, and a caller holding a live
+   `ProbeVerdict` derives the status from it through `from_verdict` instead.
+   Deriving the catalogue's claim from a live probe would make five rows flip on
+   this laptop and five different rows flip in CI, and would require rewriting the
+   eight test files that pin those constants — which are the memorization the leaf
+   attacks, and whose re-pointing is a maintainer's decision rather than a silent
+   rewrite.
+
+### Gates
+
+| gate | result |
+| --- | --- |
+| `RUSTFLAGS=-Dwarnings cargo check --lib --all-features --tests` | clean at every commit of this wave |
+| `rust-script scripts/check-hardcoded-language.rs` | 1286 detected / 1286 allowlisted, **no growth**; twenty Spanish sentences went to seed rather than to the allowlist |
+| `rust-script scripts/check-file-size.rs` | all files within their limits |
+| `rust-script scripts/check-minimal-core-boundary.rs` | 49 handler sources, 19,766 outside-core lines |
+| `rust-script scripts/generate-seed-registry.rs` | the registry and every generated file agree; three seed files added, one promoted out of `unregistered` |
+| `rust-script scripts/check-debt-ratchet.rs --base origin/main` | holds — `literal_predicates` 547/547, `hardcoded_language_rows` 1286/1286 |
+| `cargo run --example regenerate_self_ast_census` | regenerated in the same commit as every `src/` change |
+
+### One gate note
+
+No committed `data/seed/**.lino` file carries `#` comments, and the five this
+wave added should not have been the exception: `scripts/audit-total-closure.py`
+reads every word of such a comment as a value token that must resolve to a
+grounded meaning, and `tests/unit/data_files.rs` reads a colon inside one as
+structure. Measured file by file, the five headers cost 83 distinct ungrounded
+tokens. They were removed and the rationale moved to the module that reads each
+document.
