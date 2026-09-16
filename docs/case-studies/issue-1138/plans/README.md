@@ -189,3 +189,20 @@ work from; this list is the reasoning behind it.
   test that proves it, the gate it must keep green and its dependencies. Three
   orderings are left explicitly open because fixing them would be a decision no
   plan made.
+
+- 2026-09-16, first CI observations on the bulk pushes: (1) CI compiles with
+  `RUSTFLAGS=-Dwarnings`, so a wave T skeleton field that no body reads yet
+  fails every job that builds the lib; five such sites were found at
+  `ef15f1916` (`capability_routing.rs:363`, `concept_lookup.rs:103,143`,
+  `concept_sense_ledger.rs:17`, `fragment_catalog.rs:96`); the rule from
+  here is `RUSTFLAGS=-Dwarnings cargo check --lib --all-features --tests`
+  before every commit. (2) `79ee54dbb` referenced `data/seed/toolchains.lino`
+  before the file was committed (the shared index swept a sibling's
+  `include_str!` into an earlier commit); the file is on the tip and the
+  census, Stock Rust Install and External Benchmarks jobs pass again at
+  `ef15f1916`. (3) `Self-hosting evidence` is red by design until wave F
+  leaf F-2 lands a commit carrying `Formal-AI-Model: formal-ai`; the gate
+  message says so. (4) `Coverage`, `CI/CD Pipeline`, `Question necessity
+  ratchet` and `Agentic CLI Matrix` fail on the same dead-code compile
+  errors and on the still-red wave T tests, which is the expected state
+  until the implementation waves close them.
