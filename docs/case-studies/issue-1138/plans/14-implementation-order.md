@@ -2881,3 +2881,61 @@ and nothing this wave committed includes them. Whoever clears the working tree
 next should restore them rather than commit them: `cargo fmt --all -- --check`
 does not ask for those changes, and committing them would silently re-sort a
 `merge=union` list.
+
+## Codex recovery checkpoint — 2026-09-16
+
+The Claude Code parent session exported at
+`2026-09-16-164059-local-command-caveatcaveat-the-messages-below.txt` ended when
+all three active Opus sub-agents received `model_not_found`. The locked parent
+PID no longer exists. Recovery therefore starts from repository evidence, not
+from a still-running agent.
+
+The branch tip at recovery was `02763816e`, two commits ahead of the remote:
+
+- `ba323f224` repairs the issue-781 route so the decision table cannot end a
+  recipe already in progress;
+- `02763816e` lands plan 04 L5, the eight seeded relations and its
+  anti-memorization guard.
+
+The interrupted worktree contained 191 modified files plus two untracked
+scratch/session files. A file-by-file audit found three different classes:
+
+1. **Recovered and complete:** multilingual write/obligation parsing in
+   `write_request`, `general_planner`, `capability_router` and the two meaning
+   seeds. It is committed separately after the five-language obligation suite,
+   issue-1099, issue-1069, issue-848 and issue-745 suites all passed.
+2. **Recovered but incomplete:** plan 04 L6 in `formalization/concepts.rs`, plus
+   the two exports it needs. It parses relation seed, extracts a concept from a
+   retrieved sense and reads evidenced relations, but L7/L8 still own bounded
+   recursion and `formalize_deeply`; the plan-04 acceptance module therefore
+   remains red at the L8/L9 `todo!` bodies. This is checkpointed explicitly as
+   incomplete and must be finished before L6 is marked done.
+3. **Not part of the implementation:** 108 Rust files and their 72 derived
+   self-AST files are formatter residue described by the preceding section.
+   They stay preserved in the old worktree and are not committed. Continuation
+   uses a clean worktree created from the recovery checkpoint, so no destructive
+   cleanup is needed.
+
+The progress audit counted 324 per-plan implementation checkboxes: 92 checked,
+232 open. One checked box, 01-L11, is explicitly partial. Plans 02, 08 and 11
+remain test skeletons, and plan 13's N1-N14 carry-over work is outside that
+count. The earlier "340 leaves" headline is not a valid completion denominator;
+before the final documentation wave, the status renderer must derive totals
+from one ledger and this document must use that generated number.
+
+Resume in dependency order:
+
+1. finish and directly test 04-L6, then implement 04-L7/L8;
+2. close 05-L13-L15/L17-L19 and the plan-10/09 solver-routing seam;
+3. finish the remaining plan-01 and plan-04 leaves before starting plan 02;
+4. proceed through I4, I6/I7, I8, the rest of I9, then measured wave F;
+5. run wave D last, including the generated requirement status and corrected
+   leaf totals; only then make the PR ready for review.
+
+Live PR state at this checkpoint: #1139 is an open draft whose remote head is
+`0f2e64070`. The remote failures are expected from the still-red wave-T tests,
+stale self-AST, formatter/clippy debt, the issue-781 real-client regression and
+the missing Formal-AI-authored evidence. Automatic release is not guaranteed
+until the release-gating CI matrix is green on the final pushed head. The red
+self-development release-cycle status is separately documented as
+non-release-gating.

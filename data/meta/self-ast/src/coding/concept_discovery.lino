@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/concept_discovery.rs
   language rust
   fidelity signature
-  byte_len 28306
-  line_count 751
-  content_id source_module_227da2971acb6495
+  byte_len 28322
+  line_count 752
+  content_id source_module_17ccabc3e1f0ceee
   symbol_count 46
   symbols
     const STRUCTURES 12 12
@@ -38,18 +38,18 @@ self_ast_census
     function discover_with_lookup 297 372
     function unserved_phrase 380 386
     function structural_meanings 389 406
-    function structures_for 408 442
-    function normalized_surface_present 444 446
-    function fuzzy_single_token_present 448 455
-    function edit_distance_at_most_one 457 490
-    function discovery_query 492 502
-    function candidates_for 504 602
-    function overlap_score 604 606
-    function candidate_kind_rank 608 616
-    function stdlib_candidate 618 633
-    function token_overlap 635 639
-    function tokens 641 647
-    function unique 649 652
-    function unresolved_surfaces 665 687
-    function concept_candidate 710 730
-    function registry_licence 738 751
+    function structures_for 409 443
+    function normalized_surface_present 445 447
+    function fuzzy_single_token_present 449 456
+    function edit_distance_at_most_one 458 491
+    function discovery_query 493 503
+    function candidates_for 505 603
+    function overlap_score 605 607
+    function candidate_kind_rank 609 617
+    function stdlib_candidate 619 634
+    function token_overlap 636 640
+    function tokens 642 648
+    function unique 650 653
+    function unresolved_surfaces 666 688
+    function concept_candidate 711 731
+    function registry_licence 739 752

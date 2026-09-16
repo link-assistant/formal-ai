@@ -405,7 +405,8 @@ pub fn structural_meanings() -> Vec<StructuralMeaning> {
         .unwrap_or_default()
 }
 
-fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
+#[must_use]
+pub fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
     let mut matched = crate::seed::lexicon()
         .meanings_with_role(crate::seed::ROLE_CODING_STRUCTURE)
         .filter(|meaning| {

@@ -2,13 +2,27 @@ self_ast_census
   target src/formalization/concepts.rs
   language rust
   fidelity signature
-  byte_len 2655
-  line_count 73
-  content_id source_module_d6a8086d78a5c954
-  symbol_count 5
+  byte_len 14018
+  line_count 387
+  content_id source_module_5e90716e0961c9c9
+  symbol_count 19
   symbols
-    struct ExtractedConcept 16 32
-    struct ExtractedRelation 36 47
-    struct ExtractedEntity 51 57
-    function concept_from_sense 63 65
-    function relations_in 71 73
+    struct ExtractedConcept 35 51
+    struct ExtractedRelation 55 66
+    struct ExtractedEntity 70 76
+    struct RelationDefinition 81 89
+    function relations 93 125
+    static RELATIONS 94 94
+    function determiners 128 146
+    static DETERMINERS 129 129
+    function surfaces_of 149 168
+    function concept_from_sense 174 200
+    function concept_id 204 219
+    function read_gloss 222 243
+    function head_term 246 259
+    function differentiae_of 262 288
+    function find_cue 292 315
+    function relations_in 321 359
+    function grounded_last 362 364
+    function grounded_first 367 369
+    function grounded_terms 372 387
