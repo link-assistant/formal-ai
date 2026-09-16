@@ -610,12 +610,24 @@ pub(super) fn plan_settled_routes(
     // the agentic surfaces among them. Moving it earlier is leaf 11's work,
     // once the 280 memorized cues below are gone and the routes above can be
     // read as capabilities rather than as a cascade.
-    if let Some(plan) = capability_router::plan_routed_capability_step(
-        task,
-        messages,
-        tool_names,
-        capability_router::RoutingStage::NamedOrLocal,
-    ) {
+    // One more thing the table may not claim: a turn that is *mid-recipe*.
+    // Once a search has produced usable output the conversation is inside the
+    // multi-step research route -- search, then fetch each result, then compose
+    // -- and the request text on that turn is still the original request. The
+    // table reads that text, sees the object it named ("… на amazon.in" names a
+    // registrable host), and answers the whole conversation with one step,
+    // ending the recipe after its first (issue #781). Routing by object, act and
+    // locus decides *which capability a request needs*; it does not decide that
+    // a recipe already under way is finished. The `has_successful_search_result`
+    // boundary is the one the research routes below already draw for themselves.
+    if !web_research::has_successful_search_result(messages)
+        && let Some(plan) = capability_router::plan_routed_capability_step(
+            task,
+            messages,
+            tool_names,
+            capability_router::RoutingStage::NamedOrLocal,
+        )
+    {
         return Some(plan);
     }
     // An instruction that edits a named file is never a web question -- when
