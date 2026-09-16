@@ -2673,3 +2673,211 @@ routed: `rustdoc -D warnings` fails on three broken intra-doc links —
 `src/agentic_coding/transcript_evidence.rs:7` (a redundant explicit link target,
 plan 05/07). Every doc link this session wrote resolves; `cargo doc` reports no
 error in any file it touched.
+
+---
+
+## Wave I5 / I6-I7 tail report — obligations and execution evidence
+
+Executed 2026-09-16 in the issue-1138 worktree, concurrently with two sibling
+sessions on plans 01/04 and 09/10/07/12. Toolchain `1.98.1`, shared
+`CARGO_TARGET_DIR`, one cargo process at a time, no container started, no docker
+image pulled. Every result line below came from a run in this worktree.
+
+### Leaves delivered
+
+| leaf | deliverable |
+| --- | --- |
+| **05-4** | `ObligationExpectation` and `ObligationOutcome` project to Links Notation, `Underivable` included. A gap that does not serialize cannot be reported, and reporting it is the whole reason the clause is kept. |
+| **05-5** | `ObligationNode::{build, discharged, next_open, collect_leaves, to_links_notation}`: one node per clause the request enumerates, each carrying the clause's UTF-8 byte span. The clause splitter knows the sentence terminators of five languages, and a cue in a script that does not space its words is a cue — without that, `然后确认` reads as one clause and every enumerated obligation in Chinese merges into the first. |
+| **05-6** | `data/meta/obligation-evidence-contract.lino` carries the derivation rules; `src/obligation_ledger/derivation.rs` reads them, so a new expectation shape is a data edit and not a `match` arm. |
+| **05-7** | An `Underivable` clause is split through `task_decomposition::split_once_checkable`, bounded by `recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND`. No second splitter and no second bound; the specification test greps the module to prove no `const … DEPTH` is declared in it. |
+| **05-8** | `ObligationLedger::{for_frame, observe, every_obligation_discharged, satisfied_count, unsatisfiable_count, unattempted_count, refuted_count, to_links_notation}`. `observe` binds a record to the node whose expectation names its path, command or check (R710-R4); an unrelated result returns `None` and leaves the ledger byte-identical. |
+| **05-9** | `need_ledger_with_execution` never mutates the planning ledger and is the single producer of `NeedStatus::Satisfied` in `src/` — enforced by a test that reads every line of `src/`. |
+| **05-10** | `record_obligation_ledger` appends the obligation tree, its discharged verdict, the executed need ledger and its satisfied count; `meta_core::record_meta_core_execution` is the second entry point. The solver call is **struck with its reason** (below). |
+| **05-11** | `"record_obligation_ledger"` bound in `recipe_interpreter::run_recorder`; `ExecutionContext` carries the obligation ledger and the executed need ledger; `require_obligation_ledger` reads the tree back through the same guard every other stage uses. |
+| **05-12** | Recipe step 14 `step_verify_obligations` and `fn_record_obligation_ledger` are rows of `data/meta/recursive-core-recipe.lino`. R343 parity holds with the new stage in, across every mode combination. |
+| **05-16** | `data/meta/obligation-evidence-ratchet.lino`: `satisfied_without_record 0` and `discarded_clauses 0`, both strictly downward, both naming the test that measures them. |
+| **05-20** | The `changelog.d/` fragment. |
+| **06-L10 (partial)** | The reconciliation this session was authorized to apply: `tests/unit/issue_1138_held_out_toolchain.rs` now scans `src`, `data/seed`, `data/meta`, `scripts` and `.github` instead of all of `data/`, with the reason recorded at the test and in plan 06 L10. The five-language refused/granted outcome table is still owed. |
+| **(coordinator-routed)** | `rustdoc -D warnings` clean; `src/solver_handlers/mod.rs` formatted and `data/meta/core-boundary-ledger.lino` lowered with it, in one commit. |
+
+Six commits, each ticking its boxes in the same commit: the leaves-4–9 commit,
+then `91dd80828`, `ef0be58fb`, `5ad43fb47`, `fcd99e5c4`. **Deviation from the
+maintainer's "commit after every leaf":** leaves 4–9 landed in one commit and
+10–12 in another, because each group is one module (and one recipe change) whose
+parts do not compile or pass independently, and splitting them would have meant
+committing `todo!` bodies that a later commit in the same session deletes.
+
+### Tests now green — focused result lines
+
+```
+specification::obligation_ledger                                     8 passed
+  satisfied_is_unconstructible_without_an_execution_record ........ ok
+  need_ledger_with_execution_is_the_only_producer_of_satisfied .... ok
+  an_unrelated_observation_discharges_nothing ..................... ok
+  a_clause_with_no_derivable_expectation_becomes_a_node_not_a_discard  ok
+  an_underivable_node_is_split_before_it_is_called_unsatisfiable ... ok
+  the_split_is_bounded_by_the_existing_split_depth_bound .......... ok
+  a_refuted_observation_reopens_the_node_instead_of_finishing_it ... ok
+  every_obligation_discharged_is_false_while_any_node_is_unattempted  ok
+
+specification::recipe_interpreter                                   12 passed
+  the_program_parses_fourteen_contiguously_ordered_steps .......... ok
+  the_execution_pass_is_bound_to_a_known_recorder ................. ok
+  native_and_data_driven_execution_produce_the_same_events ........ ok   # R343 parity, new stage in
+  native_and_data_driven_planning_do_not_fabricate_execution_evidence  ok
+  executing_the_recipe_reproduces_the_pipeline_under_every_mode_combination  ok
+
+specification::recursive_core_recipe                                 3 passed
+specification::meta_frame::the_planning_ledger_still_records_planned_not_satisfied  ok
+issue_1138_obligation_evidence                            2 of 5 passed
+  a_bare_ok_tool_result_does_not_satisfy_a_file_bytes_expectation .. ok
+  a_gap_is_reported_with_its_clause_and_byte_span_not_as_completion  ok
+issue_1138_held_out_toolchain                                        1 passed
+data_files                                                          17 passed
+docs_requirements_issue_559                                         15 passed
+issue_1021_behaviour_range                                          21 passed
+issue_1099_multiple_obligations                       4 passed (standing guard, untouched)
+specification:: as a whole                          1122 passed; 15 failed
+```
+
+The 15 `specification::` failures are all leaves other sessions own —
+`source_reconstruction` (07-15), `routing_precedence` and `prompt_variations`
+(plan 10), `formalization_depth_meta_algorithm` (plan 04), `status_render`
+(wave D), `equation_corpus`, `source_cache` — and none of them moved this pass.
+
+### Tests still red, and exactly why
+
+| test | why |
+| --- | --- |
+| `issue_1138_obligation_evidence::a_second_clause_without_an_artifact_is_never_silently_dropped` | The artifact clause derives a `FileBytes` expectation in **English only**. The write-request reader is not multilingual to the depth this test needs: `data/seed/meanings-file-write.lino` carries **no Spanish lexeme at all** for `file_write_action`, `file_write_target_cue`, `file_write_destination_cue` or `file_write_content`; Russian has `с текстом …` and `с содержанием …` but not `с содержимым …`; Hindi has `जिसमें लिखा हो …` but not the `जिसमें … हो` circumfix the prompt uses. Measured clause by clause with a scratch probe, which was then removed. |
+| `issue_1138_obligation_evidence::a_held_out_paraphrase_produces_the_same_obligation_tree_shape` | The same gap, plus one defect the probe isolated and this session did **not** repair: for the content-first wording (*"Write Gemfile.lock into notes/attribution.md"*, and its four translations), `write_request::cued_write_target` returns the **first** file-shaped token after any cue, and `Gemfile.lock` follows the action cue `Write`. The content is bound as the target, the destination-led branch then fails its `action_end <= clause_start` test, and the whole clause composes to nothing. The repair is contained — prefer a candidate led by a *destination* or *target* cue over one led by a bare action cue, which changes the answer only when a sentence offers both — but it is a change to the shared write-request reader on a live path, and it was not made without the budget to run the agentic suites behind it. |
+| `issue_1138_obligation_evidence::the_session_does_not_finalize_while_any_obligation_is_unattempted` | Same cause: in Spanish no clause derives an observable expectation, so `next_step` honestly reports a gap where the test requires an `Observe`. |
+| `docs_requirements::issue_1138::*` (4) | No `docs/requirements/issue-1138-*.md` shard exists yet, and the fourth case additionally needs plan 11 L1's ledger to cover the 1,030 ids `REQUIREMENTS.md` declares. Wave D, not this wave. |
+| `issue_1138_locate_targets` (3), `issue_1138_solve_cli` (3), `issue_1138_self_use_repository_workspace` (3), `issue_1138_self_use_toolchain` (3), `issue_1138_surface_honesty::an_unverified_answer_says_so_in_five_languages` | Unchanged from the wave I6/I7 report: plan 03 L6, L9–L17 and plan 06 L13/L15 were not reached this pass. |
+
+No wave T or wave F test was weakened, deleted or `#[ignore]`d.
+
+### Three decisions recorded rather than taken silently
+
+1. **`discharged()` on an interior node is "every child is discharged".** Plan
+   05's sentence also asks the interior node's own outcome to be `Satisfied` or
+   `Unsatisfiable`. An interior node carries no expectation an observation can
+   answer — its children carry them — so that reading makes every tree with a
+   split permanently undischargeable, which is the opposite of the gate the type
+   exists to enforce. The deviation is stated in the method's own doc comment.
+2. **The mismatch sentences are seed rows, not literals.**
+   `data/seed/obligation-mismatch.lino` carries five of them in five languages,
+   looked up in the language the clause was written in. A refusal a user cannot
+   read is as opaque as no refusal at all (R379), and
+   `check-hardcoded-language.rs` holds at 1286 / 1286 with no allowlist growth.
+   For the same reason the contract's rule conditions are single tokens
+   (`general_plan_mode` + `mode`, `generated_check`, `no_artifact`) rather than
+   sentences: a rule key is a key, not prose.
+3. **The expected digest trims the sentence's own full stop.** "containing
+   Gemfile.lock." names twelve bytes, not thirteen, and the file a write produces
+   ends with exactly one newline, which is what `cat <path>` observes. Both
+   normalizations are stated where the digest is computed. Content the request
+   never stated yields **no** digest rather than a guessed one.
+
+### The leaf struck, with its reason
+
+**05-10's solver call.** `meta_method_dispatch::try_dispatch` *returns the
+answer* (`src/solver.rs:551-560`), so there is no seam after dispatch that every
+path reaches; wiring one would change the answer path this plan is forbidden to
+touch. The recorder instead runs as recipe step 14 inside `record_meta_core`,
+where it reports honestly that nothing has been observed yet, and the surface an
+observation actually arrives on is the agentic transcript, which reaches the
+ledger through `next_step`. Struck in plan 05 with this reason.
+
+### Five pre-existing pins re-pinned, never loosened
+
+Step 14 changes every recorded trace, which plan 05 leaf 12 and plan 00 §9 X11
+both anticipate. Five assertions move from thirteen to fourteen, each strictly
+re-pinned rather than relaxed:
+
+- `the_program_parses_thirteen_contiguously_ordered_steps` → `…fourteen…`,
+  `step_count` 13 → 14, orders `1..=14`;
+- `the_recorder_sequence_matches_the_live_pipeline_order`: recorder count 10 →
+  11, and the recipe's recorder sequence still equals, in order, the stages
+  `MetaSelfImprovement::pipeline_stages` reads out of `src/meta_core.rs`;
+- `external_stages_are_skipped_and_recorder_stages_run`: the executed list gains
+  `verify_obligations` and the accounted-for total is 14;
+- `the_program_serializes_as_links_notation`: `step_count "14"`,
+  `recorder_count "11"`;
+- `recursive_core_recipe_steps_are_complete_and_ordered`: `1..=14`.
+
+`tests/unit/specification/recipe_interpreter.rs:229-231`'s pinned `satisfied "0"`
+on the *planning* ledger is untouched, and the executed ledger now reports
+`satisfied "0"` beside it at this seam — the sibling assertion plan 05's "Gates
+and ratchets" section asks for.
+
+### Leaves not done, recorded as not done
+
+`05-1` (the pin test for the `es`/`hi`/`zh` enumeration-cue surfaces; the seed
+rows mostly exist, but `之后` and `после этого` are still missing), `05-13` (the
+`task_obligations` rewrite over `ObligationNode`), `05-14` (the planner switch to
+`ObligationStep`), `05-15` (the `"ok"` shortcut in
+`tests/unit/issue_1099_multiple_obligations.rs`), `05-17`
+(`evidence_record.rs`'s private `Obligation`), `05-18` (the requirement shard),
+`05-19` (`assemble-requirements.rs --write`). `06-L10` is partial; `06-L12`,
+`06-L13` and `06-L15` were not reached. **Plan 03 was not reached at all**:
+`03-L1`, `03-L6`, `03-L9` through `03-L18` are exactly where the wave I6/I7
+report left them. None is claimed, and no test of theirs was touched.
+
+### What the next agent must pick up, in the order that unblocks the most
+
+1. **The write-request reader's multilingual parity** — the single largest
+   blocker, and it blocks three wave T tests at once. Two contained pieces: add
+   the Spanish lexeme to all four `file_write_*` roles in
+   `data/seed/meanings-file-write.lino` (it has none) plus the missing Russian
+   and Hindi content-lead surfaces; and make `write_request::cued_write_target`
+   prefer a destination- or target-cue-led candidate over an action-cue-led one,
+   which is consulted only when a sentence offers both. Add `confirm` /
+   `подтверди` / `पुष्टि` / `确认` / `confirma` and their siblings to
+   `observable_task_action` in `data/seed/meanings-decomposition.lino`, which has
+   **no Spanish lexeme either** — that is what makes the check clause derive a
+   `SymbolicCheck` instead of falling through to `Underivable`.
+2. **Plan 05 leaves 13–15**, which put the ledger on the live agentic path. The
+   shape is known and the risk is named: `plan_general_change_step` runs its own
+   multi-turn progress logic, so switching `task_obligations::outstanding` to
+   evidence-based satisfaction changes per-turn behaviour and must be run against
+   `issue_1099_multiple_obligations`, `issue_1069_ladder_change_tasks`,
+   `issue_848_coding_ladder` and `agentic_coding` before it is committed. Leaf 15
+   should make the 1099 harness reply with the bytes a read-back would show
+   (`format!("{content}\n")`), not `"ok"`.
+3. **Plan 03**, untouched, in its own order: L1, then L6
+   (`WorkspaceCensus::of_directory`), then L9–L11 (the SWE-bench case), then
+   L12–L13 (`Command::Solve`), then L14–L17.
+4. **Plan 06 L12, L13, L15**, and L10's five-language outcome table.
+
+### Gates
+
+| gate | result |
+| --- | --- |
+| `RUSTFLAGS=-Dwarnings cargo check --lib --all-features --tests` | clean at every commit of this wave |
+| `RUSTDOCFLAGS=-Dwarnings cargo doc --no-deps --all-features` | clean |
+| `rust-script scripts/check-hardcoded-language.rs` | `Detected prose literals: 1286 \| allowlisted: 1286` — **no growth**; six sentences went to seed rather than to the allowlist |
+| `rust-script scripts/check-file-size.rs` | `All checked files are within their line limits` — `src/obligation_ledger.rs` reached 1061 lines and was **split** into `src/obligation_ledger/derivation.rs`, never exempted |
+| `rust-script scripts/check-minimal-core-boundary.rs` | `minimal-core boundary: 49 handler sources, 19763 outside-core lines` — the ledger was lowered in the same commit that formatted the file |
+| `rust-script scripts/check-debt-ratchet.rs --base origin/main` | `debt ratchet holds` |
+| `rust-script scripts/generate-seed-registry.rs` | `The seed registry and every file generated from it agree` — one seed file added and registered |
+| `python3 scripts/check-closure-audit.py` | `unresolved_distinct_honest: measured 3569 / reviewed 3569` — `closure audit holds` |
+| `cargo run --example regenerate_self_ast_census` | `589 documents`, regenerated in the same commit as every `src/` change |
+
+### One accident of the shared worktree, recorded
+
+`rustfmt` was run directly on `src/agentic_coding/modules.rs` to format this
+session's own edit to it. That file is `include!`d by `src/agentic_coding/mod.rs`
+(`:20`), so `cargo fmt --all` **cannot** reach it or the ~55 modules it declares
+— and rustfmt, invoked on it directly, formats all of them. It reordered the
+`pub use` lists that `scripts/normalize-ordered-lists.rs` owns and that
+`merge=union` depends on. `modules.rs` itself was restored from `HEAD` and
+re-edited by hand, as was `src/agentic_coding/general_planner.rs`; the other
+files under `src/agentic_coding/` are left **unstaged** in the working tree with
+rustfmt's formatting applied, because restoring them needs a `git restore` /
+`git checkout --` this session is not permitted to run. They are formatting-only
+and nothing this wave committed includes them. Whoever clears the working tree
+next should restore them rather than commit them: `cargo fmt --all -- --check`
+does not ask for those changes, and committing them would silently re-sort a
+`merge=union` list.
