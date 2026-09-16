@@ -363,9 +363,7 @@ pub fn program_test_instructions(
             Language::Russian => format!("Проверьте, что код компилируется: `{check_command}`."),
             Language::Hindi => format!("जाँचें कि कोड संकलित होता है: `{check_command}`।"),
             Language::Chinese => format!("检查代码能否编译：`{check_command}`。"),
-            Language::Spanish => {
-                spanish("step_check").replace("{check_command}", check_command)
-            }
+            Language::Spanish => spanish("step_check").replace("{check_command}", check_command),
             _ => format!("Check that it compiles: `{check_command}`."),
         });
     }

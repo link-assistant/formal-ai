@@ -296,8 +296,16 @@ choice; both CLI and Electron can ask, and Electron warns when larger storage is
 still required. `src/dreaming_runtime.rs` runs the same learning loop in the
 core server, guarded by foreground activity, while Electron additionally uses
 system-idle detection and lowest practical cross-platform process priority.
-The thirteen-stage recipe in `data/meta/dreaming-recipe.lino` is pinned to all
-of these live source modules.
+After that foreground guard, issue #705's `src/anticipation.rs` derives
+first-order transitions over formal `IntentClass` values, ranks the top three,
+expands them through observed parameters plus seeded meanings and operations,
+and probes every variant offline. Unknown and failed probes enter the shared
+proposal-only learning frontier one-for-one. Source prelearning is fetch-consent
+gated and retains URL, digest, capture time, and TTL; ordinary solving keeps
+precedence, then an exact unexpired alias may answer offline. `memory_sync`
+appends a `prediction_hit` link when a later actual request matches, while the
+ledger truthfully reports zero until that occurs. The seventeen-stage recipe in
+`data/meta/dreaming-recipe.lino` is pinned to all of these live source modules.
 
 The Electron desktop shell starts `desktop/lib/dreaming.cjs` by default as a
 plan-only background task. It waits before its first run, repeats infrequently,

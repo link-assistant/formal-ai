@@ -652,9 +652,10 @@ fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
         // `data/seed/repository-command-allowlist.lino`. Widening the set is a
         // reviewable data edit rather than an edit to this list, and a program
         // with no row is refused exactly as it is today.
-        other if crate::repository_workspace::command_allowlist()
-            .iter()
-            .any(|row| row.program == other) =>
+        other
+            if crate::repository_workspace::command_allowlist()
+                .iter()
+                .any(|row| row.program == other) =>
         {
             &[]
         }

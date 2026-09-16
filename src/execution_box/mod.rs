@@ -329,7 +329,11 @@ impl ExecutionBox {
     ///
     /// # Errors
     /// Propagates the box's own refusals.
-    pub fn run(&self, script: &str, inputs: &[(String, Vec<u8>)]) -> Result<BoxObservation, BoxError> {
+    pub fn run(
+        &self,
+        script: &str,
+        inputs: &[(String, Vec<u8>)],
+    ) -> Result<BoxObservation, BoxError> {
         for (name, bytes) in inputs {
             let path = self.workspace.join(name);
             if let Some(parent) = path.parent() {
@@ -357,11 +361,7 @@ impl ExecutionBox {
     ///
     /// # Errors
     /// Propagates the box's own refusals.
-    pub fn run_command(
-        &self,
-        program: &str,
-        argv: &[&str],
-    ) -> Result<BoxObservation, BoxError> {
+    pub fn run_command(&self, program: &str, argv: &[&str]) -> Result<BoxObservation, BoxError> {
         self.observe(program, argv)
     }
 
@@ -426,10 +426,7 @@ impl ExecutionBox {
             let _ = reader.join();
         }
 
-        let partial_output = observed
-            .lock()
-            .map(|text| text.clone())
-            .unwrap_or_default();
+        let partial_output = observed.lock().map(|text| text.clone()).unwrap_or_default();
         Ok(BoxObservation {
             exit_code: if timed_out { None } else { exit_code },
             timed_out,

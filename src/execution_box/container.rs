@@ -116,7 +116,10 @@ impl ConversationContainer {
                 other => Err(other),
             },
         )?;
-        let _ = std::fs::write(workspace.join(RUNNING_MARKER), self.conversation_id.as_bytes());
+        let _ = std::fs::write(
+            workspace.join(RUNNING_MARKER),
+            self.conversation_id.as_bytes(),
+        );
         self.handle = Some(BoxHandle {
             container_id: self.conversation_id.clone(),
             image: self.image.clone(),
@@ -269,7 +272,11 @@ fn collect(root: &std::path::Path, directory: &std::path::Path, rows: &mut Vec<S
         if path.is_dir() {
             collect(root, &path, rows);
         } else if let Ok(bytes) = std::fs::read(&path) {
-            let relative = path.strip_prefix(root).unwrap_or(&path).display().to_string();
+            let relative = path
+                .strip_prefix(root)
+                .unwrap_or(&path)
+                .display()
+                .to_string();
             rows.push([relative, crate::source_fetch::sha256_hex(&bytes)].join(" "));
         }
     }
