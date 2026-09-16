@@ -105,16 +105,28 @@ pub trait TaskExecutor {
     ///
     /// `split_depth` is how many splits already happened above this node, so an
     /// implementation can spend a shrinking budget; the controller enforces its
-    /// own bound regardless. The default refuses to split, which is the honest
-    /// answer for an executor that has no splitter: such a task goes straight
-    /// to [`TaskExecutor::extend_for`], exactly as before this hook existed.
+    /// own bound regardless.
+    ///
+    /// The default is [`balanced_split`] (issue #1138 B12, plan 12 leaf 10). It
+    /// used to be `Vec::new()`, which meant a failing task with no children
+    /// stopped silently even when its own goal named two obligations; now the
+    /// same `Split` heuristic the inspected tree uses cuts it into exactly two
+    /// children, and a goal that genuinely carries one obligation still yields
+    /// nothing and goes straight to [`TaskExecutor::extend_for`], exactly as
+    /// before. [`DEFAULT_SPLIT_DEPTH_BOUND`] is unchanged; no new bound appears.
     fn split(
         &mut self,
-        _task: &RecursiveTask,
+        task: &RecursiveTask,
         _failure: &TaskAttempt,
         _split_depth: u8,
     ) -> Vec<RecursiveTask> {
-        Vec::new()
+        let Some(split) = crate::selection_heuristics::balanced_split(&task.goal) else {
+            return Vec::new();
+        };
+        vec![
+            RecursiveTask::leaf(format!("{}_left", task.id), split.left),
+            RecursiveTask::leaf(format!("{}_right", task.id), split.right),
+        ]
     }
 
     /// Validate a parent after every child passed and its effects were composed.

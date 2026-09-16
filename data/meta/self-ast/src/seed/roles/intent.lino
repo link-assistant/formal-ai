@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/roles/intent.rs
   language rust
   fidelity signature
-  byte_len 36474
-  line_count 548
-  content_id source_module_36b62036f97d12b1
-  symbol_count 87
+  byte_len 39294
+  line_count 592
+  content_id source_module_a5af890cabbf925c
+  symbol_count 97
   symbols
     const ROLE_CLARIFICATION_REQUEST 14 14
     const ROLE_CONVERSATION_PREFERENCE_AVOID 16 16
@@ -94,3 +94,13 @@ self_ast_census
     const ROLE_RESEARCH_EVALUATION_DOMAIN 537 537
     const ROLE_ENUMERATION_REQUEST_OPENER 542 542
     const ROLE_ENUMERATION_CONSTRAINT 548 548
+    const ROLE_CAPABILITY_ACT_RETRIEVE 557 557
+    const ROLE_CAPABILITY_ACT_ENUMERATE 560 560
+    const ROLE_CAPABILITY_ACT_TRANSFORM 563 563
+    const ROLE_CAPABILITY_ACT_COMPOSE 566 566
+    const ROLE_CAPABILITY_ACT_SCHEDULE 570 570
+    const ROLE_CAPABILITY_ACT_EXPLAIN 573 573
+    const ROLE_CAPABILITY_ACT_DEMONSTRATE 576 576
+    const ROLE_CAPABILITY_ACT_RECORD 579 579
+    const ROLE_CAPABILITY_SELF_SURFACE_NOUN 586 586
+    const ROLE_CAPABILITY_QUANTITY_INTERROGATIVE 592 592

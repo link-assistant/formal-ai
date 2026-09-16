@@ -1,0 +1,393 @@
+# `The eight acts of capability routing (issue #1138 B10, plan 10 leaf 6).`
+#
+# `Capability is a function of the object in the request, the act asked for,`
+# `and where the effect lands. Verbs select the *act*; they never select the`
+# `capability. This file is the one place per-language verb surfaces remain,`
+# `and it is shared by every capability -- so adding a language is eight`
+# `blocks here rather than eleven per-capability cue lists, and the asymmetry`
+# `that let "search" reach web_search while "find" reached read_file cannot`
+# `recur in any direction.`
+#
+# `Surfaces are stems, read as raw substrings, because an imperative is`
+# `inflected in every language the corpus covers.`
+meanings
+  act_retrieve
+    defined-by action
+    role capability_act_retrieve
+    lexeme en
+      surface
+        text "find"
+      surface
+        text "search"
+      surface
+        text "look for"
+      surface
+        text "fetch"
+      surface
+        text "get"
+      surface
+        text "read"
+      surface
+        text "open"
+      surface
+        text "download"
+      surface
+        text "locate"
+      surface
+        text "where"
+    lexeme ru
+      surface
+        text "найд"
+      surface
+        text "ищи"
+      surface
+        text "поищ"
+      surface
+        text "загруз"
+      surface
+        text "скачай"
+      surface
+        text "прочит"
+      surface
+        text "откро"
+      surface
+        text "где"
+    lexeme hi
+      surface
+        text "खोज"
+      surface
+        text "ढूँढ"
+      surface
+        text "ढूंढ"
+      surface
+        text "लाइए"
+      surface
+        text "पढ़"
+      surface
+        text "कहाँ"
+    lexeme zh
+      surface
+        text "查找"
+      surface
+        text "寻找"
+      surface
+        text "找"
+      surface
+        text "获取"
+      surface
+        text "读取"
+      surface
+        text "打开"
+      surface
+        text "哪里"
+    lexeme es
+      surface
+        text "busca"
+      surface
+        text "encuentra"
+      surface
+        text "descarga"
+      surface
+        text "abre"
+      surface
+        text "lee"
+      surface
+        text "dónde"
+  act_enumerate
+    defined-by action
+    role capability_act_enumerate
+    lexeme en
+      surface
+        text "list"
+      surface
+        text "enumerate"
+      surface
+        text "show me the files"
+      surface
+        text "what is in"
+    lexeme ru
+      surface
+        text "перечисл"
+      surface
+        text "список"
+      surface
+        text "покажи файлы"
+    lexeme hi
+      surface
+        text "सूचीबद्ध"
+      surface
+        text "सूची"
+    lexeme zh
+      surface
+        text "列出"
+      surface
+        text "列表"
+    lexeme es
+      surface
+        text "enumera"
+      surface
+        text "lista"
+      surface
+        text "listar"
+  act_transform
+    defined-by action
+    role capability_act_transform
+    lexeme en
+      surface
+        text "rewrite"
+      surface
+        text "convert"
+      surface
+        text "replace"
+      surface
+        text "rename"
+    lexeme ru
+      surface
+        text "перепиш"
+      surface
+        text "преобраз"
+      surface
+        text "замени"
+      surface
+        text "переимен"
+    lexeme hi
+      surface
+        text "बदल"
+      surface
+        text "परिवर्तित"
+    lexeme zh
+      surface
+        text "改写"
+      surface
+        text "转换"
+      surface
+        text "替换"
+    lexeme es
+      surface
+        text "reescribe"
+      surface
+        text "convierte"
+      surface
+        text "reemplaza"
+  act_compose
+    defined-by action
+    role capability_act_compose
+    lexeme en
+      surface
+        text "essay"
+      surface
+        text "write me"
+      surface
+        text "draft"
+      surface
+        text "long-form"
+      surface
+        text "written piece"
+      surface
+        text "put together"
+    lexeme ru
+      surface
+        text "эссе"
+      surface
+        text "напиши мне"
+      surface
+        text "сочинени"
+      surface
+        text "развёрнут"
+    lexeme hi
+      surface
+        text "निबंध"
+      surface
+        text "लेख"
+    lexeme zh
+      surface
+        text "文章"
+      surface
+        text "写一篇"
+      surface
+        text "长文"
+    lexeme es
+      surface
+        text "ensayo"
+      surface
+        text "escríbeme"
+      surface
+        text "texto largo"
+  act_schedule
+    defined-by action
+    role capability_act_schedule
+    lexeme en
+      surface
+        text "schedule"
+      surface
+        text "book"
+      surface
+        text "put a call"
+      surface
+        text "put me down"
+      surface
+        text "block an hour"
+      surface
+        text "set up a call"
+      surface
+        text "pencil in"
+      surface
+        text "put down"
+    lexeme ru
+      surface
+        text "назнач"
+      surface
+        text "поставь"
+      surface
+        text "запланир"
+      surface
+        text "забронир"
+    lexeme hi
+      surface
+        text "निर्धारित"
+      surface
+        text "रखिए"
+      surface
+        text "तय कर"
+    lexeme zh
+      surface
+        text "安排"
+      surface
+        text "预约"
+      surface
+        text "定在"
+    lexeme es
+      surface
+        text "agenda"
+      surface
+        text "programa"
+      surface
+        text "pon una llamada"
+      surface
+        text "reserva"
+  act_explain
+    defined-by action
+    role capability_act_explain
+    lexeme en
+      surface
+        text "explain"
+      surface
+        text "put that another way"
+      surface
+        text "rephrase"
+      surface
+        text "clarify"
+      surface
+        text "what do you mean"
+    lexeme ru
+      surface
+        text "объясн"
+      surface
+        text "поясн"
+      surface
+        text "другими словами"
+      surface
+        text "что ты имеешь в виду"
+    lexeme hi
+      surface
+        text "समझा"
+      surface
+        text "स्पष्ट"
+    lexeme zh
+      surface
+        text "解释"
+      surface
+        text "换个说法"
+      surface
+        text "说清楚"
+    lexeme es
+      surface
+        text "explica"
+      surface
+        text "aclara"
+      surface
+        text "de otra manera"
+  act_demonstrate
+    defined-by action
+    role capability_act_demonstrate
+    lexeme en
+      surface
+        text "answer in"
+      surface
+        text "reply in"
+      surface
+        text "say something in"
+      surface
+        text "sound like in"
+    lexeme ru
+      surface
+        text "ответь на"
+      surface
+        text "скажи на"
+      surface
+        text "говори на"
+    lexeme hi
+      surface
+        text "में उत्तर"
+      surface
+        text "में जवाब"
+      surface
+        text "में बोल"
+    lexeme zh
+      surface
+        text "用"
+      surface
+        text "说一句"
+    lexeme es
+      surface
+        text "responde en"
+      surface
+        text "habla en"
+      surface
+        text "dime algo en"
+  act_record
+    defined-by action
+    role capability_act_record
+    lexeme en
+      surface
+        text "report"
+      surface
+        text "file an issue"
+      surface
+        text "log a bug"
+      surface
+        text "impossible to"
+      surface
+        text "does not work"
+    lexeme ru
+      surface
+        text "сообщи"
+      surface
+        text "заведи задачу"
+      surface
+        text "невозможно"
+      surface
+        text "не работает"
+    lexeme hi
+      surface
+        text "रिपोर्ट"
+      surface
+        text "नामुमकिन"
+      surface
+        text "काम नहीं"
+    lexeme zh
+      surface
+        text "报告"
+      surface
+        text "提个问题"
+      surface
+        text "根本"
+      surface
+        text "用不了"
+    lexeme es
+      surface
+        text "reporta"
+      surface
+        text "no hay quien"
+      surface
+        text "no funciona"

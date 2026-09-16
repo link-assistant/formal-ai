@@ -1,0 +1,18 @@
+self_ast_census
+  target src/selection_heuristics/refutation.rs
+  language rust
+  fidelity signature
+  byte_len 5942
+  line_count 151
+  content_id source_module_b1324d7a3732077b
+  symbol_count 9
+  symbols
+    const NO_DISCRIMINATING_EXPERIMENT 18 18
+    function worst_case_survivors 24 26
+    function attempts_refutation_of 34 36
+    function discriminates 41 48
+    function alive 54 59
+    function observe 66 96
+    function verdict 100 115
+    function leading 119 121
+    function next_experiment 131 151

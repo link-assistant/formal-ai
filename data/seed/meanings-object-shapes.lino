@@ -1,0 +1,163 @@
+# `Object-shape surfaces for capability routing (issue #1138 B10, plan 10`
+# `leaves 4-5).`
+#
+# `Most object types are derived with no vocabulary at all: a URL parses, a`
+# `path carries a separator or an extension, a clock time is digits around a`
+# `colon. Two are not derivable from shape alone, and this file grounds them`
+# `so src/capability_routing.rs names roles rather than spellings:`
+#
+# `  * a self surface -- the assistant's own UI, answer or behaviour -- needs`
+# `    the noun for the thing being complained about beside the existing`
+# `    assistant_self_reference role;`
+# `  * a quantity question needs the interrogative that asks for a magnitude,`
+# `    which is a closed class in every language and is what separates`
+# `    "how deep does an oak root go" from "how do oak roots work".`
+meanings
+  self_surface_noun
+    defined-by concept
+    role capability_self_surface_noun
+    lexeme en
+      surface
+        text "panel"
+      surface
+        text "sidebar"
+      surface
+        text "splitter"
+      surface
+        text "button"
+      surface
+        text "window"
+      surface
+        text "widget"
+      surface
+        text "interface"
+      surface
+        text "answer you"
+      surface
+        text "reply you"
+    lexeme ru
+      surface
+        text "панель"
+      surface
+        text "боковую"
+      surface
+        text "кнопк"
+      surface
+        text "окно"
+      surface
+        text "интерфейс"
+      surface
+        text "ответ, который ты"
+    lexeme hi
+      surface
+        text "पैनल"
+      surface
+        text "बटन"
+      surface
+        text "विंडो"
+      surface
+        text "इंटरफ़ेस"
+    lexeme zh
+      surface
+        text "面板"
+      surface
+        text "侧栏"
+      surface
+        text "按钮"
+      surface
+        text "窗口"
+      surface
+        text "界面"
+    lexeme es
+      surface
+        text "panel"
+      surface
+        text "barra lateral"
+      surface
+        text "botón"
+      surface
+        text "ventana"
+      surface
+        text "interfaz"
+  quantity_interrogative
+    defined-by concept
+    role capability_quantity_interrogative
+    lexeme en
+      surface
+        text "how deep"
+      surface
+        text "how far"
+      surface
+        text "how tall"
+      surface
+        text "how high"
+      surface
+        text "how long"
+      surface
+        text "how wide"
+      surface
+        text "how heavy"
+      surface
+        text "how much does"
+      surface
+        text "how many"
+      surface
+        text "what span"
+      surface
+        text "what size"
+    lexeme ru
+      surface
+        text "насколько глубоко"
+      surface
+        text "насколько далеко"
+      surface
+        text "насколько высок"
+      surface
+        text "насколько длин"
+      surface
+        text "какого размера"
+      surface
+        text "сколько весит"
+      surface
+        text "как глубоко"
+    lexeme hi
+      surface
+        text "कितनी गहरी"
+      surface
+        text "कितनी लंबी"
+      surface
+        text "कितना वजन"
+      surface
+        text "कितने"
+      surface
+        text "कितनी दूर"
+      surface
+        text "कितना बड़ा"
+    lexeme zh
+      surface
+        text "多深"
+      surface
+        text "多高"
+      surface
+        text "多长"
+      surface
+        text "多远"
+      surface
+        text "多重"
+      surface
+        text "多大"
+      surface
+        text "能扎多"
+    lexeme es
+      surface
+        text "qué profundidad"
+      surface
+        text "qué altura"
+      surface
+        text "cuánto pesa"
+      surface
+        text "cuánto mide"
+      surface
+        text "qué tamaño"
+      surface
+        text "cuán lejos"

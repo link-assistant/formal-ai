@@ -16,6 +16,7 @@ use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 mod adapters;
 mod execution;
+mod ranking;
 pub use adapters::{
     trace_from_compiled_procedure, trace_from_event_log, traces_from_memory_events,
 };
@@ -604,12 +605,14 @@ pub fn discover_algorithms(traces: &[ExecutionTrace]) -> AlgorithmDiscoveryRun {
         }
         maximal.push(candidate);
     }
-    maximal.sort_by(|left, right| {
-        right
-            .validated()
-            .cmp(&left.validated())
-            .then_with(|| left.id.cmp(&right.id))
-    });
+    // Issue #1138 B12, plan 12 leaf 5: the survivors of the subsumption filter
+    // are ordered by the *same* registry heuristic the draft portfolio uses,
+    // instead of by an ad-hoc `sort_by` that only this module knew about.
+    // `subsumes` above stays the correctness filter -- a longer validated
+    // candidate subsumes a shorter one -- and correctness still comes first
+    // here: a candidate whose held-out tests did not all pass never enters the
+    // ranking and keeps its deterministic id order behind those that did.
+    maximal = ranking::rank_survivors(maximal);
 
     let ratio = if flattened.is_empty() {
         10_000

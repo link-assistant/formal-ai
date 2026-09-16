@@ -2,56 +2,69 @@ self_ast_census
   target src/selection_heuristics.rs
   language rust
   fidelity signature
-  byte_len 13194
-  line_count 371
-  content_id source_module_d405148f900c4486
-  symbol_count 48
+  byte_len 19463
+  line_count 531
+  content_id source_module_72715fd11b9c6845
+  symbol_count 61
   symbols
-    enum HeuristicRole 16 20
-    function slug 24 26
-    function from_slug 29 32
-    struct HeuristicMethod 37 46
-    function to_links_notation 50 52
-    function catalog_from 59 62
-    struct ActionCost 70 79
-    struct CandidateScore 83 90
-    function satisfies 95 97
-    function to_links_notation 100 102
-    trait CandidateRanker 107 112
-    function slug 108 108
-    function rank 111 111
-    struct LeastActionRanker 116 116
-    function slug 119 121
-    function rank 123 126
-    trait TaskSplitter 130 135
-    function slug 131 131
-    function split 134 134
-    struct BinarySplit 139 148
-    function imbalance 154 156
-    function to_links_notation 159 161
-    function balanced_split 172 175
-    enum SplitRefusal 179 185
-    function split_refusal 189 192
-    struct ContradictionLink 196 211
-    enum ContradictionDerivation 215 222
-    enum TrizResolution 226 235
-    enum SeparationAxis 239 244
-    function contradictions_in 249 252
-    struct TrizRanker 257 257
-    function slug 260 262
-    function rank 264 267
-    struct SearchHypothesis 273 280
-    struct Experiment 284 292
-    function worst_case_survivors 298 300
-    function attempts_refutation_of 304 307
-    struct HypothesisSpace 312 318
-    function alive 322 324
-    function observe 328 331
-    function verdict 335 337
-    enum SearchVerdict 341 350
-    trait ExperimentChooser 352 357
-    function slug 353 353
-    function next_experiment 356 356
-    struct RefutationSearch 360 360
-    function slug 363 365
-    function next_experiment 367 370
+    module refutation 22 22
+    module splitting 23 23
+    module triz 24 24
+    enum HeuristicRole 28 32
+    function slug 37 43
+    function from_slug 47 54
+    struct HeuristicMethod 59 68
+    function parameter 73 78
+    function applies_in 83 85
+    function to_links_notation 89 102
+    const STRUCTURAL_FIELDS 106 106
+    const HEURISTIC_RECORD_TYPE 109 109
+    const SELECTION_HEURISTICS_LINO 112 113
+    function catalog_from 120 153
+    function shipped_catalog 159 161
+    struct ActionCost 169 178
+    struct CandidateScore 182 189
+    function satisfies 196 198
+    function to_links_notation 202 214
+    function dimension 220 228
+    const KEY_ORDER_PARAMETER 232 232
+    function key_order 235 241
+    function ranking_key 244 249
+    trait CandidateRanker 253 258
+    function slug 254 254
+    function rank 257 257
+    struct LeastActionRanker 262 262
+    function slug 265 267
+    function rank 269 284
+    trait TaskSplitter 288 293
+    function slug 289 289
+    function split 292 292
+    struct BinarySplit 297 306
+    function imbalance 312 314
+    function to_links_notation 318 333
+    function balanced_split 344 346
+    struct BalancedSplitter 351 351
+    function slug 354 356
+    function split 358 360
+    enum SplitRefusal 365 371
+    function split_refusal 375 377
+    struct ContradictionLink 381 396
+    enum ContradictionDerivation 400 407
+    enum TrizResolution 411 420
+    enum SeparationAxis 424 429
+    function contradictions_in 434 436
+    struct TrizRanker 441 441
+    function slug 444 446
+    function rank 448 450
+    struct SearchHypothesis 456 463
+    struct Experiment 467 475
+    struct HypothesisSpace 479 485
+    enum SearchVerdict 488 497
+    trait ExperimentChooser 499 504
+    function slug 500 500
+    function next_experiment 503 503
+    struct RefutationSearch 507 507
+    function slug 510 512
+    function next_experiment 514 516
+    function segment_count 521 523
+    function complete_layers 529 531

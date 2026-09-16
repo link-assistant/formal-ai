@@ -51,6 +51,7 @@ pub const LEARNING_SOURCES_LINO: &str = include_str!("../../data/seed/learning-s
 pub const MARKET_PRICE_REFERENCES_LINO: &str =
     include_str!("../../data/seed/market-price-references.lino");
 pub const MEANINGS_LINO: &str = include_str!("../../data/seed/meanings.lino");
+pub const MEANINGS_ACTS_LINO: &str = include_str!("../../data/seed/meanings-acts.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../data/seed/meanings-agent-actions.lino");
 pub const MEANINGS_BEHAVIOR_RULES_LINO: &str =
@@ -102,6 +103,8 @@ pub const MEANINGS_NOTE_COMPOSITION_LINO: &str =
     include_str!("../../data/seed/meanings-note-composition.lino");
 pub const MEANINGS_NUMBER_CONSTRAINTS_LINO: &str =
     include_str!("../../data/seed/meanings-number-constraints.lino");
+pub const MEANINGS_OBJECT_SHAPES_LINO: &str =
+    include_str!("../../data/seed/meanings-object-shapes.lino");
 pub const MEANINGS_ONTOLOGY_LINO: &str = include_str!("../../data/seed/meanings-ontology.lino");
 pub const MEANINGS_PLAYWRIGHT_LINO: &str = include_str!("../../data/seed/meanings-playwright.lino");
 pub const MEANINGS_POLICY_LINO: &str = include_str!("../../data/seed/meanings-policy.lino");
@@ -111,6 +114,8 @@ pub const MEANINGS_PROOF_LINO: &str = include_str!("../../data/seed/meanings-pro
 pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../data/seed/meanings-research-table.lino");
 pub const MEANINGS_SEARCH_LINO: &str = include_str!("../../data/seed/meanings-search.lino");
+pub const MEANINGS_SELECTION_CRITERIA_LINO: &str =
+    include_str!("../../data/seed/meanings-selection-criteria.lino");
 pub const MEANINGS_SEMANTIC_META_LINO: &str =
     include_str!("../../data/seed/meanings-semantic-meta.lino");
 pub const MEANINGS_SKILL_COMPILER_LINO: &str =
@@ -205,7 +210,9 @@ pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../data/seed/summary-topi
 pub const TERMINAL_COMMANDS_LINO: &str = include_str!("../../data/seed/terminal-commands.lino");
 pub const TOOL_RESOURCE_SCOPES_LINO: &str =
     include_str!("../../data/seed/tool-resource-scopes.lino");
+pub const TOOLCHAINS_LINO: &str = include_str!("../../data/seed/toolchains.lino");
 pub const TOOLS_LINO: &str = include_str!("../../data/seed/tools.lino");
+pub const TRIZ_PRINCIPLES_LINO: &str = include_str!("../../data/seed/triz-principles.lino");
 
 /// Embedded copy of every Links Notation seed file. Returned in registry
 /// order so callers can render the merged bundle deterministically.
@@ -244,6 +251,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/learning-sources.lino", LEARNING_SOURCES_LINO),
         ("data/seed/market-price-references.lino", MARKET_PRICE_REFERENCES_LINO),
         ("data/seed/meanings.lino", MEANINGS_LINO),
+        ("data/seed/meanings-acts.lino", MEANINGS_ACTS_LINO),
         ("data/seed/meanings-agent-actions.lino", MEANINGS_AGENT_ACTIONS_LINO),
         ("data/seed/meanings-behavior-rules.lino", MEANINGS_BEHAVIOR_RULES_LINO),
         ("data/seed/meanings-calculator.lino", MEANINGS_CALCULATOR_LINO),
@@ -275,12 +283,14 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-meta.lino", MEANINGS_META_LINO),
         ("data/seed/meanings-note-composition.lino", MEANINGS_NOTE_COMPOSITION_LINO),
         ("data/seed/meanings-number-constraints.lino", MEANINGS_NUMBER_CONSTRAINTS_LINO),
+        ("data/seed/meanings-object-shapes.lino", MEANINGS_OBJECT_SHAPES_LINO),
         ("data/seed/meanings-ontology.lino", MEANINGS_ONTOLOGY_LINO),
         ("data/seed/meanings-playwright.lino", MEANINGS_PLAYWRIGHT_LINO),
         ("data/seed/meanings-policy.lino", MEANINGS_POLICY_LINO),
         ("data/seed/meanings-program-synthesis.lino", MEANINGS_PROGRAM_SYNTHESIS_LINO),
         ("data/seed/meanings-proof.lino", MEANINGS_PROOF_LINO),
         ("data/seed/meanings-research-table.lino", MEANINGS_RESEARCH_TABLE_LINO),
+        ("data/seed/meanings-selection-criteria.lino", MEANINGS_SELECTION_CRITERIA_LINO),
         ("data/seed/meanings-semantic-meta.lino", MEANINGS_SEMANTIC_META_LINO),
         ("data/seed/meanings-skill-compiler.lino", MEANINGS_SKILL_COMPILER_LINO),
         ("data/seed/meanings-skill-procedure.lino", MEANINGS_SKILL_PROCEDURE_LINO),
@@ -369,7 +379,9 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
         ("data/seed/terminal-commands.lino", TERMINAL_COMMANDS_LINO),
         ("data/seed/tool-resource-scopes.lino", TOOL_RESOURCE_SCOPES_LINO),
+        ("data/seed/toolchains.lino", TOOLCHAINS_LINO),
         ("data/seed/tools.lino", TOOLS_LINO),
+        ("data/seed/triz-principles.lino", TRIZ_PRINCIPLES_LINO),
     ]
 }
 
@@ -412,6 +424,7 @@ pub const RESPONSE_FILES: &[&str] = &[
 pub const MEANING_FILES: &[&str] = &[
     LEARNED_REQUEST_OPENERS_LINO,
     MEANINGS_LINO,
+    MEANINGS_ACTS_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
     MEANINGS_BEHAVIOR_RULES_LINO,
     MEANINGS_CALCULATOR_LINO,
@@ -443,6 +456,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_META_LINO,
     MEANINGS_NOTE_COMPOSITION_LINO,
     MEANINGS_NUMBER_CONSTRAINTS_LINO,
+    MEANINGS_OBJECT_SHAPES_LINO,
     MEANINGS_ONTOLOGY_LINO,
     MEANINGS_PLAYWRIGHT_LINO,
     MEANINGS_POLICY_LINO,
@@ -450,6 +464,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_PROOF_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_SEARCH_LINO,
+    MEANINGS_SELECTION_CRITERIA_LINO,
     MEANINGS_SEMANTIC_META_LINO,
     MEANINGS_SKILL_COMPILER_LINO,
     MEANINGS_SKILL_PROCEDURE_LINO,

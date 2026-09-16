@@ -546,3 +546,47 @@ pub const ROLE_ENUMERATION_REQUEST_OPENER: &str = "enumeration_request_opener";
 /// that an enumeration request carries a filter (so it is a real research
 /// request, not a bare noun phrase).
 pub const ROLE_ENUMERATION_CONSTRAINT: &str = "enumeration_constraint";
+/// Semantic role: the *retrieve* act of capability routing (issue #1138 B10,
+/// plan 10 leaf 6).
+///
+/// "find", "search", "найди", "खोज", "查找", "busca" — recorded as stems and
+/// matched as raw substrings. Verbs select the act; they never select the
+/// capability, so this one role serves web search, code search and file search
+/// alike and the #745/#758 asymmetry cannot recur in either direction. Carried
+/// by `act_retrieve` in `data/seed/meanings-acts.lino`.
+pub const ROLE_CAPABILITY_ACT_RETRIEVE: &str = "capability_act_retrieve";
+/// Semantic role: the *enumerate* act — list what is there rather than fetch one
+/// thing. Carried by `act_enumerate`.
+pub const ROLE_CAPABILITY_ACT_ENUMERATE: &str = "capability_act_enumerate";
+/// Semantic role: the *transform* act — rewrite, convert, replace. Carried by
+/// `act_transform`.
+pub const ROLE_CAPABILITY_ACT_TRANSFORM: &str = "capability_act_transform";
+/// Semantic role: the *compose* act — produce an extended written piece from
+/// retrieved structure. Carried by `act_compose`.
+pub const ROLE_CAPABILITY_ACT_COMPOSE: &str = "capability_act_compose";
+/// Semantic role: the *schedule* act — place an event in time. Carried by
+/// `act_schedule`; it subsumes the calendar verbs that used to live in
+/// `data/meta/cue-lexicon.lino` as their own cue sets.
+pub const ROLE_CAPABILITY_ACT_SCHEDULE: &str = "capability_act_schedule";
+/// Semantic role: the *explain* act — re-render at a lower formalization depth.
+/// Carried by `act_explain`.
+pub const ROLE_CAPABILITY_ACT_EXPLAIN: &str = "capability_act_explain";
+/// Semantic role: the *demonstrate* act — answer in a named language. Carried by
+/// `act_demonstrate`.
+pub const ROLE_CAPABILITY_ACT_DEMONSTRATE: &str = "capability_act_demonstrate";
+/// Semantic role: the *record* act — file what happened. Carried by
+/// `act_record`.
+pub const ROLE_CAPABILITY_ACT_RECORD: &str = "capability_act_record";
+/// Semantic role: the noun for a piece of the assistant's own surface.
+///
+/// "panel", "панель", "पैनल", "面板", "panel" — read beside
+/// [`crate::seed::ROLE_ASSISTANT_SELF_REFERENCE`] so "the panel you drew" is a
+/// self surface while "the panel of judges" is not. Carried by
+/// `self_surface_noun` in `data/seed/meanings-object-shapes.lino`.
+pub const ROLE_CAPABILITY_SELF_SURFACE_NOUN: &str = "capability_self_surface_noun";
+/// Semantic role: an interrogative whose expected answer is a magnitude.
+///
+/// "how deep", "насколько глубоко", "कितनी गहरी", "多深", "qué profundidad" —
+/// the closed class that separates a measurement question from a mechanism
+/// question. Carried by `quantity_interrogative`.
+pub const ROLE_CAPABILITY_QUANTITY_INTERROGATIVE: &str = "capability_quantity_interrogative";

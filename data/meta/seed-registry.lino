@@ -112,6 +112,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-acts
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-agent-actions
     bundle true
     lexicon meaning
@@ -231,6 +235,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-object-shapes
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-ontology
     bundle true
     lexicon meaning
@@ -257,6 +265,10 @@ seed_registry
     web true
   seed meanings-search
     lexicon meaning
+  seed meanings-selection-criteria
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-semantic-meta
     bundle true
     lexicon meaning
@@ -449,9 +461,13 @@ seed_registry
     web true
   seed tool-resource-scopes
     bundle true
+  seed toolchains
+    bundle true
   seed tools
     bundle true
     web true
+  seed triz-principles
+    bundle true
   seed unknown-openers
     web true
   unregistered capability-routing

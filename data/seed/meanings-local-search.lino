@@ -142,6 +142,15 @@ meanings
         text 在我的桌面上
       surface
         text 在桌面上
+    lexeme es
+      surface
+        text "en mi escritorio"
+      surface
+        text "en el escritorio"
+      surface
+        text "en escritorio"
+      surface
+        text "del escritorio"
       surface
         text 桌面上
   local_path_scope_home

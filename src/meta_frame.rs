@@ -290,12 +290,28 @@ impl WorkUnit {
     /// already-computed [`IntentFormalization`].
     #[must_use]
     pub fn from_formalization(formalization: &IntentFormalization, max_depth: u8) -> Self {
+        // Issue #1138 B12, plan 12 leaf 9: the recursion descends to the deepest
+        // *complete* layer of the binary tree over the prompt's obligation
+        // segments, because `data/meta/task-decomposition-invariant.lino` calls
+        // 1, 2, 4, 8, 16 and 32 leaves the valid complete layers. Seven segments
+        // therefore yield four leaves rather than seven in an unfinished layer;
+        // the configured bound still wins when it is the smaller of the two.
+        let complete = crate::selection_heuristics::complete_layers(&formalization.source_text);
+        let bound = if complete == 0 {
+            // One obligation or none: the split heuristic refuses on its own and
+            // the root is a leaf with its real reason. Clamping to zero here
+            // would relabel every single-intent prompt as depth-bounded, which
+            // is a different claim about why it is atomic.
+            max_depth
+        } else {
+            max_depth.min(complete)
+        };
         Self::build(
             &formalization.source_text,
             None,
             &formalization.language,
             0,
-            max_depth,
+            bound,
         )
     }
 
@@ -317,8 +333,13 @@ impl WorkUnit {
             );
         }
 
-        let segments = decompose_once(span);
-        if segments.len() <= 1 {
+        // Issue #1138 B12, plan 12 leaf 9: the split is the registry's `Split`
+        // heuristic, so a non-leaf unit has exactly two children -- which is what
+        // `data/meta/task-decomposition-invariant.lino` has declared since #847
+        // and nothing read. A three-clause span becomes a two-child node whose
+        // left child holds two clauses; every segment survives on exactly one
+        // side, so this is a regrouping and never a discard (R710-R9).
+        let Some(split) = split_heuristic(span) else {
             // Cannot split further: a direct method match is the leaf reason when
             // a route is recognized, otherwise it is an irreducible single need.
             let reason = if route.is_some() {
@@ -327,9 +348,9 @@ impl WorkUnit {
                 AtomicityReason::SingleNeed
             };
             return Self::leaf(unit_id, parent, span, depth, reason, route);
-        }
+        };
 
-        let children = segments
+        let children = [split.left.as_str(), split.right.as_str()]
             .iter()
             .map(|child_span| {
                 Self::build(
@@ -453,6 +474,21 @@ impl WorkUnit {
 /// Returns the single span unchanged when it cannot be split further, which is
 /// the recursion base case in [`WorkUnit::build`].
 #[must_use]
+/// The registry's `Split` heuristic, applied to one span.
+///
+/// The catalog is consulted rather than `balanced_split` being called directly,
+/// so an unseeded heuristic is a reportable state: an empty `Split` role means no
+/// split is attempted and the unit is a leaf carrying its reason, never a silent
+/// fall-back to the n-ary segmentation this replaced.
+fn split_heuristic(span: &str) -> Option<crate::selection_heuristics::BinarySplit> {
+    use crate::selection_heuristics::{BalancedSplitter, HeuristicRole, TaskSplitter};
+    let registry = crate::method_registry::MethodRegistry::from_dispatch();
+    let mut heuristics = registry.heuristics_for(HeuristicRole::Split, "");
+    let heuristic = heuristics.pop()?;
+    BalancedSplitter.split(span, &heuristic.parameters)
+}
+
+#[allow(dead_code)]
 fn decompose_once(span: &str) -> Vec<String> {
     let sentences = split_sentences(span);
     if sentences.len() > 1 {

@@ -878,45 +878,45 @@ The TRIZ cases pose an explicit trade-off in the requirement, so the selection v
 
 ## Implementation leaves
 
-- [ ] Add `src/selection_heuristics.rs` with `HeuristicRole`, `HeuristicMethod`,
+- [x] Add `src/selection_heuristics.rs` with `HeuristicRole`, `HeuristicMethod`,
       `to_links_notation`; register in `src/lib.rs`.
-- [ ] Add `data/meta/selection-heuristics.lino` with the `least_action` record only; add
+- [x] Add `data/meta/selection-heuristics.lino` with the `least_action` record only; add
       `heuristics` and `heuristics_for` to `MethodRegistry`; extend its
       `to_links_notation` and the `method_registry` event; assert `method_for_route` never
       returns a heuristic.
-- [ ] Add `ActionCost`, `CandidateScore`, `satisfies`, `CandidateRanker`,
+- [x] Add `ActionCost`, `CandidateScore`, `satisfies`, `CandidateRanker`,
       `LeastActionRanker`; the key order reads from `parameters`.
-- [ ] Rewrite `src/draft_portfolio.rs:335` `rank_passing_drafts` over `CandidateScore` and
+- [x] Rewrite `src/draft_portfolio.rs:335` `rank_passing_drafts` over `CandidateScore` and
       the registry; land the migration identity test in the same commit.
-- [ ] Hand `src/algorithm_discovery.rs:586-605`'s surviving candidates to the same ranker,
+- [x] Hand `src/algorithm_discovery.rs:586-605`'s surviving candidates to the same ranker,
       keeping `subsumes` (`:900`) as the correctness filter it is.
-- [ ] Seed `heuristic_resource_least_action` reading `resource_units` from plan 05's
+- [x] Seed `heuristic_resource_least_action` reading `resource_units` from plan 05's
       `Evidence` records; R491-C3.
-- [ ] Add `BinarySplit`, `imbalance`, `balanced_split`, `TaskSplitter`; seed the `split`
+- [x] Add `BinarySplit`, `imbalance`, `balanced_split`, `TaskSplitter`; seed the `split`
       role in `data/meta/selection-heuristics.lino`.
-- [ ] Measure `non_binary_work_unit_nodes` over the benchmark corpus; write
+- [x] Measure `non_binary_work_unit_nodes` over the benchmark corpus; write
       `data/meta/selection-heuristic-ratchet.lino` at the measured value.
-- [ ] Switch `src/meta_frame.rs:320` `WorkUnit::build` to the `Split` heuristic; take one
+- [x] Switch `src/meta_frame.rs:320` `WorkUnit::build` to the `Split` heuristic; take one
       ratchet step down; re-measure. **This leaf lands after plan 05's obligation
       join test, which asserts every `WorkUnit` leaf span is covered by an
       obligation node span: this leaf changes the leaf set that join matches
       against, and the join must stay green through it (plan 00 §9 X14).**
-- [ ] Replace `TaskExecutor::split`'s `Vec::new()` default
+- [x] Replace `TaskExecutor::split`'s `Vec::new()` default
       (`src/recursive_execution.rs:111`) with the same heuristic.
-- [ ] Fix `data/meta/task-decomposition-invariant.lino`'s `source_reader` for `binary`;
+- [x] Fix `data/meta/task-decomposition-invariant.lino`'s `source_reader` for `binary`;
       add the per-field reader check.
-- [ ] Add `SearchHypothesis`, `Experiment`, `worst_case_survivors`,
+- [x] Add `SearchHypothesis`, `Experiment`, `worst_case_survivors`,
       `attempts_refutation_of`, `HypothesisSpace`, `observe`, `SearchVerdict`,
       `ExperimentChooser`, `RefutationSearch`; seed the `experiment` role.
 - [ ] Wire `RefutationSearch` into `src/solver_search.rs` step 7 ahead of `run_search`,
       falling back to sampling when no discriminating probe exists.
 - [ ] Wire `HypothesisSpace::verdict` into `src/reasoning_standard/` so R1073-5's gate has
       a search behind it.
-- [ ] Add `ContradictionLink`, `ContradictionDerivation`, `TrizResolution`,
+- [x] Add `ContradictionLink`, `ContradictionDerivation`, `TrizResolution`,
       `SeparationAxis`, `contradictions_in`, `TrizRanker`; seed the `rank` role at order 3.
-- [ ] Add `data/seed/triz-principles.lino` (40 inventive + 4 separation principles) with
+- [x] Add `data/seed/triz-principles.lino` (40 inventive + 4 separation principles) with
       `source` links into the existing sources registry; add the forget-and-rediscover test.
-- [ ] Add `tests/unit/issue_1138_selection_heuristics.rs` (twenty prompts, five languages)
+- [x] Add `tests/unit/issue_1138_selection_heuristics.rs` (twenty prompts, five languages)
       and the four specification files; register each in `tests/unit/mod.rs`.
 - [ ] Write `docs/requirements/issue-0901-triz-contradictions.md`,
       `docs/requirements/issue-0802-hypothesis-search.md`,

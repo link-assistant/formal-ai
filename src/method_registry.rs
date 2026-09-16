@@ -214,10 +214,7 @@ impl MethodRegistry {
         Ok(Self {
             methods,
             learned_methods,
-            // Wave T: the collection exists so there is one declaration of the
-            // registry; plan 12 leaf 2 loads `data/meta/selection-heuristics.lino`
-            // into it. Behaviour is unchanged until it does.
-            heuristics: Vec::new(),
+            heuristics: crate::selection_heuristics::shipped_catalog(),
         })
     }
 
@@ -234,8 +231,13 @@ impl MethodRegistry {
         role: crate::selection_heuristics::HeuristicRole,
         situation: &str,
     ) -> Vec<&crate::selection_heuristics::HeuristicMethod> {
-        let _ = (role, situation);
-        todo!("plan 12 leaf 2 -- heuristics_for over the seeded catalog")
+        let mut selected: Vec<&crate::selection_heuristics::HeuristicMethod> = self
+            .heuristics
+            .iter()
+            .filter(|heuristic| heuristic.role == role && heuristic.applies_in(situation))
+            .collect();
+        selected.sort_by_key(|heuristic| heuristic.order);
+        selected
     }
 
     /// Total number of method records.
@@ -336,9 +338,13 @@ impl MethodRegistry {
                 self.count_on(MethodSurface::Contextual).to_string(),
             ),
             ("learned_count", self.learned_methods.len().to_string()),
+            ("heuristic_count", self.heuristics.len().to_string()),
         ];
         for method in &self.methods {
             pairs.push(("method", method.name.clone()));
+        }
+        for heuristic in &self.heuristics {
+            pairs.push(("heuristic", heuristic.name.clone()));
         }
         let mut out = format_lino_record("method_registry", &pairs);
         for method in &self.methods {
@@ -348,6 +354,10 @@ impl MethodRegistry {
         for method in &self.learned_methods {
             out.push('\n');
             out.push_str(&method.to_links_notation());
+        }
+        for heuristic in &self.heuristics {
+            out.push('\n');
+            out.push_str(&heuristic.to_links_notation());
         }
         out
     }

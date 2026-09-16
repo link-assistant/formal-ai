@@ -1,0 +1,23 @@
+# `The selection-heuristic ratchet (issue #1138 B12, plan 12 leaf 8).`
+#
+# `Separate from data/meta/debt-ratchet.lino because plan 12 owns this measure`
+# `and the two ledgers are edited by different work; a shared file is where`
+# `two branches collide over a number neither of them changed.`
+#
+# `Every measure below is strictly downward: a commit may lower it, and a`
+# `commit that raises it fails. The value is what`
+# `examples/measure_non_binary_work_units.rs reported on this tree, not a`
+# `number chosen to be comfortable.`
+selection_heuristic_ratchet
+  record_type "ratchet_ledger"
+  schema_version 1
+  owner "docs/case-studies/issue-1138/plans/12-selection-heuristics.md"
+  measure non_binary_work_unit_nodes
+    direction "down"
+    value "0"
+    measured_by "examples/measure_non_binary_work_units.rs"
+    corpora "data/benchmarks/capability-routing, data/benchmarks/handler-family-paraphrases, data/benchmarks/local-path-discovery"
+    prompts "776"
+    work_unit_nodes "1266"
+    measured_on "2026-09-16"
+    note "WorkUnit::build asks the registry's Split heuristic, which returns exactly two children or refuses, so a non-binary interior node is unreachable by construction rather than merely absent from this corpus. The measure stays because construction can regress and a number that reads zero for a reason is worth keeping honest."

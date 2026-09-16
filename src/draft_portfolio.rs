@@ -29,7 +29,11 @@
 
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
+use crate::method_registry::MethodRegistry;
 use crate::seed;
+use crate::selection_heuristics::{
+    ActionCost, CandidateRanker, CandidateScore, HeuristicRole, LeastActionRanker,
+};
 
 /// Bounded retry budget for one draft slot.
 ///
@@ -329,20 +333,43 @@ where
     })
 }
 
-/// Rank the passing drafts by least action: smallest artifact first, then fewest
-/// steps, then the lowest draft index as the final deterministic tie-break
-/// (issue #491).
+/// Rank the passing drafts by the registry's `Rank` heuristic (issue #491,
+/// #1138 B12, plan 12 leaf 4).
+///
+/// The key order is no longer a `sort_by_key` written here: it is the seeded
+/// `key_order` of `data/meta/selection-heuristics.lino`, which ships as
+/// `code_size,steps,candidate_index` and therefore reproduces the previous
+/// ordering -- smallest artifact first, then fewest steps, then the lowest draft
+/// index -- byte for byte. Reordering those dimensions is now a `.lino` edit.
+///
+/// Correctness still comes first, and is decided before any ranker runs: a draft
+/// whose declared checks did not all pass never enters the ranking.
 fn rank_passing_drafts<A>(drafts: &[DraftEvaluation<A>]) -> Vec<usize> {
-    let mut ranked = drafts
+    let scores: Vec<CandidateScore> = drafts
         .iter()
-        .filter(|draft| draft.passed())
-        .map(|draft| draft.index)
-        .collect::<Vec<_>>();
-    ranked.sort_by_key(|index| {
-        let draft = &drafts[*index];
-        (draft.cost_size, draft.cost_steps, draft.index)
-    });
-    ranked
+        .map(|draft| CandidateScore {
+            candidate_id: format!("draft_{}", draft.index),
+            checks: (draft.passed_tests, draft.total_tests),
+            cost: ActionCost {
+                steps: draft.cost_steps,
+                code_size: draft.cost_size,
+                resource_units: 0,
+                leaf_count: 1,
+            },
+        })
+        .collect();
+    LeastActionRanker.rank(&scores, &ranking_parameters())
+}
+
+/// The seeded `Rank` heuristic's parameters, or none when the catalog declares
+/// no ranking heuristic -- in which case the ranker falls back to the
+/// deterministic identity ordering rather than inventing a key.
+fn ranking_parameters() -> Vec<(String, String)> {
+    MethodRegistry::from_dispatch()
+        .heuristics_for(HeuristicRole::Rank, "")
+        .first()
+        .map(|heuristic| heuristic.parameters.clone())
+        .unwrap_or_default()
 }
 
 /// The first ranked draft that also composes. Passing drafts that fail

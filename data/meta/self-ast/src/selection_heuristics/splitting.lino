@@ -1,0 +1,27 @@
+self_ast_census
+  target src/selection_heuristics/splitting.rs
+  language rust
+  fidelity signature
+  byte_len 13190
+  line_count 337
+  content_id source_module_910605d155afc2c3
+  symbol_count 18
+  symbols
+    struct Span 30 33
+    function new 36 38
+    function text 40 42
+    function raw_spans 52 58
+    function sentence_spans 62 83
+    function clause_spans 88 112
+    function marker_boundaries 119 150
+    function joins_two_numbers 157 167
+    function head_action 175 184
+    const OBLIGATION_ROLES 191 191
+    function checkable_spans 201 238
+    function carries_an_obligation 242 251
+    function with_head 255 261
+    function evidences_an_obligation 264 270
+    function balanced_split 277 295
+    function split_refusal 298 313
+    function segment_count 319 321
+    function complete_layers 331 337

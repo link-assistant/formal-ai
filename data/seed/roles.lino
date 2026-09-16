@@ -67,10 +67,30 @@ roles
     kind meaning
   calendar_weekday
     kind predicate
+  capability_act_compose
+    kind predicate
+  capability_act_demonstrate
+    kind predicate
+  capability_act_enumerate
+    kind predicate
+  capability_act_explain
+    kind predicate
+  capability_act_record
+    kind predicate
+  capability_act_retrieve
+    kind predicate
+  capability_act_schedule
+    kind predicate
+  capability_act_transform
+    kind predicate
+  capability_quantity_interrogative
+    kind predicate
   capability_query
     kind meaning
   capability_query_more
     kind meaning
+  capability_self_surface_noun
+    kind predicate
   cardinal_number_word
     kind predicate
   causal_interrogative
@@ -107,6 +127,8 @@ roles
     kind predicate
   coding_name_slot
     kind predicate
+  coding_recurrence_operator
+    kind predicate
   coding_relationship_subject_kind
     kind predicate
   coding_request_object
@@ -114,8 +136,6 @@ roles
   coding_request_verb
     kind predicate
   coding_return_action
-    kind predicate
-  coding_recurrence_operator
     kind predicate
   coding_search_fact_query
     kind predicate
@@ -544,6 +564,10 @@ roles
   script_authoring_verb
     kind predicate
   script_or_code_artifact
+    kind predicate
+  selection_criterion_brevity_cue
+    kind predicate
+  selection_criterion_completeness_cue
     kind predicate
   self_fact_query
     kind meaning

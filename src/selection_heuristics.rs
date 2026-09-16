@@ -2,14 +2,26 @@
 //! the next experiment, and to split a task it cannot solve directly
 //! (#491, #901, #802, #453; plan 12).
 //!
-//! Wave T skeleton: the shapes the tests name exist, the behaviour does not.
+//! A heuristic is registry *data*, not a `sort_by` at each call site: the key
+//! order, the roles and the precedence all live in
+//! `data/meta/selection-heuristics.lino`, so reordering the dimensions is a
+//! `.lino` edit. Correctness comes first and cost second, and no ranking key may
+//! depend on a wall clock.
 
 extern crate alloc;
 
-use alloc::string::String;
+use alloc::format;
+use alloc::string::{String, ToString};
+use alloc::vec;
 use alloc::vec::Vec;
 
 use crate::execution_evidence::Evidence;
+use crate::links_format::format_lino_record;
+use crate::seed::parser::parse_lino;
+
+mod refutation;
+mod splitting;
+mod triz;
 
 /// Which of the three selection jobs a heuristic performs.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -20,15 +32,25 @@ pub enum HeuristicRole {
 }
 
 impl HeuristicRole {
+    /// Stable slug, exactly as `data/meta/selection-heuristics.lino` declares it.
     #[must_use]
     pub const fn slug(self) -> &'static str {
-        panic!("plan 12 leaf 1 -- HeuristicRole slugs")
+        match self {
+            Self::Rank => "rank",
+            Self::Experiment => "experiment",
+            Self::Split => "split",
+        }
     }
 
+    /// The role a catalog row declares, or `None` when the slug is unknown.
     #[must_use]
     pub fn from_slug(slug: &str) -> Option<Self> {
-        let _ = slug;
-        todo!("plan 12 leaf 1 -- HeuristicRole slugs")
+        match slug {
+            "rank" => Some(Self::Rank),
+            "experiment" => Some(Self::Experiment),
+            "split" => Some(Self::Split),
+            _ => None,
+        }
     }
 }
 
@@ -46,19 +68,96 @@ pub struct HeuristicMethod {
 }
 
 impl HeuristicMethod {
+    /// The declared value of one parameter, when the row carries it.
+    #[must_use]
+    pub fn parameter(&self, key: &str) -> Option<&str> {
+        self.parameters
+            .iter()
+            .find(|(name, _)| name == key)
+            .map(|(_, value)| value.as_str())
+    }
+
+    /// Whether this heuristic applies in `situation`. An empty `applies_when`
+    /// means always, so an empty situation matches the unconditional rows only.
+    #[must_use]
+    pub fn applies_in(&self, situation: &str) -> bool {
+        self.applies_when.is_empty() || self.applies_when.iter().any(|slug| slug == situation)
+    }
+
+    /// Links Notation projection, as the registry event renders it.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
-        todo!("plan 12 leaf 1 -- HeuristicMethod links notation")
+        let mut pairs: Vec<(&str, String)> = vec![
+            ("record_type", String::from(HEURISTIC_RECORD_TYPE)),
+            ("role", self.role.slug().to_string()),
+            ("order", self.order.to_string()),
+        ];
+        for slug in &self.applies_when {
+            pairs.push(("applies_when", slug.clone()));
+        }
+        for (key, value) in &self.parameters {
+            pairs.push((key.as_str(), value.clone()));
+        }
+        format_lino_record(&self.name, &pairs)
     }
 }
+
+/// Field names the catalog reads structurally rather than as parameters.
+const STRUCTURAL_FIELDS: [&str; 4] = ["record_type", "role", "order", "applies_when"];
+
+/// The `record_type` a catalog row must carry to be a heuristic.
+const HEURISTIC_RECORD_TYPE: &str = "selection_heuristic";
+
+/// The shipped catalog, embedded so the browser build reads the same data.
+pub const SELECTION_HEURISTICS_LINO: &str =
+    include_str!("../data/meta/selection-heuristics.lino");
 
 /// Load the catalog from `data/meta/selection-heuristics.lino`.
 ///
 /// # Errors
-/// Returns the parse failure when the document is not a heuristic catalog.
+/// Returns the offending record and field when a row declares an unknown role
+/// or a non-numeric order.
 pub fn catalog_from(text: &str) -> Result<Vec<HeuristicMethod>, String> {
-    let _ = text;
-    todo!("plan 12 leaf 2 -- read data/meta/selection-heuristics.lino")
+    let tree = parse_lino(text);
+    let mut catalog = Vec::new();
+    for record in &tree.children {
+        if record.find_child_value("record_type") != HEURISTIC_RECORD_TYPE {
+            continue;
+        }
+        let role_slug = record.find_child_value("role");
+        let Some(role) = HeuristicRole::from_slug(role_slug) else {
+            return Err(format!("{}:role:{role_slug}", record.name));
+        };
+        let order = record
+            .find_child_value("order")
+            .parse::<usize>()
+            .map_err(|_| format!("{}:order", record.name))?;
+        let mut applies_when = Vec::new();
+        let mut parameters = Vec::new();
+        for field in &record.children {
+            if field.name == "applies_when" {
+                applies_when.push(field.id.clone());
+            } else if !STRUCTURAL_FIELDS.contains(&field.name.as_str()) {
+                parameters.push((field.name.clone(), field.id.clone()));
+            }
+        }
+        catalog.push(HeuristicMethod {
+            name: record.name.clone(),
+            role,
+            order,
+            applies_when,
+            parameters,
+        });
+    }
+    Ok(catalog)
+}
+
+/// The shipped catalog, parsed. A catalog that does not parse is an empty one:
+/// the caller then falls back to the deterministic identity ordering and emits
+/// `heuristic:none`, rather than inventing a key.
+#[must_use]
+pub fn shipped_catalog() -> Vec<HeuristicMethod> {
+    catalog_from(SELECTION_HEURISTICS_LINO).unwrap_or_default()
 }
 
 /// The deterministic cost of producing or running one candidate.
@@ -91,15 +190,62 @@ pub struct CandidateScore {
 
 impl CandidateScore {
     /// Whether every declared check passed and at least one was declared.
+    ///
+    /// `(0, 0)` is not a pass: nothing was declared and nothing was observed.
     #[must_use]
     pub const fn satisfies(&self) -> bool {
-        panic!("plan 12 leaf 3 -- correctness before cost")
+        self.checks.1 > 0 && self.checks.0 == self.checks.1
     }
 
+    /// Links Notation projection, so a ranking is inspectable after the fact.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
-        todo!("plan 12 leaf 3 -- CandidateScore links notation")
+        let pairs: Vec<(&str, String)> = vec![
+            ("record_type", String::from("candidate_score")),
+            ("checks_satisfied", self.checks.0.to_string()),
+            ("checks_declared", self.checks.1.to_string()),
+            ("satisfies", self.satisfies().to_string()),
+            ("steps", self.cost.steps.to_string()),
+            ("code_size", self.cost.code_size.to_string()),
+            ("resource_units", self.cost.resource_units.to_string()),
+            ("leaf_count", self.cost.leaf_count.to_string()),
+        ];
+        format_lino_record(&self.candidate_id, &pairs)
     }
+
+    /// One dimension of the declared key order, as a comparable integer.
+    ///
+    /// `candidate_index` is the candidate's position in the scored set, which is
+    /// the deterministic final tie-break `src/draft_portfolio.rs` already used.
+    fn dimension(&self, name: &str, index: usize) -> u128 {
+        match name {
+            "steps" => u128::from(self.cost.steps),
+            "code_size" => self.cost.code_size as u128,
+            "resource_units" => u128::from(self.cost.resource_units),
+            "leaf_count" => u128::from(self.cost.leaf_count),
+            _ => index as u128,
+        }
+    }
+}
+
+/// The parameter whose value declares the ranking key order.
+const KEY_ORDER_PARAMETER: &str = "key_order";
+
+/// Read the declared key order out of a heuristic's parameters.
+fn key_order(parameters: &[(String, String)]) -> Vec<&str> {
+    parameters
+        .iter()
+        .find(|(key, _)| key == KEY_ORDER_PARAMETER)
+        .map(|(_, value)| value.split(',').map(str::trim).collect())
+        .unwrap_or_default()
+}
+
+/// The sort key of one candidate under `order`, smallest first.
+fn ranking_key(score: &CandidateScore, index: usize, order: &[&str]) -> Vec<u128> {
+    order
+        .iter()
+        .map(|dimension| score.dimension(dimension, index))
+        .collect()
 }
 
 /// Rank a candidate set. The key order is read from the heuristic's parameters,
@@ -121,8 +267,20 @@ impl CandidateRanker for LeastActionRanker {
     }
 
     fn rank(&self, scores: &[CandidateScore], parameters: &[(String, String)]) -> Vec<usize> {
-        let _ = (scores, parameters);
-        todo!("plan 12 leaf 3 -- least-action ranking over the declared key order")
+        let mut ranked: Vec<usize> = scores
+            .iter()
+            .enumerate()
+            .filter(|(_, score)| score.satisfies())
+            .map(|(index, _)| index)
+            .collect();
+        let order = key_order(parameters);
+        if order.is_empty() {
+            // No declared key order: the deterministic identity ordering, never
+            // an invented one. The caller emits `heuristic:none` beside it.
+            return ranked;
+        }
+        ranked.sort_by_key(|index| ranking_key(&scores[*index], *index, &order));
+        ranked
     }
 }
 
@@ -152,12 +310,26 @@ impl BinarySplit {
     /// reported, never optimized away by dropping a segment.
     #[must_use]
     pub const fn imbalance(&self) -> usize {
-        panic!("plan 12 leaf 7 -- report the imbalance, never hide it")
+        self.left_weight.abs_diff(self.right_weight)
     }
 
+    /// Links Notation projection, so the imbalance travels with the split.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
-        todo!("plan 12 leaf 7 -- BinarySplit links notation")
+        let pairs: Vec<(&str, String)> = vec![
+            ("record_type", String::from("binary_split")),
+            ("left", self.left.clone()),
+            ("right", self.right.clone()),
+            ("left_weight", self.left_weight.to_string()),
+            ("right_weight", self.right_weight.to_string()),
+            ("imbalance", self.imbalance().to_string()),
+            ("left_span", format!("{},{}", self.left_span.0, self.left_span.1)),
+            (
+                "right_span",
+                format!("{},{}", self.right_span.0, self.right_span.1),
+            ),
+        ];
+        format_lino_record("binary_split", &pairs)
     }
 }
 
@@ -170,8 +342,22 @@ impl BinarySplit {
 /// segments yields `None`.
 #[must_use]
 pub fn balanced_split(task: &str) -> Option<BinarySplit> {
-    let _ = task;
-    todo!("plan 12 leaf 7 -- balanced binary split")
+    splitting::balanced_split(task)
+}
+
+/// The seeded `balanced_split` heuristic, so the split reaches the core through
+/// the registry rather than through a direct call.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BalancedSplitter;
+
+impl TaskSplitter for BalancedSplitter {
+    fn slug(&self) -> &'static str {
+        "balanced_split"
+    }
+
+    fn split(&self, task: &str, _parameters: &[(String, String)]) -> Option<BinarySplit> {
+        balanced_split(task)
+    }
 }
 
 /// Why a split was refused, so `None` is never read as "the task is easy".
@@ -187,8 +373,7 @@ pub enum SplitRefusal {
 /// The refusal reason for a task `balanced_split` returned `None` for.
 #[must_use]
 pub fn split_refusal(task: &str) -> Option<SplitRefusal> {
-    let _ = task;
-    todo!("plan 12 leaf 7 -- an unsplittable task reports its reason")
+    splitting::split_refusal(task)
 }
 
 /// A trade-off between two criteria, as a link with a value on the range (#901).
@@ -247,8 +432,7 @@ pub enum SeparationAxis {
 /// win on a different cost dimension are a technical contradiction.
 #[must_use]
 pub fn contradictions_in(scores: &[CandidateScore], requirement: &str) -> Vec<ContradictionLink> {
-    let _ = (scores, requirement);
-    todo!("plan 12 leaf 15 -- detect technical contradictions")
+    triz::contradictions_in(scores, requirement)
 }
 
 /// A ranker that resolves detected contradictions by their selection value
@@ -262,8 +446,7 @@ impl CandidateRanker for TrizRanker {
     }
 
     fn rank(&self, scores: &[CandidateScore], parameters: &[(String, String)]) -> Vec<usize> {
-        let _ = (scores, parameters);
-        todo!("plan 12 leaf 15 -- break a least-action tie by the selection value")
+        triz::rank(scores, parameters)
     }
 }
 
@@ -291,22 +474,6 @@ pub struct Experiment {
     pub predicts_no: Vec<String>,
 }
 
-impl Experiment {
-    /// Live hypotheses surviving the worse of the two outcomes. Lower is better:
-    /// this is the halving criterion (#802).
-    #[must_use]
-    pub fn worst_case_survivors(&self) -> usize {
-        todo!("plan 12 leaf 12 -- the halving criterion")
-    }
-
-    /// Whether this probe is a *disproof attempt* of the leading hypothesis.
-    #[must_use]
-    pub fn attempts_refutation_of(&self, leading: &str) -> bool {
-        let _ = leading;
-        todo!("plan 12 leaf 12 -- disproof first")
-    }
-}
-
 /// The live hypothesis set and the experiments run against it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HypothesisSpace {
@@ -315,26 +482,6 @@ pub struct HypothesisSpace {
     pub experiments: Vec<Experiment>,
     /// Every observation applied so far, so the elimination is replayable.
     pub observations: Vec<Evidence>,
-}
-
-impl HypothesisSpace {
-    #[must_use]
-    pub fn alive(&self) -> Vec<&SearchHypothesis> {
-        todo!("plan 12 leaf 12 -- live hypotheses")
-    }
-
-    /// Apply one observation: kill every hypothesis whose prediction it
-    /// contradicts, recording which experiment did it.
-    pub fn observe(&mut self, experiment_id: &str, record: Evidence) -> usize {
-        let _ = (experiment_id, record);
-        todo!("plan 12 leaf 12 -- every elimination is backed by an Evidence record")
-    }
-
-    /// The honest verdict when the space stops shrinking.
-    #[must_use]
-    pub fn verdict(&self) -> SearchVerdict {
-        todo!("plan 12 leaf 12 -- not_confirmed_not_refuted names its survivors")
-    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -365,7 +512,20 @@ impl ExperimentChooser for RefutationSearch {
     }
 
     fn next_experiment<'a>(&self, space: &'a HypothesisSpace) -> Option<&'a Experiment> {
-        let _ = space;
-        todo!("plan 12 leaf 12 -- minimize worst-case survivors, prefer refutation")
+        refutation::next_experiment(space)
     }
+}
+
+/// How many obligation segments `task` carries.
+#[must_use]
+pub fn segment_count(task: &str) -> usize {
+    splitting::segment_count(task)
+}
+
+/// The number of layers a complete binary tree over `task`'s segments has, which
+/// is how deep the recursion may descend before the bottom layer stops being a
+/// complete one (`data/meta/task-decomposition-invariant.lino`).
+#[must_use]
+pub fn complete_layers(task: &str) -> u8 {
+    splitting::complete_layers(task)
 }
