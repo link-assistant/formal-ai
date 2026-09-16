@@ -1,0 +1,1 @@
+Write a Python function is_isogram(word) that returns True when the word is an isogram.

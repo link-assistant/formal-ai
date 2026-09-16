@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.094Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.095Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.095Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.095Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.111Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.111Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.112Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.113Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.113Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.119Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.120Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.125Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 80590,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.125Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.149Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.157Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 45,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.158Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T02:48:53.158Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.164Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.164Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.166Z",
+  "service": "session",
+  "id": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ",
+  "title": "New session - 2026-09-16T02:48:53.166Z",
+  "time": {
+    "created": 1789526933166,
+    "updated": 1789526933166
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.166Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.167Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.167Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.167Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.168Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57e20152ffegWcSfhAcHjB0xq/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.168Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57e20152ffegWcSfhAcHjB0xq/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.173Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 5,
+  "method": "POST",
+  "path": "/session/ses_f57e20152ffegWcSfhAcHjB0xq/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.177Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.178Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.180Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.183Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.183Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.183Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.184Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.184Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.184Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.184Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.185Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.185Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.384Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.388Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.389Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.405Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.411Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.418Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.422Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.423Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.789Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526933789,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e011b001JBIwh4uttRClEj",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81dff8b001DjtqUuvaFDtuzA",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.790Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.790Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526933790,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e011e001C8DNcUkTKvnCdp",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81dff8b001DjtqUuvaFDtuzA",
+    "type": "tool",
+    "callID": "call_ef1768c5d9d48cdc",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.790Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526933790,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e011d001F8n6ZC7PeJusrB",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81dff8b001DjtqUuvaFDtuzA",
+    "type": "text",
+    "text": "我来上网搜索 句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram。",
+    "time": {
+      "start": 1789526933790,
+      "end": 1789526933790
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:53.790Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526933790,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e011e001C8DNcUkTKvnCdp",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81dff8b001DjtqUuvaFDtuzA",
+    "type": "tool",
+    "callID": "call_ef1768c5d9d48cdc",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram"
+      },
+      "time": {
+        "start": 1789526933790
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526935425,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e011e001C8DNcUkTKvnCdp",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81dff8b001DjtqUuvaFDtuzA",
+    "type": "tool",
+    "callID": "call_ef1768c5d9d48cdc",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram"
+      },
+      "output": "Title: Lipogram\nURL: https://en.wikipedia.org/wiki/lipogram\nPublished: N/A\nAuthor: N/A\nHighlights:\nA pangrammatic lipogram is a text that uses every letter of the alphabet except one. For example, \"The quick brown fox jumped over the lazy dog\" omits the letter S, which the usual pangram includes by using the word jumps.\n...\nogram is Ernest Vincent\n...\n's novel Gadsby(1939), which has over 50,\n...\n00 words\n...\n's self-\n...\nprohibited such common English words as the and he, plurals ending in -es, past tenses ending in -ed, and even abbreviations like Mr. (since it is short for Mister) or Rob (for Robert). Yet the narration flows fairly smoothly, and the book was praised by critics for its literary merits.\n...\nInterest in lipograms was rekindled by Georges Perec's novel La Disparition (1969) (openly inspired by Wright's Gadsby) and its English translation A Void by Gilbert Adair. Both works are missing the letter E, which is the most common letter in French as well as in English. A Spanish translation instead omits the letter A, the second most common letter in that language. Perec subsequently wrote Les Revenentes(1972), a novel that uses no vowels except for E. Perec was a member of Oulipo, a group of French authors who adopted a variety of constraints in their work. La Disparition is, to date, the longest lipogram in existence.\n...\nA pangrammatic lipogram or lipogrammatic pangram uses every letter of the alphabet except one. An example omitting the letter E is:\n...\nThe book Ella Minnow Pea by Mark Dunn(2001) is described as a \"progressively lipogrammatic epistolary fable\": the plot of the story deals with a small country that begins to outlaw the use of various letters as the tiles of each letter fall off of a statue. As each letter is outlawed within the story, it is (for the most part) no longer used in the text of the novel. It is not purely lipogrammatic, however, because the outlawed letters do appear in the text proper from time to time (the characters being penalized with banishment for their use) and when the plot requires a search for pangram sentences, all twenty-six letters are obviously in use. Also, late in the text, the author begins using letters serving as homophones for the omitted letters (i.e., PH in place of an F, G in place of C), which may be considered cheating. At the beginning of each chapter, the alphabet appears along with a sentence, \"The quick brown fox jumps over the lazy dog\". As the letters are removed from the story, the alphabet, and sentence changes.\n...\nChapter 1: ABCDEFGHIJKLMNOPQRSTUVWXYZ \"The quick brown fox jumps over the lazy dog\". Chapter 2: ABCDEFGHIJKLMNOPQRSTUVWXY* \"The quick brown fox jumps over the la*y dog\". Chapter 3: ABCDEFGHIJKLMNOP*RSTUVWXY* \"The *uick brown fox jumps over the la*y dog\". Chapter 4: ABCDEFGHI*KLMNOP*RSTUVWXY* \"The *uick brown fox *umps over the la*y dog\". Chapter 5: ABCDEFGHI*KLMNOP*RSTUVW*Y* \"The *uick brown fo* *umps over the la*y dog\".\n...\nIn France, J. R. Ronden premièred la Pièce sans A (The Play without A) in 1816. Jacques Arago wrote in 1853 a version of his Voyage autour du monde (Voyage around the world), but without the letter a. Georges Perec published in 1969 La Disparition, a novel without the letter e, the most commonly used letter of the alphabet in French. Its published translation into English, A Void, by Gilbert Adair, won the Scott Moncrieff Prize in 1995.\n\n---\n\nTitle: The quick brown fox jumps over the lazy dog\nURL: https://en.wikipedia.org/wiki/The_Quick_Brown_Fox_Jumps_Over_The_Lazy_Dog\nPublished: N/A\nAuthor: N/A\nHighlights:\nThe quick brown fox jumps over the lazy dog\n...\nSentence containing all letters of the English alphabet\n...\n\"**The quick brown fox jumps over the lazy dog**\" is an [English](./English_language)-language [pangram](./Pangram); it contains all 26 letters of the [English alphabet](./English_alphabet); because of this, the phrase is commonly used for [touch-typing](./Touch_typing) practice, testing [typewriters](./Typewriter) and [computer keyboards](./Computer_keyboard), displaying examples of [fonts](./Font), and other applications involving text where the use of all letters in the alphabet is desired.\n...\nThe earliest known appearance of the phrase was in *[The Boston Journal](./The_Boston_Journal)*. In an article titled \"Current Notes\" in the February 9, 1885, edition, the phrase is mentioned as a good practice [sentence](./Sentence_(linguistics)) for writing students: \"A favorite copy set by writing teachers for their pupils is the following, because it contains every letter of the alphabet: 'A quick brown fox jumps over the lazy dog.'\" Dozens of other newspapers published the phrase over the next few months, all using the version of the sentence starting with \"A\" rather than \"The\", which still contains all 26 letters as \"the\" is used later in the sentence. The earliest known use of the phrase starting with \"The\" is from the 1888 book *Illustrative Shorthand* by Linda Bronson. The modern form (starting with \"The\") became more common even though it is two letters longer than the original (starting with \"A\").\n...\nThe [lipogrammatic](./Lipogram) novel *[Ella Minnow Pea](./Ella_Minnow_Pea)* by [Mark Dunn](./Mark_Dunn) is built entirely around the \"quick brown fox\" pangram and its inventor. It depicts a fictional island off the [South Carolina](./South_Carolina) coast that idealizes the pangram, chronicling the effects on literature and social structure as various letters are banned from daily use by government dictum.\n...\nThe [NASA](./NASA) [Space Shuttle](./Space_Shuttle) flew a [teleprinter](./Teleprinter) that used the phrase \"THE LAZY YELLOW DOG WAS CAUGHT BY THE SLOW RED FOX AS HE LAY SLEEPING IN THE SUN\", a reference to the eponymous phrase, as part of its self-test program. While the phrase is not a [pangram](./Pangram), as it lacks J, K, M, Q, and V, it was selected to be exactly 80 characters wide to match the length of the teleprinter's drum.\n\n---\n\nTitle: The quick brown fox jumps over the lazy dog\nURL: https://zh.wikipedia.org/zh-cn/The_quick_brown_fox_jumps_over_the_lazy_dog\nPublished: 2006-08-19T13:02:49.000Z\nAuthor: N/A\nHighlights:\n**The quick brown fox jumps over the lazy dog**是一个著名的[英语](https://zh.wikipedia.org/wiki/%E8%8B%B1%E8%AA%9E)[全字母句](https://zh.wikipedia.org/wiki/%E5%85%A8%E5%AD%97%E6%AF%8D%E5%8F%A5)，意为“敏捷的棕色狐狸跨过懒狗”，常用于测试[字体](https://zh.wikipedia.org/wiki/%E5%AD%97%E9%AB%94)显示效果和[键盘](https://zh.wikipedia.org/wiki/%E9%8D%B5%E7%9B%A4)是否故障。此句也常以“quick brown fox”做为指代简称。\n...\n此句共35个[字母](https://zh.wikipedia.org/wiki/%E5%AD%97%E6%AF%8D)，其中e重复3次，h重复2次，o重复4次，r重复2次，t重复2次（包含T），u重复2次，使用的都是常用的单词，没有使用[专有名词](https://zh.wikipedia.org/wiki/%E4%B8%93%E6%9C%89%E5%90%8D%E8%AF%8D%E5%92%8C%E6%99%AE%E9%80%9A%E5%90%8D%E8%AF%8D)。\n\n---\n\nTitle: 浅谈全字母句：为什么狐狸要跃过懒狗？\nURL: https://news.qq.com/rain/a/20210628A0CXES00\nPublished: 2021-06-28T22:00:25.000Z\nAuthor: 腾讯网\nHighlights:\n点击上边的“机核”关注我们，这里不止是游戏声明：文章观点仅代表作者本人，不代表机核平台立场。\"The quick brown fox jumps over the lazy dog\"（那只敏捷的棕毛狐狸跃过那只懒狗）。从 1885 年2 月10 日开始，两只犬科动物莫名地互动了起来。这句话的特别之处在于，它在保证尽可能短的同时，包含了全部的26 个字母。追根溯源，该句最早出现于1885 年2 月10 日《波士顿日报》的一篇文章「Current Notes」。原文为：\n...\nA favorite copy set by writing teachers for their pupils is the following, because it contains every letter of the alphabet:'A quick brown fox jumps over the lazy dog.'\n...\n正如原文所说，这句话是“老师最喜欢让学生练习写字的例句”（A favorite copy set by writing teachers for their pupils）。或许你会注意到，它的古早版本是以不定冠词「A」开头。而以定冠词「The」开头的版本，最早的记载来自于 1888 年Linda Bronson 所著书籍Illustrative Shorthand中。\n...\nPangram 全字母句这种句子在英文中被称作pangram/holoalphabetic（全字母句。希腊语：παν γράμμα。即pan gramma，意为「每个字母」）。\n...\n汉语有全字母句吗？Pangram是英语的舶来品，对于使用表意文字的汉语来说并不适用，并且也不可能编出包含十几万汉字字符的一句话。但是，中国古代却有类似的用于少儿启蒙的产物——《千字文》。\n...\n“永”字中的八个笔画，是传统\n...\n字笔画的高度概括，「永字八法」也被楷书书法奉为圭臬。诸宗元在《中国书学浅说》中解说如下：点为侧（如鸟之翻然侧下）；横为勒（如勒马之用缰）；竖为弩（用力也）；钩为趯（跳貌，与跃同）；提为策（如策马之用鞭）；撇为掠（如用篦之掠发）；短撇为啄（如鸟之啄物）；捺为磔（磔音哲，裂牲为磔，笔锋开张也）。发展至现代，汉字基本笔画也有所改变。1965 年1 月30 日，《印刷通用汉字字形表》发布，规定了五种基本笔画：横（一）、竖（丨）、撇（丿）、点（丶）、折（），又称“札字法”。且：提（㇀）归入横，竖钩（亅）归入竖，捺（乀）归入点，横钩（乛）、斜钩（㇂）、横撇（フ、㇇）、竖提（）、竖弯钩（乚）、撇折（）等均归入折。（撇横、横折弯、横折弯钩等笔画均被归入折）日语呢？看到汉字，或许有人会联想到日文。日文基于两套文字体系，即漢字（汉字）和仮名（假名）。虽然对于日文汉字来说，仍没有全字母句，但日文汉字也均可用假名注音，因此一个包含所有假名的句子或许也算是达到了目的。而其中最著名的当属《伊吕波歌（いろは）》。该诗的最早记载出现在1079 年，日本平安时代，以“万叶假名”写就：以呂波耳本部止千利奴流乎和加餘多連曽津祢那良牟有為能於久耶万計不己衣天阿佐伎喩女美之恵比毛勢須![图片](http://inews.gtimg.com/newsapp_bt/0/13706173237/641)\n...\n古代平假名写法为（其中「ゐ」「ゑ」在现代日语中基本不再使用；在当时「浊点」「半浊点」还仍未出现，且拨音「ん」与「む」写法相同）：いろはにほへと　ちりぬるを（色は匂へど　散りぬるを）わかよたれそ　つねならむ（我が世誰ぞ　常ならん）うゐのおくやま　けふこ\n...\n有為の奥山　今日越えて）あさきゆめみし\n...\nひもせす（浅き夢見じ　酔ひもせず）这首\n...\n的中文翻译\n...\n文艺的：花虽芬芳终须落此世岂谁可常留有为山深今日越不恋醉梦免蹉跎《伊吕波歌》在十九世纪明治时代五十音图发明以前，一直被用作假名顺序表。即使是现在，《伊吕波歌》依然有其用途。比如用于日本法律的序号（第四十九条第二項第一号イ）、音符（Aイ、Bロ、Cハ、Dニ、Eホ、Fヘ、Gト）等等。\n...\n结语在各种语言中，全字母句基本都是作为使用工具而诞生的：如识字、书法、测试等等。因此在发展之初，也尽量保持着易懂的原则。而当全字母句作为一个概念被审视时，人类爱折腾的天性自然也不会放过它。历史中甚至出现过一群人为不同的全字母句“站台”的故事，比如一个叫Alan C. Lloyd 的博士曾经表示他更习惯写成\"The quick brown dog is jumping over a lazy fox\"，为狗狗打 call。\n\n---\n\nTitle: Pangram - Wikipedia\nURL: https://en.wikipedia.org/wiki/Pangram?lang=en\nPublished: 2002-05-31T00:00:00.000Z\nAuthor: N/A\nHighlights:\nThe best-known English pangram is \" The quick brown fox jumps over the lazy dog\". It has been used since at least the late 19th century and was used by Western Union to test Telex/ TWX data communication equipment for accuracy and reliability. Pangrams like this are now used by a number of computer programs to display computer typefaces.\n...\nNon-Latin alphabetic or phonetic scripts such as Greek, Armenian, and others can also have pangrams. In some writing systems, exactly what counts as a distinct symbol can be debated. For example, many languages have accents or other diacritics, but one might count \"é\" and \"e\" as the same for pangrams. A similar problem arises for older English orthography that includes the long s(\"ſ\").\n...\nLogographic scripts, or writing systems such as Chinese\n...\ndo not use an alphabet but are composed principally of logograms, cannot produce pangrams in a literal sense (or at least, not pangrams of reasonable size). The total number of signs is large and imprecisely defined, so\n...\nevery possible sign is practically impossible. However,\n...\nanalogies to pangrams are\n...\n, including traditional pangrams in\n...\nThe pangram \"The quick brown fox jumps over the lazy dog\", and\n...\nsearch for a shorter pangram, are the cornerstone of the plot of the novel Ella Minnow Pea by Mark Dunn\n...\nThe search successfully comes to an end when the phrase \"Pack my box with five dozen liquor jugs\" is discovered (which has only 6 duplicated vowels).\n...\n- The New York Times Spelling Bee, a word game which involves the concept of pangrams\n- Lipogram– Writing that avoids specific letters\n- Heterogram– Word, phrase or sentence with no repeated letter\n- Music written in all major or minor keys\n- Chromatic scale– Musical scale set of twelve pitches\n- Ambigram– Symmetrical calligraphic or typographic visual pun\n- Abecedarium– Inscription consisting of the letters of an alphabet\n- Pandigital number, the same idea for integers in a given base\n- Pangrammatic lipogram\n- Pangrammatic window\n- Panalphabetic window\n\n---\n\nTitle: 全字母句\nURL: https://zh.wikipedia.org/zh-cn/%E5%85%A8%E5%AD%97%E6%AF%8D%E5%8F%A5\nPublished: 2006-08-01T08:52:26.000Z\nAuthor: N/A\nHighlights:\n|\n**全字母句**（英语：**pangram**或**holoalphabetic sentence**，[希腊语](https://zh.wikipedia.org/wiki/%E5%B8%8C%E8%87%98%E8%AA%9E)：**pan gramma**（意为“每一个字母”））,指包含有[字母表](https://zh.wikipedia.org/wiki/%E5%AD%97%E6%AF%8D%E8%A1%A8)中所有[字母](https://zh.wikipedia.org/wiki/%E5%AD%97%E6%AF%8D)并且言之成义的句子。全字母句用于测试[字体](https://zh.wikipedia.org/wiki/%E5%AD%97%E4%BD%93)显示效果和测试[打字机](https://zh.wikipedia.org/wiki/%E6%89%93%E5%AD%97%E6%9C%BA)。最知名的英语全字母句是“[The quick brown fox jumps over the lazy dog](https://zh.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog)（敏捷的棕色狐狸跨过懒狗）”。\n...\n* [The quick brown fox jumps over the lazy dog](https://zh.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog).(35个字母) (被[Windows](https://zh.wikipedia.org/wiki/Windows)及[Blackberry](https://zh.wikipedia.org/wiki/Blackberry)用作范例文稿)\n...\n* The quick brown fox jumps over a lazy dog.(33个字母) (The quick brown fox jumps over the lazy dog.的缩短版)\n...\n* Quick brown dogs jump over the lazy fox.(32个字母)(The quick brown fox jumps over the lazy dog.的缩短版)\n...\n全字母句有很多用途，而不仅仅是游戏。例如，全字母句“The quick brown fox jumps over the lazy dog”被Western Union发展起来用于测试Telex/TWX[数据](https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE)[通讯设备](https://zh.wikipedia.org/w/index.php?title=%E9%80%9A%E8%AE%AF%E8%AE%BE%E5%A4%87&action=edit&redlink=1)的精确性和可靠性。还有在不少[系统](https://zh.wikipedia.org/wiki/%E7%B3%BB%E7%B5%B1)中，全字母句也被用于显示字体，而测试有没有错误，因为他包含了所有的字母。\n\n---\n\nTitle: The quick brown fox jumps over the lazy dog - 維基學院，自由的研習社群\nURL: https://zh.wikiversity.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog\nPublished: N/A\nAuthor: N/A\nHighlights:\nThe quick brown fox jumps over the lazy dog（中文翻譯為「敏捷的棕毛狐狸从懶狗身上跃过」）是一個著名的英语全字母句，常被用於測試字體的顯示效果和鍵盤有沒有故障。此句也常以「 quick brown fox」做為指代簡稱。 \n\n此句共35個字母，其中e重複3次，h重複2次，o重複4次，r重複2次，t重複2次（包含T），u重複2次，不過使用的都是常用的單詞，沒有使用專有名詞。 \n\n在 w:zh:Microsoft Office Word 2003中輸入「=rand()」命令，再按Enter鍵，會出現此句 [1] ，而Office 2007及更高版本則是「=rand.old()」命令 [2] 。 \n\n## 參考文獻\n\n---\n\nTitle: The Quick Brown Fox: A History of Pangrams – LingoDigest\nURL: https://www.lingodigest.com/the-quick-brown-fox-a-history-of-pangrams/\nPublished: 2025-12-12T23:29:09.000Z\nAuthor: LingoDigest\nHighlights:\nDerived from the Greek words pan (meaning “all”) and gramma (meaning “letter”), a pangram is a holoalphabetic sentence—a sentence that utilizes every single letter of the alphabet at least once. While they began as practical tools for scribes and printers, pangrams have evolved into a complex linguistic game. The ultimate goal? To construct the “perfect pangram”—a sentence that uses every letter distinctively once, totaling exactly 26 letters, while maintaining grammatical and semantic sense.\n...\nThe “Quick Brown Fox” famously appeared in the Boston Journal in 1885. It gained legendary status not because it was the first, but because it was efficient. At 35 letters, it is concise enough to type quickly but coherent enough to remember easily. When Western Union began testing their Telex / TWX communication lines, they used this sentence. When Microsoft and Apple needed sample text for font previewers, the fox was there.\n...\nTo understand the linguistic challenge of the pangram, one must understand the frequency of English letters. In standard English writing, the letter ‘e’ appears approximately 11-13% of the time, while ‘z’ appears less than 0.1% of the time. Natural language relies on redundancy; we repeat vowels and common consonants constantly to create flow and meaning.\n...\nA pangram forces a collision between high-frequency and low-frequency letters. To encompass the alphabet, you must drag the ‘X’, ‘J’, ‘Q’, and ‘Z’ out of obscurity and force them to coexist with a limited number of vowels. Pangrams generally fall into three categories of difficulty:\n...\n- The Easy (Long) Pangram: These focus on narrative coherence rather than brevity. Example: “The intricate quirks of the\n...\nband proved to be exciting for the extra zealots playing the viola.” It makes perfect sense, but it is bloated.\n- The Efficient Pangram: These sentences, like the “Quick Brown Fox” (35 letters) or “Pack my box with five dozen liquor jugs” (32 letters), strike a balance between brevity and clarity. They are the workhorses of the genre.\n- The Perfect Pangram: The Holy Grail. A 26-letter sentence. Every letter used exactly once. No repeats.\n...\n6-letter pangram is a lesson in linguistic\n...\nBecause English requires vowels to bridge consonants, and because\n...\nsix vowels (depending on your use\n...\n‘y’)\n...\n, the “perfect”\n...\nThe sentence must abandon standard grammar and dive into archaic vocabulary\n...\nstructural problem: The\n...\n‘Q’ almost always demands a ‘U’.\n...\nyou use a ‘U’ for your ‘Q’, you cannot use it for ‘jump’ or ‘run’ or ‘cup’. You have spent your ‘\n...\nThey appeal to us because they represent Oulipian constraint. The Oulipo was a group of French writers and mathematicians who believed that arbitrary constraints (like writing a novel without the letter ‘e’) forced creativity to bloom in unexpected ways. The pangram is the ultimate microcosm of this philosophy.\n...\nThe quest for the perfect pangram reminds us that language is a system of rules, and as humans, we love nothing more than trying to break, bend, and perfect those rules. So, the next time you see that quick brown fox jumping, take a moment to appreciate the linguistic gymnastics required to get him off the ground. He isn’t just a lazy placeholder; he is a monument to the alphabet itself.",
+      "title": "Web search: 句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram",
+      "metadata": {},
+      "time": {
+        "start": 1789526933790,
+        "end": 1789526935424
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.427Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526935427,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0782001iJmYG6XrngZbNO",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81dff8b001DjtqUuvaFDtuzA",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8538,
+      "output": 113,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8651,
+      "headroom": 30205,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.427Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.428Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.428Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.428Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.429Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.429Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.429Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.437Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8651,
+  "providerTokens": 8651,
+  "estimatedInputTokens": 5567,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8538,
+    "cacheRead": 0,
+    "output": 113
+  },
+  "overflow": false,
+  "headroom": 30205,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.437Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.439Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:55.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.106Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526936106,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0a280014zDAcm7uJ6wXFO",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e078d001GC9IUStxz3xaya",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.106Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.106Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526936106,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0a2a002DWEgcT7ZDz8GGk",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e078d001GC9IUStxz3xaya",
+    "type": "tool",
+    "callID": "call_08e4b386e9e54074",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.106Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526936106,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0a2a001SbIfwBPbVihoo4",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e078d001GC9IUStxz3xaya",
+    "type": "text",
+    "text": "我来打开 https://en.wikipedia.org/wiki/lipogram，读取其中的内容。",
+    "time": {
+      "start": 1789526936106,
+      "end": 1789526936106
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.106Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526936106,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0a2a002DWEgcT7ZDz8GGk",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e078d001GC9IUStxz3xaya",
+    "type": "tool",
+    "callID": "call_08e4b386e9e54074",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://en.wikipedia.org/wiki/lipogram"
+      },
+      "time": {
+        "start": 1789526936106
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526936420,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0a2a002DWEgcT7ZDz8GGk",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e078d001GC9IUStxz3xaya",
+    "type": "tool",
+    "callID": "call_08e4b386e9e54074",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://en.wikipedia.org/wiki/lipogram"
+      },
+      "output": "Lipogram - Wikipedia\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJump to content\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nMain menu\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tMain menu\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tNavigation\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tMain pageContentsCurrent eventsRandom articleAbout WikipediaContact us\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tContribute\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tHelpLearn to editCommunity portalRecent changesUpload fileSpecial pages\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nSearch\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tSearch\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nAppearance\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tDonate\n\nCreate account\n\nLog in\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nPersonal tools\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nDonate\n\n\n\nCreate account\n\n\n\nLog in\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tContents\n\tmove to sidebar\n\thide\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t(Top)\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tHistory\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tAnalysing lipograms\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tPangrammatic lipogram\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tDropping letters\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5\n\t\t\t\tOther examples\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t6\n\t\t\t\tNon-English examples\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t7\n\t\t\t\tNon-literary lipograms\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t8\n\t\t\t\tReverse lipogram\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t9\n\t\t\t\tSee also\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t10\n\t\t\t\tReferences\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t11\n\t\t\t\tExternal links\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nToggle the table of contents\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tLipogram\n\t\t\t\n\n\t\n\t\n\n30 languages\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tالعربيةБеларуская (тарашкевіца)БеларускаяবাংলাCatalàČeštinaDanskDeutschΕλληνικάEsperantoEspañolEuskaraفارسیSuomiFrançaisGalegoMagyarՀայերենIdoItaliano한국어NederlandsPolskiPortuguêsРусскийSlovenščinaСрпски / srpskiTürkçeУкраїнська中文\n\t\t\t\n\t\t\tEdit links\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tArticle\n\nTalk\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tEnglish\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tRead\n\nEdit\n\nView history\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nTools\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tTools\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tActions\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nRead\n\n\n\nEdit\n\n\n\nView history\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tGeneral\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWhat links hereRelated changesUpload filePermanent linkPage informationCite this pageGet shortened URLSwitch to legacy parser\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tPrint/export\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tDownload as PDFPrintable version\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tIn other projects\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWikimedia CommonsWikidata item\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tAppearance\n\tmove to sidebar\n\thide\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tFrom Wikipedia, the free encyclopedia\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tWriting that avoids specific letters\n\nPlaque in tribute to Georges Perec by Christophe Verdon. Café de la Mairie, Place Saint-Sulpice in Paris\nA lipogram (from Ancient Greek: λειπογράμματος, leipográmmatos, \"leaving out a letter\"[1]) is a kind of constrained writing or word game consisting of writing paragraphs or longer works in which a particular letter or group of letters is avoided.[2][3] Extended Ancient Greek texts avoiding the letter sigma are the earliest examples of lipograms.[4]\n\nWriting a lipogram may be a trivial task when avoiding uncommon letters like Z, J, Q, or X, but it is much more challenging to avoid common letters like E, T, or A in the English language, as the author must omit many ordinary words. Grammatically meaningful and smooth-flowing lipograms can be difficult to compose. Identifying lipograms can also be problematic, as there is always the possibility that a given piece of writing in any language may be unintentionally lipogrammatic. For example, Poe's poem The Raven contains no Z, but there is no evidence that this was intentional.\n\nA pangrammatic lipogram is a text that uses every letter of the alphabet except one. For example, \"The quick brown fox jumped over the lazy dog\" omits the letter S, which the usual pangram includes by using the word jumps.\n\nHistory[edit]\nLasus of Hermione, who lived during the second half of the sixth century BCE, is the most ancient author of a lipogram. This makes the lipogram, according to Quintus Curtius Rufus, \"the most ancient systematic artifice of Western literature\".[5] Lasus did not like the letter sigma, and excluded it from one of his poems, entitled Ode to the Centaurs, of which nothing remains; as well as a Hymn to Demeter, of which the first verse remains:[5]\n\n \n\n\n\nOriginalΔάματρα μέλπω Κόραν τε Κλυμένοι᾽ ἄλοχον\nμελιβόαν ὕμνον ἀναγνέων\nΑἰολίδ᾽ ἂμ βαρύβρομον ἁρμονίαν\n\n\nTransliteration  Dámatra mélpô Kóran te Klyménoi᾽ álochon\nmelibóan hýmnon anagnéôn\nAiolíd᾽ ám barýbromon harmonían\n\nEnglish translation  I chant of Demeter and Kore, Wife of the famed [Hades]\nLifting forth a gentle-voiced hymn\nIn the deep-toned Aeolian mode.[6]\n\n\nThe Greek poets from late antiquity Nestor of Laranda and Tryphiodorus wrote lipogrammatic adaptations of the Homeric poems: Nestor composed an Iliad, which was followed by Tryphiodorus' Odyssey.[7] Both Nestor's Iliad and Tryphiodorus' Odyssey were composed of 24 books (like the original Iliad and Odyssey) each book omitting a subsequent letter of the Greek alphabet. Therefore, the first book omitted alpha, the second beta, the third gamma, and so forth.[4]\n\nTwelve centuries after Tryphiodorus wrote his lipogrammatic Odyssey, in 1711, the influential London essayist and journalist Joseph Addison commented on this work (although it had been lost), arguing that \"it must have been amusing to see the most elegant word of the language rejected like \"a diamond with a flaw in it\" if it was tainted by the proscribed letter\".[8]\n\nPetrus Riga, a canon of Sainte-Marie de Reims during the 11th century, translated the Bible, and due to its scriptural obscurities called it Aurora. Each canto of the translation was followed by a resume in Lipogrammatic verse; the first canto has no A, the second has no B, the third has no C, and so on. There are two hundred and fifty manuscripts of Petrus Riga's Bible still preserved.[9]\n\nThere is a tradition of German and Italian lipograms excluding the letter R dating from the seventeenth century until modern times. While some authors excluded other letters, it was the exclusion of the R which ensured the practice of the lipogram continued into modern times. In German especially, the R, while not the most prevalent letter, has a very important grammatical role, as masculine pronouns, etc. in the nominative case include an R (e.g. er, der, dieser, jener, welcher).[10] For the Italian authors, it seems to be a profound dislike of the letter R which prompted them to write lipograms excluding this letter (and often only this letter).[11]\n\nThere is also a long tradition of vocalic lipograms, in which a vowel (or vowels) is omitted. This tends to be the most difficult form of the lipogram. This practice was developed mainly in Spain by the Portuguese author Alonso de Alcala y Herrera who published an octavo entitled Varios efectos de amor, en cinco novelas exemplares, y nuevo artificio para escribir prosa y versos sin una de las letras vocales. From Spain, the method moved into France[12] and England.[11]\n\nOne of the most remarkable examples of a lipogram is Ernest Vincent Wright's novel Gadsby (1939), which has over 50,000 words but not a single letter E.[13] Wright's self-imposed rule prohibited such common English words as the and he, plurals ending in -es, past tenses ending in -ed, and even abbreviations like Mr. (since it is short for Mister) or Rob (for Robert). Yet the narration flows fairly smoothly, and the book was praised by critics for its literary merits.[14][15]\n\nWright was motivated to write Gadsby by an earlier four-stanza lipogrammatic poem of another author.[16]\n\nEven earlier, Spanish playwright Enrique Jardiel Poncela published five short stories between 1926 and 1927, each one omitting a vowel; the best known are \"El Chofer Nuevo\" (\"The new Driver\"), without the letter A, and \"Un marido sin vocación\" (\"A Vocationless Husband\"), without the E.[17][18]\n\nInterest in lipograms was rekindled by Georges Perec's novel La Disparition (1969) (openly inspired by Wright's Gadsby) and its English translation A Void by Gilbert Adair.[13] Both works are missing the letter E, which is the most common letter in French as well as in English. A Spanish translation instead omits the letter A, the second most common letter in that language. Perec subsequently wrote Les Revenentes (1972), a novel that uses no vowels except for E. Perec was a member of Oulipo, a group of French authors who adopted a variety of constraints in their work. La Disparition is, to date, the longest lipogram in existence.[19]\n\nAnalysing lipograms[edit]\nLipograms are sometimes dismissed by academia. \"Literary history seems deliberately to ignore writing as practice, as work, as play\".[20]\n\nIn his book Rethinking Writing, Roy Harris notes that without the ability to analyse language, the lipogram would be unable to exist. He argues that \"the lipogram would be inconceivable unless there were writing systems based on fixed inventories of graphic units, and unless it were possible to classify written texts on the base of the presence or absence of one of those units irrespective of any phonetic value it might have or any function in the script\". He argues that as the Greeks were able to invent this system of writing as they had a concept of literary notation. Harris then argues that the proof of this knowledge is found in the Greek invention of \"a literate game which consists, essentially, in superimposing the structure of a notation on the structure of texts\".[21]\n\nPangrammatic lipogram[edit]\nA pangrammatic lipogram or lipogrammatic pangram uses every letter of the alphabet except one. An example omitting the letter E is:[22]\n\nA jovial swain should not complain\nOf any buxom fair\nWho mocks his pain and thinks it gain\nTo quiz his awkward air.\n\nA longer example is \"Fate of Nassan\", an anonymous poem dating from pre-1870, where each stanza is a lipogrammatic pangram using every letter of the alphabet except E.[23]\n\nBold Nassan quits his caravan,\nA hazy mountain grot to scan;\nClimbs jaggy rocks to spy his way,\nDoth tax his sight, but far doth stray.\n\nNot work of man, nor sport of child\nFinds Nassan on this mazy wild;\nLax grow his joints, limbs toil in vain—\nPoor wight! why didst thou quit that plain?\n\nVainly for succour Nassan calls;\nKnow, Zillah, that thy Nassan falls;\nBut prowling wolf and fox may joy\nTo quarry on thy Arab boy.\n\nOne other pangrammatic lipogram omitting only the letter E is:\n\nNow focus your mind vigorously on this paragraph and on all its words. What’s so unusual about it? Don’t just zip through it quickly. Go through it slowly. Tax your brain as much as you can.\n\nThe KJV Bible unintentionally contains two lipogrammatic pangrams: Ezra 7:21 lacks only J, and 1 Chronicles 12:40 lacks only Q.[24]\n\nDropping letters[edit]\nAnother type of lipogram, which omits every instance of a letter from words that would otherwise contain it, as opposed to finding other words that do not contain the letter, was recorded by Willard R. Espy in 181 Missing O's,[25] based on C. C. Bombaugh's univocalic 'Incontrovertible Facts'.[26]\n\nN mnk t gd t rb r cg r plt.\nN fl s grss t blt Sctch cllps ht.\nFrm Dnjn's tps n rnc rlls.\nLgwd, nt Lts, flds prt's bwls.\nBx tps, nt bttms, schl-bys flg fr sprt.\nTrps f ld tsspts, ft, t st, cnsrt.\nN cl mnsns blw sft n xfrd dns,\nrthdx, dg-trt, bk-wrm Slmns.\nBld strgths f ghsts n hrrr shw.\nn Lndn shp-frnts n hp-blssms grw.\nT crcks f gld n dd lks fr fd.\nn sft clth ftstls n ld fx dth brd.\nLng strm-tst slps frlrn, wrk n t prt.\nRks d nt rst n spns, nr wd-ccks snrt,\nN dg n snw-drp r n cltsft rlls,\nNr cmmn frg cncct lng prtcls.\n\nThe above is also a conventional lipogram in omitting the letters A, E, I, O, and U.\n\nAmerican author James Thurber wrote The W[o]nderful [O] (1957), a fairy tale in which villains ban the letter 'O' from the use by the inhabitants of the island of [Oo]r[oo].\n\nThe book Ella Minnow Pea by Mark Dunn (2001) is described as a \"progressively lipogrammatic epistolary fable\": the plot of the story deals with a small country that begins to outlaw the use of various letters as the tiles of each letter fall off of a statue. As each letter is outlawed within the story, it is (for the most part) no longer used in the text of the novel. It is not purely lipogrammatic, however, because the outlawed letters do appear in the text proper from time to time (the characters being penalized with banishment for their use) and when the plot requires a search for pangram sentences, all twenty-six letters are obviously in use. Also, late in the text, the author begins using letters serving as homophones for the omitted letters (i.e., PH in place of an F, G in place of C), which may be considered cheating. At the beginning of each chapter, the alphabet appears along with a sentence, \"The quick brown fox jumps over the lazy dog\". As the letters are removed from the story, the alphabet, and sentence changes.\n\nChapter 1: ABCDEFGHIJKLMNOPQRSTUVWXYZ \"The quick brown fox jumps over the lazy dog\".\nChapter 2: ABCDEFGHIJKLMNOPQRSTUVWXY* \"The quick brown fox jumps over the la*y dog\".\nChapter 3: ABCDEFGHIJKLMNOP*RSTUVWXY* \"The *uick brown fox jumps over the la*y dog\".\nChapter 4: ABCDEFGHI*KLMNOP*RSTUVWXY* \"The *uick brown fox *umps over the la*y dog\".\nChapter 5: ABCDEFGHI*KLMNOP*RSTUVW*Y* \"The *uick brown fo* *umps over the la*y dog\".[27]\n\nOther examples[edit]\nIn Rebeccah Giltrow's Twenty-Six Degrees, each of the twenty-six chapters, narrated by a different character, deliberately excludes one of the twenty-six letters while using the other twenty-five at least once. Each of the twenty-six letters is excluded from one and only one chapter (the first chapter excludes A, the second chapter excludes B, the third chapter excludes C, etc., the last (twenty-sixth) chapter excludes Z).[citation needed]\n\nCipher and Poverty (The Book of Nothing), a book by Mike Schertzer (1998), is presented as the writings of \"a prisoner whose world had been impoverished to a single utterance ... who can find me here in this silence\". The poems that follow use only the vowels A, E, I, and O, and consonants C, D, F, H, L, M, N, R, S, T, and W, taken from that utterance.\n\nAnother example is the book Eunoia written by Canadian author Christian Bök (2001). The title uses every vowel once and each of the five chapters is its own lipogram. The first chapter only uses words that have the vowel \"A\" and no other vowels, the second exclusively uses words that only have the vowel \"E\", the third only uses words with just the vowel \"I\", and so on.[28]\n\nIn December 2009, a collective of crime writers, Criminal Brief, published eight days of articles as a Christmas-themed lipogrammatic exercise.[29]\n\nIn June 2013, finance author Alan Corey published \"The Subversive Job Search\",[30] a non-fiction lipogram that omitted the letter \"Z\".[31]\n\nIn the ninth episode of the ninth season of How I Met Your Mother, \"Platonish\", Lily and Robin challenge Barney to obtain a girl's phone number without using the letter E.\n\nA website called the Found Poetry Review asked each of its readers (as part of a larger series of challenges) to compose a poem avoiding all letters in the title of the newspaper that had already been selected. For example, if the reader was using the New York Times, then they could not use the letters E, I, K, M, N, O, R, S, T, W, and Y.[32]\n\nGrant Maierhofer's Ebb, a novel published in 2023, by Kernpunkt Press, was written entirely without the letter \"A\".\n\nNon-English examples[edit]\nThis section needs more citations. Please help improve this section by adding citations to reliable sources. Unsourced material may be challenged and removed.  (October 2025) (Learn how and when to remove this message)\nIn Turkey the tradition of \"Lebdeğmez atışma\" or \"Dudak değmez aşık atışması\" (literally: two troubadours throwing verses at each other where lips do not touch each other) that is still practiced,[33] a form of instantaneously improvised poetry sung by opposing Ashiks taking turns for artfully criticising each other with one verse at a time, usually by each placing a pin between their upper and lower lips so that the improvised song, accompanied by a Saz (played by the ashik himself), consists only of labial lipograms i.e. without words where lips must touch each other, effectively excluding the letters B, F, M, P and V from the text of the improvised songs.\n\nThe seventh- or eighth-century Dashakumaracharita by Daṇḍin includes a prominent lipogrammatic section at the beginning of the seventh chapter. Mantragupta is called upon to relate his adventures. However, during the previous night of vigorous lovemaking, his lips have been nibbled several times by his beloved; as a result, they are now swollen, making it painful for him to close them. Thus, throughout his narrative, he is compelled to refrain from using any labial consonants (प,फ,ब,भ,म).\n\nIn France, J. R. Ronden premièred la Pièce sans A (The Play without A) in 1816.[34] Jacques Arago wrote in 1853 a version of his Voyage autour du monde (Voyage around the world), but without the letter a.[35] Georges Perec published in 1969 La Disparition, a novel without the letter e, the most commonly used letter of the alphabet in French. Its published translation into English, A Void, by Gilbert Adair, won the Scott Moncrieff Prize in 1995.[36]\n\nIn Sweden, a form of lipogram was developed out of necessity at the Linköping University. Because files were shared and moved between computer platforms where the internal representation of the characters Å, Ä, Ö, å, ä, and ö (all moderately common vowels) were different, the tradition to write comments in source code without using those characters emerged. [citation needed]\n\nZanzō ni Kuchibeni o (1989) by Yasutaka Tsutsui is a progressively lipogrammatic novel in Japanese. The first chapter is written without the syllable あ (a), the second without あ and い (i), the third without あ, い, and う (u), and so on; usable syllables decrease as the story advances. In the last chapter, the last syllable, ん (n), vanishes and the story is closed.\n\nZero Degree (1991) by Charu Nivedita is a lipogrammatic novel in Tamil. The entire novel is written without the common word ஒரு (oru, \"one\", also used as the indefinite article), and there are no punctuation marks in the novel except dots. Later the novel was translated into English.[clarification needed]\n\nRussian 18th-century poet Gavriil Derzhavin avoided the harsh R sound (and the letter Р that represents it) in his poem \"The Nightingale\" to render the bird's singing.\n\nThe seventh-century Arab theologian Wasil ibn Ata gave a sermon without the letter rāʾ (R).[37] However, it was the 19th-century Mufti of Damascus, Mahmud Hamza \"al-Hamzawi\" (d. 1887), who produced perhaps the most remarkable work of this genre with a complete commentary of the Quran (published in two volumes) without dotted letters in either the introduction or interlinear commentary.[38] This is all the more remarkable because dotted letters make up about half of the Arabic alphabet.\n\nIn Hungarian language, the game \"eszperente\" is a game where people only speak using words that contain the vowel \"e\"; as this makes otherwise straightforward communication complicated, a lot of creative thinking is required in describing common terms in roundabout ways.\n\nIn Spanish, Mexican author Óscar de la Borbolla, published in 1991 Las vocales malditas (the cursed vowels), a compilation of five short stories composed using a single different vowel: \"Cantata a Satanás\" (Cantata to Satan), \"El hereje rebelde\" (the rebel heretic), \"Mimí sin bikini\" (Mimi without a bikini), \"Los locos somos otro cosmos\" (we the fools are another cosmos), and \"Un gurú vudú\" (a voodoo guru).\n\nNon-literary lipograms[edit]\nWhile a lipogram is usually limited to literary works, there are also chromatic lipograms, works of music that avoid the use of certain notes. Examples avoiding either the second, sixth, and tenth notes, or the third, seventh, and eleventh notes in a chromatic scale have been cited.[39]\n\nReverse lipogram[edit]\nA reverse lipogram, also known as an antilipo[40] or transgram[41] is a type of constrained writing where each word must contain a particular letter in the text. For example, this is a short antilipo where each word contains the letter \"O\":\n\nOnce someone’s gone, nobody loses; also, victory’s not for people who don’t know about world history.\n\nSee also[edit]\n\nPangram (The quick brown fox jumps over the lazy dog)\nPalindrome\nLetter frequency\n\nReferences[edit]\n\n↑ Harry Thurston Peck, Harpers Dictionary of Classical Antiquities (1898), Lipogram\n↑ McArthur, Tom (1992). The Oxford Companion to the English Language, p. 612. Oxford University Press. ISBN 019214183X\n↑ \"Oulipo: A Primer of Potential Literature\", pp. 97–98 University of Nebraska Press. ISBN 978-0803281318\n1 2 Motte Jr, Warren F (1986). \"Oulipo: A Primer of Potential Literature\", pp. 100–101 University of Nebraska Press. ISBN 978-0803281318\n1 2 Oulipo: A Primer of Potential Literature. p. 100 University of Nebraska Press. ISBN 978-0803281318\n↑ Athen., 14.624e–f, and see 10.455c–d\n↑ Swain, S.; Harrison, S.; Elsner, J. (2007), Severan Culture, Cambridge, p. 5, ISBN 978-0521859820{{citation}}:  CS1 maint: location missing publisher (link)\n↑ \"Oulipo: A Primer of Potential Literature\", p. 101. University of Nebraska Press. ISBN 978-0803281318\n↑ Jacques Bens, Claude Berge, and Paul Braffort, History of the Lipogram, pp. 101, 102\n↑ \"Oulipo: A Primer of Potential Literature\", p. 102 University of Nebraska Press. ISBN 978-0803281318\n1 2 \"Oulipo: A Primer of Potential Literature\", p. 103 University of Nebraska Press. ISBN 978-0803281318\n↑ For example, this 1853 example omits \"A\":\"Curieux voyage autour du monde de Jacques Arago\". mediterranees.net. Retrieved 16 January 2023.\n1 2 Andrews, Dale (26 February 2013). \"Constrained Writing\". Washington: SleuthSayers.\n↑ Burton, Walt (25 March 1937), \"Fifty Thousand Words Minus\", Oshkosh Daily\n↑ Bellamy, Francis Rufus (March 1936), \"Glancing Through\", Fiction Parade and Golden Book Magazine, 2 (5): 62\n↑ Park, Ed (6 August 2002), \"Egadsby! Ernest Vincent Wright's Machine Dreams\", The Village Voice{{citation}}:  CS1 maint: deprecated archival service (link)\n↑ \"Un marido sin vocación\". perso.wanadoo.es. Archived from the original on 4 March 2016. Retrieved 7 September 2009.\n↑ Jardiel, Enrique (1948), Para Leer Mientras Sube el Ascensor\n↑ Sorensen, Roy (October 1999), \"Blanks: Signs of Omission\", American Philosophical Quarterly\n↑ Oulipo: A Primer of Potential Literature, p. 98, University of Nebraska Press. ISBN 978-0803281318\n↑ \"Rethinking Writing\", pp. 113–114, Continuum. ISBN 978-0826479242\n↑ Susan Elkin,Lipograms: The Presence of Absence, p. 15.\n↑ Bombaugh, Charles C. (2013). \"Gleanings for the curious from the harvest-fields of literature : Bombaugh, Charles C. (Charles Carroll), 1828–1906 : Free Download &amp; Streaming : Internet Archive\". archive.org. Retrieved 4 August 2013.\n↑ Brandreth, Gyles (1980). The Joy of Lex. Morrow. pp. 237–238. ISBN 0-688-03709-7.\n↑ \"Do You Know What a Lipogram is?\". Archived from the original on 2 December 2014. Retrieved 22 November 2014.\n↑ Crystal, David (2002). Incontrovertible Facts. Penguin Adult. ISBN 978-0141003962.\n↑ Mark Dunn, Ella Minnow Pea, MP Publishing, 2010\n↑ Christian Bök, Eunoia, Coach House Books, 2005 [ISBN missing] [page needed]\n↑ Lundin, Leigh; Warren, James Lincoln; Lopresti, Rob; Elliott-Upton, Deborah; Steinbock, Steve; Floyd, John (December 2009). \"Christmas Contest\". Lipograms. Los Angeles: Criminal Brief. Retrieved 27 February 2013.\n↑ \"Career Press – The Best in Career, Business, and Reference Guides for More than 20 Years\". careerpress.com.\n↑ Caroline (14 June 2013). \"CAROLINELEAVITTVILLE: Alan Corey talks about 4 Fun Writerly Things Found in his fab new Book: The Subversive Job Search\".\n↑ \"Oulipost #2: Lipogram (Newspaper Titles) | The Found Poetry Review\". foundpoetryreview.com.\n↑ \"search query for lebdeğmez\". Retrieved 16 January 2023 – via YouTube.\n↑ [la Pièce sans A de J. R. Ronden]\n↑ Cardenas, Fabricio (17 March 2015). \"Vieux papiers des Pyrénées-Orientales: Le voyage sans A de Jacques Arago\". Vieux papiers des Pyrénées-Orientales. Retrieved 16 January 2023.\n↑ \"List of prize winners at the Society of Authors website\". Archived from the original on 5 November 2013. Retrieved 4 August 2012.\n↑ \"خطبة واصل بن عطاء التي جانب فيها الراء\". alkeltawia.com (in Arabic). Retrieved 12 December 2017.\n↑ \"در الأسرار في تفسير القرآن بالحروف المهملة\" (in Arabic). Retrieved 1 February 2020.\n↑ Slonimsky, Nicolas (Winter 1968–1969), \"Alexander Tcherepnin Septuagenarian\", Tempo (87): 16–23, doi:10.1017/S004029820002605X, S2CID 143018697\n↑ \"Lipogram Links\". phrontistery.info.\n↑ Fitzpatrick-O'Dinn, Dominique. \"Table of Forms – The Transgram\". Retrieved 25 November 2019.\n\n\nExternal links[edit]\n\n\nLook up lipogram in Wiktionary, the free dictionary.\n\nA Loquacious Location of Lipograms (omits the letter E)\nAndrew Huang performs his own \"Rapping without the letter E\"\nA thread of a Hungarian forum where the members talk only in Eszperente (regular Hungarian, but using only the vowel E)\nLas vocales malditas Archived 14 December 2014 at the Wayback Machine by Óscar de la Borbolla\nLipogram article at A.Word.A.Day\nLipogrammatic Autobiography by Douglas R. Hofstadter\nLives of the Presidents Told in Words of One Syllable by Jean S. Remy\nRobinson Crusoe in Words of One Syllable by Mary Godolphin\nThe Pilgrim's Progress in Words of One Syllable by Mary Godolphin (pseudonym of Lucy Aikin)\n\nAuthority control databases InternationalFASTNationalUnited StatesIsraelOtherYale LUX\n\n\n\n\n\n\n\n\n\n\n\nRetrieved from \"https://en.wikipedia.org/w/index.php?title=Lipogram&amp;oldid=1374159554\"\n\t\t\t\t\tCategories: LipogramsConstrained writingHidden categories: Articles with short descriptionShort description is different from WikidataUse dmy dates from January 2023Articles containing Ancient Greek (to 1453)-language textCS1 maint: location missing publisherArticles containing German-language textArticles containing Spanish-language textCS1 maint: deprecated archival serviceArticles containing French-language textAll articles with unsourced statementsArticles with unsourced statements from June 2023Pages with missing ISBNsWikipedia articles needing page number citations from October 2020Articles needing additional references from October 2025All articles needing additional referencesArticles with unsourced statements from December 2018Articles containing Tamil-language textWikipedia articles needing clarification from March 2015Articles containing Russian-language textCS1 Arabic-language sources (ar)Webarchive template wayback links\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t This page was last edited on 10 September 2026, at 05:03&#160;(UTC).\n\tPage was rendered with Parsoid.\n\tText is available under the Creative Commons Attribution-ShareAlike 4.0 License;\nadditional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.\n\n\n\t\t\t\t\n\tPrivacy policy\n\tAbout Wikipedia\n\tDisclaimers\n\tContact Wikipedia\n\tLegal &amp; safety contacts\n\tCode of Conduct\n\tDevelopers\n\tStatistics\n\tCookie statement\n\tMobile view\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nSearch\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tSearch\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nToggle the table of contents\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tLipogram\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n30 languages\n\t\t\t\n\t\t\t\n\nAdd topic",
+      "title": "https://en.wikipedia.org/wiki/lipogram (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789526936106,
+        "end": 1789526936418
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.421Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526936421,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0b64001uFIga52IdK3PeB",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e078d001GC9IUStxz3xaya",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 25204,
+      "output": 124,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 25328,
+      "headroom": 13528,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.422Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.422Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.424Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.426Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.426Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.426Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.426Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.427Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.427Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.437Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 25328,
+  "providerTokens": 25328,
+  "estimatedInputTokens": 12680,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 25204,
+    "cacheRead": 0,
+    "output": 124
+  },
+  "overflow": false,
+  "headroom": 13528,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.437Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.439Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526936637,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0c3c001xI48XweCF0UT0P",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0b75001fB0IcWFECCVDbW",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.637Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526936638,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0c3d002WDj7r79sgxqkEv",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0b75001fB0IcWFECCVDbW",
+    "type": "tool",
+    "callID": "call_04a527540af003de",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526936638,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0c3d001i482AwpKNLu8Ek",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0b75001fB0IcWFECCVDbW",
+    "type": "text",
+    "text": "我来打开 https://en.wikipedia.org/wiki/The_Quick_Brown_Fox_Jumps_Over_The_Lazy_Dog，读取其中的内容。",
+    "time": {
+      "start": 1789526936638,
+      "end": 1789526936638
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:56.638Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526936638,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0c3d002WDj7r79sgxqkEv",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0b75001fB0IcWFECCVDbW",
+    "type": "tool",
+    "callID": "call_04a527540af003de",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://en.wikipedia.org/wiki/The_Quick_Brown_Fox_Jumps_Over_The_Lazy_Dog"
+      },
+      "time": {
+        "start": 1789526936638
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.408Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526937408,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0c3d002WDj7r79sgxqkEv",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0b75001fB0IcWFECCVDbW",
+    "type": "tool",
+    "callID": "call_04a527540af003de",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://en.wikipedia.org/wiki/The_Quick_Brown_Fox_Jumps_Over_The_Lazy_Dog"
+      },
+      "output": "The quick brown fox jumps over the lazy dog - Wikipedia\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJump to content\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nMain menu\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tMain menu\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tNavigation\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tMain pageContentsCurrent eventsRandom articleAbout WikipediaContact us\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tContribute\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tHelpLearn to editCommunity portalRecent changesUpload fileSpecial pages\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nSearch\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tSearch\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nAppearance\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tDonate\n\nCreate account\n\nLog in\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nPersonal tools\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nDonate\n\n\n\nCreate account\n\n\n\nLog in\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tContents\n\tmove to sidebar\n\thide\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t(Top)\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tHistory\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tComputer usage\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tCultural references\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tOther pangrams\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5\n\t\t\t\tSee also\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t6\n\t\t\t\tReferences\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t7\n\t\t\t\tExternal links\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nToggle the table of contents\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tThe quick brown fox jumps over the lazy dog\n\t\t\t\n\n\t\n\t\n\n21 languages\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tالعربيةAzərbaycancaDeutschEspañolفارسیFrançaisՀայերենBahasa IndonesiaItaliano日本語한국어नेपालीPortuguêsРусскийSimple EnglishУкраїнськаTiếng Việt吴语閩南語 / Bân-lâm-gí粵語中文\n\t\t\t\n\t\t\tEdit links\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tArticle\n\nTalk\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tEnglish\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tRead\n\nView source\n\nView history\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nTools\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tTools\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tActions\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nRead\n\n\n\nView source\n\n\n\nView history\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tGeneral\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWhat links hereRelated changesUpload filePermanent linkPage informationCite this pageGet shortened URLSwitch to legacy parser\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tPrint/export\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tDownload as PDFPrintable version\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tIn other projects\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWikimedia CommonsWikidata item\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tAppearance\n\tmove to sidebar\n\thide\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\n\n\t\t\t\t\t\tFrom Wikipedia, the free encyclopedia\n\t\t\t\t\t\n\t\t\t\t\t(Redirected from The Quick Brown Fox Jumps Over The Lazy Dog)\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tSentence containing all letters of the English alphabet\n\nThe phrase shown in metal moveable type, used in printing presses (image reversed for readability)\n\n\n\"The quick brown fox jumps over the lazy dog\" is an English-language pangram; it contains all 26 letters of the English alphabet. Because of this, the phrase is commonly used for touch-typing practice, testing typewriters and computer keyboards, displaying examples of fonts, and other applications involving text where the use of all letters in the alphabet is desired.\n\nHistory\n\nItem from the February 9, 1885, edition of The Boston Journal mentioning the phrase \"A quick brown fox jumps over the lazy dog.\"\nThe earliest known appearance of the phrase was in The Boston Journal. In an article titled \"Current Notes\" in the February 9, 1885, edition, the phrase is mentioned as a good practice sentence for writing students: \"A favorite copy set by writing teachers for their pupils is the following, because it contains every letter of the alphabet: 'A quick brown fox jumps over the lazy dog.'\"[1] Dozens of other newspapers published the phrase over the next few months, all using the version of the sentence starting with \"A\" rather than \"The\", which still contains all 26 letters as \"the\" is used later in the sentence.[2] The earliest known use of the phrase starting with \"The\" is from the 1888 book Illustrative Shorthand by Linda Bronson.[3] The modern form (starting with \"The\") became more common even though it is two letters longer than the original (starting with \"A\").\n\nA 1908 edition of the Los Angeles Herald Sunday Magazine records that when the New York Herald was equipping an office with typewriters \"a few years ago\", staff found that the common practice sentence of \"now is the time for all good men to come to the aid of the party\" did not familiarize typists with the entire alphabet, and ran onto two lines in a newspaper column. They write that a staff member named Arthur F. Curtis invented the \"quick brown fox\" pangram to address this.[4]\n\nPictorial depiction of the pangram from Scouting for Boys (1908)[5]\nAs the use of typewriters grew in the late 19th century, the phrase began appearing in typing lesson books as a practice sentence. Early examples include  How to Become Expert in Typewriting: A Complete Instructor Designed Especially for the Remington Typewriter (1890),[6] and Typewriting Instructor and Stenographer's Hand-book (1892). By the turn of the 20th century, the phrase had become widely known. In the January 10, 1903, issue of Pitman's Phonetic Journal, it is referred to as \"the well known memorized typing line embracing all the letters of the alphabet\".[7] Robert Baden-Powell's book Scouting for Boys (1908) uses the phrase as a practice sentence for signaling.[5]\n\nThe first message sent on the Moscow–Washington hotline on August 30, 1963, was the test phrase \"THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG'S BACK 1234567890\".[8] Later, Soviet diplomat Andrei Gromyko asked American Secretary of State Dean Rusk what the phrase meant.[9]\n\nDuring the 20th century, technicians tested typewriters and teleprinters by typing the sentence.[10]\n\nIt is the sentence used in the annual Zaner-Bloser National Handwriting Competition, a cursive writing competition which has been held in the U.S. since 1991.[11][12]\n\nComputer usage\nThe phrase being used in a BBC Ceefax test from 1972\nThe phrase used to preview a computer typeface\nIn the age of computers, this pangram is commonly used to display font samples and for testing computer keyboards. In cryptography, it is commonly used as a test vector for hash and encryption algorithms to verify their implementation, as well as to ensure alphabetic character set compatibility.[citation needed]\n\nMicrosoft Word has a command to auto-type the sentence, in versions up to Word 2003, using the command =rand(), and in Microsoft Office Word 2007 and later using the command =rand.old().[13]\n\nCultural references\n\nNumerous references to the phrase have occurred in movies, television, books, video games, advertising, websites, and graphic arts. \n\t \nThe lipogrammatic novel Ella Minnow Pea by Mark Dunn is built entirely around the \"quick brown fox\" pangram and its inventor. It depicts a fictional island off the South Carolina coast that idealizes the pangram, chronicling the effects on literature and social structure as various letters are banned from daily use by government dictum.[14]\n\nThe NASA Space Shuttle flew a teleprinter that used the phrase \"THE LAZY YELLOW DOG WAS CAUGHT BY THE SLOW RED FOX AS HE LAY SLEEPING IN THE SUN\", a reference to the eponymous phrase, as part of its self-test program. While the phrase is not a pangram, as it lacks J, K, M, Q, and V, it was selected to be exactly 80 characters wide to match the length of the teleprinter's drum.[15]\n\nOther pangrams\nMain article: Pangram\nWith 35 letters, this is not the shortest pangram. Shorter examples include:\n\n\"Quick nymph bugs vex fjord waltz.\" (27 letters; U repeated)\n\"Waltz, bad nymph, for quick jigs vex.\" (28 letters)\n\"Sphinx of black quartz, judge my vow.\" (29 letters)\n\"How vexingly quick daft zebras jump!\" (30 letters)\n\"The five boxing wizards jump quickly.\" (31 letters)\n\"Pack my box with five dozen liquor jugs.\" (32 letters)\n\nIf abbreviations and non-dictionary words are allowed, it is possible to create a perfect pangram that uses each letter only once, such as \"Mr. Jock, TV quiz PhD, bags few lynx\".\n\nSee also\nFiller text\nEtaoin shrdlu – Common metal-type printing error\nLorem ipsum – Placeholder text used in publishing and graphic design\nThousand Character Classic – Chinese educational poem\nIroha – Japanese pangram poem\n\nReferences\n\n↑ \"Current Notes\" (PDF). Boston Journal (morning ed.). Boston, Massachusetts. February 10, 1885. p. 1. Archived (PDF) from the original on 2024-05-21. Retrieved 2020-10-30.\n↑ \"Search for 'quick brown fox'\". Newspapers.com. Archived from the original on 21 June 2013. Retrieved 8 November 2016.\n↑ Bronson, Linda Pennington (1888). Illustrative Shorthand. San Francisco: Cal. Label &amp; Maccabe Litho. Co. p. 76.\n↑ \"Los Angeles herald. [microfilm reel] (Los Angeles [Calif.]) 1900-1911, November 08, 1908, Image 51\". Los Angeles Herald Sunday Magazine. 1908-11-08. p. 5. Archived from the original on 2021-11-16. Retrieved 2021-11-16.\n1 2 Baden-Powell, Robert (1908). Scouting for Boys (PDF). London: Pearson. p. 76. ISBN 0-665-98794-3. Archived (PDF) from the original on 2014-06-11. Retrieved 2015-02-21. {{cite book}}: ISBN / Date incompatibility (help)\n↑ Barnes, Lovisa Ellen (1890). How to Become Expert in Typewriting. A.J. Barnes. p. 12.\n↑ \"The Fox Typewriter\". Pitman's Phonetic Journal. January 10, 1903.\n↑ \"Washington Moscow Hotline\". Cryptomuseum.com. Archived from the original on 2016-03-06. Retrieved 2013-09-21.\n↑ Rusk, Dean (1991). As I Saw It: A Secretary of State's Memoirs. London: I.B. Tauris &amp; Co. Ltd. p. 225.\n↑ Vegter, Wobbe (June 2007). \"Jean-Maurice-Émile Baudot\". ThemNews. 8 (2). Archived from the original on 2016-04-09. Retrieved 2013-09-21.\n↑ \"Students Compete To See Who Has The Best Cursive Writing\". NPR.org. 2021-05-28. Archived from the original on 2021-06-07. Retrieved 2021-06-08.\n↑ \"About the Zaner-Bloser National Handwriting Contest\". www.zaner-bloser.com. Archived from the original on 8 June 2021. Retrieved 8 June 2021.\n↑ \"kb212251 Microsoft support\". Support.microsoft.com. 2011-09-18. Retrieved 2013-09-21.{{cite web}}:  CS1 maint: deprecated archival service (link)\n↑ Ella Minnow Pea: A Novel in Letters, by Mark Dunn, Anchor, 2001 Archived 2023-04-06 at the Wayback Machine, ISBN 0385722435\n↑ \"Reverse engineering the 59-pound printer onboard the Space Shuttle\". Ken Shirriff's Blog. 2024-08-03. Archived from the original on 2025-01-24. Retrieved 2025-02-05.\n\n\nExternal links\n\n Media related to The quick brown fox jumps over the lazy dog at Wikimedia Commons\n The dictionary definition of the quick brown fox jumps over the lazy dog at Wiktionary\nvteStandard test items\nPangram\nReference implementation\nSanity check\nStandard test image\nArtificial intelligence(Machine learning)\nChinese room\nImageNet\nMNIST database\nTuring test\nList\nTelevision (test card)\nSMPTE color bars\nEBU colour bars\nIndian-head test pattern\nEIA 1956 resolution chart\nBBC Test Card A, B, C, D, E, F, G, H, J, W, X\nETP-1\nPhilips circle pattern (PM 5538, PM 5540, PM 5544, PM 5644)\nSnell &amp; Wilcox SW2/SW4\nTelefunken FuBK\nTVE test card\nUEIT\nComputer languages\nHello, world\nQuine\nTrabb Pardo–Knuth algorithm\nMan or boy test\nJust another Perl hacker\nData compression\nCalgary corpus\nCanterbury corpus\nSilesia corpus\nenwik8, enwik9\n3D computer graphics\n3DBenchy\nCornell box\nStanford bunny\nStanford dragon\nUtah teapot\nList\n2D computer graphics\nGhostscript tiger\nLenna\nTypography (filler text)\nEtaoin shrdlu\nHamburgevons\nLorem ipsum\nThe quick brown fox jumps over the lazy dog\nOther\nAcid\n1\n2\n3\n\"Bad Apple!!\"\nBig Buck Bunny\nDoom\nEICAR test file\nFunctions for optimization\nGTUBE\nHarvard sentences\n\"The North Wind and the Sun\"\n\"Tom's Diner\"\nSMPTE universal leader\nEURion constellation\nWebdriver Torso\n1951 USAF resolution test chart\n\nvteTypewritersManufacturers\nBrother\nCommodore\nRemington\nIBM\nImperial\nOliver\nOlivetti\nOlympia\nRoyal\nSharp\nSilver Reed\nSmith Corona\nTriumph-Adler\nUnderwood\nXerox\nModels\nBlickensderfer typewriter\nData Recall Diamond\nHammond Typewriter\nHansen Writing Ball\nIBM Electric\nIBM Selectric\nIBM Wheelwriter\nSholes and Glidden typewriter\nOlivetti Lettera 22\nOlivetti Valentine\nHermes 3000\nYatran\nProminent figures\nLucien Stephen Crandall\nFrank Haven Hall\nJames Densmore\nCarlos Glidden\nRasmus Malling-Hansen\nHenry Mill\nJohn Pratt\nClarence Seamans\nChristopher Sholes\nJames Fields Smathers\nLyman Cornelius Smith\nSamuel W. Soulé\nKyota Sugimoto\nEttore Sottsass\nComponents\nKeyboard layout\nAZERTY\nDvorak\nTurkish F\nHCESAR\nQWERTY\nQWERTZ\nQZERTY\nPlaten\nRelated equipment\nCarbon paper\nCorrection fluid\nErasing shield\nInk ribbon\nStenotype\nTypewriter desk\nTypewriter eraser\nOther scripts\nChinese\nJapanese\nThai\nCultural aspects\nBoston Typewriter Orchestra\nCopy typist\nSamizdat\nSpeed typing contest\nThe quick brown fox jumps over the lazy dog\nTouch typing\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRetrieved from \"https://en.wikipedia.org/w/index.php?title=The_quick_brown_fox_jumps_over_the_lazy_dog&amp;oldid=1371830068\"\n\t\t\t\t\tCategories: 1880s neologisms1880s quotationsEnglish phrasesFiller textPangramsTest itemsTypographyHidden categories: Articles with short descriptionShort description is different from WikidataWikipedia indefinitely semi-protected pagesCS1 errors: ISBN dateAll articles with unsourced statementsArticles with unsourced statements from March 2019CS1 maint: deprecated archival serviceWebarchive template wayback linksCommons category link from Wikidata\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t This page was last edited on 28 August 2026, at 18:58&#160;(UTC).\n\tPage was rendered with Parsoid.\n\tText is available under the Creative Commons Attribution-ShareAlike 4.0 License;\nadditional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.\n\n\n\t\t\t\t\n\tPrivacy policy\n\tAbout Wikipedia\n\tDisclaimers\n\tContact Wikipedia\n\tLegal &amp; safety contacts\n\tCode of Conduct\n\tDevelopers\n\tStatistics\n\tCookie statement\n\tMobile view\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nSearch\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tSearch\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nToggle the table of contents\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tThe quick brown fox jumps over the lazy dog\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n21 languages\n\t\t\t\n\t\t\t\n\nAdd topic",
+      "title": "https://en.wikipedia.org/wiki/The_Quick_Brown_Fox_Jumps_Over_The_Lazy_Dog (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789526936638,
+        "end": 1789526937408
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.409Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526937409,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e0f40001uaCQfaqBqgFK5y",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0b75001fB0IcWFECCVDbW",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 53443,
+      "output": 194,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 53637,
+      "headroom": -14781,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.409Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.409Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.409Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.409Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.410Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.410Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.410Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.411Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.411Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.411Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.415Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 53637,
+  "providerTokens": 53637,
+  "estimatedInputTokens": 16429,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 53443,
+    "cacheRead": 0,
+    "output": 194
+  },
+  "overflow": true,
+  "headroom": -14781,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.416Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.416Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.416Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.417Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.417Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.417Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.417Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.417Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.827Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526937827,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e10e30017hxG47abyOJkEk",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0f49001n77NZh5VZGh5I7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526937828,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e10e4001rgYdSmhHqzUoiR",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0f49001n77NZh5VZGh5I7",
+    "type": "text",
+    "text": "我来上网搜索 句子 \"quick brown fox\" 是不是关于字母 e 的 lipogram。\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789526937828,
+      "end": 1789526937828
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526937828,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e10e4002SvNHW4iQa3LHs6",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e0f49001n77NZh5VZGh5I7",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 60400,
+      "output": 98,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 60498,
+      "headroom": -21642,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.828Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.829Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.829Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.829Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526937829,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e10e5002aMWBA2CvtVsQEL",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e10e500116aIuMMjC5kANs",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789526937829,
+      "end": 1789526937829
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.829Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.830Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.830Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.830Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.830Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.830Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.831Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.831Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.831Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.831Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.832Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526937887,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e111e0012avEkCYnwP0g31",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e10e6001Mr2vOJAs9rGT17",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526937887,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e111f002uxtxVzGte1w5he",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e10e6001Mr2vOJAs9rGT17",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789526937887,
+      "end": 1789526937887
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526937887,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "part": {
+    "id": "prt_0a81e111f003xGh1JdAnCrL6yt",
+    "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+    "messageID": "msg_0a81e10e6001Mr2vOJAs9rGT17",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8647,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8720,
+      "headroom": 30136,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.887Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.888Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.888Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.888Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.888Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.889Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789526937889,
+  "sessionID": "ses_f57e20152ffegWcSfhAcHjB0xq"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.889Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.889Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.889Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.890Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.8KjNuvaOQJ",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:57.890Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+
