@@ -360,7 +360,7 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     let normalized = normalize_prompt(prompt);
     let tokens: Vec<&str> = prompt.split_whitespace().collect();
     let mut found: Vec<ObjectType> = Vec::new();
-    let mut note = |object: ObjectType, present: bool, found: &mut Vec<ObjectType>| {
+    let note = |object: ObjectType, present: bool, found: &mut Vec<ObjectType>| {
         if present && !found.contains(&object) {
             found.push(object);
         }
