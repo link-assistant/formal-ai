@@ -297,14 +297,53 @@ fn retrieved_evidence_becomes_a_candidate_part_the_composer_can_read() {
     );
 }
 
+// The fixture repair this case needed, recorded at the case.
+//
+// As written in wave T the case asked `discovery_catalog()` — a catalog built
+// through `DiscoveryCatalog::new`, which leaves `source_candidates` empty — for
+// a `source_program` candidate. `source_program` parts exist only in
+// `DiscoveryCatalog::source_candidates` (`src/coding/synthesis_runtime.rs`
+// fills them from the sequence-source walk), so the case panicked
+// `both a program and a sense must be offered` with `(None, Some(3))` before
+// comparing anything: the sense *was* ranked last, and the check could not see
+// it. The repair is in the case's own setup — the catalog now offers the
+// program the assertion is about, and the requirement sentence carries one word
+// nobody has seeded, so the lookup offers the sense the assertion is about —
+// and the assertion itself is untouched (issue #1138, plan 01 L9).
+//
+// The sentence needed the second half of the repair for the same class of
+// reason: after plan 01 L8, a sense reaches a need only through
+// `unresolved_surfaces`, and every word of
+// "Return the greatest common divisor of the two integers." is accounted for by
+// the structures that sentence matches, so the need offered no sense at all.
+fn retrieved_program(id: &str, composition: &str) -> formal_ai::concept_discovery::CandidatePart {
+    formal_ai::concept_discovery::CandidatePart {
+        id: id.to_owned(),
+        kind: "source_program".to_owned(),
+        label: composition.to_owned(),
+        language: Some("python".to_owned()),
+        code: Some("while b:\n    a, b = b, a % b\nreturn a".to_owned()),
+        callable_name: Some("gcd".to_owned()),
+        source_tests: Vec::new(),
+        license: "GFDL-1.2-or-later".to_owned(),
+        source_url: "https://rosettacode.org/wiki/Greatest_common_divisor".to_owned(),
+        sha256: "e".repeat(64),
+        fetched_at: "2026-09-15T00:00:00Z".to_owned(),
+        score: 1.0,
+    }
+}
+
 #[test]
 fn concept_senses_rank_below_retrieved_implementations() {
-    let catalog = discovery_catalog();
+    let catalog = discovery_catalog().with_source_candidates(vec![retrieved_program(
+        "rosettacode:greatest_common_divisor",
+        "greatest common divisor",
+    )]);
     let mut lookup = CountingLookup::default();
     let map = discover_with_lookup(
         &spec(
             "greatest_common_divisor",
-            "Return the greatest common divisor of the two integers.",
+            "Return the greatest common divisor of the two integers, the largest florpquux they share.",
             "en",
         ),
         &catalog,

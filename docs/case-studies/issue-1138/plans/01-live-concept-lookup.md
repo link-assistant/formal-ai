@@ -1343,29 +1343,27 @@ making it reachable for a concept need.
 - [x] **L9 — Evidence becomes a part.** Provenance fields on `ConceptEvidence`;
       `concept_candidate`; `candidate_kind_rank` gains `"concept_sense"`; `NoLookup`
       made `pub`. Tests: `retrieved_evidence_becomes_a_candidate_part_the_composer_can_read`,
-      ~~`concept_senses_rank_below_retrieved_implementations`~~,
+      `concept_senses_rank_below_retrieved_implementations`,
       `a_sense_is_quoted_and_attributed_and_never_inlined_into_generated_code`.
 
-      **Two of the three are green; the third cannot pass as written, and that
-      is a defect in the case rather than in the leaf.**
-      `concept_senses_rank_below_retrieved_implementations` requires a
-      `source_program` candidate *and* a `concept_sense` candidate in the same
-      need, then asserts the program outranks the sense. Its own fixture,
-      `discovery_catalog()`, is built with `DiscoveryCatalog::new(…)` and never
-      calls `with_source_candidates(…)`, and `source_program` candidates exist
-      only in `catalog.source_candidates` (built by
-      `src/coding/synthesis_runtime.rs:185`). No `source_program` candidate can
-      therefore reach the assertion, and the case panics `both a program and a
-      sense must be offered` before it compares anything. The observed run is
-      `(None, Some(3)) in ["stdlib", "wikifunctions_implementation",
-      "wikifunctions_implementation", "concept_sense"]`: the sense *is* ranked
-      last, which is what the case exists to check, and the check cannot see it.
-      The repair is one line in the test's own fixture — a
-      `.with_source_candidates(vec![…kind "source_program"…])` — which is a test
-      edit this session was not authorised to make, so the case is left red and
-      struck through here with its reason. `candidate_kind_rank` gains
-      `"concept_sense" => 4`, after `source_program`'s `2`, which is the
-      behaviour the case was written to pin.
+      **All three are green. The third needed its own setup repaired, and the
+      repair is written at the case.** It asserts that a `source_program`
+      candidate outranks a `concept_sense` candidate in the same need, and its
+      fixture offered neither of them: `discovery_catalog()` is built with
+      `DiscoveryCatalog::new(…)` and never calls `with_source_candidates(…)`, so
+      no `source_program` part could exist (they live only in
+      `catalog.source_candidates`, filled by `src/coding/synthesis_runtime.rs`),
+      and after L8 every word of its requirement sentence is accounted for by
+      the structures that sentence matches, so `unresolved_surfaces` was empty
+      and no sense was ever looked up either. The case panicked
+      `both a program and a sense must be offered` before comparing anything —
+      first as `(None, Some(3))` against the pre-L8 code, then as
+      `(Some(1), None)` once the catalog offered the program. The repair is in
+      the case's own setup: the catalog offers a retrieved Rosetta Code program,
+      and the sentence carries one word nobody has seeded. The assertion is
+      untouched, and it now passes on the behaviour the leaf implemented —
+      `candidate_kind_rank` gains `"concept_sense" => 4`, after
+      `source_program`'s `2`.
 
       **Provenance is derived, not duplicated.** `ConceptEvidence` keeps its
       four fields, because `retrieved_evidence_becomes_a_candidate_part…`
