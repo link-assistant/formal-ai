@@ -16,7 +16,7 @@ debt_ratchet
     note "corrected undercount. 40 counted the handler-precedence table only, so the five prelude methods -- diagnostic, nl_tool, behavior_rules, feature_capability, playwright_script -- ran on every turn ahead of that table while sitting outside the ledger entirely. Issue #1138 B9, plan 09 leaf 5. No handler was written; the tree is unchanged."
   ceiling
     measure literal_predicates
-    value 548
+    value 547
     how "occurrences of a contains( or starts_with( call with a double-quoted first argument in src/**/*.rs"
   ceiling
     measure hardcoded_language_rows

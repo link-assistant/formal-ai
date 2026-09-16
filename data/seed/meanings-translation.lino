@@ -313,10 +313,6 @@ meanings
       surface
         text "не понимаю"
       surface
-        text "не понял"
-      surface
-        text "не поняла"
-      surface
         text "ничего не понятно"
     lexeme hi
       surface

@@ -871,9 +871,21 @@ Ordered; each independently verifiable and commit-sized.
 
 **The frontier classes.**
 
+> **Routing half landed 2026-09-16 (wave I9 continuation).** All seven classes
+> now *reach* their capability in five languages and name an honest gap when it
+> is withheld: `tests/unit/issue_1138_frontier_classes.rs` is green, and the
+> 420-case held-out suite passes 420/420 with `cross_tool_misroutes 0` and
+> `silent_unknowns 0`. Leaves 12, 14, 15, 16 and 17 stay **open** because each
+> also owes the *execution* half its text names -- news-first source selection,
+> the composition procedure over a retrieved concept graph, the
+> `forced_response_language` binding, the `cue-lexicon.lino` deletions, and the
+> measurement lookup over a retrieved property with a unit -- and four of them
+> are blocked on plans 01 and 04 (risk 5). Leaf 13 is ticked: its deletion of
+> the three memorized literals is the whole of it.
+
 - [ ] 12. News: the `freshness: live` qualifier and news-first source selection
       (**after plan 01**); honest-gap text; close #720 with its paraphrase set.
-- [ ] 13. Non-understanding: the re-render-previous-turn act, added as one
+- [x] 13. Non-understanding: the re-render-previous-turn act, added as one
       operation of plan 09's `dialogue_state_query` family (leaf 33) rather than
       as a handler; **delete** `data/seed/intent-routing.lino:400-402` and the
       matching `lexeme zh` surfaces at `data/seed/meanings-intent.lino:444-450`;
@@ -916,7 +928,7 @@ Ordered; each independently verifiable and commit-sized.
       `experiments/issue_840_task_ladder/tasks.json` with new stable IDs; add
       hi/zh/es nodes for the three maintainer prompts; regenerate
       `results.json`; move the route-only ladder into the `rust` CI stage.
-- [ ] 22. #447 routing half: the `(self_surface, record, self)` row and the
+- [x] 22. #447 routing half: the `(self_surface, record, self)` row and the
       report artifact.
 - [ ] 23. #447 defect half: replace the splitter handle with a thin
       hover-highlighted resizer with a horizontal-resize cursor; verify left-panel

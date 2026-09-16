@@ -271,7 +271,7 @@ fn behavior_rules_count_followup_answers_reported_russian_prompt() {
     assert_eq!(response.intent, "behavior_rules_count");
     assert!(response.answer.contains("Всего правил"));
     assert!(response.answer.contains("total_rules \"8\""));
-    assert!(!response.answer.contains("Я тебя не понял"));
+    assert!(!response.answer.contains("Мне не удалось тебя понять"));
 }
 
 #[test]

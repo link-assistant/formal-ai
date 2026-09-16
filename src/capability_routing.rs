@@ -27,9 +27,12 @@ use crate::seed::{
     ROLE_CAPABILITY_ACT_COMPOSE, ROLE_CAPABILITY_ACT_DEMONSTRATE, ROLE_CAPABILITY_ACT_ENUMERATE,
     ROLE_CAPABILITY_ACT_EXPLAIN, ROLE_CAPABILITY_ACT_RECORD, ROLE_CAPABILITY_ACT_RETRIEVE,
     ROLE_CAPABILITY_ACT_SCHEDULE, ROLE_CAPABILITY_ACT_TRANSFORM,
+    ROLE_CAPABILITY_CLOCK_REFERENCE, ROLE_CAPABILITY_CONTAINER_SCOPE,
+    ROLE_CAPABILITY_CONTENT_INTRODUCER, ROLE_CAPABILITY_FRESHNESS_LIVE,
+    ROLE_CAPABILITY_LANGUAGE_REFERENCE, ROLE_CAPABILITY_PRIOR_TURN_REFERENCE,
     ROLE_CAPABILITY_QUANTITY_INTERROGATIVE, ROLE_CAPABILITY_SELF_SURFACE_NOUN,
-    ROLE_LOCAL_PATH_SCOPE_CURRENT, ROLE_LOCAL_PATH_SCOPE_DESKTOP, ROLE_LOCAL_PATH_SCOPE_HOME,
-    ROLE_TRANSLATION_LANGUAGE,
+    ROLE_CAPABILITY_WEB_SCOPE, ROLE_CAPABILITY_WORKSPACE_SCOPE, ROLE_LOCAL_PATH_SCOPE_CURRENT,
+    ROLE_LOCAL_PATH_SCOPE_DESKTOP, ROLE_LOCAL_PATH_SCOPE_HOME, ROLE_TRANSLATION_LANGUAGE,
 };
 use crate::web_engine_core::normalize_prompt;
 
@@ -277,6 +280,25 @@ fn evidences(role: &str, normalized: &str) -> bool {
     lexicon.mentions_role(role, normalized) || lexicon.mentions_role_raw(role, normalized)
 }
 
+/// How *specific* the evidence for `role` in `normalized` is: the character
+/// length of the longest surface of the role the prompt carries, or zero.
+///
+/// A longer surface is a more specific observation about the same sentence.
+/// "echo" is evidence of composing; "echo the contents of" is evidence of
+/// retrieving, and it is the same four letters plus fifteen more, so it is the
+/// reading the sentence actually supports. Without this, act resolution would
+/// depend on the order the acts happen to be declared in, which is exactly the
+/// declaration-order dependence plan 10 refuses in the table itself.
+fn evidence_strength(role: &str, normalized: &str) -> usize {
+    seed::lexicon()
+        .words_for_role(role)
+        .into_iter()
+        .filter(|word| normalized.contains(word.as_str()))
+        .map(|word| word.chars().count())
+        .max()
+        .unwrap_or(0)
+}
+
 /// Whether a token parses as an absolute URL.
 fn is_url(token: &str) -> bool {
     let token = token.trim_matches(|character: char| !character.is_alphanumeric());
@@ -315,7 +337,7 @@ fn has_clock_time(prompt: &str) -> bool {
 }
 
 /// Whether the prompt carries a balanced quoted span of more than one token.
-fn has_quoted_content(prompt: &str) -> bool {
+fn has_quoted_span(prompt: &str) -> bool {
     for delimiter in ['"', '\u{201c}', '\u{00ab}'] {
         let closing = match delimiter {
             '\u{201c}' => '\u{201d}',
@@ -334,23 +356,69 @@ fn has_quoted_content(prompt: &str) -> bool {
     false
 }
 
-/// Whether the prompt names a filesystem scope: the desktop, the home directory,
-/// or the current directory. A possessive is not consulted, which is the single
-/// change that makes `on my desktop` and `on desktop` one request.
-fn has_path_scope(normalized: &str) -> bool {
+/// Whether the request carries *explicit content*: a quoted span, or a seeded
+/// content introducer (`containing`, `с текстом`, `内容为`, `con el texto`).
+///
+/// Quotation marks are one way a person hands over a literal; naming the
+/// content with the phrase the language uses for it is the other, and a request
+/// that carries one carries the same object as a request that carries the other.
+fn has_explicit_content(prompt: &str, normalized: &str) -> bool {
+    has_quoted_span(prompt) || evidences(ROLE_CAPABILITY_CONTENT_INTRODUCER, normalized)
+}
+
+/// Whether the prompt names a filesystem container: the desktop, the home
+/// directory, the current directory, or the folder/file/path nouns themselves.
+/// A possessive is not consulted, which is the single change that makes
+/// `on my desktop` and `on desktop` one request.
+fn has_container_scope(normalized: &str) -> bool {
     [
         ROLE_LOCAL_PATH_SCOPE_DESKTOP,
         ROLE_LOCAL_PATH_SCOPE_HOME,
         ROLE_LOCAL_PATH_SCOPE_CURRENT,
+        ROLE_CAPABILITY_CONTAINER_SCOPE,
     ]
     .iter()
     .any(|role| evidences(role, normalized))
+}
+
+/// Whether the prompt scopes its effect to the machine the task is being done
+/// on. Wider than [`has_container_scope`]: the code, the repository and the
+/// project are the workspace without being a directory the request names.
+fn has_workspace_scope(normalized: &str) -> bool {
+    has_container_scope(normalized) || evidences(ROLE_CAPABILITY_WORKSPACE_SCOPE, normalized)
+}
+
+/// Whether the prompt scopes its effect to the open web, either by naming it or
+/// by asking for what is true *now*, which nothing but a live source can answer
+/// (plan 10 leaf 12's `freshness: live` qualifier).
+fn has_web_scope(normalized: &str) -> bool {
+    evidences(ROLE_CAPABILITY_WEB_SCOPE, normalized) || is_freshness_live(normalized)
+}
+
+/// The `freshness: live` qualifier: the request is about what is true at the
+/// moment it is asked, so a stored answer cannot satisfy it (issue #720).
+#[must_use]
+pub fn is_freshness_live(normalized: &str) -> bool {
+    evidences(ROLE_CAPABILITY_FRESHNESS_LIVE, normalized)
 }
 
 /// Whether the subject is a piece of the assistant's own surface.
 fn is_self_surface(normalized: &str) -> bool {
     evidences(ROLE_CAPABILITY_SELF_SURFACE_NOUN, normalized)
         || evidences(ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized)
+        || is_prior_turn_reference(normalized)
+}
+
+/// Whether the object of the request is the assistant's *previous turn*: the
+/// closed class of comprehension-failure surfaces (issue #721).
+///
+/// This is the one class with no structural signal at all -- "that went over my
+/// head" names nothing the characters can be read for -- so it is grounded in a
+/// seed role in five languages rather than in a Rust branch, and none of the
+/// three reported strings is among its surfaces.
+#[must_use]
+pub fn is_prior_turn_reference(normalized: &str) -> bool {
+    evidences(ROLE_CAPABILITY_PRIOR_TURN_REFERENCE, normalized)
 }
 
 /// Every object the prompt carries, ranked; the table is consulted for the
@@ -375,15 +443,22 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
         tokens.iter().any(|token| is_path(token)),
         &mut found,
     );
-    note(ObjectType::SelfSurface, is_self_surface(&normalized), &mut found);
+    note(
+        ObjectType::SelfSurface,
+        is_self_surface(&normalized),
+        &mut found,
+    );
     note(
         ObjectType::LanguageName,
-        evidences(ROLE_TRANSLATION_LANGUAGE, &normalized),
+        evidences(ROLE_TRANSLATION_LANGUAGE, &normalized)
+            || evidences(ROLE_CAPABILITY_LANGUAGE_REFERENCE, &normalized),
         &mut found,
     );
     note(
         ObjectType::TimeExpression,
-        has_clock_time(prompt) || evidences(ROLE_CALENDAR_DAY_REFERENCE, &normalized),
+        has_clock_time(prompt)
+            || evidences(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
+            || evidences(ROLE_CAPABILITY_CLOCK_REFERENCE, &normalized),
         &mut found,
     );
     note(
@@ -393,17 +468,19 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     );
     note(
         ObjectType::QuotedContent,
-        has_quoted_content(prompt),
+        has_explicit_content(prompt, &normalized),
         &mut found,
     );
-    note(ObjectType::PathScope, has_path_scope(&normalized), &mut found);
+    note(
+        ObjectType::PathScope,
+        has_container_scope(&normalized),
+        &mut found,
+    );
     note(
         ObjectType::BareTerm,
-        tokens.iter().any(|token| {
-            token
-                .chars()
-                .any(|character| character.is_alphanumeric())
-        }),
+        tokens
+            .iter()
+            .any(|token| token.chars().any(|character| character.is_alphanumeric())),
         &mut found,
     );
     if found.is_empty() {
@@ -413,31 +490,91 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     found
 }
 
+/// Every act the prompt evidences, most specific first, with `retrieve` always
+/// last: a request that evidences no narrower act is a retrieval, and saying so
+/// is what keeps a verb the list has never seen from ending in an `Ask` that
+/// names nothing (plan 10 risk 1).
+#[must_use]
+pub fn acts(prompt: &str) -> Vec<Act> {
+    let normalized = normalize_prompt(prompt);
+    if normalized.is_empty() {
+        return vec![Act::Unresolved];
+    }
+    let mut scored: Vec<(usize, usize, Act)> = ACTS_IN_PRECEDENCE
+        .into_iter()
+        .enumerate()
+        .filter_map(|(order, candidate)| {
+            let strength = evidence_strength(candidate.role(), &normalized);
+            (strength > 0).then_some((strength, order, candidate))
+        })
+        .collect();
+    scored.sort_by(|left, right| right.0.cmp(&left.0).then(left.1.cmp(&right.1)));
+    let mut ordered: Vec<Act> = scored.into_iter().map(|(_, _, act)| act).collect();
+    if !ordered.contains(&Act::Retrieve) {
+        ordered.push(Act::Retrieve);
+    }
+    ordered
+}
+
 /// The act the prompt asks for, resolved through `data/seed/meanings-acts.lino`.
 #[must_use]
 pub fn act(prompt: &str) -> Act {
-    let normalized = normalize_prompt(prompt);
-    ACTS_IN_PRECEDENCE
-        .into_iter()
-        .find(|candidate| evidences(candidate.role(), &normalized))
-        .unwrap_or(Act::Unresolved)
+    acts(prompt).first().copied().unwrap_or(Act::Unresolved)
 }
 
-/// Where the effect lands, derived from the objects and the scope nouns.
+/// Where the effect of acting on `object` lands, given the rest of the prompt.
+///
+/// The locus is a property of the object and the seed's own scope nouns, never
+/// of the verb: the same object in the same scope lands in the same place
+/// whatever it is asked to do.
+#[must_use]
+pub fn locus_of(object: ObjectType, prompt: &str) -> Locus {
+    let normalized = normalize_prompt(prompt);
+    match object {
+        ObjectType::Url => Locus::Web,
+        ObjectType::Path | ObjectType::PathScope => Locus::Workspace,
+        ObjectType::SelfSurface => {
+            if is_prior_turn_reference(&normalized) {
+                Locus::Dialogue
+            } else {
+                Locus::SelfSurface
+            }
+        }
+        ObjectType::LanguageName => Locus::Dialogue,
+        ObjectType::TimeExpression => {
+            if has_workspace_scope(&normalized) {
+                Locus::Workspace
+            } else {
+                Locus::Dialogue
+            }
+        }
+        ObjectType::QuotedContent => {
+            if has_workspace_scope(&normalized) {
+                Locus::Workspace
+            } else if has_web_scope(&normalized) {
+                Locus::Web
+            } else {
+                Locus::Dialogue
+            }
+        }
+        ObjectType::QuantityQuestion | ObjectType::BareTerm => {
+            if has_workspace_scope(&normalized) {
+                Locus::Workspace
+            } else {
+                Locus::Web
+            }
+        }
+        ObjectType::None => Locus::Dialogue,
+    }
+}
+
+/// Where the effect lands, derived from the highest-ranked object and the scope
+/// nouns.
 #[must_use]
 pub fn locus(prompt: &str) -> Locus {
-    let normalized = normalize_prompt(prompt);
     let objects = object_type(prompt);
-    if objects.contains(&ObjectType::SelfSurface) {
-        return Locus::SelfSurface;
-    }
-    if has_path_scope(&normalized) || objects.contains(&ObjectType::Path) {
-        return Locus::Workspace;
-    }
-    if objects.contains(&ObjectType::Url) {
-        return Locus::Web;
-    }
-    Locus::Unresolved
+    let highest = objects.first().copied().unwrap_or(ObjectType::None);
+    locus_of(highest, prompt)
 }
 
 /// The shipped decision table.
@@ -492,20 +629,29 @@ pub fn routing_table_from(text: &str) -> Result<Vec<RouteRow>, String> {
 
 /// Resolve one prompt against the table, given the capabilities the client
 /// advertised.
+///
+/// Objects are consulted highest-ranked first and, within an object, the acts
+/// the prompt evidences most specific first. Each object is resolved in the
+/// locus *its own* effect lands in, because a prompt carries several objects at
+/// once -- "what came out today" names both a day and a term -- and asking
+/// where "the prompt" lands would force one answer on both.
 #[must_use]
 pub fn route(prompt: &str, advertised: &[&str]) -> RoutingOutcome {
     let table = routing_table();
     let objects = object_type(prompt);
-    let act = act(prompt);
-    let locus = locus(prompt);
+    let acts = acts(prompt);
     for object in &objects {
-        let outcome = route_with(&table, *object, act, locus, advertised);
-        if !matches!(outcome, RoutingOutcome::Ask { .. }) {
-            return outcome;
+        let locus = locus_of(*object, prompt);
+        for act in &acts {
+            let outcome = route_with(&table, *object, *act, locus, advertised);
+            if !matches!(outcome, RoutingOutcome::Ask { .. }) {
+                return outcome;
+            }
         }
     }
     let highest = objects.first().copied().unwrap_or(ObjectType::None);
-    route_with(&table, highest, act, locus, advertised)
+    let act = acts.first().copied().unwrap_or(Act::Unresolved);
+    route_with(&table, highest, act, locus_of(highest, prompt), advertised)
 }
 
 /// Resolve one triple against a supplied table.

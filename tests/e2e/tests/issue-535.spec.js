@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 const UNKNOWN_ANSWER_MARKER = 'That one is new to me';
-const RUSSIAN_UNKNOWN_ANSWER_MARKER = 'Я тебя не понял';
+const RUSSIAN_UNKNOWN_ANSWER_MARKER = 'Мне не удалось тебя понять';
 const SAMPLE_TEXT = [
   'Formal AI issue 535 sample text for originality checking.',
   'The variation-tech-model manual explains a deterministic links model.',

@@ -427,11 +427,7 @@ meanings
         text "i am confused"
     lexeme ru
       surface
-        text "не понял"
-      surface
         text "не понимаю"
-      surface
-        text "не поняла"
       surface
         text "не понятно"
       surface
@@ -442,8 +438,6 @@ meanings
       surface
         text "समझ नहीं आई"
     lexeme zh
-      surface
-        text 我不明白
       surface
         text 我不懂
       surface

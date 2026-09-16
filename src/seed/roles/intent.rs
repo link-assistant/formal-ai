@@ -590,3 +590,57 @@ pub const ROLE_CAPABILITY_SELF_SURFACE_NOUN: &str = "capability_self_surface_nou
 /// the closed class that separates a measurement question from a mechanism
 /// question. Carried by `quantity_interrogative`.
 pub const ROLE_CAPABILITY_QUANTITY_INTERROGATIVE: &str = "capability_quantity_interrogative";
+/// Semantic role: a noun that scopes the effect to the *open web*.
+///
+/// "online", "в интернете", "इंटरनेट", "网络", "en la web" — the counterpart of
+/// the filesystem scope nouns, so a locus is derived from what the request
+/// names rather than from which verb it happens to use. Carried by
+/// `web_scope` in `data/seed/meanings-object-shapes.lino`.
+pub const ROLE_CAPABILITY_WEB_SCOPE: &str = "capability_web_scope";
+/// Semantic role: a noun that scopes the effect to the machine the task is
+/// being done on, without naming a directory.
+///
+/// "the code", "репозитор", "कोड", "代码", "el código" — wider than
+/// [`ROLE_CAPABILITY_CONTAINER_SCOPE`]: it is what keeps code navigation out of
+/// a web search (issue #758) without claiming the request names a folder.
+pub const ROLE_CAPABILITY_WORKSPACE_SCOPE: &str = "capability_workspace_scope";
+/// Semantic role: the noun for a filesystem container the request names.
+///
+/// "folder", "папк", "फ़ोल्डर", "文件夹", "carpeta" — read beside the three
+/// `local_path_scope_*` roles so `on my desktop` and `on desktop` are one
+/// request and a listing is asked of the thing that holds files.
+pub const ROLE_CAPABILITY_CONTAINER_SCOPE: &str = "capability_container_scope";
+/// Semantic role: the `freshness: live` qualifier (plan 10 leaf 12, issue #720).
+///
+/// "right now", "сегодня", "अभी", "现在", "ahora mismo" — the request is about
+/// what is true at the moment it is asked, so no stored answer satisfies it and
+/// the locus is the live web whatever the verb was.
+pub const ROLE_CAPABILITY_FRESHNESS_LIVE: &str = "capability_freshness_live";
+/// Semantic role: a point in the clock day that carries no colon.
+///
+/// "noon", "полдень", "बजे", "今晚", "mediodía" — the half of a time expression
+/// that digits cannot supply, so `at eight tonight` is a time expression for the
+/// same reason `at 20:00` is.
+pub const ROLE_CAPABILITY_CLOCK_REFERENCE: &str = "capability_clock_reference";
+/// Semantic role: a reference to the assistant's own previous turn through a
+/// failure to understand it (plan 10 leaf 13, issue #721).
+///
+/// "over my head", "не уловил", "पल्ले नहीं", "没听明白", "no te sigo" — the one
+/// class with no structural signal, so it is grounded here in five languages.
+/// None of the three reported strings is among its surfaces: the class is
+/// closed when its paraphrases route, not when the reported string does.
+pub const ROLE_CAPABILITY_PRIOR_TURN_REFERENCE: &str = "capability_prior_turn_reference";
+/// Semantic role: a name for a human language used to ask for a reply *in* it.
+///
+/// "по-русски", "में", "用中文", "en español" — the surfaces
+/// [`ROLE_TRANSLATION_LANGUAGE`] does not carry because they are adverbial
+/// rather than nominal, kept beside it so a demonstration request names a
+/// language object in every one of the five locales.
+pub const ROLE_CAPABILITY_LANGUAGE_REFERENCE: &str = "capability_language_reference";
+/// Semantic role: the phrase that introduces literal content the request hands
+/// over unquoted.
+///
+/// "containing", "с текстом", "सामग्री के साथ", "内容为", "con el texto" —
+/// quotation marks are one way to hand over a literal and this is the other, so
+/// both derive the same object.
+pub const ROLE_CAPABILITY_CONTENT_INTRODUCER: &str = "capability_content_introducer";

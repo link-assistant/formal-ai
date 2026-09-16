@@ -13,7 +13,7 @@ const wasmParityCases = [
     name: 'Russian',
     prompt: 'неведомослово',
     expected: 'Я ещё не научился отвечать на это.',
-    forbidden: 'Я тебя не понял.',
+    forbidden: 'Мне не удалось тебя понять.',
   },
   {
     language: 'hi',
