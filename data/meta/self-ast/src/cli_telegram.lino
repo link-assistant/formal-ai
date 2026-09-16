@@ -1,0 +1,11 @@
+self_ast_census
+  target src/cli_telegram.rs
+  language rust
+  fidelity signature
+  byte_len 2014
+  line_count 52
+  content_id source_module_1ef5543c55578b9f
+  symbol_count 2
+  symbols
+    function run_telegram 18 43
+    function parse_allowed_updates 46 52

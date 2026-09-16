@@ -850,7 +850,7 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
 - [ ] Pass `memory_events` through `FormalAiEngine::answer` so
       `dreaming_application::apply_retained_amendments` reaches the engine surface, not only
       `src/protocol.rs`.
-- [ ] Add `open_draft_pull_request` and `DraftPullRequest` to `src/promotion.rs`; add the
+- [x] Add `open_draft_pull_request` and `DraftPullRequest` to `src/promotion.rs`; add the
       `promotion_published` event kind; add `--open-draft-pr` to `src/cli_improve.rs`.
 - [ ] Make `dreaming_runtime::write_learning_cycle_record` (`:133-145`) readable: either
       wire its record into the next promotion run's proposal input, or delete it. Decide

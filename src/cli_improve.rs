@@ -2,6 +2,7 @@ use std::error::Error;
 use std::path::PathBuf;
 
 use crate::load_memory_or_empty;
+use formal_ai::promotion::open_draft_pull_request;
 use formal_ai::{
     BundleInfo, MemoryStore, PromotionRun, agent_info, apply_promotions, export_memory_full,
     parse_promotion_proposals, replay_promotion_gates,
@@ -24,6 +25,12 @@ pub struct ImproveArgs {
     pub backup: Option<PathBuf>,
     /// Required acknowledgement when `--apply` is used.
     pub confirm: bool,
+    /// Open the review as a draft pull request instead of printing the plan
+    /// for a human to run (issue #1138 B7, plan 07 leaf 13).
+    ///
+    /// Opt-in and `false` by default, so #656's behaviour is unchanged when the
+    /// flag is absent: the protocol still only prints the branch plan.
+    pub open_draft_pr: bool,
 }
 
 /// Drive the promotion protocol: replay each proposal's benchmark ratchets,
@@ -121,6 +128,26 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
         .filter(|command| !command.starts_with("git checkout -b "))
     {
         eprintln!("    {command}");
+    }
+
+    // Issue #1138 B7, plan 07 leaf 13. Without the flag nothing below runs and
+    // the printed plan above is the whole of the protocol's last step, exactly
+    // as #656 left it. With it, the draft is an artifact with a head, a base
+    // and an append-only `promotion_published` event -- never the default
+    // branch, never ready, never merged.
+    if args.open_draft_pr {
+        let draft = open_draft_pull_request(&run)?;
+        println!("{}", draft.links_notation());
+        if let Some(memory_path) = args.memory.as_deref() {
+            let mut store = load_memory_or_empty(memory_path)?;
+            let appended = store.import(&draft.memory_events());
+            store.save_to_file(memory_path)?;
+            eprintln!(
+                "Appended {appended} promotion event(s) to {}; total now {}.",
+                memory_path.display(),
+                store.len()
+            );
+        }
     }
 
     Ok(())

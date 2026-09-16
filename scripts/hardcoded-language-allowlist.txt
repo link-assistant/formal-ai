@@ -166,6 +166,7 @@ src/cli_memory.rs	Wrote full memory: {} event(s) + {} seed file(s)
 src/cli_memory.rs	Wrote full-memory backup with {} event(s) to {}.
 src/cli_memory.rs	Wrote {} events (events-only)
 src/cli_shared_dialog.rs	Wrote demo_memory to {}.
+src/cli_telegram.rs	Telegram polling mode requires a bot token. Pass --token or set TELEGRAM_BOT_TOKEN.
 src/client_integrations.rs	temporary config path escapes its root: {relative}
 src/client_integrations.rs	temporary config path must be relative: {relative}
 src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
@@ -417,7 +418,6 @@ src/links_substitution_query/text.rs	{TWO_SIDES}; found trailing input
 src/links_substitution_query/text.rs	{matching} {substituting}
 src/main.rs	Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base covering all nine protocol primitives.
 src/main.rs	Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.
-src/main.rs	Telegram polling mode requires a bot token. Pass --token or set TELEGRAM_BOT_TOKEN.
 src/main.rs	the agentic loop did not finish within its turn cap after {} tool call(s)
 src/main.rs	{} does not appear to be a formal_ai_bundle Links Notation document
 src/memory/bundle.rs	  exported_at \"

@@ -1,7 +1,5 @@
 use std::error::Error;
 use std::path::PathBuf;
-use std::sync::Arc;
-use std::sync::atomic::AtomicBool;
 
 use clap::{Args as ClapArgs, CommandFactory, Subcommand, ValueEnum};
 use lino_arguments::Parser;
@@ -25,6 +23,7 @@ mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 mod cli_summarization;
+mod cli_telegram;
 
 use cli_algorithm::{AlgorithmArgs, run_algorithm};
 use cli_benchmark::{BenchmarkAction, run_benchmark};
@@ -44,15 +43,15 @@ use cli_report::{ReportArgs, run_report};
 use cli_shared_dialog::{SharedDialogAction, run_shared_dialog};
 use cli_statement_audit::{StatementAuditArgs, run_statement_audit};
 use cli_summarization::{SummarizationAction, run_summarization};
+use cli_telegram::run_telegram;
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, GithubLogCollectorConfig,
-    MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer,
-    TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, agent_info, collect_github_logs,
-    create_chat_completion_with_solver, create_response_with_solver, delimit_tool_args,
-    enable_http_agent_mode_for_current_process, export_memory_bundle, import_memory_full,
-    knowledge_links_notation, merged_bundle, naturalize_thinking_step_in, parse_bundle,
-    render_github_log_plan, run_proxy, run_telegram_polling, run_telegram_webhook_server,
+    MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, UniversalSolver,
+    WithFormalAiArgs, agent_info, collect_github_logs, create_chat_completion_with_solver,
+    create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
+    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
+    naturalize_thinking_step_in, parse_bundle, render_github_log_plan, run_proxy,
     run_with_formal_ai, seed_files, suggest_memory_migrations, thinking_answer_language,
     thinking_trace_heading,
 };
@@ -292,6 +291,12 @@ enum Command {
         /// Required acknowledgement when `--apply` is used.
         #[arg(long, default_value_t = false)]
         confirm: bool,
+
+        /// Open the applied promotion as a draft pull request instead of
+        /// printing the plan for a human to run. Never targets the default
+        /// branch, never marks the review ready, and never merges.
+        #[arg(long, default_value_t = false)]
+        open_draft_pr: bool,
     },
     /// Run the auto-learning adoption cycle over a recorded learning frontier
     /// (issue #701, E59).
@@ -686,6 +691,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             apply,
             backup,
             confirm,
+            open_draft_pr,
         } => run_improve(&ImproveArgs {
             promote,
             proposals,
@@ -694,6 +700,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             apply,
             backup,
             confirm,
+            open_draft_pr,
         })?,
         Command::Learn { action } => run_learn_action(action)?,
     }
@@ -766,15 +773,15 @@ impl GithubLogsOptions {
     }
 }
 
-struct TelegramRunArgs {
-    mode: TelegramMode,
-    token: Option<String>,
-    api_base: String,
-    timeout: u32,
-    limit: u32,
-    allowed_updates: String,
-    host: String,
-    port: u16,
+pub(crate) struct TelegramRunArgs {
+    pub(crate) mode: TelegramMode,
+    pub(crate) token: Option<String>,
+    pub(crate) api_base: String,
+    pub(crate) timeout: u32,
+    pub(crate) limit: u32,
+    pub(crate) allowed_updates: String,
+    pub(crate) host: String,
+    pub(crate) port: u16,
 }
 
 fn solver_for_chat(
@@ -956,39 +963,4 @@ pub(crate) fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error
         return Ok(buf);
     }
     Ok(std::fs::read_to_string(path)?)
-}
-
-fn run_telegram(args: TelegramRunArgs) -> Result<(), Box<dyn Error>> {
-    match args.mode {
-        TelegramMode::Polling => {
-            let token = args.token.ok_or_else(|| {
-                String::from(
-                    "Telegram polling mode requires a bot token. \
-                     Pass --token or set TELEGRAM_BOT_TOKEN.",
-                )
-            })?;
-            let mut config = TelegramPollingConfig::new(token);
-            config.api_base = args.api_base;
-            config.timeout_seconds = args.timeout;
-            config.limit = args.limit.clamp(1, 100);
-            config.allowed_updates = parse_allowed_updates(&args.allowed_updates);
-            run_telegram_polling(&config, None, Arc::new(AtomicBool::new(false)))?;
-        }
-        TelegramMode::Webhook => {
-            run_telegram_webhook_server(&format!(
-                "{host}:{port}",
-                host = args.host,
-                port = args.port
-            ))?;
-        }
-    }
-    Ok(())
-}
-
-fn parse_allowed_updates(raw: &str) -> Vec<String> {
-    raw.split(',')
-        .map(str::trim)
-        .filter(|entry| !entry.is_empty())
-        .map(ToOwned::to_owned)
-        .collect()
 }
