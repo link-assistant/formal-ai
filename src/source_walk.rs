@@ -205,9 +205,9 @@ pub fn page_title(subject: &str, hyphenated: bool) -> String {
 ///
 /// Whitespace, and ASCII punctuation. Deliberately *not* `!is_alphanumeric()`:
 /// a Devanagari virama and every other combining mark is a non-alphanumeric
-/// character in the middle of a word, so that test cut `लिपोग्राम` into
-/// `लिपोग` and `राम` and asked Wikipedia for a title with a space in it. A
-/// non-ASCII character is part of the word unless it is whitespace.
+/// character in the middle of a word, so that test cut every Hindi word
+/// carrying one into two halves and asked Wikipedia for a title with a space
+/// in it. A non-ASCII character is part of the word unless it is whitespace.
 #[must_use]
 pub fn is_word_boundary(character: char) -> bool {
     character.is_whitespace()

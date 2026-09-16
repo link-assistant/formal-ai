@@ -1328,15 +1328,51 @@ making it reachable for a concept need.
       `an_unknown_word_resolves_to_a_licensed_sense_with_exact_provenance`,
       `a_lookup_that_finds_nothing_reports_every_consulted_source_and_no_gloss`,
       `an_offline_run_replays_the_committed_captures_without_any_transport_call`.
-- [ ] **L8 — Per-word needs.** `unresolved_surfaces` in
+- [x] **L8 — Per-word needs.** `unresolved_surfaces` in
       `src/coding/concept_discovery.rs`; the lookup is consulted for every unresolved
       surface, not only when the whole sentence is unmatched; `DiscoveryBounds::max_words`.
       Test: `a_partially_understood_sentence_still_asks_about_its_unresolved_words`.
-- [ ] **L9 — Evidence becomes a part.** Provenance fields on `ConceptEvidence`;
+
+      **`max_words` does not exist, and the reason is a test.** Three cases in
+      `tests/unit/coding_discovery/concepts.rs` construct `DiscoveryBounds` with
+      a two-field struct literal and no `..Default::default()`, so a third field
+      breaks tests written in wave T to pin exactly this shape. The bound on how
+      many surfaces one specification may ask about is `max_pages`, which was
+      already the evidence bound in `discover_with_lookup` and already means
+      "how many retrievals this discovery may cost". One number, not two.
+- [x] **L9 — Evidence becomes a part.** Provenance fields on `ConceptEvidence`;
       `concept_candidate`; `candidate_kind_rank` gains `"concept_sense"`; `NoLookup`
       made `pub`. Tests: `retrieved_evidence_becomes_a_candidate_part_the_composer_can_read`,
-      `concept_senses_rank_below_retrieved_implementations`,
+      ~~`concept_senses_rank_below_retrieved_implementations`~~,
       `a_sense_is_quoted_and_attributed_and_never_inlined_into_generated_code`.
+
+      **Two of the three are green; the third cannot pass as written, and that
+      is a defect in the case rather than in the leaf.**
+      `concept_senses_rank_below_retrieved_implementations` requires a
+      `source_program` candidate *and* a `concept_sense` candidate in the same
+      need, then asserts the program outranks the sense. Its own fixture,
+      `discovery_catalog()`, is built with `DiscoveryCatalog::new(…)` and never
+      calls `with_source_candidates(…)`, and `source_program` candidates exist
+      only in `catalog.source_candidates` (built by
+      `src/coding/synthesis_runtime.rs:185`). No `source_program` candidate can
+      therefore reach the assertion, and the case panics `both a program and a
+      sense must be offered` before it compares anything. The observed run is
+      `(None, Some(3)) in ["stdlib", "wikifunctions_implementation",
+      "wikifunctions_implementation", "concept_sense"]`: the sense *is* ranked
+      last, which is what the case exists to check, and the check cannot see it.
+      The repair is one line in the test's own fixture — a
+      `.with_source_candidates(vec![…kind "source_program"…])` — which is a test
+      edit this session was not authorised to make, so the case is left red and
+      struck through here with its reason. `candidate_kind_rank` gains
+      `"concept_sense" => 4`, after `source_program`'s `2`, which is the
+      behaviour the case was written to pin.
+
+      **Provenance is derived, not duplicated.** `ConceptEvidence` keeps its
+      four fields, because `retrieved_evidence_becomes_a_candidate_part…`
+      constructs it with a four-field struct literal; `concept_candidate`
+      resolves the licence from the sources registry entry whose id the evidence
+      URL names, and `sha256` is the digest of the quoted gloss the candidate
+      actually carries rather than of a page it does not.
 - [ ] **L10 — Wire the coding path.** `discover_and_compose` builds the lookup and
       calls `discover_with_lookup`. Test:
       `held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages`.

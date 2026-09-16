@@ -82,7 +82,7 @@ pub trait UnknownConceptLookup {
     fn lookup(&mut self, phrase: &str, depth: usize) -> Option<ConceptEvidence>;
 }
 
-struct NoLookup;
+pub struct NoLookup;
 
 impl UnknownConceptLookup for NoLookup {
     fn lookup(&mut self, _phrase: &str, _depth: usize) -> Option<ConceptEvidence> {
@@ -210,19 +210,28 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
             let structures = structures_for(&normalized);
             let query = discovery_query(spec, &structures);
             let recurrence_query = format!("{phrase} {}", spec.name.replace('_', " "));
-            let candidates = candidates_for(&query, &recurrence_query, catalog);
-            if structures.is_empty()
-                && candidates.is_empty()
-                && evidence.len() < bounds.max_pages
-                && bounds.max_depth > 0
-                && let Some(found) = lookup.lookup(&phrase, 1)
-            {
-                evidence.push(found);
+            let mut candidates = candidates_for(&query, &recurrence_query, catalog);
+            // Ask about every surface the sentence left unresolved, not only
+            // about sentences that matched nothing at all: a sentence can be
+            // four-fifths understood and still turn on the word nobody knows
+            // (issue #1138, plan 01 L8). `max_pages` is the bound on how many
+            // such words one specification may ask about.
+            let unresolved = unresolved_surfaces(&normalized, &structures);
+            let mut asked = 0_usize;
+            for surface in &unresolved {
+                if evidence.len() >= bounds.max_pages || bounds.max_depth == 0 {
+                    break;
+                }
+                if let Some(found) = lookup.lookup(surface, 1) {
+                    candidates.push(concept_candidate(&found));
+                    evidence.push(found);
+                    asked += 1;
+                }
             }
-            let status = if structures.is_empty()
-                && candidates.is_empty()
-                && !evidence.iter().any(|item| item.phrase == phrase)
-            {
+            candidates.sort_by(|left, right| {
+                candidate_kind_rank(&left.kind).cmp(&candidate_kind_rank(&right.kind))
+            });
+            let status = if structures.is_empty() && candidates.is_empty() && asked == 0 {
                 "blocked"
             } else {
                 "satisfied"
@@ -463,6 +472,7 @@ fn candidate_kind_rank(kind: &str) -> usize {
         "stdlib" => 0,
         "wikifunctions_definition" => 1,
         "source_program" => 2,
+        "concept_sense" => 4,
         _ => 3,
     }
 }
@@ -506,16 +516,96 @@ fn unique(values: impl Iterator<Item = String>) -> Vec<String> {
 /// Unresolved surfaces of one requirement sentence, in sentence order — the
 /// words the coding path must ask about even when the rest of the sentence was
 /// understood (issue #1138, plan 01 L8).
+///
+/// Before this, the lookup was consulted only when a sentence matched *nothing
+/// at all*. A requirement sentence whose verb, whose `true` and whose `word`
+/// are all seeded, and which turns on one noun nobody has ever heard of,
+/// matched enough to count as understood and therefore asked about nothing.
+/// Understanding four words out of five is not understanding the sentence; the
+/// fifth is the need.
 #[must_use]
-pub fn unresolved_surfaces(_normalized: &str, _structures: &[StructuralMeaning]) -> Vec<String> {
-    todo!("plan 01 leaf L8")
+pub fn unresolved_surfaces(normalized: &str, structures: &[StructuralMeaning]) -> Vec<String> {
+    let normalized = crate::engine::normalize_prompt(normalized);
+    let lexicon = crate::seed::lexicon();
+    let accounted: BTreeSet<String> = structures
+        .iter()
+        .filter_map(|structure| lexicon.meaning(&structure.id))
+        .flat_map(|meaning| {
+            meaning
+                .words()
+                .flat_map(|surface| {
+                    surface
+                        .split_whitespace()
+                        .map(str::to_lowercase)
+                        .collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    crate::concept_lookup::unknown_surfaces(&normalized, "")
+        .into_iter()
+        .filter(|surface| !accounted.contains(surface))
+        .collect()
 }
 
 /// A retrieved sense, as a candidate the composer can read. The candidate's
 /// kind is `concept_sense`, which ranks *after* `source_program`, so a
 /// retrieved definition never outranks a retrieved implementation (issue #1138,
 /// plan 01 L9).
+///
+/// `code` is `None` by construction. The Rosetta Code precedent
+/// (`docs/meta-algorithm.md:897-901`) is binding: retrieved text under a
+/// share-alike or non-commercial licence is shown and attributed, never
+/// inserted into a generated program. A `concept_sense` exists to let the
+/// composer reach *seeded structure* through a definition, not to supply
+/// program text.
+///
+/// **Recorded deviation from plan 01 L9.** The plan adds `source_id`,
+/// `sha256`, `fetched_at` and `license` fields to [`ConceptEvidence`].
+/// `tests/unit/coding_discovery/concepts.rs` constructs the record with a
+/// four-field struct literal and no `..Default::default()`, so adding a field
+/// breaks a test written in wave T to pin this shape. The provenance is
+/// therefore *derived* rather than duplicated: the licence comes from the
+/// sources registry entry whose id the evidence URL names, which has the
+/// further virtue that a licence can only ever be stated once, in the registry.
 #[must_use]
-pub fn concept_candidate(_evidence: &ConceptEvidence) -> CandidatePart {
-    todo!("plan 01 leaf L9")
+pub fn concept_candidate(evidence: &ConceptEvidence) -> CandidatePart {
+    let (source_id, license) = registry_licence(&evidence.source_url);
+    CandidatePart {
+        id: format!("concept_sense:{}", evidence.phrase),
+        kind: "concept_sense".to_owned(),
+        label: evidence.definition.clone(),
+        language: None,
+        // A gloss is evidence, never a program.
+        code: None,
+        callable_name: None,
+        source_tests: Vec::new(),
+        license,
+        source_url: evidence.source_url.clone(),
+        // The digest of the quoted gloss, which is what this candidate carries.
+        // The digest of the whole page lives on `ConceptSense` and in the sense
+        // ledger; claiming it here would attribute a page to a sentence.
+        sha256: crate::source_fetch::sha256_hex(evidence.definition.as_bytes()),
+        fetched_at: String::new(),
+        score: f64::from(u8::from(!source_id.is_empty())),
+    }
+}
+
+/// The registry source an evidence URL belongs to, and the licence it declares.
+///
+/// Matched by registry id inside the URL's host rather than by a host list in
+/// Rust, so a source that changes its API host keeps its licence and a source
+/// nobody declared is reported as having no stated licence rather than being
+/// given one.
+fn registry_licence(source_url: &str) -> (String, String) {
+    let host = source_url
+        .split_once("://")
+        .map_or(source_url, |(_, rest)| rest.split('/').next().unwrap_or(rest));
+    crate::seed::source_registry()
+        .into_iter()
+        .find(|record| record.host() == host || host.contains(&record.id))
+        .map_or_else(
+            || (String::new(), String::from("license_unstated")),
+            |record| (record.id, record.license_name),
+        )
 }
