@@ -2,55 +2,61 @@ self_ast_census
   target src/rule_interpreter.rs
   language rust
   fidelity signature
-  byte_len 26679
-  line_count 775
-  content_id source_module_f8a43dce5ae5f2b5
-  symbol_count 47
+  byte_len 31256
+  line_count 888
+  content_id source_module_680a70119690b884
+  symbol_count 53
   symbols
     struct HandlerRules 23 25
     struct HandlerRuleSet 29 32
     struct Rule 35 44
-    enum Subject 47 53
-    enum RoleMode 56 63
-    enum Condition 66 81
-    enum ValueSource 84 89
-    enum ValueRef 92 97
-    enum Step 100 102
-    enum Fallback 105 109
-    enum Response 112 119
-    struct Node 121 126
-    struct Context 128 135
-    function rules 144 149
-    static CACHE 145 145
-    function handler_names 153 155
-    function run_handler 159 168
-    function handler_matches 172 176
-    function parse 185 204
-    function handler 208 210
-    function handler_names 213 215
-    function rule_count 219 221
-    function name 227 229
-    function rule_names 232 234
-    function run_with 238 248
-    function matches_with 252 259
-    function new 263 272
-    function text 274 282
-    function languages 284 290
-    function run 294 320
-    function resolve_values 322 343
-    function resolve 347 357
-    function render 361 392
-    function substitute 395 401
-    function holds 404 509
-    function parse_rule 512 589
-    function parse_conditions 591 593
-    function parse_condition 595 625
-    function split_subject 627 639
-    function parse_subject 641 650
-    function parse_value 652 682
-    function parse_value_ref 684 693
-    function first_arg 696 701
-    function error 703 707
-    function parse_tree 714 743
-    function attach 745 750
-    function tokenize 752 775
+    enum Subject 47 64
+    enum Shape 75 90
+    enum RoleMode 93 100
+    enum Condition 103 119
+    enum ValueSource 122 127
+    enum ValueRef 130 135
+    enum Step 138 140
+    enum Fallback 143 147
+    enum Response 150 157
+    struct Node 159 164
+    struct Context 166 176
+    function rules 185 190
+    static CACHE 186 186
+    function handler_names 194 196
+    function run_handler 200 209
+    function handler_matches 213 217
+    function parse 226 245
+    function handler 249 251
+    function handler_names 254 256
+    function rule_count 260 262
+    function name 268 270
+    function rule_names 273 275
+    function run_with 279 289
+    function matches_with 293 300
+    function new 304 320
+    function text 322 331
+    function languages 333 339
+    function run 343 369
+    function resolve_values 371 392
+    function resolve 396 406
+    function render 410 441
+    function substitute 444 450
+    function holds 453 559
+    function parse_rule 562 639
+    function parse_conditions 641 643
+    function parse_condition 645 676
+    function split_subject 678 690
+    const QUOTE_PAIRS 697 697
+    function holds 708 728
+    const URL_PREFIXES 733 733
+    function is_url 736 740
+    function parse_shape 742 751
+    function parse_subject 753 763
+    function parse_value 765 795
+    function parse_value_ref 797 806
+    function first_arg 809 814
+    function error 816 820
+    function parse_tree 827 856
+    function attach 858 863
+    function tokenize 865 888

@@ -247,3 +247,147 @@ fn conversation_control_recognition_is_the_rule_set_the_planner_consults() {
         "Add wikiquote as a search provider"
     ));
 }
+
+
+/// Issue #1138 B9, plan 09 leaf 9: the two grammar primitives the promotion
+/// migration needs, and the only ones it adds.
+///
+/// `of padded` is the space-padded subject `role_padded` built privately for
+/// one condition; as a subject, every condition can ask for it, which is what
+/// lets `contains("в ")` in `src/intent_formalization/prompt_relevants.rs`
+/// become `role temporal_preposition of padded` — seed data in every language
+/// rather than one Russian preposition compiled into Rust. `shape` states a
+/// structural property of the input that carries no natural language, so
+/// `contains(':')` becomes `shape time_separator` instead of hiding a
+/// structural test inside a lexical one.
+const SHAPE_RULES: &str = "handler_rules
+  handler padded_probe
+    rule padded_probe
+      when
+        substring \" qed \" of padded
+      respond padded_probe
+        text en \"padded\"
+  handler normalized_probe
+    rule normalized_probe
+      when
+        substring \" qed \" of normalized
+      respond normalized_probe
+        text en \"normalized\"
+  handler digit_probe
+    rule digit_probe
+      when
+        shape digit of trimmed
+      respond digit_probe
+        text en \"digit\"
+  handler time_probe
+    rule time_probe
+      when
+        shape time_separator of trimmed
+      respond time_probe
+        text en \"time\"
+  handler url_probe
+    rule url_probe
+      when
+        shape url of prompt
+      respond url_probe
+        text en \"url\"
+  handler path_probe
+    rule path_probe
+      when
+        shape path of prompt
+      respond path_probe
+        text en \"path\"
+  handler quoted_probe
+    rule quoted_probe
+      when
+        shape quoted of prompt
+      respond quoted_probe
+        text en \"quoted\"
+";
+
+fn probe(parsed: &HandlerRules, handler: &str, prompt: &str) -> bool {
+    let lexicon = parse_lexicon_text("meanings\n");
+    parsed
+        .handler(handler)
+        .unwrap_or_else(|| panic!("{handler} must exist"))
+        .matches_with(&lexicon, prompt, &prompt.to_lowercase())
+}
+
+#[test]
+fn of_padded_matches_a_boundary_surface_at_the_edges_of_the_input() {
+    let parsed = HandlerRules::parse(SHAPE_RULES).expect("the probe rules must parse");
+
+    // The whole prompt is the word: padded sees " qed ", normalized sees "qed".
+    assert!(
+        probe(&parsed, "padded_probe", "qed"),
+        "`of padded` must match a boundary surface at the start and end of the input"
+    );
+    assert!(
+        !probe(&parsed, "normalized_probe", "qed"),
+        "without padding the same condition cannot match at the edges, which is \
+         the reason the subject exists"
+    );
+
+    // Inside the sentence both agree, so padding widens and never narrows.
+    assert!(probe(&parsed, "padded_probe", "show the qed line"));
+    assert!(probe(&parsed, "normalized_probe", "show the qed line"));
+
+    // A longer word that merely contains the surface is still not a match.
+    assert!(
+        !probe(&parsed, "padded_probe", "qedx"),
+        "padding adds a boundary; it does not remove one"
+    );
+}
+
+#[test]
+fn every_shape_is_a_structural_property_and_carries_no_natural_language() {
+    let parsed = HandlerRules::parse(SHAPE_RULES).expect("the probe rules must parse");
+
+    // digit — any Unicode decimal digit, in any script.
+    assert!(probe(&parsed, "digit_probe", "meet at 7"));
+    assert!(probe(&parsed, "digit_probe", "встреча в ７"));
+    assert!(!probe(&parsed, "digit_probe", "meet at noon"));
+
+    // time_separator — the literal replacement for `contains(':')`.
+    assert!(probe(&parsed, "time_probe", "20:00"));
+    assert!(probe(&parsed, "time_probe", "20：00"));
+    assert!(!probe(&parsed, "time_probe", "2000"));
+
+    // url — an absolute web address or a bare host.
+    assert!(probe(&parsed, "url_probe", "open https://example.org/docs"));
+    assert!(probe(&parsed, "url_probe", "open www.example.org"));
+    assert!(!probe(&parsed, "url_probe", "open the docs"));
+
+    // path — a separator-carrying token that is not a URL.
+    assert!(probe(&parsed, "path_probe", "read src/lib.rs"));
+    assert!(probe(&parsed, "path_probe", "read C:\\\\src\\\\lib.rs"));
+    assert!(
+        !probe(&parsed, "path_probe", "open https://example.org/docs"),
+        "a URL is a URL and not also a path; the two shapes must stay distinguishable"
+    );
+    assert!(!probe(&parsed, "path_probe", "read the file"));
+
+    // quoted — a matched delimiter pair, in any registered script.
+    assert!(probe(&parsed, "quoted_probe", "find \"the qed line\""));
+    assert!(probe(&parsed, "quoted_probe", "найди «строку»"));
+    assert!(probe(&parsed, "quoted_probe", "找到「那一行」"));
+    assert!(
+        !probe(&parsed, "quoted_probe", "find the qed line"),
+        "an unquoted span is not quoted, and one lone mark does not pair"
+    );
+    assert!(!probe(&parsed, "quoted_probe", "find \"the qed line"));
+}
+
+#[test]
+fn an_unknown_shape_or_subject_is_refused_rather_than_ignored() {
+    let unknown_shape = "handler_rules\n  handler probe\n    rule probe\n      when\n        \
+                         shape weather of trimmed\n      respond probe\n        text en \"x\"\n";
+    let error = HandlerRules::parse(unknown_shape).expect_err("an unknown shape must not parse");
+    assert!(error.contains("unknown_shape"), "{error}");
+
+    let unknown_subject = "handler_rules\n  handler probe\n    rule probe\n      when\n        \
+                           shape digit of sideways\n      respond probe\n        text en \"x\"\n";
+    let error =
+        HandlerRules::parse(unknown_subject).expect_err("an unknown subject must not parse");
+    assert!(error.contains("unknown_subject"), "{error}");
+}

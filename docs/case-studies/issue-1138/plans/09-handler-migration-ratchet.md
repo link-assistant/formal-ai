@@ -1095,7 +1095,7 @@ only inside the generator's own output.
 
 **Move promotion and dispatch specialisation into data.**
 
-- [ ] 9. Add `shape` and `of padded` to the rule grammar in
+- [x] 9. Add `shape` and `of padded` to the rule grammar in
       `src/rule_interpreter.rs`; unit-test each new primitive.
 - [ ] 10. Create `data/seed/handler-promotions.lino` with all 19 promotions
       transcribed; add `src/handler_promotion.rs`; register the seed file in

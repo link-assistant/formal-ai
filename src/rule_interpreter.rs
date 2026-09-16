@@ -50,6 +50,43 @@ enum Subject {
     Lowercase,
     Prompt,
     Trimmed,
+    /// The normalized prompt with one leading and one trailing space, so a
+    /// surface whose seeded form carries a word boundary matches at the edges
+    /// of the input as well as inside it (issue #1138 B9, plan 09 leaf 9).
+    ///
+    /// `role_padded` built this shape privately for one condition; as a subject
+    /// every condition can ask for it, which is what lets the Russian
+    /// preposition test in
+    /// `src/intent_formalization/prompt_relevants.rs` become
+    /// `role temporal_preposition of padded` — seed data in every language
+    /// rather than one Russian preposition compiled into Rust.
+    Padded,
+}
+
+/// A structural property of the input that carries no natural language
+/// (issue #1138 B9, plan 09 leaf 9).
+///
+/// The promotion predicates being migrated to data are not all lexical: some
+/// ask whether the prompt contains a number or a time separator at all. Those
+/// questions have no seeded surface to match, and writing them as a `substring`
+/// of a punctuation mark would hide a structural test inside a lexical one. A
+/// `shape` says what it is.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Shape {
+    /// Any Unicode decimal digit.
+    Digit,
+    /// A colon, ASCII or fullwidth: what separates an hour from a minute in
+    /// every locale this system answers in. The literal replacement for
+    /// `normalized.contains(':')`.
+    TimeSeparator,
+    /// An absolute web address, or a bare `www.` host.
+    Url,
+    /// A whitespace-delimited token that is a filesystem path: it carries a
+    /// separator and is not a URL.
+    Path,
+    /// A matched pair of quotation marks, in any of the scripts the seed
+    /// declares languages for.
+    Quoted,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -78,6 +115,7 @@ enum Condition {
     UnbalancedParentheses,
     RouteExact(String),
     HistoryRole(String),
+    Shape(Shape, Subject),
 }
 
 #[derive(Debug)]
@@ -131,6 +169,9 @@ struct Context<'a> {
     normalized: &'a str,
     cleaned: String,
     lowercase: String,
+    /// The normalized prompt with one leading and one trailing space; see
+    /// [`Subject::Padded`].
+    padded: String,
     language: String,
 }
 
@@ -267,6 +308,13 @@ impl<'a> Context<'a> {
             normalized,
             cleaned: normalize_prompt(normalized),
             lowercase: prompt.to_lowercase(),
+            padded: {
+                let mut padded = String::with_capacity(normalized.len() + 2);
+                padded.push(' ');
+                padded.push_str(normalized);
+                padded.push(' ');
+                padded
+            },
             language: language.to_owned(),
         }
     }
@@ -278,6 +326,7 @@ impl<'a> Context<'a> {
             Subject::Lowercase => &self.lowercase,
             Subject::Prompt => self.prompt,
             Subject::Trimmed => self.normalized.trim(),
+            Subject::Padded => &self.padded,
         }
     }
 
@@ -505,6 +554,7 @@ impl Condition {
                         .lexicon
                         .mentions_role_raw(role, &event.payload.to_lowercase())
                 }),
+            Self::Shape(shape, subject) => shape.holds(context.text(*subject)),
         }
     }
 }
@@ -620,6 +670,7 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
         "unbalanced_parentheses" => Condition::UnbalancedParentheses,
         "route_exact" => Condition::RouteExact(node.first_arg()?),
         "history_role" => Condition::HistoryRole(node.first_arg()?),
+        "shape" => Condition::Shape(parse_shape(node, &node.first_arg()?)?, subject),
         _ => return Err(node.error("unknown_condition")),
     })
 }
@@ -638,6 +689,67 @@ fn split_subject(args: &[String]) -> (Vec<String>, Option<&str>) {
     (options, subject)
 }
 
+/// Quotation marks that open and close a span, paired.
+///
+/// Seed data, not prose: these are the delimiter pairs the five registered
+/// languages write quotations with. A `shape quoted` asks whether a span is
+/// delimited, never what it says.
+const QUOTE_PAIRS: [(char, char); 6] = [
+    ('"', '"'),
+    ('\'', '\''),
+    ('\u{ab}', '\u{bb}'),
+    ('\u{201c}', '\u{201d}'),
+    ('\u{300c}', '\u{300d}'),
+    ('\u{2018}', '\u{2019}'),
+];
+
+impl Shape {
+    /// Whether the subject text has this structural property.
+    fn holds(self, text: &str) -> bool {
+        match self {
+            Self::Digit => text.chars().any(|character| character.is_numeric()),
+            Self::TimeSeparator => text.contains(':') || text.contains('\u{ff1a}'),
+            Self::Url => text
+                .split_whitespace()
+                .any(|token| is_url(&token.to_lowercase())),
+            Self::Path => text.split_whitespace().any(|token| {
+                let lowered = token.to_lowercase();
+                !is_url(&lowered) && (token.contains('/') || token.contains('\\'))
+            }),
+            Self::Quoted => QUOTE_PAIRS.iter().any(|(open, close)| {
+                if open == close {
+                    text.matches(*open).count() >= 2
+                } else {
+                    text.find(*open)
+                        .is_some_and(|start| text[start..].chars().skip(1).any(|ch| ch == *close))
+                }
+            }),
+        }
+    }
+}
+
+/// How an absolute web address begins. Structural tokens, not prose: a scheme
+/// and the conventional bare host, neither of which is written in any language.
+const URL_PREFIXES: [&str; 3] = ["http://", "https://", "www."];
+
+/// Whether one whitespace-delimited, already lowercased token is a web address.
+fn is_url(token: &str) -> bool {
+    URL_PREFIXES
+        .iter()
+        .any(|prefix| token.starts_with(*prefix))
+}
+
+fn parse_shape(node: &Node, name: &str) -> Result<Shape, String> {
+    Ok(match name {
+        "digit" => Shape::Digit,
+        "time_separator" => Shape::TimeSeparator,
+        "url" => Shape::Url,
+        "path" => Shape::Path,
+        "quoted" => Shape::Quoted,
+        _ => return Err(node.error("unknown_shape")),
+    })
+}
+
 fn parse_subject(node: &Node, name: &str) -> Result<Subject, String> {
     Ok(match name {
         "normalized" => Subject::Normalized,
@@ -645,6 +757,7 @@ fn parse_subject(node: &Node, name: &str) -> Result<Subject, String> {
         "lowercase" => Subject::Lowercase,
         "prompt" => Subject::Prompt,
         "trimmed" => Subject::Trimmed,
+        "padded" => Subject::Padded,
         _ => return Err(node.error("unknown_subject")),
     })
 }
