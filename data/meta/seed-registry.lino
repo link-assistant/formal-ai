@@ -337,6 +337,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-writing-systems
+    bundle true
+    lexicon meaning
+    web true
   seed memory-programs
     bundle true
     web true
@@ -453,6 +457,9 @@ seed_registry
   seed repository-command-allowlist
     bundle true
   seed self-improvement-loop
+    bundle true
+    web true
+  seed sentence-punctuation
     bundle true
     web true
   seed setup-publishers

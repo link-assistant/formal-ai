@@ -1210,11 +1210,45 @@ Honest expectations, recorded whatever they are:
 
 Ordered; each individually verifiable and commit-sized.
 
-- [ ] **L1 — Segmentation, red first.** `tests/unit/issue_1138_segmentation.rs` with
+- [x] **L1 — Segmentation, red first.** `tests/unit/issue_1138_segmentation.rs` with
       four failing tests (zh `。`, hi `।`, es inverted punctuation, exact spans).
-- [ ] **L2 — `src/formalization/segment.rs`.** Script-aware `sentences`/`clauses`
+      Written and observed failing in wave T.
+- [x] **L2 — `src/formalization/segment.rs`.** Script-aware `sentences`/`clauses`
       with exact spans; terminators declared in seed, not literals in Rust.
       `src/agentic_coding/formalize.rs:471-498` deleted in favour of it. L1 green.
+
+      **Where the seed draws the line, and why each part of it is data.**
+      `data/seed/sentence-punctuation.lino` declares, per script, the sentence
+      `terminator`s, the `opening` marks that belong to the sentence they open
+      (`¿` `¡`), the `clause_separator`s L4's need emission will split on, and
+      the Unicode `range`s the script is written in — so [`Script`] is decided
+      from the characters a segment contains and never from a language flag a
+      caller passed in. A Rust `match` over `。`, `।` and `¿` would be a list of
+      writing systems in the runtime, which is exactly what
+      `scripts/check-hardcoded-language.rs` exists to keep out of it: a sixth
+      language would then be a code change instead of a seed row.
+
+      **One context rule stayed in Rust, and it is named rather than hidden.** A
+      `.` between two digits ends a number, not a sentence. That is a fact about
+      a character's *neighbours*, which no per-script table can carry, so it is
+      the one condition the segmenter decides itself.
+
+      **The old segmenter is gone, not wrapped.**
+      `src/agentic_coding/formalize.rs` kept a private `segment_sentences` that
+      recognised `.`, `!` and `?` and nothing else, and that cut at
+      `start = char_index + 1` before trimming — so a span named the separator
+      whitespace as part of the sentence after it, the defect recorded at
+      `docs/case-studies/issue-710/plans/07:371-377`. It now delegates to
+      `formalization::segment::sentences` and only converts byte spans to the
+      character spans that module's provenance rows already count.
+
+      **Four seed tokens had to be grounded before the closure gate would pass,
+      and grounding them was the right answer rather than the cheap one.**
+      `latin`, `cyrillic`, `devanagari` and `han` are values no meanings file
+      defined, so `scripts/check-closure-audit.py` counted four new unresolved
+      tokens. `data/seed/meanings-writing-systems.lino` defines the four
+      writing systems and their parent concept in all five languages, and the
+      honest gap returns to its reviewed value.
 - [ ] **L3 — One need type.** Move `ConceptNeed` to `src/formalization/needs.rs` as plan 00 §4.1's `Need`,
       replace `status: String` with `NeedState`, map `meta_frame::NeedStatus` onto it, add `NeedOrigin` and
       `source_span`, re-export from `src/coding/concept_discovery.rs`. Test:

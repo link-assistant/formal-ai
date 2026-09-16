@@ -146,6 +146,8 @@ pub const MEANINGS_WEB_SEARCH_LINO: &str = include_str!("../../data/seed/meaning
 pub const MEANINGS_WEB_SEARCH_QUERY_LINO: &str =
     include_str!("../../data/seed/meanings-web-search-query.lino");
 pub const MEANINGS_WIKIDATA_LINO: &str = include_str!("../../data/seed/meanings-wikidata.lino");
+pub const MEANINGS_WRITING_SYSTEMS_LINO: &str =
+    include_str!("../../data/seed/meanings-writing-systems.lino");
 pub const MEMORY_PROGRAMS_LINO: &str = include_str!("../../data/seed/memory-programs.lino");
 pub const MODEL_ALIASES_LINO: &str = include_str!("../../data/seed/model-aliases.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
@@ -209,6 +211,8 @@ pub const REPOSITORY_COMMAND_ALLOWLIST_LINO: &str =
     include_str!("../../data/seed/repository-command-allowlist.lino");
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
     include_str!("../../data/seed/self-improvement-loop.lino");
+pub const SENTENCE_PUNCTUATION_LINO: &str =
+    include_str!("../../data/seed/sentence-punctuation.lino");
 pub const SETUP_PUBLISHERS_LINO: &str = include_str!("../../data/seed/setup-publishers.lino");
 pub const SHELL_INTENTS_LINO: &str = include_str!("../../data/seed/shell-intents.lino");
 pub const SOURCES_REGISTRY_LINO: &str = include_str!("../../data/seed/sources-registry.lino");
@@ -315,6 +319,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-web-search.lino", MEANINGS_WEB_SEARCH_LINO),
         ("data/seed/meanings-web-search-query.lino", MEANINGS_WEB_SEARCH_QUERY_LINO),
         ("data/seed/meanings-wikidata.lino", MEANINGS_WIKIDATA_LINO),
+        ("data/seed/meanings-writing-systems.lino", MEANINGS_WRITING_SYSTEMS_LINO),
         ("data/seed/memory-programs.lino", MEMORY_PROGRAMS_LINO),
         ("data/seed/model-aliases.lino", MODEL_ALIASES_LINO),
         ("data/seed/multilingual-responses.lino", MULTILINGUAL_RESPONSES_LINO),
@@ -384,6 +389,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/release-timelines.lino", RELEASE_TIMELINES_LINO),
         ("data/seed/repository-command-allowlist.lino", REPOSITORY_COMMAND_ALLOWLIST_LINO),
         ("data/seed/self-improvement-loop.lino", SELF_IMPROVEMENT_LOOP_LINO),
+        ("data/seed/sentence-punctuation.lino", SENTENCE_PUNCTUATION_LINO),
         ("data/seed/setup-publishers.lino", SETUP_PUBLISHERS_LINO),
         ("data/seed/shell-intents.lino", SHELL_INTENTS_LINO),
         ("data/seed/sources-registry.lino", SOURCES_REGISTRY_LINO),
@@ -492,4 +498,5 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_WEB_SEARCH_LINO,
     MEANINGS_WEB_SEARCH_QUERY_LINO,
     MEANINGS_WIKIDATA_LINO,
+    MEANINGS_WRITING_SYSTEMS_LINO,
 ];

@@ -477,35 +477,37 @@ struct Sentence {
     end: usize,
 }
 
+/// Segment `text` through the one script-aware segmenter (issue #1138, plan 04
+/// L2), and report the spans in *characters* because that is what this module's
+/// `pred:states` provenance has always counted.
+///
+/// What was here before recognised `.`, `!` and `?` and nothing else, so a
+/// Chinese requirement was one undivided blob, a Hindi one ended only if it
+/// happened to carry a Latin full stop, and the Spanish inverted marks were
+/// read as ordinary text. It also cut a sentence at `start = char_index + 1`
+/// and trimmed afterwards, so a span named the separator whitespace as part of
+/// the sentence that followed it — the defect recorded at
+/// `docs/case-studies/issue-710/plans/07:371-377`.
+/// `formalization::segment::sentences` answers both, in the five scripts the
+/// seed declares, and this function only converts its byte spans to the
+/// character spans the provenance rows already use.
 fn segment_sentences(text: &str) -> Vec<Sentence> {
-    let mut sentences = Vec::new();
-    let mut start = 0usize;
-    let mut buffer = String::new();
-    for (char_index, character) in text.chars().enumerate() {
-        buffer.push(character);
-        if matches!(character, '.' | '!' | '?') {
-            let trimmed = buffer.trim().to_owned();
-            if !trimmed.is_empty() {
-                sentences.push(Sentence {
-                    text: trimmed,
-                    start,
-                    end: char_index + 1,
-                });
-            }
-            start = char_index + 1;
-            buffer.clear();
-        }
-    }
-    let trimmed = buffer.trim().to_owned();
-    if !trimmed.is_empty() {
-        let end = text.chars().count();
-        sentences.push(Sentence {
-            text: trimmed,
-            start,
-            end,
-        });
-    }
-    sentences
+    let mut boundaries: Vec<usize> = text.char_indices().map(|(offset, _)| offset).collect();
+    boundaries.push(text.len());
+    let characters = |byte_offset: usize| -> usize {
+        boundaries
+            .iter()
+            .position(|offset| *offset >= byte_offset)
+            .unwrap_or(boundaries.len().saturating_sub(1))
+    };
+    crate::formalization::segment::sentences(text)
+        .into_iter()
+        .map(|segment| Sentence {
+            start: characters(segment.start),
+            end: characters(segment.end),
+            text: segment.text,
+        })
+        .collect()
 }
 
 fn has_cyrillic(text: &str) -> bool {
