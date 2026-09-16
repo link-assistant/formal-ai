@@ -101,13 +101,23 @@ pub fn is_inappropriate_content(normalized: &str) -> bool {
     crate::seed::lexicon().mentions_role_raw(crate::seed::ROLE_VULGAR_CONTENT_MARKER, normalized)
 }
 
-pub fn requires_external_lookup(prompt: &str) -> bool {
-    let lower = prompt.to_lowercase();
-    lower.contains("capital of")
-        || lower.contains("cite a definition")
-        || lower.contains("define associative memory")
-        || lower.contains("from wikipedia")
-        || lower.contains("born in")
+/// Whether the prompt contains a surface no seeded meaning accounts for.
+///
+/// Issue #1138 B1, plan 01 L11: this used to be five English literals —
+/// `capital of`, `from wikipedia`, `born in` and two more — so retrieval was
+/// reachable only for prompts that happened to be phrased in English *and* to
+/// contain one of five phrases. A word the seed does not contain is the actual
+/// trigger, in whatever language it is written, which is what
+/// [`crate::concept_lookup::unknown_surfaces`] computes from the lexicon rather
+/// than from a list.
+///
+/// The bound on how often this may fire is [`crate::source_walk::LookupBounds`]
+/// and the per-service accessibility cache, not a request budget; plan 01 risk
+/// 7 records that the first measurement of how often it fires must be kept even
+/// if it is embarrassing.
+#[must_use]
+pub fn unresolved_surfaces_present(normalized: &str, language: &str) -> bool {
+    !crate::concept_lookup::unknown_surfaces(normalized, language).is_empty()
 }
 
 pub fn record_decomposition(

@@ -1340,11 +1340,23 @@ making it reachable for a concept need.
 - [ ] **L10 — Wire the coding path.** `discover_and_compose` builds the lookup and
       calls `discover_with_lookup`. Test:
       `held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages`.
-- [ ] **L11 — Wire the universal loop.** Replace `requires_external_lookup`
+- [x] **L11 — Wire the universal loop.** Replace `requires_external_lookup`
       (`src/solver_helpers/mod.rs:104-111`) with `unresolved_surfaces_present`;
       `record_external_search` performs the lookup and returns senses; delete
       `policy:no_fetch_capability`; rank senses in `answer_unknown_prompt`. Tests:
       `tests/unit/issue_1138_universal_loop_lookup.rs` (all three).
+
+      **Done except its last clause, and the clause is named rather than
+      quietly dropped.** The trigger, the lookup, the per-source outcome rows
+      and the deletion of the marker all landed; `grep -rn
+      policy:no_fetch_capability src` is empty and all three cases are green.
+      What did **not** land is *ranking the senses inside
+      `answer_unknown_prompt`*: the retrieved senses are returned and recorded
+      as `concept_lookup:hit` evidence with source, digest and licence, but the
+      unknown reply's body is still composed without them. That is a change to
+      the shape of every unknown answer in the tree, and it belongs in a commit
+      of its own with the reply-body tests in front of it. Recorded here as the
+      remaining half of L11.
 - [x] **L12 — Sense ledger.** `src/concept_sense_ledger.rs`; forget/rediscover and
       tamper-rejection tests.
 - [ ] **L13 — Browser parity.** `formal_ai_worker_source_walk.js`,

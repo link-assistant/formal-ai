@@ -20,14 +20,26 @@ use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
+/// Where every capture is read from and written to.
+///
+/// `FORMAL_AI_SOURCE_CACHE_DIR`, then `FORMAL_AI_CACHE_DIR`, then `data`. It is
+/// a function rather than three lines repeated per caller because the universal
+/// loop and the coding path must share one cache: two roots would be two
+/// different answers to the same question about the same word (issue #1138,
+/// plan 01 L11).
+#[must_use]
+pub fn source_cache_root() -> String {
+    std::env::var("FORMAL_AI_SOURCE_CACHE_DIR")
+        .or_else(|_| std::env::var("FORMAL_AI_CACHE_DIR"))
+        .unwrap_or_else(|_| String::from("data"))
+}
+
 pub fn discovery_catalog(
     spec: &CodingTaskSpec,
     log: &mut EventLog,
     live: bool,
 ) -> DiscoveryCatalog {
-    let cache_dir = std::env::var("FORMAL_AI_SOURCE_CACHE_DIR")
-        .or_else(|_| std::env::var("FORMAL_AI_CACHE_DIR"))
-        .unwrap_or_else(|_| String::from("data"));
+    let cache_dir = source_cache_root();
     let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(live);
     let stdlib = if live {
         fetch_index(&client).unwrap_or_default()

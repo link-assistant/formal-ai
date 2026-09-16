@@ -48,7 +48,7 @@ use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
     is_unbounded_loop, record_candidates, record_decomposition, record_validation,
-    requires_external_lookup,
+    unresolved_surfaces_present,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{UnknownReasoningConfig, answer_unknown_prompt};
@@ -633,8 +633,9 @@ impl UniversalSolver {
             {
                 return answer;
             }
-            if requires_external_lookup(prompt) {
-                self.record_external_search(&mut log, prompt);
+            if unresolved_surfaces_present(&crate::engine::normalize_prompt(prompt), language.slug())
+            {
+                let _senses = self.record_external_search(&mut log, prompt, language);
             }
             return answer_unknown_prompt(
                 prompt,
@@ -871,16 +872,92 @@ impl UniversalSolver {
         finalize_simple(prompt, log, &intent, &response_link, body, 0.5)
     }
 
-    fn record_external_search(&self, log: &mut EventLog, prompt: &str) {
+    /// Ask the sources registry what the prompt's unresolved surfaces mean.
+    ///
+    /// Issue #1138 B1, plan 01 L11. This method used to append a policy marker
+    /// saying that an external search had been requested and no retrieval was
+    /// executed — a true statement about the code of the day and a false
+    /// statement about the system's limits the moment a retrieval kernel
+    /// existed. A capability claim the tree can no longer support is a
+    /// fabricated provenance of the system's own state, so the marker is gone
+    /// and every consulted source leaves a real outcome row instead. The
+    /// deleted marker's name is pinned by
+    /// `tests/unit/issue_1138_universal_loop_lookup.rs`, which is why it is not
+    /// written out here.
+    ///
+    /// Offline stays an explicit boundary, not a missing capability: the
+    /// `skipped:offline` payload is what `event_log` projects as
+    /// `policy:offline`.
+    fn record_external_search(
+        &self,
+        log: &mut EventLog,
+        prompt: &str,
+        language: Language,
+    ) -> Vec<crate::concept_lookup::ConceptSense> {
         if self.config.offline {
             log.append("search:external", "skipped:offline".to_owned());
-            return;
+            return Vec::new();
         }
         log.append("search:external", prompt.to_owned());
-        log.append(
-            "policy:no_fetch_capability",
-            "external search requested but no retrieval was executed".to_owned(),
+        let normalized = crate::engine::normalize_prompt(prompt);
+        let code = language.slug();
+        let surfaces = crate::concept_lookup::unknown_surfaces(&normalized, code);
+        let bounds = crate::source_walk::LookupBounds::default();
+        let cache_root = crate::coding::synthesis_runtime::source_cache_root();
+        let client = crate::source_fetch::CachedSourceClient::new(
+            &cache_root,
+            crate::source_fetch::CurlSourceTransport,
+        )
+        .with_online(crate::coding::synthesis_runtime::live_fetch_enabled());
+        let preferences = crate::how_to_guide::ServicePreferences::default();
+        let mut availability = crate::service_accessibility::ServiceAccessibilityCache::load(
+            &cache_root,
         );
+        let now = crate::service_accessibility::unix_now();
+        let mut senses = Vec::new();
+        for surface in surfaces.iter().take(bounds.max_services) {
+            let outcome = crate::concept_lookup::lookup_surface(
+                surface,
+                code,
+                &client,
+                &preferences,
+                &bounds,
+                &mut availability,
+                now,
+            );
+            if outcome.items.is_empty() {
+                // An absence that names every source consulted is evidence; a
+                // bare "not found" is not.
+                log.append(
+                    "concept_lookup:miss",
+                    crate::trace_record::payload(&[
+                        ("surface", surface.clone()),
+                        (
+                            "consulted",
+                            outcome
+                                .outcomes
+                                .iter()
+                                .map(|row| format!("{} {}", row.source_id, row.status))
+                                .collect::<Vec<_>>()
+                                .join(" "),
+                        ),
+                    ]),
+                );
+            }
+            for sense in &outcome.items {
+                log.append(
+                    "concept_lookup:hit",
+                    crate::trace_record::payload(&[
+                        ("surface", surface.clone()),
+                        ("source", sense.source_id.clone()),
+                        ("sha256", sense.sha256.clone()),
+                        ("license", sense.license_name.clone()),
+                    ]),
+                );
+            }
+            senses.extend(outcome.items);
+        }
+        senses
     }
 }
 
