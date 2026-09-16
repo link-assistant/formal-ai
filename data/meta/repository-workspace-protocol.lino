@@ -1,61 +1,65 @@
+# Issue #1138 B7, plan 03 leaf L8 -- the repository protocol as data.
+#
+# Six steps, in order: clone at an exact commit, locate what the requirement
+# names, read it, edit it, verify it, and diff it. Adding a step -- "run the
+# linter before the tests" -- is an edit to this document rather than an edit to
+# Rust, which is the whole reason the protocol is data.
+#
+# `src/repository_workspace/mod.rs` reads it through `WorkspaceProtocol::load`
+# and regenerates it through `WorkspaceProtocol::regenerate_document`, so a
+# deleted document is rediscovered to the same content id.
+# `tests/unit/specification/repository_workspace_protocol.rs` keeps every step
+# grounded: the file it names exists, the orders are contiguous, and the loader
+# produces exactly the steps declared here.
 repository_workspace_protocol
   record_type "meta_recipe"
   issue "1138"
   topic "repository_workspace"
-  title "One repository protocol for SWE-bench, the coding ladder and self-coding"
-  summary "One protocol for SWE-bench, the #848 ladder and self-coding. Grounded by tests/unit/specification/repository_workspace_protocol.rs against the live source, so the step order is data: adding a step is an edit to this document, not an edit to Rust."
-  generalization "To run any repository task, instantiate the six ordered steps below against a RepositoryWorkspace: materialise the tree at an exact commit, resolve what the requirement names, read those bytes, apply the change, run the named tests on a declared backend, and emit the unified diff. Every step records an execution record before the next step is planned, so a step that did not run leaves its need planned rather than satisfied."
 repository_step_clone
   record_type "meta_step"
   order "1"
   id "clone"
-  title "Materialise the origin at the exact base commit"
-  detail "Materialise the origin at the exact base commit. A branch name is refused: a task defined against a moving reference is not reproducible."
-  precondition "task carries an origin and a 40-character base commit"
-  postcondition "the checked-out HEAD equals base_commit"
+  detail "Materialise the tree at the exact base commit the task names. A branch is a moving target and is refused before anything is created."
+  precondition "The spec names a forty-character object name and an origin."
+  postcondition "HEAD in the clone resolves to exactly that commit, and nothing outside the clone changed."
   source_file "src/repository_workspace/clone.rs"
 repository_step_locate
   record_type "meta_step"
   order "2"
   id "locate"
-  title "Resolve the files the requirement names"
-  detail "Resolve the files the requirement names: census for Rust trees, literal and path occurrence otherwise. The requirement arrives as the need's subject in the need's own language, so five held-out languages are one code path. Ambiguity resolves to nothing and the candidates are reported."
-  precondition "clone postcondition observed"
-  postcondition "at least one Location, or an explicit unresolved need naming the candidates"
+  detail "Resolve the files and declarations the requirement names, in the language it was written in. A tie is ambiguity and resolves to nothing, with both candidates reported."
+  precondition "A tree exists at the base commit and the requirement is carried verbatim."
+  postcondition "Either a located set with the mechanism that found it, or nothing at all with the candidates named."
   source_file "src/repository_workspace/locate.rs"
 repository_step_read
   record_type "meta_step"
   order "3"
   id "read"
-  title "Read the located bytes and snapshot them"
-  detail "Read every located file and retain its bytes as the baseline, so the diff at the end is computed from what the protocol actually observed rather than from a second version-control call."
-  precondition "at least one Location was resolved"
-  postcondition "every located path has baseline bytes"
+  detail "Read the located bytes, so the edit is made against what the file actually holds rather than against what the requirement assumed."
+  precondition "At least one location resolved."
+  postcondition "The prior bytes of every file about to change are retained."
   source_file "src/repository_workspace/mod.rs"
 repository_step_edit
   record_type "meta_step"
   order "4"
   id "edit"
-  title "Apply the change and observe the bytes written"
-  detail "Apply the change and read the file back, so the edit is an observation rather than an intention. A write that cannot be read back is a failure of the step, not of the answer."
-  precondition "baseline bytes exist for the target path"
-  postcondition "one execution record per written file, carrying the digest of the bytes read back"
+  detail "Apply the change inside the workspace only. The ambient checkout is byte-identical afterwards, whatever the requirement asked for."
+  precondition "The prior bytes were read and retained."
+  postcondition "The edited bytes are observed on disk and recorded as an observation."
   source_file "src/repository_workspace/edit.rs"
 repository_step_verify
   record_type "meta_step"
   order "5"
   id "verify"
-  title "Run the named tests on a declared backend"
-  detail "Run the named tests on the declared execution backend. A missing interpreter, compiler or container is a missing prerequisite handed to the recovery path: it is never a pass and never a silent skip, and a timeout is reported with both the deadline and the elapsed time."
-  precondition "the edit postcondition was observed"
-  postcondition "one execution record naming the passed and failed test names, or a missing-prerequisite report"
+  detail "Run the named tests. A missing runner is a prerequisite, not a failure; a deadline reached reports both numbers; neither is a pass."
+  precondition "The edit was applied and the tests the task names are known."
+  postcondition "Each named test is observed passing or failing, or the reason it did not run is named."
   source_file "src/repository_workspace/verify.rs"
 repository_step_diff
   record_type "meta_step"
   order "6"
   id "diff"
-  title "Emit the unified diff and prove it applies"
-  detail "Emit the unified diff between the base commit and the current tree. A diff that does not apply cleanly to a second clone at the same base commit is refused before it is offered as an answer."
-  precondition "the verify step produced an execution record"
-  postcondition "a unified diff that round-trips through a clean apply at base_commit"
+  detail "Produce the unified diff the task is judged by. It has to apply to a clean clone at the same base commit, or it is not a deliverable."
+  precondition "The tree holds the edit and the verification was attempted."
+  postcondition "A diff that round-trips through git apply, or an empty diff honestly reporting that nothing changed."
   source_file "src/repository_workspace/diff.rs"

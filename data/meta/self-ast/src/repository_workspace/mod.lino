@@ -2,10 +2,10 @@ self_ast_census
   target src/repository_workspace/mod.rs
   language rust
   fidelity signature
-  byte_len 15386
-  line_count 444
-  content_id source_module_e4245a082e60907f
-  symbol_count 40
+  byte_len 20918
+  line_count 576
+  content_id source_module_16c2e07f79144d8c
+  symbol_count 44
   symbols
     module clone 12 12
     module diff 13 13
@@ -15,35 +15,39 @@ self_ast_census
     module verify 17 17
     const ALLOWLIST_LINO 29 29
     const RECORD_ALLOWED 32 32
-    enum WorkspaceError 36 69
-    struct RepositoryWorkspace 73 79
-    function open 86 93
-    function adopt 100 111
-    function root 115 117
-    function spec 121 123
-    function base_commit 127 129
-    function source_files 135 140
-    function read 146 152
-    function write 158 175
-    function diff 181 187
-    function baseline 192 194
-    struct ProtocolStep 200 209
-    struct RepositoryTask 213 220
-    struct ProtocolOutcome 224 237
-    struct WorkspaceProtocol 242 244
-    function load 249 251
-    function parse 255 257
-    function steps 261 263
-    function execute 270 276
-    function regenerate_document 281 283
-    struct AllowedCommand 288 303
-    function command_allowlist 308 323
-    const DEFAULT_DEADLINE_SECONDS 326 326
-    function deadline_seconds 335 348
-    function optional 351 357
-    const GIT_GLOBAL_FLAGS 365 365
-    const GLOBAL_FLAG_PROGRAM 368 368
-    function subcommand_of 372 381
-    function allows 391 401
-    function shape_matches 406 421
-    function collect_files 424 444
+    const PROTOCOL_LINO 36 36
+    const RECORD_STEP 39 39
+    const PROTOCOL_HEADER 43 43
+    enum WorkspaceError 47 80
+    struct RepositoryWorkspace 84 90
+    function open 97 104
+    function adopt 111 122
+    function root 126 128
+    function spec 132 134
+    function base_commit 138 140
+    function source_files 146 151
+    function read 157 163
+    function write 169 186
+    function diff 192 198
+    function baseline 203 205
+    struct ProtocolStep 211 220
+    struct RepositoryTask 224 231
+    struct ProtocolOutcome 235 248
+    struct WorkspaceProtocol 253 255
+    function load 260 262
+    function parse 266 280
+    function source_files 284 291
+    function steps 295 297
+    function execute 304 374
+    function regenerate_document 379 415
+    struct AllowedCommand 420 435
+    function command_allowlist 440 455
+    const DEFAULT_DEADLINE_SECONDS 458 458
+    function deadline_seconds 467 480
+    function optional 483 489
+    const GIT_GLOBAL_FLAGS 497 497
+    const GLOBAL_FLAG_PROGRAM 500 500
+    function subcommand_of 504 513
+    function allows 523 533
+    function shape_matches 538 553
+    function collect_files 556 576

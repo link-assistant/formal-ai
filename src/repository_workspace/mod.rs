@@ -31,6 +31,17 @@ const ALLOWLIST_LINO: &str = include_str!("../../data/seed/repository-command-al
 /// Record type of one allowlist row.
 const RECORD_ALLOWED: &str = "allowed_command";
 
+/// The ordered protocol, as data. Adding "run the linter before the tests" is a
+/// `.lino` edit, not a Rust edit.
+const PROTOCOL_LINO: &str = include_str!("../../data/meta/repository-workspace-protocol.lino");
+
+/// Record type of one protocol step.
+const RECORD_STEP: &str = "meta_step";
+
+/// The header the regenerated document carries, so a deleted document is
+/// rediscovered to the same content id rather than to a near-miss.
+const PROTOCOL_HEADER: &str = include_str!("protocol-header.txt");
+
 /// Everything that can stop the protocol, stated rather than swallowed.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum WorkspaceError {
@@ -247,13 +258,36 @@ impl WorkspaceProtocol {
     /// Parse the committed protocol document.
     #[must_use]
     pub fn load() -> Self {
-        todo!("plan 03 leaf L8")
+        Self::parse(PROTOCOL_LINO)
     }
 
     /// Parse a protocol document.
     #[must_use]
-    pub fn parse(_document: &str) -> Self {
-        todo!("plan 03 leaf L8")
+    pub fn parse(document: &str) -> Self {
+        let mut steps: Vec<ProtocolStep> = parse_lino(document)
+            .children
+            .iter()
+            .filter(|node| node.find_child_value("record_type") == RECORD_STEP)
+            .map(|node| ProtocolStep {
+                order: node.find_child_value("order").parse().unwrap_or_default(),
+                id: node.find_child_value("id").to_owned(),
+                precondition: vec![node.find_child_value("precondition").to_owned()],
+                postcondition: vec![node.find_child_value("postcondition").to_owned()],
+            })
+            .collect();
+        steps.sort_by_key(|step| step.order);
+        Self { steps }
+    }
+
+    /// The file each step is implemented in, in protocol order.
+    #[must_use]
+    pub fn source_files() -> Vec<String> {
+        parse_lino(PROTOCOL_LINO)
+            .children
+            .iter()
+            .filter(|node| node.find_child_value("record_type") == RECORD_STEP)
+            .map(|node| node.find_child_value("source_file").to_owned())
+            .collect()
     }
 
     /// The ordered steps.
@@ -269,17 +303,115 @@ impl WorkspaceProtocol {
     #[must_use]
     pub fn execute(
         &self,
-        _workspace: &mut RepositoryWorkspace,
-        _task: &RepositoryTask,
+        workspace: &mut RepositoryWorkspace,
+        task: &RepositoryTask,
     ) -> ProtocolOutcome {
-        todo!("plan 03 leaf L8")
+        let mut outcome = ProtocolOutcome {
+            located: Vec::new(),
+            edited: Vec::new(),
+            observations: Vec::new(),
+            diff: String::new(),
+            stopped_at: None,
+            open: Vec::new(),
+        };
+
+        for step in &self.steps {
+            match step.id.as_str() {
+                "locate" => {
+                    let need = crate::needs::Need::raised(
+                        crate::needs::NeedKind::Part,
+                        &task.requirement,
+                        "",
+                        "repository_workspace_protocol",
+                    );
+                    match locate::locate_targets(workspace, &need) {
+                        Ok(found) if found.is_empty() => {
+                            // Nothing resolved. The protocol stops here and says
+                            // so, rather than editing a file it guessed at.
+                            outcome.stopped_at = Some(step.clone());
+                            outcome.open.push(task.requirement.clone());
+                            return outcome;
+                        }
+                        Ok(found) => outcome.located = found,
+                        Err(error) => {
+                            outcome.stopped_at = Some(step.clone());
+                            outcome.open.push(format!("{error:?}"));
+                            return outcome;
+                        }
+                    }
+                }
+                "verify" => {
+                    if let Some(tests) = task.tests.as_ref() {
+                        match verify::run_named_tests(
+                            workspace,
+                            tests,
+                            &crate::execution_box::ExecutionBackend::HostSandbox,
+                        ) {
+                            Ok(evidence) => outcome.observations.push(evidence),
+                            Err(error) => {
+                                outcome.stopped_at = Some(step.clone());
+                                outcome.open.push(format!("{error:?}"));
+                                return outcome;
+                            }
+                        }
+                    }
+                }
+                "diff" => match workspace.diff() {
+                    Ok(patch) => outcome.diff = patch,
+                    Err(error) => {
+                        outcome.stopped_at = Some(step.clone());
+                        outcome.open.push(format!("{error:?}"));
+                        return outcome;
+                    }
+                },
+                _ => {}
+            }
+        }
+        outcome
+            .edited
+            .extend(workspace.baseline().keys().cloned());
+        outcome
     }
 
     /// Regenerate the committed protocol document from the live source, so a
     /// deleted document is rediscovered to the same content id.
     #[must_use]
     pub fn regenerate_document() -> String {
-        todo!("plan 03 leaf L8")
+        use std::fmt::Write as _;
+
+        let mut out = String::from(PROTOCOL_HEADER);
+        let sources = Self::source_files();
+        let declared = parse_lino(PROTOCOL_LINO);
+        let records: Vec<&crate::seed::parser::LinoNode> = declared
+            .children
+            .iter()
+            .filter(|node| node.find_child_value("record_type") == RECORD_STEP)
+            .collect();
+        for (step, node) in Self::load().steps().iter().zip(records) {
+            let _ = writeln!(out, "repository_step_{}", step.id);
+            let _ = writeln!(out, "  record_type \"{RECORD_STEP}\"");
+            let _ = writeln!(out, "  order \"{}\"", step.order);
+            let _ = writeln!(out, "  id \"{}\"", step.id);
+            let _ = writeln!(out, "  detail \"{}\"", node.find_child_value("detail"));
+            let _ = writeln!(
+                out,
+                "  precondition \"{}\"",
+                step.precondition.join(" ")
+            );
+            let _ = writeln!(
+                out,
+                "  postcondition \"{}\"",
+                step.postcondition.join(" ")
+            );
+            let _ = writeln!(
+                out,
+                "  source_file \"{}\"",
+                sources
+                    .get(step.order.saturating_sub(1))
+                    .map_or("", String::as_str)
+            );
+        }
+        out
     }
 }
 
