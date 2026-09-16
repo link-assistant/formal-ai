@@ -1257,7 +1257,7 @@ Ordered; each individually verifiable and commit-sized.
       `needs_raised`/`needs_grounded`/`max_depth_reached`. Tests:
       `an_unfamiliar_requirement_raises_a_need_for_every_unresolved_surface`,
       `a_document_with_an_unresolved_need_is_never_reported_as_covered`.
-- [ ] **L5 — Relation vocabulary.** `data/seed/formalization-relations.lino` (8
+- [x] **L5 — Relation vocabulary.** `data/seed/formalization-relations.lino` (8
       relations × 5 languages) and the extended no-memorization gate forbidding
       domain nouns in it.
 - [ ] **L6 — Concept grounding.** `src/formalization/concepts.rs`:

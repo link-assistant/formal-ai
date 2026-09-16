@@ -517,5 +517,4 @@ pub const ROLE_SELECTION_CRITERION_BREVITY_CUE: &str = "selection_criterion_brev
 /// [`ROLE_SELECTION_CRITERION_BREVITY_CUE`], read the same way. A requirement
 /// that evidences neither role leaves the contradiction named and unresolved:
 /// there is no default 50 %.
-pub const ROLE_SELECTION_CRITERION_COMPLETENESS_CUE: &str =
-    "selection_criterion_completeness_cue";
+pub const ROLE_SELECTION_CRITERION_COMPLETENESS_CUE: &str = "selection_criterion_completeness_cue";

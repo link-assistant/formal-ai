@@ -35,6 +35,8 @@ pub const ENVIRONMENTS_LINO: &str = include_str!("../../data/seed/environments.l
 pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
 pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
     include_str!("../../data/seed/formal-language-projections.lino");
+pub const FORMALIZATION_RELATIONS_LINO: &str =
+    include_str!("../../data/seed/formalization-relations.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str = include_str!("../../data/seed/handler-precedence.lino");
 pub const HANDLER_RULES_LINO: &str = include_str!("../../data/seed/handler-rules.lino");
@@ -83,6 +85,8 @@ pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../data/seed/meanings-finance.lino");
+pub const MEANINGS_FORMALIZATION_RELATIONS_LINO: &str =
+    include_str!("../../data/seed/meanings-formalization-relations.lino");
 pub const MEANINGS_FORMALIZATION_REPORT_LINO: &str =
     include_str!("../../data/seed/meanings-formalization-report.lino");
 pub const MEANINGS_HOW_LINO: &str = include_str!("../../data/seed/meanings-how.lino");
@@ -249,6 +253,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/environments.lino", ENVIRONMENTS_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),
+        ("data/seed/formalization-relations.lino", FORMALIZATION_RELATIONS_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
         ("data/seed/handler-rules.lino", HANDLER_RULES_LINO),
@@ -282,6 +287,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
         ("data/seed/meanings-file-write.lino", MEANINGS_FILE_WRITE_LINO),
         ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
+        ("data/seed/meanings-formalization-relations.lino", MEANINGS_FORMALIZATION_RELATIONS_LINO),
         ("data/seed/meanings-formalization-report.lino", MEANINGS_FORMALIZATION_REPORT_LINO),
         ("data/seed/meanings-how.lino", MEANINGS_HOW_LINO),
         ("data/seed/meanings-intent.lino", MEANINGS_INTENT_LINO),
@@ -460,6 +466,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FINANCE_LINO,
+    MEANINGS_FORMALIZATION_RELATIONS_LINO,
     MEANINGS_FORMALIZATION_REPORT_LINO,
     MEANINGS_HOW_LINO,
     MEANINGS_INTENT_LINO,

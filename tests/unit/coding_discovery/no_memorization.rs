@@ -210,6 +210,92 @@ fn issue_1138_held_out_vocabulary_is_absent_from_runtime_and_seed() {
     );
 }
 
+/// The relation seed of issue #1138 plan 04 L5.
+const RELATION_SEED: &str = "data/seed/formalization-relations.lino";
+
+/// Issue #1138, plan 04 L5 — the relation seed declares *how a gloss is read*,
+/// never *what a word means*.
+///
+/// The whole plan turns on the difference. A file of eight relations and the
+/// cues that evidence them is a reading rule: it says that "a word in which no
+/// letter is repeated" names a genus and a property, without knowing anything
+/// about words or letters. A file that also declared what `isogram` means would
+/// be the closed fairy-tale lexicon again under a new name, and the plan would
+/// have moved the ceiling rather than removed it.
+///
+/// Two things make that testable, and one does not. The schema is closed, so a
+/// concept cannot be smuggled in as a record kind; and the relation vocabulary
+/// is fixed at the eight the plan declares, so a ninth relation named after a
+/// subject matter fails here rather than in review. What no test can decide is
+/// whether an individual cue is *really* a connective — that is a judgement,
+/// and it is made at the file, in the open, rather than asserted here in a form
+/// that would pass whatever was written.
+#[test]
+fn the_relation_seed_declares_how_a_gloss_is_read_and_never_what_a_word_means() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let text = fs::read_to_string(root.join(RELATION_SEED))
+        .unwrap_or_else(|error| panic!("{RELATION_SEED}: {error}"));
+
+    let relations = [
+        "is_a",
+        "has_property",
+        "part_of",
+        "requires",
+        "produces",
+        "precedes",
+        "excludes",
+        "measured_in",
+    ];
+    let schema = [
+        "relations",
+        "determiners",
+        "kind",
+        "inverse",
+        "grounding",
+        "lexeme",
+        "surface",
+        "text",
+    ];
+
+    let mut declared: Vec<String> = Vec::new();
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        let head = trimmed.split_whitespace().next().unwrap_or_default();
+        if schema.contains(&head) {
+            continue;
+        }
+        assert!(
+            relations.contains(&head),
+            "{RELATION_SEED} declares `{head}`, which is neither the relation schema \
+             nor one of the eight declared relations: a subject matter may not enter \
+             this file under any record kind"
+        );
+        declared.push(head.to_owned());
+    }
+    declared.sort();
+    let mut expected: Vec<String> = relations.iter().map(|name| (*name).to_owned()).collect();
+    expected.sort();
+    assert_eq!(
+        declared, expected,
+        "the relation vocabulary is the eight the plan declares, no more and no fewer"
+    );
+
+    for line in text.lines() {
+        let trimmed = line.trim();
+        let Some(surface) = trimmed.strip_prefix("text ") else {
+            continue;
+        };
+        let surface = surface.trim().trim_matches('"');
+        assert!(
+            surface.split_whitespace().count() <= 4,
+            "a cue is a fragment, not a definition: {surface:?} in {RELATION_SEED}"
+        );
+    }
+}
+
 #[test]
 fn no_seed_template_is_a_whole_algorithm() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));

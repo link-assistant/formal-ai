@@ -75,6 +75,9 @@ seed_registry
   seed formal-language-projections
     bundle true
     web true
+  seed formalization-relations
+    bundle true
+    web true
   seed greetings
     bundle true
     web true
@@ -188,6 +191,10 @@ seed_registry
     lexicon meaning
     web true
   seed meanings-finance
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-formalization-relations
     bundle true
     lexicon meaning
     web true
