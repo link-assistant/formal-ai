@@ -20,6 +20,7 @@ toolchain_rust
   requires ()
   setup_hint "the Rust toolchain from https://rustup.rs"
   environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
 toolchain_python
   record_type "toolchain_probe"
   program "python3"
@@ -28,6 +29,7 @@ toolchain_python
   requires ()
   setup_hint "Python 3 from https://www.python.org/downloads/"
   environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
 toolchain_javascript
   record_type "toolchain_probe"
   program "node"
@@ -36,6 +38,7 @@ toolchain_javascript
   requires ()
   setup_hint "Node.js from https://nodejs.org/"
   environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
 toolchain_typescript
   record_type "toolchain_probe"
   program "tsc"
@@ -43,7 +46,8 @@ toolchain_typescript
   argv ("--version")
   requires ("node")
   setup_hint "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`"
-  environment "the TypeScript compiler, probed rather than assumed"
+  environment "TypeScript compiler is not configured in this repository runtime"
+  execution_status "unavailable"
 toolchain_go
   record_type "toolchain_probe"
   program "go"
@@ -52,6 +56,7 @@ toolchain_go
   requires ()
   setup_hint "Go from https://go.dev/dl/"
   environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
 toolchain_c
   record_type "toolchain_probe"
   program "gcc"
@@ -60,6 +65,7 @@ toolchain_c
   requires ()
   setup_hint "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager"
   environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
 toolchain_cpp
   record_type "toolchain_probe"
   program "g++"
@@ -67,7 +73,8 @@ toolchain_cpp
   argv ("--version")
   requires ()
   setup_hint "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager"
-  environment "the C++ toolchain, probed rather than assumed"
+  environment "C++ toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
 toolchain_java
   record_type "toolchain_probe"
   program "javac"
@@ -75,7 +82,8 @@ toolchain_java
   argv ("-version")
   requires ("java")
   setup_hint "a JDK from https://adoptium.net/"
-  environment "the Java toolchain, probed rather than assumed"
+  environment "Java toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
 toolchain_jdk_runtime
   record_type "toolchain_probe"
   program "java"
@@ -83,7 +91,8 @@ toolchain_jdk_runtime
   argv ("-version")
   requires ()
   setup_hint "a JDK from https://adoptium.net/"
-  environment "the Java runtime, probed rather than assumed"
+  environment "Java runtime, probed rather than declared"
+  execution_status "not_probed"
 toolchain_csharp
   record_type "toolchain_probe"
   program "dotnet"
@@ -91,7 +100,8 @@ toolchain_csharp
   argv ("--version")
   requires ()
   setup_hint "the .NET SDK from https://dotnet.microsoft.com/download"
-  environment "the .NET toolchain, probed rather than assumed"
+  environment "C# / dotnet toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
 toolchain_ruby
   record_type "toolchain_probe"
   program "ruby"
@@ -99,7 +109,8 @@ toolchain_ruby
   argv ("--version")
   requires ()
   setup_hint "Ruby from https://www.ruby-lang.org/en/downloads/"
-  environment "the Ruby interpreter, probed rather than assumed"
+  environment "Ruby interpreter is not configured in this repository runtime"
+  execution_status "unavailable"
 toolchain_scala
   record_type "toolchain_probe"
   program "scalac"
@@ -107,7 +118,8 @@ toolchain_scala
   argv ("-version")
   requires ("java")
   setup_hint "Scala from https://www.scala-lang.org/download/ (a JDK is required as well)"
-  environment "the Scala toolchain, probed rather than assumed"
+  environment "Scala toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
 toolchain_kotlin
   record_type "toolchain_probe"
   program "kotlinc"
@@ -115,7 +127,8 @@ toolchain_kotlin
   argv ("-version")
   requires ("java")
   setup_hint "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)"
-  environment "the Kotlin toolchain, probed rather than assumed"
+  environment "Kotlin toolchain is not configured in this repository runtime"
+  execution_status "unavailable"
 toolchain_php
   record_type "toolchain_probe"
   program "php"
@@ -124,6 +137,7 @@ toolchain_php
   requires ()
   setup_hint "PHP from https://www.php.net/downloads"
   environment "issue-8 local verification harness (isolated sandbox)"
+  execution_status "verified"
 toolchain_laravel
   record_type "toolchain_probe"
   program "php"
@@ -132,6 +146,7 @@ toolchain_laravel
   requires ("composer")
   setup_hint "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)"
   environment "issue-1021 local Laravel verification harness (experiments/issue-1021-laravel/run.sh)"
+  execution_status "verified"
 toolchain_docker
   record_type "toolchain_probe"
   program "docker"
@@ -140,3 +155,4 @@ toolchain_docker
   requires ()
   setup_hint "Docker from https://docs.docker.com/get-docker/"
   environment "the container runtime the execution box needs"
+  execution_status "not_probed"

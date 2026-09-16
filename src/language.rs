@@ -40,6 +40,10 @@ impl Language {
     pub const Hindi: Self = Self("hi");
     /// Chinese.
     pub const Chinese: Self = Self("zh");
+    /// Spanish. Added by issue #1138 plan 06 leaf L2, because the coding
+    /// guidance branched on four languages and let Spanish fall through to
+    /// English on every program answer.
+    pub const Spanish: Self = Self("es");
     /// No registered language matched the prompt's dominant script.
     pub const Unknown: Self = Self("unknown");
 

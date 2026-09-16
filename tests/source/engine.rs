@@ -6,7 +6,8 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
-    ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramSpec, WRITE_PROGRAM_INTENT,
+    ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramLanguage, ProgramSpec,
+    WRITE_PROGRAM_INTENT,
     program_language_by_alias, program_spec, program_template_count, supported_program_languages,
     supported_program_tasks,
 };
@@ -786,7 +787,7 @@ fn write_program_answer(
         spec.language.code_fence,
         spec.template.code,
         execution_report(
-            &spec.language.execution,
+            spec.language,
             &spec.run_command_line(),
             &expected_output,
             language,
@@ -842,30 +843,33 @@ fn unsupported_write_program_answer(
 }
 
 fn execution_report(
-    execution: &ProgramExecution,
+    program_language: &ProgramLanguage,
     run_command: &str,
     output: &str,
     language: Language,
 ) -> String {
+    let execution = &program_language.execution;
     let command_lines = execution_command_lines(execution, run_command);
-    let verified = matches!(execution.status, ExecutionStatus::Verified);
-    let status_phrase = execution_status_phrase(execution.status, language);
+    let status = program_language.execution_status();
+    let environment = program_language.environment();
+    let verified = matches!(status, ExecutionStatus::Verified);
+    let status_phrase = execution_status_phrase(status, language);
     let output_label = execution_output_label(verified, language);
     let status_line = match language {
         Language::Russian => format!(
             "Статус выполнения: {status_phrase} в среде «{}».",
-            execution.environment
+            environment
         ),
         Language::Hindi => format!(
             "निष्पादन स्थिति: {status_phrase} ({} में)।",
-            execution.environment
+            environment
         ),
         Language::Chinese => {
-            format!("执行状态：{status_phrase}（{}）。", execution.environment)
+            format!("执行状态：{status_phrase}（{environment}）。")
         }
         _ => format!(
             "Execution status: {status_phrase} in {}.",
-            execution.environment
+            environment
         ),
     };
 

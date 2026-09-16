@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/fragment_catalog.rs
   language rust
   fidelity signature
-  byte_len 3475
-  line_count 112
-  content_id source_module_901e89a76d501123
+  byte_len 3651
+  line_count 115
+  content_id source_module_d78eef68f1be6127
   symbol_count 14
   symbols
     enum FragmentOrigin 17 22
@@ -17,7 +17,7 @@ self_ast_census
     function producing 74 76
     function fragments 80 82
     function content_id 87 89
-    struct FragmentLedger 95 97
-    function new 101 103
-    function recall 105 107
-    function remember 109 111
+    struct FragmentLedger 95 100
+    function new 104 106
+    function recall 108 110
+    function remember 112 114

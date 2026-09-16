@@ -19,6 +19,7 @@ pub const CALLER_CONTEXT_LINO: &str = include_str!("../../data/seed/caller-conte
 pub const CLIENT_COMPLETION_CONTRACTS_LINO: &str =
     include_str!("../../data/seed/client-completion-contracts.lino");
 pub const CLIENT_INTEGRATIONS_LINO: &str = include_str!("../../data/seed/client-integrations.lino");
+pub const CODING_GUIDANCE_LINO: &str = include_str!("../../data/seed/coding-guidance.lino");
 pub const CODING_IDIOMS_LINO: &str = include_str!("../../data/seed/coding-idioms.lino");
 pub const COMPUTER_USE_TASKS_LINO: &str = include_str!("../../data/seed/computer-use-tasks.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
@@ -226,6 +227,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/caller-context.lino", CALLER_CONTEXT_LINO),
         ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),
         ("data/seed/client-integrations.lino", CLIENT_INTEGRATIONS_LINO),
+        ("data/seed/coding-guidance.lino", CODING_GUIDANCE_LINO),
         ("data/seed/coding-idioms.lino", CODING_IDIOMS_LINO),
         ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),

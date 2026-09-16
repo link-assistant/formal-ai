@@ -2,14 +2,23 @@ self_ast_census
   target src/concept_sense_ledger.rs
   language rust
   fidelity signature
-  byte_len 1572
-  line_count 46
-  content_id source_module_5cbc8b45be055833
-  symbol_count 6
+  byte_len 8892
+  line_count 228
+  content_id source_module_4cc8cf4f690558f4
+  symbol_count 15
   symbols
-    struct ConceptSenseLedger 16 18
-    function new 22 24
-    function remember 27 29
-    function recall 33 35
-    function forget 38 40
-    function content_ids 43 45
+    const LEDGER_FILE 33 33
+    const ROOT 36 36
+    struct ConceptSenseLedger 40 42
+    function new 47 51
+    function path 55 57
+    function remember 67 82
+    function recall 90 96
+    function forget 103 107
+    function content_ids 116 122
+    function records 125 141
+    function write 143 157
+    struct Record 161 164
+    function fields 167 185
+    function digest 189 196
+    function read_record 199 228

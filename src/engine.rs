@@ -6,7 +6,8 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
-    ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramSpec, WRITE_PROGRAM_INTENT,
+    ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramLanguage, ProgramSpec,
+    WRITE_PROGRAM_INTENT,
     program_language_by_alias, program_spec, program_template_count, supported_program_languages,
     supported_program_tasks,
 };
@@ -867,7 +868,7 @@ fn write_program_answer(
         spec.language.code_fence,
         spec.template.code,
         execution_report(
-            &spec.language.execution,
+            spec.language,
             &spec.run_command_line(),
             &expected_output,
             language,
@@ -891,31 +892,22 @@ fn write_program_intro(language_name: &str, task_label: &str, language: Language
 }
 
 fn execution_report(
-    execution: &ProgramExecution,
+    program_language: &ProgramLanguage,
     run_command: &str,
     output: &str,
     language: Language,
 ) -> String {
+    let execution = &program_language.execution;
+    let status = program_language.execution_status();
+    let environment = program_language.environment();
     let command_lines = execution_command_lines(execution, run_command);
-    let verified = matches!(execution.status, ExecutionStatus::Verified);
-    let status_phrase = execution_status_phrase(execution.status, language);
-    let output_label = execution_output_label(verified, language);
+    let status_phrase = execution_status_phrase(status, language);
+    let output_label = execution_output_label(status, language);
     let status_line = match language {
-        Language::Russian => format!(
-            "Статус выполнения: {status_phrase} в среде «{}».",
-            execution.environment
-        ),
-        Language::Hindi => format!(
-            "निष्पादन स्थिति: {status_phrase} ({} में)।",
-            execution.environment
-        ),
-        Language::Chinese => {
-            format!("执行状态：{status_phrase}（{}）。", execution.environment)
-        }
-        _ => format!(
-            "Execution status: {status_phrase} in {}.",
-            execution.environment
-        ),
+        Language::Russian => format!("Статус выполнения: {status_phrase} в среде «{}».", environment),
+        Language::Hindi => format!("निष्पादन स्थिति: {status_phrase} ({} में)।", environment),
+        Language::Chinese => format!("执行状态：{status_phrase}（{}）。", environment),
+        _ => format!("Execution status: {status_phrase} in {}.", environment),
     };
 
     format!(
@@ -932,20 +924,33 @@ fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'sta
         (ExecutionStatus::Unavailable, Language::Russian) => "не скомпилировано и не запущено",
         (ExecutionStatus::Unavailable, Language::Hindi) => "संकलित या चलाया नहीं गया",
         (ExecutionStatus::Unavailable, Language::Chinese) => "未编译或运行",
+        (ExecutionStatus::NotProbed, Language::Russian) => "не проверялось в этой среде",
+        (ExecutionStatus::NotProbed, Language::Hindi) => "इस वातावरण में जाँचा नहीं गया",
+        (ExecutionStatus::NotProbed, Language::Chinese) => "未在本环境中探测",
         (status, _) => status.label(),
     }
 }
 
-fn execution_output_label(verified: bool, language: Language) -> &'static str {
-    match (verified, language) {
-        (true, Language::Russian) => "Вывод",
-        (false, Language::Russian) => "Ожидаемый вывод после проверки",
-        (true, Language::Hindi) => "आउटपुट",
-        (false, Language::Hindi) => "सत्यापन के बाद अपेक्षित आउटपुट",
-        (true, Language::Chinese) => "输出",
-        (false, Language::Chinese) => "验证后的预期输出",
-        (true, _) => "Output",
-        (false, _) => "Expected output after verification",
+/// The label above the output block.
+///
+/// Issue #1138 plan 06 leaf L2: `NotProbed` gets its own label rather than
+/// borrowing `Unavailable`'s. "Expected output after verification" promises a
+/// verification that is coming; "not observed in this environment" states what
+/// actually happened, which is that nothing looked.
+fn execution_output_label(status: ExecutionStatus, language: Language) -> &'static str {
+    match (status, language) {
+        (ExecutionStatus::Verified, Language::Russian) => "Вывод",
+        (ExecutionStatus::Unavailable, Language::Russian) => "Ожидаемый вывод после проверки",
+        (ExecutionStatus::NotProbed, Language::Russian) => "Вывод, не наблюдавшийся в этой среде",
+        (ExecutionStatus::Verified, Language::Hindi) => "आउटपुट",
+        (ExecutionStatus::Unavailable, Language::Hindi) => "सत्यापन के बाद अपेक्षित आउटपुट",
+        (ExecutionStatus::NotProbed, Language::Hindi) => "आउटपुट, इस वातावरण में नहीं देखा गया",
+        (ExecutionStatus::Verified, Language::Chinese) => "输出",
+        (ExecutionStatus::Unavailable, Language::Chinese) => "验证后的预期输出",
+        (ExecutionStatus::NotProbed, Language::Chinese) => "输出，未在本环境中观察到",
+        (ExecutionStatus::Verified, _) => "Output",
+        (ExecutionStatus::Unavailable, _) => "Expected output after verification",
+        (ExecutionStatus::NotProbed, _) => "Output, not observed in this environment",
     }
 }
 

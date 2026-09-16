@@ -2,10 +2,10 @@ self_ast_census
   target src/source_fetch.rs
   language rust
   fidelity signature
-  byte_len 12946
-  line_count 413
-  content_id source_module_31de488fdb48d779
-  symbol_count 39
+  byte_len 15745
+  line_count 481
+  content_id source_module_e633004bf507b8f2
+  symbol_count 42
   symbols
     const CACHE_FORMAT_VERSION 21 21
     const LEGACY_CACHE_FORMAT_VERSION 22 22
@@ -14,35 +14,38 @@ self_ast_census
     const USER_AGENT 25 29
     trait SourceTransport 32 34
     function get 33 33
-    struct CurlSourceTransport 38 38
-    function get 41 77
-    enum FetchError 82 87
-    function fmt 90 97
-    struct SourceCapture 104 110
-    function source_url 114 116
-    function fetched_at 119 121
-    function sha256 124 126
-    function cached 129 131
-    function bytes 134 136
-    function trace_payload 139 150
-    function record 153 158
-    struct CachedSourceClient 163 169
-    function new 173 181
-    function with_online 184 187
-    function with_clock 190 193
-    function with_ttl_seconds 196 199
-    function fetch 201 230
-    function paths 232 237
-    function validate_url 240 254
-    function read_capture 256 309
-    function field 311 324
-    function write_capture 326 351
-    function content_path 353 355
-    function is_sha256_hex 357 362
-    function unique_temp_path 364 371
-    function cache_error 373 375
-    function cache_diagnostic 377 379
-    function sha256_hex 382 384
-    function hex_lower 396 402
-    function unix_now 404 408
-    function format_timestamp 410 413
+    const STATUS_TEMPLATE 43 43
+    function http_status 46 55
+    struct CurlSourceTransport 59 59
+    function get 62 110
+    enum FetchError 115 134
+    function speaks_for_the_service 143 151
+    function fmt 155 165
+    struct SourceCapture 172 178
+    function source_url 182 184
+    function fetched_at 187 189
+    function sha256 192 194
+    function cached 197 199
+    function bytes 202 204
+    function trace_payload 207 218
+    function record 221 226
+    struct CachedSourceClient 231 237
+    function new 241 249
+    function with_online 252 255
+    function with_clock 258 261
+    function with_ttl_seconds 264 267
+    function fetch 269 298
+    function paths 300 305
+    function validate_url 308 322
+    function read_capture 324 377
+    function field 379 392
+    function write_capture 394 419
+    function content_path 421 423
+    function is_sha256_hex 425 430
+    function unique_temp_path 432 439
+    function cache_error 441 443
+    function cache_diagnostic 445 447
+    function sha256_hex 450 452
+    function hex_lower 464 470
+    function unix_now 472 476
+    function format_timestamp 478 481

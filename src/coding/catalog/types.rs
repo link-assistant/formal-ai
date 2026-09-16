@@ -21,10 +21,6 @@ pub struct ProgramLanguage {
     /// File name a novice should save the snippet as before running it (issue
     /// #330). The check/run commands above already reference this name.
     pub save_as: &'static str,
-    /// One-line, novice-friendly hint for installing the toolchain (issue
-    /// #330). URLs and shell commands stay canonical; only the surrounding
-    /// prose is localized in `program_test_instructions`.
-    pub setup_hint: &'static str,
     /// The catalogued language this row is a *framework of*, or `None` when the
     /// row is a language in its own right.
     ///
@@ -60,6 +56,53 @@ impl ProgramLanguage {
     #[must_use]
     pub const fn is_framework(&self) -> bool {
         self.framework_of.is_some()
+    }
+
+    /// One-line, novice-friendly hint for installing the toolchain (issue
+    /// #330). URLs and shell commands stay canonical; only the surrounding
+    /// prose is localized in `program_test_instructions`.
+    ///
+    /// Issue #1138 plan 06 leaf L3: this was fourteen `&'static str` constants
+    /// in `languages.rs`, which is knowledge the runtime could not reach — the
+    /// install path could not read them and the publisher lookup could not
+    /// replace them. They are now rows in `data/seed/toolchains.lino`, beside
+    /// the probe that says whether the toolchain is actually here.
+    #[must_use]
+    pub fn setup_hint(&self) -> String {
+        crate::prerequisite::probe::seed_setup_hint(self.slug)
+    }
+
+    /// The environment the recorded verification ran in.
+    #[must_use]
+    pub fn environment(&self) -> String {
+        crate::prerequisite::probe::seed_environment(self.slug)
+    }
+
+    /// Whether the output shown beside this language's programs was observed.
+    ///
+    /// Read from `data/seed/toolchains.lino`, which records what a harness run
+    /// actually observed, rather than from a constant in this file. A caller
+    /// holding a live [`crate::prerequisite::probe::ProbeVerdict`] derives the
+    /// status from it through [`ExecutionStatus::from_verdict`] instead; the
+    /// seed row is what a caller with no observation of its own may say.
+    #[must_use]
+    pub fn execution_status(&self) -> ExecutionStatus {
+        match crate::prerequisite::probe::seed_execution_status(self.slug).as_str() {
+            "verified" => ExecutionStatus::Verified,
+            "unavailable" => ExecutionStatus::Unavailable,
+            _ => ExecutionStatus::NotProbed,
+        }
+    }
+
+    /// Probe this language's toolchain on this machine, right now.
+    #[must_use]
+    pub fn probe_now(&self, root: &std::path::Path) -> crate::prerequisite::probe::ProbeVerdict {
+        crate::prerequisite::probe::seed_probe_for_language(self.slug).map_or_else(
+            || crate::prerequisite::probe::ProbeVerdict::NotProbed {
+                reason: String::from("no probe declared for this language"),
+            },
+            |probe| crate::prerequisite::probe::probe_command(&probe, root),
+        )
     }
 }
 
@@ -190,19 +233,36 @@ fn list_files_sample_output(task_slug: &str, save_as: &str) -> Option<String> {
     Some(files.join("\n"))
 }
 
+/// How a catalogued program is checked and run.
+///
+/// Issue #1138 plan 06 leaf L3 removed `status` and `environment` from this
+/// record. They were the two fields a human wrote by hand to say whether the
+/// program had been observed working, in a record the runtime could not update;
+/// they are rows of `data/seed/toolchains.lino` now, read through
+/// [`ProgramLanguage::execution_status`] and [`ProgramLanguage::environment`],
+/// beside the probe that observes the toolchain on this machine.
 #[derive(Clone, Copy)]
 pub struct ProgramExecution {
-    pub status: ExecutionStatus,
-    pub environment: &'static str,
     pub check_command: Option<&'static str>,
     pub run_command: &'static str,
     pub notes: &'static str,
 }
 
-#[derive(Clone, Copy)]
+/// Whether the output shown beside a program was observed.
+///
+/// Issue #1138 plan 06 leaf L2 added the third variant. Two variants could say
+/// "it worked" and "it did not", and had no way at all to say **we have not
+/// looked** — so every row was a human's guess presented with the authority of
+/// an observation, and `execution_output_label` relabelled unobserved output as
+/// "Expected output after verification" from a constant.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ExecutionStatus {
+    /// The program was compiled and run, and the output shown is what it printed.
     Verified,
+    /// The toolchain is not here, so nothing could be compiled or run.
     Unavailable,
+    /// Nothing looked. This is not a synonym for `Unavailable`.
+    NotProbed,
 }
 
 impl ExecutionStatus {
@@ -210,6 +270,23 @@ impl ExecutionStatus {
         match self {
             Self::Verified => "compiled and ran",
             Self::Unavailable => "not compiled or run",
+            Self::NotProbed => "not probed in this environment",
+        }
+    }
+
+    /// Derive the status from a live probe rather than from a constant.
+    ///
+    /// A probe that observed the toolchain present says the toolchain is
+    /// present; it does **not** by itself say the program shown was run, which
+    /// is why a caller that has not executed anything keeps `NotProbed` until it
+    /// has an observation to point at.
+    #[must_use]
+    pub const fn from_verdict(verdict: &crate::prerequisite::probe::ProbeVerdict) -> Self {
+        match verdict {
+            crate::prerequisite::probe::ProbeVerdict::Present { .. } => Self::Verified,
+            crate::prerequisite::probe::ProbeVerdict::Missing { .. }
+            | crate::prerequisite::probe::ProbeVerdict::Unusable { .. } => Self::Unavailable,
+            crate::prerequisite::probe::ProbeVerdict::NotProbed { .. } => Self::NotProbed,
         }
     }
 }

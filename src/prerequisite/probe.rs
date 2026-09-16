@@ -276,6 +276,42 @@ pub fn seed_probe_for_language(language: &str) -> Option<ToolchainProbe> {
         })
 }
 
+/// The install hint seed carries for one catalogue language slug.
+///
+/// Issue #1138 plan 06 leaf L3: these were fourteen `&'static str` constants in
+/// `src/coding/catalog/languages.rs`, unreachable from the install path that
+/// needed them. They are rows now, beside the probe for the same program.
+#[must_use]
+pub fn seed_setup_hint(language: &str) -> String {
+    seed_field(language, "setup_hint")
+}
+
+/// The environment description seed carries for one catalogue language slug.
+#[must_use]
+pub fn seed_environment(language: &str) -> String {
+    seed_field(language, "environment")
+}
+
+/// The execution status a recorded harness run observed for one catalogue
+/// language slug: `verified`, `unavailable`, or absent, which is `not_probed`.
+#[must_use]
+pub fn seed_execution_status(language: &str) -> String {
+    seed_field(language, "execution_status")
+}
+
+/// One field of the seed row for a catalogue language slug.
+fn seed_field(language: &str, field: &str) -> String {
+    parse_lino(TOOLCHAINS_LINO)
+        .children
+        .iter()
+        .find(|node| {
+            node.find_child_value("record_type") == RECORD_PROBE
+                && node.find_child_value("language") == language
+        })
+        .map(|node| node.find_child_value(field).to_owned())
+        .unwrap_or_default()
+}
+
 /// The probe declared for one program, when seed declares one.
 #[must_use]
 pub fn seed_probe_for_program(program: &str) -> Option<ToolchainProbe> {

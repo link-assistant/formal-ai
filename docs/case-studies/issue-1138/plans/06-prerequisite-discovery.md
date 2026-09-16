@@ -794,8 +794,8 @@ Record the probe table, the recovery outcome for each of the five languages, and
 ## Implementation leaves — ordered, each individually verifiable and commit-sized
 
 - [x] **L1.** Add `src/prerequisite/probe.rs` with `ToolchainProbe`, `ProbeVerdict`, `probe_command`, and `data/seed/toolchains.lino` carrying the probe argv for every catalogued language. Test: missing/present/unusable/not-probed.
-- [ ] **L2.** Add `ExecutionStatus::NotProbed` and `from_verdict` (`src/coding/catalog/types.rs:202-214`); make `src/engine.rs:939-951` and `src/coding/guidance.rs:291-311` render it; add the missing Spanish branch. Test: an unprobed toolchain is not reported as unavailable.
-- [ ] **L3.** Delete the 14 `setup_hint` and 5 `environment` constants from `src/coding/catalog/languages.rs` in favour of seed rows; add both to `data/meta/debt-ratchet.lino` as shrink-only ceilings at their current values first, then drive them down in this commit. Test: no `ExecutionStatus::Verified`/`::Unavailable` literal remains in that file.
+- [x] **L2.** Add `ExecutionStatus::NotProbed` and `from_verdict` (`src/coding/catalog/types.rs:202-214`); make `src/engine.rs:939-951` and `src/coding/guidance.rs:291-311` render it; add the missing Spanish branch. Test: an unprobed toolchain is not reported as unavailable.
+- [x] **L3.** Delete the 14 `setup_hint` and 5 `environment` constants from `src/coding/catalog/languages.rs` in favour of seed rows; add both to `data/meta/debt-ratchet.lino` as shrink-only ceilings at their current values first, then drive them down in this commit. Test: no `ExecutionStatus::Verified`/`::Unavailable` literal remains in that file.
 - [x] **L4.** Add `src/prerequisite/mod.rs` `PrerequisiteNeed` and the classifier that turns a `StepFailure` (`src/agentic_coding/command_reroute.rs:172-176`) or a `WorkspaceError::MissingPrerequisite` (plan 03) into one. Test: 127 vs 126 vs compile error; platform observed.
 - [x] **L5.** Write the need into `NeedLedger` as `Blocked`, and forbid `Satisfied` without a passing re-probe. Test: the three-state lifecycle.
 - [x] **L6.** Add `src/prerequisite/publisher.rs` `SetupProcedure`, `SetupStep`, `discover_setup_procedure` over `data/seed/sources-registry.lino` + a new `data/seed/setup-publishers.lino`, calling the plan 00 §4.2 `SourceLookup` contract (plan 01 owns its one implementation; `src/coding/concept_discovery.rs:81-91` is the trait it supersedes or adapts). Test: lookalike host, no postcondition, exhaustion, cycle, shared dependency.
@@ -812,6 +812,21 @@ Record the probe table, the recovery outcome for each of the five languages, and
 - [ ] **L17.** Recover the SWE-bench harness prerequisite through `recover()` rather than through `.github/workflows/external-benchmarks.yml:113-117`, and record whether the run still reaches the evaluator.
 - [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `VISION.md`, `ROADMAP.md`, `GOALS.md`, `docs/benchmarks.md`, `docs/meta-algorithm.md` per the next section; tick the six open boxes of `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81` that this plan actually closes, and leave the rest unticked with the reason.
 
+
+**Leaf L2/L3 note (wave I6).** `ExecutionStatus` now has three variants and
+`from_verdict`; `execution_output_label` takes the status rather than a boolean
+and renders `NotProbed` as *"Output, not observed in this environment"* rather
+than as the promise "Expected output after verification". The fourteen
+`setup_hint` strings, the five `environment` strings and the per-row `status`
+left `src/coding/catalog/languages.rs` for `data/seed/toolchains.lino`, beside
+the probe argv for the same program, so no catalogue row states its own
+availability. What the seed row records is what a harness run **observed**; a
+caller holding a live `ProbeVerdict` derives the status from it instead. The
+Spanish branch of `src/coding/guidance.rs` is served from
+`data/seed/coding-guidance.lino` rather than from twenty more Rust literals,
+because the `check-hardcoded-language.rs` allowlist may only shrink; the other
+four languages stay where that allowlist already inventories them, which is
+plan 09's burn-down rather than this leaf's.
 
 **Leaf L6 note (wave I6).** `search_setup_procedure` takes the plan 00 §4.2
 `SourceLookup` contract by generic parameter and is exercised against a fixture

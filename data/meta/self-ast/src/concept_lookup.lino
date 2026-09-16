@@ -2,26 +2,48 @@ self_ast_census
   target src/concept_lookup.rs
   language rust
   fidelity signature
-  byte_len 5752
-  line_count 185
-  content_id source_module_6cbdf91d0bb2f0ac
-  symbol_count 18
+  byte_len 24361
+  line_count 684
+  content_id source_module_bbce821be1500bcc
+  symbol_count 40
   symbols
-    struct ConceptSense 24 40
-    function content_id 46 48
-    function to_links_notation 51 53
-    enum LookupOutcome 58 65
-    struct SenseExtractor 70 73
-    function new 77 79
-    type Item 83 83
-    function entry_url 85 87
-    function read 89 98
-    struct RegistrySourceLookup 102 111
-    function new 115 124
-    function outcomes 128 130
-    function lookup 134 136
-    struct RegistryConceptLookup 142 144
-    function new 148 150
-    function lookup 156 162
-    function lookup_surface 167 177
-    function unknown_surfaces 183 185
+    struct ConceptSense 31 62
+    function content_id 71 82
+    function to_links_notation 91 116
+    function provenance 120 131
+    enum LookupOutcome 136 146
+    struct SenseExtractor 151 154
+    function new 159 164
+    type Item 168 168
+    function entry_url 170 172
+    function read 174 235
+    function sense_language 244 253
+    struct RawGloss 257 262
+    function read_glosses 265 279
+    function wiktionary_entry 283 303
+    function wordnet_sense 307 328
+    function mediawiki_summary 332 343
+    function wikidata_entity 347 369
+    function projection_glosses 373 378
+    function collect_projection 380 407
+    function string_at 409 411
+    function strings_at 413 418
+    function array_at 420 426
+    function compact 429 431
+    struct RegistrySourceLookup 434 443
+    function new 448 466
+    function outcomes 470 472
+    function consulted 476 478
+    function bounds 482 484
+    function resolve 487 507
+    function lookup 511 528
+    struct RegistryConceptLookup 534 536
+    function new 541 543
+    function outcomes 547 549
+    function lookup 555 578
+    function lookup_surface 583 608
+    function unknown_surfaces 619 638
+    function outside_quotes 642 666
+    const PAIRS 643 643
+    function seeded_surfaces 669 684
+    static CACHE 670 670

@@ -38,6 +38,8 @@ seed_registry
     bundle true
   seed client-integrations
     bundle true
+  seed coding-guidance
+    bundle true
   seed coding-idioms
     bundle true
     web true

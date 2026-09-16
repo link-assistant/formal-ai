@@ -656,11 +656,11 @@ impl UniversalSolver {
             }
             log.append(
                 "execution_status",
-                spec.language.execution.status.label().to_owned(),
+                spec.language.execution_status().label().to_owned(),
             );
             log.append(
                 "execution_environment",
-                spec.language.execution.environment.to_owned(),
+                spec.language.environment(),
             );
             log.append("program_parameter:language", spec.language.slug.to_owned());
             log.append("program_parameter:task", spec.task.slug.to_owned());

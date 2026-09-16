@@ -707,11 +707,11 @@ pub fn try_write_script(
     let intent = format!("write_script_{}", program.language.slug);
     log.append(
         "execution_status",
-        program.language.execution.status.label().to_owned(),
+        program.language.execution_status().label().to_owned(),
     );
     log.append(
         "execution_environment",
-        program.language.execution.environment.to_owned(),
+        program.language.environment(),
     );
     Some(finalize_simple(
         prompt,
