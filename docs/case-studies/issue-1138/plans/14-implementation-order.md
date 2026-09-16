@@ -1423,3 +1423,192 @@ wave's commits. It reports one offender throughout —
 `src/selection_heuristics/splitting.rs`, `"{head} {text}"` — which belongs to a
 concurrent sibling's uncommitted work, not to this wave. No prompt added by this
 wave lives in `src/` or `data/seed/`.
+
+---
+
+## Wave I1/I2 report
+
+Written at the end of the wave, from runs in this worktree on 2026-09-16. Every
+number below is a paste of a command's output, not a recollection.
+
+### Wave I1 — every row, and what landed
+
+| leaf | state | commit |
+| --- | --- | --- |
+| **00-C1** the `Need` record | done | `feat(issue-1138): the \`Need\` record, once (plan 00 leaf C1)` |
+| **05-3** the `Evidence` record | **not mine** — landed by the sibling agent that owns plan 05 | `feat(evidence): the \`Evidence\` record, content-addressed and deterministic` |
+| **05-2** `reported_exit_code` promoted to `pub(crate)` | done, by that same commit: `Evidence::from_tool_result` is its first cross-module caller, so the promotion and its reason landed together | as above |
+| **09-1** widen the boundary scan root | done | `fix(issue-1138): the boundary scan root covers every handler file (plan 09 leaf 1)` |
+| **09-2** strict two-sided debt ratchet, `--base` required | done | `fix(issue-1138): the debt ratchet compares strictly in both directions (plan 09 leaf 2)` |
+| **09-3** one handler census | done | `fix(issue-1138): one handler census, five new measures, the prelude in the ledger (plan 09 leaves 3-5)` |
+| **09-4** five new measures | done | as above |
+| **09-5** the prelude in the ledger | done | as above |
+| **09-6** honest closure number | done | `fix(issue-1138): the closure number stops measuring its own generator (plan 09 leaves 6-7)` |
+| **09-7** `closure-audit.lino` + strict `total_closure` | done | as above |
+| **09-8** delete the 16 generated shards | done | `refactor(issue-1138): delete the generated closure shards; the generator proposes work (plan 09 leaf 8)` |
+| **09-9** `shape` and `of padded` | done | `feat(issue-1138): \`shape\` and \`of padded\` in the rule grammar (plan 09 leaf 9)` |
+
+### Wave I2 — plan 01
+
+| leaf | state |
+| --- | --- |
+| **01-L1** the refactor guard | done — both halves green |
+| **01-L2** extract the kernel into `src/source_walk.rs` | done — `how_to_guide` 828 -> 688 lines, #991 byte-identical |
+| **01-L3** `need_kinds` / `extractor` / `api_language` in the registry | done |
+| **01-L4** settings surface | **not attempted** |
+| **01-L5** the four registry-bound extractors | **not attempted** |
+| **01-L6** capture the fixtures | **not attempted** (see the honest capture finding below) |
+| **01-L7** `lookup_surface`, `RegistrySourceLookup`, `RegistryConceptLookup` | **not attempted** |
+| **01-L8** … **01-L18** | **not attempted** |
+
+L1-L3 land in `feat(issue-1138): one bounded walk, and the registry's second
+selection axis (plan 01 L1-L3)`. L4 onward are **not** struck through: nothing
+was found that makes them unachievable, and the wave T tests they owe stay red
+and unweakened. This wave ran out of working budget after L3, and saying so is
+the honest record; a later session resumes at L4 with the kernel and the
+registry axis already under it.
+
+### Tests now green (focused runs, result lines pasted)
+
+```
+$ cargo test --all-features --test unit specification::needs
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 3812 filtered out
+
+$ cargo test --all-features --test unit issue_918
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 3806 filtered out
+
+$ cargo test --all-features --test unit issue_699_handler_migration
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 3808 filtered out
+
+$ cargo test --all-features --test unit total_closure
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 3808 filtered out
+
+$ cargo test --all-features --test unit issue_1085_rule_interpreter
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 3799 filtered out
+
+$ cargo test --all-features --test unit issue_991_how_to
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 3806 filtered out
+
+$ cargo test --all-features --test unit issue_1138_source_walk_parity
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3814 filtered out
+```
+
+`issue_991_how_to` and `issue_1085_rule_interpreter` were green before this wave
+and are pasted because L2 moved the walk underneath the first and leaf 9 added
+grammar to the second: green after the change is the claim, not green at all.
+
+### Tests still red, and why
+
+| test | why |
+| --- | --- |
+| `issue_1138_concept_lookup` (all 9) | L5 and L7 owe the extractors and `lookup_surface`; `src/concept_lookup.rs` is still the wave T skeleton. |
+| `concept_sense_ledger` (both) | L12 owes `src/concept_sense_ledger.rs`. |
+| `issue_1138_universal_loop_lookup` (all 3) | L11 owes the loop wiring and the deletion of `policy:no_fetch_capability`, which is still present in `src/solver.rs`. |
+| `coding_discovery::concepts` (the three added cases) | L8 and L9 owe per-word needs and evidence-as-part. |
+| `coding_discovery::multilingual::held_out_unknown_word_tasks…` | L10 owes the coding-path wiring. |
+| `specification::concept_lookup_meta_algorithm` | L16 owes the grounded recipe. |
+| `tests/integration/issue_1138_concept_lookup_http.rs` | L15 owes it, and it depends on L11. |
+| `tests/web/issue-1138-concept-lookup.test.mjs` | L13 owes the two workers. |
+| `issue_1138_handler_promotions` (all 3) | leaves 10 and 11 of plan 09 owe `data/seed/handler-promotions.lino` and `src/handler_promotion.rs`; they are wave I9. Leaf 9 owed this file only the grammar, and `promotion_conditions_use_the_handler_rules_grammar` now finds every keyword it checks for in the interpreter. |
+
+### The capture finding, recorded rather than worked around
+
+Plan 01 L6 says: capture the fixtures with the example the plan names if the
+network is available, and record honestly if it is not. The network **is**
+available from this worktree, and the finding is about the services rather than
+the network:
+
+```
+$ curl -s -m 20 -w "HTTP %{http_code}" \
+    "https://api.dictionaryapi.dev/api/v2/entries/en/mass"       -> HTTP 200, a full entry
+$ curl -s -m 20 -w "HTTP %{http_code}" \
+    "https://api.dictionaryapi.dev/api/v2/entries/en/isogram"    -> HTTP 522, "error code: 522"
+$ curl -s -m 20 \
+    "https://en.wikipedia.org/api/rest_v1/page/summary/Isogram"  -> HTTP 200, redirected to
+                                                                    "Heterogram (literature)"
+```
+
+The Free Dictionary API serves the lemmas the committed
+`data/cache/wiktionary/en/` corpus was built from and has **no entry for the
+held-out word this plan is judged by**. So
+`an_unknown_word_resolves_to_a_licensed_sense_with_exact_provenance`, which
+asserts `sense.source_id == "wiktionary"` for `isogram`, cannot be satisfied by
+a real capture of that service. Plan 01's risk 2 anticipated the shape of this
+("the honest intermediate number, if Wiktionary's API serves only `en`, is `en`
+resolved and ru/hi/zh/es reported `unbound_template`") but not this instance of
+it: the gap is not a language the endpoint does not serve, it is a *word* the
+endpoint does not have. Wikipedia does answer, under a different title.
+
+No fixture was fabricated. L6 remains open, and whoever takes it decides one of
+two things, which is a decision and not an implementation detail: either the
+test's expected `source_id` becomes "whichever declared source answered, in
+registry order" — which is what the registry ordering is *for* — or the held-out
+word changes to one the dictionary tier actually serves, which weakens the
+"absent from every seed file" property the corpus depends on.
+
+### Gates, pasted
+
+```
+$ rust-script scripts/check-hardcoded-language.rs
+Detected prose literals: 1286 | allowlisted: 1286          (allowlist did not grow)
+
+$ rust-script scripts/check-minimal-core-boundary.rs
+minimal-core boundary: 49 handler sources, 19766 outside-core lines
+
+$ rust-script scripts/check-debt-ratchet.rs --base origin/main
+  dispatch_name_special_cases: measured 9 / ceiling 9
+  handler_files: measured 46 / ceiling 46
+  handler_migration_pending: measured 45 / ceiling 45
+  hardcoded_language_rows: measured 1286 / ceiling 1286
+  literal_predicates: measured 548 / ceiling 548
+  promotion_predicates: measured 19 / ceiling 19
+  store_read_share: measured 0 / ceiling 0
+  try_dispatch_entries: measured 39 / ceiling 39
+  worker_sync_handler_literals: measured 31 / ceiling 31
+  (handler_files: 42 -> 46, announced as a corrected undercount in the ledger's note)
+  (handler_migration_pending: 40 -> 45, announced as a corrected undercount in the ledger's note)
+debt ratchet holds
+
+$ rust-script scripts/check-file-size.rs
+All checked files are within their line limits
+
+$ rust-script scripts/generate-seed-registry.rs --check
+The seed registry and every file generated from it agree.
+
+$ python3 scripts/check-closure-audit.py
+  unresolved_distinct_honest: measured 3572 / reviewed 3572
+closure audit holds
+
+$ rust-script scripts/run-ci-gates.rs --check
+46 gate(s) registered across 3 stage(s); the workflow runs every stage.
+
+$ rust-script --test scripts/check-debt-ratchet.rs
+test result: ok. 10 passed
+```
+
+There is **no** `scripts/check-seed-registry.rs` in this tree; the gate named
+`check_seed_registry` runs `rust-script scripts/generate-seed-registry.rs
+--check`, which is what is pasted above.
+
+### Two things this wave changed that no leaf named
+
+1. **A ceiling may rise only when its own `note` says `corrected undercount`
+   *and names the value it corrects*.** Plan 00 §6.2 permits the two rises this
+   wave records, but nothing enforced the permission, and a bare marker left in
+   place after a correction would license a second rise forever. The checker now
+   requires the old number to appear in the note, which it cannot once the
+   correction has landed, and prints both permitted rises.
+2. **`scripts/check-closure-audit.py`.** Plan 09 leaf 7 asks for a CI gate file
+   and puts the comparison it gates in a Rust unit test. A gate needs something
+   to run that does not build the crate, so the comparison exists twice: the
+   test is authoritative, the script is the cheap form, and neither duplicates
+   any resolver logic.
+
+### One accident of the shared worktree, recorded
+
+The 16 `git rm`-staged deletions of `data/seed/closure-generated-*.lino` were
+swept into a sibling agent's commit (`test(issue-1138): wave F, the frontier
+queue re-measured, and Spanish`) because the git index is shared across agents
+in this worktree. The final tree is correct and the reason for the deletion is
+in this agent's own commit message; the attribution of those 16 file deletions
+is not. History was not rewritten to fix it.
