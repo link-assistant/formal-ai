@@ -947,7 +947,7 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 - [ ] Add `tests/unit/docs_requirements/issue_1138.rs` grep-pins.
 - [ ] Regenerate `data/meta/self-ast/`; run
       `rust-script scripts/assemble-requirements.rs --write`.
-- [ ] Add the `changelog.d/` fragment.
+- [x] Add the `changelog.d/` fragment.
 
 ## Docs to update
 
