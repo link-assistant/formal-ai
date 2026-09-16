@@ -7,13 +7,18 @@
 //! predicates standing in for a rule, and rows of the hardcoded-language
 //! allowlist (R379).
 //!
-//! Two rules, one command each:
+//! Two rules, both in one required command:
 //!
-//! * default -- every measured value is at or below its ceiling. A pull request
-//!   that removes debt may lower a ceiling; nothing may raise one.
-//! * `--base <rev>` -- additionally, no ceiling is higher than at `<rev>`.
-//!   `GITHUB_BASE_REF` is honoured when set, so the pull-request gate compares
-//!   against the branch it targets without being told.
+//! * every measured value is **exactly** its ceiling. Above it is new debt;
+//!   below it is debt already removed whose ceiling was not lowered in the same
+//!   commit, which leaves the next commit free to add it back (issue #1138 B9,
+//!   plan 09 leaf 2). A measure whose `how` field says `direction upward` has a
+//!   floor instead of a ceiling and the comparison inverts.
+//! * `--base <rev>` -- no ceiling is higher than at `<rev>` (and no upward
+//!   measure's floor lower). `GITHUB_BASE_REF` is honoured when set, so the
+//!   pull-request gate compares against the branch it targets without being
+//!   told. The flag is **required**: a run with nothing to compare against
+//!   answers a weaker question than the gate claims to answer.
 //!
 //! No release depends on any ceiling here. This file carried a name built on a
 //! division of `src` into a privileged part and the rest until 2026-09-12. That
@@ -24,7 +29,7 @@
 //! every release.
 //!
 //! Usage:
-//!   rust-script scripts/check-debt-ratchet.rs [--base <rev>] [--repo <path>]
+//!   rust-script scripts/check-debt-ratchet.rs --base <rev> [--repo <path>]
 //!   rust-script --test scripts/check-debt-ratchet.rs
 //!
 //! ```cargo
@@ -32,7 +37,7 @@
 //! edition = "2024"
 //! ```
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -42,9 +47,17 @@ const LEDGER: &str = "data/meta/debt-ratchet.lino";
 const HANDLER_LEDGER: &str = "data/meta/handler-migration-ledger.lino";
 const ALLOWLIST: &str = "scripts/hardcoded-language-allowlist.txt";
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+/// The marker a measure puts in its own `how` field when its strict direction is
+/// upward rather than downward (plan 00 §6.7 names `store_read_share` and plan
+/// 10's four routing measures as the declared exceptions).
+const UPWARD_MARKER: &str = "direction upward";
+
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 struct Ratchet {
     ceilings: BTreeMap<String, u64>,
+    /// Measures whose strict direction is upward; for them the recorded value is
+    /// a floor that may only rise.
+    upward: BTreeSet<String>,
 }
 
 fn unquote(value: &str) -> String {
@@ -55,16 +68,26 @@ fn unquote(value: &str) -> String {
 /// dependency and the same parser runs at any revision.
 fn parse_ratchet(text: &str) -> Result<Ratchet, String> {
     let mut ceilings = BTreeMap::new();
+    let mut upward = BTreeSet::new();
     let mut measure: Option<String> = None;
+    let mut named: Option<String> = None;
     for line in text.lines() {
         let trimmed = line.trim();
         if trimmed == "ceiling" {
             measure = None;
+            named = None;
             continue;
         }
         if let Some(rest) = trimmed.strip_prefix("measure ") {
             measure = Some(unquote(rest));
+            named = measure.clone();
             continue;
+        }
+        if let Some(rest) = trimmed.strip_prefix("how ")
+            && let Some(name) = named.as_ref()
+            && unquote(rest).contains(UPWARD_MARKER)
+        {
+            upward.insert(name.clone());
         }
         if let Some(rest) = trimmed.strip_prefix("value ") {
             let Some(name) = measure.take() else {
@@ -79,7 +102,7 @@ fn parse_ratchet(text: &str) -> Result<Ratchet, String> {
     if ceilings.is_empty() {
         return Err("the ratchet names no ceiling".to_owned());
     }
-    Ok(Ratchet { ceilings })
+    Ok(Ratchet { ceilings, upward })
 }
 
 fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
@@ -140,7 +163,19 @@ fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     Ok(measured)
 }
 
-/// Every measured value at or below its ceiling.
+/// Every measured value **exactly at** its ceiling.
+///
+/// Issue #1138 B9, plan 09 leaf 2: this was an at-or-below comparison, which is
+/// how `literal_predicates` sat at 548 against a ceiling of 549 for weeks — the
+/// gate was green while the ledger stated a number the tree had already beaten,
+/// so the next commit could add a literal back for free. The rule is now
+/// `check-minimal-core-boundary.rs`'s exact two-sided one: a value above its
+/// ceiling fails, and a value below it fails too, naming the remedy "lower the
+/// reviewed ceiling in this commit".
+///
+/// A measure whose `how` field declares `direction upward` inverts the
+/// comparison: for it, above the floor is the improvement and below it is the
+/// regression.
 fn check_measured(ratchet: &Ratchet, measured: &BTreeMap<String, u64>) -> Vec<String> {
     let mut failures = Vec::new();
     for (name, ceiling) in &ratchet.ceilings {
@@ -148,21 +183,24 @@ fn check_measured(ratchet: &Ratchet, measured: &BTreeMap<String, u64>) -> Vec<St
             failures.push(format!("ceiling `{name}` has no measurement"));
             continue;
         };
-        if value > ceiling {
+        let upward = ratchet.upward.contains(name);
+        if (!upward && value > ceiling) || (upward && value < ceiling) {
             failures.push(format!(
                 "{name}: measured {value}, ceiling {ceiling}; move the behaviour into data/seed or \
                  data/meta rules instead of raising the ceiling (issue #1085 D1)"
+            ));
+        } else if (!upward && value < ceiling) || (upward && value > ceiling) {
+            failures.push(format!(
+                "{name}: improved from {ceiling} to {value}; lower the reviewed ceiling in \
+                 data/meta/debt-ratchet.lino in this commit"
             ));
         }
     }
     failures
 }
 
-/// No ceiling higher than before; with `strict_shrink`, the line ceiling lower.
-fn check_against_previous(
-    previous: &Ratchet,
-    current: &Ratchet,
-) -> Vec<String> {
+/// No ceiling higher than before — and, for an upward measure, no floor lower.
+fn check_against_previous(previous: &Ratchet, current: &Ratchet) -> Vec<String> {
     let mut failures = Vec::new();
     for (name, before) in &previous.ceilings {
         let Some(now) = current.ceilings.get(name) else {
@@ -171,7 +209,14 @@ fn check_against_previous(
             ));
             continue;
         };
-        if now > before {
+        if current.upward.contains(name) {
+            if now < before {
+                failures.push(format!(
+                    "{name}: floor lowered from {before} to {now}; an upward measure's floor can \
+                     only move up"
+                ));
+            }
+        } else if now > before {
             failures.push(format!(
                 "{name}: ceiling raised from {before} to {now}; a ceiling can only move down"
             ));
@@ -225,18 +270,23 @@ fn parse_options(args: impl IntoIterator<Item = String>) -> Result<Options, Stri
             "--repo" => repo = PathBuf::from(args.next().ok_or("--repo requires a value")?),
             "--base" => base = Some(args.next().ok_or("--base requires a value")?),
             "--help" | "-h" => {
-                return Err(
-                    "usage: check-debt-ratchet.rs [--base <rev>] [--repo <path>]"
-                        .to_owned(),
-                );
+                return Err("usage: check-debt-ratchet.rs --base <rev> [--repo <path>]".to_owned());
             }
             other => return Err(format!("unknown argument: {other}")),
         }
     }
-    Ok(Options {
-        repo,
-        base,
-    })
+    // Issue #1138 B9, plan 09 leaf 2: `--base` was optional, so the only check
+    // that catches a *raised* ceiling ran on a pull request and nowhere else. A
+    // run without a base answers a weaker question than the one the gate claims
+    // to answer, so it is refused rather than silently downgraded.
+    if base.is_none() {
+        return Err(
+            "--base <rev> is required: without it the ceilings are compared against nothing and a \
+             raised ceiling passes. Use --base origin/main locally; CI supplies GITHUB_BASE_REF."
+                .to_owned(),
+        );
+    }
+    Ok(Options { repo, base })
 }
 
 fn run() -> Result<(), String> {
@@ -311,7 +361,10 @@ mod tests {
         let mut ceilings = BTreeMap::new();
         ceilings.insert("literal_predicates".to_owned(), literals);
         ceilings.insert("handler_files".to_owned(), handlers);
-        Ratchet { ceilings }
+        Ratchet {
+            ceilings,
+            upward: BTreeSet::new(),
+        }
     }
 
     #[test]
@@ -372,8 +425,65 @@ mod tests {
         );
     }
 
+    /// Issue #1138 B9, plan 09 leaf 2. `literal_predicates` measured 548
+    /// against a ceiling of 549 and the gate was green, so the ledger stated a
+    /// number the tree had already beaten and the next commit could add the
+    /// literal back for free. Below the ceiling is now a failure that names the
+    /// remedy.
     #[test]
-    fn the_committed_ledger_measures_at_or_below_its_own_ceilings() {
+    fn a_measurement_below_its_ceiling_fails_and_asks_for_the_ceiling_to_be_lowered() {
+        let failures = check_measured(&ratchet(10, 2), &{
+            let mut measured = BTreeMap::new();
+            measured.insert("literal_predicates".to_owned(), 9);
+            measured.insert("handler_files".to_owned(), 2);
+            measured
+        });
+        assert_eq!(failures.len(), 1, "{failures:?}");
+        assert!(
+            failures[0].contains("literal_predicates: improved from 10 to 9")
+                && failures[0].contains("lower the reviewed ceiling"),
+            "{failures:?}"
+        );
+    }
+
+    /// A measure that declares `direction upward` in its own `how` field has a
+    /// floor, not a ceiling: below it is the regression and above it is the
+    /// improvement that must be recorded (plan 00 §6.7).
+    #[test]
+    fn an_upward_measure_inverts_both_comparisons() {
+        let text = "debt_ratchet\n  ceiling\n    measure store_read_share\n    value 3\n    \
+                    how \"share of reads served by the link store; strict direction upward\"\n";
+        let parsed = parse_ratchet(text).expect("the sample parses");
+        assert!(parsed.upward.contains("store_read_share"));
+
+        let below = check_measured(&parsed, &BTreeMap::from([("store_read_share".to_owned(), 2)]));
+        assert_eq!(below.len(), 1, "{below:?}");
+        assert!(below[0].contains("measured 2, ceiling 3"), "{below:?}");
+
+        let above = check_measured(&parsed, &BTreeMap::from([("store_read_share".to_owned(), 4)]));
+        assert_eq!(above.len(), 1, "{above:?}");
+        assert!(above[0].contains("improved from 3 to 4"), "{above:?}");
+
+        assert!(check_measured(&parsed, &BTreeMap::from([("store_read_share".to_owned(), 3)])).is_empty());
+    }
+
+    /// The only check that catches a raised ceiling is the base comparison, so a
+    /// run with no base answers a weaker question than the gate claims to.
+    #[test]
+    fn a_run_without_a_base_is_refused() {
+        // SAFETY: single-threaded test process; the variable is removed so the
+        // ambient CI environment cannot supply the base this test withholds.
+        unsafe { env::remove_var("GITHUB_BASE_REF") };
+        let error = parse_options(Vec::new()).err().expect("a base is required");
+        assert!(error.contains("--base <rev> is required"), "{error}");
+        assert!(
+            parse_options(["--base".to_owned(), "origin/main".to_owned()]).is_ok(),
+            "an explicit base is accepted"
+        );
+    }
+
+    #[test]
+    fn the_committed_ledger_measures_exactly_its_own_ceilings() {
         let root = repo_root();
         let text = fs::read_to_string(root.join(LEDGER)).expect("the ledger is committed");
         let parsed = parse_ratchet(&text).expect("the committed ledger parses");

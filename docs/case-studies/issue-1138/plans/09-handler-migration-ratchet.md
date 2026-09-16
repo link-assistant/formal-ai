@@ -983,7 +983,7 @@ Ordered; each is independently verifiable and commit-sized.
       `src/solver_handler_how.rs`, `solver_handler_how_synthesis.rs`,
       `solver_handler_units.rs`, `solver_handler_oracle.rs`; add their ledger
       rows; record the new `source_file_count_max` / `source_lines_max`.
-- [ ] 2. Make `scripts/check-debt-ratchet.rs` strict two-sided (adopt
+- [x] 2. Make `scripts/check-debt-ratchet.rs` strict two-sided (adopt
       `check-minimal-core-boundary.rs:284-291`); lower `literal_predicates`
       549→548 in the same commit; add `--base` to the gate's `run` line.
 - [ ] 3. Point `check-debt-ratchet.rs` and

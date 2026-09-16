@@ -85,7 +85,11 @@ jobs:
       # through the `check_debt_ratchet` gate; what is gone is the rule that a
       # *release* must show the line count falling.
       - name: 'Debt ratchet holds (ceilings move down, never up)'
-        run: rust-script scripts/check-debt-ratchet.rs
+        # Issue #1138 B9, plan 09 leaf 2: `--base` is required, so the only
+        # check that catches a *raised* ceiling runs here too and not only on a
+        # pull request. `fetch-depth: 0` above makes `origin/main` available;
+        # when it is not, the checker prints a skip line rather than failing.
+        run: rust-script scripts/check-debt-ratchet.rs --base origin/main
       # `PULL_REQUEST_CREATED_AT` is what lets the architect's relaxation apply:
       # after a day the floor reports "relaxed" instead of blocking, so a
       # release is never held by a requirement he already said should yield
