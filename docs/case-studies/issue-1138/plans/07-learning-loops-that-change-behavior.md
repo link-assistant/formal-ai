@@ -806,15 +806,15 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
 
 ## Implementation leaves
 
-- [ ] Land plan 05's `src/execution_evidence.rs` first; `BehaviorDelta` depends on
+- [x] Land plan 05's `src/execution_evidence.rs` first; `BehaviorDelta` depends on
       `Evidence`.
-- [ ] Add `src/behavior_delta.rs` with `DeltaVerdict`, `BehaviorDelta`, `AdoptionEffect`,
+- [x] Add `src/behavior_delta.rs` with `DeltaVerdict`, `BehaviorDelta`, `AdoptionEffect`,
       `prove_effect`, `to_links_notation` for all three; register in `src/lib.rs`.
 - [ ] Extend `data/meta/learning-adoption-ledger.lino` with the `behavior_delta` and
       `adoption_effect` record shapes; keep the 60 existing #701 pairs byte-identical.
-- [ ] Add `LearnedMethod::to_recipe_program` and `is_executable` in
+- [x] Add `LearnedMethod::to_recipe_program` and `is_executable` in
       `src/method_registry.rs`, reusing `recipe_interpreter::RecipeProgram`.
-- [ ] Add the fourth loop to `ordered_method_names_for_relevants` (learned methods last)
+- [x] Add the fourth loop to `ordered_method_names_for_relevants` (learned methods last)
       plus the `method:learned` trace event; keep the signature and name unchanged.
 - [ ] Teach `meta_method_dispatch::try_dispatch` to execute a learned name through
       `to_recipe_program()`; the first production caller of `learned_method`.

@@ -843,20 +843,20 @@ Ordered; each independently verifiable and commit-sized.
 
 **Build the three derivations.**
 
-- [ ] 4. `src/capability_routing.rs`: `ObjectType` and `object_type()`, reusing
+- [x] 4. `src/capability_routing.rs`: `ObjectType` and `object_type()`, reusing
       `web_research.rs:634`, `file_path_shape.rs`, `local_search.rs:270-331`;
       `tests/unit/issue_1138_object_type.rs` with the five-language cases.
-- [ ] 5. Add the `time_of_day` and `quantity_question` object shapes; unit-test
+- [x] 5. Add the `time_of_day` and `quantity_question` object shapes; unit-test
       each independently of any capability.
-- [ ] 6. `data/seed/meanings-acts.lino`: the eight acts, five languages each;
+- [x] 6. `data/seed/meanings-acts.lino`: the eight acts, five languages each;
       register in `data/meta/seed-registry.lino` and regenerate.
-- [ ] 7. `locus()`: derive from object + scope nouns; add `lexeme es` to the
+- [x] 7. `locus()`: derive from object + scope nouns; add `lexeme es` to the
       eleven `local_path_*` roles in `data/seed/meanings-local-search.lino`;
       assert `on my desktop` ≡ `on desktop`.
 
 **Land the table.**
 
-- [ ] 8. `data/seed/capability-routing.lino` with the nine seed rows plus
+- [x] 8. `data/seed/capability-routing.lino` with the nine seed rows plus
       `default ask`; `src/capability_routing.rs::route()`;
       `tests/unit/specification/capability_routing_table.rs`.
 - [ ] 9. Wire `route()` ahead of `capability_router::plan_shared_capability_step`

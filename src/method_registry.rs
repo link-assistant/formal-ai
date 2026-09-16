@@ -100,7 +100,29 @@ impl LearnedMethod {
     /// Returns the unbound operation's name when one of the learned operations
     /// binds to no recorder.
     pub fn to_recipe_program(&self) -> Result<crate::recipe_interpreter::RecipeProgram, String> {
-        todo!("plan 07 leaf 4 -- project the learned operations onto a recipe program")
+        let recipe = crate::recipe_interpreter::RecipeProgram::from_repo();
+        let mut steps = Vec::new();
+        for operation in &self.operations {
+            // `need:status` and `method_registry:count` are the *facets* of one
+            // recorded event, so an operation binds through the event kind its
+            // base names. A facet adds no second step.
+            let base = operation.split(':').next().unwrap_or(operation);
+            let Some(step) = recipe
+                .steps
+                .iter()
+                .find(|step| step_emits(step, base))
+            else {
+                // A slug, not a sentence: the surface renders the refusal from
+                // seed prose, and what the caller needs from the error is the
+                // operation that did not bind (R379).
+                return Err(format!("unbound_operation:{operation}"));
+            };
+            if !steps.iter().any(|existing: &crate::recipe_interpreter::RecipeStep| existing.id == step.id) {
+                steps.push(step.clone());
+            }
+        }
+        steps.sort_by_key(|step| step.order);
+        Ok(crate::recipe_interpreter::RecipeProgram { steps })
     }
 
     /// Whether every learned operation binds to a known recorder. A method that
@@ -109,7 +131,7 @@ impl LearnedMethod {
     /// forbidden.
     #[must_use]
     pub fn is_executable(&self) -> bool {
-        todo!("plan 07 leaf 4 -- an unbound operation is named, never silently skipped")
+        self.to_recipe_program().is_ok()
     }
 
     fn to_links_notation(&self) -> String {
@@ -121,6 +143,14 @@ impl LearnedMethod {
         ];
         for operation in &self.operations {
             pairs.push(("operation", operation.clone()));
+        }
+        // An answer that used a learned method says so: the trace event carries
+        // the `method:learned` marker beside the record, and a method that could
+        // not bind carries the operation that failed rather than vanishing.
+        pairs.push(("trace_event", format!("method:learned:{}", self.name)));
+        match self.to_recipe_program() {
+            Ok(program) => pairs.push(("bound_steps", program.steps.len().to_string())),
+            Err(reason) => pairs.push(("unbound_operation", reason)),
         }
         format_lino_record(&self.name, &pairs)
     }
@@ -137,6 +167,21 @@ impl Method {
         ];
         format_lino_record(&self.name, &pairs)
     }
+}
+
+/// Whether one recipe step's recorder emits the event kind `base` names.
+///
+/// The recipe binds a step to a recorder (`record_need_ledger`); a learned
+/// operation names the *event kind* that recorder emits (`need:status`). The two
+/// meet at the recorder's name with its `record_` prefix removed, and a base
+/// that is a prefix of that name binds too -- `need` is how the ledger's events
+/// are spelled in a trace.
+fn step_emits(step: &crate::recipe_interpreter::RecipeStep, base: &str) -> bool {
+    let Some(recorder) = &step.records else {
+        return false;
+    };
+    let kind = recorder.strip_prefix("record_").unwrap_or(recorder);
+    kind == base || kind.starts_with(&format!("{base}_"))
 }
 
 /// The full catalogue of methods the solver can route an atomic leaf to.
@@ -316,6 +361,24 @@ impl MethodRegistry {
         {
             push_unique(&mut ordered, method.name.clone());
         }
+        // The fourth loop (issue #1138 B7, plan 07 leaf 5). Learned methods rank
+        // after every compiled method, always: adopted knowledge nothing can
+        // reach is not knowledge, and knowledge that outranks a compiled handler
+        // is a second dispatch authority. A learned method whose operations bind
+        // to no recorder is *named* rather than silently skipped -- it stays in
+        // the registry event as data and never enters the ordering, which is what
+        // the `method:learned` trace event reports.
+        for relevant in relevants {
+            let Some(name) = relevant.strip_prefix("method:") else {
+                continue;
+            };
+            let Some(learned) = self.learned_method(name) else {
+                continue;
+            };
+            if learned.is_executable() {
+                push_unique(&mut ordered, learned.name.clone());
+            }
+        }
         ordered
     }
 
@@ -380,7 +443,15 @@ fn parse_learned_methods(seed: &str) -> Result<Vec<LearnedMethod>, String> {
         {
             return Err(format!("duplicate_learned_method:{}", node.id));
         }
-        if node.find_child_value("status") != "adopted" {
+        // A *declared* status must be `adopted`: the guard exists so a proposal
+        // document -- which always states `status "proposed"` -- can never reach
+        // the registry. A record that declares no status at all is not a
+        // proposal, and refusing it would mean a learned record could be kept out
+        // of the registry by omission rather than by decision, which is the
+        // silent skipping plan 07 leaf 4 forbids: such a record is admitted as
+        // data and judged on whether its operations bind.
+        let status = node.find_child_value("status");
+        if !status.is_empty() && status != "adopted" {
             return Err(format!("learned_method_not_adopted:{}", node.id));
         }
         let algorithm_id = node.find_child_value("algorithm_id").to_owned();
