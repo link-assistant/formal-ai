@@ -78,10 +78,27 @@ def _line_tokens(stripped: str) -> list[str]:
     return buf.split()
 
 
-def defined_meaning_slugs(root: str) -> set[str]:
-    """Slugs defined by either syntax across every ``data/seed/*.lino`` file."""
+#: Prefix of the files ``scripts/close-total.py`` writes.
+#:
+#: Issue #1138 B9, plan 09 leaf 6. Counting these as definitions made the metric
+#: self-satisfying: the generator wrote a gloss for every unresolved token and
+#: the audit then read its own output back as grounding, so the reported gap was
+#: zero by construction while thousands of English-only glosses no runtime loads
+#: stood in for it. The honest measurement excludes them; the generator may
+#: propose work, never satisfy the gate.
+GENERATED_PREFIX = "closure-generated-"
+
+
+def defined_meaning_slugs(root: str, *, include_generated: bool = True) -> set[str]:
+    """Slugs defined by either syntax across every ``data/seed/*.lino`` file.
+
+    With ``include_generated=False`` the files ``scripts/close-total.py`` writes
+    are skipped, which is the honest definition set (see ``GENERATED_PREFIX``).
+    """
     defined: set[str] = set()
     for path in sorted(glob.glob(os.path.join(root, "data/seed/*.lino"))):
+        if not include_generated and os.path.basename(path).startswith(GENERATED_PREFIX):
+            continue
         with open(path, encoding="utf-8") as handle:
             lines = handle.read().split("\n")
         stack: list[tuple[int, str]] = []
@@ -134,9 +151,9 @@ def grounded_ids(root: str) -> set[str]:
 class Resolver:
     """Resolution oracle for a single repository root."""
 
-    def __init__(self, root: str) -> None:
+    def __init__(self, root: str, *, include_generated: bool = True) -> None:
         self.root = root
-        self.defined = defined_meaning_slugs(root)
+        self.defined = defined_meaning_slugs(root, include_generated=include_generated)
         self.roles = declared_roles(root)
         self.wiktionary = cached_lemmas(root, "wiktionary")
         self.wordnet = cached_lemmas(root, "wordnet")
@@ -185,19 +202,34 @@ def value_tokens(root: str) -> Counter[str]:
 
 
 def audit(root: str) -> dict:
-    resolver = Resolver(root)
+    """Both numbers: the honest gap, and the gap the generator's output hides.
+
+    ``unresolved`` and its two counts are the **honest** measurement — the
+    generated shards are not in the definition set — because that is the number
+    a grounding work list and the ratchet must read. The
+    ``*_with_generated`` keys preserve the historical measurement so the two can
+    be compared in one run and the difference is visible rather than asserted.
+    """
+    honest = Resolver(root, include_generated=False)
+    with_generated = Resolver(root)
     counts = value_tokens(root)
-    unresolved = {t: c for t, c in counts.items() if not resolver.resolves(t)}
+    unresolved = {t: c for t, c in counts.items() if not honest.resolves(t)}
+    generated_included = {t: c for t, c in counts.items() if not with_generated.resolves(t)}
     return {
-        "defined": len(resolver.defined),
-        "roles": len(resolver.roles),
-        "wiktionary": len(resolver.wiktionary),
-        "wordnet": len(resolver.wordnet),
-        "ids": len(resolver.ids),
+        "defined": len(with_generated.defined),
+        "defined_honest": len(honest.defined),
+        "roles": len(honest.roles),
+        "wiktionary": len(honest.wiktionary),
+        "wordnet": len(honest.wordnet),
+        "ids": len(honest.ids),
         "distinct_value_tokens": len(counts),
         "unresolved": dict(sorted(unresolved.items(), key=lambda kv: (-kv[1], kv[0]))),
         "unresolved_distinct": len(unresolved),
+        "unresolved_distinct_honest": len(unresolved),
         "unresolved_occurrences": sum(unresolved.values()),
+        "unresolved_occurrences_honest": sum(unresolved.values()),
+        "unresolved_distinct_with_generated": len(generated_included),
+        "unresolved_occurrences_with_generated": sum(generated_included.values()),
     }
 
 
@@ -219,20 +251,35 @@ def main(argv: list[str]) -> int:
     if "--json" in flags:
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
-    print(f"defined meanings: {result['defined']}  roles: {result['roles']}")
+    print(
+        f"defined meanings: {result['defined']}  "
+        f"(honest, generated shards excluded: {result['defined_honest']})  "
+        f"roles: {result['roles']}"
+    )
     print(
         f"wiktionary: {result['wiktionary']}  wordnet: {result['wordnet']}  "
         f"wikidata ids: {result['ids']}"
     )
     print(f"distinct value tokens: {result['distinct_value_tokens']}")
     print(
-        f"UNRESOLVED distinct: {result['unresolved_distinct']}  "
-        f"occurrences: {result['unresolved_occurrences']}"
+        f"UNRESOLVED distinct (honest): {result['unresolved_distinct_honest']}  "
+        f"occurrences: {result['unresolved_occurrences_honest']}"
+    )
+    print(
+        f"UNRESOLVED distinct (counting the generated shards as definitions): "
+        f"{result['unresolved_distinct_with_generated']}  "
+        f"occurrences: {result['unresolved_occurrences_with_generated']}"
     )
     print("\n=== unresolved (top 60) ===")
     for token, count in list(result["unresolved"].items())[:60]:
         print(f"{count:4d}  {token}")
-    return 1 if result["unresolved_distinct"] else 0
+    # The exit code keeps the historical meaning -- "does anything resolve to
+    # nothing at all, generated glosses included" -- so a step that runs this
+    # script as a pass/fail verification does not silently flip red on the day
+    # the honest number is first reported. The honest number is ratcheted by
+    # `tests/unit/total_closure.rs::seed_closure_gap_only_shrinks`, which is the
+    # gate plan 09 leaf 7 gives it.
+    return 1 if result["unresolved_distinct_with_generated"] else 0
 
 
 if __name__ == "__main__":

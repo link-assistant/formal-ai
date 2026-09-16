@@ -6,8 +6,10 @@ closure_audit
   checker "tests/unit/total_closure.rs::seed_closure_gap_only_shrinks"
   measure_source "python3 scripts/audit-total-closure.py --json . reporting unresolved_distinct_honest"
   strict_direction "down. A value above the ceiling fails with grew; a value below it fails with improved, lower the reviewed ceiling. The rule is copied from scripts/check-minimal-core-boundary.rs lines 286-290."
+  gate "data/meta/ci-gates/check-closure-audit.lino, running python3 scripts/check-closure-audit.py -- the cheap form of the unit test, so CI can answer the question without building the crate"
   ceiling
     measure unresolved_distinct_honest
-    value 0
+    value 3585
     how "distinct unresolved value tokens reported by scripts/audit-total-closure.py once data/seed/closure-generated- is excluded from the definition set"
-    note "placeholder, not a measurement. Plan 09 leaf 6 emits the honest number and leaf 7 records the first honest run here with its date. Wave T leaves the test red on purpose rather than guessing a value no run produced."
+    measured_on 2026-09-16
+    note "the first honest run, recorded whatever it is (plan 00 invariant 4). The same run reports 1067 honestly defined meanings against 4622 counting the generated shards, and 30 distinct tokens that resolve to nothing even with those shards counted. 3,585 is therefore the size of the grounding work the generated glosses were standing in for, and this ledger is where it shrinks."

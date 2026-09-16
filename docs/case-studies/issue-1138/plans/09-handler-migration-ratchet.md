@@ -1043,15 +1043,36 @@ the checker.
 
 **Make the closure number honest.**
 
-- [ ] 6. Exclude `closure-generated-*` from the audit's definition set; emit
+- [x] 6. Exclude `closure-generated-*` from the audit's definition set; emit
       `unresolved_distinct_honest`; print both numbers.
-- [ ] 7. Create `data/meta/closure-audit.lino` with the measured honest N;
+- [x] 7. Create `data/meta/closure-audit.lino` with the measured honest N;
       convert `tests/unit/total_closure.rs` to the strict two-sided rule; add
       `data/meta/ci-gates/check-closure-audit.lino`.
 - [ ] 8. Delete the 16 `closure-generated-*.lino` files (17,791 lines) and their
       `unregistered` block at `data/meta/seed-registry.lino:457-459`; re-point
       `scripts/close-total.py` to emit a work list; drop the step at
       `scripts/regenerate-derived-artifacts.sh:43`.
+
+**Leaf 7 added one file the leaf did not name (wave I1).** A gate needs
+something to run, and the comparison leaf 7 specifies lives in a Rust unit test
+that requires the crate to be built. `scripts/check-closure-audit.py` is the
+cheap form of exactly that comparison — it reads
+`data/meta/closure-audit.lino` and the audit's `--json` and applies the same
+strict two-sided rule — so `data/meta/ci-gates/check-closure-audit.lino` can
+answer the question in seconds. The unit test remains authoritative; the script
+duplicates no resolver logic, only the comparison.
+
+**The first honest number, recorded whatever it is (leaf 6/7).**
+`python3 scripts/audit-total-closure.py .` on 2026-09-16 reports 1,067 honestly
+defined meanings against 4,622 counting the generated shards, an honest gap of
+**3,585** distinct tokens over 9,135 occurrences, and 30 distinct tokens that
+resolve to nothing even with the generated shards counted as definitions. The
+last 30 are wave T's own seed additions for leaf 9's `shape` / `of padded`
+grammar, and leaf 10 grounds them. 3,585 is the size of the grounding work the
+generated glosses were standing in for; `data/meta/closure-audit.lino` is where
+it shrinks, and the script's exit code keeps its historical meaning so no step
+that runs it as a pass/fail verification flips on the day the honest number is
+first reported.
 
 **Move promotion and dispatch specialisation into data.**
 
