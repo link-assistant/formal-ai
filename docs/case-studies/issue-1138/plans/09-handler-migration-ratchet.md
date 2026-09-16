@@ -986,12 +986,12 @@ Ordered; each is independently verifiable and commit-sized.
 - [x] 2. Make `scripts/check-debt-ratchet.rs` strict two-sided (adopt
       `check-minimal-core-boundary.rs:284-291`); lower `literal_predicates`
       549→548 in the same commit; add `--base` to the gate's `run` line.
-- [ ] 3. Point `check-debt-ratchet.rs` and
+- [x] 3. Point `check-debt-ratchet.rs` and
       `tests/unit/issue_699_handler_migration.rs:175-196` at
       `check-minimal-core-boundary.rs::source_files`; delete
       `RECORDED_SPECIALIZED_HANDLER_FILES_MAX` and
       `RECORDED_TRY_DISPATCH_ENTRIES_MAX` (`:19-20`); record `handler_files 46`.
-- [ ] 4. Add `try_dispatch_entries 39`, `promotion_predicates 19`,
+- [x] 4. Add `try_dispatch_entries 39`, `promotion_predicates 19`,
       `dispatch_name_special_cases 9`, `worker_sync_handler_literals 31`,
       `store_read_share 0` to `data/meta/debt-ratchet.lino` with `how` strings;
       implement each measure in the checker. **This leaf is the gate every other
@@ -1003,11 +1003,43 @@ Ordered; each is independently verifiable and commit-sized.
       — `capability-routing-ratchet`, `selection-heuristic-ratchet`,
       `adoption-effect-ratchet`, `obligation-evidence-ratchet`,
       `toolchain-ledger` — keep their own files.**
-- [ ] 5. Add the 5 prelude methods as `status pending` ledger rows; widen
+- [x] 5. Add the 5 prelude methods as `status pending` ledger rows; widen
       `migration_ledger_is_a_complete_live_registry_census` to precedence +
       prelude; record `handler_migration_pending 45`; fix
       `data/meta/handler-migration-ledger.lino:4`'s dead reference to
       `data/meta/kernel-ratchet.lino`.
+
+**Two deviations from leaves 3 and 4, recorded rather than silent (wave I1).**
+
+1. Leaf 3 said `check-debt-ratchet.rs` and
+   `tests/unit/issue_699_handler_migration.rs` should *call*
+   `check-minimal-core-boundary.rs::source_files`. They cannot: that function
+   counts every `*.rs` minus `modules.rs`, which is 49 with the widened scan
+   root, while the migration count excludes the three dispatch `mod.rs` files
+   and is 46 — the number this plan records. Compiling the boundary script as a
+   module inside `check-debt-ratchet.rs` would also give it a second `main` and
+   a `walkdir` dependency it does not have. The single definition is therefore
+   the **boundary ledger** rather than the boundary function:
+   `check-debt-ratchet.rs` counts the ledger's `source` rows whose disposition
+   is not `delete`, minus `mod.rs`/`modules.rs`, and `check-minimal-core-
+   boundary.rs` proves those rows equal the tree file for file. One census, read
+   from data, and no second directory walk — which is the property leaf 3 was
+   for.
+2. Leaf 4's `store_read_share` is recorded as a **count of store-reading entry
+   points** (`from_store(` occurrences in `src/`), not as the fraction 0 → 1.0
+   the table above sketches. The ledger's `value` field is an integer, and plan
+   00 §6.8 forbids stating a number that has not been run; a fraction of routing
+   decisions can only be measured after stage 3 lands. Its `how` field declares
+   `direction upward`, and the checker inverts both comparisons for it.
+
+A third mechanism this wave added, which no leaf named: a ceiling may rise only
+when the measure's own `note` says `corrected undercount` **and names the value
+it corrects**. Without the second half the marker would be a standing bypass —
+left in place it would license a second rise — so `check_against_previous`
+requires the old number to appear in the note, which it cannot once the
+correction has landed. Both permitted rises of this wave (`handler_files`
+42 → 46, `handler_migration_pending` 40 → 45) pass through it and are printed by
+the checker.
 
 **Make the closure number honest.**
 

@@ -6,12 +6,14 @@ debt_ratchet
   release_rule "none. No release depends on any ceiling here. A release is cut on CI correctness alone in .github/workflows/release.yml."
   ceiling
     measure handler_files
-    value 42
-    how "*.rs files under src/solver_handlers/ other than mod.rs and modules.rs"
+    value 46
+    how "source rows of data/meta/core-boundary-ledger.lino whose disposition is not delete, other than mod.rs and modules.rs. That ledger is proved equal to the tree, file for file, by scripts/check-minimal-core-boundary.rs, so this is one census and not a second walk."
+    note "corrected undercount. 42 counted *.rs under src/solver_handlers/ only, so the four handler files one directory up -- solver_handler_how.rs, solver_handler_how_synthesis.rs, solver_handler_units.rs, solver_handler_oracle.rs -- were invisible, and a migration could have lowered this number by moving a file out of the scanned directory. Issue #1138 B9, plan 09 leaves 1 and 3. No handler was written; the tree is unchanged."
   ceiling
     measure handler_migration_pending
-    value 40
-    how "occurrences of the phrase status pending in data/meta/handler-migration-ledger.lino"
+    value 45
+    how "occurrences of the phrase status pending in data/meta/handler-migration-ledger.lino, whose census is the live registry: the specialized handler-precedence table followed by the five prelude methods"
+    note "corrected undercount. 40 counted the handler-precedence table only, so the five prelude methods -- diagnostic, nl_tool, behavior_rules, feature_capability, playwright_script -- ran on every turn ahead of that table while sitting outside the ledger entirely. Issue #1138 B9, plan 09 leaf 5. No handler was written; the tree is unchanged."
   ceiling
     measure literal_predicates
     value 548
@@ -20,3 +22,24 @@ debt_ratchet
     measure hardcoded_language_rows
     value 1286
     how "non-empty, non-comment rows of scripts/hardcoded-language-allowlist.txt"
+  ceiling
+    measure try_dispatch_entries
+    value 39
+    how "rows of the HANDLER_FUNCTIONS table in src/solver_dispatch.rs whose function name begins with try_. The reading is the one tests/unit/issue_699_handler_migration.rs performs, so the gate and the test cannot disagree about what a dispatch entry is."
+    note "Recorded for the first time by issue #1138 B9, plan 09 leaf 4. The number was 39 all along; what did not exist was a checker that would fail when it rose. A Rust constant recorded 50, eleven entries of headroom in which new handlers could be added while every gate stayed green."
+  ceiling
+    measure promotion_predicates
+    value 19
+    how "occurrences of the literal handler: prefix in src/intent_formalization/prompt_relevants.rs, one per promotion the prompt formalizer decides in Rust rather than reading from data/seed/handler-promotions.lino"
+  ceiling
+    measure dispatch_name_special_cases
+    value 9
+    how "occurrences of a name == comparison in src/meta_method_dispatch.rs plus the quoted arms of its try_prelude_method match; a method name the dispatcher special-cases is a method attribute that has not been written down"
+  ceiling
+    measure worker_sync_handler_literals
+    value 31
+    how "name: entries of the syncHandlers array literal in src/web/worker/formal_ai_worker_20.js; the browser derives its handler order from a literal instead of from data/seed/handler-precedence.lino, which is why the two surfaces can disagree"
+  ceiling
+    measure store_read_share
+    value 0
+    how "occurrences of from_store( in src/**/*.rs: the routing decisions served by the link store rather than the seed tables. This is the one measure here whose strict direction is upward, so a value above the recorded one fails with -lower the reviewed ceiling- and a value below it is the regression. It is a count of store-reading entry points and not a percentage, because the value field is an integer and a fraction this plan has not yet run may not be stated as one."

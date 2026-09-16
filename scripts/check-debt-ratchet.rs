@@ -46,11 +46,33 @@ use std::process::Command;
 const LEDGER: &str = "data/meta/debt-ratchet.lino";
 const HANDLER_LEDGER: &str = "data/meta/handler-migration-ledger.lino";
 const ALLOWLIST: &str = "scripts/hardcoded-language-allowlist.txt";
+/// The one census of handler source files in the tree (issue #1138 B9, plan 09
+/// leaf 3).
+///
+/// `handler_files` used to be measured here by a second directory walk with
+/// slightly different rules from `scripts/check-minimal-core-boundary.rs`'s, and
+/// `tests/unit/issue_699_handler_migration.rs` held a third copy as Rust
+/// constants. Three copies of one number is how 37/50 drifted from 36/39
+/// unnoticed. There is now one census — the boundary ledger's `source` rows,
+/// which that gate proves equal to the tree file for file — and this script
+/// counts them rather than walking anything.
+const BOUNDARY_LEDGER: &str = "data/meta/core-boundary-ledger.lino";
+/// Bookkeeping files that carry no domain knowledge: the dispatch `mod.rs`
+/// files and the generated `mod` list issue #991 split out of them. They are
+/// boundary debt (they are compiled Rust under the handler root) but they are
+/// not *handlers*, so the migration count excludes them.
+const BOOKKEEPING: [&str; 2] = ["mod.rs", "modules.rs"];
 
 /// The marker a measure puts in its own `how` field when its strict direction is
 /// upward rather than downward (plan 00 §6.7 names `store_read_share` and plan
 /// 10's four routing measures as the declared exceptions).
 const UPWARD_MARKER: &str = "direction upward";
+
+/// The marker a measure puts in its own `note` field when the value rises
+/// because the old one counted the wrong set, not because debt was added (plan
+/// 00 §6.2). The note must also name the value being corrected, so a note left
+/// behind after the correction cannot silently permit a second rise.
+const CORRECTION_MARKER: &str = "corrected undercount";
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 struct Ratchet {
@@ -58,6 +80,9 @@ struct Ratchet {
     /// Measures whose strict direction is upward; for them the recorded value is
     /// a floor that may only rise.
     upward: BTreeSet<String>,
+    /// Per measure, the `note` text, so an announced correction can be
+    /// distinguished from a raised ceiling.
+    notes: BTreeMap<String, String>,
 }
 
 fn unquote(value: &str) -> String {
@@ -69,6 +94,7 @@ fn unquote(value: &str) -> String {
 fn parse_ratchet(text: &str) -> Result<Ratchet, String> {
     let mut ceilings = BTreeMap::new();
     let mut upward = BTreeSet::new();
+    let mut notes = BTreeMap::new();
     let mut measure: Option<String> = None;
     let mut named: Option<String> = None;
     for line in text.lines() {
@@ -89,6 +115,11 @@ fn parse_ratchet(text: &str) -> Result<Ratchet, String> {
         {
             upward.insert(name.clone());
         }
+        if let Some(rest) = trimmed.strip_prefix("note ")
+            && let Some(name) = named.as_ref()
+        {
+            notes.insert(name.clone(), unquote(rest));
+        }
         if let Some(rest) = trimmed.strip_prefix("value ") {
             let Some(name) = measure.take() else {
                 return Err(format!("`{trimmed}` has no `measure` above it"));
@@ -102,7 +133,11 @@ fn parse_ratchet(text: &str) -> Result<Ratchet, String> {
     if ceilings.is_empty() {
         return Err("the ratchet names no ceiling".to_owned());
     }
-    Ok(Ratchet { ceilings, upward })
+    Ok(Ratchet {
+        ceilings,
+        upward,
+        notes,
+    })
 }
 
 fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
@@ -126,21 +161,116 @@ fn relative(root: &Path, path: &Path) -> String {
         .replace('\\', "/")
 }
 
-/// Measure the four values in a checkout.
+/// Every handler source the core-boundary ledger covers, minus bookkeeping.
+///
+/// The one definition, read from data. `check-minimal-core-boundary.rs` proves
+/// these rows are exactly the files on disk, so counting rows and counting files
+/// are the same measurement — with the difference that there is now one place
+/// where "which files are handlers" is written down.
+fn handler_source_files(root: &Path) -> Result<Vec<String>, String> {
+    let text = fs::read_to_string(root.join(BOUNDARY_LEDGER))
+        .map_err(|error| format!("{BOUNDARY_LEDGER}: {error}"))?;
+    let mut files = Vec::new();
+    let mut path: Option<String> = None;
+    for line in text.lines() {
+        if let Some(rest) = line.strip_prefix("  source ") {
+            path = Some(rest.trim().to_owned());
+            continue;
+        }
+        if let Some(rest) = line.trim().strip_prefix("disposition ")
+            && let Some(source) = path.take()
+        {
+            let name = source.rsplit('/').next().unwrap_or("");
+            if unquote(rest) != "delete" && !BOOKKEEPING.contains(&name) {
+                files.push(source);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
+}
+
+/// Read one file, naming it if it is missing.
+fn read(root: &Path, path: &str) -> Result<String, String> {
+    fs::read_to_string(root.join(path)).map_err(|error| format!("{path}: {error}"))
+}
+
+/// The slice of `text` between the first `open` and the next `close` after it.
+fn between<'a>(text: &'a str, open: &str, close: &str) -> &'a str {
+    text.split_once(open)
+        .and_then(|(_, tail)| tail.split_once(close))
+        .map_or("", |(body, _)| body)
+}
+
+/// Native dispatch entries that are still a compiled `try_*` arm.
+///
+/// The same reading `tests/unit/issue_699_handler_migration.rs` performs, so the
+/// test and the gate cannot disagree about what a dispatch entry is.
+fn try_dispatch_entries(root: &Path) -> Result<u64, String> {
+    let dispatch = read(root, "src/solver_dispatch.rs")?;
+    Ok(between(&dispatch, "const HANDLER_FUNCTIONS", "];")
+        .lines()
+        .filter(|line| {
+            line.split_once(',')
+                .is_some_and(|(_, function)| function.trim_start().starts_with("try_"))
+        })
+        .count() as u64)
+}
+
+/// Hard-coded promotion predicates: one `handler:<name>` literal per promotion
+/// the prompt formalizer decides in Rust instead of reading from seed data.
+fn promotion_predicates(root: &Path) -> Result<u64, String> {
+    let text = read(root, "src/intent_formalization/prompt_relevants.rs")?;
+    Ok(text.matches("\"handler:").count() as u64)
+}
+
+/// Method names the dispatcher special-cases: the `name == "…"` comparisons plus
+/// the prelude match arms, which are the same thing written two ways.
+fn dispatch_name_special_cases(root: &Path) -> Result<u64, String> {
+    let text = read(root, "src/meta_method_dispatch.rs")?;
+    let comparisons = text.matches("name == \"").count();
+    let prelude = between(&text, "fn try_prelude_method", "_ => return None")
+        .matches("\" =>")
+        .count();
+    Ok((comparisons + prelude) as u64)
+}
+
+/// Handler names the browser worker states as literals rather than deriving from
+/// `data/seed/handler-precedence.lino`.
+fn worker_sync_handler_literals(root: &Path) -> Result<u64, String> {
+    let text = read(root, "src/web/worker/formal_ai_worker_20.js")?;
+    Ok(between(&text, "const syncHandlers = [", "\n  ];")
+        .matches("name: \"")
+        .count() as u64)
+}
+
+/// Routing decisions served by the link store rather than the seed tables.
+///
+/// The one measure here whose strict direction is upward (plan 00 §6.7). It is a
+/// count of the store-reading entry points that exist, not a percentage: the
+/// ledger's `value` field is an integer, and a number this plan has not yet run
+/// may not be stated as a fraction it has not measured (plan 00 §6.8).
+fn store_read_share(root: &Path) -> Result<u64, String> {
+    let mut files = Vec::new();
+    rust_files(&root.join("src"), &mut files)?;
+    let mut total = 0_u64;
+    for file in &files {
+        let path = relative(root, file);
+        let text = fs::read_to_string(file).map_err(|error| format!("{path}: {error}"))?;
+        total += text.matches("from_store(").count() as u64;
+    }
+    Ok(total)
+}
+
+/// Measure every value in a checkout.
 fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     let mut files = Vec::new();
     rust_files(&root.join("src"), &mut files)?;
     let mut literals = 0_u64;
-    let mut handler_files = 0_u64;
+    let handler_files = handler_source_files(root)?.len() as u64;
     for file in &files {
         let path = relative(root, file);
         let text = fs::read_to_string(file).map_err(|error| format!("{path}: {error}"))?;
-        if path.starts_with("src/solver_handlers/") {
-            let name = path.rsplit('/').next().unwrap_or("");
-            if name != "mod.rs" && name != "modules.rs" {
-                handler_files += 1;
-            }
-        }
         // Every file under src/, with no kernel exemption: all of src serves
         // the meta algorithm: see VISION.md and docs/architect-notes/.
         literals +=
@@ -160,6 +290,17 @@ fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     measured.insert("handler_migration_pending".to_owned(), pending);
     measured.insert("literal_predicates".to_owned(), literals);
     measured.insert("hardcoded_language_rows".to_owned(), rows);
+    measured.insert("try_dispatch_entries".to_owned(), try_dispatch_entries(root)?);
+    measured.insert("promotion_predicates".to_owned(), promotion_predicates(root)?);
+    measured.insert(
+        "dispatch_name_special_cases".to_owned(),
+        dispatch_name_special_cases(root)?,
+    );
+    measured.insert(
+        "worker_sync_handler_literals".to_owned(),
+        worker_sync_handler_literals(root)?,
+    );
+    measured.insert("store_read_share".to_owned(), store_read_share(root)?);
     Ok(measured)
 }
 
@@ -216,13 +357,34 @@ fn check_against_previous(previous: &Ratchet, current: &Ratchet) -> Vec<String> 
                      only move up"
                 ));
             }
-        } else if now > before {
+        } else if now > before && !announces_correction(current, name, *before) {
             failures.push(format!(
-                "{name}: ceiling raised from {before} to {now}; a ceiling can only move down"
+                "{name}: ceiling raised from {before} to {now}; a ceiling can only move down. If \
+                 the old value counted the wrong set, say so in this measure's `note` as \
+                 \"{CORRECTION_MARKER}\" and name the {before} it corrects (plan 00 §6.2)"
             ));
         }
     }
     failures
+}
+
+/// Whether this measure's own `note` announces that `before` was an undercount.
+///
+/// Plan 00 §6.2 permits exactly this: a value that rises because the old one
+/// counted the wrong set, in a commit that changes no behaviour. The note must
+/// name the number it corrects, so a note left in place after the correction
+/// cannot silently permit a second rise — `before` is then the corrected value
+/// and no longer appears in the text.
+fn announces_correction(ratchet: &Ratchet, measure: &str, before: u64) -> bool {
+    let Some(note) = ratchet.notes.get(measure) else {
+        return false;
+    };
+    if !note.contains(CORRECTION_MARKER) {
+        return false;
+    }
+    let before = before.to_string();
+    note.split(|character: char| !character.is_ascii_digit())
+        .any(|token| token == before)
 }
 
 fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
@@ -312,7 +474,16 @@ fn run() -> Result<(), String> {
     if let Some(base) = &options.base {
         match ratchet_at(&repo, base) {
             Ok(Some(previous)) => {
-                failures.extend(check_against_previous(&previous, &ratchet))
+                for (name, before) in &previous.ceilings {
+                    let now = ratchet.ceilings.get(name).copied().unwrap_or(*before);
+                    if now > *before && announces_correction(&ratchet, name, *before) {
+                        println!(
+                            "  ({name}: {before} -> {now}, announced as a {CORRECTION_MARKER} in \
+                             the ledger's note)"
+                        );
+                    }
+                }
+                failures.extend(check_against_previous(&previous, &ratchet));
             }
             Ok(None) => println!("  ({base} has no {LEDGER}; nothing to compare against)"),
             Err(error) => println!("  (skipping the base comparison: {error})"),
@@ -364,6 +535,7 @@ mod tests {
         Ratchet {
             ceilings,
             upward: BTreeSet::new(),
+            notes: BTreeMap::new(),
         }
     }
 
@@ -465,6 +637,41 @@ mod tests {
         assert!(above[0].contains("improved from 3 to 4"), "{above:?}");
 
         assert!(check_measured(&parsed, &BTreeMap::from([("store_read_share".to_owned(), 3)])).is_empty());
+    }
+
+    /// Plan 00 §6.2's one permitted rise, and the reason it cannot become a
+    /// standing bypass: the note must name the number it corrects, so the same
+    /// note is inert against the corrected value.
+    #[test]
+    fn an_announced_corrected_undercount_may_rise_once_and_not_twice() {
+        let mut corrected = ratchet(10, 46);
+        corrected.notes.insert(
+            "handler_files".to_owned(),
+            "corrected undercount. 42 counted one directory only.".to_owned(),
+        );
+        assert!(
+            check_against_previous(&ratchet(10, 42), &corrected).is_empty(),
+            "a rise the ledger announces and explains is the correction plan 00 §6.2 allows"
+        );
+
+        let mut again = corrected.clone();
+        again.ceilings.insert("handler_files".to_owned(), 47);
+        let failures = check_against_previous(&corrected, &again);
+        assert_eq!(failures.len(), 1, "{failures:?}");
+        assert!(
+            failures[0].contains("ceiling raised from 46 to 47"),
+            "the same note must not permit a second rise: {failures:?}"
+        );
+
+        let mut unexplained = ratchet(10, 46);
+        unexplained
+            .notes
+            .insert("handler_files".to_owned(), "corrected undercount.".to_owned());
+        assert_eq!(
+            check_against_previous(&ratchet(10, 42), &unexplained).len(),
+            1,
+            "a marker that names no corrected value explains nothing"
+        );
     }
 
     /// The only check that catches a raised ceiling is the base comparison, so a
