@@ -1475,13 +1475,14 @@ making it reachable for a concept need.
       `coding_discovery_step_understand` record in
       `data/meta/coding-discovery-recipe.lino`.
 
-      The recipe and its grounding test are green. The
-      `coding_discovery_step_understand` record is **not** added: inserting a
-      step renumbers every `order` after it in a recipe whose own specification
-      test asserts contiguity over the existing steps, so it belongs with
-      L10 — the leaf that actually makes the coding path *do* the step —
-      rather than ahead of it, where it would be a recipe claiming a step the
-      code does not run.
+      Complete. The `coding_discovery_step_understand` record was deliberately
+      deferred until L10 landed: inserting a step renumbers every `order` after
+      it in a recipe whose own specification test asserts contiguity, and ahead
+      of L10 it would have been a recipe claiming a step the code did not run.
+      With the coding path now asking, the step is `order 2`, its `function` is
+      `lookup_surface`, `src/concept_lookup.rs` joins the recipe's cited
+      sources, and `specification::coding_discovery_meta_algorithm` checks all
+      six steps against the live pipeline.
 - [ ] **L17 — Ledgers and docs.** Requirement shard
       `docs/requirements/issue-1138-live-concept-lookup.md`,
       `rust-script scripts/assemble-requirements.rs --write`, traceability rows,
