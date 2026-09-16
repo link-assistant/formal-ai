@@ -25,7 +25,46 @@ impl UnifiedDiff {
 }
 
 /// Compute the unified diff between `before` and `after` for one path.
+///
+/// A whole-file hunk rather than a minimal one: the diff has to *apply*, and a
+/// hunk that names every line it replaces applies to a clean clone at the same
+/// base commit without depending on a context heuristic agreeing with git's.
 #[must_use]
-pub fn unified_diff(_relative_path: &str, _before: &str, _after: &str) -> UnifiedDiff {
-    todo!("plan 03 leaf L5")
+pub fn unified_diff(relative_path: &str, before: &str, after: &str) -> UnifiedDiff {
+    use std::fmt::Write as _;
+
+    if before == after {
+        return UnifiedDiff::default();
+    }
+    let before_lines = split_lines(before);
+    let after_lines = split_lines(after);
+
+    let mut out = String::new();
+    let _ = writeln!(out, "--- a/{relative_path}");
+    let _ = writeln!(out, "+++ b/{relative_path}");
+    let _ = writeln!(
+        out,
+        "@@ -1,{} +1,{} @@",
+        before_lines.len(),
+        after_lines.len()
+    );
+    for line in before_lines {
+        let _ = writeln!(out, "-{line}");
+    }
+    for line in after_lines {
+        let _ = writeln!(out, "+{line}");
+    }
+    UnifiedDiff(out)
+}
+
+/// The lines of a file, without a phantom empty line for a trailing newline.
+fn split_lines(text: &str) -> Vec<&str> {
+    if text.is_empty() {
+        Vec::new()
+    } else {
+        text.strip_suffix('\n')
+            .unwrap_or(text)
+            .split('\n')
+            .collect()
+    }
 }

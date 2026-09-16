@@ -2,12 +2,13 @@ self_ast_census
   target src/repository_workspace/diff.rs
   language rust
   fidelity signature
-  byte_len 972
-  line_count 31
-  content_id source_module_7785be24a69584ee
-  symbol_count 4
+  byte_len 2105
+  line_count 70
+  content_id source_module_c832063efa5c869e
+  symbol_count 5
   symbols
     struct UnifiedDiff 11 11
     function as_str 16 18
     function is_empty 22 24
-    function unified_diff 29 31
+    function unified_diff 33 58
+    function split_lines 61 70

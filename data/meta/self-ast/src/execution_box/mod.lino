@@ -2,10 +2,10 @@ self_ast_census
   target src/execution_box/mod.rs
   language rust
   fidelity signature
-  byte_len 17340
-  line_count 495
-  content_id source_module_bdd730a0fada8ce9
-  symbol_count 34
+  byte_len 18016
+  line_count 514
+  content_id source_module_c42d3a32863d829b
+  symbol_count 36
   symbols
     module container 13 13
     const BACKEND_ENV 23 23
@@ -36,8 +36,10 @@ self_ast_census
     function network 312 314
     function deadline 318 320
     function workspace 324 326
-    function run 332 421
-    function halving_ladder 432 448
-    function detach 454 462
-    function record_command 466 475
-    function stream 480 495
+    function run 332 353
+    function run_command 360 366
+    function observe 369 440
+    function halving_ladder 451 467
+    function detach 473 481
+    function record_command 485 494
+    function stream 499 514

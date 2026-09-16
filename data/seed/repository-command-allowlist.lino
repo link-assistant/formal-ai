@@ -1,51 +1,166 @@
+# Issue #1138 B7, plan 03 leaf L3 -- what a repository task may run, as data.
+#
+# Default-deny. A program with no row here is refused, and so is a listed
+# program used with a subcommand no row names: the grant is a program *and* a
+# subcommand *and* an argument shape, never a bare program. Widening the set is
+# an edit to this file, which is reviewable, rather than an edit to a list in
+# Rust, which is not.
+#
+# Wave F recorded why this matters. A Russian prompt -- "Запусти это и скажи
+# точно, что оно печатает: print(sum(range(1, 11)))" -- had its leading verb
+# stripped and the remainder handed to `/bin/sh -c`; the shell's syntax error
+# came back labelled as a completed command. Under this table the first word of
+# that remainder has no row, so the sentence is refused before any shell sees
+# it, and the sentence that says so is seeded in five languages in
+# `data/seed/command-outcome.lino`.
+#
+# `arguments` is the argument shape after the subcommand. A `{placeholder}`
+# matches exactly one argument; a literal must match exactly; `{rest}` as the
+# last token matches any remaining arguments. `deadline_seconds` is the bound
+# the shape is measured against -- a declared measurement, not an allowance:
+# exceeding it is reported with both numbers and claims nothing.
 repository_command_allowlist
-  record_type "command_allowlist"
+  record_type "repository_command_allowlist"
   issue "1138"
-  topic "repository_workspace"
-  default "deny"
-  summary "Issue #1138 B7 (plan 03 L3): the repository protocol's permitted commands as reviewable data, each with its program, subcommand, argument shape and pre- and postconditions. The default-deny arm in the agent's program resolver survives unchanged; what changes is that widening the set is an edit to this document rather than an edit to Rust."
-  command git_clone
-    program "git"
-    subcommand "clone"
-    arguments ("--no-checkout" "--filter=blob:none" "{origin}" "{root}")
-    mutating "true"
-    precondition "root does not exist"
-    postcondition "root/.git exists"
-  command git_checkout_commit
-    program "git"
-    subcommand "checkout"
-    arguments ("-C" "{root}" "{base_commit}")
-    mutating "true"
-    precondition "base_commit is a 40-character object name"
-    postcondition "the checked-out HEAD equals base_commit"
-  command git_rev_parse
-    program "git"
-    subcommand "rev-parse"
-    arguments ("-C" "{root}" "HEAD")
-    mutating "false"
-    postcondition "one 40-character object name on standard output"
-  command git_diff
-    program "git"
-    subcommand "diff"
-    arguments ("-C" "{root}" "{base_commit}")
-    mutating "false"
-    postcondition "a unified diff, possibly empty"
-  command git_apply_check
-    program "git"
-    subcommand "apply"
-    arguments ("-C" "{root}" "--check" "{patch}")
-    mutating "false"
-    precondition "patch is a unified diff produced against base_commit"
-    postcondition "exit zero only when the patch applies cleanly"
-  command cargo_test_named
-    program "cargo"
-    subcommand "test"
-    arguments ("--manifest-path" "{root}/Cargo.toml" "--test" "{suite}" "{name}")
-    mutating "false"
-    postcondition "one pass or fail verdict per named test"
-  command python_test_named
-    program "python3"
-    subcommand "-m"
-    arguments ("pytest" "{root}" "-k" "{name}")
-    mutating "false"
-    postcondition "one pass or fail verdict per named test"
+  policy "default_deny"
+  plan "docs/case-studies/issue-1138/plans/03-repository-workspace-protocol.md"
+allow_git_clone
+  record_type "allowed_command"
+  id "git_clone"
+  program "git"
+  subcommand "clone"
+  arguments ("--no-checkout" "{origin}" "{root}")
+  mutating "true"
+  deadline_seconds "900"
+  precondition "The spec names a forty-character base commit."
+  postcondition "A tree exists at the destination and no other directory changed."
+allow_git_checkout
+  record_type "allowed_command"
+  id "git_checkout"
+  program "git"
+  subcommand "checkout"
+  arguments ("--detach" "{commit}")
+  mutating "true"
+  deadline_seconds "300"
+  precondition "The clone exists and the commit is an object name."
+  postcondition "HEAD resolves to exactly the requested commit."
+allow_git_rev_parse
+  record_type "allowed_command"
+  id "git_rev_parse"
+  program "git"
+  subcommand "rev-parse"
+  arguments ("{revision}")
+  mutating "false"
+  deadline_seconds "60"
+  precondition "A git tree exists at the workspace root."
+  postcondition "An object name is printed, or the failure is reported verbatim."
+allow_git_add_intent
+  record_type "allowed_command"
+  id "git_add_intent"
+  program "git"
+  subcommand "add"
+  arguments ("--intent-to-add" "--all")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The workspace is a clone the protocol owns."
+  postcondition "New files are visible to the diff without their bytes being staged."
+allow_git_diff
+  record_type "allowed_command"
+  id "git_diff"
+  program "git"
+  subcommand "diff"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "120"
+  precondition "The workspace is a clone the protocol owns."
+  postcondition "A unified diff that applies to a clean clone at the same base."
+allow_git_apply
+  record_type "allowed_command"
+  id "git_apply"
+  program "git"
+  subcommand "apply"
+  arguments ("{patch}")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The patch was produced against the same base commit."
+  postcondition "The tree matches the tree the patch was taken from."
+allow_git_status
+  record_type "allowed_command"
+  id "git_status"
+  program "git"
+  subcommand "status"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "60"
+  precondition "A git tree exists at the workspace root."
+  postcondition "The observed state is reported, never assumed."
+allow_git_init
+  record_type "allowed_command"
+  id "git_init"
+  program "git"
+  subcommand "init"
+  arguments ("{rest}")
+  mutating "true"
+  deadline_seconds "60"
+  precondition "The directory is one the protocol created."
+  postcondition "A git tree exists where there was none."
+allow_cargo_test
+  record_type "allowed_command"
+  id "cargo_test"
+  program "cargo"
+  subcommand "test"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "1800"
+  precondition "The tree declares a Cargo manifest."
+  postcondition "Each named test is observed passing or failing; neither is assumed."
+allow_cargo_build
+  record_type "allowed_command"
+  id "cargo_build"
+  program "cargo"
+  subcommand "build"
+  arguments ("{rest}")
+  mutating "true"
+  deadline_seconds "1800"
+  precondition "The tree declares a Cargo manifest."
+  postcondition "The build outcome is observed, including its diagnostics."
+allow_cargo_check
+  record_type "allowed_command"
+  id "cargo_check"
+  program "cargo"
+  subcommand "check"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "900"
+  precondition "The tree declares a Cargo manifest."
+  postcondition "The check outcome is observed, including its diagnostics."
+allow_python_module
+  record_type "allowed_command"
+  id "python_module"
+  program "python3"
+  subcommand "-m"
+  arguments ("{module}" "{rest}")
+  mutating "false"
+  deadline_seconds "1800"
+  precondition "The module is the test runner the tree declares."
+  postcondition "Each named test is observed passing or failing."
+allow_python_inline
+  record_type "allowed_command"
+  id "python_inline"
+  program "python3"
+  subcommand "-c"
+  arguments ("{script}")
+  mutating "false"
+  deadline_seconds "2"
+  precondition "The script is one the protocol composed, never one a prompt supplied."
+  postcondition "The observed output is reported with its exit status."
+allow_npm_test
+  record_type "allowed_command"
+  id "npm_test"
+  program "npm"
+  subcommand "test"
+  arguments ("{rest}")
+  mutating "false"
+  deadline_seconds "1800"
+  precondition "The tree declares a package manifest with a test script."
+  postcondition "Each named test is observed passing or failing."

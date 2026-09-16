@@ -2,40 +2,48 @@ self_ast_census
   target src/capability_routing.rs
   language rust
   fidelity signature
-  byte_len 20289
-  line_count 592
-  content_id source_module_c572ba4505a6f154
-  symbol_count 32
+  byte_len 26689
+  line_count 738
+  content_id source_module_8f60a88dfc8274e8
+  symbol_count 40
   symbols
-    enum ObjectType 39 61
-    const OBJECT_TYPES 64 64
-    function slug 80 93
-    function from_slug 97 99
-    function rank 106 119
-    enum Act 126 137
-    const ACTS_IN_PRECEDENCE 144 144
-    function slug 158 170
-    function from_slug 174 179
-    function role 182 194
-    enum Locus 199 207
-    function slug 212 220
-    function from_slug 224 234
-    struct RouteRow 239 250
-    enum RoutingOutcome 255 268
-    function evidences 275 278
-    function is_url 281 284
-    function is_path 288 302
-    function has_clock_time 305 315
-    function has_quoted_content 318 335
-    function has_path_scope 340 348
-    function is_self_surface 351 354
-    function object_type 359 414
-    function act 418 424
-    function locus 428 441
-    function routing_table 445 447
-    const CAPABILITY_ROUTING_LINO 450 450
-    function routing_table_from 458 491
-    function route 496 509
-    function route_with 513 549
-    function readings_for 557 589
-    const DEFAULT_OUTCOME 592 592
+    enum ObjectType 42 64
+    const OBJECT_TYPES 67 67
+    function slug 83 96
+    function from_slug 100 102
+    function rank 109 122
+    enum Act 129 140
+    const ACTS_IN_PRECEDENCE 147 147
+    function slug 161 173
+    function from_slug 177 182
+    function role 185 197
+    enum Locus 202 210
+    function slug 215 223
+    function from_slug 227 237
+    struct RouteRow 242 253
+    enum RoutingOutcome 258 271
+    function evidences 278 281
+    function evidence_strength 292 300
+    function is_url 303 306
+    function is_path 310 324
+    function has_clock_time 327 337
+    function has_quoted_span 340 357
+    function has_explicit_content 365 367
+    function has_container_scope 373 382
+    function has_workspace_scope 387 389
+    function has_web_scope 394 396
+    function is_freshness_live 401 403
+    function is_self_surface 406 410
+    function is_prior_turn_reference 420 422
+    function object_type 427 491
+    function acts 498 517
+    function act 521 523
+    function locus_of 531 569
+    function locus 574 578
+    function routing_table 582 584
+    const CAPABILITY_ROUTING_LINO 587 587
+    function routing_table_from 595 628
+    function route 639 655
+    function route_with 659 695
+    function readings_for 703 735
+    const DEFAULT_OUTCOME 738 738

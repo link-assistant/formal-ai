@@ -43,6 +43,8 @@ seed_registry
   seed coding-idioms
     bundle true
     web true
+  seed command-outcome
+    bundle true
   seed computer-use-tasks
     bundle true
   seed concept-contexts
@@ -446,6 +448,8 @@ seed_registry
     bundle true
   seed release-timelines
     bundle true
+  seed repository-command-allowlist
+    bundle true
   seed self-improvement-loop
     bundle true
     web true
@@ -489,9 +493,6 @@ seed_registry
   unregistered question-generation-lexicon
     owner "src/question_generation.rs"
     reason "Question generation embeds its own lexicon so the words it may use are scoped to the one module that may use them."
-  unregistered repository-command-allowlist
-    owner "src/repository_workspace/mod.rs"
-    reason "Wave T skeleton for issue 1138 plan 03 leaf L3: the allowlist rows are read from disk by the repository-workspace module and its tests. Leaf L3 routes the agent's program resolver through it and regenerates the embedded registry."
   unregistered roles
     owner "scripts/generate-role-registry.py"
     reason "The reserved-role registry is generated from the other seed files and read from disk by the audits, never bundled."

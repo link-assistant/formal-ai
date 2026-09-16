@@ -2,10 +2,15 @@ self_ast_census
   target src/repository_workspace/clone.rs
   language rust
   fidelity signature
-  byte_len 1343
-  line_count 33
-  content_id source_module_0734081c00dcbdb0
-  symbol_count 2
+  byte_len 6096
+  line_count 159
+  content_id source_module_fdf39e4ca7fd7db9
+  symbol_count 7
   symbols
-    struct WorkspaceSpec 15 22
-    function clone_at_base 31 33
+    const COMMIT_LENGTH 19 19
+    struct WorkspaceSpec 23 30
+    function names_a_commit 35 38
+    function clone_source 42 48
+    function run_git 57 88
+    function observed_head 92 97
+    function clone_at_base 106 159

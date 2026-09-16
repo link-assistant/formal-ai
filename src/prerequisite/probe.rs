@@ -321,7 +321,11 @@ pub fn seed_probe_for_program(program: &str) -> Option<ToolchainProbe> {
 }
 
 /// Split a Links Notation tuple value `("a" "b")` into its members.
-pub(super) fn split_tuple(value: &str) -> Vec<String> {
+///
+/// Shared with plan 03's command allowlist, which reads argument shapes out of
+/// the same tuple form.
+#[must_use]
+pub fn split_tuple(value: &str) -> Vec<String> {
     value
         .split_whitespace()
         .map(|element| element.trim_matches(['(', ')', '"']).to_owned())

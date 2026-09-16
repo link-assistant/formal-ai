@@ -791,12 +791,12 @@ Every one of these writes its number to a ledger before anything is tuned. A
 ## Implementation leaves — ordered, each individually verifiable and commit-sized
 
 - [ ] **L1.** Add `WorkspaceCensus::of_directory(root)` to `src/self_ast_census.rs` beside the existing `compile(files)` (`:293`). Test: a three-file fixture directory censuses identically to `compile` on the same `(path, source)` pairs.
-- [ ] **L2.** Add `src/repository_workspace/clone.rs` with `WorkspaceSpec` and `clone_at_base`. Test: exact-commit checkout, branch-name refusal, deterministic tree.
-- [ ] **L3.** Add `data/seed/repository-command-allowlist.lino` and route `src/agent.rs:642-657`'s `other =>` arm through it, keeping the default-deny arm. Test: `curl` refused, `git push` refused, `git clone` allowed, allowlist set equals the seed table.
-- [ ] **L4.** Add `src/repository_workspace/mod.rs` with `RepositoryWorkspace::{open, adopt, root, base_commit, source_files, read, write}`. Test: isolation from the ambient checkout.
-- [ ] **L5.** Add `src/repository_workspace/diff.rs` `unified_diff` and `RepositoryWorkspace::diff`. Test: empty diff for an untouched clone; `git apply` round trip.
+- [x] **L2.** Add `src/repository_workspace/clone.rs` with `WorkspaceSpec` and `clone_at_base`. Test: exact-commit checkout, branch-name refusal, deterministic tree.
+- [x] **L3.** Add `data/seed/repository-command-allowlist.lino` and route `src/agent.rs:642-657`'s `other =>` arm through it, keeping the default-deny arm. Test: `curl` refused, `git push` refused, `git clone` allowed, allowlist set equals the seed table.
+- [x] **L4.** Add `src/repository_workspace/mod.rs` with `RepositoryWorkspace::{open, adopt, root, base_commit, source_files, read, write}`. Test: isolation from the ambient checkout.
+- [x] **L5.** Add `src/repository_workspace/diff.rs` `unified_diff` and `RepositoryWorkspace::diff`. Test: empty diff for an untouched clone; `git apply` round trip.
 - [ ] **L6.** Add `src/repository_workspace/locate.rs` `locate_targets`, delegating Rust trees to `requirement_resolution::resolve_in` unchanged. Test: the five held-out prompts and the ambiguity case.
-- [ ] **L7.** Add `src/repository_workspace/verify.rs` `Command`, `ExecutionBackend`, `run_named_tests`, `Evidence`, and `WorkspaceError::MissingPrerequisite`. Test: missing interpreter, timeout, pass/fail split.
+- [x] **L7.** Add `src/repository_workspace/verify.rs` `Command`, `ExecutionBackend`, `run_named_tests`, `Evidence`, and `WorkspaceError::MissingPrerequisite`. Test: missing interpreter, timeout, pass/fail split.
 - [ ] **L8.** Add `data/meta/repository-workspace-protocol.lino` and `WorkspaceProtocol::{load, parse, execute}` plus `tests/unit/specification/repository_workspace_protocol.rs`. Test: source-file grounding, contiguous order, rediscovery content id.
 - [ ] **L9.** Wire the protocol's per-step observations into `NeedLedger` rows so no step is `Satisfied` without an execution record (`src/meta_frame.rs:644-700`). Test: a step that did not run leaves its need `Planned`, never `Satisfied`.
 - [ ] **L10.** Widen `BenchmarkCase` with `repository` / `tests`; convert `cases.rs:152-166`; add the `solve_repository_case` branch at `mod.rs:150-156`. Test: parsed case carries a 40-char base commit; every other suite still has `None`.

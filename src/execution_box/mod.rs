@@ -348,9 +348,28 @@ impl ExecutionBox {
         })?;
         self.record_command(script);
 
-        let mut command = Command::new(HOST_INTERPRETER);
+        let script_argument = script_path.display().to_string();
+        self.observe(HOST_INTERPRETER, &[script_argument.as_str()])
+    }
+
+    /// Run one program with its arguments in this box's workspace, under the
+    /// same deadline and the same honest reporting as a script.
+    ///
+    /// # Errors
+    /// Propagates the box's own refusals.
+    pub fn run_command(
+        &self,
+        program: &str,
+        argv: &[&str],
+    ) -> Result<BoxObservation, BoxError> {
+        self.observe(program, argv)
+    }
+
+    /// Spawn one process, stream what it prints, and stop it at the deadline.
+    fn observe(&self, program: &str, argv: &[&str]) -> Result<BoxObservation, BoxError> {
+        let mut command = Command::new(program);
         command
-            .arg(&script_path)
+            .args(argv)
             .current_dir(&self.workspace)
             .stdin(Stdio::null())
             .stdout(Stdio::piped())

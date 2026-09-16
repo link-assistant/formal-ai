@@ -2,36 +2,48 @@ self_ast_census
   target src/repository_workspace/mod.rs
   language rust
   fidelity signature
-  byte_len 8208
-  line_count 261
-  content_id source_module_67909773844fceab
-  symbol_count 28
+  byte_len 15386
+  line_count 444
+  content_id source_module_e4245a082e60907f
+  symbol_count 40
   symbols
     module clone 12 12
     module diff 13 13
     module edit 14 14
     module locate 15 15
-    module verify 16 16
-    enum WorkspaceError 28 61
-    struct RepositoryWorkspace 65 71
-    function open 78 80
-    function adopt 87 89
-    function root 93 95
-    function spec 99 101
-    function base_commit 105 107
-    function source_files 113 115
-    function read 121 123
-    function write 129 131
-    function diff 137 139
-    struct ProtocolStep 145 154
-    struct RepositoryTask 158 165
-    struct ProtocolOutcome 169 182
-    struct WorkspaceProtocol 187 189
-    function load 194 196
-    function parse 200 202
-    function steps 206 208
-    function execute 215 221
-    function regenerate_document 226 228
-    struct AllowedCommand 233 248
-    function command_allowlist 253 255
-    function allows 259 261
+    module outcome 16 16
+    module verify 17 17
+    const ALLOWLIST_LINO 29 29
+    const RECORD_ALLOWED 32 32
+    enum WorkspaceError 36 69
+    struct RepositoryWorkspace 73 79
+    function open 86 93
+    function adopt 100 111
+    function root 115 117
+    function spec 121 123
+    function base_commit 127 129
+    function source_files 135 140
+    function read 146 152
+    function write 158 175
+    function diff 181 187
+    function baseline 192 194
+    struct ProtocolStep 200 209
+    struct RepositoryTask 213 220
+    struct ProtocolOutcome 224 237
+    struct WorkspaceProtocol 242 244
+    function load 249 251
+    function parse 255 257
+    function steps 261 263
+    function execute 270 276
+    function regenerate_document 281 283
+    struct AllowedCommand 288 303
+    function command_allowlist 308 323
+    const DEFAULT_DEADLINE_SECONDS 326 326
+    function deadline_seconds 335 348
+    function optional 351 357
+    const GIT_GLOBAL_FLAGS 365 365
+    const GLOBAL_FLAG_PROGRAM 368 368
+    function subcommand_of 372 381
+    function allows 391 401
+    function shape_matches 406 421
+    function collect_files 424 444

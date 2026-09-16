@@ -21,6 +21,7 @@ pub const CLIENT_COMPLETION_CONTRACTS_LINO: &str =
 pub const CLIENT_INTEGRATIONS_LINO: &str = include_str!("../../data/seed/client-integrations.lino");
 pub const CODING_GUIDANCE_LINO: &str = include_str!("../../data/seed/coding-guidance.lino");
 pub const CODING_IDIOMS_LINO: &str = include_str!("../../data/seed/coding-idioms.lino");
+pub const COMMAND_OUTCOME_LINO: &str = include_str!("../../data/seed/command-outcome.lino");
 pub const COMPUTER_USE_TASKS_LINO: &str = include_str!("../../data/seed/computer-use-tasks.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
@@ -203,6 +204,8 @@ pub const PROOF_PROGRAM_TEMPLATES_LINO: &str =
     include_str!("../../data/seed/proof-program-templates.lino");
 pub const QUESTION_NECESSITY_LINO: &str = include_str!("../../data/seed/question-necessity.lino");
 pub const RELEASE_TIMELINES_LINO: &str = include_str!("../../data/seed/release-timelines.lino");
+pub const REPOSITORY_COMMAND_ALLOWLIST_LINO: &str =
+    include_str!("../../data/seed/repository-command-allowlist.lino");
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
     include_str!("../../data/seed/self-improvement-loop.lino");
 pub const SETUP_PUBLISHERS_LINO: &str = include_str!("../../data/seed/setup-publishers.lino");
@@ -229,6 +232,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/client-integrations.lino", CLIENT_INTEGRATIONS_LINO),
         ("data/seed/coding-guidance.lino", CODING_GUIDANCE_LINO),
         ("data/seed/coding-idioms.lino", CODING_IDIOMS_LINO),
+        ("data/seed/command-outcome.lino", COMMAND_OUTCOME_LINO),
         ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
@@ -376,6 +380,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/proof-program-templates.lino", PROOF_PROGRAM_TEMPLATES_LINO),
         ("data/seed/question-necessity.lino", QUESTION_NECESSITY_LINO),
         ("data/seed/release-timelines.lino", RELEASE_TIMELINES_LINO),
+        ("data/seed/repository-command-allowlist.lino", REPOSITORY_COMMAND_ALLOWLIST_LINO),
         ("data/seed/self-improvement-loop.lino", SELF_IMPROVEMENT_LOOP_LINO),
         ("data/seed/setup-publishers.lino", SETUP_PUBLISHERS_LINO),
         ("data/seed/shell-intents.lino", SHELL_INTENTS_LINO),

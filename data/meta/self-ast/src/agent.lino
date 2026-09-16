@@ -2,9 +2,9 @@ self_ast_census
   target src/agent.rs
   language rust
   fidelity signature
-  byte_len 26471
-  line_count 753
-  content_id source_module_fde143fa4265e4ae
+  byte_len 26987
+  line_count 764
+  content_id source_module_922d658747ed52e3
   symbol_count 53
   symbols
     static WORKSPACE_SEQ 25 25
@@ -50,13 +50,13 @@ self_ast_census
     function backticked_after 616 621
     function delete_path_len 623 631
     function split_command 633 640
-    function resolve_allowed_program 642 658
-    function resolve_allowed_program_from_path 660 663
-    function resolve_program_from_path_names 665 678
-    function path_search_names 680 688
-    function is_blocked_execution_alias 690 696
-    function effective_command_time_budget 698 704
-    function command_environment 720 720
-    function trace_command 732 741
-    function command_timed_out 743 745
-    function looks_like_workspace_path 747 753
+    function resolve_allowed_program 642 669
+    function resolve_allowed_program_from_path 671 674
+    function resolve_program_from_path_names 676 689
+    function path_search_names 691 699
+    function is_blocked_execution_alias 701 707
+    function effective_command_time_budget 709 715
+    function command_environment 731 731
+    function trace_command 743 752
+    function command_timed_out 754 756
+    function looks_like_workspace_path 758 764
