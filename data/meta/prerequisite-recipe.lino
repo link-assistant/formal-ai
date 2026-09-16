@@ -1,11 +1,3 @@
-# Issue #1138 B6, plan 06 leaf L8 -- the recovery sequence as data.
-#
-# The eight stages are issue-710 plan 07's recovery sequence, written down so
-# the runtime walks a document instead of a Rust branch. `src/prerequisite/mod.rs`
-# reads it through `recovery_steps()`, and
-# `tests/unit/specification/prerequisite_recipe.rs` keeps every step grounded:
-# the file it names exists, the orders are contiguous, the id has an arm in that
-# file, and regenerating the skeleton from the live source reproduces it.
 prerequisite_recipe
   record_type "meta_recipe"
   issue "1138"

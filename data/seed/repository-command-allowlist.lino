@@ -1,24 +1,3 @@
-# Issue #1138 B7, plan 03 leaf L3 -- what a repository task may run, as data.
-#
-# Default-deny. A program with no row here is refused, and so is a listed
-# program used with a subcommand no row names: the grant is a program *and* a
-# subcommand *and* an argument shape, never a bare program. Widening the set is
-# an edit to this file, which is reviewable, rather than an edit to a list in
-# Rust, which is not.
-#
-# Wave F recorded why this matters. A Russian prompt -- "Запусти это и скажи
-# точно, что оно печатает: print(sum(range(1, 11)))" -- had its leading verb
-# stripped and the remainder handed to `/bin/sh -c`; the shell's syntax error
-# came back labelled as a completed command. Under this table the first word of
-# that remainder has no row, so the sentence is refused before any shell sees
-# it, and the sentence that says so is seeded in five languages in
-# `data/seed/command-outcome.lino`.
-#
-# `arguments` is the argument shape after the subcommand. A `{placeholder}`
-# matches exactly one argument; a literal must match exactly; `{rest}` as the
-# last token matches any remaining arguments. `deadline_seconds` is the bound
-# the shape is measured against -- a declared measurement, not an allowance:
-# exceeding it is reported with both numbers and claims nothing.
 repository_command_allowlist
   record_type "repository_command_allowlist"
   issue "1138"

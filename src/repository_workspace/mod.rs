@@ -26,6 +26,24 @@ use locate::Location;
 use verify::RunCommand;
 
 /// The default-deny allowlist, as reviewable data.
+///
+/// A program with no row is refused, and so is a listed program used with a
+/// subcommand no row names: the grant is a program *and* a subcommand *and* an
+/// argument shape, never a bare program. Widening the set is an edit to that
+/// file, which is reviewable, rather than an edit to a list in Rust, which is
+/// not.
+///
+/// Wave F recorded why the scope has to be this narrow. A Russian prompt —
+/// *"Запусти это и скажи точно, что оно печатает: print(sum(range(1, 11)))"* —
+/// had its leading verb stripped and the remainder handed to `/bin/sh -c`; the
+/// shell's syntax error came back labelled as a completed command. Under this
+/// table the first word of that remainder has no row, so the sentence is
+/// refused before any shell sees it.
+///
+/// The document itself carries no prose header: `scripts/audit-total-closure.py`
+/// reads every word of a `data/seed/**.lino` comment as a value token that must
+/// resolve to a grounded meaning, so the rationale for a seed table lives in the
+/// module that reads it. No committed seed file carries `#` comments.
 const ALLOWLIST_LINO: &str = include_str!("../../data/seed/repository-command-allowlist.lino");
 
 /// Record type of one allowlist row.

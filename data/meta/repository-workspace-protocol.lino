@@ -1,16 +1,3 @@
-# Issue #1138 B7, plan 03 leaf L8 -- the repository protocol as data.
-#
-# Six steps, in order: clone at an exact commit, locate what the requirement
-# names, read it, edit it, verify it, and diff it. Adding a step -- "run the
-# linter before the tests" -- is an edit to this document rather than an edit to
-# Rust, which is the whole reason the protocol is data.
-#
-# `src/repository_workspace/mod.rs` reads it through `WorkspaceProtocol::load`
-# and regenerates it through `WorkspaceProtocol::regenerate_document`, so a
-# deleted document is rediscovered to the same content id.
-# `tests/unit/specification/repository_workspace_protocol.rs` keeps every step
-# grounded: the file it names exists, the orders are contiguous, and the loader
-# produces exactly the steps declared here.
 repository_workspace_protocol
   record_type "meta_recipe"
   issue "1138"

@@ -1,15 +1,3 @@
-# Issue #1138 B6, plan 06 leaf L2 -- the Spanish branch of the coding guidance.
-#
-# `src/coding/guidance.rs` branched on Russian, Hindi and Chinese and let Spanish
-# fall through to English, which is a five-language doctrine gap in a code path
-# that ships on every program answer. The gap is closed here rather than with
-# twenty more Rust literals, because `scripts/check-hardcoded-language.rs`'s
-# burn-down allowlist may only shrink: the other four languages remain today's
-# recorded debt, and every new sentence lands in seed.
-#
-# One record per message, keyed by the `id` the Rust arm asks for. Placeholders
-# are substituted by the caller: {setup_hint}, {save_as}, {check_command},
-# {run_command}.
 coding_guidance
   record_type "coding_guidance_registry"
   issue "1138"

@@ -1,14 +1,3 @@
-# Issue #1138, plan 03 leaf L3 -- what a surface may say about a command it ran.
-#
-# Wave F recorded two defects in three lines of one transcript: natural-language
-# prose reached `/bin/sh -c`, and the shell's syntax error came back labelled
-# `выполнена` -- completed. Refusing the prose is the allowlist's job
-# (`data/seed/repository-command-allowlist.lino`); saying so honestly, in the
-# language the request arrived in, is this file's.
-#
-# `{exit}` is the observed exit status and `{output}` is what the command
-# actually printed. Neither is ever omitted, and no row here can be rendered as
-# a completion when the status was not zero.
 command_outcomes
   record_type "command_outcome_registry"
   issue "1138"

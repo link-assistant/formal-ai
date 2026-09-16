@@ -1,12 +1,3 @@
-# Issue #1138 B6, plan 06 leaf L1 -- one probe per catalogued program.
-#
-# Availability is observed, never declared. Each row says which executable a
-# catalogue language needs, the argv that proves the executable works (a version
-# check, never a compile), and which other programs it needs first. The verdict
-# is whatever the probe observed; no row states its own status.
-#
-# `setup_hint` and `environment` moved here from `src/coding/catalog/languages.rs`
-# in leaf L3, so the catalogue row no longer asserts what a human once typed.
 toolchains
   record_type "toolchain_registry"
   issue "1138"

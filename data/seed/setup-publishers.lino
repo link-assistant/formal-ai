@@ -1,15 +1,3 @@
-# Issue #1138 B6, plan 06 leaf L6 -- which host is authoritative for which program.
-#
-# Ranking is not authority. Issue-710 plan 07 recorded the limit directly: a
-# `.gov`/`.edu` preference does not identify a compiler's official source, and a
-# well-ranked page about a toolchain is not the toolchain's publisher. Each row
-# pins one program to the host its procedure must come from; any other host that
-# the registry walk surfaces is refused, and the refusal is recorded rather than
-# dropped.
-#
-# A program with no row here has no pinned authority, so the search is exhausted
-# and says which sources it consulted. That is the honest outcome, and it is why
-# a held-out program is not served by this table.
 setup_publishers
   record_type "setup_publisher_registry"
   issue "1138"
