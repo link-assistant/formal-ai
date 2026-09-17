@@ -148,6 +148,7 @@ pub fn search_with_structures(
                 fragments: vec![fragment.id.clone()],
                 coverage: fragment_coverage(fragment, structure_ids),
                 grounding: vec![(fragment.grounding.clone(), fragment.license.clone())],
+                observation: false,
             })
         })
         .collect::<Vec<_>>();
@@ -156,6 +157,8 @@ pub fn search_with_structures(
         let mut layer = Vec::new();
         for (fragment_index, fragment) in ranked.iter().enumerate() {
             let names = fragment.argument_names(&spec.language);
+            let observation_payloads =
+                conditional_payload_slots(fragment, &spec.language).unwrap_or_default();
             let binders = &binder_names[fragment_index];
             let binder_slot = names
                 .iter()
@@ -227,6 +230,7 @@ pub fn search_with_structures(
                             constant_maps: 0,
                             loose: 0,
                             grounding: Vec::new(),
+                            observation: false,
                         }];
                         // A pair element unpacks into the consuming fragment's
                         // own two slot names: `for left, right in
@@ -244,6 +248,7 @@ pub fn search_with_structures(
                                 constant_maps: 0,
                                 loose: 0,
                                 grounding: Vec::new(),
+                                observation: false,
                             });
                         }
                         return binder_choices;
@@ -255,6 +260,7 @@ pub fn search_with_structures(
                         index,
                         &parameters,
                         &loop_variable_choices,
+                        &observation_payloads,
                         &owned,
                         &coverable,
                     )
@@ -312,6 +318,7 @@ pub fn search_with_structures(
                     constant_maps,
                     loose,
                     grounding,
+                    observation: false,
                 });
             }
         }
@@ -927,6 +934,79 @@ fn fragment_binder_slots(fragment: &Fragment, language: &str) -> BTreeSet<String
     bound
 }
 
+/// The payload slots of a conditional fragment: when the realization is a
+/// conditional expression (`{matched} if {condition} else {unmatched}`, with
+/// both keywords at top nesting level and outside quotes), the placeholders
+/// occurring inside the condition name condition slots and every other
+/// placeholder is a payload slot. `None` for any non-conditional surface.
+///
+/// Observation-derived literals are admitted only here. A conditional's work
+/// — deciding which branch applies — must be discovered from the catalog's
+/// sources; the examples' contribution is limited to the answer's vocabulary,
+/// the labels the branches return. Feeding an expected output into a condition
+/// operand instead would bake one example's input into the program.
+fn conditional_payload_slots(fragment: &Fragment, language: &str) -> Option<Vec<String>> {
+    let surface = fragment.realizations.get(language)?;
+    let characters: Vec<char> = surface.chars().collect();
+    let word_after = |position: usize, word: &str| -> bool {
+        characters
+            .get(position..position + word.len() + 1)
+            .is_some_and(|window| {
+                window[..word.len()].iter().collect::<String>() == word
+                    && window[word.len()] == ' '
+            })
+    };
+    let mut depth = 0usize;
+    let mut quote: Option<char> = None;
+    let mut condition_start: Option<usize> = None;
+    let mut condition_end: Option<usize> = None;
+    let mut index = 0;
+    while index < characters.len() {
+        let character = characters[index];
+        if let Some(opening) = quote {
+            if character == '\\' {
+                index += 2;
+                continue;
+            }
+            if character == opening {
+                quote = None;
+            }
+        } else {
+            match character {
+                '\'' | '"' => quote = Some(character),
+                '(' | '[' | '{' => depth += 1,
+                ')' | ']' | '}' => depth = depth.saturating_sub(1),
+                ' ' if depth == 0 => {
+                    let next = index + 1;
+                    if condition_start.is_none() && word_after(next, "if") {
+                        condition_start = Some(next);
+                    } else if condition_start.is_some()
+                        && condition_end.is_none()
+                        && word_after(next, "else")
+                    {
+                        condition_end = Some(next);
+                    }
+                }
+                _ => {}
+            }
+        }
+        index += 1;
+    }
+    let (Some(condition_start), Some(condition_end)) = (condition_start, condition_end) else {
+        return None;
+    };
+    let condition_text: String = characters[condition_start..condition_end]
+        .iter()
+        .collect();
+    let names = fragment.argument_names(language);
+    Some(
+        names
+            .into_iter()
+            .filter(|name| !condition_text.contains(&format!("{{{name}}}")))
+            .collect(),
+    )
+}
+
 /// One-level applications that read an enclosing comprehension's loop
 /// variable.
 ///
@@ -960,6 +1040,7 @@ fn loop_variable_applies<'a>(
         constant_maps: 0,
         loose: 0,
         grounding: Vec::new(),
+        observation: false,
     };
     let mut applies: Vec<Expression> = Vec::new();
     let others: Vec<&Fragment> = others.collect();
@@ -969,6 +1050,7 @@ fn loop_variable_applies<'a>(
         }
         let names = fragment.argument_names(language);
         let owned = fragment_coverage(fragment, structure_ids);
+        let observation_payloads = conditional_payload_slots(fragment, language).unwrap_or_default();
         for (slot, expected) in fragment.signature.iter().enumerate() {
             if !types_may_unify(expected, element_type) {
                 continue;
@@ -988,6 +1070,7 @@ fn loop_variable_applies<'a>(
                             index,
                             parameters,
                             &[],
+                            &observation_payloads,
                             &owned,
                             needed,
                         )
@@ -1043,6 +1126,7 @@ fn loop_variable_applies<'a>(
                     fragments,
                     coverage,
                     grounding,
+                    observation: false,
                 });
             }
         }
@@ -1096,6 +1180,7 @@ fn loop_variable_applies<'a>(
         }
         let names = fragment.argument_names(language);
         let owned = fragment_coverage(fragment, structure_ids);
+        let observation_payloads = conditional_payload_slots(fragment, language).unwrap_or_default();
         for (slot, ty) in fragment.signature.iter().enumerate() {
             // The comprehension body must compute from the loop variable: an
             // ingredient that never reads it maps a constant over the
@@ -1135,6 +1220,7 @@ fn loop_variable_applies<'a>(
                             index,
                             parameters,
                             &[],
+                            &observation_payloads,
                             &owned,
                             needed,
                         )
@@ -1190,6 +1276,7 @@ fn loop_variable_applies<'a>(
                     fragments,
                     coverage,
                     grounding,
+                    observation: false,
                 });
             }
         }
@@ -1235,6 +1322,7 @@ fn pair_loop_variable_applies<'a>(
         }
         let names = fragment.argument_names(language);
         let owned = fragment_coverage(fragment, structure_ids);
+        let observation_payloads = conditional_payload_slots(fragment, language).unwrap_or_default();
         for slot in 0..fragment.signature.len() - 1 {
             if !pair_types.iter().any(|(left, right)| {
                 types_may_unify(&fragment.signature[slot], left)
@@ -1263,6 +1351,7 @@ fn pair_loop_variable_applies<'a>(
                 constant_maps: 0,
                 loose: 0,
                 grounding: Vec::new(),
+                observation: false,
             };
             let choices = fragment
                 .signature
@@ -1281,6 +1370,7 @@ fn pair_loop_variable_applies<'a>(
                             index,
                             parameters,
                             &[],
+                            &observation_payloads,
                             &owned,
                             needed,
                         )
@@ -1328,6 +1418,7 @@ fn pair_loop_variable_applies<'a>(
                     fragments,
                     coverage,
                     grounding,
+                    observation: false,
                 });
             }
             if !applies.is_empty() && !unpacked.contains(&pair_names) {
@@ -1540,6 +1631,12 @@ struct Expression {
     /// iteration produces, and guesses rank below grounded assemblies.
     loose: usize,
     grounding: Vec<(String, String)>,
+    /// Whether this literal was lifted from an example's expected output. Such
+    /// an atom carries the answer's vocabulary, not available data: the slot
+    /// filter admits it only as the payload of a conditional fragment, never
+    /// as a condition operand — otherwise the search would memorize which
+    /// example input produced which label instead of deriving the condition.
+    observation: bool,
 }
 
 fn atom_expressions(
@@ -1562,6 +1659,7 @@ fn atom_expressions(
             constant_maps: 0,
             loose: 0,
             grounding: Vec::new(),
+            observation: false,
         })
         .collect::<Vec<_>>();
     for fragment in fragments {
@@ -1578,6 +1676,7 @@ fn atom_expressions(
                 constant_maps: 0,
                 loose: 0,
                 grounding: vec![(fragment.grounding.clone(), fragment.license.clone())],
+                observation: false,
             });
         }
     }
@@ -1609,9 +1708,21 @@ fn discovered_literals(spec: &CodingTaskSpec) -> Vec<Expression> {
         let serialized = serde_json::to_string(value).expect("text literal serializes");
         literals.push(literal(&serialized, IrType::Text));
     }
-    // Deliberately no atoms from the examples' expected outputs: an expected
-    // value is the answer, not available data — composing with it would be
-    // memorization of the example, not derivation from the requirement.
+    // An expected output is the answer, not available data — composing with a
+    // whole expected value would memorize the example. What an observation may
+    // still contribute is the answer's vocabulary: the label a classification
+    // returns. Those atoms are flagged `observation`, and the slot filter only
+    // admits them as the payload slots of a conditional fragment — the
+    // condition itself must still be discovered from the catalog's sources,
+    // so 'accepted' names a branch while `text == 'teal_blue'` can never form.
+    for example in &spec.examples {
+        for value in quoted_literals(&example.expected) {
+            let serialized = serde_json::to_string(&value).expect("text literal serializes");
+            let mut atom = literal(&serialized, IrType::Text);
+            atom.observation = true;
+            literals.push(atom);
+        }
+    }
     if quoted.len() >= 3 {
         let fields = quoted
             .iter()
@@ -1669,6 +1780,7 @@ fn literal(text: &str, ty: IrType) -> Expression {
         constant_maps: 0,
         loose: 0,
         grounding: Vec::new(),
+        observation: false,
     }
 }
 
@@ -1699,18 +1811,30 @@ fn argument_choices(
     index: usize,
     parameters: &[(String, IrType)],
     extra: &[Expression],
+    observation_slots: &[String],
     owned: &BTreeSet<String>,
     needed: &BTreeSet<String>,
 ) -> Vec<Expression> {
+    // An observation literal (an atom lifted from an expected output) is only
+    // the answer's vocabulary: it may name a conditional's payload and nothing
+    // else. Every other slot filters these atoms out, so an expected value can
+    // never become a condition operand or a standalone answer.
+    let observation_allowed = observation_slots.iter().any(|name| name == slot);
     let mut choices = pool
         .iter()
-        .filter(|expression| types_may_unify(expected, &expression.ty))
+        .filter(|expression| {
+            types_may_unify(expected, &expression.ty)
+                && (observation_allowed || !expression.observation)
+        })
         .cloned()
         .collect::<Vec<_>>();
     choices.extend(
         extra
             .iter()
-            .filter(|expression| types_may_unify(expected, &expression.ty))
+            .filter(|expression| {
+                types_may_unify(expected, &expression.ty)
+                    && (observation_allowed || !expression.observation)
+            })
             .cloned(),
     );
     let input_names = parameters

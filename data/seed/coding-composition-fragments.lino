@@ -21,6 +21,17 @@ meanings
     fragment_result "integer"
     supports balanced_delimiter_groups
     supports group_max_nesting
+  group_nesting_depths
+    defined-by mapping
+    role coding_fragment
+    idiom "(lambda groups: [max(__import__('itertools').accumulate(1 if symbol == '(' else -1 for symbol in group), default=0) for group in groups])({runs}.split())"
+    grounding "https://docs.python.org/3.12/library/itertools.html#itertools.accumulate"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "deepest nesting of each whitespace separated delimiter group"
+    fragment_signature "text"
+    fragment_result "sequence<integer>"
+    supports group_max_nesting
   zero_depth_end_offsets
     defined-by filter
     role coding_fragment
