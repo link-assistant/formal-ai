@@ -1204,14 +1204,14 @@ the point.
       `coding_discovery::multilingual` extension.
 - [ ] **L21** — Browser/WASM parity: expose recognise→discover→elaborate→lower in
       the worker, label results unverified, keep the line and size budgets.
-- [ ] **L22** — Extend `external_benchmark_suite` with `full_slice` /
+- [x] **L22** — Extend `external_benchmark_suite` with `full_slice` /
       `full_minimum_pass_count` (**lands before plan 08 L22, so its
       re-measurement writes into a ledger that already knows two slices; the two
       floors are independent series and neither may be derived from the other —
       plan 00 §9 X8**); teach `raise_floor`
       (`src/external_benchmarks/ledger.rs:224-245`) and `best_pass_count`
       (`src/external_benchmarks/ratchet.rs:115-121`) the second floor.
-- [ ] **L23** — Raise the no-memorization gate's `SLICE`
+- [x] **L23** — Raise the no-memorization gate's `SLICE`
       (`tests/unit/coding_discovery/no_memorization.rs:5`) to the full suite
       length; justify any `GENERIC_FUNCTION_NAMES` addition in-comment.
 - [ ] **L24** — Run `--slice 164` and `--slice 500`, online and cold-offline;
