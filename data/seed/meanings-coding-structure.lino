@@ -415,6 +415,7 @@ meanings
     idiom "len({items})"
     fragment_signature "unknown:0"
     fragment_result integer
+    supports reduce_count
     grounding "https://docs.python.org/3.12/library/functions.html#len"
     lexeme en
       surface

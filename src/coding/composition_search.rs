@@ -362,6 +362,7 @@ pub fn search_with_structures(
         (
             Reverse(referenced.len()),
             candidate.action_cost(),
+            literal_leaves(&candidate.body),
             Reverse(candidate.fragments.len()),
             candidate.content_id(),
         )
@@ -373,7 +374,48 @@ pub fn search_with_structures(
     let reserved = recursive
         .len()
         .min((bounds.max_candidates / 4).max(usize::from(!recursive.is_empty())));
-    candidates.truncate(bounds.max_candidates.saturating_sub(reserved));
+    // Truncation is not least-action: least-action selects among the drafts
+    // that verify, so the budget only bounds what reaches the examples. A
+    // flat cost-ordered cut lets one prolific junk family (cheap re-wraps of
+    // the input) flood every slot before the verified composition — deeper
+    // because it computes rather than re-reads — is ever reached. The budget
+    // is therefore spent round-robin across program families: a family is a
+    // root fragment together with whether it invents constants, the same
+    // division the pool beam uses, so neither the input-driven composition
+    // nor the arithmetic formula whose semantics genuinely need a literal is
+    // crowded out by the other's rivals.
+    let budget = bounds.max_candidates.saturating_sub(reserved);
+    let mut buckets: std::collections::BTreeMap<String, Vec<ProgramIr>> =
+        std::collections::BTreeMap::new();
+    for candidate in candidates.drain(..) {
+        let root = match &candidate.body {
+            IrNode::Apply { fragment, .. } => fragment.clone(),
+            _ => String::new(),
+        };
+        let class = format!(
+            "{root}/{}",
+            usize::from(literal_leaves(&candidate.body) > 0)
+        );
+        buckets.entry(class).or_default().push(candidate);
+    }
+    for bucket in buckets.values_mut() {
+        bucket.reverse();
+    }
+    let families: Vec<String> = buckets.keys().cloned().collect();
+    'family_rounds: for _ in 0..budget {
+        for class in &families {
+            let Some(bucket) = buckets.get_mut(class) else {
+                continue;
+            };
+            let Some(candidate) = bucket.pop() else {
+                continue;
+            };
+            candidates.push(candidate);
+            if candidates.len() >= budget {
+                break 'family_rounds;
+            }
+        }
+    }
     recursive.truncate(reserved);
     candidates.extend(recursive);
     candidates.sort_by_key(|candidate| (candidate.action_cost(), candidate.content_id()));
@@ -1033,6 +1075,7 @@ fn loop_variable_applies<'a>(
                 expression.fragments.len(),
                 expression.depth,
                 Reverse(parameter_reads(&expression.node, &input_names)),
+                literal_leaves(&expression.node),
                 format!("{:?}", expression.node),
             )
         });
@@ -1054,11 +1097,26 @@ fn loop_variable_applies<'a>(
         let names = fragment.argument_names(language);
         let owned = fragment_coverage(fragment, structure_ids);
         for (slot, ty) in fragment.signature.iter().enumerate() {
-            let binder_dependent = applies
+            // The comprehension body must compute from the loop variable: an
+            // ingredient that never reads it maps a constant over the
+            // iteration, and the plain pool already offers constants.
+            // Ingredients that also read a task input enumerate first — a
+            // computation over the iteration is what a binder slot exists
+            // for; re-reading the variable alone is the degenerate tail.
+            let mut binder_dependent = applies
                 .iter()
-                .filter(|expression| types_may_unify(ty, &expression.ty))
+                .filter(|expression| {
+                    types_may_unify(ty, &expression.ty)
+                        && node_contains_parameter(&expression.node, loop_variable)
+                })
                 .cloned()
                 .collect::<Vec<_>>();
+            binder_dependent.sort_by_key(|expression| {
+                let reads_input = input_names.iter().any(|name| {
+                    node_contains_parameter(&expression.node, name)
+                });
+                usize::from(!reads_input)
+            });
             if binder_dependent.is_empty() {
                 continue;
             }
@@ -1283,8 +1341,22 @@ fn pair_loop_variable_applies<'a>(
 /// How many DISTINCT task inputs the expression reads anywhere in its tree.
 /// A nested re-read of the same input adds no grounding beyond the first, so
 /// deeply tangled assemblies gain no ranking advantage over a plain input.
-fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {
-    let owned: BTreeSet<String> = names.iter().map(|name| (*name).to_owned()).collect();
+/// Number of literal leaves in a tree. At an otherwise full rank tie, the
+/// fill that reads the task's input beats the fill that invents a constant:
+/// a literal is an assumption the examples never justified, and preferring
+/// it is how a search drifts toward memorizing its examples.
+fn literal_leaves(node: &IrNode) -> usize {
+    match node {
+        IrNode::Literal { .. } => 1,
+        IrNode::Apply { arguments, .. } => arguments
+            .iter()
+            .map(|argument| literal_leaves(argument))
+            .sum(),
+        _ => 0,
+    }
+}
+
+fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {    let owned: BTreeSet<String> = names.iter().map(|name| (*name).to_owned()).collect();
     let mut into = BTreeSet::new();
     collect_parameter_names(node, &owned, &mut into);
     into.len()
@@ -1703,6 +1775,7 @@ fn argument_choices(
                         .filter(|id| !owned.contains(*id))
                         .count(),
                     Reverse(parameter_reads(&expression.node, &input_names)),
+                    literal_leaves(&expression.node),
                 ),
                 (
                     exact_name,
@@ -1948,17 +2021,46 @@ fn diversity_class(expression: &Expression) -> String {
         IrNode::Literal { text, .. } => format!("literal {}", text),
         IrNode::Parameter { .. } => format!("parameter {}", type_key(&expression.ty)),
         IrNode::Apply { fragment, .. } => format!(
-            "apply {} {}{}",
+            "apply {} {}{}{}",
             fragment,
             type_key(&expression.ty),
             if repeats_a_fragment(&expression.node) {
                 " recursive"
             } else {
                 ""
+            },
+            if has_computed_argument(&expression.node) {
+                " computed"
+            } else {
+                ""
             }
         ),
         _ => format!("apply {}", type_key(&expression.ty)),
     }
+}
+
+/// True when any argument subtree applies a fragment. An apply whose
+/// arguments are all leaves re-reads or renames values; an apply over a
+/// computed argument is a genuinely different shape — the comprehension body
+/// `values_equal(rotate(text, item), text)` versus the bare re-read
+/// `values_equal(item, text)` — and must not share one diversity window with
+/// it, or the leaner form crowds the composition the window exists for.
+fn has_computed_argument(node: &IrNode) -> bool {
+    let IrNode::Apply { arguments, .. } = node else {
+        return false;
+    };
+    arguments.iter().any(|argument| {
+        let mut stack = vec![argument];
+        while let Some(current) = stack.pop() {
+            if matches!(current, IrNode::Apply { .. }) {
+                return true;
+            }
+            if let IrNode::Apply { arguments, .. } = current {
+                stack.extend(arguments);
+            }
+        }
+        false
+    })
 }
 
 /// True when a fragment is applied directly to its own output — the
@@ -2220,6 +2322,7 @@ fn normalize_pool(pool: &mut Vec<Expression>, requested: usize, limit: usize) {
             requested.saturating_sub(expression.coverage.len()),
             usize::from(expression.constant_maps > 0),
             usize::from(type_has_open_variables(&expression.ty)),
+            literal_leaves(&expression.node),
             expression.fragments.len(),
             expression.depth,
             format!("{:?}", expression.node),
