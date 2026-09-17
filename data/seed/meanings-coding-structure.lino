@@ -372,7 +372,7 @@ meanings
   reduce_count
     defined-by reduction
     role coding_structure
-    idiom "sum(1 for {item} in {items} if {predicate})"
+    idiom "sum(1 for {character} in {items} if {predicate})"
     fragment_signature ("unknown:0" "sequence<unknown:0>" boolean)
     fragment_result integer
     grounding "https://docs.python.org/3.12/library/functions.html#sum"

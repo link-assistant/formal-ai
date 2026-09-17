@@ -17,9 +17,21 @@ impl LanguageLowering for PythonLowering {
     }
 
     fn lower(&self, ir: &ProgramIr, catalog: &FragmentCatalog) -> Result<String, LoweringGap> {
-        let expression = lower_node(&ir.body, catalog)?;
+        let (expression, modules) = hoist_inline_imports(&lower_node(&ir.body, catalog)?);
+        let imports = modules
+            .iter()
+            .map(|module| render("python_import", &[("module", module)]))
+            .collect::<Result<Vec<_>, _>>()?
+            .join("\n");
+        let prepend = |program: String| {
+            if imports.is_empty() {
+                program
+            } else {
+                format!("{imports}\n{program}")
+            }
+        };
         if ir.name.is_empty() {
-            return Ok(expression);
+            return Ok(prepend(expression));
         }
         let parameters = ir
             .parameters
@@ -27,15 +39,48 @@ impl LanguageLowering for PythonLowering {
             .map(|(name, _)| python_identifier(name))
             .collect::<Vec<_>>()
             .join(", ");
-        render(
+        Ok(prepend(render(
             "python_ir_function",
             &[
                 ("name", &python_identifier(&ir.name)),
                 ("parameters", &parameters),
                 ("expression", &expression),
             ],
-        )
+        )?))
     }
+}
+
+/// Seed surfaces keep `__import__('module')` inline so each stays a single
+/// expression; the Python backend is the place that decides the idiomatic
+/// module form (PEP 8 imports at the top), by rewriting attribute access and
+/// collecting one import per module.
+fn hoist_inline_imports(expression: &str) -> (String, Vec<String>) {
+    const NEEDLE: &str = "__import__('";
+    let mut modules = std::collections::BTreeSet::new();
+    let mut lowered = String::with_capacity(expression.len());
+    let mut rest = expression;
+    while let Some(start) = rest.find(NEEDLE) {
+        lowered.push_str(&rest[..start]);
+        let after = &rest[start + NEEDLE.len()..];
+        let Some(end) = after.find('\'') else {
+            break;
+        };
+        let module = &after[..end];
+        match after[end + 1..].strip_prefix(").") {
+            Some(attribute) => {
+                modules.insert(module.to_owned());
+                lowered.push_str(module);
+                lowered.push('.');
+                rest = attribute;
+            }
+            None => {
+                lowered.push_str(&rest[start..start + NEEDLE.len() + end + 1]);
+                rest = &after[end + 1..];
+            }
+        }
+    }
+    lowered.push_str(rest);
+    (lowered, modules.into_iter().collect())
 }
 
 fn lower_node(node: &IrNode, catalog: &FragmentCatalog) -> Result<String, LoweringGap> {

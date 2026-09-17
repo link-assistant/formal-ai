@@ -6,7 +6,7 @@ use std::time::Duration;
 use crate::agent::{AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
 use crate::coding::concept_discovery::{CandidatePart, ConceptMap};
 use crate::coding::fragment_catalog::FragmentCatalog;
-use crate::coding::program_ir::ProgramIr;
+use crate::coding::program_ir::{IrNode, IrType, ProgramIr};
 use crate::coding::python_render::render_function;
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 use crate::needs::{Need, NeedKind, NeedState};
@@ -256,6 +256,54 @@ pub fn compose_with_ir(
     }
 }
 
+/// Whether the top-level fragment's driving iteration is bounded by a
+/// constant: its sequence-typed slot is filled without reading any of the
+/// program's parameters. Returns 1 in that case, 0 otherwise.
+fn constant_bounded_domain(program: &ProgramIr, catalog: &FragmentCatalog) -> usize {
+    let mut current = &program.body;
+    while let IrNode::Return { value } | IrNode::Emit { value } = current {
+        current = value;
+    }
+    let IrNode::Apply { fragment, arguments } = current else {
+        return 0;
+    };
+    let Some(definition) = catalog.get(fragment) else {
+        return 0;
+    };
+    let Some(slot) = definition
+        .signature
+        .iter()
+        .position(|ty| matches!(ty, IrType::Sequence(_)))
+    else {
+        return 0;
+    };
+    let Some(domain) = arguments.get(slot) else {
+        return 0;
+    };
+    let input_names = program
+        .parameters
+        .iter()
+        .map(|(name, _)| name.as_str())
+        .collect::<Vec<_>>();
+    let reads_input = |node: &IrNode| -> bool {
+        let mut stack = vec![node];
+        while let Some(current) = stack.pop() {
+            match current {
+                IrNode::Parameter { name, .. } => {
+                    if input_names.contains(&name.as_str()) {
+                        return true;
+                    }
+                }
+                IrNode::Apply { arguments, .. } => stack.extend(arguments),
+                IrNode::Literal { .. } => {}
+                _ => return false,
+            }
+        }
+        false
+    };
+    usize::from(!reads_input(domain))
+}
+
 fn ir_draft(
     spec: &CodingTaskSpec,
     catalog: &FragmentCatalog,
@@ -278,7 +326,12 @@ fn ir_draft(
         return Ok(None);
     };
     let content_id = program.content_id();
-    let action_cost = program.action_cost();
+    let mut action_cost = program.action_cost();
+    // A draft whose driving iteration runs over a constant performs
+    // input-independent action: its work is bounded by the constant, not by
+    // the task's input, so agreement with the examples is coincidence. Such
+    // a draft owes the unexamined input as extra action.
+    action_cost += 4 * constant_bounded_domain(&program, catalog);
     Ok(Some(Draft {
         id: content_id.clone(),
         source,
