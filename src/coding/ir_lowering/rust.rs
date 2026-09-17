@@ -170,6 +170,9 @@ fn rust_type(ty: &IrType) -> String {
         IrType::Float => "f64".to_owned(),
         IrType::Boolean => "bool".to_owned(),
         IrType::Text => "String".to_owned(),
+        // Functions render as their lambda text; a typed slot never needs a
+        // Rust name for the callable itself.
+        IrType::Callable => "String".to_owned(),
         IrType::Sequence(element) => format!("Vec<{}>", rust_type(element)),
         IrType::Pair(left, right) => format!("({}, {})", rust_type(left), rust_type(right)),
         IrType::Mapping(key, value) => {

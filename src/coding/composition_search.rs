@@ -23,7 +23,7 @@ pub struct SearchBounds {
 impl Default for SearchBounds {
     fn default() -> Self {
         Self {
-            max_candidates: 64,
+            max_candidates: 256,
             max_depth: 8,
         }
     }
@@ -103,6 +103,7 @@ pub fn search_with_structures(
                     .annotation
                     .as_deref()
                     .and_then(annotation_type)
+                    .or_else(|| example_parameter_type(spec, index))
                     .unwrap_or(IrType::Unknown(index)),
             )
         })
@@ -129,6 +130,10 @@ pub fn search_with_structures(
         .iter()
         .flat_map(|fragment| fragment.argument_names(&spec.language))
         .collect::<BTreeSet<_>>();
+    let binder_names: Vec<BTreeSet<String>> = ranked
+        .iter()
+        .map(|fragment| fragment_binder_slots(fragment, &spec.language))
+        .collect();
     let mut pool = atom_expressions(spec, &parameters, &ranked, structure_ids);
     let fold_roots = ranked
         .iter()
@@ -136,6 +141,8 @@ pub fn search_with_structures(
             let node = fold_candidate(fragment, &parameters)?;
             Some(Expression {
                 depth: node_depth(&node),
+                constant_maps: constant_map_count(&node, catalog, &spec.language),
+                loose: loose_feeds(&node, catalog),
                 node,
                 ty: fragment.result.clone(),
                 fragments: vec![fragment.id.clone()],
@@ -147,19 +154,69 @@ pub fn search_with_structures(
     for depth in 2..=bounds.max_depth {
         let snapshot = pool.clone();
         let mut layer = Vec::new();
-        for fragment in &ranked {
+        for (fragment_index, fragment) in ranked.iter().enumerate() {
             let names = fragment.argument_names(&spec.language);
+            let binders = &binder_names[fragment_index];
+            let binder_slot = names
+                .iter()
+                .enumerate()
+                .find_map(|(index, name)| binders.contains(name).then_some(index));
+            let loop_variable_choices = binder_slot
+                .and_then(|index| {
+                    let name = names.get(index)?;
+                    let element = fragment.signature.get(index)?;
+                    Some(loop_variable_applies(
+                        ranked
+                            .iter()
+                            .enumerate()
+                            .filter_map(|(other, fragment)| {
+                                (other != fragment_index).then_some(*fragment)
+                            }),
+                        &snapshot,
+                        name,
+                        element,
+                        &parameters,
+                        structure_ids,
+                        &coverable,
+                        catalog,
+                        &spec.language,
+                    ))
+                })
+                .unwrap_or_default();
+            let owned = fragment_coverage(fragment, structure_ids);
             let choices = fragment
                 .signature
                 .iter()
                 .enumerate()
                 .map(|(index, expected)| {
+                    if names
+                        .get(index)
+                        .is_some_and(|name| binders.contains(name))
+                    {
+                        let name = names[index].clone();
+                        return vec![Expression {
+                            node: IrNode::Parameter {
+                                name,
+                                ty: expected.clone(),
+                            },
+                            ty: expected.clone(),
+                            fragments: Vec::new(),
+                            coverage: BTreeSet::new(),
+                            depth: 0,
+                            constant_maps: 0,
+                            loose: 0,
+                            grounding: Vec::new(),
+                        }];
+                    }
                     argument_choices(
                         &snapshot,
                         expected,
                         names.get(index).map(String::as_str).unwrap_or(""),
                         index,
                         &parameters,
+                        &loop_variable_choices,
+                        &owned,
+                        &coverable,
                     )
                 })
                 .collect::<Vec<_>>();
@@ -167,10 +224,20 @@ pub fn search_with_structures(
                 continue;
             }
             let mut combinations = Vec::new();
-            enumerate_arguments(&choices, 0, &mut Vec::new(), &mut combinations, 512);
-            combinations.sort_by_key(|arguments| Reverse(argument_coherence(arguments)));
-            combinations.truncate(96);
+            enumerate_arguments(&choices, 0, &mut Vec::new(), &mut combinations, 2_048);
+            combinations.sort_by_key(|arguments| {
+                (
+                    binder_circularity(binders, binder_slot, arguments),
+                    Reverse(argument_coherence(arguments)),
+                )
+            });
+            combinations.truncate(2_048);
             for arguments in combinations {
+                let result_ty = inferred_expression_type(
+                    &fragment.result,
+                    &fragment.signature,
+                    &arguments,
+                );
                 let mut fragments = vec![fragment.id.clone()];
                 let mut coverage = fragment_coverage(fragment, structure_ids);
                 let mut grounding = vec![(fragment.grounding.clone(), fragment.license.clone())];
@@ -183,23 +250,29 @@ pub fn search_with_structures(
                 fragments.dedup();
                 grounding.sort();
                 grounding.dedup();
-                let expression = Expression {
-                    node: IrNode::Apply {
-                        fragment: fragment.id.clone(),
-                        arguments: arguments
-                            .into_iter()
-                            .map(|argument| argument.node)
-                            .collect(),
-                    },
-                    ty: fragment.result.clone(),
+                let node = IrNode::Apply {
+                    fragment: fragment.id.clone(),
+                    arguments: arguments
+                        .into_iter()
+                        .map(|argument| argument.node)
+                        .collect(),
+                };
+                let actual_depth = node_depth(&node);
+                if actual_depth > depth {
+                    continue;
+                }
+                let constant_maps = constant_map_count(&node, catalog, &spec.language);
+                let loose = loose_feeds(&node, catalog);
+                layer.push(Expression {
+                    node,
+                    ty: result_ty,
                     fragments,
                     coverage,
-                    depth,
+                    depth: actual_depth,
+                    constant_maps,
+                    loose,
                     grounding,
-                };
-                if node_depth(&expression.node) == depth {
-                    layer.push(expression);
-                }
+                });
             }
         }
         pool.extend(layer);
@@ -210,17 +283,21 @@ pub fn search_with_structures(
     // neighborhood cannot evict a shallower valid reduction.
     pool.extend(fold_roots);
 
-    let mut candidates = pool
+    let candidates = pool
         .into_iter()
         .filter(|expression| {
             !expression.fragments.is_empty()
                 && (coverable.is_empty() || expression.coverage.is_superset(&coverable))
         })
+        .collect::<Vec<_>>();
+    let mut candidates = candidates
+        .into_iter()
         .map(|expression| program_from_expression(spec, parameters.clone(), expression))
         .filter(|candidate| {
-            node_depth(&candidate.body) <= bounds.max_depth
-                && candidate.type_check(catalog).is_ok()
-                && lowered_candidate_is_closed(spec, catalog, candidate, &placeholder_names)
+            let depth_ok = node_depth(&candidate.body) <= bounds.max_depth;
+            let type_ok = candidate.type_check(catalog).is_ok();
+            let closed_ok = lowered_candidate_is_closed(spec, catalog, candidate, &placeholder_names);
+            depth_ok && type_ok && closed_ok
         })
         .collect::<Vec<_>>();
     let mut recursive = recursive_reduce_programs(
@@ -230,7 +307,25 @@ pub fn search_with_structures(
         structure_ids,
         bounds.max_candidates,
     );
-    candidates.sort_by_key(|candidate| (candidate.action_cost(), candidate.content_id()));
+    // Truncation is not least-action: least-action selects among the drafts
+    // that verify. The bounded candidate budget is spent first on programs
+    // that actually read the task's inputs, then on richer compositions —
+    // constant-only and literal-stuffed programs cannot generalize and only
+    // pass examples by coincidence.
+    let parameter_names = parameters
+        .iter()
+        .map(|(name, _)| name.clone())
+        .collect::<BTreeSet<_>>();
+    candidates.sort_by_key(|candidate| {
+        let mut referenced = BTreeSet::new();
+        collect_parameter_names(&candidate.body, &parameter_names, &mut referenced);
+        (
+            Reverse(referenced.len()),
+            candidate.action_cost(),
+            Reverse(candidate.fragments.len()),
+            candidate.content_id(),
+        )
+    });
     candidates.dedup_by(|left, right| left.content_id() == right.content_id());
     // Keep a bounded share for each complete root constructor. Otherwise the
     // cheaper subexpression beam can evict every recursive program before the
@@ -640,6 +735,491 @@ fn collect_bindings_until(
     }
 }
 
+/// Names a fragment's own surface binds through `for`/`lambda` targets.
+///
+/// A slot whose placeholder name the fragment itself binds takes the loop
+/// variable reference as its argument: the idiom introduces the binding, so
+/// the argument must lower to that name, never to a computed value. Scope
+/// matters — `{item}` between `for` and `in`, or a lambda parameter
+/// placeholder occurring inside the lambda body, is a binding; the same name
+/// as an IIFE call argument outside the lambda is an ordinary input slot.
+fn fragment_binder_slots(fragment: &Fragment, language: &str) -> BTreeSet<String> {
+    let Some(surface) = fragment.realizations.get(language) else {
+        return BTreeSet::new();
+    };
+    let characters: Vec<char> = surface.chars().collect();
+    let mut depth = vec![0usize; characters.len() + 1];
+    let mut current = 0usize;
+    for (index, character) in characters.iter().enumerate() {
+        match character {
+            '(' | '[' => current += 1,
+            ')' | ']' => current = current.saturating_sub(1),
+            _ => {}
+        }
+        depth[index + 1] = current;
+    }
+    let mut tokens: Vec<(String, usize)> = Vec::new();
+    let mut index = 0;
+    while index < characters.len() {
+        if characters[index].is_alphabetic() || characters[index] == '_' {
+            let start = index;
+            let mut word = String::new();
+            while index < characters.len()
+                && (characters[index].is_alphanumeric() || characters[index] == '_')
+            {
+                word.push(characters[index]);
+                index += 1;
+            }
+            tokens.push((word, start));
+            continue;
+        }
+        index += 1;
+    }
+    let mut placeholder_hits: Vec<(String, usize)> = Vec::new();
+    let mut index = 0;
+    while index < characters.len() {
+        if characters[index] == '{' && characters.get(index + 1) == Some(&'{') {
+            index += 2;
+            continue;
+        }
+        if characters[index] == '{' {
+            let mut name = String::new();
+            let mut cursor = index + 1;
+            while cursor < characters.len() && characters[cursor] != '}' {
+                name.push(characters[cursor]);
+                cursor += 1;
+            }
+            if cursor < characters.len() {
+                placeholder_hits.push((name, index));
+                index = cursor + 1;
+                continue;
+            }
+        }
+        index += 1;
+    }
+    let mut bound = BTreeSet::new();
+    for (token_index, (word, start)) in tokens.iter().enumerate() {
+        if word == "for" {
+            let mut names: Vec<String> = Vec::new();
+            let mut span_end = characters.len();
+            for (inner, offset) in &tokens[token_index + 1..] {
+                if inner == "in" {
+                    span_end = *offset;
+                    break;
+                }
+                names.push(inner.clone());
+            }
+            for (name, offset) in &placeholder_hits {
+                if names.contains(name) && *offset >= *start && *offset <= span_end {
+                    bound.insert(name.clone());
+                }
+            }
+        } else if word == "lambda" {
+            let lambda_depth = depth[*start];
+            let mut parameters: Vec<String> = Vec::new();
+            let mut body_start = None;
+            for (inner, offset) in &tokens[token_index + 1..] {
+                if inner == ":" && depth[*offset] == lambda_depth {
+                    body_start = Some(*offset);
+                    break;
+                }
+                parameters.push(inner.clone());
+            }
+            let Some(body_start) = body_start else {
+                continue;
+            };
+            let mut body_end = characters.len();
+            for index in body_start..characters.len() {
+                if matches!(characters[index], ')' | ']') && depth[index + 1] < lambda_depth {
+                    body_end = index;
+                    break;
+                }
+            }
+            for (name, offset) in &placeholder_hits {
+                if parameters.contains(name) && *offset > body_start && *offset <= body_end {
+                    bound.insert(name.clone());
+                }
+            }
+        }
+    }
+    bound
+}
+
+/// One-level applications that read an enclosing comprehension's loop
+/// variable.
+///
+/// A body like `[1 if item == '(' else -1 for item in symbols]` needs a body
+/// expression referencing the binder, which no global pool expression can
+/// supply — the binder only exists inside the comprehension fragment's own
+/// scope. These applies are candidate choices for the comprehension's free
+/// slots and never pool members: anywhere else they would lower to an
+/// unbound name.
+#[allow(clippy::too_many_arguments)]
+fn loop_variable_applies<'a>(
+    others: impl Iterator<Item = &'a Fragment>,
+    pool: &[Expression],
+    loop_variable: &str,
+    element_type: &IrType,
+    parameters: &[(String, IrType)],
+    structure_ids: &[String],
+    needed: &BTreeSet<String>,
+    catalog: &FragmentCatalog,
+    language: &str,
+) -> Vec<Expression> {
+    let binder = Expression {
+        node: IrNode::Parameter {
+            name: loop_variable.to_owned(),
+            ty: element_type.clone(),
+        },
+        ty: element_type.clone(),
+        fragments: Vec::new(),
+        coverage: BTreeSet::new(),
+        depth: 0,
+        constant_maps: 0,
+        loose: 0,
+        grounding: Vec::new(),
+    };
+    let mut applies: Vec<Expression> = Vec::new();
+    let others: Vec<&Fragment> = others.collect();
+    for fragment in &others {
+        if fragment.signature.is_empty() {
+            continue;
+        }
+        let names = fragment.argument_names(language);
+        let owned = fragment_coverage(fragment, structure_ids);
+        for (slot, expected) in fragment.signature.iter().enumerate() {
+            if !types_may_unify(expected, element_type) {
+                continue;
+            }
+            let choices = fragment
+                .signature
+                .iter()
+                .enumerate()
+                .map(|(index, ty)| {
+                    if index == slot {
+                        vec![binder.clone()]
+                    } else {
+                        argument_choices(
+                            pool,
+                            ty,
+                            names.get(index).map(String::as_str).unwrap_or(""),
+                            index,
+                            parameters,
+                            &[],
+                            &owned,
+                            needed,
+                        )
+                    }
+                })
+                .collect::<Vec<_>>();
+            if choices.iter().any(Vec::is_empty) {
+                continue;
+            }
+            let mut combinations = Vec::new();
+            enumerate_arguments(&choices, 0, &mut Vec::new(), &mut combinations, 8);
+            combinations.sort_by_key(|arguments| {
+                (
+                    binder_circularity(
+                        &std::iter::once(loop_variable.to_owned()).collect(),
+                        Some(slot),
+                        arguments,
+                    ),
+                    Reverse(argument_coherence(arguments)),
+                )
+            });
+            for arguments in combinations {
+                let result_ty = inferred_expression_type(
+                    &fragment.result,
+                    &fragment.signature,
+                    &arguments,
+                );
+                let mut fragments = vec![fragment.id.clone()];
+                let mut coverage = fragment_coverage(fragment, structure_ids);
+                let mut grounding = vec![(fragment.grounding.clone(), fragment.license.clone())];
+                for argument in &arguments {
+                    fragments.extend(argument.fragments.iter().cloned());
+                    coverage.extend(argument.coverage.iter().cloned());
+                    grounding.extend(argument.grounding.iter().cloned());
+                }
+                fragments.sort();
+                fragments.dedup();
+                grounding.sort();
+                grounding.dedup();
+                let node = IrNode::Apply {
+                    fragment: fragment.id.clone(),
+                    arguments: arguments
+                        .into_iter()
+                        .map(|argument| argument.node)
+                        .collect(),
+                };
+                applies.push(Expression {
+                    depth: node_depth(&node),
+                    constant_maps: constant_map_count(&node, catalog, language),
+                    loose: loose_feeds(&node, catalog),
+                    node,
+                    ty: result_ty,
+                    fragments,
+                    coverage,
+                    grounding,
+                });
+            }
+        }
+    }
+    let input_names = parameters
+        .iter()
+        .map(|(name, _)| name.as_str())
+        .collect::<Vec<_>>();
+    let rank = |applies: &mut Vec<Expression>| {
+        applies.sort_by_key(|expression| {
+            (
+                usize::from(expression.constant_maps > 0),
+                usize::MAX - expression.coverage.len(),
+                expression.fragments.len(),
+                expression.depth,
+                Reverse(parameter_reads(&expression.node, &input_names)),
+                format!("{:?}", expression.node),
+            )
+        });
+        applies.dedup_by(|left, right| left.node == right.node);
+        let diversified = diversify(applies, 16, 3);
+        *applies = diversified;
+    };
+    rank(&mut applies);
+    // Second level: the binder may also sit one apply below the surface, as
+    // in `values_equal(rotate(text, item), text)` — the comprehension body
+    // compares a binder-dependent computation against an outer value. The
+    // surface apply takes one binder-dependent one-level apply in a single
+    // slot; its remaining slots draw plain pool choices.
+    let mut two_level = Vec::new();
+    for fragment in &others {
+        if fragment.signature.is_empty() {
+            continue;
+        }
+        let names = fragment.argument_names(language);
+        let owned = fragment_coverage(fragment, structure_ids);
+        for (slot, ty) in fragment.signature.iter().enumerate() {
+            let binder_dependent = applies
+                .iter()
+                .filter(|expression| types_may_unify(ty, &expression.ty))
+                .cloned()
+                .collect::<Vec<_>>();
+            if binder_dependent.is_empty() {
+                continue;
+            }
+            let choices = fragment
+                .signature
+                .iter()
+                .enumerate()
+                .map(|(index, expected)| {
+                    if index == slot {
+                        binder_dependent.clone()
+                    } else {
+                        argument_choices(
+                            pool,
+                            expected,
+                            names.get(index).map(String::as_str).unwrap_or(""),
+                            index,
+                            parameters,
+                            &[],
+                            &owned,
+                            needed,
+                        )
+                    }
+                })
+                .collect::<Vec<_>>();
+            if choices.iter().any(Vec::is_empty) {
+                continue;
+            }
+            let mut combinations = Vec::new();
+            enumerate_arguments(&choices, 0, &mut Vec::new(), &mut combinations, 8);
+            combinations.sort_by_key(|arguments| {
+                (
+                    binder_circularity(
+                        &std::iter::once(loop_variable.to_owned()).collect(),
+                        Some(slot),
+                        arguments,
+                    ),
+                    Reverse(argument_coherence(arguments)),
+                )
+            });
+            for arguments in combinations {
+                let result_ty = inferred_expression_type(
+                    &fragment.result,
+                    &fragment.signature,
+                    &arguments,
+                );
+                let mut fragments = vec![fragment.id.clone()];
+                let mut coverage = fragment_coverage(fragment, structure_ids);
+                let mut grounding = vec![(fragment.grounding.clone(), fragment.license.clone())];
+                for argument in &arguments {
+                    fragments.extend(argument.fragments.iter().cloned());
+                    coverage.extend(argument.coverage.iter().cloned());
+                    grounding.extend(argument.grounding.iter().cloned());
+                }
+                fragments.sort();
+                fragments.dedup();
+                grounding.sort();
+                grounding.dedup();
+                let node = IrNode::Apply {
+                    fragment: fragment.id.clone(),
+                    arguments: arguments
+                        .into_iter()
+                        .map(|argument| argument.node)
+                        .collect(),
+                };
+                two_level.push(Expression {
+                    depth: node_depth(&node),
+                    constant_maps: constant_map_count(&node, catalog, language),
+                    loose: loose_feeds(&node, catalog),
+                    node,
+                    ty: result_ty,
+                    fragments,
+                    coverage,
+                    grounding,
+                });
+            }
+        }
+    }
+    applies.extend(two_level);
+    rank(&mut applies);
+    applies
+}
+
+/// How many DISTINCT task inputs the expression reads anywhere in its tree.
+/// A nested re-read of the same input adds no grounding beyond the first, so
+/// deeply tangled assemblies gain no ranking advantage over a plain input.
+fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {
+    let owned: BTreeSet<String> = names.iter().map(|name| (*name).to_owned()).collect();
+    let mut into = BTreeSet::new();
+    collect_parameter_names(node, &owned, &mut into);
+    into.len()
+}
+
+fn collect_parameter_names(node: &IrNode, names: &BTreeSet<String>, into: &mut BTreeSet<String>) {
+    fn walk(
+        node: &IrNode,
+        names: &BTreeSet<String>,
+        bound: &BTreeSet<String>,
+        into: &mut BTreeSet<String>,
+    ) {
+        match node {
+            IrNode::Parameter { name, .. } => {
+                if names.contains(name) && !bound.contains(name) {
+                    into.insert(name.clone());
+                }
+            }
+            IrNode::Literal { .. } => {}
+            IrNode::Apply { arguments, .. } => {
+                for argument in arguments {
+                    walk(argument, names, bound, into);
+                }
+            }
+            IrNode::Each {
+                item,
+                items,
+                body,
+                predicate,
+            } => {
+                walk(items, names, bound, into);
+                let mut inner = bound.clone();
+                inner.insert(item.clone());
+                walk(body, names, &inner, into);
+                if let Some(predicate) = predicate {
+                    walk(predicate, names, &inner, into);
+                }
+            }
+            IrNode::Fold {
+                item,
+                accumulator,
+                items,
+                initial,
+                body,
+            } => {
+                walk(items, names, bound, into);
+                walk(initial, names, bound, into);
+                let mut inner = bound.clone();
+                inner.insert(item.clone());
+                inner.insert(accumulator.clone());
+                walk(body, names, &inner, into);
+            }
+            IrNode::Repeat {
+                counter,
+                from,
+                to,
+                body,
+            } => {
+                walk(from, names, bound, into);
+                walk(to, names, bound, into);
+                let mut inner = bound.clone();
+                inner.insert(counter.clone());
+                walk(body, names, &inner, into);
+            }
+            IrNode::Recurrence {
+                state,
+                base,
+                transition,
+                index,
+            } => {
+                for value in base {
+                    walk(value, names, bound, into);
+                }
+                let mut inner = bound.clone();
+                inner.extend(state.iter().cloned());
+                walk(transition, names, &inner, into);
+                walk(index, names, &inner, into);
+            }
+            IrNode::RecursiveReduce {
+                state,
+                target,
+                item,
+                items,
+                next,
+                admissible,
+                base_test,
+                base,
+                local,
+                ..
+            } => {
+                for value in target {
+                    walk(value, names, bound, into);
+                }
+                walk(items, names, bound, into);
+                let mut inner = bound.clone();
+                inner.extend(state.iter().cloned());
+                inner.extend(item.iter().cloned());
+                for value in next {
+                    walk(value, names, &inner, into);
+                }
+                if let Some(admissible) = admissible {
+                    walk(admissible, names, &inner, into);
+                }
+                walk(base_test, names, &inner, into);
+                walk(base, names, &inner, into);
+                walk(local, names, &inner, into);
+            }
+            IrNode::Condition {
+                test,
+                then_branch,
+                else_branch,
+            } => {
+                walk(test, names, bound, into);
+                walk(then_branch, names, bound, into);
+                walk(else_branch, names, bound, into);
+            }
+            IrNode::Bind { name, value, body } => {
+                walk(value, names, bound, into);
+                let mut inner = bound.clone();
+                inner.insert(name.clone());
+                walk(body, names, &inner, into);
+            }
+            IrNode::Emit { value } | IrNode::Return { value } => {
+                walk(value, names, bound, into);
+            }
+        }
+    }
+    walk(node, names, &BTreeSet::new(), into);
+}
+
 /// Minimal Python lexical scan for identifier scope. String contents are
 /// deliberately skipped, so a quoted example cannot accidentally bind or
 /// invalidate a placeholder with the same spelling.
@@ -682,6 +1262,16 @@ struct Expression {
     fragments: Vec<String>,
     coverage: BTreeSet<String>,
     depth: usize,
+    /// How many comprehensions inside this expression map a constant: a body
+    /// that never reads its binder cannot depend on the iteration, so such an
+    /// expression is filler for any requirement about the individual items.
+    constant_maps: usize,
+    /// How many slots anywhere in this tree were filled with a text value
+    /// where the fragment demands a sequence of a concrete non-text element.
+    /// Iterating text as characters is free (the element is unknown or text);
+    /// feeding raw text where integers are expected is a guess about what the
+    /// iteration produces, and guesses rank below grounded assemblies.
+    loose: usize,
     grounding: Vec<(String, String)>,
 }
 
@@ -702,6 +1292,8 @@ fn atom_expressions(
             fragments: Vec::new(),
             coverage: BTreeSet::new(),
             depth: 1,
+            constant_maps: 0,
+            loose: 0,
             grounding: Vec::new(),
         })
         .collect::<Vec<_>>();
@@ -716,24 +1308,9 @@ fn atom_expressions(
                 fragments: vec![fragment.id.clone()],
                 coverage: fragment_coverage(fragment, structure_ids),
                 depth: 1,
+                constant_maps: 0,
+                loose: 0,
                 grounding: vec![(fragment.grounding.clone(), fragment.license.clone())],
-            });
-        }
-        for (name, ty) in fragment
-            .argument_names(&spec.language)
-            .into_iter()
-            .zip(&fragment.signature)
-        {
-            atoms.push(Expression {
-                node: IrNode::Parameter {
-                    name,
-                    ty: ty.clone(),
-                },
-                ty: ty.clone(),
-                fragments: Vec::new(),
-                coverage: BTreeSet::new(),
-                depth: 1,
-                grounding: Vec::new(),
             });
         }
     }
@@ -765,12 +1342,9 @@ fn discovered_literals(spec: &CodingTaskSpec) -> Vec<Expression> {
         let serialized = serde_json::to_string(value).expect("text literal serializes");
         literals.push(literal(&serialized, IrType::Text));
     }
-    for example in &spec.examples {
-        literals.push(literal(
-            &example.expected,
-            inferred_literal_type(&example.expected),
-        ));
-    }
+    // Deliberately no atoms from the examples' expected outputs: an expected
+    // value is the answer, not available data — composing with it would be
+    // memorization of the example, not derivation from the requirement.
     if quoted.len() >= 3 {
         let fields = quoted
             .iter()
@@ -825,6 +1399,8 @@ fn literal(text: &str, ty: IrType) -> Expression {
         fragments: Vec::new(),
         coverage: BTreeSet::new(),
         depth: 1,
+        constant_maps: 0,
+        loose: 0,
         grounding: Vec::new(),
     }
 }
@@ -863,19 +1439,44 @@ fn quoted_literals(text: &str) -> Vec<String> {
     values
 }
 
+#[allow(clippy::too_many_arguments)]
 fn argument_choices(
     pool: &[Expression],
     expected: &IrType,
     slot: &str,
     index: usize,
     parameters: &[(String, IrType)],
+    extra: &[Expression],
+    owned: &BTreeSet<String>,
+    needed: &BTreeSet<String>,
 ) -> Vec<Expression> {
     let mut choices = pool
         .iter()
         .filter(|expression| types_may_unify(expected, &expression.ty))
         .cloned()
         .collect::<Vec<_>>();
+    choices.extend(
+        extra
+            .iter()
+            .filter(|expression| types_may_unify(expected, &expression.ty))
+            .cloned(),
+    );
+    let input_names = parameters
+        .iter()
+        .map(|(name, _)| name.as_str())
+        .collect::<Vec<_>>();
+    // Inside a comprehension, the non-container slots are the body: they can
+    // only compute something general by reading the loop variable, which only
+    // the binder-dependent extras provide. A pool expression there would map
+    // a constant over the input. The container slot itself is not a body — it
+    // keeps the plain pool ranking.
+    let extras_first = !extra.is_empty() && !matches!(expected, IrType::Sequence(_));
+    let extra_nodes = extra
+        .iter()
+        .map(|expression| format!("{:?}", expression.node))
+        .collect::<std::collections::BTreeSet<_>>();
     choices.sort_by_key(|expression| {
+        let is_extra = usize::from(!extra_nodes.contains(&format!("{:?}", expression.node)));
         let exact_name = match &expression.node {
             IrNode::Parameter { name, .. } => usize::from(name != slot),
             _ => 1,
@@ -888,18 +1489,361 @@ fn argument_choices(
             ),
             _ => 1,
         };
-        (
-            usize::MAX - expression.coverage.len(),
-            Reverse(expression.fragments.len()),
-            exact_name,
-            positional,
-            expression.depth,
+        // A candidate that reads the task's inputs stays general over the
+        // examples; constants can only agree with them by coincidence. A
+        // choice that adds structure coverage the enclosing fragment does
+        // not already provide is the one that can complete a composition:
+        // required structures count first, then total structure beyond the
+        // enclosing fragment's own — a grounded assembly integrates more of
+        // the discovered sources than a minimal chain that merely re-wraps
+        // the input.
+        let novel = expression
+            .coverage
+            .iter()
+            .filter(|id| needed.contains(*id) && !owned.contains(*id))
+            .count();
+        let key = (
+            (
+                (
+                    if extras_first { is_extra } else { 0 },
+                    usize::from(expression.constant_maps > 0),
+                    expression.loose,
+                    usize::from(pathological_repeat(&expression.node)),
+                    usize::from(!expression.fragments.is_empty()),
+                    usize::from(!types_fit_strictly(expected, &expression.ty)),
+                    usize::MAX - novel,
+                    usize::MAX - expression
+                        .coverage
+                        .iter()
+                        .filter(|id| needed.contains(*id))
+                        .count(),
+                    usize::MAX - expression
+                        .coverage
+                        .iter()
+                        .filter(|id| !owned.contains(*id))
+                        .count(),
+                    Reverse(parameter_reads(&expression.node, &input_names)),
+                ),
+                (
+                    exact_name,
+                    positional,
+                    usize::MAX - expression.fragments.len(),
+                    expression.depth,
+                ),
+            ),
             format!("{:?}", expression.node),
-        )
+        );
+        key
     });
     choices.dedup_by(|left, right| left.node == right.node);
-    choices.truncate(8);
-    choices
+    diversify(&choices, 32, 12)
+}
+
+/// Counts degenerate comprehensions: a body that never reads its binder (a
+/// constant map such as `[0 for item in items]`) and an iterable that reads
+/// its own binder (circular, such as feeding `slice(values, item)` back as
+/// the iterable of the very comprehension binding `item`). Both are well
+/// typed but cannot depend on the iteration, so they are filler in any
+/// window over individual items.
+fn constant_map_count(node: &IrNode, catalog: &FragmentCatalog, language: &str) -> usize {
+    match node {
+        IrNode::Apply { fragment, arguments } => {
+            let mut count = 0;
+            if let Some(definition) = catalog.get(fragment) {
+                let names = definition.argument_names(language);
+                let binders = fragment_binder_slots(definition, language);
+                for (binder_index, binder) in names.iter().enumerate() {
+                    if !binders.contains(binder) {
+                        continue;
+                    }
+                    for (slot, expected) in definition.signature.iter().enumerate() {
+                        if slot == binder_index {
+                            continue;
+                        }
+                        let Some(argument) = arguments.get(slot) else {
+                            continue;
+                        };
+                        if matches!(expected, IrType::Sequence(_)) {
+                            if references_parameter(argument, binder) {
+                                count += 1;
+                            }
+                        } else if !references_parameter(argument, binder) {
+                            count += 1;
+                        }
+                    }
+                }
+            }
+            count += arguments
+                .iter()
+                .map(|argument| constant_map_count(argument, catalog, language))
+                .sum::<usize>();
+            count
+        }
+        // The search pool only ever holds Apply trees over atoms.
+        _ => 0,
+    }
+}
+
+fn references_parameter(node: &IrNode, name: &str) -> bool {
+    match node {
+        IrNode::Parameter { name: candidate, .. } => candidate == name,
+        IrNode::Apply { arguments, .. } => arguments
+            .iter()
+            .any(|argument| references_parameter(argument, name)),
+        _ => false,
+    }
+}
+
+/// The type an argument tree presents at its root, for loose-feed counting.
+fn argument_root_type(node: &IrNode, catalog: &FragmentCatalog) -> Option<IrType> {
+    match node {
+        IrNode::Parameter { ty, .. } | IrNode::Literal { ty, .. } => Some(ty.clone()),
+        IrNode::Apply { fragment, .. } => {
+            catalog.get(fragment).map(|definition| definition.result.clone())
+        }
+        _ => None,
+    }
+}
+
+/// Whether one slot was filled with a value that only fits through the
+/// text-over-sequence leniency while the element type is concrete: a text
+/// cannot promise to yield those elements, so the assembly is a guess.
+fn loose_feed(expected: &IrType, argument: &IrNode, catalog: &FragmentCatalog) -> bool {
+    let Some(actual) = argument_root_type(argument, catalog) else {
+        return false;
+    };
+    if types_fit_strictly(expected, &actual) {
+        return false;
+    }
+    let IrType::Sequence(element) = expected else {
+        return false;
+    };
+    matches!(actual, IrType::Text)
+        && !matches!(element.as_ref(), IrType::Unknown(_) | IrType::Text)
+}
+
+/// Resolves a fragment's schematic result against the argument types the
+/// combination actually provides. A schematic result such as
+/// `sequence<unknown:1>` leaves the element open, which lets a body that
+/// produces a sequence masquerade as a flat sequence in every later window;
+/// binding the signature's variables to the observed argument types records
+/// what the assembly really yields.
+fn inferred_expression_type(
+    result: &IrType,
+    signature: &[IrType],
+    arguments: &[Expression],
+) -> IrType {
+    let mut bindings: std::collections::BTreeMap<usize, IrType> = std::collections::BTreeMap::new();
+    for (slot, expected) in signature.iter().enumerate() {
+        let Some(argument) = arguments.get(slot) else {
+            continue;
+        };
+        collect_variable_bindings(expected, &argument.ty, &mut bindings);
+    }
+    if bindings.is_empty() {
+        return result.clone();
+    }
+    apply_variable_bindings(result, &bindings)
+}
+
+/// Whether a type still names open schematic variables: an assembly whose
+/// result type is unresolved promises less than one whose element types are
+/// concrete, and retention keeps the concrete promise first.
+fn type_has_open_variables(ty: &IrType) -> bool {
+    match ty {
+        IrType::Unknown(_) => true,
+        IrType::Sequence(element) => type_has_open_variables(element),
+        IrType::Pair(left, right) | IrType::Mapping(left, right) => {
+            type_has_open_variables(left) || type_has_open_variables(right)
+        }
+        _ => false,
+    }
+}
+
+fn collect_variable_bindings(
+    expected: &IrType,
+    observed: &IrType,
+    bindings: &mut std::collections::BTreeMap<usize, IrType>,
+) {
+    match (expected, observed) {
+        (IrType::Sequence(expected_element), IrType::Sequence(observed_element)) => {
+            collect_variable_bindings(expected_element, observed_element, bindings);
+        }
+        (
+            IrType::Pair(expected_left, expected_right),
+            IrType::Pair(observed_left, observed_right),
+        ) => {
+            collect_variable_bindings(expected_left, observed_left, bindings);
+            collect_variable_bindings(expected_right, observed_right, bindings);
+        }
+        (
+            IrType::Mapping(expected_key, expected_value),
+            IrType::Mapping(observed_key, observed_value),
+        ) => {
+            collect_variable_bindings(expected_key, observed_key, bindings);
+            collect_variable_bindings(expected_value, observed_value, bindings);
+        }
+        (IrType::Unknown(id), observed) => {
+            bindings.insert(*id, observed.clone());
+        }
+        _ => {}
+    }
+}
+
+fn apply_variable_bindings(
+    ty: &IrType,
+    bindings: &std::collections::BTreeMap<usize, IrType>,
+) -> IrType {
+    match ty {
+        IrType::Unknown(id) => bindings.get(id).cloned().unwrap_or_else(|| ty.clone()),
+        IrType::Sequence(element) => {
+            IrType::Sequence(Box::new(apply_variable_bindings(element, bindings)))
+        }
+        IrType::Pair(left, right) => IrType::Pair(
+            Box::new(apply_variable_bindings(left, bindings)),
+            Box::new(apply_variable_bindings(right, bindings)),
+        ),
+        IrType::Mapping(key, value) => IrType::Mapping(
+            Box::new(apply_variable_bindings(key, bindings)),
+            Box::new(apply_variable_bindings(value, bindings)),
+        ),
+        other => other.clone(),
+    }
+}
+
+/// Counts loose feeds over a whole tree, so assemblies built on a guess carry
+/// that guess with them wherever they are later slotted.
+fn loose_feeds(node: &IrNode, catalog: &FragmentCatalog) -> usize {
+    match node {
+        IrNode::Apply { fragment, arguments } => {
+            let mut count = 0;
+            if let Some(definition) = catalog.get(fragment) {
+                for (slot, expected) in definition.signature.iter().enumerate() {
+                    let Some(argument) = arguments.get(slot) else {
+                        continue;
+                    };
+                    if loose_feed(expected, argument, catalog) {
+                        count += 1;
+                    }
+                }
+            }
+            count += arguments
+                .iter()
+                .map(|argument| loose_feeds(argument, catalog))
+                .sum::<usize>();
+            count
+        }
+        _ => 0,
+    }
+}
+
+/// A type identity that treats unknown variables as one class, so the
+/// diversity quota groups `sequence<unknown:0>` with `sequence<unknown:1>`.
+fn type_key(ty: &IrType) -> String {
+    match ty {
+        IrType::Unknown(_) => "_".to_owned(),
+        IrType::Sequence(inner) => format!("sequence<{}>", type_key(inner)),
+        IrType::Pair(left, right) => format!("pair<{}, {}>", type_key(left), type_key(right)),
+        IrType::Mapping(key, value) => {
+            format!("mapping<{}, {}>", type_key(key), type_key(value))
+        }
+        other => format!("{other:?}"),
+    }
+}
+
+/// Keeps a bounded choice window from being monopolized by one prolific kind
+/// of expression: at most `per_type` entries per distinct class, `limit`
+/// entries overall, preserving the incoming order. The class separates the
+/// three ways a slot can be filled — reading an input, holding a constant,
+/// applying a fragment — because input-reading applications otherwise crowd
+/// every window of their result type and constants (each value a distinct
+/// atom with its own meaning) become unreachable exactly when a task needs
+/// one, such as a divisor or a minimum length. Self-nested chains of one
+/// fragment form a class of their own: `f(f(...))` is a genuinely different
+/// (and usually degenerate) shape from a single `f`, and without the split a
+/// few chain levels crowd the grounded single applications out of the very
+/// windows they need for their next composition step.
+fn diversity_class(expression: &Expression) -> String {
+    match &expression.node {
+        IrNode::Literal { text, .. } => format!("literal {}", text),
+        IrNode::Parameter { .. } => format!("parameter {}", type_key(&expression.ty)),
+        IrNode::Apply { fragment, .. } => format!(
+            "apply {} {}{}",
+            fragment,
+            type_key(&expression.ty),
+            if repeats_a_fragment(&expression.node) {
+                " recursive"
+            } else {
+                ""
+            }
+        ),
+        _ => format!("apply {}", type_key(&expression.ty)),
+    }
+}
+
+/// True when a fragment is applied directly to its own output — the
+/// self-nesting filler pattern (`accumulate(accumulate(values, add), add)`) —
+/// or when any single fragment appears three or more times. Repetition of a
+/// fragment exactly twice through *other* fragments
+/// (`reverse(remove-first(reverse(...)))`, removing a trailing marker) is
+/// legitimate composition, not filler.
+fn pathological_repeat(node: &IrNode) -> bool {
+    fn walk(node: &IrNode, counts: &mut std::collections::BTreeMap<String, usize>) -> bool {
+        match node {
+            IrNode::Apply { fragment, arguments } => {
+                let count = counts.entry(fragment.clone()).or_insert(0);
+                *count += 1;
+                if *count >= 3 {
+                    return true;
+                }
+                arguments.iter().any(|argument| {
+                    matches!(argument,
+                        IrNode::Apply { fragment: inner, .. } if inner == fragment)
+                        || walk(argument, counts)
+                })
+            }
+            _ => false,
+        }
+    }
+    let mut counts = std::collections::BTreeMap::new();
+    walk(node, &mut counts)
+}
+
+/// Whether any fragment id is applied more than once in the tree.
+fn repeats_a_fragment(node: &IrNode) -> bool {
+    fn count(node: &IrNode, counts: &mut std::collections::BTreeMap<String, usize>) {
+        match node {
+            IrNode::Apply { fragment, arguments } => {
+                *counts.entry(fragment.clone()).or_insert(0) += 1;
+                for argument in arguments {
+                    count(argument, counts);
+                }
+            }
+            _ => {}
+        }
+    }
+    let mut counts = std::collections::BTreeMap::new();
+    count(node, &mut counts);
+    counts.into_values().any(|count| count > 1)
+}
+
+fn diversify(sorted: &[Expression], limit: usize, per_type: usize) -> Vec<Expression> {
+    let mut kept: Vec<Expression> = Vec::new();
+    let mut per_result_type: std::collections::BTreeMap<String, usize> =
+        std::collections::BTreeMap::new();
+    for expression in sorted {
+        if kept.len() >= limit {
+            break;
+        }
+        let key = diversity_class(expression);
+        let count = per_result_type.entry(key).or_insert(0);
+        if *count >= per_type {
+            continue;
+        }
+        *count += 1;
+        kept.push(expression.clone());
+    }
+    kept
 }
 
 fn enumerate_arguments(
@@ -908,8 +1852,7 @@ fn enumerate_arguments(
     current: &mut Vec<Expression>,
     output: &mut Vec<Vec<Expression>>,
     limit: usize,
-) {
-    if output.len() >= limit {
+) {    if output.len() >= limit {
         return;
     }
     if index == choices.len() {
@@ -925,6 +1868,28 @@ fn enumerate_arguments(
         }
     }
 }
+
+/// How many non-binder slots of one assembled application read a name the
+/// application itself binds — an iterable such as `values[item]` feeding the
+/// very comprehension that binds `item` is circular and cannot depend on any
+/// real iteration. Such combos rank below every grounded one.
+fn binder_circularity(
+    binders: &BTreeSet<String>,
+    binder_slot: Option<usize>,
+    arguments: &[Expression],
+) -> usize {
+    arguments
+        .iter()
+        .enumerate()
+        .filter(|(index, _)| Some(*index) != binder_slot)
+        .filter(|(_, expression)| {
+            binders
+                .iter()
+                .any(|name| node_contains_parameter(&expression.node, name))
+        })
+        .count()
+}
+
 
 fn argument_coherence(arguments: &[Expression]) -> usize {
     arguments
@@ -1044,14 +2009,57 @@ fn fragment_coverage(fragment: &Fragment, requested: &[String]) -> BTreeSet<Stri
 fn normalize_pool(pool: &mut Vec<Expression>, requested: usize, limit: usize) {
     pool.sort_by_key(|expression| {
         (
+            // Atoms carry no coverage but are the inputs every composition
+            // grounds in; they survive retention first.
+            usize::from(!expression.fragments.is_empty()),
             requested.saturating_sub(expression.coverage.len()),
-            Reverse(expression.fragments.len()),
+            usize::from(expression.constant_maps > 0),
+            usize::from(type_has_open_variables(&expression.ty)),
+            expression.fragments.len(),
             expression.depth,
             format!("{:?}", expression.node),
         )
     });
     pool.dedup_by(|left, right| left.node == right.node);
-    pool.truncate(limit);
+    // Least action alone would let one composition family fill the whole
+    // pool: minimal re-wraps of one root fragment are countless, while the
+    // assemblies rooted at another fragment are few but carry the structures
+    // a later depth needs. Retention reserves room for every structure class
+    // — the same classes the per-slot windows sample — so no family is
+    // crowded out before its descendants can form.
+    // Round-robin across classes in sorted order: every family keeps its
+    // best entries before any family hordes the budget, so a chain rooted at
+    // a rare fragment survives even when common families are countless.
+    let mut buckets: std::collections::BTreeMap<String, Vec<Expression>> =
+        std::collections::BTreeMap::new();
+    let mut kept: Vec<Expression> = Vec::with_capacity(limit);
+    for expression in pool.drain(..) {
+        if kept.len() < limit && expression.fragments.is_empty() {
+            kept.push(expression);
+            continue;
+        }
+        let class = diversity_class(&expression);
+        buckets.entry(class).or_default().push(expression);
+    }
+    for bucket in buckets.values_mut() {
+        bucket.reverse();
+    }
+    let round: Vec<String> = buckets.keys().cloned().collect();
+    'rounds: for _ in 0..limit {
+        for class in &round {
+            let Some(bucket) = buckets.get_mut(class) else {
+                continue;
+            };
+            let Some(expression) = bucket.pop() else {
+                continue;
+            };
+            kept.push(expression);
+            if kept.len() >= limit {
+                break 'rounds;
+            }
+        }
+    }
+    *pool = kept;
 }
 
 fn program_from_expression(
@@ -1189,6 +2197,7 @@ const fn neutral_literal(ty: &IrType) -> &'static str {
         IrType::Integer | IrType::Float => "0",
         IrType::Boolean => "false",
         IrType::Text => "\"\"",
+        IrType::Callable => "None",
         IrType::Sequence(_) => "[]",
         IrType::Pair(_, _) => "(0, 0)",
         IrType::Mapping(_, _) => "{}",
@@ -1208,6 +2217,60 @@ fn annotation_type(annotation: &str) -> Option<IrType> {
     parse_type_slug(&normalized)
 }
 
+/// Structural parameter types discovered from the task's own examples.
+///
+/// The examples are trusted sources: an argument the task itself supplies
+/// tells the search whether a parameter is a sequence or text, so scalar
+/// slots stop accepting whole collections. Only the structural classes are
+/// discovered — bare numbers stay open, and parameters whose examples
+/// disagree (or are absent) stay open too.
+fn example_parameter_type(spec: &CodingTaskSpec, index: usize) -> Option<IrType> {
+    let classes = spec
+        .examples
+        .iter()
+        .map(|example| example.arguments.get(index).map(String::as_str))
+        .collect::<Option<Vec<_>>>()?;
+    if classes.is_empty() {
+        return None;
+    }
+    let same_class = |left: &IrType, right: &IrType| match (left, right) {
+        (IrType::Sequence(_), IrType::Sequence(_)) => true,
+        _ => left == right,
+    };
+    let mut discovered: Option<IrType> = None;
+    for value in &classes {
+        let trimmed = value.trim();
+        let class = if trimmed.starts_with('[') {
+            let inner = trimmed.trim_start_matches('[').trim_end_matches(']').trim();
+            let elements = inner
+                .split(',')
+                .map(|element| element.trim())
+                .filter(|element| !element.is_empty())
+                .collect::<Vec<_>>();
+            let element = if !elements.is_empty()
+                && elements.iter().all(|element| element.parse::<f64>().is_ok())
+            {
+                IrType::Float
+            } else {
+                IrType::Unknown(9_001)
+            };
+            IrType::Sequence(Box::new(element))
+        } else if trimmed.starts_with('\'') || trimmed.starts_with('"') {
+            IrType::Text
+        } else if trimmed.parse::<f64>().is_ok() || trimmed.is_empty() {
+            continue;
+        } else {
+            IrType::Text
+        };
+        match &discovered {
+            None => discovered = Some(class),
+            Some(seen) if same_class(seen, &class) => {}
+            Some(_) => return None,
+        }
+    }
+    discovered
+}
+
 fn types_may_unify(left: &IrType, right: &IrType) -> bool {
     match (left, right) {
         (IrType::Unknown(_), _) | (_, IrType::Unknown(_)) => true,
@@ -1218,6 +2281,22 @@ fn types_may_unify(left: &IrType, right: &IrType) -> bool {
         (IrType::Pair(left_a, left_b), IrType::Pair(right_a, right_b))
         | (IrType::Mapping(left_a, left_b), IrType::Mapping(right_a, right_b)) => {
             types_may_unify(left_a, right_a) && types_may_unify(left_b, right_b)
+        }
+        _ => left == right,
+    }
+}
+
+/// Strict counterpart to [`types_may_unify`]: the same recursion without the
+/// text-over-sequence leniency. A choice whose type fits a slot only through
+/// that leniency is a guess about the iteration element; a choice whose type
+/// fits exactly is grounded, so windows rank it first.
+fn types_fit_strictly(left: &IrType, right: &IrType) -> bool {
+    match (left, right) {
+        (IrType::Unknown(_), _) | (_, IrType::Unknown(_)) => true,
+        (IrType::Sequence(left), IrType::Sequence(right)) => types_fit_strictly(left, right),
+        (IrType::Pair(left_a, left_b), IrType::Pair(right_a, right_b))
+        | (IrType::Mapping(left_a, left_b), IrType::Mapping(right_a, right_b)) => {
+            types_fit_strictly(left_a, right_a) && types_fit_strictly(left_b, right_b)
         }
         _ => left == right,
     }

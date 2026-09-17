@@ -569,7 +569,7 @@ meanings
     defined-by sequence
     role coding_structure
     idiom "__import__('itertools').accumulate({items}, {operation})"
-    fragment_signature ("sequence<unknown:0>" text)
+    fragment_signature ("sequence<unknown:0>" callable)
     fragment_result "sequence<unknown:0>"
     supports prefix_negative
     supports balanced_delimiter_groups

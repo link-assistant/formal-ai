@@ -38,6 +38,10 @@ pub enum IrType {
     Float,
     Boolean,
     Text,
+    /// A function value (a seeded lambda such as `lambda left, right: left +
+    /// right`). Distinct from text: a callable slot only accepts fragments
+    /// that define a function, so an input never masquerades as an operation.
+    Callable,
     Sequence(Box<Self>),
     Pair(Box<Self>, Box<Self>),
     Mapping(Box<Self>, Box<Self>),
@@ -153,7 +157,8 @@ impl ProgramIr {
     pub fn type_check(&self, catalog: &FragmentCatalog) -> Result<(), String> {
         let mut environment = self.parameters.iter().cloned().collect();
         let mut substitutions = BTreeMap::new();
-        infer_node(&self.body, catalog, &mut environment, &mut substitutions)?;
+        let mut fresh = FRAGMENT_TYPE_VARIABLE_OFFSET;
+        infer_node(&self.body, catalog, &mut environment, &mut substitutions, &mut fresh)?;
         Ok(())
     }
 
@@ -373,6 +378,8 @@ const fn neutral_literal(ty: &IrType) -> &'static str {
         IrType::Integer | IrType::Float => "0",
         IrType::Boolean => "false",
         IrType::Text => "\"\"",
+        // No literal denotes a function; the seed's lambda fragments do.
+        IrType::Callable => "None",
         IrType::Sequence(_) => "[]",
         IrType::Pair(_, _) => "(0, 0)",
         IrType::Mapping(_, _) => "{}",
@@ -525,6 +532,7 @@ fn infer_node(
     catalog: &FragmentCatalog,
     environment: &mut BTreeMap<String, IrType>,
     substitutions: &mut BTreeMap<usize, IrType>,
+    fresh: &mut usize,
 ) -> Result<IrType, String> {
     match node {
         IrNode::Parameter { name, ty } => {
@@ -555,11 +563,13 @@ fn infer_node(
                     ],
                 ));
             }
+            let base = *fresh;
+            *fresh += FRAGMENT_TYPE_VARIABLE_STRIDE;
             for (position, (argument, expected)) in
                 arguments.iter().zip(&definition.signature).enumerate()
             {
-                let observed = infer_node(argument, catalog, environment, substitutions)?;
-                let expected = fragment_type_variable(expected);
+                let observed = infer_node(argument, catalog, environment, substitutions, fresh)?;
+                let expected = fragment_type_variable(expected, base);
                 unify(&expected, &observed, substitutions).map_err(|detail| {
                     let position = (position + 1).to_string();
                     runtime_message(
@@ -573,7 +583,7 @@ fn infer_node(
                 })?;
             }
             Ok(resolve_type(
-                &fragment_type_variable(&definition.result),
+                &fragment_type_variable(&definition.result, base),
                 substitutions,
             ))
         }
@@ -583,16 +593,17 @@ fn infer_node(
             body,
             predicate,
         } => {
-            let items_type = infer_node(items, catalog, environment, substitutions)?;
+            let items_type = infer_node(items, catalog, environment, substitutions, fresh)?;
             let element = iterable_element(&items_type);
             let previous = environment.insert(item.clone(), element);
             if let Some(predicate) = predicate {
-                let predicate_type = infer_node(predicate, catalog, environment, substitutions)?;
+                let predicate_type =
+                    infer_node(predicate, catalog, environment, substitutions, fresh)?;
                 unify(&IrType::Boolean, &predicate_type, substitutions).map_err(|detail| {
                     runtime_message("ir_each_predicate", &[("detail", &detail)])
                 })?;
             }
-            let body_type = infer_node(body, catalog, environment, substitutions)?;
+            let body_type = infer_node(body, catalog, environment, substitutions, fresh)?;
             restore_binding(environment, item, previous);
             Ok(IrType::Sequence(Box::new(body_type)))
         }
@@ -603,11 +614,11 @@ fn infer_node(
             initial,
             body,
         } => {
-            let items_type = infer_node(items, catalog, environment, substitutions)?;
-            let initial_type = infer_node(initial, catalog, environment, substitutions)?;
+            let items_type = infer_node(items, catalog, environment, substitutions, fresh)?;
+            let initial_type = infer_node(initial, catalog, environment, substitutions, fresh)?;
             let old_item = environment.insert(item.clone(), iterable_element(&items_type));
             let old_accumulator = environment.insert(accumulator.clone(), initial_type.clone());
-            let body_type = infer_node(body, catalog, environment, substitutions)?;
+            let body_type = infer_node(body, catalog, environment, substitutions, fresh)?;
             unify(&initial_type, &body_type, substitutions).map_err(|detail| {
                 runtime_message(
                     "ir_fold_error",
@@ -624,8 +635,8 @@ fn infer_node(
             to,
             body,
         } => {
-            let from_type = infer_node(from, catalog, environment, substitutions)?;
-            let to_type = infer_node(to, catalog, environment, substitutions)?;
+            let from_type = infer_node(from, catalog, environment, substitutions, fresh)?;
+            let to_type = infer_node(to, catalog, environment, substitutions, fresh)?;
             unify(&IrType::Integer, &from_type, substitutions)
                 .and_then(|()| unify(&IrType::Integer, &to_type, substitutions))
                 .map_err(|detail| {
@@ -635,7 +646,7 @@ fn infer_node(
                     )
                 })?;
             let previous = environment.insert(counter.clone(), IrType::Integer);
-            let body_type = infer_node(body, catalog, environment, substitutions)?;
+            let body_type = infer_node(body, catalog, environment, substitutions, fresh)?;
             restore_binding(environment, counter, previous);
             Ok(body_type)
         }
@@ -645,12 +656,12 @@ fn infer_node(
             transition,
             index,
         } => {
-            let index_type = infer_node(index, catalog, environment, substitutions)?;
+            let index_type = infer_node(index, catalog, environment, substitutions, fresh)?;
             unify(&IrType::Integer, &index_type, substitutions)
                 .map_err(|detail| runtime_message("ir_recurrence_index", &[("detail", &detail)]))?;
             let mut recurrence_type = IrType::Unknown(usize::MAX - 1);
             for base_case in base {
-                let base_type = infer_node(base_case, catalog, environment, substitutions)?;
+                let base_type = infer_node(base_case, catalog, environment, substitutions, fresh)?;
                 unify(&recurrence_type, &base_type, substitutions).map_err(|detail| {
                     runtime_message("ir_recurrence_base", &[("detail", &detail)])
                 })?;
@@ -665,7 +676,7 @@ fn infer_node(
                     )
                 })
                 .collect::<Vec<_>>();
-            let transition_type = infer_node(transition, catalog, environment, substitutions)?;
+            let transition_type = infer_node(transition, catalog, environment, substitutions, fresh)?;
             unify(&recurrence_type, &transition_type, substitutions).map_err(|detail| {
                 runtime_message("ir_recurrence_transition", &[("detail", &detail)])
             })?;
@@ -692,14 +703,14 @@ fn infer_node(
             }
             let state_types = target
                 .iter()
-                .map(|node| infer_node(node, catalog, environment, substitutions))
+                .map(|node| infer_node(node, catalog, environment, substitutions, fresh))
                 .collect::<Result<Vec<_>, _>>()?;
             let old_state = state
                 .iter()
                 .zip(&state_types)
                 .map(|(name, ty)| (name.clone(), environment.insert(name.clone(), ty.clone())))
                 .collect::<Vec<_>>();
-            let items_type = infer_node(items, catalog, environment, substitutions)?;
+            let items_type = infer_node(items, catalog, environment, substitutions, fresh)?;
             let item_types = destructured_types(&iterable_element(&items_type), item.len())?;
             let old_items = item
                 .iter()
@@ -707,7 +718,7 @@ fn infer_node(
                 .map(|(name, ty)| (name.clone(), environment.insert(name.clone(), ty)))
                 .collect::<Vec<_>>();
             for (position, next_node) in next.iter().enumerate() {
-                let next_type = infer_node(next_node, catalog, environment, substitutions)?;
+                let next_type = infer_node(next_node, catalog, environment, substitutions, fresh)?;
                 unify(&state_types[position], &next_type, substitutions).map_err(|detail| {
                     runtime_message(
                         "ir_recursive_next",
@@ -716,21 +727,21 @@ fn infer_node(
                 })?;
             }
             if let Some(predicate) = admissible {
-                let ty = infer_node(predicate, catalog, environment, substitutions)?;
+                let ty = infer_node(predicate, catalog, environment, substitutions, fresh)?;
                 unify(&IrType::Boolean, &ty, substitutions).map_err(|detail| {
                     runtime_message("ir_recursive_admissible", &[("detail", &detail)])
                 })?;
             }
-            let test_type = infer_node(base_test, catalog, environment, substitutions)?;
+            let test_type = infer_node(base_test, catalog, environment, substitutions, fresh)?;
             unify(&IrType::Boolean, &test_type, substitutions).map_err(|detail| {
                 runtime_message("ir_recursive_base_test", &[("detail", &detail)])
             })?;
-            let base_type = infer_node(base, catalog, environment, substitutions)?;
-            let local_type = infer_node(local, catalog, environment, substitutions)?;
+            let base_type = infer_node(base, catalog, environment, substitutions, fresh)?;
+            let local_type = infer_node(local, catalog, environment, substitutions, fresh)?;
             unify(&base_type, &local_type, substitutions)
                 .map_err(|detail| runtime_message("ir_recursive_local", &[("detail", &detail)]))?;
-            check_reduction_fragment(catalog, reducer, &base_type, substitutions)?;
-            check_combination_fragment(catalog, combine, &base_type, substitutions)?;
+            check_reduction_fragment(catalog, reducer, &base_type, substitutions, fresh)?;
+            check_combination_fragment(catalog, combine, &base_type, substitutions, fresh)?;
             for (name, previous) in old_items {
                 restore_binding(environment, &name, previous);
             }
@@ -744,25 +755,25 @@ fn infer_node(
             then_branch,
             else_branch,
         } => {
-            let test_type = infer_node(test, catalog, environment, substitutions)?;
+            let test_type = infer_node(test, catalog, environment, substitutions, fresh)?;
             unify(&IrType::Boolean, &test_type, substitutions)
                 .map_err(|detail| runtime_message("ir_condition_test", &[("detail", &detail)]))?;
-            let then_type = infer_node(then_branch, catalog, environment, substitutions)?;
-            let else_type = infer_node(else_branch, catalog, environment, substitutions)?;
+            let then_type = infer_node(then_branch, catalog, environment, substitutions, fresh)?;
+            let else_type = infer_node(else_branch, catalog, environment, substitutions, fresh)?;
             unify(&then_type, &else_type, substitutions).map_err(|detail| {
                 runtime_message("ir_condition_branches", &[("detail", &detail)])
             })?;
             Ok(resolve_type(&then_type, substitutions))
         }
         IrNode::Bind { name, value, body } => {
-            let value_type = infer_node(value, catalog, environment, substitutions)?;
+            let value_type = infer_node(value, catalog, environment, substitutions, fresh)?;
             let previous = environment.insert(name.clone(), value_type);
-            let body_type = infer_node(body, catalog, environment, substitutions)?;
+            let body_type = infer_node(body, catalog, environment, substitutions, fresh)?;
             restore_binding(environment, name, previous);
             Ok(body_type)
         }
         IrNode::Emit { value } | IrNode::Return { value } => {
-            infer_node(value, catalog, environment, substitutions)
+            infer_node(value, catalog, environment, substitutions, fresh)
         }
     }
 }
@@ -805,6 +816,7 @@ fn check_reduction_fragment(
     id: &str,
     value_type: &IrType,
     substitutions: &mut BTreeMap<usize, IrType>,
+    fresh: &mut usize,
 ) -> Result<(), String> {
     let fragment = catalog
         .get(id)
@@ -815,8 +827,10 @@ fn check_reduction_fragment(
             &[("fragment", id)],
         ));
     }
-    let expected = fragment_type_variable(&fragment.signature[0]);
-    let result = fragment_type_variable(&fragment.result);
+    let base = *fresh;
+    *fresh += FRAGMENT_TYPE_VARIABLE_STRIDE;
+    let expected = fragment_type_variable(&fragment.signature[0], base);
+    let result = fragment_type_variable(&fragment.result, base);
     unify(
         &expected,
         &IrType::Sequence(Box::new(value_type.clone())),
@@ -830,6 +844,7 @@ fn check_combination_fragment(
     id: &str,
     value_type: &IrType,
     substitutions: &mut BTreeMap<usize, IrType>,
+    fresh: &mut usize,
 ) -> Result<(), String> {
     let fragment = catalog
         .get(id)
@@ -840,11 +855,13 @@ fn check_combination_fragment(
             &[("fragment", id)],
         ));
     }
+    let base = *fresh;
+    *fresh += FRAGMENT_TYPE_VARIABLE_STRIDE;
     for argument in &fragment.signature {
-        unify(&fragment_type_variable(argument), value_type, substitutions)?;
+        unify(&fragment_type_variable(argument, base), value_type, substitutions)?;
     }
     unify(
-        &fragment_type_variable(&fragment.result),
+        &fragment_type_variable(&fragment.result, base),
         value_type,
         substitutions,
     )
@@ -895,17 +912,28 @@ fn runtime_message(id: &str, values: &[(&str, &str)]) -> String {
 
 const FRAGMENT_TYPE_VARIABLE_OFFSET: usize = usize::MAX / 4;
 
-fn fragment_type_variable(ty: &IrType) -> IrType {
+/// Distinct type-variable ids reserved for one fragment occurrence. Covers
+/// every schematic variable a seeded fragment declares.
+const FRAGMENT_TYPE_VARIABLE_STRIDE: usize = 32;
+
+/// Instantiates a fragment's schematic type with type variables based at
+/// `base`. The base is drawn fresh for every fragment occurrence: a constant
+/// offset would make two applications of different fragments share the same
+/// variable, letting one application's iterable binding (text iteration
+/// binding an element to text) poison an unrelated fragment's element type.
+fn fragment_type_variable(ty: &IrType, base: usize) -> IrType {
     match ty {
-        IrType::Unknown(id) => IrType::Unknown(FRAGMENT_TYPE_VARIABLE_OFFSET.saturating_add(*id)),
-        IrType::Sequence(element) => IrType::Sequence(Box::new(fragment_type_variable(element))),
+        IrType::Unknown(id) => IrType::Unknown(base.saturating_add(*id)),
+        IrType::Sequence(element) => {
+            IrType::Sequence(Box::new(fragment_type_variable(element, base)))
+        }
         IrType::Pair(left, right) => IrType::Pair(
-            Box::new(fragment_type_variable(left)),
-            Box::new(fragment_type_variable(right)),
+            Box::new(fragment_type_variable(left, base)),
+            Box::new(fragment_type_variable(right, base)),
         ),
         IrType::Mapping(key, value) => IrType::Mapping(
-            Box::new(fragment_type_variable(key)),
-            Box::new(fragment_type_variable(value)),
+            Box::new(fragment_type_variable(key, base)),
+            Box::new(fragment_type_variable(value, base)),
         ),
         _ => ty.clone(),
     }
@@ -948,6 +976,7 @@ fn push_type(output: &mut String, indent: usize, ty: &IrType) {
         IrType::Float => push_lino_node(output, indent, "type", Some("float")),
         IrType::Boolean => push_lino_node(output, indent, "type", Some("boolean")),
         IrType::Text => push_lino_node(output, indent, "type", Some("text")),
+        IrType::Callable => push_lino_node(output, indent, "type", Some("callable")),
         IrType::Unknown(id) => {
             push_lino_node(output, indent, "type", Some(&format!("unknown:{id}")));
         }
@@ -1134,6 +1163,7 @@ pub(crate) fn type_slug(ty: &IrType) -> String {
         IrType::Float => "float".to_owned(),
         IrType::Boolean => "boolean".to_owned(),
         IrType::Text => "text".to_owned(),
+        IrType::Callable => "callable".to_owned(),
         IrType::Sequence(element) => format!("sequence<{}>", type_slug(element)),
         IrType::Pair(left, right) => format!("pair<{},{}>", type_slug(left), type_slug(right)),
         IrType::Mapping(key, value) => {

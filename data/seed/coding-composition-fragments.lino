@@ -9,7 +9,6 @@ meanings
     rediscovery_query "remove Unicode whitespace characters from text"
     fragment_signature "text"
     fragment_result "text"
-    supports balanced_delimiter_groups
   delimiter_depth_delta
     defined-by mapping
     role coding_fragment
@@ -52,7 +51,7 @@ meanings
     license "PSF-2.0"
     bootstrap true
     rediscovery_query "binary addition lambda operation"
-    fragment_result text
+    fragment_result callable
     supports prefix_negative
     supports balanced_delimiter_groups
     supports group_max_nesting
@@ -75,7 +74,7 @@ meanings
     license "PSF-2.0"
     bootstrap true
     rediscovery_query "binary maximum callable operation"
-    fragment_result text
+    fragment_result callable
     supports running_prefix
     supports reduce_max
   multiply_values

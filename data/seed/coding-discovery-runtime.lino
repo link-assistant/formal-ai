@@ -38,14 +38,14 @@ coding_discovery_runtime
     grounding "https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict"
     license "PSF-2.0"
     rediscovery_query "map space separated values through a dictionary"
-    fragment_signature ("mapping<text,integer>" text)
+    fragment_signature (text "mapping<text,integer>")
     fragment_result "sequence<integer>"
   template explicit_ordering
     text "(lambda order: ' '.join(sorted({items}.split(), key=order.__getitem__)))({order})"
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
     license "PSF-2.0"
     rediscovery_query "sort space separated values by explicit order mapping"
-    fragment_signature ("mapping<text,integer>" text)
+    fragment_signature (text "mapping<text,integer>")
     fragment_result text
     supports sort_ascending
   template regex_minimum_word_length

@@ -174,6 +174,7 @@ pub fn parse_type_slug(value: &str) -> Option<IrType> {
         "float" => Some(IrType::Float),
         "boolean" => Some(IrType::Boolean),
         "text" => Some(IrType::Text),
+        "callable" => Some(IrType::Callable),
         _ => {
             if let Some(id) = value.strip_prefix("unknown:") {
                 return id.parse().ok().map(IrType::Unknown);
