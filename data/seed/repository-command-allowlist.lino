@@ -43,6 +43,26 @@ allow_git_add_intent
   deadline_seconds "120"
   precondition "The workspace is a clone the protocol owns."
   postcondition "New files are visible to the diff without their bytes being staged."
+allow_git_add_all
+  record_type "allowed_command"
+  id "git_add_all"
+  program "git"
+  subcommand "add"
+  arguments ("--all")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The workspace is an isolated clone and the user explicitly requested a commit."
+  postcondition "Exactly the isolated workspace diff is staged."
+allow_git_commit
+  record_type "allowed_command"
+  id "git_commit"
+  program "git"
+  subcommand "commit"
+  arguments ("-m" "{message}")
+  mutating "true"
+  deadline_seconds "120"
+  precondition "The staged isolated-workspace diff passed the protocol and carries all attribution trailers."
+  postcondition "The isolated clone has one attributable commit and the ambient checkout is unchanged."
 allow_git_diff
   record_type "allowed_command"
   id "git_diff"

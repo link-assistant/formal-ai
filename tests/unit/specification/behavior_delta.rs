@@ -11,8 +11,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::behavior_delta::{AdoptionEffect, BehaviorDelta, DeltaVerdict, prove_effect};
-use formal_ai::method_registry::MethodRegistry;
 use formal_ai::execution_evidence::{Evidence, EvidenceDetail, EvidenceSource, ObservationKind};
+use formal_ai::method_registry::MethodRegistry;
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()

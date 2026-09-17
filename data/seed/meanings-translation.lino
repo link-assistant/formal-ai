@@ -193,6 +193,9 @@ meanings
         text 用英语
       surface
         text 用英語
+    lexeme es
+      surface
+        text "en inglés"
   response_language_russian
     defined-by language_russian
     role response_language_marker
@@ -218,6 +221,9 @@ meanings
         text 用俄语
       surface
         text 用俄語
+    lexeme es
+      surface
+        text "en ruso"
   response_language_hindi
     defined-by language_hindi
     role response_language_marker
@@ -241,6 +247,9 @@ meanings
         text 用印地语
       surface
         text 用印地文
+    lexeme es
+      surface
+        text "en hindi"
   response_language_chinese
     defined-by language_chinese
     role response_language_marker
@@ -264,6 +273,9 @@ meanings
         text 用汉语
       surface
         text 用漢語
+    lexeme es
+      surface
+        text "en chino"
   response_language_spanish
     defined-by language_spanish
     role response_language_marker

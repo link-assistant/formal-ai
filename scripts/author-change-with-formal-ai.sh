@@ -9,7 +9,7 @@
 #
 # This script closes that gap. It drives the same live loop (`formal-ai serve`
 # plus the real `@link-assistant/agent` CLI), then lands the file the CLI wrote
-# and commits it with the three canonical trailers the self-hosting metric reads:
+# and commits it with the four canonical trailers the self-hosting metric reads:
 #
 #   Formal-AI-Session:      the resumable session id the run reported
 #   Formal-AI-Model:        the model that produced the change (always formal-ai here)

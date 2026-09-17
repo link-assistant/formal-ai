@@ -7,8 +7,10 @@
 
 use std::time::Duration;
 
+use formal_ai::box_language_projects::{box_image_survey, box_language_contract};
 use formal_ai::execution_box::{
-    BoxError, BoxPolicy, ExecutionBackend, ExecutionBox, NetworkPolicy,
+    BoxError, BoxPolicy, ExecutionBackend, ExecutionBox, NetworkPolicy, backend_from_configuration,
+    disposable_container_invocation,
 };
 
 fn host_policy(deadline: Duration) -> BoxPolicy {
@@ -29,7 +31,10 @@ fn a_timeout_is_a_reported_failure_with_both_numbers() {
     )
     .expect("the host sandbox is always available");
     let observation = boxed
-        .run("import time\nprint('started', flush=True)\ntime.sleep(5)\n", &[])
+        .run(
+            "import time\nprint('started', flush=True)\ntime.sleep(5)\n",
+            &[],
+        )
         .expect("a timeout is an observation, not an error");
 
     assert!(
@@ -66,7 +71,7 @@ fn the_halving_ladder_records_every_n_it_tried() {
     )
     .expect("the host sandbox is always available");
     let rungs = boxed
-        .halving_ladder("total = sum(range(N))\nprint(total)\n", 1_000_000_000)
+        .halving_ladder("total = sum(range({N}))\nprint(total)\n", 1_000_000_000)
         .expect("the ladder reports its rungs");
 
     assert!(
@@ -140,4 +145,125 @@ fn a_missing_docker_daemon_is_a_refusal_not_a_skip() {
         }
         Err(other) => panic!("an absent backend must refuse by name, got {other:?}"),
     }
+}
+
+/// The two toolchains that motivate prerequisite recovery have no dedicated
+/// image in the pinned registry survey. They must therefore remain explicit
+/// deferred contracts rather than silently borrowing the multi-gigabyte image
+/// or pretending execution was observed.
+#[test]
+fn kotlin_and_scala_are_deferred_when_the_survey_has_no_dedicated_image() {
+    let contract = box_language_contract();
+    let survey = box_image_survey();
+    for (language, repository) in [("kotlin", "box-kotlin"), ("scala", "box-scala")] {
+        let project = contract
+            .deferred
+            .iter()
+            .find(|project| project.language == language)
+            .unwrap_or_else(|| panic!("{language}: deferred project must be declared"));
+        assert!(
+            project.reason.contains(repository),
+            "{language}: the reason must name the missing image"
+        );
+        assert!(
+            survey.missing.iter().any(|missing| missing == repository),
+            "{language}: the pinned survey must corroborate the deferral"
+        );
+    }
+}
+
+/// The Docker image's two environment declarations form one permission: both
+/// are required, `docker` is observed as the isolation, and the configured
+/// runner remains exact argv rather than becoming host-shell text.
+#[test]
+fn start_runner_configuration_honors_the_declared_isolation() {
+    let backend = backend_from_configuration(
+        Some("docker"),
+        Some("$ --isolated docker --auto-remove-docker-container --"),
+        None,
+    )
+    .expect("the Dockerfile configuration is valid")
+    .expect("the pair selects a backend");
+    assert_eq!(
+        backend,
+        ExecutionBackend::StartRunner {
+            program: String::from("$"),
+            arguments: vec![
+                String::from("--isolated"),
+                String::from("docker"),
+                String::from("--auto-remove-docker-container"),
+                String::from("--"),
+            ],
+            isolation: String::from("docker"),
+        }
+    );
+
+    for incomplete in [
+        backend_from_configuration(Some("docker"), None, None),
+        backend_from_configuration(None, Some("$ --isolated docker --"), None),
+        backend_from_configuration(Some("host"), Some("runner"), None),
+    ] {
+        assert!(
+            matches!(incomplete, Err(BoxError::InvalidConfiguration { .. })),
+            "incomplete or non-isolated runner configuration must refuse"
+        );
+    }
+}
+
+/// User-controlled argv follows the fixed container program as positional
+/// data. Shell punctuation cannot modify the extraction/working-directory
+/// command, and the default network denial is visible in argv.
+#[test]
+fn disposable_container_command_is_hermetic_and_network_denied() {
+    let invocation = disposable_container_invocation(
+        "konard/box-python:2.4.0",
+        NetworkPolicy::Denied,
+        "python3",
+        &["name; touch escaped", "$(false)"],
+    );
+    assert_eq!(invocation.program, "docker");
+    assert!(
+        invocation
+            .arguments
+            .windows(2)
+            .any(|pair| pair == ["--network", "none"]),
+        "the default invocation must lower network denial to Docker"
+    );
+    assert_eq!(
+        &invocation.arguments[invocation.arguments.len() - 3..],
+        ["python3", "name; touch escaped", "$(false)"],
+        "program and arguments stay distinct positional argv"
+    );
+    assert!(
+        invocation
+            .arguments
+            .iter()
+            .any(|argument| argument == "exec \"$@\"" || argument.contains("exec \"$@\"")),
+        "the only shell program executes positional argv"
+    );
+}
+
+/// Language-to-image selection reads the shared box contract. A published
+/// language resolves dynamically; a surveyed deferral refuses with its data
+/// reason instead of borrowing a different image.
+#[test]
+fn box_language_backend_is_selected_from_the_shared_contract() {
+    let python = backend_from_configuration(None, None, Some("box-language:python"))
+        .expect("python has a published box contract")
+        .expect("the contract selects a backend");
+    let ExecutionBackend::Box { image } = python else {
+        panic!("a published language must select its box image");
+    };
+    assert!(image.starts_with("konard/box-python:"));
+
+    let kotlin = backend_from_configuration(None, None, Some("box-language:kotlin"));
+    let Err(BoxError::InvalidConfiguration { detail }) = kotlin else {
+        panic!("a deferred language must refuse rather than borrow an image");
+    };
+    assert!(detail.contains("box-kotlin"));
+
+    assert!(matches!(
+        backend_from_configuration(None, None, Some("box:--privileged")),
+        Err(BoxError::InvalidConfiguration { .. })
+    ));
 }

@@ -23,6 +23,12 @@ on:
         required: false
         default: false
         type: boolean
+      authored_rules:
+        description: 'Per-leaf authored mappings visible to the agent'
+        required: false
+        default: 'disabled'
+        type: choice
+        options: ['disabled', 'enabled']
   pull_request:
     paths:
       - 'experiments/issue_1028_agent_cli_ladder/**'
@@ -49,6 +55,7 @@ jobs:
       NODE_FILTER: ${{ inputs.node_filter || '' }}
       OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-tree-run
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+      AUTHORED_RULES: ${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -57,7 +64,7 @@ jobs:
         id: ledger
         uses: ./.github/actions/green-ledger
         with:
-          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}
+          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}-rules-${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}
           paths: >-
             src data build.rs Cargo.toml Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
@@ -108,17 +115,33 @@ jobs:
           recorded_leaves=$(sed -n 's/^  leaf_nodes_passing //p' data/meta/ladder-ratchet.lino)
           measured_leaves=$(field leaf_nodes_passing)
           selected_leaves=$(field leaf_nodes_selected)
+          authored_rules_enabled=$(field authored_rules_enabled)
           echo "leaf nodes passing: recorded $recorded_leaves, this run $measured_leaves of $selected_leaves"
           cat "$result" >> "$GITHUB_STEP_SUMMARY"
           # Only a full-width run is comparable with the record: a filtered or
           # shallower run selects fewer leaves and would always look worse.
-          if [[ "$selected_leaves" == 32 ]]; then
+          if [[ "$selected_leaves" == 32 && "$authored_rules_enabled" == true ]]; then
             if (( measured_leaves < recorded_leaves )); then
               echo "::error::$measured_leaves of 32 leaves passed; the record is $recorded_leaves (data/meta/ladder-ratchet.lino). A leaf Formal AI could change no longer changes."
               exit 1
             fi
             if (( measured_leaves > recorded_leaves )); then
               echo "::notice::leaf nodes passing improved to $measured_leaves; raise leaf_nodes_passing in data/meta/ladder-ratchet.lino in a reviewed commit"
+            fi
+          fi
+          if [[ "$selected_leaves" == 32 && "$authored_rules_enabled" == false ]]; then
+            measured_without_rules=$(field leaf_nodes_passing_without_authored_rules)
+            recorded_without_rules=$(sed -n 's/^  leaf_nodes_passing_without_authored_rules //p' data/meta/ladder-ratchet.lino)
+            if [[ "$recorded_without_rules" == not_measured ]]; then
+              echo "::error::the first complete rule-disabled run measured $measured_without_rules of 32; record that exact value as leaf_nodes_passing_without_authored_rules in data/meta/ladder-ratchet.lino"
+              exit 1
+            fi
+            if (( measured_without_rules < recorded_without_rules )); then
+              echo "::error::$measured_without_rules of 32 leaves passed without authored rules; the record is $recorded_without_rules"
+              exit 1
+            fi
+            if (( measured_without_rules > recorded_without_rules )); then
+              echo "::notice::rule-disabled leaves improved to $measured_without_rules; raise leaf_nodes_passing_without_authored_rules in a reviewed commit"
             fi
           fi
           if [[ "$TREE_DEPTH" == all ]]; then

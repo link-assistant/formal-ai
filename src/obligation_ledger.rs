@@ -3,8 +3,9 @@
 //! Plan 05 owns this module. `ObligationOutcome::Satisfied` carries an
 //! [`Evidence`] and nothing else, so the type system — not a convention —
 //! forbids a satisfied obligation without an observation, and
-//! [`need_ledger_with_execution`] is the single place `NeedStatus::Satisfied`
-//! may be produced.
+//! [`need_status_with_observation`] is the single constructor of
+//! `NeedStatus::Satisfied`; [`need_ledger_with_execution`] reaches it only from
+//! an evidence-bearing satisfied obligation.
 //!
 //! The tree is built from the clauses a request enumerates, an expectation is
 //! derived per clause from the rules of
@@ -415,9 +416,12 @@ impl ObligationNode {
                         mismatch: self.mismatch_sentence(
                             "file_bytes_digest",
                             &[
-                                ("{path}", path),
-                                ("{observed}", &record.observed_output_sha256),
-                                ("{expected}", expected),
+                                (concat!("{", "path", "}"), path),
+                                (
+                                    concat!("{", "observed", "}"),
+                                    &record.observed_output_sha256,
+                                ),
+                                (concat!("{", "expected", "}"), expected),
                             ],
                         ),
                     },
@@ -426,8 +430,10 @@ impl ObligationNode {
                     },
                     None => ObligationOutcome::Refuted {
                         record: record.clone(),
-                        mismatch: self
-                            .mismatch_sentence("file_bytes_no_success", &[("{path}", path)]),
+                        mismatch: self.mismatch_sentence(
+                            "file_bytes_no_success",
+                            &[(concat!("{", "path", "}"), path)],
+                        ),
                     },
                 })
             }
@@ -448,15 +454,15 @@ impl ObligationNode {
                         mismatch: self.mismatch_sentence(
                             "command_exit",
                             &[
-                                ("{command}", command),
+                                (concat!("{", "command", "}"), command),
                                 (
-                                    "{observed}",
+                                    concat!("{", "observed", "}"),
                                     &record.exit_code.map_or_else(
                                         || String::from("none"),
                                         |code| code.to_string(),
                                     ),
                                 ),
-                                ("{expected}", &expected_exit.to_string()),
+                                (concat!("{", "expected", "}"), &expected_exit.to_string()),
                             ],
                         ),
                     }
@@ -476,9 +482,12 @@ impl ObligationNode {
                         mismatch: self.mismatch_sentence(
                             "output_hash",
                             &[
-                                ("{command}", command),
-                                ("{observed}", &record.observed_output_sha256),
-                                ("{expected}", sha256),
+                                (concat!("{", "command", "}"), command),
+                                (
+                                    concat!("{", "observed", "}"),
+                                    &record.observed_output_sha256,
+                                ),
+                                (concat!("{", "expected", "}"), sha256),
                             ],
                         ),
                     }
@@ -495,8 +504,10 @@ impl ObligationNode {
                 } else {
                     ObligationOutcome::Refuted {
                         record: record.clone(),
-                        mismatch: self
-                            .mismatch_sentence("symbolic_check", &[("{check}", check_id)]),
+                        mismatch: self.mismatch_sentence(
+                            "symbolic_check",
+                            &[(concat!("{", "check", "}"), check_id)],
+                        ),
                     }
                 })
             }
@@ -597,14 +608,14 @@ impl ObligationLedger {
     /// A record that contradicts the expectation refutes the node rather than
     /// finishing it: a refuted node is still open, and the session may not
     /// finalize while it is.
-    pub fn observe(&mut self, record: Evidence) -> Option<String> {
+    pub fn observe(&mut self, record: &Evidence) -> Option<String> {
         let mut leaves = Vec::new();
         self.root.leaves_mut(&mut leaves);
         for leaf in leaves {
             if matches!(leaf.outcome, ObligationOutcome::Satisfied { .. }) {
                 continue;
             }
-            if let Some(outcome) = leaf.judge(&record) {
+            if let Some(outcome) = leaf.judge(record) {
                 leaf.outcome = outcome;
                 return Some(leaf.node_id.clone());
             }
@@ -777,12 +788,32 @@ pub enum ObligationStep {
     },
 }
 
+/// Project a positive observation into the need ledger's terminal status.
+///
+/// This is the single constructor for [`NeedStatus::Satisfied`] in `src/`.
+/// Callers retain their domain-specific evidence (an execution record, a
+/// successful prerequisite re-probe, or a formalization observation) and pass
+/// whether that observation matched. A missing or contradictory observation
+/// preserves `otherwise`; it can never manufacture satisfaction.
+#[must_use]
+pub const fn need_status_with_observation(
+    observation_matches: bool,
+    otherwise: NeedStatus,
+) -> NeedStatus {
+    if observation_matches {
+        NeedStatus::Satisfied
+    } else {
+        otherwise
+    }
+}
+
 /// The join: a *new* need ledger whose rows are upgraded from `Planned` to
 /// `Satisfied` exactly where an obligation carrying an [`Evidence`] discharged
 /// the same need. Never mutates its input.
 ///
-/// This is the **only** function in the tree that may produce
-/// `NeedStatus::Satisfied` (plan 05 leaf 9).
+/// This is the only execution-ledger path to satisfaction (plan 05 leaf 9); the
+/// shared constructor also projects domain observations such as a successful
+/// prerequisite re-probe without duplicating the terminal variant.
 #[must_use]
 pub fn need_ledger_with_execution(
     planned: &NeedLedger,
@@ -791,12 +822,11 @@ pub fn need_ledger_with_execution(
     let discharged = obligations.satisfied_need_ids();
     let mut executed = planned.clone();
     for row in &mut executed.rows {
-        if discharged.iter().any(|need_id| need_id == &row.need_id) {
-            // The one place in the tree a need may become satisfied, and it is
-            // reachable only from an `ObligationOutcome::Satisfied`, which
-            // cannot be constructed without an `Evidence` (plan 05 leaf 9).
-            row.status = NeedStatus::Satisfied;
-        }
+        // This execution match is reachable only from an
+        // `ObligationOutcome::Satisfied`, which cannot be constructed without
+        // an `Evidence` (plan 05 leaf 9).
+        let observation_matches = discharged.iter().any(|need_id| need_id == &row.need_id);
+        row.status = need_status_with_observation(observation_matches, row.status);
     }
     executed
 }
@@ -819,7 +849,7 @@ pub fn next_step(request: &str, messages: &[ChatMessage]) -> Option<ObligationSt
         ),
     };
     for record in crate::agentic_coding::transcript_evidence::records(messages) {
-        ledger.observe(record);
+        ledger.observe(&record);
     }
     let mut leaves = Vec::new();
     ledger.root.collect_leaves(&mut leaves);

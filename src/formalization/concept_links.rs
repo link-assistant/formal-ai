@@ -38,8 +38,7 @@ impl ConceptGraph {
     /// language and source that answered a need rather than of the requirement
     /// itself. This is the same boundary used by `ConceptMap::identity`: source
     /// evidence proves the reduction without making its content id depend on
-    /// whether the source called the concept "isogram", "isograma", or another
-    /// equivalent surface.
+    /// whether two sources used the same headword or equivalent surfaces.
     #[must_use]
     pub fn identity(&self) -> String {
         // A partial lookup is evidence about individual headwords, but it is
@@ -200,8 +199,9 @@ impl ConceptGraph {
     }
 }
 
-/// The entry point. Deterministic for a given text, lookup and bounds. An
-/// offline caller passes an offline lookup and every unmet need becomes
+/// Formalize a document into a recursively grounded concept graph.
+///
+/// This is deterministic for a given text, lookup and bounds. An offline caller passes an offline lookup and every unmet need becomes
 /// `NeedState::Unsatisfiable` with its consulted-source rows intact.
 pub fn formalize_deeply<L: SourceLookup>(
     text: &str,
@@ -262,7 +262,7 @@ pub fn formalize_deeply<L: SourceLookup>(
             let sense_doc = sense.content_id();
             let gloss_segments = sentences(&sense.gloss);
             for mut need in emit_needs(&sense_doc, &gloss_segments, &graph, parent.depth + 1) {
-                need.raised_by = parent.need_id.clone();
+                need.raised_by.clone_from(&parent.need_id);
                 if seen.insert(need.need_id.clone()) {
                     next.push(need);
                 }

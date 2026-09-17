@@ -6,10 +6,10 @@ use crate::coding::function_catalog::python_docs::{StdlibIndex, StdlibPart};
 use crate::coding::function_catalog::wikifunctions::{FunctionMatch, FunctionPart, Implementation};
 use crate::coding::recurrence::Recurrence;
 use crate::coding::task_spec::{CodingTaskSpec, Example};
+use crate::concept_lookup::LookupOutcome;
 use crate::links_format::push_lino_node;
 use crate::needs::{NeedKind, NeedState};
-
-const STRUCTURES: &str = include_str!("../../data/seed/meanings-coding-structure.lino");
+use crate::source_walk::{LookupBounds, SourceLookup};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StructuralMeaning {
@@ -77,38 +77,6 @@ pub struct ConceptEvidence {
     pub definition: String,
     pub source_url: String,
     pub depth: usize,
-}
-
-pub trait UnknownConceptLookup {
-    fn lookup(&mut self, phrase: &str, depth: usize) -> Option<ConceptEvidence>;
-
-    /// Whether this lookup actually consults declared sources.
-    ///
-    /// A `None` from a lookup that consulted nothing means *unasked*; a `None`
-    /// from a lookup that walked the registry means *no declared source
-    /// answered*, which is a fact worth recording against the need (issue
-    /// #1138, plan 01 L10). Defaulted to `false` so the trait keeps its
-    /// one-method shape for every implementation written before the
-    /// distinction existed.
-    fn consults_sources(&self) -> bool {
-        false
-    }
-
-    /// The language this lookup asks in, when it asks in one.
-    ///
-    /// Empty for a lookup that has no language, which is why an unserved-need
-    /// row records whatever the caller knew rather than inventing a code.
-    fn language(&self) -> String {
-        String::new()
-    }
-}
-
-pub struct NoLookup;
-
-impl UnknownConceptLookup for NoLookup {
-    fn lookup(&mut self, _phrase: &str, _depth: usize) -> Option<ConceptEvidence> {
-        None
-    }
 }
 
 /// The state a need carries when every declared source was consulted about a
@@ -289,15 +257,19 @@ impl ConceptMap {
 }
 
 #[must_use]
-pub fn discover(spec: &CodingTaskSpec, catalog: &DiscoveryCatalog) -> ConceptMap {
-    discover_with_lookup(spec, catalog, &mut NoLookup, DiscoveryBounds::default())
+pub fn discover(
+    spec: &CodingTaskSpec,
+    catalog: &DiscoveryCatalog,
+    lookup: &mut dyn SourceLookup,
+) -> ConceptMap {
+    discover_with_lookup(spec, catalog, lookup, DiscoveryBounds::default())
 }
 
 #[must_use]
-pub fn discover_with_lookup<L: UnknownConceptLookup>(
+pub fn discover_with_lookup(
     spec: &CodingTaskSpec,
     catalog: &DiscoveryCatalog,
-    lookup: &mut L,
+    lookup: &mut dyn SourceLookup,
     bounds: DiscoveryBounds,
 ) -> ConceptMap {
     let sentences = if spec.requirement_sentences.is_empty() {
@@ -307,8 +279,11 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
     };
     let mut evidence = Vec::new();
     let mut unserved: Vec<ConceptRequirement> = Vec::new();
-    let asks_sources = lookup.consults_sources();
-    let asked_language = lookup.language();
+    let asked_language = spec.prose_language.clone();
+    let lookup_bounds = LookupBounds {
+        max_depth: bounds.max_depth,
+        ..LookupBounds::default()
+    };
     let mut needs: Vec<ConceptRequirement> = sentences
         .into_iter()
         .map(|phrase| {
@@ -324,27 +299,48 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
             // such words one specification may ask about.
             let unresolved = unresolved_surfaces(&normalized, &structures);
             let mut asked = 0_usize;
+            let mut consulted_sources = false;
             for surface in &unresolved {
                 if evidence.len() >= bounds.max_pages || bounds.max_depth == 0 {
                     break;
                 }
-                if let Some(found) = lookup.lookup(surface, 1) {
-                    candidates.push(concept_candidate(&found));
-                    evidence.push(found);
-                    asked += 1;
-                } else if asks_sources {
-                    // Every declared source was consulted about this surface
-                    // and none published a sense for it. That is a need the
-                    // map carries openly — an unserved language, measured
-                    // rather than argued (issue #1138, plan 01 L10) — and not
-                    // an absence the map is silent about.
-                    unserved.push(ConceptRequirement::new(
-                        &unserved_phrase(surface, &asked_language),
-                        &asked_language,
-                        UNSERVED,
-                        Vec::new(),
-                        Vec::new(),
-                    ));
+                let need = ConceptNeed::raised(
+                    NeedKind::Concept,
+                    surface,
+                    &asked_language,
+                    "coding:discovery",
+                );
+                match lookup.lookup(&need, &lookup_bounds) {
+                    LookupOutcome::Found(senses) => {
+                        if let Some(sense) = senses.into_iter().next() {
+                            consulted_sources = true;
+                            let found = ConceptEvidence {
+                                phrase: surface.clone(),
+                                definition: sense.gloss,
+                                source_url: sense.source_url,
+                                depth: sense.depth,
+                            };
+                            candidates.push(concept_candidate(&found));
+                            evidence.push(found);
+                            asked += 1;
+                        }
+                    }
+                    LookupOutcome::NotFound { consulted } if !consulted.is_empty() => {
+                        consulted_sources = true;
+                        // Every declared source was consulted about this surface
+                        // and none published a sense for it. That is a need the
+                        // map carries openly — an unserved language, measured
+                        // rather than argued (issue #1138, plan 01 L10) — and not
+                        // an absence the map is silent about.
+                        unserved.push(ConceptRequirement::new(
+                            &unserved_phrase(surface, &asked_language),
+                            &asked_language,
+                            UNSERVED,
+                            Vec::new(),
+                            Vec::new(),
+                        ));
+                    }
+                    LookupOutcome::NotFound { .. } => {}
                 }
             }
             candidates.sort_by(|left, right| {
@@ -356,7 +352,7 @@ pub fn discover_with_lookup<L: UnknownConceptLookup>(
                 // Collapsing the two would make an honest refusal by the
                 // sources indistinguishable from a walk that never ran
                 // (issue #1138, plan 01 L10).
-                if asks_sources && !unresolved.is_empty() {
+                if consulted_sources && !unresolved.is_empty() {
                     UNSERVED
                 } else {
                     NeedState::Open
@@ -387,7 +383,12 @@ fn unserved_phrase(surface: &str, language: &str) -> String {
 
 #[must_use]
 pub fn structural_meanings() -> Vec<StructuralMeaning> {
-    let root = crate::seed::parser::parse_lino(STRUCTURES);
+    let Some(text) =
+        crate::coding::fragment_catalog::bootstrap_seed_text("meanings-coding-structure.lino")
+    else {
+        return Vec::new();
+    };
+    let root = crate::seed::parser::parse_lino(&text);
     root.children
         .iter()
         .find(|node| node.name == "meanings")
@@ -396,7 +397,11 @@ pub fn structural_meanings() -> Vec<StructuralMeaning> {
                 .children
                 .iter()
                 .map(|node| StructuralMeaning {
-                    id: node.name.clone(),
+                    id: if node.name == "meaning" {
+                        node.id.clone()
+                    } else {
+                        node.name.clone()
+                    },
                     idiom: node.find_child_value("idiom").to_owned(),
                     grounding: node.find_child_value("grounding").to_owned(),
                 })
@@ -412,9 +417,10 @@ pub fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
         .filter(|meaning| {
             meaning.evidenced_in(normalized)
                 || meaning.words().any(|surface| {
-                    let surface = crate::engine::normalize_prompt(surface);
-                    normalized_surface_present(normalized, &surface)
-                        || fuzzy_single_token_present(normalized, &surface)
+                    let normalized_surface = crate::engine::normalize_prompt(surface);
+                    normalized_surface_present(normalized, &normalized_surface)
+                        || normalized_slotted_surface_present(normalized, surface)
+                        || fuzzy_single_token_present(normalized, &normalized_surface)
                 })
         })
         .map(|meaning| meaning.slug.as_str())
@@ -444,6 +450,41 @@ pub fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
 
 fn normalized_surface_present(normalized: &str, surface: &str) -> bool {
     !surface.is_empty() && format!(" {normalized} ").contains(&format!(" {surface} "))
+}
+
+/// Match a data-declared `before … after` surface with a short phrase in its
+/// slot. This lets a language express relations such as “for every item”
+/// without turning either half (for example, a bare “for”) into evidence on
+/// its own. The bounded slot prevents two unrelated clauses from being joined.
+fn normalized_slotted_surface_present(normalized: &str, surface: &str) -> bool {
+    let Some((before, after)) = surface.split_once('…') else {
+        return false;
+    };
+    let before = crate::engine::normalize_prompt(before);
+    let after = crate::engine::normalize_prompt(after);
+    let before = before.trim();
+    let after = after.trim();
+    if before.is_empty() || after.is_empty() {
+        return false;
+    }
+    let tokens = normalized.split_whitespace().collect::<Vec<_>>();
+    let before = before.split_whitespace().collect::<Vec<_>>();
+    let after = after.split_whitespace().collect::<Vec<_>>();
+    tokens
+        .windows(before.len())
+        .enumerate()
+        .any(|(start, words)| {
+            if words != before {
+                return false;
+            }
+            let slot_start = start + before.len();
+            (1..=6).any(|slot_width| {
+                let suffix_start = slot_start + slot_width;
+                tokens
+                    .get(suffix_start..suffix_start + after.len())
+                    .is_some_and(|words| words == after)
+            })
+        })
 }
 
 fn fuzzy_single_token_present(normalized: &str, surface: &str) -> bool {
@@ -687,8 +728,9 @@ pub fn unresolved_surfaces(normalized: &str, structures: &[StructuralMeaning]) -
         .collect()
 }
 
-/// A retrieved sense, as a candidate the composer can read. The candidate's
-/// kind is `concept_sense`, which ranks *after* `source_program`, so a
+/// A retrieved sense, as a candidate the composer can read.
+///
+/// The candidate's kind is `concept_sense`, which ranks *after* `source_program`, so a
 /// retrieved definition never outranks a retrieved implementation (issue #1138,
 /// plan 01 L9).
 ///

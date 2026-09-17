@@ -1,0 +1,16 @@
+self_ast_census
+  target src/solver_search/problem.rs
+  language rust
+  fidelity signature
+  byte_len 4637
+  line_count 142
+  content_id source_module_bc4ec5dcbe6fe3d3
+  symbol_count 7
+  symbols
+    function parse_search_problem 17 56
+    const MAX_OPERANDS 60 60
+    function target_marker_positions 62 73
+    function distance_to_nearest 75 81
+    function parse_ops 83 100
+    function symbol_present 102 117
+    function extract_integers_with_positions 119 142

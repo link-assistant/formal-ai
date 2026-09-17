@@ -43,7 +43,7 @@ mod replay;
 #[allow(unused_imports)]
 pub use attribution::{
     HOSTED_MODEL_MARKERS, MODEL_TRAILER, NON_BEHAVIOUR_PREFIXES, hosted_model_marker,
-    is_non_authored_path,
+    is_non_authored_path, model_attribution,
 };
 use replay::pull_request_authors;
 #[allow(unused_imports)]

@@ -1200,6 +1200,15 @@ meanings
         text 审查
       surface
         text 审阅
+    lexeme es
+      surface
+        text inspecciona
+      surface
+        text revisa
+      surface
+        text audita
+      surface
+        text examina
   workspace_inspection_verify
     defined-by action
     role workspace_inspection_action
@@ -1231,6 +1240,11 @@ meanings
         text 验证
       surface
         text 确认
+    lexeme es
+      surface
+        text verifica
+      surface
+        text confirma
   workspace_inspection_identify
     defined-by action
     role workspace_inspection_action
@@ -1270,219 +1284,222 @@ meanings
         text 找出
       surface
         text 在哪里
-  git_branch_cue
+    lexeme es
+      surface
+        text identifica
+      surface
+        text localiza
+      surface
+        text "dónde se define"
+  web_search_provider
     defined-by concept
-    role git_branch_cue
-    precondition "a request names the branch a result is kept on"
-    effect "the name that follows the cue is the branch the result is pushed to"
+    role coding_search_subject_kind
+    precondition "a repository requirement names an Internet search provider or source"
+    effect "the language-independent web, search, and provider identifier components are available to repository target resolution"
     unit "not applicable"
-    example "branch"
+    example "search provider"
     lexeme en
       surface
-        text branch
+        text "search provider"
+      surface
+        text "search providers"
+      surface
+        text "trusted search providers"
     lexeme ru
       surface
-        text ветке
+        text "поисковый провайдер"
       surface
-        text ветка
-      surface
-        text ветку
-      surface
-        text ветки
+        text "поисковых провайдеров"
     lexeme hi
       surface
-        text शाखा
+        text "खोज प्रदाता"
       surface
-        text ब्रांच
+        text "खोज प्रदाताओं"
     lexeme zh
       surface
-        text 分支
+        text 搜索来源
+      surface
+        text 搜索提供者
     lexeme es
       surface
-        text rama
-  git_commit_request
-    defined-by action
-    role git_commit_request
-    precondition "a request asks for the working tree to be committed"
-    effect "the request is answered by staging, committing and pushing the tree"
-    unit "not applicable"
-    example "commit them"
-    lexeme en
+        text "proveedor de búsqueda"
       surface
-        text "commit them"
-      surface
-        text "commit these changes"
-      surface
-        text "commit the changes"
-      surface
-        text "commit your changes"
-      surface
-        text "commit and push"
-      surface
-        text "commit it"
-    lexeme ru
-      surface
-        text закоммить
-      surface
-        text закоммитьте
-      surface
-        text "сделай коммит"
-      surface
-        text "зафиксируй изменения"
-      surface
-        text "зафиксируйте изменения"
-    lexeme hi
-      surface
-        text "कमिट करें"
-      surface
-        text "कमिट करो"
-      surface
-        text "बदलाव कमिट करें"
-    lexeme zh
-      surface
-        text 提交这些更改
-      surface
-        text 提交更改
-      surface
-        text 提交这些修改
-      surface
-        text 提交代码
-    lexeme es
-      surface
-        text "haz commit"
-      surface
-        text "haz el commit"
-      surface
-        text "confirma los cambios"
-      surface
-        text "commitea los cambios"
-  ci_workflow_request
+        text "proveedores de búsqueda"
+  repository_provider
     defined-by concept
-    role ci_workflow_request
-    precondition "a work item requires a continuous-integration workflow beside the program"
-    effect "the execution recipe carries the workflow as a supporting file"
+    role coding_search_subject_kind
+    precondition "a repository requirement names a provider or source implementation concept"
+    effect "the provider identifier component is available to repository target resolution"
     unit "not applicable"
-    example "github actions workflow"
+    example provider
     lexeme en
       surface
-        text "github actions workflow"
+        text provider
       surface
-        text "actions workflow"
-      surface
-        text "ci workflow"
-      surface
-        text "workflow that automatically runs"
+        text providers
     lexeme ru
       surface
-        text "рабочий процесс github actions"
-      surface
-        text "workflow github actions"
-      surface
-        text "ci workflow"
-      surface
-        text "рабочий процесс ci"
+        text провайдер
     lexeme hi
       surface
-        text "github actions वर्कफ़्लो"
-      surface
-        text "सीआई वर्कफ़्लो"
-      surface
-        text "ci वर्कफ़्लो"
+        text प्रदाता
     lexeme zh
       surface
-        text "github actions 工作流"
+        text 来源
       surface
-        text "ci 工作流"
-      surface
-        text 工作流程
+        text 提供者
     lexeme es
       surface
-        text "flujo de trabajo de github actions"
+        text proveedor
       surface
-        text "workflow de github actions"
-      surface
-        text "flujo de trabajo de ci"
-  file_edit_position_after
+        text proveedores
+  repository_default_value
     defined-by concept
-    role file_edit_position_after
-    precondition "an additive edit places new text after an anchor line"
-    effect "the anchor is replaced by the anchor followed by the new text"
+    role coding_search_subject_kind
+    precondition "a repository requirement names a default implementation value"
+    effect "the default identifier component is available to repository target resolution"
     unit "not applicable"
-    example "directly after the line"
+    example default
     lexeme en
       surface
-        text "after the line"
-      surface
-        text "directly after"
-      surface
-        text "right after"
-      surface
-        text after
+        text default
     lexeme ru
       surface
-        text "после строки"
-      surface
-        text "сразу после"
-      surface
-        text после
+        text "по умолчанию"
     lexeme hi
       surface
-        text "पंक्ति के बाद"
-      surface
-        text "के बाद"
+        text डिफ़ॉल्ट
     lexeme zh
       surface
-        text 之后
-      surface
-        text 后面
-      surface
-        text 行后
+        text 默认
     lexeme es
       surface
-        text "después de la línea"
-      surface
-        text "justo después de"
-      surface
-        text "después de"
-  file_edit_position_before
+        text "por defecto"
+  repository_timeout
     defined-by concept
-    role file_edit_position_before
-    precondition "an additive edit places new text before an anchor line"
-    effect "the anchor is replaced by the new text followed by the anchor"
-    unit "not applicable"
-    example "before the line"
+    role coding_search_subject_kind
+    precondition "a repository requirement names a bounded wait duration"
+    effect "the timeout identifier component is available to repository target resolution"
+    unit second
+    example timeout
     lexeme en
       surface
-        text "before the line"
-      surface
-        text "directly before"
-      surface
-        text "right before"
-      surface
-        text before
+        text timeout
     lexeme ru
       surface
-        text "перед строкой"
-      surface
-        text "прямо перед"
-      surface
-        text перед
+        text таймаут
     lexeme hi
       surface
-        text "पंक्ति से पहले"
-      surface
-        text "से पहले"
+        text टाइमआउट
     lexeme zh
       surface
-        text 之前
-      surface
-        text 前面
-      surface
-        text 行前
+        text 超时
     lexeme es
       surface
-        text "antes de la línea"
+        text "tiempo de espera"
+  file_analysis_gap_marker
+    defined-by predicate
+    role file_analysis_gap_marker
+    precondition "a bounded audit searches a text artifact for explicit evidence of incomplete work"
+    effect "the surface joins the data-derived grep expression without making absence evidence of completion"
+    unit "not applicable"
+    example "pending"
+    lexeme en
       surface
-        text "justo antes de"
+        text TODO
       surface
-        text "antes de"
+        text FIXME
+      surface
+        text TBD
+      surface
+        text remaining
+      surface
+        text pending
+      surface
+        text partial
+      surface
+        text blocked
+      surface
+        text deferred
+      surface
+        text "not implemented"
+      surface
+        text "not yet"
+      surface
+        text missing
+      surface
+        text incomplete
+    lexeme ru
+      surface
+        text осталось
+      surface
+        text ожидает
+      surface
+        text частично
+      surface
+        text заблокировано
+      surface
+        text отложено
+      surface
+        text "не реализовано"
+      surface
+        text "ещё не"
+      surface
+        text отсутствует
+      surface
+        text неполный
+    lexeme hi
+      surface
+        text शेष
+      surface
+        text लंबित
+      surface
+        text आंशिक
+      surface
+        text अवरुद्ध
+      surface
+        text स्थगित
+      surface
+        text "लागू नहीं"
+      surface
+        text अनुपस्थित
+      surface
+        text अधूरा
+    lexeme zh
+      surface
+        text 剩余
+      surface
+        text 待处理
+      surface
+        text 部分
+      surface
+        text 阻塞
+      surface
+        text 延期
+      surface
+        text 未实现
+      surface
+        text 尚未
+      surface
+        text 缺失
+      surface
+        text 不完整
+    lexeme es
+      surface
+        text restante
+      surface
+        text pendiente
+      surface
+        text parcial
+      surface
+        text bloqueado
+      surface
+        text diferido
+      surface
+        text "no implementado"
+      surface
+        text "todavía no"
+      surface
+        text falta
+      surface
+        text incompleto

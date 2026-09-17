@@ -9,7 +9,7 @@ use crate::language::detect as detect_language;
 use crate::release_timeline;
 use crate::seed::{
     self, Antecedent, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds,
-    Pronoun, SummaryTopicSeeds,
+    Pronoun, SummaryTopic, SummaryTopicSeeds,
 };
 use crate::world_model::Context;
 use crate::world_model_context::{
@@ -31,18 +31,29 @@ pub fn try_summarization_request(
         return None;
     }
 
-    let (topic, body) = seeds.pick_topic(normalized).map_or_else(
-        || {
+    let language = detect_language(prompt).slug();
+    let (topic, body, source) = seeds
+        .pick_topic(normalized)
+        .and_then(|topic| {
+            derived_topic_summary(topic, language)
+                .map(|(body, source)| (topic.display_name.clone(), body, source))
+        })
+        .unwrap_or_else(|| {
             let label = prompt
                 .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
                 .to_owned();
-            let body = seeds.render_fallback(&label);
-            (label, body)
-        },
-        |topic| (topic.display_name.clone(), topic.body.clone()),
-    );
+            let fallback = if seeds.fallback_response.is_empty() {
+                "unknown"
+            } else {
+                seeds.fallback_response.as_str()
+            };
+            let body = seed::localized_response(fallback, language)
+                .unwrap_or_else(|| crate::engine::unknown_answer().to_owned());
+            (label, body, String::from("none"))
+        });
 
     log.append("summarization:topic", topic);
+    log.append("summarization:source", source);
     if let Some(label) = seeds.constraint_for(normalized) {
         log.append("summarization:constraint", label.to_owned());
     }
@@ -55,6 +66,41 @@ pub fn try_summarization_request(
         &body,
         0.85,
     ))
+}
+
+/// Resolve one typed topic reference into canonical knowledge, then select a
+/// concise localized statement. The summary-topic file contains no prose body:
+/// edits to the concept/project record immediately change this answer.
+fn derived_topic_summary(topic: &SummaryTopic, language: &str) -> Option<(String, String)> {
+    match topic.source_kind.as_str() {
+        "concept" => {
+            let record = seed::concepts()
+                .into_iter()
+                .find(|record| record.slug == topic.source_id)?;
+            let localized = record.localized_for(language);
+            let summary = localized
+                .map(|value| value.summary.as_str())
+                .filter(|value| !value.is_empty())
+                .unwrap_or(record.summary.as_str())
+                .to_owned();
+            let source = localized
+                .map(|value| value.source.as_str())
+                .filter(|value| !value.is_empty())
+                .unwrap_or(record.source.as_str())
+                .to_owned();
+            Some((summary, source))
+        }
+        "project" => {
+            let registry = seed::projects_registry();
+            let record = registry.by_slug(&topic.source_id)?;
+            let statement = record
+                .statements_for(language)
+                .iter()
+                .max_by_key(|statement| statement.weight)?;
+            Some((statement.text.clone(), record.url.clone()))
+        }
+        _ => None,
+    }
 }
 
 fn brainstorm_seed_data() -> &'static BrainstormSeeds {
@@ -145,9 +191,10 @@ fn conversation_topic(prompt: &str, normalized: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
     for form in &forms {
         if form.action == "scan"
-            && let Some((_, topic)) = lower.split_once(form.before_slot()) {
-                return clean_conversation_topic(topic);
-            }
+            && let Some((_, topic)) = lower.split_once(form.before_slot())
+        {
+            return clean_conversation_topic(topic);
+        }
     }
     None
 }
@@ -408,9 +455,10 @@ fn resolve_coreference_antecedent<'a>(
         let context_id = format!("conversation:turn:{turn_index}");
         let mut context = Context::new(&context_id);
         if event.kind == "prior_turn:user"
-            && let Some(antecedent) = seeds.pick_antecedent(&event.payload.to_lowercase()) {
-                context.assert_link(REFERENCE, &antecedent.display_name);
-            }
+            && let Some(antecedent) = seeds.pick_antecedent(&event.payload.to_lowercase())
+        {
+            context.assert_link(REFERENCE, &antecedent.display_name);
+        }
         hierarchy
             .nest(context, &parent_id, InheritancePolicy::Full)
             .ok()?;

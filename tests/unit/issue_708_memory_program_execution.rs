@@ -332,6 +332,10 @@ fn query_surface_traces_the_compiled_program_and_names_program_gaps() {
     )
     .expect("honest memory program gap");
     assert_eq!(gap.answer.intent, "memory_program_gap");
+    assert_eq!(
+        gap.answer.answer,
+        "I could not compile this memory request without dropping a step. program_gap:no_complete_seeded_family"
+    );
     assert!(gap.answer.answer.contains("program_gap"));
     assert!(!gap.changed);
 }

@@ -15,8 +15,10 @@ use alloc::vec::Vec;
 
 use crate::engine::stable_id;
 use crate::execution_evidence::{Evidence, EvidenceSource, ObservationKind};
+use crate::intent_formalization::formalize_intent;
 use crate::links_format::format_lino_record;
-use crate::method_registry::MethodRegistry;
+use crate::method_registry::{LearnedMethodStatus, MethodRegistry};
+use crate::solver::SolverConfig;
 
 /// The five languages the adoption contract requires evidence in.
 pub const ADOPTION_LANGUAGES: [&str; 5] = ["en", "ru", "hi", "zh", "es"];
@@ -202,8 +204,9 @@ impl AdoptionEffect {
     }
 }
 
-/// Prove the effect of one learned item by answering each held-out prompt twice:
-/// once against a registry with the item removed, once with it present.
+/// Prove the effect of one learned item by answering each held-out prompt twice.
+///
+/// Answer once against a registry with the item removed, then once with it present.
 /// Deterministic: same seed data, same prompts, same deltas.
 #[must_use]
 pub fn prove_effect(
@@ -216,15 +219,19 @@ pub fn prove_effect(
     let deltas = held_out
         .iter()
         .map(|(language, prompt)| {
-            let before = observe(without_item, item_id, language, prompt, false);
-            let after = observe(with_item, item_id, language, prompt, true);
-            let verdict = if before.observed_output_sha256 == after.observed_output_sha256 {
+            let before = observe(without_item, item_id, language, prompt);
+            let after = observe(with_item, item_id, language, prompt);
+            let verdict = if before.evidence.observed_output_sha256
+                == after.evidence.observed_output_sha256
+            {
                 DeltaVerdict::Unchanged
+            } else if !before.expectation_satisfied && after.expectation_satisfied {
+                DeltaVerdict::Improved
+            } else if before.expectation_satisfied && !after.expectation_satisfied {
+                DeltaVerdict::Regressed
             } else {
-                // The answer changed, and nothing here can say whether it changed
-                // for the better: that judgement belongs to the expectation the
-                // caller attaches to the prompt. Until one is attached the honest
-                // verdict is the one that never supports adoption.
+                // The answer changed, but the executable postcondition did not:
+                // preserve the observation without claiming direction.
                 DeltaVerdict::ChangedUnverified
             };
             BehaviorDelta {
@@ -233,8 +240,8 @@ pub fn prove_effect(
                 item_kind: item_kind.to_owned(),
                 language: (*language).to_owned(),
                 prompt: (*prompt).to_owned(),
-                before,
-                after,
+                before: before.evidence,
+                after: after.evidence,
                 verdict,
             }
         })
@@ -246,32 +253,56 @@ pub fn prove_effect(
     }
 }
 
-/// Answer one held-out prompt against one registry and record what was observed.
+struct ObservedAnswer {
+    evidence: Evidence,
+    expectation_satisfied: bool,
+}
+
+/// Answer one held-out explicit method invocation against one registry.
 ///
-/// The observation is the ordered method selection the registry produces for the
-/// prompt's relevants -- the thing a learned method can change, and deterministic
-/// for a given seed. Hashing it makes "the answer changed" a digest comparison
-/// over bytes that were actually produced, never a claim.
+/// The postcondition is general for every learned method: the named adopted
+/// method must be selected, its data-defined recipe must execute, and every
+/// operation in the learned record must appear in the resulting event log.
+/// This verifies the capability the item actually learned; it does not compare
+/// the answer to a canned benchmark string.
 fn observe(
     registry: &MethodRegistry,
     item_id: &str,
     language: &str,
     prompt: &str,
-    item_present: bool,
-) -> Evidence {
-    let mut relevants = vec![format!("language:{language}"), format!("prompt:{prompt}")];
-    if item_present {
-        relevants.push(format!("method:{item_id}"));
-    }
+) -> ObservedAnswer {
+    let formalization = formalize_intent(prompt, language, None);
+    let mut relevants = formalization.relevants.clone();
+    relevants.push(format!("method:{item_id}"));
     let ordered = registry.ordered_method_names_for_relevants(&relevants);
-    let observed = ordered.join("\u{1e}");
-    let command = format!("method_selection:{language}");
-    Evidence::observed(
+    let execution = registry
+        .learned_method(item_id)
+        .filter(|method| method.status == LearnedMethodStatus::Adopted)
+        .filter(|_| ordered.iter().any(|name| name == item_id))
+        .and_then(|method| method.execute(&formalization, SolverConfig::default()).ok());
+    let expectation_satisfied = execution
+        .as_ref()
+        .is_some_and(|execution| execution.operations_verified);
+    let observed = execution.map_or_else(
+        || {
+            format_lino_record(
+                "learned_method_unavailable",
+                &[("method", item_id.to_owned())],
+            )
+        },
+        |execution| execution.answer,
+    );
+    let command = format!("learned_method_answer:{language}");
+    let evidence = Evidence::observed(
         command,
         relevants,
         Some(0),
         observed.as_bytes(),
         ObservationKind::SymbolicCheck,
         EvidenceSource::Engine,
-    )
+    );
+    ObservedAnswer {
+        evidence,
+        expectation_satisfied,
+    }
 }

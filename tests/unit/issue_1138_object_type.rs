@@ -104,6 +104,32 @@ fn object_type_is_structural_in_every_language() {
 }
 
 #[test]
+fn a_qualified_api_member_is_not_a_file_path() {
+    for prompt in [
+        "how does pandas DataFrame.join work?",
+        "как работает pandas DataFrame.join?",
+        "pandas DataFrame.join कैसे काम करता है?",
+        "pandas DataFrame.join 如何工作？",
+    ] {
+        let derived = object_type(prompt);
+        assert_eq!(
+            derived.first().copied(),
+            Some(ObjectType::BareTerm),
+            "a dotted qualified symbol is a documentation subject, not a filename: \
+             {prompt:?} derived {derived:?}"
+        );
+    }
+
+    let explicit_file = object_type("read the file DataFrame.join in this workspace");
+    assert_eq!(
+        explicit_file.first().copied(),
+        Some(ObjectType::Path),
+        "an explicit filesystem scope must keep an unusual but valid filename: \
+         {explicit_file:?}"
+    );
+}
+
+#[test]
 fn a_possessive_never_changes_the_locus() {
     // The maintainer's three prompts differ only by a possessive and a hyphen;
     // they are structurally one request and must derive one locus.

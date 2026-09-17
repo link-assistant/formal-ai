@@ -95,7 +95,10 @@ fn one_lite_instance_runs_the_whole_protocol() {
 
     let manifest = suite("swebench_lite").expect("the SWE-bench Lite suite is declared");
     let cases = parse_cases(manifest, &[RECORD.to_owned()], 1).expect("the record should parse");
-    let case = cases.into_iter().next().expect("one record yields one case");
+    let case = cases
+        .into_iter()
+        .next()
+        .expect("one record yields one case");
     let spec = case
         .repository
         .clone()

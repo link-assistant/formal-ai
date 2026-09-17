@@ -197,7 +197,7 @@ section below.
 | id | PR | merged | closes | quoted remainder | bottleneck | status | planned in |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | C1 | #9 | 2026-05-12 | #8 | "Docker and `tsc` are not installed in the prepared runtime, so Docker-backed isolation was not used and TypeScript answers report that limitation instead of claiming execution." | B6 | still open | 06 (docker execution pipeline, #930/#937) |
-| C2 | #13 | 2026-05-14 | #12 | "remaining `#[ignore = \"MVP-target: …\"]` tests still document the road ahead without blocking CI" | other — ignored-test debt | still open | new leaf: enumerate every `#[ignore]` still in the tree, un-ignore or delete with a reason (plan 11 ledger) |
+| C2 | #13 | 2026-05-14 | #12 | "remaining ignored target-state tests still document the road ahead without blocking CI" | other — ignored-test debt | still open | new leaf: enumerate every `#[ignore]` still in the tree, un-ignore or delete with a reason (plan 11 ledger) |
 | C3 | #15 | 2026-05-15 | #14 | "Hello-world programs for non-JavaScript languages now honestly report that the browser sandbox cannot invoke the toolchain instead of faking execution status." | B6 | still open | 06 (browser runtime honesty; plan 02 §7 records the same gap) |
 | C4 | #99 | 2026-05-17 | #68 | "Keeps `link-calculator` delegation first, then uses a narrow formal-ai fallback for calculator-missing linear equations." | B8 | still open — #968 later recorded ten equation limitations | 08 (equation corpus re-measured) |
 | C5 | #208 | 2026-05-21 | #207 | "`cargo test` (406 unit tests passing, 69 ignored as tracked future work)" | other — ignored-test debt | still open | same leaf as C2 |
@@ -445,7 +445,7 @@ fully close it by implementing plans 01–12, and why not when it cannot.
 | issue | title | ask (one line) | coverage | plan(s) | reason |
 | --- | --- | --- | --- | --- | --- |
 | #447 | Issue with dialog: интерфейс ужасен | mobile dialog is unusable; routing and layout both wrong | partial | 10 | #1087 names "the mobile flows in #447"; routing leaves land here, the mobile layout redesign is a UI change unrelated to the meta algorithm |
-| #453 | Moonshot tasks | split any task into two sub-tasks recursively using the best internet data, deduplicating ideas to their first source | **partial** | 12, 01, 04 | **changed by the 2026-09-16 reconciliation.** Plan 12 delivers R453-M1 to M3 (exactly two children, every segment preserved, an unsplittable task reported rather than certified atomic) and files **R453-M4** — "combine all different approaches … for each duplicated idea find the first source of it in the history" — as **Open** with its blocker named in its risk 7. Plan 12's own words: "Claiming it would be exactly the overstatement this issue exists to remove" |
+| #453 | Moonshot tasks | split any task into two sub-tasks recursively using the best internet data, deduplicating ideas to their first source | full | 12, 01, 04 | Plan 12 delivers R453-M1 to M3 (exactly two grounded children, every segment preserved, and an underivable split reported rather than falsely certified atomic) and R453-M4 through shared semantic deduplication that retains the first ordered source plus all later sources. |
 | #483 | Experimental fallback for formalization using small models | use a small in-browser model to match formalization to Wikipedia | **no** | — | maintainer decision: the ask conflicts with the standing NON-GOAL on neural inference; PR #644 is the stale attempt and must be resolved by the maintainer, not by this plan |
 | #491 | Principle of least action | optimize for the shortest reasoning path; split every task into two | **partial** | 12 | **changed by the 2026-09-16 reconciliation.** Plan 12 delivers R491-C1 and R491-C3 and advances R491-C2. **R491-C4** — "include user satisfaction and requirement completeness when comparing candidate solutions and learning general procedures" — is recorded **Open as a universal capability** in `docs/requirements/issue-0491-least-action-continuation.md:13`, and no leaf in this pull request delivers it |
 | #557 | Buttons embedded into the text field on desktop/tablet | adaptive, polished composer | **no** | — | UI redesign unrelated to the meta algorithm; PR #643 is the stale attempt |
@@ -475,7 +475,7 @@ fully close it by implementing plans 01–12, and why not when it cannot.
 | #861 | Optional anonymous Sentry issue reporting | anonymous telemetry-based reporting | **no** | — | requires a third-party account, a DSN and a privacy decision |
 | #869 | Назначь мне встречу с Александром на 20:00 по Грузии | schedule a meeting in a named timezone | partial | 10, 04 | routing and the timezone concept land here; an actual calendar integration does not exist and is not meta-algorithm work |
 | #872 | игры для малышей … в App Store (iOS) | find free open-source children's games on the App Store | partial | 01, 10, new leaf (option network) | retrieval and constraint ranking land here; App Store coverage depends on what the source serves |
-| #901 | Automate TRIZ principles and contradiction resolution | contradictions as links with trade-off values, resolved by pattern | **partial** | 12 | **changed by the 2026-09-16 reconciliation.** Plan 12 delivers the mechanism — `ContradictionLink` with an integer basis-point selection value, the forty inventive and four separation principles as forgettable seed data, resolution at the ranking seam — and states in its risk 5 that "the 20-task TRIZ corpus #901 asks for … is not in this plan's scope and is named as the follow-up". Without that corpus the mechanism is unvalidated, and #901 asked for both |
+| #901 | Automate TRIZ principles and contradiction resolution | contradictions as links with trade-off values, resolved by pattern | full | 12 | Plan 12 delivers `ContradictionLink`, integer basis-point selection derived from requirements, forty inventive and four separation principles as forgettable seed data, ranking-seam resolution, and the requested 20-task validation corpus across five languages. |
 | #930 | E78: Telegram — compile and run code before answering | docker execution pipeline from #8 | full | 06 | plan 06's docker execution leaf |
 | #934 | E82: Restart E39 — shrinking JS-worker budget, slice-2 absorption | absorb the JS worker into WASM | partial | 09 | the ratchet turns downward here; absorbing all ~26,700 lines is larger than one pull request can honestly claim |
 | #935 | E83: File the two promised upstream relative-meta-logic issues | file library-usability and WASM-compilation issues upstream | full | new leaf | two upstream issue filings plus the recorded dependency; E3 gives the concrete evidence |
@@ -546,15 +546,14 @@ the silent-omission failure this plan exists to catch:
 
 ## Issues this PR will close
 
-**Thirty-two** issues, derived from the "full" rows of the coverage table. Each
+**Thirty-four** issues, derived from the "full" rows of the coverage table. Each
 is closed only when the plan leaf named in that table is ticked and its gate is
 green; a leaf that cannot be finished removes its issue from this list and
 records why, rather than closing it on prose.
 
-> **reconciled 2026-09-16: was thirty-seven. Five issues moved to "will not
+> **reconciled 2026-09-17: was thirty-seven. Three issues remain in "will not
 > close" because a plan's own text says the issue's ask is not fully
-> delivered — #453 (R453-M4 filed Open), #491 (R491-C4 Open), #901 (the
-> validation corpus out of scope), #954 (no leaf reorganizes `src/`), #1090
+> delivered — #491 (R491-C4 Open), #954 (no leaf reorganizes `src/`), #1090
 > (an explicit maintainer decision). Three issues stayed only because the
 > reconciliation added the missing leaf rather than downgrading the row:
 > #950 (plan 09 leaf 42), #949 (plan 11 L75), #1089 (plan 11 L76). This is
@@ -562,6 +561,7 @@ records why, rather than closing it on prose.
 > moment its leaf is struck through (plan 00 §8).**
 
 ```
+Closes #453
 Closes #705
 Closes #710
 Closes #720
@@ -574,6 +574,7 @@ Closes #821
 Closes #826
 Closes #827
 Closes #838
+Closes #901
 Closes #930
 Closes #935
 Closes #937
@@ -598,18 +599,16 @@ Closes #1138
 
 ### Issues this PR will NOT close, with one-line reasons
 
-**Twenty-nine** issues. **Eighteen** are partially advanced and stay open with a
+**Twenty-seven** issues. **Sixteen** are partially advanced and stay open with a
 narrowed remainder; eleven are outside what this pull request can honestly
-deliver. The five marked **moved 2026-09-16** left the `Closes` list during the
+deliver. The three marked **moved 2026-09-16** left the `Closes` list during the
 plan-00 §8 reconciliation, each because a plan's own text says the issue's ask is
 not fully delivered.
 
 | issue | why it stays open |
 | --- | --- |
 | #447 | routing leaves land; the mobile layout redesign does not |
-| #453 | **moved 2026-09-16** — R453-M1 to M3 land; R453-M4 ("deduplicate ideas to their first historical source") is filed Open in plan 12 with its blocker named |
 | #491 | **moved 2026-09-16** — R491-C1 and R491-C3 land and R491-C2 advances; R491-C4 (user satisfaction and requirement completeness as ranking dimensions) is Open in the shard and no leaf delivers it |
-| #901 | **moved 2026-09-16** — the contradiction mechanism lands; the 20-task validation corpus #901 also asks for is out of scope (plan 12 risk 5) |
 | #954 | **moved 2026-09-16** — the module map is generated; no leaf reorganizes the 541 files of `src/` into directory modules |
 | #1090 | **moved 2026-09-16** — the column is measured honestly and both branches are laid out; choosing between filling 743 cells and marking the column aspirational is a maintainer decision this pull request records rather than makes |
 | #483 | maintainer decision needed — the ask conflicts with the NON-GOAL on neural inference |

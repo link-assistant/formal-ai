@@ -21,7 +21,7 @@ use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::{ExecutionSurface, SolverConfig, UniversalSolver};
+use crate::{ExecutionSurface, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 pub use cases::{BenchmarkCase, Expectation};
 pub use grade::CaseOutcome;
@@ -106,6 +106,20 @@ pub fn run_suite_with_online(
     repository_root: &Path,
     online: bool,
 ) -> Result<SuiteRun, String> {
+    run_suite_with_options(manifest, slice, repository_root, online, false)
+}
+
+/// Run an upstream suite with explicit discovery-network and prerequisite
+/// installation permissions. `allow_install` grants only the pinned,
+/// workspace-scoped harness procedure; it is false in every compatibility
+/// entry point.
+pub fn run_suite_with_options(
+    manifest: &SuiteManifest,
+    slice: usize,
+    repository_root: &Path,
+    online: bool,
+    allow_install: bool,
+) -> Result<SuiteRun, String> {
     let solver_version = env!("CARGO_PKG_VERSION").to_string();
     if let Availability::Unavailable { reason } = &manifest.availability {
         return Ok(unavailable_run(manifest, slice, &solver_version, reason));
@@ -152,14 +166,20 @@ pub fn run_suite_with_online(
     let solver = benchmark_solver_with(online);
     let responses = cases
         .iter()
-        .map(|case| solver.solve(&case.prompt))
+        .map(|case| {
+            if case.repository.is_some() {
+                solve_repository_case(case, &workspace)
+            } else {
+                solver.solve(&case.prompt)
+            }
+        })
         .collect::<Vec<_>>();
     let answers = responses
         .iter()
         .map(|response| response.answer.clone())
         .collect::<Vec<_>>();
     let outcomes = if manifest.grading == Grading::SweBenchTests {
-        match grade::grade_swebench(&cases, &answers, &workspace) {
+        match grade::grade_swebench_with_install(&cases, &answers, &workspace, allow_install) {
             Ok(outcomes) => outcomes,
             Err(reason) => {
                 return Ok(unavailable_run(
@@ -201,6 +221,80 @@ pub fn run_suite_with_online(
         unavailable: None,
         solver_version,
     })
+}
+
+/// Run one repository-backed benchmark through the same clone → locate → read
+/// → edit → verify → diff protocol as the authoring CLI.
+///
+/// A protocol refusal is represented by an empty answer and an inspectable
+/// trace, so the upstream grader records a failed patch rather than confusing a
+/// capability gap with unavailable benchmark infrastructure.
+fn solve_repository_case(case: &BenchmarkCase, run_root: &Path) -> SymbolicAnswer {
+    let case_root = run_root
+        .join("repository-cases")
+        .join(crate::engine::stable_id("benchmark_repository", &case.id));
+    if case_root.exists() {
+        let _ = std::fs::remove_dir_all(&case_root);
+    }
+    let Some(spec) = case.repository.clone() else {
+        unreachable!("repository benchmark branch requires a clone spec");
+    };
+    let result = crate::repository_workspace::RepositoryWorkspace::open(&spec, &case_root).map(
+        |mut workspace| {
+            crate::repository_workspace::WorkspaceProtocol::load().execute(
+                &mut workspace,
+                &crate::repository_workspace::RepositoryTask {
+                    requirement: case.prompt.clone(),
+                    clone: spec,
+                    tests: case.tests.clone(),
+                },
+            )
+        },
+    );
+    match result {
+        Ok(outcome) => {
+            let answer = if outcome.diff.trim().is_empty() {
+                String::new()
+            } else {
+                format!("```diff\n{}\n```", outcome.diff.trim_end())
+            };
+            let mut trace = String::from("repository_benchmark_protocol\n");
+            let _ = writeln!(trace, "  case \"{}\"", case.id.replace('"', "\"\""));
+            let _ = writeln!(trace, "  observations \"{}\"", outcome.observations.len());
+            let _ = writeln!(trace, "  diff_bytes \"{}\"", outcome.diff.len());
+            if let Some(step) = outcome.stopped_at {
+                let _ = writeln!(trace, "  stopped_at \"{}\"", step.id);
+            }
+            for open in outcome.open {
+                let _ = writeln!(trace, "  open \"{}\"", open.replace('"', "\"\""));
+            }
+            SymbolicAnswer {
+                intent: String::from("repository_task"),
+                answer,
+                confidence: 1.0,
+                evidence_links: outcome
+                    .observations
+                    .iter()
+                    .map(|evidence| evidence.evidence_id.clone())
+                    .collect(),
+                thinking_steps: Vec::new(),
+                links_notation: trace,
+                execution_recipe: None,
+            }
+        }
+        Err(error) => SymbolicAnswer {
+            intent: String::from("repository_task"),
+            answer: String::new(),
+            confidence: 1.0,
+            evidence_links: Vec::new(),
+            thinking_steps: Vec::new(),
+            links_notation: crate::links_format::format_lino_record(
+                "repository_benchmark_protocol",
+                &[("open", format!("{error:?}"))],
+            ),
+            execution_recipe: None,
+        },
+    }
 }
 
 fn unavailable_run(

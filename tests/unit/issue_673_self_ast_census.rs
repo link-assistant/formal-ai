@@ -189,6 +189,32 @@ fn census_regenerates_deterministically_and_incrementally() {
 }
 
 #[test]
+fn directory_census_matches_the_same_explicit_source_set() {
+    let root = std::env::temp_dir().join(format!(
+        "formal-ai-issue-1138-directory-census-{}",
+        std::process::id()
+    ));
+    let _ = fs::remove_dir_all(&root);
+    fs::create_dir_all(root.join("src/nested")).expect("create census fixture");
+    fs::write(root.join("src/alpha.rs"), "pub const ALPHA: u8 = 1;\n")
+        .expect("write alpha fixture");
+    fs::write(root.join("src/nested/beta.rs"), "pub struct Beta;\n").expect("write beta fixture");
+    fs::write(root.join("src/nested/gamma.rs"), "pub fn gamma() {}\n")
+        .expect("write gamma fixture");
+    fs::write(root.join("README.md"), "not Rust source\n").expect("write non-source fixture");
+
+    let from_directory = WorkspaceCensus::of_directory(&root).expect("census fixture directory");
+    let explicit = WorkspaceCensus::compile(&[
+        ("src/alpha.rs", "pub const ALPHA: u8 = 1;\n"),
+        ("src/nested/beta.rs", "pub struct Beta;\n"),
+        ("src/nested/gamma.rs", "pub fn gamma() {}\n"),
+    ]);
+    assert_eq!(from_directory, explicit);
+
+    fs::remove_dir_all(root).expect("remove census fixture");
+}
+
+#[test]
 fn committed_documents_exclude_the_redundant_workspace_aggregate() {
     let census = WorkspaceCensus::compile(&[
         ("src/alpha.rs", "pub fn alpha() {}\n"),
@@ -238,11 +264,16 @@ fn the_index_resolves_every_path_symbol_the_method_registry_knows() {
                         .is_some_and(|symbol| symbol.kind == "function")
                 })
         };
-        let entry = entry_point(&source, &method.name, &declared).or_else(|| {
-            rule_backed
-                .contains(&method.name.as_str())
-                .then(|| "run_handler".to_owned())
-        });
+        let entry = method
+            .execution
+            .runtime
+            .map(|runtime| runtime.entry_point().to_owned())
+            .or_else(|| entry_point(&source, &method.name, &declared))
+            .or_else(|| {
+                rule_backed
+                    .contains(&method.name.as_str())
+                    .then(|| "run_handler".to_owned())
+            });
         let Some(symbol) = entry else {
             unresolved.push(format!("{} (no entry point)", method.name));
             continue;

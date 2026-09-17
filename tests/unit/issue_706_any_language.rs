@@ -210,7 +210,12 @@ fn detection_registry_is_seed_data_not_rust_constants() {
 fn fifth_language_is_detected_without_any_rust_change() {
     use formal_ai::language::detect;
 
-    for prompt in ["¿Cómo estás?", "hola, ¿quién eres?", "gracias por favor"] {
+    for prompt in [
+        "¿Cómo estás?",
+        "hola, ¿quién eres?",
+        "gracias por favor",
+        "Formaliza este requisito: una comprobación debe rechazar la entrada",
+    ] {
         assert_eq!(
             detect(prompt).slug(),
             "es",
@@ -423,6 +428,10 @@ fn a_language_without_localized_openers_reports_a_gap_not_english() {
         "an adopted Spanish frame must route like English"
     );
     let answer = engine.answer("¿Cómo funciona la fotosíntesis submarina de xyzzy?");
+    assert_eq!(
+        answer.answer,
+        "Ninguna fuente consultada definió «¿Cómo funciona la fotosíntesis submarina de xyzzy». Fuentes consultadas: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss."
+    );
     assert!(
         answer.answer.contains("I detected an unsupported language"),
         "expected the explicit language gap answer, got: {}",

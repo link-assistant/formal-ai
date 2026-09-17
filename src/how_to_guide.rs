@@ -524,10 +524,7 @@ impl CaptureExtractor for StepExtractor<'_> {
                     entries.iter().collect()
                 };
                 if relevant.is_empty() {
-                    read.detail = Some(trace_record::line(
-                        "no_relevant_result",
-                        &[("url", url.clone())],
-                    ));
+                    read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                 }
                 for entry in &relevant {
                     let found = extract_steps(&entry.body, bounds.max_items);
@@ -542,10 +539,7 @@ impl CaptureExtractor for StepExtractor<'_> {
                 }
             }
             Payload::Compressed => {
-                read.detail = Some(trace_record::line(
-                    "compressed_payload",
-                    &[("url", url.clone())],
-                ));
+                read.detail = Some(trace_record::line("compressed_payload", &[("url", url)]));
             }
             Payload::OpenSearch { titles, .. } | Payload::Search { titles } => {
                 let relevant: Vec<&String> = titles
@@ -554,23 +548,21 @@ impl CaptureExtractor for StepExtractor<'_> {
                     .take(bounds.max_pages_per_service)
                     .collect();
                 if relevant.is_empty() {
-                    read.detail = Some(trace_record::line(
-                        "no_relevant_result",
-                        &[("url", url.clone())],
-                    ));
+                    read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                 }
                 for title in relevant {
                     read.follow.push(parse_url(record, title));
                 }
             }
             Payload::Unrecognized { reason } => {
+                let should_search = is_wiki && reason.starts_with("api_error");
                 read.detail = Some(trace_record::line(
                     "unreadable_payload",
-                    &[("reason", reason.clone()), ("url", url.clone())],
+                    &[("reason", reason), ("url", url)],
                 ));
                 // A title guess that misses is not a dead end: the same wiki can
                 // be searched for the task, and the hits parsed one hop deeper.
-                if is_wiki && reason.starts_with("api_error") {
+                if should_search {
                     read.follow.push(search_url(record, task));
                 }
             }

@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/guidance.rs
   language rust
   fidelity signature
-  byte_len 26498
-  line_count 394
-  content_id source_module_5f9bbeeacad21045
+  byte_len 26467
+  line_count 392
+  content_id source_module_b079296e5e9901c5
   symbol_count 7
   symbols
     const CODING_GUIDANCE_LINO 22 22
@@ -13,4 +13,4 @@ self_ast_census
     function program_explanation_section 52 64
     function program_explanation 69 87
     function program_explanation_in 93 293
-    function program_test_instructions 299 394
+    function program_test_instructions 299 392

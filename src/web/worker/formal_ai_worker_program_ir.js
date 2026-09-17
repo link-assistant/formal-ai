@@ -1,0 +1,334 @@
+// Browser/WASM mirror of issue #1138 plan 02's pure coding pipeline.
+// Recognition and concept discovery stay in the shared worker lexicon. This
+// module turns the discovered meaning ids into a bounded, typed expression
+// search over the same runtime-loaded fragment seed as native Rust, lowers the
+// least-cost result, and deliberately leaves execution status unverified.
+
+const BROWSER_IR_BOUNDS = Object.freeze({ width: 24, depth: 6, pool: 768 });
+let cachedBrowserFragments = null;
+
+function browserNodeValue(node, name) {
+  const found = (node.children || []).find((child) => child.name === name);
+  return found ? found.value : "";
+}
+
+function browserNodeValues(node, name) {
+  return (node.children || [])
+    .filter((child) => child.name === name)
+    .map((child) => child.value);
+}
+
+function browserTypeTokens(value) {
+  return [...String(value || "").matchAll(/"([^"]*)"|([^\s()]+)/g)]
+    .map((match) => match[1] || match[2])
+    .filter(Boolean);
+}
+
+function browserType(value) {
+  return String(value || "unknown:0").toLowerCase().replace(/\s+/g, "");
+}
+
+function browserTypesUnify(left, right) {
+  const a = browserType(left);
+  const b = browserType(right);
+  if (a.startsWith("unknown:") || b.startsWith("unknown:")) return true;
+  const compound = (value, prefix) =>
+    value.startsWith(`${prefix}<`) && value.endsWith(">")
+      ? value.slice(prefix.length + 1, -1)
+      : null;
+  for (const prefix of ["sequence", "pair", "mapping"]) {
+    const innerA = compound(a, prefix);
+    const innerB = compound(b, prefix);
+    if (innerA !== null || innerB !== null) {
+      if (prefix === "sequence" && innerA !== null && b === "text") {
+        return browserTypesUnify(innerA, "text");
+      }
+      if (prefix === "sequence" && innerB !== null && a === "text") {
+        return browserTypesUnify("text", innerB);
+      }
+      if (innerA === null || innerB === null) return false;
+      if (prefix === "sequence") return browserTypesUnify(innerA, innerB);
+      const split = (value) => {
+        let depth = 0;
+        for (let index = 0; index < value.length; index += 1) {
+          if (value[index] === "<") depth += 1;
+          else if (value[index] === ">") depth -= 1;
+          else if (value[index] === "," && depth === 0) {
+            return [value.slice(0, index), value.slice(index + 1)];
+          }
+        }
+        return [];
+      };
+      const partsA = split(innerA);
+      const partsB = split(innerB);
+      return partsA.length === 2 && partsB.length === 2 &&
+        browserTypesUnify(partsA[0], partsB[0]) &&
+        browserTypesUnify(partsA[1], partsB[1]);
+    }
+  }
+  return a === b;
+}
+
+function browserPlaceholders(template) {
+  const found = [];
+  for (const match of String(template || "").matchAll(/\{\{?([A-Za-z_][A-Za-z0-9_]*)\}?\}/g)) {
+    if (!found.includes(match[1])) found.push(match[1]);
+  }
+  return found;
+}
+
+function browserFragmentsFrom(text, containerName, recordName, surfaceName) {
+  const root = parseLinoTree(String(text || ""));
+  const containers = root.children.filter((node) => node.name === containerName);
+  const records = (containers.length ? containers : [root]).flatMap((node) => node.children || []);
+  return records.flatMap((node) => {
+    const id = node.name === recordName ? node.value : node.name;
+    const surface = browserNodeValue(node, surfaceName);
+    if (!id || !surface || !browserNodeValue(node, "fragment_result")) return [];
+    const signature = browserTypeTokens(browserNodeValue(node, "fragment_signature"))
+      .map(browserType);
+    return [{
+      id,
+      surface,
+      signature,
+      result: browserType(browserNodeValue(node, "fragment_result")),
+      arguments: browserPlaceholders(surface),
+      supports: browserNodeValues(node, "supports"),
+      grounding: browserNodeValue(node, "grounding"),
+      license: browserNodeValue(node, "license"),
+    }];
+  });
+}
+
+function browserFragmentCatalog() {
+  if (cachedBrowserFragments) return cachedBrowserFragments;
+  const fragments = [];
+  fragments.push(...browserFragmentsFrom(
+    seedRawText(SEED_RAW, "meanings-coding-structure.lino"),
+    "meanings", "meaning", "idiom",
+  ));
+  fragments.push(...browserFragmentsFrom(
+    seedRawText(SEED_RAW, "coding-composition-fragments.lino"),
+    "meanings", "meaning", "idiom",
+  ));
+  fragments.push(...browserFragmentsFrom(
+    seedRawText(SEED_RAW, "coding-discovery-runtime.lino"),
+    "coding_discovery_runtime", "template", "text",
+  ));
+  const byId = new Map(fragments.map((fragment) => [fragment.id, fragment]));
+  cachedBrowserFragments = [...byId.values()].sort((left, right) =>
+    left.id.localeCompare(right.id),
+  );
+  return cachedBrowserFragments;
+}
+
+function browserFunctionParameters(prompt) {
+  const name = extractPythonFunctionName(prompt);
+  if (!name) return [];
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = new RegExp(`${escaped}\\s*\\(([^)]*)\\)`, "i").exec(String(prompt || ""));
+  if (!match) return [];
+  return match[1].split(",").map((part, index) => {
+    const fields = part.trim().split(":");
+    const parameter = fields[0].replace(/[^\p{L}\p{N}_]/gu, "");
+    const annotation = String(fields[1] || "unknown").trim().toLowerCase();
+    const type = annotation.replace(/str/g, "text").replace(/int/g, "integer")
+      .replace(/bool/g, "boolean").replace(/list\[([^\]]+)\]/g, "sequence<$1>");
+    return {
+      name: parameter || `argument_${index}`,
+      type: browserType(type === "unknown" ? `unknown:${index}` : type),
+    };
+  });
+}
+
+function browserFunctionResultType(prompt) {
+  const match = /\)\s*->\s*([^\s.:,]+)/i.exec(String(prompt || ""));
+  if (!match) return "";
+  return browserType(match[1].toLowerCase().replace(/str/g, "text")
+    .replace(/int/g, "integer").replace(/bool/g, "boolean")
+    .replace(/list\[([^\]]+)\]/g, "sequence<$1>"));
+}
+
+function browserFragmentCoverage(fragment, structures) {
+  return structures.filter((id) => fragment.id === id || fragment.supports.includes(id));
+}
+
+function browserExpressionKey(expression) {
+  return expression.source;
+}
+
+function browserNormalizeExpressions(expressions) {
+  expressions.sort((left, right) =>
+    right.coverage.length - left.coverage.length ||
+    right.fragments.length - left.fragments.length ||
+    right.coherence - left.coherence ||
+    left.depth - right.depth ||
+    browserExpressionKey(left).localeCompare(browserExpressionKey(right)),
+  );
+  const seen = new Set();
+  return expressions.filter((expression) => {
+    const key = browserExpressionKey(expression);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, BROWSER_IR_BOUNDS.pool);
+}
+
+function browserRenderFragment(fragment, arguments_) {
+  let rendered = fragment.surface;
+  for (let index = 0; index < fragment.arguments.length; index += 1) {
+    const name = fragment.arguments[index];
+    const value = arguments_[index] ? arguments_[index].source : "";
+    rendered = rendered.replaceAll(`{${name}}`, value).replaceAll(`{{${name}}}`, `{${value}}`);
+  }
+  return rendered;
+}
+
+function browserFragmentCoherence(fragment, arguments_, parameters) {
+  let score = arguments_.reduce((total, argument, index) =>
+    total + (argument.source === fragment.arguments[index] ? 1 : 0), 0);
+  const shape = /for\s+\{([A-Za-z_]\w*)\}\s+in\s+\{([A-Za-z_]\w*)\}.*if\s+\{([A-Za-z_]\w*)\}/
+    .exec(fragment.surface);
+  if (!shape) return score;
+  const at = (name) => arguments_[fragment.arguments.indexOf(name)];
+  const binder = at(shape[1]);
+  const collection = at(shape[2]);
+  const predicate = at(shape[3]);
+  if (!binder || !collection || !predicate || !/^[A-Za-z_]\w*$/.test(binder.source)) return score;
+  score += (binder.source === collection.source ? -2 : 1) +
+    (browserIdentifierCount(predicate.source, binder.source) > 0 ? 2 : -1);
+  if (parameters.some((parameter) => parameter.name === collection.source)) score += 2;
+  return score;
+}
+
+function browserArgumentProducts(choices, limit) {
+  let products = [[]];
+  for (const options of choices) {
+    const next = [];
+    for (const product of products) {
+      for (const option of options) {
+        next.push(product.concat([option]));
+        if (next.length >= limit) break;
+      }
+      if (next.length >= limit) break;
+    }
+    products = next;
+  }
+  return products;
+}
+
+function browserIdentifierCount(source, identifier) {
+  const escaped = identifier.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return (String(source || "").match(new RegExp(`\\b${escaped}\\b`, "g")) || []).length;
+}
+
+function browserUnboundPlaceholderCount(expression, fragments, parameters) {
+  const parameterNames = new Set(parameters.map((parameter) => parameter.name));
+  const placeholders = new Set(fragments.flatMap((fragment) => fragment.arguments));
+  return [...placeholders].filter((name) =>
+    !parameterNames.has(name) && browserIdentifierCount(expression.source, name) === 1,
+  ).length;
+}
+
+function browserComposeProgramIr(prompt, normalized, structures) {
+  const language = programLanguageFromPrompt(normalized) || "python";
+  if (language !== "python") return null;
+  const name = extractPythonFunctionName(prompt);
+  const parameters = browserFunctionParameters(prompt);
+  const resultType = browserFunctionResultType(prompt);
+  if (!name || parameters.length === 0 || structures.length === 0) return null;
+  const catalog = browserFragmentCatalog();
+  const relevant = catalog.map((fragment) => ({
+    fragment,
+    score: (structures.includes(fragment.id) ? 100 : 0) +
+      browserFragmentCoverage(fragment, structures).length * 90,
+  })).filter((item) => item.score > 0)
+    .sort((left, right) => right.score - left.score ||
+      left.fragment.signature.length - right.fragment.signature.length ||
+      left.fragment.id.localeCompare(right.fragment.id))
+    .slice(0, BROWSER_IR_BOUNDS.width).map((item) => item.fragment);
+  const coverable = structures.filter((id) => relevant.some((fragment) =>
+    fragment.id === id || fragment.supports.includes(id),
+  ));
+  let pool = parameters.map((parameter) => ({
+    source: parameter.name, type: parameter.type, fragments: [], coverage: [],
+    sources: [], licenses: [], depth: 1, coherence: 0,
+  }));
+  for (const fragment of relevant) {
+    for (let index = 0; index < fragment.arguments.length; index += 1) {
+      pool.push({
+        source: fragment.arguments[index],
+        type: fragment.signature[index] || `unknown:${index}`,
+        fragments: [], coverage: [], sources: [], licenses: [], depth: 1,
+        coherence: 0,
+      });
+    }
+    if (fragment.signature.length === 0) {
+      pool.push({
+        source: browserRenderFragment(fragment, []), type: fragment.result,
+        fragments: [fragment.id], coverage: browserFragmentCoverage(fragment, structures),
+        sources: fragment.grounding ? [fragment.grounding] : [],
+        licenses: fragment.license ? [fragment.license] : [], depth: 1, coherence: 0,
+      });
+    }
+  }
+  pool = browserNormalizeExpressions(pool);
+  for (let depth = 2; depth <= BROWSER_IR_BOUNDS.depth; depth += 1) {
+    const snapshot = pool.slice();
+    const layer = [];
+    for (const fragment of relevant) {
+      if (fragment.signature.length === 0) continue;
+      const choices = fragment.signature.map((type, index) => snapshot
+        .filter((expression) => browserTypesUnify(type, expression.type))
+        .sort((left, right) => {
+          const leftName = left.source === fragment.arguments[index] ? 0 : 1;
+          const rightName = right.source === fragment.arguments[index] ? 0 : 1;
+          return leftName - rightName || right.coverage.length - left.coverage.length ||
+            right.coherence - left.coherence || left.depth - right.depth ||
+            left.source.localeCompare(right.source);
+        }).slice(0, 8));
+      if (choices.some((options) => options.length === 0)) continue;
+      for (const arguments_ of browserArgumentProducts(choices, 96)) {
+        const childDepth = Math.max(...arguments_.map((argument) => argument.depth));
+        if (childDepth + 1 !== depth) continue;
+        const unique = (values) => [...new Set(values)].sort();
+        layer.push({
+          source: browserRenderFragment(fragment, arguments_), type: fragment.result,
+          fragments: unique([fragment.id, ...arguments_.flatMap((argument) => argument.fragments)]),
+          coverage: unique([
+            ...browserFragmentCoverage(fragment, structures),
+            ...arguments_.flatMap((argument) => argument.coverage),
+          ]),
+          sources: unique([fragment.grounding, ...arguments_.flatMap((argument) => argument.sources)].filter(Boolean)),
+          licenses: unique([fragment.license, ...arguments_.flatMap((argument) => argument.licenses)].filter(Boolean)),
+          depth,
+          coherence: browserFragmentCoherence(fragment, arguments_, parameters) +
+            arguments_.reduce((total, argument) => total + argument.coherence, 0),
+        });
+      }
+    }
+    pool = browserNormalizeExpressions(pool.concat(layer));
+  }
+  const complete = pool.filter((expression) => expression.fragments.length > 0 &&
+    (!resultType || browserTypesUnify(resultType, expression.type)) &&
+    coverable.every((id) => expression.coverage.includes(id)))
+    .sort((left, right) =>
+      browserUnboundPlaceholderCount(left, relevant, parameters) -
+        browserUnboundPlaceholderCount(right, relevant, parameters) ||
+      parameters.filter((parameter) => !left.source.includes(parameter.name)).length -
+        parameters.filter((parameter) => !right.source.includes(parameter.name)).length ||
+      left.depth - right.depth ||
+      right.coherence - left.coherence ||
+      right.fragments.length - left.fragments.length || left.source.localeCompare(right.source));
+  if (complete.length === 0) return null;
+  const chosen = complete[0];
+  const canonical = [name, ...parameters.map((parameter) => `${parameter.name}:${parameter.type}`),
+    ...chosen.fragments, chosen.source].join("\u001f");
+  return {
+    contentId: conceptStableId("program_ir", canonical),
+    source: `def ${name}(${parameters.map((parameter) => parameter.name).join(", ")}):\n    return ${chosen.source}\n`,
+    fragments: chosen.fragments,
+    sources: chosen.sources,
+    licenses: chosen.licenses,
+  };
+}

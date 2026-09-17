@@ -10,13 +10,19 @@
 //! handler migrates by moving its recognition and wording into data and
 //! deleting the Rust.
 
+use std::collections::BTreeMap;
 use std::sync::OnceLock;
 
 use crate::engine::{SymbolicAnswer, normalize_prompt, unknown_answer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{self, HANDLER_RULES_LINO, Lexicon, Slot};
+use crate::seed_links::SeedLinkNetwork;
 use crate::solver_handlers::finalize_simple;
+
+mod parser;
+
+use parser::{parse_rule, parse_tree};
 
 /// Every handler rule set declared in `data/seed/handler-rules.lino`.
 #[derive(Debug)]
@@ -95,6 +101,8 @@ enum RoleMode {
     Raw,
     Languages,
     Forms,
+    /// A two-word role surface whose object occurs between its two words.
+    Separated,
     /// The whole subject equals one of the role's surfaces (issue #1095).
     Whole,
 }
@@ -116,6 +124,44 @@ enum Condition {
     RouteExact(String),
     HistoryRole(String),
     Shape(Shape, Subject),
+}
+
+/// One lexical surface read by the condition evaluator. Both backends expose
+/// this language-neutral shape; matching stays in one evaluator below.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ConditionSurface {
+    pub text: String,
+    pub language: String,
+    pub slot: Slot,
+}
+
+/// Source of the lexical and exact-route facts used by conditions.
+///
+/// Stage 2 keeps evaluation singular while allowing the current parsed seed
+/// tables and the projected link store to be compared record for record.
+pub trait ConditionSource {
+    fn role_surfaces(&self, role: &str) -> Vec<ConditionSurface>;
+    fn exact_route_surfaces(&self, slug: &str) -> Vec<String>;
+}
+
+/// The current runtime backend: facts read from the parsed seed tables.
+#[derive(Debug, Clone, Copy)]
+pub struct SeedTables<'a> {
+    lexicon: &'a Lexicon,
+}
+
+impl<'a> SeedTables<'a> {
+    #[must_use]
+    pub const fn new(lexicon: &'a Lexicon) -> Self {
+        Self { lexicon }
+    }
+}
+
+/// Stage-2 backend built by querying the boot-time link projection.
+#[derive(Debug, Clone)]
+pub struct LinkStoreSource {
+    roles: BTreeMap<String, Vec<ConditionSurface>>,
+    routes: BTreeMap<String, Vec<String>>,
 }
 
 #[derive(Debug)]
@@ -164,7 +210,7 @@ struct Node {
 }
 
 struct Context<'a> {
-    lexicon: &'a Lexicon,
+    source: &'a dyn ConditionSource,
     prompt: &'a str,
     normalized: &'a str,
     cleaned: String,
@@ -173,6 +219,172 @@ struct Context<'a> {
     /// [`Subject::Padded`].
     padded: String,
     language: String,
+}
+
+impl ConditionSource for SeedTables<'_> {
+    fn role_surfaces(&self, role: &str) -> Vec<ConditionSurface> {
+        self.lexicon
+            .meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .flat_map(|meaning| meaning.lexemes.iter())
+            .flat_map(|lexeme| {
+                lexeme.words.iter().map(|form| ConditionSurface {
+                    text: form.text.clone(),
+                    language: lexeme.language.clone(),
+                    slot: form.slot(),
+                })
+            })
+            .collect()
+    }
+
+    fn exact_route_surfaces(&self, slug: &str) -> Vec<String> {
+        seed::intent_routing()
+            .intents
+            .iter()
+            .find(|route| route.slug == slug)
+            .map(|route| {
+                route
+                    .keywords
+                    .iter()
+                    .chain(&route.phrases)
+                    .cloned()
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+}
+
+impl LinkStoreSource {
+    /// Read the condition vocabulary from a projected store. The resulting
+    /// index owns only query results; it never consults `seed::lexicon()`.
+    #[must_use]
+    pub fn from_store(store: &SeedLinkNetwork) -> Self {
+        let mut roles: BTreeMap<String, Vec<ConditionSurface>> = BTreeMap::new();
+        for path in store.document_paths() {
+            let Some(document) = store.document(path) else {
+                continue;
+            };
+            for root in queried_nodes(store, document)
+                .into_iter()
+                .filter(|node| node.to == "meanings")
+            {
+                for meaning in queried_nodes(store, &root.index) {
+                    let children = queried_nodes(store, &meaning.index);
+                    let meaning_roles = children
+                        .iter()
+                        .filter(|child| child.to == "role")
+                        .filter_map(|child| store.value_of(&child.index))
+                        .map(str::to_owned)
+                        .collect::<Vec<_>>();
+                    if meaning_roles.is_empty() {
+                        continue;
+                    }
+                    let mut surfaces = Vec::new();
+                    for child in &children {
+                        if child.to == "lexeme" {
+                            let language = store
+                                .field(&child.index, "language")
+                                .or_else(|| store.value_of(&child.index))
+                                .unwrap_or_default();
+                            surfaces.extend(
+                                queried_nodes(store, &child.index)
+                                    .into_iter()
+                                    .filter(|surface| {
+                                        matches!(surface.to.as_str(), "surface" | "word")
+                                    })
+                                    .filter_map(|surface| {
+                                        stored_surface(store, &surface.index, language)
+                                    }),
+                            );
+                        } else if child.to == "surface" {
+                            let language =
+                                store.field(&child.index, "language").unwrap_or_default();
+                            if let Some(surface) = stored_surface(store, &child.index, language) {
+                                surfaces.push(surface);
+                            }
+                        }
+                    }
+                    for role in meaning_roles {
+                        let entries = roles.entry(role).or_default();
+                        for surface in &surfaces {
+                            if !entries.contains(surface) {
+                                entries.push(surface.clone());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        let mut routes = BTreeMap::new();
+        if let Some(document) = store.document(seed::INTENT_ROUTING_PATH) {
+            for root in queried_nodes(store, document)
+                .into_iter()
+                .filter(|node| node.to == "intent_routing")
+            {
+                for intent in queried_nodes(store, &root.index)
+                    .into_iter()
+                    .filter(|node| node.to == "intent")
+                {
+                    let Some(slug) = store.field(&intent.index, "slug") else {
+                        continue;
+                    };
+                    let mut surfaces = store.field_values(&intent.index, "keyword");
+                    surfaces.extend(store.field_values(&intent.index, "phrase"));
+                    routes.insert(slug.to_owned(), surfaces);
+                }
+            }
+        }
+        Self { roles, routes }
+    }
+}
+
+impl ConditionSource for LinkStoreSource {
+    fn role_surfaces(&self, role: &str) -> Vec<ConditionSurface> {
+        self.roles.get(role).cloned().unwrap_or_default()
+    }
+
+    fn exact_route_surfaces(&self, slug: &str) -> Vec<String> {
+        self.routes.get(slug).cloned().unwrap_or_default()
+    }
+}
+
+fn queried_nodes(store: &SeedLinkNetwork, parent: &str) -> Vec<crate::link_store::DoubletLink> {
+    store
+        .query(&SeedLinkNetwork::children_pattern(parent))
+        .into_iter()
+        .filter(|link| !link.index.ends_with('='))
+        .collect()
+}
+
+fn stored_surface(store: &SeedLinkNetwork, node: &str, language: &str) -> Option<ConditionSurface> {
+    let text = match store.field(node, "text") {
+        Some(text) if !text.is_empty() => text.to_owned(),
+        _ => match store.field(node, "codepoints") {
+            Some(codepoints) if !codepoints.is_empty() => {
+                crate::seed::parser::decode_codepoints(codepoints)
+            }
+            _ => store.value_of(node).unwrap_or_default().to_owned(),
+        },
+    };
+    (!text.is_empty()).then(|| ConditionSurface {
+        slot: slot_of(&text),
+        text,
+        language: language.to_owned(),
+    })
+}
+
+fn slot_of(text: &str) -> Slot {
+    match text.split_once('…') {
+        None => Slot::Bare,
+        Some((before, after)) => match (!before.is_empty(), !after.is_empty()) {
+            (true, true) => Slot::Circumfix,
+            (true, false) => Slot::Prefix,
+            (false, true) => Slot::Suffix,
+            (false, false) => Slot::Bare,
+        },
+    }
 }
 
 /// The embedded rule document, parsed once.
@@ -203,17 +415,26 @@ pub fn run_handler(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    let source = SeedTables::new(seed::lexicon());
     rules()
         .handler(name)?
-        .run_with(seed::lexicon(), prompt, normalized, log)
+        .run_with_source(&source, prompt, normalized, log)
 }
 
 /// Whether any rule behind `name` accepts `prompt`, without producing an answer.
 #[must_use]
 pub fn handler_matches(name: &str, prompt: &str) -> bool {
+    let source = SeedTables::new(seed::lexicon());
     rules()
         .handler(name)
-        .is_some_and(|set| set.matches_with(seed::lexicon(), prompt, &prompt.to_lowercase()))
+        .is_some_and(|set| set.matches_with_source(&source, prompt, &prompt.to_lowercase()))
+}
+
+/// One rule-condition result, before value capture or response rendering.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ConditionVerdict {
+    pub owner: String,
+    pub matched: bool,
 }
 
 impl HandlerRules {
@@ -260,6 +481,30 @@ impl HandlerRules {
     pub fn rule_count(&self) -> usize {
         self.handlers.iter().map(|set| set.rules.len()).sum()
     }
+
+    /// Evaluate every declared rule condition through one source. No
+    /// short-circuit by handler occurs, so the parity gate covers all rows.
+    #[must_use]
+    pub fn condition_verdicts(
+        &self,
+        source: &dyn ConditionSource,
+        prompt: &str,
+        normalized: &str,
+        log: &EventLog,
+    ) -> Vec<ConditionVerdict> {
+        let language = detect_language(prompt);
+        let context = Context::new(source, prompt, normalized, language.slug());
+        let mut verdicts = Vec::with_capacity(self.rule_count());
+        for handler in &self.handlers {
+            for rule in &handler.rules {
+                verdicts.push(ConditionVerdict {
+                    owner: format!("rule:{}:{}", handler.name, rule.name),
+                    matched: rule.when.holds(&context, log),
+                });
+            }
+        }
+        verdicts
+    }
 }
 
 impl HandlerRuleSet {
@@ -283,16 +528,41 @@ impl HandlerRuleSet {
         normalized: &str,
         log: &mut EventLog,
     ) -> Option<SymbolicAnswer> {
+        let source = SeedTables::new(lexicon);
+        self.run_with_source(&source, prompt, normalized, log)
+    }
+
+    /// Try each rule using an explicit condition source.
+    #[must_use]
+    pub fn run_with_source(
+        &self,
+        source: &dyn ConditionSource,
+        prompt: &str,
+        normalized: &str,
+        log: &mut EventLog,
+    ) -> Option<SymbolicAnswer> {
         let language = detect_language(prompt);
-        let context = Context::new(lexicon, prompt, normalized, language.slug());
+        let context = Context::new(source, prompt, normalized, language.slug());
         self.rules.iter().find_map(|rule| rule.run(&context, log))
     }
 
     /// Whether any rule accepts the prompt; nothing is logged or rendered.
     #[must_use]
     pub fn matches_with(&self, lexicon: &Lexicon, prompt: &str, normalized: &str) -> bool {
+        let source = SeedTables::new(lexicon);
+        self.matches_with_source(&source, prompt, normalized)
+    }
+
+    /// Whether any rule accepts a prompt through an explicit source.
+    #[must_use]
+    pub fn matches_with_source(
+        &self,
+        source: &dyn ConditionSource,
+        prompt: &str,
+        normalized: &str,
+    ) -> bool {
         let language = detect_language(prompt);
-        let context = Context::new(lexicon, prompt, normalized, language.slug());
+        let context = Context::new(source, prompt, normalized, language.slug());
         let scratch = EventLog::default();
         self.rules.iter().any(|rule| {
             rule.when.holds(&context, &scratch) && rule.resolve_values(&context).is_some()
@@ -301,9 +571,14 @@ impl HandlerRuleSet {
 }
 
 impl<'a> Context<'a> {
-    fn new(lexicon: &'a Lexicon, prompt: &'a str, normalized: &'a str, language: &str) -> Self {
+    fn new(
+        source: &'a dyn ConditionSource,
+        prompt: &'a str,
+        normalized: &'a str,
+        language: &str,
+    ) -> Self {
         Self {
-            lexicon,
+            source,
             prompt,
             normalized,
             cleaned: normalize_prompt(normalized),
@@ -457,62 +732,66 @@ impl Condition {
             Self::None(children) => !children.iter().any(|child| child.holds(context, log)),
             Self::Role(role, mode, subject) => {
                 let text = context.text(*subject);
+                let surfaces = context.source.role_surfaces(role);
                 match mode {
-                    RoleMode::Spelled => context.lexicon.mentions_role(role, text),
-                    RoleMode::Raw => context.lexicon.mentions_role_raw(role, text),
-                    RoleMode::Languages => context.lexicon.mentions_role_in_languages_raw(
-                        role,
-                        text,
-                        &context.languages(),
-                    ),
-                    RoleMode::Forms => context
-                        .lexicon
-                        .role_word_forms(role)
-                        .into_iter()
-                        .any(|form| !form.text.is_empty() && text.contains(&form.text)),
+                    RoleMode::Spelled => surfaces
+                        .iter()
+                        .any(|surface| spelled_surface_present(text, surface)),
+                    RoleMode::Raw => surfaces
+                        .iter()
+                        .any(|surface| !surface.text.is_empty() && text.contains(&surface.text)),
+                    RoleMode::Languages => {
+                        let languages = context.languages();
+                        surfaces.iter().any(|surface| {
+                            languages.contains(&surface.language.as_str())
+                                && !surface.text.is_empty()
+                                && text.contains(&surface.text)
+                        })
+                    }
+                    RoleMode::Forms => surfaces
+                        .iter()
+                        .any(|surface| !surface.text.is_empty() && text.contains(&surface.text)),
+                    RoleMode::Separated => surfaces
+                        .iter()
+                        .any(|surface| separated_surface_present(text, &surface.text)),
                     // Equality, not containment: a turn that *is* a surface
                     // ("continue") carries the role; a request that contains
                     // the word ("continue the migration in src/queue.rs")
                     // keeps its own meaning (issue #1095).
                     RoleMode::Whole => {
-                        !text.is_empty()
-                            && context
-                                .lexicon
-                                .words_for_role(role)
-                                .iter()
-                                .any(|surface| surface == text)
+                        !text.is_empty() && surfaces.iter().any(|surface| surface.text == text)
                     }
                 }
             }
             Self::RoleLead(role, subject) => {
                 let text = context.text(*subject);
                 context
-                    .lexicon
-                    .role_word_forms(role)
+                    .source
+                    .role_surfaces(role)
                     .into_iter()
-                    .any(|form| match form.slot() {
-                        Slot::Prefix => text.starts_with(form.before_slot()),
-                        _ => text.contains(form.text.as_str()),
+                    .any(|surface| match surface.slot {
+                        Slot::Prefix => text.starts_with(before_slot(&surface.text)),
+                        _ => text.contains(surface.text.as_str()),
                     })
             }
             Self::RolePrefix(role, subject) => {
                 let text = context.text(*subject);
                 context
-                    .lexicon
-                    .role_word_forms(role)
+                    .source
+                    .role_surfaces(role)
                     .into_iter()
-                    .filter(|form| form.slot() == Slot::Prefix)
-                    .any(|form| text.starts_with(form.before_slot()))
+                    .filter(|surface| surface.slot == Slot::Prefix)
+                    .any(|surface| text.starts_with(before_slot(&surface.text)))
             }
             Self::RolePadded(role, subject) => {
                 let text = context.text(*subject);
                 let padded = format!(" {text} ");
                 context
-                    .lexicon
-                    .role_word_forms(role)
+                    .source
+                    .role_surfaces(role)
                     .into_iter()
-                    .any(|form| {
-                        let marker = form.text.as_str();
+                    .any(|surface| {
+                        let marker = surface.text.as_str();
                         if marker.starts_with(' ') || marker.ends_with(' ') {
                             padded.contains(marker)
                         } else {
@@ -535,158 +814,101 @@ impl Condition {
                 let closes = context.prompt.chars().filter(|ch| *ch == ')').count();
                 opens != closes
             }
-            Self::RouteExact(slug) => seed::intent_routing()
-                .intents
+            Self::RouteExact(slug) => context
+                .source
+                .exact_route_surfaces(slug)
                 .iter()
-                .find(|route| route.slug == *slug)
-                .is_some_and(|route| {
-                    route.keywords.contains(&context.cleaned)
-                        || route.phrases.contains(&context.cleaned)
-                }),
-            Self::HistoryRole(role) => log
-                .events()
-                .iter()
-                .filter(|event| {
-                    event.kind == "prior_turn:user" || event.kind == "prior_turn:assistant"
-                })
-                .any(|event| {
-                    context
-                        .lexicon
-                        .mentions_role_raw(role, &event.payload.to_lowercase())
-                }),
+                .any(|surface| surface == &context.cleaned),
+            Self::HistoryRole(role) => {
+                log.events()
+                    .iter()
+                    .filter(|event| {
+                        event.kind == "prior_turn:user" || event.kind == "prior_turn:assistant"
+                    })
+                    .any(|event| {
+                        let payload = event.payload.to_lowercase();
+                        context.source.role_surfaces(role).iter().any(|surface| {
+                            !surface.text.is_empty() && payload.contains(&surface.text)
+                        })
+                    })
+            }
             Self::Shape(shape, subject) => shape.holds(context.text(*subject)),
         }
     }
 }
 
-fn parse_rule(node: &Node) -> Result<Rule, String> {
-    let name = node.first_arg()?;
-    let mut when = None;
-    let mut values = Vec::new();
-    let mut steps = Vec::new();
-    let mut response = None;
-    let mut intent = None;
-    let mut link = None;
-    let mut confidence = 1.0;
-    for child in &node.children {
-        match child.name.as_str() {
-            "when" => when = Some(Condition::All(parse_conditions(&child.children)?)),
-            "value" => values.push(parse_value(child)?),
-            "log" => {
-                let kind = child.first_arg()?;
-                let value = child.args.get(1).map_or_else(
-                    || ValueRef::Literal(String::new()),
-                    |raw| parse_value_ref(raw),
-                );
-                steps.push(Step::Log {
-                    kind: Box::leak(kind.into_boxed_str()),
-                    value,
-                });
+/// Whether a seeded role surface is present, including the open slot carried by
+/// a semantic form such as `how many … remain`.
+///
+/// The rule interpreter used to compare the literal ellipsis character for
+/// [`Slot`] forms. That made slot-backed meanings usable by their dedicated
+/// recognizers but invisible to data-authored handler promotions. Interpreting
+/// the same slot metadata here keeps the lexicon as the single recognition
+/// authority: a newly seeded paraphrase can affect dispatch without a Rust
+/// phrase branch.
+fn spelled_surface_present(text: &str, surface: &ConditionSurface) -> bool {
+    let expected = surface.text.as_str();
+    match surface.slot {
+        Slot::Bare => bounded_surface_present(text, expected),
+        Slot::Prefix => expected
+            .split_once('…')
+            .is_some_and(|(before, _)| text.contains(before.trim())),
+        Slot::Suffix => expected
+            .split_once('…')
+            .is_some_and(|(_, after)| text.contains(after.trim())),
+        Slot::Circumfix => expected.split_once('…').is_some_and(|(before, after)| {
+            let before = before.trim();
+            let after = after.trim();
+            if before.is_empty() || after.is_empty() {
+                return false;
             }
-            "respond" => {
-                let intent_name = child.first_arg()?;
-                let mut fallback = Fallback::Localized;
-                let mut texts = Vec::new();
-                for option in &child.children {
-                    match option.name.as_str() {
-                        "fallback" => {
-                            fallback = match option.first_arg()?.as_str() {
-                                "localized" => Fallback::Localized,
-                                "exact" => Fallback::Exact,
-                                language => Fallback::Language(language.to_owned()),
-                            };
-                        }
-                        "text" => {
-                            let language = option.first_arg()?;
-                            let text = option
-                                .args
-                                .get(1)
-                                .cloned()
-                                .ok_or_else(|| option.error("text_without_body"))?;
-                            texts.push((language, text));
-                        }
-                        _ => return Err(option.error("unknown_respond_option")),
-                    }
-                }
-                response = Some(Response::Seed {
-                    intent: intent_name,
-                    fallback,
-                    texts,
-                });
-            }
-            "respond_unknown" => response = Some(Response::Unknown),
-            "intent" => intent = Some(child.first_arg()?),
-            "link" => link = Some(child.first_arg()?),
-            "confidence" => {
-                confidence = child
-                    .first_arg()?
-                    .parse::<f32>()
-                    .map_err(|_| child.error("confidence_not_a_number"))?;
-            }
-            _ => return Err(child.error("unknown_rule_field")),
-        }
+            text.find(before).is_some_and(|start| {
+                let tail = &text[start + before.len()..];
+                tail.find(after)
+                    .is_some_and(|offset| !tail[..offset].trim().is_empty())
+            })
+        }),
     }
-    Ok(Rule {
-        name,
-        when: when.ok_or_else(|| node.error("rule_without_when"))?,
-        values,
-        steps,
-        response: response.ok_or_else(|| node.error("rule_without_respond"))?,
-        intent,
-        link,
-        confidence,
+}
+
+fn bounded_surface_present(text: &str, expected: &str) -> bool {
+    if expected.is_empty() {
+        return false;
+    }
+    if crate::coding::contains_cjk(expected) {
+        return text.contains(expected);
+    }
+    text == expected
+        || text.starts_with(&format!("{expected} "))
+        || text.ends_with(&format!(" {expected}"))
+        || text.contains(&format!(" {expected} "))
+}
+
+/// The furthest a phrasal verb's object may separate its verb and particle.
+///
+/// This mirrors the semantic lexicon's bound, but operates on
+/// [`ConditionSource`] surfaces so parsed seed tables and the projected link
+/// store evaluate the same data-owned condition.
+const SEPARATED_ROLE_OBJECT_LIMIT: usize = 6;
+
+fn separated_surface_present(text: &str, surface: &str) -> bool {
+    let mut parts = surface.split_whitespace();
+    let (Some(verb), Some(particle), None) = (parts.next(), parts.next(), parts.next()) else {
+        return false;
+    };
+    let words: Vec<&str> = text.split_whitespace().collect();
+    words.iter().enumerate().any(|(index, word)| {
+        *word == verb
+            && words
+                .iter()
+                .skip(index + 2)
+                .take(SEPARATED_ROLE_OBJECT_LIMIT)
+                .any(|later| *later == particle)
     })
 }
 
-fn parse_conditions(nodes: &[Node]) -> Result<Vec<Condition>, String> {
-    nodes.iter().map(parse_condition).collect()
-}
-
-fn parse_condition(node: &Node) -> Result<Condition, String> {
-    let (options, subject) = split_subject(&node.args[node.args.len().min(1)..]);
-    let subject = subject.map_or(Ok(Subject::Normalized), |name| parse_subject(node, name))?;
-    Ok(match node.name.as_str() {
-        "all" => Condition::All(parse_conditions(&node.children)?),
-        "any" => Condition::Any(parse_conditions(&node.children)?),
-        "none" => Condition::None(parse_conditions(&node.children)?),
-        "role" => {
-            let mode = match options.first().map(String::as_str) {
-                None | Some("spelled") => RoleMode::Spelled,
-                Some("raw") => RoleMode::Raw,
-                Some("languages") => RoleMode::Languages,
-                Some("forms") => RoleMode::Forms,
-                Some("whole") => RoleMode::Whole,
-                Some(_) => return Err(node.error("unknown_role_mode")),
-            };
-            Condition::Role(node.first_arg()?, mode, subject)
-        }
-        "role_lead" => Condition::RoleLead(node.first_arg()?, subject),
-        "role_prefix" => Condition::RolePrefix(node.first_arg()?, subject),
-        "role_padded" => Condition::RolePadded(node.first_arg()?, subject),
-        "word" => Condition::Word(node.first_arg()?, subject),
-        "substring" => Condition::Substring(node.first_arg()?, subject),
-        "prefix" => Condition::Prefix(node.first_arg()?, subject),
-        "only_characters" => Condition::OnlyCharacters(node.first_arg()?),
-        "unbalanced_parentheses" => Condition::UnbalancedParentheses,
-        "route_exact" => Condition::RouteExact(node.first_arg()?),
-        "history_role" => Condition::HistoryRole(node.first_arg()?),
-        "shape" => Condition::Shape(parse_shape(node, &node.first_arg()?)?, subject),
-        _ => return Err(node.error("unknown_condition")),
-    })
-}
-
-fn split_subject(args: &[String]) -> (Vec<String>, Option<&str>) {
-    let mut options = Vec::new();
-    let mut subject = None;
-    let mut iter = args.iter();
-    while let Some(arg) = iter.next() {
-        if arg == "of" {
-            subject = iter.next().map(String::as_str);
-        } else {
-            options.push(arg.clone());
-        }
-    }
-    (options, subject)
+fn before_slot(text: &str) -> &str {
+    text.split_once('…').map_or(text, |(before, _)| before)
 }
 
 /// Quotation marks that open and close a span, paired.
@@ -707,7 +929,7 @@ impl Shape {
     /// Whether the subject text has this structural property.
     fn holds(self, text: &str) -> bool {
         match self {
-            Self::Digit => text.chars().any(|character| character.is_numeric()),
+            Self::Digit => text.chars().any(char::is_numeric),
             Self::TimeSeparator => text.contains(':') || text.contains('\u{ff1a}'),
             Self::Url => text
                 .split_whitespace()
@@ -734,155 +956,5 @@ const URL_PREFIXES: [&str; 3] = ["http://", "https://", "www."];
 
 /// Whether one whitespace-delimited, already lowercased token is a web address.
 fn is_url(token: &str) -> bool {
-    URL_PREFIXES
-        .iter()
-        .any(|prefix| token.starts_with(*prefix))
-}
-
-fn parse_shape(node: &Node, name: &str) -> Result<Shape, String> {
-    Ok(match name {
-        "digit" => Shape::Digit,
-        "time_separator" => Shape::TimeSeparator,
-        "url" => Shape::Url,
-        "path" => Shape::Path,
-        "quoted" => Shape::Quoted,
-        _ => return Err(node.error("unknown_shape")),
-    })
-}
-
-fn parse_subject(node: &Node, name: &str) -> Result<Subject, String> {
-    Ok(match name {
-        "normalized" => Subject::Normalized,
-        "cleaned" => Subject::Cleaned,
-        "lowercase" => Subject::Lowercase,
-        "prompt" => Subject::Prompt,
-        "trimmed" => Subject::Trimmed,
-        "padded" => Subject::Padded,
-        _ => return Err(node.error("unknown_subject")),
-    })
-}
-
-fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
-    let name = node.first_arg()?;
-    let kind = node
-        .args
-        .get(1)
-        .ok_or_else(|| node.error("value_without_source"))?;
-    let source = match kind.as_str() {
-        "backticks" => ValueSource::Backticks,
-        "trimmed_prompt" => ValueSource::TrimmedPrompt,
-        "literal" => ValueSource::Literal(
-            node.args
-                .get(2)
-                .cloned()
-                .ok_or_else(|| node.error("literal_without_text"))?,
-        ),
-        "agent_info" => {
-            let key = node
-                .args
-                .get(2)
-                .cloned()
-                .ok_or_else(|| node.error("agent_info_without_key"))?;
-            let default = match node.args.get(3).map(String::as_str) {
-                Some("default") => node.args[4..].join(" "),
-                _ => String::new(),
-            };
-            ValueSource::AgentInfo { key, default }
-        }
-        _ => return Err(node.error("unknown_value_source")),
-    };
-    Ok((name, source))
-}
-
-fn parse_value_ref(raw: &str) -> ValueRef {
-    match raw {
-        "$prompt" => ValueRef::Prompt,
-        "$trimmed" => ValueRef::Trimmed,
-        _ => raw.strip_prefix('$').map_or_else(
-            || ValueRef::Literal(raw.to_owned()),
-            |name| ValueRef::Capture(name.to_owned()),
-        ),
-    }
-}
-
-impl Node {
-    fn first_arg(&self) -> Result<String, String> {
-        self.args
-            .first()
-            .cloned()
-            .ok_or_else(|| self.error("missing_argument"))
-    }
-
-    fn error(&self, reason: &str) -> String {
-        let line = self.line;
-        let name = &self.name;
-        format!("handler_rules:{line}:{reason}:{name}")
-    }
-}
-
-/// Parse an indented Links Notation document into a tree of `name args…` nodes.
-///
-/// Values may be wrapped in double or single quotes to keep spaces; there are no
-/// escape sequences.
-fn parse_tree(text: &str) -> Vec<Node> {
-    let mut roots: Vec<Node> = Vec::new();
-    let mut stack: Vec<(usize, Node)> = Vec::new();
-    for (index, raw) in text.lines().enumerate() {
-        let trimmed = raw.trim_start();
-        if trimmed.is_empty() || trimmed.starts_with('#') {
-            continue;
-        }
-        let indent = raw.len() - trimmed.len();
-        let mut tokens = tokenize(trimmed.trim_end());
-        if tokens.is_empty() {
-            continue;
-        }
-        let node = Node {
-            line: index + 1,
-            name: tokens.remove(0),
-            args: tokens,
-            children: Vec::new(),
-        };
-        while stack.last().is_some_and(|(depth, _)| *depth >= indent) {
-            let (_, finished) = stack.pop().expect("stack_checked");
-            attach(&mut roots, &mut stack, finished);
-        }
-        stack.push((indent, node));
-    }
-    while let Some((_, finished)) = stack.pop() {
-        attach(&mut roots, &mut stack, finished);
-    }
-    roots
-}
-
-fn attach(roots: &mut Vec<Node>, stack: &mut [(usize, Node)], node: Node) {
-    match stack.last_mut() {
-        Some((_, parent)) => parent.children.push(node),
-        None => roots.push(node),
-    }
-}
-
-fn tokenize(line: &str) -> Vec<String> {
-    let mut tokens = Vec::new();
-    let mut current = String::new();
-    let mut quote: Option<char> = None;
-    for ch in line.chars() {
-        match quote {
-            Some(open) if ch == open => {
-                quote = None;
-                tokens.push(std::mem::take(&mut current));
-            }
-            None if ch == '"' || ch == '\'' => quote = Some(ch),
-            None if ch.is_whitespace() => {
-                if !current.is_empty() {
-                    tokens.push(std::mem::take(&mut current));
-                }
-            }
-            _ => current.push(ch),
-        }
-    }
-    if !current.is_empty() {
-        tokens.push(current);
-    }
-    tokens
+    URL_PREFIXES.iter().any(|prefix| token.starts_with(*prefix))
 }

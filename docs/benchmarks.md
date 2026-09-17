@@ -26,6 +26,17 @@ source provenance for download-on-test integration. Only permissive licenses
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
 | Dynamic coding discovery paraphrases | #710 | [`coding-discovery-paraphrases.lino`](../data/benchmarks/coding-discovery-paraphrases.lino) | `coding_discovery::multilingual` | 25 |
+| Composition from retrieved sources | #1138 B2 | [`coding-composition-from-sources.lino`](../data/benchmarks/coding-composition-from-sources.lino) | `coding_discovery::multilingual` | 25 |
+| Live concept-lookup paraphrases | #1138 B1 | [`concept-lookup-paraphrases.lino`](../data/benchmarks/concept-lookup-paraphrases.lino) | `issue_1138_universal_loop_lookup` | 10 |
+| Deep requirement formalization | #1138 B4 | [`formalization-depth-requirements.lino`](../data/benchmarks/formalization-depth-requirements.lino) | `issue_1138_formalization_depth` | 10 |
+| Verifiable-task paraphrases | #1138 B8 | [`verifiable-task-paraphrases.lino`](../data/benchmarks/verifiable-task-paraphrases.lino) | `verifiable_task` | 30 |
+| Handler-family paraphrases | #1138 B9 | [`handler-family-paraphrases-suite.lino`](../data/benchmarks/handler-family-paraphrases-suite.lino) | `issue_1138_family_migration` | seed-defined |
+| Capability-routing paraphrases | #1138 B10 | [`capability-routing-suite.lino`](../data/benchmarks/capability-routing-suite.lino) | `issue_1138_capability_routing` | seed-defined |
+| Self-use: live concept lookup | #1138 B1 | [`self-use-concept-lookup.lino`](../data/benchmarks/self-use-concept-lookup.lino) | `issue_1138_self_use_concept_lookup` | observation corpus |
+| Self-use: verifiable tasks | #1138 B8 | [`self-use-verifiable-task.lino`](../data/benchmarks/self-use-verifiable-task.lino) | `issue_1138_self_use_verifiable_task` | observation corpus |
+| Self-use: intent routing | #1138 B10 | [`self-use-intent-routing.lino`](../data/benchmarks/self-use-intent-routing.lino) | `issue_1138_self_use_intent_routing` | observation corpus |
+| Self-use: prerequisite recovery | #1138 B6 | [`self-use-prerequisite.lino`](../data/benchmarks/self-use-prerequisite.lino) | `issue_1138_self_use_toolchain` | observation corpus |
+| Self-use: repository workspace | #1138 B3 | [`self-use-repository-workspace.lino`](../data/benchmarks/self-use-repository-workspace.lino) | `issue_1138_self_use_repository_workspace` | observation corpus |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
@@ -105,6 +116,20 @@ the subject binding. The ratchet requires the link-native learner to infer the
 shared dataflow, parameterize the changing value, reproduce the held-out trace
 losslessly, and keep the resulting algorithm inert until explicit approval.
 No third-party benchmark payload is imported.
+
+### Recursive discovery and self-use — issue #1138
+
+The six held-out paraphrase suites above exercise one shared discovery loop at
+different boundaries: retrieve missing concepts, compose procedures from
+sources, formalize requirements to observed primitives, derive verifiable
+answers, select handler families, and route capabilities. Their cases are
+self-authored in English, Russian, Hindi, Chinese, and Spanish; benchmark words
+and expected answers are not embedded in production code. The five `self-use-*`
+fixtures are a separate observation layer: they preserve prompts and measured
+outcomes from real Formal AI sessions, including failures, without turning
+those observations into accepted answers or a pass floor. No third-party
+payload is imported by these suites; source licenses and retrieval evidence are
+recorded by the runtime artifacts each case produces.
 
 ### bAbI-style world-state tracking — issue #702
 
@@ -294,6 +319,12 @@ measurements:
 | SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
 | EditEval | — | `benchmark_unavailable` | — | — |
 
+The scheduled SWE-bench measurement now requests all 23 pinned dev cases. The
+latest committed evidence is still the honest `0/1` row above: no `0/23` (or
+better) row is published until the official evaluator has actually completed
+that width. Ratchet history is keyed by `(suite, slice)`, so opening the
+23-case series neither erases nor weakens the independent one-case history.
+
 The same-day empty-source-cache control scored HumanEval **20/20** and MBPP
 **18/20**. The two remaining MBPP cases require externally defined sequence
 knowledge: with `--online`, the solver searches official OEIS JSON, follows a
@@ -353,9 +384,11 @@ cargo run --bin formal-ai -- benchmark list
 # (network + python3 required). Offline remains the default when omitted.
 cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20 --online
 
-# Refresh every suite locally. SWE-bench additionally needs the pinned official
-# Python harness and Docker; scheduled CI bounds it separately to one case.
-cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --online --append
+# Refresh every suite locally. SWE-bench's pinned official Python harness and
+# Docker are prerequisites the run discovers. `--allow-install` grants only the
+# pinned workspace-scoped harness procedure; without it a missing harness is
+# reported as unavailable instead of becoming a solver failure.
+cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --online --allow-install --append
 
 # Verify the monotonic ratchet without running any suite.
 cargo run --bin formal-ai -- benchmark ratchet
@@ -418,3 +451,19 @@ npm run --prefix tests/e2e check:variation-floor   # the per-language floor
   cases, update [`data/benchmarks/LICENSES.md`](../data/benchmarks/LICENSES.md)
   when a payload slice is vendored, and add a row to the tables above so this
   catalog stays the complete index.
+
+<!-- status:begin benchmarks -->
+Generated from `data/benchmarks/external-results.lino`.
+
+| Suite | Date | Slice | Passed | Total | Solver |
+| --- | --- | ---: | ---: | ---: | --- |
+| `ascent_transitive_closure` | 2026-09-07 | 5 | 5 | 5 | 0.347.0 |
+| `coedit` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
+| `egg_math` | 2026-09-07 | 20 | 20 | 20 | 0.347.0 |
+| `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
+| `humaneval` | 2026-09-15 | 20 | 20 | 20 | 0.349.2 |
+| `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
+| `mbpp` | 2026-09-15 | 20 | 20 | 20 | 0.349.2 |
+| `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
+| `swebench_lite` | 2026-09-07 | 1 | 0 | 1 | 0.347.0 |
+<!-- status:end benchmarks -->

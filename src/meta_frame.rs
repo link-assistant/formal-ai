@@ -750,7 +750,12 @@ impl NeedLedger {
             let status = match need.state {
                 crate::needs::NeedState::Open => NeedStatus::Pending,
                 crate::needs::NeedState::Planned => NeedStatus::Planned,
-                crate::needs::NeedState::Satisfied => NeedStatus::Satisfied,
+                crate::needs::NeedState::Satisfied => {
+                    crate::obligation_ledger::need_status_with_observation(
+                        need.state == crate::needs::NeedState::Satisfied,
+                        NeedStatus::Planned,
+                    )
+                }
                 crate::needs::NeedState::Unsatisfiable => NeedStatus::Blocked,
             };
             if let Some(row) = self.rows.iter_mut().find(|row| row.need_id == need.need_id) {

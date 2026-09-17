@@ -30,12 +30,12 @@ fn fold_ir() -> ProgramIr {
             items: Box::new(parameter("text", IrType::Text)),
             initial: Box::new(IrNode::Literal {
                 text: "[]".to_owned(),
-                ty: IrType::Sequence(Box::new(IrType::Text)),
+                ty: run_sequence_type(),
             }),
             body: Box::new(IrNode::Apply {
                 fragment: "extend_run".to_owned(),
                 arguments: vec![
-                    parameter("runs", IrType::Sequence(Box::new(IrType::Text))),
+                    parameter("runs", run_sequence_type()),
                     parameter("character", IrType::Text),
                 ],
             }),
@@ -55,14 +55,18 @@ fn repeated_ir() -> ProgramIr {
             name: "runs".to_owned(),
             value: Box::new(inner.body.clone()),
             body: Box::new(IrNode::Return {
-                value: Box::new(parameter(
-                    "runs",
-                    IrType::Sequence(Box::new(IrType::Text)),
-                )),
+                value: Box::new(parameter("runs", run_sequence_type())),
             }),
         },
         ..inner
     }
+}
+
+fn run_sequence_type() -> IrType {
+    IrType::Sequence(Box::new(IrType::Pair(
+        Box::new(IrType::Text),
+        Box::new(IrType::Integer),
+    )))
 }
 
 #[test]
@@ -126,5 +130,117 @@ fn action_cost_orders_the_shorter_derivation_first() {
         short.action_cost(),
         fold_ir().action_cost(),
         "cost is a function of the IR alone, so the order is total and stable"
+    );
+}
+
+#[test]
+fn text_satisfies_a_sequence_of_text_fragment_input() {
+    let catalog = FragmentCatalog::bootstrap();
+    let ir = ProgramIr {
+        name: "contains_character".to_owned(),
+        parameters: vec![("text".to_owned(), IrType::Text)],
+        result: IrType::Boolean,
+        body: IrNode::Apply {
+            fragment: "membership".to_owned(),
+            arguments: vec![
+                parameter("character", IrType::Text),
+                parameter("text", IrType::Text),
+            ],
+        },
+        fragments: vec!["membership".to_owned()],
+        source_urls: Vec::new(),
+        source_licenses: Vec::new(),
+        reuse: ReuseMode::ShapeOnly,
+    };
+
+    assert!(
+        ir.type_check(&catalog).is_ok(),
+        "text is structurally an iterable of text characters"
+    );
+}
+
+#[test]
+fn recursive_reduction_round_trips_as_data_and_type_checks() {
+    let integer = |name: &str| IrNode::Parameter {
+        name: name.to_owned(),
+        ty: IrType::Integer,
+    };
+    let zero = || IrNode::Literal {
+        text: "0".to_owned(),
+        ty: IrType::Integer,
+    };
+    let apply = |fragment: &str, arguments: Vec<IrNode>| IrNode::Apply {
+        fragment: fragment.to_owned(),
+        arguments,
+    };
+    let local = apply(
+        "nested_sequence_value",
+        vec![
+            IrNode::Parameter {
+                name: "weights".to_owned(),
+                ty: IrType::Sequence(Box::new(IrType::Sequence(Box::new(IrType::Integer)))),
+            },
+            integer("state_0"),
+            integer("state_1"),
+        ],
+    );
+    let ir = ProgramIr {
+        name: "minimum_cost".to_owned(),
+        parameters: vec![
+            (
+                "weights".to_owned(),
+                IrType::Sequence(Box::new(IrType::Sequence(Box::new(IrType::Integer)))),
+            ),
+            ("row".to_owned(), IrType::Integer),
+            ("column".to_owned(), IrType::Integer),
+        ],
+        result: IrType::Integer,
+        body: IrNode::RecursiveReduce {
+            state: vec!["state_0".to_owned(), "state_1".to_owned()],
+            target: vec![integer("row"), integer("column")],
+            item: vec!["offset_0".to_owned(), "offset_1".to_owned()],
+            items: Box::new(apply("diagonal_predecessors", Vec::new())),
+            next: vec![
+                apply("integer_add", vec![integer("state_0"), integer("offset_0")]),
+                apply("integer_add", vec![integer("state_1"), integer("offset_1")]),
+            ],
+            admissible: Some(Box::new(apply(
+                "boolean_and",
+                vec![
+                    apply("integer_nonnegative", vec![integer("state_0")]),
+                    apply("integer_nonnegative", vec![integer("state_1")]),
+                ],
+            ))),
+            base_test: Box::new(apply(
+                "boolean_and",
+                vec![
+                    apply("values_equal", vec![integer("state_0"), zero()]),
+                    apply("values_equal", vec![integer("state_1"), zero()]),
+                ],
+            )),
+            base: Box::new(local.clone()),
+            local: Box::new(local),
+            reducer: "reduce_min".to_owned(),
+            combine: "integer_add".to_owned(),
+        },
+        fragments: vec![
+            "boolean_and".to_owned(),
+            "diagonal_predecessors".to_owned(),
+            "integer_add".to_owned(),
+            "integer_nonnegative".to_owned(),
+            "nested_sequence_value".to_owned(),
+            "reduce_min".to_owned(),
+            "values_equal".to_owned(),
+        ],
+        source_urls: Vec::new(),
+        source_licenses: Vec::new(),
+        reuse: ReuseMode::ShapeOnly,
+    };
+    let catalog = FragmentCatalog::bootstrap();
+    assert!(ir.type_check(&catalog).is_ok());
+    assert_eq!(
+        ProgramIr::from_links_notation(&ir.to_links_notation()),
+        Some(ir),
+        "recursive control flow remains associative data, not Rust-only behavior"
     );
 }

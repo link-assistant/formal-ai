@@ -2,9 +2,9 @@ self_ast_census
   target src/execution_box/container.rs
   language rust
   fidelity signature
-  byte_len 11017
-  line_count 276
-  content_id source_module_e2e7b4ea525a9ca4
+  byte_len 11120
+  line_count 283
+  content_id source_module_452bf40aaccc8618
   symbol_count 17
   symbols
     const CONVERSATIONS_DIR 19 19
@@ -15,12 +15,12 @@ self_ast_census
     struct RestoreComparison 53 60
     struct ConversationContainer 64 75
     function workspace 80 84
-    function attach 95 125
-    function stop_if_idle 131 141
-    function idle_for 152 160
-    function restore 166 168
-    function lifecycle 172 181
-    function compare_restores 193 222
-    function from_ledger 226 244
-    function tree_digest 251 256
-    function collect 259 276
+    function attach 95 128
+    function stop_if_idle 134 144
+    function idle_for 155 163
+    function restore 169 171
+    function lifecycle 175 184
+    function compare_restores 196 225
+    function from_ledger 229 247
+    function tree_digest 254 259
+    function collect 262 283

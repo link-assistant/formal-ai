@@ -5,10 +5,31 @@ use std::path::Path;
 use formal_ai::coding_function_catalog::python_docs::{StdlibIndex, StdlibPart};
 use formal_ai::coding_task_spec::recognise;
 use formal_ai::composition::compose;
-use formal_ai::concept_discovery::{DiscoveryCatalog, discover};
-use formal_ai::needs::NeedState;
+use formal_ai::concept_discovery::{ConceptMap, DiscoveryCatalog};
+use formal_ai::concept_lookup::LookupOutcome;
+use formal_ai::needs::{Need, NeedState};
+use formal_ai::source_walk::{LookupBounds, SourceLookup};
 
 const CORPUS: &str = "data/benchmarks/coding-discovery-paraphrases.lino";
+
+#[derive(Default)]
+struct EmptyLookup;
+
+impl SourceLookup for EmptyLookup {
+    fn lookup(&mut self, _need: &Need, _bounds: &LookupBounds) -> LookupOutcome {
+        LookupOutcome::NotFound {
+            consulted: Vec::new(),
+        }
+    }
+}
+
+fn discover(
+    spec: &formal_ai::coding_task_spec::CodingTaskSpec,
+    catalog: &DiscoveryCatalog,
+) -> ConceptMap {
+    let mut lookup = EmptyLookup;
+    formal_ai::concept_discovery::discover(spec, catalog, &mut lookup)
+}
 
 #[derive(Debug)]
 struct Paraphrase {
@@ -149,15 +170,13 @@ fn held_out_unknown_word_tasks_share_one_concept_map_identity_in_five_languages(
         let mut availability = formal_ai::service_accessibility::ServiceAccessibilityCache::new(
             std::env::temp_dir().join(format!("formal-ai-1138-l10-{}", case.language)),
         );
-        let mut lookup = formal_ai::concept_lookup::RegistryConceptLookup::new(
-            formal_ai::concept_lookup::RegistrySourceLookup::new(
-                &client,
-                &preferences,
-                &mut availability,
-                formal_ai::source_walk::LookupBounds::default(),
-                &case.language,
-                u64::MAX / 2,
-            ),
+        let mut lookup = formal_ai::concept_lookup::RegistrySourceLookup::new(
+            &client,
+            &preferences,
+            &mut availability,
+            formal_ai::source_walk::LookupBounds::default(),
+            &case.language,
+            u64::MAX / 2,
         );
         let concepts = formal_ai::concept_discovery::discover_with_lookup(
             &spec,
@@ -277,14 +296,24 @@ fn composition_from_sources_holds_in_five_languages() {
                 case.language
             );
         } else {
-            let selected = outcome.selected.unwrap_or_else(|| {
-                panic!(
-                    "{} {} did not compose: {}",
-                    case.family, case.language, outcome.research_trail
-                )
-            });
+            let source = outcome
+                .selected
+                .as_ref()
+                .map(|selected| selected.source.as_str())
+                .or_else(|| {
+                    outcome
+                        .unverified
+                        .first()
+                        .map(|candidate| candidate.source.as_str())
+                })
+                .unwrap_or_else(|| {
+                    panic!(
+                        "{} {} did not compose: {}",
+                        case.family, case.language, outcome.research_trail
+                    )
+                });
             assert!(
-                !selected.source.trim().is_empty(),
+                !source.trim().is_empty(),
                 "{} {} composed an empty program",
                 case.family,
                 case.language

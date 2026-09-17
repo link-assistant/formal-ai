@@ -2,12 +2,11 @@ self_ast_census
   target src/coding/function_catalog/python_docs.rs
   language rust
   fidelity signature
-  byte_len 10266
-  line_count 298
-  content_id source_module_0d20568068fbf9fd
-  symbol_count 22
+  byte_len 10610
+  line_count 307
+  content_id source_module_807b5460b7701e43
+  symbol_count 21
   symbols
-    const DOCS_ROOT 11 11
     const PAGES 12 19
     struct StdlibPart 22 31
     function match_score 35 52
@@ -17,15 +16,15 @@ self_ast_census
     function parts 81 83
     function part 86 88
     function parts_for_phrase 91 108
-    function fetch_index 111 127
-    function extract_page 129 181
-    function attribute 183 187
-    function text 189 191
-    function collapse_whitespace 193 195
-    function first_sentence 197 203
-    function canonical_tokens 205 207
-    function canonical_token_list 209 217
-    function count_as_score 219 221
-    function stem 223 229
-    function runtime_fallback_index 231 298
-    const SYMBOLS 232 252
+    function fetch_index 111 129
+    function extract_page 131 187
+    function attribute 189 193
+    function text 195 197
+    function collapse_whitespace 199 201
+    function first_sentence 203 209
+    function canonical_tokens 211 213
+    function canonical_token_list 215 223
+    function count_as_score 225 227
+    function stem 229 235
+    function runtime_fallback_index 237 307
+    const SYMBOLS 238 258

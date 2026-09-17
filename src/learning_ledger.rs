@@ -28,7 +28,11 @@
 use std::{fmt::Write as _, sync::OnceLock};
 
 use crate::engine::stable_id;
+use crate::link_store::LinkStore;
+use crate::memory::{MemoryEvent, MemoryStore};
 use crate::self_healing::{RepairCase, RepairOutcome};
+
+const APPROVED_LESSONS_LINO: &str = include_str!("../data/seed/approved-lessons.lino");
 
 /// An explicit, auditable human decision on a reviewed [`RepairCase`].
 ///
@@ -173,6 +177,75 @@ impl LearningLedger {
         }
     }
 
+    /// Load approved lessons from their seed through the canonical link-store
+    /// projection.
+    ///
+    /// The seed is data, not a constructor for the one historical case: adding
+    /// a second reviewed lesson is therefore a seed append. Each row first
+    /// becomes a [`MemoryEvent`] and is appended through [`LinkStore`]; the
+    /// resulting ledger is then projected from the stored events. This keeps
+    /// the portable Links Notation and the associative store on one read path.
+    ///
+    /// # Errors
+    ///
+    /// Returns a stable error slug when the document has the wrong root, a
+    /// lesson is incomplete, a count is not numeric, or the link projection
+    /// loses a row.
+    pub fn from_approved_lessons_seed(seed: &str) -> Result<Self, String> {
+        let document = crate::seed::parser::parse_lino(seed);
+        let root = document
+            .children
+            .iter()
+            .find(|node| node.name == "approved_lessons")
+            .ok_or_else(|| String::from("approved_lessons_root_missing"))?;
+        let mut store = MemoryStore::new();
+        for lesson in root.children.iter().filter(|node| node.name == "lesson") {
+            let value = |name: &str| -> Result<String, String> {
+                let value = lesson.find_child_value(name).trim();
+                if value.is_empty() {
+                    Err(format!("approved_lesson_{name}_missing:{}", lesson.id))
+                } else {
+                    Ok(value.to_owned())
+                }
+            };
+            let benchmark_passed = value("benchmark_passed")?;
+            benchmark_passed
+                .parse::<usize>()
+                .map_err(|_| format!("approved_lesson_benchmark_passed_invalid:{}", lesson.id))?;
+            let event = MemoryEvent {
+                id: lesson.id.clone(),
+                kind: Some(String::from("approved_lesson")),
+                role: Some(String::from("system")),
+                intent: Some(String::from("repair_lesson")),
+                tool: Some(value("module_path")?),
+                inputs: Some(value("failure_prompt")?),
+                outputs: Some(value("resolved_task")?),
+                content: Some(value("rule_id")?),
+                demo_label: Some(value("modifier")?),
+                conversation_id: Some(value("case_id")?),
+                conversation_title: Some(value("benchmark_suite")?),
+                evidence: vec![
+                    format!("benchmark_passed={benchmark_passed}"),
+                    format!("reviewer={}", value("reviewer")?),
+                ],
+                ..MemoryEvent::default()
+            };
+            store
+                .append_memory_event(event)
+                .map_err(|error| format!("approved_lesson_link_store:{error}"))?;
+        }
+        let records = store.records();
+        if records.len() != store.events().len() {
+            return Err(String::from("approved_lesson_projection_incomplete"));
+        }
+        let entries = store
+            .events()
+            .iter()
+            .map(ledger_entry_from_event)
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Self { entries })
+    }
+
     /// The promoted lessons, in promotion order.
     #[must_use]
     pub fn entries(&self) -> &[LedgerEntry] {
@@ -301,22 +374,16 @@ impl LearningLedger {
     }
 }
 
-/// Build the canonical, fully-worked ledger: the canonical self-healing case
-/// promoted with a granted approval.
+/// Load the canonical, fully-worked ledger from the approved-lessons seed.
 ///
-/// Deterministic and self-contained — used by the committed
-/// `data/meta/learning-ledger.lino` artifact, the example, and the tests. Panics
-/// only if the canonical case is not promotable, which would itself be a bug.
+/// The seed contains the exact entry the former hard-coded constructor derived,
+/// so the committed `data/meta/learning-ledger.lino` remains byte-identical.
+/// New reviewed lessons are data edits and pass through the same [`LinkStore`]
+/// projection instead of requiring a new Rust branch.
 #[must_use]
 pub fn canonical_ledger() -> LearningLedger {
-    let mut ledger = LearningLedger::new();
-    ledger
-        .promote(
-            &crate::self_healing::canonical_case(),
-            &HumanApproval::granted("maintainer"),
-        )
-        .expect("the canonical self-healing case is green and approvable");
-    ledger
+    LearningLedger::from_approved_lessons_seed(APPROVED_LESSONS_LINO)
+        .expect("the embedded approved-lessons seed must be valid")
 }
 
 /// The failure prompts [`canonical_ledger`] can possibly answer, read straight
@@ -335,7 +402,11 @@ pub fn canonical_ledger() -> LearningLedger {
 /// the ledger that is actually built, so the two cannot drift apart.
 #[must_use]
 pub fn canonical_ledger_failure_prompts() -> Vec<String> {
-    vec![crate::self_healing::canonical_failure_trace().prompt]
+    canonical_ledger()
+        .entries()
+        .iter()
+        .map(|entry| entry.failure_prompt.clone())
+        .collect()
 }
 
 /// Recall an approved, committed lesson for the live solver path.
@@ -365,6 +436,41 @@ pub fn approved_lesson_for(prompt: &str) -> Option<LedgerEntry> {
 
 fn normalise(prompt: &str) -> String {
     prompt.trim().to_lowercase()
+}
+
+fn ledger_entry_from_event(event: &MemoryEvent) -> Result<LedgerEntry, String> {
+    let required = |name: &str, value: Option<&str>| -> Result<String, String> {
+        value
+            .filter(|value| !value.trim().is_empty())
+            .map(ToOwned::to_owned)
+            .ok_or_else(|| format!("approved_lesson_{name}_missing:{}", event.id))
+    };
+    let benchmark_passed = evidence_value(event, "benchmark_passed")?
+        .parse::<usize>()
+        .map_err(|_| format!("approved_lesson_benchmark_passed_invalid:{}", event.id))?;
+    Ok(LedgerEntry {
+        lesson_id: required("lesson_id", Some(event.id.as_str()))?,
+        case_id: required("case_id", event.conversation_id.as_deref())?,
+        failure_prompt: required("failure_prompt", event.inputs.as_deref())?,
+        module_path: required("module_path", event.tool.as_deref())?,
+        rule_id: required("rule_id", event.content.as_deref())?,
+        resolved_task: required("resolved_task", event.outputs.as_deref())?,
+        modifier: required("modifier", event.demo_label.as_deref())?,
+        benchmark_suite: required("benchmark_suite", event.conversation_title.as_deref())?,
+        benchmark_passed,
+        reviewer: evidence_value(event, "reviewer")?,
+    })
+}
+
+fn evidence_value(event: &MemoryEvent, key: &str) -> Result<String, String> {
+    let prefix = format!("{key}=");
+    event
+        .evidence
+        .iter()
+        .find_map(|value| value.strip_prefix(&prefix))
+        .filter(|value| !value.trim().is_empty())
+        .map(ToOwned::to_owned)
+        .ok_or_else(|| format!("approved_lesson_{key}_missing:{}", event.id))
 }
 
 fn field(out: &mut String, key: &str, value: &str) {

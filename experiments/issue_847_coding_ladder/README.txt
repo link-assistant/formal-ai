@@ -12,9 +12,10 @@ Every task is work we actually want done. Nothing here is a synthetic /tmp
 exercise: the point is to teach Formal AI to code on our own backlog, so a
 task that starts passing is a real contribution rather than a throwaway drill.
 
-Driven through `formal-ai with agent`, which is exactly the path Hive Mind
-uses: Hive Mind -> Agent CLI -> `formal-ai serve --agent-mode`
-(link-assistant/hive-mind#2059).
+Driven through `formal-ai solve --repository . --base-commit <observed HEAD>`.
+Each task runs in an isolated exact-commit clone; the command's pure stdout
+diff is checked and explicitly applied to the ambient benchmark tree before
+the existing effect verifier runs. The tree is reset before the next task.
 
 FILES
 -----
@@ -33,9 +34,10 @@ USAGE
   experiments/issue_847_coding_ladder/run_coding_ladder.sh
   ONLY=846 experiments/issue_847_coding_ladder/run_coding_ladder.sh
 
-The working tree must be clean outside experiments/: tasks edit the real
-repository and are reverted with `git checkout -- .` between runs. Changes
-under experiments/ are ignored by that guard so the harness can write results.
+The working tree must be clean outside experiments/: tasks edit an isolated
+clone and their returned diff is applied to this benchmark tree, then reverted
+with `git checkout -- .` between runs. Changes under experiments/ are ignored
+by that guard so the harness can write results.
 
 BASELINE @ v0.304.0 (this branch), agent CLI 0.25.0, Linux, 2026-07-25
 ----------------------------------------------------------------------

@@ -4,10 +4,11 @@
 //! `reference_closure.rs` backbone gate does not cover, and asks that CI fail
 //! immediately if either is missing or not working:
 //!
-//!   1. **Total closure** — *every* non-keyword, non-quoted value token anywhere
-//!      in `data/seed/**.lino` must resolve to a defined meaning, a grounded
-//!      source id with a cache record, or an override. Not just the structured
-//!      `defined-by`/facet/role backbone.
+//!   1. **Total closure** — every semantic reference anywhere in
+//!      `data/seed/**.lino` must resolve to a defined meaning, a grounded source
+//!      id with a cache record, or an override. Declaration identities,
+//!      comments, and literal matcher operands are data but not reference edges.
+//!      This covers more than the structured `defined-by`/facet/role backbone.
 //!   2. **The multi-source `view`** — `WordNet` cached and used, `data/view/`
 //!      present with deterministic `M-…` ids, per-field provenance, a working
 //!      merge, and a `sources-registry.lino` listing every ingested source with
@@ -20,6 +21,7 @@
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde_json::Value;
 
@@ -90,15 +92,19 @@ fn seed_closure_gap_only_shrinks() {
         panic!("audit did not emit JSON ({err}); stderr: {stderr}\nstdout: {stdout}")
     });
 
-    let honest = report["unresolved_distinct_honest"].as_u64().unwrap_or_else(|| {
-        panic!(
-            "scripts/audit-total-closure.py does not report `unresolved_distinct_honest`. \
+    let honest = report["unresolved_distinct_honest"]
+        .as_u64()
+        .unwrap_or_else(|| {
+            panic!(
+                "scripts/audit-total-closure.py does not report `unresolved_distinct_honest`. \
              Plan 09 leaf 6 excludes the `closure-generated-` prefix from the audit's \
              definition set and emits the honest number beside the old one, so the gate \
              measures grounding rather than the generator's own output. Report keys: {:?}",
-            report.as_object().map(|map| map.keys().cloned().collect::<Vec<_>>())
-        )
-    });
+                report
+                    .as_object()
+                    .map(|map| map.keys().cloned().collect::<Vec<_>>())
+            )
+        });
     let ceiling = reviewed_closure_ceiling();
 
     let unresolved = report["unresolved"]
@@ -121,6 +127,158 @@ fn seed_closure_gap_only_shrinks() {
          ceiling in data/meta/closure-audit.lino in this commit, so the ratchet records \
          the improvement instead of quietly allowing a later regression back to {ceiling}"
     );
+}
+
+/// The audit follows the LiNo schema instead of mistaking every bare scalar
+/// for a meaning-graph edge. Record identities and matcher literals are local
+/// data; leaf values remain genuine references even when they share a head
+/// (for example a branch declares an `intent`, while a leaf selects one).
+#[test]
+fn closure_audit_distinguishes_schema_data_from_semantic_references() {
+    let unique = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("the system clock should be after the Unix epoch")
+        .as_nanos();
+    let fixture_root = std::env::temp_dir().join(format!(
+        "formal-ai-closure-schema-{}-{unique}",
+        std::process::id()
+    ));
+    let seed_dir = fixture_root.join("data/seed");
+    let meta_dir = fixture_root.join("data/meta");
+    std::fs::create_dir_all(&seed_dir)
+        .unwrap_or_else(|err| panic!("{} should be creatable: {err}", seed_dir.display()));
+    std::fs::create_dir_all(&meta_dir)
+        .unwrap_or_else(|err| panic!("{} should be creatable: {err}", meta_dir.display()));
+    std::fs::write(seed_dir.join("roles.lino"), "roles\n")
+        .expect("fixture roles should be writable");
+    let schema_path = meta_dir.join("total-closure-schema.lino");
+    let base_schema = r#"total_closure_schema
+  declaration_identity_head response
+  declaration_identity_head family
+  declaration_identity_head evidence_group
+  declaration_identity_head task
+  declaration_identity_head intent
+  literal_operand_head cue
+  literal_operand_head word
+  literal_operand_head prefix
+  literal_operand_head substring
+"#;
+    std::fs::write(
+        &schema_path,
+        format!(
+            "{base_schema}  declaration_identity_head custom_record\n  literal_operand_head custom_literal\n"
+        ),
+    )
+    .expect("fixture closure schema should be writable");
+    std::fs::write(
+        seed_dir.join("schema-fixture.lino"),
+        r#"schema_fixture
+  # ignored_comment_token must never become a reference
+  response response_identity
+    intent genuine_intent_reference
+  family family_identity
+    preempts genuine_method_reference
+    evidence_group evidence_identity
+      cue literal_cue
+      word literal_word
+      prefix literal_prefix
+      substring literal_substring
+  task task_identity
+    source genuine_source_reference
+  intent intent_identity
+    slug genuine_slug_reference
+  source genuine_leaf_reference
+  custom_record custom_identity
+    source genuine_custom_reference
+  custom_literal literal_custom
+"#,
+    )
+    .expect("fixture seed should be writable");
+
+    let output = Command::new("python3")
+        .arg(repo_root().join("scripts/audit-total-closure.py"))
+        .arg("--json")
+        .arg(&fixture_root)
+        .current_dir(repo_root())
+        .output()
+        .expect("the closure audit should run on the fixture");
+    std::fs::write(&schema_path, base_schema)
+        .expect("fixture closure schema should be replaceable");
+    let without_custom_schema = Command::new("python3")
+        .arg(repo_root().join("scripts/audit-total-closure.py"))
+        .arg("--json")
+        .arg(&fixture_root)
+        .current_dir(repo_root())
+        .output()
+        .expect("the closure audit should rerun after a data-only schema change");
+    let cleanup = std::fs::remove_dir_all(&fixture_root);
+    assert!(
+        output.status.success(),
+        "fixture audit failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        without_custom_schema.status.success(),
+        "fixture audit without custom schema rows failed: {}",
+        String::from_utf8_lossy(&without_custom_schema.stderr)
+    );
+    cleanup.unwrap_or_else(|err| panic!("{} cleanup failed: {err}", fixture_root.display()));
+
+    let report: Value = serde_json::from_slice(&output.stdout)
+        .unwrap_or_else(|err| panic!("fixture audit did not emit JSON: {err}"));
+    let unresolved = report["unresolved"]
+        .as_object()
+        .expect("fixture report should contain unresolved references");
+    for reference in [
+        "genuine_intent_reference",
+        "genuine_method_reference",
+        "genuine_source_reference",
+        "genuine_slug_reference",
+        "genuine_leaf_reference",
+        "genuine_custom_reference",
+    ] {
+        assert!(
+            unresolved.contains_key(reference),
+            "semantic leaf reference `{reference}` was incorrectly excluded: {report}"
+        );
+    }
+    for schema_data in [
+        "ignored_comment_token",
+        "response_identity",
+        "family_identity",
+        "evidence_identity",
+        "task_identity",
+        "intent_identity",
+        "custom_identity",
+        "literal_cue",
+        "literal_word",
+        "literal_prefix",
+        "literal_substring",
+        "literal_custom",
+    ] {
+        assert!(
+            !unresolved.contains_key(schema_data),
+            "schema data `{schema_data}` was incorrectly audited as a reference: {report}"
+        );
+    }
+    assert_eq!(report["ignored_full_line_comments"], 1);
+    assert_eq!(report["excluded_declaration_identities"], 6);
+    assert_eq!(report["excluded_literal_operands"], 5);
+    assert_eq!(report["schema_declaration_identity_heads"], 6);
+    assert_eq!(report["schema_literal_operand_heads"], 5);
+
+    let report_without_custom: Value = serde_json::from_slice(&without_custom_schema.stdout)
+        .unwrap_or_else(|err| panic!("second fixture audit did not emit JSON: {err}"));
+    let unresolved_without_custom = report_without_custom["unresolved"]
+        .as_object()
+        .expect("second fixture report should contain unresolved references");
+    for data_selected_reference in ["custom_identity", "literal_custom"] {
+        assert!(
+            unresolved_without_custom.contains_key(data_selected_reference),
+            "removing the schema row should make `{data_selected_reference}` auditable: \
+             {report_without_custom}"
+        );
+    }
 }
 
 /// The total-closure backbone counts must not silently collapse: a healthy seed

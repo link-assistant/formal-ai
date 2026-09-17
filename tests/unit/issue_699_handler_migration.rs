@@ -61,33 +61,20 @@ fn reviewed_ceiling(measure: &str) -> usize {
 /// live one directory up, so a migration cannot lower a count by moving a file.
 fn handler_files() -> Vec<String> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let mut files: Vec<String> = walkdir::WalkDir::new(root.join("src/solver_handlers"))
-        .into_iter()
-        .filter_map(Result::ok)
-        .filter(|entry| entry.file_type().is_file())
-        .filter_map(|entry| {
-            let path = entry.path();
-            let name = path.file_name()?.to_str()?.to_owned();
-            // `mod.rs` holds the dispatch logic and `modules.rs` is the
-            // generated `mod` list issue #991 split out of it; neither is a
-            // handler, so neither may move a ratchet that counts handlers.
-            let bookkeeping = matches!(name.as_str(), "mod.rs" | "modules.rs");
-            (path.extension().is_some_and(|extension| extension == "rs") && !bookkeeping).then(|| {
-                path.strip_prefix(root)
-                    .unwrap_or(path)
-                    .display()
-                    .to_string()
-            })
-        })
-        .collect();
-    for outside in [
-        "solver_handler_how.rs",
-        "solver_handler_how_synthesis.rs",
-        "solver_handler_units.rs",
-        "solver_handler_oracle.rs",
-    ] {
-        if root.join("src").join(outside).is_file() {
-            files.push(format!("src/{outside}"));
+    let ledger = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
+        .expect("core boundary ledger");
+    let mut files = Vec::new();
+    let mut source: Option<String> = None;
+    for line in ledger.lines() {
+        if let Some(path) = line.strip_prefix("  source ") {
+            source = Some(path.to_owned());
+            continue;
+        }
+        if line.trim() == "disposition migrate"
+            && let Some(path) = source.take()
+            && !matches!(path.rsplit('/').next(), Some("mod.rs" | "modules.rs"))
+        {
+            files.push(path);
         }
     }
     files.sort();
@@ -122,6 +109,12 @@ fn held_out_number_constraint_paraphrases_are_data_driven() {
             );
         }
         let response = FormalAiEngine.answer(prompt);
+        if language == "en" {
+            assert_eq!(
+                response.answer,
+                "If this is an integer-number riddle, the unique answer is 5.\n\nInteger formalization: x in Z, x > 4, x < 6. Solver form: `x > 4 and x < 6 is satisfiable over integers`.\n\nIf real numbers are allowed, the answer is not unique; for example, x = 4.5 also fits.\n\nFormal relative-meta-logic / SMT check:\nHow I interpreted the request: treating the request as the formal claim \"x > 4 and x < 6 is satisfiable\" and discharging it by relative-meta-logic / SMT decision procedure inside relative-meta-logic.\n\nProof (method: relative-meta-logic / SMT decision procedure).\n\nStatement: x > 4 and x < 6 is satisfiable\n\n1. Definition: Delegate the normalized claim to the relative-meta-logic / SMT decision procedure for quantifier-free linear real arithmetic.\n2. Definition: Constraints: x > 4 and x < 6.\n3. Inference: The constraints reduce to x: > 4 and < 6.\n4. Inference: Witness found: x = 5.\nTherefore the constraint system is satisfiable. ∎"
+            );
+        }
         assert_eq!(
             response.intent, "number_constraint_reasoning",
             "{language} held-out paraphrase was not routed through the migrated method: {}",
@@ -148,6 +141,12 @@ fn held_out_entity_typos_resolve_from_memory() {
         ("hi", "निकोला टेस्ल कौन है", "निकोला टेस्ला"),
     ] {
         let response = FormalAiEngine.answer(prompt);
+        if prompt == "who is ada lovlace" {
+            assert_eq!(
+                response.answer,
+                "I don't have a Links Notation fact for \"ada lovlace\" yet. Did you mean \"Ada Lovelace\"? Add a fact or rule in Links Notation and run the request again."
+            );
+        }
         assert_eq!(
             response.intent, "who_is_question",
             "{language} held-out prompt left the migrated method: {}",
@@ -202,6 +201,12 @@ fn unsupported_write_program_fails_with_a_named_skill_gap() {
         ),
     ] {
         let response = FormalAiEngine.answer(prompt);
+        if language == "en" {
+            assert_eq!(
+                response.answer,
+                "I cannot write this program: no synthesis route reaches task \"main\" in language \"rust\".\n\nI decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `rust`, or restate the task in steps I can already compile.\n\nResearch trail: phrases=write a rust program that reverses a linked list | reverses@en | linked@en;parts=;failed_examples=;blocked_needs=;attempts=program_ir_7f936754ab1cf239ac803f4371dc028ef16b1aa8344bdf4cc959d410b0182681:failed"
+            );
+        }
         assert_eq!(
             response.intent, "write_program_skill_gap",
             "{language} underivable program request must name a skill gap: {}",

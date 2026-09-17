@@ -20,7 +20,7 @@ use crate::seed::SourceRecord;
 use crate::service_accessibility::ServiceAccessibilityCache;
 use crate::source_fetch::{CachedSourceClient, SourceCapture, SourceTransport};
 use crate::source_walk::{
-    CaptureExtractor, Extracted, LookupBounds, SourceLookup, WalkOutcome, WalkSourceOutcome,
+    CaptureExtractor, Extracted, LookupBounds, SourceLookup, Walk, WalkOutcome, WalkSourceOutcome,
     entry_url_in, walk_sources,
 };
 use crate::trace_record;
@@ -132,7 +132,7 @@ impl ConceptSense {
 }
 
 /// What a lookup produced, or honestly did not.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum LookupOutcome {
     /// Evidence, in consultation order. Every item carries the digest of the
     /// bytes it was read from.
@@ -311,7 +311,7 @@ fn wiktionary_entry(value: &Value, surface: &str) -> Vec<RawGloss> {
     out
 }
 
-/// Open English WordNet's per-lemma endpoint: an array of synsets, each with a
+/// Open English `WordNet`'s per-lemma endpoint: an array of synsets, each with a
 /// `definition` list and the `members` that share it.
 fn wordnet_sense(value: &Value, surface: &str) -> Vec<RawGloss> {
     let mut out = Vec::new();
@@ -336,7 +336,7 @@ fn wordnet_sense(value: &Value, surface: &str) -> Vec<RawGloss> {
     out
 }
 
-/// MediaWiki's REST summary: one `extract` under the title the wiki resolved
+/// `MediaWiki`'s REST summary: one `extract` under the title the wiki resolved
 /// the request to, which may be a redirect target and is reported as such.
 fn mediawiki_summary(value: &Value, surface: &str) -> Vec<RawGloss> {
     let Some(extract) = string_at(value, "extract").filter(|text| !text.is_empty()) else {
@@ -351,7 +351,7 @@ fn mediawiki_summary(value: &Value, surface: &str) -> Vec<RawGloss> {
     }]
 }
 
-/// A per-language Wiktionary entry, read through the MediaWiki `extracts` API:
+/// A per-language Wiktionary entry, read through the `MediaWiki` `extracts` API:
 /// `query.pages.<id>.extract`, a plain-text rendering of the wiki page.
 ///
 /// **What counts as a gloss here, and why the rule is this narrow.** The
@@ -635,64 +635,6 @@ impl<T: SourceTransport> SourceLookup for RegistrySourceLookup<'_, T> {
     }
 }
 
-/// The thin adapter that keeps `src/coding/concept_discovery.rs` compiling while
-/// retrieval lands; removed by plan 01 L18 once every caller names
-/// [`SourceLookup`] directly.
-pub struct RegistryConceptLookup<'a, T: SourceTransport> {
-    inner: RegistrySourceLookup<'a, T>,
-}
-
-impl<'a, T: SourceTransport> RegistryConceptLookup<'a, T> {
-    /// Wrap the one implementation in the older, narrower trait.
-    #[must_use]
-    pub const fn new(inner: RegistrySourceLookup<'a, T>) -> Self {
-        Self { inner }
-    }
-
-    /// The rows the wrapped lookup recorded, so a blocked need can say why.
-    #[must_use]
-    pub fn outcomes(&self) -> &[WalkSourceOutcome] {
-        self.inner.outcomes()
-    }
-}
-
-impl<T: SourceTransport> crate::coding::concept_discovery::UnknownConceptLookup
-    for RegistryConceptLookup<'_, T>
-{
-    fn consults_sources(&self) -> bool {
-        true
-    }
-
-    fn language(&self) -> String {
-        self.inner.language.clone()
-    }
-
-    fn lookup(
-        &mut self,
-        phrase: &str,
-        depth: usize,
-    ) -> Option<crate::coding::concept_discovery::ConceptEvidence> {
-        let need = Need::raised(
-            NeedKind::Concept,
-            phrase,
-            &self.inner.language.clone(),
-            "coding:discovery",
-        );
-        let bounds = self.inner.bounds();
-        match SourceLookup::lookup(&mut self.inner, &need, &bounds) {
-            LookupOutcome::Found(senses) => senses.into_iter().next().map(|sense| {
-                crate::coding::concept_discovery::ConceptEvidence {
-                    phrase: phrase.to_owned(),
-                    definition: sense.gloss,
-                    source_url: sense.source_url,
-                    depth,
-                }
-            }),
-            LookupOutcome::NotFound { .. } => None,
-        }
-    }
-}
-
 /// Look one surface up, as the trait does, but returning every sense instead of
 /// the first. The universal loop and the coding path both call this.
 pub fn lookup_surface<T: SourceTransport>(
@@ -709,11 +651,13 @@ pub fn lookup_surface<T: SourceTransport>(
         NeedKind::Concept,
         surface,
         &extractor,
-        client,
         preferences,
-        bounds,
+        &Walk {
+            client,
+            bounds,
+            now,
+        },
         availability,
-        now,
     );
     // The per-source reader stops at the item bound within one service; the
     // answer as a whole is bounded here, so `max_items` means the same number
@@ -760,7 +704,7 @@ pub fn unknown_surfaces(normalized: &str, language: &str) -> Vec<String> {
 pub fn is_unknown_surface(token: &str) -> bool {
     let folded = token.to_lowercase();
     token.chars().count() >= 3
-        && !token.chars().all(|character| character.is_numeric())
+        && !token.chars().all(char::is_numeric)
         && !seeded_surfaces().contains(&folded)
 }
 
@@ -853,7 +797,7 @@ fn seeded_surfaces() -> &'static BTreeSet<String> {
         crate::seed::lexicon()
             .meanings
             .iter()
-            .flat_map(|meaning| meaning.words())
+            .flat_map(crate::seed::Meaning::words)
             .flat_map(|surface| {
                 surface
                     .split_whitespace()

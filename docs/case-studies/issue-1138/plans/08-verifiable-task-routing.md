@@ -1071,6 +1071,36 @@ run produces it. The commitments are about process:
   and conflating them would be the dishonest outcome this plan most needs to
   avoid.
 
+## Exact reconciliation checkpoint — 2026-09-17
+
+This checkpoint was written before changing the remaining implementation or
+checkboxes. The working tree already contains substantially more than the stale
+leaf ledger records:
+
+- L8–L12 are represented by the registered `verifiable_task` interpreter and
+  its derive/execute/check pipeline in
+  `src/solver_handlers/verifiable_task.rs`; it records process evidence, shape,
+  independent agreement, equation/count/edit round trips and unit consistency.
+- L14 is represented by recall, tamper, recompute and forget/rediscover tests in
+  `tests/unit/verifiable_task/ledger.rs`.
+- L15–L16 are represented by source-registry category lookup with multiplicity,
+  deletion of the old object-category table, and the category-table ratchet in
+  `tests/unit/verifiable_task/no_memorization.rs`.
+- L20 is represented by the browser recognizer/formalizer/IR renderer in
+  `src/web/worker/formal_ai_worker_verifiable_task.js` and the explicit
+  `unverified:browser_execution_unavailable` web contract.
+- L21 is represented by the authored-shape ceiling and routing-order ratchet in
+  `tests/unit/verifiable_task/ratchets.rs`.
+
+Those leaves remain unchecked below until their focused tests and static gates
+run against this exact combined tree. L1 is genuinely incomplete: the colon
+named-unknown corpus row is still a limitation and the floor is still 72 even
+though the generic route now wins dispatch. L19 is also incomplete: the current
+gate prohibits the retired category table and grader imports but does not scan
+the pinned upstream non-coding case sentences. L22–L24 remain measurement work,
+not implementation claims; no score or document will be updated without the
+corresponding online/cold run evidence.
+
 ---
 
 ## Implementation leaves
@@ -1080,22 +1110,22 @@ run produces it. The commitments are about process:
       `named_unknown_colon_clause`
       (`data/benchmarks/equation-type-corpus.lino:972-980`) from limitation to
       `benchmark_case` in the same commit; raise `minimum_pass_count` to 73.
-- [ ] **L2** — Add `data/seed/meanings-verifiable-task.lino` with the four
+- [x] **L2** — Add `data/seed/meanings-verifiable-task.lino` with the four
       expectation meanings in en/ru/hi/zh/es and a `verifiable_expectation` role;
       no code consumes it yet.
-- [ ] **L3** — Add `src/verifiable_task.rs`: `TaskExpectation`, `AnswerShape`,
+- [x] **L3** — Add `src/verifiable_task.rs`: `TaskExpectation`, `AnswerShape`,
       `VerifiableTask`, `identity`, `to_links_notation`. No recognizer yet.
-- [ ] **L4** — Add `src/verifiable_task/quantities.rs`: `Quantity`, `Entity`,
+- [x] **L4** — Add `src/verifiable_task/quantities.rs`: `Quantity`, `Entity`,
       five-language numeral and multiplicity extraction over
       `arithmetic_normalization_tables`.
-- [ ] **L5** — Add `recognise_verifiable`, delegating to
+- [x] **L5** — Add `recognise_verifiable`, delegating to
       `crate::coding::task_spec::recognise` first so today's Python path is
       byte-identical; add the five-language recognition tests.
-- [ ] **L6** — Add `VerifiableTask::render` and the `AnswerShape` rules; localized
+- [x] **L6** — Add `VerifiableTask::render` and the `AnswerShape` rules; localized
       wording in `data/seed/multilingual-responses-*.lino`, no literals in Rust.
-- [ ] **L7** — Add `impl From<&VerifiableTask> for CodingTaskSpec` with the
+- [x] **L7** — Add `impl From<&VerifiableTask> for CodingTaskSpec` with the
       projection table above.
-- [ ] **L17'** — *(moved ahead of L8 by the reconciliation)* Replace
+- [x] **L17'** — *(moved ahead of L8 by the reconciliation)* Replace
       `INTENT_MARKERS` (`src/solver_handlers/pattern_inference.rs:29-43`) with
       the `verifiable_expectation` seed role in five languages; retire
       `pattern_inference` from `HANDLER_FUNCTIONS` and
@@ -1123,7 +1153,7 @@ run produces it. The commitments are about process:
 - [ ] **L12** — Add check 5 (unit consistency); wire unit conversion as a
       retrieved fact, addressing the `unit_carrying_*` limitation class
       (`data/benchmarks/equation-type-corpus.lino:936-953`).
-- [ ] **L13** — Add `src/verifiable_task/ledger.rs` mirroring
+- [x] **L13** — Add `src/verifiable_task/ledger.rs` mirroring
       `DiscoveredProcedureLedger`; store the derivation, never the value.
 - [ ] **L14** — Add the recall-recomputes test and the forget → rediscover →
       same-`derivation_id` round trip, offline from committed captures.
@@ -1139,7 +1169,7 @@ run produces it. The commitments are about process:
       §9 X4; this plan's risk 7, now an ordering constraint in plan 14).**
 - [ ] ~~**L17**~~ — struck through: moved ahead of L8 as **L17'** so the
       dispatch slot is freed before it is filled (plan 00 §9 R12).
-- [ ] **L18** — Add the 30 held-out five-language cases as
+- [x] **L18** — Add the 30 held-out five-language cases as
       `data/benchmarks/verifiable-task-paraphrases.lino` plus the routing and
       recognition suites.
 - [ ] **L19** — Extend the no-memorization gate to GSM8K questions, MATH

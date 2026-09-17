@@ -2,13 +2,23 @@ self_ast_census
   target src/repository_workspace/locate.rs
   language rust
   fidelity signature
-  byte_len 2294
-  line_count 66
-  content_id source_module_42be843ff2a91990
-  symbol_count 5
+  byte_len 11539
+  line_count 326
+  content_id source_module_745cf53061f10ed3
+  symbol_count 15
   symbols
-    struct Location 15 22
-    enum LocationEvidence 26 33
-    struct AmbiguityReport 37 40
-    function locate_targets 49 54
-    function locate_ambiguity 61 66
+    struct Location 18 25
+    enum LocationEvidence 29 36
+    struct AmbiguityReport 40 43
+    function locate_targets 52 63
+    function locate_ambiguity 70 80
+    struct CandidateSet 82 85
+    function locate_candidates 87 146
+    function named_paths 148 162
+    function semantic_terms 168 188
+    function words 190 202
+    function census_candidates 204 250
+    struct CensusCandidate 253 259
+    function compare 265 271
+    function owns_value 274 290
+    function literal_declarations 292 326

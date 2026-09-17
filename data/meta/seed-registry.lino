@@ -29,8 +29,12 @@ seed_registry
     web true
   seed agentic-tool-capabilities
     bundle true
+  seed approved-lessons
+    bundle true
   seed brainstorm-seeds
     bundle true
+    web true
+  seed browser-handler-precedence
     web true
   seed caller-context
     bundle true
@@ -81,9 +85,13 @@ seed_registry
   seed greetings
     bundle true
     web true
+  seed handler-family-methods
+    bundle true
   seed handler-precedence
     bundle true
     web true
+  seed handler-promotions
+    bundle true
   seed handler-rules
     bundle true
   seed hello-world-programs
@@ -105,6 +113,8 @@ seed_registry
     bundle true
     web true
   seed learned-methods
+    bundle true
+  seed learned-program-rules
     bundle true
   seed learned-request-openers
     bundle true
@@ -158,6 +168,10 @@ seed_registry
   seed meanings-computer-use
     bundle true
     lexicon meaning
+  seed meanings-concept-lookup
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-conversation
     bundle true
     lexicon meaning
@@ -191,6 +205,10 @@ seed_registry
     lexicon meaning
     web true
   seed meanings-finance
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-formalization-needs
     bundle true
     lexicon meaning
     web true
@@ -270,6 +288,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-repository-workflow
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-research-table
     bundle true
     lexicon meaning
@@ -320,6 +342,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-verifiable-task
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-web-followup
     bundle true
     lexicon meaning
@@ -351,6 +377,8 @@ seed_registry
   seed memory-programs
     bundle true
     web true
+  seed method-execution
+    bundle true
   seed model-aliases
     bundle true
   seed multilingual-responses
@@ -372,6 +400,10 @@ seed_registry
   seed multilingual-responses-client-config
     bundle true
     lexicon response
+  seed multilingual-responses-concept-lookup
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-decomposition
     bundle true
     lexicon response
@@ -393,6 +425,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-orchestration
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-parity
     bundle true
     lexicon response
     web true
@@ -463,6 +499,8 @@ seed_registry
     bundle true
   seed repository-command-allowlist
     bundle true
+  seed research-table-procedure
+    bundle true
   seed self-improvement-loop
     bundle true
     web true
@@ -503,9 +541,6 @@ seed_registry
   unregistered google-trends-*
     owner "src/google_trends_catalog.rs"
     reason "The Google Trends catalog embeds its own prompts and snapshot; the capability owns the data rather than the shared bundle."
-  unregistered handler-promotions
-    owner "src/handler_promotion.rs"
-    reason "Wave T skeleton for issue 1138 plan 09 leaf 10: the promotion rows are read from disk by the promotion module and its tests. Leaf 10 moves the file into the bundle and regenerates the embedded registry."
   unregistered question-generation-lexicon
     owner "src/question_generation.rs"
     reason "Question generation embeds its own lexicon so the words it may use are scoped to the one module that may use them."

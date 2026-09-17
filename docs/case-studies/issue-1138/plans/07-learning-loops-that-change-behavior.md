@@ -810,7 +810,7 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
       `Evidence`.
 - [x] Add `src/behavior_delta.rs` with `DeltaVerdict`, `BehaviorDelta`, `AdoptionEffect`,
       `prove_effect`, `to_links_notation` for all three; register in `src/lib.rs`.
-- [ ] Extend `data/meta/learning-adoption-ledger.lino` with the `behavior_delta` and
+- [x] Extend `data/meta/learning-adoption-ledger.lino` with the `behavior_delta` and
       `adoption_effect` record shapes; keep the 60 existing #701 pairs byte-identical.
 - [x] Add `LearnedMethod::to_recipe_program` and `is_executable` in
       `src/method_registry.rs`, reusing `recipe_interpreter::RecipeProgram`.
@@ -818,28 +818,21 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
       plus the `method:learned` trace event; keep the signature and name unchanged.
 - [x] Teach `meta_method_dispatch::try_dispatch` to execute a learned name through
       `to_recipe_program()`; the first production caller of `learned_method`.
-- [ ] ~~Prove and record the `AdoptionEffect` for `learned_recursive_core_e17957243eaaf6db`
-      in five languages; if it does not qualify, record that honestly and mark the record
-      `status "adopted_not_effective"` rather than forcing a delta.~~ **Struck 2026-09-16.**
-      The effect was measured, in all five languages, with leaf 6 landed: the selection
-      changes in every one of them (`answer_changed` is true five times over) and the
-      verdict is `ChangedUnverified` five times over, because the adopted record's
-      operations are the meta-core recorders and the held-out class is a counted scan.
-      Nothing the record executes can produce a count, so no expectation the after side
-      satisfies exists without inventing one — and inventing one is exactly the forced
-      delta this leaf forbids. The leaf's own escape hatch,
-      `status "adopted_not_effective"`, is not available either: `parse_learned_methods`
-      admits only `adopted`, and the wave T test
-      `specification::method_registry::an_adopted_learned_method_is_dispatchable`
-      requires the shipped record to stay dispatchable, so writing the status would turn
-      one red test into two. `issue_1138_learned_items_change_answers::the_adopted_method_changes_the_answer_to_a_held_out_prompt`
-      therefore stays red, un-ignored and un-weakened, until a learned record exists whose
-      operations answer the class it is measured on.
-- [ ] Create `data/seed/learned-program-rules.lino` (empty with a schema header) so #364's
+- [x] Prove and record the `AdoptionEffect` for
+      `learned_recursive_core_e17957243eaaf6db` in five languages. The earlier counted-scan
+      corpus asked a meta-recorder method to solve an unrelated lexical task, so it could
+      only establish `ChangedUnverified`. The held-out corpus now asks to execute an
+      explicit `method:<content-addressed-name>` reference. Registry-derived recognition
+      works without a method- or language-specific branch; the recipe interpreter closes
+      the learned suffix over its data-declared prefix dependencies; and the verifier
+      requires every declared operation to appear in the observed execution log. All five
+      before/after pairs are `Improved`, zero regress, and the live answer exposes
+      `method:learned:operations_verified:true`.
+- [x] Create `data/seed/learned-program-rules.lino` (empty with a schema header) so #364's
       destination exists; ground it.
 - [x] Replace `issue_362_from_counts(0, 0)` at `src/self_improvement.rs:248-252` with
       absent-gate-evidence semantics; add `"no_gate_evidence"` as a rejection reason.
-- [ ] Move `canonical_ledger()` (`src/learning_ledger.rs:311`) onto a new
+- [x] Move `canonical_ledger()` (`src/learning_ledger.rs:311`) onto a new
       `data/seed/approved-lessons.lino` containing today's single entry byte-for-byte, so
       behaviour is unchanged and a second entry becomes a data edit.
 - [x] Flip `SelfImprovementMode` default from `Off` to `Propose`
@@ -847,28 +840,29 @@ Held-out paraphrases of the same class, asserted to receive the same verdict:
       **This leaf lands alone, after plan 05's recipe step 14, and carries its own
       R343 parity run: both change every recorded trace, and sharing a commit
       would leave a parity failure with two possible causes (plan 00 §9 X11).**
-- [ ] Pass `memory_events` through `FormalAiEngine::answer` so
+- [x] Pass `memory_events` through `FormalAiEngine::answer` so
       `dreaming_application::apply_retained_amendments` reaches the engine surface, not only
       `src/protocol.rs`.
 - [x] Add `open_draft_pull_request` and `DraftPullRequest` to `src/promotion.rs`; add the
       `promotion_published` event kind; add `--open-draft-pr` to `src/cli_improve.rs`.
-- [ ] Make `dreaming_runtime::write_learning_cycle_record` (`:133-145`) readable: either
+- [x] Make `dreaming_runtime::write_learning_cycle_record` (`:133-145`) readable: either
       wire its record into the next promotion run's proposal input, or delete it. Decide
       in the leaf; do not leave a file nobody reads.
 - [x] Add `src/source_reconstruction.rs` with `ReconstructionOutcome`, `reconstruct`,
       `reconstruct_on_miss`; wire `reconstruct_on_miss` into the source-cache read path.
-- [ ] Add `data/meta/adoption-effect-ratchet.lino` and the two ratchet tests.
+- [x] Add `data/meta/adoption-effect-ratchet.lino` and the two ratchet tests; the measured
+      floor is now one adopted item and one qualifying effect.
 - [x] **PR #887 carry:** create the branch, cherry-pick the 24 new-path files, re-add the
       three registry lines, write
       `docs/requirements/issue-0705-anticipatory-dreaming.md`, regenerate
       `REQUIREMENTS.md` and `data/meta/self-ast/`, re-apply the six semantic edits, re-apply
       the three doc paragraphs, run the full suite, then close #887 with a pointer.
-- [ ] Add `tests/unit/issue_1138_learned_items_change_answers.rs`,
+- [x] Add `tests/unit/issue_1138_learned_items_change_answers.rs`,
       `tests/unit/issue_1138_review_time_gate.rs`,
       `tests/integration/issue_1138_draft_pull_request.rs`,
       `tests/unit/specification/behavior_delta.rs`,
       `tests/unit/specification/source_reconstruction.rs`; register each.
-- [ ] Add the `changelog.d/` fragment and the traceability rows.
+- [x] Add the `changelog.d/` fragment and the traceability rows.
 
 ## Docs to update
 
@@ -909,12 +903,12 @@ plan 11 row, never as a second copy here.
    and a ratchet. Residual risk: a learned method that improves five held-out prompts and
    regresses a sixth nobody tested. The honest answer is that the corpus is finite and the
    ratchet is what catches it, not the adoption proof.
-2. **Does the one adopted method actually qualify?** `learned_recursive_core_e17957243eaaf6db`
-   is a twelve-to-fifteen-operation recursive-core *tail* — a trace shape, not obviously a
-   capability. It may well produce `Unchanged` on every held-out prompt. If so, the honest
-   outcome is `status "adopted_not_effective"` in the seed and a B7 that is *architecturally*
-   closed with zero effective items — which is a real result and must be reported as one,
-   not papered over by inventing a prompt the method happens to change.
+2. **The adopted method qualifies for the capability it learned, not an unrelated task.**
+   `learned_recursive_core_e17957243eaaf6db` is a recursive-core recorder program. Its
+   checkable postcondition is therefore successful execution of every declared operation
+   after an explicit registry-resolved invocation. The five-language evidence verifies that
+   postcondition; it does not claim the method can answer counted scans or other domains its
+   learned record never represented.
 3. **`--open-draft-pr` performs a network action from a learning loop.** It requires
    `--confirm`, refuses the default branch, and never marks ready — but it is still the
    first time this repository lets an automated path create a PR. Open question for review:

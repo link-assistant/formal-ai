@@ -1,14 +1,14 @@
 core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
-  source_file_count_max 49
-  source_lines_max 19763
+  source_file_count_max 51
+  source_lines_max 20640
   outside_core_file_count_max 49
-  outside_core_lines_max 19763
-  note "Issue #1138 B9, plan 09 leaf 1: the scan root was src/solver_handlers alone, so the four handler files that live one directory up were unledgered and uncounted. Adding them is a corrected undercount, not new debt; no handler file was written in this commit."
+  outside_core_lines_max 19741
+  note "Issue #1138 B9, plan 09 leaf 1 corrected the four handlers outside src/solver_handlers. Plan 08 promoted the generic verifiable-task interpreter; the URL parsing split adds one recursively counted source but its structural parser reads language evidence from seed roles, so it is promoted core machinery rather than migration debt."
   source src/solver_handler_how.rs
     disposition migrate
-    baseline_lines 888
+    baseline_lines 884
     data_target "how-to request recognition and guide rendering rules"
     reason "How-to cue vocabulary, source ordering and rendered prose are domain knowledge over the sources registry."
   source src/solver_handler_how_synthesis.rs
@@ -43,22 +43,22 @@ core_boundary_ledger
     reason "Rule vocabulary and matching policy belong beside the stored rules."
   source src/solver_handlers/behavior_rules.rs
     disposition migrate
-    baseline_lines 951
+    baseline_lines 961
     data_target "behavior-rule query and rendering rules"
     reason "Listing, counting, and rendering stored behavior rules are domain policy."
   source src/solver_handlers/benchmark_prompts.rs
     disposition migrate
-    baseline_lines 543
+    baseline_lines 591
     data_target "benchmark prompt concepts and responses"
     reason "Benchmark-specific prompts and answers are examples in seed data."
   source src/solver_handlers/calculator_rate.rs
     disposition migrate
-    baseline_lines 126
+    baseline_lines 124
     data_target "exchange-rate interpretation rules"
     reason "Financial intent and rate vocabulary are domain knowledge."
   source src/solver_handlers/calendar.rs
     disposition migrate
-    baseline_lines 976
+    baseline_lines 996
     data_target "calendar reasoning rules"
     reason "Date intent, recurrence policy, and calendar rendering are domain knowledge."
   source src/solver_handlers/calendar_ics.rs
@@ -68,7 +68,7 @@ core_boundary_ledger
     reason "Calendar artifact construction can be expressed as a data recipe over a host writer."
   source src/solver_handlers/compound_interest.rs
     disposition migrate
-    baseline_lines 557
+    baseline_lines 558
     data_target "finance formulas, roles, and examples"
     reason "Compound-interest recognition and explanatory policy are domain knowledge."
   source src/solver_handlers/conversation_memory/conversation_summary.rs
@@ -83,7 +83,7 @@ core_boundary_ledger
     reason "This mixed route contains response prose and query presentation; only its dedicated parser and executor modules are core interpreters."
   source src/solver_handlers/conversation_memory/memory_write.rs
     disposition migrate
-    baseline_lines 294
+    baseline_lines 293
     data_target "memory-write routing and localized response rules"
     reason "This mixed route contains localized prose, event policy, and natural-language write behavior despite seed-driven recognition."
   source src/solver_handlers/conversation_memory/mod.rs
@@ -118,7 +118,7 @@ core_boundary_ledger
     reason "Fact-check intent and workflow selection are data-defined policy."
   source src/solver_handlers/feature_capability.rs
     disposition migrate
-    baseline_lines 650
+    baseline_lines 656
     data_target "feature capability concepts and responses"
     reason "Capability vocabulary and claims must remain auditable seed facts."
   source src/solver_handlers/installation_conversion.rs
@@ -133,27 +133,27 @@ core_boundary_ledger
     reason "Descriptions of the meta algorithm belong in inspectable seed knowledge."
   source src/solver_handlers/mod.rs
     disposition migrate
-    baseline_lines 938
+    baseline_lines 939
     data_target "handler routing, response, and domain rules"
     reason "This mixed dispatcher embeds specialized behavior and must be split before any primitive is promoted."
   source src/solver_handlers/natural_language_tools.rs
     disposition migrate
-    baseline_lines 334
+    baseline_lines 378
     data_target "natural-language tool invocation rules"
     reason "Tool names, request cues, and argument policy belong in seed data."
   source src/solver_handlers/numeric_list/codegen.rs
     disposition migrate
-    baseline_lines 521
+    baseline_lines 520
     data_target "numeric-list code-generation recipes"
     reason "Language-specific program templates are data executed by a generic recipe interpreter."
   source src/solver_handlers/numeric_list/mod.rs
     disposition migrate
-    baseline_lines 853
+    baseline_lines 855
     data_target "numeric-list operation rules"
     reason "List operation vocabulary, routing, and explanation are domain knowledge."
   source src/solver_handlers/pattern_inference.rs
     disposition migrate
-    baseline_lines 359
+    baseline_lines 323
     data_target "pattern inference rules and examples"
     reason "Pattern families and explanatory examples belong in problem-solving data."
   source src/solver_handlers/playwright_script.rs
@@ -178,7 +178,7 @@ core_boundary_ledger
     reason "The handler now only orchestrates specification, discovery, composition, verification, and rendering; task bodies were removed and the baseline ratcheted from 531 lines."
   source src/solver_handlers/research_table.rs
     disposition migrate
-    baseline_lines 485
+    baseline_lines 540
     data_target "research comparison workflow rules"
     reason "Research criteria, table policy, and rendering are problem-domain knowledge."
   source src/solver_handlers/response_language_followup.rs
@@ -188,7 +188,7 @@ core_boundary_ledger
     reason "Language-change cues and response policy belong in multilingual seed data."
   source src/solver_handlers/self_awareness.rs
     disposition migrate
-    baseline_lines 550
+    baseline_lines 556
     data_target "self-knowledge facts and explanation rules"
     reason "Capability and architecture claims must remain auditable data rather than compiled assertions."
   source src/solver_handlers/shell_command_transform.rs
@@ -198,7 +198,7 @@ core_boundary_ledger
     reason "Command transformation policy and shell idioms are data over a process surface."
   source src/solver_handlers/software_project.rs
     disposition migrate
-    baseline_lines 909
+    baseline_lines 912
     data_target "software-project planning recipes"
     reason "Project structure, framework choices, and planning policy are coding-domain knowledge."
   source src/solver_handlers/software_project_code.rs
@@ -213,7 +213,7 @@ core_boundary_ledger
     reason "Follow-up state transitions and project vocabulary are domain policy."
   source src/solver_handlers/task_decomposition.rs
     disposition migrate
-    baseline_lines 243
+    baseline_lines 246
     data_target "task decomposition methods and examples"
     reason "Decomposition heuristics and examples are problem-solving metadata."
   source src/solver_handlers/text_edit_ops.rs
@@ -231,9 +231,14 @@ core_boundary_ledger
     baseline_lines 236
     data_target "user intent concepts and routing rules"
     reason "Intent classification is seed knowledge consumed by the meta algorithm."
+  source src/solver_handlers/verifiable_task.rs
+    disposition promote
+    baseline_lines 750
+    core_component verifiable_task_interpreter
+    reason "Generic interpreter of seed-declared expectations: composes shared IR, executes it in the bounded workspace, and records observed checks without storing domain answers."
   source src/solver_handlers/web_requests.rs
     disposition migrate
-    baseline_lines 992
+    baseline_lines 810
     data_target "web request workflow rules"
     reason "URL intent, provider policy, and response prose are data over a network surface."
   source src/solver_handlers/web_requests/live_search.rs
@@ -241,9 +246,14 @@ core_boundary_ledger
     baseline_lines 87
     data_target "live-search provider rules"
     reason "Search-provider selection and result policy belong in data over a network surface."
+  source src/solver_handlers/web_requests/url_parse.rs
+    disposition promote
+    baseline_lines 149
+    core_component seed_driven_url_interpreter
+    reason "The module is generic structural machinery: URL syntax is parsed once and language-specific fetch/navigation evidence comes from role word forms in seed data."
   source src/solver_handlers/web_search_intent.rs
     disposition migrate
-    baseline_lines 872
+    baseline_lines 877
     data_target "web-search intent and query rules"
     reason "Search cues, query rewriting, and provider policy are domain knowledge."
   source src/solver_handlers/world_state.rs

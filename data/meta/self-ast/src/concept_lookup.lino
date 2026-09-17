@@ -2,10 +2,10 @@ self_ast_census
   target src/concept_lookup.rs
   language rust
   fidelity signature
-  byte_len 31737
-  line_count 865
-  content_id source_module_9e5f5991a2c9c8bb
-  symbol_count 48
+  byte_len 29918
+  line_count 807
+  content_id source_module_d40b9705305e0370
+  symbol_count 42
   symbols
     struct ConceptSense 31 62
     function content_id 71 82
@@ -40,18 +40,12 @@ self_ast_census
     function bounds 589 591
     function resolve 594 614
     function lookup 618 635
-    struct RegistryConceptLookup 641 643
-    function new 648 650
-    function outcomes 654 656
-    function consults_sources 662 664
-    function language 666 668
-    function lookup 670 693
-    function lookup_surface 698 723
-    function unknown_surfaces 734 749
-    function is_unknown_surface 760 765
-    function unknown_surface_spans 775 819
-    const PAIRS 776 776
-    function outside_quotes 823 847
-    const PAIRS 824 824
-    function seeded_surfaces 850 865
-    static CACHE 851 851
+    function lookup_surface 640 665
+    function unknown_surfaces 676 691
+    function is_unknown_surface 702 707
+    function unknown_surface_spans 717 761
+    const PAIRS 718 718
+    function outside_quotes 765 789
+    const PAIRS 766 766
+    function seeded_surfaces 792 807
+    static CACHE 793 793

@@ -2,29 +2,42 @@ self_ast_census
   target src/coding/composition.rs
   language rust
   fidelity signature
-  byte_len 25000
-  line_count 722
-  content_id source_module_962a21165212aea8
-  symbol_count 21
+  byte_len 34144
+  line_count 987
+  content_id source_module_4f04c62bfc8665b2
+  symbol_count 34
   symbols
-    struct DraftAttempt 12 16
-    struct VerifiedDraft 19 26
-    struct CompositionOutcome 29 33
-    struct Draft 35 43
-    function compose 46 121
-    function candidate_drafts 123 130
-    function candidate_draft 132 189
-    function source_examples 191 205
-    function structural_drafts 207 417
-    function structural_program_draft 419 432
-    function structural_draft 434 452
-    function structural_source_urls 454 465
-    function adapt_implementation 467 498
-    function verify 500 563
-    function program_stdout_expectation 565 585
-    function derived_examples 587 640
-    function first_positive_integer 642 661
-    function render_comparison 663 675
-    function render_failure_trail 677 706
-    function template 708 710
-    function idiom 712 722
+    struct DraftAttempt 15 19
+    struct VerifiedDraft 22 29
+    struct UnverifiedDraft 34 41
+    struct CompositionOutcome 44 52
+    struct MissingFragment 55 57
+    function new 60 62
+    struct FragmentRenderer 72 74
+    function new 77 79
+    function template 81 87
+    function idiom 89 95
+    function return_value 97 99
+    struct Draft 102 111
+    function compose 114 123
+    function compose_with_ir 129 263
+    function ir_draft 265 298
+    function syntax_is_valid 301 303
+    function syntax_is_valid 306 308
+    function candidate_drafts 310 322
+    function candidate_draft 324 402
+    function source_examples 404 418
+    function structural_drafts 420 637
+    function structural_program_draft 639 653
+    function structural_draft 655 674
+    function structural_source_urls 676 687
+    function adapt_implementation 689 720
+    function verify 722 808
+    function program_stdout_expectation 810 830
+    function derived_examples 832 885
+    function first_positive_integer 887 906
+    function render_comparison 908 920
+    function render_failure_trail 922 957
+    function blocked_fragment_need 959 965
+    function template 967 976
+    function idiom 978 987

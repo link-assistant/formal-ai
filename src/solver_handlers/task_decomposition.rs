@@ -18,13 +18,13 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{
-    self, localized_response, ROLE_DECOMPOSABLE_TASK_NOUN, ROLE_SUBTASK_ENUMERATION_CUE,
-    ROLE_SUBTASK_UNIT_NOUN, ROLE_TASK_ATOMICITY_PREDICATE, ROLE_TASK_DECOMPOSITION_ACTION,
-    ROLE_TASK_FIRST_STEP_CUE,
-};
 use crate::meta_frame::AtomicityReason;
-use crate::task_decomposition::{record_task_decomposition, stated_task, Decomposition};
+use crate::seed::{
+    self, ROLE_DECOMPOSABLE_TASK_NOUN, ROLE_SUBTASK_ENUMERATION_CUE, ROLE_SUBTASK_UNIT_NOUN,
+    ROLE_TASK_ATOMICITY_PREDICATE, ROLE_TASK_DECOMPOSITION_ACTION, ROLE_TASK_FIRST_STEP_CUE,
+    localized_response,
+};
+use crate::task_decomposition::{Decomposition, record_task_decomposition, stated_task};
 
 use super::finalize_simple;
 
@@ -155,7 +155,10 @@ fn atomicity_answer(decomposition: &Decomposition, language: &str) -> (&'static 
         );
     }
     if let Some(reason) = decomposition.unenumerable_reason() {
-        return ("task_atomicity", seeded(language, unenumerable_intent(reason)));
+        return (
+            "task_atomicity",
+            seeded(language, unenumerable_intent(reason)),
+        );
     }
     let lead = response(language, "task_atomicity_no", "No.");
     (

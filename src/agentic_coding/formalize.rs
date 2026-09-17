@@ -432,7 +432,7 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
             &format_lino_record(
                 "preserved_span",
                 &[
-                    ("id", format!("preserved:{}", index)),
+                    ("id", format!("preserved:{index}")),
                     ("doc", annotation.doc.clone()),
                     ("span", format!("{}:{}", annotation.start, annotation.end)),
                     ("text", annotation.text.clone()),
@@ -543,7 +543,7 @@ fn segment_sentences(text: &str) -> Vec<Sentence> {
         boundaries
             .iter()
             .position(|offset| *offset >= byte_offset)
-            .unwrap_or(boundaries.len().saturating_sub(1))
+            .unwrap_or_else(|| boundaries.len().saturating_sub(1))
     };
     crate::formalization::segment::sentences(text)
         .into_iter()

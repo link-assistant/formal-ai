@@ -1,12 +1,40 @@
 use std::error::Error;
 use std::path::PathBuf;
 
-use crate::load_memory_or_empty;
+use crate::cli_memory::load_memory_or_empty;
 use formal_ai::promotion::open_draft_pull_request;
 use formal_ai::{
     BundleInfo, MemoryStore, PromotionRun, agent_info, apply_promotions, export_memory_full,
     parse_promotion_proposals, replay_promotion_gates,
 };
+
+/// Explicit acknowledgement for destructive promotion materialization.
+///
+/// Keeping this state typed prevents callers from accidentally confusing the
+/// confirmation bit with the other independent command modes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DestructiveConfirmation {
+    /// The caller did not acknowledge the destructive action.
+    Absent,
+    /// The caller explicitly acknowledged the destructive action.
+    Confirmed,
+}
+
+impl DestructiveConfirmation {
+    const fn is_confirmed(self) -> bool {
+        matches!(self, Self::Confirmed)
+    }
+}
+
+impl From<bool> for DestructiveConfirmation {
+    fn from(confirmed: bool) -> Self {
+        if confirmed {
+            Self::Confirmed
+        } else {
+            Self::Absent
+        }
+    }
+}
 
 /// Arguments for `formal-ai improve` (issue #656, E37).
 #[derive(Debug)]
@@ -24,7 +52,7 @@ pub struct ImproveArgs {
     /// Optional full-memory backup written before applying to `--memory`.
     pub backup: Option<PathBuf>,
     /// Required acknowledgement when `--apply` is used.
-    pub confirm: bool,
+    pub confirm: DestructiveConfirmation,
     /// Open the review as a draft pull request instead of printing the plan
     /// for a human to run (issue #1138 B7, plan 07 leaf 13).
     ///
@@ -55,12 +83,12 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
     // replay. No command is run and no file is touched without acknowledgement.
     if args.apply {
         require_destructive_confirmation(
-            args.confirm,
+            args.confirm.is_confirmed(),
             "apply the promotion plan and materialize seed edits",
         )?;
     }
 
-    let run = load_promotion_run(args.proposals.as_deref())?;
+    let run = load_promotion_run(args.proposals.as_deref(), args.memory.as_deref())?;
     println!("{}", run.links_notation());
 
     let promoted = run.promoted().len();
@@ -153,10 +181,33 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn load_promotion_run(proposals: Option<&std::path::Path>) -> Result<PromotionRun, Box<dyn Error>> {
-    let path = proposals
-        .ok_or("no open proposal document supplied; pass --proposals <promotion_proposals.lino>")?;
-    let text = std::fs::read_to_string(path)?;
+fn load_promotion_run(
+    proposals: Option<&std::path::Path>,
+    memory: Option<&std::path::Path>,
+) -> Result<PromotionRun, Box<dyn Error>> {
+    let discovered;
+    let path = if let Some(path) = proposals {
+        path
+    } else if let Some(memory_path) = memory {
+        discovered = formal_ai::dreaming_runtime::learning_cycle_record_path(memory_path);
+        discovered.as_path()
+    } else {
+        return Err(
+            "no open proposal document supplied; pass --proposals <promotion_proposals.lino> \
+             or --memory <memory.lino> to consume its latest dreaming-cycle proposals"
+                .into(),
+        );
+    };
+    let text = std::fs::read_to_string(path).map_err(|error| {
+        formal_ai::repository_workspace::render_protocol_template(
+            "promotion_proposals_read_error",
+            &[
+                ("path", &path.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+        .unwrap_or_else(|| String::from("promotion_proposals_read_error"))
+    })?;
     let parsed = parse_promotion_proposals(&text)
         .map_err(|error| format!("could not parse {}: {error}", path.display()))?;
     if parsed.is_empty() {

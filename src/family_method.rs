@@ -1,0 +1,265 @@
+//! Seed-declared generic handler-family interpreter (issue #1138 B9).
+//!
+//! The migration target is five operation families, not another collection of
+//! prompt handlers. Each family declares ordered evidence groups in
+//! `data/seed/handler-family-methods.lino`; the one matcher below evaluates all
+//! of them. Language surfaces and honest fallback rendering are data, while
+//! Rust retains only structural primitives such as counting numeric operands.
+
+use std::sync::OnceLock;
+
+use crate::engine::SymbolicAnswer;
+use crate::event_log::EventLog;
+use crate::language::detect as detect_language;
+use crate::seed::parser::{LinoNode, parse_lino};
+use crate::solver::ConversationTurn;
+use crate::solver_handlers::finalize_simple;
+
+const FAMILY_METHODS_LINO: &str = include_str!("../data/seed/handler-family-methods.lino");
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct EvidenceGroup {
+    name: String,
+    terms: Vec<EvidenceTerm>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum EvidenceTerm {
+    Substring(String),
+    Word(String),
+    Prefix(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FamilyMethod {
+    name: String,
+    priority: u32,
+    preempts: Vec<String>,
+    evidence_groups: Vec<EvidenceGroup>,
+    minimum_numbers: usize,
+    responses: Vec<(String, String)>,
+}
+
+impl FamilyMethod {
+    fn matches(&self, normalized: &str) -> bool {
+        let padded = format!(" {normalized} ");
+        let lexical = self.evidence_groups.iter().all(|group| {
+            group.terms.iter().any(|term| match term {
+                EvidenceTerm::Substring(cue) => {
+                    if cue.starts_with(' ') || cue.ends_with(' ') {
+                        padded.contains(cue)
+                    } else {
+                        normalized.contains(cue)
+                    }
+                }
+                EvidenceTerm::Word(word) => normalized
+                    .split(|character: char| !character.is_alphanumeric())
+                    .any(|token| token == word),
+                EvidenceTerm::Prefix(prefix) => normalized
+                    .split(|character: char| !character.is_alphanumeric())
+                    .any(|token| token.starts_with(prefix)),
+            })
+        });
+        lexical && numeric_operands(normalized).len() >= self.minimum_numbers
+    }
+
+    fn response(&self, language: &str, operand_count: usize) -> Option<String> {
+        self.responses
+            .iter()
+            .find(|(candidate, _)| candidate == language)
+            .or_else(|| {
+                self.responses
+                    .iter()
+                    .find(|(candidate, _)| candidate == "en")
+            })
+            .map(|(_, text)| {
+                text.replace(
+                    concat!("{", "operand_count", "}"),
+                    &operand_count.to_string(),
+                )
+            })
+    }
+}
+
+/// Interpret one request through the first matching seed-declared family.
+///
+/// `history` is recorded as evidence for dialogue queries. A caller that has no
+/// history gets the same honest no-evidence response rather than a fabricated
+/// recollection.
+#[must_use]
+pub fn try_family_method(
+    prompt: &str,
+    normalized: &str,
+    history: &[ConversationTurn],
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_family_method_selected(prompt, normalized, history, log, |_| true)
+}
+
+/// Interpret a matching family only when its seed record says it outranks the
+/// competing dispatcher result.
+///
+/// Families normally sit at the generic concept/unknown fallback boundary. A
+/// few already-grounded family shapes overlap an older specialist (for
+/// example, source-backed retrieval also contains the word "summarise"). The
+/// precedence relation belongs beside the family's evidence groups in seed,
+/// rather than in a Rust list or an unconditional early call that would shadow
+/// richer handlers.
+#[must_use]
+pub fn try_family_method_preempting(
+    prompt: &str,
+    normalized: &str,
+    history: &[ConversationTurn],
+    log: &mut EventLog,
+    competing_method: &str,
+) -> Option<SymbolicAnswer> {
+    try_family_method_selected(prompt, normalized, history, log, |family| {
+        family
+            .preempts
+            .iter()
+            .any(|candidate| candidate == competing_method)
+    })
+}
+
+fn try_family_method_selected(
+    prompt: &str,
+    normalized: &str,
+    history: &[ConversationTurn],
+    log: &mut EventLog,
+    eligible: impl Fn(&FamilyMethod) -> bool,
+) -> Option<SymbolicAnswer> {
+    let operands = numeric_operands(normalized);
+    let family = catalog()
+        .iter()
+        .filter(|family| eligible(family))
+        .filter(|family| family.matches(normalized))
+        .min_by_key(|family| family.priority)?;
+    let language = detect_language(prompt).slug();
+    let body = family.response(language, operands.len())?;
+
+    log.append("family_method", family.name.clone());
+    log.append(
+        "family_method:evidence_groups",
+        family
+            .evidence_groups
+            .iter()
+            .map(|group| group.name.as_str())
+            .collect::<Vec<_>>()
+            .join("|"),
+    );
+    if family.minimum_numbers > 0 {
+        log.append("family_method:operand_count", operands.len().to_string());
+    }
+    log.append("family_method:history_count", history.len().to_string());
+
+    Some(finalize_simple(
+        prompt,
+        log,
+        &family.name,
+        &format!("response:{}", family.name),
+        &body,
+        0.9,
+    ))
+}
+
+fn catalog() -> &'static [FamilyMethod] {
+    static CELL: OnceLock<Vec<FamilyMethod>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        parse_catalog(FAMILY_METHODS_LINO).unwrap_or_else(|error| panic!("{error}"))
+    })
+}
+
+fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
+    let tree = parse_lino(text);
+    let root = tree
+        .children
+        .iter()
+        .find(|node| node.name == "handler_family_methods")
+        .ok_or_else(|| String::from("handler_family_methods:missing_root"))?;
+    let mut families = Vec::new();
+    for node in root.children.iter().filter(|node| node.name == "family") {
+        let priority = node
+            .find_child_value("priority")
+            .parse::<u32>()
+            .map_err(|_| format!("handler_family_methods:{}:invalid_priority", node.id))?;
+        let minimum_numbers = node
+            .find_child_value("minimum_numbers")
+            .parse::<usize>()
+            .unwrap_or(0);
+        let evidence_groups = node
+            .children
+            .iter()
+            .filter(|child| child.name == "evidence_group")
+            .map(parse_evidence_group)
+            .collect::<Result<Vec<_>, _>>()?;
+        let responses = node
+            .children
+            .iter()
+            .filter(|child| child.name == "response")
+            .filter_map(|child| split_response(&child.id))
+            .collect::<Vec<_>>();
+        if node.id.is_empty() || evidence_groups.is_empty() || responses.is_empty() {
+            return Err(format!(
+                "handler_family_methods:{}:incomplete_family",
+                node.id
+            ));
+        }
+        families.push(FamilyMethod {
+            name: node.id.clone(),
+            priority,
+            preempts: node
+                .children
+                .iter()
+                .filter(|child| child.name == "preempts")
+                .map(|child| child.id.clone())
+                .filter(|name| !name.is_empty())
+                .collect(),
+            evidence_groups,
+            minimum_numbers,
+            responses,
+        });
+    }
+    families.sort_by_key(|family| family.priority);
+    Ok(families)
+}
+
+fn parse_evidence_group(node: &LinoNode) -> Result<EvidenceGroup, String> {
+    let terms = node
+        .children
+        .iter()
+        .filter_map(|child| match child.name.as_str() {
+            "cue" => Some(EvidenceTerm::Substring(child.id.to_lowercase())),
+            "word" => Some(EvidenceTerm::Word(child.id.to_lowercase())),
+            "prefix" => Some(EvidenceTerm::Prefix(child.id.to_lowercase())),
+            _ => None,
+        })
+        .filter(|term| match term {
+            EvidenceTerm::Substring(value)
+            | EvidenceTerm::Word(value)
+            | EvidenceTerm::Prefix(value) => !value.is_empty(),
+        })
+        .collect::<Vec<_>>();
+    if node.id.is_empty() || terms.is_empty() {
+        return Err(format!(
+            "handler_family_methods:{}:empty_evidence_group",
+            node.id
+        ));
+    }
+    Ok(EvidenceGroup {
+        name: node.id.clone(),
+        terms,
+    })
+}
+
+fn split_response(value: &str) -> Option<(String, String)> {
+    let (language, text) = value.split_once(char::is_whitespace)?;
+    let text = text.trim().trim_matches('"').replace("\"\"", "\"");
+    (!language.is_empty() && !text.is_empty()).then(|| (language.to_owned(), text))
+}
+
+fn numeric_operands(text: &str) -> Vec<String> {
+    text.split(|character: char| !character.is_numeric() && character != '-' && character != '.')
+        .filter(|token| token.chars().any(char::is_numeric))
+        .map(str::to_owned)
+        .collect()
+}

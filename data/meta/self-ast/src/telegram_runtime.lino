@@ -2,27 +2,36 @@ self_ast_census
   target src/telegram_runtime.rs
   language rust
   fidelity signature
-  byte_len 11108
-  line_count 311
-  content_id source_module_67881e809be42e5b
-  symbol_count 19
+  byte_len 20060
+  line_count 560
+  content_id source_module_4f48385355107f99
+  symbol_count 28
   symbols
-    enum TelegramPollingRuntimeError 18 21
-    function fmt 24 29
-    function from 35 37
-    trait TelegramTransport 42 70
-    function get_updates 44 44
-    function send_message 46 50
-    function edit_message_text 56 62
-    function sleep_between_edits 67 69
-    struct CurlTelegramTransport 73 75
-    function new 79 83
-    function run_curl 85 105
-    function get_updates 109 120
-    function send_message 122 143
-    function edit_message_text 145 154
-    function run_telegram_polling 158 165
-    function run_telegram_polling_with_transport 169 223
-    function run_telegram_webhook_server 226 228
-    function send_reply 230 298
-    function sleep_with_cancellation 300 311
+    const TELEGRAM_EXECUTION_HARD_LIMIT 23 23
+    enum TelegramCodeExecution 28 50
+    function answer 55 62
+    function execute_telegram_code_request 71 199
+    function execute_telegram_code_request_from_environment 205 214
+    function requested_python 216 243
+    function initial_iteration_bound 245 251
+    function localized 253 255
+    function render 257 263
+    enum TelegramPollingRuntimeError 267 270
+    function fmt 273 278
+    function from 284 286
+    trait TelegramTransport 291 319
+    function get_updates 293 293
+    function send_message 295 299
+    function edit_message_text 305 311
+    function sleep_between_edits 316 318
+    struct CurlTelegramTransport 322 324
+    function new 328 332
+    function run_curl 334 354
+    function get_updates 358 369
+    function send_message 371 392
+    function edit_message_text 394 403
+    function run_telegram_polling 407 414
+    function run_telegram_polling_with_transport 418 472
+    function run_telegram_webhook_server 475 477
+    function send_reply 479 547
+    function sleep_with_cancellation 549 560

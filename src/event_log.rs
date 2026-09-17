@@ -48,6 +48,13 @@ impl EventLog {
         id
     }
 
+    /// Append a machine-addressable payload without hand-building a textual
+    /// key/value record at every call site.
+    pub fn append_fields(&mut self, kind: &'static str, fields: &[(&str, &str)]) -> String {
+        let payload = render_fields(fields);
+        self.append(kind, payload)
+    }
+
     #[must_use]
     pub fn events(&self) -> &[Event] {
         &self.events
@@ -197,6 +204,16 @@ impl EventLog {
         }
         Ok(self.events.len())
     }
+}
+
+/// Render the canonical compact form used by structured event payloads.
+#[must_use]
+pub fn render_fields(fields: &[(&str, &str)]) -> String {
+    fields
+        .iter()
+        .map(|(name, value)| format!("{name}={value}"))
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 /// Role of a planned step in a recursively-composite (fractal) thinking tree.
@@ -689,6 +706,18 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             // rather than being reduced to an opaque event id.
             "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
             "program_gap" => format!("program_gap:{}", event.payload.replace(' ', "_")),
+            // Verifiable-task observations are themselves the evidence. Keep
+            // the check slug, executed value and gap/research detail readable;
+            // replacing them with the event digest makes it impossible for a
+            // consumer to tell which verification actually passed.
+            "verifiable_task:check"
+            | "verifiable_task:executed"
+            | "verifiable_task:gap"
+            | "verifiable_task:searched"
+            | "verifiable_task:uncorroborated"
+            | "verifiable_task:membership_source" => {
+                format!("{}:{}", event.kind, event.payload)
+            }
             "memory_program_compiled" => format!("memory_program_compiled:{}", event.id),
             "memory_program_execution" => format!("memory_program_execution:{}", event.id),
             "skill_learning_proposal" => {
@@ -706,6 +735,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "network_fetch" => format!("network_fetch:{}", event.id),
             "calculation:engine" => format!("calculation:engine:{}", event.payload),
             "calculation:lino" => format!("calculation:lino:{}", event.payload),
+            "method:learned:operations_verified" => {
+                format!("method:learned:operations_verified:{}", event.payload)
+            }
             "intent" => format!("intent:{}", event.payload),
             "program_parameter:language" => {
                 format!("program_parameter:language:{}", event.payload)

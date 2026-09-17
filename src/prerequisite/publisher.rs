@@ -32,6 +32,10 @@ const REFUSED_NOT_THE_PINNED_PUBLISHER: &str = "host_is_not_the_pinned_publisher
 /// Why a candidate host was refused when no publisher is pinned at all.
 const REFUSED_NO_PINNED_PUBLISHER: &str = "no_pinned_publisher_for_this_program";
 
+/// Typed setup notation was not present in otherwise attributable publisher
+/// bytes. Prose is evidence for a human, not an executable process request.
+const REFUSED_NO_TYPED_RECIPE: &str = "publisher_payload_has_no_typed_setup_recipe";
+
 /// An install procedure, with the provenance that makes it trustable.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SetupProcedure {
@@ -56,13 +60,21 @@ pub struct SetupProcedure {
 /// One ordered step of a setup procedure.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SetupStep {
-    /// The command line exactly as the publisher documents it.
+    /// Human-readable rendering of the documented call, retained as evidence.
+    /// Execution uses `program` and `arguments`, never a shell parser.
     pub command: String,
+    /// Exact executable to resolve under the granted environment.
+    pub program: String,
+    /// Exact argument vector. Shell punctuation remains ordinary data.
+    pub arguments: Vec<String>,
     /// Where the step is allowed to write. A step outside the workspace root is
     /// refused before execution, whatever the fetched text says.
     pub writes_under: PathBuf,
     /// Expected artifact digest, when the publisher documents one.
     pub digest: Option<String>,
+    /// Whether this step needs network access. Process permission does not
+    /// imply network permission.
+    pub requires_network: bool,
 }
 
 /// One row of `data/seed/setup-publishers.lino`: which host is authoritative for
@@ -100,16 +112,227 @@ pub fn seed_publishers() -> Vec<SetupPublisher> {
         .collect()
 }
 
-/// The documented procedure URL seed carries for one program.
-fn seed_documentation_url(program: &str) -> Option<String> {
-    let root = parse_lino(SETUP_PUBLISHERS_LINO);
-    root.children
+/// Whether an attributable URL names exactly `expected`, not a lookalike whose
+/// path or suffix merely contains it.
+fn url_has_host(url: &str, expected: &str) -> bool {
+    let without_scheme = url
+        .strip_prefix("https://")
+        .or_else(|| url.strip_prefix("http://"))
+        .unwrap_or(url);
+    let authority = without_scheme.split('/').next().unwrap_or_default();
+    let host_port = authority.rsplit('@').next().unwrap_or_default();
+    let host = host_port.split(':').next().unwrap_or_default();
+    host.eq_ignore_ascii_case(expected)
+}
+
+fn safe_program_name(program: &str) -> bool {
+    !program.is_empty()
+        && program
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || b"-_.+".contains(&byte))
+}
+
+fn arguments(node: &crate::seed::parser::LinoNode) -> Option<Vec<String>> {
+    node.children
         .iter()
-        .find(|node| {
-            node.find_child_value("record_type") == RECORD_PUBLISHER
-                && node.find_child_value("program") == program
+        .filter(|child| child.name == "argument")
+        .map(|child| {
+            if child
+                .id
+                .chars()
+                .any(|character| matches!(character, '\0' | '\n' | '\r'))
+            {
+                None
+            } else {
+                Some(child.id.clone())
+            }
         })
-        .map(|node| node.find_child_value("documentation").to_owned())
+        .collect()
+}
+
+fn display_command(program: &str, arguments: &[String]) -> String {
+    let mut rendered = program.to_owned();
+    for argument in arguments {
+        rendered.push(' ');
+        rendered.push_str(argument);
+    }
+    rendered
+}
+
+/// Formalize one retrieved first-party document into the deliberately small
+/// setup grammar. Ordinary prose cannot cross this boundary: every process is
+/// a `program` plus repeated `argument` links, with an explicit write scope and
+/// network declaration.
+fn procedure_from_sense(
+    need: &PrerequisiteNeed,
+    publisher: &SetupPublisher,
+    sense: &crate::concept_lookup::ConceptSense,
+) -> Option<SetupProcedure> {
+    if !url_has_host(&sense.source_url, &publisher.host) {
+        return None;
+    }
+    let root = parse_lino(&sense.gloss);
+    let recipe = root
+        .children
+        .iter()
+        .find(|node| node.name == "setup_procedure")?;
+    if recipe.find_child_value("program") != need.program {
+        return None;
+    }
+    let platform = recipe.find_child_value("platform");
+    if !platform.is_empty() && platform != "any" && platform != need.platform.slug() {
+        return None;
+    }
+
+    let mut steps = Vec::new();
+    for node in recipe.children.iter().filter(|node| node.name == "step") {
+        let program = node.find_child_value("program");
+        if !safe_program_name(program) {
+            return None;
+        }
+        let arguments = arguments(node)?;
+        let writes_under = node.find_child_value("writes_under");
+        if writes_under.is_empty() {
+            return None;
+        }
+        steps.push(SetupStep {
+            command: display_command(program, &arguments),
+            program: program.to_owned(),
+            arguments,
+            writes_under: PathBuf::from(writes_under),
+            digest: (!node.find_child_value("digest").is_empty())
+                .then(|| node.find_child_value("digest").to_owned()),
+            requires_network: matches!(
+                node.find_child_value("requires_network"),
+                "true" | "required"
+            ),
+        });
+    }
+    if steps.is_empty() {
+        return None;
+    }
+
+    let postcondition = recipe
+        .children
+        .iter()
+        .find(|node| node.name == "postcondition")?;
+    let probe_program = postcondition.find_child_value("program");
+    if !safe_program_name(probe_program) {
+        return None;
+    }
+    let probe_arguments = arguments(postcondition)?;
+
+    Some(SetupProcedure {
+        program: need.program.clone(),
+        source_id: sense.source_id.clone(),
+        source_url: sense.source_url.clone(),
+        content_id: sense.sha256.clone(),
+        platform: need.platform,
+        steps,
+        postcondition: Some(super::probe::ToolchainProbe::new(
+            probe_program,
+            &probe_arguments
+                .iter()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+        )),
+    })
+}
+
+/// Build a workspace-scoped recipe for a Python package in a pinned Git repository.
+///
+/// This is a general package recipe: the caller
+/// supplies the target capability, repository, immutable revision and import
+/// probe, while the publisher registry decides whether that source is trusted.
+pub fn pinned_python_repository_procedure(
+    program: &str,
+    repository_url: &str,
+    revision: &str,
+    import_module: &str,
+    platform: Platform,
+) -> Result<SetupProcedure, PublisherRefusal> {
+    let Some(publisher) = seed_publishers()
+        .into_iter()
+        .find(|publisher| publisher.program == program)
+    else {
+        return Err(PublisherRefusal {
+            host: repository_url.to_owned(),
+            program: program.to_owned(),
+            reason: String::from(REFUSED_NO_PINNED_PUBLISHER),
+        });
+    };
+    let immutable_revision =
+        revision.len() == 40 && revision.bytes().all(|byte| byte.is_ascii_hexdigit());
+    let safe_import = !import_module.is_empty()
+        && import_module
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'.');
+    if !url_has_host(repository_url, &publisher.host) || !immutable_revision || !safe_import {
+        return Err(PublisherRefusal {
+            host: repository_url.to_owned(),
+            program: program.to_owned(),
+            reason: [REFUSED_NOT_THE_PINNED_PUBLISHER, publisher.host.as_str()].join(":"),
+        });
+    }
+
+    let repository = repository_url.trim_end_matches('/');
+    let package = format!("git+{repository}.git@{revision}");
+    let create_arguments = vec![
+        String::from("-m"),
+        String::from("venv"),
+        String::from("{prefix}"),
+    ];
+    let install_arguments = vec![
+        String::from("-m"),
+        String::from("pip"),
+        String::from("install"),
+        String::from("--disable-pip-version-check"),
+        package,
+    ];
+    let content_id = crate::engine::stable_id(
+        "setup-procedure",
+        &[program, repository_url, revision, import_module].join("\u{1f}"),
+    );
+    let Some(import_probe) = crate::coding::python_render::runtime_template(
+        "publisher_python_import",
+        &[("module", import_module)],
+    ) else {
+        return Err(PublisherRefusal {
+            host: repository_url.to_owned(),
+            program: program.to_owned(),
+            reason: String::from("missing_runtime_template:publisher_python_import"),
+        });
+    };
+
+    Ok(SetupProcedure {
+        program: program.to_owned(),
+        source_id: publisher.source_id,
+        source_url: format!("{repository_url}/tree/{revision}"),
+        content_id,
+        platform,
+        steps: vec![
+            SetupStep {
+                command: display_command("python3", &create_arguments),
+                program: String::from("python3"),
+                arguments: create_arguments,
+                writes_under: PathBuf::from("."),
+                digest: None,
+                requires_network: false,
+            },
+            SetupStep {
+                command: display_command("python3", &install_arguments),
+                program: String::from("python3"),
+                arguments: install_arguments,
+                writes_under: PathBuf::from("."),
+                digest: None,
+                requires_network: true,
+            },
+        ],
+        postcondition: Some(super::probe::ToolchainProbe::new(
+            "python3",
+            &["-c", &import_probe],
+        )),
+    })
 }
 
 /// Why a candidate procedure was refused, recorded rather than dropped.
@@ -205,7 +428,7 @@ pub fn search_setup_procedure<L: SourceLookup>(
 
     let mut consulted = Vec::new();
     let mut refusals = Vec::new();
-    let mut retrieved_content_id = String::new();
+    let mut procedure = None;
 
     match lookup.lookup(&record, bounds) {
         LookupOutcome::Found(senses) => {
@@ -214,9 +437,16 @@ pub fn search_setup_procedure<L: SourceLookup>(
                     consulted.push(sense.source_id.clone());
                 }
                 match pinned.as_ref() {
-                    Some(publisher) if sense.source_url.contains(publisher.host.as_str()) => {
-                        if retrieved_content_id.is_empty() {
-                            retrieved_content_id = sense.sha256.clone();
+                    Some(publisher) if url_has_host(&sense.source_url, &publisher.host) => {
+                        if procedure.is_none() {
+                            procedure = procedure_from_sense(need, publisher, &sense);
+                            if procedure.is_none() {
+                                refusals.push(PublisherRefusal {
+                                    host: sense.source_url.clone(),
+                                    program: need.program.clone(),
+                                    reason: String::from(REFUSED_NO_TYPED_RECIPE),
+                                });
+                            }
                         }
                     }
                     Some(publisher) => refusals.push(PublisherRefusal {
@@ -239,7 +469,7 @@ pub fn search_setup_procedure<L: SourceLookup>(
                     consulted.push(outcome.source_id.clone());
                 }
                 match pinned.as_ref() {
-                    Some(publisher) if outcome.detail.contains(publisher.host.as_str()) => {}
+                    Some(publisher) if url_has_host(&outcome.detail, &publisher.host) => {}
                     Some(publisher) => refusals.push(PublisherRefusal {
                         host: outcome.detail.clone(),
                         program: need.program.clone(),
@@ -255,25 +485,6 @@ pub fn search_setup_procedure<L: SourceLookup>(
             }
         }
     }
-
-    // Authority is pinned, never ranked. Without a pinned publisher the search
-    // is exhausted and says which sources it consulted.
-    let procedure = pinned.map(|publisher| {
-        let source_url = seed_documentation_url(&need.program)
-            .filter(|url| !url.trim().is_empty())
-            .unwrap_or_else(|| publisher.documentation_url());
-        SetupProcedure {
-            program: need.program.clone(),
-            source_id: publisher.source_id.clone(),
-            source_url,
-            content_id: retrieved_content_id,
-            platform: need.platform,
-            steps: Vec::new(),
-            postcondition: Some(super::probe::seed_probe_for_program(&need.program).unwrap_or_else(
-                || super::probe::ToolchainProbe::new(&need.program, &["--version"]),
-            )),
-        }
-    });
 
     PublisherSearch {
         procedure,

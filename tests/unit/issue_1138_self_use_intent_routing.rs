@@ -220,6 +220,9 @@ fn a_speak_in_language_request_keeps_the_language_it_names() {
     let mut offenders = Vec::new();
     for case in family("speak_in_language") {
         let answer = solve_through_capability_table(&case.prompt).answer;
+        if case.language == "en" {
+            assert_eq!(answer, "Hindi (in hindi): नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?");
+        }
         if is_a_search_instead_of_an_answer(&answer) {
             offenders.push(format!("{}: sent to the web", case.language));
         }
@@ -257,10 +260,16 @@ fn a_speak_in_language_request_keeps_the_language_it_names() {
 fn a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses() {
     let marker = field("schedule_paraphrase", "expected_marker");
     let reported = field("schedule_paraphrase", "reported_prompt");
+    let reported_answer = solve_through_capability_table(&reported).answer;
+    assert_eq!(
+        reported_answer
+            .lines()
+            .find(|line| line.starts_with("SUMMARY:")),
+        Some("SUMMARY:С александром"),
+        "the dynamic calendar timestamps are normalized by documenting its exact summary line"
+    );
     assert!(
-        solve_through_capability_table(&reported)
-            .answer
-            .contains(&marker),
+        reported_answer.contains(&marker),
         "the reported #869 prompt produced a calendar event when wave F was recorded; \
          losing that is a regression, not progress"
     );
@@ -304,6 +313,56 @@ fn spanish_routing_variations_reach_their_capability() {
          from the variation matrix and from every capability cue list. Spanish requests \
          sent to the web instead of their capability:\n{}",
         offenders.join("\n")
+    );
+}
+
+/// A Spanish write stem is one act observation shared by all typed workspace
+/// objects. Inflection may change the surface, but a concrete destination path
+/// keeps the table authoritative over a generic concept-lookup promotion.
+#[test]
+fn spanish_typed_write_variations_keep_the_table_authoritative() {
+    for prompt in [
+        "Escribe un saludo en notes.txt",
+        "Escriba un saludo en notes.txt",
+        "Quiero escribir un saludo en notes.txt",
+    ] {
+        let routed = route(prompt, ROUTED_CAPABILITIES);
+        assert_eq!(
+            routed,
+            RoutingOutcome::Routed {
+                capability: String::from("write_file"),
+            },
+            "the Spanish compose stem plus a typed path must select write_file: {prompt:?}"
+        );
+        let answer = solve_through_capability_table(prompt);
+        assert_eq!(
+            answer.answer,
+            "This request routes to the `write_file` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it."
+        );
+        assert!(
+            !is_a_search_instead_of_an_answer(&answer.answer),
+            "a typed workspace object must not fall through to concept lookup or web search: {prompt:?}"
+        );
+    }
+}
+
+/// The language-demonstration exception is deliberately narrower than
+/// language-name routing as a whole. An explicit translation action retains
+/// the translation recipe and its source operand.
+#[test]
+fn a_real_translation_recipe_is_not_preempted_by_language_demonstration() {
+    let answer = solve("Translate \"hello\" to Hindi.");
+    assert!(
+        answer.intent.starts_with("translate_"),
+        "an explicit translation recipe must remain a translation, got intent {:?}\n{}",
+        answer.intent,
+        answer.links_notation
+    );
+    assert!(
+        !answer
+            .links_notation
+            .contains("capability=response_language_demonstration"),
+        "a target language inside a real translation must not turn into a response-language demonstration"
     );
 }
 

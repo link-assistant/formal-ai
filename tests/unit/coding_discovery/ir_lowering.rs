@@ -84,6 +84,28 @@ fn every_node() -> Vec<(&'static str, IrNode)> {
             },
         ),
         (
+            "RecursiveReduce",
+            IrNode::RecursiveReduce {
+                state: vec!["state".to_owned()],
+                target: vec![*zero()],
+                item: vec!["offset".to_owned()],
+                items: Box::new(IrNode::Literal {
+                    text: "[-1]".to_owned(),
+                    ty: IrType::Sequence(Box::new(IrType::Integer)),
+                }),
+                next: vec![*zero()],
+                admissible: None,
+                base_test: Box::new(IrNode::Literal {
+                    text: "true".to_owned(),
+                    ty: IrType::Boolean,
+                }),
+                base: zero(),
+                local: zero(),
+                reducer: "reduce_min".to_owned(),
+                combine: "integer_add".to_owned(),
+            },
+        ),
+        (
             "Condition",
             IrNode::Condition {
                 test: zero(),
@@ -158,14 +180,20 @@ fn the_same_ir_lowers_to_python_and_rust() {
             }),
             initial: Box::new(IrNode::Literal {
                 text: "[]".to_owned(),
-                ty: IrType::Sequence(Box::new(IrType::Text)),
+                ty: run_sequence_type(),
             }),
             body: Box::new(IrNode::Apply {
                 fragment: "extend_run".to_owned(),
-                arguments: vec![IrNode::Parameter {
-                    name: "character".to_owned(),
-                    ty: IrType::Text,
-                }],
+                arguments: vec![
+                    IrNode::Parameter {
+                        name: "runs".to_owned(),
+                        ty: run_sequence_type(),
+                    },
+                    IrNode::Parameter {
+                        name: "character".to_owned(),
+                        ty: IrType::Text,
+                    },
+                ],
             }),
         },
     );
@@ -204,18 +232,31 @@ fn the_same_ir_lowers_to_python_and_rust() {
                 }),
                 initial: Box::new(IrNode::Literal {
                     text: "[]".to_owned(),
-                    ty: IrType::Sequence(Box::new(IrType::Text)),
+                    ty: run_sequence_type(),
                 }),
                 body: Box::new(IrNode::Apply {
                     fragment: "extend_run".to_owned(),
-                    arguments: vec![IrNode::Parameter {
-                        name: "character".to_owned(),
-                        ty: IrType::Text,
-                    }],
+                    arguments: vec![
+                        IrNode::Parameter {
+                            name: "runs".to_owned(),
+                            ty: run_sequence_type(),
+                        },
+                        IrNode::Parameter {
+                            name: "character".to_owned(),
+                            ty: IrType::Text,
+                        },
+                    ],
                 }),
             },
         )
         .content_id(),
         "the two language requests share one IR identity"
     );
+}
+
+fn run_sequence_type() -> IrType {
+    IrType::Sequence(Box::new(IrType::Pair(
+        Box::new(IrType::Text),
+        Box::new(IrType::Integer),
+    )))
 }

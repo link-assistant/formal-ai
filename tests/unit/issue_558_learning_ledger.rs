@@ -197,6 +197,43 @@ fn committed_ledger_artifact_matches_the_generated_ledger() {
 }
 
 #[test]
+fn canonical_ledger_is_loaded_from_the_link_store_backed_seed() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let seed = fs::read_to_string(root.join("data/seed/approved-lessons.lino"))
+        .expect("approved-lessons seed should be committed");
+    let loaded = LearningLedger::from_approved_lessons_seed(&seed)
+        .expect("approved lessons must cross the link-store projection");
+    assert_eq!(loaded, canonical_ledger());
+
+    // A second reviewed lesson is a data append, not another hard-coded arm.
+    let extended = format!(
+        "{seed}{}",
+        concat!(
+            "  lesson promoted_lesson_second\n",
+            "    case_id repair_case_second\n",
+            "    failure_prompt \"Compute the checksum twice\"\n",
+            "    module_path src/checksum.rs\n",
+            "    rule_id verify_checksum_twice\n",
+            "    modifier verify_twice\n",
+            "    resolved_task checksum_with_verification\n",
+            "    benchmark_suite checksum_regression\n",
+            "    benchmark_passed 5\n",
+            "    reviewer maintainer-two\n",
+        )
+    );
+    let expanded = LearningLedger::from_approved_lessons_seed(&extended)
+        .expect("an appended data row must load without Rust changes");
+    assert_eq!(expanded.len(), 2);
+    assert_eq!(
+        expanded
+            .lesson_for("Compute the checksum twice")
+            .expect("second data row is queryable")
+            .resolved_task,
+        "checksum_with_verification"
+    );
+}
+
+#[test]
 fn rejection_slugs_and_approval_accessors_are_stable() {
     assert_eq!(PromotionRejected::HumanDeclined.slug(), "human_declined");
     assert_eq!(PromotionRejected::TestsNotGreen.slug(), "tests_not_green");

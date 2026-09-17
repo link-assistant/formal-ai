@@ -1,9 +1,11 @@
 //! Natural-language tool/API execution with explicit policy gates.
 
-use crate::associative_package::{default_package_store, PackagePermissionDecision};
+use crate::associative_package::{PackagePermissionDecision, default_package_store};
 use crate::calculation::evaluate_calculation;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::execution_intent::explicit_named_execution_target;
+use crate::language::detect as detect_language;
 use crate::seed;
 use crate::solver_helpers::{
     extract_backticked, extract_javascript_program, extract_quoted_phrase,
@@ -21,6 +23,9 @@ pub fn try_natural_language_tool_request(
     if let Some(answer) = try_javascript_code_execution(prompt, log, agent_mode) {
         return Some(answer);
     }
+    if let Some(answer) = try_unavailable_code_execution(prompt, normalized, log) {
+        return Some(answer);
+    }
     if let Some(answer) = try_calculator_api_call(prompt, normalized, log, agent_mode) {
         return Some(answer);
     }
@@ -31,6 +36,45 @@ pub fn try_natural_language_tool_request(
         return Some(answer);
     }
     None
+}
+
+/// Refuse an explicit run request honestly when no executable language backend
+/// claimed it above.
+///
+/// The request vocabulary and reply both live in the multilingual seed.  This
+/// fallback therefore generalizes to added spellings and languages without a
+/// source-code branch, while staying behind every actually executable runtime.
+fn try_unavailable_code_execution(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let language = detect_language(prompt).slug();
+    let requested = seed::response_values_for("code_execution_request_markers", language)?
+        .iter()
+        .any(|marker| normalized.contains(&marker.to_lowercase()));
+    if !requested {
+        return None;
+    }
+
+    let mut body = seed::localized_response("code_execution_refused", language)?;
+    if let Some(target) = explicit_named_execution_target(prompt) {
+        log.append("execution:requested_target", target.clone());
+        body.push_str("\n`");
+        body.push_str(&target);
+        body.push('`');
+    }
+    log.append("execution:not_observed", "backend_unavailable".to_owned());
+    log.append("execution_status", "not_observed".to_owned());
+    log.append("execution_environment", "unconfigured".to_owned());
+    Some(finalize_simple(
+        prompt,
+        log,
+        "code_execution_refused",
+        "response:code_execution_refused",
+        &body,
+        1.0,
+    ))
 }
 
 fn try_javascript_code_execution(

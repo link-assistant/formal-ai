@@ -218,7 +218,12 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     // neither counted nor ledgered, and a migration could have lowered the
     // ratchet by moving a file out of the scanned directory. The rise to 49 is a
     // corrected undercount recorded in the ledger's `note`, not new debt.
-    assert_eq!(actual.len(), 49);
+    // Plan 08 then added one generic interpreter of seed-declared verifiable
+    // tasks. It is compiled core machinery rather than another domain handler.
+    // The URL parsing split then exposed another generic interpreter. Its
+    // structural parser reads language evidence from seed roles, so recursive
+    // source count rises while migration debt continues to fall.
+    assert_eq!(actual.len(), 51);
     assert_eq!(
         entries
             .iter()
@@ -231,8 +236,8 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
             .iter()
             .filter(|entry| entry.disposition == "promote")
             .count(),
-        0,
-        "mixed handler files cannot be promoted into the minimal core"
+        2,
+        "both generic seed-driven interpreters are promoted"
     );
     for entry in entries
         .iter()
@@ -374,7 +379,11 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // `file_edit_position_*` cues of an additive edit -- moving the floor
     // from 96 to 101: each was a hardcoded English sentence or a missing route
     // before it was data. None is allowed to become a metadata gap.
-    assert_eq!(coding_records, 101, "coding-path regression floor");
+    // Issue #1138 moved five repository-workflow meanings out of the coding
+    // task source into their own complete domain source, then added four
+    // language-neutral repository-target meanings here. The net floor is 100;
+    // none of the nine records became an unreviewed metadata gap.
+    assert_eq!(coding_records, 100, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the

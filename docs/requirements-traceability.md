@@ -285,6 +285,7 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R223 | 580 | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
 | R224 | 581 | pre-2026-07 (undated); issue #195 | tests/unit/docs_requirements.rs | not yet confirmed |
 | R225 | 582 | pre-2026-07 (undated); issue #195 | issue-level coverage (not row-pinned): tests/unit/specification/agent_isolation.rs | not yet confirmed |
+| R195-7 | n/a | PR for #1138 (issue #195 completion) | tests/unit/issue_1138_execution_box.rs; tests/unit/issue_1138_telegram_execution.rs | not yet confirmed |
 | R226 | 593 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
 | R227 | 594 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
 | R228 | 595 | pre-2026-07 (undated); issue #196 | none recorded | not yet confirmed |
@@ -403,7 +404,22 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R341 | 929 | PR #560 (issue #559) | tests/unit/specification/cue_lexicon.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_cue_lexicon_is_traceable | not yet confirmed |
 | R342 | 930 | PR #560 (issue #559) | tests/unit/specification/skill_ledger.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_skill_ledger_is_traceable | not yet confirmed |
 | R343 | 931 | PR #560 (issue #559) | tests/unit/specification/recipe_interpreter.rs; tests/unit/docs_requirements_issue_559.rs::issue_559_recipe_interpreter_is_traceable | not yet confirmed |
-| R344 | 932 | PR #560 (issue #559) | tests/unit/issue_699_handler_migration.rs | not yet confirmed |
+| R344 | 932 | PR #560 (issue #559) | tests/unit/issue_699_handler_migration.rs; tests/unit/specification/obligation_ledger.rs | not yet confirmed |
+| R1138-B5-1 | n/a | PR for #1138 | tests/unit/specification/execution_evidence.rs | not yet confirmed |
+| R1138-B5-2 | n/a | PR for #1138 | tests/unit/specification/obligation_ledger.rs | not yet confirmed |
+| R1138-B5-3 | n/a | PR for #1138 | tests/unit/issue_1138_obligation_evidence.rs | not yet confirmed |
+| R1138-6-1 | n/a | PR for #1138 | tests/unit/issue_1138_toolchain_probe.rs; tests/unit/issue_1138_prerequisite_need.rs | not yet confirmed |
+| R1138-6-2 | n/a | PR for #1138 | tests/unit/issue_1138_surface_honesty.rs | not yet confirmed |
+| R1138-6-3 | n/a | PR for #1138 | tests/unit/issue_1138_prerequisite_need.rs | not yet confirmed |
+| R1138-6-4 | n/a | PR for #1138 | tests/unit/issue_1138_prerequisite_need.rs | not yet confirmed |
+| R1138-6-5 | n/a | PR for #1138 | tests/unit/issue_1138_setup_publisher.rs | not yet confirmed |
+| R1138-6-6 | n/a | PR for #1138 | tests/unit/issue_1138_install_scope.rs | not yet confirmed |
+| R1138-6-7 | n/a | PR for #1138 | tests/unit/issue_1138_setup_publisher.rs; tests/unit/issue_1138_install_scope.rs | not yet confirmed |
+| R1138-6-8 | n/a | PR for #1138 | tests/unit/specification/prerequisite_recipe.rs; tests/unit/issue_1138_prerequisite_need.rs | not yet confirmed |
+| R1138-6-9 | n/a | PR for #1138 | tests/unit/issue_1138_execution_box.rs; tests/unit/issue_1138_install_scope.rs | not yet confirmed |
+| R1138-6-10 | n/a | PR for #1138 | tests/unit/issue_1138_execution_box.rs; tests/unit/issue_1138_named_tests.rs | not yet confirmed |
+| R1138-6-11 | n/a | PR for #1138 | tests/unit/issue_1138_surface_honesty.rs; tests/web/issue-1138-browser-runtime.test.mjs | not yet confirmed |
+| R1138-6-12 | n/a | PR for #1138 | tests/unit/issue_1138_telegram_execution.rs; tests/web/issue-1138-execution-parity.test.mjs | not yet confirmed |
 | R345 | 956 | PR #564 (issue #563) | tests/unit/specification/summarization_pipeline.rs::repository_file_summary_recurses_into_markdown_embedded_grammars | not yet confirmed |
 | R346 | 957 | PR #564 (issue #563) | none recorded | not yet confirmed |
 | R347 | 958 | PR #564 (issue #563) | none recorded | not yet confirmed |
@@ -738,9 +754,9 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R914-5 | 1701 | not delivered — untracked | none — untracked | not yet confirmed |
 | R914-6 | 1702 | not delivered — untracked | none — untracked | not yet confirmed |
 | R914-7 | 1703 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
-| R914-8 | 1704 | not delivered — tracked in #873 | none — tracked in #873 | not yet confirmed |
-| R914-9 | 1705 | not delivered — tracked in #848 | none — tracked in #848 | not yet confirmed |
-| R914-10 | 1706 | not delivered — tracked in #527 | none — tracked in #527 | not yet confirmed |
+| R914-8 | 1704 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/composition.rs | not yet confirmed |
+| R914-9 | 1705 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/issue_1138_learned_items_change_answers.rs | not yet confirmed |
+| R914-10 | 1706 | delivered 2026-08-14; PR #1003 (issue #920) | tests/unit/issue_920_question_necessity.rs | not yet confirmed |
 | R914-11 | 1707 | not delivered — untracked | none — untracked | not yet confirmed |
 | R914-12 | 1708 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
 | R914-13 | 1709 | pre-2026-07 (undated); issue #914 | issue-level coverage (not row-pinned): tests/unit/docs_requirements_issue_914.rs | not yet confirmed |
@@ -789,7 +805,7 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R1021-11 | 2280 | PR #1027 (issue #1021), 2026-08-20 | tests/unit/issue_1021_write_path.rs::the_ladder_has_both_rungs_and_an_opt_in_to_climb_the_first; ::a_command_the_operator_named_is_not_the_ladders_business; `experiments/issue_916_write_effect_ladder/test_ladder.py` (`SandboxResetTests`, `ExpectedCommandTests`, `MutatingLadderDatasetTests` -- 30 judge tests, no server needed) | measured 2026-08-20 against the real release binary: `experiments/issue_916_write_effect_ladder/run_write_effect_ladder.sh` reports 16/16 rungs green including `824.L1`-`824.L5`, and the same run against the committed baseline reports `baseline 11/11 -> now 16/16`, so the ratchet moved up rather than sideways; log kept in docs/case-studies/issue-1021/logs/write-effect-ladder-after.log |
 | R1021-12 | 2281 | PR #1027 (issue #1021), 2026-08-20 | tests/unit/issue_1021_recoverable_memory.rs::a_version_that_does_not_compile_leaves_the_previous_one_in_place; ::the_compile_failure_is_a_real_compiler_diagnostic; ::a_rollback_removes_a_file_the_candidate_added; ::a_failed_version_falls_back_to_the_last_adopted_one_not_to_the_first; ::a_candidate_that_edits_a_baseline_test_is_rolled_back_before_it_is_scored | not yet confirmed |
 | R1021-13 | 2282 | PR #1027 (issue #1021), 2026-08-20 | tests/unit/issue_1021_bounded_autonomy.rs::a_loop_that_never_resolves_stops_at_the_limit_and_asks; ::the_question_repeats_until_the_operator_answers_it; ::granting_more_time_resumes_the_run_from_where_it_stopped; ::the_default_limit_is_the_hour_the_issue_names; ::full_trust_does_not_arrive_with_the_full_autonomous_mode | not yet confirmed |
-| R1021-14 | 2283 | PR #1027 (issue #1021), 2026-08-19 | none -- not delivered; tracked in #924 | n/a -- not delivered; data/meta/self-hosting-ledger.lino still reads 0.00% self-authored |
+| R1021-14 | 2283 | PR #1027 (issue #1021), 2026-08-19 | none -- not delivered; no current open tracker | n/a -- not delivered; the release ledger is non-zero, but no qualifying run is a `solve` run |
 | R1021-15 | 2284 | PR #1027 (issue #1021), 2026-08-19 | tests/unit/issue_1021_contribution_artifacts.rs::a_composed_fragment_is_one_the_changelog_gate_accepts; ::every_seeded_bump_and_category_composes_its_own_heading | not yet confirmed |
 | R1021-16 | 2285 | PR #1027 (issue #1021), 2026-08-19 | tests/unit/issue_1021_contribution_artifacts.rs::a_composed_body_closes_its_issue_by_the_gates_own_rules; tests/unit/issue_1021_closed_circle.rs::the_artifacts_satisfy_the_gates_that_read_them | not yet confirmed |
 | R1021-17 | 2286 | PR #1027 (issue #1021), 2026-08-19 | tests/unit/issue_1021_contribution_artifacts.rs::the_generator_composes_prose_without_containing_any | not yet confirmed |

@@ -114,10 +114,7 @@ fn an_underivable_contradiction_is_named_and_left_unresolved() {
         .first()
         .expect("the contradiction is still detected; only its value is underivable");
     assert!(
-        matches!(
-            link.derivation,
-            ContradictionDerivation::Underivable { .. }
-        ),
+        matches!(link.derivation, ContradictionDerivation::Underivable { .. }),
         "an unstated trade-off must be reported as underivable, got {:?}",
         link.derivation
     );

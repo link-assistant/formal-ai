@@ -98,7 +98,7 @@ impl SymbolicAnswer {
     pub fn is_inconclusive(&self) -> bool {
         matches!(
             self.intent.as_str(),
-            "unknown" | "ill_formed" | "punctuation_only_prompt"
+            "unknown" | "ill_formed" | "punctuation_only_prompt" | "concept_lookup_unresolved"
         ) || self.intent.starts_with("clarify")
     }
 
@@ -148,7 +148,28 @@ impl FormalAiEngine {
     /// Answer a prompt by running it through the universal solver loop.
     #[must_use]
     pub fn answer(&self, prompt: &str) -> SymbolicAnswer {
-        crate::solver::UniversalSolver::default().solve(prompt)
+        self.answer_with_memory(prompt, &[])
+    }
+
+    /// Answer with the retained memory events that may change later solving.
+    ///
+    /// The zero-memory [`Self::answer`] entry point remains source-compatible;
+    /// stateful library callers use this method so retained dreaming amendments
+    /// reach the same engine surface as the protocol adapters. Both paths share
+    /// [`crate::dreaming_application::solve_with_standing_requirements`], which
+    /// also owns anticipation-cache fallback and evidence links.
+    #[must_use]
+    pub fn answer_with_memory(
+        &self,
+        prompt: &str,
+        memory_events: &[crate::memory::MemoryEvent],
+    ) -> SymbolicAnswer {
+        crate::dreaming_application::solve_with_standing_requirements(
+            &crate::solver::UniversalSolver::default(),
+            prompt,
+            &[],
+            memory_events,
+        )
     }
 }
 
@@ -902,20 +923,15 @@ fn execution_report(
     let command_lines = execution_command_lines(execution, run_command);
     let status_phrase = execution_status_phrase(status, language);
     let output_label = execution_output_label(status, language);
+    let notes = &execution.notes;
     let status_line = match language {
-        Language::Russian => format!(
-            "Статус выполнения: {status_phrase} в среде «{}».",
-            environment
-        ),
-        Language::Hindi => format!("निष्पादन स्थिति: {status_phrase} ({} में)।", environment),
-        Language::Chinese => format!("执行状态：{status_phrase}（{}）。", environment),
-        _ => format!("Execution status: {status_phrase} in {}.", environment),
+        Language::Russian => format!("Статус выполнения: {status_phrase} в среде «{environment}»."),
+        Language::Hindi => format!("निष्पादन स्थिति: {status_phrase} ({environment} में)।"),
+        Language::Chinese => format!("执行状态：{status_phrase}（{environment}）。"),
+        _ => format!("Execution status: {status_phrase} in {environment}."),
     };
 
-    format!(
-        "{status_line}\n{command_lines}\n{output_label}:\n```text\n{output}\n```\n{}",
-        execution.notes
-    )
+    format!("{status_line}\n{command_lines}\n{output_label}:\n```text\n{output}\n```\n{notes}")
 }
 
 fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {

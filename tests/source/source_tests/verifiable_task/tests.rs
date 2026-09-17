@@ -36,7 +36,12 @@ fn module_files_are_where_the_convention_says() {
     let mut present: Vec<String> = fs::read_dir(&directory)
         .expect("the module directory should be readable")
         .filter_map(Result::ok)
-        .map(|entry| format!("src/verifiable_task/{}", entry.file_name().to_string_lossy()))
+        .map(|entry| {
+            format!(
+                "src/verifiable_task/{}",
+                entry.file_name().to_string_lossy()
+            )
+        })
         .collect();
     present.sort();
 

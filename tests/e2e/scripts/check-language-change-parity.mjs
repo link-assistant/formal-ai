@@ -25,11 +25,12 @@ const watchedFiles = [
   'src/web/i18n-catalog-permissions.lino',
   'src/web/i18n-catalog-messages.lino',
   'data/seed/prompt-patterns.lino',
-  ...responseFiles,
   'data/seed/concepts.lino',
   'data/seed/tools.lino',
   'data/seed/concept-contexts.lino',
 ];
+
+const responseResource = 'data/seed/multilingual-responses*.lino';
 
 function runGit(args) {
   return spawnSync('git', args, {
@@ -239,6 +240,34 @@ const previousLanguages = new Set(parseLanguagesAtRef(baseRef));
 const newlyRegisteredLanguages = new Set(
   supportedLanguages.filter((language) => !previousLanguages.has(language)),
 );
+
+// Response records are deliberately sharded by concern and file size. Treat
+// every shard as one logical language resource so moving a translated record
+// between shards cannot look like an English-only edit in one file and a
+// non-English-only edit in another. The per-language signatures still make a
+// one-language wording change fail exactly as before.
+{
+  const oldText = responseFiles
+    .map((relativePath) => readFileAtRef(baseRef, relativePath))
+    .join('\n');
+  const newText = responseFiles
+    .map((relativePath) => readCurrentFile(relativePath))
+    .join('\n');
+  const oldSignatures = collectRecordsByLanguage(oldText, 'response');
+  const newSignatures = collectRecordsByLanguage(newText, 'response');
+  const changed = changedLanguages(oldSignatures, newSignatures, supportedLanguages);
+  const onlyNewLanguages = changed.every((language) => newlyRegisteredLanguages.has(language));
+  if (changed.length > 0 && !onlyNewLanguages) {
+    const missingLocales = requiredLocales.filter(
+      (language) => !changed.includes(language),
+    );
+    if (missingLocales.length > 0) {
+      errors.push(
+        `${responseResource} changed ${changed.join(', ')} language content without updating ${missingLocales.join(', ')}`,
+      );
+    }
+  }
+}
 
 for (const relativePath of watchedFiles) {
   const oldText = readFileAtRef(baseRef, relativePath);

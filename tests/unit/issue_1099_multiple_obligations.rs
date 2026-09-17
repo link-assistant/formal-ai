@@ -38,7 +38,9 @@ fn written_paths(task: &str, turns: usize) -> (Vec<String>, Option<String>) {
         match plan_chat_step(&messages, &TOOLS) {
             Some(AgenticPlan::ToolCalls(calls)) => {
                 let call = &calls[0];
-                let mut result = String::from("ok");
+                // A write acknowledgement carries no file bytes. Only the
+                // later `cat` observation may discharge a file expectation.
+                let mut result = String::new();
                 if call.tool == "write"
                     && let Ok(arguments) =
                         serde_json::from_str::<serde_json::Value>(&call.arguments)
@@ -67,7 +69,7 @@ fn written_paths(task: &str, turns: usize) -> (Vec<String>, Option<String>) {
                 {
                     // Return the bytes a real read-back would show. A bare
                     // success token is not evidence of the file's contents.
-                    result = format!("{content}\n");
+                    result.clone_from(content);
                 }
                 messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
                     format!("step-{turn}"),

@@ -396,6 +396,8 @@ meanings
       surface
         text "परियोजना"
       surface
+        text "प्रोजेक्ट"
+      surface
         text "स्थानीय"
       surface
         text "इस मशीन"
@@ -506,6 +508,8 @@ meanings
         text "路径"
       surface
         text "机器"
+      surface
+        text "本机"
       surface
         text "电脑"
     lexeme es

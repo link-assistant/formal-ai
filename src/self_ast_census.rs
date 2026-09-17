@@ -30,6 +30,7 @@
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
+use std::path::Path;
 use std::sync::OnceLock;
 
 use crate::agentic_coding::self_ast::{AstCensus, ast_census};
@@ -299,6 +300,26 @@ impl WorkspaceCensus {
         Self { modules }
     }
 
+    /// Census every Rust source below `root` from the live directory.
+    ///
+    /// Paths are relative to `root`, traversal is deterministic, and repository
+    /// metadata/build-output directories are excluded. This is the runtime
+    /// counterpart of [`Self::compile`]: a cloned repository can be inspected
+    /// without pretending it is the checkout embedded in the running binary.
+    ///
+    /// # Errors
+    /// Returns the first directory or UTF-8 source read error observed.
+    pub fn of_directory(root: &Path) -> std::io::Result<Self> {
+        let mut files = Vec::new();
+        collect_directory_sources(root, root, &mut files)?;
+        files.sort_by(|left, right| left.0.cmp(&right.0));
+        let borrowed = files
+            .iter()
+            .map(|(path, source)| (path.as_str(), source.as_str()))
+            .collect::<Vec<_>>();
+        Ok(Self::compile(&borrowed))
+    }
+
     /// How many modules the census covers.
     #[must_use]
     pub const fn module_count(&self) -> usize {
@@ -458,6 +479,33 @@ impl WorkspaceCensus {
         }
         out
     }
+}
+
+fn collect_directory_sources(
+    root: &Path,
+    directory: &Path,
+    files: &mut Vec<(String, String)>,
+) -> std::io::Result<()> {
+    let mut entries = std::fs::read_dir(directory)?.collect::<Result<Vec<_>, _>>()?;
+    entries.sort_by_key(std::fs::DirEntry::file_name);
+    for entry in entries {
+        let path = entry.path();
+        if path.is_dir() {
+            let file_name = entry.file_name();
+            if matches!(file_name.to_str(), Some(".git" | "target")) {
+                continue;
+            }
+            collect_directory_sources(root, &path, files)?;
+        } else if path.extension().and_then(|extension| extension.to_str()) == Some("rs") {
+            let relative = path
+                .strip_prefix(root)
+                .unwrap_or(&path)
+                .to_string_lossy()
+                .replace('\\', "/");
+            files.push((relative, std::fs::read_to_string(path)?));
+        }
+    }
+    Ok(())
 }
 
 /// Build a resolution record for a module and an optionally named item.

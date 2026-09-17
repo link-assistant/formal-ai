@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 35787
-  line_count 771
-  content_id source_module_dbd45e523a014cd2
-  symbol_count 42
+  byte_len 39102
+  line_count 842
+  content_id source_module_146629bf60891d98
+  symbol_count 43
   symbols
     struct Token 14 18
     function tokens 28 54
@@ -48,80 +48,82 @@ self_ast_census
     function strip_clause_lead 701 712
     function strip_leading_qualifier 717 728
     function safe_relative_path 729 736
-    function payload_continues_past_its_first_line 755 771
+    function compose_edit_request 743 807
+    function payload_continues_past_its_first_line 826 842
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18702
-    named_node_count 4044
-    distinct_node_kinds 86
+    total_link_count 21553
+    named_node_count 4632
+    distinct_node_kinds 87
     node_kinds
-      arguments 290
+      arguments 350
       array_expression 8
       array_type 12
       assignment_expression 4
-      attribute 2
-      attribute_item 2
-      binary_expression 64
-      block 81
+      attribute 3
+      attribute_item 3
+      binary_expression 87
+      block 92
       boolean_literal 12
       break_expression 1
-      call_expression 290
+      call_expression 350
       char_literal 71
-      closure_expression 58
-      closure_parameters 58
+      closure_expression 72
+      closure_parameters 72
+      compound_assignment_expr 1
       continue_expression 1
       crate 2
-      doc_comment 296
-      else_clause 4
+      doc_comment 300
+      else_clause 5
       enum_item 1
       enum_variant 3
       enum_variant_list 1
       escape_sequence 4
-      expression_statement 39
+      expression_statement 47
       field_declaration 9
       field_declaration_list 2
-      field_expression 255
-      field_identifier 268
+      field_expression 313
+      field_identifier 326
       field_initializer 8
       field_initializer_list 4
       for_expression 2
-      function_item 39
+      function_item 40
       function_modifiers 1
       generic_function 1
-      generic_type 41
-      identifier 699
-      if_expression 18
-      index_expression 15
+      generic_type 42
+      identifier 858
+      if_expression 22
+      index_expression 20
       inner_doc_comment_marker 9
-      integer_literal 21
+      integer_literal 28
       let_chain 1
-      let_condition 5
-      let_declaration 52
+      let_condition 6
+      let_declaration 76
       lifetime 17
       lifetime_parameter 2
-      line_comment 311
+      line_comment 315
       loop_expression 1
       macro_invocation 10
       match_arm 3
       match_block 1
       match_expression 1
       match_pattern 3
-      mutable_specifier 6
+      mutable_specifier 7
       or_pattern 1
-      outer_doc_comment_marker 287
-      parameter 54
-      parameters 39
-      parenthesized_expression 6
-      primitive_type 79
-      range_expression 17
-      reference_expression 20
-      reference_type 51
-      return_expression 10
-      scoped_identifier 35
-      scoped_use_list 2
+      outer_doc_comment_marker 291
+      parameter 57
+      parameters 40
+      parenthesized_expression 11
+      primitive_type 82
+      range_expression 19
+      reference_expression 27
+      reference_type 52
+      return_expression 13
+      scoped_identifier 45
+      scoped_use_list 3
       self 1
       shorthand_field_initializer 10
       source_file 1
@@ -129,18 +131,18 @@ self_ast_census
       string_literal 8
       struct_expression 4
       struct_item 2
-      super 39
+      super 43
       token_tree 13
-      try_expression 12
-      tuple_expression 14
-      tuple_pattern 20
-      tuple_struct_pattern 7
-      tuple_type 9
-      type_arguments 42
-      type_identifier 72
+      try_expression 19
+      tuple_expression 16
+      tuple_pattern 22
+      tuple_struct_pattern 8
+      tuple_type 10
+      type_arguments 43
+      type_identifier 76
       type_parameters 2
-      unary_expression 25
+      unary_expression 27
       use_declaration 3
-      use_list 2
-      visibility_modifier 38
-      while_expression 1
+      use_list 3
+      visibility_modifier 39
+      while_expression 2

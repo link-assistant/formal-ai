@@ -4,7 +4,7 @@
 //! treated "the task" and "the first artifact named by the task" as the same
 //! thing. Plan 05 removes that second model of an obligation. The public
 //! compatibility surface below is now a projection of the runtime
-//! [`ObligationNode`](crate::obligation_ledger::ObligationNode) tree, so a
+//! [`ObligationNode`] tree, so a
 //! clause that has no immediately derivable artifact remains an underivable
 //! node instead of disappearing from the request.
 
@@ -157,8 +157,12 @@ pub(super) fn observed_file_outcome(
         // the exit status explicitly absent and observe no file bytes; this
         // refutes a file expectation without upgrading a harness claim into a
         // local-process result.
-        ledger.observe(Evidence::observed(
-            format!("write {path}"),
+        ledger.observe(&Evidence::observed(
+            crate::repository_workspace::render_protocol_template(
+                "obligation_write_observation",
+                &[("path", path)],
+            )
+            .unwrap_or_else(|| String::from("obligation_write_observation")),
             vec![path.to_owned()],
             None,
             b"",
@@ -175,7 +179,7 @@ pub(super) fn observed_file_outcome(
             .and_then(super::capability_router::classify_tool)
             == Some(super::planner::Capability::Write);
         if is_write {
-            ledger.observe(record);
+            ledger.observe(&record);
         }
     }
     ledger.root.outcome
@@ -189,7 +193,7 @@ fn observed_ledger(request: &str, messages: &[ChatMessage]) -> ObligationLedger 
         root: agentic_root(request),
     };
     for record in super::transcript_evidence::records(messages) {
-        ledger.observe(record);
+        ledger.observe(&record);
     }
     ledger
 }
@@ -199,9 +203,10 @@ fn observed_ledger(request: &str, messages: &[ChatMessage]) -> ObligationLedger 
 ///
 /// The general derivation trims a sentence's final full stop before hashing,
 /// because it has no execution plan yet. The live composer does: its `content`
-/// field is the exact write operand. Hash that operand (plus the read-back
-/// newline used by this route) so the observation and expectation describe the
-/// same bytes instead of repeatedly reopening an already verified node.
+/// field is the exact write operand. Hash that operand exactly so the
+/// observation and expectation describe the same bytes instead of repeatedly
+/// reopening an already verified node. A read tool may display a trailing
+/// newline, but it must not invent one in the file's content address.
 fn agentic_root(request: &str) -> ObligationNode {
     let mut root = ObligationNode::build(
         request,
@@ -216,14 +221,9 @@ fn align_file_expectations(node: &mut ObligationNode) {
         && let Some(plan) = super::general_planner::compose_general_change_plan(&node.clause)
         && matches!(node.expectation, ObligationExpectation::FileBytes { .. })
     {
-        let observed = if plan.content.ends_with('\n') {
-            plan.content.clone()
-        } else {
-            format!("{}\n", plan.content)
-        };
         node.expectation = ObligationExpectation::FileBytes {
             path: plan.target,
-            sha256: Some(crate::source_fetch::sha256_hex(observed.as_bytes())),
+            sha256: Some(crate::source_fetch::sha256_hex(plan.content.as_bytes())),
         };
     }
     for child in &mut node.children {

@@ -18,7 +18,7 @@ obligation_evidence_ratchet
     value "0"
     measured_by "tests/unit/specification/obligation_ledger.rs"
     measured_on "2026-09-16"
-    note "ObligationOutcome::Satisfied has exactly one field and it is an Evidence, so a satisfied obligation carrying no observation is unconstructible rather than merely unobserved. need_ledger_with_execution reads only that variant and is the single producer of NeedStatus::Satisfied in src/, which need_ledger_with_execution_is_the_only_producer_of_satisfied enforces by reading every line of src/."
+    note "ObligationOutcome::Satisfied has exactly one field and it is an Evidence, so a satisfied obligation carrying no observation is unconstructible rather than merely unobserved. need_ledger_with_execution reads only that variant; need_status_with_observation is the single constructor of NeedStatus::Satisfied for this and other observed domains. need_ledger_with_execution_is_the_only_producer_of_satisfied enforces the single-module boundary by reading every line of src/."
   measure discarded_clauses
     direction "down"
     value "0"

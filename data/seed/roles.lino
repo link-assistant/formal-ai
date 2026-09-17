@@ -297,6 +297,8 @@ roles
     kind predicate
   feature_capability_question
     kind meaning
+  file_analysis_gap_marker
+    kind predicate
   file_edit_action_cue
     kind predicate
   file_edit_new_lead_cue
@@ -729,6 +731,28 @@ roles
     kind meaning
   url_navigate
     kind meaning
+  verifiable_entity_separator
+    kind predicate
+  verifiable_expectation
+    kind predicate
+  verifiable_expectation_count
+    kind predicate
+  verifiable_expectation_edited_text
+    kind predicate
+  verifiable_expectation_numeric
+    kind predicate
+  verifiable_expectation_pattern
+    kind predicate
+  verifiable_expectation_unknown
+    kind predicate
+  verifiable_quantity_determiner
+    kind predicate
+  verifiable_quantity_flow_decrease
+    kind predicate
+  verifiable_quantity_flow_increase
+    kind predicate
+  verifiable_unit_conversion
+    kind predicate
   vulgar_content_marker
     kind predicate
   web_medium

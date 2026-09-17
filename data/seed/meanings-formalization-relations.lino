@@ -3,6 +3,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role relation_predicate
+    precondition "source and target concepts are available"
+    effect "records a typed relation between formalized concepts"
+    unit "not applicable"
+    example "precondition relates a method to what must hold before it runs"
     lexeme en
       surface
         text "formalization relation"
@@ -26,6 +31,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role classification_relation
+    precondition "two concepts can be compared by generality"
+    effect "places a concept in a generalization hierarchy"
+    unit "not applicable"
+    example "a litre is classified under a volume unit"
     lexeme en
       surface
         text taxonomic
@@ -45,6 +55,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role generalization_relation
+    precondition "a broader concept and a narrower concept are available"
+    effect "records that the broader concept includes the narrower concept"
+    unit "not applicable"
+    example "a measurement unit subsumes a volume unit"
     lexeme en
       surface
         text subsumes
@@ -64,6 +79,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role attribute_relation
+    precondition "an entity and a descriptive value are available"
+    effect "attaches the descriptive value to the entity"
+    unit "not applicable"
+    example "a source is attributed with its license"
     lexeme en
       surface
         text attributive
@@ -83,6 +103,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role property_relation
+    precondition "a property and its owning concept are available"
+    effect "records which concept owns the property"
+    unit "not applicable"
+    example "runtime size is a property of an execution environment"
     lexeme en
       surface
         text "property of"
@@ -102,6 +127,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role part_whole_relation
+    precondition "a part and a containing whole are available"
+    effect "records a typed part-whole relation"
+    unit "not applicable"
+    example "a prerequisite step is part of a setup recipe"
     lexeme en
       surface
         text meronymic
@@ -121,6 +151,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role containment_relation
+    precondition "a whole and a candidate part are available"
+    effect "records the candidate as a part of the whole"
+    unit "not applicable"
+    example "a procedure has an ordered verification step"
     lexeme en
       surface
         text "has part"
@@ -140,6 +175,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role applicability_condition
+    precondition "a method and a required prior state are available"
+    effect "records what must hold before the method applies"
+    unit "not applicable"
+    example "a repository edit requires a writable workspace"
     lexeme en
       surface
         text precondition
@@ -159,6 +199,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role dependency_relation
+    precondition "a prerequisite and a dependent operation are available"
+    effect "records the operation that needs the prerequisite"
+    unit "not applicable"
+    example "a compiler is required by a compilation step"
     lexeme en
       surface
         text "required by"
@@ -178,6 +223,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role production_relation
+    precondition "an operation and a prospective artifact are available"
+    effect "records the artifact produced by the operation"
+    unit "not applicable"
+    example "a renderer produces a generated document"
     lexeme en
       surface
         text production
@@ -197,6 +247,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role provenance_relation
+    precondition "an artifact and its producing operation are available"
+    effect "records the operation that produced the artifact"
+    unit "not applicable"
+    example "a status page is produced by its ledger renderer"
     lexeme en
       surface
         text "produced by"
@@ -216,6 +271,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role ordering_relation
+    precondition "two ordered steps are available"
+    effect "records that one step occurs after the other"
+    unit "not applicable"
+    example "verification follows an edit"
     lexeme en
       surface
         text follows
@@ -235,6 +295,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role incompatibility_relation
+    precondition "two alternatives are available for comparison"
+    effect "records that the alternatives cannot both apply"
+    unit "not applicable"
+    example "offline-only execution excludes network access"
     lexeme en
       surface
         text exclusion
@@ -254,6 +319,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role inverse_incompatibility_relation
+    precondition "an option and an excluding condition are available"
+    effect "records the condition that prevents the option"
+    unit "not applicable"
+    example "network access is excluded by an offline-only capability"
     lexeme en
       surface
         text "excluded by"
@@ -273,6 +343,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role measurement_relation
+    precondition "a measurable concept and a unit are available"
+    effect "records the unit used to interpret the concept"
+    unit "not applicable"
+    example "elapsed time has the measure second"
     lexeme en
       surface
         text measure
@@ -292,6 +367,11 @@ meanings
     defined-by formalization-relation
     denotation relation
     connotation concept
+    role inverse_measurement_relation
+    precondition "a unit and a measurable concept are available"
+    effect "records the concept quantified by the unit"
+    unit "not applicable"
+    example "a second measures elapsed time"
     lexeme en
       surface
         text measures

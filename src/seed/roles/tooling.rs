@@ -112,6 +112,14 @@ pub const ROLE_AGENT_ACTION_FORMALIZE_VERB: &str = "agent_action_formalize_verb"
 pub const ROLE_AGENT_ACTION_REPORT_VERB: &str = "agent_action_report_verb";
 /// Semantic role: the issue/bug/repository object of a report action.
 pub const ROLE_AGENT_ACTION_REPORT_SUBJECT: &str = "agent_action_report_subject";
+/// Semantic role: an explicit incompleteness marker collected during a bounded
+/// file analysis.
+///
+/// The multilingual surfaces live in `data/seed/meanings-coding-tasks.lino`.
+/// The file-analysis planner turns those data-owned surfaces into the search
+/// expression it sends to an advertised grep tool; source code therefore owns
+/// the bounded search mechanism, not a fixed natural-language marker list.
+pub const ROLE_FILE_ANALYSIS_GAP_MARKER: &str = "file_analysis_gap_marker";
 /// Semantic role: an action asking to read an explicitly named local file.
 ///
 /// Multilingual surfaces live in `data/seed/meanings-file-write.lino` alongside

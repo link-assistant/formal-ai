@@ -7,11 +7,297 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::thread::sleep;
 use std::time::Duration;
 
+use crate::execution_box::{
+    BoxPolicy, ExecutionBackend, ExecutionBox, LadderReport, NetworkPolicy,
+    backend_from_environment,
+};
+use crate::execution_evidence::{Evidence, EvidenceSource, ObservationKind};
+use crate::language::detect as detect_language;
+use crate::seed;
 use crate::server::serve;
 use crate::telegram::{
     TelegramPollingConfig, TelegramPollingError, TelegramPollingReply, extract_sent_message_id,
     parse_get_updates_response,
 };
+
+/// #930's total ceiling for a Telegram compile/run attempt.
+pub const TELEGRAM_EXECUTION_HARD_LIMIT: Duration = Duration::from_mins(10);
+
+/// One Telegram code-execution decision, including the observation users may
+/// inspect. There is no success variant without an [`Evidence`] record.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TelegramCodeExecution {
+    /// The prompt did not ask to execute code.
+    NotRequested,
+    /// Execution was requested but no backend was configured.
+    Refused {
+        /// Localized, seed-backed honesty sentence.
+        answer: String,
+    },
+    /// The backend ran the program and produced an attributable observation.
+    Observed {
+        /// Localized answer containing the observed output.
+        answer: String,
+        /// Content-addressed observation of the process.
+        evidence: Box<Evidence>,
+        /// Descending-N measurements, when the code exposed `{N}`.
+        ladder: Option<LadderReport>,
+    },
+    /// A configured backend refused or failed; the verbose observation is kept.
+    Failed {
+        /// Localized answer that never claims verification.
+        answer: String,
+    },
+}
+
+impl TelegramCodeExecution {
+    /// The user-facing answer when this prompt was an execution request.
+    #[must_use]
+    pub fn answer(&self) -> Option<&str> {
+        match self {
+            Self::NotRequested => None,
+            Self::Refused { answer } | Self::Observed { answer, .. } | Self::Failed { answer } => {
+                Some(answer)
+            }
+        }
+    }
+}
+
+/// Execute an explicit Telegram code request with an injected backend.
+///
+/// Supplying the backend is the permission boundary: `None` is an honest
+/// refusal. Production obtains it from the isolated runtime configuration;
+/// tests inject `HostSandbox` without modifying process-global environment.
+#[must_use]
+pub fn execute_telegram_code_request(
+    prompt: &str,
+    backend: Option<ExecutionBackend>,
+    deadline: Duration,
+) -> TelegramCodeExecution {
+    let language = detect_language(prompt).slug();
+    let Some(code) = requested_python(prompt, language) else {
+        return TelegramCodeExecution::NotRequested;
+    };
+    let Some(backend) = backend else {
+        return TelegramCodeExecution::Refused {
+            answer: localized("code_execution_refused", language),
+        };
+    };
+    let backend_slug = backend.slug();
+    let policy = BoxPolicy {
+        network: NetworkPolicy::Denied,
+        deadline: deadline.min(TELEGRAM_EXECUTION_HARD_LIMIT),
+    };
+    let boxed = match ExecutionBox::open(&backend, &policy) {
+        Ok(boxed) => boxed,
+        Err(error) => {
+            return TelegramCodeExecution::Failed {
+                answer: render(
+                    "code_execution_failed",
+                    language,
+                    &[("backend", &backend_slug), ("log", &format!("{error:?}"))],
+                ),
+            };
+        }
+    };
+
+    // Generated iteration-heavy programs use an explicit placeholder. The
+    // ladder records every N and stops after ten cumulative minutes. Ordinary
+    // source is executed once and is never textually rewritten.
+    let ladder = if code.contains("{N}") {
+        match boxed.halving_ladder_with_hard_limit(
+            &code,
+            initial_iteration_bound(prompt).unwrap_or(1),
+            TELEGRAM_EXECUTION_HARD_LIMIT,
+        ) {
+            Ok(report) => Some(report),
+            Err(error) => {
+                return TelegramCodeExecution::Failed {
+                    answer: render(
+                        "code_execution_failed",
+                        language,
+                        &[("backend", &backend_slug), ("log", &format!("{error:?}"))],
+                    ),
+                };
+            }
+        }
+    } else {
+        None
+    };
+    if let Some(report) = &ladder
+        && report.hard_failed
+    {
+        return TelegramCodeExecution::Failed {
+            answer: render(
+                "code_execution_failed",
+                language,
+                &[("backend", &backend_slug), ("log", &report.verbose_log)],
+            ),
+        };
+    }
+
+    let invocation = match boxed.script_invocation() {
+        Ok(invocation) => invocation,
+        Err(error) => {
+            return TelegramCodeExecution::Failed {
+                answer: render(
+                    "code_execution_failed",
+                    language,
+                    &[("backend", &backend_slug), ("log", &format!("{error:?}"))],
+                ),
+            };
+        }
+    };
+    let observation = match boxed.run(&code, &[]) {
+        Ok(observation) => observation,
+        Err(error) => {
+            return TelegramCodeExecution::Failed {
+                answer: render(
+                    "code_execution_failed",
+                    language,
+                    &[("backend", &backend_slug), ("log", &format!("{error:?}"))],
+                ),
+            };
+        }
+    };
+    let command = std::iter::once(invocation.program.as_str())
+        .chain(invocation.arguments.iter().map(String::as_str))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let mut evidence = Evidence::observed(
+        command,
+        std::iter::once(invocation.program)
+            .chain(invocation.arguments)
+            .collect(),
+        observation.exit_code,
+        observation.partial_output.as_bytes(),
+        ObservationKind::CommandExit,
+        EvidenceSource::LocalProcess,
+    );
+    evidence.for_need = String::from("telegram_code_execution");
+    evidence.produced_by = String::from("telegram_execution_box");
+
+    if observation.timed_out || observation.exit_code != Some(0) {
+        let timed_out = observation.timed_out.to_string();
+        let elapsed_ms = observation.elapsed.as_millis().to_string();
+        let deadline_ms = observation.deadline.as_millis().to_string();
+        let exit = format!("{:?}", observation.exit_code);
+        let mut log = crate::event_log::render_fields(&[
+            ("timed_out", &timed_out),
+            ("elapsed_ms", &elapsed_ms),
+            ("deadline_ms", &deadline_ms),
+            ("exit", &exit),
+        ]);
+        log.push('\n');
+        log.push_str(&observation.partial_output);
+        return TelegramCodeExecution::Failed {
+            answer: render(
+                "code_execution_failed",
+                language,
+                &[("backend", &backend_slug), ("log", &log)],
+            ),
+        };
+    }
+
+    let exit = observation.exit_code.unwrap_or_default().to_string();
+    let elapsed_ms = observation.elapsed.as_millis().to_string();
+    let deadline_ms = observation.deadline.as_millis().to_string();
+    let answer = render(
+        "code_execution_observed",
+        language,
+        &[
+            ("backend", &backend_slug),
+            ("exit", &exit),
+            ("elapsed_ms", &elapsed_ms),
+            ("deadline_ms", &deadline_ms),
+            ("output", observation.partial_output.trim_end()),
+            ("evidence", &evidence.evidence_id),
+        ],
+    );
+    TelegramCodeExecution::Observed {
+        answer,
+        evidence: Box::new(evidence),
+        ladder,
+    }
+}
+
+/// Production Telegram execution.
+///
+/// `FORMAL_AI_START_ISOLATION` and `FORMAL_AI_START_RUNNER` are a pair: the
+/// runner is invoked as exact argv for each program, so merely declaring it
+/// never turns into permission to execute on the host. Alternatively,
+/// `FORMAL_AI_EXECUTION_BACKEND=host_sandbox` is the explicit host grant.
+/// Missing configuration is an honest refusal and invalid configuration is an
+/// observed failure.
+#[must_use]
+pub fn execute_telegram_code_request_from_environment(prompt: &str) -> TelegramCodeExecution {
+    match backend_from_environment() {
+        Ok(backend) => execute_telegram_code_request(prompt, backend, Duration::from_secs(60)),
+        Err(error) => {
+            let language = detect_language(prompt).slug();
+            if requested_python(prompt, language).is_none() {
+                TelegramCodeExecution::NotRequested
+            } else {
+                TelegramCodeExecution::Failed {
+                    answer: render(
+                        "code_execution_failed",
+                        language,
+                        &[("backend", "configuration"), ("log", &format!("{error:?}"))],
+                    ),
+                }
+            }
+        }
+    }
+}
+
+fn requested_python(prompt: &str, language: &str) -> Option<String> {
+    let normalized = prompt.to_lowercase();
+    let markers =
+        seed::response_values_for("code_execution_request_markers", language).unwrap_or_default();
+    if !markers.iter().any(|marker| normalized.contains(marker)) {
+        return None;
+    }
+    if let Some(open) = prompt.find("```") {
+        let after = &prompt[open + 3..];
+        let body = after
+            .strip_prefix("python")
+            .or_else(|| after.strip_prefix("py"))
+            .unwrap_or(after);
+        if let Some(close) = body.find("```") {
+            let code = body[..close].trim();
+            return (!code.is_empty()).then(|| code.to_owned());
+        }
+    }
+    let separator = prompt
+        .char_indices()
+        .rev()
+        .find_map(|(index, character)| matches!(character, ':' | '：').then_some(index))?;
+    let code = prompt
+        .get(separator + prompt[separator..].chars().next()?.len_utf8()..)
+        .map(str::trim)
+        .filter(|code| !code.is_empty() && code.contains('('))?;
+    Some(code.to_owned())
+}
+
+fn initial_iteration_bound(prompt: &str) -> Option<u64> {
+    prompt
+        .split(|character: char| !character.is_ascii_digit())
+        .filter(|part| !part.is_empty())
+        .filter_map(|part| part.parse().ok())
+        .max()
+}
+
+fn localized(intent: &str, language: &str) -> String {
+    seed::localized_response(intent, language).unwrap_or_else(|| intent.to_owned())
+}
+
+fn render(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    let mut text = localized(intent, language);
+    for (name, value) in values {
+        text = text.replace(&format!("{{{name}}}"), value);
+    }
+    text
+}
 
 /// Errors that can interrupt the long-polling loop.
 #[derive(Debug)]

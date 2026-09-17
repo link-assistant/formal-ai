@@ -37,6 +37,12 @@ fn summarization_request_summarizes_inline_conversation_content() {
 
     for (language, prompt, expected_topic) in cases {
         let response = FormalAiEngine.answer(prompt);
+        if language == "English" {
+            assert_eq!(
+                response.answer,
+                "Conversation summary: User asked about the weather.\n\nTitle: Assistant said it is sunny\n\nUser turns:\n  1. User asked about the weather. Assistant said it is sunny."
+            );
+        }
         assert_eq!(
             response.intent, "summarize_conversation",
             "language={language}: {}",

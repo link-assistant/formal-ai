@@ -48,6 +48,25 @@ const DIALOGUES: &[(&str, &str, &str, &str, &str)] = &[
     ),
 ];
 
+const DOCUMENTED_REMAINING_ANSWERS: &[(&str, &str)] = &[
+    (
+        "en",
+        "1 statement(s) still separate the current state from your target: door -> open.\nThe answer is the current->target difference, computed as a links network, not retrieved from memory.\nDifference: world_diff_e2d76cbd05a7453c",
+    ),
+    (
+        "ru",
+        "Текущее состояние отделяют от вашей цели ещё 1 утверждений: дверь -> открыта.\nОтвет — это разность текущее->целевое, вычисленная как сеть связей, а не извлечённая из памяти.\nРазность: world_diff_4deec111f3f35068",
+    ),
+    (
+        "hi",
+        "वर्तमान स्थिति को आपके लक्ष्य से अभी 1 कथन अलग करते हैं: दरवाज़ा -> खुला।\nउत्तर वर्तमान->लक्ष्य अंतर है, जो संबंध-नेटवर्क के रूप में गणना किया गया है, स्मृति से लिया गया नहीं।\nअंतर: world_diff_86a5df8df23d93fc",
+    ),
+    (
+        "zh",
+        "当前状态与你的目标之间还有 1 条陈述：门 -> 开着。\n答案是当前->目标的差异，作为链接网络计算得出，而不是从记忆中取出。\n差异：world_diff_cd0daa3fcd2a3284",
+    ),
+];
+
 fn tracking_solver() -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
         world_model_mode: WorldModelMode::Track,
@@ -95,6 +114,13 @@ fn asking_what_is_left_answers_from_the_difference_in_every_language() {
     let solver = tracking_solver();
     for (language, fact, wish, question, expected) in DIALOGUES {
         let answer = solver.solve_with_history(question, &history(fact, wish));
+        let expected_answer = DOCUMENTED_REMAINING_ANSWERS
+            .iter()
+            .find_map(|(documented_language, answer)| {
+                (*documented_language == *language).then_some(*answer)
+            })
+            .expect("every dialogue language has a complete documented answer");
+        assert_eq!(answer.answer, expected_answer, "[{language}]");
         assert_eq!(
             answer.intent, "world_state_remaining",
             "[{language}] the state question must reach the world-model handler: {}",
@@ -137,6 +163,7 @@ fn the_answer_is_recomputed_from_the_dialogue_and_never_mentions_embeddings() {
     let turns = history("the door is closed", "I want the door to be open");
     let first = solver.solve_with_history("what is left to do?", &turns);
     let second = solver.solve_with_history("what is left to do?", &turns);
+    assert_eq!(first.answer, DOCUMENTED_REMAINING_ANSWERS[0].1);
     assert_eq!(
         first.answer, second.answer,
         "the same dialogue must produce the same answer on replay"

@@ -10,7 +10,10 @@
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-use formal_ai::prerequisite::install::{InstallGrant, install_scoped};
+use formal_ai::prerequisite::install::{
+    InstallGrant, ProcessCapability, SetupExecutor, SetupStepObservation, install_scoped,
+    install_scoped_with_executor,
+};
 use formal_ai::prerequisite::probe::ToolchainProbe;
 use formal_ai::prerequisite::publisher::{SetupProcedure, SetupStep};
 use formal_ai::prerequisite::{Platform, PrerequisiteError};
@@ -60,8 +63,39 @@ impl TaggedProcedure for SetupProcedure {
 fn unpack_step() -> SetupStep {
     SetupStep {
         command: String::from("tar -xf zig.tar.xz"),
+        program: String::from("tar"),
+        arguments: vec![String::from("-xf"), String::from("zig.tar.xz")],
         writes_under: PathBuf::new(),
         digest: None,
+        requires_network: false,
+    }
+}
+
+#[derive(Default)]
+struct RecordingExecutor {
+    calls: Vec<(String, Vec<String>, PathBuf)>,
+}
+
+impl SetupExecutor for RecordingExecutor {
+    fn execute(
+        &mut self,
+        program: &str,
+        arguments: &[String],
+        current_dir: &Path,
+        _environment: &BTreeMap<String, String>,
+    ) -> Result<SetupStepObservation, String> {
+        self.calls.push((
+            program.to_owned(),
+            arguments.to_vec(),
+            current_dir.to_path_buf(),
+        ));
+        Ok(SetupStepObservation {
+            program: program.to_owned(),
+            arguments: arguments.to_vec(),
+            exit_code: Some(0),
+            stdout: String::from("installed"),
+            stderr: String::new(),
+        })
     }
 }
 
@@ -85,7 +119,10 @@ fn install_refuses_without_a_grant() {
     std::fs::create_dir_all(&root).expect("the test root should be creatable");
     let before = digest_tree(&root);
 
-    let outcome = install_scoped(&procedure(&root, vec![unpack_step()]), &InstallGrant::default());
+    let outcome = install_scoped(
+        &procedure(&root, vec![unpack_step()]),
+        &InstallGrant::default(),
+    );
     assert_eq!(
         outcome,
         Err(PrerequisiteError::NotGranted {
@@ -107,8 +144,11 @@ fn a_step_writing_outside_the_root_is_refused_before_execution() {
     let root = temp_root("outside");
     let escaping = SetupStep {
         command: String::from("cp zig /usr/local/bin/zig"),
+        program: String::from("cp"),
+        arguments: vec![String::from("zig"), String::from("/usr/local/bin/zig")],
         writes_under: PathBuf::from("/usr/local/bin"),
         digest: None,
+        requires_network: false,
     };
     let outcome = install_scoped(
         &procedure(&root, vec![escaping]),
@@ -164,7 +204,8 @@ fn insufficient_disk_is_refused_before_download() {
     let mut procedure = procedure(&root, vec![unpack_step()]);
     procedure.content_id = String::from("3".repeat(64));
     // A stated requirement larger than any machine has free.
-    procedure.steps[0].command = String::from("tar -xf zig.tar.xz requires_bytes=18446744073709551615");
+    procedure.steps[0].command =
+        String::from("tar -xf zig.tar.xz requires_bytes=18446744073709551615");
 
     let outcome = install_scoped(
         &procedure,
@@ -227,7 +268,7 @@ fn the_environment_is_returned_explicitly_not_exported() {
     let path_before = std::env::var("PATH").unwrap_or_default();
 
     let toolchain = install_scoped(
-        &procedure(&root, vec![unpack_step()]),
+        &procedure(&root, Vec::new()),
         &InstallGrant::Allowed {
             programs: vec![String::from("zig")],
             root: root.clone(),
@@ -249,4 +290,93 @@ fn the_environment_is_returned_explicitly_not_exported() {
         path_before,
         "the process environment is unchanged; nothing was exported"
     );
+}
+
+/// Naming the tool being installed is not blanket permission to execute every
+/// process a fetched document happens to contain.
+#[test]
+fn a_step_needs_an_explicit_execution_capability() {
+    let root = temp_root("execution-capability");
+    let mut executor = RecordingExecutor::default();
+    let outcome = install_scoped_with_executor(
+        &procedure(&root, vec![unpack_step()]),
+        &InstallGrant::Allowed {
+            programs: vec![String::from("zig")],
+            root,
+        },
+        &mut executor,
+    );
+
+    assert_eq!(
+        outcome,
+        Err(PrerequisiteError::ExecutionCapabilityNotGranted {
+            program: String::from("tar"),
+        })
+    );
+    assert!(
+        executor.calls.is_empty(),
+        "capability checks happen before any process is started"
+    );
+}
+
+/// An executable recipe is lowered to an exact program/argv call. It is never
+/// interpolated into a shell command, so punctuation in an argument stays data.
+#[test]
+fn an_allowed_step_is_executed_as_exact_argv_and_observed() {
+    let root = temp_root("exact-argv");
+    let _ = std::fs::remove_dir_all(&root);
+    std::fs::create_dir_all(&root).expect("the test root should be creatable");
+    let step = SetupStep {
+        command: String::from("python3 -c 'print(\"a;b\")'"),
+        program: String::from("python3"),
+        arguments: vec![String::from("-c"), String::from("print(\"a;b\")")],
+        writes_under: PathBuf::from("."),
+        digest: None,
+        requires_network: false,
+    };
+    let mut executor = RecordingExecutor::default();
+
+    let (toolchain, observations) = install_scoped_with_executor(
+        &procedure(&root, vec![step]),
+        &InstallGrant::AllowedExecution {
+            programs: vec![String::from("zig")],
+            processes: vec![ProcessCapability::new("python3", &["-c"])],
+            allow_network: false,
+            root: root.clone(),
+        },
+        &mut executor,
+    )
+    .expect("the exact executable capability was granted");
+
+    assert_eq!(executor.calls.len(), 1);
+    assert_eq!(executor.calls[0].0, "python3");
+    assert_eq!(
+        executor.calls[0].1,
+        vec![String::from("-c"), String::from("print(\"a;b\")")]
+    );
+    assert!(executor.calls[0].2.starts_with(&toolchain.prefix));
+    assert_eq!(observations.len(), 1);
+    assert_eq!(observations[0].stdout, "installed");
+}
+
+/// Network is a separate consent bit from process execution.
+#[test]
+fn a_network_step_needs_explicit_network_consent() {
+    let root = temp_root("network-capability");
+    let mut step = unpack_step();
+    step.requires_network = true;
+    let mut executor = RecordingExecutor::default();
+    let outcome = install_scoped_with_executor(
+        &procedure(&root, vec![step]),
+        &InstallGrant::AllowedExecution {
+            programs: vec![String::from("zig")],
+            processes: vec![ProcessCapability::new("tar", &["-xf"])],
+            allow_network: false,
+            root,
+        },
+        &mut executor,
+    );
+
+    assert_eq!(outcome, Err(PrerequisiteError::NetworkCapabilityNotGranted));
+    assert!(executor.calls.is_empty());
 }

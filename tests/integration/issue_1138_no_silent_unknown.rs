@@ -35,6 +35,9 @@ const ADVERTISED: &[&str] = &[
     "ask_user",
 ];
 
+const DOCUMENTED_PROMPT: &str = "Find y: 7 * y = 84";
+const DOCUMENTED_ANSWER: &str = "12";
+
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
 }
@@ -92,6 +95,8 @@ fn unknown_openers() -> Vec<String> {
 
 #[test]
 fn no_benchmark_prompt_reaches_the_unknown_opener() {
+    let documented = FormalAiEngine.answer(DOCUMENTED_PROMPT).answer;
+    assert_eq!(documented, DOCUMENTED_ANSWER);
     let prompts = benchmark_prompts();
     assert!(
         prompts.len() >= 700,

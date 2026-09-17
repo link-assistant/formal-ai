@@ -3,6 +3,11 @@ meanings
     defined-by writing-system
     denotation relation
     connotation concept
+    role script_classifier
+    precondition "a written surface is available"
+    effect "classifies the symbol system used by the surface"
+    unit "not applicable"
+    example "a language surface is associated with its writing system"
     lexeme en
       surface
         text writing system
@@ -30,6 +35,11 @@ meanings
     defined-by writing-system
     denotation relation
     connotation concept
+    role writing_system
+    precondition "a surface uses Latin-script characters"
+    effect "classifies the surface as Latin script"
+    unit "not applicable"
+    example "English and Spanish commonly use Latin script"
     lexeme en
       surface
         text latin
@@ -57,6 +67,11 @@ meanings
     defined-by writing-system
     denotation relation
     connotation concept
+    role writing_system
+    precondition "a surface uses Cyrillic-script characters"
+    effect "classifies the surface as Cyrillic script"
+    unit "not applicable"
+    example "Russian commonly uses Cyrillic script"
     lexeme en
       surface
         text cyrillic
@@ -84,6 +99,11 @@ meanings
     defined-by writing-system
     denotation relation
     connotation concept
+    role writing_system
+    precondition "a surface uses Devanagari characters"
+    effect "classifies the surface as Devanagari script"
+    unit "not applicable"
+    example "Hindi commonly uses Devanagari script"
     lexeme en
       surface
         text devanagari
@@ -111,6 +131,11 @@ meanings
     defined-by writing-system
     denotation relation
     connotation concept
+    role writing_system
+    precondition "a surface uses Han characters"
+    effect "classifies the surface as Han script"
+    unit "not applicable"
+    example "Chinese commonly uses Han characters"
     lexeme en
       surface
         text han

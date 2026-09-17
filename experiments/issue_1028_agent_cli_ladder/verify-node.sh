@@ -45,15 +45,21 @@ record() {
 target_dir() {
   printf '%s' "${LADDER_CARGO_TARGET_DIR:-$workspace/target}"
 }
-# The unit-test filter for a module path: its file stem, or the directory name
-# for a `mod.rs`.
+# The unit-test filter for a source or seed path. A `meanings-*.lino` file owns
+# the same semantic family as its suffix, so `meanings-verifiable-task.lino`
+# exercises `verifiable_task` instead of silently running zero tests.
 module_filter() {
-  local stem
-  stem=$(basename "$1" .rs)
+  local path="$1" stem
+  stem=$(basename "$path")
+  stem="${stem%.rs}"
+  stem="${stem%.lino}"
   if [[ "$stem" == mod ]]; then
-    stem=$(basename "$(dirname "$1")")
+    stem=$(basename "$(dirname "$path")")
   fi
-  printf '%s' "$stem"
+  if [[ "$path" == data/seed/meanings-*.lino ]]; then
+    stem="${stem#meanings-}"
+  fi
+  printf '%s' "${stem//-/_}"
 }
 cargo_check() {
   [[ "${LADDER_CARGO_CHECK:-1}" != 0 ]] || { record compile skipped; return 0; }
@@ -150,10 +156,8 @@ if [[ "$depth" -eq 5 ]]; then
   [[ "$tracked_changes" == " M $criterion_path" ]] || fail unexpected_tracked_changes
   record diff_lines "$(diff_lines "$criterion_path")"
   rustfmt_parses "$criterion_path" || fail unparsable_leaf_change
-  if [[ "$criterion_path" == *.rs ]]; then
-    cargo_check || fail uncompilable_leaf_change
-    cargo_test "$(module_filter "$criterion_path")" || fail failing_leaf_tests
-  fi
+  cargo_check || fail uncompilable_leaf_change
+  cargo_test "$(module_filter "$criterion_path")" || fail failing_leaf_tests
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
 elif [[ "$depth" -eq 4 ]]; then
   child_directory=".agent-ladder/verified-children"

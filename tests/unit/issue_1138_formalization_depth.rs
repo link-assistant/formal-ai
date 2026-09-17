@@ -30,8 +30,49 @@ use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use formal_ai::source_walk::{LookupBounds, SourceLookup, WalkSourceOutcome};
 
 const CORPUS: &str = "data/benchmarks/formalization-depth-requirements.lino";
-const FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b4";
+// Deep formalization consumes the exact concept captures recorded by plan 01.
+// Reusing that content-addressed fixture keeps one canonical copy of source
+// bytes instead of duplicating it under a plan-specific directory.
+const SOURCE_FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b1";
+const PARITY_FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b4";
 const PARITY_FILE: &str = "expected-graphs.json";
+const RECORDED_GRAPH_IDENTITY: &str = "concept_graph_3a37a219dc8e55c7";
+
+const NEED_REPORT_INTENTS: &[&str] = &[
+    "formalization_unresolved_need",
+    "formalization_grounded_concept",
+    "formalization_extracted_procedure",
+    "formalization_depth_exhausted",
+    "formalization_offline_need",
+];
+const NEED_REPORT_LANGUAGES: &[&str] = &["en", "ru", "hi", "zh", "es"];
+const NEED_REPORT_EXAMPLES: &[(&str, &str, &str)] = &[
+    (
+        "formalization_unresolved_need",
+        "en",
+        "3 of 7 needs grounded; “unfamiliar term” unresolved at depth 2.",
+    ),
+    (
+        "formalization_unresolved_need",
+        "ru",
+        "Обоснованы 3 из 7 потребностей; «незнакомый термин» не разрешён на глубине 2.",
+    ),
+    (
+        "formalization_unresolved_need",
+        "hi",
+        "7 में से 3 आवश्यकताएँ प्रमाणित हैं; “अपरिचित पद” गहराई 2 पर अनसुलझा है।",
+    ),
+    (
+        "formalization_unresolved_need",
+        "zh",
+        "7 个需求中有 3 个已获依据；“陌生术语”在深度 2 仍未解决。",
+    ),
+    (
+        "formalization_unresolved_need",
+        "es",
+        "3 de 7 necesidades fundamentadas; «término desconocido» sigue sin resolverse en la profundidad 2.",
+    ),
+];
 
 struct Requirement {
     family: String,
@@ -152,6 +193,53 @@ fn graph_with(lookup: &mut FixtureLookup, text: &str, depth: usize) -> ConceptGr
         &LookupBounds::default(),
         depth,
     )
+}
+
+#[test]
+fn every_formalization_need_outcome_has_a_five_language_meaning() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let path = "data/seed/meanings-formalization-needs.lino";
+    let meanings = fs::read_to_string(root.join(path)).expect("formalization need meanings");
+
+    assert!(
+        formal_ai::seed::seed_files()
+            .iter()
+            .any(|(registered, _)| *registered == path),
+        "the native offline bundle must include the need-reporting meanings"
+    );
+    for intent in NEED_REPORT_INTENTS {
+        assert_eq!(
+            meanings.matches(&format!("\n  {intent}\n")).count(),
+            1,
+            "one language-independent meaning for {intent}"
+        );
+        for language in NEED_REPORT_LANGUAGES {
+            assert_eq!(
+                meanings
+                    .matches(&format!("\n  response_{intent}_{language}\n"))
+                    .count(),
+                1,
+                "one {language} reporting meaning for {intent}"
+            );
+        }
+    }
+    assert_eq!(NEED_REPORT_INTENTS.len() * NEED_REPORT_LANGUAGES.len(), 25);
+    for (intent, language, example) in NEED_REPORT_EXAMPLES {
+        let heading = format!("  response_{intent}_{language}");
+        let mut record = meanings
+            .lines()
+            .skip_while(|line| *line != heading)
+            .skip(1)
+            .take_while(|line| line.starts_with("    "));
+        let actual = record
+            .find_map(|line| line.strip_prefix("    example "))
+            .expect("localized response meaning has an example");
+        assert_eq!(
+            actual,
+            format!("\"{example}\""),
+            "{intent}/{language} must retain its exact public example"
+        );
+    }
 }
 
 fn step(ordinal: usize, text: &str, license: &str) -> ProcedureStepRecord {
@@ -463,7 +551,8 @@ fn a_non_commercial_licensed_procedure_is_shown_but_refused_for_promotion() {
 
 #[test]
 fn an_offline_run_replays_the_committed_captures_and_reproduces_the_graph_identity() {
-    let fixture: PathBuf = Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE_DIR);
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let fixture: PathBuf = root.join(SOURCE_FIXTURE_DIR);
     let client = CachedSourceClient::new(&fixture, CurlSourceTransport).with_online(false);
     let preferences = ServicePreferences::default();
     let mut availability =
@@ -489,16 +578,18 @@ fn an_offline_run_replays_the_committed_captures_and_reproduces_the_graph_identi
         !graph.concepts.is_empty(),
         "the committed captures ground the requirement offline"
     );
-    let expected = fs::read_to_string(fixture.join(PARITY_FILE)).expect("parity expectation");
-    assert!(
-        expected.contains(&graph.identity()),
-        "the offline replay reproduces the recorded graph identity"
+    let expected = fs::read_to_string(root.join(PARITY_FIXTURE_DIR).join(PARITY_FILE))
+        .expect("parity expectation");
+    assert_eq!(
+        expected,
+        "[\n  {\n    \"identity\": \"concept_graph_3a37a219dc8e55c7\"\n  }\n]\n"
     );
+    assert_eq!(graph.identity(), RECORDED_GRAPH_IDENTITY);
 }
 
 #[test]
 fn the_native_and_browser_runtimes_produce_the_same_graph() {
-    let fixture: PathBuf = Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE_DIR);
+    let fixture: PathBuf = Path::new(env!("CARGO_MANIFEST_DIR")).join(PARITY_FIXTURE_DIR);
     let expected = fs::read_to_string(fixture.join(PARITY_FILE)).expect("parity expectation");
     let mut lookup = FixtureLookup::with(vec![sense(
         "isogram",
@@ -506,9 +597,10 @@ fn the_native_and_browser_runtimes_produce_the_same_graph() {
     )]);
     let graph = graph_with(&mut lookup, &english("isogram_requirement"), 1);
 
-    assert!(
-        expected.contains(&graph.identity()),
-        "the browser worker must produce the same graph identity"
+    assert_eq!(graph.identity(), RECORDED_GRAPH_IDENTITY);
+    assert_eq!(
+        expected,
+        "[\n  {\n    \"identity\": \"concept_graph_3a37a219dc8e55c7\"\n  }\n]\n"
     );
     assert!(
         graph

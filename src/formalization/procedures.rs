@@ -177,7 +177,7 @@ impl ExtractedProcedure {
     }
 
     fn identity(&self) -> String {
-        let mut values = vec![
+        let mut values = [
             self.goal.as_str(),
             self.language.as_str(),
             self.source_id.as_str(),
@@ -266,7 +266,10 @@ fn standalone(text: &str, start: usize, end: usize) -> bool {
 fn valid_provenance(step: &ProcedureStepRecord) -> bool {
     !step.text.trim().is_empty()
         && !step.source_id.trim().is_empty()
-        && (step.source_url.starts_with("https://") || step.source_url.starts_with("http://"))
+        && step
+            .source_url
+            .split_once("://")
+            .is_some_and(|(scheme, rest)| matches!(scheme, "http" | "https") && !rest.is_empty())
         && step.sha256.len() == 64
         && step.sha256.bytes().all(|byte| byte.is_ascii_hexdigit())
         && !step.fetched_at.trim().is_empty()
@@ -285,10 +288,10 @@ fn same_source(first: &ProcedureStepRecord, candidate: &ProcedureStepRecord) -> 
 }
 
 fn step_text(step: &ProcedureStep) -> String {
-    match &step.object {
-        Some(object) => format!("{} {object}", step.imperative),
-        None => step.imperative.clone(),
-    }
+    step.object.as_ref().map_or_else(
+        || step.imperative.clone(),
+        |object| format!("{} {object}", step.imperative),
+    )
 }
 
 fn field(name: &str, value: &str) -> String {

@@ -13,10 +13,10 @@
 
 use formal_ai::dreaming_application::STANDING_REQUIREMENT_INTENT;
 use formal_ai::{
-    ChatCompletionRequest, ChatMessage, MemoryEvent, ResponsesRequest, RetainedAmendment,
-    SolverConfig, UniversalSolver, create_chat_completion_with_solver_and_memory,
-    create_response_with_solver_and_memory, solve_with_amendment_records,
-    solve_with_standing_requirements,
+    ChatCompletionRequest, ChatMessage, FormalAiEngine, MemoryEvent, ResponsesRequest,
+    RetainedAmendment, SolverConfig, UniversalSolver,
+    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
+    solve_with_amendment_records, solve_with_standing_requirements,
 };
 
 /// A learned topic, its standing rule, and the held-out paraphrases — one per
@@ -263,7 +263,40 @@ fn the_production_entry_point_and_the_replay_core_agree() {
                 "[{}/{language}] production and replay must derive the same answer",
                 topic.topic,
             );
+            if topic.topic == "latex" && language == "en" {
+                assert_eq!(
+                    production.answer.lines().last(),
+                    Some(
+                        "Learned standing requirement (latex): Always include a LaTeX verification step in proof solutions."
+                    )
+                );
+            }
             assert_eq!(production.intent, core.intent);
         }
     }
+}
+
+#[test]
+fn retained_amendments_reach_the_library_engine_surface() {
+    let topics = amended_topics();
+    let events = amendment_events(&topics);
+    let prompt = topics[0].held_out[0].1;
+    let plain = FormalAiEngine.answer(prompt);
+    let retained = FormalAiEngine.answer_with_memory(prompt, &events);
+
+    assert_ne!(plain.answer, retained.answer);
+    assert_eq!(
+        retained.answer.lines().last(),
+        Some(
+            "Learned standing requirement (latex): Always include a LaTeX verification step in proof solutions."
+        )
+    );
+    assert!(retained.answer.contains(topics[0].rule));
+    assert!(
+        retained
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("meta_algorithm_amendment:")),
+        "the library entry point must carry the retained rule's evidence link"
+    );
 }

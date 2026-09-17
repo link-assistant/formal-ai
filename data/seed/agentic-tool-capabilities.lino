@@ -25,6 +25,7 @@ agentic_tool_capabilities
       zh ("读取所有文件" "读取多个文件" "读取这些文件" "打开所有文件" "显示多个文件" "加载多个文件" "检查这些文件" "读取每个文件" "显示所有文件" "一起读取文件")
   capability "shell"
     aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash" "computer_use" "code_interpreter")
+    command_aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash")
   capability "grep"
     aliases ("grep" "grep_search" "search" "codesearch" "Grep" "file_search")
     cues

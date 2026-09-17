@@ -1,0 +1,80 @@
+research_table_procedure
+  issue 948
+  purpose "Status classification, localized column labels, and source-dependent cell instructions for the generic research comparison procedure. Topic facts never live here."
+  status no_results
+    marker "no cors enabled web search results"
+    marker "no cors readable web search results"
+    marker "no usable cors search results"
+    marker "не получены результаты веб поиска"
+    marker "未获取到"
+    marker "कोई खोज परिणाम नहीं"
+  status all_providers_disabled
+    marker "all cors readable search providers are disabled"
+    marker "all cors enabled search providers are disabled"
+    marker "все cors совместимые поисковые провайдеры отключены"
+    marker "所有支持 cors 的搜索提供方都已禁用"
+    marker "सभी cors समर्थित खोज प्रदाता अक्षम हैं"
+  status search_plan_only
+    marker "web search requested"
+    marker "open research question detected"
+    marker "search providers that can be queried"
+    marker "verify claims against"
+  table_text en
+    intro "Research comparison table (draft; verify claims against the source links from the preceding retrieval)."
+    topic_label Topic
+  table_text ru
+    intro "Таблица сравнения (черновик; проверьте утверждения по ссылкам из предыдущего поиска)."
+    topic_label Тема
+  table_text hi
+    intro "शोध तुलना तालिका (मसौदा; पिछले खोज चरण के स्रोत लिंक से दावों की जाँच करें)।"
+    topic_label विषय
+  table_text zh
+    intro "研究比较表（草稿；请依据上一检索步骤的来源链接核实各项说法）。"
+    topic_label 主题
+  table_text es
+    intro "Tabla comparativa de investigación (borrador; verifica las afirmaciones con los enlaces de la recuperación anterior)."
+    topic_label Tema
+  criterion key_differences
+    label en "Key differences"
+    label ru "Ключевые различия"
+    label hi "मुख्य अंतर"
+    label zh "关键差异"
+    label es "Diferencias clave"
+    instruction en "Extract from the preceding source captures what distinguishes this topic from the others."
+    instruction ru "Извлеките из предыдущих снимков источников то, что отличает эту тему от остальных."
+    instruction hi "पिछले स्रोत-संग्रह से निकालें कि यह विषय अन्य विषयों से किस तरह अलग है।"
+    instruction zh "从前一步采集的来源中提取该主题与其他主题的区别。"
+    instruction es "Extrae de las capturas de fuentes anteriores qué distingue este tema de los demás."
+  criterion use_cases
+    label en "Use cases"
+    label ru "Сценарии применения"
+    label hi "उपयोग के मामले"
+    label zh "使用场景"
+    label es "Casos de uso"
+    instruction en "Extract the practical settings in which the preceding sources apply this topic."
+    instruction ru "Извлеките практические ситуации, в которых предыдущие источники применяют эту тему."
+    instruction hi "उन व्यावहारिक स्थितियों को निकालें जहाँ पिछले स्रोत इस विषय को लागू करते हैं।"
+    instruction zh "提取前述来源应用该主题的实际场景。"
+    instruction es "Extrae los contextos prácticos en los que las fuentes anteriores aplican este tema."
+  criterion advantages
+    label en Advantages
+    label ru Преимущества
+    label hi लाभ
+    label zh 优点
+    label es Ventajas
+    instruction en "Extract strengths supported by the preceding source captures; leave unsupported claims unverified."
+    instruction ru "Извлеките сильные стороны, подтверждённые предыдущими снимками источников; неподтверждённые утверждения оставьте непроверенными."
+    instruction hi "पिछले स्रोत-संग्रह से समर्थित खूबियाँ निकालें; असमर्थित दावों को अप्रमाणित रखें।"
+    instruction zh "提取前述来源采集所支持的优点；没有支持的说法保持未验证状态。"
+    instruction es "Extrae las ventajas respaldadas por las capturas anteriores; deja sin verificar las afirmaciones no respaldadas."
+  criterion disadvantages
+    label en Disadvantages
+    label ru Недостатки
+    label hi सीमाएँ
+    label zh 局限
+    label es Desventajas
+    instruction en "Extract limitations supported by the preceding source captures; leave unsupported claims unverified."
+    instruction ru "Извлеките ограничения, подтверждённые предыдущими снимками источников; неподтверждённые утверждения оставьте непроверенными."
+    instruction hi "पिछले स्रोत-संग्रह से समर्थित सीमाएँ निकालें; असमर्थित दावों को अप्रमाणित रखें।"
+    instruction zh "提取前述来源采集所支持的局限；没有支持的说法保持未验证状态。"
+    instruction es "Extrae las limitaciones respaldadas por las capturas anteriores; deja sin verificar las afirmaciones no respaldadas."

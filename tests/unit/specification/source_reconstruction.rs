@@ -109,7 +109,7 @@ fn reconstruction_emits_an_execution_record() {
     let source = fs::read_to_string(repo_root().join("src/source_reconstruction.rs"))
         .expect("source_reconstruction.rs readable");
     assert!(
-        source.contains("Recovered { record: Evidence }"),
+        source.contains("Recovered { record: Box<Evidence> }"),
         "the Recovered variant carries the Evidence record the recovery produced"
     );
     assert!(

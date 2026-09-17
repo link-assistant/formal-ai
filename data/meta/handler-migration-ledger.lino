@@ -1,7 +1,7 @@
 handler_migration_ledger
   issue 699
   batch 3
-  ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/debt-ratchet.lino. Corrected by issue #1138 B9, plan 09 leaf 5: this line named data/meta/kernel-ratchet.lino, a file that has never existed in the tree -- the measures moved to data/meta/debt-ratchet.lino under issue #1126 and this note was not updated, which is where ROADMAP.md:362 took its stale figures from."
+  ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/debt-ratchet.lino. Corrected by issue #1138 B9, plan 09 leaf 5: this line named a deleted kernel-ratchet path that never existed in the tree; the measures moved to data/meta/debt-ratchet.lino under issue #1126 and this note was not updated, which is where ROADMAP.md:362 took its stale figures from."
   census "the live registry: the specialized handler-precedence table (data/seed/handler-precedence.lino) followed by the five prelude methods (src/solver_dispatch.rs PRELUDE_METHOD_NAMES), which run on every turn ahead of the table. Counting only the table left five live methods outside this ledger, so the pending count read 40 when it was 45."
   handler conversation_control
     status migrated
@@ -51,6 +51,8 @@ handler_migration_ledger
     status pending
   handler summarization
     status pending
+  handler verifiable_task
+    status pending
   handler text_manipulation
     status pending
   handler brainstorming
@@ -89,8 +91,6 @@ handler_migration_ledger
     primitive "src/number_constraints.rs"
     justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved."
     held_out "tests/unit/issue_699_handler_migration.rs"
-  handler pattern_inference
-    status pending
   handler program_synthesis
     status migrated
     data "data/seed/coding-idioms.lino|data/seed/multilingual-responses-synthesis.lino"

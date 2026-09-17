@@ -743,11 +743,11 @@ fn a_wired_up_mcp_search_outranks_the_clients_own_search_alias() {
     }
 }
 
-/// The same ordering must not let browser automation win a fetch: it carries no
-/// research capability at all, so the client's own alias stays the choice when
-/// no MCP *research* tool is advertised (issue #1133).
+/// The same ordering must not let browser automation win a work-item read. A
+/// shell can ask GitHub for the issue's source fields directly, avoiding both
+/// browser interaction and a model-backed fetch interpretation (issue #1133).
 #[test]
-fn browser_automation_does_not_outrank_the_clients_fetch_alias() {
+fn browser_automation_and_model_fetch_do_not_outrank_structured_gh_read() {
     let tools = [
         "Bash",
         "Write",
@@ -759,7 +759,8 @@ fn browser_automation_does_not_outrank_the_clients_fetch_alias() {
     )];
     match plan_chat_step(&messages, &tools).expect("a work item has a plan") {
         AgenticPlan::ToolCalls(calls) => {
-            assert_eq!(calls[0].tool, "WebFetch", "{calls:?}");
+            assert_eq!(calls[0].tool, "Bash", "{calls:?}");
+            assert!(calls[0].arguments.contains("gh issue view"), "{calls:?}");
         }
         AgenticPlan::Final(answer) => panic!("expected the work item to be read, got {answer:?}"),
     }

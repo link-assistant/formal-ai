@@ -283,14 +283,13 @@ fn argv_of(command: &str) -> Vec<String> {
     for character in command.chars() {
         match quote {
             Some(open) if character == open => quote = None,
-            Some(_) => current.push(character),
             None if character == '\'' || character == '"' => quote = Some(character),
             None if character.is_whitespace() => {
                 if !current.is_empty() {
                     argv.push(std::mem::take(&mut current));
                 }
             }
-            None => current.push(character),
+            Some(_) | None => current.push(character),
         }
     }
     if !current.is_empty() {

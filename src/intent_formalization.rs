@@ -22,7 +22,6 @@ use crate::probability::ProbabilityStore;
 use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
-use crate::{concepts, cue_lexicon};
 
 mod prompt_relevants;
 mod requirements;
@@ -242,6 +241,9 @@ pub fn formalize_intent(
         push_unique(&mut knowns, format!("parameter:{name}:{value}"));
     }
     append_prompt_relevants(prompt, &normalized, &mut relevants);
+    for relevant in MethodRegistry::from_dispatch().explicit_learned_method_relevants(prompt) {
+        push_unique(&mut relevants, relevant);
+    }
 
     let route_slug = route
         .as_ref()
@@ -625,71 +627,8 @@ fn slot_known_link(role: FormalizationRole, kind: FormalizationAnchorKind, id: &
     }
 }
 
-fn looks_like_single_concept_lookup(prompt: &str) -> bool {
-    concepts::extract_concept_query(prompt).is_some_and(|query| {
-        !query
-            .term
-            .chars()
-            .any(|character| matches!(character, ',' | ';' | '，' | '、'))
-    })
-}
-
-fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
-    // Structural composite: a digit must be present, and an arithmetic operator must
-    // appear in either the raw lowercased prompt or the normalized view. The operator
-    // cue list lives in the cue lexicon (`arithmetic_operators`, substring match); the
-    // digit-plus-either-input glue stays here.
-    let raw = prompt.to_ascii_lowercase();
-    raw.chars().any(|c| c.is_ascii_digit())
-        && cue_lexicon::cues("arithmetic_operators")
-            .iter()
-            .any(|operator| raw.contains(operator) || normalized.contains(operator))
-}
-
-fn looks_like_latest_news_search(normalized: &str) -> bool {
-    let padded = format!(" {normalized} ");
-    let lexicon = seed::lexicon();
-    lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_NEWS_SUBJECT, &padded)
-        && lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_NEWS_RECENCY, &padded)
-}
-
-/// Routing mirror of `web_search_intent::extract_records_information_request`: a
-/// verbless "records about a subject" request names a record subject
-/// ([`ROLE_WEB_SEARCH_RECORDS_SUBJECT`]) tied to that subject by a topic
-/// connective ([`ROLE_WEB_SEARCH_TOPIC_MARKER`]).
-fn looks_like_records_information_search(normalized: &str) -> bool {
-    let padded = format!(" {normalized} ");
-    let lexicon = seed::lexicon();
-    lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_RECORDS_SUBJECT, &padded)
-        && lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_TOPIC_MARKER, &padded)
-}
-
-fn looks_like_program_synthesis(normalized: &str) -> bool {
-    // Fallback routing gate for synthesis requests without a parseable signature.
-    // Task identity and semantics are never selected from a benchmark catalogue.
-    let lexicon = crate::seed::lexicon();
-    lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized)
-        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized)
-        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
-}
-
-fn looks_like_text_manipulation(normalized: &str) -> bool {
-    // The fourteen text-manipulation operation cues live in the cue lexicon
-    // (`text_manipulation`, substring match), not as a Rust string literal.
-    cue_lexicon::matches("text_manipulation", normalized)
-}
-
 fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
     tokens.iter().any(|token| contains_token(normalized, token))
-}
-
-// Loose term check used only inside append_prompt_relevants for calendar create
-// promotion (the real strict boundary-aware version lives in the calendar handler).
-fn contains_term_for_relevants(haystack: &str, needle: &str) -> bool {
-    if needle.is_empty() {
-        return false;
-    }
-    haystack.contains(needle)
 }
 
 fn route_from_relevants(relevants: &[String]) -> Option<String> {

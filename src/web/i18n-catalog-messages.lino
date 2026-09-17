@@ -8,6 +8,13 @@ en
     author
       user "You"
     detectedFailureReport "I detected a failure while working on this request. Would you like to report it?"
+    browserRuntime
+      title "Python execution"
+      available "Not loaded. Download about 20 MB only after you choose Load Pyodide."
+      loading "Downloading the Pyodide runtime (about 20 MB)…"
+      ready "Pyodide is loaded. Explicit Python run requests now execute in the browser worker."
+      failed "Pyodide could not be loaded: {error}"
+      load "Load Pyodide (about 20 MB)"
     copyCode "Copy"
     copyCodeDone "Copied!"
     copyCodeTitle "Copy code to clipboard"
@@ -159,6 +166,13 @@ ru
     author
       user "Вы"
     detectedFailureReport "Я обнаружил сбой при выполнении этого запроса. Хотите сообщить о нём?"
+    browserRuntime
+      title "Выполнение Python"
+      available "Не загружено. Около 20 МБ будут скачаны только после нажатия «Загрузить Pyodide»."
+      loading "Загрузка среды Pyodide (около 20 МБ)…"
+      ready "Pyodide загружен. Явные запросы запуска Python теперь выполняются в браузерном worker."
+      failed "Не удалось загрузить Pyodide: {error}"
+      load "Загрузить Pyodide (около 20 МБ)"
     copyCode "Копировать"
     copyCodeDone "Скопировано!"
     copyCodeTitle "Скопировать код в буфер обмена"
@@ -310,6 +324,13 @@ zh
     author
       user "你"
     detectedFailureReport "我在处理此请求时检测到故障。要报告此问题吗？"
+    browserRuntime
+      title "Python 执行"
+      available "尚未加载。仅在您选择“加载 Pyodide”后下载约 20 MB。"
+      loading "正在下载 Pyodide 运行时（约 20 MB）…"
+      ready "Pyodide 已加载。明确的 Python 运行请求现在会在浏览器 worker 中执行。"
+      failed "无法加载 Pyodide：{error}"
+      load "加载 Pyodide（约 20 MB）"
     copyCode "复制"
     copyCodeDone "已复制！"
     copyCodeTitle "将代码复制到剪贴板"
@@ -461,6 +482,13 @@ hi
     author
       user "आप"
     detectedFailureReport "इस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप इसकी रिपोर्ट करना चाहेंगे?"
+    browserRuntime
+      title "Python निष्पादन"
+      available "लोड नहीं है। केवल ‘Pyodide लोड करें’ चुनने के बाद लगभग 20 MB डाउनलोड होगा।"
+      loading "Pyodide runtime डाउनलोड हो रहा है (लगभग 20 MB)…"
+      ready "Pyodide लोड है। स्पष्ट Python run requests अब browser worker में execute होते हैं।"
+      failed "Pyodide लोड नहीं हो सका: {error}"
+      load "Pyodide लोड करें (लगभग 20 MB)"
     copyCode "कॉपी करें"
     copyCodeDone "कॉपी हो गया!"
     copyCodeTitle "कोड को क्लिपबोर्ड पर कॉपी करें"

@@ -2,27 +2,25 @@ self_ast_census
   target src/solver_handlers/pattern_inference.rs
   language rust
   fidelity signature
-  byte_len 12444
-  line_count 359
-  content_id source_module_07778bd9887530bf
-  symbol_count 19
+  byte_len 11281
+  line_count 323
+  content_id source_module_090ea329446b8f6b
+  symbol_count 17
   symbols
-    const INTENT_MARKERS 29 43
-    function looks_like_pattern_inference 54 60
-    function try_pattern_inference 67 73
-    function try_pattern_inference_with_response_language 83 105
-    struct Atom 110 113
-    function intern 117 130
-    function is_atom_token 137 145
-    function clean_token 149 152
-    function longest_atom_run 159 180
-    function parse_sequence 183 189
-    struct GridParse 193 197
-    function parse_grid 201 226
-    function to_points 229 238
-    function predict_next 242 250
-    function answer_sequence 252 283
-    function answer_grid 285 319
-    function sequence_body 322 341
-    function grid_body 344 351
-    function render_pattern_response 353 359
+    function try_pattern_inference 32 38
+    function try_pattern_inference_with_response_language 48 73
+    struct Atom 78 81
+    function intern 85 98
+    function is_atom_token 105 113
+    function clean_token 117 120
+    function longest_atom_run 127 144
+    function parse_sequence 147 153
+    struct GridParse 157 161
+    function parse_grid 165 190
+    function to_points 193 202
+    function predict_next 206 214
+    function answer_sequence 216 247
+    function answer_grid 249 283
+    function sequence_body 286 305
+    function grid_body 308 315
+    function render_pattern_response 317 323

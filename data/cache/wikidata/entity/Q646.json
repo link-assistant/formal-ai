@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q646": {
+      "type": "item",
+      "id": "Q646",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "thermometer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "термометр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तापमापी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "溫度計"
+        },
+        "es": {
+          "language": "es",
+          "value": "termómetro"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "device that measures temperature or a temperature gradient"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "прибор для измерения температуры"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तापमान नापने का एक यंत्र"
+        },
+        "es": {
+          "language": "es",
+          "value": "instrumento de medición de la temperatura"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "temperature sensor"
+          },
+          {
+            "language": "en",
+            "value": "🌡"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "градусник"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "termometro"
+          },
+          {
+            "language": "es",
+            "value": "🌡"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

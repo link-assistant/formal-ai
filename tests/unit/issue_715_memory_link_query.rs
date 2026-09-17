@@ -11,6 +11,46 @@
 use formal_ai::memory::{MemoryEvent, MemoryStore};
 use formal_ai::{MemoryQueryExecution, execute_memory_query};
 
+const COMPLETE_READ_ANSWER: &str = r#"matched 38 of 38 links
+(doublet_b75cfceefb08ab5a: memory_event_e51698ff710c1be0 Type)
+(doublet_8470feea2af5c0bf: Type MemoryEvent)
+(doublet_09e3ff92d59811d9: MemoryEvent SubType)
+(doublet_ba57a2eef42a06f1: SubType message)
+(doublet_48283d32e63b9a84: message Value)
+(doublet_bf0a60d6cb5cbc54: memory_event_e51698ff710c1be0 e1)
+(doublet_364ca5fe2a29921e: memory_event_e51698ff710c1be0 "schema_version:0.2.0")
+(doublet_bdb3c414aae13cb1: memory_event_e51698ff710c1be0 "field:id")
+(doublet_3ac7cc6a56f4f05e: "field:id" "value:e1")
+(doublet_8d7e37a9aba513be: memory_event_e51698ff710c1be0 "field:kind")
+(doublet_ab7aa40bcddb9762: "field:kind" "value:message")
+(doublet_dcc8c260ded67064: memory_event_e51698ff710c1be0 "field:role")
+(doublet_8edabbb11664e0fa: "field:role" "value:user")
+(doublet_5c0537143f05ac09: memory_event_e51698ff710c1be0 "field:content")
+(doublet_aae9485332100869: "field:content" "value:the kettle is on")
+(doublet_950c17a2d28a3f56: memory_event_e51698ff710c1be0 "field:conversationId")
+(doublet_a1f944b90d514083: "field:conversationId" "value:c1")
+(doublet_b79cb53fe426327a: memory_event_e51698ff710c1be0 "field:writeCount")
+(doublet_7ec2a6c6036c741a: "field:writeCount" "value:1")
+(doublet_3421ad09cc84eb46: memory_event_2ff743505aba2450 Type)
+(doublet_8470feea2af5c0bf: Type MemoryEvent)
+(doublet_09e3ff92d59811d9: MemoryEvent SubType)
+(doublet_ba57a2eef42a06f1: SubType message)
+(doublet_48283d32e63b9a84: message Value)
+(doublet_9aa9812df5b34d21: memory_event_2ff743505aba2450 e2)
+(doublet_09091c90e9956d22: memory_event_2ff743505aba2450 "schema_version:0.2.0")
+(doublet_722df249f3bb40e5: memory_event_2ff743505aba2450 "field:id")
+(doublet_3ac7cb6a56f4eeab: "field:id" "value:e2")
+(doublet_42f3977f3b08b62a: memory_event_2ff743505aba2450 "field:kind")
+(doublet_ab7aa40bcddb9762: "field:kind" "value:message")
+(doublet_5617ca32e57f2d48: memory_event_2ff743505aba2450 "field:role")
+(doublet_8edabbb11664e0fa: "field:role" "value:user")
+(doublet_6cc904e35916843d: memory_event_2ff743505aba2450 "field:content")
+(doublet_5ead6bd018090ab7: "field:content" "value:the cat is asleep")
+(doublet_18553325d6dae502: memory_event_2ff743505aba2450 "field:conversationId")
+(doublet_a1f944b90d514083: "field:conversationId" "value:c1")
+(doublet_4f213d1e006529de: memory_event_2ff743505aba2450 "field:writeCount")
+(doublet_7ec2a6c6036c741a: "field:writeCount" "value:1")"#;
+
 /// Two events, so a read has something to select *between* rather than merely
 /// something to return.
 fn store() -> MemoryStore {
@@ -40,6 +80,7 @@ fn query(prompt: &str) -> MemoryQueryExecution {
 fn a_read_query_returns_every_projected_link() {
     let execution = query("(($i: $s $t)) (($i: $s $t))");
 
+    assert_eq!(execution.answer.answer, COMPLETE_READ_ANSWER);
     assert!(
         !execution.changed,
         "a read must not mark the store dirty: {}",
@@ -106,6 +147,10 @@ fn link_level_writes_are_refused_and_leave_the_store_alone() {
         let execution = execute_memory_query(prompt, &mut store, None)
             .unwrap_or_else(|| panic!("{label}: {prompt} should be recognized"));
 
+        let expected_answer = format!(
+            "This query would {label} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from."
+        );
+        assert_eq!(execution.answer.answer, expected_answer, "{label}");
         assert!(!execution.changed, "{label}: a refusal cannot be a change");
         assert_eq!(
             execution.answer.intent, "memory_link_query_rejected",

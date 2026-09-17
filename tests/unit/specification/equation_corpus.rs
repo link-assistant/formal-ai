@@ -9,8 +9,9 @@
 //!      equation types, every category and every supported language represented,
 //!      and a pass-count floor that cannot exceed the number of cases;
 //!   2. every case, replayed through `FormalAiEngine::answer` (the production
-//!      entry point), still routes to `calculation`, still names the expected
-//!      engine in its evidence links, and still produces the recorded answer;
+//!      entry point), still routes to its recorded solver, still names the
+//!      expected engine in its evidence links, and still produces the recorded
+//!      answer;
 //!   3. the observed pass count never drops below `minimum_pass_count` and the
 //!      distinct verified-type count never drops below `minimum_verified_types`
 //!      — the CI ratchet the issue asks for.
@@ -276,10 +277,14 @@ fn issue_891_equation_corpus_is_well_formed() {
             "case {} must record both a prompt and the answer observed for it",
             case.id,
         );
-        assert_eq!(
-            case.expected_intent, "calculation",
-            "case {} must expect a solved calculation",
+        assert!(
+            matches!(
+                case.expected_intent.as_str(),
+                "calculation" | "verifiable_task"
+            ),
+            "case {} must expect a solver that executes a checkable derivation, got {}",
             case.id,
+            case.expected_intent,
         );
         assert!(
             !case.expected_engine.is_empty(),
@@ -395,6 +400,13 @@ fn evaluate_case(case: &Case) -> Result<(), String> {
         .evidence_links
         .iter()
         .find_map(|link| link.strip_prefix("calculation:engine:"))
+        .or_else(|| {
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("verifiable_task:executed:"))
+                .then_some("verifiable-task-interpreter")
+        })
         .unwrap_or_default();
     if engine != case.expected_engine {
         return Err(format!(
@@ -418,19 +430,13 @@ fn evaluate_case(case: &Case) -> Result<(), String> {
 ///
 /// Plan 08 L1 fixes the `Find x:` misroute — `Find` is a shell command name, so
 /// the agent router claims the prompt before the calculator sees it — and raises
-/// `minimum_pass_count` from 72 to 73 in the same commit. Plan 08 L12 adds unit
-/// consistency, which promotes the `unit_carrying_*` class. This test is the
-/// ratchet that makes "promoted in the same commit" checkable rather than
+/// `minimum_pass_count` from 72 to 73 in the same commit. Other limitations stay
+/// limitations until their own derivation and verification are implemented.
+/// This test makes "promoted in the same commit" checkable rather than
 /// aspirational.
 #[test]
 fn every_limitation_is_still_honest_or_promoted() {
-    const PROMOTED_BY_PLAN_08: &[&str] = &[
-        "named_unknown_colon_clause",
-        "named_unknown_if_clause",
-        "named_unknown_for_clause",
-        "unit_carrying_unknown",
-        "unit_carrying_constant",
-    ];
+    const PROMOTED_BY_PLAN_08: &[&str] = &["named_unknown_colon_clause"];
 
     let suite = load_suite();
     let case_ids: BTreeSet<&str> = suite.cases.iter().map(|case| case.id.as_str()).collect();

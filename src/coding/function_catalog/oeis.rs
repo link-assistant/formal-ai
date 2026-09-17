@@ -9,12 +9,14 @@ use std::collections::BTreeSet;
 
 use serde::Deserialize;
 
+use crate::coding::fragment_catalog::FragmentCatalog;
+use crate::coding::ir_lowering::lowering_for;
+use crate::coding::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
 use crate::coding::python_render::{render_function, runtime_template};
 use crate::coding::task_spec::CodingTaskSpec;
+use crate::seed::SourceRecord;
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
 
-const API: &str = "https://oeis.org";
-const LICENSE: &str = "CC-BY-SA-4.0";
 const MAX_REFERENCES: usize = 8;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -28,6 +30,9 @@ pub struct SequenceProgram {
     pub fetched_at: String,
     pub license: String,
     pub composition: String,
+    /// The source-neutral derivation when this candidate came from a parsed
+    /// recurrence rather than a directly reusable formula.
+    pub program_ir: Option<ProgramIr>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -63,11 +68,17 @@ pub fn discover_programs<T: SourceTransport>(
     client: &CachedSourceClient<T>,
     spec: &CodingTaskSpec,
 ) -> SequenceDiscovery {
+    let Some(source) = crate::seed::source_record("oeis") else {
+        return SequenceDiscovery {
+            programs: Vec::new(),
+            diagnostics: vec!["oeis:source_registry_missing".to_owned()],
+        };
+    };
     let queries = research_queries(spec);
     let mut diagnostics = Vec::new();
     let mut programs = Vec::new();
     for query in queries {
-        match discover_query(client, spec, &query) {
+        match discover_query(client, spec, &source, &query) {
             Ok((mut found, mut misses)) => {
                 programs.append(&mut found);
                 diagnostics.append(&mut misses);
@@ -86,12 +97,10 @@ pub fn discover_programs<T: SourceTransport>(
 fn discover_query<T: SourceTransport>(
     client: &CachedSourceClient<T>,
     spec: &CodingTaskSpec,
+    source: &SourceRecord,
     query: &str,
 ) -> Result<(Vec<SequenceProgram>, Vec<String>), FetchError> {
-    let search = client.fetch(&format!(
-        "{API}/search?q={}&fmt=json",
-        encode_component(query)
-    ))?;
+    let search = client.fetch(&source.api_url(&[("query", query)]))?;
     let initial = parse_records(&search)?;
     let mut ids = initial
         .first()
@@ -106,7 +115,8 @@ fn discover_query<T: SourceTransport>(
         .filter(|id| seen.insert(*id))
         .take(1 + MAX_REFERENCES)
     {
-        let url = format!("{API}/A{id:06}?fmt=json");
+        let root = source.api.split("/search").next().unwrap_or(&source.api);
+        let url = format!("{root}/A{id:06}?fmt=json");
         let capture = match client.fetch(&url) {
             Ok(capture) => capture,
             Err(error) => {
@@ -122,7 +132,7 @@ fn discover_query<T: SourceTransport>(
             }
         };
         let Some(record) = record else { continue };
-        programs.extend(programs_for_record(spec, &record, &capture));
+        programs.extend(programs_for_record(spec, &record, &capture, source));
         if programs.len() >= 4 {
             break;
         }
@@ -181,6 +191,7 @@ fn programs_for_record(
     spec: &CodingTaskSpec,
     record: &Record,
     capture: &SourceCapture,
+    source: &SourceRecord,
 ) -> Vec<SequenceProgram> {
     let mut programs = Vec::new();
     if boolean_examples(spec)
@@ -192,6 +203,7 @@ fn programs_for_record(
                 spec,
                 record,
                 capture,
+                source,
                 &format!("formula-membership-start-{start}"),
                 &body,
                 format!("oeis_formula_membership(index_start={start})"),
@@ -202,13 +214,14 @@ fn programs_for_record(
         && let Some(recurrence) = linear_recurrence(&record.name)
     {
         for (divisor, offset) in matching_index_maps(spec, record) {
-            let body = recurrence_body(&spec.parameters[0].name, &recurrence, divisor, offset);
-            programs.push(sequence_program(
+            let ir = recurrence_ir(spec, &recurrence, divisor, offset, record, capture, source);
+            programs.push(sequence_program_from_ir(
                 spec,
                 record,
                 capture,
+                source,
                 &format!("linear-recurrence-divisor-{divisor}-offset-{offset}"),
-                &body,
+                ir,
                 format!("oeis_linear_recurrence(index=floor(n/{divisor})+{offset})"),
             ));
         }
@@ -220,6 +233,7 @@ fn sequence_program(
     spec: &CodingTaskSpec,
     record: &Record,
     capture: &SourceCapture,
+    registry_source: &SourceRecord,
     variant: &str,
     body: &str,
     composition: String,
@@ -232,8 +246,36 @@ fn sequence_program(
         source_url: capture.source_url().to_owned(),
         sha256: capture.sha256().to_owned(),
         fetched_at: capture.fetched_at().to_owned(),
-        license: LICENSE.to_owned(),
+        license: registry_source.license_name.clone(),
         composition,
+        program_ir: None,
+    }
+}
+
+fn sequence_program_from_ir(
+    spec: &CodingTaskSpec,
+    record: &Record,
+    capture: &SourceCapture,
+    registry_source: &SourceRecord,
+    variant: &str,
+    program_ir: ProgramIr,
+    composition: String,
+) -> SequenceProgram {
+    let catalog = FragmentCatalog::bootstrap();
+    let source = lowering_for("python")
+        .and_then(|lowering| lowering.lower(&program_ir, &catalog).ok())
+        .unwrap_or_default();
+    SequenceProgram {
+        id: format!("A{:06}:{variant}", record.number),
+        label: record_label(record),
+        source,
+        callable_name: spec.name.clone(),
+        source_url: capture.source_url().to_owned(),
+        sha256: capture.sha256().to_owned(),
+        fetched_at: capture.fetched_at().to_owned(),
+        license: registry_source.license_name.clone(),
+        composition,
+        program_ir: Some(program_ir),
     }
 }
 
@@ -357,14 +399,15 @@ fn arithmetic_formula(name: &str) -> Option<String> {
 fn formula_membership_body(parameter: &str, formula: &str, start: usize) -> String {
     let expression = replace_variable(formula, "source_index");
     let start = start.to_string();
-    template(
+    let expression = template(
         "oeis_formula_membership",
         &[
             ("start", &start),
             ("expression", &expression),
             ("parameter", parameter),
         ],
-    )
+    );
+    template("python_return", &[("expression", &expression)])
 }
 
 fn replace_variable(expression: &str, replacement: &str) -> String {
@@ -445,43 +488,98 @@ fn matching_index_maps(spec: &CodingTaskSpec, record: &Record) -> Vec<(i128, i12
     maps
 }
 
-fn recurrence_body(
-    parameter: &str,
+fn recurrence_ir(
+    spec: &CodingTaskSpec,
     recurrence: &LinearRecurrence,
     divisor: i128,
     offset: i128,
-) -> String {
-    let transition = recurrence
+    _record: &Record,
+    capture: &SourceCapture,
+    registry_source: &SourceRecord,
+) -> ProgramIr {
+    let parameter = &spec.parameters[0].name;
+    let state = recurrence
         .coefficients
         .iter()
         .enumerate()
-        .map(|(index, coefficient)| {
-            let coefficient = coefficient.to_string();
-            let index = (index + 1).to_string();
-            template(
-                "oeis_recurrence_term",
-                &[("coefficient", &coefficient), ("index", &index)],
-            )
-        })
-        .collect::<Vec<_>>()
-        .join(" + ");
-    let divisor = divisor.to_string();
-    let offset = offset.to_string();
-    let initial = format!("{:?}", recurrence.initial);
-    template(
-        "oeis_linear_recurrence",
-        &[
-            ("parameter", parameter),
-            ("divisor", &divisor),
-            ("offset", &offset),
-            ("initial", &initial),
-            ("transition", &transition),
+        .map(|(index, _)| format!("previous_{}", index + 1))
+        .collect::<Vec<_>>();
+    let mut terms = recurrence
+        .coefficients
+        .iter()
+        .zip(&state)
+        .map(|(coefficient, name)| IrNode::Apply {
+            fragment: "integer_multiply".to_owned(),
+            arguments: vec![
+                integer_literal(*coefficient),
+                IrNode::Parameter {
+                    name: name.clone(),
+                    ty: IrType::Integer,
+                },
+            ],
+        });
+    let first = terms.next().unwrap_or_else(|| integer_literal(0));
+    let transition = terms.fold(first, |left, right| IrNode::Apply {
+        fragment: "integer_add".to_owned(),
+        arguments: vec![left, right],
+    });
+    let parameter_node = || IrNode::Parameter {
+        name: parameter.clone(),
+        ty: IrType::Integer,
+    };
+    let index = IrNode::Apply {
+        fragment: "integer_add".to_owned(),
+        arguments: vec![
+            IrNode::Apply {
+                fragment: "integer_floor_divide".to_owned(),
+                arguments: vec![parameter_node(), integer_literal(divisor)],
+            },
+            integer_literal(offset),
         ],
-    )
+    };
+    ProgramIr {
+        name: spec.name.clone(),
+        parameters: vec![(parameter.clone(), IrType::Integer)],
+        result: IrType::Integer,
+        body: IrNode::Condition {
+            test: Box::new(IrNode::Apply {
+                fragment: "integer_divisible".to_owned(),
+                arguments: vec![parameter_node(), integer_literal(divisor)],
+            }),
+            then_branch: Box::new(IrNode::Recurrence {
+                state,
+                base: recurrence
+                    .initial
+                    .iter()
+                    .copied()
+                    .map(integer_literal)
+                    .collect(),
+                transition: Box::new(transition),
+                index: Box::new(index),
+            }),
+            else_branch: Box::new(integer_literal(0)),
+        },
+        fragments: vec![
+            "integer_add".to_owned(),
+            "integer_divisible".to_owned(),
+            "integer_floor_divide".to_owned(),
+            "integer_multiply".to_owned(),
+        ],
+        source_urls: vec![capture.source_url().to_owned()],
+        source_licenses: vec![registry_source.license_name.clone()],
+        reuse: ReuseMode::ShapeOnly,
+    }
+}
+
+fn integer_literal(value: i128) -> IrNode {
+    IrNode::Literal {
+        text: value.to_string(),
+        ty: IrType::Integer,
+    }
 }
 
 fn template(id: &str, values: &[(&str, &str)]) -> String {
-    runtime_template(id, values).unwrap_or_else(|| panic!("missing runtime template {id}"))
+    runtime_template(id, values).unwrap_or_default()
 }
 
 fn record_label(record: &Record) -> String {
@@ -490,18 +588,4 @@ fn record_label(record: &Record) -> String {
         .take(4)
         .collect::<Vec<_>>()
         .join(" ")
-}
-
-fn encode_component(value: &str) -> String {
-    use std::fmt::Write as _;
-
-    let mut encoded = String::new();
-    for byte in value.bytes() {
-        if byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_' | b'.' | b'~') {
-            encoded.push(char::from(byte));
-        } else {
-            write!(encoded, "%{byte:02X}").expect("writing to a String cannot fail");
-        }
-    }
-    encoded
 }

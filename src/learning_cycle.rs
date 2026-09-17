@@ -46,7 +46,7 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
 use crate::engine::normalize_prompt;
-use crate::promotion::{PromotionProposal, PromotionRatchet, SeedEdit};
+use crate::promotion::{PromotionProposal, PromotionRatchet, SeedEdit, render_promotion_proposals};
 use crate::seed::Slot;
 use crate::seed::parser::parse_lino;
 
@@ -290,6 +290,16 @@ impl LearningCycleRun {
             let _ = writeln!(out, "    reason \"{}\"", blocked.reason);
             let _ = writeln!(out, "    sample_prompt \"{}\"", blocked.sample_prompt);
             let _ = writeln!(out, "    routed_to \"human_triage\"");
+        }
+        // The idle runtime persists this exact document. Embed the proposal
+        // blocks in the issue-#656 reader's shape so the next `improve` run can
+        // consume the artifact directly instead of leaving an audit file with
+        // no reader. The learning-cycle fields above remain the human-readable
+        // derivation and the proposal blocks below are the executable handoff.
+        let promotion_document = render_promotion_proposals(&self.proposals);
+        for line in promotion_document.lines().skip(1) {
+            out.push_str(line);
+            out.push('\n');
         }
         out.trim_end().to_owned()
     }

@@ -18,6 +18,46 @@ hive-mind v2.28.1 had been released at 16:59Z the same day, before the first run
 started at 18:50Z. Formal AI backend 0.349.2 (the serving sidecar), the version
 this analysis replays against.
 
+## 2026-09-16 rerun audit
+
+The same three pull requests were inspected again after Hive Mind #2247 and
+Formal AI #1134 merged. These are the latest observed heads, not inferences from
+the earlier traces:
+
+| run | latest head | result |
+| --- | --- | --- |
+| Kotlin / Claude Code | `302f35a24da3327398302f365793ef4f8ed563c2` | still failed: tracked `Main.java` contains Kotlin source inside an unterminated Java string, `Main.class` is committed, no workflow exists, and the PR was marked ready despite the terminal failure |
+| Scala / Agent CLI | `724fb2be3c4e10808256368da910c0c3e9eb3d09` | the requested `Main.scala`, exact-output verifier and GitHub Actions workflow now exist; both latest `run` checks pass |
+| Rust / Codex | `9d74fb354ad3ee68ea64167543be59b6604d0357` | still only `.gitkeep`; Codex exited before a model turn with `invalid transport` in the stripped `mcp_servers.playwright` table |
+
+The Kotlin trace exposed a new Formal AI boundary defect. The planned
+`WebFetch` call used the whole *solve this issue, implement, verify, commit and
+push* request as the fetch tool's required `prompt`. Claude Code implements
+`WebFetch` by calling a model over the fetched page, so that nested Formal AI
+call solved the issue and returned a Kotlin code block instead of returning the
+issue body. The outer planner then treated that code block as the work item.
+Repository work items now prefer the authenticated, structured `gh issue/pr
+view` read whenever a run capability exists. Fetch-only clients receive a
+data-declared extraction prompt that explicitly returns title/body source text
+and forbids solving, rewriting or executing the issue. A regression asserts
+that the user's solve request never becomes the fetch prompt.
+
+The recovery/readiness half is a Hive Mind defect: the failed Kotlin session's
+invalid source and compiler output were auto-committed, the no-progress breaker
+then stopped correctly, but the PR was converted to ready because it had no
+pending changes and no configured checks. It is reported with the public trace
+and exact comments in
+[Hive Mind #2263](https://github.com/link-assistant/hive-mind/issues/2263).
+
+The Rust failure did not reach Formal AI or Codex model execution. It is the
+already reported [Hive Mind #2259](https://github.com/link-assistant/hive-mind/issues/2259):
+the source fix merged in #2260 after v2.29.0 was built, so this rerun exercised
+the old released image and does not falsify that patch. It remains unverified by
+this canary until a release containing #2260 is used. The Scala result exposes
+no current Agent CLI protocol failure; its repository artifacts and hosted
+verification are complete even though the continued local task image still has
+no Scala compiler.
+
 ## Sources
 
 Every log Hive Mind attached to the three pull requests on 2026-09-13:

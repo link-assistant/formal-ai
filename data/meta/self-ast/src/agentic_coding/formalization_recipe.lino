@@ -2,62 +2,65 @@ self_ast_census
   target src/agentic_coding/formalization_recipe.rs
   language rust
   fidelity full_ast
-  byte_len 6548
-  line_count 153
-  content_id source_module_fb9b2f8ef604f324
-  symbol_count 7
+  byte_len 8144
+  line_count 192
+  content_id source_module_326d707cf470a7fb
+  symbol_count 9
   symbols
     const SEARCH_QUERY 22 22
     const CANONICAL_SOURCE_URL 25 26
     const KB_PATH 29 29
     function is_formalization_task 32 35
     function inline_formalization_source 44 56
-    function plan_formalization_step 60 123
-    function final_answer 131 153
+    function requested_formalization_source 64 76
+    function discovery_query 81 86
+    function plan_formalization_step 90 162
+    function final_answer 170 192
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3556
-    named_node_count 715
-    distinct_node_kinds 49
+    total_link_count 4457
+    named_node_count 911
+    distinct_node_kinds 51
     node_kinds
-      arguments 63
+      arguments 85
       array_type 2
       attribute 1
       attribute_item 1
-      binary_expression 2
-      block 11
-      call_expression 63
-      closure_expression 3
-      closure_parameters 3
+      binary_expression 3
+      block 14
+      call_expression 85
+      char_literal 1
+      closure_expression 8
+      closure_parameters 8
       const_item 3
-      crate 9
-      doc_comment 20
+      crate 11
+      doc_comment 29
       else_clause 1
-      expression_statement 10
-      field_expression 48
-      field_identifier 48
-      function_item 4
-      generic_type 1
-      identifier 173
-      if_expression 6
+      expression_statement 12
+      field_expression 67
+      field_identifier 67
+      function_item 6
+      generic_type 3
+      identifier 208
+      if_expression 7
       inner_doc_comment_marker 6
       let_chain 4
       let_condition 4
-      let_declaration 13
-      line_comment 36
+      let_declaration 17
+      line_comment 46
       macro_invocation 3
-      outer_doc_comment_marker 14
-      parameter 7
-      parameters 4
-      parenthesized_expression 1
-      primitive_type 9
+      outer_doc_comment_marker 23
+      parameter 9
+      parameters 6
+      parenthesized_expression 2
+      primitive_type 11
       reference_expression 11
-      reference_type 11
-      return_expression 4
-      scoped_identifier 34
+      reference_type 13
+      return_expression 5
+      scoped_identifier 39
       scoped_use_list 2
       source_file 1
       string_content 18
@@ -65,10 +68,11 @@ self_ast_census
       super 5
       token_tree 7
       try_expression 1
+      tuple_pattern 1
       tuple_struct_pattern 4
-      type_arguments 1
-      type_identifier 6
-      unary_expression 6
+      type_arguments 3
+      type_identifier 10
+      unary_expression 7
       use_declaration 5
       use_list 2
       visibility_modifier 5

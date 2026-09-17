@@ -1,4 +1,284 @@
 multilingual_responses
+  response response_capability_gap_en
+    intent capability_gap
+    language en
+    text "This request routes to the `{needed}` capability, but this chat surface does not expose the required `{missing}` tool. Use an agent client that advertises it."
+  response response_capability_gap_anchors_en
+    intent capability_gap_anchors
+    language en
+    text "\nRequest anchors preserved for that client: {anchors}."
+  response response_language_demonstration_en
+    intent response_language_demonstration
+    language en
+    text "{canonical} ({surface}): {demonstration}"
+  response response_explain_previous_turn_empty_en
+    intent explain_previous_turn_empty
+    language en
+    text "There is no previous assistant turn available to explain yet."
+  response response_explain_previous_turn_answer_en
+    intent explain_previous_turn_answer
+    language en
+    text "Here is the previous answer in a simpler form:\n\n{previous}"
+  response response_code_execution_refused_en
+    intent code_execution_refused
+    language en
+    text "This code was not tested, not compiled, not checked because no execution backend is configured."
+  response response_code_execution_refused_ru
+    intent code_execution_refused
+    language ru
+    text "Этот код не тестировался, не компилировался и не проверялся, потому что среда выполнения не настроена."
+  response response_code_execution_refused_hi
+    intent code_execution_refused
+    language hi
+    text "इस कोड का परीक्षण, संकलन या जाँच नहीं हुई क्योंकि कोई execution backend कॉन्फ़िगर नहीं है।"
+  response response_code_execution_refused_zh
+    intent code_execution_refused
+    language zh
+    text "此代码未经测试、编译或检查，因为尚未配置执行后端。"
+  response response_code_execution_refused_es
+    intent code_execution_refused
+    language es
+    text "Este código no fue probado, compilado ni comprobado porque no hay un entorno de ejecución configurado."
+  response response_code_execution_observed_en
+    intent code_execution_observed
+    language en
+    text "Execution status: observed in `{backend}` (exit {exit}, {elapsed_ms} ms; deadline {deadline_ms} ms).\n\nOutput:\n```text\n{output}\n```\n\nEvidence: `{evidence}`"
+  response response_code_execution_observed_ru
+    intent code_execution_observed
+    language ru
+    text "Статус выполнения: наблюдалось в `{backend}` (код {exit}, {elapsed_ms} мс; предел {deadline_ms} мс).\n\nВывод:\n```text\n{output}\n```\n\nСвидетельство: `{evidence}`"
+  response response_code_execution_observed_hi
+    intent code_execution_observed
+    language hi
+    text "निष्पादन स्थिति: `{backend}` में देखा गया (exit {exit}, {elapsed_ms} ms; deadline {deadline_ms} ms)।\n\nआउटपुट:\n```text\n{output}\n```\n\nसाक्ष्य: `{evidence}`"
+  response response_code_execution_observed_zh
+    intent code_execution_observed
+    language zh
+    text "执行状态：已在 `{backend}` 中观察（退出码 {exit}，{elapsed_ms} 毫秒；时限 {deadline_ms} 毫秒）。\n\n输出：\n```text\n{output}\n```\n\n证据：`{evidence}`"
+  response response_code_execution_observed_es
+    intent code_execution_observed
+    language es
+    text "Estado de ejecución: observado en `{backend}` (salida {exit}, {elapsed_ms} ms; límite {deadline_ms} ms).\n\nSalida:\n```text\n{output}\n```\n\nEvidencia: `{evidence}`"
+  response response_code_execution_failed_en
+    intent code_execution_failed
+    language en
+    text "Execution failed in `{backend}`. Nothing is reported as verified.\n\nVerbose observation:\n```text\n{log}\n```"
+  response response_code_execution_failed_ru
+    intent code_execution_failed
+    language ru
+    text "Выполнение в `{backend}` завершилось сбоем. Ничего не объявлено проверенным.\n\nПодробное наблюдение:\n```text\n{log}\n```"
+  response response_code_execution_failed_hi
+    intent code_execution_failed
+    language hi
+    text "`{backend}` में निष्पादन विफल हुआ। कुछ भी सत्यापित घोषित नहीं किया गया।\n\nविस्तृत अवलोकन:\n```text\n{log}\n```"
+  response response_code_execution_failed_zh
+    intent code_execution_failed
+    language zh
+    text "在 `{backend}` 中执行失败。没有任何结果被声明为已验证。\n\n详细观察：\n```text\n{log}\n```"
+  response response_code_execution_failed_es
+    intent code_execution_failed
+    language es
+    text "La ejecución falló en `{backend}`. No se declara nada como verificado.\n\nObservación detallada:\n```text\n{log}\n```"
+  response response_code_execution_request_markers_en
+    intent code_execution_request_markers
+    language en
+    text ("run this" "execute this" "compile and run" "tell me exactly what it prints")
+  response response_code_execution_request_markers_ru
+    intent code_execution_request_markers
+    language ru
+    text ("запусти это" "выполни это" "скомпилируй и запусти" "что оно печатает")
+  response response_code_execution_request_markers_hi
+    intent code_execution_request_markers
+    language hi
+    text ("इसे चलाओ" "इसे निष्पादित" "संकलित करके चलाओ" "क्या छापता")
+  response response_code_execution_request_markers_zh
+    intent code_execution_request_markers
+    language zh
+    text ("运行这个" "执行这个" "编译并运行" "打印了什么")
+  response response_code_execution_request_markers_es
+    intent code_execution_request_markers
+    language es
+    text ("ejecuta esto" "compílalo y ejecútalo" "qué imprime")
+  response response_browser_runtime_downloadable_en
+    intent browser_runtime_downloadable
+    language en
+    text "Python is not loaded. Pyodide can be downloaded on explicit click (about {size}); until then this code was not tested, not compiled, not checked."
+  response response_browser_runtime_downloadable_ru
+    intent browser_runtime_downloadable
+    language ru
+    text "Python не загружен. Pyodide можно скачать явным нажатием (около {size}); до этого код не тестировался, не компилировался и не проверялся."
+  response response_browser_runtime_downloadable_hi
+    intent browser_runtime_downloadable
+    language hi
+    text "Python लोड नहीं है। स्पष्ट क्लिक पर Pyodide डाउनलोड किया जा सकता है (लगभग {size}); तब तक इस कोड का परीक्षण, संकलन या जाँच नहीं हुई।"
+  response response_browser_runtime_downloadable_zh
+    intent browser_runtime_downloadable
+    language zh
+    text "Python 尚未加载。明确点击后可下载 Pyodide（约 {size}）；在此之前，此代码未经测试、编译或检查。"
+  response response_browser_runtime_downloadable_es
+    intent browser_runtime_downloadable
+    language es
+    text "Python no está cargado. Pyodide puede descargarse con un clic explícito (aproximadamente {size}); hasta entonces este código no fue probado, compilado ni comprobado."
+  response response_browser_runtime_ready_en
+    intent browser_runtime_ready
+    language en
+    text "The Pyodide Python runtime is loaded; an explicit run request can now be observed in the browser worker."
+  response response_browser_runtime_ready_ru
+    intent browser_runtime_ready
+    language ru
+    text "Среда Python Pyodide загружена; теперь явный запрос запуска можно наблюдать в браузерном worker."
+  response response_browser_runtime_ready_hi
+    intent browser_runtime_ready
+    language hi
+    text "Pyodide Python runtime लोड है; अब स्पष्ट run request को browser worker में देखा जा सकता है।"
+  response response_browser_runtime_ready_zh
+    intent browser_runtime_ready
+    language zh
+    text "Pyodide Python 运行时已加载；现在可在浏览器 worker 中观察明确的运行请求。"
+  response response_browser_runtime_ready_es
+    intent browser_runtime_ready
+    language es
+    text "El entorno Python Pyodide está cargado; ahora se puede observar una solicitud explícita de ejecución en el worker del navegador."
+  response response_verifiable_task_verified_en
+    intent verifiable_task_verified
+    language en
+    text "Computed and corroborated by an independent check."
+  response response_verifiable_task_verified_ru
+    intent verifiable_task_verified
+    language ru
+    text "Вычислено и подтверждено независимой проверкой."
+  response response_verifiable_task_verified_hi
+    intent verifiable_task_verified
+    language hi
+    text "गणना की गई और स्वतंत्र जाँच से पुष्ट किया गया।"
+  response response_verifiable_task_verified_zh
+    intent verifiable_task_verified
+    language zh
+    text "已计算并由独立检查相互印证。"
+  response response_verifiable_task_verified_es
+    intent verifiable_task_verified
+    language es
+    text "Calculado y corroborado mediante una comprobación independiente."
+  response response_verifiable_task_uncorroborated_en
+    intent verifiable_task_uncorroborated
+    language en
+    text "Computed, but not independently corroborated."
+  response response_verifiable_task_uncorroborated_ru
+    intent verifiable_task_uncorroborated
+    language ru
+    text "Вычислено, но не подтверждено независимой проверкой."
+  response response_verifiable_task_uncorroborated_hi
+    intent verifiable_task_uncorroborated
+    language hi
+    text "गणना की गई, पर स्वतंत्र रूप से पुष्ट नहीं हुई।"
+  response response_verifiable_task_uncorroborated_zh
+    intent verifiable_task_uncorroborated
+    language zh
+    text "已计算，但尚未得到独立印证。"
+  response response_verifiable_task_uncorroborated_es
+    intent verifiable_task_uncorroborated
+    language es
+    text "Calculado, pero sin corroboración independiente."
+  response response_verifiable_task_gap_en
+    intent verifiable_task_gap
+    language en
+    text "I could not derive a checked answer from the available evidence. The research trail is recorded; no value was guessed."
+  response response_verifiable_task_gap_ru
+    intent verifiable_task_gap
+    language ru
+    text "Мне не удалось вывести проверяемый ответ из доступных свидетельств. Ход исследования записан; значение не угадывалось."
+  response response_verifiable_task_gap_hi
+    intent verifiable_task_gap
+    language hi
+    text "उपलब्ध साक्ष्य से जाँचा हुआ उत्तर नहीं निकला। शोध क्रम दर्ज है; कोई मान अनुमान से नहीं दिया गया।"
+  response response_verifiable_task_gap_zh
+    intent verifiable_task_gap
+    language zh
+    text "无法从现有证据推导出经检查的答案。研究轨迹已记录；没有猜测任何值。"
+  response response_verifiable_task_gap_es
+    intent verifiable_task_gap
+    language es
+    text "No pude derivar una respuesta comprobada de la evidencia disponible. El recorrido de investigación queda registrado; no se adivinó ningún valor."
+  response response_verifiable_task_browser_unverified_en
+    intent verifiable_task_browser_unverified
+    language en
+    text "I recognized a `{expectation}` verifiable task and formalized its requirements. This browser has no executor for the derived program, so the result remains unverified and no value is presented as an answer."
+  response response_verifiable_task_browser_unverified_ru
+    intent verifiable_task_browser_unverified
+    language ru
+    text "Я распознал проверяемую задачу типа `{expectation}` и формализовал её требования. В этом браузере нет исполнителя для выведенной программы, поэтому результат остаётся непроверенным и никакое значение не выдаётся как ответ."
+  response response_verifiable_task_browser_unverified_hi
+    intent verifiable_task_browser_unverified
+    language hi
+    text "मैंने `{expectation}` प्रकार का सत्यापन योग्य कार्य पहचाना और उसकी आवश्यकताओं को औपचारिक बनाया। इस ब्राउज़र में निकाले गए प्रोग्राम का executor नहीं है, इसलिए परिणाम असत्यापित है और कोई मान उत्तर के रूप में प्रस्तुत नहीं किया गया।"
+  response response_verifiable_task_browser_unverified_zh
+    intent verifiable_task_browser_unverified
+    language zh
+    text "我识别出一个 `{expectation}` 类型的可验证任务，并形式化了它的要求。此浏览器没有可执行派生程序的执行器，因此结果仍未验证，也不会把任何值当作答案。"
+  response response_verifiable_task_browser_unverified_es
+    intent verifiable_task_browser_unverified
+    language es
+    text "Reconocí una tarea verificable de tipo `{expectation}` y formalicé sus requisitos. Este navegador no tiene un ejecutor para el programa derivado, así que el resultado sigue sin verificar y no se presenta ningún valor como respuesta."
+  response response_verifiable_task_trailing_number_en
+    intent verifiable_task_trailing_number
+    language en
+    text "{value}"
+  response response_verifiable_task_trailing_number_ru
+    intent verifiable_task_trailing_number
+    language ru
+    text "{value}"
+  response response_verifiable_task_trailing_number_hi
+    intent verifiable_task_trailing_number
+    language hi
+    text "{value}"
+  response response_verifiable_task_trailing_number_zh
+    intent verifiable_task_trailing_number
+    language zh
+    text "{value}"
+  response response_verifiable_task_trailing_number_es
+    intent verifiable_task_trailing_number
+    language es
+    text "{value}"
+  response response_verifiable_task_delimited_value_en
+    intent verifiable_task_delimited_value
+    language en
+    text "{value}"
+  response response_verifiable_task_delimited_value_ru
+    intent verifiable_task_delimited_value
+    language ru
+    text "{value}"
+  response response_verifiable_task_delimited_value_hi
+    intent verifiable_task_delimited_value
+    language hi
+    text "{value}"
+  response response_verifiable_task_delimited_value_zh
+    intent verifiable_task_delimited_value
+    language zh
+    text "{value}"
+  response response_verifiable_task_delimited_value_es
+    intent verifiable_task_delimited_value
+    language es
+    text "{value}"
+  response response_verifiable_task_code_block_en
+    intent verifiable_task_code_block
+    language en
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_ru
+    intent verifiable_task_code_block
+    language ru
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_hi
+    intent verifiable_task_code_block
+    language hi
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_zh
+    intent verifiable_task_code_block
+    language zh
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_es
+    intent verifiable_task_code_block
+    language es
+    text "```\n{value}\n```"
   response response_write_program_skill_gap_name_en
     intent write_program_skill_gap_name
     language en

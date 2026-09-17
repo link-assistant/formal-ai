@@ -95,6 +95,7 @@ for primary-source fact verification.
 - Dispatch the same sub-task to multiple agents in parallel when configured, compare the verified results in a recorded ledger, and select the winner deterministically.
 - Complete the self-coding chain: Formal AI codes itself via Agent CLI, directed by Hive Mind, with every change landing as a reviewed pull request.
 - Keep every UI action, setting, and capability reachable through natural language in every environment, including agentic mode where no Formal AI UI exists.
+- Treat a missing prerequisite as a requirement: observe the failure, name the program, find its procedure at the trusted publisher, install it under the workspace and never system-wide, retry the original step, and keep only the recipe — so the toolchain can be forgotten and rediscovered.
 
 ## Self-Evolution Goals
 
@@ -110,6 +111,7 @@ recalled live; promotion remains explicitly benchmark- and human-gated.
 - Measure that share by the model that produced the change (`Formal-AI-Model` must be formal-ai and be named in the committed evidence) over behaviour-changing files only; documentation, logs and ledgers about Formal AI are not Formal AI authoring itself (issue #1085).
 - Define "Formal AI codes itself" as: Formal AI appends or supersedes links in `data/seed` and `data/meta` that change its own behaviour, or applies a link substitution to its own source, generates a held-out test, validates it through the interpreter and `cargo test`, and opens the pull request. Seed edits are the first rung; source edits follow through the same rule engine.
 - Keep a full meta-language representation of the source beside the source: a `.lino` per file under `src/`, one to one on every merged pull request, from which the source can be reconstructed (issue #558). Rust is an emission target of that representation, not the system; its line count measures an output and is not a release condition.
+- Never present unobserved output as observed. Every surface states its execution limit from a probe, in every supported language.
 
 ## Documentation Goals
 

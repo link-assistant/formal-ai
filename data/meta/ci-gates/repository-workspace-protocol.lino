@@ -1,0 +1,4 @@
+ci_gate repository_workspace_protocol
+  stage rust
+  description "The repository workspace stays one exact-commit, default-deny protocol: clone/diff isolation, multilingual target location, named-test evidence, data/source grounding and solve attribution are exercised together so a caller cannot bypass a protocol step unnoticed."
+  run "cargo test --locked --test unit issue_1138_repository_workspace && cargo test --locked --test unit issue_1138_locate_targets && cargo test --locked --test unit issue_1138_named_tests && cargo test --locked --test unit repository_workspace_protocol && cargo test --locked --test unit issue_1138_solve_cli && cargo test --locked --test unit solve_commit_payload_is_accepted_by_the_canonical_attribution_parser"

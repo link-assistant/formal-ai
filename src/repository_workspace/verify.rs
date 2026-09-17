@@ -121,11 +121,12 @@ pub fn run_named_tests(
         detail: format!("{refusal:?}"),
     })?;
 
-    let observation = boxed
-        .run_command(program, &borrowed)
-        .map_err(|refusal| WorkspaceError::Observed {
-            detail: format!("{refusal:?}"),
-        })?;
+    let observation =
+        boxed
+            .run_command(program, &borrowed)
+            .map_err(|refusal| WorkspaceError::Observed {
+                detail: format!("{refusal:?}"),
+            })?;
 
     if observation.timed_out {
         return Err(WorkspaceError::TimedOut {

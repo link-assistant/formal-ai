@@ -40,17 +40,6 @@ const HOW_TO_MIN_STEP_CHARS = 40;
 /** Steps are compacted to at most this many characters. */
 const HOW_TO_MAX_STEP_CHARS = 180;
 
-/** Issue #709 tier weights, mirrored from `SourceTier::weight_percent`. */
-const HOW_TO_TIER_WEIGHTS = {
-  original_first_party: 100,
-  original_journalism: 85,
-  independent_corroboration: 50,
-  unoriginal: 0,
-};
-
-/** Consultation order of the registry roles; `none` never contributes. */
-const HOW_TO_ROLE_ORDER = { primary: 0, secondary: 1 };
-
 /** Seven days — the minimum accessibility TTL issue #991 requires. */
 const SERVICE_ACCESSIBILITY_TTL_SECONDS = 7 * 24 * 60 * 60;
 
@@ -67,49 +56,16 @@ let cachedHowToSourceRegistry = null;
 
 /** Every `external_trusted` service declared in the seed registry. */
 function howToSourceRegistry() {
-  if (cachedHowToSourceRegistry) return cachedHowToSourceRegistry;
-  const raw = seedRawText(SEED_RAW, "sources-registry.lino");
-  if (!raw || !self.FormalAiSeed) return [];
-  const root = self.FormalAiSeed.parse(raw);
-  const registry = [];
-  const sections = (root.children || []).filter((node) => node.name === "sources_registry");
-  const sources = (sections.length ? sections : [root]).flatMap((section) =>
-    (section.children || []).filter((node) => node.name === "source"),
-  );
-  for (const node of sources) {
-    const value = (name) => {
-      const child = (node.children || []).find((item) => item.name === name);
-      return child && child.value ? String(child.value) : "";
-    };
-    const record = {
-      id: node.value || "",
-      name: value("name"),
-      kind: value("kind"),
-      serviceGroup: value("service_group"),
-      settingsKey: value("settings_key"),
-      defaultEnabled: value("default_enabled") !== "false",
-      howToRole: value("how_to_role") || "none",
-      tier: value("source_tier") || "independent_corroboration",
-      api: value("api"),
-      licenseName: value("license_name"),
-      licenseUrl: value("license_url"),
-    };
-    if (record.serviceGroup === "external_trusted") registry.push(record);
+  if (!cachedHowToSourceRegistry) {
+    cachedHowToSourceRegistry = sourceWalkRegistry()
+      .filter((record) => record.serviceGroup === "external_trusted");
   }
-  cachedHowToSourceRegistry = registry;
-  return registry;
+  return cachedHowToSourceRegistry;
 }
 
 /** Percent-encode with RFC 3986's unreserved set, exactly as Rust does. */
 function howToPercentEncode(value) {
-  const bytes = new TextEncoder().encode(String(value == null ? "" : value));
-  let encoded = "";
-  for (const byte of bytes) {
-    const character = String.fromCharCode(byte);
-    if (/[A-Za-z0-9\-_.~]/u.test(character)) encoded += character;
-    else encoded += `%${byte.toString(16).toUpperCase().padStart(2, "0")}`;
-  }
-  return encoded;
+  return sourceWalkPercentEncode(value);
 }
 
 /** Host of a service endpoint, used to tell wikiHow's hyphenated titles apart. */
@@ -120,8 +76,7 @@ function howToSourceHost(record) {
 
 /** The tier weight of a source, defaulting to independent corroboration. */
 function howToTierWeight(tier) {
-  const weight = HOW_TO_TIER_WEIGHTS[tier];
-  return typeof weight === "number" ? weight : HOW_TO_TIER_WEIGHTS.independent_corroboration;
+  return sourceWalkTierWeight(tier);
 }
 
 /**
@@ -177,10 +132,7 @@ function howToAnswersUrl(record, questionId) {
 
 /** Whether the user's settings allow this service. */
 function howToServiceAllowed(preferences, record) {
-  const setting = preferences ? preferences[record.settingsKey] : undefined;
-  if (setting === true) return true;
-  if (setting === false) return false;
-  return record.defaultEnabled;
+  return sourceWalkServiceAllowed(preferences, record);
 }
 
 /**
@@ -191,18 +143,14 @@ function howToServiceAllowed(preferences, record) {
  */
 function howToSelectSources(task, preferences, bounds) {
   const limits = bounds || HOW_TO_GUIDE_BOUNDS;
-  return howToSourceRegistry()
-    .filter((record) => record.howToRole in HOW_TO_ROLE_ORDER)
-    .filter((record) => howToServiceAllowed(preferences, record))
-    .filter((record) => howToEntryUrl(record, task) !== null)
-    .sort((left, right) => {
-      const role = HOW_TO_ROLE_ORDER[left.howToRole] - HOW_TO_ROLE_ORDER[right.howToRole];
-      if (role !== 0) return role;
-      const tier = howToTierWeight(right.tier) - howToTierWeight(left.tier);
-      if (tier !== 0) return tier;
-      return left.id < right.id ? -1 : left.id > right.id ? 1 : 0;
-    })
-    .slice(0, limits.maxServices);
+  return sourceWalkCandidates(
+    "procedure",
+    task,
+    "",
+    preferences,
+    limits,
+    (record, subject) => howToEntryUrl(record, subject),
+  ).selected.map(({ record }) => record);
 }
 
 /**
@@ -211,20 +159,19 @@ function howToSelectSources(task, preferences, bounds) {
  * unexplained absence.
  */
 function howToSkippedSources(task, preferences) {
-  const skipped = [];
-  for (const record of howToSourceRegistry()) {
-    if (!(record.howToRole in HOW_TO_ROLE_ORDER)) continue;
-    if (!howToServiceAllowed(preferences, record)) {
-      skipped.push(howToOutcome(record.id, "disabled", record.settingsKey));
-    } else if (howToEntryUrl(record, task) === null) {
-      skipped.push(howToOutcome(record.id, "unbound_template", record.api));
-    }
-  }
-  return skipped;
+  return sourceWalkCandidates(
+    "procedure",
+    task,
+    "",
+    preferences,
+    HOW_TO_GUIDE_BOUNDS,
+    (record, subject) => howToEntryUrl(record, subject),
+  ).skipped.map((outcome) => ({ ...outcome, steps: outcome.items }));
 }
 
 function howToOutcome(sourceId, status, detail) {
-  return { sourceId, status, detail: String(detail || ""), pages: 0, steps: 0 };
+  const outcome = sourceWalkOutcome(sourceId, status, detail);
+  return { ...outcome, steps: outcome.items };
 }
 
 function howToOutcomeTracePayload(outcome) {
@@ -233,75 +180,43 @@ function howToOutcomeTracePayload(outcome) {
 
 // --- Per-service accessibility memory (mirror of src/service_accessibility.rs)
 
-/** Records keyed by registry id, each with the TTL it was written under. */
-const howToServiceAccessibility = new Map();
-
 function howToNowSeconds() {
-  return Math.floor(Date.now() / 1000);
+  return sourceWalkNowSeconds();
 }
 
 /** Record the outcome of a probe. */
 function howToObserveService(sourceId, status, detail, now) {
-  howToServiceAccessibility.set(sourceId, {
-    sourceId,
-    status,
-    detail: String(detail || ""),
-    checkedAt: typeof now === "number" ? now : howToNowSeconds(),
-    ttlSeconds: SERVICE_ACCESSIBILITY_TTL_SECONDS,
-  });
+  sourceWalkObserveService(sourceId, status, detail, now);
 }
 
 /** Whether a record is older than the TTL it was written under. */
 function howToServiceNeedsRefresh(sourceId, now) {
-  const record = howToServiceAccessibility.get(sourceId);
-  if (!record) return true;
-  const at = typeof now === "number" ? now : howToNowSeconds();
-  return at - record.checkedAt > record.ttlSeconds;
+  return sourceWalkServiceNeedsRefresh(sourceId, now);
 }
 
 /** A service known to be down stays skipped for the whole TTL. */
 function howToServiceKnownUnreachable(sourceId, now) {
-  const record = howToServiceAccessibility.get(sourceId);
-  if (!record || record.status !== "unreachable") return false;
-  return !howToServiceNeedsRefresh(sourceId, now);
+  return sourceWalkServiceKnownUnreachable(sourceId, now);
 }
 
 /** Explicit invalidation: forget one service, or every service. */
 function howToInvalidateService(sourceId) {
-  return howToServiceAccessibility.delete(sourceId);
+  return sourceWalkInvalidateService(sourceId);
 }
 
 function howToInvalidateAllServices() {
-  const count = howToServiceAccessibility.size;
-  howToServiceAccessibility.clear();
-  return count;
+  return sourceWalkInvalidateAllServices();
 }
 
 /** The records as Links Notation, the shape `service-accessibility.lino` holds. */
 function howToServiceAccessibilityLino() {
-  const lines = ["service_accessibility"];
-  for (const id of Array.from(howToServiceAccessibility.keys()).sort()) {
-    const record = howToServiceAccessibility.get(id);
-    lines.push(`  service ${id}`);
-    lines.push(`    status ${record.status}`);
-    lines.push(`    checked_at ${record.checkedAt}`);
-    lines.push(`    ttl_seconds ${record.ttlSeconds}`);
-    lines.push(`    detail "${record.detail.replace(/"/gu, '\\"')}"`);
-  }
-  return `${lines.join("\n")}\n`;
+  return sourceWalkAccessibilityLino();
 }
 
 // --- Capture (mirror of src/source_fetch.rs, in-session)
 
-/** Content-addressed captures for this worker session, keyed by URL. */
-const howToCaptureCache = new Map();
-
 async function howToSha256Hex(text) {
-  const bytes = new TextEncoder().encode(text);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(digest))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+  return sourceWalkSha256Hex(text);
 }
 
 /**
@@ -311,30 +226,7 @@ async function howToSha256Hex(text) {
  * task twice costs one request and produces one identical trace.
  */
 async function howToFetchCapture(url) {
-  const cached = howToCaptureCache.get(url);
-  if (cached) return { ...cached, cached: true };
-  if (typeof fetch !== "function") {
-    return { ok: false, url, error: "fetch_unavailable" };
-  }
-  try {
-    const response = await fetch(url, { method: "GET", mode: "cors" });
-    if (!response || !response.ok) {
-      return { ok: false, url, error: `http_${response ? response.status : 0}` };
-    }
-    const text = await response.text();
-    const capture = {
-      ok: true,
-      url,
-      text,
-      sha256: await howToSha256Hex(text),
-      fetchedAt: String(howToNowSeconds()),
-      cached: false,
-    };
-    howToCaptureCache.set(url, capture);
-    return capture;
-  } catch (error) {
-    return { ok: false, url, error: error instanceof Error ? error.message : String(error) };
-  }
+  return sourceWalkFetchCapture(url);
 }
 
 // --- Payload recognition (mirror of src/how_to_guide/extract.rs)
@@ -529,95 +421,6 @@ function howToPushSteps(record, capture, depth, found, steps) {
 }
 
 /**
- * Walk one service inside the declared bounds, returning its candidate steps.
- *
- * Only the service's *declared* entry endpoint speaks for the service: wikiHow
- * answers `action=parse` and returns 500 on `list=search`, so letting the
- * fallback's failure mark the whole service unreachable would blank its working
- * endpoint for the seven-day accessibility TTL.
- */
-async function howToCaptureService(record, task, entryUrl, bounds, outcome, now) {
-  const queue = [{ url: entryUrl, depth: 0 }];
-  const visited = [];
-  const steps = [];
-  const isWiki = String(record.api || "").includes("api.php");
-  while (queue.length > 0) {
-    const { url, depth } = queue.shift();
-    if (outcome.pages >= bounds.maxPagesPerService || visited.includes(url)) continue;
-    visited.push(url);
-    const capture = await howToFetchCapture(url);
-    if (!capture.ok) {
-      if (url === entryUrl) {
-        howToObserveService(record.id, "unreachable", capture.error, now);
-        outcome.status = "unreachable";
-      } else {
-        outcome.status = "fallback_failed";
-      }
-      outcome.detail = `${capture.error} url=${url}`;
-      break;
-    }
-    outcome.pages += 1;
-    howToObserveService(record.id, "reachable", `captured ${url}`, now);
-    const age = now - Number.parseInt(capture.fetchedAt, 10);
-    if (Number.isFinite(age) && age > bounds.maxCaptureAgeSeconds) {
-      outcome.detail = `stale_capture age_seconds=${age} url=${url}`;
-    }
-    const payload = howToClassifyPayload(capture.text);
-    if (payload.kind === "parse") {
-      const found = howToExtractSteps(payload.html, bounds.maxItems);
-      if (found.length === 0 && depth < bounds.maxDepth) {
-        for (const title of howToWikiLinkTitles(payload.html, bounds.maxPagesPerService)) {
-          if (howToMatchesTask(task, title)) {
-            queue.push({ url: howToParseUrl(record, title), depth: depth + 1 });
-          }
-        }
-      }
-      howToPushSteps(record, capture, depth, found, steps);
-    } else if (payload.kind === "items") {
-      // Depth 0 is the question search, where relevance still has to be judged;
-      // deeper captures are the answers to a question already judged relevant.
-      const relevant =
-        depth === 0
-          ? payload.entries.filter(
-              (entry) => howToMatchesTask(task, entry.title) || howToMatchesTask(task, entry.link),
-            )
-          : payload.entries;
-      if (relevant.length === 0) outcome.detail = `no_relevant_result url=${url}`;
-      const before = steps.length;
-      for (const entry of relevant) {
-        howToPushSteps(record, capture, depth, howToExtractSteps(entry.body, bounds.maxItems), steps);
-      }
-      if (steps.length === before && depth < bounds.maxDepth) {
-        // A question body states the problem; the procedure is in the answers.
-        for (const entry of relevant) {
-          if (entry.questionId) {
-            queue.push({ url: howToAnswersUrl(record, entry.questionId), depth: depth + 1 });
-          }
-        }
-      }
-    } else if (payload.kind === "opensearch" || payload.kind === "search") {
-      const relevant = payload.titles
-        .filter((title) => howToMatchesTask(task, title))
-        .slice(0, bounds.maxPagesPerService);
-      if (relevant.length === 0) outcome.detail = `no_relevant_result url=${url}`;
-      if (depth < bounds.maxDepth) {
-        for (const title of relevant) {
-          queue.push({ url: howToParseUrl(record, title), depth: depth + 1 });
-        }
-      }
-    } else {
-      outcome.detail = `unreadable_payload reason=${payload.reason} url=${url}`;
-      // A title guess that misses is not a dead end: the same wiki can be
-      // searched for the task, and the hits parsed one hop deeper.
-      if (isWiki && String(payload.reason).startsWith("api_error") && depth < bounds.maxDepth) {
-        queue.push({ url: howToSearchUrl(record, task), depth: depth + 1 });
-      }
-    }
-  }
-  return steps;
-}
-
-/**
  * Identical bytes under two URLs mean one of them is a copy. The higher tier
  * keeps the capture; the copy contributes nothing, exactly as the issue #709
  * policy decides it for search results.
@@ -706,36 +509,84 @@ function howToGuideIsSufficient(guide) {
   return Boolean(guide) && guide.steps.length >= HOW_TO_MIN_ACCEPTED_STEPS;
 }
 
+/** Procedure-specific interpretation of one capture for the shared walk. */
+function howToReadCapture(record, task, capture, depth, produced, bounds) {
+  const payload = howToClassifyPayload(capture.text);
+  const items = [];
+  const follow = [];
+  let detail = "";
+  if (payload.kind === "parse") {
+    const found = howToExtractSteps(payload.html, bounds.maxItems);
+    if (found.length === 0 && depth < bounds.maxDepth) {
+      for (const title of howToWikiLinkTitles(payload.html, bounds.maxPagesPerService)) {
+        if (howToMatchesTask(task, title)) follow.push(howToParseUrl(record, title));
+      }
+    }
+    howToPushSteps(record, capture, depth, found, items);
+  } else if (payload.kind === "items") {
+    const relevant = depth === 0
+      ? payload.entries.filter(
+        (entry) => howToMatchesTask(task, entry.title) || howToMatchesTask(task, entry.link),
+      )
+      : payload.entries;
+    if (relevant.length === 0) detail = `no_relevant_result url=${capture.url}`;
+    for (const entry of relevant) {
+      howToPushSteps(
+        record,
+        capture,
+        depth,
+        howToExtractSteps(entry.body, bounds.maxItems),
+        items,
+      );
+    }
+    if (items.length === 0 && depth < bounds.maxDepth) {
+      for (const entry of relevant) {
+        if (entry.questionId) follow.push(howToAnswersUrl(record, entry.questionId));
+      }
+    }
+  } else if (payload.kind === "opensearch" || payload.kind === "search") {
+    const relevant = payload.titles
+      .filter((title) => howToMatchesTask(task, title))
+      .slice(0, bounds.maxPagesPerService);
+    if (relevant.length === 0) detail = `no_relevant_result url=${capture.url}`;
+    if (depth < bounds.maxDepth) {
+      for (const title of relevant) follow.push(howToParseUrl(record, title));
+    }
+  } else {
+    detail = `unreadable_payload reason=${payload.reason} url=${capture.url}`;
+    const isWiki = String(record.api || "").includes("api.php");
+    if (isWiki && String(payload.reason).startsWith("api_error") && depth < bounds.maxDepth) {
+      follow.push(howToSearchUrl(record, task));
+    }
+  }
+  items.forEach((item, index) => { item.position = produced + index + 1; });
+  return { items, follow, detail };
+}
+
 /** Synthesise a guide for `task` from the enabled registry services. */
 async function synthesizeHowToGuide(task, preferences, bounds, now) {
   const limits = bounds || HOW_TO_GUIDE_BOUNDS;
   const at = typeof now === "number" ? now : howToNowSeconds();
+  const subject = String(task || "").trim();
+  const walked = await sourceWalkSources("procedure", subject, "", preferences, limits, {
+    now: at,
+    entryUrl: (record, value) => howToEntryUrl(record, value),
+    emptyStatus: "no_steps",
+    read: (record, capture, depth, produced, declared) =>
+      howToReadCapture(record, subject, capture, depth, produced, declared),
+  });
   const guide = {
-    task: String(task || "").trim(),
+    task: subject,
     steps: [],
-    outcomes: howToSkippedSources(String(task || "").trim(), preferences),
+    outcomes: walked.outcomes.map((outcome) => ({
+      ...outcome,
+      steps: outcome.items,
+    })),
     conflicts: [],
     copies: [],
     bounds: limits,
   };
-  let collected = [];
-  for (const record of howToSelectSources(guide.task, preferences, limits)) {
-    if (howToServiceKnownUnreachable(record.id, at)) {
-      const known = howToServiceAccessibility.get(record.id);
-      guide.outcomes.push(howToOutcome(record.id, "unreachable_cached", known ? known.detail : ""));
-      continue;
-    }
-    const entryUrl = howToEntryUrl(record, guide.task);
-    if (entryUrl === null) continue;
-    const outcome = howToOutcome(record.id, "no_steps", entryUrl);
-    // eslint-disable-next-line no-await-in-loop -- the bounds are per service and
-    // the accessibility record is written between services, so the walk is serial.
-    const steps = await howToCaptureService(record, guide.task, entryUrl, limits, outcome, at);
-    if (steps.length > 0) outcome.status = "contributed";
-    outcome.steps = steps.length;
-    guide.outcomes.push(outcome);
-    collected = collected.concat(steps);
-  }
+  let collected = walked.items;
   collected = howToApplyCopiedSourcePolicy(collected, guide);
   collected = howToApplyConflictPolicy(collected, guide);
   guide.steps = howToOrderSteps(collected, limits.maxItems);

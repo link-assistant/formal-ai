@@ -8,7 +8,7 @@
 //! a second route can ask the same questions without re-deriving them and
 //! drifting from the parse the planner will actually execute (issue #1066).
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
-use super::shell_command_policy::sentences;
+use super::shell_command_policy::{prose_sentences, sentences};
 use crate::seed::{self, Slot};
 /// One whitespace token together with its byte span in the original request.
 pub(super) struct Token<'a> {
@@ -55,7 +55,7 @@ pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
 
 /// Whether a character is one of the ideographic punctuation marks that
 /// separate words and clauses in a script written without spaces.
-fn is_ideographic_punctuation(character: char) -> bool {
+const fn is_ideographic_punctuation(character: char) -> bool {
     matches!(character,
         '\u{3001}'..='\u{3003}'
             | '\u{3008}'..='\u{3011}'
@@ -733,6 +733,77 @@ pub(super) fn safe_relative_path(path: &str) -> bool {
         && path
             .chars()
             .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
+}
+
+/// Recover the `(target, old, new)` of a file-edit request from its wording.
+///
+/// Every cue comes from the seed lexicon. A target may be a safe relative path
+/// or an unambiguous self-AST census reference; ambiguous spans fail closed.
+#[must_use]
+pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
+    if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
+        return Some(edit);
+    }
+    let toks = tokens(request);
+    let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
+    let new_leads = bare_surfaces(seed::ROLE_FILE_EDIT_NEW_LEAD_CUE);
+    let target_cues = bare_surfaces(seed::ROLE_FILE_EDIT_TARGET_CUE);
+    let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
+    let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
+    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
+        let cleaned = clean_path_token(token.text);
+        let resolved = super::general_planner::resolve_census_target(cleaned);
+        if resolved.is_none() && (!looks_like_file_path(cleaned) || !safe_relative_path(cleaned)) {
+            return None;
+        }
+        let prev_is_cue = index
+            .checked_sub(1)
+            .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
+        let next_is_cue =
+            (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
+        let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
+        (prev_is_cue || next_is_cue).then_some((index, target))
+    })?;
+    let mut clause_start_index = file_index;
+    while clause_start_index > 0 && is_target_cue(clause_start_index - 1) {
+        clause_start_index -= 1;
+    }
+    let file_clause_start = toks[clause_start_index].start;
+    let action = toks
+        .iter()
+        .filter(|token| action_cues.contains(&clean_cue_token(token.text)))
+        .find(|token| token.start > toks[file_index].end)
+        .or_else(|| {
+            toks.iter()
+                .find(|token| action_cues.contains(&clean_cue_token(token.text)))
+        })?;
+    let action_end = action.end;
+    let new_lead = toks.iter().find(|token| {
+        token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
+    })?;
+    if file_clause_start >= action_end && file_clause_start < new_lead.start {
+        return None;
+    }
+    let old_span = request.get(action_end..new_lead.start)?;
+    let sentence_end = prose_sentences(request)
+        .into_iter()
+        .find(|sentence| sentence.span.contains(&new_lead.end))
+        .map_or_else(
+            || request.len(),
+            |sentence| {
+                let raw = &request[sentence.span.clone()];
+                sentence.span.start + (raw.len() - raw.trim_start().len()) + sentence.text.len()
+            },
+        );
+    let new_end = if file_clause_start > new_lead.end {
+        file_clause_start.min(sentence_end)
+    } else {
+        sentence_end
+    };
+    let new_span = request.get(new_lead.end..new_end)?;
+    let old = super::positional_edit::literal_text(old_span)?;
+    let new = super::positional_edit::literal_text(new_span)?;
+    Some((target, old, new))
 }
 
 /// Whether the payload starting at `from` is a block that outlives its first line.

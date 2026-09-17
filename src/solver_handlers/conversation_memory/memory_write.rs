@@ -8,7 +8,7 @@
 use super::super::finalize_simple;
 
 use crate::coding::contains_cjk;
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::memory::{MemoryEvent, MemoryStore};
@@ -109,12 +109,10 @@ impl MemoryWriteRequest {
                 "ru" => format!(
                     "Заменил \"{old_value}\" на \"{new_value}\" в памяти (обновлено вхождений: {applied})."
                 ),
-                "zh" => format!(
-                    "已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。"
-                ),
-                "hi" => format!(
-                    "स्मृति में \"{old_value}\" को \"{new_value}\" से बदला ({applied})।"
-                ),
+                "zh" => {
+                    format!("已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。")
+                }
+                "hi" => format!("स्मृति में \"{old_value}\" को \"{new_value}\" से बदला ({applied})।"),
                 _ => format!(
                     "Replaced \"{old_value}\" with \"{new_value}\" in memory ({applied} occurrence(s) updated)."
                 ),
@@ -175,9 +173,10 @@ fn recognize_memory_append(prompt: &str) -> Option<String> {
     prefixes.sort_by_key(|prefix| std::cmp::Reverse(prefix.len()));
     for prefix in prefixes {
         if lowered.starts_with(&prefix)
-            && let Some(statement) = clean_memory_write_text(&trimmed[prefix.len()..]) {
-                return Some(statement);
-            }
+            && let Some(statement) = clean_memory_write_text(&trimmed[prefix.len()..])
+        {
+            return Some(statement);
+        }
     }
     None
 }

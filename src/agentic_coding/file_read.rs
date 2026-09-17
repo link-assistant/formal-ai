@@ -12,6 +12,9 @@ use super::write_request;
 use crate::protocol::{ChatMessage, ToolCall};
 use crate::seed;
 
+const AUDIT_READ_LINE_LIMIT: usize = 160;
+const AUDIT_READ_COLUMN_LIMIT: usize = 320;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum FileReadTask {
     Direct {
@@ -30,12 +33,24 @@ pub(super) enum FileReadTask {
     },
 }
 
+impl FileReadTask {
+    pub(super) fn is_analysis(&self) -> bool {
+        match self {
+            Self::Direct { mode, .. }
+            | Self::DirectMany { mode, .. }
+            | Self::ListThenRead { mode, .. } => mode == &FileReadMode::Audit,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum FileReadMode {
     Full,
     FirstLine,
     ExtractValue(String),
     Summary,
+    /// Collect explicit incompleteness evidence without loading whole files.
+    Audit,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -61,6 +76,7 @@ pub(super) fn plan_file_read_step(
 ) -> AgenticPlan {
     let read_tool = tool_for(tool_names, Capability::Read);
     let run_tool = tool_for(tool_names, Capability::Run);
+    let grep_tool = tool_for(tool_names, Capability::Grep);
     let records = tool_result_records(messages);
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
 
@@ -75,11 +91,20 @@ pub(super) fn plan_file_read_step(
             *prefer_run,
             read_tool,
             run_tool,
+            grep_tool,
             &records,
             &request,
         ),
         FileReadTask::DirectMany { paths, mode } => {
-            exact::plan_direct_file_reads(paths, mode, read_tool, run_tool, &records, &request)
+            exact::plan_direct_file_reads(
+                paths,
+                mode,
+                read_tool,
+                run_tool,
+                grep_tool,
+                &records,
+                &request,
+            )
         }
         FileReadTask::ListThenRead {
             directory,
@@ -110,9 +135,21 @@ fn plan_direct_file_read(
     prefer_run: bool,
     read_tool: Option<&str>,
     run_tool: Option<&str>,
+    grep_tool: Option<&str>,
     records: &[ToolResultRecord],
     request: &str,
 ) -> AgenticPlan {
+    if mode == &FileReadMode::Audit {
+        return exact::plan_direct_file_reads(
+            &[path.to_owned()],
+            mode,
+            read_tool,
+            run_tool,
+            grep_tool,
+            records,
+            request,
+        );
+    }
     let read_command = read_command_for(path, mode);
     let exact_run = exact::exact_line_key(request).is_some() && run_tool.is_some();
     let recorded = if exact_run {
@@ -145,7 +182,11 @@ fn plan_direct_file_read(
         } else {
             content
         };
-        return AgenticPlan::Final(file_read_final_answer(mode, &[(path.to_owned(), content)]));
+        return AgenticPlan::Final(file_read_final_answer(
+            mode,
+            &[(path.to_owned(), content)],
+            request,
+        ));
     }
 
     if (prefer_run || exact_run)
@@ -157,7 +198,7 @@ fn plan_direct_file_read(
         }
 
     if let Some(tool) = read_tool {
-        return plan_one(tool, read_arguments(path));
+        return plan_one(tool, read_arguments(path, mode));
     }
     if let Some(tool) = run_tool {
         return plan_one(
@@ -207,7 +248,7 @@ fn plan_list_then_read(
         {
             return AgenticPlan::Final(failure);
         }
-        return AgenticPlan::Final(file_read_final_answer(mode, &contents));
+        return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
     }
 
     if selection == FileSelection::All {
@@ -217,14 +258,14 @@ fn plan_list_then_read(
                 .filter(|path| read_result_for_path(records, path).is_none())
                 .map(|path| PlannedToolCall {
                     tool: tool.to_owned(),
-                    arguments: read_arguments(path),
+                    arguments: read_arguments(path, mode),
                 })
                 .collect();
             return AgenticPlan::ToolCalls(calls);
         }
     } else if let Some(path) = paths.first()
         && let Some(tool) = read_tool {
-            return plan_one(tool, read_arguments(path));
+            return plan_one(tool, read_arguments(path, mode));
         }
 
     if let Some(tool) = run_tool {
@@ -243,6 +284,7 @@ fn plan_list_then_read(
                     paths.join(", "),
                     super::tool_result::strip_transport_envelope(raw),
                 )],
+                request,
             ));
         }
         return plan_one(tool, json!({ "command": command }).to_string());
@@ -396,7 +438,10 @@ fn selection_for_prompt(lower: &str) -> FileSelection {
 }
 
 fn mode_for_prompt(prompt: &str) -> FileReadMode {
-    let lower = prompt.to_ascii_lowercase();
+    // Inspection verbs are multilingual seed data, so normalization must fold
+    // every script that has case rather than only ASCII. Otherwise a capitalized
+    // Russian imperative misses the same semantic role its lowercase form hits.
+    let lower = prompt.to_lowercase();
     if lower.contains("first line") {
         return FileReadMode::FirstLine;
     }
@@ -405,6 +450,9 @@ fn mode_for_prompt(prompt: &str) -> FileReadMode {
     }
     if let Some(key) = exact::exact_line_key(prompt) {
         return FileReadMode::ExtractValue(key);
+    }
+    if seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &lower) {
+        return FileReadMode::Audit;
     }
     if lower.contains("summarize") || lower.contains("summary") {
         return FileReadMode::Summary;
@@ -585,6 +633,26 @@ fn read_result_for_path<'a>(records: &'a [ToolResultRecord], path: &str) -> Opti
         .map(|record| record.content.as_str())
 }
 
+fn grep_result_for_path<'a>(
+    records: &'a [ToolResultRecord],
+    path: &str,
+    pattern: &str,
+) -> Option<&'a str> {
+    records
+        .iter()
+        .find(|record| {
+            record.capability == Some(Capability::Grep)
+                && path_argument(&record.arguments)
+                    .is_some_and(|recorded| same_path(&recorded, path))
+                && record
+                    .arguments
+                    .get("pattern")
+                    .and_then(serde_json::Value::as_str)
+                    == Some(pattern)
+        })
+        .map(|record| record.content.as_str())
+}
+
 /// Whether a recorded path argument denotes the path the planner asked for.
 ///
 /// The transcript holds the argument the *client's* schema accepted, not the one
@@ -651,13 +719,56 @@ fn path_argument(arguments: &serde_json::Value) -> Option<String> {
         .map(ToOwned::to_owned)
 }
 
-fn read_arguments(path: &str) -> String {
-    json!({
+fn read_arguments(path: &str, mode: &FileReadMode) -> String {
+    let mut arguments = json!({
         "filePath": path,
         "path": path,
         "file_path": path,
-    })
-    .to_string()
+    });
+    if mode == &FileReadMode::Audit {
+        arguments["offset"] = json!(0);
+        arguments["limit"] = json!(AUDIT_READ_LINE_LIMIT);
+        arguments["columnOffset"] = json!(0);
+        arguments["columnLimit"] = json!(AUDIT_READ_COLUMN_LIMIT);
+    }
+    arguments.to_string()
+}
+
+fn grep_arguments(path: &str, pattern: &str) -> String {
+    json!({ "path": path, "pattern": pattern }).to_string()
+}
+
+/// Build the audit query from semantic seed data. The one structural member is
+/// an unchecked Markdown box: syntax rather than natural-language domain data.
+fn file_analysis_pattern() -> String {
+    let mut alternatives = vec![String::from(r"\[\s*\]")];
+    alternatives.extend(
+        seed::lexicon()
+            .words_for_role(seed::ROLE_FILE_ANALYSIS_GAP_MARKER)
+            .into_iter()
+            .filter(|surface| !surface.trim().is_empty())
+            .map(|surface| regex_escape(&surface)),
+    );
+    alternatives.sort();
+    alternatives.dedup();
+    format!("(?i)(?:{})", alternatives.join("|"))
+}
+
+fn regex_escape(surface: &str) -> String {
+    surface
+        .chars()
+        .flat_map(|character| {
+            if matches!(
+                character,
+                '.' | '+' | '*' | '?' | '(' | ')' | '|' | '[' | ']' | '{' | '}' | '^' | '$'
+                    | '\\'
+            ) {
+                vec!['\\', character]
+            } else {
+                vec![character]
+            }
+        })
+        .collect()
 }
 
 fn read_command_for(path: &str, mode: &FileReadMode) -> String {
@@ -666,6 +777,21 @@ fn read_command_for(path: &str, mode: &FileReadMode) -> String {
         FileReadMode::ExtractValue(key) => {
             let expression = shell_string(&format!("s/^{key}=//p"));
             ["sed", "-n", &expression, &shell_path(path)].join(" ")
+        }
+        FileReadMode::Audit => {
+            let line_range = format!("'1,{}p'", AUDIT_READ_LINE_LIMIT);
+            let column_range = format!("1-{}", AUDIT_READ_COLUMN_LIMIT);
+            [
+                "sed",
+                "-n",
+                &line_range,
+                &shell_path(path),
+                "|",
+                "cut",
+                "-c",
+                &column_range,
+            ]
+            .join(" ")
         }
         FileReadMode::Full | FileReadMode::Summary => {
             format!("cat {}", shell_path(path))
@@ -744,7 +870,11 @@ fn selected_paths_from_listing(
         .collect()
 }
 
-fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> String {
+fn file_read_final_answer(
+    mode: &FileReadMode,
+    files: &[(String, String)],
+    request: &str,
+) -> String {
     match mode {
         FileReadMode::FirstLine => {
             let (path, content) = &files[0];
@@ -775,6 +905,7 @@ fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> St
             }
             lines.join("\n")
         }
+        FileReadMode::Audit => bounded_audit_answer(files, request),
         FileReadMode::Full => {
             if files.len() > 1 {
                 return files
@@ -792,6 +923,73 @@ fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> St
             )
         }
     }
+}
+
+fn bounded_audit_answer(files: &[(String, String)], request: &str) -> String {
+    const FINDINGS_PER_FILE: usize = 4;
+    const FINDINGS_TOTAL: usize = 24;
+    const FINDING_CHARS: usize = 180;
+    const PATH_CHARS: usize = 160;
+
+    let markers = seed::lexicon()
+        .words_for_role(seed::ROLE_FILE_ANALYSIS_GAP_MARKER)
+        .into_iter()
+        .map(|surface| surface.to_lowercase())
+        .collect::<Vec<_>>();
+    let language = crate::language::detect(request).slug();
+    let response = |intent: &str| seed::localized_response(intent, language).unwrap_or_default();
+    let mut remaining = FINDINGS_TOTAL;
+    let mut lines = vec![response("file_analysis_heading")
+        .replace("{count}", &files.len().to_string())];
+    for (path, content) in files {
+        lines.push(format!("- `{}`", capped_text(path, PATH_CHARS)));
+        let no_matches = content.trim() == "No files found";
+        let grep_result = content.trim_start().starts_with("Found ");
+        let mut findings = content
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty())
+            .filter(|line| {
+                !no_matches
+                    && (!grep_result
+                        || (!line.starts_with("Found ") && !line.ends_with(':')))
+                    && line_contains_gap_marker(line, &markers)
+            })
+            .take(FINDINGS_PER_FILE.min(remaining))
+            .map(|line| capped_text(line, FINDING_CHARS))
+            .collect::<Vec<_>>();
+        remaining = remaining.saturating_sub(findings.len());
+        if findings.is_empty() {
+            lines.push(format!("  {}", response("file_analysis_no_marker")));
+        } else {
+            lines.extend(findings.drain(..).map(|finding| format!("  - {finding}")));
+        }
+    }
+    lines.push(response("file_analysis_absence_boundary"));
+    lines.join("\n")
+}
+
+fn line_contains_gap_marker(line: &str, markers: &[String]) -> bool {
+    let normalized = line.to_lowercase();
+    contains_unchecked_box(line)
+        || markers.iter().any(|surface| normalized.contains(surface))
+}
+
+fn contains_unchecked_box(line: &str) -> bool {
+    line.match_indices('[').any(|(start, _)| {
+        line[start + 1..]
+            .find(']')
+            .is_some_and(|end| line[start + 1..start + 1 + end].chars().all(char::is_whitespace))
+    })
+}
+
+fn capped_text(text: &str, max_chars: usize) -> String {
+    let mut chars = text.chars();
+    let mut capped = chars.by_ref().take(max_chars).collect::<String>();
+    if chars.next().is_some() {
+        capped.push('…');
+    }
+    capped
 }
 
 fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
@@ -893,8 +1091,12 @@ fn supplied_file_final_answer(
             )],
             path,
         ),
-        FileReadMode::ExtractValue(_) | FileReadMode::Summary => {
-            file_read_final_answer(mode, &[(path.to_owned(), content.to_owned())])
+        FileReadMode::ExtractValue(_) | FileReadMode::Summary | FileReadMode::Audit => {
+            file_read_final_answer(
+                mode,
+                &[(path.to_owned(), content.to_owned())],
+                request,
+            )
         }
     }
 }

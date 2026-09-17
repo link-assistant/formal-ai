@@ -196,9 +196,12 @@ and is grounded by
 [`tests/unit/specification/agentic_meta_algorithm.rs`](../tests/unit/specification/agentic_meta_algorithm.rs).
 
 The loop is a pure, deterministic function of the conversation so far — no
-sampling, no hidden state, no neural inference (a NON-GOAL). Given the messages
-exchanged and the tool names the agentic CLI advertised, the planner decides the
-next step as a small state machine:
+sampling, no hidden state, no neural inference (a NON-GOAL). A step may observe
+that a program it needs is absent; that observation is a need, not an error, and
+the recovery sequence that follows is the same deterministic function of the
+conversation plus the observed exit code. Given the messages exchanged and the
+tool names the agentic CLI advertised, the planner decides the next step as a
+small state machine:
 
 ```text
 web_search → web_fetch → write_file(formalize) → run_command(verify) → final
@@ -262,6 +265,47 @@ cargo test --test unit specification::agentic_meta_algorithm -- --nocapture
 Because this recipe is checked against the source too, the agentic loop and its
 recipe can never silently diverge — the loop is itself a reproducible artifact of
 the meta-algorithm.
+
+## The prerequisite-discovery meta-algorithm (issue #1138 B6)
+
+`data/meta/prerequisite-recipe.lino` is the executable, reviewable authority for
+turning an observed missing executable into a consent-bounded recovery. It is a
+general procedure over a program, platform, publisher, workspace and observed
+postcondition; compiler names and benchmark cases are inputs rather than Rust
+branches.
+
+1. Bind the failure to the exact prior call; distinguish missing, denied and
+   ordinary nonzero exits (`src/prerequisite/mod.rs`).
+2. Observe the host platform and dependencies instead of inferring them from
+   the requested language (`src/prerequisite/mod.rs`).
+3. Walk registered sources to the publisher authoritative for that program,
+   recording lookalikes and exhaustion (`src/prerequisite/publisher.rs`).
+4. Formalize publisher bytes into typed exact-argv steps plus a mandatory
+   postcondition; retrieved prose is never executed
+   (`src/prerequisite/publisher.rs`).
+5. Require a per-program grant and confine every write to the workspace
+   (`src/prerequisite/install.rs`).
+6. Lower only explicitly permitted process and network capabilities, refusing
+   digest, path or disk violations before execution
+   (`src/prerequisite/install.rs`).
+7. Re-probe, then retry the original step only after the observed postcondition
+   is present (`src/prerequisite/mod.rs`).
+8. Retain the source, content id, probe and observed version in the append-only
+   reconstruction ledger; installed payload bytes remain disposable
+   (`src/prerequisite/ledger.rs`).
+
+| Recipe record | Count | Grounded against |
+| --- | --- | --- |
+| `meta_recipe` | 1 | issue `1138`, topic `prerequisite_discovery` |
+| `meta_step` | 8 | orders 1..8 are contiguous; every `source_file` exists |
+| typed setup step | variable | exact `program` + repeated `argument`; explicit write scope, network need and optional digest |
+| postcondition | 1 per procedure | `ToolchainProbe` for the program the procedure claims to install |
+| evidence | every probe and process | command/argv, exit status and observed-byte hash |
+
+The grounding and forget/rediscover invariant are executable in
+`tests/unit/specification/prerequisite_recipe.rs`; live network or Docker
+availability is recorded separately and never inferred from that structural
+test.
 
 ## The response-language follow-up meta-algorithm (issue #556)
 

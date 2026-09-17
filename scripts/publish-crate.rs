@@ -52,8 +52,12 @@ impl FailureKind {
         }
     }
 
-    fn is_deferred(self) -> bool {
-        matches!(self, FailureKind::RateLimited)
+    fn blocks_release(self) -> bool {
+        // Every unsuccessful `cargo publish` must keep the release job red.
+        // In particular, HTTP 429 is recoverable but it is not success: a
+        // green job would otherwise skip every downstream artifact while
+        // making the release look complete.
+        true
     }
 }
 
@@ -94,7 +98,11 @@ fn needs_cd(rust_root: &str) -> bool {
 
 fn set_output(key: &str, value: &str) {
     if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(&output_file) {
+        if let Ok(mut file) = fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&output_file)
+        {
             let _ = writeln!(file, "{}={}", key, value);
         }
     }
@@ -120,7 +128,11 @@ fn main() {
 
     // Get token from CLI arg, then env vars
     let token = get_arg("token")
-        .or_else(|| env::var("CARGO_REGISTRY_TOKEN").ok().filter(|s| !s.is_empty()))
+        .or_else(|| {
+            env::var("CARGO_REGISTRY_TOKEN")
+                .ok()
+                .filter(|s| !s.is_empty())
+        })
         .or_else(|| env::var("CARGO_TOKEN").ok().filter(|s| !s.is_empty()));
 
     let package_info = match rust_paths::read_package_info(&package_manifest) {
@@ -136,7 +148,9 @@ fn main() {
     println!("Package: {}@{}", name, version);
 
     if name == "example-sum-package-name" {
-        println!("Skipping publish: package name is the template default 'example-sum-package-name'");
+        println!(
+            "Skipping publish: package name is the template default 'example-sum-package-name'"
+        );
         println!("Rename the package in Cargo.toml before publishing to crates.io");
         set_output("publish_result", "skipped");
         return;
@@ -146,7 +160,9 @@ fn main() {
     println!("=== Attempting to publish to crates.io ===");
 
     if token.is_none() {
-        println!("::warning::Neither CARGO_REGISTRY_TOKEN nor CARGO_TOKEN is set, attempting publish without explicit token");
+        println!(
+            "::warning::Neither CARGO_REGISTRY_TOKEN nor CARGO_TOKEN is set, attempting publish without explicit token"
+        );
         println!();
         println!("To fix this, ensure one of the following secrets is configured:");
         println!("  - CARGO_REGISTRY_TOKEN (Cargo's native env var, preferred)");
@@ -219,21 +235,23 @@ fn main() {
                 }
                 eprintln!();
                 eprintln!(
-                    "This is NOT a bug in the pipeline; the publish has been deferred and will be retried automatically."
+                    "This transient failure is recoverable, but this release job must remain failed and visible."
                 );
                 eprintln!(
-                    "scripts/check-release-needed.rs detects that {}@{} is missing from crates.io",
+                    "scripts/check-release-needed.rs detects that {}@{} is still missing from crates.io",
                     name, version
                 );
                 eprintln!(
-                    "and will set should_release=true, skip_bump=true on the next push to main,"
+                    "and the automatic release recovery path resumes this prepared version without another bump,"
                 );
-                eprintln!("so the same version is re-uploaded once the throttle window has rolled over.");
+                eprintln!(
+                    "so a rerun uploads the same version once the throttle window has rolled over."
+                );
                 eprintln!();
                 eprintln!("To unblock immediately:");
                 eprintln!("  1. Wait until the 24-hour throttle window has rolled over.");
                 eprintln!(
-                    "  2. Re-run the release workflow, or push any commit to main to trigger a retry."
+                    "  2. Re-run the failed release jobs; do not create another release version just to retry."
                 );
                 eprintln!();
                 eprintln!("See: https://doc.rust-lang.org/cargo/reference/publishing.html");
@@ -246,11 +264,17 @@ fn main() {
                 eprintln!();
                 eprintln!("Failed to publish due to missing or invalid authentication token.");
                 eprintln!();
-                eprintln!("SOLUTION: Configure one of these secrets in your repository or organization:");
-                eprintln!("  1. CARGO_REGISTRY_TOKEN - Cargo's native environment variable (preferred)");
+                eprintln!(
+                    "SOLUTION: Configure one of these secrets in your repository or organization:"
+                );
+                eprintln!(
+                    "  1. CARGO_REGISTRY_TOKEN - Cargo's native environment variable (preferred)"
+                );
                 eprintln!("  2. CARGO_TOKEN - Alternative name for backwards compatibility");
                 eprintln!();
-                eprintln!("If using organization secrets with a different name, map it in your workflow:");
+                eprintln!(
+                    "If using organization secrets with a different name, map it in your workflow:"
+                );
                 eprintln!("  - name: Publish to Crates.io");
                 eprintln!("    env:");
                 eprintln!("      CARGO_REGISTRY_TOKEN: ${{{{ secrets.YOUR_SECRET_NAME }}}}");
@@ -264,10 +288,9 @@ fn main() {
             }
         }
         set_output("publish_result", kind.output_value());
-        if kind.is_deferred() {
-            return;
+        if kind.blocks_release() {
+            exit(1);
         }
-        exit(1);
     }
 }
 
@@ -286,7 +309,7 @@ You have published too many versions of this crate in the last 24 hours
 ";
         assert_eq!(classify_failure(body), FailureKind::RateLimited);
         assert_eq!(FailureKind::RateLimited.output_value(), "rate_limited");
-        assert!(FailureKind::RateLimited.is_deferred());
+        assert!(FailureKind::RateLimited.blocks_release());
     }
 
     #[test]
@@ -294,7 +317,7 @@ You have published too many versions of this crate in the last 24 hours
         let body = "error: crate version 0.42.0 already uploaded";
         assert_eq!(classify_failure(body), FailureKind::AlreadyExists);
         assert_eq!(FailureKind::AlreadyExists.output_value(), "already_exists");
-        assert!(!FailureKind::AlreadyExists.is_deferred());
+        assert!(FailureKind::AlreadyExists.blocks_release());
     }
 
     #[test]
@@ -308,7 +331,7 @@ You have published too many versions of this crate in the last 24 hours
         let body = "error: please provide a non-empty token";
         assert_eq!(classify_failure(body), FailureKind::AuthFailed);
         assert_eq!(FailureKind::AuthFailed.output_value(), "auth_failed");
-        assert!(!FailureKind::AuthFailed.is_deferred());
+        assert!(FailureKind::AuthFailed.blocks_release());
     }
 
     #[test]
@@ -322,6 +345,6 @@ You have published too many versions of this crate in the last 24 hours
         let body = "error: something else entirely went wrong";
         assert_eq!(classify_failure(body), FailureKind::Unknown);
         assert_eq!(FailureKind::Unknown.output_value(), "failed");
-        assert!(!FailureKind::Unknown.is_deferred());
+        assert!(FailureKind::Unknown.blocks_release());
     }
 }

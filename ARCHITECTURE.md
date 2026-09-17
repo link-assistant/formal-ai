@@ -1357,7 +1357,9 @@ functions are synthesized from spec + tests and verified in the bounded agent
 workspace (`src/solver_handlers/program_synthesis.rs`), text manipulation is
 generalized over arbitrary input, and the imported benchmark suite grew to a
 10-case slice that passed **10/10** with a `minimum_pass_count` ratchet (13 cases / 13-floor today — see `data/benchmarks/industry-suite.lino`)
-(`tests/unit/specification/benchmarks.rs`).
+(`tests/unit/specification/benchmarks.rs`). The latest committed upstream
+comparison is HumanEval 20/20 and MBPP 20/20; `docs/status.md` renders every
+upstream suite row from the external-results ledger.
 
 The 2026-05-29 audit (issue #244, fifth pass) found the next gap is **parity**,
 per the PR #245 feedback ("all Rust and JavaScript logic are in sync", "all

@@ -413,6 +413,28 @@ fn whole_source_research_task_executes_and_replays_without_inventing_evidence() 
     let live_answer =
         try_web_search_with_client(prompt, &prompt.to_lowercase(), &mut live_log, &online)
             .expect("production search handler");
+    assert_eq!(
+        live_answer.answer,
+        r#"Fused 3 statement(s) from 2 captured source(s) for `20 v power supply`:
+
+1. Official supply: 20 V and 3.25 A.
+   `posterior=0.800000 source_count=1 source_tier=independent_corroboration`
+   - [A result](https://result.invalid/a)
+     > Official supply: 20 V and 3.25 A.
+     [Read more](https://result.invalid/a)
+
+2. Compatible supply: 20 V and 4 A.
+   `posterior=0.800000 source_count=1 source_tier=independent_corroboration`
+   - [B result](https://result.invalid/b)
+     > Compatible supply: 20 V and 4 A.
+     [Read more](https://result.invalid/b)
+
+3. Price: $39.
+   `posterior=0.800000 source_count=1 source_tier=independent_corroboration`
+   - [B result](https://result.invalid/b)
+     > Price: $39.
+     [Read more](https://result.invalid/b)"#
+    );
 
     let mut live_network = OptionNetwork::new("power_supply");
     live_network.require(Constraint::quantity(

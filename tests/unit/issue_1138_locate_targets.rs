@@ -69,7 +69,12 @@ fn repo_root() -> PathBuf {
 
 fn head_commit() -> String {
     let output = Command::new("git")
-        .args(["-C", &repo_root().display().to_string(), "rev-parse", "HEAD"])
+        .args([
+            "-C",
+            &repo_root().display().to_string(),
+            "rev-parse",
+            "HEAD",
+        ])
         .output()
         .expect("git rev-parse should run");
     String::from_utf8_lossy(&output.stdout).trim().to_owned()
@@ -89,9 +94,26 @@ fn need_for(subject: &str, language: &str) -> Need {
     }
 }
 
+struct PythonFixture(PathBuf);
+
+impl std::ops::Deref for PythonFixture {
+    type Target = Path;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Drop for PythonFixture {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+
 /// A three-file Python tree with exactly one occurrence of `DEFAULT_TIMEOUT`,
-/// plus a second fixture where two files declare it.
-fn python_fixture(tag: &str, duplicate: bool) -> PathBuf {
+/// plus a second fixture where two files declare it. The fixture removes its
+/// temporary Git object store even when an assertion fails.
+fn python_fixture(tag: &str, duplicate: bool) -> PythonFixture {
     let root = std::env::temp_dir().join(format!("formal-ai-issue-1138-python-{tag}"));
     let _ = std::fs::remove_dir_all(&root);
     std::fs::create_dir_all(&root).expect("fixture root should be creatable");
@@ -118,13 +140,21 @@ fn python_fixture(tag: &str, duplicate: bool) -> PathBuf {
     for args in [
         vec!["init", "-q"],
         vec!["add", "."],
-        vec!["-c", "user.email=t@example.org", "-c", "user.name=t", "commit", "-qm", "fixture"],
+        vec![
+            "-c",
+            "user.email=t@example.org",
+            "-c",
+            "user.name=t",
+            "commit",
+            "-qm",
+            "fixture",
+        ],
     ] {
         let mut command = Command::new("git");
         command.arg("-C").arg(&root).args(&args);
         let _ = command.output();
     }
-    root
+    PythonFixture(root)
 }
 
 /// Each of the five prompts resolves to the declaration neither of them names.
@@ -144,8 +174,9 @@ fn census_locates_a_declaration_the_prompt_never_names() {
             "{language}: the requirement must resolve to the provider list's file, got {locations:?}"
         );
         assert!(
-            locations.iter().any(|location| location.symbol.as_deref()
-                == Some("WEB_SEARCH_PROVIDERS")),
+            locations
+                .iter()
+                .any(|location| location.symbol.as_deref() == Some("WEB_SEARCH_PROVIDERS")),
             "{language}: the requirement must resolve to the declaration, got {locations:?}"
         );
         assert!(

@@ -115,7 +115,7 @@ pub fn span(doc_id: &str, start: usize, end: usize) -> String {
 
 /// What one round of satisfaction produced: the needs with updated states, the
 /// senses that grounded them, and the origin rows for the ones it could not.
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Satisfaction {
     pub needs: Vec<Need>,
     pub senses: Vec<ConceptSense>,

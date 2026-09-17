@@ -44,6 +44,18 @@ fn budget_search_solves_reachability_under_sufficient_budget() {
         "the trace must record the `search:solution` derivation marker; got: {}",
         answer.links_notation,
     );
+    assert!(
+        answer
+            .links_notation
+            .contains("search:heuristic:experiment"),
+        "a finite candidate family must pass through the registry-backed refutation chooser"
+    );
+    assert!(
+        answer
+            .links_notation
+            .contains("produced_by \"refutation_search\""),
+        "each eliminated candidate must be backed by an Evidence record"
+    );
     // The search only combines the provided operators; the solved expression
     // must be one that actually evaluates to the target.
     assert!(
@@ -140,6 +152,14 @@ fn budget_search_is_deterministic_across_runs() {
     let first = solver.solve(SEARCH_PROMPT);
     let second = solver.solve(SEARCH_PROMPT);
 
+    assert_eq!(
+        first.answer,
+        "Found by budget-driven search: 3 * 7 + 5 = 26.\n\
+No reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\n\
+Search budget: 256 candidate evaluations; a satisfying composition was found after 6 evaluations.\n\
+Search path: search_03a957b01beed257",
+        "the deterministic example answer must remain reviewable in full",
+    );
     assert_eq!(
         first.answer, second.answer,
         "the seeded search must produce identical answers across runs",

@@ -144,11 +144,7 @@ fn protocol_document_matches_the_live_source() {
     }
 
     let loaded = WorkspaceProtocol::load();
-    let loaded_ids: Vec<String> = loaded
-        .steps()
-        .iter()
-        .map(|step| step.id.clone())
-        .collect();
+    let loaded_ids: Vec<String> = loaded.steps().iter().map(|step| step.id.clone()).collect();
     let declared_ids: Vec<String> = declared
         .iter()
         .map(|step| step.require("id").to_owned())

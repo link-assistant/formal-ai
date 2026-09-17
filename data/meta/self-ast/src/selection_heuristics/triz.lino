@@ -2,19 +2,19 @@ self_ast_census
   target src/selection_heuristics/triz.rs
   language rust
   fidelity signature
-  byte_len 8904
-  line_count 232
-  content_id source_module_d018e88f84a84db5
+  byte_len 8886
+  line_count 227
+  content_id source_module_18fc6f819243c717
   symbol_count 11
   symbols
-    const DIMENSIONS 35 35
-    function criterion_for 45 52
-    function cue_role_for 55 61
-    function measure 64 66
-    function clause_spans 70 89
-    function clauses_demanding 92 105
-    const NO_STATED_TRADE_OFF 111 111
-    function contradictions_in 114 141
-    function link_for 145 192
-    function rank 197 223
-    function dimension_of 226 232
+    const DIMENSIONS 33 33
+    function criterion_for 43 50
+    function cue_role_for 53 59
+    function measure 62 64
+    function clause_spans 68 87
+    function clauses_demanding 90 103
+    const NO_STATED_TRADE_OFF 109 109
+    function contradictions_in 112 139
+    function link_for 143 190
+    function rank 195 218
+    function dimension_of 221 227

@@ -62,9 +62,17 @@ fn coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline()
         .with_clock(fixed_time);
     let failed_task = formal_ai::FormalAiEngine.answer("Write a Ruby program that counts to three");
     assert_eq!(failed_task.intent, "write_program_skill_gap");
-    assert_eq!(
-        failed_task.answer,
-        "I cannot write this program: no synthesis route reaches task \"count_to_three\" in language \"ruby\".\n\nI decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `ruby`, or restate the task in steps I can already compile."
+    let gap = "I cannot write this program: no synthesis route reaches task \"count_to_three\" in language \"ruby\".\n\nI decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `ruby`, or restate the task in steps I can already compile.";
+    assert_eq!(failed_task.answer.get(..gap.len()), Some(gap));
+    assert!(
+        failed_task.answer.starts_with(gap),
+        "the stable named gap precedes diagnostic evidence: {}",
+        failed_task.answer
+    );
+    assert!(
+        failed_task.answer[gap.len()..].starts_with("\n\nResearch trail: "),
+        "a blocked synthesis exposes the required research trail: {}",
+        failed_task.answer
     );
     let source = "def main\n  __COUNT_TO_THREE__\nend\n";
     let expected = "def main\n  1.upto(3) { |number| puts number }\nend\n";

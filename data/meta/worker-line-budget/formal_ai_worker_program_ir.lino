@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_program_ir.js"
+  ceiling 335
+  rationale "Issue #1138 pure browser coding IR, bounded typed fragment search, source attribution, and honest unverified lowering parity with native composition."

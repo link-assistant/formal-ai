@@ -86,7 +86,7 @@ fn starts_with_cue(rest: &str, cue: &str) -> bool {
 
 /// Whether a character belongs to a script that does not separate its words with
 /// spaces: the CJK ideographs, the kana, and the Hangul syllables.
-fn is_unspaced_script(character: char) -> bool {
+const fn is_unspaced_script(character: char) -> bool {
     matches!(character,
         '\u{3040}'..='\u{30ff}'
             | '\u{3400}'..='\u{4dbf}'

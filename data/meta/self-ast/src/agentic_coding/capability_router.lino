@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 24937
-  line_count 618
-  content_id source_module_801da6c0039dda29
+  byte_len 25472
+  line_count 627
+  content_id source_module_97d0124392d5b75d
   symbol_count 24
   symbols
     function tool_for 24 59
@@ -21,26 +21,26 @@ self_ast_census
     function names_a_container_without_an_act 283 287
     function stage_of 291 303
     const ROUTED_CAPABILITIES 310 310
-    function plan_routed_capability_step 333 401
-    function lowered_search_command 412 419
-    function routed_arguments 427 469
-    function plan_shared_capability_step 471 500
-    function task_matches 502 512
-    function arguments_for 514 561
-    function wildcard_token 563 567
-    function file_tokens 569 582
-    function shell_fallback 584 614
-    function shell_quote 616 618
+    function plan_routed_capability_step 333 410
+    function lowered_search_command 421 428
+    function routed_arguments 436 478
+    function plan_shared_capability_step 480 509
+    function task_matches 511 521
+    function arguments_for 523 570
+    function wildcard_token 572 576
+    function file_tokens 578 591
+    function shell_fallback 593 623
+    function shell_quote 625 627
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15637
-    named_node_count 3254
+    total_link_count 15787
+    named_node_count 3282
     distinct_node_kinds 76
     node_kinds
-      arguments 262
+      arguments 266
       array_expression 6
       array_type 10
       attribute 1
@@ -48,7 +48,7 @@ self_ast_census
       binary_expression 58
       block 67
       boolean_literal 12
-      call_expression 262
+      call_expression 266
       char_literal 25
       closure_expression 39
       closure_parameters 39
@@ -61,23 +61,23 @@ self_ast_census
       enum_variant_list 1
       escape_sequence 2
       expression_statement 50
-      field_expression 169
-      field_identifier 169
+      field_expression 172
+      field_identifier 172
       field_pattern 3
       for_expression 1
       function_item 20
       generic_function 1
       generic_type 14
-      identifier 743
+      identifier 748
       if_expression 26
       inner_doc_comment_marker 1
       integer_literal 8
       let_chain 2
       let_condition 4
-      let_declaration 37
+      let_declaration 38
       lifetime 8
       lifetime_parameter 2
-      line_comment 134
+      line_comment 139
       macro_invocation 20
       match_arm 26
       match_block 5
@@ -94,7 +94,7 @@ self_ast_census
       reference_type 40
       remaining_field_pattern 2
       return_expression 19
-      scoped_identifier 142
+      scoped_identifier 144
       scoped_type_identifier 4
       scoped_use_list 3
       shorthand_field_identifier 3
@@ -102,7 +102,7 @@ self_ast_census
       string_content 108
       string_literal 106
       struct_pattern 4
-      super 24
+      super 25
       token_tree 42
       try_expression 11
       tuple_expression 11

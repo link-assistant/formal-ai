@@ -1,0 +1,20 @@
+Q162339
+  aliases
+    en (phonendoscope stethoscopes)
+    es (fonendo fonendoscopio)
+    ru ("фонендоскоп" "стетофонендоскоп")
+    zh ("听筒" "医用听筒")
+  descriptions
+    en "acoustic medical device for auscultation"
+    es "aparato médico para la auscultación"
+    ru "Прибор, который всегда с врачом"
+    zh "用於聽診的聲學醫療設備"
+  id Q162339
+  labels
+    en stethoscope
+    es estetoscopio
+    hi "स्टेथोस्कोप"
+    ru "стетоскоп"
+    zh "聽診器"
+  type item
+success 1

@@ -1,0 +1,82 @@
+# Issue #1138 plan 06 L10/L13 execution-outcome table.
+#
+# The prompt text stays in self-use-prerequisite.lino.  This table records the
+# two permission-state outcomes once per language and points at the shared
+# response intents rather than copying localized prose.  The final-tree Rust
+# runner must execute every row before plan 06 L10 is checked. `observed` names
+# the required injected-host-sandbox outcome; it never claims that a live
+# Telegram transport or a remote deployment was exercised.
+telegram_execution_outcomes
+  record_type "execution_outcome_table"
+  id "issue_1138_telegram_execution_outcomes"
+  plan "06"
+  prompt_family "run_this_without_a_runtime"
+  prompt_source "data/benchmarks/self-use-prerequisite.lino"
+  runner "cargo test --test unit issue_1138_telegram_execution"
+  observation_scope "Telegram request routing with an absent backend and an injected host-sandbox backend; no Telegram network call"
+  language_count "5"
+  language_outcome en
+    language en
+    prompt_ref run_this_en
+    refused
+      status refused
+      response_intent code_execution_refused
+      observation backend_absent
+    granted
+      status observed
+      response_intent code_execution_observed
+      backend host_sandbox
+      output "55"
+      evidence_kind command_exit
+  language_outcome ru
+    language ru
+    prompt_ref run_this_ru
+    refused
+      status refused
+      response_intent code_execution_refused
+      observation backend_absent
+    granted
+      status observed
+      response_intent code_execution_observed
+      backend host_sandbox
+      output "55"
+      evidence_kind command_exit
+  language_outcome hi
+    language hi
+    prompt_ref run_this_hi
+    refused
+      status refused
+      response_intent code_execution_refused
+      observation backend_absent
+    granted
+      status observed
+      response_intent code_execution_observed
+      backend host_sandbox
+      output "55"
+      evidence_kind command_exit
+  language_outcome zh
+    language zh
+    prompt_ref run_this_zh
+    refused
+      status refused
+      response_intent code_execution_refused
+      observation backend_absent
+    granted
+      status observed
+      response_intent code_execution_observed
+      backend host_sandbox
+      output "55"
+      evidence_kind command_exit
+  language_outcome es
+    language es
+    prompt_ref run_this_es
+    refused
+      status refused
+      response_intent code_execution_refused
+      observation backend_absent
+    granted
+      status observed
+      response_intent code_execution_observed
+      backend host_sandbox
+      output "55"
+      evidence_kind command_exit

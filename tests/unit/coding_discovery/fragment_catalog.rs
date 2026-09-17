@@ -16,8 +16,9 @@ use formal_ai::fragment_catalog::{Fragment, FragmentCatalog, FragmentLedger, Fra
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
 
 /// The two seed files the bootstrap catalog reads.
-const BOOTSTRAP_SEED: [&str; 2] = [
+const BOOTSTRAP_SEED: [&str; 3] = [
     "data/seed/meanings-coding-structure.lino",
+    "data/seed/coding-composition-fragments.lino",
     "data/seed/coding-discovery-runtime.lino",
 ];
 
@@ -48,6 +49,20 @@ fn bootstrap_catalog_is_absent_without_the_seed_and_never_panics() {
         None,
         "a missing fragment id is an absence, never a panic"
     );
+    assert_eq!(
+        catalog.render_named("python_return", "python", &[("expression", "value")]),
+        None,
+        "a named lookup against an empty catalog remains an explicit absence"
+    );
+    assert_eq!(
+        formal_ai::python_render::runtime_template_from(
+            &empty_seed,
+            "python_return",
+            &[("expression", "value")],
+        ),
+        None,
+        "the runtime renderer must not retain a compile-time seed copy"
+    );
 
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     for relative in BOOTSTRAP_SEED {
@@ -59,6 +74,103 @@ fn bootstrap_catalog_is_absent_without_the_seed_and_never_panics() {
     assert!(
         !FragmentCatalog::bootstrap().fragments().is_empty(),
         "with the seed present the same code path yields the bootstrap fragments"
+    );
+    assert_eq!(
+        FragmentCatalog::bootstrap().render_named("python_return", "python", &[]),
+        None,
+        "a missing required placeholder is not rendered as malformed source"
+    );
+}
+
+#[test]
+fn structural_algorithms_are_composed_from_primitives_not_catalogued_as_answers() {
+    let catalog = FragmentCatalog::bootstrap();
+    for answer_id in [
+        "balanced_delimiter_groups",
+        "group_max_nesting",
+        "grid_minimum_cost_path",
+        "one_bit_difference",
+        "remove_boundary_occurrences",
+        "rotation_period",
+    ] {
+        assert_eq!(
+            catalog.get(answer_id),
+            None,
+            "{answer_id} is a requested meaning, not a reusable implementation fragment"
+        );
+    }
+    for primitive_id in [
+        "bitwise_xor",
+        "delimiter_depth_delta",
+        "drop_whitespace",
+        "first_truthy_position",
+        "positive_offsets",
+        "remove_first_occurrence",
+        "reverse_text",
+        "rotate_left_text",
+        "single_set_bit",
+        "slice_at_end_offsets",
+        "values_equal",
+        "zero_depth_end_offsets",
+    ] {
+        assert!(
+            catalog.get(primitive_id).is_some(),
+            "the reusable primitive {primitive_id} must remain discoverable"
+        );
+    }
+}
+
+#[test]
+fn named_rendering_preserves_target_language_braces_around_a_slot() {
+    let rendered = FragmentCatalog::bootstrap()
+        .render_named(
+            "regex_minimum_word_length",
+            "python",
+            &[("minimum", "5"), ("text", "sentence")],
+        )
+        .expect("the source-backed regex fragment renders");
+
+    assert_eq!(
+        rendered,
+        "__import__('re').findall(r'\\b\\w{5,}\\b', sentence)"
+    );
+}
+
+#[test]
+fn runtime_lowering_template_changes_when_seed_data_changes() {
+    let seed = temp_dir("runtime-template-mutation");
+    fs::write(
+        seed.join("coding-discovery-runtime.lino"),
+        "coding_discovery_runtime\n  template python_ir_emit\n    text \"emit({value})\"\n",
+    )
+    .expect("write runtime template seed");
+    let first = formal_ai::python_render::runtime_template_from(
+        &seed,
+        "python_ir_emit",
+        &[("value", "answer")],
+    );
+
+    fs::write(
+        seed.join("coding-discovery-runtime.lino"),
+        "coding_discovery_runtime\n  template python_ir_emit\n    text \"observe({value})\"\n",
+    )
+    .expect("mutate runtime template seed");
+    let second = formal_ai::python_render::runtime_template_from(
+        &seed,
+        "python_ir_emit",
+        &[("value", "answer")],
+    );
+
+    assert_eq!(first.as_deref(), Some("emit(answer)"));
+    assert_eq!(second.as_deref(), Some("observe(answer)"));
+    assert_ne!(
+        first, second,
+        "runtime lowering must remain controlled by data"
+    );
+    assert_eq!(
+        FragmentCatalog::bootstrap().get("ir_type_mismatch"),
+        None,
+        "diagnostic/rendering templates are data, not searchable solution fragments"
     );
 }
 
@@ -101,6 +213,17 @@ fn forgotten_fragments_are_rediscovered_to_the_same_content_id() {
             .all(|fragment| fragment.origin == FragmentOrigin::Rediscovered),
         "every fragment in the rebuilt catalog came back from a source"
     );
+    assert_eq!(
+        ledger.forget_all().expect("forget rediscovered cache"),
+        before.fragments().len()
+    );
+    assert!(
+        FragmentCatalog::default()
+            .with_rediscovered(&ledger)
+            .fragments()
+            .is_empty(),
+        "the command's forget operation removes only the rediscovery ledger"
+    );
 }
 
 #[test]
@@ -117,7 +240,13 @@ fn rediscovery_queries_name_no_benchmark_identifier() {
             "{} rediscovers itself by a natural-language phrase: {query}",
             fragment.id
         );
-        for forbidden in ["humaneval", "mbpp", "run_length", "find_position", "edit_steps"] {
+        for forbidden in [
+            "humaneval",
+            "mbpp",
+            "run_length",
+            "find_position",
+            "edit_steps",
+        ] {
             assert!(
                 !query.to_lowercase().contains(forbidden),
                 "{} names a benchmark identifier in its query: {query}",

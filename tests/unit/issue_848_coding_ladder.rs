@@ -541,6 +541,49 @@ fn compiler_measurement_and_same_task_authorship_are_preserved() {
         "server_started = \"formal-ai: started a temporary server in agent mode\" in output"
     ));
     assert!(runner.contains("not_measured = (not server_started"));
+    assert!(
+        runner.contains("cmd = [binary, \"solve\", \"--repository\", \".\", \"--base-commit\",")
+    );
+    assert!(runner.contains("base_commit = subprocess.run([\"git\", \"rev-parse\", \"HEAD\"]"));
+    assert!(runner.contains("\"--task\", task[\"prompt\"], \"--evidence\", evidence_dir]"));
+    assert!(!runner.contains(
+        "cmd = [binary, \"with\", \"agent\", \"--non-interactive\", \"-p\", task[\"prompt\"]]"
+    ));
+}
+
+#[test]
+fn isolated_solve_stdout_is_explicitly_transported_into_the_benchmark_tree() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let read = |path: &str| {
+        std::fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
+    };
+    let runner = read("experiments/issue_847_coding_ladder/run_coding_ladder.sh");
+
+    for contract in [
+        "patch = proc.stdout",
+        "patch_file.write(patch)",
+        "[\"git\", \"apply\", \"--check\", patch_path]",
+        "[\"git\", \"apply\", \"--whitespace=nowarn\", patch_path]",
+        "cwd=root, capture_output=True, text=True",
+    ] {
+        assert!(
+            runner.contains(contract),
+            "the ladder lost patch-transport contract `{contract}`"
+        );
+    }
+    let check = runner
+        .find("[\"git\", \"apply\", \"--check\", patch_path]")
+        .expect("patch applicability check");
+    let apply = runner
+        .find("[\"git\", \"apply\", \"--whitespace=nowarn\", patch_path]")
+        .expect("explicit patch application");
+    let verify = runner
+        .find("verified = subprocess.run(")
+        .expect("existing effect verifier");
+    assert!(
+        check < apply && apply < verify,
+        "the diff must be checked, applied, and only then judged in the ambient tree"
+    );
 
     let prompts: serde_json::Value =
         serde_json::from_str(&read("experiments/issue_847_coding_ladder/prompts.json"))

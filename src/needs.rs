@@ -200,8 +200,8 @@ impl Need {
             match field {
                 "kind" => need.kind = NeedKind::from_seed(value),
                 "subject" => need.subject = unescape(value),
-                "language" => need.language = value.to_owned(),
-                "raised_by" => need.raised_by = value.to_owned(),
+                "language" => value.clone_into(&mut need.language),
+                "raised_by" => value.clone_into(&mut need.raised_by),
                 "source_span" => need.source_span = unescape(value),
                 "depth" => need.depth = value.parse().ok()?,
                 "state" => need.state = NeedState::from_seed(value)?,

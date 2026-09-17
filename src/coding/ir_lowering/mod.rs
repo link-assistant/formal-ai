@@ -31,10 +31,14 @@ pub struct LoweringGap {
 /// Every registered lowering, in catalog order.
 #[must_use]
 pub fn lowerings() -> Vec<&'static dyn LanguageLowering> {
-    todo!("plan 02 leaf L6")
+    static PYTHON: python::PythonLowering = python::PythonLowering;
+    static RUST: rust::RustLowering = rust::RustLowering;
+    vec![&PYTHON, &RUST]
 }
 
 #[must_use]
-pub fn lowering_for(_language: &str) -> Option<&'static dyn LanguageLowering> {
-    todo!("plan 02 leaf L6")
+pub fn lowering_for(language: &str) -> Option<&'static dyn LanguageLowering> {
+    lowerings()
+        .into_iter()
+        .find(|lowering| lowering.language() == language.trim().to_ascii_lowercase())
 }

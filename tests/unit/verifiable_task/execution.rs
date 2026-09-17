@@ -33,6 +33,8 @@ fn the_composed_program_is_executed_and_its_output_is_the_answer() {
         let paraphrase = case("arithmetic_narrative", language);
         let response = FormalAiEngine.answer(&paraphrase.prompt);
 
+        assert_eq!(response.answer, "3", "{language}: exact computed answer");
+
         assert!(
             response
                 .evidence_links
@@ -57,13 +59,20 @@ fn the_composed_program_is_executed_and_its_output_is_the_answer() {
     }
 }
 
-/// When the route cannot corroborate a value it reports the gap. A guess is
-/// never returned, and the research trail says what was tried.
+/// When the route cannot derive a value it reports the localized gap. A guess
+/// is never returned, and the research trail says what was tried.
 #[test]
-fn two_independent_derivations_that_disagree_yield_a_gap() {
+fn an_unavailable_derivation_yields_a_localized_gap() {
     for language in LANGUAGES {
         let paraphrase = case("honest_gap", language);
         let response = FormalAiEngine.answer(&paraphrase.prompt);
+        let expected = formal_ai::seed::localized_response("verifiable_task_gap", language)
+            .expect("every registered language carries the honest-gap response");
+
+        assert_eq!(
+            response.answer, expected,
+            "{language}: exact honest-gap answer"
+        );
 
         assert!(
             trailing_number(&response.answer).is_none(),
@@ -107,9 +116,9 @@ fn an_answer_with_only_the_ran_check_is_not_called_verified() {
             response.evidence_links
         );
 
-        let corroborated = checks.iter().any(|link| {
-            link.ends_with("agreement") || link.ends_with("round_trip")
-        });
+        let corroborated = checks
+            .iter()
+            .any(|link| link.ends_with("agreement") || link.ends_with("round_trip"));
         if !corroborated {
             assert!(
                 response
@@ -129,6 +138,8 @@ fn an_unknown_value_round_trips_through_its_equation() {
     for language in LANGUAGES {
         let paraphrase = case("named_unknown", language);
         let response = FormalAiEngine.answer(&paraphrase.prompt);
+
+        assert_eq!(response.answer, "12", "{language}: exact solved unknown");
 
         assert!(
             response.answer.contains("12"),

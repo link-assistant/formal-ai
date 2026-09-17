@@ -42,7 +42,7 @@ impl Experiment {
         let names = |listed: &[String]| {
             alive
                 .iter()
-                .any(|hypothesis| listed.iter().any(|name| *name == hypothesis.hypothesis_id))
+                .any(|hypothesis| listed.contains(&hypothesis.hypothesis_id))
         };
         names(&self.predicts_yes) && names(&self.predicts_no)
     }
@@ -82,10 +82,7 @@ impl HypothesisSpace {
             if !hypothesis.alive {
                 continue;
             }
-            if contradicted
-                .iter()
-                .any(|name| *name == hypothesis.hypothesis_id)
-            {
+            if contradicted.contains(&hypothesis.hypothesis_id) {
                 hypothesis.alive = false;
                 hypothesis.refuted_by = Some(experiment_id.to_owned());
                 killed += 1;

@@ -285,6 +285,10 @@ fn decomposition_is_deterministic_for_a_given_config() {
     let prompt = "Split this task into subtasks: 'Fix the failing test, update the changelog and open a pull request.'";
     let first = decomposition_solver().solve(prompt);
     let second = decomposition_solver().solve(prompt);
+    assert_eq!(
+        first.answer,
+        "Sub-tasks, each with a completion criterion you can observe:\n1. Fix the failing test [observable_result:task_result_0fea32a5941ce50d]\n2. update the changelog [observable_result:task_result_e23250ba5f7ac101]\n3. open a pull request [observable_result:task_result_e85b748f1f5ddfbc]"
+    );
     assert_eq!(first.answer, second.answer);
     assert_eq!(first.links_notation, second.links_notation);
 
@@ -583,10 +587,10 @@ fn failed_execution_can_propose_a_strategy_but_only_reviewed_green_learning_acti
 // a power of two. The tests below are written before the leaves that make them
 // pass (plan 14 wave T).
 
+use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_frame::WorkUnit;
 use formal_ai::selection_heuristics::{BinarySplit, SplitRefusal, balanced_split, split_refusal};
 use formal_ai::translation::formalize_prompt;
-use formal_ai::intent_formalization::formalize_intent;
 
 /// The same helper `tests/unit/specification/meta_frame.rs` uses.
 fn work_unit_for(prompt: &str, max_depth: u8) -> WorkUnit {
@@ -726,8 +730,8 @@ fn every_declared_invariant_field_has_a_reader_that_enforces_it() {
     // `src/intent_formalization/requirements.rs`, which reads `source_integrity`.
     // A declared invariant whose named reader reads a different field is a
     // declaration with no enforcement.
-    let path =
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("data/meta/task-decomposition-invariant.lino");
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("data/meta/task-decomposition-invariant.lino");
     let text = std::fs::read_to_string(&path).expect("task-decomposition-invariant.lino readable");
     let fields: Vec<&str> = text
         .lines()

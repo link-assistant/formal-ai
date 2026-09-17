@@ -28,12 +28,9 @@ fn seed_programs() -> BTreeSet<String> {
     text.lines()
         .filter_map(|line| {
             let trimmed = line.trim();
-            trimmed.strip_prefix("program ").map(|value| {
-                value
-                    .trim()
-                    .trim_matches('"')
-                    .to_owned()
-            })
+            trimmed
+                .strip_prefix("program ")
+                .map(|value| value.trim().trim_matches('"').to_owned())
         })
         .collect()
 }
@@ -56,7 +53,10 @@ fn an_unlisted_program_is_still_refused() {
 #[test]
 fn an_unlisted_git_subcommand_is_refused() {
     assert!(
-        allows("git", &["clone", "--no-checkout", "owner/name", "/tmp/root"]),
+        allows(
+            "git",
+            &["clone", "--no-checkout", "owner/name", "/tmp/root"]
+        ),
         "cloning is how a repository task starts"
     );
     assert!(
@@ -115,7 +115,10 @@ fn prose_is_never_a_command() {
             "hi",
             "इसे और मुझे ठीक-ठीक बताओ कि यह क्या छापता है: print(sum(range(1, 11)))",
         ),
-        ("zh", "这个并准确告诉我它打印了什么：print(sum(range(1, 11)))"),
+        (
+            "zh",
+            "这个并准确告诉我它打印了什么：print(sum(range(1, 11)))",
+        ),
         (
             "es",
             "esto y dime exactamente qué imprime: print(sum(range(1, 11)))",

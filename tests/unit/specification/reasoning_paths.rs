@@ -89,6 +89,7 @@ fn arithmetic_routes_simple_expressions_across_supported_languages() {
         language: &'static str,
         prompt: &'static str,
         expected: &'static str,
+        documented: &'static str,
     }
 
     let cases = [
@@ -96,26 +97,31 @@ fn arithmetic_routes_simple_expressions_across_supported_languages() {
             language: "en",
             prompt: "Please calculate 6 + 7.",
             expected: "13",
+            documented: "6 + 7 = 13",
         },
         Case {
             language: "ru",
             prompt: "подскажи, сколько будет 7 + 6",
             expected: "13",
+            documented: "7 + 6 = 13",
         },
         Case {
             language: "hi",
             prompt: "2 + 2 कितना है?",
             expected: "4",
+            documented: "2 + 2 = 4",
         },
         Case {
             language: "zh",
             prompt: "计算 2 + 2",
             expected: "4",
+            documented: "2 + 2 = 4",
         },
     ];
 
     for case in cases {
         let response = answer(case.prompt);
+        assert_eq!(response.answer, case.documented);
         assert_eq!(
             response.intent, "calculation",
             "{} prompt should route to calculation, got {} with answer {}",
@@ -200,6 +206,10 @@ fn arithmetic_handles_large_integer_multiplication_without_overflow() {
                 123123980921093128 * 2348023048230429324";
     let response = answer(expr);
     assert_eq!(
+        response.answer,
+        "123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 * 123123980921093128 * 2348023048230429324 = 14106037729072578219732303763058131893558797911438976263759723254861297645532782853698438305271884662855522699368411530645666807157944703912711825919309276503681820752258928464177288947927128964537894542565939212004155831409388576062134381260971721670118984372679158715813314225808627206297070554572201889629074559598592"
+    );
+    assert_eq!(
         response.intent, "calculation",
         "large integer multiplication must succeed, not overflow: {}",
         response.answer,
@@ -244,6 +254,54 @@ fn calendar_reasoning_answers_current_day_questions_across_supported_languages()
 
     for (prompt, expected_fragment, language_tag) in cases {
         let response = answer(prompt);
+        let date = response
+            .evidence_links
+            .iter()
+            .find_map(|link| link.strip_prefix("calendar:today:"))
+            .expect("current-day answer records its exact UTC date");
+        let weekday = response
+            .evidence_links
+            .iter()
+            .find_map(|link| link.strip_prefix("calendar:weekday:"))
+            .expect("current-day answer records its weekday");
+        let localized_weekday = match (language_tag, weekday) {
+            ("language:en", "monday") => "Monday",
+            ("language:en", "tuesday") => "Tuesday",
+            ("language:en", "wednesday") => "Wednesday",
+            ("language:en", "thursday") => "Thursday",
+            ("language:en", "friday") => "Friday",
+            ("language:en", "saturday") => "Saturday",
+            ("language:en", "sunday") => "Sunday",
+            ("language:ru", "monday") => "понедельник",
+            ("language:ru", "tuesday") => "вторник",
+            ("language:ru", "wednesday") => "среда",
+            ("language:ru", "thursday") => "четверг",
+            ("language:ru", "friday") => "пятница",
+            ("language:ru", "saturday") => "суббота",
+            ("language:ru", "sunday") => "воскресенье",
+            ("language:hi", "monday") => "सोमवार",
+            ("language:hi", "tuesday") => "मंगलवार",
+            ("language:hi", "wednesday") => "बुधवार",
+            ("language:hi", "thursday") => "गुरुवार",
+            ("language:hi", "friday") => "शुक्रवार",
+            ("language:hi", "saturday") => "शनिवार",
+            ("language:hi", "sunday") => "रविवार",
+            ("language:zh", "monday") => "星期一",
+            ("language:zh", "tuesday") => "星期二",
+            ("language:zh", "wednesday") => "星期三",
+            ("language:zh", "thursday") => "星期四",
+            ("language:zh", "friday") => "星期五",
+            ("language:zh", "saturday") => "星期六",
+            ("language:zh", "sunday") => "星期日",
+            _ => panic!("unexpected current-day locale/weekday: {language_tag}/{weekday}"),
+        };
+        let documented = match language_tag {
+            "language:ru" => format!("Сегодня {localized_weekday}, {date} (UTC)."),
+            "language:hi" => format!("आज {localized_weekday} है, {date} (UTC)."),
+            "language:zh" => format!("今天是{localized_weekday}，{date}（UTC）。"),
+            _ => format!("Today is {localized_weekday}, {date} (UTC)."),
+        };
+        assert_eq!(response.answer, documented);
         assert_eq!(
             response.intent, "calendar_current_day",
             "today question {prompt:?} should use calendar reasoning, got: {}",
@@ -669,6 +727,12 @@ fn multilingual_how_x_works_prompts_use_mechanism_discovery() {
         "AUR 如何工作?",
     ] {
         let response = answer(prompt);
+        if prompt == "how does AUR work?" {
+            assert_eq!(
+                response.answer,
+                "Mechanism discovery plan for `AUR`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `AUR` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details."
+            );
+        }
         assert_eq!(
             response.intent, "how_it_works",
             "{prompt:?} must route to mechanism discovery; got intent={}, answer={}",
@@ -724,224 +788,4 @@ fn russian_how_known_concept_works_resolves_concept_lookup() {
 // calendar_create_event with rich parsed_* evidence and a confirmation body.
 // ---------------------------------------------------------------------------
 
-#[test]
-fn calendar_create_event_russian_day_number_with_time_and_tz() {
-    // Exact prompt from https://github.com/link-assistant/formal-ai/issues/404
-    let response = answer("Забей мне 18 число в 17:00 по грузии на встречу с Леваном");
-    assert_ne!(
-        response.intent, "unknown",
-        "calendar scheduling prompt must not return unknown; got intent={}, answer={}",
-        response.intent, response.answer
-    );
-    assert!(
-        response.intent == "calendar_create_event" || response.intent.contains("calendar"),
-        "expected calendar_create_event intent, got {}",
-        response.intent
-    );
-    // Rich trace evidence for the parsed fields (the heart of the feature).
-    // Evidence links use generated ids after the key (e.g. calendar:parsed_date:calendar:parsed_date_xxx).
-    // We assert the presence of the parsed keys (recorded by the handler) + correct intent.
-    let parsed_keys = response
-        .evidence_links
-        .iter()
-        .filter(|l| l.starts_with("calendar:parsed_"))
-        .count();
-    assert!(
-        parsed_keys >= 4,
-        "must emit multiple calendar:parsed_* evidence keys; links={:?}",
-        response.evidence_links
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|l| l.contains("parsed_time_zone")
-                || l.contains("Asia/Tbilisi")
-                || l.contains("грузии")),
-        "must capture timezone in evidence; links={:?}",
-        response.evidence_links
-    );
-    // Confirmation-style answer (the handler proposes; it does not auto-create).
-    let a = response.answer.to_lowercase();
-    assert!(
-        a.contains("создать") || a.contains("событие") || a.contains("да"),
-        "answer should propose the event and invite confirmation; got: {}",
-        response.answer
-    );
-    // Real, portable calendar artifacts: an RFC 5545 VEVENT plus a no-login
-    // Google Calendar render URL, with the "по грузии" alias resolved to IANA.
-    assert!(
-        response.answer.contains("BEGIN:VCALENDAR") && response.answer.contains("BEGIN:VEVENT"),
-        "answer must embed an importable .ics VEVENT; got: {}",
-        response.answer
-    );
-    assert!(
-        response.answer.contains("TZID=Asia/Tbilisi"),
-        "Russian timezone alias must resolve to IANA Asia/Tbilisi; got: {}",
-        response.answer
-    );
-    assert!(
-        response
-            .answer
-            .contains("calendar.google.com/calendar/render"),
-        "answer must offer a no-login Google Calendar render URL; got: {}",
-        response.answer
-    );
-}
-
-#[test]
-fn calendar_create_event_fallback_english() {
-    let response = answer("schedule meeting with Levan on the 18th at 5pm Georgia time");
-    assert_ne!(response.intent, "unknown");
-    assert!(
-        response.intent.contains("calendar"),
-        "english scheduling must also hit calendar path; intent={}",
-        response.intent
-    );
-    assert!(
-        response.answer.contains("BEGIN:VCALENDAR")
-            && response.answer.contains("TZID=Asia/Tbilisi")
-            && response
-                .answer
-                .contains("calendar.google.com/calendar/render"),
-        "english scheduling must also export a .ics + Google Calendar URL; got: {}",
-        response.answer
-    );
-}
-
-#[test]
-fn calendar_create_event_hindi() {
-    // No timezone in the prompt → defaults to UTC; the schedule verb is
-    // stripped from the .ics SUMMARY so the title reads as the event noun.
-    let response = answer("18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें");
-    assert_ne!(response.intent, "unknown");
-    assert!(
-        response.intent.contains("calendar"),
-        "hindi scheduling must hit calendar path; intent={}",
-        response.intent
-    );
-    assert!(
-        response.answer.contains("BEGIN:VEVENT")
-            && response
-                .answer
-                .contains("calendar.google.com/calendar/render"),
-        "hindi scheduling must export a .ics + Google Calendar URL; got: {}",
-        response.answer
-    );
-}
-
-#[test]
-fn calendar_create_event_chinese() {
-    let response = answer("18号下午5点和Levan安排会议");
-    assert_ne!(response.intent, "unknown");
-    assert!(
-        response.intent.contains("calendar"),
-        "chinese scheduling must hit calendar path; intent={}",
-        response.intent
-    );
-    assert!(
-        response.answer.contains("BEGIN:VEVENT")
-            && response
-                .answer
-                .contains("calendar.google.com/calendar/render"),
-        "chinese scheduling must export a .ics + Google Calendar URL; got: {}",
-        response.answer
-    );
-}
-
-// ---------------------------------------------------------------------------
-// Cross-handler sanity: every reasoning path projects from a non-empty event
-// log, so the answer is never memoized.
-// ---------------------------------------------------------------------------
-
-#[test]
-fn every_specialized_handler_emits_a_trace_link() {
-    let prompts = [
-        "Hi",
-        "What is 2 + 2?",
-        "What is Wikipedia?",
-        "Please run this javascript:\n```js\n1+1;\n```",
-        "Write me hello world program in Rust",
-    ];
-    for prompt in prompts {
-        let response = answer(prompt);
-        assert!(
-            response
-                .evidence_links
-                .iter()
-                .any(|link| link.starts_with("trace:")),
-            "prompt {prompt:?} must emit a trace link: {:?}",
-            response.evidence_links,
-        );
-    }
-}
-
-// ---------------------------------------------------------------------------
-// R89: incompatible-unit queries — explicit symbolic refusal (issue #43).
-//
-// "Сколько метров в килобайте?" mixes length (meters) with data-storage
-// (kilobytes). The solver must recognise the dimensional mismatch and emit
-// `intent:unit_incompatibility` with a clear explanation rather than falling
-// through to `intent:unknown`.
-// ---------------------------------------------------------------------------
-
-#[test]
-fn russian_meters_in_kilobyte_returns_unit_incompatibility() {
-    let response = answer("Сколько метров в килобайте?");
-    assert_eq!(
-        response.intent, "unit_incompatibility",
-        "mixing length and data-storage units must not fall through to unknown: {:?}",
-        response.answer,
-    );
-    assert!(
-        response.answer.contains("length") || response.answer.contains("длин"),
-        "answer should mention the length dimension: {}",
-        response.answer,
-    );
-    assert!(
-        response.answer.contains("data storage") || response.answer.contains("данн"),
-        "answer should mention the data storage dimension: {}",
-        response.answer,
-    );
-    assert!(
-        (response.confidence - 1.0).abs() < f32::EPSILON,
-        "incompatibility is a known fact, confidence must be 1.0",
-    );
-}
-
-#[test]
-fn english_meters_in_kilobyte_returns_unit_incompatibility() {
-    let response = answer("How many meters in a kilobyte?");
-    assert_eq!(response.intent, "unit_incompatibility");
-    assert!(response.answer.contains("length"));
-    assert!(response.answer.contains("data storage"));
-}
-
-#[test]
-fn incompatible_unit_answer_records_evidence_link() {
-    let response = answer("How many meters in a kilobyte?");
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link.starts_with("unit_incompatibility")),
-        "must emit a unit_incompatibility event: {:?}",
-        response.evidence_links,
-    );
-}
-
-#[test]
-fn compatible_unit_query_does_not_trigger_incompatibility_handler() {
-    // km to meters: both are length — must not fire the incompatibility handler.
-    let response = answer("What is 2 + 2?");
-    assert_ne!(
-        response.intent, "unit_incompatibility",
-        "arithmetic prompt must not trigger unit_incompatibility",
-    );
-}
-
-#[test]
-fn greeting_is_not_intercepted_by_incompatibility_handler() {
-    let response = answer("Hi");
-    assert_eq!(response.intent, "greeting");
-}
+mod extended;

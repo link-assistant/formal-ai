@@ -1,0 +1,121 @@
+multilingual_responses
+  response response_concept_lookup_unresolved_en
+    intent concept_lookup_unresolved
+    language en
+    text "No consulted source defined ""{surface}"". Consulted: {consulted}."
+  response response_concept_lookup_unresolved_ru
+    intent concept_lookup_unresolved
+    language ru
+    text "Ни один из проверенных источников не определил «{surface}». Проверены: {consulted}."
+  response response_concept_lookup_unresolved_hi
+    intent concept_lookup_unresolved
+    language hi
+    text "जाँचे गए किसी स्रोत ने ""{surface}"" को परिभाषित नहीं किया। जाँचे गए स्रोत: {consulted}।"
+  response response_concept_lookup_unresolved_zh
+    intent concept_lookup_unresolved
+    language zh
+    text "查阅的来源均未定义“{surface}”。已查阅：{consulted}。"
+  response response_concept_lookup_unresolved_es
+    intent concept_lookup_unresolved
+    language es
+    text "Ninguna fuente consultada definió «{surface}». Fuentes consultadas: {consulted}."
+  response response_concept_lookup_resolved_en
+    intent concept_lookup_resolved
+    language en
+    text "{surface} ({lemma}): {gloss}\n\nSource: {source} (sha256 {sha256}; {license})"
+  response response_concept_lookup_resolved_ru
+    intent concept_lookup_resolved
+    language ru
+    text "{surface} ({lemma}): {gloss}\n\nИсточник: {source} (sha256 {sha256}; {license})"
+  response response_concept_lookup_resolved_hi
+    intent concept_lookup_resolved
+    language hi
+    text "{surface} ({lemma}): {gloss}\n\nस्रोत: {source} (sha256 {sha256}; {license})"
+  response response_concept_lookup_resolved_zh
+    intent concept_lookup_resolved
+    language zh
+    text "{surface}（{lemma}）：{gloss}\n\n来源：{source}（sha256 {sha256}；{license}）"
+  response response_concept_lookup_resolved_es
+    intent concept_lookup_resolved
+    language es
+    text "{surface} ({lemma}): {gloss}\n\nFuente: {source} (sha256 {sha256}; {license})"
+  response response_concept_lookup_sources_heading_en
+    intent concept_lookup_sources_heading
+    language en
+    text "Sources:"
+  response response_concept_lookup_sources_heading_ru
+    intent concept_lookup_sources_heading
+    language ru
+    text "Источники:"
+  response response_concept_lookup_sources_heading_hi
+    intent concept_lookup_sources_heading
+    language hi
+    text "स्रोत:"
+  response response_concept_lookup_sources_heading_zh
+    intent concept_lookup_sources_heading
+    language zh
+    text "来源："
+  response response_concept_lookup_sources_heading_es
+    intent concept_lookup_sources_heading
+    language es
+    text "Fuentes:"
+  response response_concept_lookup_citation_en
+    intent concept_lookup_citation
+    language en
+    text "{source}: {url} ({license}; sha256 {sha256})"
+  response response_concept_lookup_citation_ru
+    intent concept_lookup_citation
+    language ru
+    text "{source}: {url} ({license}; sha256 {sha256})"
+  response response_concept_lookup_citation_hi
+    intent concept_lookup_citation
+    language hi
+    text "{source}: {url} ({license}; sha256 {sha256})"
+  response response_concept_lookup_citation_zh
+    intent concept_lookup_citation
+    language zh
+    text "{source}：{url}（{license}；sha256 {sha256}）"
+  response response_concept_lookup_citation_es
+    intent concept_lookup_citation
+    language es
+    text "{source}: {url} ({license}; sha256 {sha256})"
+  response response_concept_lookup_offline_miss_en
+    intent concept_lookup_offline_miss
+    language en
+    text "I could not look up ""{surface}"" because live retrieval is off and no cached capture was available. Sources: {consulted}."
+  response response_concept_lookup_offline_miss_ru
+    intent concept_lookup_offline_miss
+    language ru
+    text "Не удалось найти «{surface}»: сетевой поиск выключен, а сохранённой копии нет. Источники: {consulted}."
+  response response_concept_lookup_offline_miss_hi
+    intent concept_lookup_offline_miss
+    language hi
+    text "“{surface}” को खोजा नहीं जा सका: ऑनलाइन खोज बंद है और कोई सहेजी हुई प्रति उपलब्ध नहीं है। स्रोत: {consulted}।"
+  response response_concept_lookup_offline_miss_zh
+    intent concept_lookup_offline_miss
+    language zh
+    text "无法查询“{surface}”：在线检索已关闭，且没有缓存记录。来源：{consulted}。"
+  response response_concept_lookup_offline_miss_es
+    intent concept_lookup_offline_miss
+    language es
+    text "No pude buscar «{surface}»: la consulta en línea está desactivada y no hay una captura guardada. Fuentes: {consulted}."
+  response response_concept_lookup_disabled_en
+    intent concept_lookup_disabled
+    language en
+    text "Source {source} was not consulted because setting {settings_key} is disabled."
+  response response_concept_lookup_disabled_ru
+    intent concept_lookup_disabled
+    language ru
+    text "Источник {source} не проверялся, потому что настройка {settings_key} отключена."
+  response response_concept_lookup_disabled_hi
+    intent concept_lookup_disabled
+    language hi
+    text "स्रोत {source} की जाँच नहीं की गई क्योंकि {settings_key} सेटिंग बंद है।"
+  response response_concept_lookup_disabled_zh
+    intent concept_lookup_disabled
+    language zh
+    text "未查阅来源 {source}，因为设置 {settings_key} 已禁用。"
+  response response_concept_lookup_disabled_es
+    intent concept_lookup_disabled
+    language es
+    text "No se consultó la fuente {source} porque la opción {settings_key} está desactivada."

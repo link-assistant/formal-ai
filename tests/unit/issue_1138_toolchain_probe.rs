@@ -99,7 +99,8 @@ fn catalog_status_comes_from_a_probe_not_a_constant() {
         .lines()
         .filter(|line| {
             let code = line.split("//").next().unwrap_or(line);
-            code.contains("ExecutionStatus::Verified") || code.contains("ExecutionStatus::Unavailable")
+            code.contains("ExecutionStatus::Verified")
+                || code.contains("ExecutionStatus::Unavailable")
         })
         .collect();
     assert!(

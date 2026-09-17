@@ -5,7 +5,7 @@ use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::relative_meta_logic::SourceTier;
 use crate::search_fusion::{
-    execute_search_fusion, SearchFusionExecution, SearchSourceClassification,
+    SearchFusionExecution, SearchSourceClassification, execute_search_fusion,
 };
 use crate::seed;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};

@@ -9,7 +9,9 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use formal_ai::cli_solve::{SolveArgs, run_solve};
+use formal_ai::cli_solve::{
+    SolveArgs, github_issue_api_url, parse_github_issue_requirement, run_solve,
+};
 
 const TRAILERS: &[&str] = &[
     "Formal-AI-Session:",
@@ -19,8 +21,7 @@ const TRAILERS: &[&str] = &[
 ];
 
 const REQUIREMENT: &str =
-    "In the repository at the current commit, the list of trusted search providers is missing the \
-encyclopaedia of quotations. Add it, keep the file valid, and run the tests that cover that list.";
+    "Add \"wikiquote\" to the list of trusted search providers, and keep the file valid.";
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
@@ -28,7 +29,12 @@ fn repo_root() -> PathBuf {
 
 fn head_commit() -> String {
     let output = Command::new("git")
-        .args(["-C", &repo_root().display().to_string(), "rev-parse", "HEAD"])
+        .args([
+            "-C",
+            &repo_root().display().to_string(),
+            "rev-parse",
+            "HEAD",
+        ])
         .output()
         .expect("git rev-parse should run");
     String::from_utf8_lossy(&output.stdout).trim().to_owned()
@@ -44,7 +50,9 @@ fn args(tag: &str) -> SolveArgs {
         base_commit: Some(head_commit()),
         model: String::from("formal-ai"),
         evidence,
-        pull_request: Some(String::from("https://github.com/link-assistant/formal-ai/pull/1138")),
+        pull_request: Some(String::from(
+            "https://github.com/link-assistant/formal-ai/pull/1138",
+        )),
         commit: false,
     }
 }
@@ -54,7 +62,12 @@ fn args(tag: &str) -> SolveArgs {
 #[test]
 fn solve_refuses_to_commit_by_default() {
     let before = Command::new("git")
-        .args(["-C", &repo_root().display().to_string(), "status", "--porcelain"])
+        .args([
+            "-C",
+            &repo_root().display().to_string(),
+            "status",
+            "--porcelain",
+        ])
         .output()
         .expect("git status should run");
 
@@ -69,7 +82,12 @@ fn solve_refuses_to_commit_by_default() {
     );
 
     let after = Command::new("git")
-        .args(["-C", &repo_root().display().to_string(), "status", "--porcelain"])
+        .args([
+            "-C",
+            &repo_root().display().to_string(),
+            "status",
+            "--porcelain",
+        ])
         .output()
         .expect("git status should run");
     assert_eq!(
@@ -98,6 +116,15 @@ fn solve_writes_all_four_trailers() {
         !outcome.evidence_files.is_empty(),
         "the raw protocol trace is committed under --evidence"
     );
+    assert!(
+        outcome.committed,
+        "an observed source edit is committed in the isolated clone"
+    );
+    assert!(
+        outcome.diff.contains(".formal-ai/evidence/"),
+        "the attributable evidence must be part of the same diff as the source edit: {}",
+        outcome.diff
+    );
     let bundle: String = outcome
         .evidence_files
         .iter()
@@ -106,6 +133,30 @@ fn solve_writes_all_four_trailers() {
     assert!(
         bundle.contains("formal-ai/"),
         "the evidence bundle names the model verbatim so the metric can read it back"
+    );
+}
+
+/// GitHub's mutable HTML is not scraped. A canonical issue URL is projected to
+/// the documented API resource, whose exact captured bytes become evidence.
+#[test]
+fn canonical_issue_url_and_payload_are_retrievable_inputs() {
+    let issue = "https://github.com/link-assistant/formal-ai/issues/1138";
+    assert_eq!(
+        github_issue_api_url(issue).as_deref(),
+        Some("https://api.github.com/repos/link-assistant/formal-ai/issues/1138")
+    );
+    assert!(github_issue_api_url("https://example.com/issues/1138").is_none());
+    assert!(github_issue_api_url("https://github.com/a/b/pull/1").is_none());
+
+    let payload = br#"{"title":"Add a provider","body":"Include the missing source.","html_url":"https://github.com/link-assistant/formal-ai/issues/1138"}"#;
+    assert_eq!(
+        parse_github_issue_requirement(issue, payload).expect("the captured payload should parse"),
+        "Add a provider\n\nInclude the missing source."
+    );
+    let pull = br#"{"title":"not an issue","body":"","pull_request":{}}"#;
+    assert!(
+        parse_github_issue_requirement(issue, pull).is_err(),
+        "an issues API response describing a pull request is refused"
     );
 }
 

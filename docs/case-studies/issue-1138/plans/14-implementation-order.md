@@ -71,7 +71,7 @@ row:
 | **I2** | retrieval kernel (plan 01) | 17 | the five-language unknown-word corpus runs and records its honest number; `policy:no_fetch_capability` occurs zero times in `src/` |
 | **I3** | formalization depth (plan 04) | 18 | one `ConceptGraph::identity()` across five languages, or a per-language refusal recorded |
 | **I4** | composition from sources (plan 02) | 25 | slice-20 and the curated 13/13 stay green; the first full-suite rows are appended |
-| **I5** | obligations and evidence (plan 05) | 18 | `need_ledger_with_execution` is the only producer of `Satisfied`; R343 parity holds |
+| **I5** | obligations and evidence (plan 05) | 18 | `need_status_with_observation` is the single `Satisfied` constructor; the execution projection requires matching `Evidence`; R343 parity holds |
 | **I6** | prerequisites and execution boxes (plan 06) | 18 | the held-out toolchain recovers under a grant and refuses without one |
 | **I7** | repository workspace (plan 03) | 19 | one SWE-bench instance runs the whole protocol; the diff round-trips through `git apply` |
 | **I8** | verifiable task routing (plan 08) | 25 | the four non-coding suites are re-measured and appended; no handler count rose |
@@ -333,6 +333,53 @@ number this repository has ever recorded.
 | **02-L24** | **run `--slice 164` and `--slice 500`, online and cold-offline; append the rows** | `data/benchmarks/external-results.lino` | — | **no tuning in this commit** | 02-L23 |
 | **02-L25** | the requirement shard and the measured numbers | `docs/requirements/issue-1138-composition-from-sources.md` + regenerate | `docs_requirements::issue_1138` | `assemble-requirements.rs` | 02-L24 |
 
+### I4 implementation checkpoint — 2026-09-16
+
+This table remains an order, not a claim that the wave is closed. The latest
+observed focused run reached 68/69 coding-discovery tests before the subsequent
+multilingual cue correction; therefore no additional I4 leaf is marked complete
+from that run alone.
+
+The deleted-template compatibility path is narrower than it was: the requested
+meanings `balanced_delimiter_groups`, `group_max_nesting`,
+`one_bit_difference`, `remove_boundary_occurrences`, and `rotation_period` are
+no longer executable catalog fragments. Their Python candidates are assembled
+from smaller, source-grounded operations (mapping, prefix accumulation,
+boundary offsets, slicing, XOR, the single-set-bit predicate, first-occurrence
+removal, reversal, rotation, equality, and first-truthy selection). Missing
+examples still put typed/lowered candidates in `CompositionOutcome::unverified`
+and never in the verified answer or procedure ledger.
+
+Strict residuals remain and keep I4 open:
+
+- 02-L5 implementation is present pending focused build evidence: named
+  fragment rendering returns `Option`, the legacy adapters return `Result`,
+  and composition records a missing part as an `Unsatisfiable` need while
+  selecting no answer. The catalog-miss and missing-placeholder tests cover
+  the no-panic boundary; the leaf stays unchecked until those tests run.
+- 02-L8 and 02-L9 now have an implementation awaiting executable evidence: the
+  9 and 31 authored generator blocks are deleted, nested candidates come from
+  bounded typed fragment enumeration, and the held-out corpus rejects any
+  selected answer that is not labelled `typed_search(…)`. Do not mark either
+  leaf complete until the focused combined-tree run is green.
+- 02-L15 is incomplete: all seven runtime templates are absent, but the OEIS
+  linear-recurrence path still renders a `SequenceProgram` instead of emitting
+  `IrNode::Recurrence`; `grid_minimum_cost_path` also still has a whole
+  realization attached to its requested-meaning id.
+- 02-L16 is incomplete: only executable primitives currently carry
+  `bootstrap` / `rediscovery_query`; the every-meaning shape gate has not
+  landed.
+- 02-L18 is incomplete: the unit round trip exists, but it replays catalog
+  records rather than source captures and there is no bootstrap-deletability CI
+  job yet.
+- 02-L20 has the corpus and identity assertion, but awaits a green run after the
+  Russian/Hindi/Chinese/Spanish distributive-cue and set-intersection precision
+  corrections.
+- 02-L21 is incomplete: the browser labels synthesis unverified but does not yet
+  run the native recognise → discover → elaborate → lower pipeline.
+- 02-L24 and 02-L25 remain measurement/documentation work; a zero placeholder
+  floor is not a measured full-suite result.
+
 **Wave gate.** The slice-20 rows did not fall, the curated 13/13 did not fall,
 and the first full-suite rows exist. It is expected and acceptable that the
 full-suite percentage is far below the first-20 percentage; that gap is the
@@ -350,7 +397,7 @@ measurement of B2 and publishing it is the point.
 | **05-6** | the derivation rules as data | `data/meta/obligation-evidence-contract.lino` | rule-set grounding | — | 05-5 |
 | **05-7** | `build` recurses through `split_once_checkable`, bounded by the existing bound | `src/obligation_ledger.rs` | `the_split_is_bounded_by_the_existing_split_depth_bound` | no new bound invented | 05-6 |
 | **05-8** | `ObligationLedger` with `observe` and the three counts | `src/obligation_ledger.rs` | `an_unrelated_observation_discharges_nothing` (R710-R4) | — | 05-7 |
-| **05-9** | `need_ledger_with_execution` — the only producer of `Satisfied` | `src/obligation_ledger.rs` | `need_ledger_with_execution_is_the_only_producer_of_satisfied` (greps `src/`) | the planning ledger is unchanged | 05-8 |
+| **05-9** | `need_status_with_observation` — the single `Satisfied` constructor; `need_ledger_with_execution` — the evidence-gated execution projection | `src/obligation_ledger.rs` | `need_ledger_with_execution_is_the_only_producer_of_satisfied` (greps `src/`) | the planning ledger is unchanged | 05-8 |
 | **05-10** | `record_obligation_ledger`, `record_meta_core_execution`, the solver call | `src/meta_core.rs`, `src/solver.rs` | R343 parity | R343 | 05-9 |
 | **05-11** | register the recorder and the guard in the interpreter | `src/recipe_interpreter.rs` | `native_and_data_driven_execution_produce_the_same_events` | **R343 parity** | 05-10 |
 | **05-12** | recipe step 14 | `data/meta/recursive-core-recipe.lino`, `tests/unit/specification/recursive_core_recipe.rs` | order 1..14 contiguous | R343 parity, own commit (§9 X11) | 05-11 |
@@ -364,9 +411,10 @@ measurement of B2 and publishing it is the point.
 | **05-20** | regenerate the self-AST census; reassemble requirements | `data/meta/self-ast/`, `REQUIREMENTS.md` | census 1:1 | `assemble-requirements.rs` | 05-19 |
 | **05-21** | the changelog fragment | `changelog.d/` | release preflight | — | 05-20 |
 
-**Wave gate.** `NeedStatus::Satisfied` has exactly one producer in `src/`, it
-cannot be reached without an `Evidence` record, and R343 parity survived both
-trace-changing leaves.
+**Wave gate.** `NeedStatus::Satisfied` has exactly one constructor in `src/`.
+The execution-ledger path cannot reach it without a matching `Evidence` record;
+other domain projections must provide their own observed state. R343 parity
+survived both trace-changing leaves.
 
 ---
 
@@ -383,14 +431,14 @@ trace-changing leaves.
 | **06-L7** ✅ | workspace-scoped install under a default-deny grant | `src/prerequisite/install.rs` | six refusal cases | **default-deny; nothing outside the workspace root** | 06-L6 |
 | **06-L8** ✅ | the recovery sequence as data, and `recover()` | `data/meta/prerequisite-recipe.lino`, `src/prerequisite/mod.rs` | `specification::prerequisite_recipe` | recipe grounding + rediscovery | 06-L7 |
 | **06-L9** ✅ | the toolchain ledger and `learn forget --toolchain` | `src/prerequisite/ledger.rs`, `data/meta/toolchain-ledger.lino` | forget/rediscover; restart reattach | append-only | 06-L8 |
-| **06-L10** | **run family 1 in five languages, refused and granted; record the table** | `docs/case-studies/issue-1138/` | `issue_1138_held_out_toolchain` | no tuning in this commit | 06-L9 |
+| **06-L10** | **run family 1 in five languages, refused and granted; record the table** | `data/benchmarks/telegram-execution-outcomes.lino` | source and Node contract present; final Rust run pending | no tuning in this commit | 06-L9 |
 | **06-L11** ✅ | `ExecutionBox`, `ExecutionBackend`, tar-on-stdin, `--network none`, honest deadline | `src/execution_box/mod.rs`, `src/box_language_projects.rs` | four box cases | `check-disk-usage-policy`; Docker optional | 06-L10 |
 | **06-L12** | kotlin and scala as `box_language_project_deferred` with the honest reason | `data/meta/box-language-projects.lino` | grounding | — | 06-L11 |
-| **06-L13** | Telegram execution (#930) and the descending-N ladder | `data/seed/environments.lino`, `src/telegram_runtime.rs` | family-3 prompts with and without a backend | every N recorded, no silent truncation | 06-L11 |
+| **06-L13** ✅ | Telegram execution (#930) and the descending-N ladder | `data/seed/environments.lino`, `src/telegram_runtime.rs` | family-3 prompts with and without a backend | every N recorded, no silent truncation | 06-L11 |
 | **06-L14** ✅ | `ConversationContainer`, snapshot/replay, idle stop, restart recovery (#937) | `src/execution_box/container.rs` | idle-and-restore; divergence reported | — | 06-L13 |
-| **06-L15** | the browser probes instead of asserting; strings move to seed | `src/web/worker/formal_ai_worker_14.js`, `src/web/i18n-catalog-messages.lino` | `an_unverified_answer_says_so_in_five_languages` | **`MAX_WASM_BYTES` unchanged**; worker binary byte-identical | 06-L13 |
-| **06-L16** | the lazily fetched browser runtime behind an explicit click | `src/web/` loader | record whether the observed output is `55` | WASM size ceiling untouched | 06-L15 |
-| **06-L17** | recover the SWE-bench harness prerequisite through `recover()` | `src/external_benchmarks/grade.rs` | record whether the evaluator is reached | `benchmark_unavailable` stays honest | 06-L9 |
+| **06-L15** ✅ | the browser probes instead of asserting; strings live in shared seed | `src/web/worker/formal_ai_worker_browser_runtime.js`, `data/seed/multilingual-responses-synthesis.lino` | five-language browser runtime tests | **`MAX_WASM_BYTES` unchanged**; worker binary byte-identical | 06-L13 |
+| **06-L16** ✅ | the lazily fetched browser runtime behind an explicit click | `src/web/` loader | observed output is `55` in the injected Pyodide fixture | WASM size ceiling untouched | 06-L15 |
+| **06-L17** | recover the SWE-bench harness prerequisite through `recover()` | `src/external_benchmarks/grade.rs`, ignored live evidence test | implementation present; live result not yet run | `benchmark_unavailable` stays honest | 06-L9 |
 | **06-L18** | the shard, traceability, and the six #710 plan-07 boxes this actually closes | `docs/requirements/issue-1138-prerequisite-discovery.md` + regenerate | `docs_requirements::issue_1138` | leave unclosable boxes unticked with the reason | 06-L17 |
 
 **Wave gate.** No answer presents unobserved output as observed, on any surface,
@@ -659,7 +707,7 @@ text is the plan 11 row it names.
 | leaf | deliverable | gate |
 | --- | --- | --- |
 | **11-L65 … L74** | re-point the ten pinned test groups a section rename breaks, in the same commit as the rename | none of the ten may be weakened, only re-pointed |
-| **11-L75** | `scripts/check-language-parity.rs` + gate (#949) | strictly downward, added through plan 09's strict checker |
+| **11-L75** ✅ | `scripts/check-language-parity.rs` + gate (#949) | 932 structural gaps measured on 2026-09-17; exact dated rows plus a strict-downward live-tree ratchet |
 | **11-L76** | collapse the `docs_*` suites to five; `tests/unit/docs_requirements/count.rs` (#1089) | 49 → 5, strictly downward |
 
 ### Carry-over leaves plan 13 assigns to no bottleneck
@@ -2692,7 +2740,7 @@ image pulled. Every result line below came from a run in this worktree.
 | **05-6** | `data/meta/obligation-evidence-contract.lino` carries the derivation rules; `src/obligation_ledger/derivation.rs` reads them, so a new expectation shape is a data edit and not a `match` arm. |
 | **05-7** | An `Underivable` clause is split through `task_decomposition::split_once_checkable`, bounded by `recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND`. No second splitter and no second bound; the specification test greps the module to prove no `const … DEPTH` is declared in it. |
 | **05-8** | `ObligationLedger::{for_frame, observe, every_obligation_discharged, satisfied_count, unsatisfiable_count, unattempted_count, refuted_count, to_links_notation}`. `observe` binds a record to the node whose expectation names its path, command or check (R710-R4); an unrelated result returns `None` and leaves the ledger byte-identical. |
-| **05-9** | `need_ledger_with_execution` never mutates the planning ledger and is the single producer of `NeedStatus::Satisfied` in `src/` — enforced by a test that reads every line of `src/`. |
+| **05-9** | `need_ledger_with_execution` never mutates the planning ledger and reaches the single `NeedStatus::Satisfied` constructor only from an evidence-bearing obligation outcome. The constructor is centralized in `obligation_ledger` for execution and other observed domains, enforced by a test that reads every line of `src/`. |
 | **05-10** | `record_obligation_ledger` appends the obligation tree, its discharged verdict, the executed need ledger and its satisfied count; `meta_core::record_meta_core_execution` is the second entry point. The solver call is **struck with its reason** (below). |
 | **05-11** | `"record_obligation_ledger"` bound in `recipe_interpreter::run_recorder`; `ExecutionContext` carries the obligation ledger and the executed need ledger; `require_obligation_ledger` reads the tree back through the same guard every other stage uses. |
 | **05-12** | Recipe step 14 `step_verify_obligations` and `fn_record_obligation_ledger` are rows of `data/meta/recursive-core-recipe.lino`. R343 parity holds with the new stage in, across every mode combination. |
@@ -2939,3 +2987,1127 @@ the missing Formal-AI-authored evidence. Automatic release is not guaranteed
 until the release-gating CI matrix is green on the final pushed head. The red
 self-development release-cycle status is separately documented as
 non-release-gating.
+
+## Codex completion checkpoint — 2026-09-16
+
+The exported Claude parent transcript and its surviving sub-agent reports have
+now been reconciled with the recovery branch. The Claude parent stopped because
+all three active workers received `model_not_found`; it did not declare the
+implementation complete. Continuation is in the isolated worktree
+`/private/tmp/formal-ai-issue-1138-final` on `codex-issue-1138-final`. The
+original Claude worktree remains untouched as recovery evidence.
+
+The recovery branch currently contains five local commits through
+`a560fa5d9`, while pull request #1139 still points at `0f2e64070`. No recovery
+commit has been pushed. The shared worktree has one consolidated, uncommitted
+implementation wave (157 paths at this checkpoint) spanning:
+
+- recursive concept formalization and browser/native source-walk parity;
+- source-backed coding task IR, composition search and Python/Rust lowering;
+- repository-workspace solve/locate/edit/verify protocol work;
+- data-driven handler promotion and verifiable-task recognition/evidence;
+- finite refutation search before stochastic fallback;
+- Kotlin/Scala execution-image survey honesty.
+
+Three continued sub-agents own disjoint completion areas: plan 02 coding,
+plans 01/03/09 source lookup and workspace migration, and plan 08 verifiable
+tasks. Their cargo invocations are paused while sources converge. Builds are to
+be serialized against the one existing target directory with Rust 1.98.1 and
+without changing flags or feature sets. A redundant `/private/tmp` build cache
+was removed after free space fell below 8 GiB; it contained only rebuildable
+compiler artifacts.
+
+The last serialized evidence before this checkpoint is:
+
+- `cargo +1.98.1 check --lib --no-default-features`: pass;
+- browser concept lookup and formalization-depth suites: 5/5 pass;
+- `git diff --check`: pass.
+
+Those results are provisional because agents subsequently changed sources.
+Before any push, this continuation must: finish the remaining implementation
+leaves; run the focused native and browser suites; regenerate every derived
+registry, requirements shard and self-AST artifact; run the repository's exact
+format/lint/semantic/closure/debt/evidence/release gates; exercise the newest
+Formal AI through Agent CLI and preserve the result; commit the complete wave;
+push once; then monitor #1139 and the post-merge release, fixing failures only
+with forward commits. Checkboxes in the individual plans must be updated only
+from fresh evidence, not from this inventory.
+
+### First consolidated validation after recovery
+
+The first serialized rebuild used Rust 1.98.1 and the one recovered Cargo target.
+`cargo check --lib --no-default-features` passed after correcting one real
+`String`/`&str` mismatch in the source-derived summarizer. The unit harness then
+compiled successfully. Direct runs against that fresh binary measured:
+
+- concept/formalization/browser runtime: 8/8 browser cases passed;
+- repository locator: 3/3 passed, including an unnamed declaration found from a
+  live directory census;
+- handler migration issue #699: 7/7 passed and the reviewed specialized count
+  stayed 46;
+- learning ledger issue #558: 14/14 passed;
+- coding discovery: 67/68 passed, with only `run_length` composition still
+  failing;
+- verifiable task: 25/31 passed; all four formerly wrong families now computed
+  the right value, but scalar rendering and evidence-link projection still made
+  six assertions fail;
+- family migration: 285/300 held-out prompts reached the right interpreter; the
+  old research-table answer branches were still present.
+
+Those three failure clusters were returned to their owning agents as mechanism
+repairs. The first whole-unit sweep was intentionally diagnostic, not accepted
+as a gate: the too-eager new family dispatcher pre-empted unrelated legacy
+routes, and an eight-thread run then hit the persistent LinkStore teardown race
+and aborted. The authoritative whole-unit run must therefore be serialized
+after the family matcher is made conservative. No test was weakened or marked
+complete from this interrupted run.
+
+At this point the seed generator reports 149 registered files, 148 embedded and
+111 projected to the browser. Free disk remains above 7 GiB; all Rust builds use
+the recovered shared target, and no second target directory may be created.
+
+### L04 ladder contract migration after 08-L17'
+
+Static audit on 2026-09-16 found one stale issue-1069 ladder leaf after the
+pattern handler migration: L04 still asked for `INTENT_MARKERS`, although
+08-L17' retired that Rust-owned list. The live handler now queries the
+`verifiable_expectation_pattern` role, whose English surfaces are owned by
+`data/seed/meanings-verifiable-task.lino`.
+
+L04 now exercises that live architecture by replacing the quoted English cue
+`continue this` with `alternating` in the seed file. Its marker must be absent
+from the committed source, its role guard must remain, the authored rule must
+round-trip through meta-language's `lino` links network, and the leaf verifier
+still runs `cargo check --lib` plus the `verifiable_task` unit-test filter. The
+requirement-level fixture follows the generated
+`MEANINGS_VERIFIABLE_TASK_LINO` declaration to its embedded data file, so moving
+ownership from Rust to seed did not weaken the requirement-to-artifact check.
+
+Evidence available without using the serialized Cargo target: the old
+`INTENT_MARKERS` leaf/rule references are removed; the new target contains
+exactly one quoted `continue this` surface and the
+`role verifiable_expectation_pattern` guard; `git diff --check` and direct
+`rustfmt --check` cover the edited files. Executable evidence remains a named
+gap for the coordinator's next serialized run: rerun
+`issue_1069_ladder_change_tasks` and `issue_1085_requirement_resolution` before
+accepting this migration as green.
+
+## PR #1139 CI and release-readiness audit — 2026-09-16T12:54:21Z
+
+This is a read-first checkpoint, not a completion claim. At the time of the
+audit the pull request still pointed at `0f2e6407012ed0928f5d239928fd8351b00a1eaa`,
+while this worktree was based at `a560fa5d9e757431f4f3bdc5f76f8407f70f62a6`
+and carried a large uncommitted implementation wave. Consequently none of the
+remote check results below validates the current tree.
+
+The live pull request was still a draft, `MERGEABLE` but `UNSTABLE`. Nine checks
+were red: the self-development report, both self-hosting-evidence jobs, Rust and
+browser coverage, lint/format, the Ubuntu full test job, Agent CLI E2E and the
+terminal pipeline status. Release Preflight, the changelog check, secrets scan,
+the local web E2E, the binary/test build and all six desktop build targets were
+green on that older head. A green preflight is necessary but not a release
+guarantee: the automatic release job is skipped on pull requests and runs only
+after a push to `main`, where it also depends on the build, secrets and both E2E
+results. The crates.io token remains an explicitly reported `unknown`, because
+crates.io has no non-mutating token-permission probe; the actual publish is the
+first authoritative observation.
+
+### Plan 03 — source audit
+
+The current tree contains implementations for L1, L6, L9, L10 and L12:
+`WorkspaceCensus::of_directory`, semantic `locate_targets`, a
+`ProtocolOutcome.need_ledger` whose satisfied rows are derived through
+`obligation_ledger::need_ledger_with_execution`, repository/test fields on a
+SWE-bench case plus the `WorkspaceProtocol` runner, and the default-deny
+`formal-ai solve` command. The first consolidated run above proved the locator
+3/3; subsequent edits mean the rest still needs fresh evidence.
+
+L13 is only partial. `run_solve` retrieves a canonical GitHub issue through the
+documented API, retains the exact capture and provenance, copies the evidence
+under `.formal-ai/evidence/<session>` into a successful isolated clone, and
+emits all four trailers. `scripts/author-change-with-formal-ai.sh` has not been
+reduced to a wrapper, and the produced commit has not yet passed the repository's
+attribution script in a fresh run. L11 is also open: the real network test is
+still ignored and no new honest SWE-bench result row has been measured. L14's
+invocation and explicit patch-transport implementation is now present, and
+L14b's standalone workflow, fast registered consistency gate and 65/130 floor
+are present with the honest L1 0/16 row intact. L14 remains open only for the
+fresh post-conversion 130-task measurement; L15-L18 remain open measurements,
+real authoring and documentation work.
+
+### Plan 06 — source audit and the L17 blocker
+
+Static source is present for L12-L16: Kotlin and Scala are explicit deferred
+box-language rows corroborated by the pinned image survey; Telegram declares
+`code_execution` and uses the execution box's recorded halving ladder; and the
+browser exposes an explicit, localized, size-labelled Pyodide load path. These
+edits landed after the last serialized Rust check, so no checkbox is advanced
+by this audit.
+
+L17 is not implemented. `.github/workflows/external-benchmarks.yml` still runs
+`python -m pip install` for the pinned SWE-bench revision before Formal AI is
+started, while `external_benchmarks::grade::ensure_swebench_runtime` only
+detects the harness and Docker. Removing that workflow step now would not route
+through recovery: `prerequisite::publisher` currently constructs no executable
+setup steps, and `install_scoped` validates and creates a workspace prefix but
+does not execute retrieved procedure text. The existing specification test also
+pins the old workflow-side install. Closing L17 therefore requires one coherent
+change to the prerequisite capability model, execution backend, benchmark
+caller and that test; replacing the pinned workflow command with another
+hard-coded install wrapper would make the architecture less general and is not
+accepted as completion.
+
+### Plan 09 — source audit
+
+L10-L12 are present in source: the promotion rows are data, the old promotion
+array in `prompt_relevants.rs` is gone, and the strict ledger records
+`dispatch_name_special_cases 0`. The first consolidated run proved the issue
+#699 migration suite 7/7, but the promotion suite and the strict debt checker
+must be rerun on the final tree before their plan boxes move. L13-L15 remain
+open: `formal_ai_worker_20.js` still contains the 31-entry `syncHandlers` array
+and there is no WASM-derived precedence/permutation gate. L16-L42 remain the
+larger family migrations, link-store read path and terminology work described
+by plan 09; the new family-method experiment does not by itself prove those
+leaves or justify deleting their specialized implementations.
+
+### Exact validation still required before one push
+
+No Cargo command was run during this audit: free disk had fallen to 4.4 GiB,
+and all compilation must remain serialized through the recovered shared target.
+From this worktree, the minimum focused evidence is:
+
+```sh
+export CARGO_TARGET_DIR=/Users/konard/Code/Archive/link-assistant/formal-ai/.claude/worktrees/issue-1138/target
+cargo +1.98.1 fmt --all -- --check
+cargo +1.98.1 check --lib --no-default-features
+cargo +1.98.1 test --no-default-features --test unit issue_1138_repository_workspace -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_locate_targets -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_solve_cli -- --nocapture
+cargo +1.98.1 test --no-default-features --test integration issue_1138_swebench_case -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_handler_promotions -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_699_handler_migration -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_execution_box -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_telegram_execution -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_surface_honesty -- --nocapture
+node --test tests/web/issue-1138-browser-runtime.test.mjs
+rust-script scripts/check-debt-ratchet.rs --base origin/main
+rust-script scripts/run-ci-gates.rs --stage rust
+```
+
+After those focused commands, the authoritative pre-push run must reproduce the
+workflow's WASM and web stages, regenerate and verify the self-AST census, run
+the whole unit/integration/doc-test surface and both coverage ratchets. Only a
+green run on the final pushed SHA can replace this checkpoint with a merge- and
+release-readiness claim.
+
+### Plan 05 L18/L19 documentation checkpoint — 2026-09-16
+
+Static reconciliation closes the two remaining documentation-contract leaves
+without claiming executable evidence that was not observed on this final tree:
+
+- **05-18** is present and registered: its five seeded and five held-out prompts
+  cover English, Russian, Hindi, Chinese and Spanish; the assertions retain an
+  underivable clause as a node, keep unattempted work from finalizing, report a
+  clause and byte span for a gap, and reject a bare `ok` result as file bytes.
+- **05-19** now pins the obligation type and recorder, both native and
+  recipe-driven recorder calls, the live agentic `observe` call, and the exact
+  byte contract: `Evidence::observed` hashes the slice it receives and records
+  that slice's length, while `from_tool_result` passes `raw.as_bytes()`.
+- The B5 requirement shard and traceability rows now name those tests with
+  `not yet confirmed`, and the issue #559/#710 requirement text distinguishes
+  the evidence-gated execution projection from the shared constructor used by
+  other domains after their own observations.
+
+The exact remaining Plan 05 documentation gap is **05-20**: regenerate the
+self-AST census and reassemble `REQUIREMENTS.md` after all concurrent source and
+requirement shards settle. The wider plan-11 replacements D188-D193 and
+D196-D197 remain in wave D. No Cargo command or shared target was used for this
+checkpoint; the coordinator must include the obligation-evidence and docs
+requirement filters in the next serialized executable run.
+
+### Plan 10 typed-object arbitration checkpoint — 2026-09-16
+
+The latest focused run reported 3/5
+`issue_1138_self_use_intent_routing` root tests passing. Static diagnosis found
+one shared arbitration defect behind the two remaining families:
+
+- a promoted `concept_lookup` could veto a grounded path decision, so Spanish
+  write requests with a typed destination never recorded the table's
+  `write_file` capability;
+- a promoted `translation` could also veto the narrower
+  `(language_name, demonstrate, dialogue)` decision, while the response-language
+  detector had no Spanish surfaces for English, Russian, Hindi or Chinese.
+
+The table now remains authoritative over generic concept lookup for typed
+objects. Translation yields only for the semantic `demonstrate` act; explicit
+translation recipes remain protected even though they name a target language.
+The general Spanish `escrib` stem belongs to the shared compose act, and the
+four cross-language response markers are seed data. Two root regressions extend
+`tests/unit/issue_1138_self_use_intent_routing.rs`:
+
+- `spanish_typed_write_variations_keep_the_table_authoritative` checks three
+  inflections against both the table and the production solver marker;
+- `a_real_translation_recipe_is_not_preempted_by_language_demonstration`
+  protects the genuine translation path.
+
+No Cargo command or shared target was used while concurrent source work was in
+flight. Direct Rust 1.98.1 formatting checks and `git diff --check` pass. The
+coordinator's next serialized run must execute the root filter
+`issue_1138_self_use_intent_routing` (now seven tests), followed by
+`issue_1138_capability_routing`, `issue_745`, and the translation filters; this
+checkpoint does not claim those executable results in advance.
+
+### Plan 06 L17 implementation checkpoint — 2026-09-16
+
+The source-level blocker recorded above is now addressed, but L17 remains
+unchecked until the focused tests and one real evaluator attempt run on the
+final tree. A trusted `SourceLookup` result can formalize a typed setup document
+into ordered exact program/argv steps; untyped prose, a lookalike host, a
+mutable revision and an absent postcondition do not become
+processes. The scoped installer now executes those typed steps without a shell,
+after validating every write scope, digest and disk requirement and every
+process/argv-prefix capability before the first process starts. Network access
+is an independent consent bit. Each successful step is returned as observed
+stdout/stderr/exit evidence, and `recover_discovered_procedure` shares the
+ledger, scoped installer and re-probe path with ordinary publisher recovery.
+
+The SWE-bench grader now probes its workspace toolchain environment, and, when
+the harness import is absent, derives the general pinned-Python-repository
+procedure from the official GitHub publisher plus the existing immutable
+`SWEBENCH_HARNESS_REF`. It grants only `python3 -m venv`, `python3 -m pip
+install`, the exact import probe and network access, installs into
+`.formal-ai/toolchains`, re-probes, then runs the evaluator with that explicit
+environment. `.github/workflows/external-benchmarks.yml` no longer preinstalls
+the harness, so the scheduled path exercises the same scoped recovery instead
+of masking it. The specification test pins that absence as well as the
+immutable revision retained by the grader.
+
+Added focused contracts are:
+
+- `issue_1138_setup_publisher`: retrieved typed recipe formalization, prose
+  refusal and immutable pinned Python repository construction;
+- `issue_1138_install_scope`: process-capability refusal before spawn, exact
+  argv execution/observation and independent network refusal;
+- `specification::external_benchmarks::swebench_uses_the_pinned_official_test_harness`:
+  the grader must retain the immutable revision and enter prerequisite recovery.
+
+No Cargo command or shared target was used for this implementation checkpoint.
+The ignored live test records whether the harness ledger and evaluator boundary
+were reached and preserves the returned outcome or infrastructure refusal; it
+deliberately does not assert benchmark success. The coordinator must still run:
+
+```sh
+cargo +1.98.1 test --no-default-features --test unit issue_1138_setup_publisher -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_install_scope -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit swebench_uses_the_pinned_official_test_harness -- --nocapture
+cargo +1.98.1 test --no-default-features --test integration issue_1138_recovery_live -- --ignored --nocapture
+cargo +1.98.1 run --no-default-features --bin formal-ai -- benchmark run --suite swebench_lite --slice 1 --online --append
+```
+
+The last two commands are network/runtime measurements and may honestly report
+an unavailable publisher, Docker daemon or evaluator. Only an observed run that
+reaches the official evaluator justifies checking 06-L17 or removing the
+workflow bootstrap.
+
+### Plan 11 L75 multilingual-response checkpoint — 2026-09-16
+
+The response seed now has a complete five-language row for every English
+intent. The pre-change static inventory found 93 incomplete intent groups and
+129 missing language cells: 81 established response groups lacked Spanish,
+while the 12 `statement_audit_*` diagnostics lacked Russian, Hindi, Chinese
+and Spanish. Those cells now contain localized responses rather than English
+fallbacks. Runtime placeholders, code spans, field names and diagnostic
+semantics are retained by the translations.
+
+The post-change structural audit reports 94 intents and exactly 94 records in
+each of `en`, `ru`, `hi`, `zh` and `es`, with zero missing cells, duplicate
+response ids, incomplete response blocks or placeholder-multiset differences.
+Every one of the 129 added records also has the same backtick count as its
+English source. `git diff --check` passes for the response seed and this plan.
+
+No Cargo command or shared target was used for this data-only checkpoint. Plan
+11 L75 therefore remains executable evidence pending the coordinator's
+serialized root test:
+
+```sh
+cargo +1.98.1 test --no-default-features --test unit issue_1138_self_use_concept_lookup::every_seeded_response_intent_serves_all_five_languages -- --exact --nocapture
+```
+
+The remaining validation concern is limited to that parser-backed run on the
+assembled final tree; the matrix and preservation claims above are static
+measurements of the current LiNo source, not advance claims about CI.
+
+### Plan 09 L39 store-read implementation checkpoint — 2026-09-16
+
+Stage 2 now has one condition evaluator over two real sources. `SeedTables`
+projects the parsed lexicon and exact-route table into condition surfaces;
+`LinkStoreSource::from_store` obtains the same role, language, slot and route
+facts by querying `SeedLinkNetwork`. The shared evaluator owns token-boundary,
+raw, language-restricted, prefix, padded, whole-surface, history and exact-route
+semantics, so neither backend carries a second condition implementation.
+
+`data/parity/condition-source.lino` contains varied positive and negative
+prompts but no copied verdicts. The parity test computes every handler-rule and
+promotion verdict through both backends for every probe, asserts the full row
+counts, and separately proves an injected link projection changes the link
+backend without changing the empty seed tables. The new Rust CI gate runs that
+test. `store_read_share` rises from 0 to 1, matching the single `from_store(`
+entry point measured by the existing strict upward checker.
+
+This is static implementation evidence, not a green-test claim: per coordinator
+instruction no Cargo command or shared target was used. Rust 1.98.1 formatting
+and `git diff --check` pass for the touched files. Leaf 39 therefore remains
+unchecked until `issue_1138_store_read_path` and the debt-ratchet gate run on the
+assembled tree.
+
+Leaf 38 also remains open in its stricter planned form. The current boot network
+already projects every seed document, including handler rules and promotions,
+and is sufficient for genuine query-backed parity, but it does not yet expose
+the promised one-content-addressed-`LinkRecord`-per-seed-record totality gate.
+Leaf 40 remains separate as designed: the runtime default is still
+`SeedTables`; parity must be observed for a release before that default flips.
+
+### Plan 09/10 regression-reconciliation checkpoint — 2026-09-16
+
+The current full-unit snapshot exposed four shared semantic seams rather than
+seven prompt-specific defects:
+
+- promotion rows could match only contiguous role surfaces, while the semantic
+  lexicon already treats a seeded two-word action such as `break into` as a
+  phrasal verb whose object may occur between its words;
+- the structural object classifier treated a dotted qualified API member as a
+  filename solely because its suffix was short and alphabetic;
+- the capability table classified the whole agent envelope, allowing a later
+  placement block such as `Work only in this checkout` to replace an open-web
+  request's locus; and
+- the central conclusion predicate did not classify an attributable
+  `concept_lookup_unresolved` result as inconclusive, allowing an observed miss
+  to be delivered as though it were the requested finding.
+
+The condition grammar now has an explicit `role ... separated` mode evaluated
+over either `ConditionSource`; the task-decomposition promotion opts into that
+mode, and the parity fixture exercises a discontinuous action. Qualified
+CamelCase member syntax stays a bare term unless the request supplies explicit
+workspace/filesystem scope, preserving unusual filenames without a hard-coded
+extension or API-name list. The table now derives its stage, route and arguments
+from the first stated-request block, matching the boundary already shared by
+the agentic research routes. Finally, `SymbolicAnswer::is_inconclusive` owns the
+concept-lookup miss boundary, so every caller that records or replays an answer
+agrees that no conclusion was reached.
+
+Static validation only was permitted during the coordinator's serialized
+suite. Rust 1.98.1 formatting and `git diff --check` are the local gates. The
+following executable evidence remains pending on the assembled tree, after the
+coordinator's family-dispatch precedence repair is present:
+
+```sh
+cargo +1.98.1 test --no-default-features --test unit issue_1066_hollow_answers -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1066_ladder_capability -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1101_documentation_question_parity -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_handler_promotions -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_object_type -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_1138_store_read_path -- --nocapture
+```
+
+This checkpoint does not claim those runs green in advance. In particular,
+the 140-failure stale snapshot also contained an independent unconditional
+family-method preemption; that file is owned by the coordinating agent and is
+not part of this bounded reconciliation.
+
+### Post-rebuild family/workspace/toolchain triage — 2026-09-16
+
+The unconditional family call was replaced by a narrower, seed-declared
+precedence relation. Each family may now carry repeated `preempts` edges beside
+its evidence groups. The shared interpreter is consulted early only against the
+named competing method or `capability_gap`; it remains at the generic
+concept/project fallback otherwise. This preserved grounded specialist answers
+while reducing the rebuilt handler-family failure from 82 of 300 to 7 of 300.
+The seven residuals identified two earlier claimants rather than seven prompt
+exceptions: Hindi source-to-Ansible conversion was claimed by
+`task_decomposition`, while Hindi reverse/sort requests were claimed inside
+`verifiable_task` before the later pattern method. Adding those two family
+precedence edges produced this observed result:
+
+```text
+issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter
+test result: ok. 1 passed; 0 failed; 300/300 corpus rows routed to their seed family
+```
+
+Capability-gap handoff now retains machine-addressable anchors (exact
+forty-character commits, named paths and code identifiers) rather than dropping
+them. The repository self-use test consequently preserves its exact base
+commit. Two former assertions were corrected because they asked an isolated
+`solve(prompt)` call, which receives no repository bytes, to fabricate
+`WEB_SEARCH_PROVIDERS` / `src/web_search_core.rs` or
+`DEFAULT_TIMEOUT` / `client.py`. The honest chat contract is a typed shell
+capability gap with no invented location; the existing workspace-bearing
+`issue_1138_locate_targets` tests remain the executable location contract. The
+first rebuilt repository filter was 3 of 4 green; its only miss was the Hindi
+loanword `प्रोजेक्ट`, absent from the shared workspace-scope meaning although
+the formal synonym `परियोजना` was present. Adding that general surface made the
+residual test green.
+
+The rebuilt toolchain filter was 2 of 4 green before the final two generalized
+repairs. An explicitly named but not-yet-catalogued implementation target is now
+preserved from the request as a language-neutral code span; candidates are
+TitleCase tokens and execution-marker heads are excluded from seed, so this
+does not add the held-out toolchain name to production data. The Russian
+unseen-project case exposed two substring false positives in the dialogue
+family: `уже` inside `нужен` and `тем` inside `затем`. The family grammar now
+supports token-prefix evidence; the uninflected adverb is an exact word and the
+topic stem is a token prefix. No compiler is guessed without project bytes.
+
+The final toolchain rerun is deliberately not claimed here: the coordinator
+released the shared Cargo target to the Plan 11 generator pass immediately
+after these last source/data edits. On the assembled tree rerun:
+
+```sh
+cargo +1.98.1 test --no-default-features --test unit issue_1138_family_migration -- --nocapture --test-threads=1
+cargo +1.98.1 test --no-default-features --test unit issue_1138_self_use_repository_workspace -- --nocapture --test-threads=1
+cargo +1.98.1 test --no-default-features --test unit issue_1138_self_use_toolchain -- --nocapture --test-threads=1
+```
+
+The subsequent source-capability integration made the isolated-chat boundary
+more explicit. Family 2 names a project and a machine, but no path or manifest.
+Its typed handoff is therefore `list_dir` (lowered to the advertised `shell`
+fallback), not `read_file`: directory contents must be observed before a file
+can be selected. This is a stronger information-state contract, not a relaxed
+expectation; the answer still may not guess the unseen compiler or web-search
+for a plausible one, and the workspace-bearing recovery test still owns the
+later file read, probe, installation-policy and execution evidence.
+The Chinese held-out phrasing uses `本机` for the local machine; adding that
+ordinary synonym to the same five-language container-scope meaning makes its
+first observation step identical to the other four languages without adding a
+prompt or compiler-specific branch.
+
+### Static/generator and Plan 11 checkpoint — 2026-09-16
+
+The current CI snapshot's static failures were traced to generated inventory
+drift and append-only test/data surfaces rather than relaxed assertions. The
+following closures are present on the assembled tree:
+
+- `src/solver.rs` is 898 lines and
+  `src/agentic_coding/general_planner.rs` is 821 lines after reusable logic was
+  extracted into `solver_search.rs` and `write_request.rs`; browser worker 20
+  is 1,308 lines after its dispatch bindings moved to the registered dispatch
+  module. The reviewed warning-band and worker budgets were lowered to the
+  measured values.
+- the redundant inline unit test in `src/promotion/materialize.rs` was removed;
+  its external issue-656 regression remains registered.
+- the coding-task and multilingual-response seeds were split only at complete
+  record boundaries. `meanings-coding-tasks.lino` / the repository-workflow
+  shard are 1,385 / 219 lines, and `multilingual-responses.lino` / its parity
+  shard are 1,486 / 519 lines. `generate-seed-registry.rs --write` registered
+  both shards and its no-write mode passed.
+- the native-list migration removed pipe-packed fragment signatures and
+  multilingual request markers; malformed grounding predicates in the new
+  verifiable-task seed were corrected. A full static census reports no LiNo
+  data file above 1,500 lines.
+- `docs/benchmarks.md` indexes every benchmark fixture currently under
+  `data/benchmarks/`. Imported self-use `agent.log` files are classified as
+  immutable evidence by the deferred-label lint rather than censored.
+- nine issue-1138 requirement shards now own 68 distinct `R1138-*` IDs and
+  name only tests present on disk. `assemble-requirements.rs --write` rebuilt
+  `REQUIREMENTS.md` from 120 shards, and check mode is byte-current.
+
+Plan 11 L1 and L76 are implemented as generalized inventories rather than
+stale constants. `generate-requirement-status.rs` derives the exact assembled
+requirement-ID set and emits a bounded manifest plus 15 ledger shards. The
+current set is 1,131 unique IDs; every shard is at most 642 lines and
+`check-requirement-status.rs` proves exact set equality, owning-shard presence,
+the verdict vocabulary, and an on-disk automated test for every `implemented`
+verdict. Both generator check mode and the independent parity checker pass.
+The former `1,030` assertion was not replaced by another number.
+
+All 48 per-issue `docs_requirements_issue_*` suites were physically nested
+under the consolidated `docs_requirements` module, with every module still
+registered. Benchmark, status-render and issue-citation checks are separate
+named suites, leaving exactly five top-level `docs_*` filesystem entries as
+#1089 requires. The debt ratchet now measures that same census. Seven
+`include_str!` paths in the relocated issue-710 suite were rebased to the new
+depth; no other relocated relative include remains.
+
+The issue-state snapshot was refreshed from GitHub's open-issue API and records
+all 67 open issues and pull requests with type, state, update time and
+attributable URL. `refresh-issue-state.rs --write` reproduces the snapshot as
+an operator-scoped local write; `check-issue-citations.rs` proves every current
+open-state claim across the 13 authority documents against it. Three stale
+R914 traceability rows now cite their delivered tests, R1021-14 retains its
+honest not-delivered verdict without pointing at closed #924, and negated
+sentences such as "no epic remains open" are not misclassified as claims of an
+open tracker. The checker passes with 67 current open items. Persistent
+scheduled branch-push/PR automation was not added because it would introduce a
+new unattended external writer; the committed refresher keeps that action in
+the repository's ordinary reviewed workflow.
+
+The issue-918 metadata audit also found 24 genuine new records outside the
+coding fragment catalog. All 16 formalization relations, five writing systems,
+and the volume/litre/millilitre records now carry direct `role`,
+`precondition`, `effect`, `unit` and `example` values. A static schema census
+has zero missing fields; Plan 02 owns the independent 13 coding-fragment rows.
+
+The Plan 11 status renderer is now production rather than a wave-T refusal.
+It generates `docs/status.md` plus exactly two in-place regions in README and
+the benchmark catalog, reading the seven declared ledger inputs and the worker
+budget directory. Delete-and-regenerate determinism remains registered in the
+unit suite; `--write` followed by `--check` passes on the assembled tree. The
+benchmark documentation test now reads VISION, ROADMAP, ARCHITECTURE, README
+and the benchmark catalog and requires every `minimum_pass_count` paragraph or
+table row that publishes a curated ratio to publish an upstream ratio beside
+it. ROADMAP and ARCHITECTURE now carry that paired comparison.
+
+Executable Cargo validation is deliberately not claimed here: the coordinator
+owns the serialized Cargo slot. Required focused checks are:
+
+```sh
+rust-script scripts/generate-seed-registry.rs
+rust-script scripts/assemble-requirements.rs
+rust-script scripts/generate-requirement-status.rs
+rust-script scripts/check-requirement-status.rs
+rust-script scripts/render-status.rs --check
+rust-script scripts/check-issue-citations.rs
+cargo +1.98.1 test --no-default-features --test unit docs_requirements -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit docs_benchmarks -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit docs_status -- --nocapture
+cargo +1.98.1 test --no-default-features --test unit issue_918 -- --nocapture
+```
+
+Disk remained at 3.0 GiB available after both generators; no alternate target,
+feature set or compiler flag was introduced.
+
+### Plan 02 coding-path regression reconciliation — 2026-09-16
+
+The assembled-tree failures shared three general boundary defects rather than
+held-out answers. Catalog helper closures unified the lifetime of their first
+temporary replacement slice with every later call; `FragmentRenderer` now
+binds the catalog once while each render method borrows its arguments
+independently. Runtime placeholder discovery also mistook the target-language
+brace in a regex quantifier such as `{{minimum},}` for part of the slot name;
+the parser now distinguishes that enclosing syntax and renders `{5,}` without
+an algorithm-specific fallback. Every IR attempt remains independently
+recoverable, and the source-backed structural candidate is still considered
+after failed search candidates.
+
+Conversational programs now retain a seed-resolved `program_task_by_alias`
+identity when one exists and use `main` only for an open-ended program. A Ruby
+request that cannot be synthesized therefore raises the actionable
+`count_to_three` gap, while the required research trail remains appended after
+the stable localized gap text. No Ruby template or task answer was added.
+
+The issue #918 ledgers were reconciled to the real architecture rather than
+blindly ratcheted: the tree has 50 handler sources, of which 49 remain migration
+debt and one is the generic seed-declared verifiable-task interpreter. The
+coding metadata floor is 100 after five workflow meanings moved to their own
+domain source and four repository-target meanings entered the complete coding
+source. Thirteen new reusable coding fragments now carry all five reviewed
+semantic fields; the other newly introduced relation, writing-system and unit
+records were completed in the same assembled-tree audit, so the committed gap
+map remains exactly equal to the live missing-field census.
+
+Observed no-default-feature evidence on the assembled tree:
+
+```text
+coding_discovery::fragment_catalog::named_rendering_preserves_target_language_braces_around_a_slot  1 passed
+coding_discovery::task_spec::conversational_program_uses_a_resolved_task_as_its_gap_identity          1 passed
+coding_discovery::structural_composition::held_out_relation_ordering_and_pattern_schemas_execute     1 passed
+issue_918::                                                                                           9 passed
+issue_919::coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline               1 passed
+specification::code_generation::single_turn::supported_language_with_missing_template_returns_a_named_skill_gap  1 passed
+```
+
+The Cargo slot was released after those filters. The only emitted warnings were
+the pre-existing summarization dead-code pair and issue #1085's unused test
+imports; neither belongs to this coding-path slice.
+
+### Source and browser-worker hard-limit remediation — 2026-09-16
+
+The final assembled-tree size audit found four Rust source parents and three
+browser-worker modules above their existing hard ceilings. The remediation
+preserves behavior and lowers complexity by subject rather than raising any
+existing limit:
+
+- handler-rule parsing and its indented-tree reader moved to
+  `src/rule_interpreter/parser.rs`; the interpreter parent is 926 lines;
+- bundle import/export moved to `src/cli_bundle.rs`; the CLI parent is 957
+  lines;
+- arithmetic reachability recognition moved to
+  `src/solver_search/problem.rs`; the search parent is 834 lines;
+- URL normalization and fetch/navigation recognition moved to
+  `src/solver_handlers/web_requests/url_parse.rs`; the handler parent is 807
+  lines;
+- the numbered worker shards were behavior-preservingly compacted to their
+  existing 1,263- and 1,307-line ceilings; and
+- deep-formalization structural helpers moved to the subject-named
+  `formal_ai_worker_formalization_support.js`. The runtime module is 89 lines
+  and its support module is 184 lines, both recorded at their exact current
+  ceilings. `worker-modules.js` registers the new shard in generated order.
+
+No Cargo command was run in this slice because the coordinator owns the
+serialized Cargo slot. Static and browser evidence completed here:
+
+```text
+node --check (four touched worker modules)                                      passed
+static budget/file parity (33 worker modules)                                  passed
+rustfmt 1.98.1 --check (owned Rust parents and extracted modules)               passed
+tests/web/worker-mirror.test.mjs                                                passed
+tests/web/issue-1138-formalization-depth.test.mjs                               passed
+tests/web/issue-1138-concept-lookup.test.mjs                                    passed
+focused browser result                                                          24 passed
+complete `tests/web/*.test.mjs` result                                          91 passed
+git diff --check (owned source, registry and budget files)                      passed
+```
+
+The coordinator should run formatting, the worker-line-budget checker and the
+focused native suites after all concurrent source edits have settled.
+
+### Total-closure schema correction and grounding — 2026-09-16
+
+The assembled release audit reported 3,902 unresolved tokens against the
+reviewed ceiling of 3,569. That apparent growth combined three different kinds
+of data under one counter: genuine semantic references, local declaration
+identities, and literal matcher operands. It also tokenized 187 full-line seed
+comments. The largest false edges were 2,060 multilingual `response` record
+IDs, 209 prompt `pattern` IDs, and the `family` / `evidence_group` identities
+introduced for generalized family routing.
+
+The correction is schema-driven. `data/meta/total-closure-schema.lino`
+declares 32 identity-bearing heads and four literal-operand heads. Python keeps
+only the structural rule: the first value is an identity only when that head
+has children. The same head on a leaf is still a reference, so for example a
+response record's identity is excluded while its `intent greeting` child is
+still audited. `cue`, `word`, `prefix` and `substring` operands are spelling
+data whether quoted or bare. `scripts/close-total.py` now consumes the audit's
+canonical inventory instead of maintaining a second tokenizer, so its proposed
+grounding work list and the ratchet cannot disagree.
+
+The remaining new runtime identifiers were not exempted. Thirteen method and
+selection concepts (`capability_gap`, family-preempted methods, registry
+runtimes, and project-lookup order selectors) now have authored five-field
+metadata and source grounding in `meanings-agent-actions.lino`. A later
+hardcoded-language migration exposed another real integration seam: 25 new
+response-intent references had moved into runtime-loaded seed data without
+meaning definitions. All 25 now have authored applicability, effect, example
+and source grounding in the same meanings file. The corrected measurement is
+1,102 distinct unresolved semantic references over 3,926 occurrences, against
+1,218 honest meaning definitions. The ledger ceiling was lowered to exactly
+1,102; it was not raised to absorb the assembled changes.
+
+The regression fixture in `tests/unit/total_closure.rs` supplies its own LiNo
+schema, verifies comments, declaration IDs and literals are excluded while
+semantic leaf values remain visible, then removes two custom schema rows and
+verifies classification changes without a Python edit. Non-Cargo evidence on
+the assembled tree:
+
+```text
+python3 scripts/audit-total-closure.py --json .
+  unresolved_distinct_honest 1102
+  unresolved_occurrences_honest 3926
+  excluded declaration identities 2777 distinct / 2797 occurrences
+  excluded literal operands 107 distinct / 220 occurrences
+  ignored full-line comments 187
+
+python3 scripts/close-total.py
+  unresolved tokens to define: 1102
+```
+
+Final native evidence used Rust 1.98.1, the shared target directory and one
+test thread:
+
+```text
+total_closure::closure_audit_distinguishes_schema_data_from_semantic_references
+  1 passed; 0 failed
+issue_1138_self_use_toolchain
+  4 passed; 0 failed
+total_closure
+  8 passed; 0 failed
+```
+
+The only compiler warnings were the pre-existing summarization dead-code pair
+and issue #1085's unused test imports. The first invocation accidentally began
+building into the worktree-local target; it was interrupted before tests and
+`cargo clean --target-dir` removed all 679.3 MiB it created. Every reported
+result above came from the intended shared target.
+
+### Consolidated integration checkpoint — 2026-09-16
+
+After every implementation stream became source-stable, the shared-target
+unit compile exposed two extraction seams that JavaScript and file-budget
+checks could not observe. The URL parser's repository helpers now import the
+structural URL primitives from their new module, and `cli_improve` imports the
+memory loader from `cli_memory` after the root CLI split. The corrected tree
+passes `cargo +1.98.1 fmt --all -- --check`, `git diff --check`, and
+`cargo +1.98.1 test --test unit --no-run` with the one shared target.
+
+The new requirement-status ledger and generated status page are now first-class
+derived artifacts rather than one-off commands. The canonical regeneration
+script rebuilds the requirement ledger before rendering all status surfaces;
+the wholly generated ledger shards and status document participate in the
+repository's union-then-regenerate merge policy. Narrative README and benchmark
+content remains outside the union driver; only their bounded generated regions
+are refreshed by the renderer.
+
+Remaining order is deliberately serialized to protect disk and the shared
+Cargo lock: closure/toolchain focused tests; documentation/data focused tests;
+all derived regeneration; complete native and web gates; genuine latest-binary
+Formal AI self-use with committed evidence; final static/release audit; then one
+push and monitoring of the exact pushed SHA through merge and release.
+
+### Complete registered-gate reconciliation — 2026-09-16
+
+The first complete `run-ci-gates.rs --stage rust` pass over the assembled tree
+ran all 37 registered Rust gates. Twenty-nine passed and eight exposed
+integration debt. This is the authoritative remaining work list; no gate was
+removed, skipped or given headroom:
+
+1. `check-disk-usage-policy` found one non-canonical Cargo command order in the
+   new condition-source parity shard. The command now uses the repository's
+   canonical `cargo test --test unit --all-features ...` order.
+2. `check-docs-rs-dependency-profile` and `check-rust-api-documentation` found
+   one redundant explicit rustdoc target. The link now uses the documented
+   item name directly.
+3. `check-minimal-core-boundary` found that natural-language tools grew beyond
+   its reviewed line baseline. Named execution-target parsing moved to the
+   subject-named `src/execution_intent.rs`; the handler is below its old limit.
+   The separately extracted URL parser is classified as promoted generic,
+   seed-driven syntax machinery, not hidden migration debt.
+4. `check-debt-ratchet` measured three real improvements exactly
+   (`literal_predicates` 547 -> 544, `promotion_predicates` 19 -> 0,
+   `worker_sync_handler_literals` 31 -> 0) and one invalid allowlist growth.
+   The improved ceilings are lowered. The language growth is being eliminated
+   by moving new code, response and protocol templates into interpreted data;
+   the ceiling will be lowered to the resulting measured count, never raised.
+5. `check-semantic-grounding` found one absent method genus, plan-leaf labels
+   mistaken for Wikidata lexemes, and four genuine uncached entity anchors.
+   The method taxonomy is being completed, the scanner is being made
+   syntax-aware with regressions, and the four records will be generated by the
+   existing verified Wikidata pipeline rather than handwritten.
+6. `check-tests-as-docs` exposed both false positives and a false negative in
+   its substring detector, plus genuine loose-only behavioural tests. The
+   checker is being made assertion-aware and each genuine case will name an
+   exact answer or finite documented answer set; no new allowlist debt is
+   accepted.
+7. `run-clippy` reported 199 library diagnostics after the implementation
+   streams met. The 113 compiler-provided mechanical rewrites are applied; the
+   remaining API, documentation, template and enum-layout findings are being
+   resolved explicitly, without broad lint suppression.
+
+After those eight are green individually, the order is: regenerate every
+derived artifact; repeat all 37 Rust gates and the complete web stage; run the
+serial unit suite and release/security preflight; build the latest binary; give
+it a real repository test-authoring task through the Agent CLI; retain the
+authored test and raw self-hosting evidence in a trailer-bearing commit; then
+push once. CI on the exact pushed SHA, not an older PR run, is the merge
+authority. A merge is followed through the main-branch release workflow until
+the release and its artifacts are observable.
+
+### Live canary and finalization checkpoint — 2026-09-16
+
+The three production canaries were re-read at their latest heads before final
+validation. The Scala/Agent CLI pull request now has correct source, an exact
+output verifier, a pinned CI workflow and two green hosted runs. The Rust/Codex
+canary still predates the already-merged Hive Mind transport fix and therefore
+does not constitute a new Formal AI or Agent CLI failure. The Kotlin/Claude
+canary exposed a different live defect: Claude's model-backed `WebFetch`
+received the whole solve request as its required `prompt`, recursively solved
+the task inside the fetch operation, and returned generated Kotlin as though it
+were issue text. Hive Mind then committed the corrupted Java file and build
+output, declared a no-CI pull request ready, and only afterwards reported
+failure. The Hive Mind containment gap is tracked upstream as
+`link-assistant/hive-mind#2263`.
+
+Formal AI's generalized containment is now part of this finalization scope.
+A GitHub work-item read prefers structured `gh issue/pr view` output when a
+real shell-command tool is available. A client without such a shell receives a
+data-declared extraction-only fetch prompt, never the user's solve request.
+Before this route is accepted it must also prove: failed or empty `gh` output
+falls back once to fetch; generic non-shell run tools do not receive shell
+commands; work-item URLs are passed as a single shell argument; a preceding
+read cannot count as a later verification command; issue and pull-request
+fallbacks use neutral work-item wording; and a full Claude/Kotlin replay reaches
+source, workflow, exact verification and commit without calling `WebFetch`.
+These cases are source tests, not an allowlist or canary-specific branch.
+
+Three independent review streams are converging before Cargo is re-entered:
+
+1. all 73 genuine new hardcoded-language detections have moved into existing
+   interpreted seed/meta vocabularies or typed event fields; after canonical
+   regeneration the allowlist is expected to fall exactly to 1,263 rows;
+2. semantic grounding and tests-as-documentation are being repaired with
+   syntax-aware scanners, generated Wikidata caches and exact behavioral
+   assertions; and
+3. Clippy's mechanical and reviewed API corrections are integrated, followed
+   by the work-item containment regressions above.
+
+The shared target exceeded the four-gigabyte cache budget during this work and
+was swept with the repository-approved `cargo sweep --maxsize 4096`, reclaiming
+1.49 GiB before further compilation. The remaining order is unchanged:
+format/static checks, each formerly failing gate, canonical generation, the
+full Rust and web stages, serial unit and release/security validation, then
+latest-binary Formal AI self-use through Agent CLI. Only those results authorize
+the final forward commits and single push.
+
+### Recovered-Claude completion audit — 2026-09-16
+
+The final three Claude sub-agents in the recovered session terminated with
+`model_not_found`. A file-by-file audit shows that later work continued most of
+their changes, but an unchecked plan box is not treated as proof and source
+scaffolding is not treated as an executed capability. The following work is
+the durable implementation queue before final gates and self-use:
+
+1. **Composition and benchmark frontier.** Retire the remaining authored draft
+   blocks in `coding/composition.rs` and `coding/structural_composition.rs` in
+   favor of fragment/procedure discovery; add browser recognise-discover-lower
+   parity; remove the remaining named equation-corpus limitations; and record
+   fresh online plus cold-offline HumanEval/MBPP and four-suite slice results.
+2. **Repository self-use.** The obsolete `agent --non-interactive` ladder
+   invocation is replaced by isolated `formal-ai solve` plus explicit stdout
+   patch transport, and the standalone coding-ladder workflow now enforces the
+   honest 65/130 floor while leaving L1 0/16 visible. Still required: measure a
+   fresh post-conversion full run, then use the newest Formal AI binary through
+   Agent CLI to author a real repository change and retain attributable
+   evidence and contribution trailers.
+3. **Formalization and execution parity.** Native B4 formalization parity and
+   the five-language need-reporting meanings landed on 2026-09-17: B4 keeps the
+   derived graph expectation while reusing B1's canonical content-addressed
+   captures, and the focused browser parity suite passed 2/2. Execution parity
+   now includes the five-language Telegram refused/granted outcome table, all
+   30 corpus-driven browser verifiable-task projections with an explicit
+   unverified boundary, and an ignored live recovery/evaluator path whose
+   result remains evidence rather than an asserted success. The focused Node
+   execution-parity suite passed 2/2; Rust execution and the ignored live run
+   remain part of the final exact-tree gate because no Cargo command was run
+   for this checkpoint.
+4. **Learning that changes answers.** Advance the adoption-effect ratchet from
+   zero with a learned item that produces a verified improved later answer;
+   `ChangedUnverified` alone does not satisfy plan 07.
+5. **Registry and migration generalization.** The browser synchronous handler
+   registry/precedence is now derived from
+   `data/seed/browser-handler-precedence.lino`, with focused reorder coverage
+   and the registered `check-worker-handler-registry` gate; the debt scanner
+   discovers the dispatch owner across the worker directory, so moving the old
+   array cannot make the metric misleadingly read zero again. Remaining here:
+   make `compose_from_sources` and `concept_measurement_lookup` executable, and
+   continue the pending handler/`SeedTables`/`GraphNode` migration.
+6. **Routing and release evidence.** Add the missing capability-routing and
+   language-parity gates, required issue requirement shards and architectural
+   note; reconcile the material plan-13 carry-overs (desktop seal, generalized
+   failure artifact, cache budget, macOS archive, JS tooling/multi-arch publish,
+   evidence index, self-authoring ladder); then regenerate all derived state and
+   execute the exact-tree plan-14 gate, push, CI, merge and release sequence.
+
+Already present but still requiring exact-tree executable validation includes
+the source-walk/concept pipeline, deep formalization, obligation ledger,
+repository protocol, Telegram/ExecutionBox scaffolding, behavior/adoption
+schemas, condition-source parity, family method, verifiable-task executor and
+refutation search. `data/meta/self-ast.lino`, assembled requirements and status
+artifacts must be regenerated only after the implementation queue is stable.
+
+### Recovered queue progress — 2026-09-17
+
+The post-recovery tests-first pass closed four concrete audit gaps without
+claiming final validation before the combined Cargo run:
+
+1. Learning now has one qualifying adopted method. Its content-addressed
+   registry entry changes a held-out answer only after verified execution; the
+   adoption-effect ratchet records one adopted and one qualifying effect.
+2. `compose_from_sources` and `concept_measurement_lookup` now execute through
+   a shared source-capability path. Both record the external-search boundary,
+   emit source identities, hashes, licences, and grounded quantities when
+   available, and produce a structured unavailable result while offline.
+3. Capability routing has an executable two-sided ratchet. It derives its
+   420-case dimensions from the corpus, runs the measurement example, requires
+   exact current values, rejects regression against the base, and counts the
+   remaining cue, phrase, and planner-dispatch debt instead of recording zero
+   targets as measurements.
+4. The selection carry-over now includes the requested 20-case TRIZ corpus in
+   five languages and #453 approach combination through the shared semantic
+   deduplicator, preserving the first source in ordered history. Separate
+   requirement shards for #901, #802, and #453 make these claims traceable.
+
+Static checks at this checkpoint: Rust formatting and `git diff --check` pass;
+the strict tests-as-documentation gate passes with a reduced 257-row burn-down
+allowlist; all six capability-routing checker unit tests pass. The shared Cargo
+target is 3.0 GiB with 6.5 GiB filesystem space free. Composition-search and
+execution-parity sub-agents are still editing, so the authoritative combined
+Cargo and web runs deliberately follow their handoff rather than compiling a
+moving tree.
+
+### Repository world-model/delta lane — 2026-09-17
+
+Plan 15 is the durable tests-first design for a semantic repository completion
+gate. It records the latest immutable heads and attribution boundaries of the
+Kotlin/Claude, Scala/Agent CLI and Rust/Codex canaries, then treats them only as
+benchmark fixtures. The implementation must compare evidence-backed observed
+repository state with independently formalized goal state through the existing
+Need and obligation contracts. A clean or ready pull request, a non-empty diff,
+or one green hosted check cannot erase a missing, mismatched or unevidenced
+requirement. No Cargo command belongs to this lane; the combined parent gate
+will execute its authored Rust tests after the shared sources stop moving.
+
+### Language-parity leaf L75 — 2026-09-17
+
+Plan 11 L75 is implemented tests-first. `scripts/check-language-parity.rs`
+walks every `.lino` file below `data/seed`, derives lexeme owners from the
+indentation tree rather than a filename convention, and rejects duplicate
+target-language lexemes. Its unit fixtures prove a non-`meanings-*` owner is
+included and prove that missing, duplicate, stale, and invalidly dated debt is
+rejected.
+
+The first live structural census is 932 lexeme-owning nodes that have at least
+one of en/ru/hi/zh/es but not all five. Each has one canonical, explicit,
+dated `uncovered_behavior` row in
+`data/meta/language-parity-debt.lino`. The compact one-row representation keeps
+that complete 937-line ledger below the repository's 1,500-line Links Notation
+limit. `language_parity_gaps` is independently recomputed from the seed tree by
+the strict two-sided debt checker, with a downward ceiling of 932; editing only
+the debt rows cannot change the measurement.
+
+`data/seed/languages.lino` remains the sole language-status authority.
+`scripts/render-status.rs --write` now projects it into `docs/status.md`, where
+Spanish appears once as `partial` with `language_gap`; no derived region was
+edited by hand. The focused parity unit suite passed 8/8, the live parity check
+accepted all 932 exact rows, and status write/check passed. The combined debt
+suite reached the new measurement but remains red on an unrelated concurrent
+tree change (`literal_predicates` measures 546 against its existing ceiling
+544). No Cargo command was run for this checkpoint, as required by the leaf's
+shared-tree handoff. The repository-wide file-size checker confirms the new
+debt ledger is below its Links Notation cap, but the moving shared tree remains
+red on five unrelated oversized tests: `installation_conversion.rs`,
+`issue_1133_hive_mind_three_runs.rs`, `specification/reasoning_paths.rs`,
+`specification/translation_via_links.rs`, and `web_requests.rs`.
+
+The lane is now implemented. The generic Links Notation reader projects every
+goal into the existing Need and ObligationLedger types, retains evidence on
+current-state facts, emits typed missing/unevidenced/mismatched deltas, and
+permits completion only when every formalized goal has matching evidence. The
+latest Scala head is the 14/14 positive canary; Kotlin remains open on wrong
+extension/generated artifact/no CI plus unobserved clauses, and Rust remains
+open on placeholder/no source/no CI while attribution records that Formal AI
+and Codex were not reached. A synthetic unrelated complete case is the
+anti-hardcoding proof. Focused static evidence is Node 2/2, Node syntax clean,
+Rust formatting clean and scoped diff-check clean; Cargo remains delegated to
+the serialized parent run.
+
+### Integrated gate and routing checkpoint — 2026-09-17
+
+The first combined `issue_1138_` run after the recovered lanes compiled the
+whole unit target and executed 189 focused tests: 181 passed and eight exposed
+three shared integration defects rather than eight independent features. The
+family catalog now arbitrates resolved source capabilities through its
+seed-declared `preempts` relations, closing all five of the 300 held-out family
+misroutes. The formalization-depth fixture now walks the Links Notation tree at
+the exact child indentation instead of truncating a meaning at the first nested
+line. Verifiable-task routing and the response-language debt reconciliation are
+being rerun on the same combined tree before the suite is repeated.
+
+The repository-wide static gates found and closed three composition issues:
+
+1. two structural evidence payloads now use `format_lino_record` instead of
+   embedding an output grammar in Rust string literals;
+2. repeated HTTP prefix predicates became one parsed-scheme predicate, lowering
+   the strict `literal_predicates` debt from 544 to 542; and
+3. five test monoliths were split into same-named Rust module directories, so
+   every file is again below the 1,000-line limit without deleting a test.
+
+The complete browser-worker suite passes 97/97. The web-stage follow-up made
+the language-change gate treat all multilingual-response shards as one logical
+resource and made multilingual test coverage discover a split Rust module tree;
+both checks now test semantic resources rather than filenames. The i18n key
+contract was extended for the two newly exposed source controls and the
+load-on-demand browser runtime (465 keys across four published UI locales).
+Desktop library tests pass 138/138 with one intentional skip, the VS Code suite
+passes 51/51 plus its smoke test, and all five JavaScript lockfiles report zero
+known vulnerabilities. Loopback and registry checks were rerun outside the
+restricted sandbox; their earlier `EPERM`/DNS results were environmental and
+were not converted into exceptions.
+
+Disk discipline remains explicit: the one shared Cargo target is 4.1 GiB, the
+locked e2e dependency install is 28 MiB, and 11 GiB remained free after these
+runs. No worktree-local Cargo target was retained. Global regeneration, the
+full Rust gates, the live/cold benchmark rows, the 130-task ladder, newest-binary
+Formal AI self-use through Agent CLI, the final forward commits and the single
+push remain ordered after the active implementation lanes stop changing the
+tree.
+
+### Formal AI self-use finding — bounded multi-file analysis — 2026-09-17
+
+The newest local Formal AI binary was invoked through Agent CLI for a read-only
+audit of two plan documents and the release workflow. Formal AI correctly
+selected the three named files, but the generic direct-reader classified the
+request as `Full`: it read and returned thousands of lines instead of obeying
+the governing audit/report intent. Agent CLI measured 666,644 input tokens,
+compacted the turn, and the resumed Formal AI session no longer synthesized the
+requested gaps. This is a product failure found by self-use, not CI evidence;
+the oversized local trace is not a repository artifact and must not be
+committed.
+
+The tests-first repair is a general file-analysis contract, independent of the
+three reproduced paths:
+
+1. derive audit/review/inspection intent from the existing seeded workspace
+   inspection role rather than from a prompt literal;
+2. for one or many named files, prefer the advertised grep capability and
+   derive its gap-marker expression from a multilingual seed role;
+3. when grep is unavailable, issue explicit bounded read ranges (and a bounded
+   shell equivalent) instead of relying on a client's unknown default;
+4. cap the number and width of returned findings, report files with no explicit
+   marker honestly, and never infer that absence proves implementation; and
+5. retain the established unbounded behavior only for an explicit request to
+   show file contents, so analysis safety does not silently redefine `cat`.
+
+The regression uses unrelated synthetic Markdown/YAML files, verifies both
+grep-first and read-only clients, and feeds oversized tool output to prove the
+answer remains bounded. After the focused test is green, the latest binary must
+repeat a small Agent CLI audit before the final self-authored change.
+
+The first implementation pass is green 4/4. It added grep-first collection,
+an explicit 160-line × 320-column fallback window, capped findings, and the
+semantic precedence rule that keeps “report findings from `.github/...`” out of
+the issue-report wizard. The same live session also isolated two Agent CLI
+defects outside Formal AI: nullable optional Claude OAuth metadata was reported
+as `link-assistant/agent#309`, and duplicate pending/running/completed
+`tool_use` stream events were reported as `link-assistant/agent#310`. Both
+reports contain sanitized local-provider reproductions and no credentials.
+
+### Release convergence checkpoint — 2026-09-17
+
+Release completion is now a visible, resumable state transition rather than a
+green best-effort attempt. `cargo publish` failures, including crates.io HTTP
+429 throttling, retain their classified `publish_result` output but return a
+non-zero status. Therefore no downstream container or GitHub artifact can be
+mistaken for a complete release, and the failed job remains an explicit retry
+obligation.
+
+The automatic release command synchronizes with explicit `main` before it
+decides whether to bump. With `--resume-prepared`, an unchanged fragment set is
+resumed only from concrete Git evidence: either `v<current-version>` resolves
+to an ancestor of `HEAD`, or `HEAD` has the exact release-commit subject for
+the current version. The latter case creates and pushes only the missing tag;
+the former creates neither another commit nor another tag. An ordinary
+untagged commit is not recovery evidence, a tag outside the current history is
+an error, and any newly merged changelog fragment requests a new release. This
+makes rerunning the original merge event converge on the version already
+prepared on current `main` instead of double-bumping it.
+
+After synchronization/recovery, the workflow queries crates.io again for the
+selected version. All downstream guards use that post-sync state, not the
+stale state observed before the version command. The pull-request build and
+both release paths run `cargo package --locked -p formal-ai`; release paths do
+so after the release build and before `cargo publish`, so Cargo must unpack and
+compile the generated `.crate` successfully before any external publication.
+
+Regression evidence covers classified publication failures, tagged and
+missing-tag recovery, refusal to infer recovery from an ordinary commit or new
+fragment, post-sync workflow state, archive-verification ordering, and the
+manual release remaining an explicit new bump. A crates.io outage can still
+delay an external service, but it can no longer produce a green partial
+release: the same prepared version remains safely retryable until publication
+and every guarded downstream artifact completes.
+
+Focused local verification is green: publication classification 6/6,
+version/recovery behavior 10/10, and the isolated release-workflow plus gate
+contracts 30/30. `actionlint`, Rust formatting, and scoped whitespace checks
+also pass. A full unit-target invocation did not reach tests locally because
+the restricted runner could not download lindera-jieba's dictionary assets;
+that environmental failure was kept visible rather than converted into an
+exception or a false green result.

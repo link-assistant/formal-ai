@@ -2,10 +2,10 @@ self_ast_census
   target src/external_benchmarks/mod.rs
   language rust
   fidelity signature
-  byte_len 9283
-  line_count 287
-  content_id source_module_69f78f1aa1846c31
-  symbol_count 23
+  byte_len 12477
+  line_count 364
+  content_id source_module_4f4ead9b9267c046
+  symbol_count 24
   symbols
     module cases 10 10
     module fetch 11 11
@@ -22,11 +22,12 @@ self_ast_census
     function report 67 73
     function to_result_entry 76 86
     function run_suite 94 100
-    function run_suite_with_online 103 204
-    function unavailable_run 206 222
-    function benchmark_solver 226 228
-    function benchmark_solver_with 232 239
-    function live_fetch_enabled 241 248
-    function repository_root 252 254
-    function today_utc 258 265
-    function format_date 270 287
+    function run_suite_with_online 103 210
+    function solve_repository_case 218 281
+    function unavailable_run 283 299
+    function benchmark_solver 303 305
+    function benchmark_solver_with 309 316
+    function live_fetch_enabled 318 325
+    function repository_root 329 331
+    function today_utc 335 342
+    function format_date 347 364

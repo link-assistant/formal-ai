@@ -1120,9 +1120,18 @@ only inside the generator's own output.
       be *deleted* in favour of the WASM one; adding a second JS parser would
       have made this plan close an issue by doing the opposite of what it asks
       (plan 00 §9 X5).**
-- [ ] 14. Convert `formal_ai_worker_20.js:577-693` from an array literal to a
-      name-keyed registry with a load-time permutation assertion; iterate the
-      fetched precedence at `:694`; record `worker_sync_handler_literals 0`.
+- [x] 14. Remove the moved array literal from
+      `src/web/worker/formal_ai_worker_dispatch.js`. The ordered bindings,
+      argument paths and result guards now live in
+      `data/seed/browser-handler-precedence.lino`; `src/web/seed_loader.js`
+      projects that document and the worker resolves it generically at startup.
+      `worker_sync_handler_literals` remains 0, but its scanner now discovers
+      the real owner across all of `src/web/worker/` instead of looking only in
+      the obsolete `formal_ai_worker_20.js` location. A seed reorder test and
+      `check-worker-handler-registry` gate prove both properties. This is the
+      recovered-Claude completion slice; leaf 13's WASM parser unification and
+      leaf 15's full native/browser vocabulary parity remain separately visible
+      rather than being claimed by this browser-only generalization.
 - [ ] 15. Rewrite `tests/unit/specification/routing_precedence.rs:205-260` as a
       reorder test over both surfaces; delete the fixture header's
       "full order-parity is impossible" claim; add
@@ -1219,6 +1228,23 @@ only inside the generator's own output.
       `VISION.md:320-326`.
 - [ ] 41. Stage 3 (closing leaf): `MethodRegistry::from_store`; precedence
       becomes `rank` links; replay the five pinned invariants.
+
+### Capability/family arbitration checkpoint — 2026-09-17
+
+- The source-capability executor exposed a precedence regression in the
+  300-case held-out suite: five dialogue/retrieval requests were claimed as
+  `compose_from_sources` or `concept_measurement_lookup` before the applicable
+  family method could run.
+- The correction is an architectural boundary, not five prompt exceptions:
+  after the capability table resolves a capability, the shared family catalog
+  may preempt it through the same seed-declared `preempts` relation already
+  used for registry methods and honest capability gaps.
+- `dialogue_state_query` declares precedence over composition and measurement;
+  `retrieval_method` declares precedence over composition. The matcher remains
+  one generic interpreter and the held-out prompts remain absent from seed.
+- The full family module passed 3/3, including all 300 held-out cases, while
+  the source-capability module passed 4/4 and the frontier-class suite passed
+  8/8, proving that unrelated source composition and measurement still execute.
 
 ---
 

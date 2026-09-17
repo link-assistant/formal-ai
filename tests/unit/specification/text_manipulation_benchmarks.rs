@@ -459,6 +459,7 @@ fn benchmark_family_matrix_covers_text_and_code_edit_variations() {
             rule: "rule_replace_text",
         },
     ];
+    let documented_answers: Vec<&str> = cases.iter().map(|Case { answer, .. }| *answer).collect();
 
     assert!(
         cases.len() >= 60,
@@ -494,6 +495,7 @@ fn benchmark_family_matrix_covers_text_and_code_edit_variations() {
     let solver = text_solver();
     for case in cases {
         let response = solver.solve(case.prompt);
+        assert!(documented_answers.contains(&response.answer.as_str()));
         assert_eq!(
             response.intent, "text_manipulation",
             "{} {} should route to text manipulation, got {} with answer {}",

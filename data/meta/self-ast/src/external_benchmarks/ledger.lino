@@ -2,28 +2,28 @@ self_ast_census
   target src/external_benchmarks/ledger.rs
   language rust
   fidelity signature
-  byte_len 9434
-  line_count 273
-  content_id source_module_fa26bdd451651673
+  byte_len 10039
+  line_count 283
+  content_id source_module_789fab9d6f207936
   symbol_count 20
   symbols
     struct LedgerRecord 14 17
     function field 21 26
     function record_type 29 31
     function usize_field 34 36
-    struct SuiteEntry 41 46
-    struct ResultEntry 50 58
-    struct UnavailableEntry 62 66
-    struct Ledger 70 72
-    function parse 76 103
-    function suites 106 123
-    function results 126 145
-    function unavailable 148 160
-    function render 164 173
-    function upsert_result 177 200
-    function upsert_unavailable 203 220
-    function raise_floor 224 245
-    function replace_or_push 247 257
-    function parse_field 260 265
-    function escape 267 269
-    function unescape 271 273
+    struct SuiteEntry 41 50
+    struct ResultEntry 54 62
+    struct UnavailableEntry 66 70
+    struct Ledger 74 76
+    function parse 80 107
+    function suites 110 129
+    function results 132 151
+    function unavailable 154 166
+    function render 170 179
+    function upsert_result 183 206
+    function upsert_unavailable 209 226
+    function raise_floor 230 255
+    function replace_or_push 257 267
+    function parse_field 270 275
+    function escape 277 279
+    function unescape 281 283

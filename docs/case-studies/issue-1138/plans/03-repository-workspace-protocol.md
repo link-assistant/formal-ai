@@ -804,11 +804,52 @@ Every one of these writes its number to a ledger before anything is tuned. A
 - [ ] **L12.** Add `src/cli_solve.rs` + `Command::Solve` in `src/main.rs`, refusing to commit by default. Test: the three `solve_cli` cases.
 - [ ] **L13.** Emit the four trailers and the evidence bundle from `run_solve`; reduce `scripts/author-change-with-formal-ai.sh` to a wrapper. Test: `scripts/self-hosting-attribution.rs::model_attribution` accepts the produced commit; a hosted model is refused.
 - [ ] **L14.** Convert `experiments/issue_847_coding_ladder/run_coding_ladder.sh` (today `cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]` at `run_coding_ladder.sh:196`) to `formal-ai solve --repository . --base-commit …`; rerun; record the new 130-task number whatever it is. **This commit must also update `tests/unit/issue_848_coding_ladder.rs:532-560`, which pins nine exact substrings of that script** (`"[\"rustc\", \"--edition=2024\""`, `"rust_target_existed[created]"`, `"\"dataset_total\": len(all_tasks)"`, `"\"complete\": not only"`, `"results-partial-$FILTER_SLUG.json"`, `"expect_from_file"`, `"re.MULTILINE"`, and both lines of the `server_started` / `not_measured` predicate at `run_coding_ladder.sh:284-288`). Every pinned semantic must survive; only the invocation line changes.
-- [ ] **L14b.** Wire the #848 ladder into CI — it has never run there (`docs/case-studies/issue-957/raw-data/verified-776-928.md:57,62`: "recorded score 65/130 with L1 = 0/16 — the exact 'honest attempt at L1' bar konard set is still failing, and nothing ratchets it"). Add `.github/workflows/coding-ladder.yml` modelled on `.github/workflows/task-ladder.yml` (weekly + `workflow_dispatch` + path-filtered), a `data/meta/ci-gates/coding-ladder.lino` row with its justification, and a floor in `data/meta/ladder-ratchet.lino` for the 130-task score that may only rise. This closes the R848-1 "ladder runs in CI with recorded score" clause that `docs/case-studies/issue-957/raw-data/verified-all.ndjson:880` marks `PARTIAL`.
+- [x] **L14b.** Wire the #848 ladder into CI — it has never run there (`docs/case-studies/issue-957/raw-data/verified-776-928.md:57,62`: "recorded score 65/130 with L1 = 0/16 — the exact 'honest attempt at L1' bar konard set is still failing, and nothing ratchets it"). Add `.github/workflows/coding-ladder.yml` modelled on `.github/workflows/task-ladder.yml` (weekly + `workflow_dispatch` + path-filtered), a `data/meta/ci-gates/coding-ladder.lino` row with its justification, and a floor in `data/meta/ladder-ratchet.lino` for the 130-task score that may only rise. This closes the R848-1 "ladder runs in CI with recorded score" clause that `docs/case-studies/issue-957/raw-data/verified-all.ndjson:880` marks `PARTIAL`.
 - [ ] **L15.** Add `leaf_nodes_passing_without_authored_rules` to `data/meta/ladder-ratchet.lino`, run `issue_1028_agent_cli_ladder` with rules disabled, record the number, and add `authored_ladder_rules: 32` to `data/meta/debt-ratchet.lino` as a shrink-only ceiling.
 - [ ] **L16.** Raise `swebench_slice` to `23` in `.github/workflows/external-benchmarks.yml` and record the full-split row. **A slice is a measurement width, not a ceiling: widening it can only lower the recorded score, and `historical_floor_violations` groups by `(suite, slice)`, so the recorded `0/1` floor is untouched. This is not a loosened gate (plan 00 §9 X7).**
 - [ ] **L17.** Author one real repository change through `formal-ai solve --commit` on a bot branch and attach it to the release cycle, closing R1021-22 or recording precisely why it is still open.
 - [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `docs/benchmarks.md`, `docs/meta-algorithm.md`, `VISION.md`, `ROADMAP.md`, `GOALS.md` per the next section.
+
+### L1-L18 reconciliation checkpoint — 2026-09-17
+
+This checkpoint records the live tree before the final Plan 03 close-out. A
+checkbox is not changed merely because code exists: the focused test named by
+the leaf must pass in this worktree first.
+
+| leaf | live-tree state before close-out | remaining proof or work |
+| --- | --- | --- |
+| L1 | `WorkspaceCensus::of_directory` exists and `issue_673_self_ast_census::directory_census_matches_the_same_explicit_source_set` supplies the three-file fixture equivalence test (two Rust sources plus one excluded non-source). | Run the focused test. |
+| L2-L5 | The exact-commit clone, seed command policy, isolated workspace and round-trip diff are implemented with Plan 03 unit coverage. | Re-run the focused workspace and command-policy tests. |
+| L6 | `locate_targets` uses the live workspace census plus seed meanings, reports ambiguity, and has held-out en/ru/hi/zh/es and foreign-tree tests. | Run the focused locator tests and the hard-coded-language gate. |
+| L7-L8 | Named-test execution and the data-owned protocol are implemented; the specification tests ground the source files, order and reconstructed content id. | Re-run the focused named-test and protocol-specification tests. |
+| L9 | `WorkspaceProtocol::execute` starts every step `Planned` and only projects `Satisfied` from an attached `Evidence` record; stopped and skipped steps are tested. | Run the focused workspace test. |
+| L10 | `BenchmarkCase` carries optional `WorkspaceSpec` / `RunCommand`; only SWE-bench populates them and the runner selects `solve_repository_case`. | Run the pinned integration parser test and external-benchmark unit tests. |
+| L11 | The ignored live one-instance test exists. No new network/container execution has been observed in this close-out, so no result may be appended. | Live clone, official evaluator run, and honest external-results row. |
+| L12 | `formal-ai solve` is registered and defaults to an isolated, non-committing run; the three required CLI behaviours have unit coverage. | Run the focused solve tests. |
+| L13 | `run_solve` writes four trailers and commits the same model-bearing evidence bundle as its source edit, but `author-change-with-formal-ai.sh` is still a second implementation rather than a wrapper and the focused test has not yet run the attribution parser against the produced commit. | Make the script a wrapper and prove the produced commit with the canonical attribution parser. |
+| L14 | The coding ladder invokes `formal-ai solve`, validates stdout as a patch, then applies it before its existing judges. | A fresh complete 130-task live run; the pre-conversion 65/130 row remains the only honest result. |
+| L14b | The path-filtered scheduled workflow, gate record and 65/130 ratchet exist. | Re-run its hermetic checker. |
+| L15 | No `--no-authored-rules` run mode, disabled-rule result field, ratchet value, or `authored_ladder_rules` debt measurement exists yet. | Implement a hermetic mode and its checkers; only a real 32-leaf Agent CLI run may set the passing value. |
+| L16 | Before close-out the external workflow still defaulted SWE-bench to width 1; historical floors were already keyed by `(suite, slice)`. | Encode width-23 semantics and tests; a full live run is still required before a `0/23` or better result row may be claimed. |
+| L17 | No close-out evidence proves a real `formal-ai solve --commit` bot-branch contribution attached to a release cycle. | External authoring, pull-request and release evidence. |
+| L18 | The issue-1138 requirement shard and broad documentation edits exist in the shared worktree, while Plan 11 owns D170-D180 and their final consistency proof. | Run the Plan 03 requirements test; leave the cross-document close-out to Plan 11 rather than duplicate it here. |
+
+### L14/L14b implementation checkpoint — 2026-09-17
+
+The runner now observes `HEAD`, calls `formal-ai solve --repository .
+--base-commit <observed HEAD> --task <prompt> --evidence <per-task temp dir>`,
+captures stdout as the sole diff transport, checks it with `git apply --check`,
+and applies it explicitly before the unchanged effect, compiler and reset
+judges run. `tests/unit/issue_848_coding_ladder.rs` pins that invocation and
+transport while retaining every earlier semantic pin.
+
+The standalone, path-filtered `.github/workflows/coding-ladder.yml` runs weekly
+and on dispatch, and its temporary full result is checked against the 65/130
+floor. The fast registered `coding_ladder` gate only compares workflow,
+committed full result and ratchet; it never executes the 130 tasks. The
+committed evidence remains the honest 2026-08-02 result, including L1 0/16.
+Therefore L14 itself remains unchecked: only a fresh post-conversion 130-task
+run may replace that result and establish the discontinuous new baseline.
 
 ## Docs to update — exact statements, quoted, with replacement
 

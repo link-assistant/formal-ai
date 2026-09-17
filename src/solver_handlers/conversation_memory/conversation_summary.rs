@@ -2,13 +2,13 @@ use std::fmt::Write as _;
 
 use super::super::finalize_simple;
 use crate::coding::contains_cjk;
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed;
 use crate::summarization::{
-    generate_chat_title, summarize_dialog, summarize_dialog_plain, DialogTurn, SummarizationConfig,
-    SummarizationMode,
+    DialogTurn, SummarizationConfig, SummarizationMode, generate_chat_title, summarize_dialog,
+    summarize_dialog_plain,
 };
 
 const RETURN_RECAP_MAX_WORDS: usize = 39;
@@ -84,9 +84,9 @@ pub(super) fn try_summarize_conversation(
             .split_once(':')
             .map(|(_, content)| content.trim())
             .filter(|content| !content.is_empty())
-        {
-            turns.push(DialogTurn::user(content));
-        }
+    {
+        turns.push(DialogTurn::user(content));
+    }
     let user_turn_count = turns.iter().filter(|turn| turn.role == "user").count();
     if user_turn_count == 0 {
         return None;

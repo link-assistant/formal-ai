@@ -2,10 +2,11 @@
 //!
 //! `ObligationOutcome::Satisfied` carries an `Evidence` and nothing else, so the
 //! type system — not a convention — forbids a satisfied obligation without an
-//! observation. `need_ledger_with_execution` is the single place
-//! `NeedStatus::Satisfied` may be produced, an unrelated observation discharges
-//! nothing (R710-R4), and a clause with no derivable expectation becomes a node
-//! rather than a discard (R710-R9).
+//! observation. `need_status_with_observation` is the single constructor of
+//! `NeedStatus::Satisfied`; the execution-ledger projection calls it only for a
+//! need discharged by that evidence-bearing outcome. An unrelated observation
+//! discharges nothing (R710-R4), and a clause with no derivable expectation
+//! becomes a node rather than a discard (R710-R9).
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -79,7 +80,7 @@ fn file_bytes_record(path: &str, bytes: &[u8]) -> Evidence {
 fn satisfied_is_unconstructible_without_an_execution_record() {
     let mut ledger = ledger_for(REQUEST);
     let record = file_bytes_record("notes/attribution.md", b"Gemfile.lock\n");
-    let discharged = ledger.observe(record.clone());
+    let discharged = ledger.observe(&record);
     assert!(
         discharged.is_some(),
         "an observation that answers a node's expectation must discharge it"
@@ -106,8 +107,9 @@ fn satisfied_is_unconstructible_without_an_execution_record() {
     }
 }
 
-/// `NeedStatus::Satisfied` may be produced in exactly one place in `src/`, and
-/// that place is `need_ledger_with_execution`.
+/// `NeedStatus::Satisfied` may be constructed in exactly one module in `src/`.
+/// The constructor is shared with other observed domains, while
+/// `need_ledger_with_execution` remains the only execution-ledger projection.
 #[test]
 fn need_ledger_with_execution_is_the_only_producer_of_satisfied() {
     let mut producers: Vec<String> = Vec::new();
@@ -132,7 +134,7 @@ fn need_ledger_with_execution_is_the_only_producer_of_satisfied() {
     assert_eq!(
         producers,
         vec![String::from("src/obligation_ledger.rs")],
-        "NeedStatus::Satisfied must be produced only by need_ledger_with_execution"
+        "NeedStatus::Satisfied must be constructed only by obligation_ledger's observed-status API"
     );
 }
 
@@ -151,7 +153,7 @@ fn an_unrelated_observation_discharges_nothing() {
         EvidenceSource::LocalProcess,
     );
     assert_eq!(
-        ledger.observe(unrelated),
+        ledger.observe(&unrelated),
         None,
         "no node expected this command, so nothing may be discharged"
     );
@@ -246,7 +248,7 @@ fn the_split_is_bounded_by_the_existing_split_depth_bound() {
 fn a_refuted_observation_reopens_the_node_instead_of_finishing_it() {
     let mut ledger = ledger_for(REQUEST);
     let wrong = file_bytes_record("notes/attribution.md", b"Cargo.lock\n");
-    ledger.observe(wrong);
+    ledger.observe(&wrong);
 
     let mut leaves = Vec::new();
     ledger.root.collect_leaves(&mut leaves);

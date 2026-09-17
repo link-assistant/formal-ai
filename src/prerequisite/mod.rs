@@ -111,6 +111,14 @@ pub enum PrerequisiteError {
         /// The program the procedure would have installed.
         program: String,
     },
+    /// The target install was allowed, but this executable was not separately
+    /// granted. Retrieved procedure text cannot widen process capabilities.
+    ExecutionCapabilityNotGranted {
+        /// Exact executable the typed step requested.
+        program: String,
+    },
+    /// A typed step declared network use but the operator did not grant it.
+    NetworkCapabilityNotGranted,
     /// A step writes outside the grant's root.
     OutsideWorkspace {
         /// The step's declared write location.
@@ -137,6 +145,15 @@ pub enum PrerequisiteError {
         program: String,
         /// The program its postcondition would have probed instead.
         probes: String,
+    },
+    /// An authorized exact process could not start or returned nonzero.
+    SetupStepFailed {
+        /// Executable that was observed failing.
+        program: String,
+        /// Exit code, when the platform supplied one.
+        exit_code: Option<i32>,
+        /// Captured error text or process-start error.
+        stderr: String,
     },
     /// A dependency cycle was detected between prerequisites.
     DependencyCycle {
@@ -175,6 +192,8 @@ pub enum RecoveryOutcome {
     NotPermitted {
         /// The procedure the grant refused.
         procedure: SetupProcedure,
+        /// Exact validation or execution failure observed.
+        reason: PrerequisiteError,
     },
     /// No trusted publisher procedure was found. Names every source consulted.
     NotFound {
@@ -232,6 +251,30 @@ pub fn recover<L: SourceLookup>(
     recover_bounded(need, grant, lookup, bounds, ledger, &mut Vec::new())
 }
 
+/// Recover from an already discovered and formalized procedure.
+///
+/// Callers that own a pinned upstream manifest can enter the same scoped
+/// installer, evidence, ledger and re-probe path without manufacturing a
+/// second `SourceLookup` implementation. The procedure's publisher provenance
+/// is still validated when it is constructed.
+pub fn recover_discovered_procedure(
+    need: &PrerequisiteNeed,
+    procedure: SetupProcedure,
+    grant: &InstallGrant,
+    ledger: &mut ToolchainLedger,
+) -> RecoveryOutcome {
+    let root = grant
+        .root()
+        .unwrap_or_else(|| std::path::PathBuf::from("."));
+    let postcondition = procedure
+        .postcondition
+        .clone()
+        .unwrap_or_else(|| probe_for(&need.program));
+    let before = probe::probe_command(&postcondition, &root);
+    let evidence = vec![observation(need, "probe", &postcondition, &before)];
+    finish_recovery(need, procedure, grant, ledger, &root, before, evidence)
+}
+
 /// The recovery walk, carrying the chain of programs already being recovered so
 /// a dependency cycle terminates instead of recursing.
 fn recover_bounded<L: SourceLookup>(
@@ -244,7 +287,9 @@ fn recover_bounded<L: SourceLookup>(
 ) -> RecoveryOutcome {
     // Stage 5 `prefer_workspace_scope`: everything happens under the grant's
     // root when there is one, and never anywhere else.
-    let root = grant.root().unwrap_or_else(|| std::path::PathBuf::from("."));
+    let root = grant
+        .root()
+        .unwrap_or_else(|| std::path::PathBuf::from("."));
 
     // Stage 1/2 `bind_failure` and `observe_platform`: what is required first,
     // and on which machine. A dependency already retained in the ledger is a
@@ -274,7 +319,7 @@ fn recover_bounded<L: SourceLookup>(
 
     let postcondition = probe_for(&need.program);
     let before = probe::probe_command(&postcondition, &root);
-    let mut evidence = vec![observation(need, "probe", &postcondition, &before)];
+    let evidence = vec![observation(need, "probe", &postcondition, &before)];
 
     // Already here: retain what was observed and report it rather than
     // installing over a working toolchain.
@@ -285,7 +330,7 @@ fn recover_bounded<L: SourceLookup>(
             source_url: String::new(),
             content_id: String::new(),
             platform: need.platform,
-            postcondition: postcondition.clone(),
+            postcondition,
             rediscover: String::new(),
             observed_version: version.clone(),
             installed_prefix: root.clone(),
@@ -313,6 +358,19 @@ fn recover_bounded<L: SourceLookup>(
         };
     };
 
+    finish_recovery(need, procedure, grant, ledger, &root, before, evidence)
+}
+
+fn finish_recovery(
+    need: &PrerequisiteNeed,
+    procedure: SetupProcedure,
+    grant: &InstallGrant,
+    ledger: &ToolchainLedger,
+    root: &std::path::Path,
+    before: ProbeVerdict,
+    mut evidence: Vec<Evidence>,
+) -> RecoveryOutcome {
+    let fallback_postcondition = probe_for(&need.program);
     // Stage 8 `retain_experience`: the reconstruction record is durable whether
     // or not the grant lets the bytes land.
     if ledger.record_for(&need.program).is_none() {
@@ -325,7 +383,7 @@ fn recover_bounded<L: SourceLookup>(
             postcondition: procedure
                 .postcondition
                 .clone()
-                .unwrap_or_else(|| postcondition.clone()),
+                .unwrap_or_else(|| fallback_postcondition.clone()),
             rediscover: procedure.source_url.clone(),
             observed_version: String::new(),
             installed_prefix: root.join(install::WORKSPACE_TOOLCHAIN_DIR),
@@ -333,17 +391,23 @@ fn recover_bounded<L: SourceLookup>(
     }
 
     // Stage 6 `lower_to_tools`, under the grant.
-    let toolchain = match install::install_scoped(&procedure, grant) {
-        Ok(toolchain) => toolchain,
-        Err(_) => return RecoveryOutcome::NotPermitted { procedure },
+    let (toolchain, observations) = match install::install_scoped_observed(&procedure, grant) {
+        Ok(installed) => installed,
+        Err(reason) => {
+            return RecoveryOutcome::NotPermitted { procedure, reason };
+        }
     };
+    for observed in observations {
+        evidence.push(setup_observation(need, &procedure, &observed));
+    }
 
     // Stage 7 `retry_and_recheck`: a successful setup command is not success.
-    let after = probe::probe_command(
-        procedure.postcondition.as_ref().unwrap_or(&postcondition),
-        &toolchain.prefix,
-    );
-    evidence.push(observation(need, "reprobe", &postcondition, &after));
+    let postcondition = procedure
+        .postcondition
+        .as_ref()
+        .unwrap_or(&fallback_postcondition);
+    let after = probe::probe_command(postcondition, root);
+    evidence.push(observation(need, "reprobe", postcondition, &after));
     if after.is_present() {
         RecoveryOutcome::Recovered {
             toolchain,
@@ -353,6 +417,29 @@ fn recover_bounded<L: SourceLookup>(
     } else {
         RecoveryOutcome::StillMissing { before, after }
     }
+}
+
+fn setup_observation(
+    need: &PrerequisiteNeed,
+    procedure: &SetupProcedure,
+    observed: &install::SetupStepObservation,
+) -> Evidence {
+    let mut argv = vec![observed.program.clone()];
+    argv.extend(observed.arguments.clone());
+    let mut bytes = observed.stdout.clone();
+    bytes.push_str(&observed.stderr);
+    let mut record = Evidence::observed(
+        argv.join(" "),
+        argv,
+        observed.exit_code.map(i64::from),
+        bytes.as_bytes(),
+        crate::execution_evidence::ObservationKind::CommandExit,
+        crate::execution_evidence::EvidenceSource::LocalProcess,
+    );
+    record.for_need.clone_from(&need.program);
+    record.produced_by = [PRODUCED_BY, "setup"].join(":");
+    record.source_ids.push(procedure.source_id.clone());
+    record
 }
 
 /// The probe that verifies one program: the seed row when there is one, a bare
@@ -394,7 +481,7 @@ fn observation(
         crate::execution_evidence::ObservationKind::CommandExit,
         crate::execution_evidence::EvidenceSource::LocalProcess,
     );
-    record.for_need = need.program.clone();
+    record.for_need.clone_from(&need.program);
     record.produced_by = [PRODUCED_BY, stage].join(":");
     record
 }
@@ -469,15 +556,17 @@ const PERMISSION_DENIED_MARKER: &str = "Permission denied";
 /// a procedure is selected, `Planned` while it runs, `Satisfied` only after a
 /// re-probe returns `Present`.
 #[must_use]
-pub fn need_status(
+pub const fn need_status(
     _need: &PrerequisiteNeed,
     reprobe: Option<&ProbeVerdict>,
 ) -> crate::meta_frame::NeedStatus {
-    match reprobe {
-        None => crate::meta_frame::NeedStatus::Blocked,
-        Some(verdict) if verdict.is_present() => crate::meta_frame::NeedStatus::Satisfied,
-        Some(_) => crate::meta_frame::NeedStatus::Planned,
-    }
+    let Some(verdict) = reprobe else {
+        return crate::meta_frame::NeedStatus::Blocked;
+    };
+    crate::obligation_ledger::need_status_with_observation(
+        verdict.is_present(),
+        crate::meta_frame::NeedStatus::Planned,
+    )
 }
 
 impl PrerequisiteNeed {

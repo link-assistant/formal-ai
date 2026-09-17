@@ -214,6 +214,35 @@ sources_registry
     license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
     cache_path data/cache/github/
     note "Project READMEs and docs/ trees for software 'how to' questions, fetched per repository; each repo carries its own license. Consulted live and opt-out-able from settings."
+  source oeis
+    name "The On-Line Encyclopedia of Integer Sequences"
+    kind sequence_catalog
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part)
+    extractor oeis_sequence_v1
+    primacy editorial_synthesis
+      upstream "the formulas, references, and programs attached to each sequence record"
+      basis "OEIS records are curated descriptions of integer sequences assembled from their cited mathematical sources and contributor submissions."
+    api "https://oeis.org/search?q={query}&fmt=json"
+    license_name "CC-BY-SA-4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/oeis/
+    note "Official sequence search and record JSON used to retrieve definitions and recurrence parts; candidate programs remain hypotheses until the ordinary verifier accepts them."
+  source python_docs
+    name "Python 3.12 standard-library documentation"
+    kind language_documentation
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part procedure)
+    extractor python_docs_v1
+    primacy self_published
+      basis "The Python Software Foundation publishes the language and standard-library documentation for the implementation it stewards."
+    api "https://docs.python.org/3.12/library/{title}"
+    license_name "PSF-2.0"
+    license_url "https://docs.python.org/3/license.html"
+    cache_path data/cache/python-docs/
+    note "Official Python standard-library reference used to discover callable parts and their semantics from documentation rather than a compiled symbol list."
   source wikinews
     name "Wikinews"
     kind original_journalism

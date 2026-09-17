@@ -9,18 +9,21 @@
 
 use std::path::PathBuf;
 
-use formal_ai::concept_lookup::LookupOutcome;
+use formal_ai::concept_lookup::{ConceptSense, LookupOutcome};
 use formal_ai::needs::Need;
 use formal_ai::prerequisite::install::InstallGrant;
-use formal_ai::prerequisite::probe::{ProbeVerdict, ToolchainProbe};
-use formal_ai::prerequisite::publisher::{SetupProcedure, SetupStep, search_setup_procedure};
-use formal_ai::prerequisite::{Platform, PrerequisiteError, PrerequisiteNeed, RecoveryOutcome, recover};
 use formal_ai::prerequisite::install::install_scoped;
 use formal_ai::prerequisite::ledger::ToolchainLedger;
+use formal_ai::prerequisite::probe::{ProbeVerdict, ToolchainProbe};
+use formal_ai::prerequisite::publisher::pinned_python_repository_procedure;
+use formal_ai::prerequisite::publisher::{SetupProcedure, SetupStep, search_setup_procedure};
+use formal_ai::prerequisite::{
+    Platform, PrerequisiteError, PrerequisiteNeed, RecoveryOutcome, recover,
+};
+use formal_ai::relative_meta_logic::SourceTier;
 use formal_ai::source_walk::{LookupBounds, SourceLookup, WalkSourceOutcome};
 
-const REQUIREMENT: &str =
-    "The build for this project needs a compiler that is not on this machine. Find out which one, \
+const REQUIREMENT: &str = "The build for this project needs a compiler that is not on this machine. Find out which one, \
 get it, and then run the project's own test command.";
 
 /// A lookup whose registry order and hosts are supplied by the test, so the
@@ -32,6 +35,8 @@ struct FixtureLookup {
     hosts: Vec<String>,
     /// Every need the fixture was asked about, in order.
     asked: Vec<String>,
+    /// Retrieved senses, when this fixture represents a successful source walk.
+    senses: Option<Vec<ConceptSense>>,
 }
 
 impl FixtureLookup {
@@ -40,6 +45,16 @@ impl FixtureLookup {
             order: order.iter().map(|id| (*id).to_owned()).collect(),
             hosts: hosts.iter().map(|host| (*host).to_owned()).collect(),
             asked: Vec::new(),
+            senses: None,
+        }
+    }
+
+    fn found(senses: Vec<ConceptSense>) -> Self {
+        Self {
+            order: Vec::new(),
+            hosts: Vec::new(),
+            asked: Vec::new(),
+            senses: Some(senses),
         }
     }
 }
@@ -47,6 +62,9 @@ impl FixtureLookup {
 impl SourceLookup for FixtureLookup {
     fn lookup(&mut self, need: &Need, _bounds: &LookupBounds) -> LookupOutcome {
         self.asked.push(need.subject.clone());
+        if let Some(senses) = self.senses.clone() {
+            return LookupOutcome::Found(senses);
+        }
         LookupOutcome::NotFound {
             consulted: self
                 .order
@@ -61,6 +79,26 @@ impl SourceLookup for FixtureLookup {
                 })
                 .collect(),
         }
+    }
+}
+
+fn setup_sense(source_url: &str, source_id: &str, gloss: &str) -> ConceptSense {
+    ConceptSense {
+        surface: String::from("kotlinc"),
+        lemma: String::from("kotlinc"),
+        language: String::from("en"),
+        gloss: gloss.to_owned(),
+        part_of_speech: String::from("procedure"),
+        synonyms: Vec::new(),
+        source_id: source_id.to_owned(),
+        source_url: source_url.to_owned(),
+        sha256: String::from("7".repeat(64)),
+        fetched_at: String::from("2026-09-16T00:00:00Z"),
+        cached: true,
+        tier: SourceTier::OriginalFirstParty,
+        license_name: String::from("Apache-2.0"),
+        license_url: String::from("https://www.apache.org/licenses/LICENSE-2.0"),
+        depth: 0,
     }
 }
 
@@ -89,7 +127,11 @@ fn a_lookalike_host_is_refused() {
         &["lookalike", "kotlin_official"],
         &["kotlin-lang.example.com", "kotlinlang.org"],
     );
-    let search = search_setup_procedure(&need_for("kotlinc", &[]), &mut lookup, &LookupBounds::default());
+    let search = search_setup_procedure(
+        &need_for("kotlinc", &[]),
+        &mut lookup,
+        &LookupBounds::default(),
+    );
     assert!(
         search
             .refusals
@@ -107,6 +149,123 @@ fn a_lookalike_host_is_refused() {
     );
 }
 
+/// A trusted lookup result can carry a machine-readable procedure. The
+/// formalizer preserves exact argv boundaries and the source bytes' digest;
+/// it does not turn surrounding prose into shell text.
+#[test]
+fn a_trusted_retrieved_recipe_becomes_executable_steps() {
+    let recipe = r#"
+setup_procedure kotlin_cli
+  program kotlinc
+  platform any
+  step create_environment
+    program python3
+    argument -m
+    argument venv
+    argument {prefix}
+    writes_under .
+    requires_network false
+  step retrieve_package
+    program python3
+    argument -m
+    argument pip
+    argument install
+    argument kotlin-compiler
+    requires_network true
+    writes_under .
+  postcondition compiler_responds
+    program kotlinc
+    argument -version
+"#;
+    let mut lookup = FixtureLookup::found(vec![setup_sense(
+        "https://kotlinlang.org/docs/command-line.html",
+        "kotlin_official",
+        recipe,
+    )]);
+
+    let search = search_setup_procedure(
+        &need_for("kotlinc", &[]),
+        &mut lookup,
+        &LookupBounds::default(),
+    );
+    let procedure = search
+        .procedure
+        .expect("a first-party structured recipe should formalize");
+
+    assert_eq!(procedure.content_id, "7".repeat(64));
+    assert_eq!(procedure.steps.len(), 2);
+    assert_eq!(procedure.steps[0].program, "python3");
+    assert_eq!(
+        procedure.steps[0].arguments,
+        vec![
+            String::from("-m"),
+            String::from("venv"),
+            String::from("{prefix}")
+        ]
+    );
+    assert!(procedure.steps[1].requires_network);
+    assert_eq!(
+        procedure.postcondition,
+        Some(ToolchainProbe::new("kotlinc", &["-version"]))
+    );
+}
+
+/// Authority alone is not executable consent: ordinary prose from the right
+/// host is evidence, but only the typed recipe grammar can become processes.
+#[test]
+fn trusted_prose_is_not_executed_as_a_recipe() {
+    let mut lookup = FixtureLookup::found(vec![setup_sense(
+        "https://kotlinlang.org/docs/command-line.html",
+        "kotlin_official",
+        "Download the compiler and run whichever setup command your system needs.",
+    )]);
+    let search = search_setup_procedure(
+        &need_for("kotlinc", &[]),
+        &mut lookup,
+        &LookupBounds::default(),
+    );
+
+    assert!(search.procedure.is_none());
+    assert!(
+        search
+            .refusals
+            .iter()
+            .any(|refusal| refusal.reason == "publisher_payload_has_no_typed_setup_recipe")
+    );
+}
+
+/// A pinned Python repository is a reusable recipe family, not a workflow-only
+/// special case. Mutable branches and unregistered hosts remain refusals.
+#[test]
+fn a_pinned_python_repository_recipe_is_reproducible() {
+    let revision = "f7bbbb2ccdf479001d6467c9e34af59e44a840f9";
+    let procedure = pinned_python_repository_procedure(
+        "swebench-harness",
+        "https://github.com/SWE-bench/SWE-bench",
+        revision,
+        "swebench.harness.run_evaluation",
+        Platform::observed(),
+    )
+    .expect("the registry pins GitHub as this prerequisite's publisher");
+
+    assert_eq!(procedure.source_id, "github");
+    assert!(procedure.source_url.ends_with(revision));
+    assert_eq!(procedure.steps.len(), 2);
+    assert!(!procedure.steps[0].requires_network);
+    assert!(procedure.steps[1].requires_network);
+    assert!(
+        pinned_python_repository_procedure(
+            "swebench-harness",
+            "https://github.com/SWE-bench/SWE-bench",
+            "main",
+            "swebench.harness.run_evaluation",
+            Platform::observed(),
+        )
+        .is_err(),
+        "a mutable revision is never accepted as a reproducible procedure"
+    );
+}
+
 /// A procedure nothing can verify is refused before a single step runs.
 #[test]
 fn a_procedure_without_a_postcondition_is_refused() {
@@ -118,8 +277,11 @@ fn a_procedure_without_a_postcondition_is_refused() {
         platform: Platform::observed(),
         steps: vec![SetupStep {
             command: String::from("tar -xf zig.tar.xz"),
+            program: String::from("tar"),
+            arguments: vec![String::from("-xf"), String::from("zig.tar.xz")],
             writes_under: temp_root("no-postcondition"),
             digest: None,
+            requires_network: false,
         }],
         postcondition: None,
     };
@@ -186,7 +348,24 @@ fn a_cycle_is_detected_and_reported() {
 /// records one setup for it.
 #[test]
 fn two_dependents_share_one_setup() {
-    let mut lookup = FixtureLookup::new(&["jdk_official"], &["jdk.java.net"]);
+    let recipe = r#"
+setup_procedure jdk
+  program java
+  platform any
+  step retrieve_jdk
+    program curl
+    argument https://jdk.java.net/archive/
+    writes_under .
+    requires_network true
+  postcondition java_responds
+    program java
+    argument -version
+"#;
+    let mut lookup = FixtureLookup::found(vec![setup_sense(
+        "https://jdk.java.net/archive/",
+        "jdk_official",
+        recipe,
+    )]);
     let root = temp_root("shared-jdk");
     let ledger_path = root.join("toolchain-ledger.lino");
     let _ = std::fs::remove_dir_all(&root);
@@ -201,8 +380,20 @@ fn two_dependents_share_one_setup() {
     };
     let bounds = LookupBounds::default();
 
-    let _ = recover(&need_for("kotlinc", &["java"]), &grant, &mut lookup, &bounds, &mut ledger);
-    let _ = recover(&need_for("scalac", &["java"]), &grant, &mut lookup, &bounds, &mut ledger);
+    let _ = recover(
+        &need_for("kotlinc", &["java"]),
+        &grant,
+        &mut lookup,
+        &bounds,
+        &mut ledger,
+    );
+    let _ = recover(
+        &need_for("scalac", &["java"]),
+        &grant,
+        &mut lookup,
+        &bounds,
+        &mut ledger,
+    );
 
     let java_records = ledger
         .records()

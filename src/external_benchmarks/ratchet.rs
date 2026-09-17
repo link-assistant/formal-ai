@@ -41,14 +41,23 @@ pub fn violations(ledger: &Ledger) -> Vec<String> {
     }
 
     for (suite_id, suite) in &suites {
-        let best = best_pass_count(&results, suite_id, suite.ratchet_slice);
-        if let Some(best) = best
-            && suite.minimum_pass_count < best
-        {
-            violations.push(format!(
-                    "{suite_id}: minimum_pass_count={} is below the best recorded pass count {best} at slice {}",
-                    suite.minimum_pass_count, suite.ratchet_slice
-                ));
+        check_floor(
+            &mut violations,
+            &results,
+            suite_id,
+            "minimum_pass_count",
+            suite.ratchet_slice,
+            suite.minimum_pass_count,
+        );
+        if let (Some(slice), Some(floor)) = (suite.full_slice, suite.full_minimum_pass_count) {
+            check_floor(
+                &mut violations,
+                &results,
+                suite_id,
+                "full_minimum_pass_count",
+                slice,
+                floor,
+            );
         }
     }
 
@@ -76,6 +85,26 @@ pub fn regressions(previous: &Ledger, current: &Ledger) -> Vec<String> {
             regressions.push(format!(
                 "{suite_id}: minimum_pass_count fell from {} to {}",
                 previous_suite.minimum_pass_count, current_suite.minimum_pass_count
+            ));
+        }
+        if let (Some(previous_slice), Some(previous_floor)) = (
+            previous_suite.full_slice,
+            previous_suite.full_minimum_pass_count,
+        ) && current_suite.full_slice == Some(previous_slice)
+            && current_suite.full_minimum_pass_count.unwrap_or(0) < previous_floor
+        {
+            let previous = previous_floor.to_string();
+            let current = current_suite
+                .full_minimum_pass_count
+                .unwrap_or(0)
+                .to_string();
+            regressions.push(vocabulary::render(
+                "external_benchmark_full_floor_regression",
+                &[
+                    ("suite", suite_id),
+                    ("previous", &previous),
+                    ("current", &current),
+                ],
             ));
         }
     }
@@ -118,6 +147,30 @@ fn best_pass_count(results: &[ResultEntry], suite: &str, slice: usize) -> Option
         .filter(|result| result.suite == suite && result.slice == slice)
         .map(|result| result.passed)
         .max()
+}
+
+fn check_floor(
+    violations: &mut Vec<String>,
+    results: &[ResultEntry],
+    suite: &str,
+    field: &str,
+    slice: usize,
+    floor: usize,
+) {
+    if let Some(best) = best_pass_count(results, suite, slice)
+        && floor < best
+    {
+        violations.push(vocabulary::render(
+            "external_benchmark_floor_below_best",
+            &[
+                ("suite", suite),
+                ("field", field),
+                ("floor", &floor.to_string()),
+                ("best", &best.to_string()),
+                ("slice", &slice.to_string()),
+            ],
+        ));
+    }
 }
 
 /// At a fixed slice size each row must clear the best score already recorded.

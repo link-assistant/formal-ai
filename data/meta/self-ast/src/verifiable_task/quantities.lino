@@ -2,12 +2,25 @@ self_ast_census
   target src/verifiable_task/quantities.rs
   language rust
   fidelity signature
-  byte_len 1663
-  line_count 44
-  content_id source_module_ba47d4c5cc22439e
-  symbol_count 4
+  byte_len 12004
+  line_count 347
+  content_id source_module_5e5089d3a39126bd
+  symbol_count 17
   symbols
-    struct Quantity 12 21
-    struct Entity 25 32
-    function extract_quantities 36 38
-    function extract_entities 42 44
+    struct Quantity 14 23
+    struct Entity 27 34
+    function extract_quantities 38 51
+    function extract_entities 55 131
+    function leading_role_surface_len 133 151
+    struct QuantityMatch 154 158
+    function quantity_matches 160 204
+    function normalized_shape 206 221
+    function digit_matches 223 241
+    function matching_offsets 243 263
+    function following_meaning 265 297
+    function starts_with_surface 299 305
+    function list_separators 307 330
+    function is_sentence_end 332 334
+    function is_unspaced_script 336 338
+    function is_entity_prefix 340 342
+    function is_entity_edge 344 347

@@ -172,7 +172,7 @@ pub fn extend_with_sequence_programs(
     spec: &CodingTaskSpec,
     log: &mut EventLog,
     live: bool,
-) -> DiscoveryCatalog {
+) -> (DiscoveryCatalog, Vec<crate::coding::program_ir::ProgramIr>) {
     let cache_dir = std::env::var("FORMAL_AI_SOURCE_CACHE_DIR")
         .or_else(|_| std::env::var("FORMAL_AI_CACHE_DIR"))
         .unwrap_or_else(|_| String::from("data"));
@@ -181,18 +181,20 @@ pub fn extend_with_sequence_programs(
     for diagnostic in sequence_discovery.diagnostics {
         log.append("synthesis:source_miss", diagnostic);
     }
-    let source_candidates = sequence_discovery
-        .programs
-        .into_iter()
-        .map(|program| {
-            log.append(
-                "source:http",
-                format!(
-                    "url={};fetched_at={};sha256={};catalog_match={}",
-                    program.source_url, program.fetched_at, program.sha256, program.id
-                ),
-            );
-            crate::coding::concept_discovery::CandidatePart {
+    let mut source_candidates = Vec::new();
+    let mut programs = Vec::new();
+    for program in sequence_discovery.programs {
+        log.append(
+            "source:http",
+            format!(
+                "url={};fetched_at={};sha256={};catalog_match={}",
+                program.source_url, program.fetched_at, program.sha256, program.id
+            ),
+        );
+        if let Some(ir) = program.program_ir {
+            programs.push(ir);
+        } else {
+            source_candidates.push(crate::coding::concept_discovery::CandidatePart {
                 id: program.id,
                 kind: "source_program".to_owned(),
                 label: program.composition,
@@ -205,10 +207,10 @@ pub fn extend_with_sequence_programs(
                 sha256: program.sha256,
                 fetched_at: program.fetched_at,
                 score: 1.0,
-            }
-        })
-        .collect();
-    catalog.with_source_candidates(source_candidates)
+            });
+        }
+    }
+    (catalog.with_source_candidates(source_candidates), programs)
 }
 
 /// Discover candidate parts, compose them, and expand to sequence sources only
@@ -222,8 +224,59 @@ pub fn discover_and_compose(
     let mut concepts = discover_over_registry(spec, &catalog, log, live);
     let mut outcome = composition::compose(spec, &concepts);
     if outcome.selected.is_none() {
-        catalog = extend_with_sequence_programs(catalog, spec, log, live);
-        if !catalog.source_candidates.is_empty() {
+        let cache_dir = source_cache_root();
+        let client = CachedSourceClient::new(&cache_dir, CurlSourceTransport).with_online(live);
+        let ledger = crate::coding::fragment_catalog::FragmentLedger::new(&cache_dir);
+        let fragment_catalog = crate::coding::fragment_catalog::FragmentCatalog::bootstrap()
+            .with_rediscovered(&ledger);
+        let lookup_bounds = crate::source_walk::LookupBounds::default();
+        let elaboration_bounds = crate::coding::program_ir::ElaborationBounds {
+            max_candidates: 64,
+            max_depth: 4,
+        };
+        let phrases = concepts
+            .needs
+            .iter()
+            .map(|need| need.phrase().to_owned())
+            .collect::<Vec<_>>();
+        let mut programs = Vec::new();
+        for phrase in phrases {
+            for (_, steps) in crate::procedure_text::retrieve_procedure(
+                &phrase,
+                &spec.prose_language,
+                &client,
+                &lookup_bounds,
+                log,
+            ) {
+                programs.extend(crate::coding::program_ir::elaborate(
+                    spec,
+                    &steps,
+                    &fragment_catalog,
+                    elaboration_bounds,
+                ));
+            }
+        }
+        programs.sort_by_key(crate::coding::program_ir::ProgramIr::content_id);
+        programs.dedup_by(|left, right| left.content_id() == right.content_id());
+        if !programs.is_empty() {
+            log.append(
+                "synthesis:procedure_elaboration",
+                format!("candidate_count={}", programs.len()),
+            );
+            outcome = composition::compose_with_ir(spec, &concepts, &fragment_catalog, programs);
+        }
+    }
+    if outcome.selected.is_none() {
+        let (extended, programs) = extend_with_sequence_programs(catalog, spec, log, live);
+        catalog = extended;
+        if !programs.is_empty() {
+            let cache_dir = source_cache_root();
+            let ledger = crate::coding::fragment_catalog::FragmentLedger::new(&cache_dir);
+            let fragments = crate::coding::fragment_catalog::FragmentCatalog::bootstrap()
+                .with_rediscovered(&ledger);
+            outcome = composition::compose_with_ir(spec, &concepts, &fragments, programs);
+        }
+        if outcome.selected.is_none() && !catalog.source_candidates.is_empty() {
             concepts = discover_over_registry(spec, &catalog, log, live);
             outcome = composition::compose(spec, &concepts);
         }
@@ -252,15 +305,13 @@ pub fn discover_over_registry(
     );
     let bounds = crate::source_walk::LookupBounds::default();
     let now = crate::service_accessibility::unix_now();
-    let mut lookup = crate::concept_lookup::RegistryConceptLookup::new(
-        crate::concept_lookup::RegistrySourceLookup::new(
-            &client,
-            &preferences,
-            &mut availability,
-            bounds,
-            &spec.prose_language,
-            now,
-        ),
+    let mut lookup = crate::concept_lookup::RegistrySourceLookup::new(
+        &client,
+        &preferences,
+        &mut availability,
+        bounds,
+        &spec.prose_language,
+        now,
     );
     let map = crate::coding::concept_discovery::discover_with_lookup(
         spec,

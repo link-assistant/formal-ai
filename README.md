@@ -1167,3 +1167,7 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as
 ```
 
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
+
+<!-- status:begin self-hosting -->
+Latest ledger row: `v0.350.0`; release share `171` basis points, trailing share `389` basis points, target `267` basis points.
+<!-- status:end self-hosting -->

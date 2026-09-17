@@ -43,6 +43,10 @@ pub struct SuiteEntry {
     pub license: String,
     pub minimum_pass_count: usize,
     pub ratchet_slice: usize,
+    /// Independent whole-suite series; absent for suites whose plan does not
+    /// yet declare a second measurement size.
+    pub full_slice: Option<usize>,
+    pub full_minimum_pass_count: Option<usize>,
 }
 
 /// One recorded run of one suite.
@@ -116,6 +120,8 @@ impl Ledger {
                         license: record.field("license").unwrap_or_default().to_string(),
                         minimum_pass_count: record.usize_field("minimum_pass_count")?,
                         ratchet_slice: record.usize_field("ratchet_slice")?,
+                        full_slice: record.usize_field("full_slice"),
+                        full_minimum_pass_count: record.usize_field("full_minimum_pass_count"),
                     },
                 ))
             })
@@ -228,14 +234,18 @@ impl Ledger {
             {
                 continue;
             }
-            let ratchet_slice = record.usize_field("ratchet_slice").unwrap_or(slice);
-            if ratchet_slice != slice {
+            let (slice_key, floor_key) = if record.usize_field("ratchet_slice") == Some(slice) {
+                ("ratchet_slice", "minimum_pass_count")
+            } else if record.usize_field("full_slice") == Some(slice) {
+                ("full_slice", "full_minimum_pass_count")
+            } else {
                 return;
-            }
-            let current = record.usize_field("minimum_pass_count").unwrap_or(0);
+            };
+            debug_assert_eq!(record.usize_field(slice_key), Some(slice));
+            let current = record.usize_field(floor_key).unwrap_or(0);
             if passed > current {
                 for (key, value) in &mut record.fields {
-                    if key == "minimum_pass_count" {
+                    if key == floor_key {
                         *value = passed.to_string();
                     }
                 }

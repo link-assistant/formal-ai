@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/lexicon.rs
   language rust
   fidelity full_ast
-  byte_len 13997
-  line_count 423
-  content_id source_module_95d9fa8ed0284054
-  symbol_count 30
+  byte_len 14799
+  line_count 447
+  content_id source_module_e6de623a1fbe9fcb
+  symbol_count 32
   symbols
     const LEXICON_LINO 14 14
     enum TermKind 18 22
@@ -22,43 +22,46 @@ self_ast_census
     struct WorkConcept 117 121
     struct Procedure 123 128
     struct WorkContext 130 134
-    struct Work 136 145
-    function primary_context 148 150
-    function final_context 152 158
-    function extract 164 223
-    function match_at 227 246
-    struct Lexicon 249 251
-    function standard 255 257
-    function load 259 325
-    function work_for_title 329 340
-    function best_work_for 342 362
-    function tokenize 365 370
-    struct Record 376 380
-    function field 383 388
-    function parse_records 391 413
-    function parse_pair 415 423
+    struct Work 136 146
+    function primary_context 149 151
+    function final_context 153 159
+    function extract 165 225
+    function match_at 229 248
+    struct Lexicon 251 253
+    function standard 257 259
+    function load 261 332
+    function work_for_title 336 344
+    function best_work_for 346 375
+    function tokenize 378 383
+    struct Record 389 393
+    function field 396 401
+    function fields 403 408
+    function phrase_occurs 411 413
+    function parse_records 415 437
+    function parse_pair 439 447
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 11189
-    named_node_count 2248
-    distinct_node_kinds 80
+    total_link_count 12088
+    named_node_count 2436
+    distinct_node_kinds 82
     node_kinds
-      arguments 167
+      abstract_type 1
+      arguments 184
       array_expression 1
-      array_type 1
+      array_type 3
       assignment_expression 4
       attribute 5
       attribute_item 5
-      binary_expression 18
-      block 47
+      binary_expression 25
+      block 51
       break_expression 1
-      call_expression 167
+      call_expression 184
       char_literal 3
-      closure_expression 19
-      closure_parameters 19
+      closure_expression 26
+      closure_parameters 26
       compound_assignment_expr 5
       const_item 1
       continue_expression 7
@@ -68,28 +71,28 @@ self_ast_census
       enum_item 2
       enum_variant 6
       enum_variant_list 2
-      expression_statement 47
-      field_declaration 40
+      expression_statement 49
+      field_declaration 41
       field_declaration_list 11
-      field_expression 188
-      field_identifier 268
-      field_initializer 40
+      field_expression 204
+      field_identifier 286
+      field_initializer 41
       field_initializer_list 13
       for_expression 5
-      function_item 16
+      function_item 18
       function_modifiers 1
-      generic_type 31
-      identifier 383
-      if_expression 15
+      generic_type 33
+      identifier 423
+      if_expression 16
       impl_item 7
       index_expression 6
       inner_doc_comment_marker 11
       integer_literal 8
       let_chain 1
-      let_condition 8
+      let_condition 9
       let_declaration 25
-      lifetime 4
-      lifetime_parameter 1
+      lifetime 8
+      lifetime_parameter 2
       line_comment 36
       macro_invocation 2
       match_arm 15
@@ -98,31 +101,32 @@ self_ast_census
       match_pattern 15
       mutable_specifier 9
       outer_doc_comment_marker 14
-      parameter 12
-      parameters 16
-      primitive_type 18
+      parameter 15
+      parameters 18
+      primitive_type 21
       range_expression 2
-      reference_expression 15
-      reference_type 17
-      return_expression 2
-      scoped_identifier 29
-      self 28
-      self_parameter 10
+      reference_expression 21
+      reference_type 21
+      return_expression 3
+      scoped_identifier 27
+      self 31
+      self_parameter 11
       shorthand_field_initializer 6
       source_file 1
-      string_content 32
-      string_literal 32
+      string_content 33
+      string_literal 33
       struct_expression 13
       struct_item 11
       token_tree 7
       try_expression 2
       tuple_expression 5
-      tuple_pattern 11
-      tuple_struct_pattern 14
+      tuple_pattern 13
+      tuple_struct_pattern 15
       tuple_type 5
-      type_arguments 31
-      type_identifier 129
-      type_parameters 1
-      unary_expression 3
+      type_arguments 33
+      type_binding 1
+      type_identifier 134
+      type_parameters 2
+      unary_expression 5
       visibility_modifier 50
       while_expression 3

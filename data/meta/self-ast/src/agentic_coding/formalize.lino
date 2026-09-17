@@ -2,54 +2,54 @@ self_ast_census
   target src/agentic_coding/formalize.rs
   language rust
   fidelity full_ast
-  byte_len 25789
-  line_count 690
-  content_id source_module_f3f911587e8c1050
+  byte_len 26072
+  line_count 694
+  content_id source_module_8919143c938438d0
   symbol_count 23
   symbols
-    const CANONICAL_FISHERMAN_SYNOPSIS 42 43
-    const FISHERMAN_DOC_ID 47 47
-    const PRIMITIVE_KINDS 50 50
-    struct FormalizationSummary 66 85
-    function covers_all_nine 97 99
-    function total_records 102 113
-    struct FormalizedKnowledgeBase 118 121
-    function formalize_text_to_links 128 478
-    function record_count 480 493
-    function resolve_doc_id 495 501
-    function push_record 503 509
-    struct Sentence 515 519
-    function segment_sentences 535 552
-    function grounded_graph 560 594
-    function slugify 596 611
-    struct Assertion 617 628
-    struct Annotation 630 637
-    struct ConceptDecl 639 644
-    struct Temporal 646 650
-    function from_expression 653 659
-    struct Modal 662 666
-    function from_raw 669 676
-    function coverage_line 681 690
+    const CANONICAL_FISHERMAN_SYNOPSIS 41 42
+    const FISHERMAN_DOC_ID 46 46
+    const PRIMITIVE_KINDS 49 49
+    struct FormalizationSummary 65 84
+    function covers_all_nine 96 98
+    function total_records 101 112
+    struct FormalizedKnowledgeBase 117 120
+    function formalize_text_to_links 127 482
+    function record_count 484 497
+    function resolve_doc_id 499 505
+    function push_record 507 513
+    struct Sentence 519 523
+    function segment_sentences 539 556
+    function grounded_graph 564 598
+    function slugify 600 615
+    struct Assertion 621 632
+    struct Annotation 634 641
+    struct ConceptDecl 643 648
+    struct Temporal 650 654
+    function from_expression 657 663
+    struct Modal 666 670
+    function from_raw 673 680
+    function coverage_line 685 694
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16813
-    named_node_count 3415
-    distinct_node_kinds 78
+    total_link_count 16956
+    named_node_count 3433
+    distinct_node_kinds 79
     node_kinds
-      arguments 252
-      array_expression 10
+      arguments 253
+      array_expression 11
       array_type 2
       assignment_expression 2
       attribute 6
       attribute_item 6
       base_field_initializer 2
       binary_expression 16
-      block 50
+      block 51
       boolean_literal 3
-      call_expression 252
+      call_expression 253
       char_literal 5
       closure_expression 18
       closure_parameters 18
@@ -57,62 +57,63 @@ self_ast_census
       continue_expression 1
       crate 10
       declaration_list 3
-      doc_comment 78
+      doc_comment 77
       else_clause 3
-      expression_statement 71
+      expression_statement 72
       field_declaration 45
       field_declaration_list 8
-      field_expression 305
-      field_identifier 425
-      field_initializer 75
-      field_initializer_list 15
-      for_expression 15
+      field_expression 309
+      field_identifier 418
+      field_initializer 64
+      field_initializer_list 13
+      for_expression 16
       function_item 12
       function_modifiers 2
       generic_function 1
       generic_type 23
-      identifier 601
+      identifier 607
       if_expression 14
       impl_item 3
-      inner_doc_comment_marker 27
+      index_expression 1
+      inner_doc_comment_marker 26
       integer_literal 9
       let_condition 5
-      let_declaration 46
-      line_comment 107
-      macro_invocation 15
+      let_declaration 47
+      line_comment 109
+      macro_invocation 16
       match_arm 15
       match_block 3
       match_expression 3
       match_pattern 15
-      mutable_specifier 28
+      mutable_specifier 29
       outer_doc_comment_marker 51
       parameter 16
       parameters 12
       parenthesized_expression 1
       primitive_type 36
-      reference_expression 54
+      reference_expression 58
       reference_type 21
       return_expression 1
-      scoped_identifier 64
+      scoped_identifier 62
       scoped_type_identifier 3
       scoped_use_list 2
       self 14
       self_parameter 2
-      shorthand_field_initializer 5
+      shorthand_field_initializer 4
       source_file 1
-      string_content 104
-      string_literal 105
-      struct_expression 15
+      string_content 110
+      string_literal 111
+      struct_expression 13
       struct_item 8
       super 1
-      token_tree 33
-      tuple_expression 49
+      token_tree 34
+      tuple_expression 56
       tuple_pattern 7
       tuple_struct_pattern 6
       tuple_type 1
       type_arguments 24
-      type_identifier 111
-      unary_expression 7
+      type_identifier 109
+      unary_expression 8
       use_as_clause 1
       use_declaration 5
       use_list 2

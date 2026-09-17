@@ -376,7 +376,7 @@ the REQUIREMENTS shards link to it instead of restating a number.
   (`id`, `shard`, `verdict`, `delivered`, `pull_request`, `tracker`,
   `automated_test`, `manual`); `docs/requirements-traceability.md` becomes a
   generated projection of it. **Plan 11 owns both.**
-- The only in-place `<!-- status:begin ... -->` regions are the two that existing
+- The only in-place status-begin comment regions are the two that existing
   pin tests require the number to stand in — `docs/benchmarks.md` and
   `README.md` — and they are fed by the same script. This resolves plan 11's own
   open question (its risk 3: a generated region inside hand-written prose is a
@@ -517,7 +517,7 @@ resolved silently. Both plans in each row carry the one-line
 | R15 | plan 05's open question "what does `SymbolicCheck { check_id }` name?" | `check_id = "<VerifiedAnswer::derivation_id>:<check slug>"`, owned by plan 08 | plan 05 risk 2 asked for this to be settled jointly with plan 12 before either lands; it is settled here | 05, 08, 12 |
 | R16 | `MethodRegistry` extended independently by plan 07 (`learned_methods` execution) and plan 12 (`heuristics`) | one struct with three collections; plan 12's declaration is authoritative and cites plan 07 | R344 requires one dispatch authority; two plans growing the same struct without a shared declaration is how two authorities appear | 07, 12 |
 | R17 | plan 12 `CandidateScore::checks: (usize, usize)` counted from an unnamed source | counted from satisfied `Evidence` rows | same reason as R14 | 12 |
-| R18 | plan 11's `<!-- status:begin -->` regions in five narrative documents | one generated `docs/status.md` plus two pinned regions | section 4.5 asks for one file; plan 11's own risk 3 asks the same question and `CONTRIBUTING.md:970-982` answers it | 11 |
+| R18 | plan 11's status-begin comment regions in five narrative documents | one generated `docs/status.md` plus two pinned regions | section 4.5 asks for one file; plan 11's own risk 3 asks the same question and `CONTRIBUTING.md:970-982` answers it | 11 |
 | R19 | plan 04's `ConceptNeed` "moved and left behind as a re-export" and plan 05's two `Obligation` types | `ConceptNeed` re-exports `needs::Need`; `agentic_coding::evidence_record::Obligation` is deleted and `task_obligations::Obligation` becomes a projection of `ObligationNode` | three names for one record | 04, 05 |
 
 ### 9.2 Cross-plan conflicts resolved (X1-X14)

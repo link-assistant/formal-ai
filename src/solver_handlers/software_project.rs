@@ -7,7 +7,7 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt, stable_id};
 use crate::event_log::EventLog;
 use crate::seed;
 use crate::solver_handlers::finalize_simple;
@@ -231,18 +231,19 @@ pub fn try_software_project_request(
     };
 
     if is_approval_prompt(normalized)
-        && let Some(meaning) = prior_software_project_meaning(log) {
-            record_meaning(log, &meaning, ApprovalState::Approved);
-            let body = render_implementation_response(&meaning);
-            return Some(finalize_simple(
-                prompt,
-                log,
-                "software_project_implementation",
-                "response:software_project_implementation",
-                &body,
-                0.82,
-            ));
-        }
+        && let Some(meaning) = prior_software_project_meaning(log)
+    {
+        record_meaning(log, &meaning, ApprovalState::Approved);
+        let body = render_implementation_response(&meaning);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "software_project_implementation",
+            "response:software_project_implementation",
+            &body,
+            0.82,
+        ));
+    }
 
     let meaning = SoftwareProjectMeaning::from_prompt(prompt, normalized)?;
     record_meaning(log, &meaning, ApprovalState::Proposed);
@@ -431,9 +432,11 @@ fn scan_match<T>(normalized: &str, matcher: impl Fn(&str) -> Option<(usize, T)>)
             continue;
         }
         if let Some((consumed, value)) = matcher(&normalized[index..])
-            && consumed > 0 && is_end_boundary(normalized, index + consumed) {
-                return Some(value);
-            }
+            && consumed > 0
+            && is_end_boundary(normalized, index + consumed)
+        {
+            return Some(value);
+        }
     }
     None
 }

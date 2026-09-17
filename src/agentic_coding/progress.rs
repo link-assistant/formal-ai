@@ -23,7 +23,8 @@ pub(super) struct ToolAttempt {
 
 impl ToolAttempt {
     /// Whether this attempt read a work item through the shell (`gh issue
-    /// view …`), which the planner treats exactly like a fetch of it.
+    /// view …`). Its successful payload is page evidence, while its retry
+    /// budget remains independent from the fetch capability.
     pub(super) fn is_work_item_read(&self) -> bool {
         self.capability == Capability::Run
             && self
@@ -39,18 +40,26 @@ pub struct Progress {
     /// Observed results, including failures. Existing recipes use this to move
     /// to their fallback or rendering phase after a client-owned attempt.
     completed: Vec<Capability>,
-    /// Results that actually satisfied their planned step.
-    successful: Vec<Capability>,
     attempts: Vec<ToolAttempt>,
     pub(super) fetched_text: Option<String>,
     pub(super) fetched_pages: Vec<(String, String)>,
     pub(super) attempted_fetches: Vec<String>,
+    /// Work-item URLs already read through a shell `gh issue|pr view` call.
+    ///
+    /// This is deliberately separate from `attempted_fetches`: an empty or
+    /// failed CLI read should fall back to the fetch capability, not make that
+    /// independent retrieval route appear exhausted.
+    attempted_work_item_reads: Vec<String>,
     pub(super) search_output: Option<String>,
     /// Every shell result of this turn, in arrival order.
     ///
     /// A report runs one command per destination (#839), so keeping only the
     /// last one would drop the export results the moment the issue was filed.
     pub(super) run_outputs: Vec<String>,
+    /// Shell observations keyed by the exact command supplied to the client.
+    /// General plans use this to keep an auxiliary `gh` read from being
+    /// mistaken for their verification command.
+    run_observations: Vec<(String, String)>,
     pub(super) fetch_result: Option<String>,
     pub(super) search_result: Option<String>,
 }
@@ -58,13 +67,14 @@ pub struct Progress {
 impl Progress {
     pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
-        let mut successful = Vec::new();
         let mut attempts = Vec::new();
         let mut fetched_text = None;
         let mut fetched_pages = Vec::new();
         let mut attempted_fetches = Vec::new();
+        let mut attempted_work_item_reads = Vec::new();
         let mut search_output = None;
         let mut run_outputs = Vec::new();
+        let mut run_observations = Vec::new();
         let mut fetch_result = None;
         let mut search_result = None;
         // Ignore results from earlier user turns.
@@ -121,6 +131,11 @@ impl Progress {
                 }
             }
             if capability == Capability::Run {
+                if let Some(command) = result_tool_call(messages, index)
+                    .and_then(|call| command_argument(&call.function.arguments))
+                {
+                    run_observations.push((command, raw.clone()));
+                }
                 // A work item read through the client's own `gh` is a fetched
                 // page like any other (issue #1133): the command names the
                 // URL, and its output is the issue's title and body.
@@ -128,7 +143,9 @@ impl Progress {
                     // The attempt is recorded whatever it returned: a read
                     // that came back empty has still been tried, and planning
                     // it again would loop (issue #1133).
-                    attempted_fetches.push(url.clone());
+                    if !attempted_work_item_reads.contains(&url) {
+                        attempted_work_item_reads.push(url.clone());
+                    }
                     if failure.is_none()
                         && let Some(text) = super::tool_result::normalized_payload(&raw)
                             .filter(|text| !text.trim().is_empty())
@@ -139,19 +156,17 @@ impl Progress {
                 run_outputs.push(raw);
             }
             completed.push(capability);
-            if failure.is_none() {
-                successful.push(capability);
-            }
         }
         Self {
             completed,
-            successful,
             attempts,
             fetched_text,
             fetched_pages,
             attempted_fetches,
+            attempted_work_item_reads,
             search_output,
             run_outputs,
+            run_observations,
             fetch_result,
             search_result,
         }
@@ -173,6 +188,13 @@ impl Progress {
                         .as_deref()
                         .is_none_or(|arguments| argument_url(arguments).is_none())
             })
+    }
+
+    /// Whether this turn already tried to read `url` with `gh issue|pr view`.
+    pub(super) fn attempted_work_item_read_of(&self, url: &str) -> bool {
+        self.attempted_work_item_reads
+            .iter()
+            .any(|attempted| attempted == url)
     }
 
     /// The latest failed attempt that came back under `tool`.
@@ -216,14 +238,6 @@ impl Progress {
             .count()
     }
 
-    /// Number of observations that satisfied the planned capability.
-    pub(super) fn successful_count(&self, capability: Capability) -> usize {
-        self.successful
-            .iter()
-            .filter(|done| **done == capability)
-            .count()
-    }
-
     /// Most recent successful result payload for one capability.
     pub(super) fn latest_successful_output(&self, capability: Capability) -> Option<&str> {
         self.attempts
@@ -231,6 +245,38 @@ impl Progress {
             .rev()
             .find(|attempt| attempt.capability == capability && attempt.succeeded)
             .map(|attempt| attempt.detail.as_str())
+    }
+
+    /// Number of run attempts for one exact command, successful or failed.
+    pub(super) fn run_count_for(&self, command: &str) -> usize {
+        self.attempts
+            .iter()
+            .filter(|attempt| run_attempt_matches(attempt, command))
+            .count()
+    }
+
+    /// Number of successful run attempts for one exact command.
+    pub(super) fn successful_run_count_for(&self, command: &str) -> usize {
+        self.attempts
+            .iter()
+            .filter(|attempt| attempt.succeeded && run_attempt_matches(attempt, command))
+            .count()
+    }
+
+    /// Most recent successful output from one exact command.
+    pub(super) fn latest_successful_run_output_for(&self, command: &str) -> Option<&str> {
+        self.attempts.iter().rev().find_map(|attempt| {
+            (attempt.succeeded && run_attempt_matches(attempt, command))
+                .then_some(attempt.detail.as_str())
+        })
+    }
+
+    /// Most recent raw observation from one exact command.
+    pub(super) fn latest_run_output_for(&self, command: &str) -> Option<&String> {
+        self.run_observations
+            .iter()
+            .rev()
+            .find_map(|(attempted, output)| (attempted == command).then_some(output))
     }
 
     /// Successful read payload for one concrete workspace path.
@@ -403,6 +449,15 @@ fn command_argument(arguments: &str) -> Option<String> {
         .get("command")
         .and_then(serde_json::Value::as_str)
         .map(str::to_owned)
+}
+
+fn run_attempt_matches(attempt: &ToolAttempt, command: &str) -> bool {
+    attempt.capability == Capability::Run
+        && attempt
+            .arguments
+            .as_deref()
+            .and_then(command_argument)
+            .is_some_and(|attempted| attempted == command)
 }
 
 fn is_issue_view_command(command: &str) -> bool {

@@ -2,31 +2,46 @@ self_ast_census
   target src/method_registry.rs
   language rust
   fidelity signature
-  byte_len 21363
-  line_count 505
-  content_id source_module_df06c3181620a379
-  symbol_count 23
+  byte_len 29812
+  line_count 718
+  content_id source_module_8f91e3bace8bba08
+  symbol_count 38
   symbols
-    enum MethodSurface 35 43
-    function slug 48 54
-    struct Method 59 66
-    struct LearnedMethod 76 89
-    function to_recipe_program 102 126
-    function is_executable 133 135
-    function to_links_notation 137 156
-    function to_links_notation 161 169
-    function step_emits 179 185
-    struct MethodRegistry 192 208
-    function from_dispatch 218 221
-    function from_dispatch_with_learned_seed 232 264
-    function heuristics_for 274 286
-    function method_count 290 292
-    function method_for_route 305 311
-    function learned_method 315 319
-    function count_on 323 325
-    function ordered_method_names_for_relevants 337 383
-    function to_links_notation 387 426
-    function parse_learned_methods 429 476
-    function child_values 478 484
-    function push_unique 486 490
-    function record_method_registry 500 505
+    const METHOD_EXECUTION_LINO 28 28
+    enum MethodRuntimeKind 36 42
+    enum ResponseLanguageVariant 46 49
+    enum ProjectLookupPhase 53 56
+    struct MethodExecution 60 69
+    enum MethodSurface 80 88
+    function slug 93 99
+    struct Method 104 113
+    enum LearnedMethodStatus 117 123
+    function slug 128 133
+    function permits_dispatch 137 139
+    struct LearnedMethod 150 165
+    function to_recipe_program 178 201
+    function is_executable 208 210
+    function to_links_notation 212 232
+    function to_links_notation 237 257
+    function slug 261 269
+    function entry_point 277 285
+    function slug 289 294
+    function slug 298 303
+    function step_emits 313 319
+    struct MethodRegistry 326 342
+    function from_dispatch 352 355
+    function from_dispatch_with_learned_seed 366 402
+    function heuristics_for 412 424
+    function method_count 428 430
+    function method_for_route 443 449
+    function learned_method 453 457
+    function execution_for 465 470
+    function count_on 474 476
+    function ordered_method_names_for_relevants 488 534
+    function to_links_notation 538 577
+    function parse_learned_methods 580 627
+    function parse_method_execution 629 685
+    function execution_for 687 689
+    function child_values 691 697
+    function push_unique 699 703
+    function record_method_registry 713 718

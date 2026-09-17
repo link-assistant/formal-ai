@@ -319,3 +319,63 @@ multilingual_responses
     intent agentic_formalization_report
     language es
     text "Se formalizó {subject} en una base de conocimiento Links Notation: {records} registros que representan {covered_count} de {primitive_count} primitivas del protocolo ({coverage}).\n\nBase de conocimiento ({path}):\n\n{kb}"
+  response response_file_analysis_heading_en
+    intent file_analysis_heading
+    language en
+    text "Bounded audit evidence from {count} file(s):"
+  response response_file_analysis_heading_ru
+    intent file_analysis_heading
+    language ru
+    text "Ограниченные данные аудита из файлов ({count}):"
+  response response_file_analysis_heading_hi
+    intent file_analysis_heading
+    language hi
+    text "{count} फ़ाइलों से सीमित ऑडिट साक्ष्य:"
+  response response_file_analysis_heading_zh
+    intent file_analysis_heading
+    language zh
+    text "来自 {count} 个文件的有界审计证据："
+  response response_file_analysis_heading_es
+    intent file_analysis_heading
+    language es
+    text "Evidencia de auditoría acotada de {count} archivo(s):"
+  response response_file_analysis_no_marker_en
+    intent file_analysis_no_marker
+    language en
+    text "No explicit gap marker was observed in the bounded evidence."
+  response response_file_analysis_no_marker_ru
+    intent file_analysis_no_marker
+    language ru
+    text "В ограниченных данных не обнаружен явный маркер незавершённой работы."
+  response response_file_analysis_no_marker_hi
+    intent file_analysis_no_marker
+    language hi
+    text "सीमित साक्ष्य में कोई स्पष्ट अपूर्णता चिह्न नहीं मिला।"
+  response response_file_analysis_no_marker_zh
+    intent file_analysis_no_marker
+    language zh
+    text "有界证据中未观察到明确的缺口标记。"
+  response response_file_analysis_no_marker_es
+    intent file_analysis_no_marker
+    language es
+    text "No se observó ningún marcador explícito de trabajo incompleto en la evidencia acotada."
+  response response_file_analysis_absence_boundary_en
+    intent file_analysis_absence_boundary
+    language en
+    text "Absence of an explicit marker in this bounded evidence does not prove completion."
+  response response_file_analysis_absence_boundary_ru
+    intent file_analysis_absence_boundary
+    language ru
+    text "Отсутствие явного маркера в этих ограниченных данных не доказывает завершённость."
+  response response_file_analysis_absence_boundary_hi
+    intent file_analysis_absence_boundary
+    language hi
+    text "इस सीमित साक्ष्य में स्पष्ट चिह्न का न होना पूर्णता सिद्ध नहीं करता।"
+  response response_file_analysis_absence_boundary_zh
+    intent file_analysis_absence_boundary
+    language zh
+    text "此有界证据中没有明确标记并不能证明工作已经完成。"
+  response response_file_analysis_absence_boundary_es
+    intent file_analysis_absence_boundary
+    language es
+    text "La ausencia de un marcador explícito en esta evidencia acotada no demuestra que el trabajo esté completo."

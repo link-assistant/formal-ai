@@ -26,6 +26,11 @@ fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
 }
 
+fn read_repo(path: &str) -> String {
+    fs::read_to_string(repo_root().join(path))
+        .unwrap_or_else(|error| panic!("{path} must be readable: {error}"))
+}
+
 /// Every `docs/requirements/issue-1138-*.md` shard, by file name.
 fn shards() -> BTreeMap<String, String> {
     let directory = repo_root().join("docs/requirements");
@@ -62,6 +67,30 @@ fn requirement_ids(text: &str) -> Vec<String> {
     ids
 }
 
+/// Every requirement-shaped id in the assembled document, not only this
+/// issue's namespace. Plan 11's generated status ledger covers this exact set.
+fn all_requirement_ids(text: &str) -> Vec<String> {
+    let mut ids: Vec<String> = Vec::new();
+    let mut rest = text;
+    while let Some(index) = rest.find('R') {
+        let tail = &rest[index..];
+        let id: String = tail
+            .chars()
+            .take_while(|character| {
+                character.is_ascii_alphanumeric() || matches!(character, '-' | '_')
+            })
+            .collect();
+        let begins_with_number = id
+            .strip_prefix('R')
+            .is_some_and(|suffix| suffix.starts_with(|character: char| character.is_ascii_digit()));
+        if begins_with_number && !ids.contains(&id) {
+            ids.push(id);
+        }
+        rest = &tail[1..];
+    }
+    ids
+}
+
 /// A `path::test_name` or `path` reference to a test, as the traceability rows
 /// spell it. The path half must exist on disk.
 fn named_test_paths(text: &str) -> Vec<String> {
@@ -71,11 +100,7 @@ fn named_test_paths(text: &str) -> Vec<String> {
     }) {
         let candidate = token.trim_matches(|character| matches!(character, '.' | ';' | ':'));
         if candidate.starts_with("tests/") && candidate.contains(".rs") {
-            let file = candidate
-                .split("::")
-                .next()
-                .unwrap_or(candidate)
-                .to_owned();
+            let file = candidate.split("::").next().unwrap_or(candidate).to_owned();
             if !paths.contains(&file) {
                 paths.push(file);
             }
@@ -134,8 +159,8 @@ fn every_issue_1138_shard_declares_ids_that_name_a_test_that_exists() {
 
 #[test]
 fn every_issue_1138_id_in_requirements_exists_in_a_shard() {
-    let requirements = fs::read_to_string(repo_root().join("REQUIREMENTS.md"))
-        .expect("REQUIREMENTS.md readable");
+    let requirements =
+        fs::read_to_string(repo_root().join("REQUIREMENTS.md")).expect("REQUIREMENTS.md readable");
     let ids = requirement_ids(&requirements);
     assert!(
         !ids.is_empty(),
@@ -157,24 +182,38 @@ fn an_implemented_verdict_names_a_test_that_exists() {
     // Plan 11 L3: a verdict of `implemented` must name a test that exists on
     // disk. The ledger carries the machine-checkable verdict; the shard carries
     // the explanation; the two must agree on the verdict word.
-    let ledger = fs::read_to_string(repo_root().join("data/meta/requirement-status-ledger.lino"))
-        .expect("data/meta/requirement-status-ledger.lino readable");
+    let ledger_directory = repo_root().join("data/meta/requirement-status-ledger");
+    let mut ledger_paths: Vec<PathBuf> = fs::read_dir(&ledger_directory)
+        .unwrap_or_else(|error| panic!("{} readable: {error}", ledger_directory.display()))
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("lino"))
+        .collect();
+    ledger_paths.sort();
+    let ledger = ledger_paths
+        .iter()
+        .map(|path| {
+            fs::read_to_string(path)
+                .unwrap_or_else(|error| panic!("{} readable: {error}", path.display()))
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
 
     let mut current_id: Option<String> = None;
     let mut verdict: Option<String> = None;
     let mut automated: Option<String> = None;
     let mut failures: Vec<String> = Vec::new();
-    let mut checked = 0usize;
+    let mut checked: Vec<String> = Vec::new();
 
     let close = |id: &Option<String>,
-                     verdict: &Option<String>,
-                     automated: &Option<String>,
-                     failures: &mut Vec<String>,
-                     checked: &mut usize| {
+                 verdict: &Option<String>,
+                 automated: &Option<String>,
+                 failures: &mut Vec<String>,
+                 checked: &mut Vec<String>| {
         let (Some(id), Some(verdict)) = (id.as_ref(), verdict.as_ref()) else {
             return;
         };
-        *checked += 1;
+        checked.push(id.clone());
         if verdict != "implemented" {
             return;
         }
@@ -224,9 +263,68 @@ fn an_implemented_verdict_names_a_test_that_exists() {
         "{} requirement rows claim `implemented` without a test that exists: {failures:?}",
         failures.len()
     );
+    checked.sort();
+    let mut duplicates: Vec<String> = checked
+        .windows(2)
+        .filter(|pair| pair[0] == pair[1])
+        .map(|pair| pair[0].clone())
+        .collect();
+    duplicates.dedup();
+    let mut expected = all_requirement_ids(&read_repo("REQUIREMENTS.md"));
+    expected.sort();
+    assert_eq!(
+        checked, expected,
+        "the generated status ledger must cover the exact assembled requirement set, \
+         with no stale hard-coded total; duplicate ids: {duplicates:?}"
+    );
+}
+
+/// Plan 05 leaf 19: the obligation contract is present at both its definition
+/// and live call sites. The byte assertions deliberately pin the raw slice
+/// passed to `Evidence::observed`; hashing a normalized rendering would make a
+/// different observation look like the one that discharged the obligation.
+#[test]
+fn issue_1138_obligation_ledger_is_traceable() {
+    let obligation_ledger = read_repo("src/obligation_ledger.rs");
+    for required in [
+        "pub struct ObligationLedger",
+        "pub(crate) fn record_obligation_ledger",
+        "pub const fn need_status_with_observation",
+        "ObligationOutcome::Satisfied {",
+    ] {
+        assert!(
+            obligation_ledger.contains(required),
+            "src/obligation_ledger.rs must retain the Plan 05 contract `{required}`"
+        );
+    }
+
+    let execution_evidence = read_repo("src/execution_evidence.rs");
+    for required in [
+        "crate::source_fetch::sha256_hex(observed)",
+        "let observed_byte_length = observed.len();",
+        "raw.as_bytes()",
+    ] {
+        assert!(
+            execution_evidence.contains(required),
+            "execution evidence must hash the exact observed bytes; missing `{required}`"
+        );
+    }
+
+    let meta_core = read_repo("src/meta_core.rs");
     assert!(
-        checked >= 1_030,
-        "the ledger covers {checked} of the 1,030 ids REQUIREMENTS.md declares; plan 11 \
-         leaf L1 seeds the rest one commit per shard, never 225 copies of a placeholder"
+        meta_core.contains("crate::obligation_ledger::record_obligation_ledger("),
+        "the native meta-core path must record its obligation ledger"
+    );
+
+    let recipe_interpreter = read_repo("src/recipe_interpreter.rs");
+    assert!(
+        recipe_interpreter.contains("crate::obligation_ledger::record_obligation_ledger("),
+        "the data-driven recipe path must use the same recorder"
+    );
+
+    let agentic = read_repo("src/agentic_coding/task_obligations.rs");
+    assert!(
+        agentic.contains("ledger.observe(&record)"),
+        "the live agentic path must judge transcript observations through the ledger"
     );
 }

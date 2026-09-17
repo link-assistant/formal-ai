@@ -20,10 +20,7 @@ fn repo_root() -> PathBuf {
 fn observed(bytes: &[u8]) -> Evidence {
     Evidence::observed(
         "cat notes/attribution.md",
-        vec![
-            String::from("cat"),
-            String::from("notes/attribution.md"),
-        ],
+        vec![String::from("cat"), String::from("notes/attribution.md")],
         Some(0),
         bytes,
         ObservationKind::CommandExit,
@@ -60,7 +57,8 @@ fn a_record_id_is_stable_across_runs_and_machines() {
 /// rendering it as zero would turn "we do not know" into "it succeeded".
 #[test]
 fn an_absent_exit_code_is_recorded_as_none_not_as_zero() {
-    let record = Evidence::from_tool_result("cat notes/attribution.md", "ok", EvidenceSource::Harness);
+    let record =
+        Evidence::from_tool_result("cat notes/attribution.md", "ok", EvidenceSource::Harness);
     assert_eq!(
         record.exit_code, None,
         "a tool result with no reported exit code must record None, never zero"

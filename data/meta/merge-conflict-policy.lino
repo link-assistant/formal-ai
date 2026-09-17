@@ -163,6 +163,21 @@ merge_conflict_policy
     regenerate "rust-script scripts/assemble-requirements.rs --write"
     verify "rust-script scripts/assemble-requirements.rs"
     observed_conflicts 64
+  artifact requirement_status_ledger
+    cause derived_artifact
+    merge union
+    path "data/meta/requirement-status-ledger.lino"
+    path "data/meta/requirement-status-ledger/*.lino"
+    regenerate "rust-script scripts/generate-requirement-status.rs --write"
+    verify "rust-script scripts/check-requirement-status.rs"
+    note "The requirement shards and traceability table determine this manifest and its content-named ledger shards; regeneration after a union keeps every merged requirement while removing stale or repeated projections."
+  artifact generated_status_document
+    cause derived_artifact
+    merge union
+    path "docs/status.md"
+    regenerate "rust-script scripts/render-status.rs --write"
+    verify "rust-script scripts/render-status.rs --check"
+    note "The renderer also refreshes bounded summary regions in README.md and docs/benchmarks.md. Those narrative files remain outside the union driver; only the wholly generated status document is safe to union."
   artifact trusted_source_recurrence_cache
     cause derived_artifact
     merge union

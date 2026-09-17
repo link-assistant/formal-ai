@@ -386,8 +386,8 @@ fn the_parity_fixture_no_longer_claims_order_parity_is_impossible() {
     // read the seed through the WASM parser, full order parity is exactly what
     // the fixture tests.
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/routing-parity.lino");
-    let fixture =
-        fs::read_to_string(&path).unwrap_or_else(|error| panic!("parity fixture readable: {error}"));
+    let fixture = fs::read_to_string(&path)
+        .unwrap_or_else(|error| panic!("parity fixture readable: {error}"));
     assert!(
         !fixture.contains("Full order-parity is impossible"),
         "tests/fixtures/routing-parity.lino still declares full order-parity impossible \

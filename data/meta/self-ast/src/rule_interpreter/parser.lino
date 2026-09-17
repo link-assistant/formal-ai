@@ -1,0 +1,22 @@
+self_ast_census
+  target src/rule_interpreter/parser.rs
+  language rust
+  fidelity signature
+  byte_len 10346
+  line_count 285
+  content_id source_module_b8e4874b73d80f18
+  symbol_count 13
+  symbols
+    function first_arg 9 14
+    function error 16 20
+    function parse_tree 27 56
+    function attach 58 63
+    function tokenize 65 88
+    function parse_rule 90 167
+    function parse_conditions 169 171
+    function parse_condition 173 205
+    function split_subject 207 219
+    function parse_shape 221 230
+    function parse_subject 232 242
+    function parse_value 244 274
+    function parse_value_ref 276 285

@@ -22,6 +22,7 @@
 //! the missing side from position would manufacture exactly the relations the
 //! two issue #710 probes found the formalizer could not produce.
 
+use std::cmp::Reverse;
 use std::sync::OnceLock;
 
 use crate::concept_lookup::ConceptSense;
@@ -118,7 +119,7 @@ pub fn relations() -> &'static [RelationDefinition] {
         for definition in &mut out {
             definition
                 .cues
-                .sort_by(|left, right| right.1.chars().count().cmp(&left.1.chars().count()));
+                .sort_by_key(|(_, surface)| Reverse(surface.chars().count()));
         }
         out
     })
@@ -140,7 +141,7 @@ fn determiners() -> &'static [String] {
                     .collect()
             })
             .unwrap_or_default();
-        out.sort_by(|left, right| right.chars().count().cmp(&left.chars().count()));
+        out.sort_by_key(|surface| Reverse(surface.chars().count()));
         out
     })
 }
@@ -167,8 +168,9 @@ fn surfaces_of(node: &LinoNode) -> Vec<(String, String)> {
         .collect()
 }
 
-/// Ground one retrieved sense as a concept: split the gloss into genus and
-/// differentiae using the seeded relation cues, then re-run the differentiae
+/// Ground one retrieved sense as a concept.
+///
+/// Split the gloss into genus and differentiae using the seeded relation cues, then re-run the differentiae
 /// through the structural lexicon so the concept reaches seeded idioms.
 #[must_use]
 pub fn concept_from_sense(sense: &ConceptSense) -> Option<ExtractedConcept> {

@@ -10,8 +10,7 @@ use formal_ai::meta_frame::NeedStatus;
 use formal_ai::prerequisite::probe::ProbeVerdict;
 use formal_ai::prerequisite::{Platform, PrerequisiteNeed, classify_failure, need_status};
 
-const REQUIREMENT: &str =
-    "Write a program in Zig that prints the sum of the numbers from one to ten, then actually \
+const REQUIREMENT: &str = "Write a program in Zig that prints the sum of the numbers from one to ten, then actually \
 compile and run it here and show me the real output.";
 
 fn missing(program: &str) -> PrerequisiteNeed {

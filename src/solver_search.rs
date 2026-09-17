@@ -17,13 +17,96 @@
 
 use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
+use crate::execution_evidence::{Evidence, EvidenceSource, ObservationKind};
 use crate::language::detect as detect_language;
 use crate::links_format::format_lino_record;
 use crate::seed;
+use crate::selection_heuristics::{
+    Experiment, ExperimentChooser, HypothesisSpace, RefutationSearch, SearchHypothesis,
+    SearchVerdict,
+};
 use crate::solver::SolverConfig;
 use crate::solver_handlers::finalize_simple;
 
 mod portfolio;
+mod problem;
+
+use problem::parse_search_problem;
+
+/// Ask the sources registry what the prompt's unresolved surfaces mean.
+///
+/// Issue #1138 B1: an offline run records its policy boundary, while an online
+/// run preserves a source id and status for every miss and attributable hashes
+/// for every hit. This search concern lives beside the solver's other bounded
+/// search algorithms so the universal-loop orchestrator stays reviewable.
+pub fn record_external_search(
+    config: &SolverConfig,
+    log: &mut EventLog,
+    prompt: &str,
+    language: crate::language::Language,
+) -> Vec<crate::concept_lookup::ConceptSense> {
+    if config.offline {
+        log.append("search:external", "skipped:offline".to_owned());
+        return Vec::new();
+    }
+    log.append("search:external", prompt.to_owned());
+    let normalized = crate::engine::normalize_prompt(prompt);
+    let code = language.slug();
+    let surfaces = crate::concept_lookup::unknown_surfaces(&normalized, code);
+    let bounds = crate::source_walk::LookupBounds::default();
+    let cache_root = crate::coding::synthesis_runtime::source_cache_root();
+    let client = crate::source_fetch::CachedSourceClient::new(
+        &cache_root,
+        crate::source_fetch::CurlSourceTransport,
+    )
+    .with_online(crate::coding::synthesis_runtime::live_fetch_enabled());
+    let preferences = crate::solver_handler_how_synthesis::service_preferences_from_env(log);
+    let mut availability =
+        crate::service_accessibility::ServiceAccessibilityCache::load(&cache_root);
+    let now = crate::service_accessibility::unix_now();
+    let mut senses = Vec::new();
+    for surface in surfaces.iter().take(bounds.max_services) {
+        let outcome = crate::concept_lookup::lookup_surface(
+            surface,
+            code,
+            &client,
+            &preferences,
+            &bounds,
+            &mut availability,
+            now,
+        );
+        if outcome.items.is_empty() {
+            log.append(
+                "concept_lookup:miss",
+                crate::trace_record::payload(&[
+                    ("surface", surface.clone()),
+                    (
+                        "consulted",
+                        outcome
+                            .outcomes
+                            .iter()
+                            .map(|row| format!("{} {}", row.source_id, row.status))
+                            .collect::<Vec<_>>()
+                            .join(" "),
+                    ),
+                ]),
+            );
+        }
+        for sense in &outcome.items {
+            log.append(
+                "concept_lookup:hit",
+                crate::trace_record::payload(&[
+                    ("surface", surface.clone()),
+                    ("source", sense.source_id.clone()),
+                    ("sha256", sense.sha256.clone()),
+                    ("license", sense.license_name.clone()),
+                ]),
+            );
+        }
+        senses.extend(outcome.items);
+    }
+    senses
+}
 
 /// One arithmetic operator the search can place between operands, identified by
 /// its language-neutral notation `symbol`.
@@ -170,15 +253,17 @@ pub fn try_budget_search(
     record_generated_tests(log, &problem);
 
     let (outcome, comparison_artifact) = if config.draft_count <= 1 {
-        (
-            run_search(
+        let outcome = match run_refutation_search(log, &problem, config.compute_budget) {
+            RefutationOutcome::Solved(solution) => Some(solution),
+            RefutationOutcome::Exhausted => None,
+            RefutationOutcome::NotApplicable => run_search(
                 seed_from_prompt(prompt),
                 log,
                 &problem,
                 config.compute_budget,
             ),
-            None,
-        )
+        };
+        (outcome, None)
     } else {
         portfolio::run_draft_portfolio(prompt, log, &problem, config)
     };
@@ -203,6 +288,227 @@ pub fn try_budget_search(
             // and decline so the honest unknown-reasoning reply takes over.
             None
         }
+    }
+}
+
+/// A finite candidate family small enough to refute completely is searched by
+/// elimination before the stochastic fallback. Larger spaces stay on the
+/// sampler: pretending an arbitrary prefix is the whole hypothesis space would
+/// make `AllRefuted` a false conclusion.
+const MAX_REFUTATION_HYPOTHESES: usize = 128;
+
+enum RefutationOutcome {
+    Solved(SearchSolution),
+    Exhausted,
+    NotApplicable,
+}
+
+fn run_refutation_search(
+    log: &mut EventLog,
+    problem: &SearchProblem,
+    budget: u32,
+) -> RefutationOutcome {
+    let Some(space_size) = candidate_space_size(problem) else {
+        return RefutationOutcome::NotApplicable;
+    };
+    if space_size == 0
+        || space_size > MAX_REFUTATION_HYPOTHESES
+        || usize::try_from(budget)
+            .ok()
+            .is_none_or(|budget| budget < space_size)
+    {
+        log.append(
+            "search:heuristic:experiment",
+            "refutation_search:not_applicable".to_owned(),
+        );
+        return RefutationOutcome::NotApplicable;
+    }
+
+    let candidates = enumerate_candidates(problem);
+    if candidates.len() != space_size {
+        return RefutationOutcome::NotApplicable;
+    }
+    let hypothesis_ids = candidates
+        .iter()
+        .map(|candidate| stable_id("search_hypothesis", &candidate.render(&problem.numbers)))
+        .collect::<Vec<_>>();
+    let experiments = hypothesis_ids
+        .iter()
+        .enumerate()
+        .map(|(index, hypothesis_id)| Experiment {
+            experiment_id: stable_id("search_experiment", hypothesis_id),
+            probe: candidates[index].render(&problem.numbers),
+            predicts_yes: vec![hypothesis_id.clone()],
+            predicts_no: hypothesis_ids
+                .iter()
+                .filter(|candidate_id| *candidate_id != hypothesis_id)
+                .cloned()
+                .collect(),
+        })
+        .collect::<Vec<_>>();
+    let mut space = HypothesisSpace {
+        space_id: stable_id("search_space", &join_numbers(&problem.numbers)),
+        hypotheses: hypothesis_ids
+            .iter()
+            .zip(candidates.iter())
+            .map(|(hypothesis_id, candidate)| SearchHypothesis {
+                hypothesis_id: hypothesis_id.clone(),
+                rule: candidate.render(&problem.numbers),
+                alive: true,
+                refuted_by: None,
+            })
+            .collect(),
+        experiments,
+        observations: Vec::new(),
+    };
+    log.append(
+        "search:heuristic:experiment",
+        "refutation_search".to_owned(),
+    );
+    log.append("search:hypotheses", space_size.to_string());
+
+    let mut evaluations = 0_u32;
+    while evaluations < budget {
+        let experiment = RefutationSearch
+            .next_experiment(&space)
+            .or_else(|| {
+                let survivor = space.alive().first()?.hypothesis_id.as_str();
+                space
+                    .experiments
+                    .iter()
+                    .find(|experiment| experiment.predicts_yes.iter().any(|id| id == survivor))
+            })
+            .cloned();
+        let Some(experiment) = experiment else {
+            break;
+        };
+        let Some(index) = space
+            .hypotheses
+            .iter()
+            .position(|hypothesis| experiment.predicts_yes.contains(&hypothesis.hypothesis_id))
+        else {
+            return RefutationOutcome::NotApplicable;
+        };
+        let candidate = &candidates[index];
+        let value = candidate.evaluate(&problem.numbers);
+        let succeeded = value == Some(problem.target);
+        evaluations += 1;
+        let rendered_value =
+            value.map_or_else(|| "undefined".to_owned(), |value| value.to_string());
+        let mut evidence = Evidence::observed(
+            experiment.probe.clone(),
+            vec![experiment.probe.clone()],
+            Some(i64::from(!succeeded)),
+            rendered_value.as_bytes(),
+            ObservationKind::SymbolicCheck,
+            EvidenceSource::Engine,
+        );
+        evidence.for_need.clone_from(&space.space_id);
+        "refutation_search".clone_into(&mut evidence.produced_by);
+        log.append("search:experiment", experiment.experiment_id.clone());
+        log.append("evidence", evidence.to_links_notation());
+        space.observe(&experiment.experiment_id, evidence);
+        if succeeded {
+            return RefutationOutcome::Solved(finish_solution(
+                log,
+                problem,
+                candidate,
+                evaluations,
+                "refutation",
+            ));
+        }
+    }
+
+    match space.verdict() {
+        SearchVerdict::AllRefuted => {
+            log.append("search:refutation:verdict", "all_refuted".to_owned());
+            log.append("search:exhausted:evaluations", evaluations.to_string());
+            RefutationOutcome::Exhausted
+        }
+        SearchVerdict::Concluded { hypothesis_id } => {
+            log.append(
+                "search:refutation:verdict",
+                format!("unverified_survivor:{hypothesis_id}"),
+            );
+            RefutationOutcome::NotApplicable
+        }
+        SearchVerdict::NotConfirmedNotRefuted { survivors, blocker } => {
+            log.append(
+                "search:refutation:verdict",
+                format!("{blocker}:{}", survivors.join(",")),
+            );
+            RefutationOutcome::NotApplicable
+        }
+    }
+}
+
+fn candidate_space_size(problem: &SearchProblem) -> Option<usize> {
+    let permutations = (1..=problem.numbers.len()).try_fold(1_usize, usize::checked_mul)?;
+    let operator_slots = problem.numbers.len().saturating_sub(1);
+    let operator_choices = (0..operator_slots)
+        .try_fold(1_usize, |product, _| product.checked_mul(problem.ops.len()))?;
+    permutations.checked_mul(operator_choices)
+}
+
+fn enumerate_candidates(problem: &SearchProblem) -> Vec<Candidate> {
+    let mut orders = Vec::new();
+    let mut current = Vec::new();
+    let mut used = vec![false; problem.numbers.len()];
+    enumerate_orders(problem.numbers.len(), &mut current, &mut used, &mut orders);
+    let mut operator_rows = Vec::new();
+    enumerate_operator_rows(
+        &problem.ops,
+        problem.numbers.len().saturating_sub(1),
+        &mut Vec::new(),
+        &mut operator_rows,
+    );
+    orders
+        .into_iter()
+        .flat_map(|order| {
+            operator_rows.iter().cloned().map(move |ops| Candidate {
+                order: order.clone(),
+                ops,
+            })
+        })
+        .collect()
+}
+
+fn enumerate_orders(
+    len: usize,
+    current: &mut Vec<usize>,
+    used: &mut [bool],
+    output: &mut Vec<Vec<usize>>,
+) {
+    if current.len() == len {
+        output.push(current.clone());
+        return;
+    }
+    for index in 0..len {
+        if used[index] {
+            continue;
+        }
+        used[index] = true;
+        current.push(index);
+        enumerate_orders(len, current, used, output);
+        current.pop();
+        used[index] = false;
+    }
+}
+
+fn enumerate_operator_rows(
+    operators: &[Op],
+    slots: usize,
+    current: &mut Vec<Op>,
+    output: &mut Vec<Vec<Op>>,
+) {
+    if current.len() == slots {
+        output.push(current.clone());
+        return;
+    }
+    for operator in operators {
+        current.push(*operator);
+        enumerate_operator_rows(operators, slots, current, output);
+        current.pop();
     }
 }
 
@@ -524,179 +830,4 @@ fn join_ops(ops: &[Op]) -> String {
         .map(|op| op.symbol().to_string())
         .collect::<Vec<_>>()
         .join(" ")
-}
-
-/// Recognize an arithmetic-reachability search problem across every supported
-/// language. Returns `None` for any prompt that is not clearly of this shape so
-/// the stage stays inert for the overwhelming majority of impulses.
-///
-/// Recognition is grounded entirely in the seed lexicon (issue #386): the
-/// "combine numbers" framing, the search verb, and the target marker are read by
-/// semantic role from `data/seed/meanings-search.lino`, and the operator
-/// vocabulary comes from `data/seed/meanings-calculator.lino` — no per-language
-/// phrase table lives here. Only the digits and the notation symbols they anchor
-/// are language-neutral and matched directly.
-fn parse_search_problem(prompt: &str) -> Option<SearchProblem> {
-    // Unicode-aware lowercasing so Cyrillic framing keywords match regardless of
-    // case (Devanagari and Han are caseless; ASCII is unaffected). The seed
-    // surfaces are authored lowercase, so a raw-substring match lines up.
-    let lower = prompt.to_lowercase();
-    let lexicon = seed::lexicon();
-
-    // Gate: require both a "combine numbers" framing and a search verb so plain
-    // calculations ("3 + 5") never reach this path. Both are matched as raw
-    // substrings so inflected forms (числа/чисел, संख्याओं, найдите) still hit.
-    if !lexicon.mentions_role_raw(seed::ROLE_REACHABILITY_OPERAND_FRAMING, &lower)
-        || !lexicon.mentions_role_raw(seed::ROLE_REACHABILITY_SEARCH_CUE, &lower)
-    {
-        return None;
-    }
-
-    // Locate the target value as the integer nearest a target marker. This
-    // handles both operand-then-target order (en/ru/zh: "equals 26") and
-    // target-then-marker order (hi: "26 के बराबर").
-    let integers = extract_integers_with_positions(&lower);
-    if integers.len() < 3 {
-        // Need at least two operands plus a distinct target.
-        return None;
-    }
-    let marker_positions = target_marker_positions(&lower);
-    if marker_positions.is_empty() {
-        return None;
-    }
-    let target_index = integers
-        .iter()
-        .enumerate()
-        .min_by_key(|(_, (_, position))| distance_to_nearest(*position, &marker_positions))
-        .map(|(index, _)| index)?;
-
-    let target = integers[target_index].0;
-    let numbers: Vec<i64> = integers
-        .iter()
-        .enumerate()
-        .filter(|(index, _)| *index != target_index)
-        .map(|(_, (value, _))| *value)
-        .collect();
-    if numbers.len() < 2 || numbers.len() > MAX_OPERANDS {
-        return None;
-    }
-
-    let ops = parse_ops(&lower);
-    Some(SearchProblem {
-        numbers,
-        target,
-        ops,
-    })
-}
-
-/// Upper bound on operand count so the search space and per-call cost stay
-/// bounded regardless of the prompt.
-const MAX_OPERANDS: usize = 6;
-
-/// Byte offsets at which any target-marker surface begins in `lower`.
-///
-/// The surfaces ("equals", "равно", "बराबर", "等于", …) come from the seed
-/// meaning carrying [`ROLE_REACHABILITY_TARGET_MARKER`](seed::ROLE_REACHABILITY_TARGET_MARKER),
-/// so anchoring the target value never names a keyword in Rust (issue #386).
-fn target_marker_positions(lower: &str) -> Vec<usize> {
-    let mut positions = Vec::new();
-    for marker in seed::lexicon().words_for_role(seed::ROLE_REACHABILITY_TARGET_MARKER) {
-        let mut from = 0;
-        while let Some(offset) = lower[from..].find(&marker) {
-            let absolute = from + offset;
-            positions.push(absolute);
-            from = absolute + marker.len();
-        }
-    }
-    positions
-}
-
-fn distance_to_nearest(position: usize, marker_positions: &[usize]) -> usize {
-    marker_positions
-        .iter()
-        .map(|&marker| position.abs_diff(marker))
-        .min()
-        .unwrap_or(usize::MAX)
-}
-
-/// Determine the allowed operator set from the prompt, grounded in the seed
-/// operator vocabulary.
-///
-/// Each operator declared in the seed (addition, subtraction, multiplication,
-/// division, modulo) is admitted when its notation symbol appears in an
-/// arithmetic context or any of its spelled surfaces (in any language) is
-/// mentioned. Declaration order is preserved so a seeded search over the set
-/// stays deterministic. When the prompt names no operator, the full seed toolbox
-/// is allowed.
-fn parse_ops(lower: &str) -> Vec<Op> {
-    let operators = seed::lexicon().arithmetic_operators();
-    let mut ops: Vec<Op> = operators
-        .iter()
-        .filter(|operator| {
-            symbol_present(lower, operator.symbol)
-                || operator.spelled.iter().any(|word| lower.contains(word))
-        })
-        .map(|operator| Op::new(operator.symbol))
-        .collect();
-    if ops.is_empty() {
-        // No operator named: allow the full seed toolbox, in declaration order.
-        ops = operators
-            .iter()
-            .map(|operator| Op::new(operator.symbol))
-            .collect();
-    }
-    ops
-}
-
-/// Is `symbol` present in `lower` as an arithmetic operator?
-///
-/// A notation symbol counts only when it sits in an arithmetic context — adjacent
-/// to a digit or set off by whitespace (or a string boundary). This keeps a
-/// hyphen inside a word ("state-of-the-art") or a slash inside a path from being
-/// read as subtraction or division, while the space- or digit-flanked symbols in
-/// a reachability prompt ("+ and *", "3-5") are recognised. The rule is uniform
-/// across every operator symbol, so nothing about which glyph is ambiguous lives
-/// in code.
-fn symbol_present(lower: &str, symbol: char) -> bool {
-    let chars: Vec<char> = lower.chars().collect();
-    let arithmetic_context =
-        |neighbor: Option<char>| neighbor.is_none_or(|c| c.is_ascii_digit() || c.is_whitespace());
-    for (index, &current) in chars.iter().enumerate() {
-        if current != symbol {
-            continue;
-        }
-        let before = index.checked_sub(1).map(|prev| chars[prev]);
-        let after = chars.get(index + 1).copied();
-        if arithmetic_context(before) || arithmetic_context(after) {
-            return true;
-        }
-    }
-    false
-}
-
-/// Extract non-negative integers with their byte offsets, in order of
-/// appearance.
-fn extract_integers_with_positions(span: &str) -> Vec<(i64, usize)> {
-    let mut numbers = Vec::new();
-    let mut current = String::new();
-    let mut start = 0;
-    for (offset, ch) in span.char_indices() {
-        if ch.is_ascii_digit() {
-            if current.is_empty() {
-                start = offset;
-            }
-            current.push(ch);
-        } else if !current.is_empty() {
-            if let Ok(value) = current.parse::<i64>() {
-                numbers.push((value, start));
-            }
-            current.clear();
-        }
-    }
-    if !current.is_empty()
-        && let Ok(value) = current.parse::<i64>()
-    {
-        numbers.push((value, start));
-    }
-    numbers
 }

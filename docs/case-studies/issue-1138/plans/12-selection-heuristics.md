@@ -28,9 +28,8 @@ corrects the issue's own summary where it overstates the gap.
   R491-C3.
 - **#901 TRIZ** *(this plan delivers the mechanism — contradictions as links with
   a 0-1 selection value, the separation principles as seed data, resolution at
-  the ranking seam — but not the 20-task validation corpus #901 also asks for,
-  which is named as the follow-up in risk 5; #901 therefore stays open with that
-  remainder, reconciled 2026-09-16)* — "each such contradiction or union of different criteria/metrics of trade
+  the ranking seam — and the 20-task, five-language validation corpus #901 asks
+  for; reconciled 2026-09-17)* — "each such contradiction or union of different criteria/metrics of trade
   offs are links in our theory. Where we can assign value from 0 to 1 … to actually solve
   the binary contradiction by selecting 50% or 10% or 80%". Zero code:
   `grep -rni "triz" src/ data/` → 0. Delivered here as `ContradictionLink` with a 0–1
@@ -42,10 +41,10 @@ corrects the issue's own summary where it overstates the gap.
   `src/fact_checking.rs:66` `RefutationStage`, which is statement refutation inside one
   handler, not experiment selection. Delivered here as `RefutationSearch`.
 - **#453 Moonshot tasks** *(this plan delivers the binary-splitting constraint,
-  R453-M1 to M3; R453-M4 — "combine all different approaches … for each duplicated
-  idea, find the first source of it in the history" — is filed Open with its
-  blocker named in risk 7, so #453 stays open with that remainder, reconciled
-  2026-09-16)* — "at least we should be able to split each task into 2 parts.
+  R453-M1 to M3, plus R453-M4 — "combine all different approaches … for each
+  duplicated idea, find the first source of it in the history" — through the
+  shared source-synthesis deduplicator; reconciled 2026-09-17)* — "at least we
+  should be able to split each task into 2 parts.
   After that we will have enough data to split them again and again recursively … combine
   all different approaches (while removing duplicates, for each duplicated idea, we need to
   find the first source of it in the history)." Zero code for the binary constraint.
@@ -908,9 +907,9 @@ The TRIZ cases pose an explicit trade-off in the requirement, so the selection v
 - [x] Add `SearchHypothesis`, `Experiment`, `worst_case_survivors`,
       `attempts_refutation_of`, `HypothesisSpace`, `observe`, `SearchVerdict`,
       `ExperimentChooser`, `RefutationSearch`; seed the `experiment` role.
-- [ ] Wire `RefutationSearch` into `src/solver_search.rs` step 7 ahead of `run_search`,
+- [x] Wire `RefutationSearch` into `src/solver_search.rs` step 7 ahead of `run_search`,
       falling back to sampling when no discriminating probe exists.
-- [ ] Wire `HypothesisSpace::verdict` into `src/reasoning_standard/` so R1073-5's gate has
+- [x] Wire `HypothesisSpace::verdict` into `src/reasoning_standard/` so R1073-5's gate has
       a search behind it.
 - [x] Add `ContradictionLink`, `ContradictionDerivation`, `TrizResolution`,
       `SeparationAxis`, `contradictions_in`, `TrizRanker`; seed the `rank` role at order 3.
@@ -918,10 +917,12 @@ The TRIZ cases pose an explicit trade-off in the requirement, so the selection v
       `source` links into the existing sources registry; add the forget-and-rediscover test.
 - [x] Add `tests/unit/issue_1138_selection_heuristics.rs` (twenty prompts, five languages)
       and the four specification files; register each in `tests/unit/mod.rs`.
-- [ ] Write `docs/requirements/issue-0901-triz-contradictions.md`,
+- [x] Write `docs/requirements/issue-0901-triz-contradictions.md`,
       `docs/requirements/issue-0802-hypothesis-search.md`,
-      `docs/requirements/issue-0453-moonshot-splitting.md`; regenerate `REQUIREMENTS.md`.
-- [ ] Add the `changelog.d/` fragment and the traceability rows.
+      `docs/requirements/issue-0453-moonshot-splitting.md`; regenerate `REQUIREMENTS.md`
+      with the shared derived-artifact generator after implementation stabilizes.
+- [x] Record the delivered selection surface in the issue #1138 `changelog.d/` fragment;
+      traceability rows are generated from these requirement shards.
 
 ## Docs to update
 
@@ -972,20 +973,21 @@ plan 11 row, never as a second copy here.
    from the key.** That is a defensible reading — a nondeterministic ranking key would break
    R13 — but it is a *reading*, and the shard text must say so explicitly rather than quietly
    satisfying a different requirement than the one written. Flagged for maintainer review.
-5. **Deriving a TRIZ selection value from clause counts is crude.** "Favour completeness"
+5. **Deriving a TRIZ selection value from clause counts is deliberately simple.** "Favour completeness"
    is one clause; a requirement with five completeness clauses and one brevity clause yields
    8,333 basis points toward completeness, which is arithmetic rather than judgement. It is
-   deterministic and inspectable, which is the bar; whether it is *right* is an open
-   question that only the 20-task TRIZ corpus #901 asks for can answer. That corpus is not
-   in this plan's scope and is named as the follow-up.
+   deterministic and inspectable, which is the bar. The 20-task, five-language corpus now
+   exercises brevity, midpoint, completeness, and honest-unresolved relations; it validates
+   the derivation contract without pretending that a finite corpus proves ideal judgement.
 6. **#802's halving criterion assumes hypotheses are enumerable.** For a coding task the
    hypothesis space is unbounded, so `RefutationSearch` applies only where a finite
    candidate set already exists (rule synthesis, source selection, algorithm choice). Where
    it does not, sampling stays. This limit must be stated in the shard, not elided.
-7. **#453's "first historical source" deduplication is not delivered here.** It needs plan
-   01's live lookup and a provenance-tracing capability that does not exist. R453-M4 is filed
-   as Open with its blocker named. Claiming it would be exactly the overstatement this issue
-   exists to remove.
+7. **#453's "first historical source" is only meaningful for ordered observations.**
+   `combine_approaches` therefore accepts source observations in history order, delegates
+   semantic equivalence to the shared source-synthesis deduplicator, and preserves the first
+   source plus every later source. It does not invent timestamps or reorder history by source
+   quality; callers without ordered provenance receive no fabricated historical claim.
 8. **Three traits mean three registry tables mean three failure modes.** A heuristic seeded
    with the wrong `role` is inert. The registry event lists every heuristic with its role and
    order so an inert one is visible, but nothing stops a typo; a per-role non-empty assertion

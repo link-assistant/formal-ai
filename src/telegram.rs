@@ -328,6 +328,12 @@ fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
                 if is_version_command(trimmed) {
                     return (version_reply_text(), None, None, Vec::new());
                 }
+                if let Some(answer) =
+                    crate::telegram_runtime::execute_telegram_code_request_from_environment(trimmed)
+                        .answer()
+                {
+                    return (answer.to_owned(), None, None, Vec::new());
+                }
                 let symbolic = telegram_solver().solve(trimmed);
                 let trace = symbolic
                     .evidence_links

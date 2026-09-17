@@ -21,20 +21,21 @@ const CONVERSATIONS_DIR: &str = "formal-ai-conversations";
 /// The marker file that says a conversation's container is attached right now.
 const RUNNING_MARKER: &str = "__formal_ai_attached";
 
+/// Original image retained beside the durable conversation metadata.
+const IMAGE_MARKER: &str = "__formal_ai_image";
+
+/// Snapshot image created at the most recent idle stop.
+const SNAPSHOT_MARKER: &str = "__formal_ai_snapshot";
+
 /// How a stopped container's state comes back (#937's explicit choice).
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SnapshotPolicy {
     /// Default: commit / export the filesystem and restore it.
+    #[default]
     Snapshot,
     /// Settings-selectable fallback: replay the recorded command log into a
     /// fresh container. Divergence between replay and snapshot is reported.
     Replay,
-}
-
-impl Default for SnapshotPolicy {
-    fn default() -> Self {
-        Self::Snapshot
-    }
 }
 
 /// What a container is doing right now.
@@ -97,31 +98,40 @@ impl ConversationContainer {
         std::fs::create_dir_all(&workspace).map_err(|error| BoxError::Observed {
             detail: error.to_string(),
         })?;
+        let replay = (self.restore == SnapshotPolicy::Replay && self.handle.is_none())
+            .then(|| std::fs::read_to_string(workspace.join(super::COMMAND_LOG)).ok())
+            .flatten();
+        let image = std::fs::read_to_string(workspace.join(SNAPSHOT_MARKER))
+            .ok()
+            .filter(|snapshot| !snapshot.trim().is_empty())
+            .unwrap_or_else(|| self.image.clone());
         let backend = ExecutionBackend::Conversation {
             conversation_id: self.conversation_id.clone(),
+            image,
         };
-        let opened = ExecutionBox::open_in(&backend, &BoxPolicy::default(), &workspace).or_else(
-            |refusal| match refusal {
-                // No container runtime is configured. The conversation's state
-                // is the workspace, so it is served from the host sandbox and
-                // the backend it is actually running on is recorded rather than
-                // claimed to be a container.
-                BoxError::BackendNotConfigured { .. } | BoxError::NoDaemon { .. } => {
-                    ExecutionBox::open_in(
-                        &ExecutionBackend::HostSandbox,
-                        &BoxPolicy::default(),
-                        &workspace,
-                    )
+        let opened = ExecutionBox::open_in(&backend, &BoxPolicy::default(), &workspace)?;
+        if let Some(log) = replay {
+            for line in log.lines() {
+                let observation = opened.run(&line.replace("\\n", "\n"), &[])?;
+                if observation.timed_out || observation.exit_code != Some(0) {
+                    return Err(BoxError::Observed {
+                        detail: observation.partial_output,
+                    });
                 }
-                other => Err(other),
-            },
-        )?;
+            }
+            std::fs::write(workspace.join(super::COMMAND_LOG), log).map_err(|error| {
+                BoxError::Observed {
+                    detail: error.to_string(),
+                }
+            })?;
+        }
         let _ = std::fs::write(
             workspace.join(RUNNING_MARKER),
             self.conversation_id.as_bytes(),
         );
+        let _ = std::fs::write(workspace.join(IMAGE_MARKER), self.image.as_bytes());
         self.handle = Some(BoxHandle {
-            container_id: self.conversation_id.clone(),
+            container_id: super::conversation_container_name(&self.conversation_id),
             image: self.image.clone(),
         });
         Ok(opened)
@@ -136,8 +146,23 @@ impl ConversationContainer {
         if self.idle_for(now) < self.idle_after {
             return Ok(());
         }
-        // Stopping preserves the workspace: the bytes are the state, and the
-        // handle is the disposable part.
+        let name = super::conversation_container_name(&self.conversation_id);
+        if self.handle.is_none() {
+            return Ok(());
+        }
+        if self.restore == SnapshotPolicy::Snapshot {
+            let snapshot = conversation_snapshot_image(&self.conversation_id);
+            docker(&["commit", &name, &snapshot])?;
+            std::fs::write(workspace.join(SNAPSHOT_MARKER), snapshot).map_err(|error| {
+                BoxError::Observed {
+                    detail: error.to_string(),
+                }
+            })?;
+        }
+        docker(&["stop", &name])?;
+        if self.restore == SnapshotPolicy::Replay {
+            docker(&["rm", &name])?;
+        }
         let _ = std::fs::remove_file(workspace.join(RUNNING_MARKER));
         self.handle = None;
         Ok(())
@@ -195,27 +220,36 @@ impl ConversationContainer {
     /// Propagates the box's own refusals.
     pub fn compare_restores(&mut self) -> Result<RestoreComparison, BoxError> {
         let workspace = self.workspace();
-        std::fs::create_dir_all(&workspace).map_err(|error| BoxError::Observed {
-            detail: error.to_string(),
-        })?;
-        let snapshot_digest = Some(tree_digest(&workspace));
+        let _ = self.attach()?;
+        let snapshot_name = super::conversation_container_name(&self.conversation_id);
+        let snapshot_digest = Some(container_state_digest(&snapshot_name, "snapshot")?);
 
+        let replay_id = [self.conversation_id.as_str(), "replay-comparison"].join(":");
         let replay_root = workspace.with_extension("replay");
-        let _ = std::fs::remove_dir_all(&replay_root);
         std::fs::create_dir_all(&replay_root).map_err(|error| BoxError::Observed {
             detail: error.to_string(),
         })?;
         let replayed = ExecutionBox::open_in(
-            &ExecutionBackend::HostSandbox,
+            &ExecutionBackend::Conversation {
+                conversation_id: replay_id.clone(),
+                image: self.image.clone(),
+            },
             &BoxPolicy::default(),
             &replay_root,
         )?;
         if let Ok(log) = std::fs::read_to_string(workspace.join(super::COMMAND_LOG)) {
             for line in log.lines() {
-                let _ = replayed.run(&line.replace("\\n", "\n"), &[]);
+                let observation = replayed.run(&line.replace("\\n", "\n"), &[])?;
+                if observation.timed_out || observation.exit_code != Some(0) {
+                    return Err(BoxError::Observed {
+                        detail: observation.partial_output,
+                    });
+                }
             }
         }
-        let replay_digest = Some(tree_digest(&replay_root));
+        let replay_name = super::conversation_container_name(&replay_id);
+        let replay_digest = Some(container_state_digest(&replay_name, "replay")?);
+        let _ = docker(&["rm", "--force", &replay_name]);
 
         Ok(RestoreComparison {
             diverged: snapshot_digest != replay_digest,
@@ -236,9 +270,9 @@ impl ConversationContainer {
             .filter(|entry| entry.path().is_dir())
             .map(|entry| Self {
                 conversation_id: entry.file_name().to_string_lossy().into_owned(),
-                image: String::new(),
+                image: std::fs::read_to_string(entry.path().join(IMAGE_MARKER)).unwrap_or_default(),
                 handle: None,
-                idle_after: Duration::from_secs(900),
+                idle_after: Duration::from_mins(15),
                 restore: SnapshotPolicy::default(),
             })
             .collect();
@@ -247,37 +281,41 @@ impl ConversationContainer {
     }
 }
 
-/// A deterministic digest of a directory tree: every file's relative path and
-/// the digest of its bytes, in sorted order. The transient files the box writes
-/// for its own bookkeeping are excluded, so a replay is compared on what the
-/// commands produced rather than on the log that drove them.
-fn tree_digest(root: &std::path::Path) -> String {
-    let mut rows: Vec<String> = Vec::new();
-    collect(root, root, &mut rows);
-    rows.sort();
-    crate::source_fetch::sha256_hex(rows.join("\n").as_bytes())
+/// Stable local image tag used for a conversation snapshot.
+#[must_use]
+pub fn conversation_snapshot_image(conversation_id: &str) -> String {
+    let digest = crate::source_fetch::sha256_hex(conversation_id.as_bytes());
+    format!("formal-ai-conversation-snapshot:{}", &digest[..24])
 }
 
-/// Walk `directory`, recording one row per file relative to `root`.
-fn collect(root: &std::path::Path, directory: &std::path::Path, rows: &mut Vec<String>) {
-    let Ok(entries) = std::fs::read_dir(directory) else {
-        return;
-    };
-    for entry in entries.flatten() {
-        let path = entry.path();
-        let name = entry.file_name().to_string_lossy().into_owned();
-        if name == super::COMMAND_LOG || name == RUNNING_MARKER || name.starts_with("__formal_ai") {
-            continue;
-        }
-        if path.is_dir() {
-            collect(root, &path, rows);
-        } else if let Ok(bytes) = std::fs::read(&path) {
-            let relative = path
-                .strip_prefix(root)
-                .unwrap_or(&path)
-                .display()
-                .to_string();
-            rows.push([relative, crate::source_fetch::sha256_hex(&bytes)].join(" "));
-        }
+fn docker(arguments: &[&str]) -> Result<String, BoxError> {
+    let output = std::process::Command::new("docker")
+        .args(arguments)
+        .output()
+        .map_err(|error| BoxError::NoDaemon {
+            detail: error.to_string(),
+        })?;
+    if output.status.success() {
+        Ok(String::from_utf8_lossy(&output.stdout).trim().to_owned())
+    } else {
+        Err(BoxError::Observed {
+            detail: String::from_utf8_lossy(&output.stderr).into_owned(),
+        })
     }
+}
+
+fn container_state_digest(container: &str, label: &str) -> Result<String, BoxError> {
+    let id = [container, label].join(":");
+    let digest = crate::source_fetch::sha256_hex(id.as_bytes());
+    let image = format!("formal-ai-conversation-compare:{}", &digest[..24]);
+    docker(&["commit", container, &image])?;
+    let layers = docker(&[
+        "image",
+        "inspect",
+        "--format",
+        "{{json .RootFS.Layers}}",
+        &image,
+    ]);
+    let _ = docker(&["image", "rm", &image]);
+    layers.map(|layers| crate::source_fetch::sha256_hex(layers.as_bytes()))
 }

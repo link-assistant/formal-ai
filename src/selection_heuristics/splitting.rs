@@ -142,7 +142,8 @@ fn marker_boundaries(text: &str, marker: &str, base: usize) -> Vec<usize> {
                 .chars()
                 .next()
                 .is_some_and(char::is_whitespace);
-        if before_is_boundary && after_is_boundary && at > 0 && !joins_two_numbers(text, at, after) {
+        if before_is_boundary && after_is_boundary && at > 0 && !joins_two_numbers(text, at, after)
+        {
             offsets.push(base + at);
         }
     }

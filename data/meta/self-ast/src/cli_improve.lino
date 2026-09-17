@@ -2,13 +2,13 @@ self_ast_census
   target src/cli_improve.rs
   language rust
   fidelity signature
-  byte_len 8030
-  line_count 206
-  content_id source_module_ca1637bf10578dcc
+  byte_len 8637
+  line_count 225
+  content_id source_module_038c0af8d8d11a11
   symbol_count 5
   symbols
     struct ImproveArgs 13 34
     function run_improve 40 154
-    function load_promotion_run 156 172
-    function require_destructive_confirmation 174 182
-    function write_full_memory_backup 184 206
+    function load_promotion_run 156 191
+    function require_destructive_confirmation 193 201
+    function write_full_memory_backup 203 225

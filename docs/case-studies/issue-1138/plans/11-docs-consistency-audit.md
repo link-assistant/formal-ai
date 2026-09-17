@@ -982,12 +982,14 @@ with:
 > the planning ledger runs before dispatch, so a selected method is **planned**, not
 > **satisfied**. A connected planning chain accounts for a detected need but does not prove
 > its execution. A second, append-only pass (`src/obligation_ledger.rs`, recipe step 14)
-> supplies the runtime per-need feedback: a row reaches **satisfied** only through
-> `need_ledger_with_execution`, whose input outcome cannot exist without an
-> `Evidence` carrying a command, an exit code or an explicit none, and a SHA-256 of
-> the observed bytes. A clause with no derivable expectation is split rather than
-> discarded, and a clause that cannot be split is reported as an unsatisfied gap with its
-> byte span.
+> supplies the runtime per-need feedback: an execution row reaches **satisfied** through
+> `need_ledger_with_execution` only when its input outcome carries a matching
+> `Evidence`. That record names the command, retains an exit code or an explicit none,
+> and hashes the exact observed bytes with SHA-256. The shared
+> `need_status_with_observation` function is the only constructor of the terminal status;
+> other domains may call it only after their own observed state or successful re-probe.
+> A clause with no derivable expectation is split rather than discarded, and a clause that
+> cannot be split is reported as an unsatisfied gap with its byte span.
 
 #### D186 — `docs/requirements/issue-0710-repository-and-retention-continuation.md:18`
 
@@ -1023,9 +1025,10 @@ says "13 steps, 29 pinned functions" while `:172-173` say `meta_step | 12` and
 item 12 (`:165-166`):
 
 > 13. **Audit the pass against the reasoning standard, unconditionally** (R1073).
-> 14. **Discharge every obligation against an execution record** — a need reaches
->     *satisfied* only with a command, an exit code and an observed-output hash behind it;
->     an unsatisfied node is split, and a node that cannot be split is reported as a gap.
+> 14. **Discharge every obligation against an execution record** — an execution-projected
+>     need reaches *satisfied* only with a matching command, an exit code or an explicit
+>     none, and a hash of the exact observed bytes behind it; an unsatisfied node is split,
+>     and a node that cannot be split is reported as a gap.
 
 #### D189 — `docs/meta-algorithm.md:172-173`
 
@@ -1088,7 +1091,7 @@ evidence before satisfaction." append: "Step 14 is that runtime check."
 12; this plan owns the B5 rows):
 
 ```
-| R1138-B5-1 | Every obligation node must carry an execution record — command, exit code or an explicit none, and a SHA-256 of the observed output — before it may be satisfied. | … |
+| R1138-B5-1 | Every satisfied obligation node must carry a matching execution record — command, exit code or an explicit none, and a SHA-256 of the exact observed bytes. | … |
 | R1138-B5-2 | An observation may discharge only the node whose expectation names its command or path; an unrelated result clears nothing. | … |
 | R1138-B5-3 | A clause with no derivable expectation is split, not discarded; a clause that cannot be split is reported as an unsatisfied gap with its byte span, never as completion prose. | … |
 ```
@@ -1103,9 +1106,10 @@ evidence before satisfaction." append: "Step 14 is that runtime check."
 
 Append:
 
-> An obligation is discharged only by an observation — a command, its exit status, and the
-> hash of what it produced. A node that cannot be observed is split; a node that cannot be
-> split is reported as a gap, never as a completed step.
+> An obligation is discharged only by a matching observation — a command, its exit status
+> or an explicit none, and the hash of the exact bytes it produced. A node that cannot be
+> observed is split; a node that cannot be split is reported as a gap, never as a completed
+> step.
 
 #### D197 — `ROADMAP.md`
 
@@ -2044,9 +2048,9 @@ The two retained regions are delimited the way generated blocks usually are, so
 the surrounding prose stays hand-written:
 
 ```text
-<!-- status:begin benchmarks -->
+<!-- status :begin benchmarks (illustrative spacing; generated files omit it) -->
 … generated table …
-<!-- status:end benchmarks -->
+<!-- status :end benchmarks (illustrative spacing; generated files omit it) -->
 ```
 
 Inputs, all already committed:
@@ -2214,7 +2218,7 @@ commit alone.
 
 ### VISION.md
 
-- [ ] L8 D14 — add `docs/architect-notes/2026-09-14-know-how-to-get-to-know-anything.md`,
+- [x] L8 D14 — add `docs/architect-notes/2026-09-14-know-how-to-get-to-know-anything.md`,
       index it, and quote it in "The Goal Is The Meta Algorithm".
 - [ ] L9 D10, D11, D12 — add the one-line current-state clause to the retrieval
       and formalization sentences.
@@ -2360,7 +2364,7 @@ no leaf delivered either. An issue in a `Closes` list with no leaf behind it is
 the failure mode #710's audit named, so the leaves are added here rather than the
 issues quietly downgraded (plan 00 §8).
 
-- [ ] L75 **Language-parity lint (#949 / E97; carry-over C49, C61).** Add
+- [x] L75 **Language-parity lint (#949 / E97; carry-over C49, C61).** Add
       `scripts/check-language-parity.rs` and
       `data/meta/ci-gates/check-language-parity.lino`: every meaning that
       declares a `lexeme` for one of en/ru/hi/zh/es must declare one for all
@@ -2370,6 +2374,14 @@ issues quietly downgraded (plan 00 §8).
       leaves 1-5 so it enters through the strict checker). Then fix D49 and D61:
       Spanish is `status partial` in three places and absent from a fourth, and
       the record must say so once, in `docs/status.md`.
+      Response templates are intentionally measured as a distinct data shape:
+      `tests/unit/issue_1138_self_use_concept_lookup.rs` derives every missing
+      `(intent, language)` pair from `multilingual-responses.lino` and requires
+      exact dated coverage in `data/meta/response-language-parity-debt.lino`.
+      Its ceiling starts at 93 incomplete intents (81 lack only Spanish and 12
+      currently have only English), rejects growth, and falls only when actual
+      localized response data is added; it does not invent translations to make
+      the test green.
 - [ ] L76 **Collapse the gate ecosystem (#1089 / E111; D149).** With L1-L5
       landed, retire the per-issue prose pins one commit per issue, keeping only
       (a) `render-status.rs --check`, (b) the architect-clause pins in

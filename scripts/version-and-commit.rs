@@ -12,7 +12,7 @@
 //! - Single-language: Cargo.toml and changelog.d/ in repository root
 //! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
 //!
-//! Usage: rust-script scripts/version-and-commit.rs --bump-type <major|minor|patch> [--description <desc>] [--rust-root <path>] [--tag-prefix <prefix>] [--release-label <label>]
+//! Usage: rust-script scripts/version-and-commit.rs --bump-type <major|minor|patch> [--description <desc>] [--rust-root <path>] [--tag-prefix <prefix>] [--release-label <label>] [--resume-prepared] [--branch <name>]
 //!
 //! ```cargo
 //! [package]
@@ -33,12 +33,16 @@ use std::env;
 use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::{exit, Command};
+use std::process::{Command, exit};
 
+#[path = "prepared-release.rs"]
+mod prepared_release;
 #[path = "rust-paths.rs"]
 mod rust_paths;
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
+
+use prepared_release::{PreparedRelease, ensure_prepared_release_tag, prepared_release};
 
 const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
 const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";
@@ -118,10 +122,13 @@ fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
 
 /// Number of commits `origin/<branch>` has that HEAD does not.
 fn commits_behind(repo: &Path, branch: &str) -> u32 {
-    git(repo, &["rev-list", "--count", &format!("HEAD..origin/{}", branch)])
-        .ok()
-        .and_then(|out| out.trim().parse().ok())
-        .unwrap_or(0)
+    git(
+        repo,
+        &["rev-list", "--count", &format!("HEAD..origin/{}", branch)],
+    )
+    .ok()
+    .and_then(|out| out.trim().parse().ok())
+    .unwrap_or(0)
 }
 
 /// Rebase onto the latest `origin/<branch>` so a concurrent release that landed
@@ -134,7 +141,7 @@ fn commits_behind(repo: &Path, branch: &str) -> u32 {
 /// newest state of the branch instead of a stale checkout.
 fn sync_with_remote(repo: &Path, branch: &str) -> Result<(), String> {
     // A missing remote is not fatal: the push step reports the real problem.
-    if let Err(e) = git(repo, &["fetch", "origin", branch]) {
+    if let Err(e) = git(repo, &["fetch", "--tags", "origin", branch]) {
         eprintln!("Warning: Could not fetch origin/{}: {}", branch, e);
         return Ok(());
     }
@@ -182,11 +189,15 @@ impl Version {
             _ => format!("{}.{}.{}", self.major, self.minor, self.patch + 1),
         }
     }
+
+    fn render(&self) -> String {
+        format!("{}.{}.{}", self.major, self.minor, self.patch)
+    }
 }
 
 fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), String> {
-    let content =
-        fs::read_to_string(cargo_toml_path).map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
+    let content = fs::read_to_string(cargo_toml_path)
+        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
 
     let re = Regex::new(r#"(?m)^(version\s*=\s*")[^"]+(")"#).unwrap();
     let new_content = re.replace(&content, format!("${{1}}{}${{2}}", new_version).as_str());
@@ -206,7 +217,11 @@ fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), Str
 ///
 /// Returns Ok(true) if Cargo.lock was updated, Ok(false) if it does not exist
 /// or no matching entry was found.
-fn update_cargo_lock(cargo_lock_path: &Path, crate_name: &str, new_version: &str) -> Result<bool, String> {
+fn update_cargo_lock(
+    cargo_lock_path: &Path,
+    crate_name: &str,
+    new_version: &str,
+) -> Result<bool, String> {
     if !cargo_lock_path.exists() {
         println!(
             "No Cargo.lock at {} (skipping lock-file version sync)",
@@ -216,7 +231,8 @@ fn update_cargo_lock(cargo_lock_path: &Path, crate_name: &str, new_version: &str
     }
 
     let path_str = cargo_lock_path.to_string_lossy();
-    let content = fs::read_to_string(cargo_lock_path).map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
+    let content = fs::read_to_string(cargo_lock_path)
+        .map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
 
     // Match the [[package]] entry for our crate:
     //   [[package]]
@@ -226,7 +242,8 @@ fn update_cargo_lock(cargo_lock_path: &Path, crate_name: &str, new_version: &str
         r#"(?m)(\[\[package\]\]\s*\nname\s*=\s*"{}"\s*\nversion\s*=\s*")[^"]+(")"#,
         regex::escape(crate_name),
     );
-    let re = Regex::new(&pattern).map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
+    let re =
+        Regex::new(&pattern).map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
 
     if !re.is_match(&content) {
         println!(
@@ -244,7 +261,8 @@ fn update_cargo_lock(cargo_lock_path: &Path, crate_name: &str, new_version: &str
         return Ok(false);
     }
 
-    fs::write(cargo_lock_path, new_content.as_ref()).map_err(|e| format!("Failed to write {}: {}", path_str, e))?;
+    fs::write(cargo_lock_path, new_content.as_ref())
+        .map_err(|e| format!("Failed to write {}: {}", path_str, e))?;
 
     println!("Updated {} to version {}", path_str, new_version);
     Ok(true)
@@ -262,8 +280,8 @@ struct CratesIoVersionEntry {
 }
 
 fn get_crate_name(cargo_toml_path: &str) -> Result<String, String> {
-    let content =
-        fs::read_to_string(cargo_toml_path).map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
+    let content = fs::read_to_string(cargo_toml_path)
+        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
 
     let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).unwrap();
 
@@ -376,7 +394,8 @@ fn ensure_version_exceeds_published(
 
     let mut candidate = format!("{}.{}.{}", major, minor, patch);
     let mut safety_counter = 0;
-    while (check_tag_exists(tag_prefix, &candidate) || check_version_on_crates_io(crate_name, &candidate))
+    while (check_tag_exists(tag_prefix, &candidate)
+        || check_version_on_crates_io(crate_name, &candidate))
         && safety_counter < 100
     {
         println!(
@@ -407,12 +426,18 @@ fn strip_frontmatter(content: &str) -> String {
 
 fn remove_changelog_fragments(files: &[PathBuf]) {
     for file in files {
-        fs::remove_file(file).unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
+        fs::remove_file(file)
+            .unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
         println!("Removed changelog fragment {}", file.display());
     }
 }
 
-fn collect_changelog_with_date(changelog_dir: &str, changelog_file: &str, version: &str, date_str: &str) -> bool {
+fn collect_changelog_with_date(
+    changelog_dir: &str,
+    changelog_file: &str,
+    version: &str,
+    date_str: &str,
+) -> bool {
     let dir_path = Path::new(changelog_dir);
     if !dir_path.exists() {
         return false;
@@ -450,7 +475,12 @@ fn collect_changelog_with_date(changelog_dir: &str, changelog_file: &str, versio
     // No leading newline: `lines[..idx]` already ends with the blank line that
     // follows the insert marker, so opening with one produced a second blank
     // line that `issue_711_rebuild_changelog.mjs --check` rejects.
-    let new_entry = format!("## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
+    let new_entry = format!(
+        "## [{}] - {}\n\n{}\n",
+        version,
+        date_str,
+        fragments.join("\n\n")
+    );
 
     if !Path::new(changelog_file).exists() {
         return false;
@@ -559,19 +589,25 @@ fn main() {
     let bump_type = match get_arg("bump-type") {
         Some(bt) => bt,
         None => {
-            eprintln!("Usage: rust-script scripts/version-and-commit.rs --bump-type <major|minor|patch> [--description <desc>] [--rust-root <path>] [--tag-prefix <prefix>] [--release-label <label>]");
+            eprintln!(
+                "Usage: rust-script scripts/version-and-commit.rs --bump-type <major|minor|patch> [--description <desc>] [--rust-root <path>] [--tag-prefix <prefix>] [--release-label <label>] [--resume-prepared] [--branch <name>]"
+            );
             exit(1);
         }
     };
 
     if !["major", "minor", "patch"].contains(&bump_type.as_str()) {
-        eprintln!("Invalid bump type: {}. Must be major, minor, or patch.", bump_type);
+        eprintln!(
+            "Invalid bump type: {}. Must be major, minor, or patch.",
+            bump_type
+        );
         exit(1);
     }
 
     let description = get_arg("description");
     let tag_prefix = get_arg("tag-prefix").unwrap_or_else(|| "v".to_string());
     let release_label = get_arg("release-label");
+    let resume_prepared = env::args().any(|arg| arg == "--resume-prepared");
     let rust_root = match rust_paths::get_rust_root(None, true) {
         Ok(root) => root,
         Err(e) => {
@@ -594,12 +630,27 @@ fn main() {
     let _ = exec("git", &["config", "user.name", "github-actions[bot]"]);
     let _ = exec(
         "git",
-        &["config", "user.email", "github-actions[bot]@users.noreply.github.com"],
+        &[
+            "config",
+            "user.email",
+            "github-actions[bot]@users.noreply.github.com",
+        ],
     );
 
     // Sync with the remote while the tree is still clean, so a concurrent
     // release is picked up before the bump is computed and staged.
-    let current_branch = exec("git", &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "main".to_string());
+    let current_branch = get_arg("branch")
+        .or_else(|| {
+            env::var("GITHUB_REF_NAME")
+                .ok()
+                .filter(|name| !name.is_empty())
+        })
+        .or_else(|| {
+            exec("git", &["rev-parse", "--abbrev-ref", "HEAD"])
+                .ok()
+                .filter(|name| name != "HEAD")
+        })
+        .unwrap_or_else(|| "main".to_string());
     if let Err(e) = sync_with_remote(Path::new("."), &current_branch) {
         eprintln!("{}", e);
         exit(1);
@@ -617,10 +668,44 @@ fn main() {
     let current = match Version::parse(&content) {
         Some(v) => v,
         None => {
-            eprintln!("Error: Could not parse version from {}", package_manifest.display());
+            eprintln!(
+                "Error: Could not parse version from {}",
+                package_manifest.display()
+            );
             exit(1);
         }
     };
+
+    if resume_prepared {
+        let current_version = current.render();
+        match prepared_release(
+            Path::new("."),
+            &current_version,
+            &tag_prefix,
+            Path::new(&changelog_dir),
+        ) {
+            Ok(Some(prepared)) => {
+                if let Err(e) = ensure_prepared_release_tag(Path::new("."), &prepared, &tag_prefix)
+                {
+                    eprintln!("Error recovering prepared release: {}", e);
+                    exit(1);
+                }
+                println!(
+                    "Resuming prepared release {}{} without another version bump",
+                    tag_prefix, current_version
+                );
+                set_output("version_committed", "false");
+                set_output("already_released", "true");
+                set_output("new_version", &current_version);
+                return;
+            }
+            Ok(None) => {}
+            Err(e) => {
+                eprintln!("Error inspecting prepared release: {}", e);
+                exit(1);
+            }
+        }
+    }
 
     let initial_bump = current.bump(&bump_type);
 
@@ -644,7 +729,8 @@ fn main() {
         bump_type, current.major, current.minor, current.patch, initial_bump
     );
 
-    let new_version = ensure_version_exceeds_published(&initial_bump, &crate_name, &tag_prefix, max_published);
+    let new_version =
+        ensure_version_exceeds_published(&initial_bump, &crate_name, &tag_prefix, max_published);
 
     if new_version != initial_bump {
         println!(
@@ -684,7 +770,8 @@ fn main() {
     // fragment -> release, so it can be committed atomically with the release
     // instead of depending on that commit's not-yet-existing SHA.
     let release_date = Utc::now().format("%Y-%m-%d").to_string();
-    let collected = collect_changelog_with_date(&changelog_dir, &changelog_file, &new_version, &release_date);
+    let collected =
+        collect_changelog_with_date(&changelog_dir, &changelog_file, &new_version, &release_date);
     let reconstructed = if collected {
         match regenerate_release_artifacts(&new_version, &release_date) {
             Ok(reconstructed) => reconstructed,
@@ -737,13 +824,19 @@ fn main() {
     }
 
     // Commit the staged release files (the rebase already happened, while clean).
-    let label_suffix = release_label.as_ref().map(|l| format!(" ({})", l)).unwrap_or_default();
+    let label_suffix = release_label
+        .as_ref()
+        .map(|l| format!(" ({})", l))
+        .unwrap_or_default();
     let commit_msg = match &description {
         Some(desc) => format!(
             "chore: release {}{}{}\n\n{}",
             tag_prefix, new_version, label_suffix, desc
         ),
-        None => format!("chore: release {}{}{}", tag_prefix, new_version, label_suffix),
+        None => format!(
+            "chore: release {}{}{}",
+            tag_prefix, new_version, label_suffix
+        ),
     };
 
     if let Err(e) = exec("git", &["commit", "-m", &commit_msg]) {
@@ -759,9 +852,14 @@ fn main() {
             Ok(_) => break,
             Err(e) => {
                 if attempt < max_push_attempts {
-                    eprintln!("Push failed (attempt {}/{}): {}", attempt, max_push_attempts, e);
+                    eprintln!(
+                        "Push failed (attempt {}/{}): {}",
+                        attempt, max_push_attempts, e
+                    );
                     eprintln!("Pulling with rebase and retrying...");
-                    if let Err(rebase_err) = exec("git", &["pull", "--rebase", "origin", &current_branch]) {
+                    if let Err(rebase_err) =
+                        exec("git", &["pull", "--rebase", "origin", &current_branch])
+                    {
                         eprintln!("Error during pull --rebase: {}", rebase_err);
                         let _ = exec("git", &["rebase", "--abort"]);
                         exit(1);

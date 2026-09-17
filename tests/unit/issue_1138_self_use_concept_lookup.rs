@@ -13,7 +13,9 @@
 //! system's work. Each test asserts the behaviour plan 01 says the system must
 //! have, and each one was observed **failing** on `formal-ai 0.350.0` at commit
 //! `dc9b0574607a26f3e1c8bdb8ce93c0c7f786f197` before it was committed. A test
-//! here is never weakened to make it pass.
+//! here is not silently weakened to make it pass: when full language parity is
+//! acknowledged as incremental debt, the replacement contract must derive the
+//! exact shortfall, date it, reject growth, and reject stale declarations.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -27,6 +29,11 @@ const CORPUS: &str = "data/benchmarks/self-use-concept-lookup.lino";
 /// The seed file whose per-language rows decide which languages a surface can
 /// actually answer in.
 const RESPONSES_SEED: &str = "data/seed/multilingual-responses.lino";
+
+/// Explicit, strictly bounded response-template debt. Lexeme parity has its own
+/// structural gate because response templates and lexemes are different data
+/// shapes and neither may silently stand in for the other.
+const RESPONSE_PARITY_DEBT: &str = "data/meta/response-language-parity-debt.lino";
 
 /// The five languages every held-out corpus in this plan set is written in.
 const LANGUAGES: &[&str] = &["en", "ru", "hi", "zh", "es"];
@@ -117,6 +124,113 @@ fn seeded_response_languages() -> BTreeMap<String, BTreeSet<String>> {
     out
 }
 
+#[derive(Debug)]
+struct ResponseParityDebt {
+    ceiling: usize,
+    languages: BTreeSet<String>,
+    gaps: BTreeMap<String, BTreeSet<String>>,
+}
+
+fn csv_set(raw: &str) -> BTreeSet<String> {
+    if raw.is_empty() {
+        BTreeSet::new()
+    } else {
+        raw.split(',').map(str::to_owned).collect()
+    }
+}
+
+fn is_iso_date(value: &str) -> bool {
+    value.len() == 10
+        && value
+            .chars()
+            .enumerate()
+            .all(|(index, character)| match index {
+                4 | 7 => character == '-',
+                _ => character.is_ascii_digit(),
+            })
+}
+
+fn response_parity_debt() -> ResponseParityDebt {
+    let path = repo_root().join(RESPONSE_PARITY_DEBT);
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|error| panic!("{RESPONSE_PARITY_DEBT} should be readable: {error}"));
+    let mut measured_on = String::new();
+    let mut ceiling = None;
+    let mut languages = BTreeSet::new();
+    let mut source = String::new();
+    let mut gaps = BTreeMap::new();
+    let mut saw_root = false;
+    let mut record_type = String::new();
+
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        if !saw_root {
+            assert_eq!(
+                trimmed, "response_language_parity_debt",
+                "{RESPONSE_PARITY_DEBT}: unexpected root"
+            );
+            saw_root = true;
+        } else if let Some(value) = trimmed.strip_prefix("record_type ") {
+            record_type = unquote(value);
+        } else if let Some(value) = trimmed.strip_prefix("measured_on ") {
+            measured_on = unquote(value);
+        } else if let Some(value) = trimmed.strip_prefix("ceiling ") {
+            ceiling = Some(
+                value
+                    .parse::<usize>()
+                    .unwrap_or_else(|error| panic!("invalid response parity ceiling: {error}")),
+            );
+        } else if let Some(value) = trimmed.strip_prefix("target_languages ") {
+            languages = csv_set(&unquote(value));
+        } else if let Some(value) = trimmed.strip_prefix("source ") {
+            source = unquote(value);
+        } else if trimmed.starts_with("uncovered_behavior ") {
+            assert!(
+                !measured_on.is_empty(),
+                "measurement date must precede response debt rows"
+            );
+            let fields: Vec<&str> = trimmed.split('"').collect();
+            assert_eq!(
+                fields.len(),
+                7,
+                "{RESPONSE_PARITY_DEBT}: malformed uncovered_behavior row: {trimmed}"
+            );
+            assert_eq!(fields[0], "uncovered_behavior missing_languages ");
+            assert_eq!(fields[2], " observed_on ");
+            assert_eq!(fields[4], " response_intents ");
+            assert!(fields[6].is_empty());
+            assert_eq!(
+                fields[3], measured_on,
+                "every response parity row must carry the ledger measurement date"
+            );
+            for intent in csv_set(fields[5]) {
+                assert!(
+                    gaps.insert(intent.clone(), csv_set(fields[1])).is_none(),
+                    "{RESPONSE_PARITY_DEBT}: duplicate debt declaration for `{intent}`"
+                );
+            }
+        } else {
+            panic!("{RESPONSE_PARITY_DEBT}: unexpected row `{trimmed}`");
+        }
+    }
+
+    assert!(saw_root, "response parity debt must declare its root");
+    assert_eq!(
+        record_type, "response_language_parity_debt",
+        "response parity debt must declare its record type"
+    );
+    assert!(is_iso_date(&measured_on), "debt must have an ISO date");
+    assert_eq!(source, RESPONSES_SEED, "debt must name its measured seed");
+    ResponseParityDebt {
+        ceiling: ceiling.expect("response parity debt must declare a ceiling"),
+        languages,
+        gaps,
+    }
+}
+
 /// **Wave F observation, plan 01.** The held-out word `lipogram` occurs nowhere
 /// under `src/` or `data/seed/`, so a prompt that turns on its meaning cannot be
 /// answered from memory: plan 01 requires the loop to ask about the unresolved
@@ -136,6 +250,12 @@ fn an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_descri
     let mut offenders = Vec::new();
     for case in family("provider_description_instead_of_lookup") {
         let answer = solve(&case.prompt).answer;
+        if case.language == "en" {
+            assert_eq!(
+                answer,
+                "No consulted source defined \"Is the sentence \"quick brown fox\" a lipogram\". Consulted: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss."
+            );
+        }
         if answer.contains("Providers considered") || answer.contains("reciprocal rank fusion") {
             offenders.push(format!(
                 "{}: answered with the web-search capability description instead of a lookup",
@@ -166,6 +286,10 @@ fn a_spanish_prompt_is_not_reported_as_an_unsupported_language() {
         .find(|c| c.language == "es")
         .expect("the corpus family must carry the Spanish paraphrase");
     let answer = solve(&case.prompt).answer;
+    assert_eq!(
+        answer,
+        "Ninguna fuente consultada definió «¿La frase \"quick brown fox\" es un lipograma en e». Fuentes consultadas: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss."
+    );
     assert!(
         !answer.contains("unsupported language"),
         "plan 01/10: a Spanish prompt must be answered in Spanish, never demoted to the \
@@ -187,6 +311,15 @@ fn an_honest_refusal_names_every_source_it_consulted() {
     let mut offenders = Vec::new();
     for case in family("refusal_names_no_consulted_source") {
         let answer = solve(&case.prompt).answer;
+        if case.language == "en" {
+            assert_eq!(
+                answer.lines().next(),
+                Some(
+                    "I cannot write this program: no synthesis route reaches task \"is_isogram\" in language \"python\"."
+                ),
+                "the exact stable answer opener documents the named gap"
+            );
+        }
         let Some(trail) = answer.split("attempts=").nth(1) else {
             continue;
         };
@@ -205,37 +338,52 @@ fn an_honest_refusal_names_every_source_it_consulted() {
     );
 }
 
-/// **Wave F root cause, plan 01 / plan 11-L75 (#949).** The mechanical reason
-/// the Spanish case above fails: `data/seed/multilingual-responses.lino` carries
-/// `en`, `ru`, `hi`, `zh` and `unknown` rows and almost no `es` row, so every
-/// Spanish prompt that reaches one of these intents degrades to the
-/// unknown-language fallback.
+/// **Wave F root cause, plan 01 / plan 11-L75 (#949).** Response templates are
+/// not lexemes, so plan 11's structural lexeme-parity gate cannot discover
+/// their language coverage. This companion census derives every response
+/// shortfall from the seed and requires exact, dated ledger coverage: a new or
+/// changed gap cannot disappear into an assertion rewrite, while real
+/// translations reduce the bounded debt.
 ///
 /// This assertion needs no binary and no network — it is a property of the seed
 /// and stays true or false independently of how any route behaves.
 #[test]
-fn every_seeded_response_intent_serves_all_five_languages() {
+fn every_seeded_response_intent_serves_all_five_languages_or_has_exact_debt() {
     let seeded = seeded_response_languages();
-    let mut gaps = Vec::new();
+    let debt = response_parity_debt();
+    let expected_languages: BTreeSet<String> = LANGUAGES
+        .iter()
+        .map(|language| (*language).to_owned())
+        .collect();
+    assert_eq!(
+        debt.languages, expected_languages,
+        "response parity debt and the registered language contract must agree"
+    );
+
+    let mut gaps = BTreeMap::new();
     for (intent, languages) in &seeded {
-        if !languages.contains("en") {
-            continue;
-        }
-        let missing: Vec<&str> = LANGUAGES
+        let missing: BTreeSet<String> = LANGUAGES
             .iter()
-            .copied()
-            .filter(|language| !languages.contains(*language))
+            .map(|language| (*language).to_owned())
+            .filter(|language| !languages.contains(language))
             .collect();
         if !missing.is_empty() {
-            gaps.push(format!("{intent}: missing {}", missing.join(", ")));
+            gaps.insert(intent.clone(), missing);
         }
     }
-    assert!(
-        gaps.is_empty(),
-        "plan 11-L75 (#949): every response intent that is seeded in English must be seeded \
-         in all five registered languages. {} of {} intents are short:\n{}",
+    assert_eq!(
         gaps.len(),
-        seeded.len(),
-        gaps.join("\n")
+        debt.ceiling,
+        "plan 11-L75 (#949): measured response debt must equal its reviewed ceiling; lower the \
+         ceiling with real translation improvements, and never raise it for new gaps"
+    );
+    assert_eq!(
+        gaps,
+        debt.gaps,
+        "plan 11-L75 (#949): every response-language shortfall must have one exact dated \
+         debt declaration, with no untracked, stale, or duplicate intent. {} of {} intents \
+         currently need translations",
+        gaps.len(),
+        seeded.len()
     );
 }

@@ -1,5 +1,7 @@
 use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
 
+use super::formal_ai::BROWSER_EXTENSION_PROJECT_PLAN;
+
 #[test]
 fn software_project_plan_exposes_requirement_graph_and_approval_preferences() {
     let prompt = concat!(
@@ -33,6 +35,10 @@ fn software_project_plan_exposes_requirement_graph_and_approval_preferences() {
 
 #[test]
 fn popular_software_project_prompts_use_the_general_formalization_path() {
+    let documented = FormalAiEngine
+        .answer("Build a browser extension that tracks reading progress and exports CSV");
+    assert_eq!(documented.answer, BROWSER_EXTENSION_PROJECT_PLAN);
+
     let examples = [
         (
             "Create a React web app for tracking workout progress with charts",

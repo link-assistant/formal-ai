@@ -6,13 +6,19 @@
 //! fall through to the unknown opener.
 
 use std::fmt::Write as _;
+use std::sync::OnceLock;
 
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
+use crate::language::detect as detect_language;
 use crate::seed;
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
 use super::finalize_simple;
+
+const RESEARCH_TABLE_PROCEDURE_LINO: &str =
+    include_str!("../../data/seed/research-table-procedure.lino");
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Criterion {
@@ -23,15 +29,6 @@ enum Criterion {
 }
 
 impl Criterion {
-    const fn label(self) -> &'static str {
-        match self {
-            Self::KeyDifferences => "Key differences",
-            Self::UseCases => "Use cases",
-            Self::Advantages => "Advantages",
-            Self::Disadvantages => "Disadvantages",
-        }
-    }
-
     const fn slug(self) -> &'static str {
         match self {
             Self::KeyDifferences => "key_differences",
@@ -74,6 +71,52 @@ impl ResearchResultStatus {
             Self::Open => "open_research",
         }
     }
+
+    fn from_slug(slug: &str) -> Option<Self> {
+        match slug {
+            "no_results" => Some(Self::NoResults),
+            "all_providers_disabled" => Some(Self::AllProvidersDisabled),
+            "search_plan_only" => Some(Self::SearchPlanOnly),
+            "open_research" => Some(Self::Open),
+            _ => None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+struct LocalizedTableText {
+    language: String,
+    intro: String,
+    topic_label: String,
+}
+
+#[derive(Debug, Clone, Default)]
+struct CriterionText {
+    slug: String,
+    labels: Vec<(String, String)>,
+    instructions: Vec<(String, String)>,
+}
+
+#[derive(Debug, Clone, Default)]
+struct ResearchTableProcedure {
+    statuses: Vec<(ResearchResultStatus, Vec<String>)>,
+    table_texts: Vec<LocalizedTableText>,
+    criteria: Vec<CriterionText>,
+}
+
+impl ResearchTableProcedure {
+    fn table_text(&self, language: &str) -> Option<&LocalizedTableText> {
+        self.table_texts
+            .iter()
+            .find(|text| text.language == language)
+            .or_else(|| self.table_texts.iter().find(|text| text.language == "en"))
+    }
+
+    fn criterion_text(&self, criterion: Criterion) -> Option<&CriterionText> {
+        self.criteria
+            .iter()
+            .find(|text| text.slug == criterion.slug())
+    }
 }
 
 pub fn try_research_comparison_table(
@@ -110,7 +153,8 @@ pub fn try_research_comparison_table(
         log.append("research_table:criterion", criterion.slug());
     }
 
-    let body = render_comparison_table(&topics, &criteria);
+    let language = detect_language(prompt).slug();
+    let body = render_comparison_table(&topics, &criteria, language);
     Some(finalize_simple(
         prompt,
         log,
@@ -212,29 +256,13 @@ fn classify_prior_research_answer(answer: Option<&str>) -> ResearchResultStatus 
         return ResearchResultStatus::Open;
     };
     let normalized = normalize_prompt(answer);
-    if normalized.contains("no cors enabled web search results")
-        || normalized.contains("no cors readable web search results")
-        || normalized.contains("no usable cors search results")
-        || normalized.contains("не получены результаты веб поиска")
-        || normalized.contains("未获取到")
-        || normalized.contains("कोई खोज परिणाम नहीं")
-    {
-        return ResearchResultStatus::NoResults;
-    }
-    if normalized.contains("all cors readable search providers are disabled")
-        || normalized.contains("all cors enabled search providers are disabled")
-        || normalized.contains("все cors совместимые поисковые провайдеры отключены")
-        || normalized.contains("所有支持 cors 的搜索提供方都已禁用")
-        || normalized.contains("सभी cors समर्थित खोज प्रदाता अक्षम हैं")
-    {
-        return ResearchResultStatus::AllProvidersDisabled;
-    }
-    if normalized.contains("web search requested")
-        || normalized.contains("open research question detected")
-        || normalized.contains("search providers that can be queried")
-        || normalized.contains("verify claims against")
-    {
-        return ResearchResultStatus::SearchPlanOnly;
+    for (status, markers) in &research_table_procedure().statuses {
+        if markers
+            .iter()
+            .any(|marker| normalized.match_indices(marker).next().is_some())
+        {
+            return *status;
+        }
     }
     ResearchResultStatus::Open
 }
@@ -284,12 +312,13 @@ fn extract_research_topics(prompt: &str) -> Vec<String> {
         }
     }
     if topics.is_empty()
-        && let Some(after_colon) = prompt.split_once(':').map(|(_, tail)| tail) {
-            let topic = clean_search_text(after_colon);
-            if !topic.is_empty() {
-                topics.push(topic);
-            }
+        && let Some(after_colon) = prompt.split_once(':').map(|(_, tail)| tail)
+    {
+        let topic = clean_search_text(after_colon);
+        if !topic.is_empty() {
+            topics.push(topic);
         }
+    }
     topics
 }
 
@@ -370,10 +399,13 @@ fn extract_criteria(prompt: &str) -> Vec<Criterion> {
 fn append_criteria_from_text(text: &str, criteria: &mut Vec<Criterion>) {
     let normalized = normalize_prompt(text);
     for meaning in seed::lexicon().meanings_with_role(seed::ROLE_RESEARCH_CRITERION) {
-        if meaning.words().any(|word| normalized.contains(word))
-            && let Some(criterion) = Criterion::from_slug(&meaning.slug) {
-                push_unique(criteria, criterion);
-            }
+        if meaning
+            .words()
+            .any(|word| normalized.match_indices(word).next().is_some())
+            && let Some(criterion) = Criterion::from_slug(&meaning.slug)
+        {
+            push_unique(criteria, criterion);
+        }
     }
 }
 
@@ -383,14 +415,20 @@ fn push_unique(criteria: &mut Vec<Criterion>, criterion: Criterion) {
     }
 }
 
-fn render_comparison_table(topics: &[String], criteria: &[Criterion]) -> String {
-    let mut body = String::from(
-        "Research comparison table (draft; verify claims against the Step 1 source links).\n\n",
-    );
+fn render_comparison_table(topics: &[String], criteria: &[Criterion], language: &str) -> String {
+    let procedure = research_table_procedure();
+    let table_text = procedure.table_text(language);
+    let intro = table_text.map_or("", |text| text.intro.as_str());
+    let topic_label = table_text.map_or("topic", |text| text.topic_label.as_str());
+    let mut body = format!("{intro}\n\n");
     body.push('|');
-    body.push_str(" Topic |");
+    let _ = write!(body, " {topic_label} |");
     for criterion in criteria {
-        let _ = write!(body, " {} |", criterion.label());
+        let label = procedure
+            .criterion_text(*criterion)
+            .and_then(|text| localized_value(&text.labels, language))
+            .unwrap_or_else(|| criterion.slug());
+        let _ = write!(body, " {label} |");
     }
     body.push('\n');
     body.push('|');
@@ -402,78 +440,95 @@ fn render_comparison_table(topics: &[String], criteria: &[Criterion]) -> String 
     for topic in topics {
         let _ = write!(body, "| {} |", table_escape(topic));
         for criterion in criteria {
-            let _ = write!(body, " {} |", table_escape(&cell_for(topic, *criterion)));
+            let cell = procedure
+                .criterion_text(*criterion)
+                .and_then(|text| localized_value(&text.instructions, language))
+                .unwrap_or_else(|| criterion.slug());
+            let _ = write!(body, " {} |", table_escape(cell));
         }
         body.push('\n');
     }
     body.trim_end().to_owned()
 }
 
-fn cell_for(topic: &str, criterion: Criterion) -> String {
-    let normalized = normalize_prompt(topic);
-    if normalized.contains("machine learning algorithm") {
-        return match criterion {
-            Criterion::KeyDifferences => {
-                "Broad family of data-driven methods; includes supervised, unsupervised, and reinforcement approaches.".to_owned()
-            }
-            Criterion::UseCases => {
-                "Classification, regression, clustering, recommendation, anomaly detection, and forecasting.".to_owned()
-            }
-            Criterion::Advantages => {
-                "Flexible toolkit; often efficient on structured data; many models are easier to inspect than deep nets.".to_owned()
-            }
-            Criterion::Disadvantages => {
-                "Model choice, preprocessing, and feature design can dominate results; overfitting remains a risk.".to_owned()
-            }
-        };
-    }
-    if normalized.contains("deep learning") && normalized.contains("traditional ml") {
-        return match criterion {
-            Criterion::KeyDifferences => {
-                "Deep learning learns layered representations; traditional ML often relies more on explicit feature engineering.".to_owned()
-            }
-            Criterion::UseCases => {
-                "Deep learning fits images, speech, and language at scale; traditional ML fits many tabular and smaller-data tasks.".to_owned()
-            }
-            Criterion::Advantages => {
-                "Deep learning scales with data and reduces manual features; traditional ML is usually faster and more interpretable.".to_owned()
-            }
-            Criterion::Disadvantages => {
-                "Deep learning needs more data/compute and is harder to explain; traditional ML may underfit unstructured signals.".to_owned()
-            }
-        };
-    }
-    if normalized.contains("neural network") {
-        return match criterion {
-            Criterion::KeyDifferences => {
-                "Built from weighted layers, activations, losses, and optimization; provides the base mechanism for deep learning.".to_owned()
-            }
-            Criterion::UseCases => {
-                "Pattern recognition, embeddings, sequence modeling, vision, speech, and nonlinear function approximation.".to_owned()
-            }
-            Criterion::Advantages => {
-                "Captures nonlinear relationships and can be trained end-to-end for complex perception tasks.".to_owned()
-            }
-            Criterion::Disadvantages => {
-                "Requires tuning and regularization; decisions can be opaque; training can be unstable on poor data.".to_owned()
-            }
-        };
-    }
+fn localized_value<'a>(values: &'a [(String, String)], language: &str) -> Option<&'a str> {
+    values
+        .iter()
+        .find(|(candidate, _)| candidate == language)
+        .or_else(|| values.iter().find(|(candidate, _)| candidate == "en"))
+        .map(|(_, value)| value.as_str())
+}
 
-    match criterion {
-        Criterion::KeyDifferences => {
-            "Use the prior search sources to identify what distinguishes this topic from the others.".to_owned()
-        }
-        Criterion::UseCases => {
-            "Summarize the practical settings where the Step 1 sources apply this topic.".to_owned()
-        }
-        Criterion::Advantages => {
-            "Extract strengths reported by the prior search sources before treating them as verified.".to_owned()
-        }
-        Criterion::Disadvantages => {
-            "Extract limitations reported by the prior search sources before treating them as verified.".to_owned()
-        }
+fn research_table_procedure() -> &'static ResearchTableProcedure {
+    static CELL: OnceLock<ResearchTableProcedure> = OnceLock::new();
+    CELL.get_or_init(|| parse_research_table_procedure(RESEARCH_TABLE_PROCEDURE_LINO))
+}
+
+fn parse_research_table_procedure(text: &str) -> ResearchTableProcedure {
+    let tree = parse_lino(text);
+    let Some(root) = tree
+        .children
+        .iter()
+        .find(|node| node.name == "research_table_procedure")
+    else {
+        return ResearchTableProcedure::default();
+    };
+    let statuses = root
+        .children
+        .iter()
+        .filter(|node| node.name == "status")
+        .filter_map(|node| {
+            let status = ResearchResultStatus::from_slug(&node.id)?;
+            Some((status, child_values(node, "marker")))
+        })
+        .collect();
+    let table_texts = root
+        .children
+        .iter()
+        .filter(|node| node.name == "table_text")
+        .map(|node| LocalizedTableText {
+            language: node.id.clone(),
+            intro: node.find_child_value("intro").to_owned(),
+            topic_label: node.find_child_value("topic_label").to_owned(),
+        })
+        .collect();
+    let criteria = root
+        .children
+        .iter()
+        .filter(|node| node.name == "criterion")
+        .map(|node| CriterionText {
+            slug: node.id.clone(),
+            labels: localized_children(node, "label"),
+            instructions: localized_children(node, "instruction"),
+        })
+        .collect();
+    ResearchTableProcedure {
+        statuses,
+        table_texts,
+        criteria,
     }
+}
+
+fn child_values(node: &LinoNode, name: &str) -> Vec<String> {
+    node.children
+        .iter()
+        .filter(|child| child.name == name)
+        .map(|child| child.id.to_lowercase())
+        .collect()
+}
+
+fn localized_children(node: &LinoNode, name: &str) -> Vec<(String, String)> {
+    node.children
+        .iter()
+        .filter(|child| child.name == name)
+        .filter_map(|child| {
+            let (language, value) = child.id.split_once(char::is_whitespace)?;
+            Some((
+                language.to_owned(),
+                value.trim().trim_matches('"').replace("\"\"", "\""),
+            ))
+        })
+        .collect()
 }
 
 fn table_escape(value: &str) -> String {

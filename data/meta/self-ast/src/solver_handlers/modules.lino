@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/modules.rs
   language rust
   fidelity signature
-  byte_len 1315
-  line_count 46
-  content_id source_module_2a164e45af00215f
-  symbol_count 38
+  byte_len 1336
+  line_count 47
+  content_id source_module_71f644de12d485c7
+  symbol_count 39
   symbols
     module agent_workspace 9 9
     module behavior_rule_followups 10 10
@@ -42,6 +42,7 @@ self_ast_census
     module text_edit_ops 41 41
     module text_manipulation 42 42
     module user_intent 43 43
-    module web_requests 44 44
-    module web_search_intent 45 45
-    module world_state 46 46
+    module verifiable_task 44 44
+    module web_requests 45 45
+    module web_search_intent 46 46
+    module world_state 47 47

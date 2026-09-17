@@ -29,6 +29,8 @@ external_benchmark_suite_humaneval
   grading_note "The produced Python code is concatenated with the upstream test and check(entry_point) is executed."
   ratchet_slice "20"
   minimum_pass_count "20"
+  full_slice "164"
+  full_minimum_pass_count "0"
 external_benchmark_suite_mbpp
   record_type "external_benchmark_suite"
   id "mbpp"
@@ -45,6 +47,8 @@ external_benchmark_suite_mbpp
   grading_note "The produced Python code is executed together with the upstream test_list assertions."
   ratchet_slice "20"
   minimum_pass_count "20"
+  full_slice "500"
+  full_minimum_pass_count "0"
 external_benchmark_suite_gsm8k
   record_type "external_benchmark_suite"
   id "gsm8k"

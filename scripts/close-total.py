@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Drive total reference-closure to zero by defining every dangling token (issue #398, PR #399).
 
-PR #399 review (comment 4668929105) requires *total* closure: every non-keyword,
-non-quoted value token anywhere in ``data/seed/**.lino`` must resolve to a defined
-meaning, a grounded source id with a cache record, or an override — and the build
-fails the instant one does not. WordNet/Wiktionary grounding (``ground-wordnet.py``,
-``ground-wiktionary.py``) closes the plain-English dictionary words. What remains is
-the *internal* vocabulary: intent names, task names, prompt-pattern ids, source
-kinds, programming-language tags, and similar snake_case / hyphenated identifiers
-that name concepts of this system itself. The reviewer's standard is explicit:
+PR #399 review (comment 4668929105) requires *total* closure: every semantic
+reference anywhere in ``data/seed/**.lino`` must resolve to a defined meaning, a
+grounded source id with a cache record, or an override — and the build fails the
+instant one does not. WordNet/Wiktionary grounding (``ground-wordnet.py``,
+``ground-wiktionary.py``) closes the plain-English dictionary words. What remains
+is the *internal* vocabulary: intent names, task names, source kinds,
+programming-language tags, and similar identifiers that name concepts of this
+system itself. Declaration identities and literal matcher operands are not
+references; their schema classification comes from ``audit-total-closure.py``.
+The reviewer's standard is explicit:
 "Every word used in a description/intent/definition is either a defined meaning, a
 grounded lexeme/sense, or it must be **made** one." This migration *makes* them.
 
@@ -45,12 +47,11 @@ import glob
 import importlib.util
 import os
 import re
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 SEED_DIR = Path("data/seed")
 GENERATED_PREFIX = "closure-generated-"
-SLUG = re.compile(r"^[a-z][a-z0-9_-]*$")
 QID = re.compile(r"^[QLP][0-9]+$")
 LANG_CODES = {"en", "ru", "hi", "zh"}
 
@@ -157,32 +158,11 @@ def base_defined_slugs(audit, files: list[str]) -> set[str]:
 
 
 def base_tokens(audit, files: list[str]):
-    """Return (counts, dominant_head) for value tokens in the base files."""
-    counts: Counter[str] = Counter()
-    heads: dict[str, Counter] = defaultdict(Counter)
-    for path in files:
-        lines = Path(path).read_text(encoding="utf-8").split("\n")
-        lex_lang = None
-        for raw in lines:
-            if not raw.strip():
-                continue
-            toks = audit._line_tokens(raw.strip())
-            if not toks:
-                continue
-            head, values = toks[0], toks[1:]
-            if head == "lexeme" and values:
-                lex_lang = values[0]
-            expanded: list[str] = []
-            for value in values:
-                expanded.extend(value.split("+"))
-            for value in expanded:
-                if not SLUG.match(value):
-                    continue
-                if head in {"text", "phrase"} and lex_lang not in (None, "en"):
-                    continue
-                counts[value] += 1
-                heads[value][head] += 1
-    dominant = {t: c.most_common(1)[0][0] for t, c in heads.items()}
+    """Return the canonical audit's counts and dominant predicate per token."""
+    del files  # file filtering is centralized in the canonical inventory
+    counts, dominant, _ = audit.semantic_reference_inventory(
+        ".", include_generated=False
+    )
     return counts, dominant
 
 

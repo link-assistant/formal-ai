@@ -2,9 +2,9 @@ self_ast_census
   target src/prerequisite/probe.rs
   language rust
   fidelity signature
-  byte_len 11834
-  line_count 334
-  content_id source_module_3dd4a7b3c5a6d6bd
+  byte_len 11743
+  line_count 330
+  content_id source_module_2b3ccee002662f79
   symbol_count 23
   symbols
     const TOOLCHAINS_LINO 20 20
@@ -21,12 +21,12 @@ self_ast_census
     function workspace_bin_directories 120 142
     function workspace_path 148 157
     function workspace_environment 162 166
-    function probe_command 173 233
-    function seed_probes 237 259
-    function seed_probe_for_language 263 277
-    function seed_setup_hint 285 287
-    function seed_environment 291 293
-    function seed_execution_status 298 300
-    function seed_field 303 313
-    function seed_probe_for_program 317 321
-    function split_tuple 328 334
+    function probe_command 173 229
+    function seed_probes 233 255
+    function seed_probe_for_language 259 273
+    function seed_setup_hint 281 283
+    function seed_environment 287 289
+    function seed_execution_status 294 296
+    function seed_field 299 309
+    function seed_probe_for_program 313 317
+    function split_tuple 324 330

@@ -70,7 +70,8 @@ environments
     memory_export_command "/bundle command (returns the seed bundle)"
     bundle_export_command "/bundle command"
     bundle_import_command "n/a (memory is provider-side)"
-    tools ("intent_routing" "write_program" "concept_lookup" "fact_lookup" "summarize_conversation" "brainstorm" "coreference" "roleplay" "html_replies")
+    execution_backend "selected from observed, permission-bearing process configuration; absent configuration refuses"
+    tools ("intent_routing" "write_program" "code_execution" "concept_lookup" "fact_lookup" "summarize_conversation" "brainstorm" "coreference" "roleplay" "html_replies")
   environment docker_microservice
     label "Docker-in-Docker Telegram bot image"
     runtime "Rust binary on konard/box-dind:2.1.1 with an inner Docker daemon"
@@ -79,6 +80,7 @@ environments
     memory_export_command "formal-ai telegram --mode polling (default container command)"
     bundle_export_command "formal-ai bundle export from inside the container"
     bundle_import_command "formal-ai memory import from inside the container"
+    execution_backend "FORMAL_AI_START_ISOLATION plus FORMAL_AI_START_RUNNER, read together as exact argv"
     tools ("telegram_polling" "telegram_webhook" "start_command" "docker_isolation" "inner_docker_daemon" "bundle" "memory")
 migration
   note "Every environment reads from data/seed/. Memory is portable as Links Notation."

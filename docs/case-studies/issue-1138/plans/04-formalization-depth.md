@@ -1,9 +1,10 @@
 # Plan 04 — Formalization depth: concepts and procedures, not stored sentences (bottleneck B4 of #1138)
 
-Status: planned, nothing implemented. Depends on plan 01 (B1 live concept lookup)
-for the retrieval it asks from. Written before the code so the work can be resumed
-from any point. A box is ticked in the same commit that lands its leaf; a leaf that
-turns out wrong is struck through with the reason, never deleted.
+Status: partially implemented. Depends on plan 01 (B1 live concept lookup) for
+the retrieval it asks from. The checklist remains the authority for unfinished
+leaves; L14 and L15 have the focused implementation and static/browser evidence
+recorded below, but the full Cargo gate has not yet been rerun on the final tree.
+A leaf that turns out wrong is struck through with the reason, never deleted.
 
 ## Issues addressed
 
@@ -500,7 +501,7 @@ Rejected, with reasons:
 | `data/seed/formalization-relations.lino` | The relation vocabulary and the cues that evidence each relation, in five languages. |
 | `data/seed/meanings-formalization-needs.lino` | Five-language response meanings for need/unresolved reporting. |
 | `data/meta/formalization-depth-recipe.lino` | The grounded meta-recipe for this step. |
-| `tests/fixtures/issue-1138-b4/` | Committed captures + `expected-graphs.json`. |
+| `tests/fixtures/issue-1138-b4/` | Derived `expected-graphs.json`; source captures remain canonical in B1. |
 | `examples/issue_1138_formalization_parity.rs` | Writes `expected-graphs.json` from the Rust path. |
 
 Names checked free by grep over `src data scripts tests`: `formalization_depth`,
@@ -1151,7 +1152,9 @@ same `ConceptGraph::identity()` from the same fixtures and marks every
   `the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum`.
 - **Capture-drift check.** `FORMAL_AI_LIVE_FETCH=1 cargo run --example
   issue_1138_formalization_parity` re-fetches through the production path and
-  reports drift against `tests/fixtures/issue-1138-b4/capture-manifest.lino`.
+  derives B4's graph expectation from plan 01's content-addressed B1 capture
+  tree. Keeping the source bytes and manifest in one canonical fixture avoids
+  duplicate caches and lets plan 01's drift check remain their authority.
 
 ### Benchmark commands and the honest numbers expected
 
@@ -1300,11 +1303,11 @@ Ordered; each individually verifiable and commit-sized.
       `tests/unit/specification/agentic_meta_algorithm.rs` and
       `docs/meta-algorithm.md` in the same commit.
 - [ ] **L13 — Loop ledger bridge.** `NeedLedger::extend_from_formalization`.
-- [ ] **L14 — Fixtures and parity.** `tests/fixtures/issue-1138-b4/`,
+- [x] **L14 — Fixtures and parity.** `tests/fixtures/issue-1138-b4/`,
       `examples/issue_1138_formalization_parity.rs`,
       `src/web/worker/formal_ai_worker_formalization.js`, its worker-line-budget
       file, `tests/web/issue-1138-formalization-depth.test.mjs`.
-- [ ] **L15 — Five-language reporting prose.**
+- [x] **L15 — Five-language reporting prose.**
       `data/seed/meanings-formalization-needs.lino` (5 meanings + 25 responses);
       the language-coverage gate must report `OK … en, ru, hi, zh, es`.
 - [ ] **L16 — Agent-process probes.**
@@ -1317,6 +1320,26 @@ Ordered; each individually verifiable and commit-sized.
       `rust-script scripts/assemble-requirements.rs --write`, traceability rows and
       the R314 correction, `docs/benchmarks.md`, `docs/meta-algorithm.md`,
       `VISION.md`, `ROADMAP.md`, and the honest measured numbers.
+
+### L14/L15 focused checkpoint — 2026-09-17
+
+- Tests were changed first to require the B4 expectation, its exact native graph
+  identity, native seed registration, five intent meanings and exactly one
+  response meaning for each of `en`, `ru`, `hi`, `zh`, and `es`.
+- The parity example uses `formalize_deeply` and `RegistrySourceLookup` over the
+  committed B1 captures, writes only the derived B4 graph fixture, and never
+  stores a second copy of captured source bodies.
+- The need-reporting seed contains generic evidence-boundary prose only. It
+  contains none of the held-out benchmark vocabulary, so it teaches how to
+  report discovery rather than memorising what the benchmark terms mean.
+- `node --test tests/web/issue-1138-formalization-depth.test.mjs` passed 2/2;
+  rustfmt, JavaScript syntax, generated-seed-registry, tests-as-docs and diff
+  checks passed.
+- The focused Rust module subsequently passed 14/14. During that run, the
+  localized-example assertion exposed a test-reader bug: it treated the first
+  four-space child field as a new two-space meaning record. The assertion now
+  walks the exact record heading and its structural child lines, so all 25
+  localized meanings are checked without weakening or adding an exception.
 
 ## Docs to update
 

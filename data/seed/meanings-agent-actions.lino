@@ -142,3 +142,316 @@ meanings
         text "任务：…"
       surface
         text "目标：…"
+  method
+    defined-by concept
+    defined-by action
+    role action
+    precondition "a reusable procedure has declared applicability evidence"
+    effect "transforms a supported request into an inspectable result through declared steps"
+    unit "not applicable"
+    example "select a registered procedure by capability and execute its typed runtime"
+    grounding "data/seed/method-execution.lino"
+  capability_gap
+    defined-by method
+    role action
+    precondition "the selected method requires a capability that is not available in the current execution context"
+    effect "reports the missing capability and preserves the actionable request evidence without claiming execution"
+    unit "not applicable"
+    example "a compiler request is preserved when no compiler or project bytes are available"
+    grounding "src/meta_method_dispatch.rs"
+  task_decomposition
+    defined-by method
+    role action
+    precondition "a request describes a compound task whose independently verifiable leaves can be discovered"
+    effect "derives ordered leaf tasks with explicit completion evidence"
+    unit "not applicable"
+    example "separate repository inspection, implementation and verification into dependent leaves"
+    grounding "src/solver_handlers/task_decomposition.rs"
+  pattern_inference
+    defined-by method
+    role action
+    precondition "the observations expose a repeatable relation whose rule can be inferred"
+    effect "derives and verifies the relation before applying it to the requested case"
+    unit "not applicable"
+    example "infer a sequence rule from the supplied examples and verify every known term"
+    grounding "src/solver_handlers/pattern_inference.rs"
+  verifiable_task
+    defined-by method
+    role action
+    precondition "the request names an expectation that can be checked against derived or observed evidence"
+    effect "formalizes, executes when possible and verifies the expectation without fabricating observations"
+    unit "not applicable"
+    example "compute a requested quantity and compare it with the stated expected value"
+    grounding "src/verifiable_task.rs"
+  write_script
+    defined-by method
+    role action
+    precondition "the request asks for an executable script and supplies or permits discovery of its requirements"
+    effect "constructs a script from reusable operations and returns verification evidence"
+    unit "not applicable"
+    example "compose a shell script from discovered file and process operations"
+    grounding "src/solver_handlers/mod.rs"
+  summarization
+    defined-by method
+    role action
+    precondition "source material is available and the request asks for a bounded summary"
+    effect "selects supported statements and renders a summary that retains their provenance"
+    unit "not applicable"
+    example "summarize retrieved evidence while preserving source attribution"
+    grounding "src/solver_handlers/benchmark_prompts.rs"
+  natural_language_tool
+    defined-by method
+    role action
+    precondition "the request describes a tool operation in natural language"
+    effect "maps the request to an available tool or returns an explicit capability gap"
+    unit "not applicable"
+    example "route a request to execute named source code without pretending it ran"
+    grounding "src/solver_handlers/natural_language_tools.rs"
+  behavior_rules
+    defined-by method
+    role action
+    precondition "seed-declared conditions match the normalized request"
+    effect "executes the matching declarative behavior and records the selected rule"
+    unit "not applicable"
+    example "apply a response rule whose roles and precedence are stored in seed data"
+    grounding "src/solver_handlers/behavior_rules.rs"
+  feature_capability
+    defined-by method
+    role action
+    precondition "the request concerns an advertised interface or runtime capability"
+    effect "resolves the capability from registered feature data or reports that it is unavailable"
+    unit "not applicable"
+    example "explain a configured response-language capability from its seed record"
+    grounding "src/solver_handlers/feature_capability.rs"
+  playwright_script
+    defined-by method
+    role action
+    precondition "the request asks for browser automation that can be represented as a script"
+    effect "constructs a browser automation script without claiming that the browser was observed"
+    unit "not applicable"
+    example "produce a browser navigation script with explicit verification steps"
+    grounding "src/solver_handlers/playwright_script.rs"
+  concept_lookup
+    defined-by method
+    role action
+    precondition "the request asks what a term means and no more specific task owns it"
+    effect "collects grounded senses from registered sources and reports provenance or an honest unresolved result"
+    unit "not applicable"
+    example "look up an unfamiliar term through cached and permitted trusted sources"
+    grounding "src/concept_lookup.rs"
+  before_runtime
+    defined-by concept
+    role action
+    precondition "a registry method declares project lookup before its runtime interpreter"
+    effect "orders project evidence collection ahead of method execution"
+    unit "not applicable"
+    example "inspect project evidence before deciding whether a toolchain is missing"
+    grounding "data/seed/method-execution.lino"
+  fallback
+    defined-by concept
+    role action
+    precondition "a preferred interpretation produced no applicable result"
+    effect "selects the declared secondary interpretation without changing the request evidence"
+    unit "not applicable"
+    example "use concept lookup only after a more specific project interpretation does not apply"
+    grounding "data/seed/method-execution.lino"
+  external_benchmark_pytest_command
+    defined-by method
+    role action
+    precondition "an external benchmark case declares a test patch that can be executed with pytest"
+    effect "renders the bounded pytest command used to observe the benchmark result"
+    unit "not applicable"
+    example "execute only the tests named by a benchmark patch inside its isolated workspace"
+    grounding "src/external_benchmarks/cases.rs"
+  external_benchmark_test_field_missing
+    defined-by method
+    role action
+    precondition "an external benchmark record has no tests field"
+    effect "reports the missing required field without inventing a test command"
+    unit "not applicable"
+    example "reject a benchmark record whose test patch names no tests array"
+    grounding "src/external_benchmarks/cases.rs"
+  external_benchmark_test_field_invalid_json
+    defined-by method
+    role action
+    precondition "an external benchmark tests field is present but is not valid JSON"
+    effect "reports the parse failure and preserves the unexecuted benchmark case"
+    unit "not applicable"
+    example "reject malformed JSON before selecting any test command"
+    grounding "src/external_benchmarks/cases.rs"
+  external_benchmark_test_field_not_array
+    defined-by method
+    role action
+    precondition "an external benchmark tests field decodes to a value other than an array"
+    effect "reports the incompatible shape without coercing it into test names"
+    unit "not applicable"
+    example "reject a scalar tests field where a finite list is required"
+    grounding "src/external_benchmarks/cases.rs"
+  external_benchmark_recovery_not_permitted
+    defined-by method
+    role action
+    precondition "a benchmark execution failed and the declared recovery policy forbids a retry"
+    effect "records the failed attempt without claiming that recovery occurred"
+    unit "not applicable"
+    example "preserve a failed benchmark result when no recovery route was authorized"
+    grounding "src/external_benchmarks/grade.rs"
+  external_benchmark_publisher_exhausted
+    defined-by method
+    role action
+    precondition "every registered publisher route for a benchmark artifact has been attempted"
+    effect "reports the exhausted routes and keeps the artifact available for later publication"
+    unit "not applicable"
+    example "retain benchmark evidence after each configured publisher rejects it"
+    grounding "src/external_benchmarks/grade.rs"
+  external_benchmark_recovery_still_missing
+    defined-by method
+    role action
+    precondition "a permitted recovery attempt completed but the required benchmark artifact is still absent"
+    effect "reports the remaining evidence gap rather than treating the retry as success"
+    unit "not applicable"
+    example "keep a benchmark unresolved when retrying did not produce its report"
+    grounding "src/external_benchmarks/grade.rs"
+  external_benchmark_full_floor_regression
+    defined-by method
+    role action
+    precondition "a full external benchmark result is below its recorded regression floor"
+    effect "rejects adoption and names the measured floor violation"
+    unit "not applicable"
+    example "block a change whose full benchmark score falls below the reviewed minimum"
+    grounding "src/external_benchmarks/ratchet.rs"
+  external_benchmark_floor_below_best
+    defined-by method
+    role action
+    precondition "a proposed benchmark floor is lower than the best previously observed result"
+    effect "reports the loose floor so the ratchet cannot preserve regression room"
+    unit "not applicable"
+    example "require the reviewed floor to follow a newly achieved best result"
+    grounding "src/external_benchmarks/ratchet.rs"
+  capability_gap_anchors
+    defined-by method
+    role action
+    precondition "a requested capability cannot be executed with the currently registered tools or evidence"
+    effect "renders the known task and capability anchors that a later discovery step can resume"
+    unit "not applicable"
+    example "preserve a named compiler and source task when execution is unavailable"
+    grounding "src/meta_method_dispatch.rs"
+  response_language_demonstration
+    defined-by method
+    role action
+    precondition "a response-language capability is requested with a concrete language example"
+    effect "renders the example through the registered language response data"
+    unit "not applicable"
+    example "demonstrate a capability in the language explicitly requested by the user"
+    grounding "src/solver_handlers/feature_capability.rs"
+  explain_previous_turn_empty
+    defined-by method
+    role action
+    precondition "the user asks for an explanation but no prior assistant answer is available"
+    effect "reports the missing conversational premise without fabricating an earlier answer"
+    unit "not applicable"
+    example "ask for the material to explain when the dialogue contains no preceding answer"
+    grounding "src/solver_synthesis.rs"
+  explain_previous_turn_answer
+    defined-by method
+    role action
+    precondition "the user asks for an explanation and a prior assistant answer is available"
+    effect "reconstructs an explanation from the retained prior answer and current request"
+    unit "not applicable"
+    example "explain why the preceding answer followed from its stated evidence"
+    grounding "src/solver_synthesis.rs"
+  code_execution_refused
+    defined-by method
+    role action
+    precondition "code execution was requested but no authorized execution backend is configured"
+    effect "returns an explicit refusal without presenting generated output as observed"
+    unit "not applicable"
+    example "state that Python was not run when the execution boundary is unavailable"
+    grounding "src/telegram_runtime.rs"
+  code_execution_observed
+    defined-by method
+    role action
+    precondition "an authorized backend executed the requested program and returned a successful observation"
+    effect "renders the output together with exit, timing and evidence identifiers"
+    unit "not applicable"
+    example "report stdout only after a process observation records a successful exit"
+    grounding "src/telegram_runtime.rs"
+  code_execution_failed
+    defined-by method
+    role action
+    precondition "an authorized code execution attempt failed, timed out or was refused by its backend"
+    effect "renders the observed failure details without claiming successful verification"
+    unit "not applicable"
+    example "report a timeout with its deadline and partial output"
+    grounding "src/telegram_runtime.rs"
+  code_execution_request_markers
+    defined-by method
+    role action
+    precondition "a natural-language request may be asking to execute supplied source code"
+    effect "provides localized evidence markers for execution-intent recognition"
+    unit "not applicable"
+    example "recognize an explicit request to run a fenced Python program"
+    grounding "src/execution_intent.rs"
+  browser_runtime_downloadable
+    defined-by method
+    role action
+    precondition "browser automation is requested and a registered runtime can be downloaded under policy"
+    effect "reports the discoverable installation route without claiming the runtime is already present"
+    unit "not applicable"
+    example "offer the registered browser-runtime setup command when downloads are permitted"
+    grounding "src/solver_handlers/playwright_script.rs"
+  browser_runtime_ready
+    defined-by method
+    role action
+    precondition "browser automation is requested and the registered browser runtime is available"
+    effect "reports that the execution prerequisite is ready for the generated automation"
+    unit "not applicable"
+    example "identify an installed Playwright runtime before presenting its run command"
+    grounding "src/solver_handlers/playwright_script.rs"
+  verifiable_task_verified
+    defined-by method
+    role action
+    precondition "a formalized task has a derived answer whose declared checks all passed"
+    effect "renders the answer with its derivation and verification evidence"
+    unit "not applicable"
+    example "return a computed value only after its shape and execution checks succeed"
+    grounding "src/solver_handlers/verifiable_task.rs"
+  verifiable_task_uncorroborated
+    defined-by method
+    role action
+    precondition "a formalized task produced a candidate answer but lacks required independent corroboration"
+    effect "reports the candidate and missing corroboration without upgrading it to verified"
+    unit "not applicable"
+    example "keep a single-source result provisional when two sources are required"
+    grounding "src/solver_handlers/verifiable_task.rs"
+  verifiable_task_gap
+    defined-by method
+    role action
+    precondition "a formalized task cannot derive or execute an expectation with the available capabilities"
+    effect "reports the exact unresolved expectation and preserves it for recursive discovery"
+    unit "not applicable"
+    example "name a missing compiler instead of fabricating a program result"
+    grounding "src/solver_handlers/verifiable_task.rs"
+  verifiable_task_trailing_number
+    defined-by method
+    role action
+    precondition "a verified answer is represented by the final numeric value in observed output"
+    effect "extracts and renders that bounded value while retaining its evidence"
+    unit "not applicable"
+    example "read the final integer printed by a successfully executed program"
+    grounding "src/solver_handlers/verifiable_task.rs"
+  verifiable_task_delimited_value
+    defined-by method
+    role action
+    precondition "a verified answer is represented by a value inside declared output delimiters"
+    effect "extracts the delimited value without discarding the observation that supports it"
+    unit "not applicable"
+    example "read a result between registered answer markers in command output"
+    grounding "src/solver_handlers/verifiable_task.rs"
+  verifiable_task_code_block
+    defined-by method
+    role action
+    precondition "a verified task answer is an executable program represented as a fenced code block"
+    effect "renders the program with its language fence and verification evidence"
+    unit "not applicable"
+    example "return verified source code in the requested language after its checks pass"
+    grounding "src/solver_handlers/verifiable_task.rs"

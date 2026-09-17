@@ -838,7 +838,7 @@ Ordered; each independently verifiable and commit-sized.
 - [ ] 2. Ship `data/benchmarks/capability-routing/` (420 cases, five languages)
       and its suite header; run it; record `capability_routing_cases_passing`
       at whatever it is. The suite is red and that is the honest baseline.
-- [ ] 3. Add `scripts/check-capability-routing.rs` and its gate file, strict
+- [x] 3. Add `scripts/check-capability-routing.rs` and its gate file, strict
       two-sided.
 
 **Build the three derivations.**

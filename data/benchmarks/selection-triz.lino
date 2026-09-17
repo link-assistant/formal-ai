@@ -1,0 +1,106 @@
+selection_triz_suite
+  record_type "benchmark_suite"
+  issue "901"
+  case_count "20"
+  languages "en|ru|hi|zh|es"
+  purpose "Twenty held-out requirements measure whether a technical contradiction is detected and its 0-1 selection point is derived from criterion-bearing clauses rather than guessed."
+triz_en_brevity
+  record_type "triz_selection_case"
+  language "en"
+  prompt "Keep it short. Make it concise. Cover every case."
+  expected "toward_brevity"
+triz_en_midpoint
+  record_type "triz_selection_case"
+  language "en"
+  prompt "Keep it concise. Make it complete."
+  expected "midpoint"
+triz_en_completeness
+  record_type "triz_selection_case"
+  language "en"
+  prompt "Keep it short. Cover every case. Make the result exhaustive."
+  expected "toward_completeness"
+triz_en_unresolved
+  record_type "triz_selection_case"
+  language "en"
+  prompt "Use the selected implementation."
+  expected "unresolved"
+triz_ru_brevity
+  record_type "triz_selection_case"
+  language "ru"
+  prompt "Сделай ответ коротким. Изложи его кратко. Полностью покрой требования."
+  expected "toward_brevity"
+triz_ru_midpoint
+  record_type "triz_selection_case"
+  language "ru"
+  prompt "Сделай ответ кратким. Обеспечь полноту."
+  expected "midpoint"
+triz_ru_completeness
+  record_type "triz_selection_case"
+  language "ru"
+  prompt "Сделай ответ коротким. Полностью покрой требования. Дай исчерпывающий результат."
+  expected "toward_completeness"
+triz_ru_unresolved
+  record_type "triz_selection_case"
+  language "ru"
+  prompt "Используй выбранную реализацию."
+  expected "unresolved"
+triz_hi_brevity
+  record_type "triz_selection_case"
+  language "hi"
+  prompt "उत्तर छोटा रखो। उसे संक्षिप्त बनाओ। हर मामले को कवर करो।"
+  expected "toward_brevity"
+triz_hi_midpoint
+  record_type "triz_selection_case"
+  language "hi"
+  prompt "उत्तर संक्षिप्त रखो। पूर्ण उत्तर दो।"
+  expected "midpoint"
+triz_hi_completeness
+  record_type "triz_selection_case"
+  language "hi"
+  prompt "उत्तर छोटा रखो। हर मामले को कवर करो। समग्र परिणाम दो।"
+  expected "toward_completeness"
+triz_hi_unresolved
+  record_type "triz_selection_case"
+  language "hi"
+  prompt "चुना हुआ कार्यान्वयन उपयोग करो।"
+  expected "unresolved"
+triz_zh_brevity
+  record_type "triz_selection_case"
+  language "zh"
+  prompt "答案要简短。表达要简洁。覆盖所有情况。"
+  expected "toward_brevity"
+triz_zh_midpoint
+  record_type "triz_selection_case"
+  language "zh"
+  prompt "答案要简洁。结果要完整。"
+  expected "midpoint"
+triz_zh_completeness
+  record_type "triz_selection_case"
+  language "zh"
+  prompt "答案要简短。覆盖所有情况。给出全面结果。"
+  expected "toward_completeness"
+triz_zh_unresolved
+  record_type "triz_selection_case"
+  language "zh"
+  prompt "使用选定的实现。"
+  expected "unresolved"
+triz_es_brevity
+  record_type "triz_selection_case"
+  language "es"
+  prompt "Hazlo corto. Sé conciso. Cubre todos los casos."
+  expected "toward_brevity"
+triz_es_midpoint
+  record_type "triz_selection_case"
+  language "es"
+  prompt "Sé breve. Da un resultado completo."
+  expected "midpoint"
+triz_es_completeness
+  record_type "triz_selection_case"
+  language "es"
+  prompt "Hazlo corto. Cubre todos los casos. Da un resultado exhaustivo."
+  expected "toward_completeness"
+triz_es_unresolved
+  record_type "triz_selection_case"
+  language "es"
+  prompt "Usa la implementación seleccionada."
+  expected "unresolved"

@@ -85,9 +85,7 @@ fn the_published_draft_is_recorded_as_an_append_only_event() {
          of the add-only history rather than an untracked side effect"
     );
     assert!(
-        events
-            .iter()
-            .all(|event| !event.id.trim().is_empty()),
+        events.iter().all(|event| !event.id.trim().is_empty()),
         "every appended event carries its stable id"
     );
 }

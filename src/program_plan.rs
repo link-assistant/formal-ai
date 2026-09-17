@@ -49,6 +49,10 @@ pub const MODIFIER_NODE: &str = "request:modifier";
 
 /// The canonical program-plan substitution rules, in Links Notation.
 pub const PROGRAM_PLAN_RULES_LINO: &str = crate::seed::PROGRAM_PLAN_RULES_LINO;
+/// Human-reviewed learned program-plan rules. The promotion protocol writes
+/// this seed; it deliberately starts empty, with only the schema root.
+pub const LEARNED_PROGRAM_RULES_LINO: &str =
+    include_str!("../data/seed/learned-program-rules.lino");
 
 /// Parsed, cached program-plan rule set embedded at compile time.
 ///
@@ -60,6 +64,14 @@ pub fn rules() -> &'static SubstitutionRuleSet {
     RULES.get_or_init(|| {
         let mut set = SubstitutionRuleSet::from_links_notation(PROGRAM_PLAN_RULES_LINO)
             .expect("embedded program-plan rules must parse");
+        let learned = SubstitutionRuleSet::from_links_notation(LEARNED_PROGRAM_RULES_LINO)
+            .expect("embedded learned program-plan rules must parse");
+        set.rules.extend(learned.rules);
+        set.rules
+            .sort_by(|left, right| left.order.cmp(&right.order).then(left.id.cmp(&right.id)));
+        let mut seen_rule_ids = BTreeSet::new();
+        set.rules
+            .retain(|rule| seen_rule_ids.insert(rule.id.clone()));
         let derived = derive_inverse_rules(
             &set.rules,
             &crate::seed::operation_vocabulary().inverse_pairs(),

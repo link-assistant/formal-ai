@@ -3,9 +3,8 @@
 // committed captures, and must mark every extracted procedure step unverified —
 // the browser has no runtime, so it may never claim a step was checked.
 //
-// The fixtures are `tests/fixtures/issue-1138-b4/`, the same tree
-// `tests/unit/issue_1138_formalization_depth.rs` replays, and the expectation
-// file is written by `examples/issue_1138_formalization_parity.rs`.
+// Source captures come from plan 01's content-addressed B1 tree. The B4 graph
+// expectation is written by `examples/issue_1138_formalization_parity.rs`.
 
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -15,8 +14,9 @@ import assert from "node:assert/strict";
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
-const FIXTURE_DIR = path.join(REPO_ROOT, "tests/fixtures/issue-1138-b4");
-const CACHE_DIR = path.join(FIXTURE_DIR, "source-cache");
+const SOURCE_FIXTURE_DIR = path.join(REPO_ROOT, "tests/fixtures/issue-1138-b1");
+const PARITY_FIXTURE_DIR = path.join(REPO_ROOT, "tests/fixtures/issue-1138-b4");
+const CACHE_DIR = path.join(SOURCE_FIXTURE_DIR, "source-cache");
 const CORPUS = path.join(REPO_ROOT, "data/benchmarks/formalization-depth-requirements.lino");
 
 /** The held-out requirements, by language, for one family. */
@@ -92,21 +92,51 @@ async function formalize(context, text) {
 
 test("the browser produces the same concept-graph identity as the native path", async () => {
   const context = await bootWorker(loadCaptures());
-  const expected = JSON.parse(readFileSync(path.join(FIXTURE_DIR, "expected-graphs.json"), "utf8"));
+  const expected = JSON.parse(readFileSync(path.join(PARITY_FIXTURE_DIR, "expected-graphs.json"), "utf8"));
+  assert.deepEqual(expected, [{ identity: "concept_graph_3a37a219dc8e55c7" }]);
+  const senses = JSON.parse(readFileSync(path.join(SOURCE_FIXTURE_DIR, "expected-senses.json"), "utf8"));
+  const servedLanguages = new Set(
+    senses.filter((sense) => String(sense.surface).toLowerCase().includes("isogram"))
+      .map((sense) => sense.language),
+  );
   const cases = requirements("isogram_requirement");
   assert.equal(cases.length, 5, "five languages, one held-out family");
 
   const identities = new Set();
   for (const one of cases) {
     const graph = await formalize(context, one.prompt);
-    assert.ok(graph.concepts.length > 0, `${one.language}: nothing was grounded`);
+    if (servedLanguages.has(one.language)) {
+      assert.ok(
+        graph.concepts.length > 0,
+        `${one.language}: a committed capture was not grounded: ${JSON.stringify(graph.needs)}`,
+      );
+    } else {
+      assert.ok(
+        graph.needs.some((need) => need.state === "unsatisfiable" && need.outcomes.length > 0),
+        `${one.language}: an unserved language must report its consulted-source outcomes`,
+      );
+    }
     identities.add(graph.identity);
+    for (const need of graph.needs.filter((candidate) => candidate.depth === 0)) {
+      const span = need.sourceSpan.slice(need.sourceSpan.lastIndexOf("@") + 1);
+      const [start, end] = span.split(":").map(Number);
+      assert.equal(
+        Buffer.from(one.prompt, "utf8").subarray(start, end).toString("utf8"),
+        need.subject,
+        `${one.language}: the need span must use native-compatible UTF-8 byte offsets`,
+      );
+    }
     assert.ok(
       expected.some((row) => row.identity === graph.identity),
       `${one.language}: the browser identity is not in the cross-runtime expectation`,
     );
   }
   assert.equal(identities.size, 1, "one requirement, five languages, one identity");
+
+  const recursive = await formalize(context, cases.find((one) => one.language === "en").prompt);
+  assert.ok(recursive.needs.some((need) => need.depth === 1), "a grounded gloss raises child needs");
+  assert.ok(recursive.needs.every((need) => need.depth <= 1), "the explicit recursion bound is honored");
+  assert.equal(recursive.maxDepthReached, 1);
 });
 
 test("every extracted procedure step the browser shows is unverified", async () => {
@@ -122,6 +152,10 @@ test("every extracted procedure step the browser shows is unverified", async () 
       assert.match(step.sourceSpan, /@\d+:\d+$/u, "a step names the exact span it came from");
     }
   }
+  assert.ok(
+    graph.procedures[0].steps.every((step) => step.imperative.toLowerCase() !== "then"),
+    "seeded continuation markers are not misreported as imperative verbs",
+  );
   assert.ok(
     graph.needs.every((need) => need.state !== "satisfied" || need.satisfiedBy),
     "a satisfied need always names the evidence that satisfied it",

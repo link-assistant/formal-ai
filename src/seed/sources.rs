@@ -109,7 +109,7 @@ pub struct SourceRecord {
     /// Issue #1138, plan 01 L10. A project can publish its material through two
     /// surfaces: Wiktionary's content reaches English through the Free
     /// Dictionary API and every other language through that language edition's
-    /// MediaWiki `extracts` API. Declaring the second endpoint on the same
+    /// `MediaWiki` `extracts` API. Declaring the second endpoint on the same
     /// record — rather than as a second registry row — is what keeps one
     /// *service* occupying one of the `max_services` slots the bounds allow,
     /// which is what `max_services` counts.
@@ -200,7 +200,7 @@ impl SourceRecord {
     /// malformed URL.
     #[must_use]
     pub fn api_url(&self, parameters: &[(&str, &str)]) -> String {
-        self.bind_template(&self.api, parameters)
+        Self::bind_template(&self.api, parameters)
     }
 
     /// The endpoint that serves `language`, template unbound.
@@ -225,10 +225,10 @@ impl SourceRecord {
     /// Fill the slots of the endpoint that serves `language`.
     #[must_use]
     pub fn api_url_in(&self, language: &str, parameters: &[(&str, &str)]) -> String {
-        self.bind_template(self.api_template_for(language), parameters)
+        Self::bind_template(self.api_template_for(language), parameters)
     }
 
-    fn bind_template(&self, template: &str, parameters: &[(&str, &str)]) -> String {
+    fn bind_template(template: &str, parameters: &[(&str, &str)]) -> String {
         let mut url = template.to_owned();
         for (name, value) in parameters {
             url = url.replace(&format!("{{{name}}}"), &percent_encode(value));

@@ -181,6 +181,22 @@ box_language_csharp
   code_fence "csharp"
   program_file "Program.cs"
   reason "no dedicated box-dotnet image, the toolchain ships only in the 5.91GB full box image"
+box_language_kotlin
+  record_type "box_language_project_deferred"
+  language "kotlin"
+  display_name "Kotlin"
+  image "konard/box"
+  code_fence "kotlin"
+  program_file "Main.kt"
+  reason "no box-kotlin image was published in the pinned box image survey, so container execution is unavailable and prerequisite discovery must run"
+box_language_scala
+  record_type "box_language_project_deferred"
+  language "scala"
+  display_name "Scala"
+  image "konard/box"
+  code_fence "scala"
+  program_file "Main.scala"
+  reason "no box-scala image was published in the pinned box image survey, so container execution is unavailable and prerequisite discovery must run"
 box_language_prompt_en
   record_type "box_language_prompt"
   locale "en"

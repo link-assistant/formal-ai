@@ -112,7 +112,12 @@ pub fn clone_at_base(spec: &WorkspaceSpec, root: &Path) -> Result<PathBuf, Works
 
     let source = spec.clone_source();
     let destination = root.display().to_string();
-    let clone_argv = ["clone", "--no-checkout", source.as_str(), destination.as_str()];
+    let clone_argv = [
+        "clone",
+        "--no-checkout",
+        source.as_str(),
+        destination.as_str(),
+    ];
     if !super::allows("git", &clone_argv) {
         return Err(WorkspaceError::UnsupportedCommand {
             program: String::from("git clone"),

@@ -200,7 +200,7 @@ impl ToolchainLedger {
             program: record.program.clone(),
             prefix: record.installed_prefix.clone(),
             environment: super::probe::workspace_environment(&root),
-            content_id: record.content_id.clone(),
+            content_id: record.content_id,
         })
     }
 }

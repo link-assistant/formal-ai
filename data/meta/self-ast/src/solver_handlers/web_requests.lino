@@ -2,55 +2,45 @@ self_ast_census
   target src/solver_handlers/web_requests.rs
   language rust
   fidelity signature
-  byte_len 42628
-  line_count 992
-  content_id source_module_8c7cdc5866bb0883
-  symbol_count 47
+  byte_len 35472
+  line_count 810
+  content_id source_module_cb6c3ab009f42c89
+  symbol_count 37
   symbols
     module live_search 14 14
-    function try_http_fetch 29 35
-    function try_http_fetch_with_offline 39 98
-    function try_url_navigate 105 129
-    const WEB_SEARCH_RRF_K 136 136
-    const WEB_SEARCH_PROVIDERS 142 142
-    function try_web_search 144 156
-    function detect_web_search_query 165 168
-    function answer_web_search_query 170 286
-    const PROMOTED_PROJECT_ORGS 288 288
-    enum RepositoryPlatform 291 295
-    function label 298 304
-    function host 306 312
-    struct RepositoryReference 316 321
-    function slug 324 326
-    function try_project_lookup 336 351
-    function try_explicit_repository_lookup 353 378
-    function try_project_lookup_with_response_language 380 396
-    function try_project_lookup_internal 398 454
-    function render_project_lookup 456 540
-    function render_generic_repository_lookup 542 646
-    function append_repository_evidence 648 655
-    function matched_project 659 673
-    function promoted_project_by_repo 675 682
-    function is_promoted_project 684 688
-    function repository_from_prompt 690 694
-    function repository_from_concept_term 696 703
-    function repository_from_slug 705 725
-    function repository_from_url 727 755
-    function clean_repository_segment 757 769
-    function is_text_url_extraction_prompt 771 775
-    function normalize_concept_term 777 783
-    function registry_static 788 792
-    static REGISTRY 790 790
-    function extract_http_fetch_url 794 800
-    function http_fetch_url_for 812 814
-    function agentic_fetch_url_for 822 825
-    function extract_url_navigate_url 827 833
-    function first_url_candidate 835 843
-    function trim_url_token 845 849
-    function is_url_wrapper_punctuation 851 856
-    function is_url_trailing_punctuation 858 860
-    function normalize_url_candidate 862 891
-    function looks_like_hostname 893 915
-    function role_evidences_web_intent 936 955
-    function is_http_fetch_prompt 965 972
-    function is_url_navigate_prompt 980 992
+    module url_parse 15 15
+    function try_http_fetch 36 42
+    function try_http_fetch_with_offline 46 54
+    function try_routed_http_fetch_with_offline 62 69
+    function answer_http_fetch_url 71 115
+    function try_url_navigate 122 146
+    const WEB_SEARCH_RRF_K 153 153
+    const WEB_SEARCH_PROVIDERS 159 159
+    function try_web_search 161 173
+    function detect_web_search_query 182 185
+    function answer_web_search_query 187 303
+    const PROMOTED_PROJECT_ORGS 305 305
+    enum RepositoryPlatform 308 312
+    function label 315 321
+    function host 323 329
+    struct RepositoryReference 333 338
+    function slug 341 343
+    function try_project_lookup 353 368
+    function try_explicit_repository_lookup 370 395
+    function try_project_lookup_with_response_language 397 413
+    function try_project_lookup_internal 415 472
+    function render_project_lookup 474 558
+    function render_generic_repository_lookup 560 664
+    function append_repository_evidence 666 673
+    function matched_project 677 691
+    function promoted_project_by_repo 693 700
+    function is_promoted_project 702 706
+    function repository_from_prompt 708 712
+    function repository_from_concept_term 714 721
+    function repository_from_slug 723 743
+    function repository_from_url 745 773
+    function clean_repository_segment 775 787
+    function is_text_url_extraction_prompt 789 793
+    function normalize_concept_term 795 801
+    function registry_static 806 810
+    static REGISTRY 808 808

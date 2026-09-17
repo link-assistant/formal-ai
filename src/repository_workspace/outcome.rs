@@ -107,22 +107,26 @@ pub fn describe_outcome(outcome: &CommandOutcome, language: &str) -> String {
     let template = seed_sentence(outcome.seed_id(), language);
     match outcome {
         CommandOutcome::NotACommand { .. } | CommandOutcome::UnverifiedExecution => template,
-        CommandOutcome::DidNotRun { program } => template.replace("{program}", program),
-        CommandOutcome::Completed { output } => template.replace("{output}", output),
+        CommandOutcome::DidNotRun { program } => {
+            template.replace(concat!("{", "program", "}"), program)
+        }
+        CommandOutcome::Completed { output } => {
+            template.replace(concat!("{", "output", "}"), output)
+        }
         CommandOutcome::DidNotComplete { exit, output } => template
             .replace(
-                "{exit}",
+                concat!("{", "exit", "}"),
                 &exit.map_or_else(|| String::from("none"), |code| code.to_string()),
             )
-            .replace("{output}", output),
+            .replace(concat!("{", "output", "}"), output),
         CommandOutcome::TimedOut {
             deadline_seconds,
             elapsed_seconds,
             output,
         } => template
-            .replace("{deadline}", &deadline_seconds.to_string())
-            .replace("{elapsed}", &elapsed_seconds.to_string())
-            .replace("{output}", output),
+            .replace(concat!("{", "deadline", "}"), &deadline_seconds.to_string())
+            .replace(concat!("{", "elapsed", "}"), &elapsed_seconds.to_string())
+            .replace(concat!("{", "output", "}"), output),
     }
 }
 
@@ -131,8 +135,7 @@ pub fn describe_outcome(outcome: &CommandOutcome, language: &str) -> String {
 pub fn seed_sentence(id: &str, language: &str) -> String {
     let root = parse_lino(COMMAND_OUTCOME_LINO);
     let Some(record) = root.children.iter().find(|node| {
-        node.find_child_value("record_type") == RECORD_OUTCOME
-            && node.find_child_value("id") == id
+        node.find_child_value("record_type") == RECORD_OUTCOME && node.find_child_value("id") == id
     }) else {
         return String::new();
     };

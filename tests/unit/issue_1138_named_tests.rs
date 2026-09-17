@@ -9,6 +9,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use formal_ai::execution_box::ExecutionBackend;
+use formal_ai::execution_evidence::EvidenceDetail;
 use formal_ai::repository_workspace::clone::WorkspaceSpec;
 use formal_ai::repository_workspace::verify::{RunCommand, run_named_tests};
 use formal_ai::repository_workspace::{RepositoryWorkspace, WorkspaceError};
@@ -19,16 +20,40 @@ fn repo_root() -> PathBuf {
 
 fn head_commit() -> String {
     let output = Command::new("git")
-        .args(["-C", &repo_root().display().to_string(), "rev-parse", "HEAD"])
+        .args([
+            "-C",
+            &repo_root().display().to_string(),
+            "rev-parse",
+            "HEAD",
+        ])
         .output()
         .expect("git rev-parse should run");
     String::from_utf8_lossy(&output.stdout).trim().to_owned()
 }
 
-fn workspace(tag: &str) -> RepositoryWorkspace {
+struct TestWorkspace {
+    workspace: RepositoryWorkspace,
+    root: PathBuf,
+}
+
+impl std::ops::Deref for TestWorkspace {
+    type Target = RepositoryWorkspace;
+
+    fn deref(&self) -> &Self::Target {
+        &self.workspace
+    }
+}
+
+impl Drop for TestWorkspace {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.root);
+    }
+}
+
+fn workspace(tag: &str) -> TestWorkspace {
     let root = std::env::temp_dir().join(format!("formal-ai-issue-1138-named-tests-{tag}"));
     let _ = std::fs::remove_dir_all(&root);
-    RepositoryWorkspace::open(
+    let workspace = RepositoryWorkspace::open(
         &WorkspaceSpec {
             origin: repo_root().display().to_string(),
             base_commit: head_commit(),
@@ -36,7 +61,8 @@ fn workspace(tag: &str) -> RepositoryWorkspace {
         },
         &root,
     )
-    .expect("a local clone should open")
+    .expect("a local clone should open");
+    TestWorkspace { workspace, root }
 }
 
 /// The runner is not here. The named tests did not run, and saying they failed
@@ -70,9 +96,9 @@ fn missing_interpreter_is_a_prerequisite_not_a_failure() {
                 "the observed standard error is quoted with it"
             );
         }
-        Ok(evidence) => panic!(
-            "a missing interpreter may never produce an execution record: {evidence:?}"
-        ),
+        Ok(evidence) => {
+            panic!("a missing interpreter may never produce an execution record: {evidence:?}")
+        }
         Err(other) => panic!("a missing interpreter is a prerequisite, got {other:?}"),
     }
 }
@@ -105,4 +131,46 @@ fn timeout_is_reported_with_the_deadline_and_elapsed() {
         Ok(evidence) => panic!("a timed-out run may never claim a pass: {evidence:?}"),
         Err(other) => panic!("a timeout must be reported as one, got {other:?}"),
     }
+}
+
+/// Exit status is observed once and projected onto every named test. A
+/// non-zero program is evidence of failure, never an unavailable runner.
+#[test]
+fn named_tests_record_the_observed_pass_fail_split() {
+    let workspace = workspace("pass-fail");
+    let passing = run_named_tests(
+        &workspace,
+        &RunCommand {
+            line: String::from("python3 -c \"raise SystemExit(0)\""),
+            names: vec![String::from("defaults::passing")],
+        },
+        &ExecutionBackend::HostSandbox,
+    )
+    .expect("the passing command ran");
+    assert_eq!(
+        passing.detail,
+        EvidenceDetail::Tests {
+            passed: vec![String::from("defaults::passing")],
+            failed: Vec::new(),
+            timed_out: false,
+        }
+    );
+
+    let failing = run_named_tests(
+        &workspace,
+        &RunCommand {
+            line: String::from("python3 -c \"raise SystemExit(1)\""),
+            names: vec![String::from("defaults::failing")],
+        },
+        &ExecutionBackend::HostSandbox,
+    )
+    .expect("a completed failing command still returns execution evidence");
+    assert_eq!(
+        failing.detail,
+        EvidenceDetail::Tests {
+            passed: Vec::new(),
+            failed: vec![String::from("defaults::failing")],
+            timed_out: false,
+        }
+    );
 }

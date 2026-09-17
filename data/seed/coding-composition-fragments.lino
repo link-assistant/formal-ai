@@ -1,0 +1,240 @@
+meanings
+  drop_whitespace
+    defined-by filter
+    role coding_fragment
+    idiom "''.join(symbol for symbol in {items} if not symbol.isspace())"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.isspace"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "remove Unicode whitespace characters from text"
+    fragment_signature "text"
+    fragment_result "text"
+    supports balanced_delimiter_groups
+  delimiter_depth_delta
+    defined-by mapping
+    role coding_fragment
+    idiom "1 if {symbol} == '(' else -1"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#conditional-expressions"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "map opening and closing delimiters to depth deltas"
+    fragment_signature "text"
+    fragment_result "integer"
+    supports balanced_delimiter_groups
+    supports group_max_nesting
+  zero_depth_end_offsets
+    defined-by filter
+    role coding_fragment
+    idiom "[index + 1 for index, depth in enumerate({items}) if depth == 0]"
+    grounding "https://docs.python.org/3.12/library/functions.html#enumerate"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "positions after values where accumulated depth returns to zero"
+    fragment_signature "sequence<integer>"
+    fragment_result "sequence<integer>"
+    supports balanced_delimiter_groups
+  slice_at_end_offsets
+    defined-by mapping
+    role coding_fragment
+    idiom "[{items}[start:end] for start, end in zip([0] + {ends}[:-1], {ends})]"
+    grounding "https://docs.python.org/3.12/library/functions.html#zip"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "partition a sequence at ordered end offsets"
+    fragment_signature (text sequence<integer>)
+    fragment_result "sequence<text>"
+    supports balanced_delimiter_groups
+  add_binary_operator
+    defined-by reduction
+    role coding_fragment
+    idiom "lambda left, right: left + right"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#lambda"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "binary addition lambda operation"
+    fragment_result text
+    supports prefix_negative
+    supports balanced_delimiter_groups
+    supports group_max_nesting
+  pair_destructuring_pattern
+    defined-by pairwise
+    role coding_fragment
+    idiom "left, right"
+    grounding "https://docs.python.org/3.12/reference/compound_stmts.html#the-for-statement"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "destructure pair in iteration target"
+    fragment_result "pair<unknown:0,unknown:0>"
+    supports pairwise_distinct
+    supports quantifier_any
+  maximum_binary_operator
+    defined-by reduction
+    role coding_fragment
+    idiom max
+    grounding "https://docs.python.org/3.12/library/functions.html#max"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "binary maximum callable operation"
+    fragment_result text
+    supports running_prefix
+    supports reduce_max
+  multiply_values
+    defined-by reduction
+    role coding_fragment
+    idiom "{left} * {right}"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "multiply two numeric values"
+    fragment_signature (float float)
+    fragment_result float
+    supports geometric_measure
+  divide_values
+    defined-by reduction
+    role coding_fragment
+    idiom "{dividend} / {divisor}"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "divide one numeric value by another"
+    fragment_signature (float float)
+    fragment_result float
+    supports geometric_measure
+  orthogonal_predecessors
+    defined-by optimization
+    role coding_fragment
+    idiom "((-1, 0), (0, -1))"
+    grounding "https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf"
+    license "repository-bootstrap"
+    bootstrap true
+    rediscovery_query "orthogonal monotone grid predecessor offsets"
+    fragment_result "sequence<pair<integer,integer>>"
+    supports grid_minimum_cost_path
+  diagonal_predecessors
+    defined-by optimization
+    role coding_fragment
+    idiom "((-1, 0), (0, -1), (-1, -1))"
+    grounding "https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf"
+    license "repository-bootstrap"
+    bootstrap true
+    rediscovery_query "diagonal monotone grid predecessor offsets"
+    fragment_result "sequence<pair<integer,integer>>"
+    supports grid_minimum_cost_path
+  nested_sequence_value
+    defined-by indexing
+    role coding_fragment
+    idiom "{items}[{first}][{second}]"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "read a nested sequence value at two coordinates"
+    fragment_signature ("sequence<sequence<unknown:0>>" integer integer)
+    fragment_result "unknown:0"
+    supports grid_minimum_cost_path
+  integer_nonnegative
+    defined-by comparison
+    role coding_fragment
+    idiom "{value} >= 0"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "test whether an integer coordinate is nonnegative"
+    fragment_signature integer
+    fragment_result boolean
+    supports grid_minimum_cost_path
+  boolean_and
+    defined-by conjunction
+    role coding_fragment
+    idiom "({left}) and ({right})"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#boolean-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "combine two required boolean conditions"
+    fragment_signature (boolean boolean)
+    fragment_result boolean
+    supports grid_minimum_cost_path
+  suffix_offsets
+    defined-by range
+    role coding_fragment
+    idiom "range(len({text}) + 1)"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#range"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "enumerate every suffix start offset"
+    fragment_signature text
+    fragment_result "sequence<integer>"
+    supports palindrome_extension
+  suffix_is_palindrome
+    defined-by predicate
+    role coding_fragment
+    idiom "{text}[{offset}:] == {text}[{offset}:][::-1]"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "test whether a text suffix is palindrome"
+    fragment_signature (text integer)
+    fragment_result boolean
+    supports palindrome_extension
+  first_matching_offset
+    defined-by reduction
+    role coding_fragment
+    idiom "next({offset} for {offset} in {offsets} if {predicate})"
+    grounding "https://docs.python.org/3.12/library/functions.html#next"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "first ordered offset satisfying predicate"
+    fragment_signature (integer "sequence<integer>" boolean)
+    fragment_result integer
+    supports palindrome_extension
+  append_reversed_prefix
+    defined-by sequence
+    role coding_fragment
+    idiom "{text} + {text}[:{offset}][::-1]"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "append reversed text prefix through offset"
+    fragment_signature (text integer)
+    fragment_result text
+    supports palindrome_extension
+  integer_divisible
+    defined-by predicate
+    role coding_fragment
+    idiom "{value} % {divisor} == 0"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "test whether one integer divides another without remainder"
+    fragment_signature (integer integer)
+    fragment_result boolean
+  integer_floor_divide
+    defined-by reduction
+    role coding_fragment
+    idiom "{value} // {divisor}"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "floor division of two integers"
+    fragment_signature (integer integer)
+    fragment_result integer
+  integer_add
+    defined-by reduction
+    role coding_fragment
+    idiom "{left} + {right}"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "addition of two integers"
+    fragment_signature (integer integer)
+    fragment_result integer
+    supports grid_minimum_cost_path
+  integer_multiply
+    defined-by reduction
+    role coding_fragment
+    idiom "{left} * {right}"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "multiplication of two integers"
+    fragment_signature (integer integer)
+    fragment_result integer

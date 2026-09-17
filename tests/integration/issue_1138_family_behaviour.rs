@@ -62,6 +62,10 @@ const BATCHES: [(&str, &str); 5] = [
     ("M1", "rule_interpreter"),
 ];
 
+const DOCUMENTED_PROMPT: &str =
+    "What is a fufloмицин — summarise it in one paragraph with the source.";
+const DOCUMENTED_ANSWER: &str = "I identified a source-backed retrieval request, but this isolated turn contains no verified capture for the subject. A trusted-source walk is required before a summary can be asserted.";
+
 fn cases_for(family: &str) -> Vec<(String, String, String)> {
     let mut cases = Vec::new();
     for language in ["en", "ru", "hi", "zh", "es"] {
@@ -85,6 +89,8 @@ fn cases_for(family: &str) -> Vec<(String, String, String)> {
 
 #[test]
 fn every_retired_handler_prompt_still_answers_through_its_family() {
+    let documented = FormalAiEngine.answer(DOCUMENTED_PROMPT).answer;
+    assert_eq!(documented, DOCUMENTED_ANSWER);
     let mut report: Vec<String> = Vec::new();
     let mut failures: Vec<String> = Vec::new();
 
@@ -123,6 +129,8 @@ fn every_retired_handler_prompt_still_answers_through_its_family() {
 
 #[test]
 fn no_family_answer_is_the_unknown_opener() {
+    let documented = FormalAiEngine.answer(DOCUMENTED_PROMPT).answer;
+    assert_eq!(documented, DOCUMENTED_ANSWER);
     // A migration that turns an answered prompt into "I do not know" is a
     // regression, not a migration (#699 requirement 5).
     let openers = fs::read_to_string(repo_root().join("data/seed/unknown-openers.lino"))

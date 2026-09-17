@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/calendar.rs
   language rust
   fidelity signature
-  byte_len 33835
-  line_count 976
-  content_id source_module_16a42c716b43899c
-  symbol_count 49
+  byte_len 34446
+  line_count 996
+  content_id source_module_1786a994ff227c6b
+  symbol_count 50
   symbols
     enum Weekday 21 29
     function index 32 42
@@ -39,20 +39,21 @@ self_ast_census
     function weekday_for_unix_days 390 400
     function render_current_day_answer 402 414
     function render_answer 416 488
-    function try_calendar_create_event 503 585
-    function default_title 588 595
-    function mentions_calendar_create_request 597 644
-    function extract_day_number 646 683
-    function relative_date_offset 685 698
-    function extract_event_title 700 708
-    function compute_target_date_with_rollover 710 730
-    function extract_clock_time 732 778
-    function extract_spoken_hour_time 780 810
-    function mentions_timezone_alias 812 819
-    function resolve_timezone 821 826
-    function extract_title 828 858
-    function extract_participant_title 860 866
-    function tidy_title 868 913
-    function strip_action_words 915 929
-    function capitalize_first 931 936
-    function render_create_confirmation 938 976
+    function try_calendar_create_event 503 513
+    function try_routed_calendar_create_event 522 600
+    function default_title 603 610
+    function mentions_calendar_create_request 612 659
+    function extract_day_number 661 700
+    function relative_date_offset 702 715
+    function extract_event_title 717 725
+    function compute_target_date_with_rollover 727 747
+    function extract_clock_time 749 796
+    function extract_spoken_hour_time 798 829
+    function mentions_timezone_alias 831 838
+    function resolve_timezone 840 845
+    function extract_title 847 878
+    function extract_participant_title 880 886
+    function tidy_title 888 933
+    function strip_action_words 935 949
+    function capitalize_first 951 956
+    function render_create_confirmation 958 996

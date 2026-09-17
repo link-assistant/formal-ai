@@ -37,12 +37,12 @@ mod codegen;
 use std::{cmp::Ordering, fmt::Write as _};
 
 use crate::coding::ProgramLanguage;
-use crate::{engine::SymbolicAnswer, event_log::EventLog};
-use crate::language::{detect as detect_language, Language};
+use crate::language::{Language, detect as detect_language};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
-use crate::seed::parser::{parse_lino, LinoNode};
 use crate::seed::NUMERIC_LIST_OPERATIONS_LINO;
+use crate::seed::parser::{LinoNode, parse_lino};
 use crate::solver::{ConversationRole, ConversationTurn};
+use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
 use super::finalize_simple;
 
@@ -383,10 +383,11 @@ fn numeric_list_history_context(history: &[ConversationTurn]) -> InheritedCoding
         // The language (and code request) come from the most recent turn that
         // named a programming language alongside its list (issue #412).
         if inherited.language.is_none()
-            && let Some(language) = crate::coding::program_language_by_alias(normalized) {
-                inherited.language = Some(language);
-                inherited.code_requested = vocabulary.matches("code_request", normalized);
-            }
+            && let Some(language) = crate::coding::program_language_by_alias(normalized)
+        {
+            inherited.language = Some(language);
+            inherited.code_requested = vocabulary.matches("code_request", normalized);
+        }
         if !inherited.items.is_empty() && inherited.language.is_some() {
             break;
         }
@@ -760,11 +761,12 @@ fn parse_quoted_strings(prompt: &str) -> Vec<ParsedListItem> {
         while index < chars.len() {
             let ch = chars[index];
             if ch == '\\'
-                && let Some(next) = chars.get(index + 1) {
-                    text.push(*next);
-                    index += 2;
-                    continue;
-                }
+                && let Some(next) = chars.get(index + 1)
+            {
+                text.push(*next);
+                index += 2;
+                continue;
+            }
             if ch == quote {
                 break;
             }

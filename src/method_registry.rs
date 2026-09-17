@@ -16,12 +16,58 @@
 //! The registry is recorded as a `method_registry` loop event so it is observable
 //! in the event log, and the live solver dispatch also uses the registry ordering.
 
+use std::collections::BTreeMap;
+use std::fmt::Write as _;
+
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
 use crate::seed::parser::parse_lino;
 use crate::solver_dispatch::{
     CONTEXTUAL_HANDLER_NAMES, PRELUDE_METHOD_NAMES, specialized_handlers,
 };
+
+const METHOD_EXECUTION_LINO: &str = include_str!("../data/seed/method-execution.lino");
+
+/// A pre-handler runtime selected by a method-record attribute.
+///
+/// The enum is a closed catalogue of native kernels. Which method invokes one
+/// is data in `method-execution.lino`, so adding or moving a method never adds
+/// a name branch to the dispatcher.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MethodRuntimeKind {
+    Diagnostic,
+    NaturalLanguageTool,
+    BehaviorRules,
+    FeatureCapability,
+    PlaywrightScript,
+}
+
+/// A response-language-aware native kernel selected by a method attribute.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ResponseLanguageVariant {
+    ConceptLookup,
+    PatternInference,
+}
+
+/// When the generic project lookup fallback runs for a method.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ProjectLookupPhase {
+    BeforeRuntime,
+    Fallback,
+}
+
+/// Execution attributes attached to a registry method by seed data.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct MethodExecution {
+    /// Optional native pre-handler runtime.
+    pub runtime: Option<MethodRuntimeKind>,
+    /// Optional forced-response-language renderer.
+    pub response_language: Option<ResponseLanguageVariant>,
+    /// Optional generic project lookup and the phase at which it runs.
+    pub project_lookup: Option<ProjectLookupPhase>,
+    /// Whether definition fusion may run before this method.
+    pub definition_fusion: bool,
+}
 
 /// How a method is reached during dispatch.
 ///
@@ -63,6 +109,35 @@ pub struct Method {
     pub order: usize,
     /// Which dispatch surface reaches this method.
     pub surface: MethodSurface,
+    /// Uniform execution policy parsed from `data/seed/method-execution.lino`.
+    pub execution: MethodExecution,
+}
+
+/// Review status of a learned method after its behavior-delta measurement.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LearnedMethodStatus {
+    /// Its held-out effect qualified, so the executable record may dispatch.
+    Adopted,
+    /// Review found a change but no verified improvement. The record remains
+    /// discoverable as experience and may not alter answers.
+    AdoptedNotEffective,
+}
+
+impl LearnedMethodStatus {
+    /// Stable seed/trace spelling.
+    #[must_use]
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::Adopted => "adopted",
+            Self::AdoptedNotEffective => "adopted_not_effective",
+        }
+    }
+
+    /// Only a method with a qualifying observed effect is dispatchable.
+    #[must_use]
+    pub const fn permits_dispatch(self) -> bool {
+        matches!(self, Self::Adopted)
+    }
 }
 
 /// One promoted method abstraction learned from solved-problem event logs.
@@ -76,6 +151,8 @@ pub struct Method {
 pub struct LearnedMethod {
     /// Stable registry name derived from the algorithm schema.
     pub name: String,
+    /// The review outcome backed by the adoption-effect ledger.
+    pub status: LearnedMethodStatus,
     /// Underlying algorithm candidate identity.
     pub algorithm_id: String,
     /// Integrity identity for support and held-out observations.
@@ -86,6 +163,21 @@ pub struct LearnedMethod {
     pub support_trace_ids: Vec<String>,
     /// Traces withheld for validation.
     pub held_out_trace_ids: Vec<String>,
+}
+
+/// One observed execution of an adopted learned method.
+///
+/// The answer is the same recipe projection returned by live dispatch.  The
+/// verification bit is derived from the execution log: every operation the
+/// learned record declares must be represented by an observed recorder event.
+/// This gives behavior-delta measurement a checkable postcondition instead of
+/// upgrading an arbitrary byte change to an improvement.
+#[derive(Debug, Clone)]
+pub struct LearnedMethodExecution {
+    pub answer: String,
+    pub executed_steps: Vec<String>,
+    pub skipped_steps: Vec<String>,
+    pub operations_verified: bool,
 }
 
 impl LearnedMethod {
@@ -101,27 +193,34 @@ impl LearnedMethod {
     /// binds to no recorder.
     pub fn to_recipe_program(&self) -> Result<crate::recipe_interpreter::RecipeProgram, String> {
         let recipe = crate::recipe_interpreter::RecipeProgram::from_repo();
-        let mut steps = Vec::new();
+        let mut selected_orders = Vec::new();
         for operation in &self.operations {
             // `need:status` and `method_registry:count` are the *facets* of one
             // recorded event, so an operation binds through the event kind its
             // base names. A facet adds no second step.
             let base = operation.split(':').next().unwrap_or(operation);
-            let Some(step) = recipe
-                .steps
-                .iter()
-                .find(|step| step_emits(step, base))
-            else {
+            let Some(step) = recipe.steps.iter().find(|step| step_emits(step, base)) else {
                 // A slug, not a sentence: the surface renders the refusal from
                 // seed prose, and what the caller needs from the error is the
                 // operation that did not bind (R379).
                 return Err(format!("unbound_operation:{operation}"));
             };
-            if !steps.iter().any(|existing: &crate::recipe_interpreter::RecipeStep| existing.id == step.id) {
-                steps.push(step.clone());
-            }
+            selected_orders.push(step.order);
         }
-        steps.sort_by_key(|step| step.order);
+
+        // A recipe is an ordered data-flow program, not a bag of recorders. A
+        // learned suffix such as `need -> ... -> reasoning_standard` still
+        // needs the earlier frame/work-unit stages that provide its inputs.
+        // Close over every executable prefix step through the last learned
+        // operation. This is deliberately structural: a newly learned suffix
+        // gets its prerequisites from recipe order, with no method-name or
+        // benchmark-specific branch.
+        let last_order = selected_orders.into_iter().max().unwrap_or(0);
+        let steps = recipe
+            .steps
+            .into_iter()
+            .filter(|step| step.is_executable() && step.order <= last_order)
+            .collect();
         Ok(crate::recipe_interpreter::RecipeProgram { steps })
     }
 
@@ -134,10 +233,54 @@ impl LearnedMethod {
         self.to_recipe_program().is_ok()
     }
 
+    /// Execute this abstraction through the shared recipe interpreter and
+    /// verify its declared operations against the resulting event log.
+    ///
+    /// # Errors
+    ///
+    /// Returns the same stable binding or dependency error live dispatch
+    /// records when the learned program cannot execute.
+    pub fn execute(
+        &self,
+        formalization: &crate::intent_formalization::IntentFormalization,
+        config: crate::solver::SolverConfig,
+    ) -> Result<LearnedMethodExecution, String> {
+        let program = self.to_recipe_program()?;
+        let trace = program.execute(
+            formalization,
+            config.max_decomposition_depth,
+            config.recursion_mode,
+            config.selection_mode,
+            config.skill_mode,
+        )?;
+        let operations_verified = self.operations.iter().all(|operation| {
+            let base = operation.split(':').next().unwrap_or(operation);
+            trace
+                .log
+                .events()
+                .iter()
+                .any(|event| event_kind_matches_base(&event.kind, base))
+        });
+        let mut answer = program.to_links_notation();
+        for id in &trace.executed {
+            let _ = write!(answer, "\n  executed {id}");
+        }
+        for id in &trace.skipped {
+            let _ = write!(answer, "\n  skipped {id}");
+        }
+        Ok(LearnedMethodExecution {
+            answer,
+            executed_steps: trace.executed,
+            skipped_steps: trace.skipped,
+            operations_verified,
+        })
+    }
+
     fn to_links_notation(&self) -> String {
         let mut pairs = vec![
             ("record_type", "learned_method".to_owned()),
             ("name", self.name.clone()),
+            ("status", self.status.slug().to_owned()),
             ("algorithm_id", self.algorithm_id.clone()),
             ("evidence_id", self.evidence_id.clone()),
         ];
@@ -159,13 +302,72 @@ impl LearnedMethod {
 impl Method {
     #[must_use]
     fn to_links_notation(&self) -> String {
-        let pairs: Vec<(&str, String)> = vec![
+        let mut pairs: Vec<(&str, String)> = vec![
             ("record_type", "method".to_owned()),
             ("name", self.name.clone()),
             ("order", self.order.to_string()),
             ("surface", self.surface.slug().to_owned()),
         ];
+        if let Some(runtime) = self.execution.runtime {
+            pairs.push(("runtime", runtime.slug().to_owned()));
+        }
+        if let Some(variant) = self.execution.response_language {
+            pairs.push(("response_language", variant.slug().to_owned()));
+        }
+        if let Some(phase) = self.execution.project_lookup {
+            pairs.push(("project_lookup", phase.slug().to_owned()));
+        }
+        if self.execution.definition_fusion {
+            pairs.push(("definition_fusion", "true".to_owned()));
+        }
         format_lino_record(&self.name, &pairs)
+    }
+}
+
+impl MethodRuntimeKind {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::Diagnostic => "diagnostic",
+            Self::NaturalLanguageTool => "natural_language_tool",
+            Self::BehaviorRules => "behavior_rules",
+            Self::FeatureCapability => "feature_capability",
+            Self::PlaywrightScript => "playwright_script",
+        }
+    }
+
+    /// Native function that implements this data-selected runtime.
+    ///
+    /// Keeping this mapping on the closed runtime type lets introspection and
+    /// dispatch share the same executable identity.  Callers therefore do not
+    /// need method-name exceptions for prelude methods whose entry point is
+    /// selected by `method-execution.lino`.
+    #[must_use]
+    pub const fn entry_point(self) -> &'static str {
+        match self {
+            Self::Diagnostic => "try_diagnostic",
+            Self::NaturalLanguageTool => "try_natural_language_tool_request",
+            Self::BehaviorRules => "try_behavior_rules_with_runtime",
+            Self::FeatureCapability => "try_feature_capability",
+            Self::PlaywrightScript => "try_playwright_script",
+        }
+    }
+}
+
+impl ResponseLanguageVariant {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::ConceptLookup => "concept_lookup",
+            Self::PatternInference => "pattern_inference",
+        }
+    }
+}
+
+impl ProjectLookupPhase {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::BeforeRuntime => "before_runtime",
+            Self::Fallback => "fallback",
+        }
     }
 }
 
@@ -231,6 +433,7 @@ impl MethodRegistry {
     /// contains fewer than two ordered operations.
     pub fn from_dispatch_with_learned_seed(learned_seed: &str) -> Result<Self, String> {
         let specialized = specialized_handlers();
+        let execution = parse_method_execution(METHOD_EXECUTION_LINO)?;
         let mut methods = Vec::with_capacity(
             PRELUDE_METHOD_NAMES.len() + specialized.len() + CONTEXTUAL_HANDLER_NAMES.len(),
         );
@@ -239,6 +442,7 @@ impl MethodRegistry {
                 name: (*name).to_owned(),
                 order,
                 surface: MethodSurface::Prelude,
+                execution: execution_for(&execution, name),
             });
         }
         for (order, (name, _handler)) in specialized.iter().enumerate() {
@@ -246,6 +450,7 @@ impl MethodRegistry {
                 name: (*name).to_owned(),
                 order,
                 surface: MethodSurface::Specialized,
+                execution: execution_for(&execution, name),
             });
         }
         for (order, name) in CONTEXTUAL_HANDLER_NAMES.iter().enumerate() {
@@ -253,6 +458,7 @@ impl MethodRegistry {
                 name: (*name).to_owned(),
                 order,
                 surface: MethodSurface::Contextual,
+                execution: execution_for(&execution, name),
             });
         }
         let learned_methods = parse_learned_methods(learned_seed)?;
@@ -318,6 +524,41 @@ impl MethodRegistry {
             .find(|method| method.name == name)
     }
 
+    /// Resolve explicit `method:<content-addressed-name>` references from a
+    /// prompt against the learned registry.
+    ///
+    /// This is the generic invocation surface for learned methods. Names come
+    /// from seed data, and tokenization merely preserves the link punctuation;
+    /// adding a learned item therefore makes its explicit reference
+    /// discoverable without adding a Rust condition for that item or language.
+    #[must_use]
+    pub fn explicit_learned_method_relevants(&self, prompt: &str) -> Vec<String> {
+        let tokens: Vec<&str> = prompt
+            .split(|character: char| {
+                !(character.is_alphanumeric() || matches!(character, ':' | '_' | '-'))
+            })
+            .filter(|token| !token.is_empty())
+            .collect();
+        self.learned_methods
+            .iter()
+            .map(|method| format!("method:{}", method.name))
+            .filter(|reference| tokens.contains(&reference.as_str()))
+            .collect()
+    }
+
+    /// Execution attributes for one method name.
+    ///
+    /// Several surfaces may carry the same name; the seed declares attributes
+    /// by method identity, so every copy must agree. An undeclared method uses
+    /// the uniform native-handler path.
+    #[must_use]
+    pub fn execution_for(&self, name: &str) -> MethodExecution {
+        self.methods
+            .iter()
+            .find(|method| method.name == name)
+            .map_or_else(MethodExecution::default, |method| method.execution)
+    }
+
     /// Number of methods on a given dispatch surface.
     #[must_use]
     pub fn count_on(&self, surface: MethodSurface) -> usize {
@@ -375,7 +616,7 @@ impl MethodRegistry {
             let Some(learned) = self.learned_method(name) else {
                 continue;
             };
-            if learned.is_executable() {
+            if learned.status.permits_dispatch() && learned.is_executable() {
                 push_unique(&mut ordered, learned.name.clone());
             }
         }
@@ -443,17 +684,16 @@ fn parse_learned_methods(seed: &str) -> Result<Vec<LearnedMethod>, String> {
         {
             return Err(format!("duplicate_learned_method:{}", node.id));
         }
-        // A *declared* status must be `adopted`: the guard exists so a proposal
-        // document -- which always states `status "proposed"` -- can never reach
-        // the registry. A record that declares no status at all is not a
-        // proposal, and refusing it would mean a learned record could be kept out
-        // of the registry by omission rather than by decision, which is the
-        // silent skipping plan 07 leaf 4 forbids: such a record is admitted as
-        // data and judged on whether its operations bind.
+        // Proposal documents never reach the registry. An empirically
+        // ineffective adoption remains available as experience, but cannot
+        // dispatch; losing it would erase the negative result and invite the
+        // same proposal again.
         let status = node.find_child_value("status");
-        if !status.is_empty() && status != "adopted" {
-            return Err(format!("learned_method_not_adopted:{}", node.id));
-        }
+        let status = match status {
+            "" | "adopted" => LearnedMethodStatus::Adopted,
+            "adopted_not_effective" => LearnedMethodStatus::AdoptedNotEffective,
+            _ => return Err(format!("learned_method_not_adopted:{}", node.id)),
+        };
         let algorithm_id = node.find_child_value("algorithm_id").to_owned();
         let evidence_id = node.find_child_value("evidence_id").to_owned();
         if algorithm_id.trim().is_empty() || evidence_id.trim().is_empty() {
@@ -465,6 +705,7 @@ fn parse_learned_methods(seed: &str) -> Result<Vec<LearnedMethod>, String> {
         }
         methods.push(LearnedMethod {
             name: node.id.clone(),
+            status,
             algorithm_id,
             evidence_id,
             operations,
@@ -473,6 +714,68 @@ fn parse_learned_methods(seed: &str) -> Result<Vec<LearnedMethod>, String> {
         });
     }
     Ok(methods)
+}
+
+fn parse_method_execution(seed: &str) -> Result<BTreeMap<String, MethodExecution>, String> {
+    let document = parse_lino(seed);
+    let root = document
+        .children
+        .iter()
+        .find(|node| node.name == "method_execution")
+        .ok_or_else(|| String::from("method_execution_missing_root"))?;
+    let mut attributes = BTreeMap::new();
+    for method in root.children.iter().filter(|node| node.name == "method") {
+        if method.id.trim().is_empty() {
+            return Err(String::from("method_execution_empty_method"));
+        }
+        let mut execution = MethodExecution::default();
+        for attribute in &method.children {
+            match attribute.name.as_str() {
+                "runtime" => {
+                    execution.runtime = Some(match attribute.id.as_str() {
+                        "diagnostic" => MethodRuntimeKind::Diagnostic,
+                        "natural_language_tool" => MethodRuntimeKind::NaturalLanguageTool,
+                        "behavior_rules" => MethodRuntimeKind::BehaviorRules,
+                        "feature_capability" => MethodRuntimeKind::FeatureCapability,
+                        "playwright_script" => MethodRuntimeKind::PlaywrightScript,
+                        other => return Err(format!("method_execution_unknown_runtime:{other}")),
+                    });
+                }
+                "response_language" => {
+                    execution.response_language = Some(match attribute.id.as_str() {
+                        "concept_lookup" => ResponseLanguageVariant::ConceptLookup,
+                        "pattern_inference" => ResponseLanguageVariant::PatternInference,
+                        other => {
+                            return Err(format!(
+                                "method_execution_unknown_response_language:{other}"
+                            ));
+                        }
+                    });
+                }
+                "project_lookup" => {
+                    execution.project_lookup = Some(match attribute.id.as_str() {
+                        "before_runtime" => ProjectLookupPhase::BeforeRuntime,
+                        "fallback" => ProjectLookupPhase::Fallback,
+                        other => {
+                            return Err(format!("method_execution_unknown_project_phase:{other}"));
+                        }
+                    });
+                }
+                "definition_fusion" if attribute.id == "true" => {
+                    execution.definition_fusion = true;
+                }
+                other => return Err(format!("method_execution_unknown_attribute:{other}")),
+            }
+        }
+        if attributes.insert(method.id.clone(), execution).is_some() {
+            return Err(format!("method_execution_duplicate_method:{}", method.id));
+        }
+    }
+    Ok(attributes)
+}
+
+fn execution_for(attributes: &BTreeMap<String, MethodExecution>, name: &str) -> MethodExecution {
+    attributes.get(name).copied().unwrap_or_default()
 }
 
 fn child_values(node: &crate::seed::parser::LinoNode, name: &str) -> Vec<String> {
@@ -487,6 +790,13 @@ fn push_unique(values: &mut Vec<String>, value: String) {
     if !values.contains(&value) {
         values.push(value);
     }
+}
+
+fn event_kind_matches_base(kind: &str, base: &str) -> bool {
+    kind == base
+        || kind
+            .strip_prefix(base)
+            .is_some_and(|suffix| suffix.starts_with(':') || suffix.starts_with('_'))
 }
 
 /// Build the method registry and emit it as a loop event plus its Links Notation

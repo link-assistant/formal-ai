@@ -323,12 +323,20 @@ fn evidence_strength(role: &str, normalized: &str) -> usize {
 /// Whether a token parses as an absolute URL.
 fn is_url(token: &str) -> bool {
     let token = token.trim_matches(|character: char| !character.is_alphanumeric());
-    token.starts_with("http://") || token.starts_with("https://")
+    token
+        .split_once("://")
+        .is_some_and(|(scheme, rest)| matches!(scheme, "http" | "https") && !rest.is_empty())
 }
 
-/// Whether a token reads as a workspace path: it carries a separator, or it is
-/// a `name.extension` pair with a short alphabetic extension.
-fn is_path(token: &str) -> bool {
+/// Whether a token reads as a workspace path in this request.
+///
+/// A dotted API member and a filename have the same punctuation. A
+/// lower-to-upper boundary in the left side (`TypeName.member`) is structural
+/// evidence for a qualified symbol, unless the surrounding request explicitly
+/// places that token in a filesystem scope. This prevents a documentation
+/// subject from becoming a read-file request without maintaining an extension
+/// allowlist in Rust.
+fn is_path(token: &str, normalized: &str) -> bool {
     let token = token.trim_matches(|character: char| matches!(character, ',' | ';' | '"' | '\''));
     if is_url(token) {
         return false;
@@ -339,12 +347,29 @@ fn is_path(token: &str) -> bool {
     token.rsplit_once('.').is_some_and(|(stem, extension)| {
         !stem.is_empty()
             && (1..=5).contains(&extension.chars().count())
-            && extension
-                .chars()
-                .all(|character| character.is_alphanumeric())
+            && extension.chars().all(char::is_alphanumeric)
             && extension.chars().any(char::is_alphabetic)
             && !is_web_host_suffix(extension)
+            && (!looks_like_qualified_member(stem, extension) || has_workspace_scope(normalized))
     })
+}
+
+/// A dotted identifier whose left side carries a type/module-style word
+/// boundary and whose right side is an identifier, rather than an extension.
+fn looks_like_qualified_member(stem: &str, member: &str) -> bool {
+    if stem.contains('.')
+        || !stem
+            .chars()
+            .all(|character| character.is_alphanumeric() || character == '_')
+        || !member
+            .chars()
+            .all(|character| character.is_alphanumeric() || character == '_')
+    {
+        return false;
+    }
+    stem.chars()
+        .zip(stem.chars().skip(1))
+        .any(|(left, right)| left.is_lowercase() && right.is_uppercase())
 }
 
 /// Whether `extension` is a registrable domain suffix rather than a file
@@ -353,8 +378,7 @@ fn is_web_host_suffix(extension: &str) -> bool {
     let extension = extension.to_lowercase();
     seed::lexicon()
         .words_for_role(ROLE_CAPABILITY_WEB_HOST_SUFFIX)
-        .iter()
-        .any(|suffix| *suffix == extension)
+        .contains(&extension)
 }
 
 /// Whether the prompt carries a clock time: digits, a colon, digits.
@@ -378,10 +402,10 @@ fn has_quoted_span(prompt: &str) -> bool {
         };
         if let Some(open) = prompt.find(delimiter) {
             let rest = &prompt[open + delimiter.len_utf8()..];
-            if let Some(close) = rest.find(closing) {
-                if rest[..close].split_whitespace().count() > 1 {
-                    return true;
-                }
+            if let Some(close) = rest.find(closing)
+                && rest[..close].split_whitespace().count() > 1
+            {
+                return true;
             }
         }
     }
@@ -477,10 +501,7 @@ pub fn explicit_content(prompt: &str) -> Option<String> {
         return Some(span);
     }
     let characters: Vec<char> = prompt.chars().collect();
-    let lowered: Vec<char> = prompt
-        .chars()
-        .flat_map(|character| character.to_lowercase())
-        .collect();
+    let lowered: Vec<char> = prompt.chars().flat_map(char::to_lowercase).collect();
     if lowered.len() != characters.len() {
         // A case fold that changes the character count would misplace every
         // offset below, so the request is left to the planner's own extractor.
@@ -562,9 +583,10 @@ fn quoted_span(prompt: &str) -> Option<String> {
 /// The first token of `prompt` that reads as a workspace path.
 #[must_use]
 pub fn first_path(prompt: &str) -> Option<String> {
+    let normalized = normalize_prompt(prompt);
     prompt
         .split_whitespace()
-        .find(|token| is_path(token))
+        .find(|token| is_path(token, &normalized))
         .map(|token| {
             token
                 .trim_matches(|character: char| {
@@ -622,7 +644,7 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     );
     note(
         ObjectType::Path,
-        tokens.iter().any(|token| is_path(token)),
+        tokens.iter().any(|token| is_path(token, &normalized)),
         &mut found,
     );
     note(
@@ -662,7 +684,7 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
         ObjectType::BareTerm,
         tokens
             .iter()
-            .any(|token| token.chars().any(|character| character.is_alphanumeric())),
+            .any(|token| token.chars().any(char::is_alphanumeric)),
         &mut found,
     );
     if found.is_empty() {
@@ -672,8 +694,9 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     found
 }
 
-/// Every act the prompt evidences, most specific first, with `retrieve` always
-/// last: a request that evidences no narrower act is a retrieval, and saying so
+/// Return every act the prompt evidences, most specific first.
+///
+/// `retrieve` is always last: a request that evidences no narrower act is a retrieval, and saying so
 /// is what keeps a verb the list has never seen from ending in an `Ask` that
 /// names nothing (plan 10 risk 1).
 #[must_use]
@@ -722,7 +745,7 @@ pub fn locus_of(object: ObjectType, prompt: &str) -> Locus {
                 Locus::SelfSurface
             }
         }
-        ObjectType::LanguageName => Locus::Dialogue,
+        ObjectType::LanguageName | ObjectType::None => Locus::Dialogue,
         ObjectType::TimeExpression => {
             if has_workspace_scope(&normalized) {
                 Locus::Workspace
@@ -746,7 +769,6 @@ pub fn locus_of(object: ObjectType, prompt: &str) -> Locus {
                 Locus::Web
             }
         }
-        ObjectType::None => Locus::Dialogue,
     }
 }
 
@@ -880,13 +902,13 @@ pub fn route_with(
             capability: row.capability.clone(),
         };
     }
-    if let Some(fallback) = &row.fallback {
-        if advertised.contains(&fallback.as_str()) {
-            return RoutingOutcome::Lowered {
-                preferred: row.capability.clone(),
-                capability: fallback.clone(),
-            };
-        }
+    if let Some(fallback) = &row.fallback
+        && advertised.contains(&fallback.as_str())
+    {
+        return RoutingOutcome::Lowered {
+            preferred: row.capability.clone(),
+            capability: fallback.clone(),
+        };
     }
     RoutingOutcome::HonestGap {
         needed: row.capability.clone(),

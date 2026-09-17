@@ -23,6 +23,7 @@ const TOOLCHAINS_LINO: &str = include_str!("../../data/seed/toolchains.lino");
 const RECORD_PROBE: &str = "toolchain_probe";
 
 /// The exit status a POSIX shell reports when a command cannot be resolved.
+///
 /// Recorded as the observed code when the operating system reports the
 /// executable is absent, because that is the code every caller in this
 /// repository would have seen had the call gone through a shell.
@@ -190,12 +191,8 @@ pub fn probe_command(probe: &ToolchainProbe, root: &Path) -> ProbeVerdict {
             if error.kind() == std::io::ErrorKind::NotFound {
                 return ProbeVerdict::Missing {
                     exit_code: Some(COMMAND_NOT_FOUND_EXIT),
-                    stderr: [
-                        probe.program.as_str(),
-                        NOT_FOUND_MARKER,
-                        &error.to_string(),
-                    ]
-                    .join(": "),
+                    stderr: [probe.program.as_str(), NOT_FOUND_MARKER, &error.to_string()]
+                        .join(": "),
                 };
             }
             return ProbeVerdict::Unusable {
@@ -217,14 +214,14 @@ pub fn probe_command(probe: &ToolchainProbe, root: &Path) -> ProbeVerdict {
     }
 
     let printed = if stdout.trim().is_empty() {
-        stderr.clone()
+        &stderr
     } else {
-        stdout.clone()
+        &stdout
     };
-    if let Some(expected) = probe.expect.as_ref() {
-        if !printed.contains(expected.as_str()) {
-            return ProbeVerdict::Unusable { exit_code, stderr };
-        }
+    if let Some(expected) = probe.expect.as_ref()
+        && !printed.contains(expected.as_str())
+    {
+        return ProbeVerdict::Unusable { exit_code, stderr };
     }
 
     ProbeVerdict::Present {

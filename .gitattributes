@@ -41,10 +41,13 @@ tests/unit/specification/mod.rs merge=union
 # Derived artifacts — `bash scripts/regenerate-derived-artifacts.sh` rebuilds them
 # from the merged sources, and each one's own verifier fails until it is rerun.
 REQUIREMENTS.md merge=union
+data/meta/requirement-status-ledger.lino merge=union
+data/meta/requirement-status-ledger/*.lino merge=union
 data/meta/seed-metadata-gaps-*.lino merge=union
 data/meta/self-ast.lino merge=union
 data/meta/self-ast/** merge=union
 data/seed/closure-generated-*.lino merge=union
+docs/status.md merge=union
 scripts/hardcoded-language-allowlist.txt merge=union
 src/web/source-cache/wikifunctions-recurrences.lino merge=union
 

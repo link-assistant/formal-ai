@@ -58,6 +58,31 @@ pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Op
         })
 }
 
+/// A client-workspace execution tool whose schema accepts a shell command.
+///
+/// The general `Run` capability also includes interactive executors such as
+/// computer use and code interpreters.  Those tools can perform work, but they
+/// do not promise the `{ "command": ... }` contract used by `gh`, so the
+/// narrower contract is declared beside the aliases in the seed registry.
+pub(super) fn shell_command_tool<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
+    let registry = seed::agentic_tool_capabilities();
+    let shell = registry
+        .iter()
+        .find(|entry| entry.id == Capability::Run.registry_id())?;
+    shell.command_aliases.iter().find_map(|alias| {
+        tool_names.iter().copied().find(|name| {
+            acts_in_capability_scope(name, Capability::Run)
+                && tool_leaf_name(name).eq_ignore_ascii_case(alias)
+        })
+    })
+}
+
+/// The provider-independent alias portion of a namespaced tool name.
+fn tool_leaf_name(name: &str) -> &str {
+    let name = name.rsplit("__").next().unwrap_or(name);
+    name.rsplit(['.', '/', ':']).next().unwrap_or(name)
+}
+
 /// Whether a tool's effect lands where `capability` needs it to.
 ///
 /// Research capabilities are about reaching *out*, so any scope answers them.
@@ -336,14 +361,23 @@ pub(super) fn plan_routed_capability_step(
     tool_names: &[&str],
     stage: RoutingStage,
 ) -> Option<AgenticPlan> {
-    if !crate::capability_routing::table_routing_enabled() || stage_of(task) != stage {
+    // The capability belongs to the stated request, not to a later harness
+    // block that only places the worker. Every agentic research route uses the
+    // same block boundary; applying the table to the whole envelope let "work
+    // only in this checkout" turn a live exchange-rate query into a local
+    // directory request (issue #1066).
+    let routed_task = super::stated_request::request_blocks(task)
+        .into_iter()
+        .next()
+        .unwrap_or(task);
+    if !crate::capability_routing::table_routing_enabled() || stage_of(routed_task) != stage {
         return None;
     }
     // At the open-web position every route that reads the conversation and the
     // workspace has declined, and a request that never named the open web is
     // one the symbolic engine should still answer. "What is Links Notation?" is
     // not a search just because nothing above claimed it (issue #989).
-    if stage == RoutingStage::OpenWeb && !crate::capability_routing::names_open_web(task) {
+    if stage == RoutingStage::OpenWeb && !crate::capability_routing::names_open_web(routed_task) {
         return None;
     }
     let advertised: Vec<&str> = ROUTED_CAPABILITIES
@@ -351,7 +385,7 @@ pub(super) fn plan_routed_capability_step(
         .filter(|(_, capability)| tool_for(tool_names, *capability).is_some())
         .map(|(slug, _)| *slug)
         .collect();
-    let (slug, lowered_from) = match crate::capability_routing::route(task, &advertised) {
+    let (slug, lowered_from) = match crate::capability_routing::route(routed_task, &advertised) {
         RoutingOutcome::Routed { capability } => (capability, None),
         RoutingOutcome::Lowered {
             preferred,
@@ -363,7 +397,7 @@ pub(super) fn plan_routed_capability_step(
         .iter()
         .find(|(name, _)| *name == slug)
         .map(|(_, capability)| *capability)?;
-    if names_a_container_without_an_act(task) {
+    if names_a_container_without_an_act(routed_task) {
         return None;
     }
     if super::tool_result::has_latest_turn_result(messages) {
@@ -375,7 +409,7 @@ pub(super) fn plan_routed_capability_step(
     // asks for neither (issues #907, #916). The shell route already draws this
     // boundary and it is drawn here for the same capabilities, not a second way.
     if capability == Capability::Run
-        && super::shell_command_policy::governs_commands_rather_than_requesting_one(task)
+        && super::shell_command_policy::governs_commands_rather_than_requesting_one(routed_task)
     {
         return None;
     }
@@ -390,13 +424,13 @@ pub(super) fn plan_routed_capability_step(
     // head their read with a verb the seed also knows as a write action, and
     // refusing the read on the verb alone left them with no route at all.
     if capability == Capability::Read
-        && super::write_request::states_write_action(task)
-        && super::write_request::stated_write_target(task).is_some()
+        && super::write_request::states_write_action(routed_task)
+        && super::write_request::stated_write_target(routed_task).is_some()
     {
         return None;
     }
     let tool = tool_for(tool_names, capability)?;
-    let arguments = routed_arguments(capability, lowered_from.as_deref(), task)?;
+    let arguments = routed_arguments(capability, lowered_from.as_deref(), routed_task)?;
     Some(plan_one(tool, arguments))
 }
 

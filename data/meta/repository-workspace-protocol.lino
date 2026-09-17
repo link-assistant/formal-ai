@@ -50,3 +50,45 @@ repository_step_diff
   precondition "The tree holds the edit and the verification was attempted."
   postcondition "A diff that round-trips through git apply, or an empty diff honestly reporting that nothing changed."
   source_file "src/repository_workspace/diff.rs"
+repository_template obligation_write_observation
+  record_type "runtime_template"
+  text "write {path}"
+repository_template solve_model_not_authoring_path
+  record_type "runtime_template"
+  text "model `{model}` is not a Formal AI authoring path"
+repository_template solve_workspace_error
+  record_type "runtime_template"
+  text "repository workspace: {error}"
+repository_template solve_session_metadata
+  record_type "runtime_template"
+  text "formal-ai session {session}\nformal-ai model {model}\n"
+repository_template solve_evidence_not_utf8
+  record_type "runtime_template"
+  text "evidence `{name}` is not UTF-8 and cannot be committed: {error}"
+repository_template solve_unsupported_issue_url
+  record_type "runtime_template"
+  text "unsupported issue URL `{issue_url}`"
+repository_template solve_issue_payload_not_json
+  record_type "runtime_template"
+  text "GitHub issue payload is not JSON: {error}"
+repository_template solve_issue_url_mismatch
+  record_type "runtime_template"
+  text "GitHub issue payload URL `{observed_url}` does not match `{issue_url}`"
+repository_template solve_stage_error
+  record_type "runtime_template"
+  text "stage isolated workspace: {error}"
+repository_template solve_commit_error
+  record_type "runtime_template"
+  text "commit isolated workspace: {error}"
+repository_template solve_commit_message
+  record_type "runtime_template"
+  text "feat: solve repository requirement\n\nFormal-AI-Session: {session}\nFormal-AI-Model: {model}\nFormal-AI-Evidence: {evidence}\nFormal-AI-Pull-Request: {pull_request}\n"
+repository_template workspace_census_error
+  record_type "runtime_template"
+  text "workspace census: {error}"
+repository_template workspace_base_commit_mismatch
+  record_type "runtime_template"
+  text "base commit {expected} was not observed (HEAD={observed})"
+repository_template promotion_proposals_read_error
+  record_type "runtime_template"
+  text "could not read promotion proposals from {path}: {error}"

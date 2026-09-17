@@ -15,11 +15,17 @@ pub mod edit;
 pub mod locate;
 pub mod outcome;
 pub mod verify;
+pub mod world_model;
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-use crate::execution_evidence::Evidence;
+use crate::execution_evidence::{Evidence, EvidenceDetail, EvidenceSource, ObservationKind};
+use crate::meta_frame::{AtomicityReason, LedgerRow, NeedLedger, NeedStatus};
+use crate::obligation_ledger::{
+    ObligationExpectation, ObligationLedger, ObligationNode, ObligationOutcome,
+    need_ledger_with_execution,
+};
 use crate::seed::parser::parse_lino;
 use clone::WorkspaceSpec;
 use locate::Location;
@@ -96,6 +102,35 @@ pub enum WorkspaceError {
         detail: String,
     },
 }
+
+impl std::fmt::Display for WorkspaceError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::NotACommit { given } => write!(formatter, "not an exact commit: {given}"),
+            Self::UnsupportedCommand { program } => {
+                write!(formatter, "repository command is not allowed: {program}")
+            }
+            Self::MissingPrerequisite {
+                program,
+                exit_code,
+                stderr,
+            } => write!(
+                formatter,
+                "missing prerequisite {program} (exit {exit_code:?}): {stderr}"
+            ),
+            Self::TimedOut {
+                deadline_seconds,
+                elapsed_seconds,
+            } => write!(
+                formatter,
+                "repository command timed out after {elapsed_seconds}s (deadline {deadline_seconds}s)"
+            ),
+            Self::Observed { detail } => formatter.write_str(detail),
+        }
+    }
+}
+
+impl std::error::Error for WorkspaceError {}
 
 /// A checked-out tree a repository task may read, edit, test and diff.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -263,6 +298,9 @@ pub struct ProtocolOutcome {
     pub stopped_at: Option<ProtocolStep>,
     /// Requirements the protocol could not satisfy, stated plainly.
     pub open: Vec<String>,
+    /// One planned need per declared step, upgraded only by linked execution
+    /// evidence produced during this run.
+    pub need_ledger: NeedLedger,
 }
 
 /// The ordered repository protocol, read from
@@ -270,6 +308,33 @@ pub struct ProtocolOutcome {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorkspaceProtocol {
     steps: Vec<ProtocolStep>,
+}
+
+/// Render one named repository-protocol template from the same data document
+/// that declares the protocol steps.
+#[must_use]
+pub fn render_protocol_template(id: &str, values: &[(&str, &str)]) -> Option<String> {
+    render_protocol_template_from(PROTOCOL_LINO, id, values)
+}
+
+/// Render a protocol template from caller-supplied data, used by replay and by
+/// tests proving that changing the meta document changes behavior.
+#[must_use]
+pub fn render_protocol_template_from(
+    document: &str,
+    id: &str,
+    values: &[(&str, &str)],
+) -> Option<String> {
+    let mut rendered = parse_lino(document)
+        .children
+        .into_iter()
+        .find(|node| node.name == "repository_template" && node.id == id)?
+        .find_child_value("text")
+        .to_owned();
+    for (name, value) in values {
+        rendered = rendered.replace(&format!("{{{name}}}"), value);
+    }
+    Some(rendered)
 }
 
 impl WorkspaceProtocol {
@@ -331,10 +396,38 @@ impl WorkspaceProtocol {
             diff: String::new(),
             stopped_at: None,
             open: Vec::new(),
+            need_ledger: protocol_ledger(&self.steps, task),
         };
 
         for step in &self.steps {
             match step.id.as_str() {
+                "clone" => match clone::observed_head(workspace.root()) {
+                    Some(head) if head == task.clone.base_commit => {
+                        let evidence = Evidence::observed(
+                            "git rev-parse HEAD",
+                            vec![String::from("HEAD")],
+                            Some(0),
+                            head.as_bytes(),
+                            ObservationKind::CommandExit,
+                            EvidenceSource::LocalProcess,
+                        );
+                        record_step_observation(&mut outcome, step, evidence);
+                    }
+                    observed => {
+                        outcome.stopped_at = Some(step.clone());
+                        outcome.open.push(
+                            render_protocol_template(
+                                "workspace_base_commit_mismatch",
+                                &[
+                                    ("expected", &task.clone.base_commit),
+                                    ("observed", observed.as_deref().unwrap_or("unavailable")),
+                                ],
+                            )
+                            .unwrap_or_else(|| String::from("workspace_base_commit_mismatch")),
+                        );
+                        return outcome;
+                    }
+                },
                 "locate" => {
                     let need = crate::needs::Need::raised(
                         crate::needs::NeedKind::Part,
@@ -350,11 +443,114 @@ impl WorkspaceProtocol {
                             outcome.open.push(task.requirement.clone());
                             return outcome;
                         }
-                        Ok(found) => outcome.located = found,
+                        Ok(found) => {
+                            let observation = found
+                                .iter()
+                                .map(|location| {
+                                    format!(
+                                        "{}:{}:{:?}",
+                                        location.relative_path,
+                                        location.symbol.as_deref().unwrap_or_default(),
+                                        location.how
+                                    )
+                                })
+                                .collect::<Vec<_>>()
+                                .join("\n");
+                            outcome.located = found;
+                            let evidence = Evidence::observed(
+                                "repository locate",
+                                Vec::new(),
+                                None,
+                                observation.as_bytes(),
+                                ObservationKind::SymbolicCheck,
+                                EvidenceSource::Engine,
+                            );
+                            record_step_observation(&mut outcome, step, evidence);
+                        }
                         Err(error) => {
                             outcome.stopped_at = Some(step.clone());
                             outcome.open.push(format!("{error:?}"));
                             return outcome;
+                        }
+                    }
+                }
+                "read" => {
+                    let mut observed = Vec::new();
+                    let mut seen = std::collections::BTreeSet::new();
+                    for location in &outcome.located {
+                        if !seen.insert(location.relative_path.clone()) {
+                            continue;
+                        }
+                        match workspace.read(&location.relative_path) {
+                            Ok(source) => observed.push((location.relative_path.clone(), source)),
+                            Err(error) => {
+                                outcome.stopped_at = Some(step.clone());
+                                outcome.open.push(format!("{error:?}"));
+                                return outcome;
+                            }
+                        }
+                    }
+                    let mut evidence = Evidence::observed(
+                        "repository read",
+                        observed.iter().map(|(path, _)| path.clone()).collect(),
+                        None,
+                        observed
+                            .iter()
+                            .flat_map(|(_, source)| source.as_bytes())
+                            .copied()
+                            .collect::<Vec<_>>()
+                            .as_slice(),
+                        ObservationKind::FileBytes,
+                        EvidenceSource::LocalProcess,
+                    );
+                    evidence.source_ids = observed
+                        .iter()
+                        .map(|(path, source)| {
+                            crate::engine::stable_id(
+                                "repository_source",
+                                &format!("{path}:{source}"),
+                            )
+                        })
+                        .collect();
+                    record_step_observation(&mut outcome, step, evidence);
+                }
+                "edit" => {
+                    let mut changes = Vec::new();
+                    let mut seen = std::collections::BTreeSet::new();
+                    for location in &outcome.located {
+                        if !seen.insert(location.relative_path.clone()) {
+                            continue;
+                        }
+                        match edit::derive_change(workspace, location, &task.requirement) {
+                            Ok(Some(change)) => changes.push(change),
+                            Ok(None) => {}
+                            Err(error) => {
+                                outcome.stopped_at = Some(step.clone());
+                                outcome.open.push(format!("{error:?}"));
+                                return outcome;
+                            }
+                        }
+                    }
+                    if changes.is_empty() {
+                        outcome.stopped_at = Some(step.clone());
+                        outcome.open.push(String::from(
+                            "no registry-grounded structural edit was derivable",
+                        ));
+                        return outcome;
+                    }
+                    for change in changes {
+                        match edit::apply_change(workspace, &change) {
+                            Ok(evidence) => {
+                                if !outcome.edited.contains(&change.relative_path) {
+                                    outcome.edited.push(change.relative_path);
+                                }
+                                record_step_observation(&mut outcome, step, evidence);
+                            }
+                            Err(error) => {
+                                outcome.stopped_at = Some(step.clone());
+                                outcome.open.push(format!("{error:?}"));
+                                return outcome;
+                            }
                         }
                     }
                 }
@@ -365,7 +561,18 @@ impl WorkspaceProtocol {
                             tests,
                             &crate::execution_box::ExecutionBackend::HostSandbox,
                         ) {
-                            Ok(evidence) => outcome.observations.push(evidence),
+                            Ok(evidence) => {
+                                let failed = matches!(
+                                    &evidence.detail,
+                                    EvidenceDetail::Tests { failed, .. } if !failed.is_empty()
+                                );
+                                record_step_observation(&mut outcome, step, evidence);
+                                if failed {
+                                    outcome.stopped_at = Some(step.clone());
+                                    outcome.open.push(String::from("named tests did not pass"));
+                                    return outcome;
+                                }
+                            }
                             Err(error) => {
                                 outcome.stopped_at = Some(step.clone());
                                 outcome.open.push(format!("{error:?}"));
@@ -375,7 +582,18 @@ impl WorkspaceProtocol {
                     }
                 }
                 "diff" => match workspace.diff() {
-                    Ok(patch) => outcome.diff = patch,
+                    Ok(patch) => {
+                        let evidence = Evidence::observed(
+                            "git diff",
+                            Vec::new(),
+                            Some(0),
+                            patch.as_bytes(),
+                            ObservationKind::CommandExit,
+                            EvidenceSource::LocalProcess,
+                        );
+                        outcome.diff = patch;
+                        record_step_observation(&mut outcome, step, evidence);
+                    }
                     Err(error) => {
                         outcome.stopped_at = Some(step.clone());
                         outcome.open.push(format!("{error:?}"));
@@ -385,9 +603,6 @@ impl WorkspaceProtocol {
                 _ => {}
             }
         }
-        outcome
-            .edited
-            .extend(workspace.baseline().keys().cloned());
         outcome
     }
 
@@ -411,16 +626,8 @@ impl WorkspaceProtocol {
             let _ = writeln!(out, "  order \"{}\"", step.order);
             let _ = writeln!(out, "  id \"{}\"", step.id);
             let _ = writeln!(out, "  detail \"{}\"", node.find_child_value("detail"));
-            let _ = writeln!(
-                out,
-                "  precondition \"{}\"",
-                step.precondition.join(" ")
-            );
-            let _ = writeln!(
-                out,
-                "  postcondition \"{}\"",
-                step.postcondition.join(" ")
-            );
+            let _ = writeln!(out, "  precondition \"{}\"", step.precondition.join(" "));
+            let _ = writeln!(out, "  postcondition \"{}\"", step.postcondition.join(" "));
             let _ = writeln!(
                 out,
                 "  source_file \"{}\"",
@@ -429,8 +636,81 @@ impl WorkspaceProtocol {
                     .map_or("", String::as_str)
             );
         }
+        // Runtime messages are data owned by the same protocol document. They
+        // are not executable steps and therefore do not participate in the
+        // source/order reconstruction above, but forgetting them would change
+        // behaviour as surely as forgetting a step. Preserve the complete
+        // suffix from the first template record, so adding another template is
+        // a data edit and requires no matching Rust arm.
+        if let Some(offset) = PROTOCOL_LINO.find("\nrepository_template ") {
+            out.push_str(&PROTOCOL_LINO[offset + 1..]);
+        }
         out
     }
+}
+
+fn protocol_ledger(steps: &[ProtocolStep], task: &RepositoryTask) -> NeedLedger {
+    let frame_id = crate::engine::stable_id(
+        "repository_protocol",
+        &format!("{}:{}", task.clone.base_commit, task.requirement),
+    );
+    NeedLedger {
+        frame_id: frame_id.clone(),
+        rows: steps
+            .iter()
+            .map(|step| LedgerRow {
+                need_id: crate::engine::stable_id(
+                    "repository_protocol_step",
+                    &format!("{frame_id}:{}", step.id),
+                ),
+                source_span: task.requirement.clone(),
+                status: NeedStatus::Planned,
+                leaf_reason: Some(AtomicityReason::DirectMethod),
+                unit_id: None,
+                route: Some(step.id.clone()),
+            })
+            .collect(),
+    }
+}
+
+fn record_step_observation(
+    outcome: &mut ProtocolOutcome,
+    step: &ProtocolStep,
+    mut evidence: Evidence,
+) {
+    let Some(need_id) = outcome
+        .need_ledger
+        .rows
+        .iter()
+        .find(|row| row.route.as_deref() == Some(step.id.as_str()))
+        .map(|row| row.need_id.clone())
+    else {
+        return;
+    };
+    evidence.for_need.clone_from(&need_id);
+    if evidence.produced_by.is_empty() {
+        evidence.produced_by = format!("repository_protocol_{}", step.id);
+    }
+    let obligations = ObligationLedger {
+        frame_id: outcome.need_ledger.frame_id.clone(),
+        root: ObligationNode {
+            node_id: crate::engine::stable_id("repository_step_obligation", &need_id),
+            parent: None,
+            clause: step.id.clone(),
+            span: (0, step.id.len()),
+            need_id: Some(need_id),
+            depth: 0,
+            expectation: ObligationExpectation::SymbolicCheck {
+                check_id: step.id.clone(),
+            },
+            outcome: ObligationOutcome::Satisfied {
+                record: evidence.clone(),
+            },
+            children: Vec::new(),
+        },
+    };
+    outcome.need_ledger = need_ledger_with_execution(&outcome.need_ledger, &obligations);
+    outcome.observations.push(evidence);
 }
 
 /// One row of `data/seed/repository-command-allowlist.lino`.
@@ -577,7 +857,7 @@ fn collect_files(root: &Path, directory: &Path, into: &mut Vec<(String, String)>
     };
     for entry in entries.flatten() {
         let path = entry.path();
-        if entry.file_name() == ".git" {
+        if matches!(entry.file_name().to_str(), Some(".git" | "target")) {
             continue;
         }
         if path.is_dir() {

@@ -15,14 +15,30 @@ Those rows completed the registry-backed route-authority slice, not the removal
 of intent-specific handler implementations. Issue #699 tracks that remaining
 migration honestly in `data/meta/handler-migration-ledger.lino`.
 
+The browser mirror no longer carries a second hand-ordered synchronous handler
+array. `data/seed/browser-handler-precedence.lino`, registered for web loading
+through `data/meta/seed-registry.lino`, declares each executable binding,
+argument projection, result guard and first-match-wins position.
+`src/web/seed_loader.js::extractBrowserHandlerPrecedence` installs those records
+at worker startup, while `scripts/check-worker-handler-registry.mjs` rejects an
+independent JavaScript inventory, an unresolved binding, a stale generated seed
+inventory, or a debt scanner fixed to the wrong worker shard. The focused Node
+test proves that reordering only the seed changes browser dispatch order.
+
 The PR #888 continuation audit (2026-09-16) further scopes R333/R334/R342:
-the shared ledger runs before dispatch, so a selected method is **planned**, not
-**satisfied**. A connected planning chain accounts for a detected need but does
-not prove its execution. Planned needs remain curriculum items, not demonstrated
-skills. Regression tests cover both native and recipe-driven traces and retain
-the separate contract for explicitly satisfied evidence. Runtime per-need
-verification feedback is still open; the implemented artifact rows below are
-not a claim that every detected obligation executes successfully.
+the planning ledger runs before dispatch, so a selected method is **planned**,
+not **satisfied**. A connected planning chain accounts for a detected need but
+does not prove its execution. Planned needs remain curriculum items, not
+demonstrated skills. A second, append-only pass (`src/obligation_ledger.rs`,
+recipe step 14) supplies runtime per-need feedback: an execution row reaches
+**satisfied** through `need_ledger_with_execution` only when its input outcome
+carries a matching `Evidence`. That record names the command, retains an exit
+code or an explicit none, and hashes the exact observed bytes with SHA-256. The
+shared `need_status_with_observation` function is the only constructor of the
+terminal status; other domains may call it only after their own observed state
+or successful re-probe. A clause with no derivable expectation is split rather
+than discarded, and a clause that cannot be split is reported as an unsatisfied
+gap with its byte span.
 
 | ID | Requirement | Status |
 | --- | --- | --- |

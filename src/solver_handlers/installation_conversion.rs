@@ -8,7 +8,7 @@
 
 use std::fmt::Write as _;
 
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::solver_handlers::finalize_simple;

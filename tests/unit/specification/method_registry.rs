@@ -307,13 +307,13 @@ fn the_registry_is_the_sole_authority_that_closes_over_the_route_corpus() {
 //
 // Written before the leaves that make them pass (plan 14 wave T).
 
-use formal_ai::method_registry::LearnedMethod;
+use formal_ai::method_registry::{LearnedMethod, LearnedMethodStatus};
 use formal_ai::selection_heuristics::HeuristicRole;
 
 /// The one adopted learned record the shipped seed carries.
 const ADOPTED: &str = "learned_recursive_core_e17957243eaaf6db";
 
-fn adopted_method(registry: &MethodRegistry) -> &LearnedMethod {
+fn shipped_method(registry: &MethodRegistry) -> &LearnedMethod {
     registry
         .learned_methods
         .iter()
@@ -323,8 +323,12 @@ fn adopted_method(registry: &MethodRegistry) -> &LearnedMethod {
 
 #[test]
 fn an_adopted_learned_method_is_dispatchable() {
-    let registry = MethodRegistry::from_dispatch();
-    let adopted = adopted_method(&registry);
+    let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
+        .expect("learned-methods seed readable");
+    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+        .expect("an effect-qualified learned method loads");
+    let adopted = shipped_method(&registry);
+    assert_eq!(adopted.status, LearnedMethodStatus::Adopted);
     assert!(
         adopted.is_executable(),
         "every operation of the adopted record is already a recorder event kind the \
@@ -347,11 +351,11 @@ fn an_adopted_learned_method_is_dispatchable() {
 
 #[test]
 fn learned_methods_rank_after_every_compiled_method() {
-    let registry = MethodRegistry::from_dispatch();
-    let relevants = vec![
-        "method:arithmetic".to_owned(),
-        format!("method:{ADOPTED}"),
-    ];
+    let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
+        .expect("learned-methods seed readable");
+    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+        .expect("an effect-qualified learned method loads");
+    let relevants = vec!["method:arithmetic".to_owned(), format!("method:{ADOPTED}")];
     let ordered = registry.ordered_method_names_for_relevants(&relevants);
     let learned_at = ordered.iter().position(|name| name == ADOPTED);
     let Some(learned_at) = learned_at else {
@@ -371,6 +375,26 @@ fn learned_methods_rank_after_every_compiled_method() {
             );
         }
     }
+}
+
+#[test]
+fn an_ineffective_adoption_is_preserved_but_cannot_dispatch() {
+    let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
+        .expect("learned-methods seed readable")
+        .replace("status \"adopted\"", "status \"adopted_not_effective\"");
+    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+        .expect("the measured negative counterexample remains representable");
+    let method = shipped_method(&registry);
+    assert_eq!(method.status, LearnedMethodStatus::AdoptedNotEffective);
+    assert!(
+        method.is_executable(),
+        "the negative result is about effect, not binding"
+    );
+    let ordered = registry.ordered_method_names_for_relevants(&[format!("method:{ADOPTED}")]);
+    assert!(
+        !ordered.iter().any(|name| name == ADOPTED),
+        "changed-but-unverified experience is retained in the registry and never allowed to alter answers"
+    );
 }
 
 #[test]

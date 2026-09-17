@@ -45,7 +45,10 @@ fn each_expectation_kind_is_recognised_in_five_languages() {
         for language in LANGUAGES {
             let paraphrase = case(family, language);
             let task = recognise_verifiable(&paraphrase.prompt).unwrap_or_else(|| {
-                panic!("{family}/{language}: {:?} must be recognised", paraphrase.prompt)
+                panic!(
+                    "{family}/{language}: {:?} must be recognised",
+                    paraphrase.prompt
+                )
             });
             assert!(
                 expected_kind(&paraphrase.expectation, &task.expectation),

@@ -95,6 +95,23 @@ fn arithmetic_history() -> Vec<ConversationTurn> {
     ]
 }
 
+fn expected_fact_check(language: &str) -> &'static str {
+    match language {
+        "ru" => {
+            "Проверены все утверждения текущего диалога (2) относительно системы current.\n1 + 1 = 3: вероятность 0.000000 (evidence_weighted); контрпример: Evaluated values: 1 + 1 = 2, 3 = 3. The relation = does not hold..\n1 + 1 = 2: вероятность 1.000000 (evidence_weighted)."
+        }
+        "hi" => {
+            "वर्तमान संवाद के सभी 2 कथनों की current के सापेक्ष जाँच की गई।\n1 + 1 = 3: प्रायिकता 0.000000 (evidence_weighted); प्रतिउदाहरण: Evaluated values: 1 + 1 = 2, 3 = 3. The relation = does not hold.।\n1 + 1 = 2: प्रायिकता 1.000000 (evidence_weighted)।"
+        }
+        "zh" => {
+            "已相对于 current 核查当前对话中的全部 2 条陈述。\n1 + 1 = 3：概率 0.000000（evidence_weighted）；反例：Evaluated values: 1 + 1 = 2, 3 = 3. The relation = does not hold.。\n1 + 1 = 2：概率 1.000000（evidence_weighted）。"
+        }
+        _ => {
+            "Checked all 2 statements in the current dialogue relative to current.\n1 + 1 = 3: probability 0.000000 (evidence_weighted); counterexample: Evaluated values: 1 + 1 = 2, 3 = 3. The relation = does not hold..\n1 + 1 = 2: probability 1.000000 (evidence_weighted)."
+        }
+    }
+}
+
 #[test]
 fn solver_fact_checks_every_current_dialogue_statement_in_every_language() {
     let solver = UniversalSolver::default();
@@ -133,6 +150,7 @@ fn solver_fact_checks_every_current_dialogue_statement_in_every_language() {
             "[{language}] an offline audit must not pretend it fetched evidence: {:?}",
             answer.evidence_links
         );
+        assert_eq!(answer.answer, expected_fact_check(language));
     }
 }
 

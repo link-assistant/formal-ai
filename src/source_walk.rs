@@ -169,7 +169,7 @@ impl WalkSourceOutcome {
 
 /// Everything one walk produced, with a row for every source that could have
 /// contributed.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WalkOutcome<I> {
     /// The subject the walk was about.
     pub subject: String,
@@ -212,7 +212,7 @@ pub fn page_title(subject: &str, hyphenated: bool) -> String {
 /// carrying one into two halves and asked Wikipedia for a title with a space
 /// in it. A non-ASCII character is part of the word unless it is whitespace.
 #[must_use]
-pub fn is_word_boundary(character: char) -> bool {
+pub const fn is_word_boundary(character: char) -> bool {
     character.is_whitespace()
         || (character.is_ascii() && !character.is_ascii_alphanumeric() && character != '_')
 }
@@ -414,7 +414,7 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
         };
         outcome.pages += 1;
         availability.observe(
-            &endpoint_key(record, &url),
+            endpoint_key(record, &url),
             ServiceStatus::Reachable,
             trace_record::line("captured", &[("url", url.clone())]),
             now,
@@ -440,19 +440,20 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
     items
 }
 
-/// Select the sources this need kind and these settings allow, walk each one
-/// inside `bounds`, and return everything the extractor recognised together
-/// with an outcome row for every source that could have contributed.
+/// Walk every source that the need kind and settings allow.
+///
+/// The result carries everything the extractor recognized and an outcome row
+/// for every source that could have contributed.
 pub fn walk_sources<T: SourceTransport, E: CaptureExtractor>(
     kind: NeedKind,
     subject: &str,
     extractor: &E,
-    client: &CachedSourceClient<T>,
     preferences: &ServicePreferences,
-    bounds: &LookupBounds,
+    walk: &Walk<'_, T>,
     availability: &mut ServiceAccessibilityCache,
-    now: u64,
 ) -> WalkOutcome<E::Item> {
+    let bounds = walk.bounds;
+    let now = walk.now;
     let subject = subject.trim().to_owned();
     let mut walked = WalkOutcome {
         subject: subject.clone(),
@@ -495,18 +496,7 @@ pub fn walk_sources<T: SourceTransport, E: CaptureExtractor>(
             continue;
         }
         let mut outcome = WalkSourceOutcome::new(&record.id, "no_items", url.clone());
-        let items = walk_source(
-            &record,
-            &url,
-            extractor,
-            &Walk {
-                client,
-                bounds,
-                now,
-            },
-            availability,
-            &mut outcome,
-        );
+        let items = walk_source(&record, &url, extractor, walk, availability, &mut outcome);
         if !items.is_empty() {
             outcome.status = String::from("contributed");
         }
@@ -563,7 +553,7 @@ pub fn observe_failure(
             "no_entry"
         } else {
             availability.observe(
-                &endpoint_key(record, url),
+                endpoint_key(record, url),
                 ServiceStatus::Unreachable,
                 error.to_string(),
                 now,

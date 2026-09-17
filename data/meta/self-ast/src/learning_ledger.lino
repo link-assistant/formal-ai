@@ -2,35 +2,39 @@ self_ast_census
   target src/learning_ledger.rs
   language rust
   fidelity signature
-  byte_len 15461
-  line_count 385
-  content_id source_module_013179965a615aeb
-  symbol_count 27
+  byte_len 20368
+  line_count 491
+  content_id source_module_10d883af03a9e8d2
+  symbol_count 31
   symbols
-    struct HumanApproval 39 42
-    function granted 47 52
-    function declined 56 61
-    function is_granted 65 67
-    function reviewer 71 73
-    enum PromotionRejected 81 95
-    function slug 100 108
-    struct LedgerEntry 117 138
-    function summary 143 154
-    struct LearningLedger 163 165
-    function new 170 174
-    function entries 178 180
-    function len 184 186
-    function is_empty 190 192
-    function promote 201 250
-    function lesson_for 259 264
-    function knows 268 270
-    function links_notation 275 294
-    function content_id 299 301
-    function canonical_ledger 311 320
-    function canonical_ledger_failure_prompts 337 339
-    function approved_lesson_for 347 364
-    static APPROVED_LEDGER 348 348
-    function normalise 366 368
-    function field 370 372
-    function nested 374 376
-    function quote 378 385
+    const APPROVED_LESSONS_LINO 35 35
+    struct HumanApproval 43 46
+    function granted 51 56
+    function declined 60 65
+    function is_granted 69 71
+    function reviewer 75 77
+    enum PromotionRejected 85 99
+    function slug 104 112
+    struct LedgerEntry 121 142
+    function summary 147 158
+    struct LearningLedger 167 169
+    function new 174 178
+    function from_approved_lessons_seed 194 247
+    function entries 251 253
+    function len 257 259
+    function is_empty 263 265
+    function promote 274 323
+    function lesson_for 332 337
+    function knows 341 343
+    function links_notation 348 367
+    function content_id 372 374
+    function canonical_ledger 384 387
+    function canonical_ledger_failure_prompts 404 410
+    function approved_lesson_for 418 435
+    static APPROVED_LEDGER 419 419
+    function normalise 437 439
+    function ledger_entry_from_event 441 463
+    function evidence_value 465 474
+    function field 476 478
+    function nested 480 482
+    function quote 484 491

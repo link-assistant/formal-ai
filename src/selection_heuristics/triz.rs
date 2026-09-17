@@ -25,9 +25,7 @@ use crate::seed::{
 };
 use crate::web_engine_core::normalize_prompt;
 
-use super::{
-    CandidateScore, ContradictionDerivation, ContradictionLink, TrizResolution,
-};
+use super::{CandidateScore, ContradictionDerivation, ContradictionLink, TrizResolution};
 
 /// The cost dimensions a candidate can win on, in the order a contradiction
 /// names them. Declaration order here is the order two criteria are paired in,
@@ -194,10 +192,7 @@ fn link_for(
 /// Rank by resolving the detected contradictions instead of by the index
 /// tie-break: the candidate that wins the criterion the requirement leans toward
 /// comes first, and a contradiction whose value is underivable changes nothing.
-pub(super) fn rank(
-    scores: &[CandidateScore],
-    parameters: &[(String, String)],
-) -> Vec<usize> {
+pub(super) fn rank(scores: &[CandidateScore], parameters: &[(String, String)]) -> Vec<usize> {
     use super::{CandidateRanker, LeastActionRanker};
     let ranked = LeastActionRanker.rank(scores, parameters);
     let requirement = parameters

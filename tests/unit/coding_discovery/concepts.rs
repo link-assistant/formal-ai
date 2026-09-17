@@ -6,9 +6,29 @@ use formal_ai::coding_function_catalog::wikifunctions::{
 };
 use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Parameter};
 use formal_ai::concept_discovery::{
-    CatalogFunction, ConceptEvidence, DiscoveryBounds, DiscoveryCatalog, UnknownConceptLookup,
-    discover, discover_with_lookup,
+    CatalogFunction, ConceptEvidence, ConceptMap, DiscoveryBounds, DiscoveryCatalog,
+    discover_with_lookup,
 };
+use formal_ai::concept_lookup::{ConceptSense, LookupOutcome};
+use formal_ai::needs::Need;
+use formal_ai::relative_meta_logic::SourceTier;
+use formal_ai::source_walk::{LookupBounds, SourceLookup};
+
+#[derive(Default)]
+struct EmptyLookup;
+
+impl SourceLookup for EmptyLookup {
+    fn lookup(&mut self, _need: &Need, _bounds: &LookupBounds) -> LookupOutcome {
+        LookupOutcome::NotFound {
+            consulted: Vec::new(),
+        }
+    }
+}
+
+fn discover(spec: &CodingTaskSpec, catalog: &DiscoveryCatalog) -> ConceptMap {
+    let mut lookup = EmptyLookup;
+    formal_ai::concept_discovery::discover(spec, catalog, &mut lookup)
+}
 
 fn stdlib(symbol: &str, description: &str) -> StdlibPart {
     StdlibPart {
@@ -202,15 +222,26 @@ struct CountingLookup {
     calls: usize,
 }
 
-impl UnknownConceptLookup for CountingLookup {
-    fn lookup(&mut self, phrase: &str, depth: usize) -> Option<ConceptEvidence> {
+impl SourceLookup for CountingLookup {
+    fn lookup(&mut self, need: &Need, bounds: &LookupBounds) -> LookupOutcome {
         self.calls += 1;
-        Some(ConceptEvidence {
-            phrase: phrase.to_owned(),
-            definition: "a fixture definition".to_owned(),
+        LookupOutcome::Found(vec![ConceptSense {
+            surface: need.subject.clone(),
+            lemma: need.subject.clone(),
+            language: need.language.clone(),
+            gloss: "a fixture definition".to_owned(),
+            part_of_speech: "noun".to_owned(),
+            synonyms: Vec::new(),
+            source_id: "wiktionary".to_owned(),
             source_url: "https://en.wiktionary.org/wiki/florpquux".to_owned(),
-            depth,
-        })
+            sha256: "a".repeat(64),
+            fetched_at: "2026-09-16T00:00:00Z".to_owned(),
+            cached: true,
+            tier: SourceTier::IndependentCorroboration,
+            license_name: "CC-BY-SA-4.0".to_owned(),
+            license_url: "https://creativecommons.org/licenses/by-sa/4.0/".to_owned(),
+            depth: bounds.max_depth.min(1),
+        }])
     }
 }
 
@@ -397,6 +428,26 @@ fn the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum() 
         assert!(
             !meta_frame.contains(&format!("    {producerless},")),
             "`{producerless}` has no producer and must be removed with the merge"
+        );
+    }
+}
+
+#[test]
+fn coding_discovery_uses_only_the_shared_source_lookup_contract() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let discovery = std::fs::read_to_string(root.join("src/coding/concept_discovery.rs"))
+        .expect("the coding discovery module");
+    let lookup = std::fs::read_to_string(root.join("src/concept_lookup.rs"))
+        .expect("the concept lookup module");
+
+    assert!(
+        discovery.contains("lookup: &mut dyn SourceLookup"),
+        "coding discovery must accept the shared lookup contract directly"
+    );
+    for retired in ["UnknownConceptLookup", "NoLookup", "RegistryConceptLookup"] {
+        assert!(
+            !discovery.contains(retired) && !lookup.contains(retired),
+            "the retired adapter `{retired}` must not return"
         );
     }
 }

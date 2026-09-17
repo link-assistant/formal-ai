@@ -248,7 +248,6 @@ fn conversation_control_recognition_is_the_rule_set_the_planner_consults() {
     ));
 }
 
-
 /// Issue #1138 B9, plan 09 leaf 9: the two grammar primitives the promotion
 /// migration needs, and the only ones it adds.
 ///

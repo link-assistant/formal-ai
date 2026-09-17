@@ -115,7 +115,11 @@ fn the_family_corpus_is_three_hundred_held_out_cases_in_five_languages() {
     );
 
     let cases = family_cases();
-    assert_eq!(cases.len(), 300, "5 families x 5 languages x 12 paraphrases");
+    assert_eq!(
+        cases.len(),
+        300,
+        "5 families x 5 languages x 12 paraphrases"
+    );
 
     let prompts: BTreeSet<&str> = cases.iter().map(|case| case.prompt.as_str()).collect();
     assert_eq!(prompts.len(), 300, "every paraphrase is distinct");
@@ -152,15 +156,22 @@ fn held_out_family_paraphrases_route_to_the_family_interpreter() {
     assert!(
         failures.is_empty(),
         "{} of {} held-out family paraphrases did not reach their family interpreter. \
-         First offenders: {:?}",
+         Failures: {:?}",
         failures.len(),
         cases.len(),
-        failures.iter().take(12).collect::<Vec<_>>()
+        failures
     );
 }
 
 #[test]
 fn no_answer_is_byte_equal_to_a_seed_body_field() {
+    let documented = FormalAiEngine
+        .answer("What is a fufloмицин — summarise it in one paragraph with the source.")
+        .answer;
+    assert_eq!(
+        documented,
+        "I identified a source-backed retrieval request, but this isolated turn contains no verified capture for the subject. A trusted-source walk is required before a summary can be asserted."
+    );
     // #948 items 1-2, permanently: the three canned summary bodies and the
     // three `contains(...)` comparison blocks are deleted, and a family answer
     // is derived from a record rather than recited from a `body` field.
@@ -204,7 +215,11 @@ fn no_answer_is_byte_equal_to_a_seed_body_field() {
             .iter()
             .find(|body| *body == trimmed || trimmed.contains(body.as_str()))
         {
-            recitations.push(format!("{}: recited {:?}", case.id, &body[..40.min(body.len())]));
+            recitations.push(format!(
+                "{}: recited {:?}",
+                case.id,
+                &body[..40.min(body.len())]
+            ));
         }
     }
     assert!(

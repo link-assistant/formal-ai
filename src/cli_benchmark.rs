@@ -38,6 +38,11 @@ pub enum BenchmarkAction {
         #[arg(long, default_value_t = false)]
         online: bool,
 
+        /// Permit the pinned official evaluator harness to be installed under
+        /// the benchmark workspace. Installation remains default-deny.
+        #[arg(long, default_value_t = false)]
+        allow_install: bool,
+
         /// Ledger path, relative to the repository root.
         #[arg(long, default_value = LEDGER_PATH)]
         ledger: PathBuf,
@@ -85,6 +90,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
             slice,
             append,
             online,
+            allow_install,
             ledger,
             date,
             repository_root,
@@ -102,6 +108,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
                     date: &date,
                     repository_root: &root,
                     online,
+                    allow_install,
                     learning_report: learning_report.as_deref(),
                     frontier_record: frontier_record.as_deref(),
                 },
@@ -148,6 +155,7 @@ struct RunSuiteOptions<'a> {
     date: &'a str,
     repository_root: &'a Path,
     online: bool,
+    allow_install: bool,
     learning_report: Option<&'a Path>,
     frontier_record: Option<&'a Path>,
 }
@@ -160,6 +168,7 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
         date,
         repository_root,
         online,
+        allow_install,
         learning_report,
         frontier_record,
     } = options;
@@ -176,14 +185,19 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
 
     let mut runs = Vec::new();
     for suite in selected {
-        let run =
-            external_benchmarks::run_suite_with_online(suite, slice, repository_root, online)?;
+        let run = external_benchmarks::run_suite_with_options(
+            suite,
+            slice,
+            repository_root,
+            online,
+            allow_install,
+        )?;
         println!("{}", run.report());
         runs.push(run);
     }
 
     if append {
-        append_runs(&runs, ledger_path, date, slice, online)?;
+        append_runs(&runs, ledger_path, date, slice, online, allow_install)?;
         println!("ledger updated: {}", ledger_path.display());
     }
     if let Some(relative_path) = learning_report {
@@ -224,6 +238,7 @@ fn append_runs(
     date: &str,
     slice: usize,
     online: bool,
+    allow_install: bool,
 ) -> Result<(), Box<dyn Error>> {
     let text = fs::read_to_string(ledger_path)
         .map_err(|error| format!("failed to read {}: {error}", ledger_path.display()))?;
@@ -241,13 +256,19 @@ fn append_runs(
             );
             continue;
         }
+        let mut command = format!(
+            "formal-ai benchmark run --suite {} --slice {slice}{}",
+            run.suite,
+            if online { " --online" } else { "" }
+        );
+        if allow_install {
+            command.push(' ');
+            command.push_str("--");
+            command.push_str("allow-install");
+        }
         ledger.upsert_result(
             &run.to_result_entry(date),
-            &format!(
-                "formal-ai benchmark run --suite {} --slice {slice}{}",
-                run.suite,
-                if online { " --online" } else { "" }
-            ),
+            &command,
             "honest upstream score: every case is graded by the upstream criterion",
         );
         ledger.raise_floor(&run.suite, run.passed, run.slice);

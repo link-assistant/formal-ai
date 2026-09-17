@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_dispatch.js"
+  ceiling 80
+  rationale "Synchronous browser-handler capability bindings extracted from the universal dispatcher; this table disappears when the Rust-to-WASM dispatcher replaces the JavaScript mirror."

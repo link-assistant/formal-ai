@@ -6,7 +6,9 @@ use lino_arguments::Parser;
 
 mod cli_algorithm;
 mod cli_benchmark;
+mod cli_bundle;
 mod cli_clients;
+mod cli_coding;
 mod cli_computer_use;
 mod cli_context;
 mod cli_environments;
@@ -27,7 +29,9 @@ mod cli_telegram;
 
 use cli_algorithm::{AlgorithmArgs, run_algorithm};
 use cli_benchmark::{BenchmarkAction, run_benchmark};
+use cli_bundle::run_bundle;
 use cli_clients::{ClientsAction, ClientsFormat, run_clients};
+use cli_coding::{CodingArgs, run_coding};
 use cli_computer_use::{ComputerUseArgs, run_computer_use};
 use cli_context::{ContextArgs, run_context};
 use cli_environments::run_environments;
@@ -36,7 +40,7 @@ use cli_import::{ImportAction, run_import};
 use cli_improve::{ImproveArgs, run_improve};
 use cli_learn::{LearnAction, run_learn_action};
 use cli_local_transport::{ConnectArgs, ServeArgs, run_connect, run_serve};
-use cli_memory::{load_memory_or_empty, run_memory};
+use cli_memory::run_memory;
 use cli_orchestration::{AgentArgs, run_external_action};
 use cli_procedure::{ProcedureArgs, run_procedure};
 use cli_report::{ReportArgs, run_report};
@@ -47,13 +51,11 @@ use cli_telegram::run_telegram;
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, GithubLogCollectorConfig,
-    MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, UniversalSolver,
-    WithFormalAiArgs, agent_info, collect_github_logs, create_chat_completion_with_solver,
-    create_response_with_solver, delimit_tool_args, enable_http_agent_mode_for_current_process,
-    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
-    naturalize_thinking_step_in, parse_bundle, render_github_log_plan, run_proxy,
-    run_with_formal_ai, seed_files, suggest_memory_migrations, thinking_answer_language,
-    thinking_trace_heading,
+    ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, UniversalSolver, WithFormalAiArgs,
+    collect_github_logs, create_chat_completion_with_solver, create_response_with_solver,
+    delimit_tool_args, enable_http_agent_mode_for_current_process, knowledge_links_notation,
+    naturalize_thinking_step_in, render_github_log_plan, run_proxy, run_with_formal_ai,
+    thinking_answer_language, thinking_trace_heading,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -111,6 +113,8 @@ enum Command {
         draft_count: Option<u8>,
     },
     Dataset,
+    /// Forget or rediscover source-grounded coding fragments.
+    Coding(CodingArgs),
     /// Export complete conversations or convert arbitrary JSON to Links Notation.
     Context(ContextArgs),
     /// Build the issue-report document every Formal AI surface files (#839).
@@ -185,6 +189,33 @@ enum Command {
     Benchmark {
         #[command(subcommand)]
         action: BenchmarkAction,
+    },
+    /// Solve one repository requirement in an isolated exact-commit clone.
+    Solve {
+        /// Canonical GitHub issue URL, or `-` to read the requirement on stdin.
+        #[arg(long)]
+        issue: Option<String>,
+        /// Literal requirement text, used instead of `--issue`.
+        #[arg(long)]
+        task: Option<String>,
+        /// Repository path, URL, or OWNER/REPO origin.
+        #[arg(long, default_value = ".")]
+        repository: String,
+        /// Exact forty-character base commit; defaults to repository HEAD.
+        #[arg(long)]
+        base_commit: Option<String>,
+        /// Authoring model identifier. Hosted models are refused.
+        #[arg(long, default_value = "formal-ai")]
+        model: String,
+        /// External copy of the attributable evidence bundle.
+        #[arg(long)]
+        evidence: PathBuf,
+        /// Canonical GitHub pull-request URL required by `--commit`.
+        #[arg(long)]
+        pull_request: Option<String>,
+        /// Commit inside the isolated clone. Mutation is off by default.
+        #[arg(long, default_value_t = false)]
+        commit: bool,
     },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
@@ -616,6 +647,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             draft_count,
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
+        Command::Coding(args) => run_coding(args)?,
         Command::Context(args) => run_context(args)?,
         Command::Report(args) => run_report(args)?,
         Command::Memory { action } => run_memory(action)?,
@@ -626,6 +658,31 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::Benchmark { action } => run_benchmark(action)?,
+        Command::Solve {
+            issue,
+            task,
+            repository,
+            base_commit,
+            model,
+            evidence,
+            pull_request,
+            commit,
+        } => {
+            let outcome = formal_ai::cli_solve::run_solve(&formal_ai::cli_solve::SolveArgs {
+                issue,
+                task,
+                repository,
+                base_commit,
+                model,
+                evidence,
+                pull_request,
+                commit,
+            })?;
+            print!("{}", outcome.diff);
+            for open in outcome.open {
+                eprintln!("open: {open}");
+            }
+        }
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::Summarization { action } => run_summarization(action)?,
         Command::FileLegality(args) => run_file_legality(&args)?,
@@ -699,7 +756,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             memory,
             apply,
             backup,
-            confirm,
+            confirm: confirm.into(),
             open_draft_pr,
         })?,
         Command::Learn { action } => run_learn_action(action)?,
@@ -886,72 +943,6 @@ fn run_chat(
         }
     }
 
-    Ok(())
-}
-
-fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
-    match action {
-        BundleAction::Export { path, memory } => {
-            let store = match memory {
-                Some(memory_path) => load_memory_or_empty(&memory_path)?,
-                None => MemoryStore::new(),
-            };
-            let bundle = if store.is_empty() {
-                merged_bundle()
-            } else {
-                export_memory_bundle(&seed_files(), store.events())
-            };
-            if path.as_os_str() == "-" {
-                print!("{bundle}");
-            } else {
-                std::fs::write(&path, bundle)?;
-                eprintln!(
-                    "Wrote bundle with {} seed file(s) and {} event(s) to {}",
-                    seed_files().len(),
-                    store.len(),
-                    path.display()
-                );
-            }
-        }
-        BundleAction::Import { path, into } => {
-            let text = read_input(&path)?;
-            let parsed = import_memory_full(&text);
-            if parsed.events.is_empty() && parsed.seed_files.is_empty() {
-                return Err(format!(
-                    "{} does not appear to be a formal_ai_bundle Links Notation document",
-                    path.display()
-                )
-                .into());
-            }
-            let parsed_seed = parse_bundle(&text);
-            let mut store = load_memory_or_empty(&into)?;
-            store.import(&parsed.events);
-            // Seed files become recomputable `seed_cache` events so seed data
-            // participates in usage/eviction accounting (issue #494).
-            let known: std::collections::BTreeSet<String> = store
-                .events()
-                .iter()
-                .map(|event| event.id.clone())
-                .collect();
-            let fresh_seed: Vec<_> = formal_ai::seed_cache_events(&parsed.seed_files)
-                .into_iter()
-                .filter(|event| !known.contains(&event.id))
-                .collect();
-            store.import(&fresh_seed);
-            store.save_to_file(&into)?;
-            eprintln!(
-                "Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.",
-                parsed.events.len(),
-                parsed_seed.len(),
-                store.len(),
-                into.display(),
-            );
-            let suggestions = suggest_memory_migrations(&parsed, &agent_info());
-            for message in suggestions {
-                eprintln!("Migration: {message}");
-            }
-        }
-    }
     Ok(())
 }
 

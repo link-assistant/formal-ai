@@ -102,6 +102,33 @@ test("the browser resolves an unknown word to the same senses as the native path
   }
 });
 
+test("concept and procedure retrieval share the one source-walk kernel", async () => {
+  const modules = readFileSync(path.join(REPO_ROOT, "src/web/worker-modules.js"), "utf8");
+  const kernel = path.join(
+    REPO_ROOT,
+    "src/web/worker/formal_ai_worker_source_walk.js",
+  );
+  assert.ok(
+    modules.includes("worker/formal_ai_worker_source_walk.js"),
+    "the production worker loads the shared source-walk module",
+  );
+  assert.ok(
+    readFileSync(kernel, "utf8").includes("async function sourceWalkSources"),
+    "the shared module owns the bounded walk",
+  );
+
+  for (const module of [
+    "formal_ai_worker_concept_lookup.js",
+    "formal_ai_worker_how_to_guide.js",
+  ]) {
+    const source = readFileSync(path.join(REPO_ROOT, "src/web/worker", module), "utf8");
+    assert.ok(
+      source.includes("sourceWalkSources("),
+      `${module} must call the shared walker instead of owning another walk`,
+    );
+  }
+});
+
 test("a settings opt-out silences a dictionary in the browser too", async () => {
   const context = await bootWorker(loadCaptures());
   const outcome = await lookup(context, HELD_OUT_WORD, "en", { externalServiceWiktionary: false });

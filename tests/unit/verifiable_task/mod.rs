@@ -10,7 +10,9 @@ mod identity;
 mod ledger;
 mod no_memorization;
 mod quantities;
+mod ratchets;
 mod recognition;
+mod rendering;
 mod routing;
 
 use std::fs;

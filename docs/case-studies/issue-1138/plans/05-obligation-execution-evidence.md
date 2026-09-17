@@ -661,10 +661,13 @@ pub(crate) fn record_obligation_ledger(
 ) -> NeedLedger;
 ```
 
-`need_ledger_with_execution` is the **only** function in the tree that produces
-`NeedStatus::Satisfied`, and it can only do so from an `ObligationOutcome::Satisfied`,
-which cannot be constructed without an `Evidence`. That is the type-level guarantee
-B5 asks for, obtained without touching `NeedStatus`.
+`need_status_with_observation` is the **only constructor** of
+`NeedStatus::Satisfied` in the tree. The execution-ledger projection
+`need_ledger_with_execution` calls it only for a matching
+`ObligationOutcome::Satisfied`, which cannot be constructed without an
+`Evidence`. Other domains call the same constructor only after their own observed
+state or successful re-probe; a planned row cannot upgrade itself. That is the
+type-level guarantee B5 asks for, obtained without changing `NeedStatus`.
 
 ### The execution record every obligation node must carry before `Satisfied`
 
@@ -855,7 +858,7 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 | | `the_observed_hash_matches_source_fetch_sha256_hex` | exactly one digest implementation |
 | | `a_harness_record_cannot_claim_a_local_process_source` | `source` is set by the call site, not the payload |
 | `tests/unit/specification/obligation_ledger.rs` | `satisfied_is_unconstructible_without_an_execution_record` | enumerates every constructor; the variant's only field is the record |
-| | `need_ledger_with_execution_is_the_only_producer_of_satisfied` | greps `src/` for `NeedStatus::Satisfied` construction sites |
+| | `need_ledger_with_execution_is_the_only_producer_of_satisfied` | greps `src/` for `NeedStatus::Satisfied` construction sites and pins the single observed-status module boundary |
 | | `an_unrelated_observation_discharges_nothing` | `observe` returns `None` when no expectation names the command or path (R710-R4) |
 | | `a_clause_with_no_derivable_expectation_becomes_a_node_not_a_discard` | the second clause appears in `to_links_notation` with its span |
 | | `an_underivable_node_is_split_before_it_is_called_unsatisfiable` | `Decompose` precedes `ReportGap` |
@@ -919,8 +922,10 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 - [x] Add `ObligationLedger` with `for_frame`, `observe`, `every_obligation_discharged`,
       the three counts and `to_links_notation`; `observe` returns `None` for an unrelated
       record.
-- [x] Add `need_ledger_with_execution`; prove by test it is the only producer of
-      `NeedStatus::Satisfied` in `src/`.
+- [x] Add `need_ledger_with_execution`; prove by test that
+      `need_status_with_observation` is the only constructor of
+      `NeedStatus::Satisfied` in `src/`, and that the execution projection reaches
+      it only from an evidence-bearing satisfied obligation.
 - [x] Add `record_obligation_ledger` and `meta_core::record_meta_core_execution`; ~~call it
       from `src/solver.rs` after `meta_method_dispatch`~~ — **struck, with the reason**:
       `meta_method_dispatch::try_dispatch` *returns the answer*
@@ -938,18 +943,20 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
       `SelfImprovementMode` default flip. Plan 14 orders this one first and gives
       each its own R343 parity run, so a parity failure has exactly one cause
       (plan 00 §9 X11).**
-- [ ] Rewrite `src/agentic_coding/task_obligations.rs` over `ObligationNode`: replace the
+- [x] Rewrite `src/agentic_coding/task_obligations.rs` over `ObligationNode`: replace the
       `continue` at `:55`, keep `pub fn obligations` compiling.
-- [ ] Add `next_step` and `ObligationStep`; switch `src/agentic_coding/planner.rs:373-379`
+- [x] Add `next_step` and `ObligationStep`; switch `src/agentic_coding/planner.rs:373-379`
       to match on it; `ReportGap` renders clause + span + reason, never completion prose.
-- [ ] Delete the private `Obligation` at `src/agentic_coding/evidence_record.rs:57-67`;
+- [x] Delete the private `Obligation` at `src/agentic_coding/evidence_record.rs:57-67`;
       route `:271` and `:274` through `ObligationLedger::observe`.
-- [ ] Replace the `"ok"` tool-result shortcut at
+- [x] Replace the `"ok"` tool-result shortcut at
       `tests/unit/issue_1099_multiple_obligations.rs:56-58` with real observed bytes.
 - [x] Add `data/meta/obligation-evidence-ratchet.lino`; ground it.
-- [ ] Add `tests/unit/issue_1138_obligation_evidence.rs` (ten prompts, five languages);
+- [x] Add `tests/unit/issue_1138_obligation_evidence.rs` (ten prompts, five languages);
       register in `tests/unit/mod.rs`.
-- [ ] Add `tests/unit/docs_requirements/issue_1138.rs` grep-pins.
+- [x] Add `tests/unit/docs_requirements/issue_1138.rs` grep-pins. The pin follows the
+      native, recipe-driven and live agentic call sites and asserts that evidence hashes
+      the exact observed byte slice.
 - [ ] Regenerate `data/meta/self-ast/`; run
       `rust-script scripts/assemble-requirements.rs --write`.
 - [x] Add the `changelog.d/` fragment.

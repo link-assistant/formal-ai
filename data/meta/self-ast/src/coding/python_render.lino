@@ -2,11 +2,12 @@ self_ast_census
   target src/coding/python_render.rs
   language rust
   fidelity signature
-  byte_len 2067
-  line_count 66
-  content_id source_module_9cc1e5124b5969d0
-  symbol_count 3
+  byte_len 2784
+  line_count 88
+  content_id source_module_13139210542ae757
+  symbol_count 4
   symbols
-    const RUNTIME 8 8
-    function runtime_template 12 27
-    function render_function 30 66
+    function runtime_template 11 15
+    function runtime_template_from 19 32
+    function render_runtime_template 34 49
+    function render_function 52 88

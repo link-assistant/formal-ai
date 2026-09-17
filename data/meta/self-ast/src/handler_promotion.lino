@@ -2,13 +2,19 @@ self_ast_census
   target src/handler_promotion.rs
   language rust
   fidelity signature
-  byte_len 2515
-  line_count 63
-  content_id source_module_87beef4ceb82bbd3
-  symbol_count 5
+  byte_len 7962
+  line_count 213
+  content_id source_module_43ecfe5ef1bdeb83
+  symbol_count 11
   symbols
-    struct HandlerPromotion 22 31
-    function to_links_notation 36 38
-    function promotions 43 45
-    function promotions_from 52 55
-    function promoted_relevants 60 63
+    const PROMOTIONS_LINO 20 20
+    struct HandlerPromotion 26 35
+    function to_links_notation 40 50
+    function promotions 55 58
+    function promotions_from 65 107
+    function promoted_relevants 112 115
+    function promoted_relevants_with_source 119 142
+    function promotion_condition_verdicts 148 169
+    function compile_condition 171 180
+    function render_nodes 182 201
+    function quoted 203 213

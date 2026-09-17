@@ -121,6 +121,21 @@ releases for testing in Hive Mind on real GitHub issues."*
 > instead of creating complete repositories for our formal-ai tests, we may use
 > separate branches with unique names
 
+**Know how to get to know anything when it is needed.**
+
+Stated by the architect in the
+[2026-09-14 note](docs/architect-notes/2026-09-14-know-how-to-get-to-know-anything.md):
+
+> We need to have dynamic discovery algorithms, that use primarely trusted
+> sources. So the goal is not to know everything in advance, the goal to know
+> how to get know anything when it is needed.
+
+The seed is a bootstrap and test accelerator, not an encyclopedia or an answer
+table. Knowledge that can be recovered from trusted sources may be cached and,
+under storage pressure, forgotten only when its rediscovery procedure remains
+available. Irreplaceable user history and the system's own experience are kept
+until the user chooses otherwise.
+
 ### Where the architect's notes live
 
 This section is kept up to date from
@@ -160,7 +175,7 @@ This keeps the seed model small while letting the network define new concepts, i
 - Chat-first interface: chat should be the default interface for English, Russian, Hindi, Chinese, and later other languages.
 - Visual network on demand: the link graph should be available side by side with chat when the user wants deeper inspection.
 - Bounded chat autonomy: chat mode should do only enough work to answer the current message, including compiling or running code when appropriate.
-- Explicit agent autonomy: agent mode should expose actions and run them in an isolated environment such as a Docker image, a server sandbox, or a browser VM where practical.
+- Explicit agent autonomy: agent mode exposes actions and runs them in an isolated environment — the allowlisted host sandbox, a `link-foundation/box` container, a per-conversation detached container, or a browser runtime — chosen by an observed probe rather than declared. Where no environment is available the answer says so and shows no unobserved output (issues #8, #930, #937, #1138 B6).
 
 ## Reasoning Model
 
@@ -266,7 +281,7 @@ The same symbolic core should be available through:
 - VS Code extension (desktop and web/`vscode.dev`) embedding the same chat; Marketplace publication is tracked by issue [#666](https://github.com/link-assistant/formal-ai/issues/666).
 - OpenAI-compatible backend for agentic CLIs (codex, opencode, gemini, qwen, claude, agent), and — the mirror direction — an orchestrator that drives those same CLIs as permissioned tools (issue [#703](https://github.com/link-assistant/formal-ai/issues/703)).
 
-Code-generation tasks should be a first focus area. The assistant should generate algorithms in popular languages, compile or run generated code when the environment supports it, report execution limits honestly, and preserve logs for failed reasoning or failed execution. Browser-only mode can start with JavaScript evaluation and later experiment with WebVM.
+Code-generation tasks should be a first focus area. The assistant should generate algorithms in popular languages, compile or run generated code when the environment supports it — and when it does not, discover the missing toolchain from its trusted publisher, install it under the workspace, and retry — report execution limits honestly from a probe rather than from a constant, and preserve logs for failed reasoning or failed execution. Browser-only mode starts with JavaScript evaluation and offers a lazily fetched Python runtime; WebVM remains an open option.
 
 ## Meaning And Identity
 

@@ -80,6 +80,20 @@ fn rust_creator_fact_is_available_across_supported_languages() {
             "{} Rust creator prompt should route to fact_lookup, got {} -> {}",
             case.language, response.intent, response.answer
         );
+        let documented_answer = match case.language {
+            "en" => {
+                "Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project."
+            }
+            "ru" => {
+                "Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект."
+            }
+            "hi" => {
+                "Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया."
+            }
+            "zh" => "Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。",
+            _ => unreachable!("the case table documents every supported language"),
+        };
+        assert_eq!(response.answer, documented_answer);
         assert!(
             response.answer.contains("Graydon Hoare"),
             "{} Rust creator answer should name Graydon Hoare, got: {}",

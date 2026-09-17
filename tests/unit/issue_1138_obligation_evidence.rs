@@ -132,7 +132,8 @@ fn a_held_out_paraphrase_produces_the_same_obligation_tree_shape() {
             "the two tables must line up language for language"
         );
         let seeded_shape = tree_shape(&ObligationNode::build(seeded, DEFAULT_SPLIT_DEPTH_BOUND));
-        let held_out_shape = tree_shape(&ObligationNode::build(held_out, DEFAULT_SPLIT_DEPTH_BOUND));
+        let held_out_shape =
+            tree_shape(&ObligationNode::build(held_out, DEFAULT_SPLIT_DEPTH_BOUND));
         assert_eq!(
             seeded_shape, held_out_shape,
             "{language}: the paraphrase must produce the same obligation shape as the seeded wording"
@@ -181,7 +182,7 @@ fn a_gap_is_reported_with_its_clause_and_byte_span_not_as_completion() {
         if ledger.every_obligation_discharged() {
             break;
         }
-        ledger.observe(Evidence::observed(
+        ledger.observe(&Evidence::observed(
             "true",
             vec![String::from("true")],
             Some(0),
@@ -220,7 +221,7 @@ fn a_bare_ok_tool_result_does_not_satisfy_a_file_bytes_expectation() {
         record.exit_code, None,
         "a harness tool result carries no exit code"
     );
-    ledger.observe(record);
+    ledger.observe(&record);
 
     let mut leaves = Vec::new();
     ledger.root.collect_leaves(&mut leaves);

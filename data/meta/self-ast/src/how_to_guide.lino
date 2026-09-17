@@ -2,10 +2,10 @@ self_ast_census
   target src/how_to_guide.rs
   language rust
   fidelity signature
-  byte_len 26342
-  line_count 688
-  content_id source_module_e574d759f4b7e683
-  symbol_count 42
+  byte_len 27290
+  line_count 714
+  content_id source_module_66dc2983ded2405b
+  symbol_count 43
   symbols
     module extract 19 19
     module render 20 20
@@ -15,37 +15,38 @@ self_ast_census
     function with 74 77
     function allows 81 86
     struct GuideStep 91 116
-    function provenance 121 133
-    struct GuideSourceOutcome 138 149
-    function from_walk 154 162
-    function new 164 172
-    function trace_payload 176 184
-    struct GuideConflict 189 198
-    struct HowToGuide 202 215
-    function is_sufficient 220 222
-    function contributing_sources 226 234
-    function trace 238 240
-    function record 243 245
-    function markdown 249 251
-    function markdown_in 258 260
-    function select_sources 270 276
-    function synthesize_how_to_guide 283 344
-    function skipped_sources 348 353
-    function entry_url 360 362
-    function page_title 367 369
-    function search_url 376 382
-    function answers_url 385 396
-    function parse_url 399 405
-    const TOPIC_STOPWORDS 410 413
-    function matches_task 422 429
-    function topic_words 433 440
-    function singular 442 447
-    struct StepExtractor 457 459
-    type Item 462 462
-    function entry_url 464 466
-    function read 468 553
-    function push_steps 556 583
-    function apply_copied_source_policy 589 618
-    function apply_conflict_policy 622 654
-    function action_key 658 670
-    function order_steps 674 688
+    function to_step_record 125 137
+    function provenance 141 153
+    struct GuideSourceOutcome 158 169
+    function from_walk 174 182
+    function new 184 192
+    function trace_payload 196 204
+    struct GuideConflict 209 218
+    struct HowToGuide 222 235
+    function is_sufficient 240 242
+    function contributing_sources 246 254
+    function trace 258 260
+    function record 263 265
+    function markdown 269 271
+    function markdown_in 278 280
+    function select_sources 290 296
+    function synthesize_how_to_guide 303 364
+    function skipped_sources 368 373
+    function entry_url 380 382
+    function page_title 387 389
+    function search_url 396 402
+    function answers_url 405 416
+    function parse_url 419 425
+    const TOPIC_STOPWORDS 430 433
+    function matches_task 442 449
+    function topic_words 453 460
+    function singular 462 467
+    struct StepExtractor 477 479
+    type Item 482 482
+    function entry_url 484 486
+    function read 488 579
+    function push_steps 582 609
+    function apply_copied_source_policy 615 644
+    function apply_conflict_policy 648 680
+    function action_key 684 696
+    function order_steps 700 714

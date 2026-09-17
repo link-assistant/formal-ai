@@ -8,11 +8,13 @@
 
 use std::fmt::Write as _;
 
-use crate::capability_routing::{ObjectType, RoutingOutcome};
+use crate::capability_routing::{Act, ObjectType, RoutingOutcome};
 use crate::engine::{SymbolicAnswer, answer_links_notation};
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::IntentFormalization;
-use crate::method_registry::MethodRegistry;
+use crate::method_registry::{
+    MethodExecution, MethodRegistry, MethodRuntimeKind, ProjectLookupPhase, ResponseLanguageVariant,
+};
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::{ConversationTurn, SolverConfig, UniversalSolver};
 use crate::solver_diagnostics::append_diagnostic_trace;
@@ -57,6 +59,7 @@ pub fn try_dispatch(
     // answer family, so the retarget generalizes beyond a single handler.
     let forced_response_language = solver.config.forced_response_language;
     for name in method_names {
+        let execution = registry.execution_for(&name);
         // Prelude methods keep first refusal: they include explicit natural-
         // language tool requests and policy-like assistant capabilities that
         // already own complete recipes.  The shared capability table then
@@ -70,7 +73,16 @@ pub fn try_dispatch(
                 return Some(answer);
             }
         }
-        if matches!(name.as_str(), "feature_capability" | "capabilities")
+        if let Some(answer) = crate::family_method::try_family_method_preempting(
+            prompt,
+            &normalized,
+            history,
+            log,
+            &name,
+        ) {
+            return Some(answer);
+        }
+        if execution.project_lookup == Some(ProjectLookupPhase::BeforeRuntime)
             && let Some(answer) = try_explicit_repository_lookup(
                 prompt,
                 &normalized,
@@ -82,11 +94,13 @@ pub fn try_dispatch(
         {
             return Some(record_method_answer(prompt, log, answer, "project_lookup"));
         }
-        if let Some(answer) = try_prelude_method(solver, &name, prompt, &normalized, log, runtime) {
+        if let Some(answer) =
+            try_attributed_runtime(solver, execution, &name, prompt, &normalized, log, runtime)
+        {
             return Some(answer);
         }
         if solver.config.definition_fusion_by_default
-            && name == "concept_lookup"
+            && execution.definition_fusion
             && let Some(answer) = crate::definition_merge::merge_definitions_by_default(prompt, log)
         {
             return Some(record_method_answer(
@@ -95,6 +109,17 @@ pub fn try_dispatch(
                 answer,
                 "definition_merge_by_default",
             ));
+        }
+        // Family interpreters replace the generic unknown/concept fallback,
+        // not the grounded methods ordered ahead of it.  This data-selected
+        // boundary preserves richer history, source, policy, and execution
+        // semantics while still letting a family claim requests none of those
+        // methods could solve.
+        if execution.project_lookup == Some(ProjectLookupPhase::Fallback)
+            && let Some(answer) =
+                crate::family_method::try_family_method(prompt, &normalized, history, log)
+        {
+            return Some(answer);
         }
         match try_contextual_override(
             &name,
@@ -118,27 +143,16 @@ pub fn try_dispatch(
         // through its response-language variant so a replayed definitional
         // request re-renders in the requested language before the plain handler
         // (which localizes only to the detected prompt language) can claim it.
-        if name == "concept_lookup"
-            && let Some(language) = forced_response_language
-            && let Some(answer) =
-                try_concept_lookup_with_response_language(prompt, log, Some(language))
-        {
-            return Some(record_method_answer(prompt, log, answer, "concept_lookup"));
-        }
-        // Issue #531/#556: when a language is forced, render the pattern-inference
-        // report in that language so a replayed "find the pattern" request no
-        // longer strands its answer in English.
-        if name == "pattern_inference"
-            && let Some(language) = forced_response_language
-            && let Some(answer) =
-                try_pattern_inference_with_response_language(prompt, &normalized, log, language)
-        {
-            return Some(record_method_answer(
+        if let Some(language) = forced_response_language
+            && let Some(answer) = try_response_language_variant(
+                execution.response_language,
                 prompt,
+                &normalized,
                 log,
-                answer,
-                "pattern_inference",
-            ));
+                language,
+            )
+        {
+            return Some(record_method_answer(prompt, log, answer, &name));
         }
         // Issue #1138 B7, plan 07 leaf 6: a learned name is executed as the
         // recipe program its operations project onto, instead of through
@@ -154,7 +168,7 @@ pub fn try_dispatch(
         {
             return Some(record_method_answer(prompt, log, answer, &name));
         }
-        if name == "concept_lookup" {
+        if execution.project_lookup == Some(ProjectLookupPhase::Fallback) {
             let answer = if let Some(language) = forced_response_language {
                 try_project_lookup_with_response_language(
                     prompt,
@@ -217,6 +231,7 @@ fn try_capability_route(
     if !solver_route_is_authoritative(prompt, &decision) {
         return None;
     }
+    let normalized = prompt.to_lowercase();
 
     // A specifically promoted interpreter keeps the request it already
     // grounded.  The table replaces generic fetch/search/clarification
@@ -224,19 +239,10 @@ fn try_capability_route(
     // interrupt translation, text manipulation, installation conversion, or
     // any other complete recipe merely because that recipe mentions a path or
     // a language.
-    if let Some(method) = promoted_method {
-        if !matches!(
-            method,
-            "http_fetch"
-                | "url_navigate"
-                | "web_search"
-                | "calendar_create_event"
-                | "clarification"
-                | "conversation_memory"
-                | "response_language_followup"
-        ) {
-            return None;
-        }
+    if let Some(method) = promoted_method
+        && !capability_route_preempts(method, &decision)
+    {
+        return None;
     }
 
     let (capability, unavailable) = match &decision.outcome {
@@ -246,11 +252,35 @@ fn try_capability_route(
             capability,
         } => (capability.as_str(), Some(preferred.as_str())),
         RoutingOutcome::HonestGap { needed, missing } => {
+            if let Some(answer) = crate::family_method::try_family_method_preempting(
+                prompt,
+                &normalized,
+                history,
+                log,
+                "capability_gap",
+            ) {
+                return Some(answer);
+            }
             record_capability_route(log, decision.object, decision.act, decision.locus, needed);
             return Some(capability_gap(prompt, log, needed, missing));
         }
         RoutingOutcome::Ask { .. } => return None,
     };
+    // Capability routing and handler-family routing are both data-selected
+    // interpretations of the same request.  Let the family catalog arbitrate
+    // a routed capability by its declared `preempts` relation before the
+    // capability executes.  Without this shared boundary, adding a capability
+    // can silently steal an older family's requests merely because capability
+    // routing runs earlier in the dispatcher.
+    if let Some(answer) = crate::family_method::try_family_method_preempting(
+        prompt,
+        &normalized,
+        history,
+        log,
+        capability,
+    ) {
+        return Some(answer);
+    }
     record_capability_route(
         log,
         decision.object,
@@ -259,13 +289,12 @@ fn try_capability_route(
         capability,
     );
     if let Some(preferred) = unavailable {
-        log.append(
+        log.append_fields(
             "capability_route:lowered",
-            format!("preferred={preferred} capability={capability}"),
+            &[("preferred", preferred), ("capability", capability)],
         );
     }
 
-    let normalized = prompt.to_lowercase();
     let live_fetch = std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
         matches!(
             value.trim().to_ascii_lowercase().as_str(),
@@ -291,16 +320,43 @@ fn try_capability_route(
             response_language_demonstration(prompt, &normalized, log)
         }
         "explain_previous_turn" => Some(explain_previous_turn(prompt, log)),
-        // These capabilities already have general registry methods.  Recording
+        "compose_from_sources" | "concept_measurement_lookup" => Some(
+            crate::source_capability::execute(capability, prompt, solver.config, log),
+        ),
+        // These capabilities already have general registry methods. Recording
         // the table decision here changes their precedence without duplicating
         // their execution or interrupting a multi-step research recipe.
-        "web_search"
-        | "compose_from_sources"
-        | "concept_measurement_lookup"
-        | "report_issue"
-        | "ask_user" => None,
+        "web_search" | "report_issue" | "ask_user" => None,
         _ => Some(capability_gap(prompt, log, capability, capability)),
     }
+}
+
+/// Whether a grounded capability decision is more specific than a promoted
+/// handler's reading of the same prompt.
+///
+/// Generic retrieval/clarification handlers and concept lookup must yield to a
+/// typed URL, path, clock, language or self-surface. Translation is different:
+/// a complete translation recipe owns its transform even though it names a
+/// target language. Only the `(language_name, demonstrate, dialogue)` reading
+/// is a request to render this response in that language.
+fn capability_route_preempts(
+    promoted_method: &str,
+    decision: &crate::capability_routing::RoutingDecision,
+) -> bool {
+    matches!(
+        promoted_method,
+        "http_fetch"
+            | "url_navigate"
+            | "web_search"
+            | "calendar_create_event"
+            | "clarification"
+            | "concept_lookup"
+            | "software_project"
+            | "conversation_memory"
+            | "response_language_followup"
+    ) || (promoted_method == "translation"
+        && decision.object == ObjectType::LanguageName
+        && decision.act == Act::Demonstrate)
 }
 
 /// Whether the table should preempt regular symbolic-handler precedence.
@@ -330,26 +386,39 @@ fn record_capability_route(
     locus: crate::capability_routing::Locus,
     capability: &str,
 ) {
-    log.append(
+    log.append_fields(
         "capability_route",
-        format!(
-            "object={} act={} locus={} capability={capability}",
-            object.slug(),
-            act.slug(),
-            locus.slug(),
-        ),
+        &[
+            ("object", object.slug()),
+            ("act", act.slug()),
+            ("locus", locus.slug()),
+            ("capability", capability),
+        ],
     );
 }
 
 fn capability_gap(prompt: &str, log: &mut EventLog, needed: &str, missing: &str) -> SymbolicAnswer {
-    log.append(
+    log.append_fields(
         "capability_gap",
-        format!("needed={needed} missing={missing}"),
+        &[("needed", needed), ("missing", missing)],
     );
-    let body = format!(
-        "This request routes to the `{needed}` capability, but this chat surface does not \
-         expose the required `{missing}` tool. Use an agent client that advertises it."
+    let mut body = seeded_runtime_text(
+        "capability_gap",
+        &[("needed", needed), ("missing", missing)],
     );
+    let anchors = request_anchors(prompt);
+    if !anchors.is_empty() {
+        let rendered = anchors
+            .iter()
+            .map(|anchor| format!("`{anchor}`"))
+            .collect::<Vec<_>>()
+            .join(", ");
+        log.append("capability_gap:request_anchors", anchors.join("|"));
+        body.push_str(&seeded_runtime_text(
+            "capability_gap_anchors",
+            &[("anchors", &rendered)],
+        ));
+    }
     finalize_simple(
         prompt,
         log,
@@ -358,6 +427,32 @@ fn capability_gap(prompt: &str, log: &mut EventLog, needed: &str, missing: &str)
         &body,
         1.0,
     )
+}
+
+/// Stable machine-addressable values that must survive an honest capability
+/// gap. A chat surface cannot open the requested workspace, but it must not
+/// discard an exact commit, path or code identifier before handing the request
+/// to a capable client.
+fn request_anchors(prompt: &str) -> Vec<&str> {
+    let mut anchors = Vec::new();
+    for token in prompt.split(|character: char| {
+        !(character.is_ascii_alphanumeric()
+            || matches!(character, '/' | '.' | '_' | '-' | ':' | '@'))
+    }) {
+        let token = token.trim_matches(['.', ',', ':', ';']);
+        let exact_commit =
+            token.len() == 40 && token.chars().all(|character| character.is_ascii_hexdigit());
+        let named_path =
+            token.contains('/') && !token.starts_with("http://") && !token.starts_with("https://");
+        let code_identifier = token.contains('_')
+            && token
+                .chars()
+                .all(|character| character.is_ascii_alphanumeric() || character == '_');
+        if (exact_commit || named_path || code_identifier) && !anchors.contains(&token) {
+            anchors.push(token);
+        }
+    }
+    anchors
 }
 
 fn response_language_demonstration(
@@ -380,7 +475,14 @@ fn response_language_demonstration(
     let demonstration =
         crate::seed::response_for("greeting", target).unwrap_or_else(|| canonical.to_owned());
     log.append("language_to", target.to_owned());
-    let body = format!("{canonical} ({surface}): {demonstration}");
+    let body = seeded_runtime_text(
+        "response_language_demonstration",
+        &[
+            ("canonical", canonical),
+            ("surface", surface),
+            ("demonstration", &demonstration),
+        ],
+    );
     Some(finalize_simple(
         prompt,
         log,
@@ -393,8 +495,8 @@ fn response_language_demonstration(
 
 fn explain_previous_turn(prompt: &str, log: &mut EventLog) -> SymbolicAnswer {
     let body = crate::solver_helpers::last_assistant_turn(log).map_or_else(
-        || String::from("There is no previous assistant turn available to explain yet."),
-        |previous| format!("Here is the previous answer in a simpler form:\n\n{previous}"),
+        || seeded_runtime_text("explain_previous_turn_empty", &[]),
+        |previous| seeded_runtime_text("explain_previous_turn_answer", &[("previous", previous)]),
     );
     finalize_simple(
         prompt,
@@ -424,34 +526,19 @@ fn try_learned_method(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let learned = registry.learned_method(name)?;
-    let program = match learned.to_recipe_program() {
-        Ok(program) => program,
-        Err(reason) => {
-            log.append("method:learned", format!("{name}:{reason}"));
-            return None;
-        }
-    };
-    let trace = match program.execute(
-        intent_formalization,
-        solver.config.max_decomposition_depth,
-        solver.config.recursion_mode,
-        solver.config.selection_mode,
-        solver.config.skill_mode,
-    ) {
-        Ok(trace) => trace,
+    let execution = match learned.execute(intent_formalization, solver.config) {
+        Ok(execution) => execution,
         Err(reason) => {
             log.append("method:learned", format!("{name}:{reason}"));
             return None;
         }
     };
     log.append("method:learned", name.to_owned());
-    let mut rendered = program.to_links_notation();
-    for id in &trace.executed {
-        let _ = write!(rendered, "\n  executed {id}");
-    }
-    for id in &trace.skipped {
-        let _ = write!(rendered, "\n  skipped {id}");
-    }
+    log.append(
+        "method:learned:operations_verified",
+        execution.operations_verified.to_string(),
+    );
+    let rendered = execution.answer;
     let intent = format!("learned_method:{name}");
     log.append("intent", intent.clone());
     let response_link = format!("response:learned_method:{name}");
@@ -508,31 +595,49 @@ impl MethodRuntime {
     }
 }
 
-fn try_prelude_method(
+fn try_attributed_runtime(
     solver: &UniversalSolver,
-    name: &str,
+    execution: MethodExecution,
+    method_name: &str,
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
     runtime: MethodRuntime,
 ) -> Option<SymbolicAnswer> {
-    let answer = match name {
-        "diagnostic" => try_diagnostic(solver, prompt, normalized, log),
-        "nl_tool" => {
+    let kind = execution.runtime?;
+    let answer = match kind {
+        MethodRuntimeKind::Diagnostic => try_diagnostic(solver, prompt, normalized, log),
+        MethodRuntimeKind::NaturalLanguageTool => {
             try_natural_language_tool_request(prompt, normalized, log, solver.config.agent_mode)
         }
-        "behavior_rules" => {
+        MethodRuntimeKind::BehaviorRules => {
             try_behavior_rules_with_runtime(prompt, normalized, log, runtime.self_awareness_runtime)
         }
-        "feature_capability" => {
+        MethodRuntimeKind::FeatureCapability => {
             try_feature_capability(prompt, normalized, log, runtime.capability_runtime)
         }
-        "playwright_script" => {
+        MethodRuntimeKind::PlaywrightScript => {
             try_playwright_script(prompt, normalized, log, solver.config.guess_probability)
         }
-        _ => return None,
     }?;
-    Some(record_method_answer(prompt, log, answer, name))
+    Some(record_method_answer(prompt, log, answer, method_name))
+}
+
+fn try_response_language_variant(
+    variant: Option<ResponseLanguageVariant>,
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    language: &str,
+) -> Option<SymbolicAnswer> {
+    match variant? {
+        ResponseLanguageVariant::ConceptLookup => {
+            try_concept_lookup_with_response_language(prompt, log, Some(language))
+        }
+        ResponseLanguageVariant::PatternInference => {
+            try_pattern_inference_with_response_language(prompt, normalized, log, language)
+        }
+    }
 }
 
 fn try_diagnostic(
@@ -615,4 +720,8 @@ fn refresh_answer_projection(
         answer_links_notation(prompt, &answer.intent, &answer.answer, log, &trace_id);
     answer.thinking_steps = log.thinking_steps_for_answer(&answer.answer);
     answer
+}
+
+fn seeded_runtime_text(intent: &str, values: &[(&str, &str)]) -> String {
+    crate::seed::render_response(intent, "en", values).unwrap_or_else(|| intent.to_owned())
 }

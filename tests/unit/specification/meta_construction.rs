@@ -253,6 +253,8 @@ fn the_knob_changes_only_the_trace_not_the_answer() {
         ..SolverConfig::default()
     })
     .solve(prompt);
+    assert_eq!(down.answer, "\"яблоко\"");
+    assert_eq!(both.answer, "\"яблоко\"");
     assert_eq!(
         down.answer, both.answer,
         "the answer must not depend on the mode"

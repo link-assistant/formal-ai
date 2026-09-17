@@ -29,7 +29,11 @@ fn a_verified_derivation_is_content_addressed_and_tamper_detecting() {
     let task = recognise_verifiable(&paraphrase.prompt).expect("the narrative is recognised");
 
     let procedure = ledger
-        .remember(&task, "derivation-issue-1138", &[String::from("fragment:sum")])
+        .remember(
+            &task,
+            "derivation-issue-1138",
+            &[String::from("fragment:sum")],
+        )
         .expect("remembering a derivation should succeed");
     assert!(
         procedure.valid(),
@@ -57,7 +61,11 @@ fn a_recalled_procedure_recomputes_rather_than_replays_a_value() {
     let paraphrase = case("arithmetic_narrative", "en");
     let original = recognise_verifiable(&paraphrase.prompt).expect("the narrative is recognised");
     let procedure = ledger
-        .remember(&original, "derivation-issue-1138", &[String::from("fragment:sum")])
+        .remember(
+            &original,
+            "derivation-issue-1138",
+            &[String::from("fragment:sum")],
+        )
         .expect("remembering a derivation should succeed");
 
     let renumbered = paraphrase
@@ -98,16 +106,27 @@ fn forgotten_derivations_are_rediscovered_to_the_same_id() {
     let task = recognise_verifiable(&paraphrase.prompt).expect("the equation is recognised");
 
     let before = ledger
-        .remember(&task, "derivation-issue-1138-unknown", &[String::from("fragment:isolate")])
+        .remember(
+            &task,
+            "derivation-issue-1138-unknown",
+            &[String::from("fragment:isolate")],
+        )
         .expect("remembering a derivation should succeed");
     ledger.forget(&task).expect("forgetting should succeed");
     assert!(
-        ledger.recall(&task).expect("recall should succeed").is_none(),
+        ledger
+            .recall(&task)
+            .expect("recall should succeed")
+            .is_none(),
         "a forgotten derivation is gone"
     );
 
     let after = ledger
-        .remember(&task, "derivation-issue-1138-unknown", &[String::from("fragment:isolate")])
+        .remember(
+            &task,
+            "derivation-issue-1138-unknown",
+            &[String::from("fragment:isolate")],
+        )
         .expect("rediscovery should succeed");
     assert_eq!(
         after.derivation_id, before.derivation_id,
@@ -116,5 +135,36 @@ fn forgotten_derivations_are_rediscovered_to_the_same_id() {
     assert_eq!(
         after.task_identity, before.task_identity,
         "the task identity is stable across a forget and a rediscovery"
+    );
+}
+
+/// Corrupting persisted bytes turns the entry into an honest cache miss. A
+/// tampered derivation is never returned as prior evidence.
+#[test]
+fn a_tampered_persisted_record_is_not_recalled() {
+    let directory = cache_directory("persisted-tamper");
+    let ledger = VerifiableTaskLedger::new(&directory);
+    let paraphrase = case("arithmetic_narrative", "en");
+    let task = recognise_verifiable(&paraphrase.prompt).expect("the narrative is recognised");
+    let procedure = ledger
+        .remember(
+            &task,
+            "derivation-original",
+            &[String::from("fragment:sum")],
+        )
+        .expect("remembering should succeed");
+
+    let bytes = std::fs::read_to_string(ledger.path()).expect("the ledger should exist");
+    let tampered = bytes.replace(&procedure.derivation_id, "derivation-tampered");
+    assert_ne!(bytes, tampered, "the fixture must change persisted bytes");
+    std::fs::write(ledger.path(), tampered)
+        .expect("the test should be able to corrupt its fixture");
+
+    assert!(
+        ledger
+            .recall(&task)
+            .expect("recall should remain readable")
+            .is_none(),
+        "a record whose integrity digest no longer matches is ignored"
     );
 }

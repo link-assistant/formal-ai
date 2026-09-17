@@ -1145,10 +1145,10 @@ the point.
       `need_kinds` field (plan 01 L3's axis, not a second one); assert in
       `tests/unit/specification/…` that `src/coding/function_catalog/oeis.rs:16`
       and `python_docs.rs:12` read their URL and license from the registry.
-- [ ] **L2** — Add `src/coding/program_ir.rs`: `IrType`, `IrNode`, `ReuseMode`,
+- [x] **L2** — Add `src/coding/program_ir.rs`: `IrType`, `IrNode`, `ReuseMode`,
       `ProgramIr`, `to_links_notation`, `content_id`, `action_cost`. Round-trip
       and cost tests only; no caller yet.
-- [ ] **L3** — Add `ProgramIr::type_check` and `ElaborationBounds`; ill-typed
+- [x] **L3** — Add `ProgramIr::type_check` and `ElaborationBounds`; ill-typed
       composition is rejected by node name.
 - [ ] **L4** — Add `src/coding/fragment_catalog.rs` with `Fragment`,
       `FragmentOrigin`, `FragmentCatalog::bootstrap()` reading the seed at
@@ -1160,7 +1160,7 @@ the point.
 - [ ] **L6** — Add `src/coding/ir_lowering/{mod,python}.rs`; move
       `render_function` (`src/coding/python_render.rs:29`) behind
       `LanguageLowering`. Existing composition still uses the old path.
-- [ ] **L7** — Add `src/coding/composition_search.rs`: bounded typed enumeration
+- [x] **L7** — Add `src/coding/composition_search.rs`: bounded typed enumeration
       over `FragmentCatalog`, deterministic by cost then id.
 - [ ] **L8** — Port the 9 blocks of `structural_drafts`
       (`src/coding/composition.rs:203-412`) to fragment *type signatures*; delete
@@ -1219,6 +1219,58 @@ the point.
       `--frontier-record` flag (`src/cli_benchmark.rs:57-61`).
 - [ ] **L25** — Update every document listed below with the measured numbers and
       the new architecture.
+
+### 2026-09-17 typed-search retirement checkpoint
+
+The implementation for L8 and L9 is now present, but the leaves remain
+unchecked until the focused Rust corpus is executed on the combined tree. The
+two authored Rust generators have been deleted. `composition_search` now
+performs bounded deterministic enumeration of nested typed fragment
+applications, deriving argument names from target realizations and relevance
+edges from source-seed `supports` links. Prompt and example literals are
+hypotheses in that same bounded frontier; only executable examples can select
+one. The held-out structural corpus now requires every selected answer to
+report `typed_search(…)`, so reintroducing a compatibility generator cannot
+satisfy the gate.
+
+Browser parity L21 and live-network measurements L24 remain open. This
+checkpoint adds no benchmark number: it awaits the coordinator's serialized
+Cargo run and then the explicitly online slice-164 and slice-500 runs.
+
+### 2026-09-17 completion audit checkpoint
+
+This audit deliberately leaves unchecked every leaf whose whole acceptance
+criterion has not run successfully on the combined tree. The browser now
+performs seed-driven typed composition and emits the lowered source with its IR
+content id, fragments, sources, licences, and an explicit unverified boundary.
+`tests/web/worker-mirror.test.mjs` passes **18/18**, JavaScript syntax checks
+pass, and the new module is **334/335** lines. The repository-wide line-budget
+gate is not green yet: `formal_ai_worker_20.js` is 1311/1308,
+`formal_ai_worker_dispatch.js` is 92/80, and
+`formal_ai_worker_verifiable_task.js` has no budget shard. Therefore L21 stays
+open rather than treating a focused test as proof of its entire budget clause.
+
+The focused `composition_search` module passes **4/4** after preserving
+complete fold roots outside the bounded subexpression beam, excluding untyped
+renderer scaffolds from the operation catalog, ordering final programs by
+action cost then content id, and rejecting lowered candidates whose catalog
+placeholder names remain free. Its multilingual fixture supplies the
+language-neutral `extend_run` identity that concept discovery is meant to
+produce and proves that English and Russian prose then expose the same
+frontier. This proves L7; L8–L9 remain unchecked because their required
+slice-20 control has not passed on the combined tree. The separately corrected
+empty-catalog blocked-need path still requires the coordinator's next
+serialized Cargo run.
+
+L15 remains materially incomplete. Six algorithm-shaped answers are absent,
+and OEIS recurrence source now passes through `IrNode::Recurrence`, but
+`grid_minimum_cost_path` is still a whole algorithm in
+`meanings-coding-structure.lino`. Removing it requires a general recursive or
+dynamic-programming IR composition, not renaming the answer as a primitive.
+The required slice-20 and 13/13 controls have also not both passed on the
+combined tree. L24 (the four live/cold full-suite measurements and frontier
+rows) and L25 (documents updated from those measured rows) remain owned by the
+coordinator and open. No full-suite number is inferred or fabricated here.
 
 ---
 

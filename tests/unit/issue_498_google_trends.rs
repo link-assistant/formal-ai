@@ -83,6 +83,11 @@ fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() 
     let catalog = google_trends_catalog();
 
     assert_eq!(
+        catalog.topics[0].answered[0].answer,
+        "No captured provider response is available for `julián andrés quiñones`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.",
+        "the first generated prompt documents one exact catalog answer"
+    );
+    assert_eq!(
         catalog.topics.len(),
         GOOGLE_TRENDS_TOP_LIMIT,
         "the committed snapshot should keep exactly the top 10 Trends topics",

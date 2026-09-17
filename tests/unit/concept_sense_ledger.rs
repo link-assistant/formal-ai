@@ -67,7 +67,10 @@ fn rediscover() -> Vec<ConceptSense> {
 fn forgotten_senses_are_rediscovered_from_the_same_captures_to_the_same_content_id() {
     let ledger = ConceptSenseLedger::new(ledger_dir("forget"));
     let first = rediscover();
-    assert!(!first.is_empty(), "the captures must yield at least one sense");
+    assert!(
+        !first.is_empty(),
+        "the captures must yield at least one sense"
+    );
     for sense in &first {
         ledger.remember(sense).expect("remember a sense");
     }
@@ -101,7 +104,10 @@ fn a_tampered_ledger_record_is_rejected_and_re_derived() {
     // Tamper with the stored bytes directly: a ledger that trusts its own file
     // would now serve a gloss no source ever published.
     let tampered_gloss = "a meaning nobody published";
-    for entry in std::fs::read_dir(&directory).expect("ledger directory").flatten() {
+    for entry in std::fs::read_dir(&directory)
+        .expect("ledger directory")
+        .flatten()
+    {
         let path = entry.path();
         if path.is_file() {
             let bytes = std::fs::read_to_string(&path).expect("ledger record");
@@ -111,7 +117,9 @@ fn a_tampered_ledger_record_is_rejected_and_re_derived() {
     }
 
     assert_eq!(
-        ledger.recall(&content_id).expect("recall a tampered record"),
+        ledger
+            .recall(&content_id)
+            .expect("recall a tampered record"),
         None,
         "a record whose bytes no longer match its digest is refused, not served"
     );

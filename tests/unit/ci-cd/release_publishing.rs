@@ -8,6 +8,9 @@ use std::process::Command;
 
 use super::workflow_fixtures::*;
 
+#[path = "release_recovery.rs"]
+mod release_recovery;
+
 fn read_worker_source(manifest_dir: &str) -> String {
     let mut source =
         fs::read_to_string(format!("{manifest_dir}/src/web/formal_ai_worker.js")).unwrap();
@@ -336,12 +339,12 @@ fn readme_keeps_traditional_ci_and_artifact_badges() {
 }
 
 #[test]
-fn build_job_checks_generated_crate_archive_size() {
+fn build_job_verifies_the_publishable_archive_before_checking_its_size() {
     let workflow = release_workflow();
     let build = job_block(&workflow, "build");
-    let package_list = build
+    let package_verify = build
         .find("- name: Check package")
-        .expect("build job should list package contents");
+        .expect("build job should verify the package archive");
     let package_size = build
         .find("- name: Check crate package size")
         .expect("build job should check the generated crate archive size");
@@ -350,12 +353,17 @@ fn build_job_checks_generated_crate_archive_size() {
         .expect("build job should install rust-script before running script guards");
 
     assert!(
-        package_list < package_size,
-        "build job should list package contents before checking archive size"
+        package_verify < package_size,
+        "build job should verify the publishable archive before checking archive size"
     );
     assert!(
         install_rust_script < package_size,
         "build job should install rust-script before checking archive size"
+    );
+    assert!(
+        build.contains("cargo package --locked -p formal-ai")
+            && !build.contains("cargo package --list --allow-dirty"),
+        "the pull-request build must compile from the .crate archive, not merely list source-tree files"
     );
     assert!(
         build.contains("rust-script scripts/check-crate-package-size.rs"),
@@ -510,59 +518,6 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
             && manual_docker_hub < manual_github_release,
         "manual release should publish crates.io first, then GHCR, then optional Docker Hub, then GitHub release"
     );
-}
-
-#[test]
-fn release_workflow_defers_rate_limited_crates_publish_without_downstream_artifacts() {
-    let workflow = release_workflow();
-    let auto_release = job_block(&workflow, "auto-release");
-
-    for step_name in [
-        "Wait for Crate availability on Crates.io",
-        "Log in to GitHub Container Registry",
-        "Set up Docker Buildx",
-        "Extract GHCR Docker metadata",
-        "Publish Docker image to GHCR",
-        "Configure Docker Hub publishing",
-        "Create GitHub Release",
-    ] {
-        let step = workflow_step_block(auto_release, step_name);
-        assert!(
-            step.contains("steps.check.outputs.crate_published == 'true'"),
-            "auto-release {step_name} should still run when the crate was already published"
-        );
-        assert!(
-            step.contains("steps.publish-crate.outputs.publish_result == 'success'"),
-            "auto-release {step_name} should wait for a successful crates.io publish before creating downstream artifacts"
-        );
-        assert!(
-            !step.contains("steps.check.outputs.should_release == 'true'\n"),
-            "auto-release {step_name} should not run solely because a release is needed"
-        );
-    }
-
-    let manual_release = job_block(&workflow, "manual-release");
-    for step_name in [
-        "Wait for Crate availability on Crates.io",
-        "Log in to GitHub Container Registry",
-        "Set up Docker Buildx",
-        "Extract GHCR Docker metadata",
-        "Publish Docker image to GHCR",
-        "Configure Docker Hub publishing",
-        "Create GitHub Release",
-    ] {
-        let step = workflow_step_block(manual_release, step_name);
-        assert!(
-            step.contains("steps.publish-crate.outputs.publish_result == 'success'"),
-            "manual-release {step_name} should wait for a successful crates.io publish before creating downstream artifacts"
-        );
-        assert!(
-            !step.contains(
-                "steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n"
-            ),
-            "manual-release {step_name} should not run solely because a version step completed"
-        );
-    }
 }
 
 #[test]

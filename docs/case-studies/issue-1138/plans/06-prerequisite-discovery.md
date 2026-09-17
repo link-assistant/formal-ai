@@ -748,8 +748,8 @@ Expected with no execution backend: the reply contains the honest sentence in th
 | same | `the_halving_ladder_records_every_n_it_tried` | #930's ladder reports each N and its outcome; nothing is hidden. |
 | same | `network_is_denied_unless_the_contract_requires_it` | `--network none` by default (`verify-box-language-projects.sh:94-97`). |
 | same | `a_missing_docker_daemon_is_a_refusal_not_a_skip` | no backend → the honest sentence, never a silent pass. |
-| `tests/unit/issue_1138_conversation_container.rs` | `an_idle_container_stops_and_restores_its_state` | write a file, idle past `idle_after`, reattach, file present. |
-| same | `replay_and_snapshot_are_compared_when_both_exist` | divergence is reported, not hidden. |
+| `tests/integration/issue_1138_recovery_live.rs` *(`#[ignore]`, Docker)* | `an_idle_container_stops_and_restores_its_state` | write a file, idle past `idle_after`, reattach, file present. Hermetic unit tests separately pin exact Docker argv and the no-host-fallback boundary. |
+| same | `replay_and_snapshot_are_compared_when_both_exist` | commit both container states, compare their root-filesystem layer ids, and derive divergence rather than hiding it. |
 | `tests/unit/issue_1138_surface_honesty.rs` | `an_unverified_answer_says_so_in_five_languages` | the honesty sentence resolves in en/ru/hi/zh/es from seed; `55` absent. |
 | same | `guidance_has_a_spanish_branch` | `src/coding/guidance.rs:291-311` no longer falls through to English for Spanish. |
 | `tests/unit/specification/prerequisite_recipe.rs` | `recipe_matches_the_live_source` | every `meta_step.source_file` exists; `order` contiguous; each `id` has an arm. |
@@ -786,7 +786,7 @@ scripts/verify-box-language-projects.sh                 # unchanged, still the C
 cargo run --bin formal-ai -- chat --backend box "Write a hello world in Go and run it."
 
 # SWE-bench with the harness prerequisite recovered rather than preinstalled.
-cargo run --bin formal-ai -- benchmark run --suite swebench_lite --slice 1 --online --append
+cargo run --bin formal-ai -- benchmark run --suite swebench_lite --slice 1 --online --allow-install --append
 ```
 
 Record the probe table, the recovery outcome for each of the five languages, and the number of catalogued languages whose status is `Verified` by observation rather than by constant — whatever those numbers are. A run in which zero languages probe `Verified` is a publishable result; a run whose numbers are not recorded is not.
@@ -802,14 +802,14 @@ Record the probe table, the recovery outcome for each of the five languages, and
 - [x] **L7.** Add `src/prerequisite/install.rs` `WorkspaceToolchain`, `InstallGrant`, `install_scoped`, default `Refused`, `.formal-ai/toolchains/<program>/<content-id>/`. Test: the five refusal cases and the explicit-environment case.
 - [x] **L8.** Add `data/meta/prerequisite-recipe.lino` + `recover()` + `tests/unit/specification/prerequisite_recipe.rs`. Test: grounding and rediscovery.
 - [x] **L9.** Add `src/prerequisite/ledger.rs` `ToolchainLedger` and `data/meta/toolchain-ledger.lino`, append-only, with `formal-ai learn forget --toolchain <program>`. Test: forget-and-rediscover content id; restart reattach.
-- [ ] **L10.** Run the family-1 held-out prompt in all five languages, refused and granted, and record the outcome table. No tuning in this commit. **Partly landed (wave I5 tail):** the guard this leaf depends on, `tests/unit/issue_1138_held_out_toolchain.rs`, was red on a conflict between two committed specifications — it scanned all of `data/` for `zig` and `gleam`, and wave F's own held-out corpus `data/benchmarks/self-use-prerequisite.lino` names both by design. Plan 14's wave T settles it: held-out prompts live in `data/benchmarks/` and the memorization scans exclude that directory. The guard is narrowed to what the runtime reads (`src`, `data/seed`, `data/meta`) and what CI runs (`scripts`, `.github`); the two names, the substring match and the empty-leaks assertion are unchanged. The five-language outcome table is still owed.
+- [x] **L10.** Run the family-1 held-out prompt in all five languages, refused and granted, and record the outcome table. No tuning in this commit. `data/benchmarks/telegram-execution-outcomes.lino` declares one refused and one observed injected-backend outcome for each language, points back to the single prompt corpus, and names its non-network observation scope. `tests/unit/issue_1138_telegram_execution.rs` drives both states for all five rows; `tests/web/issue-1138-execution-parity.test.mjs` checks the table and shared response intents without copying localized answers. Measured 2026-09-17: no-default-features Rust 4/4 and browser parity/runtime 4/4.
 - [x] **L11.** Add `src/execution_box/mod.rs` `ExecutionBox`, `ExecutionBackend`, `BoxPolicy`, tar-on-stdin input, `--network none` default, honest deadline. Give `box_language_contract()` (`src/box_language_projects.rs:315`) its first non-test caller. Test: timeout reporting, network denial, missing-daemon refusal.
-- [ ] **L12.** Add kotlin and scala to `data/meta/box-language-projects.lino` as `box_language_project_deferred` rows with the honest `reason` that `data/meta/box-image-survey.lino:13-16` records no such image, so the box backend reports unavailable for exactly the two languages B6 names.
-- [ ] **L13.** Wire Telegram (#930): add `"code_execution"` to `data/seed/environments.lino:67-75`, route `src/telegram_runtime.rs` through `ExecutionBox`, implement the descending-N ladder with every N recorded and the ten-minute verbose hard fail. Test: family-3 prompts with and without a backend.
-- [x] **L14.** Add `src/execution_box/container.rs` `ConversationContainer`, `SnapshotPolicy`, idle stop, reattach, restart recovery (#937). Test: idle-and-restore; replay/snapshot divergence reported.
-- [ ] **L15.** Make `src/web/worker/formal_ai_worker_14.js:519-545` probe instead of assert: state which runtime could be loaded and its size, keep the worker binary under `MAX_WASM_BYTES`, move the five-language strings into `src/web/i18n-catalog-messages.lino`. Test: the worker binary is byte-unchanged; the honesty sentence resolves in five languages.
-- [ ] **L16.** Add the lazily-fetched Pyodide loader behind an explicit user click with the download size shown, and run the family-3 prompt in the browser with it loaded. Record whether the observed output is `55`.
-- [ ] **L17.** Recover the SWE-bench harness prerequisite through `recover()` rather than through `.github/workflows/external-benchmarks.yml:113-117`, and record whether the run still reaches the evaluator.
+- [x] **L12.** Add kotlin and scala to `data/meta/box-language-projects.lino` as `box_language_project_deferred` rows with the honest `reason` that `data/meta/box-image-survey.lino:13-16` records no such image, so the box backend reports unavailable for exactly the two languages B6 names.
+- [x] **L13.** Wire Telegram (#930): add `"code_execution"` to `data/seed/environments.lino:67-75`, route `src/telegram_runtime.rs` through `ExecutionBox`, implement the descending-N ladder with every N recorded and the ten-minute verbose hard fail. Test: family-3 prompts with and without a backend.
+- [ ] **L14.** Add `src/execution_box/container.rs` `ConversationContainer`, `SnapshotPolicy`, idle stop, reattach, restart recovery (#937). **Implementation and hermetic command/no-fallback tests are ready; live evidence pending:** ignored Docker tests exercise idle snapshot/reattach and snapshot-versus-replay comparison. Check this leaf only after they run on the final tree.
+- [x] **L15.** Make the browser probe instead of assert: `formal_ai_worker_browser_runtime.js` states which runtime could be loaded and its size, keeps the worker binary under `MAX_WASM_BYTES`, and reads all five honesty responses from the shared multilingual seed. Test: the worker binary is byte-unchanged; the honesty sentence resolves in five languages.
+- [x] **L16.** Add the lazily-fetched Pyodide loader behind an explicit user click with the download size shown, and run the family-3 prompt in the browser with it loaded. The focused browser test records observed output `55` without changing the shipped WASM bytes.
+- [ ] **L17.** Recover the SWE-bench harness prerequisite through `recover()` rather than through `.github/workflows/external-benchmarks.yml`. **Implementation ready, live evidence pending:** the workflow no longer preinstalls it, and ignored `swebench_harness_recovery_records_whether_the_evaluator_was_reached` records recovery/evaluator reachability without asserting success. Check this leaf only after that ignored live test has actually recorded the final-tree result.
 - [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `VISION.md`, `ROADMAP.md`, `GOALS.md`, `docs/benchmarks.md`, `docs/meta-algorithm.md` per the next section; tick the six open boxes of `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:65-81` that this plan actually closes, and leave the rest unticked with the reason.
 
 
@@ -823,19 +823,25 @@ test was weakened, deleted or ignored here. The resolution — scope the guard t
 `data/seed`, which is what the runtime reads, or move the self-use corpora out
 of `data/` — belongs to whoever owns both files.
 
-**Leaf L11/L14 note (wave I6).** The deadline bounds the *program*, so the box
-widens it by the interpreter start-up it measured on this machine (at least a
-250 ms backstop) before killing anything — the distinction `src/agent.rs`'s
-`PYTHON_TIME_BUDGET_FLOOR` already draws, and without it start-up latency
-decides whether a program that would have printed something is reported as
-having printed nothing. `ExecutionBox::run` takes `&self` and
-`ConversationContainer::attach` returns an owned box, so no box has to be kept
-alive in a process-global slot; the two redundant `let mut` bindings in
-`tests/unit/issue_1138_execution_box.rs` were dropped, which re-points the test
-and changes no assertion in it. A conversation's durable state is its workspace
-directory, which is why an idle stop and a reattach observe the same bytes with
-no container runtime present — and why the backend actually used is recorded
-rather than claimed to be a container.
+**Leaf L11/L14 correction (2026-09-17 audit).** The first implementation only
+probed Docker and then ran Python in a host directory; the conversation path
+silently fell back to that host backend. That did not satisfy either checked
+leaf. The execution path now streams a tar archive to `docker run --rm -i`,
+passes program arguments positionally after fixed shell source, lowers default
+network denial to `--network none`, and selects language images from
+`box_language_contract()`. Conversation execution creates a deterministic
+detached container, executes through `docker exec`, commits/stops for snapshot
+restore, or removes/replays for the explicit replay policy. Missing Docker or
+operator configuration refuses; only an explicit `HostSandbox` grant runs on
+the host. Hermetic tests pin command construction and this no-fallback boundary.
+No daemon-backed run is claimed here; final live Docker snapshot/replay evidence
+remains a release-validation observation.
+
+**Leaf L17 permission correction (2026-09-17 audit).** Online mode is not
+installation consent. `benchmark run` now defaults to refusing a missing
+SWE-bench harness and exposes `--allow-install` for the pinned, workspace-scoped
+procedure. Scheduled CI passes that flag explicitly. The ignored live test uses
+the same explicit grant and remains the evidence required before L17 is checked.
 
 **Leaf L2/L3 note (wave I6).** `ExecutionStatus` now has three variants and
 `from_verdict`; `execution_output_label` takes the status rather than a boolean
@@ -863,6 +869,26 @@ environment; it does **not** execute the fetched commands. Executing a retrieved
 procedure happens in `recover` through a declared `ExecutionBackend`, which is
 also where `StillMissing` is produced, so the most dangerous operation in this
 repository is never a side effect of preparing a directory.
+
+### Durable checkpoint — 2026-09-17 execution audit
+
+- Proven locally: browser runtime/execution parity 4/4; no-default-features
+  execution-box 8/8, conversation-container contracts 3/3, five-language
+  Telegram execution 4/4, and SWE-bench harness/default-deny contracts 2/2;
+  no-default-features library compilation is green after the Docker backend
+  change.
+- Corrected after source audit: `Box` now invokes Docker with tar-on-stdin;
+  `Conversation` is a real detached Docker lifecycle; neither silently falls
+  back to the host; `FORMAL_AI_START_ISOLATION` and
+  `FORMAL_AI_START_RUNNER` are validated and executed as a pair; SWE-bench
+  installation is default-deny behind `--allow-install`.
+- Documentation rows D198-D208 are applied. D209 remains partially open because
+  the predecessor checklist still requires stale/corrupt-cache, interrupted
+  replay, full original-step retry, and live Kotlin/Scala Agent CLI evidence.
+- Live observations still required and intentionally not claimed: daemon-backed
+  snapshot-versus-replay, the ignored held-out compiler recovery, and the
+  ignored official SWE-bench evaluator/recovery boundary. L17 and L18 therefore
+  remain unchecked, as does L14 until its two ignored Docker tests run.
 
 ## Docs to update — exact statements, quoted, with replacement
 

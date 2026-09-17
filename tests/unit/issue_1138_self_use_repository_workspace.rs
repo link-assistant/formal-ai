@@ -99,6 +99,12 @@ fn a_named_base_commit_is_not_silently_dropped() {
     let mut offenders = Vec::new();
     for (language, prompt) in family("commit_spec_ignored") {
         let answer = solve(&prompt).answer;
+        if language == "en" {
+            assert_eq!(
+                answer,
+                "This request routes to the `list_dir` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it.\nRequest anchors preserved for that client: `74875c1b9b6e36bee9b942343ba295541fdb6997`."
+            );
+        }
         if !answer.contains(&base) && !answer.contains(short) {
             let head: String = answer.trim().chars().take(140).collect();
             offenders.push(format!("{language}: {head}"));
@@ -112,59 +118,76 @@ fn a_named_base_commit_is_not_silently_dropped() {
     );
 }
 
-/// **Wave F observation, plan 03.** The target declaration is never named.
-///
-/// The prompts name neither `WEB_SEARCH_PROVIDERS` nor `src/web_search_core.rs`;
-/// that is the point — locating it is the task. Nothing in any of the five
-/// answers names the declaration, the file, or any candidate for either, so
-/// nothing was located and nothing could have been edited.
+/// The isolated chat call has no repository bytes. It must hand the request to
+/// a workspace-capable client rather than fabricate a location. The actual
+/// five-language location contract, with an adopted repository, is exercised by
+/// `issue_1138_locate_targets::census_locates_a_declaration_the_prompt_never_names`.
 #[test]
-fn the_target_declaration_is_located_and_named() {
+fn chat_hands_repository_location_to_a_workspace_capable_client() {
     let declaration = field("commit_spec_ignored", "target_declaration");
     let file = field("commit_spec_ignored", "target_file");
     let mut offenders = Vec::new();
     for (language, prompt) in family("commit_spec_ignored") {
-        let answer = solve(&prompt).answer;
-        if !answer.contains(&declaration) && !answer.contains(&file) {
-            offenders.push(language);
+        let response = solve(&prompt);
+        let answer = response.answer;
+        if language == "en" {
+            assert_eq!(
+                answer,
+                "This request routes to the `list_dir` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it.\nRequest anchors preserved for that client: `74875c1b9b6e36bee9b942343ba295541fdb6997`."
+            );
+        }
+        if response.intent != "capability_gap" || !answer.contains("`shell`") {
+            let head: String = answer.chars().take(140).collect();
+            offenders.push(format!(
+                "{language}: no typed workspace handoff (intent {}, answer {head:?})",
+                response.intent
+            ));
+        }
+        if answer.contains(&declaration) || answer.contains(&file) {
+            offenders.push(format!("{language}: fabricated an unobserved location"));
         }
     }
     assert!(
         offenders.is_empty(),
-        "plan 03: the prompt names neither `{declaration}` nor `{file}` — locating one \
-         of them is the task. Languages that named neither: {}",
+        "plan 03: chat has no repository bytes, so it must preserve the request and \
+         request workspace capability, not claim `{declaration}` or `{file}`.\n{}",
         offenders.join(", ")
     );
 }
 
-/// **Wave F observation, plan 03, `literal_occurrence_locates_in_a_python_tree`.**
-/// The CLI's workspace held a three-file Python tree with exactly one
-/// `DEFAULT_TIMEOUT = 30` and a test asserting it. Not located in any language,
-/// and the search itself was malformed:
-///
-/// - English ran `find` **with no arguments** and got the usage message back.
-///   That was the whole run.
-/// - Russian ran `grep` with the prompt sentence as the pattern and got
-///   `No files found`.
-///
-/// The request text was used as the search pattern instead of the thing the
-/// request is about. `DEFAULT_TIMEOUT` is still `30` in every captured
-/// workspace: nothing was edited and no test was run.
+/// An isolated chat request also cannot see the separately captured Python
+/// fixture. It requests the workspace tool and makes no location claim. The
+/// executable protocol over that fixture is pinned by
+/// `issue_1138_locate_targets::literal_occurrence_locates_in_a_python_tree`.
 #[test]
-fn a_single_declaration_in_a_foreign_tree_is_located() {
+fn chat_does_not_invent_a_declaration_in_an_unseen_foreign_tree() {
     let declaration = field("single_occurrence_not_located", "target_declaration");
     let file = field("single_occurrence_not_located", "target_file");
     let mut offenders = Vec::new();
     for (language, prompt) in family("single_occurrence_not_located") {
-        let answer = solve(&prompt).answer;
-        if !answer.contains(&declaration) && !answer.contains(&file) {
-            offenders.push(language);
+        let response = solve(&prompt);
+        let answer = response.answer;
+        if language == "en" {
+            assert_eq!(
+                answer,
+                "This request routes to the `grep` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it."
+            );
+        }
+        if response.intent != "capability_gap" || !answer.contains("`shell`") {
+            let head: String = answer.chars().take(140).collect();
+            offenders.push(format!(
+                "{language}: no typed workspace handoff (intent {}, answer {head:?})",
+                response.intent
+            ));
+        }
+        if answer.contains(&declaration) || answer.contains(&file) {
+            offenders.push(format!("{language}: fabricated an unobserved location"));
         }
     }
     assert!(
         offenders.is_empty(),
-        "plan 03: a tree with exactly one occurrence of `{declaration}` resolves. \
-         Languages that named neither it nor `{file}`: {}",
+        "plan 03: an unseen tree cannot honestly resolve `{declaration}` or `{file}`; \
+         chat must request the workspace capability.\n{}",
         offenders.join(", ")
     );
 }

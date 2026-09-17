@@ -86,6 +86,10 @@ fn selected(
             .all(|url| url.starts_with("https://")),
         "{selected:#?}"
     );
+    assert!(
+        selected.composition.starts_with("typed_search("),
+        "the held-out corpus must be produced by typed fragment search, not a legacy shape generator: {selected:#?}"
+    );
     selected
 }
 
@@ -119,7 +123,7 @@ fn held_out_arithmetic_scan_and_geometry_schemas_execute() {
         "Calculate a geometric area from its dimensions.",
         &[(&["6", "5"], "15.0"), (&["4", "3"], "6.0")],
     );
-    assert!(geometry.composition.contains("geometric_measure"));
+    assert!(geometry.source.contains('/') && geometry.source.contains('*'));
 }
 
 #[test]

@@ -35,9 +35,11 @@ use std::collections::BTreeMap;
 use std::fmt;
 
 use crate::event_log::EventLog;
+use crate::execution_evidence::{Evidence, EvidenceSource, ObservationKind};
 use crate::intent_formalization::IntentFormalization;
 use crate::links_format::push_lino_node;
 use crate::seed::parser::{LinoNode, parse_lino};
+use crate::selection_heuristics::{Experiment, HypothesisSpace, SearchHypothesis, SearchVerdict};
 
 use episode::{ActionOutcome, ReasoningEpisode};
 use instructions::InstructionSet;
@@ -600,6 +602,18 @@ fn settle_verdict(
             }
             LedgerState::Discharged => {}
         }
+        match hypothesis_search_verdict(&conclusion.id, episode) {
+            SearchVerdict::Concluded { hypothesis_id } if hypothesis_id != conclusion.id => {
+                alternative_proven = true;
+            }
+            SearchVerdict::AllRefuted => alternative_proven = true,
+            SearchVerdict::NotConfirmedNotRefuted { survivors, blocker } => blockers.push(format!(
+                "{}:hypothesis_search:{blocker}:{}",
+                conclusion.id,
+                survivors.join(",")
+            )),
+            SearchVerdict::Concluded { .. } => {}
+        }
     }
     if !blockers.is_empty() {
         return Verdict::NotConfirmedNotRefuted { blockers };
@@ -609,6 +623,98 @@ fn settle_verdict(
     } else {
         Verdict::Confirmed
     }
+}
+
+/// Replay a conclusion's recorded refutations as a finite hypothesis search.
+///
+/// The conclusion is the leading hypothesis and every distinct alternative
+/// mechanism is another. A refutation that survived its recorded observation
+/// eliminates the conclusion; a refutation that failed eliminates its
+/// alternative. Unchecked or unevidenced probes stay alive and therefore force
+/// the honest `not_confirmed_not_refuted` verdict.
+fn hypothesis_search_verdict(conclusion: &str, episode: &ReasoningEpisode) -> SearchVerdict {
+    let probes = episode
+        .probes
+        .iter()
+        .filter(|probe| probe.conclusion == conclusion)
+        .collect::<Vec<_>>();
+    let has_probes = !probes.is_empty();
+    let mut hypotheses = vec![SearchHypothesis {
+        hypothesis_id: conclusion.to_owned(),
+        rule: conclusion.to_owned(),
+        alive: true,
+        refuted_by: None,
+    }];
+    for probe in &probes {
+        let alternative = crate::engine::stable_id(
+            "refutation_hypothesis",
+            &format!("{conclusion}:{}", probe.mechanism),
+        );
+        if !hypotheses
+            .iter()
+            .any(|hypothesis| hypothesis.hypothesis_id == alternative)
+        {
+            hypotheses.push(SearchHypothesis {
+                hypothesis_id: alternative,
+                rule: probe.mechanism.clone(),
+                alive: true,
+                refuted_by: None,
+            });
+        }
+    }
+    let experiments = probes
+        .iter()
+        .map(|probe| Experiment {
+            experiment_id: probe.id.clone(),
+            probe: probe.denies.clone(),
+            predicts_yes: vec![crate::engine::stable_id(
+                "refutation_hypothesis",
+                &format!("{conclusion}:{}", probe.mechanism),
+            )],
+            predicts_no: vec![conclusion.to_owned()],
+        })
+        .collect();
+    let mut space = HypothesisSpace {
+        space_id: crate::engine::stable_id("refutation_space", conclusion),
+        hypotheses,
+        experiments,
+        observations: Vec::new(),
+    };
+    for probe in probes {
+        let Some(observation) = probe.evidence.iter().find_map(|id| episode.observation(id)) else {
+            continue;
+        };
+        let exit_code = match probe.outcome {
+            refutation::ProbeOutcome::Survived => Some(0),
+            refutation::ProbeOutcome::Refuted => Some(1),
+            refutation::ProbeOutcome::Unchecked => None,
+        };
+        if exit_code.is_none() {
+            continue;
+        }
+        let mut evidence = Evidence::observed(
+            observation.command.clone(),
+            observation
+                .command
+                .split_whitespace()
+                .map(str::to_owned)
+                .collect(),
+            exit_code,
+            observation.output.as_bytes(),
+            ObservationKind::SymbolicCheck,
+            EvidenceSource::Harness,
+        );
+        evidence.for_need.clone_from(&space.space_id);
+        "reasoning_standard_refutation".clone_into(&mut evidence.produced_by);
+        space.observe(&probe.id, evidence);
+    }
+    if !has_probes {
+        return SearchVerdict::NotConfirmedNotRefuted {
+            survivors: vec![conclusion.to_owned()],
+            blocker: "no_refutation_attempted".to_owned(),
+        };
+    }
+    space.verdict()
 }
 
 /// Audit one episode against the standard.

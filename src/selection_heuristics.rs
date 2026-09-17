@@ -17,6 +17,7 @@ use alloc::vec::Vec;
 
 use crate::execution_evidence::Evidence;
 use crate::links_format::format_lino_record;
+use crate::relative_meta_logic::SourceTier;
 use crate::seed::parser::parse_lino;
 
 mod refutation;
@@ -109,8 +110,7 @@ const STRUCTURAL_FIELDS: [&str; 4] = ["record_type", "role", "order", "applies_w
 const HEURISTIC_RECORD_TYPE: &str = "selection_heuristic";
 
 /// The shipped catalog, embedded so the browser build reads the same data.
-pub const SELECTION_HEURISTICS_LINO: &str =
-    include_str!("../data/meta/selection-heuristics.lino");
+pub const SELECTION_HEURISTICS_LINO: &str = include_str!("../data/meta/selection-heuristics.lino");
 
 /// Load the catalog from `data/meta/selection-heuristics.lino`.
 ///
@@ -305,6 +305,72 @@ pub struct BinarySplit {
     pub right_span: (usize, usize),
 }
 
+/// One candidate approach in discovery/history order.
+///
+/// `semantic_terms` are the grounded language-independent meanings of the
+/// approach. When they are absent, the shared summarization deduplicator uses
+/// its conservative lexical signature instead of guessing equivalence.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ApproachObservation {
+    pub approach: String,
+    pub source: String,
+    pub tier: SourceTier,
+    pub semantic_terms: Vec<String>,
+}
+
+/// One distinct approach after conservative merging.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CombinedApproach {
+    pub approach_id: String,
+    /// First wording observed for this meaning.
+    pub approach: String,
+    /// First source in the supplied history, as #453 requires.
+    pub first_source: String,
+    /// Every distinct source in first-seen order.
+    pub sources: Vec<String>,
+}
+
+/// Combine different approaches, deduplicate equivalent meanings, and retain
+/// the first historical source for every merged idea (#453 R453-M4).
+///
+/// The operation delegates equivalence and provenance to the same reversible
+/// statement deduplicator used by multi-source synthesis. Input order is the
+/// history order; no timestamp is invented and no later, higher-tier source is
+/// allowed to rewrite who supplied an idea first.
+#[must_use]
+pub fn combine_approaches(history: &[ApproachObservation]) -> Vec<CombinedApproach> {
+    let observations = history
+        .iter()
+        .map(|observation| {
+            crate::summarization::SourcedStatement::from_sentence(
+                &observation.approach,
+                observation.source.clone(),
+                observation.tier,
+            )
+            .with_semantic_terms(observation.semantic_terms.clone())
+        })
+        .collect::<Vec<_>>();
+    crate::summarization::deduplicate(&observations)
+        .statements
+        .into_iter()
+        .filter_map(|statement| {
+            let first_source = statement.variants.first()?.source.clone();
+            let mut sources = Vec::new();
+            for variant in &statement.variants {
+                if !sources.contains(&variant.source) {
+                    sources.push(variant.source.clone());
+                }
+            }
+            Some(CombinedApproach {
+                approach_id: statement.id,
+                approach: statement.representative.text,
+                first_source,
+                sources,
+            })
+        })
+        .collect()
+}
+
 impl BinarySplit {
     /// `|left_weight - right_weight|`. Zero is a perfect halving; the value is
     /// reported, never optimized away by dropping a segment.
@@ -323,7 +389,10 @@ impl BinarySplit {
             ("left_weight", self.left_weight.to_string()),
             ("right_weight", self.right_weight.to_string()),
             ("imbalance", self.imbalance().to_string()),
-            ("left_span", format!("{},{}", self.left_span.0, self.left_span.1)),
+            (
+                "left_span",
+                format!("{},{}", self.left_span.0, self.left_span.1),
+            ),
             (
                 "right_span",
                 format!("{},{}", self.right_span.0, self.right_span.1),
@@ -333,9 +402,10 @@ impl BinarySplit {
     }
 }
 
-/// Fold the n-ary output of `task_decomposition::split_once_checkable` into the
-/// balanced binary tree `data/meta/task-decomposition-invariant.lino` declares,
-/// by cutting at the boundary that minimizes `imbalance()`.
+/// Fold n-ary task decomposition into the declared balanced binary tree.
+///
+/// Cut the output of `task_decomposition::split_once_checkable` at the boundary
+/// that minimizes `imbalance()`.
 ///
 /// Every segment survives on exactly one side, so this is a regrouping, never a
 /// discard (R710-R9). A task whose n-ary split has fewer than two checkable
@@ -522,8 +592,9 @@ pub fn segment_count(task: &str) -> usize {
     splitting::segment_count(task)
 }
 
-/// The number of layers a complete binary tree over `task`'s segments has, which
-/// is how deep the recursion may descend before the bottom layer stops being a
+/// Return the complete binary-tree layers over `task`'s segments.
+///
+/// This is how deep the recursion may descend before the bottom layer stops being a
 /// complete one (`data/meta/task-decomposition-invariant.lino`).
 #[must_use]
 pub fn complete_layers(task: &str) -> u8 {

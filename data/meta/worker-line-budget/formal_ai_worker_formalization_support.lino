@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_formalization_support.js"
+  ceiling 184
+  rationale "Issue #1138 structural segmentation, procedure extraction, and graph identity helpers shared by deep formalization."

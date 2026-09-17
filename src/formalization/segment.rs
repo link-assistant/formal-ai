@@ -215,9 +215,7 @@ pub fn sentences(text: &str) -> Vec<Segment> {
             .and_then(|previous| characters.get(previous))
             .map(|(_, character)| *character);
         let next = characters.get(index + 1).map(|(_, character)| *character);
-        if previous.is_some_and(|previous| previous.is_numeric())
-            && next.is_some_and(|next| next.is_numeric())
-        {
+        if previous.is_some_and(char::is_numeric) && next.is_some_and(char::is_numeric) {
             continue;
         }
         let end = offset + character.len_utf8();

@@ -37,12 +37,50 @@ const PARITY_FILE: &str = "expected-senses.json";
 /// The held-out word the corpus asks about; it appears in no seed file.
 const HELD_OUT_WORD: &str = "isogram";
 
+const OUTCOME_INTENTS: &[&str] = &[
+    "concept_lookup_unresolved",
+    "concept_lookup_resolved",
+    "concept_lookup_sources_heading",
+    "concept_lookup_citation",
+    "concept_lookup_offline_miss",
+    "concept_lookup_disabled",
+];
+
+const OUTCOME_LANGUAGES: &[&str] = &["en", "ru", "hi", "zh", "es"];
+
 fn fixture_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE_DIR)
 }
 
 fn availability(tag: &str) -> ServiceAccessibilityCache {
     ServiceAccessibilityCache::new(std::env::temp_dir().join(format!("formal-ai-issue-1138-{tag}")))
+}
+
+#[test]
+fn every_concept_lookup_outcome_is_seeded_in_all_five_languages() {
+    let meanings = fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("data/seed/meanings-concept-lookup.lino"),
+    )
+    .expect("the concept lookup meaning document exists");
+
+    for intent in OUTCOME_INTENTS {
+        assert!(
+            meanings.contains(&format!("  {intent}\n")),
+            "the outcome meaning `{intent}` must be declared"
+        );
+        for language in OUTCOME_LANGUAGES {
+            let response = formal_ai::seed::response_for(intent, language)
+                .unwrap_or_else(|| panic!("missing concept lookup response {intent}/{language}"));
+            assert!(
+                !response.trim().is_empty(),
+                "the response {intent}/{language} must say what happened"
+            );
+            assert!(
+                meanings.contains(&format!("  response_{intent}_{language}\n")),
+                "the meaning document must ground {intent}/{language}"
+            );
+        }
+    }
 }
 
 /// A transport that records every call it is asked to make and refuses it, so

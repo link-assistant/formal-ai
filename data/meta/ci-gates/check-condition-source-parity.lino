@@ -1,0 +1,4 @@
+ci_gate check_condition_source_parity
+  stage rust
+  description "Every handler rule and promotion condition is evaluated through both the parsed seed tables and the projected link store over the committed parity probes; any verdict difference blocks the merge."
+  run "cargo test --test unit --all-features issue_1138_store_read_path"

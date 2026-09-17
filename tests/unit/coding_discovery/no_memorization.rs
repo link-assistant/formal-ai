@@ -2,7 +2,27 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const SLICE: usize = 20;
+const HUMANEVAL_SLICE: usize = 164;
+const MBPP_SLICE: usize = 500;
+const NON_CODING_CANARIES: &[(&str, &str)] = &[
+    (
+        "gsm8k/question",
+        "Janet's ducks lay 16 eggs per day. She eats three for breakfast every morning and bakes muffins for her friends every day with four. She sells the remainder at the farmers' market daily for $2 per fresh duck egg. How much in dollars does she make every day at the farmers' market?",
+    ),
+    (
+        "math/problem",
+        "If x = 2 and y = 5, then what is the value of (x^4 + 2y^2) / 6?",
+    ),
+    (
+        "object_counting/input",
+        "I have a clarinet, a violin, and a flute. How many musical instruments do I have?",
+    ),
+    (
+        "coedit/src",
+        "Paraphrase this sentence: Why are you arresting me?",
+    ),
+    ("coedit/tgt", "Why am I being arrested?"),
+];
 // These upstream entry points are also ordinary language/operators used
 // throughout the runtime; forbidding them would flag prose rather than
 // benchmark knowledge. Compound/specific callable names remain forbidden.
@@ -14,44 +34,46 @@ fn upstream_slice_names_and_sentences_are_absent_from_runtime_and_seed() {
     let cache = benchmark_cache(root);
     let humaneval = cache.join("humaneval.jsonl");
     let mbpp = cache.join("mbpp.jsonl");
-    if !humaneval.is_file() || !mbpp.is_file() {
-        eprintln!(
-            "SKIP no-memorization corpus gate: cache both {} and {} with the external benchmark runner",
-            humaneval.display(),
-            mbpp.display()
-        );
-        return;
-    }
 
     let mut forbidden_names = BTreeSet::new();
     let mut forbidden_sentences = BTreeSet::new();
-    for value in json_lines(&humaneval) {
-        if let Some(name) = value.get("entry_point").and_then(serde_json::Value::as_str) {
-            forbidden_names.insert(name.to_owned());
-        }
-        if let Some(prompt) = value.get("prompt").and_then(serde_json::Value::as_str) {
-            for sentence in docstring_sentences(prompt) {
-                if sentence.split_whitespace().count() > 4 {
-                    forbidden_sentences.insert(sentence);
+    if humaneval.is_file() {
+        for value in json_lines(&humaneval, HUMANEVAL_SLICE) {
+            if let Some(name) = value.get("entry_point").and_then(serde_json::Value::as_str) {
+                forbidden_names.insert(name.to_owned());
+            }
+            if let Some(prompt) = value.get("prompt").and_then(serde_json::Value::as_str) {
+                for sentence in docstring_sentences(prompt) {
+                    if sentence.split_whitespace().count() > 4 {
+                        forbidden_sentences.insert(sentence);
+                    }
                 }
             }
         }
     }
-    for value in json_lines(&mbpp) {
-        if let Some(text) = value.get("text").and_then(serde_json::Value::as_str) {
-            forbidden_sentences.insert(normalize(text));
-        }
-        if let Some(tests) = value.get("test_list").and_then(serde_json::Value::as_array) {
-            for test in tests {
-                if let Some(name) = test
-                    .as_str()
-                    .and_then(|line| line.trim().strip_prefix("assert "))
-                    .and_then(|assertion| assertion.split_once('(').map(|(name, _)| name.trim()))
-                {
-                    forbidden_names.insert(name.to_owned());
+    if mbpp.is_file() {
+        for value in json_lines(&mbpp, MBPP_SLICE) {
+            if let Some(text) = value.get("text").and_then(serde_json::Value::as_str) {
+                forbidden_sentences.insert(normalize(text));
+            }
+            if let Some(tests) = value.get("test_list").and_then(serde_json::Value::as_array) {
+                for test in tests {
+                    if let Some(name) = test
+                        .as_str()
+                        .and_then(|line| line.trim().strip_prefix("assert "))
+                        .and_then(|assertion| {
+                            assertion.split_once('(').map(|(name, _)| name.trim())
+                        })
+                    {
+                        forbidden_names.insert(name.to_owned());
+                    }
                 }
             }
         }
+    }
+    add_non_coding_sentences(&cache, &mut forbidden_sentences);
+    for (_, sentence) in NON_CODING_CANARIES {
+        forbidden_sentences.insert(normalize(sentence));
     }
     forbidden_names.retain(|name| !GENERIC_FUNCTION_NAMES.contains(&name.as_str()));
 
@@ -86,6 +108,132 @@ fn upstream_slice_names_and_sentences_are_absent_from_runtime_and_seed() {
     );
 }
 
+fn add_non_coding_sentences(cache: &Path, sentences: &mut BTreeSet<String>) {
+    for (file, suite) in [
+        ("gsm8k-test.jsonl", "gsm8k"),
+        ("math-test.jsonl", "math"),
+        ("coedit-validation.jsonl", "coedit"),
+    ] {
+        let path = cache.join(file);
+        if path.is_file() {
+            for value in json_lines(&path, usize::MAX) {
+                add_non_coding_value(suite, &value, sentences);
+            }
+        } else {
+            eprintln!(
+                "no-memorization corpus gate: {suite} cache absent at {}; pinned canary remains active",
+                path.display()
+            );
+        }
+    }
+
+    let object_counting = cache.join("object-counting-task.json");
+    if object_counting.is_file() {
+        let text = fs::read_to_string(&object_counting)
+            .unwrap_or_else(|error| panic!("{}: {error}", object_counting.display()));
+        let document: serde_json::Value = serde_json::from_str(&text)
+            .unwrap_or_else(|error| panic!("{}: {error}", object_counting.display()));
+        for example in document
+            .get("examples")
+            .and_then(serde_json::Value::as_array)
+            .into_iter()
+            .flatten()
+        {
+            add_non_coding_value("object_counting", example, sentences);
+        }
+    } else {
+        eprintln!(
+            "no-memorization corpus gate: object_counting cache absent at {}; pinned canary remains active",
+            object_counting.display()
+        );
+    }
+}
+
+fn add_non_coding_value(suite: &str, value: &serde_json::Value, sentences: &mut BTreeSet<String>) {
+    let fields: &[&str] = match suite {
+        "gsm8k" => &["question"],
+        "math" => &["problem"],
+        "object_counting" => &["input"],
+        "coedit" => &["src", "tgt"],
+        other => panic!("unknown non-coding suite {other}"),
+    };
+    for field in fields {
+        if let Some(sentence) = value.get(field).and_then(serde_json::Value::as_str) {
+            let normalized = normalize(sentence);
+            // Very short answers (for example "3" or "yes") are ordinary
+            // language, not identifying benchmark knowledge. Keep the same
+            // five-word discriminativeness floor used for HumanEval docstring
+            // sentences, while checking both CoEdIT source and target fields.
+            if normalized.split_whitespace().count() > 4 {
+                sentences.insert(normalized);
+            }
+        }
+    }
+}
+
+#[test]
+fn non_coding_upstream_fields_are_all_part_of_the_gate() {
+    let mut sentences = BTreeSet::new();
+    for (suite, record) in [
+        (
+            "gsm8k",
+            r#"{"question":"gsm question sentinel has five words"}"#,
+        ),
+        (
+            "math",
+            r#"{"problem":"math problem sentinel has five words"}"#,
+        ),
+        (
+            "object_counting",
+            r#"{"input":"big bench input sentinel has words","target":["four","4"]}"#,
+        ),
+        (
+            "coedit",
+            r#"{"src":"coedit source sentinel has five words","tgt":"coedit target sentinel has five words"}"#,
+        ),
+    ] {
+        let value: serde_json::Value = serde_json::from_str(record).expect("test record");
+        add_non_coding_value(suite, &value, &mut sentences);
+    }
+    assert_eq!(
+        sentences,
+        [
+            "big bench input sentinel has words",
+            "coedit source sentinel has five words",
+            "coedit target sentinel has five words",
+            "gsm question sentinel has five words",
+            "math problem sentinel has five words",
+        ]
+        .into_iter()
+        .map(str::to_owned)
+        .collect()
+    );
+}
+
+#[test]
+fn each_non_coding_suite_has_a_true_upstream_canary() {
+    assert_eq!(NON_CODING_CANARIES.len(), 5);
+    assert_eq!(
+        NON_CODING_CANARIES
+            .iter()
+            .map(|(field, _)| *field)
+            .collect::<BTreeSet<_>>(),
+        [
+            "coedit/src",
+            "coedit/tgt",
+            "gsm8k/question",
+            "math/problem",
+            "object_counting/input",
+        ]
+        .into_iter()
+        .collect()
+    );
+    assert!(NON_CODING_CANARIES.iter().all(|(_, sentence)| {
+        let normalized = normalize(sentence);
+        !normalized.is_empty() && normalized.split_whitespace().count() >= 4
+    }));
+}
+
 fn benchmark_cache(root: &Path) -> PathBuf {
     let repository_cache = root.join("target/formal-ai-benchmarks");
     if repository_cache.is_dir() {
@@ -96,12 +244,12 @@ fn benchmark_cache(root: &Path) -> PathBuf {
     })
 }
 
-fn json_lines(path: &Path) -> Vec<serde_json::Value> {
+fn json_lines(path: &Path, full_slice: usize) -> Vec<serde_json::Value> {
     fs::read_to_string(path)
         .unwrap_or_else(|error| panic!("{}: {error}", path.display()))
         .lines()
         .filter(|line| !line.trim().is_empty())
-        .take(SLICE)
+        .take(full_slice)
         .map(|line| serde_json::from_str(line).expect("upstream JSONL record"))
         .collect()
 }

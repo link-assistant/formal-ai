@@ -2,14 +2,15 @@ self_ast_census
   target src/external_benchmarks/ratchet.rs
   language rust
   fidelity signature
-  byte_len 6872
-  line_count 189
-  content_id source_module_aa00b7fa11904f6e
-  symbol_count 6
+  byte_len 7918
+  line_count 226
+  content_id source_module_e7bfd3bf9cc475ed
+  symbol_count 7
   symbols
-    function violations 16 57
-    function regressions 61 101
-    function index_results 103 113
-    function best_pass_count 115 121
-    function historical_floor_violations 126 150
-    function stagnant 158 189
+    function violations 16 66
+    function regressions 70 121
+    function index_results 123 133
+    function best_pass_count 135 141
+    function check_floor 143 158
+    function historical_floor_violations 163 187
+    function stagnant 195 226

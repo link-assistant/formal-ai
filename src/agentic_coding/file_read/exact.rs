@@ -4,8 +4,8 @@ use serde_json::json;
 
 use super::{
     AgenticPlan, FileReadMode, PlannedToolCall, ToolResultRecord, failed_step_answer,
-    file_read_final_answer, read_arguments, read_command_for, read_result_for_path,
-    run_record_for_command,
+    file_analysis_pattern, file_read_final_answer, grep_arguments, grep_result_for_path,
+    read_arguments, read_command_for, read_result_for_path, run_record_for_command,
 };
 use crate::seed;
 
@@ -20,9 +20,37 @@ pub(super) fn plan_direct_file_reads(
     mode: &FileReadMode,
     read_tool: Option<&str>,
     run_tool: Option<&str>,
+    grep_tool: Option<&str>,
     records: &[ToolResultRecord],
     request: &str,
 ) -> AgenticPlan {
+    if mode == &FileReadMode::Audit
+        && let Some(tool) = grep_tool
+    {
+        let pattern = file_analysis_pattern();
+        let mut contents = Vec::with_capacity(paths.len());
+        for path in paths {
+            if let Some(raw) = grep_result_for_path(records, path, &pattern) {
+                if let Some(failure) = failed_step_answer(path, raw, request) {
+                    return AgenticPlan::Final(failure);
+                }
+                contents.push((path.clone(), raw.to_owned()));
+            }
+        }
+        if contents.len() == paths.len() {
+            return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
+        }
+        let calls = paths
+            .iter()
+            .filter(|path| grep_result_for_path(records, path, &pattern).is_none())
+            .map(|path| PlannedToolCall {
+                tool: tool.to_owned(),
+                arguments: grep_arguments(path, &pattern),
+            })
+            .collect();
+        return AgenticPlan::ToolCalls(calls);
+    }
+
     // Agent's display-oriented `read` tool abbreviates a physical line after
     // 1,000 columns. A request that explicitly names an exact machine-field
     // line cannot accept that rendered view as file contents, so use the
@@ -68,7 +96,7 @@ pub(super) fn plan_direct_file_reads(
         }
     }
     if contents.len() == paths.len() {
-        return AgenticPlan::Final(file_read_final_answer(mode, &contents));
+        return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
     }
 
     if exact_run
@@ -92,7 +120,7 @@ pub(super) fn plan_direct_file_reads(
             .filter(|path| read_result_for_path(records, path).is_none())
             .map(|path| PlannedToolCall {
                 tool: tool.to_owned(),
-                arguments: read_arguments(path),
+                arguments: read_arguments(path, mode),
             })
             .collect();
         return AgenticPlan::ToolCalls(calls);

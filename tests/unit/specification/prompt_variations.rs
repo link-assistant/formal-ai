@@ -17,12 +17,10 @@ fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
 }
 
-// ---------------------------------------------------------------------------
 // Generalised assertion helpers (R132).
 // Each helper takes a slice of prompts and the expected single property to
 // check on every prompt's answer. Helpers preserve the prompt text inside
 // the failure message so the failing variation is obvious in CI logs.
-// ---------------------------------------------------------------------------
 
 fn assert_intent_for_each(prompts: &[&str], expected_intent: &str) {
     for prompt in prompts {
@@ -86,13 +84,11 @@ fn assert_intent_not(prompts: &[&str], forbidden_intent: &str) {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Greeting matrix: 5+ variations × 4 languages.
 //
 // English, Russian, Hindi, Chinese natural-language greetings (Belebele/
 // XCOPA-style: each language has authentic phrasings, not literal
 // translations).
-// ---------------------------------------------------------------------------
 
 const ENGLISH_GREETINGS: &[&str] = &["Hi", "Hello", "Hey", "Hello!", "Hi.", "hELLO", "Hi!"];
 
@@ -126,13 +122,11 @@ fn greeting_matrix_records_per_language_evidence() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Farewell matrix.
 //
 // Farewell prompts are part of the seeded intent-routing rule book but were
 // previously only exercised by the seed test. Pin them here too so a
 // regression in the matcher is caught alongside greetings.
-// ---------------------------------------------------------------------------
 
 const ENGLISH_FAREWELLS: &[&str] = &["bye", "goodbye", "ciao"];
 
@@ -154,13 +148,11 @@ fn farewell_matrix_is_classified_as_farewell_across_languages() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Identity matrix.
 //
 // "Who are you?" and its variants are the most frequent identity prompt
 // across MT-Bench, AlpacaEval, and WildBench. We exercise the same set in
 // every supported language.
-// ---------------------------------------------------------------------------
 
 const ENGLISH_IDENTITY: &[&str] = &[
     "Who are you?",
@@ -221,11 +213,9 @@ fn identity_matrix_mentions_formal_ai_in_every_language() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Clarification matrix.
 //
 // "I didn't understand" and its variants. Issue #29 added this category.
-// ---------------------------------------------------------------------------
 
 const ENGLISH_CLARIFICATION: &[&str] = &[
     "I don't understand",
@@ -260,7 +250,6 @@ fn clarification_matrix_is_classified_as_clarification_across_languages() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Concept lookup matrix.
 //
 // "What is X?" is one of the highest-frequency conversational prompts in
@@ -268,7 +257,6 @@ fn clarification_matrix_is_classified_as_clarification_across_languages() {
 // formalization target: each X resolves to a Wikidata Q-id. We exercise
 // the multilingual phrasings of the question for terms that the seed
 // concept table covers (Wikipedia, Rust, doublet).
-// ---------------------------------------------------------------------------
 
 const ENGLISH_CONCEPT_LOOKUPS: &[&str] = &[
     "What is Wikipedia?",
@@ -309,14 +297,12 @@ fn concept_lookup_matrix_is_classified_as_concept_lookup_across_languages() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Capabilities matrix.
 //
 // Issue #49: "что ты умеешь?" / "what can you do?" must not fall through
 // to unknown. Capability questions show up across every chatbot benchmark
 // (Chatbot Arena's "Open conversation" category, WildBench "About the
 // model").
-// ---------------------------------------------------------------------------
 
 const ENGLISH_CAPABILITIES: &[&str] = &[
     "what can you do?",
@@ -367,14 +353,12 @@ fn capabilities_matrix_never_falls_through_to_unknown() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Parametric write-program code-generation matrix.
 //
 // The hello-world templates cover Rust, Python, JavaScript, Go, C, and
 // TypeScript through one `write_program(language, task)` intent. We re-pin
 // them here as a single block so adding new languages or aliases only
 // requires extending the tuples.
-// ---------------------------------------------------------------------------
 
 const HELLO_WORLD_VARIATIONS: &[(&str, &str, &str)] = &[
     // English natural language.
@@ -429,6 +413,40 @@ fn hello_world_matrix_routes_to_parametric_write_program_intent() {
 fn hello_world_matrix_emits_a_code_block_per_language() {
     for (prompt, _expected_language, fence) in HELLO_WORLD_VARIATIONS {
         let response = answer(prompt);
+        let expected_answer = match (
+            *_expected_language,
+            prompt.chars().any(|ch| ('а'..='я').contains(&ch)),
+        ) {
+            ("rust", false) => {
+                "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install the Rust toolchain from https://rustup.rs.\n2. Save the code above to a file named `main.rs`.\n3. Check that it compiles: `rustc main.rs -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
+            }
+            ("python", false) => {
+                "Here is a minimal Python hello world program:\n\n```python\nprint(\"Hello, world!\")\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `python3 -m py_compile main.py`\nRun command: `python3 main.py`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
+            }
+            ("javascript", false) => {
+                "Here is a minimal JavaScript hello world program:\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `node --check main.js`\nRun command: `node main.js`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/.\n2. Save the code above to a file named `main.js`.\n3. Check that it compiles: `node --check main.js`.\n4. Run it: `node main.js`.\n5. Compare the output with the expected output shown above."
+            }
+            ("go", false) => {
+                "Here is a minimal Go hello world program:\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nRun command: `go run main.go`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Go from https://go.dev/dl/.\n2. Save the code above to a file named `main.go`.\n3. Run it: `go run main.go`.\n4. Compare the output with the expected output shown above."
+            }
+            ("c", false) => {
+                "Here is a minimal C hello world program:\n\n```c\n#include <stdio.h>\n\nint main(void) {\n    puts(\"Hello, world!\");\n    return 0;\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `gcc main.c -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install a C compiler such as GCC from https://gcc.gnu.org/ or your package manager.\n2. Save the code above to a file named `main.c`.\n3. Check that it compiles: `gcc main.c -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
+            }
+            ("typescript", false) => {
+                "Here is a minimal TypeScript hello world program:\n\n```typescript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not compiled or run in TypeScript compiler is not configured in this repository runtime.\nCheck command: `tsc hello.ts`\nRun command: `node hello.js`\nExpected output after verification:\n```text\nHello, world!\n```\nThe TypeScript seed is returned with this warning until a tsc-backed execution profile is available.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`.\n2. Save the code above to a file named `hello.ts`.\n3. Check that it compiles: `tsc hello.ts`.\n4. Run it: `node hello.js`.\n5. Compare the output with the expected output shown above."
+            }
+            ("python", true) => {
+                "Вот минимальная программа на языке Python (hello world):\n\n```python\nprint(\"Hello, world!\")\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `python3 -m py_compile main.py`\nRun command: `python3 main.py`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Python 3 from https://www.python.org/downloads/.\n2. Сохраните приведённый выше код в файл `main.py`.\n3. Проверьте, что код компилируется: `python3 -m py_compile main.py`.\n4. Запустите программу: `python3 main.py`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+            }
+            ("javascript", true) => {
+                "Вот минимальная программа на языке JavaScript (hello world):\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `node --check main.js`\nRun command: `node main.js`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Node.js from https://nodejs.org/.\n2. Сохраните приведённый выше код в файл `main.js`.\n3. Проверьте, что код компилируется: `node --check main.js`.\n4. Запустите программу: `node main.js`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+            }
+            ("rust", true) => {
+                "Вот минимальная программа на языке Rust (hello world):\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: the Rust toolchain from https://rustup.rs.\n2. Сохраните приведённый выше код в файл `main.rs`.\n3. Проверьте, что код компилируется: `rustc main.rs -o main`.\n4. Запустите программу: `./main`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+            }
+            combination => panic!("missing documented hello-world answer for {combination:?}"),
+        };
+        assert_eq!(response.answer, expected_answer);
         assert!(
             response.answer.contains(fence),
             "prompt {prompt:?} should include {fence} fence, got: {}",
@@ -437,14 +455,12 @@ fn hello_world_matrix_emits_a_code_block_per_language() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Math / calculator matrix (R124 augmentation).
 //
 // `calculator_delegation.rs` already exercises 5-10 prompts per language
 // for calculator-backed math. This matrix adds the highest-frequency
 // "simple arithmetic in natural language" prompts that show up in GSM8K /
 // MT-Bench Math / AlpacaEval-style benchmarks.
-// ---------------------------------------------------------------------------
 
 const ENGLISH_BASIC_MATH: &[&str] = &[
     "What is 2 + 2?",
@@ -462,13 +478,11 @@ fn basic_math_matrix_is_classified_as_calculation() {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Refusal / safety matrix (MT-Bench / Chatbot Arena overlap).
 //
 // Issue #39 added the policy_inappropriate_content intent. We add a few
 // variations so a regression that re-enables a vulgar prompt is caught
 // here too.
-// ---------------------------------------------------------------------------
 
 const ENGLISH_REFUSAL: &[&str] = &["suck my dick"];
 
@@ -560,6 +574,12 @@ fn brainstorming_intent_routes_to_brainstorm_handler() {
             response.intent,
         );
         let expected_last_number = if prompt.contains("ten") { "10." } else { "5." };
+        let expected_answer = if prompt.contains("ten") {
+            "1. TraceLint\n2. ReviewLink\n3. PatchSignal\n4. DiffAnchor\n5. CodeLedger\n6. SymbolScribe\n7. RuleBeacon\n8. LinkHarbor\n9. TraceForge\n10. PromptLedger"
+        } else {
+            "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs."
+        };
+        assert_eq!(response.answer, expected_answer);
         assert!(
             response.answer.contains(expected_last_number),
             "prompt {prompt:?} should return the requested number of ideas, got: {}",
@@ -575,6 +595,10 @@ fn web_search_online_variant_routes_to_web_search_handler() {
         response.intent, "web_search",
         "reported search-online phrasing should route to web_search, got {} with answer {}",
         response.intent, response.answer,
+    );
+    assert_eq!(
+        response.answer,
+        "Web search requested for `genshin impact`.\n\nIn the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), so URLs that appear in more than one provider bubble up. Duplicate entries for the same entity (e.g. Wikidata + Wikipedia) are collapsed into a single bullet with an \"other sources\" footnote. For an arbitrary page, use `fetch example.com`; if direct `fetch()` is blocked by CORS, the browser checks frame policy before an embedded iframe.\n\nProvider: duckduckgo (default)\nProviders considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews\nCombined ranking: reciprocal rank fusion (k = 60)"
     );
     assert!(
         response.answer.to_lowercase().contains("genshin impact"),
@@ -701,6 +725,7 @@ fn russian_capital_russia_prompt_returns_moscow() {
         "reported prompt should route to fact_lookup, got {} with answer {}",
         response.intent, response.answer,
     );
+    assert_eq!(response.answer, "Столица России — Москва.");
     assert!(
         response.answer.contains("Москва"),
         "reported prompt should answer in Russian with Moscow, got {}",
@@ -745,7 +770,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "Russia",
         "Q159",
         "Q649",
-        "Moscow",
+        "The capital of Russia is Moscow.",
         &[
             "What is the capital of Russia?",
             "Which city is Russia's capital?",
@@ -756,7 +781,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "Japan",
         "Q17",
         "Q1490",
-        "Tokyo",
+        "The capital of Japan is Tokyo.",
         &[
             "What is the capital of Japan?",
             "Which city is Japan's capital?",
@@ -766,7 +791,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "France",
         "Q142",
         "Q90",
-        "Paris",
+        "The capital of France is Paris.",
         &[
             "What is the capital of France?",
             "What is the capital of the French Republic?",
@@ -776,7 +801,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "Germany",
         "Q183",
         "Q64",
-        "Berlin",
+        "The capital of Germany is Berlin.",
         &[
             "What is the capital of Germany?",
             "What is Germany's capital?",
@@ -786,7 +811,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "China",
         "Q148",
         "Q956",
-        "Beijing",
+        "The capital of China is Beijing.",
         &[
             "What is the capital of China?",
             "Which city is the capital of the People's Republic of China?",
@@ -796,7 +821,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "India",
         "Q668",
         "Q987",
-        "New Delhi",
+        "The capital of India is New Delhi.",
         &[
             "What is the capital of India?",
             "Which city is India's capital?",
@@ -806,7 +831,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "Brazil",
         "Q155",
         "Q2844",
-        "Brasília",
+        "The capital of Brazil is Brasília.",
         &[
             "What is the capital of Brazil?",
             "Which city is Brazil's capital?",
@@ -816,7 +841,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "United States",
         "Q30",
         "Q61",
-        "Washington",
+        "The capital of the United States is Washington, D.C.",
         &[
             "What is the capital of the United States?",
             "What is the capital of the USA?",
@@ -826,7 +851,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
         "United Kingdom",
         "Q145",
         "Q84",
-        "London",
+        "The capital of the United Kingdom is London.",
         &[
             "What is the capital of the United Kingdom?",
             "What is the capital of the UK?",
@@ -836,7 +861,7 @@ const CAPITAL_CASES: &[CapitalCase] = &[
 
 #[test]
 fn capital_matrix_resolves_every_seeded_country() {
-    for (country, subject_qid, value_qid, expected_substr, prompts) in CAPITAL_CASES {
+    for (country, subject_qid, value_qid, expected_answer, prompts) in CAPITAL_CASES {
         for prompt in *prompts {
             let response = answer(prompt);
             assert_eq!(
@@ -844,9 +869,10 @@ fn capital_matrix_resolves_every_seeded_country() {
                 "{country} prompt {prompt:?} should route to fact_lookup, got {}",
                 response.intent,
             );
+            assert_eq!(response.answer, *expected_answer);
             assert!(
-                response.answer.contains(expected_substr),
-                "{country} prompt {prompt:?} should mention {expected_substr}, got: {}",
+                response.answer.contains(country),
+                "{country} prompt {prompt:?} should name the country, got: {}",
                 response.answer,
             );
             let subject_link = format!("wikidata:{subject_qid}");
@@ -947,13 +973,21 @@ const ROLEPLAY_PROMPTS: &[&str] = &[
 
 #[test]
 fn roleplay_intent_routes_to_roleplay_handler() {
-    for prompt in ROLEPLAY_PROMPTS {
+    const EXPECTED_ANSWERS: &[&str] = &[
+        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+        "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
+        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields.",
+    ];
+    for (prompt, expected_answer) in ROLEPLAY_PROMPTS.iter().zip(EXPECTED_ANSWERS) {
         let response = answer(prompt);
         assert!(
             response.intent.starts_with("roleplay"),
             "prompt {prompt:?} should route to a roleplay* intent, got: {}",
             response.intent,
         );
+        assert_eq!(response.answer, *expected_answer);
         if prompt.contains("Ada Lovelace") {
             assert!(
                 response.answer.to_lowercase().contains("algorithm"),

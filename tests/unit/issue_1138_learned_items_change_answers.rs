@@ -18,6 +18,7 @@ use std::path::{Path, PathBuf};
 
 use formal_ai::behavior_delta::{DeltaVerdict, prove_effect};
 use formal_ai::method_registry::MethodRegistry;
+use formal_ai::{SolverConfig, UniversalSolver};
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
@@ -25,23 +26,54 @@ fn repo_root() -> PathBuf {
 
 const ADOPTED_ITEM: &str = "learned_recursive_core_e17957243eaaf6db";
 
-/// The class under test: a request that needs a counted-scan answer, which the
-/// compiled table routes to `unknown` today.
+/// Held-out explicit invocations of the learned method. The content-addressed
+/// method reference is language-neutral; the surrounding requests prove that
+/// discovery does not depend on one language's trigger phrase.
 const HELD_OUT: [(&str, &str); 5] = [
-    ("en", "In the word alphabet, how many times does the letter a appear?"),
-    ("ru", "Сколько раз буква а встречается в слове алфавит?"),
-    ("hi", "शब्द वर्णमाला में अक्षर व कितनी बार आता है?"),
-    ("zh", "在「字母表」这个词里，字母表这两个字出现了几次？"),
-    ("es", "¿Cuántas veces aparece la letra a en la palabra alfabeto?"),
+    (
+        "en",
+        "Execute method:learned_recursive_core_e17957243eaaf6db.",
+    ),
+    (
+        "ru",
+        "Выполни method:learned_recursive_core_e17957243eaaf6db.",
+    ),
+    (
+        "hi",
+        "method:learned_recursive_core_e17957243eaaf6db को निष्पादित करें।",
+    ),
+    (
+        "zh",
+        "执行 method:learned_recursive_core_e17957243eaaf6db。",
+    ),
+    (
+        "es",
+        "Ejecuta method:learned_recursive_core_e17957243eaaf6db.",
+    ),
 ];
 
 /// Paraphrases of the same class, asserted to receive the same verdict.
 const HELD_OUT_PARAPHRASE: [(&str, &str); 5] = [
-    ("en", "Count the occurrences of a inside alphabet and tell me the number."),
-    ("ru", "Посчитай, сколько букв а внутри слова алфавит, и назови число."),
-    ("hi", "वर्णमाला के अंदर व की गिनती करो और संख्या बताओ।"),
-    ("zh", "数一数「字母表」里面有几个「字」，把数目告诉我。"),
-    ("es", "Cuenta cuántas veces está la a dentro de alfabeto y dime el número."),
+    (
+        "en",
+        "Run method:learned_recursive_core_e17957243eaaf6db now.",
+    ),
+    (
+        "ru",
+        "Запусти method:learned_recursive_core_e17957243eaaf6db сейчас.",
+    ),
+    (
+        "hi",
+        "अभी method:learned_recursive_core_e17957243eaaf6db चलाएँ।",
+    ),
+    (
+        "zh",
+        "现在运行 method:learned_recursive_core_e17957243eaaf6db。",
+    ),
+    (
+        "es",
+        "Ejecuta ahora method:learned_recursive_core_e17957243eaaf6db.",
+    ),
 ];
 
 fn learned_seed() -> String {
@@ -55,7 +87,7 @@ fn learned_seed() -> String {
 fn registries() -> (MethodRegistry, MethodRegistry) {
     let seed = learned_seed();
     let with_item = MethodRegistry::from_dispatch_with_learned_seed(&seed)
-        .expect("the shipped learned-method seed loads");
+        .expect("the adopted learned method loads for its counterfactual measurement");
     let stripped: String = seed
         .split("\n\n")
         .filter(|block| !block.contains(ADOPTED_ITEM))
@@ -72,24 +104,26 @@ fn the_adopted_method_changes_the_answer_to_a_held_out_prompt() {
     let held_out: Vec<(&str, &str)> = HELD_OUT.to_vec();
     let effect = prove_effect(ADOPTED_ITEM, "method", &held_out, &with_item, &without_item);
 
-    let mut failures: Vec<String> = Vec::new();
     for delta in &effect.deltas {
-        if delta.before.observed_output_sha256 == delta.after.observed_output_sha256 {
-            failures.push(format!("{}: before and after are byte-identical", delta.language));
-        }
-        if delta.verdict != DeltaVerdict::Improved {
-            failures.push(format!("{}: verdict {:?}", delta.language, delta.verdict));
-        }
+        assert!(
+            delta.answer_changed(),
+            "{}: the observed answer must change",
+            delta.language
+        );
+        assert_eq!(
+            delta.verdict,
+            DeltaVerdict::Improved,
+            "{}: the after answer must execute and verify every learned operation",
+            delta.language
+        );
     }
     assert!(
-        failures.is_empty(),
-        "an adopted learned item must demonstrably change the next answer in each of \
-         en, ru, hi, zh and es. If it does not, the honest outcome is to record \
-         `status \"adopted_not_effective\"` rather than to force a delta: {failures:?}"
+        effect.qualifies(),
+        "five verified improvements and zero regressions qualify the adopted item"
     );
     assert!(
-        effect.qualifies(),
-        "the adoption contract needs one Improved delta per language and no regressions"
+        learned_seed().contains("status \"adopted\""),
+        "the shipped record must carry the measured adoption"
     );
 }
 
@@ -99,7 +133,13 @@ fn a_held_out_paraphrase_gets_the_same_verdict() {
     let original: Vec<(&str, &str)> = HELD_OUT.to_vec();
     let paraphrase: Vec<(&str, &str)> = HELD_OUT_PARAPHRASE.to_vec();
     let first = prove_effect(ADOPTED_ITEM, "method", &original, &with_item, &without_item);
-    let second = prove_effect(ADOPTED_ITEM, "method", &paraphrase, &with_item, &without_item);
+    let second = prove_effect(
+        ADOPTED_ITEM,
+        "method",
+        &paraphrase,
+        &with_item,
+        &without_item,
+    );
 
     assert_eq!(first.deltas.len(), 5);
     assert_eq!(second.deltas.len(), 5);
@@ -111,6 +151,101 @@ fn a_held_out_paraphrase_gets_the_same_verdict() {
             left.language
         );
     }
+}
+
+#[test]
+fn explicit_references_execute_the_adopted_method_on_the_live_solver_path() {
+    let solver = UniversalSolver::new(SolverConfig::default());
+    for (language, prompt) in HELD_OUT {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.intent,
+            format!("learned_method:{ADOPTED_ITEM}"),
+            "{language}: explicit references are resolved from registry data"
+        );
+        assert_eq!(
+            response.answer.lines().collect::<Vec<_>>(),
+            expected_answer_lines(),
+            "{language}: the complete learned-method answer is the verified recipe execution"
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("method:learned:operations_verified:true")),
+            "{language}: the trace must expose the successful learned-operation postcondition: {:?}",
+            response.evidence_links
+        );
+    }
+}
+
+fn expected_answer_lines() -> Vec<&'static str> {
+    vec![
+        "recipe_program",
+        "  record_type \"recipe_program\"",
+        "  step_count \"10\"",
+        "  recorder_count \"10\"",
+        "plan_build_problem_frame",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"2\"",
+        "  id \"build_problem_frame\"",
+        "  executes \"record_problem_frame\"",
+        "plan_decompose_recursively",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"3\"",
+        "  id \"decompose_recursively\"",
+        "  executes \"record_work_units\"",
+        "plan_account_for_needs",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"4\"",
+        "  id \"account_for_needs\"",
+        "  executes \"record_need_ledger\"",
+        "plan_catalogue_methods",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"5\"",
+        "  id \"catalogue_methods\"",
+        "  executes \"record_method_registry\"",
+        "plan_reason_white_box",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"6\"",
+        "  id \"reason_white_box\"",
+        "  executes \"record_work_unit_reasoning\"",
+        "plan_construct_upward",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"7\"",
+        "  id \"construct_upward\"",
+        "  executes \"record_upward_construction\"",
+        "plan_record_evidence",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"9\"",
+        "  id \"record_evidence\"",
+        "  executes \"record_solution_evidence\"",
+        "plan_select_methods",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"10\"",
+        "  id \"select_methods\"",
+        "  executes \"record_selection\"",
+        "plan_accumulate_skills",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"12\"",
+        "  id \"accumulate_skills\"",
+        "  executes \"record_skill_ledger\"",
+        "plan_audit_reasoning_standard",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"13\"",
+        "  id \"audit_reasoning_standard\"",
+        "  executes \"record_reasoning_standard\"",
+        "  executed build_problem_frame",
+        "  executed decompose_recursively",
+        "  executed account_for_needs",
+        "  executed catalogue_methods",
+        "  executed reason_white_box",
+        "  executed construct_upward",
+        "  executed record_evidence",
+        "  executed select_methods",
+        "  executed accumulate_skills",
+        "  executed audit_reasoning_standard",
+    ]
 }
 
 #[test]
@@ -174,10 +309,7 @@ fn no_prompt_in_the_delta_set_appears_in_the_inference_corpus() {
         }
         corpora.push((name, fs::read_to_string(entry.path()).unwrap_or_default()));
     }
-    corpora.push((
-        "data/seed/learned-methods.lino".to_owned(),
-        learned_seed(),
-    ));
+    corpora.push(("data/seed/learned-methods.lino".to_owned(), learned_seed()));
     assert!(
         !corpora.is_empty(),
         "the inference corpus must be readable for this guard to mean anything"

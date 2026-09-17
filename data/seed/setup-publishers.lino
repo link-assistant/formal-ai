@@ -92,3 +92,9 @@ setup_publisher_docker
   source_id "docker_official"
   host "docs.docker.com"
   documentation "https://docs.docker.com/get-docker/"
+setup_publisher_swebench_harness
+  record_type "setup_publisher"
+  program "swebench-harness"
+  source_id "github"
+  host "github.com"
+  documentation "https://github.com/SWE-bench/SWE-bench"

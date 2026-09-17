@@ -1133,13 +1133,19 @@ of intent-specific handler implementations. Issue #699 tracks that remaining
 migration honestly in `data/meta/handler-migration-ledger.lino`.
 
 The PR #888 continuation audit (2026-09-16) further scopes R333/R334/R342:
-the shared ledger runs before dispatch, so a selected method is **planned**, not
-**satisfied**. A connected planning chain accounts for a detected need but does
-not prove its execution. Planned needs remain curriculum items, not demonstrated
-skills. Regression tests cover both native and recipe-driven traces and retain
-the separate contract for explicitly satisfied evidence. Runtime per-need
-verification feedback is still open; the implemented artifact rows below are
-not a claim that every detected obligation executes successfully.
+the planning ledger runs before dispatch, so a selected method is **planned**,
+not **satisfied**. A connected planning chain accounts for a detected need but
+does not prove its execution. Planned needs remain curriculum items, not
+demonstrated skills. A second, append-only pass (`src/obligation_ledger.rs`,
+recipe step 14) supplies runtime per-need feedback: an execution row reaches
+**satisfied** through `need_ledger_with_execution` only when its input outcome
+carries a matching `Evidence`. That record names the command, retains an exit
+code or an explicit none, and hashes the exact observed bytes with SHA-256. The
+shared `need_status_with_observation` function is the only constructor of the
+terminal status; other domains may call it only after their own observed state
+or successful re-probe. A clause with no derivable expectation is split rather
+than discarded, and a clause that cannot be split is reported as an unsatisfied
+gap with its byte span.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
@@ -1622,12 +1628,12 @@ benchmark slices do not establish these broader capabilities. Plan 06 in
 | R710-R1 | Bind implementation language, source destination and output operands independently; preserve ordered output clauses. | Literal stdout composition in Rust, Kotlin, Scala and Python; `process_composition` and `issue_1133_hive_mind_three_runs` test renamed paths and filename-shaped output. Arbitrary program behavior remains open. |
 | R710-R2 | Include requested CI, runtime setup, comments, run instructions and executable output assertions. | Source-backed primitive records and shared recipe workflow generation; verifier mutation tests reject wrong case, extra LF and nonzero exit. Live Python project passes. Kotlin local execution still stops at a missing compiler. |
 | R710-R3 | Discover missing runtime prerequisites recursively and recover from observed failures. | Partial: recipe replay resumes after a bound successful retry and retains the original failure. Automatic prerequisite discovery/setup remains open; generating a workflow does not prove local compiler recovery. |
-| R710-R4 | A successful tool result must be bound to the requested path, bytes and ordered command before it counts as execution evidence. | `recipe_evidence` and `issue_908` retain actual assistant calls and reject orphan, duplicate, unrelated and out-of-order results, including during recovery. Unrelated setup cannot clear a failed step. |
+| R710-R4 | A successful tool result must be bound to the requested path, bytes and ordered command before it counts as execution evidence. | `recipe_evidence` and `issue_908` retain actual assistant calls and reject orphan, duplicate, unrelated and out-of-order results, including during recovery. Unrelated setup cannot clear a failed step. The same binding applies outside the recipe path: `ObligationLedger::observe` returns `None` for a record whose command or path answers no expectation, so an unrelated result cannot clear any obligation on any surface. |
 | R710-R5 | Commit only the recipe's artifacts, excluding compiler outputs and unrelated staged files. | Explicit-path staging and `git commit --only`; `issue_1133_hive_mind_three_runs` preserves branch/commit evidence assertions. Explicit requests to commit pending repository changes keep their separate semantics. |
 | R710-R6 | Preserve original dialogue and observations, unknown legacy records, and imported custom knowledge unless the user authorizes deletion/modification. | Provenance-first classification, apply-time revalidation and duplicate-ID safety; `memory_retention_origin`, `memory_learning`, existing deletion/reset and export/import tests. |
 | R710-R7 | Forget only reconstructable cache data; keep the rediscovery recipe and provenance, accounting for retained metadata. | Reconstruction records survive restart and further pressure in `memory_retention_origin`; a public URL authorizes reacquisition, not replacement of historical evidence with today's content. End-to-end automatic source-cache reconstruction remains open. |
 | R710-R8 | Formal AI must perform meaningful work through Agent CLI, and failures must become general regression cases. | Live Python project and grounded source-identifier rename succeed. The open-ended refactor only read its input; executable authoring-helper regressions now reject unchanged seed/destination bytes before publishing. Kotlin recovery, semantic formalization and open-ended regression authorship remain open. |
-| R710-R9 | Retain every requirement as a verifiable obligation; unknown clauses cannot be silently discarded. | Partial: shared decomposition preserves operands, addresses, list clauses and byte provenance (`requirement_span_integrity`); inline formalization preserves source identity (`issue_956`). The need ledger distinguishes selected methods from satisfied results, preventing pre-execution success and skill claims. Preserving unknown text does not interpret or execute it; complete obligation-ledger execution and runtime verification feedback remain open. |
+| R710-R9 | Retain every requirement as a verifiable obligation; unknown clauses cannot be silently discarded. | Shared decomposition preserves operands, addresses, list clauses and byte provenance (`requirement_span_integrity`); inline formalization preserves source identity (`issue_956`). The need ledger distinguishes selected methods from satisfied results, preventing pre-execution success and skill claims. Preserving unknown text still does not interpret it, but it is no longer discarded: an unrecognized clause becomes an `Underivable` obligation node that is split and, failing that, reported as a named gap with its byte span. Obligation-ledger execution and runtime verification feedback are delivered by `src/obligation_ledger.rs`. |
 | R710-R10 | Report proven wrapper/client defects upstream without publishing private traces. | Hive Mind #2259 contains the reviewed MCP transport reproduction; no current Agent CLI defect has been established from the compiler failures. |
 
 ## Issue #834 Legal & Compliance Self-Audit
@@ -2416,7 +2422,7 @@ bar is not to be met by lowering it".
 | R1021-11 | #944 (E92): rungs on the mutating-action ladder. | Delivered on both axes. The publishing rungs are refused-unless-opted-in and never-delegated (`tests/unit/issue_1021_write_path.rs`). The filesystem rungs `824.L1`-`824.L5` join the issue #916 write-effect ladder with the sandbox-reset semantics the issue asks for by name: each rung declares the state it starts from, its directory is emptied and checked to be empty, the declared state is written and then *read back off disk*, and a start that did not land is a `sandbox` violation rather than a silent premise (`experiments/issue_916_write_effect_ladder/test_ladder.py::SandboxResetTests`). All sixteen rungs are green against the real release binary and the ratchet moved 11/11 -> 16/16. |
 | R1021-12 | #946 (E94): versioned recoverable memory. | `src/memory_revision.rs` captures the bytes of every tracked file *before* a candidate version is written and restores them exactly when it fails, so a self-compile that does not build leaves the workspace on the last version that did (`a_version_that_does_not_compile_leaves_the_previous_one_in_place`). The baseline that judges a version is pinned by digest, and a candidate that edits it is rolled back before its verdict is consulted (`a_candidate_that_edits_a_baseline_test_is_rolled_back_before_it_is_scored`). |
 | R1021-13 | #947 (E95): bounded autonomy with a stuck-recovery limit. | `src/bounded_autonomy.rs` bounds a run on an injected clock: `RecoveryLoop::step` answers `Continue` until the limit -- one hour by default -- is spent, then presents the plan and asks (`a_loop_that_never_resolves_stops_at_the_limit_and_asks`). Per-command permission is the default mode and full trust is a separate opt-in, so delegating the commands is not delegating the choices (`full_trust_does_not_arrive_with_the_full_autonomous_mode`). |
-| R1021-14 | #924 (E77): one real repository change per release landing as a normal reviewed pull request. | **Not delivered by a `solve` run**; `data/meta/self-hosting-ledger.lino` still reads `0.00% self-authored`. |
+| R1021-14 | #924 (E77): one real repository change per release landing as a normal reviewed pull request. | **Not delivered by a `solve` run.** The ledger's self-authored share is non-zero for Agent-CLI-authored leaves, but no qualifying run is a `solve` run. |
 | R1021-15 | Produce the changelog fragment a code change needs. | `formal_ai::contribution_artifacts::compose` renders it from `data/seed/contribution-artifacts.lino` into the shape `scripts/check-changelog-fragment.rs` accepts. |
 | R1021-16 | Produce a pull-request body that links its issue with a closing keyword. | Same generator; the closing line leads the body, and `scripts/check-pull-request-link.rs` accepts it. |
 | R1021-17 | Generated code is R379-clean. | Delivered narrowly: `src/contribution_artifacts.rs` holds no natural-language literal, all wording living in seed data. It is not a claim about arbitrary future generated code. |
@@ -2484,7 +2490,7 @@ sub-issues of #1085.
 | R1085-6 | Record who opened each qualifying pull request in the ledger row. | Delivered: `self_authored_pull_request_author` rows, `FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP=gh` in `release.yml`. |
 | R1085-7 | Restate history under metric version 3 by appending rows, never rewriting; publish the figure. | Delivered mechanism: `--replay-epoch` (`scripts/self-hosting-replay.rs`); the restated rows are appended from the first CI run of the status workflow. |
 | R1085-8 | Move the self-development floor off the release path onto an always-visible red-until-true status with no budget, window or bypass; releases cut on CI correctness alone. | Delivered: `.github/workflows/self-development-status.yml`; `release.yml` and `scripts/version-and-commit.rs` no longer gate; `tests/unit/ci-cd/issue_1014.rs`. |
-| R1085-9 | Ladder leaves must compile; composites apply both children's diffs to one tree; depth 3 and above are requirement-shaped; the root is a real issue; run on pull requests with a ratcheted deepest passing level. | Delivered in the harness: every leaf runs `cargo check --lib` and `cargo test --test unit <module>`; a depth-4 composite applies both children's diffs to one tree and compiles it; depth 3 and above are requirement-shaped prompts verified by every leaf marker, the modified-file set, formatting, compile and tests; the workflow runs on pull requests and weekly over all levels and compares the run with `data/meta/ladder-ratchet.lino`, which records how many of the 32 leaves Formal AI actually changed (15, may only rise) and the deepest level whose nodes all passed (none yet; level 5 is the leaves). The seventeen leaves that fail are three mechanisms, measured and filed as #1095 and #1096 with per-leaf evidence in `docs/case-studies/issue-1085/ci-evidence/ladder-leaf-failures.md`; the earlier record of level 5 was carried over from the read-and-echo baseline and the comparison itself was inverted. The bot-opened pull request runs through `.github/workflows/self-authored-pull-request.yml` (first task #1091); `hive-mind solve` is not on that path because its commits carry no metric trailers or evidence, which is filed upstream. The real-issue root is #1087 (D6). |
+| R1085-9 | Ladder leaves must compile; composites apply both children's diffs to one tree; depth 3 and above are requirement-shaped; the root is a real issue; run on pull requests with a ratcheted deepest passing level. | Delivered in the harness: every leaf runs `cargo check --lib` and `cargo test --test unit <module>`; a depth-4 composite applies both children's diffs to one tree and compiles it; depth 3 and above are requirement-shaped prompts verified by every leaf marker, the modified-file set, formatting, compile and tests; the workflow runs on pull requests and weekly over all levels and compares the run with `data/meta/ladder-ratchet.lino`, which records how many of the 32 leaves Formal AI actually changed (15, may only rise) and the deepest level whose nodes all passed (none yet; level 5 is the leaves). The seventeen leaves that fail are three mechanisms, measured and filed as #1095 and #1096 with per-leaf evidence in `docs/case-studies/issue-1085/ci-evidence/ladder-leaf-failures.md`; the earlier record of level 5 was carried over from the read-and-echo baseline and the comparison itself was inverted. The bot-opened pull request runs through `.github/workflows/self-authored-pull-request.yml` (first task #1091); `hive-mind solve` is not on that path because its commits carry no metric trailers or evidence, which is filed upstream. The real-issue root is #1087 (D6). Issue #1138 adds a separate `--no-authored-rules` mode that excludes all 32 exact per-leaf mappings from the agent's sparse workspace while retaining the same verifier; its ratchet is deliberately `not_measured` until one complete 32-leaf live run records the observed score. |
 | R1085-10 | Cite the upstream benchmark row beside every curated 13/13 citation. | Delivered: `VISION.md`, `ROADMAP.md` (three sites). |
 | R1085-11 | Failing upstream cases feed the learning cycle; the external-benchmarks workflow is red on a falling suite; explain the HumanEval task-0 transfer failure. | Delivered: every failed upstream case is rewritten into `data/meta/learning-frontier-upstream-benchmarks.lino` (`formal-ai benchmark run --frontier-record`, replayed by `formal-ai learn cycle --frontier upstream-benchmarks`); the ledger gate already fails a fallen pass count and `benchmark ratchet` now prints a warning for a suite unchanged over three runs; the HumanEval/0 and MBPP/2 transfer is explained in the case study and fixed. `tests/unit/issue_1085_upstream_frontier.rs`. |
 | R1085-12 | The crates.io credential probe must not report a token rejected on a cookie-only endpoint; `/api/v1/me` is never called, and the read-only verdict is `unknown` with the reason. | Delivered: `scripts/preflight-credentials.sh`, `tests/unit/ci-cd/issue_1081/release_preflight.rs`. Run 34149311523 was the false positive. |
@@ -2506,6 +2512,157 @@ before it reaches `main`.
 | R1137-1 | A pull request that changes agentic routing must run the full real-client replay before merge. | Implemented: `scripts/detect-code-changes.rs` derives `agentic-routing-changed` from the complete PR diff whenever a tracked path under `src/agentic_coding/` changes; `.github/workflows/release.yml` passes `full-replay: true` to the reusable Agent CLI workflow for that PR. The path classifier and caller expression are pinned by `detect_code_changes::tests::agentic_source_changes_request_the_four_client_replay` and `ci_cd::issue_1137_agentic_routing_replay`. |
 | R1137-2 | The pre-merge replay must retain Agent, OpenCode, Claude, and Codex and prove search, fetch, and cited synthesis. | Implemented: the full-replay-only `run_issue_781.sh` step retains the four-client default and its per-client search/fetch/final assertions; `the_full_replay_still_exercises_each_supported_client` pins the caller, harness, and client inventory. |
 | R1137-3 | Pull requests outside the routing boundary should retain the cheaper held-out gate. | Implemented: the new detector output is false outside `src/agentic_coding/`; the existing `main`, schedule, and manual full-replay conditions remain unchanged. The classifier regression exercises unrelated coding and documentation paths. |
+
+## Issue #1138 Bottleneck Audit
+
+This shard records the requirement contracts introduced while closing the
+measured bottlenecks in issue #1138. A status below names the implementation and
+the automated test that holds it; it does not claim a run that has not been
+observed on the final tree.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-B5-1 | Every satisfied obligation node must carry a matching execution record: the command, its exit code or an explicit none, and a SHA-256 of the exact observed bytes. | Implemented by `src/execution_evidence.rs::Evidence::observed`, which hashes its raw byte slice, and by the evidence-bearing `ObligationOutcome::Satisfied` variant in `src/obligation_ledger.rs`. Verified by `tests/unit/specification/execution_evidence.rs` and `tests/unit/specification/obligation_ledger.rs`. |
+| R1138-B5-2 | An observation may discharge only the node whose expectation names its command or path; an unrelated result clears nothing. | Implemented by `src/obligation_ledger.rs::ObligationLedger::observe`. Verified by `tests/unit/specification/obligation_ledger.rs::an_unrelated_observation_discharges_nothing`. |
+| R1138-B5-3 | A clause with no derivable expectation is split, not discarded; a clause that cannot be split is reported as an unsatisfied gap with its byte span, never as completion prose. | Implemented by `src/obligation_ledger.rs::ObligationNode`, `src/agentic_coding/task_obligations.rs` and the `ObligationStep::ReportGap` branch in `src/agentic_coding/planner.rs`. Verified across ten prompts and five languages by `tests/unit/issue_1138_obligation_evidence.rs`. |
+
+## Issue #1138 Composition From Sources
+
+Coding answers are composed from typed, attributable fragments rather than
+benchmark names or copied answers. The executable contract is covered by
+`tests/unit/coding_discovery/composition.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-B2-1 | Retrieved procedure text is formalized into ordered steps before code is composed. | Implemented in the procedure-text and structural-composition stages; covered by `tests/unit/coding_discovery/composition.rs`. |
+| R1138-B2-2 | Composition uses a language-neutral typed program IR. | Implemented by `src/coding/program_ir.rs`; covered by `tests/unit/coding_discovery/program_ir.rs`. |
+| R1138-B2-3 | Target-language lowering is selected after composition and preserves the IR identity. | Implemented by the IR lowerers; covered by `tests/unit/coding_discovery/ir_lowering.rs`. |
+| R1138-B2-4 | The bootstrap fragment catalog is deletable data, not a hard-coded task answer. | Implemented by the fragment catalog; covered by `tests/unit/coding_discovery/fragment_catalog.rs`. |
+| R1138-B2-5 | Forgetting and rediscovering a fragment from the same capture reproduces its content id. | Covered by `tests/unit/coding_discovery/fragment_catalog.rs`. |
+| R1138-B2-6 | Upstream suites are graded by their real tests and publish honest pass totals. | Covered by `tests/unit/specification/external_benchmarks.rs`. |
+| R1138-B2-7 | Seed fragments use typed, human-readable shapes and may not encode benchmark answers. | Covered by `tests/unit/coding_discovery/no_memorization.rs`. |
+| R1138-B2-8 | OEIS and Python documentation are selected through the trusted-source registry with provenance and license metadata. | Covered by `tests/unit/coding_discovery/oeis.rs` and `tests/unit/coding_discovery/python_docs.rs`. |
+
+## Issue #1138 Formalization Depth
+
+Unfamiliar requirement text is recursively grounded rather than preserved as
+an assertion-shaped sentence. The contract is covered by
+`tests/unit/issue_1138_formalization_depth.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-B4-1 | Every ungrounded surface, relation, or procedure becomes an explicit need with source span and origin. | Implemented by the formalization graph; covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-2 | A need is satisfied through the shared registry lookup, and the retrieved gloss is recursively formalized to bounded depth. | Implemented by the formalization-depth loop; covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-3 | A grounded result is a sourced concept, predicate, entity, or procedure link, never a stored answer sentence. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-4 | Preserved text cannot satisfy an assertion primitive, and an unresolved need cannot be reported covered. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-5 | An extracted procedure enters memory only through bounded execution and named review with license metadata retained. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-6 | Equivalent English, Russian, Hindi, Chinese, and Spanish requirements produce one graph identity or a per-language gap. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-7 | Sentence segmentation is script-aware and every recorded span selects exactly its source text. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-8 | A custom agentic task is formalized instead of substituting a seeded example narrative. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-9 | One need type and status vocabulary serve the universal loop, coding path, and formalizer. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-10 | Offline capture replay reproduces the graph identity, and deleting derived graph memory loses no source evidence. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+
+## Issue #1138 Learning Effects
+
+Learning is accepted only when promotion changes held-out execution without a
+regression. The contract is covered by
+`tests/unit/issue_1138_learning_ratchet.rs` and
+`tests/unit/issue_1138_learned_items_change_answers.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-B7-1 | An adopted learned item executes in live dispatch and its use is named in the trace. | Covered by `tests/unit/issue_1138_learned_items_change_answers.rs`. |
+| R1138-B7-2 | Adoption requires an improved before/after execution-record pair on held-out prompts in five languages with zero regressions. | Covered by `tests/unit/issue_1138_learning_ratchet.rs`. |
+| R1138-B7-3 | The human gate reviews a draft pull request carrying the seed edit; inertness is not treated as approval. | Covered by `tests/unit/issue_1138_learning_ratchet.rs`. |
+| R1138-B7-4 | A forgotten cache payload is refetched on demand, and a hash divergence is reported rather than substituted. | Covered by `tests/unit/issue_1138_learning_ratchet.rs`. |
+
+## Issue #1138 Live Concept Lookup
+
+The universal and coding paths share one bounded, attributable source walk.
+The requirements below are pinned by
+`tests/unit/issue_1138_concept_lookup.rs` and
+`tests/unit/issue_1138_universal_loop_lookup.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-B1-1 | One source-lookup implementation walks the sources registry and serves both the universal loop and coding discovery. | Implemented by `src/concept_lookup.rs::SourceLookup`; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-2 | Lookup is bounded by declared depth, pages, services, and capture age. | Implemented by `src/source_walk.rs::LookupBounds`; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-3 | Every retrieved sense carries source id, exact URL, digest, fetch time, license, and depth; offline replay is byte-stable. | Implemented by the sense ledger and capture cache; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-4 | A retrieved gloss is attributed and is never inserted into generated code as an answer template. | Enforced by the sense projection; covered by `tests/unit/issue_1138_universal_loop_lookup.rs`. |
+| R1138-B1-5 | A miss names every consulted source and its outcome instead of guessing. | Implemented by the lookup outcome ledger; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-6 | Source-service opt-outs are authoritative for concept lookup. | Implemented by service preferences; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-7 | Held-out words absent from seed data resolve or report an attributable miss in English, Russian, Hindi, Chinese, and Spanish. | Covered by `tests/unit/issue_1138_universal_loop_lookup.rs`. |
+| R1138-B1-8 | Deleting the derived sense ledger and replaying the same captures reproduces the same content ids. | Covered by `tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-9 | Native and browser runtimes use one source-walk contract and one parity fixture. | Covered by `tests/unit/issue_1138_concept_lookup.rs` and the browser parity suite. |
+
+## Issue #1138 Prerequisite Discovery
+
+Missing tools become observable, consent-bounded prerequisite needs. The
+contract is covered by `tests/unit/issue_1138_prerequisite_need.rs` and
+`tests/unit/issue_1138_install_scope.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-6-1 | Toolchain availability is observed; an unprobed tool is `NotProbed`, never unavailable. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-2 | The check command runs before any output is called observed; unobserved output is labelled in every supported language. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-3 | A missing executable is distinguished from permission denial and ordinary compile failure by observed status. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-4 | A missing executable becomes a blocked prerequisite need until a re-probe observes it present. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-5 | Setup instructions come from the declared trusted publisher; lookalike hosts are refused and recorded. | Covered by `tests/unit/issue_1138_setup_publisher.rs`. |
+| R1138-6-6 | Installation is separately consented, workspace-scoped, and refuses any out-of-scope write before execution. | Covered by `tests/unit/issue_1138_install_scope.rs`. |
+| R1138-6-7 | A recipe without a postcondition is refused; a failing postcondition remains `StillMissing`. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-8 | Memory retains recipe and provenance rather than the installed payload, and rediscovery preserves the content id. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-9 | Execution uses an isolated selectable environment with network disabled unless the contract grants it. | Covered by `tests/unit/issue_1138_install_scope.rs`. |
+| R1138-6-10 | Deadlines report elapsed time, limit, partial output, and every attempted ladder level. | Covered by `tests/unit/issue_1138_named_tests.rs`. |
+| R1138-6-11 | The browser advertises runtime size and loads it only after explicit action; only an actual run yields observed output. | Covered by `tests/unit/issue_1138_surface_honesty.rs`. |
+| R1138-6-12 | With no execution environment, every language receives an honest refusal rather than fabricated observed output. | Covered by `tests/unit/issue_1138_surface_honesty.rs`. |
+
+## Issue #1138 Repository Workspace Protocol
+
+Repository authoring uses one default-deny protocol, covered by
+`tests/unit/issue_1138_repository_workspace.rs` and
+`tests/unit/issue_1138_locate_targets.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-3-1 | A repository task carries an origin and an exact base commit; a branch name is refused as a base. | Implemented by the repository-workspace request parser; covered by `tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-2 | Named targets are located by repository census or literal/path occurrence; ambiguity resolves to no target. | Implemented by `src/repository_workspace/locate.rs`; covered by `tests/unit/issue_1138_locate_targets.rs`. |
+| R1138-3-3 | Named tests run and record command, exit code, and output before an obligation can be satisfied. | Implemented by the verification stage; covered by `tests/unit/issue_1138_named_tests.rs` and `tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-4 | The offered patch is a unified diff computed from the tree and verified against the exact base. | Implemented by the workspace outcome; covered by `tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-5 | SWE-bench, the coding ladder, and self-authoring consume the same protocol document. | Partial: SWE-bench and the coding ladder enter `WorkspaceProtocol`; `scripts/author-change-with-formal-ai.sh` still owns a separate Agent-CLI authoring loop, so the third caller is not unified yet. Covered by `tests/unit/issue_1138_repository_workspace.rs` and `tests/unit/issue_848_coding_ladder.rs`. |
+| R1138-3-6 | Commands are default-deny and allowed by program, subcommand, and argument shape from seed data. | Implemented by the repository command allowlist; covered by `tests/unit/issue_1138_command_allowlist.rs`. |
+| R1138-3-7 | Authoring refuses commits by default; an allowed commit carries all self-hosting trailers and exact model evidence. | Partial: `run_solve` is default-deny and its produced commit payload passes the canonical attribution parser, but the legacy authoring shell has not yet been reduced to that entry point. Covered by `tests/unit/issue_1138_solve_cli.rs` and `tests/unit/specification/self_hosting_metric/solve_attribution.rs`. |
+| R1138-3-8 | A missing prerequisite remains an evidenced unsatisfied need, never a pass or skip. | Implemented by the protocol outcome ledger; covered by `tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-9 | The protocol document is forgettable and regenerates to the same content id. | Covered by `tests/unit/specification/repository_workspace_protocol.rs`. |
+
+## Issue #1138 Selection Heuristics
+
+Candidate selection is associative, deterministic, and subordinate to
+satisfaction. The contract is covered by
+`tests/unit/issue_1138_selection_heuristics.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-B12-1 | Selection heuristics live in the method registry as link data, are never route targets, and their precedence changes by data edit. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
+| R1138-B12-2 | No heuristic may rank an unsatisfying candidate above a satisfying one, and no ranking key depends on wall-clock time. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
+| R1138-B12-3 | An empty heuristic table falls back to deterministic identity ordering and records that fallback. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
+| R1138-B12-4 | The non-binary work-unit count is measured, recorded, and strictly decreasing. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
+
+## Issue #1138 Verifiable Task Routing
+
+Checkable natural-language tasks share the coding discovery and execution
+machinery. The contract is covered by `tests/unit/verifiable_task/mod.rs`.
+
+| ID | Requirement | Status / evidence |
+| --- | --- | --- |
+| R1138-B8-1 | One shared task type represents expected answer shape, inputs, procedure needs, and checks. | Implemented by `src/verifiable_task.rs`; covered by `tests/unit/verifiable_task/identity.rs`. |
+| R1138-B8-2 | Recognition vocabulary is seed-driven in English, Russian, Hindi, Chinese, and Spanish. | Covered by `tests/unit/verifiable_task/recognition.rs`. |
+| R1138-B8-3 | A recognized task projects onto the shared discover-compose-execute-verify path. | Covered by `tests/unit/verifiable_task/execution.rs`. |
+| R1138-B8-4 | The answer is projected only from observed execution evidence. | Covered by `tests/unit/verifiable_task/execution.rs`. |
+| R1138-B8-5 | Type, range, relation, recomputation, and provenance checks are explicit and all must pass. | Covered by `tests/unit/verifiable_task/ledger.rs`. |
+| R1138-B8-6 | Derivation memory stores a recomputable recipe rather than replaying the previous answer. | Covered by `tests/unit/verifiable_task/ledger.rs`. |
+| R1138-B8-7 | Task categories are derived from seed meanings, not a hard-coded answer table. | Covered by `tests/unit/verifiable_task/recognition.rs`. |
+| R1138-B8-8 | The no-memorization gate scans production source and seed data for benchmark prompts and answers. | Covered by `tests/unit/verifiable_task/ratchets.rs`. |
+| R1138-B8-9 | Every solver generation re-measures the held-out five-language corpus and records gaps honestly. | Covered by `tests/unit/verifiable_task/rendering.rs`. |
 
 ## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
 

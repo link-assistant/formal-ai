@@ -618,8 +618,9 @@ impl UniversalSolver {
             // Issue #513: recognize terminal-command requests (visible fix for
             // #511) before falling through to the unknown answer, so a shell
             // request returns an agent_suggestion intent in both engines.
-            if let Some(answer) =
-                crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
+            if crate::verifiable_task::recognise_verifiable(prompt).is_none()
+                && let Some(answer) =
+                    crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
             {
                 return answer;
             }
@@ -633,10 +634,19 @@ impl UniversalSolver {
             {
                 return answer;
             }
-            if unresolved_surfaces_present(&crate::engine::normalize_prompt(prompt), language.slug())
-            {
-                let _senses = self.record_external_search(&mut log, prompt, language);
-            }
+            let senses = if unresolved_surfaces_present(
+                &crate::engine::normalize_prompt(prompt),
+                language.slug(),
+            ) {
+                crate::solver_search::record_external_search(
+                    &self.config,
+                    &mut log,
+                    prompt,
+                    language,
+                )
+            } else {
+                Vec::new()
+            };
             return answer_unknown_prompt(
                 prompt,
                 language,
@@ -645,6 +655,7 @@ impl UniversalSolver {
                     questioning_rigor: self.config.questioning_rigor,
                     offline: self.config.offline,
                 },
+                &senses,
             );
         }
 
@@ -659,10 +670,7 @@ impl UniversalSolver {
                 "execution_status",
                 spec.language.execution_status().label().to_owned(),
             );
-            log.append(
-                "execution_environment",
-                spec.language.environment(),
-            );
+            log.append("execution_environment", spec.language.environment());
             log.append("program_parameter:language", spec.language.slug.to_owned());
             log.append("program_parameter:task", spec.task.slug.to_owned());
             log.append("program_parameters", spec.parameter_summary());
@@ -870,94 +878,6 @@ impl UniversalSolver {
         let intent = format!("policy_{intent_slug}");
         let response_link = format!("response:policy:{intent_slug}");
         finalize_simple(prompt, log, &intent, &response_link, body, 0.5)
-    }
-
-    /// Ask the sources registry what the prompt's unresolved surfaces mean.
-    ///
-    /// Issue #1138 B1, plan 01 L11. This method used to append a policy marker
-    /// saying that an external search had been requested and no retrieval was
-    /// executed — a true statement about the code of the day and a false
-    /// statement about the system's limits the moment a retrieval kernel
-    /// existed. A capability claim the tree can no longer support is a
-    /// fabricated provenance of the system's own state, so the marker is gone
-    /// and every consulted source leaves a real outcome row instead. The
-    /// deleted marker's name is pinned by
-    /// `tests/unit/issue_1138_universal_loop_lookup.rs`, which is why it is not
-    /// written out here.
-    ///
-    /// Offline stays an explicit boundary, not a missing capability: the
-    /// `skipped:offline` payload is what `event_log` projects as
-    /// `policy:offline`.
-    fn record_external_search(
-        &self,
-        log: &mut EventLog,
-        prompt: &str,
-        language: Language,
-    ) -> Vec<crate::concept_lookup::ConceptSense> {
-        if self.config.offline {
-            log.append("search:external", "skipped:offline".to_owned());
-            return Vec::new();
-        }
-        log.append("search:external", prompt.to_owned());
-        let normalized = crate::engine::normalize_prompt(prompt);
-        let code = language.slug();
-        let surfaces = crate::concept_lookup::unknown_surfaces(&normalized, code);
-        let bounds = crate::source_walk::LookupBounds::default();
-        let cache_root = crate::coding::synthesis_runtime::source_cache_root();
-        let client = crate::source_fetch::CachedSourceClient::new(
-            &cache_root,
-            crate::source_fetch::CurlSourceTransport,
-        )
-        .with_online(crate::coding::synthesis_runtime::live_fetch_enabled());
-        let preferences = crate::how_to_guide::ServicePreferences::default();
-        let mut availability = crate::service_accessibility::ServiceAccessibilityCache::load(
-            &cache_root,
-        );
-        let now = crate::service_accessibility::unix_now();
-        let mut senses = Vec::new();
-        for surface in surfaces.iter().take(bounds.max_services) {
-            let outcome = crate::concept_lookup::lookup_surface(
-                surface,
-                code,
-                &client,
-                &preferences,
-                &bounds,
-                &mut availability,
-                now,
-            );
-            if outcome.items.is_empty() {
-                // An absence that names every source consulted is evidence; a
-                // bare "not found" is not.
-                log.append(
-                    "concept_lookup:miss",
-                    crate::trace_record::payload(&[
-                        ("surface", surface.clone()),
-                        (
-                            "consulted",
-                            outcome
-                                .outcomes
-                                .iter()
-                                .map(|row| format!("{} {}", row.source_id, row.status))
-                                .collect::<Vec<_>>()
-                                .join(" "),
-                        ),
-                    ]),
-                );
-            }
-            for sense in &outcome.items {
-                log.append(
-                    "concept_lookup:hit",
-                    crate::trace_record::payload(&[
-                        ("surface", surface.clone()),
-                        ("source", sense.source_id.clone()),
-                        ("sha256", sense.sha256.clone()),
-                        ("license", sense.license_name.clone()),
-                    ]),
-                );
-            }
-            senses.extend(outcome.items);
-        }
-        senses
     }
 }
 

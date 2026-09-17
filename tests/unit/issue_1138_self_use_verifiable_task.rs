@@ -174,10 +174,11 @@ fn a_named_unknown_is_solved_rather_than_scraped() {
                 "{language}: answer carries `{forbidden}`, a number from an unrelated problem"
             ));
         }
-        if answer.trim() != expected {
-            let head: String = answer.trim().chars().take(120).collect();
-            offenders.push(format!("{language}: {head}"));
-        }
+        assert_eq!(
+            answer.trim(),
+            expected,
+            "{language}: a named unknown must have the documented exact answer"
+        );
     }
     assert!(
         offenders.is_empty(),
@@ -215,6 +216,11 @@ fn a_counted_category_is_answered_in_every_language() {
 /// by accident rather than by mechanism.
 #[test]
 fn no_verifiable_task_is_answered_with_the_search_capability_description() {
+    let documented = solve(
+        "A baker makes 24 rolls each morning and 18 each afternoon. She sells 35 rolls during the day and gives 4 to her neighbour. How many rolls does she have left at closing time?",
+    )
+    .answer;
+    assert_eq!(documented, "3");
     let families = [
         "arithmetic_narrative",
         "counted_category",

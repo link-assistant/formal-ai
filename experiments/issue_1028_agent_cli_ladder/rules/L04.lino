@@ -1,8 +1,8 @@
 link_edit
   leaf L04
-  path src/solver_handlers/pattern_inference.rs
-  language rust
-  rule insert_member
-    list "INTENT_MARKERS"
-    member "alternating"
-  expect "alternating"
+  path data/seed/meanings-verifiable-task.lino
+  language lino
+  rule replace_literal
+    old "continue this"
+    new alternating
+  expect alternating

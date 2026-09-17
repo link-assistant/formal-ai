@@ -325,8 +325,8 @@ pub fn program_test_instructions(
                  `{run_command}`。"
             ),
             Language::Spanish => spanish("prior_code_note")
-                .replace("{save_as}", save_as)
-                .replace("{run_command}", &run_command),
+                .replace(concat!("{", "save_as", "}"), save_as)
+                .replace(concat!("{", "run_command", "}"), &run_command),
             _ => format!(
                 "Test the updated program the same way as before: save the code to `{save_as}` \
                  and run `{run_command}` again."
@@ -348,14 +348,16 @@ pub fn program_test_instructions(
         Language::Russian => format!("Установите инструментарий: {setup_hint}."),
         Language::Hindi => format!("टूलचेन इंस्टॉल करें: {setup_hint}।"),
         Language::Chinese => format!("安装工具链：{setup_hint}。"),
-        Language::Spanish => spanish("step_install").replace("{setup_hint}", &setup_hint),
+        Language::Spanish => {
+            spanish("step_install").replace(concat!("{", "setup_hint", "}"), &setup_hint)
+        }
         _ => format!("Install {setup_hint}."),
     });
     steps.push(match language {
         Language::Russian => format!("Сохраните приведённый выше код в файл `{save_as}`."),
         Language::Hindi => format!("ऊपर दिए गए कोड को `{save_as}` फ़ाइल में सहेजें।"),
         Language::Chinese => format!("将上面的代码保存到文件 `{save_as}`。"),
-        Language::Spanish => spanish("step_save").replace("{save_as}", save_as),
+        Language::Spanish => spanish("step_save").replace(concat!("{", "save_as", "}"), save_as),
         _ => format!("Save the code above to a file named `{save_as}`."),
     });
     if let Some(check_command) = execution.check_command {
@@ -363,7 +365,9 @@ pub fn program_test_instructions(
             Language::Russian => format!("Проверьте, что код компилируется: `{check_command}`."),
             Language::Hindi => format!("जाँचें कि कोड संकलित होता है: `{check_command}`।"),
             Language::Chinese => format!("检查代码能否编译：`{check_command}`。"),
-            Language::Spanish => spanish("step_check").replace("{check_command}", check_command),
+            Language::Spanish => {
+                spanish("step_check").replace(concat!("{", "check_command", "}"), check_command)
+            }
             _ => format!("Check that it compiles: `{check_command}`."),
         });
     }
@@ -371,7 +375,9 @@ pub fn program_test_instructions(
         Language::Russian => format!("Запустите программу: `{run_command}`."),
         Language::Hindi => format!("प्रोग्राम चलाएँ: `{run_command}`।"),
         Language::Chinese => format!("运行程序：`{run_command}`。"),
-        Language::Spanish => spanish("step_run").replace("{run_command}", &run_command),
+        Language::Spanish => {
+            spanish("step_run").replace(concat!("{", "run_command", "}"), &run_command)
+        }
         _ => format!("Run it: `{run_command}`."),
     });
     steps.push(match language {

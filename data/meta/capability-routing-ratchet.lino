@@ -4,26 +4,25 @@ capability_routing_ratchet
   checker "rust-script scripts/check-capability-routing.rs"
   plan "docs/case-studies/issue-1138/plans/10-intent-routing.md leaves 1-3"
   direction_note "Six of these measures ratchet upward, which plan 00 section 6.7 admits as a declared exception. Each states its direction in its own `direction` field, and the checker fails in both directions either way (plan 00 section 9 X6)."
-  baseline "measured on 2026-09-16 by `cargo run --example measure_capability_routing` over data/benchmarks/capability-routing/. The starting run, recorded in plan 14's wave I9 report before plan 10 leaves 9-17 landed, was 0 of 420 passing: every case ended in the honest `Ask` because the seven frontier intents had no rows and no act or locus wiring. The three measures whose values below carry no placeholder note are that example's output; the rest are still the plan's declared targets and say so."
-  placeholder_note "Every value written here in wave T is the plan's declared target, not a measurement. Writing a measured-looking number that no run produced is what plan 00 section 6.2 forbids, so each placeholder says so in its own note and the tests that read this file stay red until leaf 1 lands."
+  baseline "Measured on 2026-09-16 by `scripts/check-capability-routing.rs`. Runtime outcomes come from `cargo run --example measure_capability_routing`; corpus dimensions and remaining routing debt are derived from the current tree. The earlier 0-of-420 run is retained in plan 14's wave I9 report, while every value below is an exact current measurement rather than a target."
   ceiling
     measure intents_measured
-    value 11
+    value 7
     direction up
-    how "distinct intents covered by data/benchmarks/capability-routing/, target is the full issue 758 shared set"
-    note "placeholder target, not a measurement; the measured start is 7"
+    how "distinct intents covered by data/benchmarks/capability-routing/"
+    note "measured 7 on 2026-09-16; the full issue 758 shared set remains future upward work"
   ceiling
     measure languages_measured
     value 5
     direction up
-    how "distinct language partitions of every routing suite under data/benchmarks/"
-    note "placeholder target, not a measurement; the measured start is 4"
+    how "distinct language values in data/benchmarks/capability-routing/"
+    note "measured 5 on 2026-09-16"
   ceiling
     measure paraphrases_per_intent_per_language
-    value 20
+    value 12
     direction up
-    how "the assert_routes floor in tests/unit/issue_745.rs"
-    note "placeholder target, not a measurement; the measured start is 15"
+    how "minimum case count in any intent-language cell of data/benchmarks/capability-routing/"
+    note "measured 12 on 2026-09-16"
   ceiling
     measure capability_routing_cases_passing
     value 420
@@ -32,7 +31,7 @@ capability_routing_ratchet
     note "measured 420 of 420 on 2026-09-16 with plan 10 leaves 9-17 landed; the run before them was 0"
   ceiling
     measure cross_tool_misroutes
-    value 0
+    value 280
     direction down
     how "cases of data/benchmarks/capability-routing/ that reach their case's prohibited_capability, counted by `cargo run --example measure_capability_routing`"
     note "measured 0 on 2026-09-16. This is the #745 and #758 defect counted directly, and it may only fall."
@@ -46,20 +45,20 @@ capability_routing_ratchet
     measure memorized_capability_cues
     value 0
     direction down
-    how "cue phrase rows in data/seed/agentic-tool-capabilities.lino"
-    note "placeholder target, not a measurement; the measured start is 280"
+    how "quoted cue values below cues blocks in data/seed/agentic-tool-capabilities.lino"
+    note "measured 280 on 2026-09-16; this downward debt remains open"
   ceiling
     measure intent_routing_phrase_rows
-    value 0
+    value 354
     direction down
     how "phrase and keyword rows of data/seed/intent-routing.lino"
-    note "placeholder target, not a measurement; the measured start is 477, of which plan 10 leaf 13 removed the three reported literals"
+    note "measured 354 on 2026-09-16; 477 was the file's former line count, not this measure"
   ceiling
     measure planner_route_arms
-    value 0
+    value 58
     direction down
-    how "named routing arms in src/agentic_coding/planner.rs"
-    note "placeholder target, not a measurement; the measured start is 45"
+    how "top-level conditional route arms in plan_chat_step_routes and plan_settled_routes in src/agentic_coding/planner.rs"
+    note "measured 58 on 2026-09-16 by the gate's source-order cascade census; 45 was an unimplemented plan estimate"
   ceiling
     measure frontier_prompts_open
     value 0

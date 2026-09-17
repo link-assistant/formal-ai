@@ -1,4 +1,4 @@
-//! Issue #1138 B12, plan 12 leaf 17: twenty prompts, five languages.
+//! Issue #1138 B12, plan 12 leaf 17: selection corpora in five languages.
 //!
 //! Ten moonshot-shaped prompts (#453) that must split into exactly two children
 //! with a reported imbalance — five in the plan's wording and five held-out
@@ -8,10 +8,47 @@
 //!
 //! Written before the leaves that make them pass (plan 14 wave T).
 
+use std::collections::{BTreeMap, BTreeSet};
+use std::fs;
+use std::path::{Path, PathBuf};
+
+use formal_ai::relative_meta_logic::SourceTier;
 use formal_ai::selection_heuristics::{
-    ActionCost, CandidateScore, ContradictionDerivation, SplitRefusal, balanced_split,
-    contradictions_in, split_refusal,
+    ActionCost, ApproachObservation, CandidateScore, ContradictionDerivation, SplitRefusal,
+    balanced_split, combine_approaches, contradictions_in, split_refusal,
 };
+
+fn repo_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
+}
+
+fn lino_records(text: &str) -> Vec<Vec<&str>> {
+    let mut records = Vec::new();
+    let mut current = Vec::new();
+    for line in text
+        .lines()
+        .filter(|line| !line.trim().is_empty() && !line.trim_start().starts_with('#'))
+    {
+        if !line.starts_with(char::is_whitespace) && !current.is_empty() {
+            records.push(std::mem::take(&mut current));
+        }
+        current.push(line);
+    }
+    if !current.is_empty() {
+        records.push(current);
+    }
+    records
+}
+
+fn lino_field(record: &[&str], wanted: &str) -> String {
+    record
+        .iter()
+        .filter_map(|line| line.trim().split_once(' '))
+        .find_map(|(name, value)| {
+            (name == wanted).then(|| value.trim().trim_matches('"').to_owned())
+        })
+        .unwrap_or_default()
+}
 
 /// The moonshot, in the plan's wording. Three obligations: an architecture that
 /// teaches itself to a stated score band, a benchmark for it, and an explanation
@@ -212,6 +249,79 @@ fn an_explicit_trade_off_requirement_moves_the_selection_value() {
 }
 
 #[test]
+fn the_twenty_task_triz_corpus_derives_each_declared_selection_relation() {
+    let text = fs::read_to_string(repo_root().join("data/benchmarks/selection-triz.lino"))
+        .expect("selection-triz.lino should be readable");
+    let records = lino_records(&text);
+    let cases = records
+        .iter()
+        .filter(|record| lino_field(record, "record_type") == "triz_selection_case")
+        .collect::<Vec<_>>();
+    assert_eq!(cases.len(), 20, "#901 requires a twenty-task corpus");
+    let languages = cases
+        .iter()
+        .map(|record| lino_field(record, "language"))
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        languages,
+        BTreeSet::from(["en", "es", "hi", "ru", "zh"].map(str::to_owned))
+    );
+    let mut per_language = BTreeMap::new();
+    let mut prompts = BTreeSet::new();
+    let mut failures = Vec::new();
+    for record in cases {
+        let language = lino_field(record, "language");
+        *per_language.entry(language.clone()).or_insert(0_usize) += 1;
+        let prompt = lino_field(record, "prompt");
+        assert!(
+            prompts.insert(prompt.clone()),
+            "every TRIZ task is distinct"
+        );
+        let expected = lino_field(record, "expected");
+        let link = contradictions_in(&tied_pair(), &prompt)
+            .into_iter()
+            .next()
+            .expect("the tied candidates form one technical contradiction");
+        let observed = match link.derivation {
+            ContradictionDerivation::Underivable { .. } => "unresolved",
+            ContradictionDerivation::RequirementClauses { .. }
+                if link.selection_basis_points < 5_000 =>
+            {
+                "toward_brevity"
+            }
+            ContradictionDerivation::RequirementClauses { .. }
+                if link.selection_basis_points > 5_000 =>
+            {
+                "toward_completeness"
+            }
+            ContradictionDerivation::RequirementClauses { .. } => "midpoint",
+            ContradictionDerivation::SeededRecord { .. } => "seeded",
+        };
+        if observed != expected {
+            failures.push(format!(
+                "{language}: {prompt:?} expected {expected}, observed {observed} at {}",
+                link.selection_basis_points
+            ));
+        }
+    }
+    assert_eq!(
+        per_language,
+        BTreeMap::from([
+            (String::from("en"), 4),
+            (String::from("es"), 4),
+            (String::from("hi"), 4),
+            (String::from("ru"), 4),
+            (String::from("zh"), 4),
+        ]),
+        "each language contributes four independent trade-off shapes"
+    );
+    assert!(
+        failures.is_empty(),
+        "TRIZ selection relations must be derived from the requirement clauses: {failures:?}"
+    );
+}
+
+#[test]
 fn a_single_clause_moonshot_is_reported_as_underivable_not_atomic() {
     // #453's original prompt, in five languages. One clause, so there is no
     // boundary to cut at; until plan 01's lookup of published decomposition
@@ -245,5 +355,64 @@ fn a_single_clause_moonshot_is_reported_as_underivable_not_atomic() {
         failures.is_empty(),
         "a single-clause moonshot is reported as underivable with its blocker, which is \
          the honest #453 limit until plan 01 lands: {failures:?}"
+    );
+}
+
+#[test]
+fn equivalent_approaches_merge_without_losing_their_first_historical_source() {
+    let combined = combine_approaches(&[
+        ApproachObservation {
+            approach: String::from("Search the trusted source registry first."),
+            source: String::from("history:turn-2"),
+            tier: SourceTier::IndependentCorroboration,
+            semantic_terms: vec![String::from("method:trusted_source_walk")],
+        },
+        ApproachObservation {
+            approach: String::from("Сначала обойди реестр доверенных источников."),
+            source: String::from("history:turn-5"),
+            tier: SourceTier::OriginalFirstParty,
+            semantic_terms: vec![String::from("method:trusted_source_walk")],
+        },
+        ApproachObservation {
+            approach: String::from("Generate and refute a finite hypothesis set."),
+            source: String::from("history:turn-7"),
+            tier: SourceTier::IndependentCorroboration,
+            semantic_terms: vec![String::from("method:refutation_search")],
+        },
+    ]);
+    let projection = combined
+        .iter()
+        .map(|approach| {
+            (
+                approach.approach.as_str(),
+                approach.first_source.as_str(),
+                approach
+                    .sources
+                    .iter()
+                    .map(String::as_str)
+                    .collect::<Vec<_>>(),
+            )
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(
+        projection,
+        [
+            (
+                "Search the trusted source registry first.",
+                "history:turn-2",
+                vec!["history:turn-2", "history:turn-5"],
+            ),
+            (
+                "Generate and refute a finite hypothesis set.",
+                "history:turn-7",
+                vec!["history:turn-7"],
+            ),
+        ]
+    );
+    assert!(
+        combined
+            .iter()
+            .all(|approach| approach.approach_id.starts_with("statement_")),
+        "every distinct approach remains content-addressable"
     );
 }

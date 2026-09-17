@@ -1,11 +1,8 @@
 #!/usr/bin/env rust-script
 //! Named debt only shrinks.
 //!
-//! `data/meta/debt-ratchet.lino` names four measured ceilings, each one a thing
-//! the architect has asked to be removed: handler files still awaiting
-//! migration to data, pending migrations in the ledger, per-case literal string
-//! predicates standing in for a rule, and rows of the hardcoded-language
-//! allowlist (R379).
+//! `data/meta/debt-ratchet.lino` names measured ceilings, each one a thing the
+//! architect has asked to be removed or generalized.
 //!
 //! Two rules, both in one required command:
 //!
@@ -43,9 +40,14 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+#[allow(dead_code)] // This consumer needs only the live structural gap count.
+#[path = "language-parity-lib.rs"]
+mod language_parity;
+
 const LEDGER: &str = "data/meta/debt-ratchet.lino";
 const HANDLER_LEDGER: &str = "data/meta/handler-migration-ledger.lino";
 const ALLOWLIST: &str = "scripts/hardcoded-language-allowlist.txt";
+const AUTHORED_LADDER_RULES: &str = "experiments/issue_1028_agent_cli_ladder/rules";
 /// The one census of handler source files in the tree (issue #1138 B9, plan 09
 /// leaf 3).
 ///
@@ -161,7 +163,8 @@ fn relative(root: &Path, path: &Path) -> String {
         .replace('\\', "/")
 }
 
-/// Every handler source the core-boundary ledger covers, minus bookkeeping.
+/// Every specialized handler source the core-boundary ledger covers, minus
+/// bookkeeping and generic interpreters promoted into the minimal core.
 ///
 /// The one definition, read from data. `check-minimal-core-boundary.rs` proves
 /// these rows are exactly the files on disk, so counting rows and counting files
@@ -181,7 +184,7 @@ fn handler_source_files(root: &Path) -> Result<Vec<String>, String> {
             && let Some(source) = path.take()
         {
             let name = source.rsplit('/').next().unwrap_or("");
-            if unquote(rest) != "delete" && !BOOKKEEPING.contains(&name) {
+            if unquote(rest) == "migrate" && !BOOKKEEPING.contains(&name) {
                 files.push(source);
             }
         }
@@ -224,24 +227,45 @@ fn promotion_predicates(root: &Path) -> Result<u64, String> {
     Ok(text.matches("\"handler:").count() as u64)
 }
 
-/// Method names the dispatcher special-cases: the `name == "…"` comparisons plus
-/// the prelude match arms, which are the same thing written two ways.
+/// Method names the dispatcher special-cases: direct `name == "…"`
+/// comparisons or a name-based runtime match. Typed attribute matches do not
+/// count: their method-to-runtime association lives in seed data.
 fn dispatch_name_special_cases(root: &Path) -> Result<u64, String> {
     let text = read(root, "src/meta_method_dispatch.rs")?;
     let comparisons = text.matches("name == \"").count();
-    let prelude = between(&text, "fn try_prelude_method", "_ => return None")
+    let name_matches = between(&text, "match name", "_ => return None")
         .matches("\" =>")
         .count();
-    Ok((comparisons + prelude) as u64)
+    Ok((comparisons + name_matches) as u64)
 }
 
 /// Handler names the browser worker states as literals rather than deriving from
 /// `data/seed/handler-precedence.lino`.
 fn worker_sync_handler_literals(root: &Path) -> Result<u64, String> {
-    let text = read(root, "src/web/worker/formal_ai_worker_20.js")?;
-    Ok(between(&text, "const syncHandlers = [", "\n  ];")
-        .matches("name: \"")
-        .count() as u64)
+    let worker_dir = root.join("src/web/worker");
+    let mut dispatch_sources = Vec::new();
+    for entry in
+        fs::read_dir(&worker_dir).map_err(|error| format!("{}: {error}", worker_dir.display()))?
+    {
+        let entry = entry.map_err(|error| format!("{}: {error}", worker_dir.display()))?;
+        let path = entry.path();
+        if path.extension().is_none_or(|extension| extension != "js") {
+            continue;
+        }
+        let text =
+            fs::read_to_string(&path).map_err(|error| format!("{}: {error}", path.display()))?;
+        if text.contains("function synchronousHandlerCandidates") {
+            dispatch_sources.push((path, text));
+        }
+    }
+    if dispatch_sources.len() != 1 {
+        return Err(format!(
+            "expected exactly one synchronousHandlerCandidates owner under src/web/worker, found {}",
+            dispatch_sources.len()
+        ));
+    }
+    let text = &dispatch_sources[0].1;
+    Ok(text.matches("name: \"").count() as u64)
 }
 
 /// Routing decisions served by the link store rather than the seed tables.
@@ -260,6 +284,38 @@ fn store_read_share(root: &Path) -> Result<u64, String> {
         total += text.matches("from_store(").count() as u64;
     }
     Ok(total)
+}
+
+/// Consolidated documentation test suites directly below `tests/unit`.
+///
+/// This is the same filesystem census as Plan 11's count test: files and
+/// directories both count because either one is a top-level Rust suite surface.
+fn docs_requirements_suites(root: &Path) -> Result<u64, String> {
+    let entries =
+        fs::read_dir(root.join("tests/unit")).map_err(|error| format!("tests/unit: {error}"))?;
+    Ok(entries
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_name().to_string_lossy().starts_with("docs_"))
+        .count() as u64)
+}
+
+/// Exact per-leaf edit documents are useful historical evidence, but each is
+/// also a memoized benchmark answer. Count the directory structurally so a
+/// rename or deletion lowers the reviewed debt instead of leaving a stale
+/// literal in a test.
+fn authored_ladder_rules(root: &Path) -> Result<u64, String> {
+    let directory = root.join(AUTHORED_LADDER_RULES);
+    let entries = fs::read_dir(&directory)
+        .map_err(|error| format!("{}: {error}", directory.display()))?;
+    Ok(entries
+        .filter_map(Result::ok)
+        .filter(|entry| {
+            entry
+                .path()
+                .extension()
+                .is_some_and(|extension| extension == "lino")
+        })
+        .count() as u64)
 }
 
 /// Measure every value in a checkout.
@@ -290,8 +346,14 @@ fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     measured.insert("handler_migration_pending".to_owned(), pending);
     measured.insert("literal_predicates".to_owned(), literals);
     measured.insert("hardcoded_language_rows".to_owned(), rows);
-    measured.insert("try_dispatch_entries".to_owned(), try_dispatch_entries(root)?);
-    measured.insert("promotion_predicates".to_owned(), promotion_predicates(root)?);
+    measured.insert(
+        "try_dispatch_entries".to_owned(),
+        try_dispatch_entries(root)?,
+    );
+    measured.insert(
+        "promotion_predicates".to_owned(),
+        promotion_predicates(root)?,
+    );
     measured.insert(
         "dispatch_name_special_cases".to_owned(),
         dispatch_name_special_cases(root)?,
@@ -301,6 +363,18 @@ fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
         worker_sync_handler_literals(root)?,
     );
     measured.insert("store_read_share".to_owned(), store_read_share(root)?);
+    measured.insert(
+        "docs_requirements_suites".to_owned(),
+        docs_requirements_suites(root)?,
+    );
+    measured.insert(
+        "authored_ladder_rules".to_owned(),
+        authored_ladder_rules(root)?,
+    );
+    measured.insert(
+        "language_parity_gaps".to_owned(),
+        language_parity::current_gap_count(root)?,
+    );
     Ok(measured)
 }
 
@@ -546,6 +620,14 @@ mod tests {
         assert_eq!(parsed.ceilings["handler_files"], 2);
     }
 
+    #[test]
+    fn authored_ladder_rules_are_measured_from_the_live_directory() {
+        assert_eq!(
+            authored_ladder_rules(&repo_root()).expect("authored ladder rule census"),
+            32
+        );
+    }
+
     /// The division of `src` into a privileged part and the rest is withdrawn
     /// (VISION.md, docs/architect-notes/), so the ledger names no such path and
     /// no measure counts Rust lines. All of `src/` serves the meta algorithm.
@@ -628,15 +710,27 @@ mod tests {
         let parsed = parse_ratchet(text).expect("the sample parses");
         assert!(parsed.upward.contains("store_read_share"));
 
-        let below = check_measured(&parsed, &BTreeMap::from([("store_read_share".to_owned(), 2)]));
+        let below = check_measured(
+            &parsed,
+            &BTreeMap::from([("store_read_share".to_owned(), 2)]),
+        );
         assert_eq!(below.len(), 1, "{below:?}");
         assert!(below[0].contains("measured 2, ceiling 3"), "{below:?}");
 
-        let above = check_measured(&parsed, &BTreeMap::from([("store_read_share".to_owned(), 4)]));
+        let above = check_measured(
+            &parsed,
+            &BTreeMap::from([("store_read_share".to_owned(), 4)]),
+        );
         assert_eq!(above.len(), 1, "{above:?}");
         assert!(above[0].contains("improved from 3 to 4"), "{above:?}");
 
-        assert!(check_measured(&parsed, &BTreeMap::from([("store_read_share".to_owned(), 3)])).is_empty());
+        assert!(
+            check_measured(
+                &parsed,
+                &BTreeMap::from([("store_read_share".to_owned(), 3)])
+            )
+            .is_empty()
+        );
     }
 
     /// Plan 00 §6.2's one permitted rise, and the reason it cannot become a
@@ -664,9 +758,10 @@ mod tests {
         );
 
         let mut unexplained = ratchet(10, 46);
-        unexplained
-            .notes
-            .insert("handler_files".to_owned(), "corrected undercount.".to_owned());
+        unexplained.notes.insert(
+            "handler_files".to_owned(),
+            "corrected undercount.".to_owned(),
+        );
         assert_eq!(
             check_against_previous(&ratchet(10, 42), &unexplained).len(),
             1,

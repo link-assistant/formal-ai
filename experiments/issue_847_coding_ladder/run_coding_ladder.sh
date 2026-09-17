@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Drive the issue #847 coding-task ladder through `formal-ai with agent`, i.e.
-# the exact path Hive Mind uses: Hive Mind -> Agent CLI -> formal-ai serve
-# --agent-mode (link-assistant/hive-mind#2059).
+# Drive the issue #847 coding-task ladder through `formal-ai solve`. Each task
+# is authored in an isolated clone at one observed commit; stdout is the sole
+# patch transport back to this benchmark tree.
 #
 # The point is to find the complexity level at which Formal AI can actually
 # complete a coding task, by starting at "solve this issue and open a PR" and
@@ -19,17 +19,19 @@
 #   ONLY      Substring filter on task id (e.g. ONLY=L4, ONLY=L1.solve)
 #   TIMEOUT   Per-task seconds (default: 300)
 #
-# Tasks run against the REAL repository and every edit is reverted with
-# `git checkout -- .` before the next task, so the tree must be clean to start.
+# Each solve runs in an isolated exact-commit clone. The harness checks and
+# explicitly applies the stdout diff to the ambient benchmark tree so the
+# existing task verifier observes it, then reverts that tree before the next
+# task. The ambient tree must therefore be clean to start.
 #
 # A task PASSES when its `verify` shell snippet exits 0 AND, where
-# `expect_answer` is present, that string appears in the agent's output.
+# `expect_answer` is present, that string appears in the solve output.
 # Verification is by observed effect, never by the agent's narration --
 # "I created the file" with no file is a FAIL.
 #
 # Exits 0 always: measurement harness, not a CI gate. `experiments/` is
 # excluded from any-code-changed (scripts/detect-code-changes.rs) and from
-# shellcheck (.github/workflows/release.yml), though note issue #846: that
+# ShellCheck (.github/workflows/release.yml), though note issue #846: that
 # exclusion is bypassed on direct pushes to main.
 
 set -uo pipefail
@@ -60,7 +62,6 @@ if ! command -v python3 >/dev/null 2>&1; then
 fi
 
 echo "binary:  $($BIN --version 2>/dev/null)"
-echo "agent:   $(agent --version 2>/dev/null || echo 'not on PATH')"
 echo "repo:    $ROOT"
 echo
 
@@ -76,12 +77,12 @@ tasks = [t for t in all_tasks if not only or only in t["id"]]
 def reset_repo():
     """Every task starts from a clean tree so results are independent.
 
-    Tasks operate on the REAL repository (that is the point -- we teach Formal
-    AI on work we actually need done), so any edit an agent makes must be
-    reverted before the next task runs. Untracked files created by a task are
-    removed too, but `experiments/` is preserved so this harness cannot delete
-    itself mid-run -- which the checkout must honour as well, or a filtered
-    re-run (ONLY=...) silently reverts the results of the previous full run.
+    Each solve authors in an exact-commit clone, then this harness transports
+    its stdout patch to the ambient benchmark tree for the existing verifier.
+    That observed edit must be reverted before the next task. Untracked files
+    created by a task are removed too, but `experiments/` is preserved so this
+    harness cannot delete itself mid-run -- which the checkout must honour as
+    well, or a filtered re-run (ONLY=...) silently reverts the prior full run.
     """
     subprocess.run(["git", "checkout", "--", ".", ":(exclude)experiments"],
                    cwd=root, capture_output=True)
@@ -89,7 +90,7 @@ def reset_repo():
                    cwd=root, capture_output=True)
 
 def reclaim_agent_scratch():
-    """Delete the ~200 MB scratch home each `formal-ai with agent` run creates.
+    """Delete any scratch home created by the authoring runtime.
 
     The agent CLI copies its whole configuration into
     `$TMPDIR/formal-ai-agent-home-config-<pid>-<nanos>/` and never removes it.
@@ -183,6 +184,9 @@ for task in tasks:
     reset_repo()
     expected, expectation_error = resolve_expected_answer(task)
     snapshot_branches()
+    base_commit = subprocess.run(["git", "rev-parse", "HEAD"],
+                                 cwd=root, capture_output=True, text=True,
+                                 check=True).stdout.strip()
     rust_targets = re.findall(
         r'\b((?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"],
     )
@@ -190,24 +194,56 @@ for task in tasks:
         target: os.path.exists(os.path.join(root, target))
         for target in rust_targets
     }
-    cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]
-    try:
-        proc = subprocess.run(
-            cmd, cwd=root, capture_output=True, text=True, timeout=timeout_s,
+    with tempfile.TemporaryDirectory(prefix=f"formal-ai-ladder-{task['id']}-") as evidence_dir:
+        cmd = [binary, "solve", "--repository", ".", "--base-commit",
+               base_commit, "--task", task["prompt"], "--evidence", evidence_dir]
+        try:
+            proc = subprocess.run(
+                cmd, cwd=root, capture_output=True, text=True, timeout=timeout_s,
+            )
+            patch = proc.stdout
+            output = proc.stdout + proc.stderr
+            timed_out = False
+        except subprocess.TimeoutExpired as exc:
+            patch = ""
+            output = (exc.stdout or "") + (exc.stderr or "")
+            if isinstance(output, bytes):
+                output = output.decode("utf-8", "replace")
+            timed_out = True
+    patch_applied = False
+    if patch.strip():
+        descriptor, patch_path = tempfile.mkstemp(
+            prefix="formal-ai-ladder-", suffix=".patch",
         )
-        output = proc.stdout + proc.stderr
-        timed_out = False
-    except subprocess.TimeoutExpired as exc:
-        output = (exc.stdout or "") + (exc.stderr or "")
-        if isinstance(output, bytes):
-            output = output.decode("utf-8", "replace")
-        timed_out = True
+        os.close(descriptor)
+        try:
+            with open(patch_path, "w") as patch_file:
+                patch_file.write(patch)
+            checked = subprocess.run(
+                ["git", "apply", "--check", patch_path],
+                cwd=root, capture_output=True, text=True,
+            )
+            if checked.returncode == 0:
+                applied = subprocess.run(
+                    ["git", "apply", "--whitespace=nowarn", patch_path],
+                    cwd=root, capture_output=True, text=True,
+                )
+                patch_applied = applied.returncode == 0
+                if not patch_applied:
+                    structural = ("solve stdout passed git apply --check but failed to apply: "
+                                  + applied.stderr.strip())
+            else:
+                structural = "solve stdout is not an applicable diff: " + checked.stderr.strip()
+        finally:
+            os.unlink(patch_path)
     reclaim_agent_scratch()
 
     verified = subprocess.run(
         ["/bin/sh", "-c", task.get("verify", "true")],
         cwd=root, capture_output=True, text=True,
     ).returncode == 0
+    if patch.strip() and not patch_applied:
+        verified = False
 
     # Structural sanity: a substring `verify` cannot tell real code from the
     # prompt echoed back into the file. Observed failure mode -- asked for a
@@ -287,7 +323,6 @@ for task in tasks:
           and not not_measured and not expectation_error)
 
     reason = ""
-    structural = locals().get("structural", "")
     if not_measured:
         reason = "NOT MEASURED (server never started)"
     elif timed_out:

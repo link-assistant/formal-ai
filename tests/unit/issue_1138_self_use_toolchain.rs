@@ -111,6 +111,12 @@ fn a_prompt_that_names_a_toolchain_is_not_told_it_named_none() {
     let mut offenders = Vec::new();
     for (language, prompt) in family("named_toolchain_is_not_seen") {
         let answer = solve(&prompt).answer;
+        if language == "en" {
+            assert_eq!(
+                answer,
+                "This code was not tested, not compiled, not checked because no execution backend is configured.\n`Zig`"
+            );
+        }
         if !answer.to_lowercase().contains(&name) {
             let head: String = answer.trim().chars().take(140).collect();
             offenders.push(format!("{language}: {head}"));
@@ -125,32 +131,44 @@ fn a_prompt_that_names_a_toolchain_is_not_told_it_named_none() {
     );
 }
 
-/// **Wave F observation, plan 06.** The workspace handed to the CLI held
-/// `gleam.toml` and `src/sum_to_ten.gleam`. Neither was opened. English turned
-/// the prompt into a filename slug and looked for a file by that name in `$HOME`;
-/// Russian and Spanish web-searched and landed on **C++** compiler install guides
-/// (`gcc.gnu.org`, `coddy.tech/docs/es/cpp/install-cpp`).
-///
-/// A plausible wrong compiler arrived at by search is the failure the
-/// prerequisite ledger exists to prevent. Nothing was installed, which is
-/// correct; nothing was discovered either, which is the defect.
+/// The compiler name exists only in the separately captured project. A plain
+/// `solve(prompt)` call has none of those bytes, so its honest result is a typed
+/// workspace handoff and no guessed compiler. Because the request names no
+/// path or manifest, the first information-gathering action is `list_dir`; only
+/// observed directory contents can justify a later `read_file`. The executable
+/// discovery and recovery path with a workspace is covered by
+/// `issue_1138_recovery_live`.
 #[test]
-fn a_missing_compiler_is_discovered_from_the_project_not_from_a_search() {
+fn a_missing_compiler_is_never_guessed_without_project_evidence() {
     let name = field("missing_compiler_is_not_discovered", "must_name").to_lowercase();
     let mut offenders = Vec::new();
     for (language, prompt) in family("missing_compiler_is_not_discovered") {
-        let answer = solve(&prompt).answer;
+        let response = solve(&prompt);
+        let answer = response.answer;
+        if language == "en" {
+            assert_eq!(
+                answer,
+                "This request routes to the `list_dir` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it."
+            );
+        }
         if is_a_search_instead_of_an_answer(&answer) {
             offenders.push(format!("{language}: web-searched for a compiler"));
         }
-        if !answer.to_lowercase().contains(&name) {
-            offenders.push(format!("{language}: never named `{name}`"));
+        if response.intent != "capability_gap" || !answer.contains("`list_dir`") {
+            let head: String = answer.chars().take(140).collect();
+            offenders.push(format!(
+                "{language}: no typed workspace handoff (intent {}, answer {head:?})",
+                response.intent
+            ));
+        }
+        if answer.to_lowercase().contains(&name) {
+            offenders.push(format!("{language}: guessed unseen compiler `{name}`"));
         }
     }
     assert!(
         offenders.is_empty(),
-        "plan 06: the program name is read from the observed failure and the project, \
-         never guessed from a search result.\n{}",
+        "plan 06: without project bytes the program name is neither guessed nor \
+         web-searched; chat requests a workspace-capable client.\n{}",
         offenders.join("\n")
     );
 }
@@ -174,6 +192,12 @@ fn an_ask_to_run_code_is_not_answered_by_reading_about_it() {
     let mut offenders = Vec::new();
     for (language, prompt) in family("run_this_without_a_runtime") {
         let answer = solve(&prompt).answer;
+        if language == "en" {
+            assert_eq!(
+                answer,
+                "This code was not tested, not compiled, not checked because no execution backend is configured."
+            );
+        }
         assert!(
             !answer.contains(&forbidden),
             "plan 06: `{forbidden}` may not appear without an observation record ({language}). \
@@ -181,7 +205,9 @@ fn an_ask_to_run_code_is_not_answered_by_reading_about_it() {
              fabrication, not a known gap.\nAnswer:\n{answer}"
         );
         if is_a_search_instead_of_an_answer(&answer) {
-            offenders.push(format!("{language}: web-searched the documentation instead"));
+            offenders.push(format!(
+                "{language}: web-searched the documentation instead"
+            ));
         }
     }
     assert!(

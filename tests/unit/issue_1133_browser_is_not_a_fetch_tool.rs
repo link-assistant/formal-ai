@@ -11,8 +11,8 @@
 use formal_ai::ChatMessage;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 
-/// The tool set the Kotlin run advertised, shortened to the pair that decides
-/// the routing: the client's fetch tool and one browser-automation tool.
+/// The tool set the Kotlin run advertised, shortened to the capabilities that
+/// decide the routing: its shell and fetch tools plus one browser tool.
 const TOOLS: [&str; 4] = [
     "Bash",
     "Write",
@@ -20,15 +20,17 @@ const TOOLS: [&str; 4] = [
     "mcp__playwright__browser_click",
 ];
 
-/// A work item is read with the client's fetch tool, never with the browser.
+/// A work item is read as structured source through `gh`, never interpreted by
+/// a model-backed fetch tool or clicked through browser automation.
 #[test]
-fn a_work_item_is_read_with_webfetch_and_not_with_a_browser_click() {
+fn a_work_item_is_read_with_gh_and_not_with_a_model_or_browser() {
     let messages = vec![ChatMessage::user(
         "Resolve the GitHub issue at https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1 in this repository.",
     )];
     match plan_chat_step(&messages, &TOOLS).expect("a work item has a plan") {
         AgenticPlan::ToolCalls(calls) => {
-            assert_eq!(calls[0].tool, "WebFetch", "{calls:?}");
+            assert_eq!(calls[0].tool, "Bash", "{calls:?}");
+            assert!(calls[0].arguments.contains("gh issue view"), "{calls:?}");
         }
         AgenticPlan::Final(answer) => panic!("expected the work item to be read, got {answer:?}"),
     }

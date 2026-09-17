@@ -87,37 +87,74 @@ fn promotion_conditions_use_the_handler_rules_grammar() {
             "promotion `{}` names no reason; an unexplained hoist is an omission",
             row.handler
         );
-        for keyword in row.when.split_whitespace() {
-            let structural = matches!(
-                keyword,
-                "all"
-                    | "any"
-                    | "none"
-                    | "role"
-                    | "role_prefix"
-                    | "role_padded"
-                    | "role_lead"
-                    | "word"
-                    | "substring"
-                    | "route_exact"
-                    | "history_role"
-                    | "shape"
-                    | "of"
-                    | "cleaned"
-                    | "trimmed"
-                    | "lowercase"
-                    | "padded"
-            );
-            let operand = keyword
-                .chars()
-                .all(|character| character.is_ascii_lowercase() || character == '_');
-            assert!(
-                structural || operand,
-                "promotion `{}` uses `{keyword}`, which is not in the handler-rules grammar",
+        let document = format!("handler_promotions\n{}", row.to_links_notation());
+        promotions_from(&document).unwrap_or_else(|error| {
+            panic!(
+                "promotion `{}` must round-trip through the shared condition parser: {error}",
                 row.handler
-            );
+            )
+        });
+    }
+
+    let malformed = "handler_promotions\n  promotion bad\n    rank 1\n    when\n      invented_predicate value\n    because invalid\n";
+    assert!(
+        promotions_from(malformed).is_err(),
+        "an unknown condition must be rejected by the handler-rules parser"
+    );
+}
+
+#[test]
+fn a_seeded_promotion_reads_a_phrasal_verb_around_its_object() {
+    let promoted = promoted_relevants(
+        &promotions(),
+        "Break the customer import rewrite into sub-tasks.",
+    );
+    assert!(
+        promoted.contains(&"handler:task_decomposition".to_owned()),
+        "the data-owned promotion must preserve the lexicon's discontinuous `break into` \
+         meaning: {promoted:?}"
+    );
+}
+
+/// A semantic form with an open slot is still a seeded role surface. The
+/// promotion evaluator must interpret that slot instead of looking for a
+/// literal ellipsis, or generic source retrieval can steal a locally
+/// derivable, checkable task before the verifiable-task interpreter runs.
+#[test]
+fn slot_backed_expectations_promote_the_verifiable_interpreter() {
+    let corpus =
+        fs::read_to_string(repo_root().join("data/benchmarks/verifiable-task-paraphrases.lino"))
+            .expect("the held-out verifiable-task corpus should be readable");
+    let mut prompts = Vec::new();
+    for line in corpus.lines() {
+        let trimmed = line.trim();
+        if let Some(raw) = trimmed.strip_prefix("prompt ") {
+            let prompt = raw
+                .trim()
+                .strip_prefix('"')
+                .and_then(|value| value.strip_suffix('"'))
+                .unwrap_or(raw)
+                .replace("\"\"", "\"");
+            prompts.push(prompt);
         }
     }
+    assert_eq!(
+        prompts.len(),
+        30,
+        "the six-by-five corpus must stay complete"
+    );
+
+    let rows = promotions();
+    let mut missed = Vec::new();
+    for prompt in prompts {
+        if !promoted_relevants(&rows, &prompt).contains(&"handler:verifiable_task".to_owned()) {
+            missed.push(prompt);
+        }
+    }
+    assert!(
+        missed.is_empty(),
+        "every seeded checkable expectation must promote verifiable_task: {missed:?}"
+    );
 }
 
 #[test]
@@ -125,8 +162,9 @@ fn no_handler_name_appears_in_prompt_relevants() {
     // Plan 09 leaf 11 deletes the nineteen-entry array and the
     // `contains("в ")` / `contains(':')` glue; after it, the file evaluates the
     // seed and keeps no handler names at all.
-    let source = fs::read_to_string(repo_root().join("src/intent_formalization/prompt_relevants.rs"))
-        .expect("prompt_relevants.rs readable");
+    let source =
+        fs::read_to_string(repo_root().join("src/intent_formalization/prompt_relevants.rs"))
+            .expect("prompt_relevants.rs readable");
     let literals = source.matches("\"handler:").count();
     assert_eq!(
         literals, 0,

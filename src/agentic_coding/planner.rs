@@ -375,8 +375,8 @@ pub(super) fn plan_settled_routes(
         && let Some(obligations) = task_obligations::obligations(task)
     {
         match task_obligations::next_step(task, messages) {
-            Some(task_obligations::ObligationStep::Observe(node))
-            | Some(task_obligations::ObligationStep::Decompose(node)) => {
+            Some(task_obligations::ObligationStep::Observe(node) |
+task_obligations::ObligationStep::Decompose(node)) => {
                 // Observable artifact nodes re-enter the ordinary composer;
                 // underivable nodes have already been recursively split by
                 // `ObligationNode::build`. If no executable plan can be
@@ -514,6 +514,16 @@ pub(super) fn plan_settled_routes(
     // request that somehow names both.
     if question_catalog::is_question_catalog_task(task) {
         return Some(plan_question_catalog_step(messages, tool_names));
+    }
+    // A request to inspect named files and report what it finds is a file
+    // analysis, not a request to open a repository issue. In particular, a
+    // `.github/...` path supplies the report router's otherwise-valid subject
+    // word. Let the typed read + audit object govern the output verb before the
+    // conversation-level report wizard sees it (issue #1138 self-use).
+    if let Some(file_task) = file_read_task_for(task)
+        && file_task.is_analysis()
+    {
+        return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
     // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
     // This is a conversation state machine: after the initial report intent it

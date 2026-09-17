@@ -23,6 +23,7 @@ use super::{
 /// Structural summaries still inspect oversized files, but sending a large
 /// single-line trace through the link-network parser has superlinear cost and
 /// can make a seeded validation draw take hours.
+#[cfg(feature = "meta-language")]
 const MAX_META_LANGUAGE_PARSE_BYTES: usize = 32 * 1024;
 
 /// Bound free-form repository evidence before sentence formalization.
@@ -487,6 +488,7 @@ fn normalize_language_label(label: &str) -> String {
     .to_owned()
 }
 
+#[cfg(feature = "meta-language")]
 fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
     match format {
         "rust" => Some("rust"),

@@ -74,13 +74,14 @@ fn detached_memory_upgrade_container_is_automatically_removed() {
 
 /// The authorship route is what lets Formal AI's work ride inside an ordinary
 /// pull request instead of needing one of its own, so its contract is pinned
-/// where a rewrite has to notice it: the three trailers the self-hosting metric
+/// where a rewrite has to notice it: the four trailers the self-hosting metric
 /// reads, an evidence directory carrying both markers that metric looks for, and
 /// a workspace the Agent CLI cannot see its own logs through.
 #[test]
 fn the_authorship_route_commits_the_trailers_the_release_gate_reads() {
     let script = repository_file("scripts/author-change-with-formal-ai.sh");
     assert!(script.contains("Formal-AI-Session: %s"));
+    assert!(script.contains("Formal-AI-Model: %s"));
     assert!(script.contains("Formal-AI-Evidence: %s"));
     assert!(script.contains("Formal-AI-Pull-Request: %s"));
     assert!(

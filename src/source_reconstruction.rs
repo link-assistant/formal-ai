@@ -16,6 +16,7 @@
 
 extern crate alloc;
 
+use alloc::boxed::Box;
 use alloc::format;
 use alloc::string::{String, ToString};
 use alloc::vec;
@@ -34,7 +35,7 @@ const OBSERVED_KIND: &str = "source_cache_observed";
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ReconstructionOutcome {
     /// The payload was refetched and its hash matches the retained fingerprint.
-    Recovered { record: Evidence },
+    Recovered { record: Box<Evidence> },
     /// The payload was refetched and its hash differs: today's page is not the
     /// historical evidence. The stub is kept and the difference is reported.
     Diverged {
@@ -113,14 +114,14 @@ fn execute_edge(
             };
         }
         return ReconstructionOutcome::Recovered {
-            record: recovery_record(
+            record: Box::new(recovery_record(
                 stub,
                 &edge,
                 &retained,
                 retained_length(stub).unwrap_or_else(|| provenance_length(stub)),
                 ObservationKind::FileBytes,
                 EvidenceSource::Harness,
-            ),
+            )),
         };
     }
 
@@ -129,14 +130,14 @@ fn execute_edge(
     // address it was authorized to reacquire. That is a symbolic check, not a
     // claim about a process or a harness, and the record says so.
     ReconstructionOutcome::Recovered {
-        record: recovery_record(
+        record: Box::new(recovery_record(
             stub,
             &edge,
             &retained,
             retained_length(stub).unwrap_or_else(|| provenance_length(stub)),
             ObservationKind::SymbolicCheck,
             EvidenceSource::Engine,
-        ),
+        )),
     }
 }
 
@@ -168,7 +169,7 @@ fn recovery_record(
     let mut record = Evidence::observed(command, argv, None, &[], kind, source);
     record.observed_output_sha256 = retained_sha256.to_string();
     record.observed_byte_length = observed_byte_length;
-    record.for_need = stub.id.clone();
+    record.for_need.clone_from(&stub.id);
     record.produced_by = String::from("source_reconstruction");
     record.source_ids = vec![edge.to_string()];
     record

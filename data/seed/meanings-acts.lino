@@ -350,6 +350,8 @@ meanings
       surface
         text "escríbeme"
       surface
+        text "escrib"
+      surface
         text "texto largo"
       surface
         text "texto"

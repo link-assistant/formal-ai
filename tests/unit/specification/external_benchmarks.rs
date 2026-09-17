@@ -178,6 +178,20 @@ fn recorded_scores_are_honest_passed_over_total() {
             suite.minimum_pass_count, best,
             "{id}: minimum_pass_count must equal the best measured pass count, not an invented floor"
         );
+        if let (Some(full_slice), Some(full_floor)) =
+            (suite.full_slice, suite.full_minimum_pass_count)
+        {
+            let full_best = results
+                .iter()
+                .filter(|result| result.suite == id && result.slice == full_slice)
+                .map(|result| result.passed)
+                .max()
+                .unwrap_or(0);
+            assert_eq!(
+                full_floor, full_best,
+                "{id}: the whole-suite floor is an independent measured series"
+            );
+        }
     }
 
     // The summary line is exactly the shape the acceptance criterion asks for.
@@ -359,6 +373,18 @@ fn recorded_upstream_pass_count_may_never_regress() {
         raised.suites()["gsm8k"].minimum_pass_count,
         7,
         "a stronger run must raise the floor"
+    );
+
+    raised.raise_floor("humaneval", 3, 164);
+    assert_eq!(
+        raised.suites()["humaneval"].full_minimum_pass_count,
+        Some(3),
+        "the whole-suite floor rises independently of the slice-20 floor"
+    );
+    assert_eq!(
+        raised.suites()["humaneval"].minimum_pass_count,
+        20,
+        "raising the whole-suite series must not rewrite the slice-20 series"
     );
 }
 
@@ -582,14 +608,28 @@ fn swebench_uses_the_pinned_official_test_harness() {
 
     let workflow = read(".github/workflows/external-benchmarks.yml");
     assert!(
-        workflow.contains(manifest::SWEBENCH_HARNESS_REF),
-        "the workflow must install an immutable revision of the official SWE-bench harness"
+        !workflow.contains("pip install") && !workflow.contains(manifest::SWEBENCH_HARNESS_REF),
+        "the workflow must leave harness acquisition to scoped prerequisite recovery"
     );
     assert!(
         workflow.contains("SWE_BENCH_SLICE"),
         "the container-heavy SWE-bench slice needs its own bounded setting"
     );
+    assert!(
+        workflow.contains("default: '23'") && workflow.contains("inputs.swebench_slice || '23'"),
+        "the scheduled and manually defaulted measurement width must cover the pinned 23-case dev split"
+    );
     let grader = read("src/external_benchmarks/grade.rs");
+    assert!(
+        grader.contains("recover_swebench_harness")
+            && grader.contains("recover_discovered_procedure")
+            && grader.contains("InstallGrant::AllowedExecution"),
+        "a missing harness must enter the scoped prerequisite recovery path instead of depending only on workflow pre-installation"
+    );
+    assert!(
+        grader.contains("SWEBENCH_HARNESS_REF"),
+        "runtime recovery must retain the immutable harness revision"
+    );
     assert!(
         grader.contains("workspace.join(\"dataset.json\")")
             && grader.contains(".arg(&dataset_path)"),
@@ -604,6 +644,45 @@ fn swebench_uses_the_pinned_official_test_harness() {
             && grader.contains("external_benchmark_swe_clear_logs_error")
             && grader.contains("fs::remove_dir_all(&prior_logs)"),
         "each solver/dataset combination must execute without reusing a stale evaluator report"
+    );
+}
+
+/// A measurement width is part of the series identity. Widening SWE-bench from
+/// one case to 23 cannot retroactively turn the honest 0/1 row into a floor for
+/// the different-width series.
+#[test]
+fn historical_ratchets_are_independent_at_each_measurement_width() {
+    let ledger = Ledger::parse(
+        r#"external_benchmark_suite_swebench_lite
+  record_type "external_benchmark_suite"
+  id "swebench_lite"
+  ratchet_slice "1"
+  minimum_pass_count "1"
+external_benchmark_result_swebench_lite_first
+  record_type "external_benchmark_result"
+  suite "swebench_lite"
+  date "2026-09-16"
+  slice "1"
+  passed "1"
+  failed "0"
+  total "1"
+  solver_version "fixture"
+external_benchmark_result_swebench_lite_wide
+  record_type "external_benchmark_result"
+  suite "swebench_lite"
+  date "2026-09-17"
+  slice "23"
+  passed "0"
+  failed "23"
+  total "23"
+  solver_version "fixture"
+"#,
+    )
+    .expect("the synthetic width fixture parses");
+    assert!(
+        ratchet::violations(&ledger).is_empty(),
+        "a 0/23 first result is not below the independent 1/1 historical floor: {:?}",
+        ratchet::violations(&ledger)
     );
 }
 
@@ -821,4 +900,29 @@ fn upstream_records_are_parsed_into_gradable_cases() {
     .expect("an empty patch is an honest model failure, not unavailable infrastructure");
     assert!(!outcomes[0].passed);
     assert!(outcomes[0].detail.contains("official SWE-bench criterion"));
+}
+
+#[test]
+fn swebench_harness_installation_is_default_deny_and_workspace_scoped() {
+    use formal_ai::prerequisite::install::InstallGrant;
+
+    let workspace = repo_root().join("target/formal-ai-benchmarks/grant-contract");
+    assert_eq!(
+        external_benchmarks::grade::swebench_harness_install_grant(&workspace, false),
+        InstallGrant::Refused,
+        "an online benchmark run is not installation consent"
+    );
+    let granted = external_benchmarks::grade::swebench_harness_install_grant(&workspace, true);
+    let InstallGrant::AllowedExecution {
+        programs,
+        root,
+        allow_network,
+        ..
+    } = granted
+    else {
+        panic!("the explicit flag should produce the narrow executable grant");
+    };
+    assert_eq!(programs, ["swebench-harness"]);
+    assert_eq!(root, workspace);
+    assert!(allow_network);
 }

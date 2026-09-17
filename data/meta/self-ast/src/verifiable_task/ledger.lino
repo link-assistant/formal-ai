@@ -2,18 +2,26 @@ self_ast_census
   target src/verifiable_task/ledger.rs
   language rust
   fidelity signature
-  byte_len 3245
-  line_count 106
-  content_id source_module_542518ab54d08248
-  symbol_count 10
+  byte_len 8604
+  line_count 249
+  content_id source_module_a428bad4022d6a79
+  symbol_count 18
   symbols
-    struct VerifiedProcedure 17 36
-    function identity_payload 41 43
-    function expected_integrity 47 49
-    function valid 53 55
-    struct VerifiableTaskLedger 60 62
-    function new 67 69
-    function path 73 75
-    function recall 81 83
-    function remember 89 96
-    function forget 103 105
+    const LEDGER_FILE 19 19
+    struct VerifiedProcedure 23 42
+    function identity_payload 47 57
+    function expected_integrity 61 71
+    function valid 75 81
+    struct VerifiableTaskLedger 86 88
+    function new 93 97
+    function path 101 103
+    function recall 109 115
+    function remember 121 148
+    function forget 155 160
+    function read_valid 162 179
+    function write 181 183
+    function unix_now 186 191
+    function required 193 199
+    function values 201 207
+    function parse_procedure 209 221
+    function render_ledger 223 249

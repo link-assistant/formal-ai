@@ -3,8 +3,8 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{localized_response, ProjectRecord};
-use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
+use crate::seed::{ProjectRecord, localized_response};
+use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
 
 use super::{finalize_simple, web_requests::registry_static};
 
