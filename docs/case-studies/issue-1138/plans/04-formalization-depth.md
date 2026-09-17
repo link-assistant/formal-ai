@@ -1263,15 +1263,15 @@ Ordered; each individually verifiable and commit-sized.
 - [x] **L5 — Relation vocabulary.** `data/seed/formalization-relations.lino` (8
       relations × 5 languages) and the extended no-memorization gate forbidding
       domain nouns in it.
-- [ ] **L6 — Concept grounding.** `src/formalization/concepts.rs`:
+- [x] **L6 — Concept grounding.** `src/formalization/concepts.rs`:
       `concept_from_sense` (genus/differentiae from the seeded cues) and
       `relations_in`. Depends on plan 01 L7. Tests:
       `a_need_is_satisfied_by_the_registry_lookup_and_becomes_a_grounded_concept`,
       plus the gloss-not-code gate.
-- [ ] **L7 — Bounded recursion.** `satisfy_needs` with `max_concept_depth`; a gloss's
+- [x] **L7 — Bounded recursion.** `satisfy_needs` with `max_concept_depth`; a gloss's
       own surfaces become needs at depth+1. Test:
       `a_grounded_gloss_raises_its_own_needs_at_the_next_depth_and_stops_at_the_bound`.
-- [ ] **L8 — The graph.** `src/formalization/concept_links.rs`: `ConceptGraph`,
+- [x] **L8 — The graph.** `src/formalization/concept_links.rs`: `ConceptGraph`,
       `identity()`, `to_links_notation()`, `structure_ids()`, `unresolved()`,
       `grounded_ratio()`, `formalize_deeply`. Test:
       `the_same_requirement_in_five_languages_produces_one_concept_graph_identity`.
