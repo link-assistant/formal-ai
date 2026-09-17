@@ -694,8 +694,14 @@ pub(super) fn template(
     id: &str,
     values: &[(&str, &str)],
 ) -> Result<String, MissingFragment> {
-    catalog
+    let from_catalog = catalog
         .render_named(id, "python", values)
-        .filter(|rendered| !rendered.is_empty())
-        .ok_or_else(|| MissingFragment::new(id))
+        .filter(|rendered| !rendered.is_empty());
+    // Renderer scaffolds (`python_import`, `python_test_entrypoint`, …) are
+    // deliberately not catalogued as operations; they render from the runtime
+    // seed, so a catalog miss falls back there before a need is raised.
+    let rendered = from_catalog
+        .or_else(|| crate::coding::python_render::runtime_template(id, values))
+        .filter(|rendered| !rendered.is_empty());
+    rendered.ok_or_else(|| MissingFragment::new(id))
 }
