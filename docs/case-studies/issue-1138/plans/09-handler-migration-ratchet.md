@@ -1097,23 +1097,30 @@ only inside the generator's own output.
 
 - [x] 9. Add `shape` and `of padded` to the rule grammar in
       `src/rule_interpreter.rs`; unit-test each new primitive.
-- [ ] 10. Create `data/seed/handler-promotions.lino` with all 19 promotions
+- [x] 10. Create `data/seed/handler-promotions.lino` with all 19 promotions
       transcribed; add `src/handler_promotion.rs`; register the seed file in
       `data/meta/seed-registry.lino` and regenerate.
-- [ ] 11. Rewrite `src/intent_formalization/prompt_relevants.rs` to evaluate the
+- [x] 11. Rewrite `src/intent_formalization/prompt_relevants.rs` to evaluate the
       seed promotions; delete the 19-entry array and the
       `contains("в ")`/`contains(':')` glue at `:154`; record
       `promotion_predicates 0`.
-- [ ] 12. Move the four `if name ==` cases and the five prelude arms in
+- [x] 12. Move the four `if name ==` cases and the five prelude arms in
       `src/meta_method_dispatch.rs` to method-record attributes; record
       `dispatch_name_special_cases 0`.
 
 **Make the browser derive its order from seed.**
 
-- [ ] 13. Expose `handler_precedence_from` through the **WASM seed parser**
+- [x] 13. Expose `handler_precedence_from` through the **WASM seed parser**
       (`src/web/wasm-worker/`) and have `src/web/seed_loader.js` call it, with
       unit tests; add `browser_only` and `phase async` guard notes to
       `data/seed/handler-precedence.lino` for the worker-only entries.
+      Shipped as `engine_handler_precedence` in `src/web/wasm-worker/src/lib.rs`
+      (rebuilt `formal_ai_worker.wasm`); the worker's registry assertion re-reads
+      the seed through it after instantiation, with the seed loader's own parse
+      as the pre-wasm guard. Ten worker-only rows now carry `browser_only` and
+      the network-phase rows carry `phase async`; the native dispatcher skips
+      the browser-only rows via `seed::browser_only_handlers`, so one document
+      owns both vocabularies.
       **reconciled: was "add `parseHandlerPrecedence` to
       `src/web/seed_loader.js`" — a new JavaScript parser. #952 (E100), which
       plan 13 lists as fully closed by this plan, asks for the JS seed parser to
@@ -1132,10 +1139,13 @@ only inside the generator's own output.
       recovered-Claude completion slice; leaf 13's WASM parser unification and
       leaf 15's full native/browser vocabulary parity remain separately visible
       rather than being claimed by this browser-only generalization.
-- [ ] 15. Rewrite `tests/unit/specification/routing_precedence.rs:205-260` as a
+- [x] 15. Rewrite `tests/unit/specification/routing_precedence.rs:205-260` as a
       reorder test over both surfaces; delete the fixture header's
       "full order-parity is impossible" claim; add
       `data/meta/ci-gates/check-worker-handler-registry.lino`.
+      The fixture's two name columns are one slug column pair now — the
+      permutation, reorder-flip and browser-only partition all read
+      `data/seed/handler-precedence.lino`; the gate file landed with leaf 14.
 
 **Batch 1 — M2 `retrieval_method` (14 handlers).** *Blocked on plan 01 (`01-live-concept-lookup.md`).*
 
@@ -1218,9 +1228,9 @@ only inside the generator's own output.
 
 **The read path.**
 
-- [ ] 38. Stage 1: project seed, rules and promotions into the link store via
+- [x] 38. Stage 1: project seed, rules and promotions into the link store via
       `src/seed_links.rs`; gate the projection's totality.
-- [ ] 39. Stage 2: extract `ConditionSource`; add the `LinkStore` backend, the
+- [x] 39. Stage 2: extract `ConditionSource`; add the `LinkStore` backend, the
       `data/parity/condition-source.lino` fixture and its gate; `store_read_share`
       begins to rise.
 - [ ] 40. Stage 2 completion: flip the default to `LinkStore`, delete

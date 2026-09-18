@@ -102,7 +102,7 @@ pub use grounding_overrides::{
     OverrideFact, cache_contains, override_facts, override_reason, parse_record, resolve,
 };
 pub use handler_precedence::{
-    HANDLER_PRECEDENCE_PATH, handler_precedence, handler_precedence_from,
+    HANDLER_PRECEDENCE_PATH, browser_only_handlers, handler_precedence, handler_precedence_from,
 };
 pub use intent_routing::{
     INTENT_ROUTING_PATH, IntentRoute, IntentRouting, intent_routing, intent_routing_from,

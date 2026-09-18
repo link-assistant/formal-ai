@@ -396,22 +396,33 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
 #[must_use]
 pub fn specialized_handlers() -> Vec<(&'static str, SpecializedHandler)> {
     let precedence = crate::seed::handler_precedence();
+    // Plan 09 leaf 13 (issue #1138): rows the seed marks `browser_only` name
+    // handlers only the browser worker runs. The native surface partitions by
+    // phase instead of pretending those rows do not exist.
+    let browser_only = crate::seed::browser_only_handlers();
+    let native: Vec<&String> = precedence
+        .iter()
+        .filter(|name| !browser_only.iter().any(|slug| slug == name.as_str()))
+        .collect();
     let rule_names = crate::rule_interpreter::handler_names();
     assert_eq!(
-        precedence.len(),
+        native.len(),
         HANDLER_FUNCTIONS.len() + rule_names.len(),
-        "handler-precedence.lino lists {} handlers but {} native functions and {} rule sets \
-         are registered; the seed must be an exact permutation of both",
+        "handler-precedence.lino lists {} native handlers ({} total minus {} browser-only) \
+         but {} native functions and {} rule sets are registered; the seed must be an \
+         exact permutation of both",
+        native.len(),
         precedence.len(),
+        browser_only.len(),
         HANDLER_FUNCTIONS.len(),
         rule_names.len(),
     );
     let mut seen = std::collections::BTreeSet::new();
-    let ordered: Vec<(&'static str, SpecializedHandler)> = precedence
+    let ordered: Vec<(&'static str, SpecializedHandler)> = native
         .iter()
         .map(|name| {
             assert!(
-                seen.insert(name.clone()),
+                seen.insert((*name).clone()),
                 "handler-precedence.lino lists handler `{name}` more than once"
             );
             resolve_handler(name, &rule_names).unwrap_or_else(|| {

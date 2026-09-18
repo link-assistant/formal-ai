@@ -49,6 +49,37 @@ fn load_handler_precedence() -> Vec<String> {
 /// Repository path of the precedence seed, its name in the seed links network.
 pub const HANDLER_PRECEDENCE_PATH: &str = "data/seed/handler-precedence.lino";
 
+/// The guard note a precedence row carries when only the browser worker runs
+/// it (plan 09 leaf 13).
+const BROWSER_ONLY_MARK: &str = "browser_only";
+
+/// The precedence rows the seed marks `browser_only`: handlers only the browser
+/// worker runs (issue #1138 B9, plan 09 leaf 13). The native dispatcher skips
+/// them when it joins the order to its function pointers, while the worker's
+/// registry keeps them — one vocabulary, with the phase a row runs in declared
+/// in the seed rather than hidden on either surface.
+#[must_use]
+pub fn browser_only_handlers() -> &'static [String] {
+    static CELL: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
+    CELL.get_or_init(|| {
+        crate::seed::seed_files()
+            .into_iter()
+            .find(|(path, _)| *path == HANDLER_PRECEDENCE_PATH)
+            .map(|(_, text)| text)
+            .map(|text| {
+                text.lines()
+                    .filter(|line| line.contains(BROWSER_ONLY_MARK))
+                    .filter_map(|line| {
+                        let name = line.split_whitespace().next()?;
+                        (name.chars().next().is_some_and(|first| first != '#'))
+                            .then(|| name.to_owned())
+                    })
+                    .collect()
+            })
+            .unwrap_or_default()
+    })
+}
+
 /// Parse an arbitrary handler-precedence document into its ordered handler names.
 ///
 /// Exposed so tests can reorder rows in a fixture and observe the routing change

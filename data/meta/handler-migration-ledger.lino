@@ -15,6 +15,36 @@ handler_migration_ledger
     primitive "src/rule_interpreter.rs"
     justification "issue #1095: a turn that is only a continuation cue is whole-prompt role equality (the interpreter's `whole` mode) rendered through seeded responses; the agentic planner asks the same rule whether to resume the established task, so no handler-specific Rust decides it."
     held_out "tests/unit/issue_1095_continuation_cue.rs"
+  handler exact_memory_query
+    status pending
+    justification "plan 09 leaf 13: the census now names the browser-only rows of the precedence seed; the memory store lives in the worker, so this handler has no native implementation yet."
+  handler memory_program
+    status pending
+    justification "plan 09 leaf 13: browser-only memory-program interpreter, recorded by the same census correction."
+  handler memory_program_gap
+    status pending
+    justification "plan 09 leaf 13: browser-only gap surfacing over stored memory programs, recorded by the same census correction."
+  handler current_dialogue_fact_checking
+    status pending
+    justification "plan 09 leaf 13: browser-only dialogue fact checking against the worker's memory, recorded by the same census correction."
+  handler link_native_synthesis
+    status pending
+    justification "plan 09 leaf 13: browser-only synthesis over the worker-held link store, recorded by the same census correction."
+  handler historical
+    status pending
+    justification "plan 09 leaf 13: browser-only replay of stored conversation history, recorded by the same census correction."
+  handler write_program_coreference
+    status pending
+    justification "plan 09 leaf 13: browser-only context-bound write-program rewrite, recorded by the same census correction."
+  handler program_blueprint_from_prompt
+    status pending
+    justification "plan 09 leaf 13: browser-only blueprint composition from a bare prompt, recorded by the same census correction."
+  handler write_program_concrete
+    status pending
+    justification "plan 09 leaf 13: browser-only context-bound concrete write-program binding, recorded by the same census correction."
+  handler software_project_request
+    status pending
+    justification "plan 09 leaf 13: browser-only interactive software-project dialogue, recorded by the same census correction."
   handler http_fetch
     status pending
   handler url_navigate

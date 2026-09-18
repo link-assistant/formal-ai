@@ -11,9 +11,9 @@ debt_ratchet
     note "corrected undercount. 42 counted *.rs under src/solver_handlers/ only, so the four handler files one directory up -- solver_handler_how.rs, solver_handler_how_synthesis.rs, solver_handler_units.rs, solver_handler_oracle.rs -- were invisible, and a migration could have lowered this number by moving a file out of the scanned directory. Issue #1138 B9, plan 09 leaves 1 and 3. No handler was written; the tree is unchanged."
   ceiling
     measure handler_migration_pending
-    value 45
+    value 55
     how "occurrences of the phrase status pending in data/meta/handler-migration-ledger.lino, whose census is the live registry: the specialized handler-precedence table followed by the five prelude methods"
-    note "corrected undercount. 40 counted the handler-precedence table only, so the five prelude methods -- diagnostic, nl_tool, behavior_rules, feature_capability, playwright_script -- ran on every turn ahead of that table while sitting outside the ledger entirely. Issue #1138 B9, plan 09 leaf 5. No handler was written; the tree is unchanged."
+    note "corrected undercount. 40 counted the handler-precedence table only, so the five prelude methods -- diagnostic, nl_tool, behavior_rules, feature_capability, playwright_script -- ran on every turn ahead of that table while sitting outside the ledger entirely. Issue #1138 B9, plan 09 leaf 5. Reviewed upward by ten on plan 09 leaf 13: the census now names the ten browser-only rows of handler-precedence.lino (exact_memory_query through software_project_request), which ran in the worker all along while sitting outside the ledger entirely. No handler was written; the tree is unchanged."
   ceiling
     measure literal_predicates
     value 543
