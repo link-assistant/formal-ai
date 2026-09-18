@@ -33,7 +33,7 @@ pub fn runtime_template_from(
 
 fn render_runtime_template(text: &str, id: &str, values: &[(&str, &str)]) -> Option<String> {
     let root = crate::seed::parser::parse_lino(text);
-    let mut rendered = root
+    let template = root
         .children
         .iter()
         .filter(|node| {
@@ -43,9 +43,17 @@ fn render_runtime_template(text: &str, id: &str, values: &[(&str, &str)]) -> Opt
             )
         })
         .flat_map(|node| node.children.iter())
-        .find(|node| node.name == "template" && node.id == id)?
-        .find_child_value("text")
-        .to_owned();
+        .find(|node| node.name == "template" && node.id == id)?;
+    // Templates whose verbatim syntax contains the seed's reserved multi-value
+    // separator (`|` in a Rust closure) are declared under `code`, the one
+    // field the seed guard exempts for verbatim listings.
+    let shape = template.find_child_value("text");
+    let shape = if shape.is_empty() {
+        template.find_child_value("code")
+    } else {
+        shape
+    };
+    let mut rendered = shape.to_owned();
     for (name, value) in values {
         rendered = rendered.replace(&format!("{{{name}}}"), value);
     }

@@ -118,9 +118,9 @@ coding_runtime_templates
   template python_ir_missing_fragment
     text "fragment `{fragment}` has no compatible Python realization"
   template rust_ir_filter
-    text ".filter(|{item}| {predicate})"
+    code ".filter(|{item}| {predicate})"
   template rust_ir_fold
-    text "({items}).into_iter().fold({initial}, |{accumulator}, {item}| {body})"
+    code "({items}).into_iter().fold({initial}, |{accumulator}, {item}| {body})"
   template rust_ir_condition
     text "if {test} {open} {then} {close} else {open} {otherwise} {close}"
   template rust_ir_emit
