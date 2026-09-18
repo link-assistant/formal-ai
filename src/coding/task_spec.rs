@@ -268,6 +268,19 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
     } else {
         return None;
     };
+    // A callable whose requirement names no parameter still denotes an
+    // anonymous input ("a string", "una cadena"): the artifact reads
+    // *something*. The search types that input by unification against the
+    // fragments it applies; without it there is no variable to ground in and
+    // every composition degenerates to constants.
+    let parameters = if artifact_shape == ArtifactShape::Function && parameters.is_empty() {
+        vec![Parameter {
+            name: "input".to_owned(),
+            annotation: None,
+        }]
+    } else {
+        parameters
+    };
     let language_priority = crate::language::registered_languages()
         .into_iter()
         .map(crate::language::Language::slug)

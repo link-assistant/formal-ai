@@ -417,6 +417,24 @@ fn fragment_from_seed_node(
     } else {
         ReuseMode::Verbatim
     };
+    let mut realizations = BTreeMap::from([("python".to_owned(), surface.to_owned())]);
+    // A seed fragment may carry additional per-language realizations of the
+    // same operation (`realization` → language → surface). They widen which
+    // target the search can name arguments and lower for; the python idiom
+    // stays the canonical surface the other languages translate.
+    for child in node
+        .children
+        .iter()
+        .filter(|child| child.name == "realization")
+    {
+        for language_node in &child.children {
+            if !language_node.id.is_empty() {
+                realizations
+                    .entry(language_node.name.clone())
+                    .or_insert_with(|| language_node.id.clone());
+            }
+        }
+    }
     Some(Fragment {
         id: id.to_owned(),
         signature,
@@ -435,7 +453,7 @@ fn fragment_from_seed_node(
             .filter(|child| child.name == "supports")
             .map(|child| child.id.clone())
             .collect(),
-        realizations: BTreeMap::from([("python".to_owned(), surface.to_owned())]),
+        realizations,
     })
 }
 

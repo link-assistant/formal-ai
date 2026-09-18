@@ -213,10 +213,7 @@ pub fn search_with_structures(
                 .iter()
                 .enumerate()
                 .map(|(index, expected)| {
-                    if names
-                        .get(index)
-                        .is_some_and(|name| binders.contains(name))
-                    {
+                    if names.get(index).is_some_and(|name| binders.contains(name)) {
                         let name = names[index].clone();
                         let mut binder_choices = vec![Expression {
                             node: IrNode::Parameter {
@@ -279,11 +276,8 @@ pub fn search_with_structures(
             });
             combinations.truncate(2_048);
             for arguments in combinations {
-                let result_ty = inferred_expression_type(
-                    &fragment.result,
-                    &fragment.signature,
-                    &arguments,
-                );
+                let result_ty =
+                    inferred_expression_type(&fragment.result, &fragment.signature, &arguments);
                 let mut fragments = vec![fragment.id.clone()];
                 let mut coverage = fragment_coverage(fragment, structure_ids);
                 let mut grounding = vec![(fragment.grounding.clone(), fragment.license.clone())];
@@ -330,23 +324,44 @@ pub fn search_with_structures(
     // neighborhood cannot evict a shallower valid reduction.
     pool.extend(fold_roots);
 
-    let candidates = pool
+    // Full coverage first; if no composition covering every structure the
+    // requirement reduced to survives typing and closing, the honest
+    // alternative to silence is the best partial composition: full
+    // provenance, typed and lowered, landed downstream in `unverified` unless
+    // the task's own oracle actually passes it. Coverage is only a preference
+    // order over *surviving* programs — nonsense that stacks every structure
+    // but fails to type never outranks a smaller composition that does.
+    let survivors: Vec<(usize, ProgramIr)> = pool
         .into_iter()
-        .filter(|expression| {
-            !expression.fragments.is_empty()
-                && (coverable.is_empty() || expression.coverage.is_superset(&coverable))
+        .filter(|expression| !expression.fragments.is_empty())
+        .map(|expression| {
+            let covered = expression.coverage.intersection(&coverable).count();
+            (covered, expression)
         })
-        .collect::<Vec<_>>();
-    let mut candidates = candidates
-        .into_iter()
-        .map(|expression| program_from_expression(spec, parameters.clone(), expression))
-        .filter(|candidate| {
+        .filter(|(covered, _)| coverable.is_empty() || *covered > 0)
+        .map(|(covered, expression)| {
+            (
+                covered,
+                program_from_expression(spec, parameters.clone(), expression),
+            )
+        })
+        .filter(|(_, candidate)| {
             let depth_ok = node_depth(&candidate.body) <= bounds.max_depth;
             let type_ok = candidate.type_check(catalog).is_ok();
-            let closed_ok = lowered_candidate_is_closed(spec, catalog, candidate, &placeholder_names);
+            let closed_ok =
+                lowered_candidate_is_closed(spec, catalog, candidate, &placeholder_names);
             depth_ok && type_ok && closed_ok
         })
-        .collect::<Vec<_>>();
+        .collect();
+    let best = survivors.iter().map(|(covered, _)| *covered).max();
+    let mut candidates: Vec<ProgramIr> = match best {
+        Some(best) => survivors
+            .into_iter()
+            .filter(|(covered, _)| *covered == best)
+            .map(|(_, candidate)| candidate)
+            .collect(),
+        None => Vec::new(),
+    };
     let mut recursive = recursive_reduce_programs(
         spec,
         catalog,
@@ -952,8 +967,7 @@ fn conditional_payload_slots(fragment: &Fragment, language: &str) -> Option<Vec<
         characters
             .get(position..position + word.len() + 1)
             .is_some_and(|window| {
-                window[..word.len()].iter().collect::<String>() == word
-                    && window[word.len()] == ' '
+                window[..word.len()].iter().collect::<String>() == word && window[word.len()] == ' '
             })
     };
     let mut depth = 0usize;
@@ -995,9 +1009,7 @@ fn conditional_payload_slots(fragment: &Fragment, language: &str) -> Option<Vec<
     let (Some(condition_start), Some(condition_end)) = (condition_start, condition_end) else {
         return None;
     };
-    let condition_text: String = characters[condition_start..condition_end]
-        .iter()
-        .collect();
+    let condition_text: String = characters[condition_start..condition_end].iter().collect();
     let names = fragment.argument_names(language);
     Some(
         names
@@ -1050,7 +1062,8 @@ fn loop_variable_applies<'a>(
         }
         let names = fragment.argument_names(language);
         let owned = fragment_coverage(fragment, structure_ids);
-        let observation_payloads = conditional_payload_slots(fragment, language).unwrap_or_default();
+        let observation_payloads =
+            conditional_payload_slots(fragment, language).unwrap_or_default();
         for (slot, expected) in fragment.signature.iter().enumerate() {
             if !types_may_unify(expected, element_type) {
                 continue;
@@ -1093,11 +1106,8 @@ fn loop_variable_applies<'a>(
                 )
             });
             for arguments in combinations {
-                let result_ty = inferred_expression_type(
-                    &fragment.result,
-                    &fragment.signature,
-                    &arguments,
-                );
+                let result_ty =
+                    inferred_expression_type(&fragment.result, &fragment.signature, &arguments);
                 let mut fragments = vec![fragment.id.clone()];
                 let mut coverage = fragment_coverage(fragment, structure_ids);
                 let mut grounding = vec![(fragment.grounding.clone(), fragment.license.clone())];
@@ -1150,11 +1160,12 @@ fn loop_variable_applies<'a>(
                 // A binder apply that grounds one of the required structures
                 // is the one the enclosing composition needs; a leaner apply
                 // merely re-reads the input.
-                usize::MAX - expression
-                    .coverage
-                    .iter()
-                    .filter(|id| needed.contains(*id))
-                    .count(),
+                usize::MAX
+                    - expression
+                        .coverage
+                        .iter()
+                        .filter(|id| needed.contains(*id))
+                        .count(),
                 usize::MAX - expression.coverage.len(),
                 expression.fragments.len(),
                 expression.depth,
@@ -1180,7 +1191,8 @@ fn loop_variable_applies<'a>(
         }
         let names = fragment.argument_names(language);
         let owned = fragment_coverage(fragment, structure_ids);
-        let observation_payloads = conditional_payload_slots(fragment, language).unwrap_or_default();
+        let observation_payloads =
+            conditional_payload_slots(fragment, language).unwrap_or_default();
         for (slot, ty) in fragment.signature.iter().enumerate() {
             // The comprehension body must compute from the loop variable: an
             // ingredient that never reads it maps a constant over the
@@ -1197,9 +1209,9 @@ fn loop_variable_applies<'a>(
                 .cloned()
                 .collect::<Vec<_>>();
             binder_dependent.sort_by_key(|expression| {
-                let reads_input = input_names.iter().any(|name| {
-                    node_contains_parameter(&expression.node, name)
-                });
+                let reads_input = input_names
+                    .iter()
+                    .any(|name| node_contains_parameter(&expression.node, name));
                 usize::from(!reads_input)
             });
             if binder_dependent.is_empty() {
@@ -1243,11 +1255,8 @@ fn loop_variable_applies<'a>(
                 )
             });
             for arguments in combinations {
-                let result_ty = inferred_expression_type(
-                    &fragment.result,
-                    &fragment.signature,
-                    &arguments,
-                );
+                let result_ty =
+                    inferred_expression_type(&fragment.result, &fragment.signature, &arguments);
                 let mut fragments = vec![fragment.id.clone()];
                 let mut coverage = fragment_coverage(fragment, structure_ids);
                 let mut grounding = vec![(fragment.grounding.clone(), fragment.license.clone())];
@@ -1322,7 +1331,8 @@ fn pair_loop_variable_applies<'a>(
         }
         let names = fragment.argument_names(language);
         let owned = fragment_coverage(fragment, structure_ids);
-        let observation_payloads = conditional_payload_slots(fragment, language).unwrap_or_default();
+        let observation_payloads =
+            conditional_payload_slots(fragment, language).unwrap_or_default();
         for slot in 0..fragment.signature.len() - 1 {
             if !pair_types.iter().any(|(left, right)| {
                 types_may_unify(&fragment.signature[slot], left)
@@ -1385,11 +1395,8 @@ fn pair_loop_variable_applies<'a>(
             combinations.sort_by_key(|arguments| Reverse(argument_coherence(arguments)));
             let pair_names = (first.clone(), second.clone());
             for arguments in combinations {
-                let result_ty = inferred_expression_type(
-                    &fragment.result,
-                    &fragment.signature,
-                    &arguments,
-                );
+                let result_ty =
+                    inferred_expression_type(&fragment.result, &fragment.signature, &arguments);
                 let mut fragments = vec![fragment.id.clone()];
                 let mut coverage = fragment_coverage(fragment, structure_ids);
                 let mut grounding = vec![(fragment.grounding.clone(), fragment.license.clone())];
@@ -1447,7 +1454,8 @@ fn literal_leaves(node: &IrNode) -> usize {
     }
 }
 
-fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {    let owned: BTreeSet<String> = names.iter().map(|name| (*name).to_owned()).collect();
+fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {
+    let owned: BTreeSet<String> = names.iter().map(|name| (*name).to_owned()).collect();
     let mut into = BTreeSet::new();
     collect_parameter_names(node, &owned, &mut into);
     into.len()
@@ -1888,16 +1896,18 @@ fn argument_choices(
                     usize::from(!expression.fragments.is_empty()),
                     usize::from(!types_fit_strictly(expected, &expression.ty)),
                     usize::MAX - novel,
-                    usize::MAX - expression
-                        .coverage
-                        .iter()
-                        .filter(|id| needed.contains(*id))
-                        .count(),
-                    usize::MAX - expression
-                        .coverage
-                        .iter()
-                        .filter(|id| !owned.contains(*id))
-                        .count(),
+                    usize::MAX
+                        - expression
+                            .coverage
+                            .iter()
+                            .filter(|id| needed.contains(*id))
+                            .count(),
+                    usize::MAX
+                        - expression
+                            .coverage
+                            .iter()
+                            .filter(|id| !owned.contains(*id))
+                            .count(),
                     Reverse(parameter_reads(&expression.node, &input_names)),
                     literal_leaves(&expression.node),
                 ),
@@ -1924,7 +1934,10 @@ fn argument_choices(
 /// window over individual items.
 fn constant_map_count(node: &IrNode, catalog: &FragmentCatalog, language: &str) -> usize {
     match node {
-        IrNode::Apply { fragment, arguments } => {
+        IrNode::Apply {
+            fragment,
+            arguments,
+        } => {
             let mut count = 0;
             if let Some(definition) = catalog.get(fragment) {
                 let names = definition.argument_names(language);
@@ -1963,7 +1976,9 @@ fn constant_map_count(node: &IrNode, catalog: &FragmentCatalog, language: &str) 
 
 fn references_parameter(node: &IrNode, name: &str) -> bool {
     match node {
-        IrNode::Parameter { name: candidate, .. } => candidate == name,
+        IrNode::Parameter {
+            name: candidate, ..
+        } => candidate == name,
         IrNode::Apply { arguments, .. } => arguments
             .iter()
             .any(|argument| references_parameter(argument, name)),
@@ -1975,9 +1990,9 @@ fn references_parameter(node: &IrNode, name: &str) -> bool {
 fn argument_root_type(node: &IrNode, catalog: &FragmentCatalog) -> Option<IrType> {
     match node {
         IrNode::Parameter { ty, .. } | IrNode::Literal { ty, .. } => Some(ty.clone()),
-        IrNode::Apply { fragment, .. } => {
-            catalog.get(fragment).map(|definition| definition.result.clone())
-        }
+        IrNode::Apply { fragment, .. } => catalog
+            .get(fragment)
+            .map(|definition| definition.result.clone()),
         _ => None,
     }
 }
@@ -1995,8 +2010,7 @@ fn loose_feed(expected: &IrType, argument: &IrNode, catalog: &FragmentCatalog) -
     let IrType::Sequence(element) = expected else {
         return false;
     };
-    matches!(actual, IrType::Text)
-        && !matches!(element.as_ref(), IrType::Unknown(_) | IrType::Text)
+    matches!(actual, IrType::Text) && !matches!(element.as_ref(), IrType::Unknown(_) | IrType::Text)
 }
 
 /// Resolves a fragment's schematic result against the argument types the
@@ -2092,7 +2106,10 @@ fn apply_variable_bindings(
 /// that guess with them wherever they are later slotted.
 fn loose_feeds(node: &IrNode, catalog: &FragmentCatalog) -> usize {
     match node {
-        IrNode::Apply { fragment, arguments } => {
+        IrNode::Apply {
+            fragment,
+            arguments,
+        } => {
             let mut count = 0;
             if let Some(definition) = catalog.get(fragment) {
                 for (slot, expected) in definition.signature.iter().enumerate() {
@@ -2196,7 +2213,10 @@ fn has_computed_argument(node: &IrNode) -> bool {
 fn pathological_repeat(node: &IrNode) -> bool {
     fn walk(node: &IrNode, counts: &mut std::collections::BTreeMap<String, usize>) -> bool {
         match node {
-            IrNode::Apply { fragment, arguments } => {
+            IrNode::Apply {
+                fragment,
+                arguments,
+            } => {
                 let count = counts.entry(fragment.clone()).or_insert(0);
                 *count += 1;
                 if *count >= 3 {
@@ -2219,7 +2239,10 @@ fn pathological_repeat(node: &IrNode) -> bool {
 fn repeats_a_fragment(node: &IrNode) -> bool {
     fn count(node: &IrNode, counts: &mut std::collections::BTreeMap<String, usize>) {
         match node {
-            IrNode::Apply { fragment, arguments } => {
+            IrNode::Apply {
+                fragment,
+                arguments,
+            } => {
                 *counts.entry(fragment.clone()).or_insert(0) += 1;
                 for argument in arguments {
                     count(argument, counts);
@@ -2258,7 +2281,8 @@ fn enumerate_arguments(
     current: &mut Vec<Expression>,
     output: &mut Vec<Vec<Expression>>,
     limit: usize,
-) {    if output.len() >= limit {
+) {
+    if output.len() >= limit {
         return;
     }
     if index == choices.len() {
@@ -2293,7 +2317,11 @@ fn argument_grounded_structures(node: &IrNode, needed: &BTreeSet<String>) -> usi
     for argument in arguments {
         let mut stack = vec![argument];
         while let Some(current) = stack.pop() {
-            if let IrNode::Apply { fragment, arguments } = current {
+            if let IrNode::Apply {
+                fragment,
+                arguments,
+            } = current
+            {
                 if needed.contains(fragment) {
                     grounded.insert(fragment.clone());
                 }
@@ -2320,7 +2348,6 @@ fn binder_circularity(
         })
         .count()
 }
-
 
 fn argument_coherence(arguments: &[Expression]) -> usize {
     arguments
@@ -2680,7 +2707,9 @@ fn example_parameter_type(spec: &CodingTaskSpec, index: usize) -> Option<IrType>
                 .filter(|element| !element.is_empty())
                 .collect::<Vec<_>>();
             let element = if !elements.is_empty()
-                && elements.iter().all(|element| element.parse::<f64>().is_ok())
+                && elements
+                    .iter()
+                    .all(|element| element.parse::<f64>().is_ok())
             {
                 IrType::Float
             } else {

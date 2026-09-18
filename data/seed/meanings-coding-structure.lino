@@ -1462,11 +1462,15 @@ meanings
     license "PSF-2.0"
     bootstrap true
     rediscovery_query "accumulate consecutive equal values"
+    realization
+      rust "{ let mut extended = {accumulator}; match extended.last_mut() { Some(last) if last.0 == {item} => last.1 += 1, _ => extended.push(({item}, 1_usize)), } extended }"
     fragment_signature (sequence<pair<text,integer>> text)
     fragment_result "sequence<pair<text,integer>>"
     lexeme en
       surface
         text "runs of equal characters"
+      surface
+        text "run of equal characters"
       surface
         text "consecutive equal values"
     lexeme ru

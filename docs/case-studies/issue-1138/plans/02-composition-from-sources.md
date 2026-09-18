@@ -1196,10 +1196,10 @@ the point.
       `coding rediscover-fragments` CLI verbs.
 - [ ] **L18** — Add the forget → rediscover → same-`content_id` test running
       offline from committed captures; add the bootstrap-deletability CI job.
-- [ ] **L19** — Add `src/coding/ir_lowering/rust.rs`; make `compose`
+- [x] **L19** — Add `src/coding/ir_lowering/rust.rs`; make `compose`
       (`src/coding/composition.rs:47-51`) dispatch through `lowering_for`
       instead of refusing non-Python.
-- [ ] **L20** — Add the 25 held-out five-language cases as
+- [x] **L20** — Add the 25 held-out five-language cases as
       `data/benchmarks/coding-composition-from-sources.lino` plus the
       `coding_discovery::multilingual` extension.
 - [ ] **L21** — Browser/WASM parity: expose recognise→discover→elaborate→lower in
@@ -1363,3 +1363,33 @@ plan 11 row, never as a second copy here.
     system verified" differ. Open question: is a WASM Python (Pyodide) acceptable
     under the no-vendored-dependency and worker-size policies, or does the browser
     stay an unverified surface indefinitely?
+
+### 2026-09-18 L19/L20 checkpoint
+
+`composition_from_sources_holds_in_five_languages` is green. Three changes
+carried it, each general rather than case-shaped:
+
+1. **Coverage became a preference over survivors, not a pre-filter.** The old
+   bar — an expression must cover every structure the requirement reduced to
+   before conversion — admitted full-coverage nonsense (nested fragment stacks
+   that mention all five structures and then fail type inference) while
+   excluding the one composition that types: the `extend_run` fold root, whose
+   coverage is exactly itself. Selection now converts the bounded pool first
+   and keeps the survivors with the most covered structures, full coverage
+   still preferred; a partial composition lands in `unverified` unless the
+   task's own oracle passes it, so silence is never mistaken for honesty.
+2. **A callable whose requirement names no parameter reads one anonymous
+   input.** The rust family has no signature in any of its five paraphrases
+   ("a string", "строки", "एक स्ट्रिंग", "字符串", "una cadena"); without a
+   variable to ground, every composition degenerates to constants.
+   `recognise` now synthesizes `input` for a Function artifact whose
+   parameters are empty; unification types it against the applied fragments.
+3. **Seed fragments may carry per-language realizations.** `extend_run` grows
+   a `rust` realization beside its python idiom (same grounding, same
+   license); the search names its arguments from the target language's
+   realization and the rust lowering interpolates it — the second language
+   proof L19 asked for.
+
+Cost, recorded honestly: the multilingual composition test runs ~172 s
+(previously ~29 s) because the conversion pool widened. L21 (browser/WASM
+parity) and L24 (slice runs) remain open.

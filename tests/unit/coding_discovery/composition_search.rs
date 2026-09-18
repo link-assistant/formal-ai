@@ -7,13 +7,13 @@
 //! same catalog must yield the same candidates in the same order.
 
 use formal_ai::coding_task_spec::recognise;
+use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
 use formal_ai::composition::compose;
 use formal_ai::composition_search::{SearchBounds, search, search_with_structures};
 use formal_ai::concept_discovery::ConceptMap;
 use formal_ai::fragment_catalog::FragmentCatalog;
 use formal_ai::ir_lowering::lowering_for;
 use formal_ai::program_ir::ProgramIr;
-use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
 
 /// A held-out request whose shape is in none of the deleted authored blocks.
 const UNSEEN_COMBINATION: &str = concat!(
@@ -117,7 +117,7 @@ fn a_typed_lowering_without_an_oracle_stays_explicitly_unverified() {
         outcome
             .unverified
             .iter()
-            .any(|candidate| candidate.source.contains("functools').reduce")),
+            .any(|candidate| candidate.source.contains("functools.reduce")),
         "a well-typed and lowered candidate remains available with an honest status: {outcome:#?}"
     );
     assert!(
@@ -164,15 +164,15 @@ fn recursive_reduction_is_discovered_and_lowered_from_typed_fragments() {
     };
     let catalog = FragmentCatalog::bootstrap();
     let structures = vec!["grid_minimum_cost_path".to_owned()];
-    let programs = search_with_structures(
-        &spec,
-        &catalog,
-        SearchBounds::default(),
-        &structures,
-    );
+    let programs = search_with_structures(&spec, &catalog, SearchBounds::default(), &structures);
     let recursive = programs
         .iter()
-        .find(|program| matches!(program.body, formal_ai::program_ir::IrNode::RecursiveReduce { .. }))
+        .find(|program| {
+            matches!(
+                program.body,
+                formal_ai::program_ir::IrNode::RecursiveReduce { .. }
+            )
+        })
         .unwrap_or_else(|| panic!("typed search omitted recursive reduction: {programs:#?}"));
     let source = lowering_for("python")
         .expect("Python lowering exists")

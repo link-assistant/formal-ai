@@ -226,7 +226,13 @@ fn an_unnamed_conversational_function_defers_identity_to_source_discovery() {
     .expect("unnamed source-discovery function");
     assert_eq!(spec.artifact_shape, ArtifactShape::Function);
     assert_eq!(spec.name, "discovered_function");
-    assert!(spec.parameters.is_empty());
+    // The callable identity stays deferred to source discovery, but the
+    // artifact still reads one anonymous input: the search grounds that
+    // variable against the fragments it applies instead of degenerating to
+    // constant programs.
+    assert_eq!(spec.parameters.len(), 1);
+    assert_eq!(spec.parameters[0].name, "input");
+    assert_eq!(spec.parameters[0].annotation, None);
 }
 
 #[test]
