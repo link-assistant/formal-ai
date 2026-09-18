@@ -535,6 +535,7 @@ rows.
 | D273 | plan 01 | `docs/benchmarks.md` |
 | D274 | plan 04 | `docs/requirements-traceability.md` |
 | D275 | plan 04 | `docs/benchmarks.md` |
+| D276 | plan 02 | `ROADMAP.md:146` (pillar 25) |
 
 ### Plan 01 — B1 live concept lookup
 
@@ -752,6 +753,21 @@ is flatly inconsistent with B2's doctrine and must be rewritten to:
 which owns `src/agentic_coding/formalization_recipe.rs`. This plan cites
 row D181 below and does not restate the replacement, because two plans rewriting one
 paragraph is how a document acquires two versions of itself (plan 00 §9 X9).**
+
+#### D276 — `ROADMAP.md:146` (pillar 25)
+
+**`ROADMAP.md:146`** (pillar 25, added 2026-09-17 when the full-suite rows
+landed and the sentence went stale on that commit) currently reads, in part:
+
+> "the latest committed upstream comparison is HumanEval 20/20 and MBPP 20/20, with every suite row generated in `docs/status.md`."
+
+Replace with:
+
+> "upstream comparisons are recorded per slice — HumanEval 20/20 and 9/164, MBPP 20/20 and `<passed>/500` — in the generated table in `docs/benchmarks.md`, with every suite row generated in `docs/status.md`."
+
+A row that asserts "latest" while citing superseded numbers fails the same
+traceability rule this audit enforces everywhere else; it is recorded here
+rather than left to silently rot (plan 00 §8).
 
 ---
 
@@ -2391,6 +2407,28 @@ issues quietly downgraded (plan 00 §8).
       at or below the ceiling in `data/meta/debt-ratchet.lino`, strictly
       downward, target 5. The count is **49** today and rose since #1089 was
       filed; record that direction in the ledger's `note`.
+
+### Leaf added by the 2026-09-17 full-suite measurement
+
+- [ ] L77 **Apply plan 02 rows D160-D168 and D276.** Plan 02 L24 records the
+      four full-suite rows (HumanEval 164 and MBPP 500, cold-offline and
+      `--online`) and the failure frontier; this leaf rewrites every document
+      those rows supersede, in the same commit as the rows so the
+      `latest_external_rows_are_published_from_the_ledger` pin never sits red:
+      D160 `VISION.md` per-slice summary with the new run date; D161
+      `ROADMAP.md` pillar 26; D162 both `ROADMAP.md` pointer swaps; D163 the
+      honest-numbers table with its `Slice` column and the empty-source-cache
+      control explicitly scoped to the first-20 slice; D164 the full-suite
+      commands and the forget/rediscover round trip; D165 was already present
+      in the suites-at-a-glance table and needs no edit; D166 R710-D2/D3 full
+      suite plus R710-D17; D167 the new
+      `docs/requirements/issue-1138-composition-from-sources.md` shard with
+      `assemble-requirements` and `generate-requirement-status` re-run; D168
+      the R1138-B2-* traceability rows and the R710-D2/D3 amendments; D276
+      pillar 25. D169 stays owned by plan 04 L12. Each document keeps the
+      needles its pin tests read (`docs_benchmarks`, `architect_notes`, the
+      per-issue suites), and the SWE-bench clauses stay untouched for plan 03
+      D173/D174.
 
 ## Risks and open questions
 

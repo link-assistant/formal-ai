@@ -484,6 +484,7 @@ show the real container start path.
 | R223 | The seed environment directory must describe the Docker-in-Docker Telegram runtime rather than the stale HTTP-server container. | Implemented in `data/seed/environments.lino` and pinned by `docker_microservice_seed_declares_dind_start_command_contract`. |
 | R224 | Docker operation instructions must live in the root README and include the privilege/runtime, Telegram token, storage volume, verification command, and socket-safety warning. | Implemented in `README.md` under "Docker-in-Docker Telegram bot image" and pinned by `tests/unit/docs_requirements.rs`. |
 | R225 | Issue research, upstream facts, and repro logs must be preserved under `docs/case-studies/issue-195`. | Implemented with issue/PR snapshots, Box/Start/Hive Mind source captures, local tool availability, and the failing pre-fix Docker runtime test log. |
+| R195-7 | The image's Start isolation configuration must govern Telegram execution at runtime, not merely appear in Dockerfile assertions. | Implemented by `execution_box::backend_from_environment`: `FORMAL_AI_START_ISOLATION` and `FORMAL_AI_START_RUNNER` are required as a pair, `docker` is validated, and the parsed runner is invoked as exact argv; incomplete configuration refuses without a host fallback. Pinned by `tests/unit/issue_1138_execution_box.rs` and `tests/unit/issue_1138_telegram_execution.rs`. |
 
 ## Issue #196 Permanent Memory Deletion And Reset
 

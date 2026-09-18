@@ -18,9 +18,9 @@ This document is a deterministic projection of committed ledgers.
 
 | Verdict | Count |
 | --- | ---: |
-| `implemented` | 444 |
+| `implemented` | 442 |
 | `not-delivered` | 20 |
-| `partial` | 663 |
+| `partial` | 665 |
 | `superseded` | 3 |
 | `withdrawn` | 1 |
 
@@ -32,7 +32,7 @@ This document is a deterministic projection of committed ledgers.
 | `coedit` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `egg_math` | 2026-09-07 | 20 | 20 | 20 | 0.347.0 |
 | `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
-| `humaneval` | 2026-09-15 | 20 | 20 | 20 | 0.349.2 |
+| `humaneval` | 2026-09-17 | 164 | 14 | 164 | 0.350.0 |
 | `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `mbpp` | 2026-09-15 | 20 | 20 | 20 | 0.349.2 |
 | `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
@@ -49,12 +49,12 @@ This document is a deterministic projection of committed ledgers.
 
 | Input | Lines |
 | --- | ---: |
-| `data/benchmarks/external-results.lino` | 887 |
+| `data/benchmarks/external-results.lino` | 898 |
 | `data/meta/self-hosting-ledger.lino` | 1230 |
-| `data/meta/debt-ratchet.lino` | 56 |
+| `data/meta/debt-ratchet.lino` | 62 |
 | `data/meta/core-boundary-ledger.lino` | 263 |
 | `data/meta/handler-migration-ledger.lino` | 209 |
-| `data/meta/ladder-ratchet.lino` | 18 |
+| `data/meta/ladder-ratchet.lino` | 20 |
 | `data/meta/requirement-status-ledger.lino` | 21 |
 | `data/seed/languages.lino` | 37 |
-| `data/meta/worker-line-budget/*.lino` | 33 files |
+| `data/meta/worker-line-budget/*.lino` | 35 files |

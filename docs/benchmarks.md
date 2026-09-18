@@ -21,6 +21,9 @@ source provenance for download-on-test integration. Only permissive licenses
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
 | Held-out algorithm discovery | #531 | [`issue-531-algorithm-traces.lino`](../data/benchmarks/issue-531-algorithm-traces.lino) | `repeated_event_sequences_become_a_validated_parameterized_algorithm` | 1 |
+| Repository world-model canaries | #1138 | [`repository-world-model-canaries.lino`](../data/benchmarks/repository-world-model-canaries.lino) | `issue_1138_repository_world_model::an_unrelated_case_completes_only_with_matching_evidence_for_every_goal` | 3 canaries, requirement-complete |
+| TRIZ selection points | #901 | [`selection-triz.lino`](../data/benchmarks/selection-triz.lino) | `issue_1138_selection_heuristics::a_held_out_paraphrase_produces_the_same_split_shape_and_imbalance` | 20 |
+| Telegram execution outcomes | #1138 | [`telegram-execution-outcomes.lino`](../data/benchmarks/telegram-execution-outcomes.lino) | `issue_1138_telegram_execution::telegram_without_a_backend_is_honest_in_five_languages` | 5 languages × 2 permission outcomes |
 | External (upstream) harness | #698, #923 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
 | bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
@@ -301,23 +304,28 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-The latest committed rows are dated `2026-09-15` for the coding suites, use
-solver version `0.349.2`, and keep the deterministic solver at
-`temperature = 0.0`. Other suite rows remain at their latest `2026-09-07`
-measurements:
+The latest committed rows are dated `2026-09-17` for the coding suites'
+full-slice measurements (HumanEval 164, MBPP 500, each run cold-offline and
+with `--online`; the ledger keeps the `--online` row per suite and date so its
+result is exactly reproducible), use solver version `0.350.0`, and keep the
+deterministic solver at `temperature = 0.0`. The `2026-09-15` first-20 rows
+remain as regression controls. Other suite rows remain at their latest
+`2026-09-07` measurements:
 
-| Suite | License | Grading | Passed | Total |
-| --- | --- | --- | ---: | ---: |
-| HumanEval | MIT | upstream unit test executed | 20 | 20 |
-| MBPP | Apache-2.0 | upstream `test_list` asserts executed with live source discovery | 20 | 20 |
-| GSM8K | MIT | final number vs. `####` gold | 2 | 20 |
-| MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
-| BIG-bench object counting | Apache-2.0 | final number vs. target | 0 | 20 |
-| CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
-| egg rewrite laws | MIT | structured `proof_outcome proven` | 20 | 20 |
-| Ascent closure assertions | MIT | structured `proof_outcome proven` | 5 | 5 |
-| SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
-| EditEval | — | `benchmark_unavailable` | — | — |
+| Suite | License | Slice | Grading | Passed | Total |
+| --- | --- | ---: | --- | ---: | ---: |
+| HumanEval | MIT | 164 | upstream unit test executed | 14 | 164 |
+| HumanEval | MIT | 20 | upstream unit test executed | 20 | 20 |
+| MBPP | Apache-2.0 | 20 | upstream `test_list` asserts executed with live source discovery | 20 | 20 |
+| MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery | MBPP500PASSED-PENDING | 500 |
+| GSM8K | MIT | 20 | final number vs. `####` gold | 2 | 20 |
+| MATH (`prm800k` 500-problem split) | MIT | 20 | final `\boxed{...}` vs. gold | 0 | 20 |
+| BIG-bench object counting | Apache-2.0 | 20 | final number vs. target | 0 | 20 |
+| CoEdIT | Apache-2.0 | 20 | edited text vs. gold target | 0 | 20 |
+| egg rewrite laws | MIT | 20 | structured `proof_outcome proven` | 20 | 20 |
+| Ascent closure assertions | MIT | 20 | structured `proof_outcome proven` | 5 | 5 |
+| SWE-bench Lite (dev) | MIT | 1 | official upstream instance tests executed | 0 | 1 |
+| EditEval | — | — | `benchmark_unavailable` | — | — |
 
 The scheduled SWE-bench measurement now requests all 23 pinned dev cases. The
 latest committed evidence is still the honest `0/1` row above: no `0/23` (or
@@ -325,15 +333,22 @@ better) row is published until the official evaluator has actually completed
 that width. Ratchet history is keyed by `(suite, slice)`, so opening the
 23-case series neither erases nor weakens the independent one-case history.
 
-The same-day empty-source-cache control scored HumanEval **20/20** and MBPP
-**18/20**. The two remaining MBPP cases require externally defined sequence
-knowledge: with `--online`, the solver searches official OEIS JSON, follows a
-bounded cross-reference frontier, formalizes a strict arithmetic or linear
-recurrence, verifies it against task examples, and reaches **20/20**. Retrieved
-bytes live only in the ignored content-addressed cache; a fresh offline run
-therefore reports those two gaps instead of relying on benchmark-specific
-built-ins. The ledger's MBPP runner includes `--online` so its result is exactly
-reproducible.
+The 2026-09-15 empty-source-cache control scored HumanEval **20/20** and MBPP
+**18/20** at the first-20 slice. The two remaining MBPP cases require externally
+defined sequence knowledge: with `--online`, the solver searches official OEIS
+JSON, follows a bounded cross-reference frontier, formalizes a strict arithmetic
+or linear recurrence, verifies it against task examples, and reaches **20/20**.
+Retrieved bytes live only in the ignored content-addressed cache; a fresh
+offline run therefore reports those two gaps instead of relying on
+benchmark-specific built-ins. The ledger's MBPP runner includes `--online` so
+its result is exactly reproducible.
+
+The 2026-09-17 full-slice runs repeat the same honesty at suite width:
+cold-offline, HumanEval honestly scores **9/164**; with `--online`, live source
+discovery raises it to **14/164**. The delta is the measured live-source
+contribution, not a solver change — both runs used solver `0.350.0` and the
+same seed corpus, and the full-slice floor follows the higher measured row.
+The full-slice MBPP runs are recorded the same way below.
 
 `20 / 20` on egg and `5 / 5` on Ascent are the real measurements of the new
 symbolic kernel against mechanically adapted declarations and assertions from
@@ -383,6 +398,19 @@ cargo run --bin formal-ai -- benchmark list
 # Run 20 real upstream HumanEval cases with live coding discovery
 # (network + python3 required). Offline remains the default when omitted.
 cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20 --online
+
+# Full-suite runs are the suite score; a first-20 slice is only a regression
+# control and is never cited without its slice. Cold-offline is the default;
+# `--online` adds live source discovery for externally defined knowledge.
+# `--frontier-record` writes the per-suite failure frontier next to the row.
+cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 164 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 164 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --bin formal-ai -- benchmark run --suite mbpp --slice 500 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --bin formal-ai -- benchmark run --suite mbpp --slice 500 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+
+# The forget/rediscover round trip: delete the discovered-procedure ledger,
+# rediscover from the same trusted sources, and require the same content id.
+cargo test --test unit coding_discovery::ledger -- --nocapture
 
 # Refresh every suite locally. SWE-bench's pinned official Python harness and
 # Docker are prerequisites the run discovers. `--allow-install` grants only the
@@ -461,7 +489,7 @@ Generated from `data/benchmarks/external-results.lino`.
 | `coedit` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `egg_math` | 2026-09-07 | 20 | 20 | 20 | 0.347.0 |
 | `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
-| `humaneval` | 2026-09-15 | 20 | 20 | 20 | 0.349.2 |
+| `humaneval` | 2026-09-17 | 164 | 14 | 164 | 0.350.0 |
 | `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `mbpp` | 2026-09-15 | 20 | 20 | 20 | 0.349.2 |
 | `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |

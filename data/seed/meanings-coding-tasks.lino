@@ -1294,8 +1294,6 @@ meanings
   web_search_provider
     defined-by concept
     role coding_search_subject_kind
-    precondition "a repository requirement names an Internet search provider or source"
-    effect "the language-independent web, search, and provider identifier components are available to repository target resolution"
     unit "not applicable"
     example "search provider"
     lexeme en
@@ -1328,8 +1326,6 @@ meanings
   repository_provider
     defined-by concept
     role coding_search_subject_kind
-    precondition "a repository requirement names a provider or source implementation concept"
-    effect "the provider identifier component is available to repository target resolution"
     unit "not applicable"
     example provider
     lexeme en
@@ -1356,8 +1352,6 @@ meanings
   repository_default_value
     defined-by concept
     role coding_search_subject_kind
-    precondition "a repository requirement names a default implementation value"
-    effect "the default identifier component is available to repository target resolution"
     unit "not applicable"
     example default
     lexeme en
@@ -1378,8 +1372,6 @@ meanings
   repository_timeout
     defined-by concept
     role coding_search_subject_kind
-    precondition "a repository requirement names a bounded wait duration"
-    effect "the timeout identifier component is available to repository target resolution"
     unit second
     example timeout
     lexeme en
@@ -1400,8 +1392,6 @@ meanings
   file_analysis_gap_marker
     defined-by predicate
     role file_analysis_gap_marker
-    precondition "a bounded audit searches a text artifact for explicit evidence of incomplete work"
-    effect "the surface joins the data-derived grep expression without making absence evidence of completion"
     unit "not applicable"
     example "pending"
     lexeme en

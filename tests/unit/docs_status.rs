@@ -13,8 +13,18 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::{Mutex, OnceLock};
 
 use sha2::{Digest, Sha256};
+
+// Both render-cycle tests below drive the *live* `docs/status.md`: one deletes
+// and regenerates it, the other runs the `--check` gate against it. Run in
+// parallel they interleave and the gate reads a momentarily missing file, so
+// the two cycles are serialized in-process.
+fn render_cycle_lock() -> &'static Mutex<()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(()))
+}
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
@@ -68,6 +78,7 @@ fn every_declared_ledger_input_exists() {
 
 #[test]
 fn deleting_the_status_document_and_regenerating_reproduces_its_content_id() {
+    let _cycle = render_cycle_lock().lock().unwrap_or_else(|error| error.into_inner());
     let path = repo_root().join("docs/status.md");
     let before = fs::read(&path).unwrap_or_else(|error| {
         panic!(
@@ -97,6 +108,7 @@ fn deleting_the_status_document_and_regenerating_reproduces_its_content_id() {
 
 #[test]
 fn check_mode_is_green_against_the_committed_ledgers() {
+    let _cycle = render_cycle_lock().lock().unwrap_or_else(|error| error.into_inner());
     let (stdout, stderr, ok) = render("--check");
     assert!(
         ok,

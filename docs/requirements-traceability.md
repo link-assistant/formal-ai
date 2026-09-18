@@ -420,6 +420,14 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R1138-6-10 | n/a | PR for #1138 | tests/unit/issue_1138_execution_box.rs; tests/unit/issue_1138_named_tests.rs | not yet confirmed |
 | R1138-6-11 | n/a | PR for #1138 | tests/unit/issue_1138_surface_honesty.rs; tests/web/issue-1138-browser-runtime.test.mjs | not yet confirmed |
 | R1138-6-12 | n/a | PR for #1138 | tests/unit/issue_1138_telegram_execution.rs; tests/web/issue-1138-execution-parity.test.mjs | not yet confirmed |
+| R1138-B2-1 | n/a | PR for #1138 | tests/unit/coding_discovery/procedure_text.rs | not yet confirmed |
+| R1138-B2-2 | n/a | PR for #1138 | tests/unit/coding_discovery/program_ir.rs | not yet confirmed |
+| R1138-B2-3 | n/a | PR for #1138 | tests/unit/coding_discovery/ir_lowering.rs; tests/unit/coding_discovery/multilingual.rs | not yet confirmed |
+| R1138-B2-4 | n/a | PR for #1138 | tests/unit/coding_discovery/fragment_catalog.rs | not yet confirmed |
+| R1138-B2-5 | n/a | PR for #1138 | tests/unit/coding_discovery/ledger.rs | not yet confirmed |
+| R1138-B2-6 | n/a | PR for #1138 | data/benchmarks/external-results.lino (2026-09-17 full-suite rows); tests/unit/specification/external_benchmarks.rs | not yet confirmed |
+| R1138-B2-7 | n/a | PR for #1138 | tests/unit/coding_discovery/structural_composition.rs; tests/unit/coding_discovery/no_memorization.rs | not yet confirmed |
+| R1138-B2-8 | n/a | PR for #1138 | data/seed/sources-registry.lino; tests/unit/coding_discovery/oeis.rs; tests/unit/coding_discovery/python_docs.rs | not yet confirmed |
 | R345 | 956 | PR #564 (issue #563) | tests/unit/specification/summarization_pipeline.rs::repository_file_summary_recurses_into_markdown_embedded_grammars | not yet confirmed |
 | R346 | 957 | PR #564 (issue #563) | none recorded | not yet confirmed |
 | R347 | 958 | PR #564 (issue #563) | none recorded | not yet confirmed |
@@ -715,8 +723,8 @@ column still records the REQUIREMENTS.md line each row was audited at in
 | R709-4 | 1642 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
 | R709-5 | 1643 | pre-2026-07 (undated); issue #709 | none recorded | not yet confirmed |
 | R710-D1 | 1551 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/no_memorization.rs | not yet confirmed |
-| R710-D2 | 1552 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs; local upstream run recorded in docs/case-studies/issue-710/README.md | not yet confirmed |
-| R710-D3 | 1553 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs; local upstream run recorded in docs/case-studies/issue-710/README.md | not yet confirmed |
+| R710-D2 | 1552 | delivered 2026-09-15; PR #888 (issue #710); full-suite measurement 2026-09-17 (PR #1139) | tests/unit/specification/external_benchmarks.rs; first-20 upstream run recorded in docs/case-studies/issue-710/README.md; full-suite rows in data/benchmarks/external-results.lino | measured 2026-09-17 with `benchmark run --suite humaneval --slice 164`, cold-offline and with `--online`; rows recorded in data/benchmarks/external-results.lino |
+| R710-D3 | 1553 | delivered 2026-09-15; PR #888 (issue #710); full-suite measurement 2026-09-17 (PR #1139) | tests/unit/specification/external_benchmarks.rs; first-20 upstream run recorded in docs/case-studies/issue-710/README.md; full-suite rows in data/benchmarks/external-results.lino | measured 2026-09-17 with `benchmark run --suite mbpp --slice 500`, cold-offline and with `--online`; rows recorded in data/benchmarks/external-results.lino |
 | R710-D4 | 1554 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/routing.rs | not yet confirmed |
 | R710-D5 | 1555 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/specification/external_benchmarks.rs | not yet confirmed |
 | R710-D6 | 1556 | delivered 2026-09-15; PR #888 (issue #710) | tests/unit/coding_discovery/python_docs.rs; tests/unit/coding_discovery/wikifunctions.rs; tests/unit/coding_discovery/rosetta.rs | not yet confirmed |

@@ -491,7 +491,7 @@ Issue #922 delivers E75's first complete method-learning lifecycle. Three real
 recursive-recipe runs feed the existing symbolic algorithm-discovery engine;
 two support traces infer recurring operation sequences and an unseen third
 trace validates them. Candidates remain proposal-only. The strongest method
-cleared fresh canonical coding (4/4), industry (13/13; the upstream HumanEval/MBPP slices score 0/20, see `data/benchmarks/external-results.lino`), and unit (12/12)
+cleared fresh canonical coding (4/4), industry (13/13; see the generated upstream table in `docs/benchmarks.md`, rendered from `data/benchmarks/external-results.lino`), and unit (12/12)
 ratchets before explicit `--apply --confirm` materialized it into
 `data/seed/learned-methods.lino`. The live registry now records the adopted
 abstraction without claiming an executable Rust handler, so existing dispatch
@@ -569,7 +569,7 @@ Issue [#1085](https://github.com/link-assistant/formal-ai/issues/1085) is the
 E108 diagnosis: the solver reasons over Rust structures and the doublets store
 is a write-behind projection; the self-hosting metric credited Claude sessions
 by trailer; the agent ladder's 32 leaves are pre-specified single-file edits that
-were never compiled; upstream coding scores are 0/20 and flat; and most effort
+were never compiled; upstream coding scores are published per slice in `docs/benchmarks.md`; and most effort
 goes to gates and evidence. The pull request for the issue lands in pushes on
 one branch, and this section records what each push delivered.
 

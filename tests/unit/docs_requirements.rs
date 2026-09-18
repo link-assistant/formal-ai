@@ -934,6 +934,11 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             | "data/wiktionary-cache"
             | "data/http-cache"
             | "data/seed/api-cache"
+            // The content-addressed store of bytes retrieved by `--online`
+            // source discovery (official OEIS JSON and the pages it cites).
+            // Like the caches above it is verbatim third-party text, and it
+            // is git-ignored: the pin governs authored repository prose.
+            | "data/source-cache"
             // Git-ignored generated mirrors of already-scanned source: the
             // VS Code packaging step copies src/web -> vscode/dist-web (with
             // data/seed -> vscode/dist-web/seed) and desktop/lib helpers ->
