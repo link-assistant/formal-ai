@@ -2,9 +2,9 @@ self_ast_census
   target src/formalization/concept_links.rs
   language rust
   fidelity signature
-  byte_len 11241
-  line_count 290
-  content_id source_module_8283b3d0f652763c
+  byte_len 11303
+  line_count 291
+  content_id source_module_def3b7ff9b25f93b
   symbol_count 9
   symbols
     struct ConceptGraph 22 30
@@ -15,4 +15,4 @@ self_ast_census
     function unresolved 176 181
     function grounded_ratio 186 193
     function max_depth_reached 197 199
-    function formalize_deeply 205 290
+    function formalize_deeply 206 291

@@ -1,0 +1,15 @@
+self_ast_census
+  target src/source_capability.rs
+  language rust
+  fidelity signature
+  byte_len 6567
+  line_count 172
+  content_id source_module_2a8efb1b1c1f4e9b
+  symbol_count 6
+  symbols
+    function compose_source_evidence 27 48
+    function measurement_source_evidence 57 86
+    function distinct_senses 88 94
+    function source_header 96 104
+    function unavailable 106 115
+    function execute 118 172

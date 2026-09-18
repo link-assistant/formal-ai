@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 38257
+  byte_len 38268
   line_count 821
-  content_id source_module_e0fd803f8a916c1e
+  content_id source_module_2948bfab84ed637d
   symbol_count 38
   symbols
     const PLAN_PATH 22 22
@@ -50,8 +50,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19852
-    named_node_count 4011
+    total_link_count 19864
+    named_node_count 4013
     distinct_node_kinds 84
     node_kinds
       arguments 275
@@ -124,7 +124,7 @@ self_ast_census
       string_literal 73
       struct_expression 6
       struct_item 2
-      super 9
+      super 10
       token_tree 35
       try_expression 17
       tuple_expression 6
@@ -137,4 +137,4 @@ self_ast_census
       use_as_clause 1
       use_declaration 10
       use_list 4
-      visibility_modifier 30
+      visibility_modifier 31

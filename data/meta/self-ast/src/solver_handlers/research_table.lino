@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/research_table.rs
   language rust
   fidelity signature
-  byte_len 18453
+  byte_len 18469
   line_count 540
-  content_id source_module_b8dc973c83061c6c
+  content_id source_module_a17a2e14d2f0f720
   symbol_count 36
   symbols
     const RESEARCH_TABLE_PROCEDURE_LINO 20 21

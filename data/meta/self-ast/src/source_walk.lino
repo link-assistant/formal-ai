@@ -2,9 +2,9 @@ self_ast_census
   target src/source_walk.rs
   language rust
   fidelity signature
-  byte_len 22543
-  line_count 587
-  content_id source_module_7f915cae86848d26
+  byte_len 22351
+  line_count 577
+  content_id source_module_e317b6151b8ef9a2
   symbol_count 28
   symbols
     struct LookupBounds 34 48
@@ -31,7 +31,7 @@ self_ast_census
     function skipped_sources 332 357
     struct Walk 360 367
     function walk_source 374 441
-    function walk_sources 446 518
-    function endpoint_key 528 540
-    function observe_failure 544 578
-    function trusted_sources 585 587
+    function walk_sources 447 508
+    function endpoint_key 518 530
+    function observe_failure 534 568
+    function trusted_sources 575 577

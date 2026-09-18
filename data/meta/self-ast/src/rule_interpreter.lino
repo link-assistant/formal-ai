@@ -2,10 +2,10 @@ self_ast_census
   target src/rule_interpreter.rs
   language rust
   fidelity signature
-  byte_len 32771
-  line_count 926
-  content_id source_module_8afc4c40b4a2bb91
-  symbol_count 64
+  byte_len 34295
+  line_count 960
+  content_id source_module_dc213b990c9f2819
+  symbol_count 65
   symbols
     module parser 23 23
     struct HandlerRules 29 31
@@ -63,11 +63,12 @@ self_ast_census
     function render 685 716
     function substitute 719 725
     function holds 728 837
-    function surface_present 840 851
-    const SEPARATED_ROLE_OBJECT_LIMIT 858 858
-    function separated_surface_present 860 874
-    function before_slot 876 878
-    const QUOTE_PAIRS 885 885
-    function holds 896 916
-    const URL_PREFIXES 921 921
-    function is_url 924 926
+    function spelled_surface_present 849 872
+    function bounded_surface_present 874 885
+    const SEPARATED_ROLE_OBJECT_LIMIT 892 892
+    function separated_surface_present 894 908
+    function before_slot 910 912
+    const QUOTE_PAIRS 919 919
+    function holds 930 950
+    const URL_PREFIXES 955 955
+    function is_url 958 960

@@ -2,35 +2,37 @@ self_ast_census
   target src/coding/function_catalog/oeis.rs
   language rust
   fidelity signature
-  byte_len 15753
-  line_count 501
-  content_id source_module_3275e342f5bf4dc7
-  symbol_count 27
+  byte_len 19191
+  line_count 596
+  content_id source_module_047b6ead7bf9d26f
+  symbol_count 29
   symbols
-    const MAX_REFERENCES 17 17
-    struct SequenceProgram 20 30
-    struct SequenceDiscovery 33 36
-    struct Record 39 51
-    struct LinearRecurrence 54 57
-    function discover_programs 61 89
-    function discover_query 91 135
-    function parse_records 137 149
-    function referenced_ids 151 163
-    function oeis_ids_in 165 182
-    function programs_for_record 184 224
-    function sequence_program 226 246
-    function research_queries 248 265
-    function tiling_query 267 292
-    function singularize_english_noun 299 316
-    function dimension_token 318 321
-    function boolean_examples 323 329
-    function integer_examples 331 339
-    function arithmetic_formula 341 363
-    function formula_membership_body 365 377
-    function replace_variable 379 390
-    function linear_recurrence 392 409
-    function parse_coefficient 411 418
-    function matching_index_maps 420 455
-    function recurrence_body 457 489
-    function template 491 493
-    function record_label 495 501
+    const MAX_REFERENCES 20 20
+    struct SequenceProgram 23 36
+    struct SequenceDiscovery 39 42
+    struct Record 45 57
+    struct LinearRecurrence 60 63
+    function discover_programs 67 95
+    function discover_query 97 141
+    function parse_records 143 155
+    function referenced_ids 157 169
+    function oeis_ids_in 171 188
+    function programs_for_record 190 230
+    function sequence_program 232 253
+    function sequence_program_from_ir 255 280
+    function research_queries 282 299
+    function tiling_query 301 331
+    function singularize_english_noun 338 355
+    function dimension_token 357 360
+    function boolean_examples 362 368
+    function integer_examples 370 378
+    function arithmetic_formula 380 402
+    function formula_membership_body 404 416
+    function replace_variable 418 429
+    function linear_recurrence 431 448
+    function parse_coefficient 450 457
+    function matching_index_maps 459 494
+    function recurrence_ir 496 577
+    function integer_literal 579 584
+    function template 586 588
+    function record_label 590 596

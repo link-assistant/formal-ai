@@ -2,82 +2,84 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 25472
-  line_count 627
-  content_id source_module_97d0124392d5b75d
-  symbol_count 24
+  byte_len 26578
+  line_count 652
+  content_id source_module_9244c1b0c17a05ad
+  symbol_count 26
   symbols
     function tool_for 24 59
-    function acts_in_capability_scope 67 75
-    function research_tool_rank 95 107
-    const HOSTED_RESEARCH_TOOLS 110 110
-    function is_browser_interaction_tool 123 127
-    const BROWSER_INTERACTION_MARKERS 129 129
-    function tool_matches_capability 143 153
-    function classify_tool 157 220
-    function workspace_creation_tool 229 236
-    function is_workspace_creation_tool 243 254
-    enum RoutingStage 268 273
-    function names_a_container_without_an_act 283 287
-    function stage_of 291 303
-    const ROUTED_CAPABILITIES 310 310
-    function plan_routed_capability_step 333 410
-    function lowered_search_command 421 428
-    function routed_arguments 436 478
-    function plan_shared_capability_step 480 509
-    function task_matches 511 521
-    function arguments_for 523 570
-    function wildcard_token 572 576
-    function file_tokens 578 591
-    function shell_fallback 593 623
-    function shell_quote 625 627
+    function shell_command_tool 67 78
+    function tool_leaf_name 81 84
+    function acts_in_capability_scope 92 100
+    function research_tool_rank 120 132
+    const HOSTED_RESEARCH_TOOLS 135 135
+    function is_browser_interaction_tool 148 152
+    const BROWSER_INTERACTION_MARKERS 154 154
+    function tool_matches_capability 168 178
+    function classify_tool 182 245
+    function workspace_creation_tool 254 261
+    function is_workspace_creation_tool 268 279
+    enum RoutingStage 293 298
+    function names_a_container_without_an_act 308 312
+    function stage_of 316 328
+    const ROUTED_CAPABILITIES 335 335
+    function plan_routed_capability_step 358 435
+    function lowered_search_command 446 453
+    function routed_arguments 461 503
+    function plan_shared_capability_step 505 534
+    function task_matches 536 546
+    function arguments_for 548 595
+    function wildcard_token 597 601
+    function file_tokens 603 616
+    function shell_fallback 618 648
+    function shell_quote 650 652
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15787
-    named_node_count 3282
+    total_link_count 16558
+    named_node_count 3456
     distinct_node_kinds 76
     node_kinds
-      arguments 266
-      array_expression 6
-      array_type 10
+      arguments 284
+      array_expression 7
+      array_type 11
       attribute 1
       attribute_item 1
-      binary_expression 58
-      block 67
+      binary_expression 60
+      block 71
       boolean_literal 12
-      call_expression 266
-      char_literal 25
-      closure_expression 39
-      closure_parameters 39
+      call_expression 284
+      char_literal 28
+      closure_expression 42
+      closure_parameters 42
       const_item 3
       crate 16
-      doc_comment 114
+      doc_comment 121
       else_clause 8
       enum_item 1
       enum_variant 2
       enum_variant_list 1
       escape_sequence 2
       expression_statement 50
-      field_expression 172
-      field_identifier 172
+      field_expression 189
+      field_identifier 189
       field_pattern 3
       for_expression 1
-      function_item 20
+      function_item 22
       generic_function 1
-      generic_type 14
-      identifier 748
+      generic_type 15
+      identifier 780
       if_expression 26
       inner_doc_comment_marker 1
       integer_literal 8
       let_chain 2
       let_condition 4
-      let_declaration 38
-      lifetime 8
-      lifetime_parameter 2
-      line_comment 139
+      let_declaration 41
+      lifetime 11
+      lifetime_parameter 3
+      line_comment 146
       macro_invocation 20
       match_arm 26
       match_block 5
@@ -85,34 +87,34 @@ self_ast_census
       match_pattern 26
       mutable_specifier 2
       or_pattern 1
-      outer_doc_comment_marker 113
-      parameter 36
-      parameters 20
+      outer_doc_comment_marker 120
+      parameter 38
+      parameters 22
       parenthesized_expression 2
-      primitive_type 42
+      primitive_type 46
       reference_expression 8
-      reference_type 40
+      reference_type 45
       remaining_field_pattern 2
       return_expression 19
-      scoped_identifier 144
+      scoped_identifier 147
       scoped_type_identifier 4
       scoped_use_list 3
       shorthand_field_identifier 3
       source_file 1
-      string_content 108
-      string_literal 106
+      string_content 109
+      string_literal 107
       struct_pattern 4
-      super 25
+      super 26
       token_tree 42
-      try_expression 11
+      try_expression 12
       tuple_expression 11
       tuple_pattern 12
       tuple_struct_pattern 4
       tuple_type 1
-      type_arguments 15
-      type_identifier 41
-      type_parameters 2
+      type_arguments 16
+      type_identifier 42
+      type_parameters 3
       unary_expression 14
       use_declaration 8
       use_list 3
-      visibility_modifier 7
+      visibility_modifier 8

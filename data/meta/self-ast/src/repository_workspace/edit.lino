@@ -2,9 +2,9 @@ self_ast_census
   target src/repository_workspace/edit.rs
   language rust
   fidelity signature
-  byte_len 2720
+  byte_len 2723
   line_count 76
-  content_id source_module_b72afff151bb6928
+  content_id source_module_023460dc70f23d66
   symbol_count 3
   symbols
     struct Change 15 20

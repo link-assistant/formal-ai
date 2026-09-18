@@ -2,28 +2,29 @@ self_ast_census
   target src/meta_method_dispatch.rs
   language rust
   fidelity signature
-  byte_len 27458
-  line_count 717
-  content_id source_module_82b80605657bbd01
-  symbol_count 20
+  byte_len 28265
+  line_count 733
+  content_id source_module_b557ea0b7fb80848
+  symbol_count 21
   symbols
     function try_dispatch 36 196
     const SOLVER_CAPABILITIES 202 212
-    function try_capability_route 220 318
-    function capability_route_preempts 328 346
-    function solver_route_is_authoritative 353 366
-    function record_capability_route 368 384
-    function capability_gap 386 416
-    function request_anchors 422 442
-    function response_language_demonstration 444 473
-    function explain_previous_turn 475 488
-    function try_learned_method 499 558
-    struct MethodRuntime 561 565
-    function new 568 589
-    function try_attributed_runtime 592 618
-    function try_response_language_variant 620 635
-    function try_diagnostic 637 675
-    function record_method 677 679
-    function record_method_answer 681 689
-    function record_contextual_method_answer 691 699
-    function refresh_answer_projection 701 717
+    function try_capability_route 220 332
+    function capability_route_preempts 342 360
+    function solver_route_is_authoritative 370 386
+    function record_capability_route 388 404
+    function capability_gap 406 436
+    function request_anchors 442 462
+    function response_language_demonstration 464 500
+    function explain_previous_turn 502 515
+    function try_learned_method 526 570
+    struct MethodRuntime 573 577
+    function new 580 601
+    function try_attributed_runtime 604 630
+    function try_response_language_variant 632 647
+    function try_diagnostic 649 687
+    function record_method 689 691
+    function record_method_answer 693 701
+    function record_contextual_method_answer 703 711
+    function refresh_answer_projection 713 729
+    function seeded_runtime_text 731 733

@@ -2,43 +2,44 @@ self_ast_census
   target src/coding/fragment_catalog.rs
   language rust
   fidelity signature
-  byte_len 20506
-  line_count 604
-  content_id source_module_14c85eaf40b05ab0
-  symbol_count 35
+  byte_len 23510
+  line_count 674
+  content_id source_module_a95658c719d89238
+  symbol_count 36
   symbols
     enum FragmentOrigin 20 25
     enum FragmentKind 29 32
-    struct Fragment 36 53
-    struct FragmentCatalog 56 58
-    function bootstrap 64 66
-    function bootstrap_from 71 88
-    function with_rediscovered 92 124
-    function get 127 129
-    function producing 133 141
-    function fragments 145 147
-    function render 152 163
-    function render_named 169 184
-    function content_id 189 197
-    function bootstrap_seed_directory 200 205
-    function bootstrap_seed_text 207 215
-    struct FragmentLedger 220 222
-    function new 226 230
-    function recall 232 239
-    function forget_all 243 259
-    function remember 261 273
-    function fragment_path 275 280
-    function normalize_catalog 283 291
-    function fragments_from_meanings 293 318
-    function fragments_from_runtime 320 337
-    function fragment_from_seed_node 339 402
-    function placeholders 404 423
-    function inferred_result 425 456
-    function types_may_unify 458 468
-    function valid_rediscovered 470 476
-    function canonical_fragment 478 505
-    function fragment_projection 507 541
-    function parse_fragment 543 583
-    function origin_slug 585 590
-    function kind_slug 592 597
-    function reuse_slug 599 604
+    struct Fragment 36 57
+    function argument_names 64 68
+    struct FragmentCatalog 72 74
+    function bootstrap 80 82
+    function bootstrap_from 87 108
+    function with_rediscovered 112 144
+    function get 147 149
+    function producing 153 161
+    function fragments 165 167
+    function render 172 183
+    function render_named 189 204
+    function content_id 209 217
+    function bootstrap_seed_directory 220 225
+    function bootstrap_seed_text 227 235
+    struct FragmentLedger 240 242
+    function new 246 250
+    function recall 252 259
+    function forget_all 263 279
+    function remember 281 293
+    function fragment_path 295 300
+    function normalize_catalog 303 311
+    function fragments_from_meanings 313 338
+    function fragments_from_runtime 340 365
+    function fragment_from_seed_node 367 458
+    function placeholders 460 479
+    function inferred_result 481 512
+    function types_may_unify 514 527
+    function valid_rediscovered 529 535
+    function canonical_fragment 537 566
+    function fragment_projection 568 605
+    function parse_fragment 607 653
+    function origin_slug 655 660
+    function kind_slug 662 667
+    function reuse_slug 669 674

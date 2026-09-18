@@ -2,9 +2,9 @@ self_ast_census
   target src/how_to_guide.rs
   language rust
   fidelity signature
-  byte_len 27290
-  line_count 714
-  content_id source_module_66dc2983ded2405b
+  byte_len 27100
+  line_count 706
+  content_id source_module_e946787fb74b463a
   symbol_count 43
   symbols
     module extract 19 19
@@ -44,9 +44,9 @@ self_ast_census
     struct StepExtractor 477 479
     type Item 482 482
     function entry_url 484 486
-    function read 488 579
-    function push_steps 582 609
-    function apply_copied_source_policy 615 644
-    function apply_conflict_policy 648 680
-    function action_key 684 696
-    function order_steps 700 714
+    function read 488 571
+    function push_steps 574 601
+    function apply_copied_source_policy 607 636
+    function apply_conflict_policy 640 672
+    function action_key 676 688
+    function order_steps 692 706

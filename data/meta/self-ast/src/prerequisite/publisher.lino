@@ -2,9 +2,9 @@ self_ast_census
   target src/prerequisite/publisher.rs
   language rust
   fidelity signature
-  byte_len 17814
-  line_count 484
-  content_id source_module_5fb0117a8f995c04
+  byte_len 18170
+  line_count 495
+  content_id source_module_4db7e19157c8e82a
   symbol_count 21
   symbols
     const SETUP_PUBLISHERS_LINO 23 23
@@ -22,9 +22,9 @@ self_ast_census
     function arguments 135 151
     function display_command 153 160
     function procedure_from_sense 166 240
-    function pinned_python_repository_procedure 246 325
-    struct PublisherRefusal 329 336
-    struct PublisherSearch 340 349
-    function detect_cycle 354 373
-    function discover_setup_procedure 382 388
-    function search_setup_procedure 391 484
+    function pinned_python_repository_procedure 247 336
+    struct PublisherRefusal 340 347
+    struct PublisherSearch 351 360
+    function detect_cycle 365 384
+    function discover_setup_procedure 393 399
+    function search_setup_procedure 402 495

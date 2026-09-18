@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_search.rs
   language rust
   fidelity signature
-  byte_len 29444
-  line_count 834
-  content_id source_module_45f33888b1918793
+  byte_len 29400
+  line_count 833
+  content_id source_module_4a26514211e768f0
   symbol_count 40
   symbols
     module portfolio 31 31
@@ -27,23 +27,23 @@ self_ast_census
     const MAX_REFUTATION_HYPOTHESES 298 298
     enum RefutationOutcome 300 304
     function run_refutation_search 306 443
-    function candidate_space_size 445 452
-    function enumerate_candidates 454 475
-    function enumerate_orders 477 497
-    function enumerate_operator_rows 499 514
-    struct SearchSolution 519 523
-    function run_search 525 609
-    const POPULATION 612 612
-    const GENERATION_LOG_STRIDE 615 615
-    function finish_solution 617 635
-    function score 641 645
-    function remember_best 647 651
-    function insert_population 653 668
-    function random_candidate 670 676
-    function random_permutation 678 686
-    function breed 690 717
-    function record_generated_tests 719 728
-    function build_answer 731 773
-    function record_skill_proposal 785 819
-    function join_numbers 821 827
-    function join_ops 829 834
+    function candidate_space_size 445 451
+    function enumerate_candidates 453 474
+    function enumerate_orders 476 496
+    function enumerate_operator_rows 498 513
+    struct SearchSolution 518 522
+    function run_search 524 608
+    const POPULATION 611 611
+    const GENERATION_LOG_STRIDE 614 614
+    function finish_solution 616 634
+    function score 640 644
+    function remember_best 646 650
+    function insert_population 652 667
+    function random_candidate 669 675
+    function random_permutation 677 685
+    function breed 689 716
+    function record_generated_tests 718 727
+    function build_answer 730 772
+    function record_skill_proposal 784 818
+    function join_numbers 820 826
+    function join_ops 828 833

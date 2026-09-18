@@ -2,9 +2,9 @@ self_ast_census
   target src/obligation_ledger/derivation.rs
   language rust
   fidelity signature
-  byte_len 12567
+  byte_len 12573
   line_count 323
-  content_id source_module_a7ee89c0243a328d
+  content_id source_module_de1887af27d34194
   symbol_count 21
   symbols
     function clauses_with_spans 27 56

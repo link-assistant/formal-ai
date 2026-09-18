@@ -2,9 +2,9 @@ self_ast_census
   target src/prerequisite/ledger.rs
   language rust
   fidelity signature
-  byte_len 7818
+  byte_len 7810
   line_count 206
-  content_id source_module_32faa00f7751326d
+  content_id source_module_1d69873efd1d9649
   symbol_count 12
   symbols
     const RECORD_TOOLCHAIN 20 20

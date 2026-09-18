@@ -2,9 +2,9 @@ self_ast_census
   target src/reasoning_standard/mod.rs
   language rust
   fidelity signature
-  byte_len 29607
+  byte_len 29614
   line_count 809
-  content_id source_module_71e6600f180be67b
+  content_id source_module_50763e81b0364617
   symbol_count 43
   symbols
     module episode 29 29

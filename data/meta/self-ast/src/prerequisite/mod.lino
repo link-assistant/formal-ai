@@ -2,9 +2,9 @@ self_ast_census
   target src/prerequisite/mod.rs
   language rust
   fidelity signature
-  byte_len 21341
+  byte_len 21310
   line_count 585
-  content_id source_module_502a6a9c8a88c4d2
+  content_id source_module_5fcee45fcf11bdf7
   symbol_count 29
   symbols
     module install 11 11

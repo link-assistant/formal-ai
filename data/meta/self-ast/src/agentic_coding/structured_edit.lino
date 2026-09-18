@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/structured_edit.rs
   language rust
   fidelity full_ast
-  byte_len 28841
+  byte_len 28834
   line_count 712
-  content_id source_module_4dc07e163ecb9c64
+  content_id source_module_1eea96521a89ea4a
   symbol_count 27
   symbols
     const MAX_MEMBER_LENGTH 31 31
@@ -39,8 +39,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19286
-    named_node_count 3870
+    total_link_count 19280
+    named_node_count 3869
     distinct_node_kinds 86
     node_kinds
       abstract_type 1
@@ -62,7 +62,7 @@ self_ast_census
       compound_assignment_expr 9
       const_item 1
       continue_expression 4
-      crate 4
+      crate 3
       doc_comment 81
       else_clause 3
       escape_sequence 2

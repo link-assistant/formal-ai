@@ -2,9 +2,9 @@ self_ast_census
   target src/handler_promotion.rs
   language rust
   fidelity signature
-  byte_len 7962
+  byte_len 7996
   line_count 213
-  content_id source_module_43ecfe5ef1bdeb83
+  content_id source_module_e8e414895ed75c5d
   symbol_count 11
   symbols
     const PROMOTIONS_LINO 20 20

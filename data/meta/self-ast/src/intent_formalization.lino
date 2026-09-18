@@ -2,9 +2,9 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 25085
-  line_count 713
-  content_id source_module_ecc3b07f3ab550f5
+  byte_len 25234
+  line_count 716
+  content_id source_module_b372faca0dc19fb5
   symbol_count 43
   symbols
     module prompt_relevants 26 26
@@ -25,28 +25,28 @@ self_ast_census
     function append_to_link_store 182 198
     function solve_with_intent_cache 203 214
     function impulse_id_for 218 220
-    function formalize_intent 223 271
-    function record_intent_formalization 273 301
-    function select_rule_for_intent 304 317
-    struct MatchedRoute 320 323
-    function route_for_prompt 325 346
-    function matches_route 348 358
-    function contains_token 360 368
-    function write_program_rule_for_intent 370 379
-    struct WriteProgramRecovery 383 395
-    struct ProgramCoreferenceRewrite 399 402
-    function rewrite_bare_program_coreference_rule 412 441
-    struct ActiveProgramContext 443 446
-    function active_program_context 448 470
-    function recover_write_program_rule 486 557
-    function operation_vocabulary 559 562
-    static VOCABULARY 560 560
-    function detected_program_modifiers 571 578
-    function append_candidate_knowns 580 598
-    function slot_known_link 600 625
-    function has_any_token 627 629
-    function route_from_relevants 631 640
-    function infer_kind 642 686
-    function starts_with_question_word 688 703
-    function contains_question_mark 705 707
-    function push_unique 709 713
+    function formalize_intent 223 274
+    function record_intent_formalization 276 304
+    function select_rule_for_intent 307 320
+    struct MatchedRoute 323 326
+    function route_for_prompt 328 349
+    function matches_route 351 361
+    function contains_token 363 371
+    function write_program_rule_for_intent 373 382
+    struct WriteProgramRecovery 386 398
+    struct ProgramCoreferenceRewrite 402 405
+    function rewrite_bare_program_coreference_rule 415 444
+    struct ActiveProgramContext 446 449
+    function active_program_context 451 473
+    function recover_write_program_rule 489 560
+    function operation_vocabulary 562 565
+    static VOCABULARY 563 563
+    function detected_program_modifiers 574 581
+    function append_candidate_knowns 583 601
+    function slot_known_link 603 628
+    function has_any_token 630 632
+    function route_from_relevants 634 643
+    function infer_kind 645 689
+    function starts_with_question_word 691 706
+    function contains_question_mark 708 710
+    function push_unique 712 716

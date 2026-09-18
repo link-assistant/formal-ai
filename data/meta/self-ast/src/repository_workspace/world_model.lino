@@ -1,0 +1,42 @@
+self_ast_census
+  target src/repository_workspace/world_model.rs
+  language rust
+  fidelity signature
+  byte_len 22690
+  line_count 614
+  content_id source_module_cd7f18d75a4c8f7a
+  symbol_count 33
+  symbols
+    const CASE 16 16
+    const REQUIREMENT 17 17
+    const OBSERVATION 18 18
+    const ATTRIBUTION 19 19
+    struct RepositoryRequirement 23 38
+    struct RepositoryObservation 42 53
+    enum RepositoryGapKind 57 64
+    function slug 67 73
+    struct RepositoryGap 78 89
+    enum AttributionVerdict 93 104
+    function parse 107 115
+    function slug 117 125
+    struct RepositoryAttribution 130 139
+    struct RepositoryWorldModel 143 151
+    function from_lino 161 312
+    function head 316 318
+    function requirements 322 324
+    function observations 328 330
+    function attributions 334 336
+    function gaps 340 342
+    function obligation_ledger 346 348
+    function satisfied_requirement_ids 352 359
+    function completion_ready 363 371
+    function to_links_notation 375 469
+    function parse_requirement 472 504
+    function parse_observation 506 561
+    function parse_attribution 563 573
+    function distinct_values 575 583
+    function record_type 585 587
+    function identifier 589 592
+    function required_identifier 594 601
+    function required 603 610
+    function optional 612 614

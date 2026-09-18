@@ -2,9 +2,9 @@ self_ast_census
   target src/solver.rs
   language rust
   fidelity signature
-  byte_len 39060
-  line_count 897
-  content_id source_module_7ea65d1292d43d62
+  byte_len 39032
+  line_count 896
+  content_id source_module_0b6b394f2ca3178d
   symbol_count 20
   symbols
     struct SolverConfig 68 157
@@ -22,8 +22,8 @@ self_ast_census
     function solve_with_history 285 287
     function solve_with_probability_store 290 296
     function solve_with_history_and_probability_store 299 312
-    function solve_with_history_probability_store_and_intent_cache 314 740
-    function handle_policy 742 870
-    function finalize_policy 872 882
-    function solve 889 891
-    function solve_with_history 895 897
+    function solve_with_history_probability_store_and_intent_cache 314 739
+    function handle_policy 741 869
+    function finalize_policy 871 881
+    function solve 888 890
+    function solve_with_history 894 896

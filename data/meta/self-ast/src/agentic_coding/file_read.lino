@@ -2,154 +2,175 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 34366
-  line_count 972
-  content_id source_module_429801b9e1c7dc4a
-  symbol_count 48
+  byte_len 41102
+  line_count 1174
+  content_id source_module_5c6b5f5699abfc57
+  symbol_count 63
   symbols
     module exact 3 3
-    enum FileReadTask 16 31
-    enum FileReadMode 34 39
-    enum FileSelection 42 46
-    struct ToolResultRecord 48 52
-    function plan_file_read_step 57 92
-    function failed_step_answer 102 105
-    function plan_direct_file_read 107 172
-    function plan_list_then_read 174 255
-    function file_read_task_for 257 346
-    function read_paths_named_beside_their_cue 355 363
-    function has_file_read_intent 365 367
-    function asks_to_read_every_file 369 372
-    function asks_to_list_then_read 374 384
-    function asks_to_read_file_in_folder 386 388
-    function selection_for_prompt 390 396
-    function mode_for_prompt 398 413
-    function extract_value_key 415 426
-    function leading_cat_path 428 439
-    function first_local_file_path 441 443
-    function local_file_paths 445 453
-    function clean_file_token 462 476
-    function looks_like_local_file_path 478 497
-    function is_file_path_char 499 501
-    function directory_for_list_read 503 534
-    function tool_result_records 536 567
-    function tool_result_call 569 575
-    function read_result_for_path 577 586
-    function same_path 594 603
-    function read_results_for_paths 605 615
-    function run_record_for_command 623 631
-    function command_argument 641 645
-    function path_argument 647 652
-    function read_arguments 654 661
-    function read_command_for 663 674
-    function list_files_command 676 685
-    function cat_many_command 687 699
-    function shell_path 701 709
-    function shell_string 711 713
-    function selected_paths_from_listing 715 745
-    function file_read_final_answer 747 795
-    function extract_jsonish_value 797 831
-    function supplied_file_answer 847 854
-    function supplied_file_final_answer 871 900
-    function supplied_file_template 908 921
-    function supplied_file_content 931 958
-    function tool_for 960 965
-    function plan_one 967 972
+    const AUDIT_READ_LINE_LIMIT 15 15
+    const AUDIT_READ_COLUMN_LIMIT 16 16
+    enum FileReadTask 19 34
+    function is_analysis 37 43
+    enum FileReadMode 47 54
+    enum FileSelection 57 61
+    struct ToolResultRecord 63 67
+    function plan_file_read_step 72 117
+    function failed_step_answer 127 130
+    function plan_direct_file_read 132 213
+    function plan_list_then_read 215 297
+    function file_read_task_for 299 388
+    function read_paths_named_beside_their_cue 397 405
+    function has_file_read_intent 407 409
+    function asks_to_read_every_file 411 414
+    function asks_to_list_then_read 416 426
+    function asks_to_read_file_in_folder 428 430
+    function selection_for_prompt 432 438
+    function mode_for_prompt 440 461
+    function extract_value_key 463 474
+    function leading_cat_path 476 487
+    function first_local_file_path 489 491
+    function local_file_paths 493 501
+    function clean_file_token 510 524
+    function looks_like_local_file_path 526 545
+    function is_file_path_char 547 549
+    function directory_for_list_read 551 582
+    function tool_result_records 584 615
+    function tool_result_call 617 623
+    function read_result_for_path 625 634
+    function grep_result_for_path 636 654
+    function same_path 662 671
+    function read_results_for_paths 673 683
+    function run_record_for_command 691 699
+    function command_argument 709 713
+    function path_argument 715 720
+    function read_arguments 722 735
+    function grep_arguments 737 739
+    function file_analysis_pattern 743 755
+    function regex_escape 757 772
+    function read_command_for 774 800
+    function list_files_command 802 811
+    function cat_many_command 813 825
+    function shell_path 827 835
+    function shell_string 837 839
+    function selected_paths_from_listing 841 871
+    function file_read_final_answer 873 926
+    function bounded_audit_answer 928 970
+    const FINDINGS_PER_FILE 929 929
+    const FINDINGS_TOTAL 930 930
+    const FINDING_CHARS 931 931
+    const PATH_CHARS 932 932
+    function line_contains_gap_marker 972 976
+    function contains_unchecked_box 978 984
+    function capped_text 986 993
+    function extract_jsonish_value 995 1029
+    function supplied_file_answer 1045 1052
+    function supplied_file_final_answer 1069 1102
+    function supplied_file_template 1110 1123
+    function supplied_file_content 1133 1160
+    function tool_for 1162 1167
+    function plan_one 1169 1174
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24582
-    named_node_count 5035
-    distinct_node_kinds 89
+    total_link_count 29965
+    named_node_count 6109
+    distinct_node_kinds 95
     node_kinds
-      arguments 427
-      array_expression 9
-      array_type 16
-      assignment_expression 3
+      arguments 516
+      array_expression 11
+      array_type 19
+      assignment_expression 8
       attribute 5
       attribute_item 5
-      binary_expression 65
-      block 137
+      binary_expression 82
+      block 160
       boolean_literal 6
-      call_expression 427
-      char_literal 36
-      closure_expression 45
-      closure_parameters 45
+      call_expression 516
+      char_literal 55
+      closure_expression 60
+      closure_parameters 60
+      const_item 6
       continue_expression 4
-      crate 5
-      doc_comment 87
-      else_clause 8
+      crate 6
+      declaration_list 1
+      doc_comment 90
+      else_clause 10
       enum_item 3
-      enum_variant 10
+      enum_variant 11
       enum_variant_list 3
-      escape_sequence 23
-      expression_statement 117
+      escape_sequence 24
+      expression_statement 140
       field_declaration 11
       field_declaration_list 4
-      field_expression 309
-      field_identifier 340
+      field_expression 384
+      field_identifier 415
       field_initializer 20
       field_initializer_list 9
-      field_pattern 10
-      for_expression 9
-      function_item 43
+      field_pattern 13
+      for_expression 10
+      function_item 52
       function_modifiers 1
-      generic_function 7
-      generic_type 35
-      identifier 1130
-      if_expression 51
-      index_expression 26
+      generic_function 10
+      generic_type 39
+      identifier 1387
+      if_expression 57
+      impl_item 1
+      index_expression 32
       inner_doc_comment_marker 1
-      integer_literal 34
+      integer_literal 45
       let_chain 4
       let_condition 24
-      let_declaration 69
-      lifetime 9
-      lifetime_parameter 3
-      line_comment 116
-      macro_invocation 30
-      match_arm 18
-      match_block 6
-      match_expression 6
-      match_pattern 18
+      let_declaration 85
+      lifetime 12
+      lifetime_parameter 4
+      line_comment 122
+      macro_invocation 46
+      match_arm 21
+      match_block 7
+      match_expression 7
+      match_pattern 21
       mod_item 1
-      mutable_specifier 9
-      or_pattern 2
+      mutable_specifier 16
+      or_pattern 5
       ordered_field_declaration_list 1
-      outer_doc_comment_marker 86
-      parameter 82
-      parameters 43
-      parenthesized_expression 8
-      primitive_type 70
-      range_expression 6
-      reference_expression 54
-      reference_type 81
-      remaining_field_pattern 1
-      return_expression 42
-      scoped_identifier 104
-      scoped_type_identifier 15
+      outer_doc_comment_marker 89
+      parameter 99
+      parameters 52
+      parenthesized_expression 10
+      primitive_type 93
+      range_expression 9
+      raw_string_literal 1
+      reference_expression 66
+      reference_type 98
+      remaining_field_pattern 4
+      return_expression 44
+      scoped_identifier 127
+      scoped_type_identifier 18
       scoped_use_list 3
-      shorthand_field_identifier 10
+      self 2
+      self_parameter 1
+      shorthand_field_identifier 13
       shorthand_field_initializer 5
       source_file 1
-      string_content 110
-      string_literal 103
+      string_content 138
+      string_literal 131
       struct_expression 9
       struct_item 1
-      struct_pattern 4
-      super 17
-      token_tree 55
+      struct_pattern 7
+      super 18
+      token_tree 80
       try_expression 10
       tuple_expression 11
-      tuple_pattern 14
+      tuple_pattern 16
       tuple_struct_pattern 31
-      tuple_type 3
-      type_arguments 42
-      type_identifier 131
-      type_parameters 3
-      unary_expression 21
+      tuple_type 4
+      type_arguments 49
+      type_identifier 152
+      type_parameters 4
+      unary_expression 27
       use_declaration 8
       use_list 3
-      visibility_modifier 6
+      visibility_modifier 7

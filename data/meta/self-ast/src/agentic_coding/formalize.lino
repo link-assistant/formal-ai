@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/formalize.rs
   language rust
   fidelity full_ast
-  byte_len 26072
+  byte_len 26078
   line_count 694
-  content_id source_module_8919143c938438d0
+  content_id source_module_822aacb04b64362e
   symbol_count 23
   symbols
     const CANONICAL_FISHERMAN_SYNOPSIS 41 42
@@ -35,8 +35,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16956
-    named_node_count 3433
+    total_link_count 16960
+    named_node_count 3434
     distinct_node_kinds 79
     node_kinds
       arguments 253
@@ -51,8 +51,8 @@ self_ast_census
       boolean_literal 3
       call_expression 253
       char_literal 5
-      closure_expression 18
-      closure_parameters 18
+      closure_expression 19
+      closure_parameters 19
       const_item 3
       continue_expression 1
       crate 10
@@ -71,7 +71,7 @@ self_ast_census
       function_modifiers 2
       generic_function 1
       generic_type 23
-      identifier 607
+      identifier 606
       if_expression 14
       impl_item 3
       index_expression 1

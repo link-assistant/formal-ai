@@ -2,9 +2,9 @@ self_ast_census
   target src/obligation_ledger.rs
   language rust
   fidelity signature
-  byte_len 34252
-  line_count 886
-  content_id source_module_5b79d753d04eaf8d
+  byte_len 34753
+  line_count 897
+  content_id source_module_66e94c91a0c00591
   symbol_count 40
   symbols
     enum ObligationExpectation 29 65
@@ -23,27 +23,27 @@ self_ast_census
     function collect_leaves 326 334
     function expand 346 385
     function leaves_mut 388 396
-    function judge 402 508
-    function mismatch_sentence 516 523
-    function to_links_notation 527 563
-    struct ObligationLedger 568 573
-    function for_frame 581 592
-    function observe 601 614
-    function every_obligation_discharged 618 620
-    function satisfied_count 624 626
-    function unsatisfiable_count 630 632
-    function unattempted_count 636 638
-    function refuted_count 642 644
-    function count_of 646 653
-    function satisfied_need_ids 657 668
-    function to_links_notation 673 690
-    function record_obligation_ledger 699 721
-    const MISMATCH_LINO 724 724
-    const RECORD_MISMATCH 727 727
-    function mismatch_template 734 747
-    function need_for_clause 750 759
-    enum ObligationStep 763 779
-    function need_status_with_observation 789 797
-    function need_ledger_with_execution 807 821
-    function next_step 832 880
-    module derivation 882 882
+    function judge 402 518
+    function mismatch_sentence 526 533
+    function to_links_notation 537 573
+    struct ObligationLedger 578 583
+    function for_frame 591 602
+    function observe 611 624
+    function every_obligation_discharged 628 630
+    function satisfied_count 634 636
+    function unsatisfiable_count 640 642
+    function unattempted_count 646 648
+    function refuted_count 652 654
+    function count_of 656 663
+    function satisfied_need_ids 667 678
+    function to_links_notation 683 700
+    function record_obligation_ledger 709 731
+    const MISMATCH_LINO 734 734
+    const RECORD_MISMATCH 737 737
+    function mismatch_template 744 757
+    function need_for_clause 760 769
+    enum ObligationStep 773 789
+    function need_status_with_observation 799 808
+    function need_ledger_with_execution 818 832
+    function next_step 843 891
+    module derivation 893 893

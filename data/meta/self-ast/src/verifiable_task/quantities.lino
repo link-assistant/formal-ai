@@ -2,9 +2,9 @@ self_ast_census
   target src/verifiable_task/quantities.rs
   language rust
   fidelity signature
-  byte_len 12004
+  byte_len 12005
   line_count 347
-  content_id source_module_5e5089d3a39126bd
+  content_id source_module_17ba096e825fc7a8
   symbol_count 17
   symbols
     struct Quantity 14 23

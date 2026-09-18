@@ -2,9 +2,9 @@ self_ast_census
   target src/formalization/procedures.rs
   language rust
   fidelity signature
-  byte_len 10963
-  line_count 296
-  content_id source_module_b9e56f4af8c39aa7
+  byte_len 11034
+  line_count 299
+  content_id source_module_450fc65d5ad1e36d
   symbol_count 15
   symbols
     const CODING_PROCEDURE_HEADER 11 11
@@ -18,7 +18,7 @@ self_ast_census
     function step_from_record 204 237
     function first_role_surface 239 253
     function standalone 255 264
-    function valid_provenance 266 275
-    function same_source 277 285
-    function step_text 287 292
-    function field 294 296
+    function valid_provenance 266 278
+    function same_source 280 288
+    function step_text 290 295
+    function field 297 299

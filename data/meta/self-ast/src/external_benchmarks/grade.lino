@@ -2,10 +2,10 @@ self_ast_census
   target src/external_benchmarks/grade.rs
   language rust
   fidelity signature
-  byte_len 22610
-  line_count 667
-  content_id source_module_9fd18348cf17b5b5
-  symbol_count 26
+  byte_len 23856
+  line_count 696
+  content_id source_module_0dd314c02385d41f
+  symbol_count 28
   symbols
     const PYTHON_TIMEOUT_SECONDS 27 27
     struct CaseOutcome 31 39
@@ -14,22 +14,24 @@ self_ast_census
     function grade_proof_status 105 121
     function structured_trace_has_event 123 143
     function grade_value 145 170
-    function grade_swebench 179 333
-    function fnv1a64 335 342
-    function inspect_swebench_runtime 344 356
-    function recover_swebench_harness 358 402
-    function ensure_swebench_runtime 404 429
-    function outcomes_from_swebench_report 431 483
-    function extract_diff 488 493
-    function failure 495 502
-    function python_available 506 511
-    function run_python 513 546
-    function extract_python 551 556
-    function fenced_block 558 566
-    function final_number 571 589
-    function normalize_number 591 608
-    function final_answer 613 624
-    function last_boxed 626 644
-    function normalize 648 657
-    function truncate 659 667
-    const LIMIT 660 660
+    function grade_swebench 179 185
+    function grade_swebench_with_install 190 345
+    function fnv1a64 347 354
+    function inspect_swebench_runtime 356 368
+    function recover_swebench_harness 370 407
+    function swebench_harness_install_grant 412 426
+    function ensure_swebench_runtime 428 458
+    function outcomes_from_swebench_report 460 512
+    function extract_diff 517 522
+    function failure 524 531
+    function python_available 535 540
+    function run_python 542 575
+    function extract_python 580 585
+    function fenced_block 587 595
+    function final_number 600 618
+    function normalize_number 620 637
+    function final_answer 642 653
+    function last_boxed 655 673
+    function normalize 677 686
+    function truncate 688 696
+    const LIMIT 689 689

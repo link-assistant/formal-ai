@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/composition.rs
   language rust
   fidelity signature
-  byte_len 34144
-  line_count 987
-  content_id source_module_4f04c62bfc8665b2
-  symbol_count 34
+  byte_len 26099
+  line_count 764
+  content_id source_module_b318fdc567035ce9
+  symbol_count 28
   symbols
     struct DraftAttempt 15 19
     struct VerifiedDraft 22 29
@@ -16,28 +16,22 @@ self_ast_census
     struct FragmentRenderer 72 74
     function new 77 79
     function template 81 87
-    function idiom 89 95
-    function return_value 97 99
-    struct Draft 102 111
-    function compose 114 123
-    function compose_with_ir 129 263
-    function ir_draft 265 298
-    function syntax_is_valid 301 303
-    function syntax_is_valid 306 308
-    function candidate_drafts 310 322
-    function candidate_draft 324 402
-    function source_examples 404 418
-    function structural_drafts 420 637
-    function structural_program_draft 639 653
-    function structural_draft 655 674
-    function structural_source_urls 676 687
-    function adapt_implementation 689 720
-    function verify 722 808
-    function program_stdout_expectation 810 830
-    function derived_examples 832 885
-    function first_positive_integer 887 906
-    function render_comparison 908 920
-    function render_failure_trail 922 957
-    function blocked_fragment_need 959 965
-    function template 967 976
-    function idiom 978 987
+    struct Draft 90 99
+    function compose 102 111
+    function compose_with_ir 118 257
+    function constant_bounded_domain 262 309
+    function ir_draft 311 349
+    function syntax_is_valid 352 354
+    function syntax_is_valid 357 359
+    function candidate_drafts 361 373
+    function candidate_draft 375 453
+    function source_examples 455 469
+    function adapt_implementation 471 502
+    function verify 504 590
+    function program_stdout_expectation 592 612
+    function derived_examples 614 667
+    function first_positive_integer 669 688
+    function render_comparison 690 702
+    function render_failure_trail 704 739
+    function blocked_fragment_need 741 747
+    function template 749 764

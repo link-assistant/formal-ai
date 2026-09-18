@@ -2,9 +2,9 @@ self_ast_census
   target src/needs.rs
   language rust
   fidelity signature
-  byte_len 8214
+  byte_len 8222
   line_count 249
-  content_id source_module_2c2f820e20a890ca
+  content_id source_module_d9cabc6127f607e4
   symbol_count 16
   symbols
     enum NeedKind 28 37

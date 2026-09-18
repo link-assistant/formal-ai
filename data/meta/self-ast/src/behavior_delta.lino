@@ -2,23 +2,24 @@ self_ast_census
   target src/behavior_delta.rs
   language rust
   fidelity signature
-  byte_len 10447
-  line_count 277
-  content_id source_module_b47e59272734b810
-  symbol_count 15
+  byte_len 11553
+  line_count 308
+  content_id source_module_c8f08125d9d2aa9c
+  symbol_count 16
   symbols
-    const ADOPTION_LANGUAGES 22 22
-    enum DeltaVerdict 26 36
-    function slug 41 48
-    function supports_adoption 56 58
-    struct BehaviorDelta 66 83
-    function identity 89 91
-    function answer_changed 95 97
-    function to_links_notation 101 116
-    struct AdoptionEffect 121 125
-    function qualifies 132 140
-    function languages_covered 148 156
-    function regressions 160 165
-    function to_links_notation 170 202
-    function prove_effect 209 247
-    function observe 255 277
+    const ADOPTION_LANGUAGES 24 24
+    enum DeltaVerdict 28 38
+    function slug 43 50
+    function supports_adoption 58 60
+    struct BehaviorDelta 68 85
+    function identity 91 93
+    function answer_changed 97 99
+    function to_links_notation 103 118
+    struct AdoptionEffect 123 127
+    function qualifies 134 142
+    function languages_covered 150 158
+    function regressions 162 167
+    function to_links_notation 172 204
+    function prove_effect 212 254
+    struct ObservedAnswer 256 259
+    function observe 268 308

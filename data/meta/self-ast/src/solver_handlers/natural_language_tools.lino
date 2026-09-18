@@ -2,23 +2,22 @@ self_ast_census
   target src/solver_handlers/natural_language_tools.rs
   language rust
   fidelity signature
-  byte_len 15433
-  line_count 413
-  content_id source_module_8e0e76c8bf498746
-  symbol_count 15
+  byte_len 13990
+  line_count 378
+  content_id source_module_d2950fdc51cfc2e9
+  symbol_count 14
   symbols
-    function try_natural_language_tool_request 16 38
-    function try_unavailable_code_execution 46 77
-    function explicit_named_execution_target 87 113
-    function try_javascript_code_execution 115 157
-    function try_calculator_api_call 159 217
-    function try_web_search_api_call 219 267
-    function try_local_shell_tool_call 269 303
-    function require_tool_permission 305 336
-    function execute_javascript_subset 338 346
-    function extract_console_log_expression 348 353
-    function is_explicit_tool_api_request 355 364
-    function is_explicit_local_shell_request 366 372
-    function extract_argument 374 380
-    function after_argument_marker 382 399
-    function clean_argument 401 413
+    function try_natural_language_tool_request 17 39
+    function try_unavailable_code_execution 47 78
+    function try_javascript_code_execution 80 122
+    function try_calculator_api_call 124 182
+    function try_web_search_api_call 184 232
+    function try_local_shell_tool_call 234 268
+    function require_tool_permission 270 301
+    function execute_javascript_subset 303 311
+    function extract_console_log_expression 313 318
+    function is_explicit_tool_api_request 320 329
+    function is_explicit_local_shell_request 331 337
+    function extract_argument 339 345
+    function after_argument_marker 347 364
+    function clean_argument 366 378

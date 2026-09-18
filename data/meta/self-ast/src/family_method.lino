@@ -2,9 +2,9 @@ self_ast_census
   target src/family_method.rs
   language rust
   fidelity signature
-  byte_len 9011
-  line_count 260
-  content_id source_module_f611468d6e65bee1
+  byte_len 9101
+  line_count 265
+  content_id source_module_bdbf5df964cf3072
   symbol_count 15
   symbols
     const FAMILY_METHODS_LINO 18 18
@@ -12,13 +12,13 @@ self_ast_census
     enum EvidenceTerm 27 31
     struct FamilyMethod 34 41
     function matches 44 64
-    function response 66 76
-    function try_family_method 85 92
-    function try_family_method_preempting 104 117
-    function try_family_method_selected 119 158
-    function catalog 160 165
-    static CELL 161 161
-    function parse_catalog 167 219
-    function parse_evidence_group 221 247
-    function split_response 249 253
-    function numeric_operands 255 260
+    function response 66 81
+    function try_family_method 90 97
+    function try_family_method_preempting 109 122
+    function try_family_method_selected 124 163
+    function catalog 165 170
+    static CELL 166 166
+    function parse_catalog 172 224
+    function parse_evidence_group 226 252
+    function split_response 254 258
+    function numeric_operands 260 265
