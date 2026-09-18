@@ -429,6 +429,8 @@ meanings
       surface
         text "не понимаю"
       surface
+        text "не поня…"
+      surface
         text "не понятно"
       surface
         text непонятно
@@ -440,6 +442,8 @@ meanings
     lexeme zh
       surface
         text 我不懂
+      surface
+        text 不明白
       surface
         text 听不懂
   capability_query

@@ -477,6 +477,24 @@ fn is_self_surface(normalized: &str) -> bool {
         || is_prior_turn_reference(normalized)
 }
 
+/// Whether the prompt is, in full, a seeded clarification utterance (issue #29).
+///
+/// A bare "what do you mean" or "не понял" is a comprehension turn, and the
+/// table reads those same short words as a question about the assistant's
+/// surface (`self` is in "what do *you* mean"). Whole-surface equality -- the
+/// issue #1095 rule that a turn which *is* a surface carries the role while a
+/// request merely *containing* it keeps its own meaning -- is what lets the
+/// seed's clarification class keep its own utterances.
+#[must_use]
+pub fn is_bare_clarification(prompt: &str) -> bool {
+    let cleaned = crate::web_engine_core::normalize_prompt(prompt);
+    !cleaned.is_empty()
+        && seed::lexicon()
+            .words_for_role(crate::seed::ROLE_CLARIFICATION_REQUEST)
+            .iter()
+            .any(|surface| surface == &cleaned)
+}
+
 /// Whether the object of the request is the assistant's *previous turn*: the
 /// closed class of comprehension-failure surfaces (issue #721).
 ///

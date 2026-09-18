@@ -364,10 +364,16 @@ fn capability_route_preempts(
 /// A typed/named object is authoritative.  A bare term is not: definitions and
 /// other local symbolic answers keep their turn unless the prompt explicitly
 /// names the open web, lands in the workspace, or asks to compose from sources.
+/// A prompt that is *only* a seeded clarification utterance is not either: the
+/// table reads its short words as a self-surface question, and the seed's own
+/// class keeps the turn (issue #29).
 fn solver_route_is_authoritative(
     prompt: &str,
     decision: &crate::capability_routing::RoutingDecision,
 ) -> bool {
+    if crate::capability_routing::is_bare_clarification(prompt) {
+        return false;
+    }
     match decision.object {
         ObjectType::BareTerm => {
             decision.locus == crate::capability_routing::Locus::Workspace
