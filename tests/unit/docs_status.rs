@@ -78,7 +78,9 @@ fn every_declared_ledger_input_exists() {
 
 #[test]
 fn deleting_the_status_document_and_regenerating_reproduces_its_content_id() {
-    let _cycle = render_cycle_lock().lock().unwrap_or_else(|error| error.into_inner());
+    let _cycle = render_cycle_lock()
+        .lock()
+        .unwrap_or_else(|error| error.into_inner());
     let path = repo_root().join("docs/status.md");
     let before = fs::read(&path).unwrap_or_else(|error| {
         panic!(
@@ -108,7 +110,9 @@ fn deleting_the_status_document_and_regenerating_reproduces_its_content_id() {
 
 #[test]
 fn check_mode_is_green_against_the_committed_ledgers() {
-    let _cycle = render_cycle_lock().lock().unwrap_or_else(|error| error.into_inner());
+    let _cycle = render_cycle_lock()
+        .lock()
+        .unwrap_or_else(|error| error.into_inner());
     let (stdout, stderr, ok) = render("--check");
     assert!(
         ok,

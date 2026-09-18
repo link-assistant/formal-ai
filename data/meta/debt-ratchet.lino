@@ -16,9 +16,9 @@ debt_ratchet
     note "corrected undercount. 40 counted the handler-precedence table only, so the five prelude methods -- diagnostic, nl_tool, behavior_rules, feature_capability, playwright_script -- ran on every turn ahead of that table while sitting outside the ledger entirely. Issue #1138 B9, plan 09 leaf 5. No handler was written; the tree is unchanged."
   ceiling
     measure literal_predicates
-    value 542
+    value 543
     how "occurrences of a contains( or starts_with( call with a double-quoted first argument in src/**/*.rs"
-    note "lowered after HTTP provenance checks were generalized from repeated prefix predicates to one parsed scheme predicate (issue #1138, plan 09)"
+    note "lowered after HTTP provenance checks were generalized from repeated prefix predicates to one parsed scheme predicate (issue #1138, plan 09); reviewed upward by one for the no-memorization ordinary-name exemption's lookup, after the partitive aggregate rule abandoned its three inline reduce_sum/reduce_product literals to read the seed's defined-by reduction edges instead (plan 02 L23/L20)"
   ceiling
     measure hardcoded_language_rows
     value 1263

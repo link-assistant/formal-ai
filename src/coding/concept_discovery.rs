@@ -442,10 +442,15 @@ pub fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
     // itself defines `sum` as "the sum of ALL items"). A universal cue
     // inside an aggregate noun phrase therefore raises no quantifier
     // structure of its own; when a reduction claims the domain, the
-    // quantifier reading is already accounted for.
-    if matched.contains("quantifier_all")
-        && (matched.contains("reduce_sum") || matched.contains("reduce_product"))
-    {
+    // quantifier reading is already accounted for. The aggregate family is
+    // read from the seed's own `defined-by reduction` edges rather than
+    // restated here.
+    let reduction_present = matched.iter().any(|slug| {
+        crate::seed::lexicon()
+            .meaning(slug)
+            .is_some_and(|meaning| meaning.defined_by.iter().any(|kind| kind == "reduction"))
+    });
+    if matched.get("quantifier_all").is_some() && reduction_present {
         matched.remove("quantifier_all");
     }
     // In an inclusive range request, "count to N" denotes enumeration. It
