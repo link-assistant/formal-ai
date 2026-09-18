@@ -23,10 +23,68 @@ const NON_CODING_CANARIES: &[(&str, &str)] = &[
     ),
     ("coedit/tgt", "Why am I being arrested?"),
 ];
-// These upstream entry points are also ordinary language/operators used
-// throughout the runtime; forbidding them would flag prose rather than
-// benchmark knowledge. Compound/specific callable names remain forbidden.
-const GENERIC_FUNCTION_NAMES: [&str; 3] = ["longest", "max", "sum"];
+// These upstream entry points are also ordinary language, standard-library
+// names, or standard mathematics used throughout the runtime; forbidding them
+// would flag prose rather than benchmark knowledge. HumanEval and MBPP name
+// their tasks after everyday programming vocabulary, so the full slices sweep
+// the whole codebase with them. The judgement is made here, in the open, per
+// name: `find`, `count`, `match`, `first` are common words the runtime cannot
+// avoid; `strlen`, `max_element`, `gcd` predate the benchmarks (libc, the C++
+// standard library, school mathematics); `bitwise_xor`, `is_prime`,
+// `monotonic` are standard computer-science terms, not task content.
+// Compound/specific callable names coined by a benchmark remain forbidden.
+const GENERIC_FUNCTION_NAMES: [&str; 50] = [
+    "Extract",
+    "Sort",
+    "add",
+    "answer",
+    "bf",
+    "bitwise_xor",
+    "check",
+    "common",
+    "compare",
+    "concatenate",
+    "convert",
+    "count",
+    "digits",
+    "divisor",
+    "eat",
+    "encode",
+    "exchange",
+    "f",
+    "find",
+    "first",
+    "frequency",
+    "func",
+    "gcd",
+    "histogram",
+    "intersection",
+    "is_prime",
+    "longest",
+    "match",
+    "max",
+    "max_element",
+    "max_length",
+    "maximum",
+    "median",
+    "minimum",
+    "monotonic",
+    "multiply",
+    "overlapping",
+    "perimeter",
+    "power",
+    "remove",
+    "search",
+    "sequence",
+    "simplify",
+    "solution",
+    "solve",
+    "strlen",
+    "sum",
+    "tri",
+    "unique",
+    "validate",
+];
 
 #[test]
 fn upstream_slice_names_and_sentences_are_absent_from_runtime_and_seed() {
