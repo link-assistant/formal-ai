@@ -436,6 +436,18 @@ pub fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
     if matched.contains("quantifier_any") {
         matched.remove("quantifier_all");
     }
+    // "The sum and product of every integer" names the domain a reduction
+    // ranges over, not a filter the program must enforce — the ordinary
+    // partitive periphrasis for aggregation (the Python documentation
+    // itself defines `sum` as "the sum of ALL items"). A universal cue
+    // inside an aggregate noun phrase therefore raises no quantifier
+    // structure of its own; when a reduction claims the domain, the
+    // quantifier reading is already accounted for.
+    if matched.contains("quantifier_all")
+        && (matched.contains("reduce_sum") || matched.contains("reduce_product"))
+    {
+        matched.remove("quantifier_all");
+    }
     // In an inclusive range request, "count to N" denotes enumeration. It
     // is not the cardinality reduction used by "count distinct items".
     if matched.contains("range_inclusive") {

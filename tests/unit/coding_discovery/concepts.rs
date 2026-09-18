@@ -451,3 +451,28 @@ fn coding_discovery_uses_only_the_shared_source_lookup_contract() {
         );
     }
 }
+
+#[test]
+fn an_aggregate_domain_cue_is_not_a_predicate_quantifier() {
+    // "The sum and product of every integer" states what the reduction
+    // ranges over, not a filter the program must enforce; the same
+    // partitive reading carries the ru/hi/zh/es paraphrases. Raising the
+    // universal structure here forces every candidate to materialize an
+    // `all(...)` gate over an aggregation, and the plain tuple shape is
+    // priced out of the typed frontier.
+    let structures = formal_ai::concept_discovery::structures_for(
+        "define python function summarize_numbers numbers return a tuple of the sum and product of every integer",
+    );
+    let ids = structures
+        .iter()
+        .map(|structure| structure.id.as_str())
+        .collect::<Vec<_>>();
+    assert!(
+        !ids.contains(&"quantifier_all"),
+        "an aggregate noun phrase must not raise the universal quantifier structure: {ids:?}"
+    );
+    assert!(
+        ids.contains(&"reduce_sum") && ids.contains(&"reduce_product") && ids.contains(&"tuple_of"),
+        "the reduction and tuple structures still carry the request: {ids:?}"
+    );
+}
