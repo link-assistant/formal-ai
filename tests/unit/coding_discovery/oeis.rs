@@ -170,3 +170,31 @@ fn plural_tile_noun_and_prose_bridge_produce_a_source_index_query() {
     assert!(recurrence.source.contains("n // 2 + 1"));
     std::fs::remove_dir_all(cache).expect("remove plural-object cache");
 }
+
+#[test]
+fn a_dimension_window_with_no_object_span_is_an_honest_gap_not_a_panic() {
+    // The full MBPP slice contains prompts with a single "4 x 6" window (and
+    // cuboid prompts whose "3 x 4 x 5" windows sit closer than three tokens
+    // apart). There are no tokens between the first window's end and the last
+    // window's start, so no object noun exists; the discovery must skip the
+    // source query instead of slicing a reversed range.
+    let cache = temp_cache("single-window");
+    let _ = std::fs::remove_dir_all(&cache);
+    let client = CachedSourceClient::new(&cache, FixtureTransport::default())
+        .with_online(true)
+        .with_clock(|| 1_789_344_000);
+    let discovery = discover_programs(
+        &client,
+        &spec(
+            "minimum_tiles",
+            "n",
+            "Find the minimum number of tiles needed to cover a 4 x 6 board.",
+            &[("2", "4"), ("3", "9")],
+        ),
+    );
+    assert!(
+        discovery.diagnostics.is_empty() && discovery.programs.is_empty(),
+        "an unusable dimension span is an honest gap, not a crash: {discovery:?}"
+    );
+    let _ = std::fs::remove_dir_all(cache);
+}

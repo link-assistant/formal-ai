@@ -310,7 +310,12 @@ fn tiling_query(text: &str) -> Option<String> {
         .collect::<Vec<_>>();
     let (first_index, _) = dimension_windows.first()?;
     let (last_index, dimensions) = dimension_windows.last()?;
-    let object = tokens[first_index + 3..*last_index]
+    // Window indices are token offsets: when the last window starts at or
+    // before the first window's end (a single "4 x 6" window, or cuboid
+    // "3 x 4 x 5" chains), no tokens lie between them, so no object noun
+    // exists and the source query is skipped rather than slicing in reverse.
+    let object = tokens
+        .get(first_index + 3..*last_index)?
         .iter()
         .copied()
         .find(|token| token.chars().count() > 2)
