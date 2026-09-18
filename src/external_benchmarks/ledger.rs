@@ -55,6 +55,11 @@ pub struct ResultEntry {
     pub suite: String,
     pub date: String,
     pub slice: usize,
+    /// Which discovery mode produced the score: `online` fetches live
+    /// sources, `offline` is cold from committed captures. The two series are
+    /// recorded independently — the same day's offline and online runs are
+    /// two rows, and only a rerun of the same mode replaces its own row.
+    pub mode: String,
     pub passed: usize,
     pub failed: usize,
     pub total: usize,
@@ -138,6 +143,9 @@ impl Ledger {
                     suite: record.field("suite")?.to_string(),
                     date: record.field("date")?.to_string(),
                     slice: record.usize_field("slice")?,
+                    // Rows written before the mode field existed are the
+                    // scheduled workflow's runs, which always run online.
+                    mode: record.field("mode").unwrap_or("online").to_string(),
                     passed: record.usize_field("passed")?,
                     failed: record.usize_field("failed")?,
                     total: record.usize_field("total")?,
@@ -178,14 +186,16 @@ impl Ledger {
         out
     }
 
-    /// Append a result row, replacing an existing row for the same suite, date
-    /// and slice so a rerun on the same day stays idempotent.
+    /// Append a result row, replacing an existing row for the same suite,
+    /// date, slice and discovery mode so a rerun stays idempotent while the
+    /// other mode's row for the same day is preserved.
     pub fn upsert_result(&mut self, entry: &ResultEntry, runner: &str, note: &str) {
         let name = format!(
-            "external_benchmark_result_{}_{}_{}",
+            "external_benchmark_result_{}_{}_{}_{}",
             entry.suite,
             entry.date.replace('-', "_"),
-            entry.slice
+            entry.slice,
+            entry.mode
         );
         let record = LedgerRecord {
             name: name.clone(),
@@ -194,6 +204,7 @@ impl Ledger {
                 ("suite".into(), entry.suite.clone()),
                 ("date".into(), entry.date.clone()),
                 ("slice".into(), entry.slice.to_string()),
+                ("mode".into(), entry.mode.clone()),
                 ("passed".into(), entry.passed.to_string()),
                 ("failed".into(), entry.failed.to_string()),
                 ("total".into(), entry.total.to_string()),

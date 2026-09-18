@@ -162,6 +162,109 @@ pub fn render_frontier_record(existing: &str, runs: &[SuiteRun], date: &str) -> 
     document
 }
 
+/// Split a rendered frontier document into pages that each honour
+/// `line_budget` lines, at `frontier_prompt` boundaries.
+///
+/// The 1500-line data cap (issue #960) applies to every committed LiNo file,
+/// and one honest prompt per failed case grows without bound, so the writer
+/// spills continuation pages to `<stem>-partN.lino` files. Every page repeats
+/// the document header, so each one is a self-describing record the ordinary
+/// parser accepts, and the concatenation replays to exactly the frontier that
+/// was split: ranks are assigned before the split and are not renumbered.
+#[must_use]
+pub fn split_frontier_document(document: &str, line_budget: usize) -> Vec<String> {
+    let header_end = document
+        .find("\n  frontier_prompt\n")
+        .map_or(document.len(), |at| at + 1);
+    let header = &document[..header_end];
+    let header_lines = header.lines().count();
+    // Slicing on the bare opener keeps each chunk opener-free and
+    // newline-terminated, so re-attaching `  frontier_prompt\n` reconstructs
+    // the item byte-for-byte.
+    let items: Vec<&str> = document[header_end..]
+        .split("  frontier_prompt\n")
+        .filter(|item| !item.is_empty())
+        .collect();
+
+    let mut pages: Vec<String> = Vec::new();
+    let mut page = String::from(header);
+    let mut page_lines = header_lines;
+    for item in items {
+        // The replayed line cost of one item is its own lines plus the
+        // `  frontier_prompt` opener the split strips and re-attaches.
+        let item_lines = item.lines().count() + 1;
+        if page_lines + item_lines > line_budget && page_lines > header_lines {
+            pages.push(std::mem::take(&mut page));
+            page.push_str(header);
+            page_lines = header_lines;
+        }
+        page.push_str("  frontier_prompt\n");
+        page.push_str(item);
+        page_lines += item_lines;
+    }
+    pages.push(page);
+    pages
+}
+
+/// The header-only page a provisioned part file carries while the frontier is
+/// too small to fill it: a parseable document with no frontier prompts.
+#[must_use]
+pub fn placeholder_frontier_page() -> &'static str {
+    "learning_frontier\n  record_type \"learning_frontier_record\"\n"
+}
+
+/// Write the split pages: the base page to `base_path`, continuation pages to
+/// the `<stem>-partN.lino` siblings next to it.
+///
+/// Parts the pages no longer fill are reset to [`placeholder_frontier_page`]
+/// rather than deleted: the embedded record compiles in exactly
+/// `provisioned_parts` part files, so the committed file set must keep
+/// existing whatever the frontier's size, and a placeholder guarantees no
+/// stale frontier item survives a shrinking rewrite. Returns the written
+/// paths, base page last.
+///
+/// # Errors
+/// When any page cannot be written, or the pages exceed the provisioned part
+/// count — which would leave a real page outside the embedded record; the
+/// provisioning must be widened instead.
+pub fn write_frontier_pages(
+    base_path: &std::path::Path,
+    pages: &[String],
+    provisioned_parts: usize,
+) -> std::io::Result<Vec<std::path::PathBuf>> {
+    if pages.len() - 1 > provisioned_parts {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!(
+                "the frontier needs {} continuation parts but only {provisioned_parts} are provisioned; widen the embedding before writing",
+                pages.len() - 1
+            ),
+        ));
+    }
+    let parent = base_path
+        .parent()
+        .map_or_else(|| std::path::PathBuf::from("."), std::path::Path::to_path_buf);
+    std::fs::create_dir_all(&parent)?;
+    let stem = base_path
+        .file_stem()
+        .map(|stem| stem.to_string_lossy().into_owned())
+        .unwrap_or_default();
+    let mut written = Vec::new();
+    for (index, page) in pages.iter().enumerate().skip(1) {
+        let path = parent.join(format!("{stem}-part{index}.lino"));
+        std::fs::write(&path, page)?;
+        written.push(path);
+    }
+    for index in pages.len()..=provisioned_parts {
+        let path = parent.join(format!("{stem}-part{index}.lino"));
+        std::fs::write(&path, placeholder_frontier_page())?;
+        written.push(path);
+    }
+    std::fs::write(base_path, &pages[0])?;
+    written.push(base_path.to_path_buf());
+    Ok(written)
+}
+
 /// The first non-empty line of `text`, whitespace collapsed, quotes and
 /// backslashes replaced, cut to `limit` characters: a value every Links
 /// Notation reader in the repository accepts on one line.

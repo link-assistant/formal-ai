@@ -214,13 +214,57 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
     }
     if let Some(relative_path) = frontier_record {
         let path = repository_root.join(relative_path);
-        let existing = fs::read_to_string(&path).unwrap_or_default();
+        // Continuation pages from an earlier write are part of the recorded
+        // frontier: the rewrite must dedup against all of them, not just the
+        // base page.
+        let stem = path
+            .file_stem()
+            .map(|stem| stem.to_string_lossy().into_owned())
+            .unwrap_or_default();
+        let mut existing = fs::read_to_string(&path).unwrap_or_default();
+        let mut part_paths: Vec<std::path::PathBuf> = path
+            .parent()
+            .and_then(|parent| fs::read_dir(parent).ok())
+            .map(|entries| {
+                entries
+                    .filter_map(Result::ok)
+                    .map(|entry| entry.path())
+                    .filter(|entry| {
+                        entry.extension().is_some_and(|extension| extension == "lino")
+                            && entry
+                                .file_stem()
+                                .is_some_and(|file_stem| {
+                                    file_stem
+                                        .to_string_lossy()
+                                        .strip_prefix(&stem)
+                                        .is_some_and(|rest| {
+                                            rest.starts_with("-part")
+                                                && rest["-part".len()..]
+                                                    .chars()
+                                                    .all(|digit| digit.is_ascii_digit())
+                                        })
+                                })
+                    })
+                    .collect()
+            })
+            .unwrap_or_default();
+        part_paths.sort();
+        for part in &part_paths {
+            existing.push_str(&fs::read_to_string(part).unwrap_or_default());
+        }
         let document =
             external_benchmarks::learning::render_frontier_record(&existing, &runs, date);
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::write(&path, document)?;
+        // The data cap (issue #960) is 1500 lines for every committed LiNo
+        // file; 1400 leaves review margin. Overflowing pages land in
+        // `<stem>-partN.lino` files, and parts the pages no longer fill are
+        // reset to placeholders so no stale frontier item survives a
+        // shrinking rewrite while the provisioned files stay in place.
+        let pages = external_benchmarks::learning::split_frontier_document(&document, 1400);
+        external_benchmarks::learning::write_frontier_pages(
+            &path,
+            &pages,
+            formal_ai::learning_cycle::UPSTREAM_BENCHMARKS_FRONTIER_PARTS,
+        )?;
         println!(
             "{}",
             vocabulary::render(
@@ -267,7 +311,7 @@ fn append_runs(
             command.push_str("allow-install");
         }
         ledger.upsert_result(
-            &run.to_result_entry(date),
+            &run.to_result_entry(date, online),
             &command,
             "honest upstream score: every case is graded by the upstream criterion",
         );

@@ -73,11 +73,12 @@ impl SuiteRun {
     }
 
     #[must_use]
-    pub fn to_result_entry(&self, date: &str) -> ResultEntry {
+    pub fn to_result_entry(&self, date: &str, online: bool) -> ResultEntry {
         ResultEntry {
             suite: self.suite.clone(),
             date: date.to_string(),
             slice: self.slice,
+            mode: if online { "online" } else { "offline" }.to_owned(),
             passed: self.passed,
             failed: self.failed,
             total: self.total,

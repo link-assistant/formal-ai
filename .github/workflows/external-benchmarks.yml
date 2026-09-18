@@ -194,13 +194,13 @@ jobs:
         if: github.event_name == 'schedule' || inputs.commit
         run: |
           set -euo pipefail
-          if git diff --quiet -- data/benchmarks/external-results.lino data/meta/learning-frontier-upstream-benchmarks.lino; then
+          if git diff --quiet -- data/benchmarks/external-results.lino 'data/meta/learning-frontier-upstream-benchmarks*.lino'; then
             echo 'ledger unchanged; nothing to commit'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/benchmarks/external-results.lino data/meta/learning-frontier-upstream-benchmarks.lino
+          git add data/benchmarks/external-results.lino 'data/meta/learning-frontier-upstream-benchmarks*.lino'
           git commit -m 'chore(benchmarks): record scheduled upstream results and the failure frontier (#698, #1085)'
           # Issue #1081 (D13). `concurrency: formal-ai-repository-writes` above
           # orders this job against the release writers; it does not rebase it.
