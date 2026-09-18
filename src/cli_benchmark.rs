@@ -230,20 +230,19 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
                     .filter_map(Result::ok)
                     .map(|entry| entry.path())
                     .filter(|entry| {
-                        entry.extension().is_some_and(|extension| extension == "lino")
-                            && entry
-                                .file_stem()
-                                .is_some_and(|file_stem| {
-                                    file_stem
-                                        .to_string_lossy()
-                                        .strip_prefix(&stem)
-                                        .is_some_and(|rest| {
-                                            rest.starts_with("-part")
-                                                && rest["-part".len()..]
-                                                    .chars()
-                                                    .all(|digit| digit.is_ascii_digit())
-                                        })
-                                })
+                        entry
+                            .extension()
+                            .is_some_and(|extension| extension == "lino")
+                            && entry.file_stem().is_some_and(|file_stem| {
+                                file_stem.to_string_lossy().strip_prefix(&stem).is_some_and(
+                                    |rest| {
+                                        rest.starts_with("-part")
+                                            && rest["-part".len()..]
+                                                .chars()
+                                                .all(|digit| digit.is_ascii_digit())
+                                    },
+                                )
+                            })
                     })
                     .collect()
             })

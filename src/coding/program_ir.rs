@@ -158,7 +158,13 @@ impl ProgramIr {
         let mut environment = self.parameters.iter().cloned().collect();
         let mut substitutions = BTreeMap::new();
         let mut fresh = FRAGMENT_TYPE_VARIABLE_OFFSET;
-        infer_node(&self.body, catalog, &mut environment, &mut substitutions, &mut fresh)?;
+        infer_node(
+            &self.body,
+            catalog,
+            &mut environment,
+            &mut substitutions,
+            &mut fresh,
+        )?;
         Ok(())
     }
 
@@ -676,7 +682,8 @@ fn infer_node(
                     )
                 })
                 .collect::<Vec<_>>();
-            let transition_type = infer_node(transition, catalog, environment, substitutions, fresh)?;
+            let transition_type =
+                infer_node(transition, catalog, environment, substitutions, fresh)?;
             unify(&recurrence_type, &transition_type, substitutions).map_err(|detail| {
                 runtime_message("ir_recurrence_transition", &[("detail", &detail)])
             })?;
@@ -858,7 +865,11 @@ fn check_combination_fragment(
     let base = *fresh;
     *fresh += FRAGMENT_TYPE_VARIABLE_STRIDE;
     for argument in &fragment.signature {
-        unify(&fragment_type_variable(argument, base), value_type, substitutions)?;
+        unify(
+            &fragment_type_variable(argument, base),
+            value_type,
+            substitutions,
+        )?;
     }
     unify(
         &fragment_type_variable(&fragment.result, base),

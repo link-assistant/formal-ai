@@ -241,9 +241,10 @@ pub fn write_frontier_pages(
             ),
         ));
     }
-    let parent = base_path
-        .parent()
-        .map_or_else(|| std::path::PathBuf::from("."), std::path::Path::to_path_buf);
+    let parent = base_path.parent().map_or_else(
+        || std::path::PathBuf::from("."),
+        std::path::Path::to_path_buf,
+    );
     std::fs::create_dir_all(&parent)?;
     let stem = base_path
         .file_stem()

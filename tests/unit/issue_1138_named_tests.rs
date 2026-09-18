@@ -67,13 +67,20 @@ fn workspace(tag: &str) -> TestWorkspace {
 
 /// The runner is not here. The named tests did not run, and saying they failed
 /// would be as wrong as saying they passed.
+///
+/// The absent program cannot be a real interpreter name: GitHub runner images
+/// ship `kotlinc`, so a "missing" probe would find it and the case would
+/// measure the runner image instead of the contract. The probe name is
+/// synthetic and reserved to this repository, so its absence is the one
+/// property every environment is guaranteed to share.
 #[test]
 fn missing_interpreter_is_a_prerequisite_not_a_failure() {
     let workspace = workspace("missing-interpreter");
+    let missing = String::from("formal-ai-probe-absent-interpreter");
     let outcome = run_named_tests(
         &workspace,
         &RunCommand {
-            line: String::from("kotlinc -script suite.kts"),
+            line: format!("{missing} -script suite.kts"),
             names: vec![String::from("defaults::timeout")],
         },
         &ExecutionBackend::HostSandbox,
@@ -85,7 +92,7 @@ fn missing_interpreter_is_a_prerequisite_not_a_failure() {
             exit_code,
             stderr,
         }) => {
-            assert_eq!(program, "kotlinc", "the refusal names the missing program");
+            assert_eq!(program, missing, "the refusal names the missing program");
             assert_eq!(
                 exit_code,
                 Some(127),

@@ -197,11 +197,9 @@ fn the_committed_upstream_frontier_is_registered_and_replayable() {
     let mut committed = fs::read_to_string(root.join(FRONTIER_PATH)).expect("record must exist");
     for part in 1..=UPSTREAM_BENCHMARKS_FRONTIER_PARTS {
         committed.push_str(
-            &fs::read_to_string(
-                root.join(format!(
-                    "data/meta/learning-frontier-upstream-benchmarks-part{part}.lino"
-                )),
-            )
+            &fs::read_to_string(root.join(format!(
+                "data/meta/learning-frontier-upstream-benchmarks-part{part}.lino"
+            )))
             .expect("the provisioned part must exist"),
         );
     }
@@ -301,7 +299,11 @@ fn a_frontier_wider_than_the_data_cap_is_written_in_bounded_self_describing_part
     }
     let replayed: Vec<String> = pages
         .iter()
-        .flat_map(|page| parse_frontier_record(page).into_iter().map(|item| item.query))
+        .flat_map(|page| {
+            parse_frontier_record(page)
+                .into_iter()
+                .map(|item| item.query)
+        })
         .collect();
     let expected: Vec<String> = parse_frontier_record(&document)
         .into_iter()
@@ -320,10 +322,7 @@ fn a_frontier_wider_than_the_data_cap_is_written_in_bounded_self_describing_part
 // survives and the embed stays compilable whatever the frontier's size.
 #[test]
 fn a_shrinking_frontier_resets_unfilled_parts_to_placeholders_instead_of_deleting_them() {
-    let dir = std::env::temp_dir().join(format!(
-        "formal-ai-frontier-parts-{}",
-        std::process::id()
-    ));
+    let dir = std::env::temp_dir().join(format!("formal-ai-frontier-parts-{}", std::process::id()));
     let _ = fs::remove_dir_all(&dir);
     fs::create_dir_all(&dir).expect("temp dir must be creatable");
     let base = dir.join("frontier.lino");
@@ -348,9 +347,11 @@ fn a_shrinking_frontier_resets_unfilled_parts_to_placeholders_instead_of_deletin
         let path = dir.join(format!("frontier-part{part}.lino"));
         assert!(path.exists(), "part {part} must exist after the wide write");
     }
-    assert!(fs::read_to_string(dir.join("frontier-part1.lino"))
-        .expect("part 1 must be readable")
-        .contains("frontier_prompt"));
+    assert!(
+        fs::read_to_string(dir.join("frontier-part1.lino"))
+            .expect("part 1 must be readable")
+            .contains("frontier_prompt")
+    );
 
     let narrow = String::from(
         "learning_frontier\n  record_type \"learning_frontier_record\"\n  frontier_prompt\n    rank \"1\"\n    query \"mbpp/MBPP/1\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"one\"\n    engine_intent \"benchmark_failure\"\n",
@@ -364,9 +365,8 @@ fn a_shrinking_frontier_resets_unfilled_parts_to_placeholders_instead_of_deletin
     )
     .expect("narrow frontier must write");
     for part in 1..=UPSTREAM_BENCHMARKS_FRONTIER_PARTS {
-        let text =
-            fs::read_to_string(dir.join(format!("frontier-part{part}.lino")))
-                .unwrap_or_else(|error| panic!("part {part} must survive the rewrite: {error}"));
+        let text = fs::read_to_string(dir.join(format!("frontier-part{part}.lino")))
+            .unwrap_or_else(|error| panic!("part {part} must survive the rewrite: {error}"));
         assert!(
             !text.contains("frontier_prompt"),
             "part {part} must carry no stale item after the shrinking rewrite"

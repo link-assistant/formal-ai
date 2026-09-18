@@ -264,7 +264,11 @@ fn constant_bounded_domain(program: &ProgramIr, catalog: &FragmentCatalog) -> us
     while let IrNode::Return { value } | IrNode::Emit { value } = current {
         current = value;
     }
-    let IrNode::Apply { fragment, arguments } = current else {
+    let IrNode::Apply {
+        fragment,
+        arguments,
+    } = current
+    else {
         return 0;
     };
     let Some(definition) = catalog.get(fragment) else {
