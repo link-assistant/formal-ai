@@ -352,6 +352,14 @@ fn a_calculator_verb_in_the_framing_does_not_claim_the_whole_prompt() {
                   12. Solve only what this worker owns in the scratch checkout. Write the outcome \
                   to worker-7.md with its first line set to worker_id=7.";
     let answer = FormalAiEngine.answer(prompt);
+    assert_eq!(
+        answer.answer,
+        "No — this task is not atomic. It splits into these sub-tasks, each with a completion criterion you can observe:\n\
+         1. Record independently checkable requirements for Is the invoice reconciliation rewrite an atomic task [requirements_are_independently_checkable]\n\
+         2. Add a regression test that reproduces Is the invoice reconciliation rewrite an atomic task [regression_test_reproduces_failure]\n\
+         3. Implement the smallest general change that satisfies Is the invoice reconciliation rewrite an atomic task [requested_behavior_passes]\n\
+         4. Run the acceptance checks for Is the invoice reconciliation rewrite an atomic task [acceptance_checks_pass]"
+    );
     assert_ne!(
         answer.intent, "calculation_error",
         "the framing was read as arithmetic: {:?}",
@@ -383,6 +391,14 @@ fn a_calculator_verb_does_not_claim_the_rest_of_its_paragraph() {
                   outcome to worker-7.md with its first line set to worker_id=7.\n\nAsk the \
                   coordinator when anything is unclear.";
     let answer = FormalAiEngine.answer(prompt);
+    assert_eq!(
+        answer.answer,
+        "No — this task is not atomic. It splits into these sub-tasks, each with a completion criterion you can observe:\n\
+         1. Record independently checkable requirements for Is the warehouse restocking rewrite an atomic task [requirements_are_independently_checkable]\n\
+         2. Add a regression test that reproduces Is the warehouse restocking rewrite an atomic task [regression_test_reproduces_failure]\n\
+         3. Implement the smallest general change that satisfies Is the warehouse restocking rewrite an atomic task [requested_behavior_passes]\n\
+         4. Run the acceptance checks for Is the warehouse restocking rewrite an atomic task [acceptance_checks_pass]"
+    );
     assert_ne!(
         answer.intent, "calculation_error",
         "the framing was read as arithmetic: {:?}",

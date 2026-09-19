@@ -1,0 +1,101 @@
+coding_composition_from_sources
+  paraphrase run_length_en
+    family run_length
+    language en
+    prompt "Write a Python function run_length(text) that returns a list of (character, count) pairs for each run of equal characters in text."
+  paraphrase run_length_ru
+    family run_length
+    language ru
+    prompt "Напиши функцию на Python run_length(text), которая возвращает список пар (символ, количество) для каждой серии одинаковых подряд идущих символов."
+  paraphrase run_length_hi
+    family run_length
+    language hi
+    prompt "एक Python फ़ंक्शन run_length(text) लिखो जो लगातार आने वाले समान अक्षरों के हर समूह के लिए (अक्षर, संख्या) जोड़ों की सूची लौटाए।"
+  paraphrase run_length_zh
+    family run_length
+    language zh
+    prompt "写一个 Python 函数 run_length(text)，返回文本中每一段连续相同字符的（字符，数量）对组成的列表。"
+  paraphrase run_length_es
+    family run_length
+    language es
+    prompt "Escribe una función de Python run_length(text) que devuelva una lista de pares (carácter, cantidad) por cada racha de caracteres iguales."
+  paraphrase find_position_en
+    family find_position
+    language en
+    prompt "Write a Python function find_position(values, target) that returns the index of target in the sorted list values, or -1 when it is absent, without scanning every element."
+  paraphrase find_position_ru
+    family find_position
+    language ru
+    prompt "Напиши функцию на Python find_position(values, target), которая возвращает индекс target в отсортированном списке values или -1, если его нет, не просматривая каждый элемент."
+  paraphrase find_position_hi
+    family find_position
+    language hi
+    prompt "एक Python फ़ंक्शन find_position(values, target) लिखो जो क्रमबद्ध सूची values में target का सूचकांक लौटाए, न मिलने पर -1, और हर तत्व को न जाँचे।"
+  paraphrase find_position_zh
+    family find_position
+    language zh
+    prompt "写一个 Python 函数 find_position(values, target)，在已排序列表 values 中返回 target 的下标，不存在时返回 -1，并且不要逐个遍历。"
+  paraphrase find_position_es
+    family find_position
+    language es
+    prompt "Escribe una función de Python find_position(values, target) que devuelva el índice de target en la lista ordenada values, o -1 si no está, sin recorrer todos los elementos."
+  paraphrase edit_steps_en
+    family edit_steps
+    language en
+    prompt "Write a Python function edit_steps(first, second) that returns the smallest number of single-character insertions, deletions or substitutions that turn first into second."
+  paraphrase edit_steps_ru
+    family edit_steps
+    language ru
+    prompt "Напиши функцию на Python edit_steps(first, second), которая возвращает наименьшее число вставок, удалений или замен одного символа, превращающих first в second."
+  paraphrase edit_steps_hi
+    family edit_steps
+    language hi
+    prompt "एक Python फ़ंक्शन edit_steps(first, second) लिखो जो first को second में बदलने के लिए एक-अक्षर के जोड़ने, हटाने या बदलने की न्यूनतम संख्या लौटाए।"
+  paraphrase edit_steps_zh
+    family edit_steps
+    language zh
+    prompt "写一个 Python 函数 edit_steps(first, second)，返回把 first 变成 second 所需的最少单字符插入、删除或替换次数。"
+  paraphrase edit_steps_es
+    family edit_steps
+    language es
+    prompt "Escribe una función de Python edit_steps(first, second) que devuelva el número mínimo de inserciones, borrados o sustituciones de un carácter para convertir first en second."
+  paraphrase run_length_rust_en
+    family run_length_rust
+    language en
+    prompt "Write a Rust function that returns the list of runs of equal characters in a string as (char, usize) pairs."
+  paraphrase run_length_rust_ru
+    family run_length_rust
+    language ru
+    prompt "Напиши функцию на Rust, которая возвращает серии одинаковых символов строки как пары (char, usize)."
+  paraphrase run_length_rust_hi
+    family run_length_rust
+    language hi
+    prompt "एक Rust फ़ंक्शन लिखो जो एक स्ट्रिंग में समान अक्षरों की लगातार श्रृंखलाओं को (char, usize) जोड़ों के रूप में लौटाए।"
+  paraphrase run_length_rust_zh
+    family run_length_rust
+    language zh
+    prompt "写一个 Rust 函数，把字符串中连续相同字符的段落作为 (char, usize) 对返回。"
+  paraphrase run_length_rust_es
+    family run_length_rust
+    language es
+    prompt "Escribe una función de Rust que devuelva las rachas de caracteres iguales de una cadena como pares (char, usize)."
+  paraphrase undefined_operation_en
+    family undefined_operation
+    language en
+    prompt "Write a Python function blorptide(values) that returns the blorptide of the numbers."
+  paraphrase undefined_operation_ru
+    family undefined_operation
+    language ru
+    prompt "Напиши функцию на Python blorptide(values), которая возвращает блорптайд чисел."
+  paraphrase undefined_operation_hi
+    family undefined_operation
+    language hi
+    prompt "एक Python फ़ंक्शन blorptide(values) लिखो जो संख्याओं का ब्लॉर्पटाइड लौटाए।"
+  paraphrase undefined_operation_zh
+    family undefined_operation
+    language zh
+    prompt "写一个 Python 函数 blorptide(values)，返回这些数字的 blorptide。"
+  paraphrase undefined_operation_es
+    family undefined_operation
+    language es
+    prompt "Escribe una función de Python blorptide(values) que devuelva el blorptide de los números."

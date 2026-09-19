@@ -1,0 +1,5 @@
+It looks like you want to run a terminal command: `Make this sentence more concise: The committee members who were present at the meeting all agreed unanimously with one another about the proposal.`.
+
+Running shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.
+
+ Use the mode radio in the toolbar to pick "Agent" (or "Full Auto" to run commands automatically).

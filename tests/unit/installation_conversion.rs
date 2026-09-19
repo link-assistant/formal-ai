@@ -1,4 +1,151 @@
+use std::fmt::Write as _;
+
 use formal_ai::FormalAiEngine;
+
+#[derive(Clone, Copy)]
+pub(super) enum DocumentedFormat {
+    Markdown,
+    Shell,
+    PowerShell,
+}
+
+impl DocumentedFormat {
+    const fn label(self) -> &'static str {
+        match self {
+            Self::Markdown => "markdown",
+            Self::Shell => "shell_script",
+            Self::PowerShell => "powershell_script",
+        }
+    }
+}
+
+/// Construct the complete documented answer for one conversion example.
+///
+/// The constant prose and every emitted byte live in this test fixture; only
+/// the explicitly listed project, formats, descriptions, and commands vary.
+/// This keeps the large cross-language/corpus loops readable while still
+/// pinning a complete public answer rather than a handful of substrings.
+pub(super) fn documented_conversion_answer(
+    source: DocumentedFormat,
+    targets: &[DocumentedFormat],
+    project: &str,
+    steps: &[(&str, &str)],
+) -> String {
+    let mut answer = format!("Converted installation instructions for {project}.\n\n");
+    answer.push_str("Formalized meaning:\n```lino\ninstallation_conversion_request\n");
+    let _ = writeln!(answer, "  source_format {}", source.label());
+    for target in targets {
+        let _ = writeln!(answer, "  target_format {}", target.label());
+    }
+    let _ = writeln!(answer, "  project \"{project}\"");
+    answer.push_str(
+        "  validation \"ordered_commands_preserved\"\n  validation \"single_ir_renders_markdown_shell_powershell\"\n",
+    );
+    // Keep the meta-algorithm projection visible in the expected answer. These
+    // are the exact public lines, not a call back into the production renderer.
+    answer.push_str(
+        concat!(
+            "  meta_algorithm \"problem_class_to_shared_ir_to_renderers_to_verification\"\n",
+            "  active_coding_surface \"installation_conversion\"\n",
+            "  construction_stage \"collect_corpus\"\n",
+            "  stage_output \"representative problem-class examples\"\n",
+            "  stage_verifier \"case-study corpus preserved\"\n",
+            "  construction_stage \"derive_surfaces\"\n",
+            "  stage_output \"input and output surface ontology\"\n",
+            "  stage_verifier \"handler-specific surface recognition fixture\"\n",
+            "  construction_stage \"extract_ir\"\n",
+            "  stage_output \"shared intermediate representation\"\n",
+            "  stage_verifier \"domain invariants preserved\"\n",
+            "  construction_stage \"synthesize_operations\"\n",
+            "  stage_output \"recognizers, extractors, renderers, and validators\"\n",
+            "  stage_verifier \"operation composition invariants\"\n",
+            "  construction_stage \"project_targets\"\n",
+            "  stage_output \"target-specific code, document, or rule projections\"\n",
+            "  stage_verifier \"per-target rendering or execution fixture\"\n",
+            "  construction_stage \"mirror_runtimes\"\n",
+            "  stage_output \"Rust and browser-worker projections of the same algorithm\"\n",
+            "  stage_verifier \"cross-runtime parity checks\"\n",
+            "  construction_stage \"promote_capability\"\n",
+            "  stage_output \"reusable coding-task construction pattern\"\n",
+            "  stage_verifier \"shared-symbol and trace-shape compatibility\"\n",
+            "  coding_surface \"coding_catalog\"\n",
+            "  surface_projection \"task spec -> parameterized template -> CST/compile check\"\n",
+            "  coding_surface \"program_synthesis\"\n",
+            "  surface_projection \"semantic function tree -> source program -> sandbox tests\"\n",
+            "  coding_surface \"program_blueprint\"\n",
+            "  surface_projection \"capability set -> blueprint recipe -> honest code projection\"\n",
+            "  coding_surface \"numeric_list\"\n",
+            "  surface_projection \"operation/data/language IR -> generated code plus evaluated result\"\n",
+            "  coding_surface \"rule_synthesis\"\n",
+            "  surface_projection \"operation/target binding -> candidate rule -> verification fixture\"\n",
+            "  coding_surface \"installation_conversion\"\n",
+            "  surface_projection \"installation surfaces -> install-step IR -> target renderers\"\n",
+        ),
+    );
+    for (index, (description, command)) in steps.iter().enumerate() {
+        let _ = writeln!(answer, "  step \"S{}\"", index + 1);
+        let _ = writeln!(answer, "  description \"{description}\"");
+        let escaped = command.replace('\\', "\\\\").replace('"', "\\\"");
+        let _ = writeln!(answer, "  command \"{escaped}\"");
+    }
+    answer.push_str(
+        "```\n\nConversion algorithm:\n\
+         1. Detect the source surface and requested target surface(s).\n\
+         2. Extract command-like install/deploy steps in original order.\n\
+         3. Render every target from the same install-step IR.\n\
+         4. Preserve commands verbatim so the conversion can round-trip.\n\n\
+         Meta algorithm for constructing conversion algorithms:\n\
+         1. collect_corpus -> representative problem-class examples; verification fixture: case-study corpus preserved.\n\
+         2. derive_surfaces -> input and output surface ontology; verification fixture: handler-specific surface recognition fixture.\n\
+         3. extract_ir -> shared intermediate representation; verification fixture: domain invariants preserved.\n\
+         4. synthesize_operations -> recognizers, extractors, renderers, and validators; verification fixture: operation composition invariants.\n\
+         5. project_targets -> target-specific code, document, or rule projections; verification fixture: per-target rendering or execution fixture.\n\
+         6. mirror_runtimes -> Rust and browser-worker projections of the same algorithm; verification fixture: cross-runtime parity checks.\n\
+         7. promote_capability -> reusable coding-task construction pattern; verification fixture: shared-symbol and trace-shape compatibility.\n\n\
+         Coding solutions using the same meta algorithm:\n\
+         - coding_catalog: task spec -> parameterized template -> CST/compile check.\n\
+         - program_synthesis: semantic function tree -> source program -> sandbox tests.\n\
+         - program_blueprint: capability set -> blueprint recipe -> honest code projection.\n\
+         - numeric_list: operation/data/language IR -> generated code plus evaluated result.\n\
+         - rule_synthesis: operation/target binding -> candidate rule -> verification fixture.\n\
+         - installation_conversion [active]: installation surfaces -> install-step IR -> target renderers.\n",
+    );
+    for target in targets {
+        answer.push('\n');
+        match target {
+            DocumentedFormat::Markdown => {
+                answer.push_str("README.md installation guide:\n\n## Installation\n\n");
+                for (index, (description, command)) in steps.iter().enumerate() {
+                    let _ = write!(
+                        answer,
+                        "{}. {}.\n\n   ```sh\n   {}\n   ```\n",
+                        index + 1,
+                        description,
+                        command
+                    );
+                }
+            }
+            DocumentedFormat::Shell => {
+                answer
+                    .push_str("Bash script:\n```bash\n#!/usr/bin/env bash\nset -euo pipefail\n\n");
+                for (description, command) in steps {
+                    let _ = writeln!(answer, "# {description}\n{command}");
+                }
+                answer.push_str("```\n");
+            }
+            DocumentedFormat::PowerShell => {
+                answer.push_str(
+                    "PowerShell script:\n```powershell\n$ErrorActionPreference = 'Stop'\n\n",
+                );
+                for (description, command) in steps {
+                    let _ = writeln!(answer, "# {description}\n{command}");
+                }
+                answer.push_str("```\n");
+            }
+        }
+    }
+    answer.trim_end().to_owned()
+}
 
 #[test]
 fn readme_install_guide_converts_to_bash_and_powershell() {
@@ -20,6 +167,23 @@ fn readme_install_guide_converts_to_bash_and_powershell() {
 
     let response = FormalAiEngine.answer(prompt);
 
+    assert_eq!(
+        response.answer,
+        documented_conversion_answer(
+            DocumentedFormat::Markdown,
+            &[DocumentedFormat::Shell, DocumentedFormat::PowerShell],
+            "the project",
+            &[
+                (
+                    "Clone the repository",
+                    "git clone https://github.com/example/widget.git",
+                ),
+                ("Enter the project directory", "cd widget"),
+                ("Install dependencies", "npm install"),
+                ("Build the project", "npm run build"),
+            ],
+        )
+    );
     assert_eq!(
         response.intent, "installation_conversion",
         "answer: {}",
@@ -65,6 +229,23 @@ fn wrapped_readme_with_nested_shell_fences_converts_to_scripts() {
     let response = FormalAiEngine.answer(prompt);
 
     assert_eq!(
+        response.answer,
+        documented_conversion_answer(
+            DocumentedFormat::Markdown,
+            &[DocumentedFormat::Shell, DocumentedFormat::PowerShell],
+            "react/react",
+            &[
+                (
+                    "Clone the repository",
+                    "git clone https://github.com/react/react.git",
+                ),
+                ("Enter the project directory", "cd react"),
+                ("Install dependencies", "yarn install"),
+                ("Run the verification command", "yarn test"),
+            ],
+        )
+    );
+    assert_eq!(
         response.intent, "installation_conversion",
         "answer: {}",
         response.answer
@@ -105,6 +286,23 @@ npm test
     let response = FormalAiEngine.answer(prompt);
 
     assert_eq!(
+        response.answer,
+        documented_conversion_answer(
+            DocumentedFormat::Markdown,
+            &[DocumentedFormat::Shell],
+            "example/widget",
+            &[
+                (
+                    "Clone the repository",
+                    "git clone https://github.com/example/widget.git",
+                ),
+                ("Enter the project directory", "cd widget"),
+                ("Install dependencies", "npm install"),
+                ("Run the verification command", "npm test"),
+            ],
+        )
+    );
+    assert_eq!(
         response.intent, "installation_conversion",
         "answer: {}",
         response.answer
@@ -138,6 +336,26 @@ ollama serve
     let response = FormalAiEngine.answer(prompt);
 
     assert_eq!(
+        response.answer,
+        documented_conversion_answer(
+            DocumentedFormat::Shell,
+            &[DocumentedFormat::Markdown],
+            "the project",
+            &[
+                (
+                    "Clone the repository",
+                    "git clone https://github.com/ollama/ollama.git",
+                ),
+                ("Enter the project directory", "cd ollama"),
+                (
+                    "Run the curl https://ollama.com/install.sh step",
+                    "curl -fsSL https://ollama.com/install.sh | sh",
+                ),
+                ("Start the application", "ollama serve"),
+            ],
+        )
+    );
+    assert_eq!(
         response.intent, "installation_conversion",
         "answer: {}",
         response.answer
@@ -167,6 +385,24 @@ powershell -NoProfile -Command "$PSVersionTable.PSVersion"
 
     let response = FormalAiEngine.answer(prompt);
 
+    assert_eq!(
+        response.answer,
+        documented_conversion_answer(
+            DocumentedFormat::PowerShell,
+            &[DocumentedFormat::Markdown],
+            "the project",
+            &[
+                (
+                    "Run the irm https://get.activated.win step",
+                    "irm https://get.activated.win | iex",
+                ),
+                (
+                    "Run the powershell $psversiontable.psversion step",
+                    "powershell -NoProfile -Command \"$PSVersionTable.PSVersion\"",
+                ),
+            ],
+        )
+    );
     assert_eq!(
         response.intent, "installation_conversion",
         "answer: {}",
@@ -203,6 +439,21 @@ fn conversion_answer_exposes_algorithm_construction_trace() {
 
     let response = FormalAiEngine.answer(prompt);
 
+    assert_eq!(
+        response.answer,
+        documented_conversion_answer(
+            DocumentedFormat::Markdown,
+            &[DocumentedFormat::Shell],
+            "the project",
+            &[
+                (
+                    "Install dependencies",
+                    "python -m pip install -r requirements.txt",
+                ),
+                ("Run the verification command", "python -m pytest"),
+            ],
+        )
+    );
     assert_eq!(
         response.intent, "installation_conversion",
         "answer: {}",
@@ -287,6 +538,17 @@ fn install_conversion_prompts_route_across_supported_languages() {
     for case in cases {
         let response = FormalAiEngine.answer(case.prompt);
 
+        if case.language == "en" {
+            assert_eq!(
+                response.answer,
+                documented_conversion_answer(
+                    DocumentedFormat::Markdown,
+                    &[DocumentedFormat::Shell],
+                    "the project",
+                    &[("Install dependencies", "npm install")],
+                )
+            );
+        }
         assert_eq!(
             response.intent, "installation_conversion",
             "language: {}, answer was: {}",
@@ -298,626 +560,4 @@ fn install_conversion_prompts_route_across_supported_languages() {
     }
 }
 
-#[test]
-fn popular_github_projects_route_through_install_conversion() {
-    let cases = [
-        (
-            "codecrafters-io/build-your-own-x",
-            "git clone https://github.com/codecrafters-io/build-your-own-x.git",
-            "make test",
-        ),
-        (
-            "sindresorhus/awesome",
-            "git clone https://github.com/sindresorhus/awesome.git",
-            "npm test",
-        ),
-        ("freeCodeCamp/freeCodeCamp", "pnpm install", "pnpm test"),
-        (
-            "public-apis/public-apis",
-            "git clone https://github.com/public-apis/public-apis.git",
-            "npx awesome-lint",
-        ),
-        (
-            "EbookFoundation/free-programming-books",
-            "git clone https://github.com/EbookFoundation/free-programming-books.git",
-            "npm test",
-        ),
-        (
-            "openclaw/openclaw",
-            "cmake -S . -B build",
-            "cmake --build build",
-        ),
-        ("nilbuild/developer-roadmap", "pnpm install", "pnpm build"),
-        (
-            "donnemartin/system-design-primer",
-            "git clone https://github.com/donnemartin/system-design-primer.git",
-            "python -m pytest",
-        ),
-        (
-            "jwasham/coding-interview-university",
-            "git clone https://github.com/jwasham/coding-interview-university.git",
-            "npm test",
-        ),
-        (
-            "vinta/awesome-python",
-            "git clone https://github.com/vinta/awesome-python.git",
-            "python -m pytest",
-        ),
-        (
-            "awesome-selfhosted/awesome-selfhosted",
-            "git clone https://github.com/awesome-selfhosted/awesome-selfhosted.git",
-            "npx awesome-lint",
-        ),
-        (
-            "996icu/996.ICU",
-            "git clone https://github.com/996icu/996.ICU.git",
-            "npm test",
-        ),
-        (
-            "practical-tutorials/project-based-learning",
-            "git clone https://github.com/practical-tutorials/project-based-learning.git",
-            "npm test",
-        ),
-        ("react/react", "yarn install", "yarn test"),
-        ("torvalds/linux", "make defconfig", "make"),
-        (
-            "trimstray/the-book-of-secret-knowledge",
-            "git clone https://github.com/trimstray/the-book-of-secret-knowledge.git",
-            "npm test",
-        ),
-        (
-            "obra/superpowers",
-            "git clone https://github.com/obra/superpowers.git",
-            "npm test",
-        ),
-        (
-            "TheAlgorithms/Python",
-            "python -m pip install -r requirements.txt",
-            "python -m pytest",
-        ),
-        (
-            "affaan-m/ECC",
-            "git clone https://github.com/affaan-m/ECC.git",
-            "python -m pytest",
-        ),
-        ("vuejs/vue", "pnpm install", "pnpm test"),
-        (
-            "ossu/computer-science",
-            "git clone https://github.com/ossu/computer-science.git",
-            "npm test",
-        ),
-        ("trekhleb/javascript-algorithms", "npm install", "npm test"),
-        (
-            "tensorflow/tensorflow",
-            "python -m pip install tensorflow",
-            "python -c \"import tensorflow as tf; print(tf.__version__)\"",
-        ),
-        ("ultraworkers/claw-code", "npm install", "npm test"),
-        ("n8n-io/n8n", "pnpm install", "pnpm test"),
-        (
-            "NousResearch/hermes-agent",
-            "python -m pip install -r requirements.txt",
-            "python -m pytest",
-        ),
-        (
-            "ohmyzsh/ohmyzsh",
-            "sh -c \"$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"",
-            "zsh --version",
-        ),
-        ("microsoft/vscode", "yarn install", "yarn compile"),
-        (
-            "Significant-Gravitas/AutoGPT",
-            "python -m pip install -r requirements.txt",
-            "python -m pytest",
-        ),
-        (
-            "CyC2018/CS-Notes",
-            "git clone https://github.com/CyC2018/CS-Notes.git",
-            "npm test",
-        ),
-        (
-            "getify/You-Dont-Know-JS",
-            "git clone https://github.com/getify/You-Dont-Know-JS.git",
-            "npm test",
-        ),
-        (
-            "jackfrued/Python-100-Days",
-            "python -m pip install -r requirements.txt",
-            "python -m pytest",
-        ),
-        (
-            "massgravel/Microsoft-Activation-Scripts",
-            "irm https://get.activated.win | iex",
-            "powershell -NoProfile -Command \"$PSVersionTable.PSVersion\"",
-        ),
-        (
-            "flutter/flutter",
-            "git clone https://github.com/flutter/flutter.git",
-            "flutter doctor",
-        ),
-        (
-            "DigitalPlatDev/FreeDomain",
-            "git clone https://github.com/DigitalPlatDev/FreeDomain.git",
-            "npm test",
-        ),
-        (
-            "avelino/awesome-go",
-            "git clone https://github.com/avelino/awesome-go.git",
-            "go test ./...",
-        ),
-        (
-            "github/gitignore",
-            "git clone https://github.com/github/gitignore.git",
-            "npm test",
-        ),
-        ("twbs/bootstrap", "npm install", "npm test"),
-        (
-            "ollama/ollama",
-            "curl -fsSL https://ollama.com/install.sh | sh",
-            "ollama --version",
-        ),
-        (
-            "multica-ai/andrej-karpathy-skills",
-            "git clone https://github.com/multica-ai/andrej-karpathy-skills.git",
-            "npm test",
-        ),
-        (
-            "anomalyco/opencode",
-            "npm install -g opencode-ai",
-            "opencode --version",
-        ),
-        (
-            "yt-dlp/yt-dlp",
-            "python -m pip install -U yt-dlp",
-            "yt-dlp --version",
-        ),
-        (
-            "AUTOMATIC1111/stable-diffusion-webui",
-            "./webui.sh",
-            "python launch.py --help",
-        ),
-        (
-            "f/prompts.chat",
-            "git clone https://github.com/f/prompts.chat.git",
-            "npm test",
-        ),
-        (
-            "huggingface/transformers",
-            "python -m pip install transformers",
-            "python -c \"import transformers; print(transformers.__version__)\"",
-        ),
-        (
-            "jlevy/the-art-of-command-line",
-            "git clone https://github.com/jlevy/the-art-of-command-line.git",
-            "npm test",
-        ),
-        (
-            "521xueweihan/HelloGitHub",
-            "python -m pip install -r requirements.txt",
-            "python -m pytest",
-        ),
-        (
-            "Snailclimb/JavaGuide",
-            "git clone https://github.com/Snailclimb/JavaGuide.git",
-            "mvn test",
-        ),
-        (
-            "microsoft/markitdown",
-            "python -m pip install markitdown",
-            "markitdown --help",
-        ),
-        (
-            "anthropics/skills",
-            "git clone https://github.com/anthropics/skills.git",
-            "npm test",
-        ),
-        (
-            "langflow-ai/langflow",
-            "python -m pip install langflow",
-            "python -m langflow run --help",
-        ),
-        (
-            "airbnb/javascript",
-            "git clone https://github.com/airbnb/javascript.git",
-            "npm test",
-        ),
-        ("langgenius/dify", "docker compose up -d", "docker ps"),
-        (
-            "Genymobile/scrcpy",
-            "sudo apt install scrcpy",
-            "bash -lc \"scrcpy --version\"",
-        ),
-        (
-            "open-webui/open-webui",
-            "docker run -d -p 3000:8080 ghcr.io/open-webui/open-webui:main",
-            "docker ps",
-        ),
-        (
-            "ytdl-org/youtube-dl",
-            "python -m pip install -U youtube_dl",
-            "python -m youtube_dl --version",
-        ),
-        (
-            "yangshun/tech-interview-handbook",
-            "pnpm install",
-            "pnpm test",
-        ),
-        (
-            "x1xhlol/system-prompts-and-models-of-ai-tools",
-            "git clone https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools.git",
-            "npm test",
-        ),
-        ("vercel/next.js", "pnpm install", "pnpm test"),
-        (
-            "langchain-ai/langchain",
-            "python -m pip install langchain",
-            "python -c \"import langchain; print(langchain.__version__)\"",
-        ),
-        (
-            "golang/go",
-            "git clone https://github.com/golang/go.git",
-            "bash ./src/all.bash",
-        ),
-        (
-            "microsoft/PowerToys",
-            "git clone https://github.com/microsoft/PowerToys.git",
-            "powershell -NoProfile -Command \"Write-Output PowerToys\"",
-        ),
-        (
-            "labuladong/fucking-algorithm",
-            "git clone https://github.com/labuladong/fucking-algorithm.git",
-            "npm test",
-        ),
-        (
-            "anthropics/claude-code",
-            "npm install -g @anthropic-ai/claude-code",
-            "npm view @anthropic-ai/claude-code version",
-        ),
-        ("firecrawl/firecrawl", "pnpm install", "pnpm test"),
-        ("Chalarangelo/30-seconds-of-code", "npm install", "npm test"),
-        (
-            "krahets/hello-algo",
-            "git clone https://github.com/krahets/hello-algo.git",
-            "npm test",
-        ),
-        (
-            "mattpocock/skills",
-            "git clone https://github.com/mattpocock/skills.git",
-            "bash --version",
-        ),
-        ("react/react-native", "yarn install", "yarn test"),
-        ("excalidraw/excalidraw", "yarn install", "yarn test"),
-        (
-            "clash-verge-rev/clash-verge-rev",
-            "pnpm install",
-            "pnpm test",
-        ),
-        (
-            "ripienaar/free-for-dev",
-            "git clone https://github.com/ripienaar/free-for-dev.git",
-            "npm test",
-        ),
-        (
-            "kubernetes/kubernetes",
-            "git clone https://github.com/kubernetes/kubernetes.git",
-            "make test",
-        ),
-        ("electron/electron", "npm install", "npm test"),
-        ("iptv-org/iptv", "npm install", "npm test"),
-        ("nodejs/node", "python configure.py", "make test"),
-        (
-            "justjavac/free-programming-books-zh_CN",
-            "git clone https://github.com/justjavac/free-programming-books-zh_CN.git",
-            "npm test",
-        ),
-        (
-            "Comfy-Org/ComfyUI",
-            "python -m pip install -r requirements.txt",
-            "python main.py --help",
-        ),
-        ("shadcn-ui/ui", "pnpm install", "pnpm test"),
-        (
-            "ggml-org/llama.cpp",
-            "cmake -B build",
-            "cmake --build build",
-        ),
-        ("rustdesk/rustdesk", "cargo build", "cargo test"),
-        (
-            "Shubhamsaboo/awesome-llm-apps",
-            "python -m pip install -r requirements.txt",
-            "python -m pytest",
-        ),
-        (
-            "Hack-with-Github/Awesome-Hacking",
-            "git clone https://github.com/Hack-with-Github/Awesome-Hacking.git",
-            "npm test",
-        ),
-        (
-            "rust-lang/rust",
-            "git clone https://github.com/rust-lang/rust.git",
-            "python x.py test library/std",
-        ),
-        ("d3/d3", "npm install", "npm test"),
-        ("mrdoob/three.js", "npm install", "npm test"),
-        (
-            "godotengine/godot",
-            "python -m pip install scons",
-            "python -c \"import SCons; print(SCons.__version__)\"",
-        ),
-        (
-            "msitarzewski/agency-agents",
-            "git clone https://github.com/msitarzewski/agency-agents.git",
-            "bash --version",
-        ),
-        (
-            "microsoft/generative-ai-for-beginners",
-            "git clone https://github.com/microsoft/generative-ai-for-beginners.git",
-            "python -m pytest",
-        ),
-        (
-            "github/spec-kit",
-            "python -m pip install -e .",
-            "python -m pytest",
-        ),
-        ("garrytan/gstack", "npm install", "npm test"),
-        ("microsoft/TypeScript", "npm install", "npm test"),
-        ("axios/axios", "npm install", "npm test"),
-        (
-            "2dust/v2rayN",
-            "git clone https://github.com/2dust/v2rayN.git",
-            "powershell -NoProfile -Command \"Write-Output v2rayN\"",
-        ),
-        (
-            "GrowingGit/GitHub-Chinese-Top-Charts",
-            "git clone https://github.com/GrowingGit/GitHub-Chinese-Top-Charts.git",
-            "mvn test",
-        ),
-        ("tauri-apps/tauri", "cargo build", "cargo test"),
-        ("fatedier/frp", "go test ./...", "go test ./cmd/..."),
-        ("denoland/deno", "cargo build", "cargo test"),
-        (
-            "papers-we-love/papers-we-love",
-            "git clone https://github.com/papers-we-love/papers-we-love.git",
-            "npm test",
-        ),
-        (
-            "jaywcjlove/awesome-mac",
-            "git clone https://github.com/jaywcjlove/awesome-mac.git",
-            "npm test",
-        ),
-    ];
-
-    assert_eq!(
-        cases.len(),
-        100,
-        "issue #423 follow-up requires doubling the popular-project conversion cases"
-    );
-
-    for (repo, install_command, verify_command) in cases {
-        let prompt = format!(
-            "Convert this README.md installation guide for {repo} into a sh script:\n\
-             ## Installation\n\
-             1. Run `{install_command}`.\n\
-             2. Verify with `{verify_command}`.\n"
-        );
-
-        let response = FormalAiEngine.answer(&prompt);
-
-        assert_eq!(
-            response.intent, "installation_conversion",
-            "repo {repo} returned {}: {}",
-            response.intent, response.answer
-        );
-        assert!(response.answer.contains("source_format markdown"));
-        assert!(response.answer.contains("target_format shell_script"));
-        assert!(response.answer.contains(install_command));
-        assert!(response.answer.contains(verify_command));
-    }
-}
-
-#[test]
-fn unlisted_tools_still_route_through_install_conversion() {
-    // Issue #433: the command recognizer no longer leans on an enumerated tool
-    // whitelist. `bun`, `deno`, and `uv` never appeared in the old `PREFIXES`
-    // table, yet their commands are recognized purely from structure/provenance.
-    let cases = [
-        ("acme/widget", "bun install", "bun test"),
-        ("acme/server", "deno task setup", "deno test"),
-        (
-            "acme/tool",
-            "uv pip install -r requirements.txt",
-            "uv run pytest",
-        ),
-        ("acme/native", "zig build", "zig build test"),
-    ];
-
-    for (repo, install_command, verify_command) in cases {
-        let prompt = format!(
-            "Convert this README.md installation guide for {repo} into a sh script:\n\
-             ## Installation\n\
-             1. Run `{install_command}`.\n\
-             2. Verify with `{verify_command}`.\n"
-        );
-
-        let response = FormalAiEngine.answer(&prompt);
-
-        assert_eq!(
-            response.intent, "installation_conversion",
-            "repo {repo} returned {}: {}",
-            response.intent, response.answer
-        );
-        assert!(
-            response.answer.contains(install_command),
-            "missing install command for {repo}: {}",
-            response.answer
-        );
-        assert!(
-            response.answer.contains(verify_command),
-            "missing verify command for {repo}: {}",
-            response.answer
-        );
-    }
-}
-
-#[test]
-fn prose_bullets_do_not_leak_into_generated_scripts() {
-    // Issue #433: adversarial prose surrounding a single real command. Only the
-    // back-ticked command should survive into the rendered script; the prose
-    // sentences (even ones that name tools) must be rejected.
-    let prompt = "Convert this README.md installation guide for acme/widget into a sh script:\n\
-                  ## Installation\n\
-                  First, make sure you have the toolchain installed and configured.\n\
-                  1. Install the project with `npm install`.\n\
-                  Then build everything and run the whole pipeline manually.\n";
-
-    let response = FormalAiEngine.answer(prompt);
-
-    assert_eq!(
-        response.intent, "installation_conversion",
-        "answer: {}",
-        response.answer
-    );
-    assert!(
-        response.answer.contains("npm install"),
-        "real command dropped: {}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("make sure you have"),
-        "prose leaked into script: {}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("Then build everything"),
-        "prose leaked into script: {}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("First, make sure"),
-        "prose leaked into script: {}",
-        response.answer
-    );
-}
-
-#[test]
-fn prose_rejection_holds_across_supported_languages() {
-    // Issue #433: the structural recognizer rejects prose and keeps real commands
-    // independently of the surrounding natural language. Exercise the same
-    // adversarial shape (prose sentences wrapping one back-ticked command) in
-    // every supported language so the generalization is not English-only.
-    struct Case {
-        language: &'static str,
-        prompt: &'static str,
-        prose_fragment: &'static str,
-    }
-
-    let cases = [
-        Case {
-            // english
-            language: "en",
-            prompt: "Convert this README.md installation guide into a sh script:\n\
-                     ## Installation\n\
-                     First, make sure your environment is ready before continuing.\n\
-                     1. Install the project with `npm install`.\n",
-            prose_fragment: "make sure your environment",
-        },
-        Case {
-            // russian / русский
-            language: "ru",
-            prompt: "Преобразуй это README.md руководство по установке в sh скрипт:\n\
-                     ## Установка\n\
-                     Сначала убедитесь, что окружение готово к работе.\n\
-                     1. Установите проект командой `npm install`.\n",
-            prose_fragment: "убедитесь, что окружение",
-        },
-        Case {
-            // hindi / हिन्दी
-            language: "hi",
-            prompt: "इस README.md स्थापना guide को sh script में बदलें:\n\
-                     ## स्थापना\n\
-                     पहले सुनिश्चित करें कि आपका वातावरण तैयार है।\n\
-                     1. परियोजना को `npm install` से स्थापित करें।\n",
-            prose_fragment: "सुनिश्चित करें कि आपका",
-        },
-        Case {
-            // chinese / 中文
-            language: "zh",
-            prompt: "请把这个 README.md 安装指南转换为 sh 脚本:\n\
-                     ## 安装\n\
-                     首先请确认你的环境已经准备就绪。\n\
-                     1. 使用 `npm install` 安装项目。\n",
-            prose_fragment: "首先请确认你的环境",
-        },
-    ];
-
-    for case in cases {
-        let response = FormalAiEngine.answer(case.prompt);
-
-        assert_eq!(
-            response.intent, "installation_conversion",
-            "language {} returned {}: {}",
-            case.language, response.intent, response.answer
-        );
-        assert!(
-            response.answer.contains("npm install"),
-            "language {}: real command dropped: {}",
-            case.language,
-            response.answer
-        );
-        assert!(
-            !response.answer.contains(case.prose_fragment),
-            "language {}: prose leaked into script: {}",
-            case.language,
-            response.answer
-        );
-    }
-}
-
-/// Issue #932: `go mod init` is Go's traditional project-init command, and a
-/// README that carries it must still convert into a shell script.
-///
-/// The guide's own words ("Create the project directory", "Build the project")
-/// plus the `mod` artifact surface inside the quoted markdown used to formalize
-/// the impulse as a software-project request, which dispatch then promoted ahead
-/// of the whole precedence table — so `installation_conversion` never ran even
-/// though `data/seed/handler-precedence.lino` ranks it above `software_project`.
-#[test]
-fn go_module_install_guide_converts_to_a_script() {
-    let prompt = r"Convert this README.md installation guide into a sh script:
-
-```markdown
-## Installation
-1. Create the project directory.
-   `mkdir -p hello-formal-ai`
-2. Enter the project directory.
-   `cd hello-formal-ai`
-3. Create the module.
-   `go mod init hello-formal-ai`
-4. Build the project.
-   `go build ./...`
-5. Run the project.
-   `go run main.go`
-```
-";
-
-    let response = FormalAiEngine.answer(prompt);
-
-    assert_eq!(
-        response.intent, "installation_conversion",
-        "answer: {}",
-        response.answer
-    );
-    for command in [
-        "mkdir -p hello-formal-ai",
-        "cd hello-formal-ai",
-        "go mod init hello-formal-ai",
-        "go build ./...",
-        "go run main.go",
-    ] {
-        assert!(
-            response.answer.contains(command),
-            "command {command} dropped: {}",
-            response.answer
-        );
-    }
-}
+mod extended;

@@ -1,0 +1,4 @@
+ci_gate check_issue_citations
+  stage rust
+  description "Every prose claim that an issue remains open names an item in the committed GitHub state snapshot."
+  run "rust-script scripts/check-issue-citations.rs"

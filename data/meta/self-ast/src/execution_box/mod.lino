@@ -1,0 +1,67 @@
+self_ast_census
+  target src/execution_box/mod.rs
+  language rust
+  fidelity signature
+  byte_len 40594
+  line_count 1138
+  content_id source_module_92f7b8a5b90031e8
+  symbol_count 58
+  symbols
+    module container 13 13
+    const BACKEND_ENV 25 25
+    const START_ISOLATION_ENV 28 28
+    const START_RUNNER_ENV 31 31
+    const HOST_INTERPRETER 34 34
+    const SCRIPT_FILE 37 37
+    const CONTAINER_RUNNER 41 42
+    const CONVERSATION_IDLE 45 45
+    const COMMAND_LOG 49 49
+    const POLL 52 52
+    const STARTUP_FLOOR 60 60
+    function interpreter_startup 71 87
+    static MEASURED 72 72
+    enum ExecutionBackend 91 127
+    function slug 132 145
+    function needs_container_runtime 149 154
+    struct ProcessInvocation 160 165
+    function disposable_container_invocation 173 198
+    function backend_from_configuration 206 292
+    function backend_from_environment 295 300
+    enum NetworkPolicy 304 310
+    function container_flags 316 321
+    struct BoxPolicy 326 331
+    function default 334 339
+    struct BoxObservation 344 355
+    struct LadderRung 359 366
+    struct LadderReport 370 377
+    enum BoxError 381 404
+    struct BoxHandle 408 413
+    struct ExecutionBox 421 426
+    function open 436 450
+    static NEXT 443 443
+    function open_in 457 501
+    function backend 505 507
+    function network 511 513
+    function deadline 517 519
+    function workspace 523 525
+    function script_invocation 530 572
+    function run 578 652
+    function run_command 659 688
+    function observe_disposable_container 690 699
+    function observe_conversation 701 728
+    function observe_process 731 744
+    function observe_invocation 746 834
+    function halving_ladder 845 848
+    function halving_ladder_with_hard_limit 859 900
+    function detach 906 915
+    function record_command 919 928
+    function prefixed_invocation 931 944
+    function validate_image 946 959
+    function checked_workspace_path 961 978
+    function archive_workspace 980 995
+    function swebench_image 997 1009
+    function conversation_container_name 1014 1017
+    function conversation_create_invocation 1021 1043
+    function conversation_exec_invocation 1049 1068
+    function ensure_conversation_container 1070 1119
+    function stream 1123 1138

@@ -37,6 +37,7 @@ pub mod program_plan;
 pub mod proof_engine;
 pub mod protocol;
 pub mod relative_meta_logic;
+pub(crate) mod repository_workspace;
 pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod self_improvement;
@@ -65,6 +66,7 @@ pub mod thinking;
 pub mod thinking_prose;
 pub mod translation;
 pub(crate) mod unknown_opener;
+pub(crate) mod verifiable_task;
 pub mod web_engine_core;
 pub mod web_search_core;
 

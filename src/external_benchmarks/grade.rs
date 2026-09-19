@@ -13,8 +13,15 @@ use std::process::Command;
 use lino_objects_codec::format::parse_indented;
 
 use super::cases::{BenchmarkCase, Expectation};
-use super::manifest::Grading;
+use super::manifest::{Grading, SWEBENCH_HARNESS_REF};
 use super::vocabulary;
+use crate::prerequisite::install::{InstallGrant, ProcessCapability};
+use crate::prerequisite::ledger::ToolchainLedger;
+use crate::prerequisite::probe::{ProbeVerdict, workspace_environment};
+use crate::prerequisite::publisher::pinned_python_repository_procedure;
+use crate::prerequisite::{
+    Platform, PrerequisiteNeed, RecoveryOutcome, recover_discovered_procedure,
+};
 
 /// Wall-clock ceiling for one upstream Python test run.
 const PYTHON_TIMEOUT_SECONDS: &str = "20";
@@ -174,6 +181,18 @@ pub fn grade_swebench(
     answers: &[String],
     workspace: &Path,
 ) -> Result<Vec<CaseOutcome>, String> {
+    grade_swebench_with_install(cases, answers, workspace, false)
+}
+
+/// Grade through the official harness, optionally granting its pinned,
+/// workspace-scoped installation. The default entry point keeps this false;
+/// CLI and scheduled callers must opt in explicitly.
+pub fn grade_swebench_with_install(
+    cases: &[BenchmarkCase],
+    answers: &[String],
+    workspace: &Path,
+    allow_install: bool,
+) -> Result<Vec<CaseOutcome>, String> {
     if cases.len() != answers.len() {
         return Err("SWE-bench cases and answers have different lengths".to_string());
     }
@@ -190,9 +209,9 @@ pub fn grade_swebench(
             .collect());
     }
 
-    ensure_swebench_runtime()?;
     fs::create_dir_all(workspace)
         .map_err(|error| format!("failed to create {}: {error}", workspace.display()))?;
+    ensure_swebench_runtime(workspace, allow_install)?;
     let dataset_path = workspace.join("dataset.json");
     let dataset: Result<Vec<serde_json::Value>, String> = cases
         .iter()
@@ -293,12 +312,16 @@ pub fn grade_swebench(
     for case in cases {
         command.arg(&case.id);
     }
-    let output = command.current_dir(workspace).output().map_err(|error| {
-        vocabulary::render(
-            "external_benchmark_swe_start_error",
-            &[("error", &error.to_string())],
-        )
-    })?;
+    let output = command
+        .current_dir(workspace)
+        .envs(workspace_environment(workspace))
+        .output()
+        .map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_swe_start_error",
+                &[("error", &error.to_string())],
+            )
+        })?;
     if !output.status.success() {
         return Err(vocabulary::render(
             "external_benchmark_swe_exit_error",
@@ -330,9 +353,10 @@ fn fnv1a64(bytes: impl IntoIterator<Item = u8>) -> u64 {
     hash
 }
 
-fn ensure_swebench_runtime() -> Result<(), String> {
+fn inspect_swebench_runtime(workspace: &Path) -> Result<bool, String> {
     let module = Command::new("python3")
         .args(["-c", "import swebench.harness.run_evaluation"])
+        .envs(workspace_environment(workspace))
         .output()
         .map_err(|error| {
             vocabulary::render(
@@ -340,8 +364,80 @@ fn ensure_swebench_runtime() -> Result<(), String> {
                 &[("error", &error.to_string())],
             )
         })?;
-    if !module.status.success() {
-        return Err("the pinned official `swebench` Python harness is not installed".to_string());
+    Ok(module.status.success())
+}
+
+fn recover_swebench_harness(workspace: &Path) -> Result<(), String> {
+    let procedure = pinned_python_repository_procedure(
+        "swebench-harness",
+        "https://github.com/SWE-bench/SWE-bench",
+        SWEBENCH_HARNESS_REF,
+        "swebench.harness.run_evaluation",
+        Platform::observed(),
+    )
+    .map_err(|refusal| refusal.reason)?;
+    let need = PrerequisiteNeed {
+        program: String::from("swebench-harness"),
+        source_span: String::from("grade a patch with the official SWE-bench harness"),
+        observed: ProbeVerdict::Missing {
+            exit_code: Some(127),
+            stderr: String::from("the pinned official SWE-bench harness is not installed"),
+        },
+        platform: Platform::observed(),
+        requires: Vec::new(),
+    };
+    let grant = swebench_harness_install_grant(workspace, true);
+    let mut ledger =
+        ToolchainLedger::new(workspace.join(".formal-ai/prerequisite/toolchain-ledger.lino"));
+    match recover_discovered_procedure(&need, procedure, &grant, &mut ledger) {
+        RecoveryOutcome::Recovered { .. } => Ok(()),
+        RecoveryOutcome::NotPermitted { reason, .. } => Err(vocabulary::render(
+            "external_benchmark_recovery_not_permitted",
+            &[("reason", &format!("{reason:?}"))],
+        )),
+        RecoveryOutcome::NotFound { consulted } => Err(vocabulary::render(
+            "external_benchmark_publisher_exhausted",
+            &[("consulted", &consulted.join(", "))],
+        )),
+        RecoveryOutcome::StillMissing { after, .. } => Err(vocabulary::render(
+            "external_benchmark_recovery_still_missing",
+            &[("after", &format!("{after:?}"))],
+        )),
+    }
+}
+
+/// The narrowly-scoped grant used by the SWE-bench evaluator. This pure seam
+/// lets tests prove that omission of `--allow-install` remains default-deny.
+#[must_use]
+pub fn swebench_harness_install_grant(workspace: &Path, allow_install: bool) -> InstallGrant {
+    if !allow_install {
+        return InstallGrant::Refused;
+    }
+    InstallGrant::AllowedExecution {
+        programs: vec![String::from("swebench-harness")],
+        processes: vec![
+            ProcessCapability::new("python3", &["-m", "venv"]),
+            ProcessCapability::new("python3", &["-m", "pip", "install"]),
+            ProcessCapability::new("python3", &["-c", "import swebench.harness.run_evaluation"]),
+        ],
+        allow_network: true,
+        root: workspace.to_path_buf(),
+    }
+}
+
+fn ensure_swebench_runtime(workspace: &Path, allow_install: bool) -> Result<(), String> {
+    if !inspect_swebench_runtime(workspace)? {
+        if !allow_install {
+            return Err(String::from(
+                "the pinned official `swebench` Python harness is missing; installation is default-deny (rerun with --allow-install to grant the pinned workspace-scoped procedure)",
+            ));
+        }
+        recover_swebench_harness(workspace)?;
+        if !inspect_swebench_runtime(workspace)? {
+            return Err(String::from(
+                "the pinned official `swebench` Python harness is not installed after recovery",
+            ));
+        }
     }
     let docker = Command::new("docker")
         .arg("info")

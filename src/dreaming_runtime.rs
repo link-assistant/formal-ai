@@ -126,18 +126,24 @@ pub fn run_core_dreaming_once(memory_path: &Path) -> io::Result<DreamingOutcome>
         let recipe_path = memory_path.with_extension("recipe.lino");
         crate::memory::write_locked_atomic(&recipe_path, &recipe)?;
     }
+    let anticipation = crate::anticipation::run_idle_anticipation(memory_path, &mut store)?;
+    if anticipation.recorded_events() > 0 {
+        store.save_to_file(memory_path)?;
+    }
     write_learning_cycle_record(memory_path)?;
     Ok(outcome)
 }
 
 /// The proposal-only learning-cycle record every idle run leaves next to the
-/// memory log (issue #701 §5).
+/// memory log (issue #701 §5), in a shape the next promotion run reads.
 ///
 /// Running the loop periodically is what makes it a loop rather than a one-off
 /// script, but "periodically" must not mean "unattended adoption": the run
 /// replays the recorded frontier, derives candidates, validates them against
 /// held-out prompts, and writes the record a human reviews. It never writes a
-/// seed file, so promotion stays behind the issue-#656 gate.
+/// seed file, so promotion stays behind the issue-#656 gate. `formal-ai improve
+/// --promote --memory <path>` discovers this sidecar and feeds its embedded
+/// proposal blocks to the canonical gate replay; it is not a write-only report.
 pub fn write_learning_cycle_record(memory_path: &Path) -> io::Result<()> {
     let run = crate::learning_cycle::google_trends_learning_cycle();
     let path = learning_cycle_record_path(memory_path);

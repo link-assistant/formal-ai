@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:49.999Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.000Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水？ --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.000Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.000Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.021Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水？",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水？",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.022Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.024Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.026Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.026Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.033Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.037Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.054Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 6625,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.054Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.072Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:03:50.078Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.079Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.079Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.079Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.079Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.080Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.080Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.080Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 56,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.080Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:03:50.080Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.088Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.088Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.090Z",
+  "service": "session",
+  "id": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4",
+  "title": "New session - 2026-09-16T03:03:50.090Z",
+  "time": {
+    "created": 1789527830090,
+    "updated": 1789527830090
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.092Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 4,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.092Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.093Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d451b5ffe2bZSRjXNZ9zbKC/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.093Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d451b5ffe2bZSRjXNZ9zbKC/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.105Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 12,
+  "method": "POST",
+  "path": "/session/ses_f57d451b5ffe2bZSRjXNZ9zbKC/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.117Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.117Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.121Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.126Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.126Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.127Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.128Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.128Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.128Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.128Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.129Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.129Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.443Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.459Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.460Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.490Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.516Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.516Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.516Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.516Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.942Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527830943,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bb19b001cs36GudvUcIA8y",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bafb90014zPSoDgUg3D0ET",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.944Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527830944,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bb19f0020i7kV2K89hEILs",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bafb90014zPSoDgUg3D0ET",
+    "type": "tool",
+    "callID": "call_887e7cc746b19e61",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.944Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527830944,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bb19f001wsP2cbFoU4uQLA",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bafb90014zPSoDgUg3D0ET",
+    "type": "text",
+    "text": "我来上网搜索 昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水。",
+    "time": {
+      "start": 1789527830944,
+      "end": 1789527830944
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:50.944Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527830944,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bb19f0020i7kV2K89hEILs",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bafb90014zPSoDgUg3D0ET",
+    "type": "tool",
+    "callID": "call_887e7cc746b19e61",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水"
+      },
+      "time": {
+        "start": 1789527830944
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.647Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527833647,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bb19f0020i7kV2K89hEILs",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bafb90014zPSoDgUg3D0ET",
+    "type": "tool",
+    "callID": "call_887e7cc746b19e61",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水"
+      },
+      "output": "Title: 雨水收集量计算器 – 估算可收集的雨水体积 - CalculatorLib\nURL: https://calculatorlib.com/zh/rainfall-calculator\nPublished: 2026-07-04T00:00:00.000Z\nAuthor: N/A\nHighlights:\n这款雨水收集量计算器可以帮你估算一场降雨能从某个表面收集到多少水。你只需输入两个数值——以毫米（mm）为单位的降雨量，以及以平方米（m²）为单位的集水面积——计算器就会返回以立方米（m³）为单位的可收集雨水体积，并同时换算成升（L）。它采用国际单位制（SI），因此只要降雨量是以毫米计量的地区都适用，也就是美国以外的世界大部分地区。\n\n 落在集水区的雨水被引入储水箱。\n...\n- 降雨量（mm）：降下的雨水深度，可以来自气象站、天气预报或雨量计的数据。1 毫米的降雨意味着每平方米落下 1 升水。\n- 集水面积（m²）：用来承接雨水的表面的水平投影面积——例如屋顶占地面积、铺装院子或一片田地。请使用水平投影面积，而不是倾斜表面的实际面积。\n...\n的关系式：\n...\n$$V = \\frac{\\text{降雨量 (mm)} \\times \\text{面积 (m}^2\\text{)}}{1000}$$\n...\n除以 1000 是为了把毫米换算成米，使单位统一为立方米。要把结果换算成升，只需将体积乘以 1000：\n...\n$$\\text{升} = \\text{体积 (m}^3\\text{)} \\times 1000 = \\text{降雨量 (mm)} \\times \\text{面积 (m}^2\\text{)}$$\n...\n由此可得一个方便的心算技巧：收集到的水量（升）就等于降雨量（mm）乘以面积（m²）。\n\n 体积等于降雨深度乘以集水面积。\n...\n假设有 25 mm 的雨水落在占地面积为 80 m² 的屋顶上。\n\n- 体积 $$= \\frac{25 \\times 80}{1000} = \\frac{2000}{1000} = 2 \\text{ m}^3$$\n- 升 $$= 2 \\times 1000 = 2000 \\text{ 升}$$\n\n也就是说，仅一场 25 mm 的降雨，就能从这片屋顶装满一个 2000 升的水箱。\n...\n深度（毫米\n...\n水平（平面\n...\n（立方米\n...\n斜表面积\n...\n$$V = \\frac{25 \\\n...\n0 \\times\n...\n0} = 2.25\\ \\text\n...\nm}^3 =\n...\n250\\ \\text{L}$$\n...\n| 情景 | 降雨（毫米） | 集水面积（m²） | 理论量 | 在 \\(C = 0.85\\) 下的现实量 |\n| --- | --- | --- | --- | --- |\n| 花园棚屋顶上的小阵雨 | 5 | 50 | 0.25 m³（250升） | 0.2125 m³（212.5升） |\n| 小房子屋顶上的中等降雨日 | 25 | 80 | 2 m³（2,000升） | 1.7 m³（1,700升） |\n| 家庭房屋屋顶上的暴雨 | 50 | 150 | 7.5 m³（7,500升） | 6.375 m³（6,375升） |\n| 仓库屋顶上的短降雨 | 10 | 1,000 | 10 m³（10,000升） | 8.5 m³（8,500升） |\n| 大屋顶上的季风日暴雨 | 100 | 200 | 20 m³（20,000升） | 17 m³（17,000升） |\n| 田地一公顷上的降雨 | 20 | 10,000 | 200 m³（200,000升） | 170 m³（170,000升） |\n...\n家庭房屋屋顶上的暴雨，面积150 m²：\n...\n$$V = \\frac{50 \\times 150}{1000} = \\frac{7500}{1000} = 7.5\\ \\text{m}^3$$ \n\n应用系数后，\\(7.5 \\times 0.85 = 6.375\\) m³。\n...\n1. 关系在两个输入中都是完全线性的。降雨加倍或面积加倍会使体积加倍，所以你可以心算缩放任何行：300 m²上的50毫米只是150 m²行的两倍，即15 m³。\n2. 对于大型场地，面积在深度上占优势。仓库屋顶上的10毫米阵雨产生的水比房屋屋顶上的50毫米暴雨多——10 m³对比7.5 m³——因为仓库集水面积几乎是房屋的七倍。\n...\n3. 小事件的影响不如看起来那样重要。棚屋上的5毫米阵雨理论上产生约250升，但初期冲洗导流和表面润湿会消耗其中很大一部分，所以非常轻的事件通常对储存的贡献几乎为零。\n...\n4. 峰值事件决定溢流口大小，而不是水箱。 100毫米季风行显示20,000升在一天内到达一个屋顶。如果你的水箱小于那个数量，沟槽、下水管和溢流路径必须能够安全地排出多余的水——尺寸过小的排水是水损伤的常见原因。\n...\n使用屋顶的平面（足迹）面积，而不是斜坡表面，并添加排入同一沟槽系统的任何面积。如果你在确定储水箱大小，应基于典型月降雨和日需求，而不是单一风暴——为一场大事件调整大小的水箱在干季气候中会在一年的大部分时间内保持空置。降雨数字也因地点而异，所以使用当地气象记录而不是全球平均值。\n\n---\n\nTitle: 雨水收集量計算機（屋頂面積 × 降雨量 × 徑流係數）｜計算機網\nURL: https://globalcalcs.com/lifestyle/rainwater-harvesting/\nPublished: N/A\nAuthor: N/A\nHighlights:\n# 雨水收集量計算機（屋頂面積 × 降雨量 × 徑流係數） \n\n 輸入屋頂集水面積、目標時段降雨量（一場大雨／一個月／一年）同 *徑流係數*（C — 取決於屋頂材質），工具即時用 *V (L) = A (m²) × P (mm) × C* 計算可收集嘅雨水體積，並同時顯示立方米、美加侖、英加侖。Tank sizing、市政可持續發展補貼申請、農場灌溉設計、學校環境教育項目都用得着。 \n\n 集水面積 \n\n 面積、降雨量需 ≥ 0，徑流係數需 0–1。 \n\n收集到嘅雨水\n...\n72,000\n\nL\n\n 立方米 72.00 m³ 美式加侖 — 英式加侖 — \n\n 公式：V (公升) = 屋頂面積 (m²) × 降雨量 (mm) × 徑流係數。1 m² × 1 mm = 1 L 係定義式換算。徑流係數參考自 FAO、Texas Water Development Board、Australian Government Tankworks 嘅 catchment design 手冊。注意：(1) 首場雨建議透過 *first-flush diverter* 排走鳥糞、灰塵；(2) 蓄水池容量唔好少過 *目標連續無雨日數 × 日用水量*；(3) 飲用必須過濾 + UV／煮沸；(4) 香港、英國、新加坡有屋頂雨水回收補貼，可查當地水務署。\n...\n## 公式 \n\n V (公升) = A (m²) × P (mm) × C V (L) ─ 收集到嘅雨水（升） A (m²) ─ 屋頂在 *平面投影* 上嘅面積 P (mm) ─ 期內降雨量（mm） C ─ 徑流係數（無單位，0–1） 換算：1 m² × 1 mm = 1 L（定義式） 1 ft² × 1 in ≈ 0.6234 US gal 1 m³ = 264.172 US gal = 219.969 imp. gal 屋頂徑流係數（業界常用值）： 金屬 / 鍍鋅鐵皮 0.90 – 0.95 瓦頂 / 燒結磚 0.85 – 0.90 瀝青 / asphalt shingle 0.80 – 0.85 混凝土 / 硬地 0.70 – 0.85 綠化屋頂 0.30 – 0.50\n...\n- ·**\n...\n接到 1 公\n...\n2 400 mm（\n...\n雨城市之一）；\n...\n敦約 600 mm；\n...\n約 2\n...\n00 mm；\n...\n00 mm；雪梨約 1 200 mm；\n...\n約 2 400 mm。\n...\n由本地氣象\n...\n30 年均值。\n...\n) 蒸發\n...\n-flush diverter 排走\n...\n## 常見問題 \n\n 香港一年總降雨 2 400 mm，我 60 m² 平台可以收幾多水？ \n\n 60 × 2 400 × 0.9（瓦頂或防水台面）= **129 600 L ≈ 130 m³ ≈ 34 240 US gal ≈ 28 510 imp. gal** 一年。但呢個係 *年總量*；實際 sizing 要考慮分佈：香港降雨集中喺 5–9 月，11 月至翌年 3 月可以連續幾星期幾乎無雨。如果用嚟灌溉小型天台菜園（每日約 30 L／m² × 10 m² 種植區 = 300 L／日），冬季 30 日無雨 → 至少 9 000 L 缸；如果再加屋頂洗濯、廁所沖水（200 L／日）→ 至少 15 000 L 缸或 *混合自來水備用*。香港屋宇署 *Green and Innovative Buildings* 對綠色建築有額外面積豁免，可申請。 \n\n 為咩屋頂面積要用平面投影，唔用實際斜面面積？ \n\n 因為 *落雨係垂直*。傾角 45° 嘅屋頂，斜面實際面積係平面投影嘅 √2 ≈ 1.414 倍，但 *投到該屋頂之上嘅雨* 只係由垂直方向落，等於用平面投影面積接住。可以咁諗：將斜頂壓平就係平面投影，呢個面積決定咗有幾多雨水會落到屋頂。如果用斜面真實面積，會 *高估* 收集量 40 % 以上 — 真實水缸唔會收到咁多。 \n\n 可唔可以收集到嘅雨水飲用？ \n\n *未處理嘅雨水唔建議飲用*。原雨水經過大氣可能含工業污染（SO₂、NOₓ、PM2.5）、屋頂污染（鳥糞、灰塵、樹葉、瀝青／鐵鏽），蓄水缸內可滋生細菌、寄生蟲。**飲用三層處理（\n...\n標準）**：(\n...\n排走）；(2)\n...\n### 屋頂雨水收集容量計算機 \n\n 輸入屋頂集水面積、降雨量同 runoff coefficient（金屬／瓦片／柏油），算出每場雨可以收集到嘅水量（公升／加侖）— 適合家用 rain barrel、花園、應對乾旱規劃。 \n\n### 酸種麵包水合率（Baker's %）計算機 \n\n 輸入麵粉、水、starter（連 starter 嘅 hydration）、鹽嘅重量，按 baker's percentage 標準算出 effective dough\n...\n% — 75% 標準鄉村包、85% ciab\n...\n、65% bagel。\n\n---\n\nTitle: 雨水收集計算機－估算集水量（立方公尺） - CalculatorLib\nURL: https://calculatorlib.com/tw/rainfall-calculator\nPublished: 2026-07-04T07:02:18.000Z\nAuthor: N/A\nHighlights:\n這款雨水收集計算機可以估算一場降雨能從某個表面收集到多少水。你只要輸入兩個數值——以毫米（mm）為單位的降雨量，以及以平方公尺（m²）為單位的集水面積——計算機就會回傳收集到的水量（立方公尺，m³），同時換算成相對應的公升數。本工具採用公制（SI）單位，因此凡是以毫米標示降雨量的地區都適用，也就是美國以外的世界大多數地方（台灣的氣象資料同樣是以毫米表示，可直接使用）。\n...\n- 降雨量（mm）：降下的雨水深度，可參考氣象站、天氣預報或自家雨量計的數據。1 毫米降雨代表每平方公尺落下 1 公升的水。\n- 集水面積（m²）：承接雨水那一面的水平（投影）面積——例如屋頂的占地面積、鋪面的庭院或一塊農地。請使用水平投影面積，而非斜面的實際表面積。\n...\n$$V = \\frac{\\text{降雨量 (mm)} \\times \\text{面積 (m}^2\\text{)}}{1000}$$\n...\n除以 1000 是把毫米換算成公尺，讓單位一致化為立方公尺。若要以公升表示結果，工具會再把水量乘以 1000：\n...\n$$\\text{公升數} = V \\times 1000 = \\text{降雨量 (mm)} \\times \\text{面積 (m}^2\\text{)}$$\n...\n假設有 25 mm 的雨落在一座占地 80 m² 的屋頂上。\n...\n- 水量＝$$\\frac{25 \\times 80}{1000} = \\frac{2000}{1000} = \\textbf{2 m}^3$$\n- 公升數＝$$2 \\times 1000 = \\textbf{2000 公升}$$\n...\n換句話說，這座屋頂只要下一場 25 mm 的大雨，就能裝滿一個 2,000 公升的水塔。\n\n---\n\nTitle: 雨水收集量计算器（加仑）| 屋顶集雨量估算 - CalculatorLib\nURL: https://calculatorlib.com/zh/rainwater-harvesting-volume-calculator\nPublished: 2026-06-18T00:00:00.000Z\nAuthor: N/A\nHighlights:\n## 结果\n\n 可收集雨水量 529.55 收集加仑数 \n\n| 水量（升） | 2,004.56 L |\n| --- | --- |\n| 水量（立方英尺） | 70.79 ft³ |\n| 理论最大值（100% 效率） | 623 gal |\n...\n雨水收集量计算器可估算一场降雨期间，或一段时间累计降雨中，你能从屋顶收集到多少加仑的雨水。它非常适合用来确定蓄水罐的容量、规划灌溉系统，以及评估雨水集蓄系统的节水潜力。这里使用的 \\(0.623\\) 系数基于美制单位（平方英尺、英寸和美制加仑），如果你习惯用公制单位，可参考下文换算说明。\n\n 雨水从屋顶集水面流入储水桶。\n...\n需要输入三个数值：以平方英尺计的屋顶集水面积（请使用建筑物的水平投影面积，而不是倾斜屋面的面积，因为雨水是垂直落下的）、以英寸计的降雨深度，以及一个符合实际的收集效率百分比。效率反映了雨水飞溅、蒸发、初期弃流和雨水沟溢流等带来的损耗——多数实际系统的效率在 75% 到 90% 之间。\n...\n1 英寸的降雨落在 1 平方英尺的面积上，相当于 \\(\\frac{1}{12}\\) 立方英尺。由于 1 立方英尺约等于 \\(7.48\\) 美制加仑，换算下来大约是每平方英尺每英寸降雨可收集 \\(0.623\\) 加仑。将其乘以面积和降雨量，再按效率折算即可：$$\\text{水量} = \\text{面积} \\times \\text{降雨量} \\times 0.623 \\times \\frac{\\text{效率}}{100}$$。\n\n 收集量取决于屋顶集水面积和降雨量。\n...\n以一个 1,000 平方英尺的屋顶、2 英寸降雨、85% 效率为例：$$1000 \\times 2 \\times 0.623 = 1{,}246 \\text{ 加仑（理论值）}$$，再乘以效率 $$1246 \\times 0.85 = \\mathbf{1{,}059.1 \\text{ 加仑}}$$（实际可收集量）。这大约能装满两个 500 加仑的蓄水罐。\n\n---\n\nTitle: 雨水收集计算器\nURL: https://www.mega-calculator.com/zh/construction/rainwater-harvesting/\nPublished: N/A\nAuthor: N/A\nHighlights:\n雨水收集计算器估算屋顶（或任何集水面）能从给定降雨量中收集多少水。落在屋顶上的雨不会渗入地下——它沿坡面流下，进入天沟，顺着落水管而下，如果你有所规划，就会流入水箱或水桶，而不是雨水管道。这个计算器把三个你可以测量或查到的数字——集水面积、降雨量和一个径流效率——转换成你实际能储存的水量。\n...\n它是雨水桶、花园灌溉储水或整套家庭系统的第一步选型：知道一个典型屋顶从一英寸雨水就能产出数百加仑，便能告诉你 55 加仑的水桶还是 2500 加仑的蓄水池才是合适的规模\n...\n- 屋顶集水面积——雨水落下的水平（平面）投影面积，可在平方英尺、平方米和平方码之间切换。使用屋顶覆盖的建筑面积，而不是屋顶\n...\n斜面：坡屋顶\n...\n的雨水与其平面投影相同，因为\n...\n是垂直落下的。\n...\n- 降雨量——下了多少雨，以英寸、毫米或厘米计。根据你想要选型的对象，使用单场降雨、月总量或年平均值。\n- 径流效率——这些雨\n...\n飞溅、蒸发\n...\n屋面润湿、初期弃流和溢流之后真正进入储存的比例，以百分数输入。带天沟良好的金属或瓦屋顶约为 80–95 %；粗糙或吸水的表面损失更多。默认值为 90 %。\n...\n结果收集的雨水以美制加仑显示，可切换为升或立方米。\n...\n收集水量使用标准收集系数 0.623 美制加仑每平方英尺每英寸雨。这个系数只是单位换算：一立方英尺水为 7.48 美制加仑，分布在 12 英寸深度上，因此每平方英尺被一英寸雨覆盖对应 $7.48÷12=0.6237.48 \\div 12 = 0.623$ 7.48÷ 12= 0.623 加仑。设集水面积为 $AA$ A（平方英尺）、降雨量为 $DD$ D（英寸）、径流效率为 $EE$ E（%），则以美制加仑计的收集水量 $VV$ V 为：\n...\n$V=A×D×0.623×E100V = A \\times D \\times 0.623 \\times \\frac{E}{100}$ V= A× D× 0.623× 100 E​\n...\n在公制单位下，同样的思路更为简单，\n...\n一平方米上一毫米的雨正好是一升：\n...\n$VL=Am2×Dmm×E100V_{\\text{L}} = A_{\\text{m}^2} \\times D_{\\text{mm}} \\times \\frac{E}{100}$ V L​= A m 2​× D mm​× 100 E​\n...\n：1000 平方\n...\n尺屋顶上\n...\n一个投影为 1000 平方英尺的屋顶接收 1 英寸雨，天沟和水箱几乎捕获全部（效率 100 %）：\n...\n$V=1000×1×0.623×100100=623 galV = 1000 \\times 1 \\times 0.623 \\times \\frac{100}{100} = 623 \\, \\text{gal}$ V= 1000× 1× 0.623× 100 100​= 623 gal\n...\n这一英寸雨产出 623 加仑——约 2358 升。这是个有用的基准：在 100 % 效率下，每 1000 平方英尺屋顶每英寸雨大约收集 623 加仑。\n...\n$V=1000×2×0.623×90100=1121.4 galV = 1000 \\times 2 \\times 0.623 \\times \\frac{90}{100} = 1121.4 \\, \\text{gal}$ V= 1000× 2× 0.623× 100 90​= 1121.4 gal\n...\n一个 92.903 平方米的屋顶（1000 平方英尺的公制等价）在 100 % 效率下接收 25.4 毫米雨（1 英寸）。因为 1 平方米上 1 毫米为 1 升：\n...\n$VL=92.903×25.4×100100≈2360 LV_{\\text{L}} = 92.903 \\times 25.4 \\times \\frac{100}{100} \\approx 2360 \\, \\text{L}$ V L​= 92.903× 25.4× 100 100​≈ 2360 L\n...\n这约为 2358 升，即 623 加仑——与示例 1 结果相同，本应如此。\n\n---\n\nTitle: 雨水收集系统模拟器 — 集水量·水箱容量计算 | NovaSolver\nURL: https://novasolver.jp/zh/tools/rainwater-harvesting.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n年可收集雨水量 V_harvest [L]。1mm 的雨落在 1m² 的屋顶上恰好等于 1 升，因此可直接用面积×降水量计算。C_runoff：径流系数，η_filter：过滤·初期弃流效率\n...\n收集到的量其实相当可观。有一个很好记的关系——“1mm 的雨落在 1m² 的屋顶上，正好是 1 升”。所以比如 120m² 的屋顶一年降雨 1600mm，简单一算就是 120×1600 = 192,000 升，也就是说有 192 吨水从屋顶上流走。把这些水接住利用起来、而不是任其排进下水道，这就是雨水收集系统。它其实是人类自古以来一直沿用的、最古老的水利工程之一。\n...\n你注意到了关键点。全部收集是不可能的。落在屋顶上的雨水，有的会溅走，有的在放晴时蒸发，还有的被用来润湿干燥的屋面而损失掉。表示这些损失的就是“径流系数”，瓦或石板屋面大约为 0.8～0.9。此外，“过滤效率”表示“初期弃流（first flush）”——故意舍弃降雨初期含灰尘、鸟粪、落叶的脏水——以及过滤器截留的部分。按默认值计算，最终约为 146.9m³——这仍然相当可观。\n...\n年可收集雨水量按“集水面积 × 年降水量 × 径流系数 × 过滤效率”计算。其基础是“1mm 的雨落在 1m² 的屋顶上正好等于 1 升”这一关系。径流系数代表飞溅、蒸发和屋面润湿造成的损失，过滤效率代表初期弃流（first flush）与过滤器截留的部分。例如集水面积 120m²、年降水量 1600mm、径流系数 0.85、过滤效率 0.90 时，一年可收集约 146.9m³ 的雨水。\n...\n办公楼屋顶面积 1200m²、年降水量 1500mm、径流系数 0.88、过滤效率 0.90 时：年可收集雨水量＝1200×1.5×0.88×0.90＝1425.6m³。若该设施年用水需求为 800m³（冲厕、冷却塔用），则供水覆盖率为 178%，梅雨期 5 月～7 月可由水箱独立供水 40 天，年节水量可达 720m³\n\n---\n\nTitle: Rain Harvesting Calculator\nURL: https://calculatorshub.net/zh-CN/%E7%8E%AF%E5%A2%83%E7%9A%84/rain-harvesting-calculator/\nPublished: 2026-03-26T18:37:00.000Z\nAuthor: Rafay Javed\nHighlights:\nThe rain harvesting calculator is a tool designed to help homeowners, farmers, and urban planners estimate the volume of water that can be collected from rooftops, pavements, or other catchment surfaces during rainfall events. By using this calculator, users can plan storage tank sizes, manage water resources efficiently, and make decisions about irrigation, household use, or 应急水 supply. It provides actionable insights into optimizing 雨水收集 and ensures sustainability during dry periods.\n...\nCatchment Area (sq ft) = Roof Length * Roof Width (Note: Use the horizontal “footprint” area of the roof, not the slope area.)\n...\nTotal Rainfall Depth = Sum of (Rainfall 1 + Rainfall 2 + … + Rainfall N) (Example: For a 1-inch storm, Rainfall Depth = 1.0)\n...\nCubic Feet of Water = Catchment Area * (Rainfall Depth / 12)\n...\n000 sq ft =\n...\n000 * 0.623 * Rainfall inches) *\n...\nCatchment Area = The total flat surface area of the roof (sq ft) Rainfall Depth = The amount of rain in a specific event (inches) 7.48 = Gallons per cubic foot of water (constant) 0.90 = Runoff Coefficient (Standard for asphalt shingle or metal roofs, accounts for absorption and evaporation losses) Average Daily Use = The amount of water consumed for irrigation or toilets (Gallons/day) Number of Days Storage = The 次 the water must last during a drought 3.14159 = Pi (constant)\n...\n| 米制 | Typical Formula | Unit / Example |\n| --- | --- | --- |\n| 集水区 | Roof Length * Roof Width | 1,000平方呎 |\n| 径流系数 | 标准版 | 0.90 for shingles/metal |\n| Harvested Water | Area * Rainfall Depth /12 * 7.48 * 0.9 | 562 gallons for 1 inch rain on 1,000 sq ft |\n| 油箱容量 | π * r² * Depth * 7.48 | 1,000-gallon tank (r=5 ft, depth=5.36 ft) |\n| 日常使用 | 无 | 50 gallons/day for garden irrigation |\n| Gallons per 1,000 sq ft | 1,000 * 0.623 * Rainfall * 0.9 | 561.5 gallons for 1 inch rain |\n...\nSuppose a roof has a catchment area of 1,500 sq ft, and the rainfall depth is 2 inches.\n...\n1. Convert rainfall to feet: 2 in / 12 = 0.1667 ft\n2. Calculate cubic feet of water: 1,500 * 0.1667 = 250 cubic feet\n3. Convert cubic feet to gallons: 250 * 7.48 = 1,870 gallons\n4. Apply runoff coefficient: 1,870 * 0.90 ≈ 1,683 gallons harvested\n...\nIf you want to store this water for 7 days at 200 gallons/day usage: Required Tank Size = (200 * 7) / 0.85 ≈ 1,647 gallons\n...\nThis means a tank of at least 1,650 gallons is needed to store enough water for a week.\n\n---\n\nTitle: 水的收集和贮存 – 2030 Palette\nURL: https://2030palette.org/%e6%b0%b4%e7%9a%84%e6%94%b6%e9%9b%86%e5%92%8c%e8%b4%ae%e5%ad%98/?lang=zh-hans\nPublished: N/A\nAuthor: N/A\nHighlights:\n典型的集水系统是通过屋顶管道将收集到的水输送到储水罐中，它可以用于饮用和非饮用用途，如绿化、冲厕和衣物洗涤。 每平方米（平方英尺）的屋顶面积在降雨量为1厘米（英寸）的情况下可收集7.37升雨水（0.46加仑）。\n...\n系统收集雨量:\n...\n- 储水罐容量（升）=雨水收集面积（平方米）x降雨量（厘米）x7.38\n- 储水罐容量（加仑）=雨水收集面积（平方英尺）x降雨量（英寸）x0.46\n...\n其中降雨量为月平均值的最高值。",
+      "title": "Web search: 昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水",
+      "metadata": {},
+      "time": {
+        "start": 1789527830944,
+        "end": 1789527833644
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.654Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527833654,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bbc34001LE55o26GHp2tzP",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bafb90014zPSoDgUg3D0ET",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8521,
+      "output": 77,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8598,
+      "headroom": 30258,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.658Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.661Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.661Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.661Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.661Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.676Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8598,
+  "providerTokens": 8598,
+  "estimatedInputTokens": 7312,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8521,
+    "cacheRead": 0,
+    "output": 77
+  },
+  "overflow": false,
+  "headroom": 30258,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.676Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.692Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:53.694Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527834419,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bbf2f001frNZVDBTEJxfLH",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bbc4c001Bq6BYcpnC0EdDm",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.422Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527834422,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bbf34001eaL1yhJ1kaZMJx",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bbc4c001Bq6BYcpnC0EdDm",
+    "type": "tool",
+    "callID": "call_2a22c1249f4717dc",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.422Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527834422,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bbf3300194SukZWOWa3dSv",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bbc4c001Bq6BYcpnC0EdDm",
+    "type": "text",
+    "text": "我来打开 https://calculatorlib.com/zh/rainfall-calculator，读取其中的内容。",
+    "time": {
+      "start": 1789527834422,
+      "end": 1789527834422
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.422Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527834422,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bbf34001eaL1yhJ1kaZMJx",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bbc4c001Bq6BYcpnC0EdDm",
+    "type": "tool",
+    "callID": "call_2a22c1249f4717dc",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://calculatorlib.com/zh/rainfall-calculator"
+      },
+      "time": {
+        "start": 1789527834422
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527834889,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bbf34001eaL1yhJ1kaZMJx",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bbc4c001Bq6BYcpnC0EdDm",
+    "type": "tool",
+    "callID": "call_2a22c1249f4717dc",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://calculatorlib.com/zh/rainfall-calculator"
+      },
+      "output": "雨水收集量计算器 – 估算可收集的雨水体积 - CalculatorLib\n    \n\n    \n    \n    \n    \n        \n        \n    \n    \n    \n    \n    \n    \n                                                                        \n            \n        \n\n            \n    \n        \n        \n        \n    \n            \n\n    \n                        \n        \n    \n                \n                \n    \n            \n\n    \n    \n    \n    \n\n\n    \n        \n            \n                \n                \n            \n            \n                \n                CalculatorLib\n            \n        \n\n        \n            \n                \n                    \n                        \n                    \n                \n                \n                ⌘&nbsp;K\n            \n        \n\n        \n            \n                \n                    \n                \n            \n            \n                中文(简体)\n                \n                                English\n    Español\n    Tiếng Việt\n    हिन्दी\n    日本語\n    한국어\n    Türkiye\n    العربية\n    Pусский\n    Français\n    中文(简体)\n    中文(繁體)\n                    \n            \n        \n    \n\n                \n        \n                                            \n                    时间和日期                \n                                            \n                    金融                \n                                            \n                    健康与健身                \n                                            \n                    个人理财                \n                                            \n                    数学和统计                \n                                            \n                    几何                \n                                            \n                    教育                \n                                            \n                    运动和健身                \n                                            \n                    物理和工程                \n                                            \n                    化学                \n                                            \n                    天气和气候                \n                                            \n                    商业和营销                \n                                            \n                    实用工具                \n                                            \n                    银行服务                \n                                            \n                    未来和新兴科技                \n                                            \n                    职业和专业发展                \n                                            \n                    智能家居和物联网                \n                                            \n                    宠物护理                \n                                            \n                    爱好和手工                \n                                            \n                    健康与正念                \n                                            \n                    冒险和旅行                \n                                            \n                    数字生活                \n                                            \n                    行业特定                \n                                            \n                    其他                \n                    \n    \n    \n\n    \n    \n        \n            \n                \n                    \n                \n                分类\n            \n            \n                \n                    \n                \n                发现\n            \n            \n                \n                计算器\n            \n            \n                \n                单位转换器\n            \n            \n                \n                实用工具\n            \n        \n    \n\n                \n        \n            \n            \n        \n                \n            免费注册账户\n            \n                \n                    \n                    保存计算器\n                \n                \n                    \n                    自定义侧边栏\n                \n                \n                    \n                    嵌入到您的网站\n                \n                \n                    \n                    REST + MCP令牌\n                \n                \n                    \n                    跟踪您的使用情况\n                \n            \n        \n        \n            \n                \n                \n                \n            \n            登录\n        \n    \n    \n                                \n    \n    \n    CalculatorLib\n                    \n                                                            分类\n                                                \n                    \n                                                            天气和气候\n                                                \n                    \n                                    雨水收集量计算器\n                            \n            \n                                \n    \n    \n    \n\n    \n        雨水收集量计算器\n        \n        \n        保存\n    \n        \n    \n                通过MCP连接 →\n    \n\n    \n        \n            输入计算\n            \n                \n                                                                            \n 降雨量（mm）： \n\n\n 集水面积（m²）： \n    \n                    \n                        计算\n                        清除\n                    \n                \n            \n        \n                            \n                数学公式\n                                \n                            \n                    \n                    \n            \n                \n                                  \n                广告\n                \n    \n    \n        \n    \n    \n        结果\n                \n \n  雨水总体积\n \n \n  1 m³\n \n \n  1000 L\n \n\n\n \n  \n   输入降雨量\n   10 mm\n  \n  \n   输入集水面积\n   100 m²\n  \n  \n   计算所得体积\n   1 m³\n  \n  \n   计算所得升数\n   1000 L\n  \n \n                    \n        \n                        \n                \n            \n                \n                     分享\n            \n                \n                     复制结果\n            \n                 PDF\n        \n    \n\n\n\n    \n        \n    \n    \n        这个结果对您有帮助吗？\n        \n            \n                \n                有\n            \n            \n                \n                没有\n            \n        \n        \n            \n        \n    \n    \n        \n        \n            \n            \n            发送\n        \n    \n    \n        \n        谢谢 — 您的反馈帮助我们改进！\n    \n    登录后，我们改进时会通知您\n\n    \n                            \n                    \n                        \n                                                    \n \n  这款雨水收集量计算器有什么用\n  这款雨水收集量计算器可以帮你估算一场降雨能从某个表面收集到多少水。你只需输入两个数值——以毫米（mm）为单位的降雨量，以及以平方米（m²）为单位的集水面积——计算器就会返回以立方米（m³）为单位的可收集雨水体积，并同时换算成升（L）。它采用国际单位制（SI），因此只要降雨量是以毫米计量的地区都适用，也就是美国以外的世界大部分地区。\n \n \n  \n  \n   落在集水区的雨水被引入储水箱。\n  \n \n \n  输入项说明\n  \n   降雨量（mm）：降下的雨水深度，可以来自气象站、天气预报或雨量计的数据。1 毫米的降雨意味着每平方米落下 1 升水。\n   集水面积（m²）：用来承接雨水的表面的水平投影面积——例如屋顶占地面积、铺装院子或一片田地。请使用水平投影面积，而不是倾斜表面的实际面积。\n  \n \n \n  计算公式\n  本计算器采用一个简单而精确的关系式：\n  $$V = \\frac{\\text{降雨量 (mm)} \\times \\text{面积 (m}^2\\text{)}}{1000}$$\n  除以 1000 是为了把毫米换算成米，使单位统一为立方米。要把结果换算成升，只需将体积乘以 1000：\n  $$\\text{升} = \\text{体积 (m}^3\\text{)} \\times 1000 = \\text{降雨量 (mm)} \\times \\text{面积 (m}^2\\text{)}$$\n  由此可得一个方便的心算技巧：收集到的水量（升）就等于降雨量（mm）乘以面积（m²）。\n Advertisement\n    \n    \n  \n  \n   体积等于降雨深度乘以集水面积。\n  \n \n \n  实例演算\n  假设有 25 mm 的雨水落在占地面积为 80 m² 的屋顶上。\n  \n   体积 $$= \\frac{25 \\times 80}{1000} = \\frac{2000}{1000} = 2 \\text{ m}^3$$\n   升 $$= 2 \\times 1000 = 2000 \\text{ 升}$$\n  \n  也就是说，仅一场 25 mm 的降雨，就能从这片屋顶装满一个 2000 升的水箱。\n \n \n  按表面类型的径流系数\n  基础计算器计算理论上降落到集水区的降雨量。实际上你永远无法收集所有的水：有些水从温暖的屋顶蒸发，有些渗入多孔材料，有些在沟槽、下水管和初期冲洗导流器中损失，有些在暴雨中溅出沟槽外。工程师们用无量纲径流（或集水效率）系数 \\(C\\)来解释这种情况，将其作为一个简单的乘数。\n  下面的范围是广泛使用的雨水收集和小型场地排水设计经验法则。它们不是单一的国家标准——不同的设计规范（例如澳大利亚、印度、德国或美国的国家雨水收集指南）发布的值略有不同，因此请检查适用于你的建筑所在地的规范。\n  \n   \n    \n     表面类型\n     典型 \\(C\\)\n     损失说明\n    \n   \n   \n    \n     金属/波纹钢板屋顶\n     0.90 – 0.95\n     最光滑、性能最好的表面；几乎没有吸收。损失主要来自初期冲洗导流和暴雨时沟槽溅水。\n    \n    \n     混凝土或粘土瓦屋顶\n     0.80 – 0.90\n     未釉面的瓦吸收水直至饱和，所以短阵雨产生的水较少。接缝处积累碎屑；苔藓生长会随时间降低 \\(C\\)。\n    \n    \n     沥青/沥青木瓦屋顶\n     0.80 – 0.85\n     粗糙的颗粒表面保留一层薄水膜。砂砾脱落意味着强烈建议在储存前使用初期冲洗导流器。\n    \n    \n     绿色/植被屋顶\n     0.25 – 0.50\n     基质按设计储存每次降水的大部分。高度可变：干基质上的小阵雨接近0，饱和后更高。\n    \n    \n     混凝土铺装/密封院\n     0.80 – 0.90\n     效率高但地面水会沾染灰尘、油和有机物——除非经过适当过滤，否则应视为非饮用水。\n    \n    \n     砾石或夯实土壤\n     0.40 – 0.60\n     大量渗透进孔隙；高度取决于表面已经有多湿润以及斜坡。\n    \n    \n     裸露地面/草坪\n     0.10 – 0.30\n     大部分降雨渗透或被植被吸收。一旦土壤饱和或土壤含粘土量大就会迅速增加径流。\n    \n   \n  \n  调整后的集水公式是：$$V = \\frac{R \\times A \\times C}{1000}$$ \n  其中 \\(R\\) 是降雨深度（毫米），\\(A\\) 是水平（平面）集水面积（平方米），\\(C\\) 是径流系数，\\(V\\) 是收集量（立方米）。使用平面面积——从上方看的足迹——而不是倾斜表面积，因为雨水是竖直下落的。\n  应用示例\n  一场25毫米的降雨事件降落在一个100 m²的金属板屋顶上，\\(C = 0.90\\)。\n  理论量（计算器返回的值）：$$V = \\frac{25 \\times 100}{1000} = 2.5\\ \\text{m}^3 = 2{,}500\\ \\text{L}$$ \n  所以原始集水量是 2.5 m³。应用系数：$$V = \\frac{25 \\times 100 \\times 0.90}{1000} = 2.25\\ \\text{m}^3 = 2{,}250\\ \\text{L}$$ \n  大约250升在初期冲洗、润湿和溅水中损失。实际使用方式：根据调整后的数字来确定水箱大小，根据理论值来确定沟槽和溢流口大小。\n \n \n  降雨、面积和体积单位转换\n  世界上大部分地区以毫米为单位报告降雨，美国以英寸为单位；集水面积以平方英尺、平方码、英亩或公顷计。在使用 \\(V = R \\times A / 1000\\) 之前，将所有单位转换为毫米和平方米。标记为精确的因数由国际协议定义；其余的为实际使用四舍五入。\n  降雨深度\n  \n   \n    \n     转换\n     因子\n     精确或四舍五入\n    \n   \n   \n    \n     1英寸\n     25.4毫米\n     精确（按国际英寸的定义）\n    \n    \n     1厘米\n     10毫米\n     精确\n    \n    \n     1毫米\n     0.03937英寸\n     四舍五入（准确为1 ÷ 25.4）\n    \n   \n  \n  集水面积\n  \n   \n    \n     转换\n     因子\n     精确或四舍五入\n    \n   \n   \n    \n     1平方英尺\n     0.092903 m²\n     四舍五入（精确值0.09290304 m²）\n    \n    \n     1平方码\n     0.836127 m²\n     四舍五入（精确值0.83612736 m²）\n    \n    \n     1英亩\n     4,046.86 m²\n     四舍五入（精确值4,046.8564224 m²）\n    \n    \n     1公顷\n     10,000 m²\n     精确\n    \n   \n  \n  体积\n  \n   \n    \n     转换\n     因子\n     精确或四舍五入\n    \n   \n   \n    \n     1立方米\n     1,000升\n     精确\n    \n    \n     1立方米\n     264.172美制液体加仑\n     四舍五入（1美制加仑 = 3.785411784升，精确）\n    \n    \n     1立方米\n     219.969英制加仑\n     四舍五入（1英制加仑 = 4.54609升，精确）\n    \n   \n  \n  注意美制液体加仑和英制加仑相差约20%，所以要始终说明你指的是哪一个——一个标价为\"500加仑\"的水箱在美国容纳1,893升，在英国容纳2,273升。\n  降雨面积快速计算\n  \n   \n    \n     规则\n     结果\n     精确或四舍五入\n    \n   \n   \n    \n     1毫米降雨在1 m²上\n     1升（0.001 m³）\n     精确——最有用的心算快速方法\n    \n    \n     1毫米降雨在1公顷上\n     10 m³（10,000升）\n     精确\n    \n    \n     1英寸降雨在1 ft²上\n     0.6234美制加仑（2.3597升）\n     四舍五入\n    \n    \n     1英寸降雨在1,000 ft²上\n     623.4美制加仑\n     四舍五入\n    \n   \n  \n  1毫米 · 1 m² = 1升的恒等式是计算器除以1,000的原因：毫米乘以平方米直接得到升，除以1,000将升转换为立方米。\n Advertisement\n    \n    \n  常见情景下的集水量\n  下面的每一行都直接从 \\(V = R \\times A / 1000\\) 计算，不使用四舍五入快速方法。最后一列应用代表性径流系数 \\(C = 0.85\\)——对于清洁的瓦片或木瓦屋顶的合理中间值——以显示下降和你能实际储存之间的差异。\n  \n   \n    \n     情景\n     降雨（毫米）\n     集水面积（m²）\n     理论量\n     在 \\(C = 0.85\\) 下的现实量\n    \n   \n   \n    \n     花园棚屋顶上的小阵雨\n     5\n     50\n     0.25 m³（250升）\n     0.2125 m³（212.5升）\n    \n    \n     小房子屋顶上的中等降雨日\n     25\n     80\n     2 m³（2,000升）\n     1.7 m³（1,700升）\n    \n    \n     家庭房屋屋顶上的暴雨\n     50\n     150\n     7.5 m³（7,500升）\n     6.375 m³（6,375升）\n    \n    \n     仓库屋顶上的短降雨\n     10\n     1,000\n     10 m³（10,000升）\n     8.5 m³（8,500升）\n    \n    \n     大屋顶上的季风日暴雨\n     100\n     200\n     20 m³（20,000升）\n     17 m³（17,000升）\n    \n    \n     田地一公顷上的降雨\n     20\n     10,000\n     200 m³（200,000升）\n     170 m³（170,000升）\n    \n   \n  \n  行如何计算\n  家庭房屋屋顶上的暴雨，面积150 m²：$$V = \\frac{50 \\times 150}{1000} = \\frac{7500}{1000} = 7.5\\ \\text{m}^3$$ \n  应用系数后，\\(7.5 \\times 0.85 = 6.375\\) m³。\n  20毫米降雨下的一公顷田地：$$V = \\frac{20 \\times 10000}{1000} = \\frac{200000}{1000} = 200\\ \\text{m}^3$$ \n  阅读结果\n  \n   关系在两个输入中都是完全线性的。降雨加倍或面积加倍会使体积加倍，所以你可以心算缩放任何行：300 m²上的50毫米只是150 m²行的两倍，即15 m³。\n   对于大型场地，面积在深度上占优势。仓库屋顶上的10毫米阵雨产生的水比房屋屋顶上的50毫米暴雨多——10 m³对比7.5 m³——因为仓库集水面积几乎是房屋的七倍。\n   小事件的影响不如看起来那样重要。棚屋上的5毫米阵雨理论上产生约250升，但初期冲洗导流和表面润湿会消耗其中很大一部分，所以非常轻的事件通常对储存的贡献几乎为零。\n   峰值事件决定溢流口大小，而不是水箱。100毫米季风行显示20,000升在一天内到达一个屋顶。如果你的水箱小于那个数量，沟槽、下水管和溢流路径必须能够安全地排出多余的水——尺寸过小的排水是水损伤的常见原因。\n   田地规模的数字很大但分散。200 m³在一公顷上只有当有池塘、沟壑或大坝来捕获它时才成为可用的水；在裸露地面上有效系数更接近0.1–0.3，而不是0.85。\n  \n  实际注意事项\n  使用屋顶的平面（足迹）面积，而不是斜坡表面，并添加排入同一沟槽系统的任何面积。如果你在确定储水箱大小，应基于典型月降雨和日需求，而不是单一风暴——为一场大事件调整大小的水箱在干季气候中会在一年的大部分时间内保持空置。降雨数字也因地点而异，所以使用当地气象记录而不是全球平均值。\n  这是一般规划信息。收获的雨水不会自动安全饮用：饮用水安全取决于屋顶材料、过滤、消毒和当地法规，许多司法管辖区限制或许可雨水收集。在设计饮用或大规模系统之前，请咨询当地当局和合格专业人士。\n \n \n  常见问题\n  计算器考虑了水量损耗吗？没有。它给出的是理论上的最大值。实际上，蒸发、溅射、初期弃流和雨水沟溢流都会减少真正能收集到的水量，因此可以把结果乘以一个径流系数（性能良好的屋顶通常取 0.8～0.9），以得到更贴近实际的数字。\n  如果我只知道厘米或英寸的降雨量怎么办？请先换算：1 厘米 = 10 毫米，1 英寸 = 25.4 毫米。换算成毫米后再输入。\n  该用倾斜屋顶的面积吗？不该——请使用水平投影面积（即从正上方俯视看到的面积）。由于雨水是垂直落下的，屋顶的坡度并不会增加承接到的雨量。\n \n                                                        \n                                \n                                    最后更新:\n                                    2026年8月26日\n                                \n                            \n                                                \n                                                                        \n                            \n                                天气和气候热门计算器\n                                                                    查看全部天气和气候计算器 →\n                                                            \n                            \n                                                                                                        \n                                        \n                                            \n                                            露点计算器\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            海拔气压计算器\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            露点计算器\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            干湿球温度相对湿度计算器\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            湿球温度计算器\n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                            露点计算相对湿度计算器\n                                        \n                                    \n                                                            \n                        \n                                                                        \n    \n    \n                                                \n                            相关计算器\n                            \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            体感温度（炎热指数）计算器\n                                            \n                                                输入气温和相对湿度，按摄氏度或华氏度计算炎热指数（Heat Index），快速得出当前条件下的体感温度。\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            风寒指数计算器\n                                            \n                                                输入气温（°F）和风速（mph），用美国国家气象局公式计算风寒体感温度，了解寒冷大风天气的真实冷度并提前做好防护。\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            华氏度转摄氏度发烧体温换算器\n                                            \n                                                在华氏度与摄氏度之间换算体温，并立即判断读数是否达到 38 °C / 100.4 °F 的发烧临界值，方便核对体温。\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            推理公式雨水径流计算器\n                                            \n                                                使用推理公式 Q=CiA 计算雨水峰值径流量。输入径流系数、降雨强度和汇水面积，支持美制（cfs）与国际单位制（m³/s）。\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            飓风等级计算器（萨菲尔-辛普森等级）\n                                            \n                                                输入持续风速（mph、节或 km/h），即可查出萨菲尔-辛普森飓风等级，快速判定 1 至 5 级飓风强度。\n                                            \n                                        \n                                    \n                                                                                                                                            \n                                        \n                                            \n                                        \n                                        \n                                            华氏转摄氏旅行换算器\n                                            \n                                                出国旅行时秒速将华氏度（°F）换算成摄氏度（°C）。输入任意 °F 温度，按公式 C =（F − 32）× 5/9 立即得出精确的 °C 数值。\n                                            \n                                        \n                                    \n                                                            \n                        \n                                                                                                \n                            发现\n                            \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            闪电距离计算器\n                                            \n                                                输入看到闪电与听到雷声之间的秒数，运用&quot;5秒法则&quot;快速估算雷击距离（公里），帮你判断雷暴离你有多近。\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            圆台体积计算器\n                                            \n                                                使用圆台体积计算器，输入上底半径、下底半径和高度，即可快速精确地求出圆台（截顶圆锥）的体积，适用于几何与工程计算。\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            扭矩转换马力计算器\n                                            \n                                                在线扭矩转马力计算器，输入扭矩、发动机转速（RPM），并选择单位（lb-ft磅英尺或N-m牛米），即可精准估算功率输出。立即优化发动机性能！\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            力转马力计算器\n                                            \n                                                使用这款简单易用的换算工具，快速准确地将力换算为马力。输入力（磅）、距离（英尺）和时间（秒），即可得出以马力为单位的功率输出。\n                                            \n                                        \n                                    \n                                                                                                        \n                                        \n                                            \n                                        \n                                        \n                                            HOMA-IR胰岛素抵抗计算器\n                                            \n                                                输入空腹胰岛素（µIU/mL）和空腹血糖（mg/dL），用标准405公式计算HOMA-IR指数，快速评估您的胰岛素抵抗水平。\n                                            \n                                        \n                                    \n                                                            \n                        \n                                                                        \n    \n    \n        \n    \n                \n            \n                \n                CalculatorLib\n            \n            免费在线计算器、单位转换器和工具——为人类和AI代理构建，支持12种语言。\n                        \n                \n                    \n                \n                \n                    \n                \n                \n                    \n                \n            \n        \n\n                \n            浏览\n            \n                财务\n                数学\n                健身与健康\n                单位转换器\n                查看所有类别 →\n            \n        \n\n                \n            资源\n            \n                热门搜索\n                最近添加\n                搜索\n                MCP server\n                报告错误\n            \n        \n\n                \n            公司\n            \n                关于我们\n                条款\n                隐私政策\n            \n        \n    \n\n    \n        © 2023–2026 CalculatorLib.com\n        CalculatorLib.com 使用经过验证的公式提供有用的参考。详情请查看免责声明。",
+      "title": "https://calculatorlib.com/zh/rainfall-calculator (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527834422,
+        "end": 1789527834889
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527834890,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc10a001L4Pvl6VdlqycfN",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bbc4c001Bq6BYcpnC0EdDm",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 20815,
+      "output": 144,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 20959,
+      "headroom": 17897,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.890Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.892Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.894Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.895Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.895Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.912Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 20959,
+  "providerTokens": 20959,
+  "estimatedInputTokens": 12782,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 20815,
+    "cacheRead": 0,
+    "output": 144
+  },
+  "overflow": false,
+  "headroom": 17897,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.913Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.921Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:54.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.295Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527835295,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc29d001BRwvaOGLz6KmeS",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc120001u05FCnTYkVSqKE",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.295Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.295Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527835295,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc29f002kJG4LJBaXhRJWL",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc120001u05FCnTYkVSqKE",
+    "type": "tool",
+    "callID": "call_82fc78bd1a7b763f",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527835296,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc29f001UkyqWYdwECl18M",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc120001u05FCnTYkVSqKE",
+    "type": "text",
+    "text": "我来打开 https://globalcalcs.com/lifestyle/rainwater-harvesting/，读取其中的内容。",
+    "time": {
+      "start": 1789527835296,
+      "end": 1789527835296
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527835296,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc29f002kJG4LJBaXhRJWL",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc120001u05FCnTYkVSqKE",
+    "type": "tool",
+    "callID": "call_82fc78bd1a7b763f",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://globalcalcs.com/lifestyle/rainwater-harvesting/"
+      },
+      "time": {
+        "start": 1789527835296
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.788Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527835788,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc29f002kJG4LJBaXhRJWL",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc120001u05FCnTYkVSqKE",
+    "type": "tool",
+    "callID": "call_82fc78bd1a7b763f",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://globalcalcs.com/lifestyle/rainwater-harvesting/"
+      },
+      "output": "雨水收集量計算機（屋頂面積 × 降雨量 × 徑流係數）｜計算機網\n  跳去主內容     \n∑\n 計算機網                              全部分類      財務理財    健康    單位轉換    數學    日期時間    生活    教育學業    科學    遊戲    建築裝修          EN   EN                                            首頁  /   生活  /  雨水收集量計算機（屋頂面積 × 降雨量 × 徑流係數）                                          生活   雨水收集量計算機（屋頂面積 × 降雨量 × 徑流係數）   輸入屋頂集水面積、目標時段降雨量（一場大雨／一個月／一年）同 *徑流係數*（C — 取決於屋頂材質），工具即時用 *V (L) = A (m²) × P (mm) × C* 計算可收集嘅雨水體積，並同時顯示立方米、美加侖、英加侖。Tank sizing、市政可持續發展補貼申請、農場灌溉設計、學校環境教育項目都用得着。        單位  m² + mm ft² + inch    屋頂類型（預設徑流係數）  金屬／鍍鋅鐵皮 — 0.95 瓦頂／燒結磚 — 0.90 柏油瀝青（asphalt shingle）— 0.85 混凝土／硬地 — 0.80 綠化屋頂（已種植）— 0.50 自訂      集水面積   m²    降雨量   mm    徑流係數（0–1）       面積、降雨量需 ≥ 0，徑流係數需 0–1。    收集到嘅雨水 72,000 L    立方米 72.00 m³   美式加侖 —   英式加侖 —     公式：V (公升) = 屋頂面積 (m²) × 降雨量 (mm) × 徑流係數。1 m² × 1 mm = 1 L 係定義式換算。徑流係數參考自 FAO、Texas Water Development Board、Australian Government Tankworks 嘅 catchment design 手冊。注意：(1) 首場雨建議透過 *first-flush diverter* 排走鳥糞、灰塵；(2) 蓄水池容量唔好少過 *目標連續無雨日數 × 日用水量*；(3) 飲用必須過濾 + UV／煮沸；(4) 香港、英國、新加坡有屋頂雨水回收補貼，可查當地水務署。        複製連結    公式   V (公升) = A (m²) × P (mm) × C\n\n  V (L)   ─  收集到嘅雨水（升）\n  A (m²) ─  屋頂在 *平面投影* 上嘅面積\n  P (mm) ─  期內降雨量（mm）\n  C      ─  徑流係數（無單位，0–1）\n\n換算：1 m² × 1 mm = 1 L（定義式）\n          1 ft² × 1 in ≈ 0.6234 US gal\n          1 m³ = 264.172 US gal = 219.969 imp. gal\n\n屋頂徑流係數（業界常用值）：\n  金屬 / 鍍鋅鐵皮       0.90 – 0.95\n  瓦頂 / 燒結磚         0.85 – 0.90\n  瀝青 / asphalt shingle 0.80 – 0.85\n  混凝土 / 硬地         0.70 – 0.85\n  綠化屋頂              0.30 – 0.50    · **用屋頂嘅 *平面投影* 面積**，唔好用斜屋面真實面積。落雨係 *垂直* 落落嚟，只有水平投影部分接收雨水。例如：6 m × 10 m 嘅斜頂屋，*無論* 屋頂幾斜，平面投影都係 60 m²。  · **降雨量 mm 嘅意義**：1 mm = 每平方米接到 1 公升嘅水。香港全年平均約 2 400 mm（最雨城市之一）；倫敦約 600 mm；新加坡約 2 300 mm；亞利桑那 Phoenix 約 200 mm；雪梨約 1 200 mm；台北約 2 400 mm。可由本地氣象局／WMO 攞 30 年均值。  · **徑流係數 C** 反映落到屋頂後 *實際流入水缸* 嘅比例，扣除：(1) 表面濕潤吸水；(2) 蒸發；(3) 渠道阻力；(4) 飛濺；(5) 首場雨 first-flush diverter 排走嘅體積。FAO、Texas Water Development Board《Rainwater Harvesting Manual》、Australian Tankworks Design Guide 都採用同類範圍。  · **水缸容量 sizing**：核心方程式係 *蓄水量 ≥ 連續無雨日 × 日用水量*。例：4 人家庭、每人 50 L／日花園 + 廁所 = 200 L／日；如果地區一年最長無雨 30 日 → 至少 6 000 L 缸。如果只係備用（drinking 緊急 + 廁所），200 L／日 × 7 日 = 1 400 L 缸已夠。  · **首場雨 first-flush diverter**：每 1 m² 集水面積排走頭 0.5–1.0 mm 嘅雨（即每 100 m² 屋頂排走 50–100 L），帶走鳥糞、灰塵、樹葉殘渣，可大幅改善水質。係 NSF/ANSI 鼠類測試嘅基本要求。  · **參考來源**：(1) FAO, *Water Harvesting* (1991)；(2) Texas Water Development Board, *The Texas Manual on Rainwater Harvesting*, 3rd ed.；(3) Australian Government, *Rainwater Tank Design and Installation Handbook* (HB 230)；(4) WHO, *Rainwater Harvesting and Utilisation Manual*。     常見問題     香港一年總降雨 2 400 mm，我 60 m² 平台可以收幾多水？      60 × 2 400 × 0.9（瓦頂或防水台面）= **129 600 L ≈ 130 m³ ≈ 34 240 US gal ≈ 28 510 imp. gal** 一年。但呢個係 *年總量*；實際 sizing 要考慮分佈：香港降雨集中喺 5–9 月，11 月至翌年 3 月可以連續幾星期幾乎無雨。如果用嚟灌溉小型天台菜園（每日約 30 L／m² × 10 m² 種植區 = 300 L／日），冬季 30 日無雨 → 至少 9 000 L 缸；如果再加屋頂洗濯、廁所沖水（200 L／日）→ 至少 15 000 L 缸或 *混合自來水備用*。香港屋宇署 *Green and Innovative Buildings* 對綠色建築有額外面積豁免，可申請。    為咩屋頂面積要用平面投影，唔用實際斜面面積？      因為 *落雨係垂直*。傾角 45° 嘅屋頂，斜面實際面積係平面投影嘅 √2 ≈ 1.414 倍，但 *投到該屋頂之上嘅雨* 只係由垂直方向落，等於用平面投影面積接住。可以咁諗：將斜頂壓平就係平面投影，呢個面積決定咗有幾多雨水會落到屋頂。如果用斜面真實面積，會 *高估* 收集量 40 % 以上 — 真實水缸唔會收到咁多。    可唔可以收集到嘅雨水飲用？      *未處理嘅雨水唔建議飲用*。原雨水經過大氣可能含工業污染（SO₂、NOₓ、PM2.5）、屋頂污染（鳥糞、灰塵、樹葉、瀝青／鐵鏽），蓄水缸內可滋生細菌、寄生蟲。**飲用三層處理（業界標準）**：(1) *first-flush diverter*（首場雨排走）；(2) *機械過濾*（5 μm + 1 μm 棉芯）；(3) *滅菌*（UV 紫外光、煮沸至 100 °C 1 分鐘以上、或 0.5 mg/L 自由氯靜置 30 分鐘）。**非飲用用途**（廁所沖水、洗衣、花園灌溉、洗車）只需 first-flush + 過濾即可。WHO *Rainwater Harvesting and Utilisation* 同 NSF/ANSI 350 標準都係咁列。      同類工具                         施肥撒播機校正計算機（每千呎施用量）     喺一小塊測試面積撒肥後秤重，換算成每千呎（或每 100 m²）施用量，校正撒播機設定。                          牧場載畜量計算機（動物單位／面積）     由牧場面積、每畝產草量同動物單位需草量，估算可持續載畜量同放牧日數。                          新種樹木澆水量計算機（按樹幹口徑）     按樹幹口徑（caliper）用「每吋口徑幾多加侖」嘅苗圃通則，算出新種樹木每次建議澆水量。                          灑水噴頭降水率同運行時間計算機     輸入該灌溉區所有噴頭嘅總流量同覆蓋面積，計出降水率（mm/hr 或 in/hr），再由目標灌溉深度得出建議運行時間。                          小費 / 加一服務費計算機     香港餐廳加一服務費、額外小費同 AA 夾錢，一次過搞掂。                          電費計算機     依中電／港燈最新電費表估算每月電費。                          油費計算機     依里程、耗油量同油價，估算單程或來回車程嘅油費總開支。                          AA 分帳計算機（取整收現金）     輸入帳單、加一服務費、額外小費同人數，計到每人應該夾幾多，仲可以一鍵取整到 $1 / $5 / $10 / $20 / $50，方便收現金。                          折扣計算機     輸入原價同折扣百分比（或減價金額），即時計到實際售價、慳幾多錢同實際折讓比率。                          煮食份量換算     杯、湯匙、茶匙、毫升、安士、克之間自由換算，方便睇外國食譜、減半或加倍配方。                          單位價格比較計算機     輸入兩件貨品嘅價錢、份量同單位（克／公斤／毫升／升／件），即時比較邊件每單位真係抵啲，並顯示慳幾多 %。                          時薪 / 月薪 / 年薪互換計算機     由時薪算月薪／年薪，或反過來由年薪算返時薪 — 自訂每週工時、每年工作週數，連兼職、freelancer 都用得。                          狗仔年齡換算（人類年齡對照）     由狗仔嘅實際年齡同體型（細／中／大／巨型）推算對應嘅人類年齡，同時對比經典「× 7」法則同最新研究結果。                          訂幾多個 Pizza 計算機     幾多人？平均食幾多塊？Pizza 切幾多份？即時計算要訂幾多個 Pizza 啱啱好，避免唔夠又避免食剩。                          瓷磚數量計算機     輸入房間尺寸同瓷磚規格，計需要幾多塊瓷磚（連耗損百分比），裝修報價同備料前必用。                          油漆用量計算機     由房間長闊高、門窗面積、油漆每公升覆蓋率同層數，計需要幾多公升油漆。                          咖啡水粉比計算機     揀沖煮方法（手沖／法式壓濾／浸泡冰咖啡／意式濃縮）同杯量，即計需要嘅咖啡豆同水量。                          牆紙卷數計算機     輸入房間尺寸、牆紙卷規格同圖案重複，計到實際需要訂幾多卷牆紙（已計算花紋對位浪費）。                          戒煙慳錢計算機     輸入每日支數、煙價同已抽年數，計算累積花費同戒煙可慳幾多錢。                          屋頂坡度計算機     由屋頂嘅 rise (上升) 同 run (水平距離)，即時計到 X-in-12 坡度寫法、傾斜角度、斜率百分比同椽木 (rafter) 長度倍率。                          混凝土板用量計算機     輸入長闊厚同浪費率，計到混凝土板實際需要嘅體積（立方米／立方碼），以及 25 kg、40 kg 或 80 lb 水泥袋嘅大概數量。                          樓梯級數計算機     輸入總升高（rise）同預想嘅級高，計到所需級數、實際每級高度、踏面深度、梯邊板斜邊長、斜度，仲會按 IRC／IBC／英國 Part K 三套常見建築規範做即時合規檢查。                          冷氣機 BTU 計算機（房間大小 → 馬力 / BTU）     輸入房間面積、樓底、向陽程度、人數同氣候，即時計到應該揀幾多 BTU／馬力嘅冷氣機。                          結婚周年禮物對照表     輸入結婚日期，即時知道今年係第幾周年、仲有幾日就到，同對應嘅傳統 ╱ 現代禮物主題（紙婚、銀婚、金婚…）。                          焗爐溫度換算（°C／°F／Gas Mark）     攝氏、華氏同英國 Gas Mark 之間互換焗爐溫度，配描述標籤（溫／中／熱／極熱）。                          食譜份量倍數計算機     輸入原食譜份數同想煮嘅份數，所有食材按比例同步放大或縮細，附常用份量四捨五入提示。                          貓貓年齡換算器     輸入貓貓嘅實際年齡，按獸醫常用公式換算成相當人類年齡，並顯示對應嘅生命階段（幼貓／成貓／高齡貓）。                          每次使用成本（性價比）計算機     輸入購買價、預期使用次數同保養費用，計算每次使用實際成本，幫你判斷物品抵唔抵買。                          Naismith 行山時間計算機     用經典 Naismith 法則估算行山時間：每 5 km 加 1 小時，每爬升 600 m 再加 1 小時，可加埋下山修正同休息時間。                          功率體重比 (P/W) 計算機     輸入功率（W／kW／馬力）同重量（kg／磅），即時計算 W/kg、hp/kg、hp/lb 嘅功率體重比，並按單車手或汽車分級評估表現。                          電動車充電時間計算機     輸入電池容量 (kWh)、充電器功率 (kW)、起始同目標電量百分比，估算充電所需時間，並考慮充電效率與恆功率／CV 階段。                          比重 (SG) 換算啤酒酒精度 (ABV)     輸入發酵前原始比重 (OG) 同發酵後最終比重 (FG)，用釀啤酒標準公式 ABV ≈ (OG − FG) × 131.25 計算酒精度，並列出發酵減少程度 (apparent attenuation) 同卡路里估算。                          泥土／護根／砂石覆蓋計算機     輸入地面面積同覆蓋深度，計算所需嘅泥土、護根（mulch）或砂石體積（公升、立方米、立方碼），並估算袋數同總費用。                          魚缸容量計算機     輸入魚缸長闊高（支援長方體、圓柱、bow-front 弧形前面三種常見形狀），計算實際水容量（公升、美加侖、英加侖）及滿缸水重，並按入水率扣除底砂、造景嘅排水量。                          薄餅麵糰水化率計算機（Baker&#39;s Percentage）     輸入麵粉重量同目標水化率，按 baker&#39;s percentage 計算水、鹽同酵母用量，支援拿玻里、紐約、西西里等風格預設。                          雙重折扣計算機（Stacked Discount）     輸入原價同兩個依次套用嘅折扣（例如「七折再九折」），工具計算最終價、合計折扣率同節省金額，避免將兩個百分比直接相加搞錯。                          屏幕尺寸計算機（對角線 → 闊 × 高）     輸入電視 / 顯示器對角線同闊高比（例 16:9、21:9），工具計算實際闊度、高度同面積（吋同厘米），方便擺位、買掛牆架同比較唔同尺寸點解面積差距咁大。                          航班碳排放足跡計算機（DEFRA 2024 排放因子）     輸入大圓距離（公里 / 英里 / 海里）、艙等同航段類型（國內／短途／長途），工具用 DEFRA 2024 排放因子計算每位乘客嘅 CO₂ 等效公斤數、總碳排同對應植樹補償 — 出差核算、年度個人碳預算同碳補償購買嘅標準工具。                          增值稅 / GST 計算機（含稅 ↔ 未稅）     輸入金額同 VAT / GST 稅率，工具會分別計算「未稅 → 含稅」嘅加稅金額，同埋「含稅 → 未稅」嘅倒推稅額，適用於全球任何採用 VAT、GST、IVA、TVA 嘅國家或地區（英國 20%、歐盟 17–27%、澳洲／新加坡 GST、印度 GST 等）。                          太陽能板系統規模計算機     輸入每日用電量（kWh）、當地平均日照時數、單塊太陽能板瓦數同整體系統效率，工具計算所需嘅總裝機容量（kW）同板塊數量，係住宅光伏屋頂、離網露營小屋或 RV 規劃嘅入門工具。                          空氣換氣率（ACH）計算機     輸入房間長／闊／高同目標 ACH（每小時換氣次數），工具計算所需通風流量（CFM、m³/h、L/s）。內建 ASHRAE 62.1 常見房間預設（睡房、廚房、會議室、健身室等），用嚟揀抽氣扇、新風機、HEPA 空氣清新機。                          單車齒比英寸計算機（Gear Inches）     輸入前齒盤齒數、後飛輪齒數同輪徑（700C、26&quot;、29er 等），工具計出傳統「Gear Inches」、Metres of Development 同每分鐘踏頻對應車速 — 單車手揀齒比、評估爬坡同高速段嘅標準工具。                          彈跳高度計算機（滯空時間）     輸入跳躍時嘅滯空時間（秒），工具用自由落體公式 h = ⅛ g t² 計垂直彈跳高度（cm），並顯示起跳初速度同最高點離地時間 — 籃球、排球、彈跳訓練同體適能評估常用。                          比賽場數計算機（淘汰賽／循環賽）     輸入參賽隊伍／選手數，工具計算單淘汰（N − 1 場）、雙淘汰、單循環（N·(N−1)/2 場）、雙循環賽嘅總場數同所需輪次，亦計出淘汰賽嘅輪空（bye）數 — 排錦標賽日程、桌遊、電競賽嘅基本工具。                          游泳配速計算機（每 100 米／100 碼）     輸入總游泳時間同距離（米或碼），工具計算每 100 米（或 100 碼）嘅配速，並可預測指定距離嘅完成時間 — 泳池訓練、鐵人三項、masters 比賽嘅基本工具。                          西洋棋 Elo 預期勝率計算機     輸入兩位棋手嘅 Elo 分（或任何 Elo-based 遊戲評分），工具用 FIDE 標準公式 E = 1 ⁄ (1 + 10^((Rb − Ra) ⁄ 400)) 計出雙方預期分數同 K-factor 對比後嘅評分變動 — 棋手、電競選手、Glicko/USCF 比賽預備常用工具。                          圍欄柱數計算機     輸入圍欄總長度、每段柱距同閘門數，工具計出所需柱數（line + corner + end）、橫桿件數同網片／木板節數，幫 DIY 屋主、農場、地盤估材料 — 經典「fence-post 問題」嘅一鍵答案。                          石膏板（drywall）用量計算機     輸入房間長闊高、門窗總面積、石膏板尺寸（常用 4×8、4×10、4×12 呎）同浪費率，工具即時計算需要多少塊板、總平方呎、螺絲、接縫膠帶同填縫膏用量 — DIY 裝修同判頭嘅報價工具。                          瀝青用量計算機（噸數）     輸入車道／路面嘅長闊同瀝青厚度，工具按熱拌瀝青密度（約 2.4 噸／立方米）計算需要嘅噸數，亦會將呎吋換算成公噸，DIY 屋主、業主立案法團、地盤判頭嘅報價工具。                          寵物每日飲食份量計算機（狗／貓）     輸入寵物體重、種類（狗／貓）、生命階段同活躍度，工具按 NRC RER／MER 公式計算每日所需熱量，並對應乾糧份量（克／天）— 養寵物日常餵食必備工具。                          蛋糕模換算（圓形／方形／長方形）     原食譜用 A 型烤模，但你手邊只有 B 型？輸入兩個模具嘅形狀同尺寸，工具按容積比計算食材縮放比例（同建議烘焙時間調整）— 圓形、方形、長方形互換適用。                          電視最佳觀看距離計算機     輸入電視屏幕對角線（吋）同解像度（1080p／4K／8K），工具按 SMPTE 30°、THX 36° 視場角度同人眼解像極限計算最佳同最大觀看距離 — 揀緊新電視同梳化擺位必備工具。                          二衝程引擎油混合計算機（汽油 + 機油）     輸入汽油量同混合比例（25:1、32:1、40:1、50:1 等），工具計算所需機油量（毫升／盎司） — 適用於電鋸、割草機、舷外機、二衝程電單車、噴泵等所有二衝程引擎。                          吊扇尺寸選擇計算機（房間 ft² → 葉片直徑）     輸入房間長度、闊度（m 或 ft）同樓底高度，工具按 ASHRAE / 美國 ENERGY STAR 嘅吊扇尺寸對照表，建議葉片直徑（29″–72″）同最低 CFM（風量），並指出是否需要下降桿（downrod）配合 8 ft 黃金高度。                          餐廳小費分賬計算機（Tip Out）     輸入服務員當班總小費同各崗位（酒保、收枱、樓面、廚房）嘅分賬百分比，工具計出每個崗位應分嘅金額及服務員最終袋落袋嘅淨小費 — 美國、加拿大、澳洲餐廳常用「tip out」做法。                          淨推薦值計算機（NPS）     輸入「推薦者」（9–10 分）、「中立者」（7–8 分）、「貶損者」（0–6 分）人數，工具按 NPS = %推薦者 − %貶損者 計出 −100 到 +100 嘅分數 — 客戶忠誠度、產品體驗、SaaS 留存指標標準。                          社交媒體互動率計算機（Engagement Rate）     輸入帖子互動數（讚 + 留言 + 分享）與分母（粉絲數 / 觸及人數 / 曝光量），工具同時計算 ER by Followers / Reach / Impressions 三個版本 — 影響力營銷、品牌 KOL 評估、廣告投放標準衡量。                          音程比率與音分計算機（Musical Interval / Cents）     輸入兩個音符之間嘅半音差（或直接輸入兩個頻率），工具按 ratio = 2^(n⁄12)、cents = 1200·log₂(f₂⁄f₁) 計出頻率比率同音分（cents）— 音樂理論、調音、和聲分析常用。                          滑翔比計算機（Glide Ratio / L⁄D）     輸入水平滑翔距離與垂直下降高度，工具計出滑翔比 (L/D)、滑翔角度同等效升阻比 — 滑翔傘、滑翔機、無動力飛行同跳傘運動員嘅基本性能指標。                          雨水收集量計算機（屋頂 × 雨量 × 系數）     輸入屋頂集水面積、年雨量（mm）同表面徑流系數，工具計出每年可收集嘅雨水量（公升 / 加侖）、每月平均同等效灌溉天數 — 設計家用雨水桶、花園灌溉系統嘅入門工具。                          麵包烘焙師百分比計算機（Baker&#39;s Percentage）     輸入麵粉重量同水、鹽、酵母、油等配方比例（佔麵粉重 %），工具按麵包烘焙師標準百分比制計算每種食材嘅實際份量同水合率 — 麵包配方放大縮小、批量生產嘅基本工具。                          草坪化肥 NPK 用量計算機     輸入草坪面積、化肥袋上嘅 NPK 比例（例如 10-10-10）同目標氮供應量（lb N／1000 ft² 或 g N／m²），工具計算需要幾袋化肥同實際施用嘅 N、P、K 重量 — 園藝、草坪、農場常用。                          直梯安全角度計算機（4:1 法則）     輸入直梯長度與牆上接觸高度，工具計算梯底與牆嘅水平距離、與地面嘅斜角，並對照 OSHA／EN 131 嘅 4:1 法則（每升高 4 個單位、底向外 1 個單位 ≈ 75.5°） — 家居維修、油漆、清潔窗戶都應用。                          輪胎氣壓溫度補償計算機     輸入現時氣溫、車胎現氣壓同目標氣溫，工具按 Gay-Lussac 氣體定律計算溫度變化後嘅表壓 — 冬天打氣、長途駕駛、單車冷熱壓力差常用。                          鹽水濃度計算機（醃漬 / 發酵 / 低溫慢煮）     輸入水量同鹽嘅目標 % w/w，工具計返要幾多克鹽；亦可由現有鹽水反算實際 % — 泡菜、酸菜、雞蛋醃漬、低溫慢煮常用，附常見食譜 2 %／3.5 %／5 % 對照。                          水缸／泳池灌水時間計算機     輸入容積（L / m³ / gal）同水喉流量（L/min、GPM 等），工具即時計算入水所需時間 — 泳池放水、魚缸換水、水缸入水常用。                          噪音暴露安全時間計算機（NIOSH / OSHA）     輸入噪音水平（dBA），工具按 NIOSH（3-dB exchange）同 OSHA（5-dB exchange）兩套公式計算每日安全暴露時間 — 演唱會、地盤、耳機聽歌、廠房工作常用，附常見噪音水平對照表。                          混凝土配比計算機（1:2:3 / 1:1.5:3 等）     輸入目標完成體積同水泥：砂：粗骨料嘅體積比（如 1:2:3 標準），工具計每樣材料嘅用量（kg／m³／包），並按 1.54 乾濕係數修正水分蒸發後嘅縮減 — 小型 DIY 地台、花圃、樁基必備。                          單位價格比較計算機（買大定買細抵啲）     輸入兩款產品嘅價錢同份量（可揀唔同單位 — g／kg／mL／L／pcs），工具即時計每單位價錢，標明邊個抵啲、節省百分比同每 100 g / 100 mL 嘅 apples-to-apples 比較。                          槓鈴片組合計算機（每邊配多少片）     輸入目標總重量、空槓重量同你健身房常見嘅可用片（kg 或 lb），工具用貪心法計算每邊應上邊幾隻片，並指出剩餘無法湊足嘅誤差。                          屋頂坡度計算機（rise / run、°、X:12）     輸入屋頂垂直高度（rise）同水平距離（run），工具同時返回坡度百分比、角度（°）、北美慣用嘅 X:12 比例，以及屋脊兩邊嘅斜邊長度（用畢氏定理）。                          魚缸加熱器瓦數計算機     輸入魚缸體積（公升 / 美制或英制加侖）、目標水溫同室內最低溫度，工具用 W ≈ 0.25 × V_L × ΔT 法則（對應 Eheim Jager、Marina、Hagen 廠商建議表）算出推薦瓦數同最接近嘅商業型號，並建議何時應用兩隻 heater。                          舒肥（Sous Vide）煮製時間建議計算機     輸入食物厚度（mm）、形狀（板狀／圓柱／球狀）、種類同水浴／初溫，工具用 Baldwin 嘅熱擴散方程估算中心點到達水浴溫度（差距 0.5 °C 為標準）嘅升溫時間 — 真正影響煮製時間嘅係厚度，唔係重量。                          輪椅斜道長度計算機（依國際 1:12 標準）     輸入垂直高度（rise），工具用國際通用嘅 1:12 最大斜率（美國 ADA、ISO 21542、英國 Doc M、新加坡 BCA 採用）計算斜道最少需要嘅長度，並列出每 9 m 需要嘅平台、扶手要求等核對清單。                          高架花床泥土體積／袋數計算機     輸入花床長、闊、深（cm 或 in），工具計算所需嘅泥土體積（公升、立方呎、立方碼），並按市面常見袋裝（20 L、40 L、50 L、1.5 cu ft、2 cu ft）算出需要買幾袋，方便去園藝店或網購時直接落單。                          車輛每公里 ／ 每英里總擁有成本計算機     輸入年行駛公里數、燃油消耗、保險、維修、折舊、停車費同貸款利息，工具計算每公里／每英里嘅實際擁車成本，方便對比 Uber／公共交通／租車。                          園藝植物間距／種苗數量計算機     輸入花圃／菜園長闊（m 或 ft）、植物間距同行距，工具用方格 / 三角形（交錯）兩種排列方式分別計算可種嘅株數同有效種植面積，方便買苗或落種前估算。                          焗爐烤肉時間計算機     輸入烤肉種類（牛、豬、羊、雞、火雞）、重量（kg 或 lb）、希望熟度（rare/medium/well）同焗爐溫度，工具用 USDA／英國牛肉與羊肉局發布嘅每磅分鐘表計算建議烤製時間（含預熱、休息時間）同核心溫度建議。                          單車功率輸出計算機（速度／坡度／空氣阻力）     輸入車手 + 單車重量、速度、坡度（%）、空氣動力係數 CdA、滾動摩擦 Crr 同風速，工具用三大阻力分量（重力、空氣、滾動）計算騎呢個速度需要嘅功率（瓦特），方便 FTP 對比、爬山訓練同器材升級評估。                          泳池氯加藥計算機     輸入泳池容量（公升或加侖）、目前游離氯濃度同目標濃度，工具計算需要加入嘅液態次氯酸鈉（漂白水）或次氯酸鈣（trichlor 粉）份量。                          風扇焗爐溫度／時間換算計算機     輸入傳統焗爐嘅溫度（°C 或 °F）同時間，工具用風扇焗爐通用法則計算對應嘅 fan-forced 溫度（一般 −20 °C／−25 °F）同時間（×0.80），並支援反向計算。                          雞尾酒稀釋與 ABV 計算機     輸入每樣材料（spirits、liqueur、syrup、果汁、水）嘅份量（mL）同 ABV（%），工具加上 stir／shake 帶來嘅標準稀釋量，計算成杯雞尾酒嘅最終體積、酒精度同每杯標準飲品數。                          磚牆磚塊數量計算機     輸入牆面長 × 高、磚塊尺寸（標準英式 215 × 102.5 × 65 mm、標準法式／國際 240 × 115 × 71 mm 或自訂）、灰縫厚度（mm）、扣除門窗面積同浪費率，工具計算所需磚塊總數、砂漿體積（m³）同建議多買嘅安全餘量。                          雪櫃全年用電量及電費計算機     輸入雪櫃額定功率（W）或銘牌全年用電量（kWh／年）、實際運作 duty cycle（壓縮機開機比例，一般 30–50%）同電費單價，工具計算全年耗電 kWh、電費同年度二氧化碳排放，方便對比新舊型號嘅實際省電。                          牆身木骨／鋼骨間距及數量計算機     輸入牆身長度（ft 或 m）同骨架中心距（16 in、19.2 in、24 in 或自訂），工具計算所需骨架（stud）數量、含端柱、開門開窗位額外king/jack stud 嘅扣減，並列出板材總長度（linear ft / m），方便釘骨架預算同採購。                          茶葉沖泡溫度／時間建議計算機     揀茶葉種類（綠茶、白茶、烏龍、紅茶、普洱、香草茶、伯爵、抹茶等），工具顯示業界建議嘅水溫範圍（°C／°F）、首泡時間（秒）、可沖次數同每次延長秒數 — 適合咖啡店訓練、家居沖泡 reference。                          單車轉速、齒輪比及速度計算機     輸入踩踏轉速 RPM（cadence）、前後齒盤齒數（chainring / cog）同輪徑（700×25c、26 inch 等），工具用 speed = cadence × (chainring / cog) × wheel_circumference 計每分鐘距離（m/min）、km/h、mph 同每踏一圈嘅前進距離（gain ratio），方便揀齒輪比同訓練配速。                          剪草時間計算機（草地面積、剪草機寬度、步速）     輸入草地面積（m² 或 ft²）、剪草機切割寬度（cm 或 inch）、步速（km/h 或 mph）同重疊比例，工具計算純剪草時間 + 建議轉彎及檢查緩衝，方便週末庭院規劃同園藝服務報價。                          單車鏈條長度計算機（齒盤、飛輪、後三角長度）     輸入最大齒盤齒數、最大飛輪齒數同 chainstay（後三角）長度，工具用 Park Tool 公式 L = 2·C + (F/4 + R/4 + 1) 計算所需鏈節數，幫單車手換大轉盤、新後變速、或修補斷鏈時準確切到啱長度。                          單車輪圈鋼線長度計算機（編輪用）     輸入花鼓凸緣半徑、花鼓闊度、鋼圈 ERD 同編輪 cross 數，工具用 L = √(d² + r² + R² − 2·r·R·cos(α)) − D/2 計算鋼線長度（每邊各算），方便 DIY 編輪同訂購鋼線時參考。                          針織／鉤針 gauge 起針數計算機     輸入 swatch gauge（每 10 cm 多少針／多少行）同想織嘅成品闊度／高度（cm），工具計算需起嘅總針數同總行數 — 避免完成後尺寸唔啱嘅編織困擾。                          拖車舌重（Tongue Weight）計算機     輸入拖車總重（GTW）、目標舌重比例（一般 10–15% conventional、20–25% fifth-wheel）同實際舌重，工具會驗證是否落入安全範圍，並計算建議調整方向 — 防止公路 sway／fishtail 失控。                          賭場莊家優勢期望損失計算機（House Edge / RTP）     輸入下注額、每小時旋轉／手數、莊家優勢百分比（或老虎機 RTP），工具計算每小時、每節、每年嘅期望損失（理論值） — 老虎機、輪盤、廿一點、百家樂玩家做預算同設止損都必用。                          電競滑鼠 eDPI 同 360° 轉一圈距離計算機     輸入滑鼠 DPI、遊戲內靈敏度、yaw（每 counts 旋轉角度，預設 0.022°/count，Source 引擎），即時計算 eDPI（= DPI × sens）同轉一圈所需嘅 cm／吋 — FPS 玩家轉 game、買 mousepad 必用。                          泳池容積計算機（長方形／圓形／橢圓／腰子形）     選擇泳池形狀（長方形、圓形、橢圓、腰子形）並輸入尺寸同平均水深，工具用對應幾何公式計出水量（m³、L、加侖、立方呎）— 加氯計量、加熱泵 sizing、買水費用估算必備。                          色差 ΔE 計算機（CIE76 Lab 色彩距離）     輸入兩個 sRGB（或直接 Lab）色，工具自動轉成 CIE Lab 色空間，計算 ΔE*ab = √(ΔL² + Δa² + Δb²)，並給出人眼可察覺度等級（&lt; 1：肉眼幾乎不可分；1–2：仔細觀察可見；2–10：明顯；&gt; 10：完全不同色）— 印刷、品牌色 QA、攝影、UI 配色嘅標準量度。                          打字速度 WPM 計算機（字／分鐘 + 準確率）     輸入打咗嘅字符總數、打字所用時間同錯字數，工具用業界標準 1 word = 5 characters 公式計算 Gross WPM = (chars / 5) / minutes、Net WPM = Gross − (errors / minutes) 同準確率 % — 教學、招聘、轉錄員、客服打字測試嘅標準量度。                          加班費計算機（OT 1.5x／2x 倍率）     輸入基本時薪、正常工時、加班時數同倍率（1.5x／2x／自訂），工具計算正常工資、加班工資同總薪酬，並按週／雙週／月推算 — 美國 FLSA、英國工會、加拿大省級規定等通用框架。                          酒店住宿總費用計算機（每晚 + 稅費 × 晚數）     輸入每晚房價、住宿稅率（%）、每晚 resort／city fee 同晚數，工具計算稅前小計、稅金、附加費同總費用，並按人頭顯示均攤 — 訂房比價、商務出差報帳必用。                          蛋糕分量計算機（圓形／方形 → 客數）     輸入蛋糕嘅形狀（圓形／方形／長方形）同尺寸（直徑或邊長，吋／公分），按 Wilton 業界標準切法計算「婚宴件」（小件）、「派對件」（中件）同「大件」嘅可分客數 — 婚宴、生日派對、聚會點餐必用。                          年假按比例計算機（入職／離職日期）     輸入全年法定／合約年假日數、入職日期同（可選）離職日期，工具按服務月份／日數比例計算當年應得年假 — 通用框架，可配合任何地方嘅勞工法或公司政策。                          體積重量計算機（DIM Weight, L×W×H ÷ 除數）     輸入包裹嘅長 × 闊 × 高同實際重量，揀承運商（UPS／FedEx／DHL／國際）對應嘅除數，工具即時計算體積重量（DIM weight）、應計運費重量（actual vs DIM 取大者）同密度，幫網購、寄件、跨境電商評估真實運費基準。                          毛線球數計算機（針織／鈎織所需 skein 數）     輸入圖樣所需毛線總長度（yards 或 metres）同一球毛線嘅長度，工具計算所需球數、加入安全餘量（5%/10%/15%），預估剩餘毛線同預算成本 — 買毛線前避免多買、少買嘅必備工具。                          布料碼數計算機（pieces × dimensions ÷ fabric width）     輸入需要剪裁嘅 pieces 數量、每件嘅長 × 闊同布料嘅闊度（45&quot;／54&quot;／60&quot; 或自訂），工具按單向裁料規則排料計算所需碼數（yards／metres），自動加入縮水同對花安全餘量，預估總布料成本 — 縫紉、家居布藝、cosplay、窗簾工程必用。                          十六進制色彩混合計算機（線性 RGB 中間色）     輸入兩個十六進制色 (#RRGGBB) 同混合比例 t ∈ [0, 1]，工具以線性 RGB 插值 (1 − t)·A + t·B 算出中間色，並支援 50/50 中點、漸層 5 段預覽 — UI 配色、漸層設計、品牌色過渡嘅實用工具。                          訂閱服務年度成本計算機     輸入多項訂閱服務（Netflix、Spotify、雲端硬碟、SaaS 等）嘅費用同計費週期（週 / 月 / 季 / 年 / 兩年），工具加總出每月、每年同 5 年 / 10 年累積成本 — 幫你睇清楚啲細碎月費實際食咗你幾多錢，係斷捨離訂閱嘅標準工具。                          播放速度時間計算機（1.25× / 1.5× / 2×）     輸入影片 / 播客 / 講座原長同播放速度，工具計算實際觀看 / 收聽時間、節省嘅分鐘數，以及 1.25× / 1.5× / 1.75× / 2× / 3× 嘅完整對照表 — 學生加速複習、上班族壓縮會議錄影、podcast 用戶最常用嘅小工具。                          按收入比例分擔開支計算機     輸入每位室友 / 伴侶嘅收入同合共要付嘅金額（例如房租、水電、家用），工具按收入比例計算每人應分擔幾多 — 解決「我哋收入差好遠唔可以平分」嘅常見問題，比簡單 AA 制更公平。                          煮蛋時間計算機（軟／半熟／全熟）     輸入蛋大小（S/M/L/XL）、起始溫度（雪櫃冷藏或室溫）同想要嘅熟度（軟黃、半熟、全熟），工具參考 Williams 蛋熱傳導公式給出沸水下煮蛋時間，避免每次靠估、過老或過生。                          單車輪胎氣壓建議計算機（Berto 公式）     輸入騎手 + 單車總重、輪胎寬度（mm）同前 / 後輪載重比，工具用 Frank Berto 嘅 15% 壓胎建議公式計算 PSI，避免氣壓過高（震到無安全感）或過低（爆胎風險升）。                          書架容量計算機（按書本厚度估算可放書數）     輸入書架可用長度（cm）同主要書本類型（口袋書、平裝書、精裝書、雜誌、藝術書），工具依出版業平均書脊厚度估算可放書本數，並顯示混合類型嘅總長度。                          窗簾布料寬度計算機（fullness 倍率）     輸入窗或軌道闊度、想要嘅褶皺豐厚度（fullness factor，1.5×–3×）、板數同邊縫，工具計算每塊板需要嘅成品寬度、裁布寬度同總訂布長度 — 縫紉、訂造窗簾、量布訂貨必備。                          結他 Capo 移調位置計算機     輸入想唱嘅 key（同可選嘅指型 key），工具計算所需 capo 位置（fret 0–11）同列出全部 12 個替代位置 — 適合按指型彈唱嘅結他手快速移調以配合人聲音域。                          微波爐功率時間調整計算機     食物包裝經常標明「在 1100W 微波爐 90 秒」嘅指引；如果你嘅微波爐係 700W，到底要叮幾耐？輸入原 wattage、原時間、實際 wattage，工具用反比例公式計出對應時間（加 10 % 安全 buffer）。                          打印機每頁成本計算機（cartridge 價 ÷ page yield）     輸入墨水或碳粉盒嘅價錢、ISO/IEC 標準 page yield（黑白 / 彩色分別）、用紙成本同每月印量，工具計出每頁總成本同每年支出 — 用嚟比較買「平機 + 貴墨」定「貴機 + 平墨」邊個長遠抵。                          通勤成本比較計算機（自駕 vs 公共交通）     輸入單程距離、燃油 / 電費、每升油里程、泊車費、過路費同公共交通單程費，工具計算每日 / 每月 / 每年通勤成本對比同年度可省金額 — 量化「揸車快但貴」vs「巴士平但耐」嘅 trade-off。                          樓梯扶手長度計算機（畢氏定理）     輸入梯級級數、級高 rise 同級寬 run 同首尾水平延伸長度，工具用畢氏定理計斜邊 hypotenuse 並加上水平延伸長度，輸出扶手總線長 — DIY 樓梯安裝、訂購木扶手 / 不鏽鋼扶手必備工具。                          反推小費計算機（從總額還原稅前金額）     輸入最終付款金額（已包含稅 + 小費）、小費百分比同稅率，工具反推埋單前嘅原始金額、稅金額同實際小費 — 對賬單、核對信用卡簽單、出差報銷必備。                          混凝土墩樁基礎體積計算機（圓柱 + 鐘形底）     輸入墩柱直徑、總深度、有冇底盤、底盤直徑同高度，工具用圓柱體積 + 圓台體積算出總混凝土用量（立方米 / 立方碼 / 80 磅袋數），自動加入 10 % 浪費係數 — 露台支柱、欄柱、棚架、車庫基礎 DIY 必備。                          屋頂瓦片捆數計算機（asphalt shingle）     輸入屋頂平面面積、坡度（rise/run）、每 square 捆數同浪費係數，工具自動算出坡度係數、實際斜面面積、roofing squares（每 100 ft²）同連浪費並向上取整嘅所需捆數 — DIY 換瓦、估價、訂貨必備。                          共乘油費攤分計算機     輸入單程距離、車輛油耗、汽油價、過路費同停車費，連埋人數，工具計出總油成本同每人應分嘅金額（可選含 / 唔含司機）— 同事返工、週末出遊、學車組隊嘅 AA 結算工具。                          送禮預算分配計算機     輸入節日 / 婚禮 / 生日嘅總送禮預算同收禮人清單（含親疏權重：直系親屬 3、朋友 2、同事 1 等），工具按權重分配出每人建議金額，避免亂咁買又超支 — 聖誕、農曆新年、婚禮回禮嘅理性開支工具。                          結婚預算分配計算機（業界比例）     輸入總婚禮預算同出席人數，工具依業界基準比例（場地餐飲、攝影、婚紗、音樂、花藝、婚戒等 12 項）一次分配，並計出每位賓客平均成本 — 提供「經典」「酒席為主」「DIY」三個方案，新人籌備婚禮第一步必備工具。                          寵物每日所需飲水量計算機     輸入狗或貓嘅體重，工具用獸醫指引（狗 50–60 mL/kg、貓 60 mL/kg）計出每日水量 mL 同 oz — 預防脫水、腎臟健康、夏天高溫補水必備。                          長途自駕加油次數計算機     輸入總行程距離、油箱容量、燃油消耗（L/100km 或 mpg）、出發剩餘油量同安全保留比例，工具計出需要幾多次加油同每段距離 — 自駕旅遊規劃必備。                          漂白水稀釋濃度計算機（消毒用）     輸入家用漂白水嘅次氯酸鈉濃度（如 5.25%）同稀釋比例，工具計算最終 NaOCl ppm 濃度，並比對 CDC 同 WHO 對日常清潔、表面消毒、體液污染處理嘅建議濃度範圍。                          白醋清潔稀釋比例計算機     依清潔場景（窗戶、地板、廚房油污、水垢、咖啡機）建議白醋（5% 醋酸）同水嘅稀釋比例，輸出實際 ml 對 ml 配方，並列明唔可以用醋清潔嘅表面（大理石、實木、銅器）。                          房間照明流明需求計算機（按 IESNA 推薦 lux × 面積）     揀房間類型（客廳、廚房、書房、浴室、睡房、工作枱、走廊…）同房間尺寸（m² / ft²），工具按 IESNA Lighting Handbook 建議照度（lux）計總流明需求 = lux × area，並按單個燈泡 / 燈具流明（一般 800–1600 lm）建議需要幾個 — 適合裝修、書枱燈、廚房射燈、加裝吊燈規劃。                          派對酒水數量計算機（紅／白／氣泡／烈酒）     輸入人數、活動長度（小時）同每人每小時飲酒杯數，工具按標準分量（紅／白酒 150 mL／杯、氣泡酒 120 mL／杯、烈酒 30 mL／shot）算出 750 mL 樽嘅需求量，並按你揀嘅紅／白／氣泡／烈酒比例分配。                          投影機投射距離計算機（屏幕闊度 × Throw Ratio）     輸入投影機 Throw Ratio（例如 1.2、0.5 短焦、超短焦 0.25）同目標屏幕對角線（吋／cm／m）同闊高比（16:9、4:3、2.35:1），工具計實際投射距離（mm／m／ft）— 適合家庭影院、辦公室、課室規劃。                          燒烤肉量計算機（每人份量、生熟比、骨重）     輸入賓客人數、肉類類型（牛排、漢堡扒、雞、豬、海鮮、香腸）、是否主菜，工具按 Weber／Serious Eats 建議每人份量（生重）計總量，並考慮烹飪縮水 25–30 %、骨頭佔比 — 適合派對、家庭聚餐、節日燒烤。                          食譜份量調整計算機（原 X 人份 → 目標 Y 人份）     輸入食譜原本嘅份數同你想煮嘅份數，工具計乘數（multiplier），並將常見份量（杯、湯匙、茶匙、磅、克、毫升）即時換算 — 適合放大食譜開派對、又或縮細一人份試煮。                          發電機燃油續航時間計算機     輸入發電機油缸容量、額定功率、實際負載百分比同燃油類型（汽油／柴油／天然氣／丙烷），工具按典型耗油曲線推算續航時間（小時）同每度電燃油成本 — 適合露營、家用備用電源、施工現場規劃。                          LED ↔ 白熾燈 / 慳電膽光輸出對照計算機（流明 ↔ 瓦）     輸入一隻舊白熾燈嘅瓦數（或者你想要嘅流明 lm），工具用 ENERGY STAR / EU 能源標籤嘅標準對照表，計同等亮度嘅 LED、CFL、鹵素瓦數，順帶估計年度電費、慳幾多錢 — 換光源時最常 Google 嘅問題。                          樹齡估算計算機（量樹圍 / 直徑推算）     量胸高處（DBH，地面起 1.3 m）嘅樹幹圍長，揀返樹種，工具用國際樹藝師協會 (ISA) 嘅 species growth factor 估算樹齡 — 唔使鋸樹數年輪，亦適用於市區公園樹、自家後花園古樹。                          尿袋（流動電源）可叉電次數計算機     輸入尿袋容量 (mAh)、手機電池容量 (mAh) 同轉換效率（一般 60–80 %），工具用 Wh = mAh × 3.7 V / 1000 嘅標準鋰電壓計幾多 Wh 可用，同實際可以叉幾多次手機 — 對買新尿袋、規劃出外用電好實用。                          冬天柴薪需要幾多 cord 計算機（取暖估算）     輸入屋宇面積（sqft / m²）、氣候帶（mild / moderate / cold / very cold）、木材種類（硬木 / 軟木 / 混合）同柴爐效率，工具用 USDA Forest Service「one cord ≈ 20 M BTU 硬木 / 12 M BTU 軟木」嘅標準熱值，估算整個取暖季節需要嘅柴薪 cord 數同 m³ 體積。                          草地播種量計算機（每千呎建議磅數）     輸入草地面積、草種（Kentucky bluegrass、Tall fescue、Bermuda、Zoysia 等）同播種類型（新建草地 / 補播），工具按美國 Extension 草坪指引嘅磅／千呎播種率計總共所需嘅種子重量同公斤、g/m² 換算 — 適合裝修庭院、學校、公園、高爾夫球場初期撒種。                          Espresso 咖啡萃取比例計算機（Brew Ratio）     輸入咖啡粉重量（dose）同目標萃取比例（ristretto 1:1.5、normale 1:2、lungo 1:3），工具即計目標 espresso 出杯重量（yield）同建議萃取時間範圍 — 適合家用 espresso、半自動機、手柄濃縮咖啡設定。                          除濕機所需容量計算機（DOE 2019）     輸入房間 / 地下室面積同潮濕程度（輕度潮、中度濕、嚴重濕、水浸後乾燥），工具按 ENERGY STAR 喺 DOE 2019 測試標準（65°F 入口）下嘅尺寸表計每日所需 pints、L／日，再對應零售常見型號（20 / 30 / 50 pt）。                          露營爐燃料用量計算機（isobutane／propane）     輸入人數、日數同每日煮食次數（早午晚 + 沖咖啡 / 燒水），工具按 backpacker / car-camping 經驗值（每人每餐 5–10 分鐘燒水時間）估算所需 isobutane 或 propane 罐數同總克數 — 幫你執行李時唔多帶 / 唔少帶。                          凍肉解凍時間計算機（雪櫃／冷水）     依 USDA 安全解凍指引計算雪櫃慢解凍（24 小時／2.27 kg）或冷水快速解凍（30 分鐘／0.45 kg）所需時間。                          安全跟車距離計算機（2 / 3 秒法則）     輸入車速，按 2 秒（乾燥）／3 秒（濕滑）／4 秒（夜晚或重車）法則計算前車與你之間應保持嘅最小跟車距離（米／呎／車身）。                          訓練總噸位計算機（sets × reps × weight）     阻力訓練常用嘅 volume 指標：每組重量 × 次數 × 組數 = 該動作總噸位；加埋幾個動作就係今日 session tonnage，方便追蹤週期進步。                          冷萃咖啡比例計算機（concentrate + 稀釋）     冷萃咖啡分濃縮 (1:4–1:8) 同直飲 (1:12–1:15) 兩種做法。輸入想出嘅杯數同濃淡偏好，即時計到要幾多粗研磨咖啡豆、幾多水、要稀釋幾多、浸幾耐 — 唔使再憑感覺落量。                          焗爐轉氣炸鍋時間溫度轉換計算機     通用換算規則：氣炸鍋比焗爐溫度減 25°F (~14°C)、時間縮短 20%。輸入焗爐食譜嘅溫度同分鐘，即時讀出氣炸鍋對應設定 — 唔使再對住食譜書畫圈圈。                          邊個 Pizza 抵啲？面積每蚊比較計算機     Pizza 嘅體驗其實同直徑無關 —— 同面積有關。輸入兩個 pizza 嘅直徑同價錢，計算機即時比較每 cm² 嘅價錢，告訴你邊個真正抵啲。                          待機電力年費計算機（Vampire Load）     電視、機頂盒、無線充電器、家用伺服器等就算唔用都一直拉幾瓦電 — 全年加埋可以好驚人。輸入待機瓦特同每度電價錢，即時讀出每年浪費幾多。                          串流影片數據用量計算機（睇得幾多個鐘？）     輸入串流嘅畫質（SD／HD／4K）同你嘅每月數據上限，計算機即時讀出可以睇幾多個鐘 Netflix／YouTube／Disney+ 而唔超 quota。                          家電耗電年費計算機（瓦特 × 小時 × 電價）     輸入家電功率（W）、每日使用時數同每度電價錢，即時讀出每日、每月、每年用幾多度電同要俾幾多錢 — 適合冷氣、暖風機、抽濕機、電視、Gaming PC 等實質運行嘅電器，並有 6 個常見家電 preset。                          浴缸放水時間計算機     輸入浴缸容量（公升）同水龍頭流量（公升／分鐘），即時讀出放滿水需要幾多分鐘、用幾多公升水、估算水費 — 順便知幾時要返嚟撳停。                          壽司飯醋計算機（鹽糖醋米水比例）     輸入想做幾多份壽司或者幾多杯生米，計算機即時讀出米、水、米醋、糖、鹽嘅標準用量 — 採用日本壽司職人慣用比例（醋 : 糖 : 鹽 = 10 : 5 : 1），新手都可以一次成功。                          意粉煮水鹽分量計算機（1 : 10 : 100 比例）     輸入幾多份意粉，工具按意大利經典「1 公升水 : 10 克鹽 : 100 克意粉」黃金比例，讀出所需嘅意粉重量、水量、鹽量，同建議煮水時間／意粉煮熟時間。                          高海拔烘焙食譜調整計算機     輸入烘焙地點嘅海拔高度（米／呎），工具讀出需要點樣調整食譜：減糖、減泡打粉、加麵粉、加液體、提高焗爐溫度、縮短烘焙時間 — 採用 USDA／King Arthur Baking 嘅標準建議。                          家庭影院最佳座位距離計算機     輸入電視／投影屏幕對角線同寬高比（16:9、21:9 等），讀出 SMPTE（30°）與 THX（36°）建議觀賞距離，並按 1080p／4K／8K 解像度計算「肉眼睇唔到 pixel」嘅最近距離。                          環氧樹脂混合比例計算機     輸入項目所需嘅樹脂總量同混合比例（1:1、2:1、3:1、4:1、5:1，按體積或重量），即時計出 Part A（樹脂）同 Part B（硬化劑）各應該量幾多，避免比例錯而 cure 唔到。                          蛋糕忌廉霜（Frosting）份量計算機     輸入蛋糕形狀（圓形 6/8/9/10 吋、長方形、片狀、杯子蛋糕）、層數同裝飾風格（薄塗 / 標準 / 重塗 / 擠花），讀出所需總忌廉霜杯數、克數，避免做太少（中途加 batch 又趕）或太多（剩半碗倒咗）。                          手沖咖啡（Pour-over）比例計算機     輸入想要嘅杯數同強度（從 1:15「濃」到 1:18「淡」），工具讀出所需咖啡粉重量、總水量、bloom 水量同每次注水量 — 適用 V60、Chemex、Kalita Wave 等手沖法。                          香檳氣酒派對開瓶數計算機     輸入賓客人數、活動時長同類型（婚宴祝酒 / 雞尾酒會 / 晚宴 / 倒數派對），按每瓶 750 mL ≈ 6 杯 flute 嘅標準算出所需香檳／氣酒瓶數，預留 ~10% buffer。                          釘長度（鐵釘 / 螺絲）計算機     輸入面板厚度（要固定嗰塊），按木工 2× 至 3× 規則算出最合適嘅鐵釘 / 木螺絲長度（mm + inch + US penny size），並提示底板需要嘅最低厚度。                          屋頂瀝青瓦（Shingles）束數計算機     輸入屋頂平面投影面積、屋頂斜度（pitch）同想留嘅 waste %，工具按北美標準「3 束 = 100 sq ft（1 square）」算出總束數同需要嘅 squares，方便去 Home Depot / B&amp;Q 落單。                          聖誕樹串燈長度計算機     輸入聖誕樹高度（呎）同想要嘅密度（基本／飽滿／豪華），按業界「每呎樹高 100 顆 / 100 個燈位」標準算出所需串燈總長度同燈泡數。                          丙烷／石油氣瓶 BBQ 用時計算機     輸入瓶裝丙烷／石油氣大小（5 / 11 / 20 / 30 / 40 lb）同燒烤爐／暖風機嘅 BTU/hr，計算可連續使用嘅小時數。                          單車車架尺寸（按身高）計算機     輸入身高（同可選嘅內側褲長 inseam），按公路車／越野車／hybrid 三類經典 sizing chart 推算合適嘅車架尺寸（cm 或 inch），方便去單車舖試車前心中有底。                          行山 / 露營每日食物重量計算機     按行業 1.5–2.5 lb／日（680–1,130 g）同每盎司 100–130 kcal 嘅 energy-dense rule，輸入行山日數、體型同活動強度，算出要帶嘅總食物重量同總卡路里。                          廁紙存量可用日數計算機     輸入家中現有廁紙卷數、每卷張數、家庭人數同每人每日平均用量，算出廁紙存貨夠用幾多日，方便決定幾時要再買。                          一塊木板可鋸出幾多件（連鋸縫 Kerf）計算機     輸入木板總長、目標每段長度同鋸片厚度（kerf, 通常 1.5–3.2 mm），用「(總長 + kerf) ÷ (段長 + kerf)」公式算出可以切到幾多段、剩多少 waste — 木工 DIY 必備。                          聖誕樹每日所需澆水量計算機     輸入樹幹底部直徑（吋／cm），按 National Christmas Tree Association「每吋幹徑每日 1 夸脫」標準算出真樹每日要加水量、首日定型水量同樹座最少容量。                          電影馬拉松總時長（連休息）計算機     輸入想連睇嘅電影條數、平均長度、片間休息分鐘數同食飯時間，計出整個馬拉松要幾耐 — 完美比 LOTR Extended、Star Wars Day、影展用家用。                          BB 尿片每月用量／囤貨計算機     輸入 BB 年齡同每日換尿片次數，按行業（Pampers、Huggies、AAP guidance）每階段用量算出每日、每週、每月、每年所需尿片數同推介一箱裝數。                          行李 / 背囊容積（公升）計算機     輸入行李 L × W × H（cm／吋），算出總體積（公升），並對照主要航空公司（國泰、AA、Ryanair、JetBlue 等）嘅手提行李 size limit，提示係咪過大。                          屋頂雨水收集容量計算機     輸入屋頂集水面積、降雨量同 runoff coefficient（金屬／瓦片／柏油），算出每場雨可以收集到嘅水量（公升／加侖）— 適合家用 rain barrel、花園、應對乾旱規劃。                          酸種麵包水合率（Baker&#39;s %）計算機     輸入麵粉、水、starter（連 starter 嘅 hydration）、鹽嘅重量，按 baker&#39;s percentage 標準算出 effective dough hydration % — 75% 標準鄉村包、85% ciabatta、65% bagel。                          火雞烤焗時間計算機     輸入火雞重量（磅／公斤）、選擇有冇 stuffing 同烤箱溫度，按 USDA / Butterball 標準算出 thaw 時間同 oven roasting 時間 — Thanksgiving / Christmas 必備。                          露台地磚（Pavers）數量計算機     輸入露台／步道面積同 paver 尺寸（長 × 闊），加 waste %，計出要買幾多塊。                          樓梯級數同梯踏深度計算機     輸入總高度同舒適嘅 riser 高度（北美 7&quot;／國際 175 mm），按 IRC / Blondel 公式算出 riser 數同建議 tread 深度。                          抽油煙機 CFM 選型計算機     輸入爐頭寬度同類型（電 / 燃氣 / 中式 wok），按 HVI 1900 同 IRC 標準計出建議嘅最低 CFM。                          淋浴用水量同熱水能源計算機     輸入花灑流量 (GPM 或 L/min)、淋浴時間、熱水比例同入水／出水溫度，計出單次同每年用水量、加熱熱水嘅 kWh、年度水費 + 電費，並對比 EPA WaterSense 1.8 GPM 慳水花灑可慳幾多。                          瓷磚填縫劑用量計算機     輸入舖砌面積、瓷磚尺寸、瓷磚厚度同填縫闊度，按行業 grout coverage 公式算出要買幾多 kg 填縫劑 (Mapei / Custom Building Products 標準)。                          混凝土板鋼筋數量 (網格) 計算機     輸入混凝土板長 × 闊、鋼筋間距 (typical 12&quot; 或 300 mm)、邊距，計出橫向 + 縱向鋼筋條數、總長度，方便落單買貨。                          樓梯側板 (Stringer) 長度同斜度計算機     輸入總高度 (rise) 同總水平距離 (run)，按勾股定理算出樓梯側板長度、斜度角同建議級數。                          汽車油缸續航里程計算機     輸入油缸容量 (L 或美制加侖) 同耗油量 (L/100km、MPG 或 km/L)，再選安全儲備百分比，計出滿缸最遠續航 + 預留後實際續航 + 長途行程嘅入油次數。                          米水比例（白米／糙米／壽司米／意大利燴飯米）計算機     揀米嘅類型（白米／糙米／茉莉香米／印度香米／壽司米／意大利燴飯米／糯米／野米）同份量（杯／克）、煮法（爐火吸水法／電飯煲），按 Cook&#39;s Illustrated／Modernist Cuisine bench-tested 比例算出對應嘅水量同預計熟米成品份量。                          啤酒裝瓶 priming sugar（碳酸化）計算機     輸入批量（升／加侖）、現存溫度、目標 CO₂ vols 同糖類型（玉米糖／白糖／DME），按 Palmer《How to Brew》公式算出 priming sugar 重量。                          滑雪板長度（按身高體重）建議計算機     輸入身高（cm／ft+in）、體重（kg／lb）同 riding style（all-mountain／freestyle／powder／free-ride），按 Burton／Evo sizing chart 算出建議滑雪板長度範圍。                          泳池水泵運轉時間（turnover）計算機     輸入泳池容積（加侖／升）、水泵流量（GPM／LPM）同每日 turnover 次數（一般 1 次／泳客多時 2 次），算出每日水泵需要嘅運轉小時數。                          縮時攝影拍攝間隔計算機     輸入真實拍攝時長、播放長度同播放幀率，算出拍攝總張數同每張之間嘅 interval（秒）。                          電腦電源供應器（PSU）瓦數計算機     輸入 CPU／GPU TDP、硬碟、風扇、RAM 同周邊，按 80 Plus + headroom 標準算出建議 PSU 瓦數。                          汽車防凍液（Coolant）混合比例計算機     輸入水箱容積、目標防凍液濃度（30/40/50/60/70%）、防凍液類型（EG／PG）同 concentrate 樽濃度（100% 純／50/50 pre-mix），算出需要加入嘅 concentrate 同蒸餾水量，連預計冰點／沸點。                          木地板／laminate flooring 箱數計算機     輸入房間長闊（或總面積）、每箱覆蓋面積同 cutting waste %（直舖 5–10%／斜舖 15%），算出需要訂購嘅地板箱數，避免買唔夠或者買太多。                          慢燉鍋（Slow Cooker）烹調時間換算計算機     輸入原食譜嘅烤箱／爐頭烹調時間，按 Crock-Pot 同 Hamilton Beach 廠家對照表算出 slow cooker LOW 同 HIGH 模式對應時間，並建議揀邊個 setting。                          薄餅麵糰份量計算機（按 baker&#39;s percentage）     輸入要整幾多個薄餅、每個麵糰球嘅重量同 hydration、salt、yeast 嘅 baker&#39;s percentage，按 Neapolitan / NY-style convention 即時算出所需麵粉、水、鹽、酵母（同可選嘅油 / 糖）克數。                          派對飲品數量計算機（啤酒 / 紅白酒 / 烈酒 / 軟飲）     輸入賓客人數、活動時數、飲酒賓客比例同酒類組合（啤酒／紅白酒／烈酒），即時計算每類所需嘅瓶數、份數同軟飲份量，已預留 10% 緩衝。                          碎石車道／路面用料計算機（體積 + 重量）     輸入車道長、闊同碎石鋪層厚度，計算所需碎石體積（立方米／立方碼）同近似總重量（公噸）。                          搬屋貨車尺寸建議計算機（房數 → 立方呎）     輸入家居房間數量同每房預估貨物量，計算總體積（立方呎）並建議合適貨車尺寸（10、15、20、26 呎）。                          牆紙膠水用量計算機     輸入需要鋪貼嘅牆紙面積（平方米／平方呎）同膠水建議覆蓋率，計算所需牆紙膠水總量（公升／包數）。                          保姆／湊小朋友時薪總費用計算機     輸入時薪、湊小朋友嘅總時數、深夜時段加成同交通費，計算保姆／湊BB嘅總開支。                          蜂蜜代替白糖食譜換算計算機     輸入食譜原本糖量／蜜糖量，計算換算後嘅蜜糖／糖份量、需要減嘅水份同建議焗爐溫度下調，避免烘焙失敗。                          窗簾用布量計算機     輸入窗闊、窗簾長、皺褶比、上下摺邊同布料卷闊，計算所需布料總長度（米／碼），並提示要剪幾多幅（widths）。                          草坪灌溉時間計算機     輸入草坪面積、灑水器流量（L/min 或 GPM）同目標灑水深度（mm／inches），計算每次灑水需時。                          電動車每 100 公里 / 100 英里充電成本計算機     輸入車輛能耗（kWh／100 km 或 kWh／100 mi）、電費（每 kWh）同充電損耗，得出每行 100 公里 / 100 英里嘅充電成本同每公里 / 每英里單價。                          人均意粉用量（乾意粉）計算機     輸入人數、意粉類型（long／short／egg／filled）同主菜或配菜定位，得出乾意粉總克數同人均克數，附煮水量同下鹽量。                          蠟燭燃燒時數計算機（蠟重量 / 燃燒速率）     輸入蠟燭重量（克／安士）、蠟材質（大豆／椰子／蜂蠟／石蠟）同燭芯尺寸，估算總燃燒時數同每次點燃建議時長。                          茶葉沖泡時間計算機（綠／紅／烏龍／白／普洱）     揀茶種（綠／紅／烏龍／白／普洱／伯爵紅／薄荷草本），輸入水量同強度偏好，得出建議水溫、茶葉用量同沖泡分鐘數。                          家庭後備發電機功率選擇計算機     勾選想保留嘅電器（雪櫃、冷氣、暖爐、煮食爐、燈、水泵等），即時加總運行瓦數同最大瞬間啟動瓦數，自動建議常見規格嘅發電機 kW，停電前快速估算。                          魚缸養魚密度計算機（吋／加侖法則）     輸入魚缸容量同魚種大小（吋／厘米），用「每吋成魚 1 加侖水」業界經驗法則同俾保守／普通／挑戰級三檔，估算可養魚總數。                          停車費比較計算機（時租 vs 日租 vs 月租）     輸入每日停車小時數、時租、日租上限同月費，自動算出最平方案及一個月／一年實際開支。                          圍欄柱孔混凝土用量計算機     輸入孔徑、孔深、柱直徑同柱數，自動算出每個柱孔需要嘅混凝土體積（含 10% 浪費），並換算成 25 kg／40 kg／60 lb／80 lb 包裝袋數。                          加濕器水箱續航時間計算機     輸入水箱容量（L 或 gal）同霧化輸出率（mL/h 或 gpd），算出可連續運行小時數，並對照常見房間大小所需嘅輸出。                          Tabata / HIIT 總時間計算機     輸入運動秒數、休息秒數、每組回合數、組數同組間休息，即時得出整個 Tabata／HIIT 課堂嘅總時間同每組／每回合分段。                          關鍵字密度 SEO 計算機     貼上一段文章同想分析嘅關鍵字／詞，即時計出總字數、關鍵字出現次數同百分比密度（含 2-grams 詞組），對應 SEO 1-3% sweet spot 建議。                          人體工學書枱／螢幕高度計算機     輸入身高（含或唔含鞋），按 ANSI/HFES 100 同 BIFMA G1 嘅人體工學公式，即時得出建議坐姿書枱、企姿站立式書枱、螢幕頂高度同眼睛至螢幕距離。                          相片打印裁切損失計算機     輸入相機相片嘅長闊比同想印嘅尺寸（4×6、5×7、8×10 等），即時知會裁切邊還是裁切上下、裁走幾多 % 面積，並圖示保留嘅範圍。                          堆肥碳氮比 C:N 計算機（褐料 vs 綠料）     輸入各種堆肥原料（廚餘、咖啡渣、落葉、紙皮等）嘅重量，依公開 C:N 表計出總體碳氮比，並對照 25–30:1 黃金堆肥範圍建議調整。                          食譜熱量密度計算機（每 100 g kcal）     輸入食譜各材料嘅重量同每 100 g 卡路里，工具自動計出整道餸嘅總熱量、總重量、每 100 g 熱量密度（kcal/100 g）同每份熱量，方便健康飲食控管。                          濕基／乾基含水率轉換計算機（穀物、木材、食物）     輸入物質總重同水份重量（或濕基／乾基百分比），即時互相換算濕基（MCwb = water/total）同乾基（MCdb = water/dry）含水率，農業、木工、食品乾燥業必備。                          濃縮咖啡 (Espresso) 萃取比例計算機     輸入咖啡粉劑量 (dose) 同期望液量 (yield)，計算 brew ratio（1:x）、識別 ristretto / normale / lungo 風格，並按目標 ratio 反推所需液量或粉量。                          船錨繩鏈長度比 (scope ratio) 計算機     輸入水深、船頭離水高度同預計天氣，工具按航海慣例 5:1（晴天）／7:1（過夜）／10:1（風暴）計算所需放出嘅錨繩 (rode) 總長度。                          水耕養液 EC ↔ PPM 換算計算機     EC（電導率，mS/cm）同 PPM（500／640／700 標度）互換，方便對照不同品牌測量計同種植指南。                          陶泥收縮率計算機（生坯 → 陰乾 → 燒成）     輸入生坯尺寸、乾燥收縮率（一般 4–8%）、燒成收縮率（一般 4–10%），預測陰乾同燒成後嘅實際尺寸；或反過來由目標燒成尺寸反推所需生坯。陶器／炻器／瓷器有預設值。                          BBQ 木炭份量計算機     依燒烤面積、煮食方法（直火／間接）同時長計算所需嘅木炭粒數同重量，連補炭時間提醒。                          雨水槽及落水管尺寸計算機     依屋頂集水面積同當地最大降雨強度（mm／hr）估算所需雨水槽寬度（K-style 5&quot;／6&quot;／7&quot;）同落水管數量，採用 SMACNA 工業標準。                          繩索安全工作負荷計算機（WLL）     輸入繩索直徑、材質（尼龍／聚酯／HMPE Dyneema 等）同安全系數（一般 5:1），估算安全工作負荷 (WLL) 同最低破斷強度 (MBS)。                          滴灌系統運行時間計算機     輸入植物每日需水量、滴頭流量（LPH）、滴頭數量同效率，計算每次灌溉運行分鐘數，連每日／每週／每月總用水量。                          滑雪板長度建議計算機（依身高與程度）     輸入身高、體重與程度（初／中／高級），按業界經驗法則建議合適嘅雙板雪具長度（cm）；分初學者短板、進階全山板、專家大轉彎板。                          衝浪板浮力（容積）計算機     依體重、衝浪程度、體能（fitness）同板型，計算所需嘅衝浪板容積（litres），覆蓋 shortboard / funboard / longboard 三種板型。                          衝浪／潛水 Wetsuit 厚度計算機（按水溫）     輸入水溫（°C 或 °F），即時得出建議 wetsuit 厚度（mm）、款式（spring / fullsuit / hooded）同 booties / gloves / hood 配件建議 — 採用 O&#39;Neill、Rip Curl、Patagonia 業界對照表。                          網球拍 Grip Size 計算機（手掌量度）     量度由無名指尖到下半部 palm crease 嘅距離（mm 或 in），即時得出網球拍 grip size（L0–L5，即 4 + n/8 inch），採用 ATP / USTA / ITF 行業標準。                          獨木舟（Kayak）槳長計算機     依划手身高同船嘅寬度（recreational / touring / sea / whitewater）以業界對照表得出建議槳長（cm）。                          馬匹年齡換算成人類年齡計算機     輸入馬匹年歲，依美國馬類獸醫協會 (AAEP) 對照表估算等效人類年齡（頭 5 年成長極快，之後每馬年 ≈ 2.5 人年）。                          兔仔年齡換算成人類年齡計算機     依美國 House Rabbit Society 同 RSPCA 對照表，將兔仔年齡（1 個月起）換算為等效人類年歲、生命階段同每月衰老速率。                          酵母換算計算機（速發／活性乾／鮮酵母）     輸入食譜原本嘅酵母類型同份量，自動換算速發乾酵母、活性乾酵母同鮮酵母（block）三者之間嘅等量比例。                          新鮮 ↔ 乾香草換算計算機     揀香草種類（羅勒、迷迭香、百里香、奧勒岡、薄荷等）然後輸入份量，依 3 : 1 鮮乾比同香草特有比例自動換算。                          圓鑽石卡拉 ↔ mm 直徑換算     輸入圓形明亮式車工鑽石嘅卡拉重量或直徑（mm），依標準理想車工嘅體積／密度比互相換算。                          電影快門角度 ↔ 快門速度換算（180° 法則）     輸入幀率（fps）同快門角度，即時換算每幀曝光時間（秒同 1/x 兩種寫法），並判定屬於 180° 自然電影感、銳利、頻閃定夢幻動態模糊風格。                          煮肉收縮率計算機（生熟重量換算）     輸入生肉重量同煮法（焗、煎、炆、炸）或自選收縮率，估算熟後重量；亦可由所需熟肉份量反推應該買幾多生肉，宴會、減脂、餐廳備料必備。                          MOA ↔ 距離英吋換算計算機（射擊／光學）     射擊／槍械瞄準鏡使用嘅 *Minute of Angle*（1/60 度）對應幾多英吋／厘米嘅散佈：1 MOA ≈ 1.047 吋 @ 100 碼。輸入角度同距離，即得實際彈著直徑或調瞄格數。                          駕駛者反應距離計算機（煞車前盲走距離）     輸入車速同反應時間（默認 1.5 秒），即時得出由「察覺障礙」到「腳踩煞車」之間嘅盲走距離；通常 1 秒走 1 個車身長度，60 km/h 反應 1.5 秒等於 25 m。                          子彈下墜距離計算機（真空模型 ½gt²）     輸入槍口速度同射程，按平拋運動 drop = ½g(R/v)² 計算子彈飛行時間同重力下墜（公分／吋），可換算成 MOA 或 mil 瞄準鏡修正格數。                          人群密度安全評估計算機（人／m²）     輸入活動場地面積同預計人數，得出人群密度（人／m²）並按 Fruin 等級（A–F）顯示是否安全；4 人／m² 以上開始有壓擠風險。                          聖誕燈串長度同串數計算機（樹／屋簷／欄杆）     輸入要佈置嘅長度（聖誕樹高度、屋簷周長、欄杆等）同單串燈長度，計算所需嘅燈串數、總電燈泡數同總用電量（W），避免買得太多或太少。                          雀鳥／家禽蛋孵化期計算機（按品種）     選擇品種（雞、鴨、鵝、鴿、鵪鶉、火雞、虎皮鸚鵡、玄鳳鸚鵡等），輸入入孵日期，列出預計孵化窗口、轉燈日期、停轉日期（lockdown）— 連同建議溫濕度。                          咖啡豆烘焙失重（roast loss）計算機     輸入生豆同烘焙後嘅重量，計算失重百分比、判斷烘焙度（淺／中／中深／深）、推算需要嘅生豆量去做指定數量嘅熟豆 — 家用烘焙者同小型 roaster 必備。                          醃肉鹽水濃度／乾醃鹽量計算機     揀「濕醃」（肉 + 水 + 鹽）或「乾醃」（肉 + 鹽），輸入肉重同目標鹽分百分比，工具計算所需鹽克數、等效鹽水濃度同推薦醃製時間 — 烤肉、火雞、培根、charcuterie 同酸黃瓜常用。                          跑步步頻 BPM 配樂計算機     輸入目標步頻（spm，例如 180），工具計算對應嘅音樂 BPM 帶 — 一拍一步（同 BPM）、兩步一拍（半 BPM）— 用嚟揀歌建立節奏跑步歌單。                          常見飲品咖啡因含量查詢     揀飲品（espresso、滴漏咖啡、紅茶、綠茶、汽水、能量飲品等）同份量，估算總咖啡因毫克數、與每日上限 400 mg 嘅比例。                          冷製皂梘 SAP 鹼量計算機（NaOH / KOH，含 superfat 同水量）     輸入 8 種常見油脂（橄欖油、椰子油、棕櫚油、蓖麻油、乳木果脂、可可脂、葵花籽油、牛脂）嘅克數，按 SAP 值算出所需 NaOH（硬皂）或 KOH（液態皂）、水量、批次總重；可調 0–15 % superfat 同 20–45 % 水量。                          潛水免減壓極限（NDL）計算機（PADI RDP + US Navy 1959）     輸入計劃潛深（m / ft），同時對照 *PADI RDP 2014*（休閒潛水標準）同 *US Navy 1959*（歷史參考表）兩個 NDL；自動標示要做安全停留嘅深度、深潛區（&gt; 30 m）同超出休閒上限（&gt; 40 m）— 潛前覺察同學員溫習用。                          康普茶（kombucha）發酵時間計算機     輸入發酵溫度（°C）同目標酸度同氣泡強度，估算 F1 主發酵同 F2 二次發酵嘅日數 — 採用 Q₁₀ ≈ 2 經典溫度法則。                          攀登墜落係數（Fall Factor）+ 衝擊力計算機     輸入墜落距離、放出嘅繩長、攀者體重同繩嘅軟硬，工具算出 fall factor（0–2）以及落到繩、安全帶、保護點嘅 peak impact force（kN）— 採用 Wexler / UIAA-101 經典模型。                          Scrabble 英文字單詞分數計算機     輸入一個英文字（最多 15 字母），用標準英文 Scrabble 字母分值即時加總，可以揀邊個位有 DL／TL／DW／TW 加成，再加 bingo（用盡 7 隻牌）50 分獎勵。                          容器蠟燭蠟量／香精油計算機（按容器容量 + 批量）     輸入容器容量（mL）、做幾多隻、揀蠟種（大豆／椰子／蜂蠟／石蠟／棕櫚／菜籽／混合）、充填率同香精油（FO）載量，工具用每種蠟嘅熔融密度即時算出每隻容器同整批所需嘅蠟克數同香精克數。                          手持安全快門速度計算機（攝影 1/焦距 法則）     輸入鏡頭焦距、感光元件 crop factor 同 IS／IBIS 停數，按「1 / (焦距 × crop)」嘅經典手持快門法則同「1 / (2f)」嘅嚴格法則，輸出建議最慢手持快門 — 並 snap 到最近嘅相機檔位。                          氦氣樽可吹氣球數量計算機（按樽容量、氣球大小）     輸入氦氣樽嘅容量（立方呎或公升，例如常見派對細樽 8.9 ft³、中樽 14.9 ft³、大樽 80 ft³）同氣球直徑（9 / 11 / 16 吋乳膠氣球），工具用球體體積算可填多少個氣球，並顯示估算嘅升力同建議嘅打結餘量。                          寵物零食每日上限計算機（10% 原則）     揀寵物（狗／貓）、輸入體重、活動量、生命階段同零食每件熱量（kcal），工具按 WSAVA 公式 RER = 70·BW(kg)^0.75 同活動系數計每日總熱量需求（MER），再按獸醫常用嘅「10% 零食原則」算可餵嘅最大零食件數同總零食熱量 — 防止狗貓過重、避免營養失衡。                          FDM 3D 打印成本計算機（耗材＋電費＋失敗率）     輸入模型所耗耗材克數、線材每公斤價錢、列印時間、機器功率（W）同電費單價，工具計出單件嘅耗材成本、電費、能耗（kWh）、失敗率調整後成本同建議定價（含加成）— 適用於 Etsy／自家打印店／makerspace 收費／業餘玩家估價。                          船錨繩長（scope）計算機     輸入水深、船艏到水面嘅高度（freeboard）、預期潮汐升幅同 scope 比例（全鏈 4:1、鏈＋繩 5:1、純尼龍繩 7:1、暴風雨 10:1），工具同時計出建議錨繩長度同迴旋半徑 — 航行、釣魚、遊艇拋錨必備。                          泳池容量計算機（長方形／圓形／橢圓形／自由形）     揀泳池形狀（長方形、圓形、橢圓形、腎形）並輸入長、闊、淺水區與深水區深度，工具用平均深度算出泳池總容量（公升、立方米同美加侖）— 補水、化學藥劑（氯、酸鹼度）配比、加熱能源計劃必備。                          洗碗機每年用水電費用計算機     輸入每星期洗碗機嘅次數、每次用水（升）、每次用電（kWh）、自來水水費、電費單價，工具計出每月／每年用水量、用電量、用水費、電費同總費用 — 用嚟比較新／舊機、ECO 模式、手洗 vs 機洗。                          影片渲染時間估算機（render ratio × 片長）     輸入影片片長同 *render ratio*（每分鐘片長需幾分鐘渲染 — 由舊機跑 4K 至新 GPU 跑 1080p 差別好大），工具算出渲染所需時間、預計完成時刻、單位電費（如有提供）。Adobe Premiere、DaVinci Resolve、Final Cut、Blender 用戶常用。                          辣度 Scoville Heat Units（SHU）↔ 辣椒素 ppm 對換器     輸入 SHU（Scoville 辣度單位）或 capsaicin／capsaicinoid 含量（ppm），工具用 *SHU ≈ 16 × ppm* 嘅標準換算公式對換 — 順便列出常見辣椒（甜椒、墨西哥辣椒、哈瓦那、卡羅來納死神等）嘅典型辣度做參考。                          微波爐瓦數 ↔ 加熱時間換算     輸入食譜原本標示嘅微波爐瓦數同時間，再輸入你家用微波爐嘅實際瓦數，工具按 新時間 = 舊時間 × 舊瓦數 ÷ 新瓦數 即時換算 — 對應冷藏食品包裝、便當、急凍蔬菜、即食粥等食譜常見嘅 1100 W 標示對應 700 W / 800 W / 900 W 家用爐。                          小費共享池分配計算機（按工時）     輸入當班總小費池同每位員工嘅工時，工具按比例分配每人所得 — 餐廳、咖啡店、酒吧最常用嘅平等小費分賬方式。                          單圈時間統計計算機（總時間、平均、最快、最慢）     輸入一系列單圈時間（跑步、游水、賽車、卡丁），工具即時計出總時間、平均圈時、最快圈、最慢圈、每圈與最快圈嘅差距 — 訓練分析常用。                          炭火燒烤燃燒時間計算機     輸入炭種（lump 或 briquette）、炭重、爐型／通風程度，工具估算高熱、中熱、低熱嘅有效燃燒時間 — 燒烤愛好者、煙燻肉、戶外露營常用。                          單車踏頻計算機（由速度同齒輪比）     輸入單車速度、輪胎尺寸（700×25c 等）同前後齒輪齒數，工具計算對應嘅踏頻（RPM）— 公路車、Zwift 訓練、選擇齒比常用。                          單車坐墊高度計算機（LeMond 公式）     輸入內腿長度（inseam），工具用 LeMond 法則 inseam × 0.883 計算最佳坐墊高度（坐墊頂到中軸 BB 距離）— 公路車、Zwift 訓練、家用單車調整常用。                          單車鏈條長度計算機     輸入後上叉長度（chainstay）、大盤齒數同最大後齒齒數，工具用 Park Tool 公式計算所需嘅鏈條節數 / 英寸 — 換新鏈、改齒比、單速車裝拆必備。                          單車曲柄長度建議計算機（按內腿長）     輸入內腿長度（inseam），工具用 LeMond 法則（cm × 1.25 + 65 mm）建議合適嘅曲柄長度，同時提示常見替代法則（inseam × 0.20 短曲柄、inseam × 0.216 長曲柄 / Zinn 法則）— bike fit、TT、track 騎士常用。                          雪櫃 / 冰箱解凍時間計算機     輸入冷藏層或冷凍層內食物重量（kg）同環境溫度，工具用標準熱傳遞模型估算解凍時間 — 雪櫃清潔、停電應急、搬屋時必備。                          啤酒苦度 IBU 計算機（Tinseth 公式）     輸入麥汁體積、麥汁比重、每種啤酒花嘅 alpha acid %、重量同煮沸時間，工具用 Tinseth 公式計算總苦度 IBU — 自釀啤酒（homebrew）必備工具。                          淨推薦值（NPS）計算機     輸入推薦者（9–10 分）、被動者（7–8 分）、批評者（0–6 分）人數，工具計算 NPS = %推薦者 − %批評者，並對標業界基準 — 客戶滿意度調查、產品 / 服務評估常用。                          屋頂面積計算機（按平面圖同坡度）     輸入建築物嘅平面投影面積（footprint）同屋頂坡度 (rise/run 或角度)，工具計算實際屋頂表面積 — 用於估算瓦片、瀝青卷材、太陽能板等屋頂物料用量。                          健身室會員 每次成本計算機     輸入月費 / 年費同每週去健身室嘅次數，工具計算每次平均成本、年總開支同「打散纸 day-pass 」嘅損益平衡點 — 衡量會員值唔值得續。                          在家工作 (WFH) 年度節省計算機     輸入每週 WFH 日數、每日通勤成本、午餐外食成本同 WFH 多用嘅電費，工具計算每年淨節省同回本日數 — 衡量 hybrid / remote 上班嘅實質金錢價值。                          分時電價 (TOU) 電費計算機     輸入峰 / 平 / 谷時段嘅 kWh 用電同每 kWh 單價，工具計算月度電費、加權平均單價同峰時佔比 — 評估轉用 TOU 套餐、加裝家庭儲能或調整用電時段嘅實際節省。                          飛行里數 / 信用卡分換領價值計算機     輸入兌換需要嘅里數 / 分數、現金票價同稅費，工具計算每點價值（cents/point 或 ¢/mile）並對比典型基準（1–2 ¢ 為公允），即時判斷「呢張機票應該畀錢定碌分」。                          「年齡一半加七」交往年齡範圍計算機     輸入你嘅年齡，用「年齡一半加七」法則算出社會上常引用嘅合適交往年齡範圍（最細至最大）。                          狗狗朱古力中毒計算機     輸入狗狗體重、朱古力種類同食咗幾多，估算可可鹼（theobromine）攝入劑量（mg/kg）同中毒嚴重程度，判斷是否需要即時求醫。                          幼犬成年體重預測計算機     由幼犬目前年齡同體重，用生長百分比法估算成年後嘅體重，並按體型分類（小型／中型／大型／巨型）。                          有薪假期累積計算機（PTO Accrual）     由每期累積時數同出糧次數，計算一年累積幾多有薪假，以及到某個日期會有幾多日假。                          欄杆立柱／欄柵間距計算機（4 吋球規則）     由欄杆淨長度、立柱闊度同最大間隙，計算所需立柱數目同平均間距，符合 4 吋（100mm）安全球規則。                          露台地板／甲板木板數量計算機     由露台長闊、板闊、板縫同板長，計算所需地板數量、總延長米數同螺絲數目（含損耗）。                          啤酒桶份量計算機（一桶夠幾多杯）     由啤酒桶容量同每杯份量，計算一桶可倒出幾多杯（扣除泡沫損耗），並換算每杯成本。                          掛畫高度計算機（57 吋中心法則）     由畫框高度、掛線下墜量同期望中心線高度，計算掛鈎應釘喺牆上邊個高度。                          十字繡布料尺寸計算機     由圖案針數、布料 count（每吋針數）同留邊，計算所需 Aida／十字繡布料嘅完成尺寸。                          池塘防水膠布尺寸計算機     由池塘長、闊、最深深度同邊緣預留，計算所需防水膠布（liner）嘅長闊尺寸。                          吊扇延長桿（downrod）長度計算機     由樓底高度、理想扇葉離地高度同吊扇本身高度，計算應該用幾長嘅延長桿。                          擋土牆磚塊數量計算機     由牆長、牆高同磚塊尺寸，計算所需擋土牆磚塊、封頂磚同底層碎石數量。                          踢腳線／地腳線長度計算機     由房間周界扣除門口闊度，計算所需踢腳線總長度同要買幾多條標準長度。                          草皮／草卷數量計算機     由鋪草面積、每卷草皮覆蓋面積同損耗率，計算需要幾多卷草皮。                          禮物包裝紙計算機     由禮盒長、闊、高，計算包裝一份禮物所需嘅包裝紙尺寸、面積同捲裝長度。                          車窗／玻璃貼膜透光率計算機（VLT 疊加）     將貼膜嘅透光率（VLT）同原廠玻璃透光率相乘，計算疊加後嘅實際透光率。                          地毯用量計算機（面積、捲闊同損耗）     由房間長闊計算所需地毯面積，加入損耗百分比，再按地毯捲闊度估算所需長度。                          地毯尺寸建議計算機     由房間長闊同想留嘅地板邊距，計算建議地毯尺寸，並對應最接近嘅標準呎寸。                          濕鹽水浸泡（Brine）用鹽計算機     由水量同鹽度百分比，計算浸肉濕鹽水要落幾多鹽同糖，並換算成茶匙／湯匙。                          換車慳油錢計算機（每年燃料成本比較）     比較兩部車嘅油耗，計算每年行駛特定里程嘅燃料成本差同慳到幾多錢。                          餐飲成本率計算機（食物成本百分比）     由食材成本同售價計算食物成本率、毛利同建議定價，幫餐廳或小食生意定菜單價。                          國際象棋時間控制／對局時長計算機     由底時間、每步加時同預計步數，估算每位棋手最長用時同一局最長總時長，方便安排比賽輪次。                          瑞士制比賽輪數計算機     輸入參賽人數，計算瑞士制分出單一冠軍所需嘅最少輪數（⌈log₂N⌉）同每輪對局數。                          獎金池分配計算機     將總獎金按名次百分比方案分配，計算每個名次應得金額，適用於電競、撲克、比賽同賭盤分成。                          鹽水泳池加鹽量計算機     按泳池水量、現時鹽度同目標鹽度（ppm），計出鹽氯機泳池要加幾多鹽或要換幾多水。                          自釀啤酒糖化投料水溫（Strike Water）計算機     按麥芽溫度、目標糖化溫度同水麥比，計出投料熱水（strike water）應加熱到幾多度。                          甘納許比例計算機（朱古力：忌廉）     按朱古力種類同用途（松露波、餡料、鏡面淋醬），計出朱古力同淡忌廉嘅比例同份量。                          油糊（Roux）稠度計算機     按想收嘅稠度同醬汁份量，計出所需牛油同麵粉嘅份量。                          魚膠（吉利丁）用量計算機     按液體份量同想要嘅凝固程度，計出所需魚膠片或魚膠粉份量。                          糖漿溫度階段計算機（糖果製作）     按糖漿溫度查出對應糖果階段（線狀、軟球、硬球、硬脆等），並按海拔調整目標溫度。                          粟粉芡計算機（勾芡比例）     按醬汁份量同想要嘅濃稠度，計算所需粟粉同凍水，調出恰到好處嘅芡汁。                          打發忌廉份量計算機     按想要嘅打發忌廉份量，倒推所需淡忌廉、砂糖同雲呢拿，避免整多或整少。                          稀釋比例計算機（清潔劑 1:N）     按 1:N 稀釋比例同要調配嘅總容量，算出需要幾多濃縮液同幾多水。                          電視掛牆高度計算機     按電視尺寸、畫面比例同坐姿視線高度，計算掛牆時螢幕中心、頂同底離地嘅建議高度。                          空氣清新機 CADR／房間尺寸計算機     按房間面積同想要嘅每小時換氣次數，計算空氣清新機所需嘅潔淨空氣輸出率（CADR）。                          雞舍大小計算機（每隻雞所需空間）     按飼養雞隻數量同品種大小，估算雞舍室內面積、戶外活動範圍、產蛋箱數目同棲木長度。                          蜂鳥糖水比例計算機（1:4 糖水）     按想調製嘅份量同糖水濃度，計算所需白砂糖同水嘅份量（標準 1 份糖：4 份水）。                          太陽能充電控制器容量計算機     由太陽能板總瓦數同電池組電壓，計算所需充電控制器嘅最低電流（安培）額定。                          軟水機容量與再生週期計算機     由用水人數、水硬度同樹脂顆粒容量，估算軟水機幾多日再生一次同建議容量。                          乾醃（Dry Brine）時間計算機     由肉類重量估算乾醃（先落鹽再靜置）所需時間，並計算所需鹽份。                          平衡醃製（EQ Cure）鹽同亞硝酸鹽計算機     按肉重同目標百分比，計算平衡醃製所需嘅食鹽、Cure #1 粉紅醃製鹽同糖，並顯示亞硝酸鹽 ppm。                          糖漿（Simple Syrup）比例計算機     按糖水比例（1:1 標準或 2:1 濃糖漿）同目標份量，計算所需嘅砂糖同水份量。                          蛋白霜糖份比例計算機     按蛋白數量同蛋白霜類型（法式／瑞士／意式），計算所需砂糖同塔塔粉份量。                          柴薪熱值計算機（每種木材 BTU）     按木材種類查每 cord 嘅熱值（百萬 BTU），再由柴薪數量同爐具效率算出可用熱能（kWh、MJ）同等效燃油量。                          DIY 電子煙油調配計算機（E-Liquid）     由目標容量、尼古丁濃度、VG/PG 比例同香精百分比，計算尼古丁基液、VG、PG 同香精各需幾多毫升。                          倒模樹脂用量計算機（Resin Volume）     由模具尺寸算出所需樹脂體積同重量，並按 A:B 混合比例分配兩劑用量。                          蠟燭香精用量計算機（Fragrance Load）     由蠟量同目標香精比例，計算做蠟燭需要幾多克香精油，並可按蠟燭數量放大。                          拼布被包邊計算機（Quilt Binding）     由被子長闊同包邊條闊度，計算包邊總長度、需要幾多條橫布條同所需布料。                          水浴罐頭海拔加時計算機（Water-Bath Canning）     按海拔高度調整水浴（沸水）罐頭嘅加工時間，避免高地水沸點下降導致殺菌不足。                          海水缸鹽度混合計算機     由水量、現有同目標鹽度（ppt／比重），計算需要加入嘅海鹽份量。                          串珠數量計算機（每串珠子）     由成品長度同珠子直徑，計算一條手鏈或頸鏈要幾多粒珠，並估算所需珠子總長。                          牲畜乾草用量計算機     由動物體重、頭數、餵飼日數同乾草捆重量，估算所需乾草總重同乾草捆數。                          精油稀釋計算機（滴數）     由基底油份量同目標稀釋濃度，計算要滴幾多滴精油先安全。                          彩彈氣樽射擊次數計算機     由壓縮空氣（HPA）氣樽容量、注氣壓力同每發耗氣量，用波義耳定律估算一樽氣可以打幾多發。                          卡板裝箱數量計算機（幾多箱上到卡板）     由紙箱同卡板（或貨櫃）尺寸，計算每層擺幾多箱、可以疊幾多層同總箱數。                          美國 LTL 零擔貨運等級計算機（密度）     由貨物重量同尺寸計算密度，再對照 NMFC 密度表估算美國 LTL 零擔貨運等級。                          親屬關係（表親／堂親）計算機     由兩個人各自距共同祖先嘅代數，計出佢哋確切嘅表堂親關係（第幾代表親、隔幾代 removed）。                          烈酒兌水降度計算機 (Proofing Down)     由起始酒精度、目標酒精度同烈酒份量，計算需要加幾多水先降到裝瓶度數。                          檯布尺寸計算機 (Tablecloth Size)     由檯面尺寸同想要嘅垂邊長度，計算長方形或圓形檯布應該買幾大。                          啤酒強制打氣壓力計算機（CO₂ PSI）     由酒溫同目標 CO₂ 體積數，計算強制打氣時調壓器應設嘅壓力（PSI）。                          乾冰用量計算機（昇華損耗）     由保冷時數同昇華速率，估算冰箱／保溫箱要放幾多乾冰先夠用。                          活動帳篷尺寸計算機（按賓客人數）     按賓客人數同活動形式（企立酒會、宴會餐檯、加舞池或自助餐），估算所需帳篷面積同建議帳篷尺寸。                          舞池尺寸計算機（按賓客人數）     按賓客人數估算所需舞池面積同尺寸——常用約四成賓客同時落場、每人約 4.5 平方呎計。                          連續斜紋布條（Bias Tape）用布量計算機     由所需滾邊長度同布條闊度，計出用連續斜裁法要幾大塊方形布，同大約用幾多布。                          氣球拱門氣球數量計算機     按氣球拱門長度、氣球大細同排列密度，估算砌一個氣球拱門大約要幾多個氣球。                          釀酒糖化效率計算機（Brewhouse Efficiency）     由麥芽用量、潛在比重同實際原麥汁比重（OG）與體積，計算你嘅糖化／釀造效率百分比。                          毛線粗幼分類計算機（每吋纏繞數 WPI）     將毛線纏繞喺尺上量度每吋纏繞數（WPI），對照標準表得出毛線粗幼分類同建議針號。                          酸種麵種餵養比例計算機（Sourdough Starter）     按餵養比例（例如 1:5:5）同想要嘅成熟麵種份量，計算要保留幾多舊種、加幾多麵粉同水，以及要棄掉幾多。                          漁輪捲線容量換算計算機     由漁輪標示嘅線容量，換算成改用唔同直徑（例如編織線轉單絲線）時嘅捲線長度。                          噴嘴流量計算機（壓力換算）     由已知壓力下嘅噴嘴流量，換算另一壓力下嘅流量（流量與壓力平方根成正比）。             ∑ 計算機網  日常用嘅在線計算工具    分類     財務理財    健康    單位轉換    數學    日期時間    生活    教育學業    科學    遊戲    建築裝修       網站    關於   私隱政策   使用條款     \n© 2026 計算機網. 所有計算結果僅供參考，實際數字以相關機構公佈為準。",
+      "title": "https://globalcalcs.com/lifestyle/rainwater-harvesting/ (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527835296,
+        "end": 1789527835787
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.790Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527835790,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc48d001Lryp1yRnz59wQe",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc120001u05FCnTYkVSqKE",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 44016,
+      "output": 158,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 44174,
+      "headroom": -5318,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.790Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.791Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.792Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.792Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.794Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.794Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.794Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.795Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.795Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.795Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.851Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 44174,
+  "providerTokens": 44174,
+  "estimatedInputTokens": 44582,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 44016,
+    "cacheRead": 0,
+    "output": 158
+  },
+  "overflow": true,
+  "headroom": -5318,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.853Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.853Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.859Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.859Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.859Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.860Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.860Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:55.862Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.257Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527836257,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc661001W1rZeVhbtePds8",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc4d3001Zui3s2DOBlOD0a",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.258Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.258Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.258Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.258Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527836258,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc662001WA1l7HgXKxFSWR",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc4d3001Zui3s2DOBlOD0a",
+    "type": "text",
+    "text": ".  我来上网搜索 昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水。\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789527836258,
+      "end": 1789527836258
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.259Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527836259,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc663001SHBrvymn3N1wwC",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc4d3001Zui3s2DOBlOD0a",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 83207,
+      "output": 84,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 83291,
+      "headroom": -44435,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.259Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.259Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.259Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.259Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.260Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527836260,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc663003E2tyqE1ilmCDtw",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc66300236JfMZINYFXEZ3",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789527836259,
+      "end": 1789527836259
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.260Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.261Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.261Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.262Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.262Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.264Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.264Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.265Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.265Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.265Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.265Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527836339,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc6b2001PMDEVNVgzhvd5h",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc666001VFBjOWEYjwmRv5",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527836340,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc6b3002M1bet5hpz3yTNP",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc666001VFBjOWEYjwmRv5",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789527836340,
+      "end": 1789527836340
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527836340,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "part": {
+    "id": "prt_0a82bc6b4001JlPJAOoIgnBILM",
+    "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+    "messageID": "msg_0a82bc666001VFBjOWEYjwmRv5",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8633,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8706,
+      "headroom": 30150,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.340Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.341Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.342Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.342Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527836342,
+  "sessionID": "ses_f57d451b5ffe2bZSRjXNZ9zbKC"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.343Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.343Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.343Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.343Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JKG19APwI4",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:56.343Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

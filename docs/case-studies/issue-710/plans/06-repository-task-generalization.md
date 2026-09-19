@@ -1,6 +1,7 @@
 # Repository task generalization and durable memory
 
-Status: active; analysis and acceptance criteria recorded before test/code edits.
+Status: active under issue #710, restated as issue #1138 B3; analysis and
+acceptance criteria recorded before test/code edits.
 Latest implementation/evidence checkpoint: [Plan 07](07-prerequisite-discovery-bridge.md),
 including source-span integrity, bound recovery replay, genuine authorship checks,
 and the distinction between a failed open-ended refactor and a verified rename.
@@ -32,7 +33,9 @@ must retain the original semantic requirements and add stronger evidence.
 | [Scala PR 2](https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2) | head `a4f344c5f5a18031d4dbbdbf2a274127a26aac27`; `Main.scala` and workflow; two failed checks | Agent sessions end at `scalac: not found`; inspect workflow and logs for missing setup, output assertion, failed-step recovery, and uncommitted-artifact accounting. Hive Mind correctly reports repeated no progress; do not label that detection a bug. |
 | [Rust PR 2](https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2) | head `9d74fb354ad3ee68ea64167543be59b6604d0357`; placeholder `.gitkeep` only; no checks | Latest session fails before a model turn: `Error loading config.toml: invalid transport in mcp_servers.playwright`. Log says the wrapper removed MCP entries then supplied `mcp_servers.playwright.enabled=false`. Inspect current Hive Mind code and existing reports before reporting the configuration defect upstream. |
 
-PR #888 baseline: 77 checks, 68 success, 9 intended skips; mergeable and clean.
+PR #888 baseline, observed 2026-09-15 at the `2f7a381a2` baseline while the PR
+was open (it merged 2026-09-16): 77 checks, 68 success, 9 intended skips;
+mergeable and clean.
 Test deployments report Formal AI 0.350.0, which alone does not identify the
 branch commit; reproduce against this worktree binary before attributing fixes.
 

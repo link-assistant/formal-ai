@@ -857,7 +857,7 @@ const BLUEPRINT_I18N = {
   },
   zh: {
     intro: (name, label) =>
-      `这是一个解决该复合任务的 ${name} 程序（${label}）。我已将您的请求分解为以下子任务：`,
+      `这是一个解决该复合任务的 ${name} 程序（${label}）。 我已将您的请求分解为以下子任务：`,
     librariesHeading: "所需的库：",
     howToRunHeading: "如何自行运行：",
     executionReport: (runCommand, execution) =>

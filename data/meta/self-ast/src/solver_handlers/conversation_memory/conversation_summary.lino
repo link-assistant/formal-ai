@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/conversation_memory/conversation_summary.rs
   language rust
   fidelity signature
-  byte_len 6433
+  byte_len 6421
   line_count 156
-  content_id source_module_f2d13d57928a15be
+  content_id source_module_0e4d54119fb96e8a
   symbol_count 5
   symbols
     const RETURN_RECAP_MAX_WORDS 14 14

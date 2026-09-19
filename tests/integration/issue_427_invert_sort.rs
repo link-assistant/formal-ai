@@ -10,6 +10,16 @@
 
 use formal_ai::{ConversationTurn, UniversalSolver};
 
+fn numeric_answer(
+    intro: &str,
+    code_fence: &str,
+    code: &str,
+    result_label: &str,
+    result: &str,
+) -> String {
+    format!("{intro}\n\n```{code_fence}\n{code}\n```\n\n{result_label} {result}")
+}
+
 /// The active coding context: JavaScript, a concrete list sorted ascending.
 fn javascript_sort_context() -> Vec<ConversationTurn> {
     vec![
@@ -52,6 +62,16 @@ fn issue_427_invert_sort_followup_is_not_unknown() {
         "result must be the inherited list sorted descending, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "Вот код на JavaScript, который сортирует числа 3, 1, 2 по убыванию:",
+            "javascript",
+            "const numbers = [3, 1, 2];\nconst sorted = [...numbers].sort((a, b) => b - a);\nconsole.log(sorted.join(\", \"));",
+            "Результат:",
+            "3, 2, 1",
+        )
+    );
 }
 
 /// English parity: the same bare invert-sort follow-up over an English Python
@@ -83,6 +103,16 @@ fn issue_427_english_invert_sort_followup_inherits_language_and_list() {
         response.answer.contains("Result: 4, 3, 1"),
         "result must be the inherited list sorted descending, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "Here is Python code that sorts the numbers 4, 1, 3 in descending order:",
+            "python",
+            "numbers = [4, 1, 3]\nsorted_numbers = sorted(numbers, reverse=True)\nprint(\", \".join(str(n) for n in sorted_numbers))",
+            "Result:",
+            "4, 3, 1",
+        )
     );
 }
 
@@ -116,6 +146,16 @@ fn issue_427_hindi_invert_sort_followup_inherits_language_and_list() {
         "result must be the inherited list sorted descending, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "यह Python कोड है जो संख्याओं 4, 1, 3 को अवरोही क्रम में क्रमबद्ध करता है:",
+            "python",
+            "numbers = [4, 1, 3]\nsorted_numbers = sorted(numbers, reverse=True)\nprint(\", \".join(str(n) for n in sorted_numbers))",
+            "परिणाम:",
+            "4, 3, 1",
+        )
+    );
 }
 
 /// Chinese parity: a bare invert-sort follow-up over a Chinese Python coding
@@ -145,6 +185,16 @@ fn issue_427_chinese_invert_sort_followup_inherits_language_and_list() {
         response.answer.contains("结果: 4, 3, 1"),
         "result must be the inherited list sorted descending, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "这是用 Python 编写的将数字 4, 1, 3 按降序排序的代码:",
+            "python",
+            "numbers = [4, 1, 3]\nsorted_numbers = sorted(numbers, reverse=True)\nprint(\", \".join(str(n) for n in sorted_numbers))",
+            "结果:",
+            "4, 3, 1",
+        )
     );
 }
 

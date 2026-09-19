@@ -2,118 +2,119 @@ self_ast_census
   target src/agentic_coding/formalize.rs
   language rust
   fidelity full_ast
-  byte_len 20855
-  line_count 601
-  content_id source_module_d8d3b8e1bef61132
+  byte_len 26078
+  line_count 694
+  content_id source_module_822aacb04b64362e
   symbol_count 23
   symbols
-    const CANONICAL_FISHERMAN_SYNOPSIS 42 43
-    const FISHERMAN_DOC_ID 47 47
-    const PRIMITIVE_KINDS 50 50
-    struct FormalizationSummary 66 79
-    function covers_all_nine 83 85
-    function total_records 88 99
-    struct FormalizedKnowledgeBase 104 107
-    function formalize_text_to_links 114 428
-    function record_count 430 443
-    function resolve_doc_id 445 451
-    function push_record 453 459
-    struct Sentence 465 469
-    function segment_sentences 471 500
-    function has_cyrillic 502 505
-    function slugify 507 522
-    struct Assertion 528 539
-    struct Annotation 541 548
-    struct ConceptDecl 550 555
-    struct Temporal 557 561
-    function from_expression 564 570
-    struct Modal 573 577
-    function from_raw 580 587
-    function coverage_line 592 601
+    const CANONICAL_FISHERMAN_SYNOPSIS 41 42
+    const FISHERMAN_DOC_ID 46 46
+    const PRIMITIVE_KINDS 49 49
+    struct FormalizationSummary 65 84
+    function covers_all_nine 96 98
+    function total_records 101 112
+    struct FormalizedKnowledgeBase 117 120
+    function formalize_text_to_links 127 482
+    function record_count 484 497
+    function resolve_doc_id 499 505
+    function push_record 507 513
+    struct Sentence 519 523
+    function segment_sentences 539 556
+    function grounded_graph 564 598
+    function slugify 600 615
+    struct Assertion 621 632
+    struct Annotation 634 641
+    struct ConceptDecl 643 648
+    struct Temporal 650 654
+    function from_expression 657 663
+    struct Modal 666 670
+    function from_raw 673 680
+    function coverage_line 685 694
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15033
-    named_node_count 3017
-    distinct_node_kinds 78
+    total_link_count 16960
+    named_node_count 3434
+    distinct_node_kinds 79
     node_kinds
-      arguments 222
-      array_expression 10
-      array_type 1
-      assignment_expression 3
+      arguments 253
+      array_expression 11
+      array_type 2
+      assignment_expression 2
       attribute 6
       attribute_item 6
-      base_field_initializer 1
-      binary_expression 15
-      block 54
+      base_field_initializer 2
+      binary_expression 16
+      block 51
       boolean_literal 3
-      call_expression 222
-      char_literal 10
-      closure_expression 12
-      closure_parameters 12
+      call_expression 253
+      char_literal 5
+      closure_expression 19
+      closure_parameters 19
       const_item 3
       continue_expression 1
-      crate 1
+      crate 10
       declaration_list 3
-      doc_comment 47
-      else_clause 4
-      expression_statement 77
-      field_declaration 42
+      doc_comment 77
+      else_clause 3
+      expression_statement 72
+      field_declaration 45
       field_declaration_list 8
-      field_expression 282
-      field_identifier 378
-      field_initializer 54
+      field_expression 309
+      field_identifier 418
+      field_initializer 64
       field_initializer_list 13
       for_expression 16
       function_item 12
       function_modifiers 2
       generic_function 1
-      generic_type 19
-      identifier 541
-      if_expression 18
+      generic_type 23
+      identifier 606
+      if_expression 14
       impl_item 3
-      inner_doc_comment_marker 27
-      integer_literal 7
+      index_expression 1
+      inner_doc_comment_marker 26
+      integer_literal 9
       let_condition 5
-      let_declaration 44
-      line_comment 57
+      let_declaration 47
+      line_comment 109
       macro_invocation 16
       match_arm 15
       match_block 3
       match_expression 3
       match_pattern 15
       mutable_specifier 29
-      outer_doc_comment_marker 20
-      parameter 14
+      outer_doc_comment_marker 51
+      parameter 16
       parameters 12
-      parenthesized_expression 2
-      primitive_type 31
-      range_expression 1
-      reference_expression 50
-      reference_type 20
+      parenthesized_expression 1
+      primitive_type 36
+      reference_expression 58
+      reference_type 21
       return_expression 1
-      scoped_identifier 33
-      scoped_use_list 1
-      self 12
+      scoped_identifier 62
+      scoped_type_identifier 3
+      scoped_use_list 2
+      self 14
       self_parameter 2
-      shorthand_field_initializer 8
+      shorthand_field_initializer 4
       source_file 1
-      string_content 106
-      string_literal 107
+      string_content 110
+      string_literal 111
       struct_expression 13
       struct_item 8
       super 1
       token_tree 34
-      tuple_expression 49
-      tuple_pattern 6
+      tuple_expression 56
+      tuple_pattern 7
       tuple_struct_pattern 6
       tuple_type 1
-      type_arguments 20
-      type_identifier 100
-      unary_expression 7
+      type_arguments 24
+      type_identifier 109
+      unary_expression 8
       use_as_clause 1
-      use_declaration 4
-      use_list 1
-      visibility_modifier 22
+      use_declaration 5
+      use_list 2
+      visibility_modifier 25

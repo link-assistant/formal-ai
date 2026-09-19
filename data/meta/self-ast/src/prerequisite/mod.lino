@@ -1,0 +1,38 @@
+self_ast_census
+  target src/prerequisite/mod.rs
+  language rust
+  fidelity signature
+  byte_len 21310
+  line_count 585
+  content_id source_module_5fcee45fcf11bdf7
+  symbol_count 29
+  symbols
+    module install 11 11
+    module ledger 12 12
+    module probe 13 13
+    module publisher 14 14
+    const PREREQUISITE_RECIPE_LINO 25 25
+    enum Platform 30 39
+    function observed 48 50
+    function from_os 54 61
+    function slug 65 72
+    function from_slug 76 83
+    struct PrerequisiteNeed 91 102
+    enum PrerequisiteError 106 163
+    struct RecoveryStep 167 176
+    enum RecoveryOutcome 181 210
+    function recovery_steps 218 233
+    function recover 244 252
+    function recover_discovered_procedure 260 276
+    function recover_bounded 280 362
+    function finish_recovery 364 420
+    function setup_observation 422 443
+    function probe_for 447 450
+    function retry_command 453 460
+    function observation 463 487
+    const PRODUCED_BY 490 490
+    function verdict_bytes 493 500
+    function classify_failure 508 549
+    const PERMISSION_DENIED_MARKER 553 553
+    function need_status 559 570
+    function to_need 575 584

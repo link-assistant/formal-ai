@@ -52,7 +52,7 @@ test.describe('Issue #402 - Russian free-time small talk', () => {
       'intent:assistant_free_time',
     );
     await expect(last).not.toContainText('Я ещё не научился');
-    await expect(last).not.toContainText('Я тебя не понял');
+    await expect(last).not.toContainText('Мне не удалось тебя понять');
     await expect(last.locator('.intent')).not.toContainText('intent:unknown');
   });
 });

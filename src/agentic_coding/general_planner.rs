@@ -7,9 +7,10 @@
 use super::planner::{Capability, trace_route};
 use super::shell_command_policy::prose_sentences;
 use super::write_request::{
-    bare_surfaces, clean_cue_token, clean_content, clean_path_token, cued_write_target,
-    first_action_cue_end, first_content_lead_end, first_prefix_lead_end,
-    honouring_pinned_first_line, looks_like_file_path, payload_continues_past_its_first_line,
+    CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_cue_token,
+    clean_content, clean_path_token, content_lead_close, first_action_cue_end,
+    first_content_lead_end, first_prefix_lead_end, honouring_pinned_first_line,
+    looks_like_file_path, payload_continues_past_its_first_line, ranked_bindings,
     safe_relative_path, tokens,
 };
 use crate::engine::stable_id;
@@ -22,6 +23,7 @@ pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
 const TARGET_PLACEHOLDER: &str = "{target}";
 
 pub(crate) use super::write_request::typed_write_target;
+pub use super::write_request::compose_edit_request;
 /// What the bounded general planner can truthfully execute.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GeneralPlanMode {
@@ -33,7 +35,10 @@ pub enum GeneralPlanMode {
     RepositoryWorkItem,
 }
 impl GeneralPlanMode {
-    const fn slug(self) -> &'static str {
+    /// The mode's stable slug, which is also the vocabulary the obligation
+    /// contract's `general_plan_mode` rule rows are keyed by (plan 05 leaf 6).
+    #[must_use]
+    pub const fn slug(self) -> &'static str {
         match self {
             Self::LiteralFile => "literal_file",
             Self::CommandOutput => "command_output",
@@ -420,7 +425,7 @@ pub(super) fn mentions_bare_role(text: &str, role: &str) -> bool {
             before_ok && after_ok
         })
 }
-fn shell_quote(value: &str) -> String {
+pub(super) fn shell_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
 }
 fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
@@ -484,13 +489,35 @@ pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
 /// for en/ru/hi/zh, so the same offsets slice the original request and the
 /// recovered content keeps its case and punctuation.
 fn parse_write_request(request: &str) -> Option<(String, String)> {
-    let lowered = request.to_lowercase();
     let toks = tokens(request);
+    // A cue between two file-shaped tokens can belong to either of them, and the
+    // ranking only says which reading to try first. The reading that recovers a
+    // payload is the one the sentence supports, so the candidates are taken in
+    // order and the first that parses is the answer. A sentence that offers one
+    // candidate reaches exactly the branch it always did.
+    ranked_bindings(&toks)
+        .into_iter()
+        .find_map(|binding| parse_write_request_bound(request, &toks, &binding))
+}
+
+/// Read `request` as a write delivered through one particular binding.
+fn parse_write_request_bound(
+    request: &str,
+    toks: &[Token<'_>],
+    binding: &WriteBinding,
+) -> Option<(String, String)> {
+    let lowered = request.to_lowercase();
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
-    let (file_index, target) = cued_write_target(&toks)?;
-    let cue = &toks[file_index - 1];
-    let clause_start = cue.start;
-    let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
+    let file_index = binding.index;
+    let target = binding.path.clone();
+    // The clause is the cue and its path together, so it begins at whichever of
+    // them the language puts first.
+    let clause_start = if binding.cue_precedes {
+        binding.cue_start
+    } else {
+        toks[file_index].start
+    };
+    let cue_is_destination = binding.family == CueFamily::Destination;
     // Marker-led content. The payload sits after the marker, bounded by the file
     // clause when the marker comes first ("write the following: hello to x.txt")
     // and running to the end when the clause comes first ("store file x.txt
@@ -515,12 +542,19 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         && positions_share_statement(request, marker_end, clause_start)
     {
         let marker_leads = marker_end <= clause_start;
-        let marker_span = if marker_leads {
-            request.get(marker_end..end_of_statement(request, marker_end, clause_start))
+        let statement_end = if marker_leads {
+            end_of_statement(request, marker_end, clause_start)
         } else {
-            request.get(marker_end..end_of_statement(request, marker_end, request.len()))
+            end_of_statement(request, marker_end, request.len())
         };
-        if (!marker_leads || first_action_cue_end(&toks).is_some())
+        // A circumfix marker states where its payload ends as well as where it
+        // begins, and the closing literal is grammar rather than bytes: the
+        // Hindi "जिसमें Gemfile.lock हो" would otherwise write the verb into the
+        // file with the content.
+        let payload_end = content_lead_close(&lowered, marker_end)
+            .map_or(statement_end, |close| close.min(statement_end));
+        let marker_span = request.get(marker_end..payload_end);
+        if (!marker_leads || first_action_cue_end(toks).is_some())
             && let Some(content) = marker_span
                 .and_then(clean_content)
                 .filter(|content| {
@@ -536,11 +570,21 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
                 return Some((target, content));
             }
     }
-    let content_span = if cue_is_destination {
-        let action_end = first_action_cue_end(&toks)?;
+    let content_span = if cue_is_destination && binding.cue_precedes {
+        let action_end = first_action_cue_end(toks)?;
         (action_end <= clause_start
             && positions_share_statement(request, action_end, clause_start))
         .then(|| request.get(action_end..clause_start))?
+    } else if cue_is_destination {
+        // The same shape read from the other side. A language that marks its
+        // destination with a postposition and closes the clause with the verb —
+        // "notes/attribution.md में Gemfile.lock लिखो" — states the payload
+        // between the two, exactly as the prepositional wording states it
+        // between the verb and the preposition.
+        let action_start = action_cue_start_after(toks, binding.cue_end)?;
+        (binding.cue_end <= action_start
+            && positions_share_statement(request, binding.cue_end, action_start))
+        .then(|| request.get(binding.cue_end..action_start))?
     } else if let Some(value_lead) = toks
         .iter()
         .skip(file_index + 1)
@@ -550,7 +594,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         // cue identifies the file object and a following destination cue
         // introduces its literal value. Requiring a write action before the
         // file keeps an unrelated "contents of FILE" read request out.
-        let action_end = first_action_cue_end(&toks)?;
+        let action_end = first_action_cue_end(toks)?;
         (action_end <= clause_start
             && positions_share_statement(request, action_end, clause_start)
             && positions_share_statement(request, clause_start, value_lead.start))
@@ -735,128 +779,6 @@ pub fn resolve_census_target(reference: &str) -> Option<CensusResolution> {
         return None;
     }
     self_ast_census::workspace().resolve(reference)
-}
-/// Recover the `(target, old, new)` of a file-edit request from its wording
-/// (issue #680).
-///
-/// The recogniser is entirely seed-driven. It locates the target file by a
-/// [`ROLE_FILE_EDIT_TARGET_CUE`](seed::ROLE_FILE_EDIT_TARGET_CUE) ("in", "within",
-/// "of", "file", …) that directly precedes a file-looking, safe relative path,
-/// finds the leftmost
-/// [`ROLE_FILE_EDIT_ACTION_CUE`](seed::ROLE_FILE_EDIT_ACTION_CUE) ("change",
-/// "replace", "edit", …), then the first
-/// [`ROLE_FILE_EDIT_NEW_LEAD_CUE`](seed::ROLE_FILE_EDIT_NEW_LEAD_CUE) ("to",
-/// "with", "into", …) after it. The *old* text is the span between the action and
-/// the new-lead; the *new* text is the span after the new-lead, bounded by the
-/// file clause when the file follows the replacement (the "replace OLD with NEW in
-/// FILE" shape) or running to the end when the file was named first (the "in FILE,
-/// change OLD to NEW" shape).
-///
-/// Returns [`None`] unless a target file, an action cue, a new-lead, and non-empty
-/// old and new spans are all present — and unless the file clause sits *outside*
-/// the replaced span — so ambiguous or non-edit requests fall through to the
-/// ordinary solver rather than fabricating an edit.
-///
-/// Byte offsets index the original request directly (the cue matching lowercases
-/// per token, which is byte-length preserving for en/ru/hi/zh), so the recovered
-/// old/new text keeps its original case and punctuation.
-#[must_use]
-pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
-    if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
-        return Some(edit);
-    }
-    let toks = tokens(request);
-    let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
-    let new_leads = bare_surfaces(seed::ROLE_FILE_EDIT_NEW_LEAD_CUE);
-    let target_cues = bare_surfaces(seed::ROLE_FILE_EDIT_TARGET_CUE);
-    // The target file: the first safe, file-looking token that sits directly beside
-    // a target cue — before it in prepositional languages ("in notes.txt") or after
-    // it in postpositional ones ("doc.txt में", "the report.md file"). Requiring the
-    // cue keeps an incidental dotted token out of the edit path, exactly as the
-    // write recogniser does.
-    let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
-    let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
-    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
-        let cleaned = clean_path_token(token.text);
-        // A repository target may be named as a bare module or item — `source_links.rs`,
-        // `src/agentic_coding/source_links.rs:render_document`, or just
-        // `is_source_links_task` — in which case the workspace self-AST census
-        // (issue #673) resolves it to the module that actually declares it.
-        let resolved = resolve_census_target(cleaned);
-        let looks_like_file = looks_like_file_path(cleaned);
-        if resolved.is_none() && (!looks_like_file || !safe_relative_path(cleaned)) {
-            return None;
-        }
-        let prev_is_cue = index
-            .checked_sub(1)
-            .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
-        let next_is_cue =
-            (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
-        let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
-        (prev_is_cue || next_is_cue).then_some((index, target))
-    })?;
-    // Extend the clause boundary left over any run of target cues so a multi-word
-    // file clause ("в файле notes.txt") is excluded from the replacement text in
-    // full, not just its innermost word.
-    let mut clause_start_index = file_index;
-    while clause_start_index > 0 && is_target_cue(clause_start_index - 1) {
-        clause_start_index -= 1;
-    }
-    let file_clause_start = toks[clause_start_index].start;
-    // The edit action opens the replacement clause; the new-lead separates the old
-    // text from the new text. The new-lead must follow the action so a "to"/"with"
-    // belonging to an earlier clause is never mistaken for the replacement lead.
-    // When a leading edit action names the target ("update FILE and change A to
-    // B"), prefer the later action that introduces the replacement itself.
-    let action = toks
-        .iter()
-        .filter(|token| action_cues.contains(&clean_cue_token(token.text)))
-        .find(|token| token.start > toks[file_index].end)
-        .or_else(|| {
-            toks.iter()
-                .find(|token| action_cues.contains(&clean_cue_token(token.text)))
-        })?;
-    let action_end = action.end;
-    let new_lead = toks.iter().find(|token| {
-        token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
-    })?;
-    // A well-formed edit names the file before the action ("in F, change A to B")
-    // or after the replacement ("replace A with B in F") — never between the action
-    // and the new-lead, which would fold the filename into the replaced text.
-    if file_clause_start >= action_end && file_clause_start < new_lead.start {
-        return None;
-    }
-    let old_span = request.get(action_end..new_lead.start)?;
-    // A clause does not outlive its sentence. Running the replacement to the end
-    // of the request is right for the one-sentence orders this route was written
-    // for, and wrong for every request that says anything afterwards: an issue
-    // #1028 ladder node reads "In the file src/protocol_memory.rs, replace
-    // \"request_history\" with \"conversation_history\". Change only that file
-    // …", followed by five more sentences of harness contract, and the whole tail
-    // became the replacement text. The same sentence scoping already tells a
-    // named command from an ordered one and a read target from a write one.
-    //
-    // The bound is the end of the sentence's *text*, so the terminator that
-    // closed it does not become part of the replacement.
-    let sentence_end = prose_sentences(request)
-        .into_iter()
-        .find(|sentence| sentence.span.contains(&new_lead.end))
-        .map_or_else(
-            || request.len(),
-            |sentence| {
-                let raw = &request[sentence.span.clone()];
-                sentence.span.start + (raw.len() - raw.trim_start().len()) + sentence.text.len()
-            },
-        );
-    let new_end = if file_clause_start > new_lead.end {
-        file_clause_start.min(sentence_end)
-    } else {
-        sentence_end
-    };
-    let new_span = request.get(new_lead.end..new_end)?;
-    let old = super::positional_edit::literal_text(old_span)?;
-    let new = super::positional_edit::literal_text(new_span)?;
-    Some((target, old, new))
 }
 /// Whether `text` carries a software-authoring verb (implement, resolve,
 /// develop, …) in any seeded language.

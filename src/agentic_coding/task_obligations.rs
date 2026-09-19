@@ -1,134 +1,232 @@
-//! A coding task that names several artifacts is finished when all of them are.
+//! A coding task that names several obligations is finished when all of them are.
 //!
-//! Issue #1099: one prompt named two files -- *"Two files. First, edit the
-//! tracked file `self-hosting-attribution.rs`: ... Second, write a new file
-//! `fragment.md` whose first three lines are ..."*. Formal AI edited the first,
-//! answered `Final("Added ... and observed the result.")`, and the session
-//! ended in five seconds with the second file never written. The whole prompt
-//! had arrived; the second clause was read and dropped, not truncated.
-//!
-//! The cause is structural: every composer here takes a request and returns one
-//! plan for one target, so "the task" and "the first artifact named by the
-//! task" were the same thing. This module separates them. A request is split
-//! into obligations at its own enumeration cues (seeded, four languages), each
-//! obligation is planned by the existing composers exactly as a standalone
-//! request would be, and the session answers `Final` only when no obligation is
-//! outstanding.
-//!
-//! Splitting is deliberately conservative: a request with no enumeration cue,
-//! or whose clauses do not each name an artifact, yields one obligation and
-//! behaves exactly as before. Reading a single-artifact request as two would
-//! invent work the user never asked for, which is a worse failure than the one
-//! this fixes.
+//! Issue #1099 exposed the structural failure this module guards: the planner
+//! treated "the task" and "the first artifact named by the task" as the same
+//! thing. Plan 05 removes that second model of an obligation. The public
+//! compatibility surface below is now a projection of the runtime
+//! [`ObligationNode`] tree, so a
+//! clause that has no immediately derivable artifact remains an underivable
+//! node instead of disappearing from the request.
 
-use super::general_planner::compose_general_change_plan;
-use super::progress::Progress;
+use crate::engine::stable_id;
+use crate::execution_evidence::{Evidence, EvidenceSource, ObservationKind};
+use crate::obligation_ledger::{
+    ObligationExpectation, ObligationLedger, ObligationNode, ObligationOutcome, clauses_with_spans,
+};
 use crate::protocol::ChatMessage;
-use crate::seed;
 
-/// One artifact a request obliges the session to produce.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Obligation {
-    /// The clause as the user wrote it, planned as a request in its own right.
-    pub request: String,
-    /// The workspace path this clause names.
-    pub target: String,
-}
+pub use crate::obligation_ledger::ObligationStep;
 
-/// Split a request into the artifacts it obliges, in the order it names them.
+/// Compatibility name for one projected runtime obligation.
 ///
-/// Returns `None` when the request names fewer than two artifacts, so callers
-/// keep their existing single-target path rather than routing every request
-/// through a list of one.
+/// This is deliberately an alias, not a second record. The clause, span,
+/// expectation and evidence-bearing outcome therefore cannot drift from the
+/// ledger the completion gate reads.
+pub type Obligation = ObligationNode;
+
+/// Project the leaves of an enumerated request's obligation tree.
+///
+/// Returns `None` for a request with fewer than two enumerated clauses, keeping
+/// the established single-target routes unchanged. Once a request is
+/// enumerated, every leaf is returned: in particular, failure to derive a file
+/// target produces an `Underivable` node rather than the old silent `continue`.
 #[must_use]
 pub fn obligations(request: &str) -> Option<Vec<Obligation>> {
-    let clauses = split_at_enumeration_cues(request);
-    if clauses.len() < 2 {
-        return None;
-    }
-    let mut obligations: Vec<Obligation> = Vec::new();
-    for clause in clauses {
-        // A clause counts only when the ordinary composer can read an artifact
-        // out of it. Prose between two named files ("Then tell me what
-        // changed") names nothing and adds no obligation.
-        let Some(plan) = compose_general_change_plan(&clause) else {
-            continue;
-        };
-        if obligations
-            .iter()
-            .any(|existing| existing.target == plan.target)
-        {
-            continue;
-        }
-        obligations.push(Obligation {
-            request: clause,
-            target: plan.target,
-        });
-    }
-    (obligations.len() > 1).then_some(obligations)
+    (clauses_with_spans(request).len() >= 2).then(|| {
+        let root = agentic_root(request);
+        let mut leaves = Vec::new();
+        root.collect_leaves(&mut leaves);
+        leaves.into_iter().cloned().collect()
+    })
 }
 
-/// The clauses of a request, cut before each enumeration cue that opens one.
+/// What the live agentic session must do next about an enumerated request.
 ///
-/// A cue is only a cut when it opens a clause -- at the start of a sentence, or
-/// just after one ends. "First" inside "the first line must be exactly `---`"
-/// is describing a file's contents, not enumerating an obligation, and the
-/// #1099 prompt contains exactly that phrase in its second clause.
-fn split_at_enumeration_cues(request: &str) -> Vec<String> {
-    let cues = seed::lexicon().words_for_role(seed::ROLE_ENUMERATION_CUE);
-    if cues.is_empty() {
-        return vec![request.to_owned()];
+/// The runtime implementation lives with the ledger. This compatibility entry
+/// point keeps the agentic route and callers of `obligations()` on the same tree
+/// and deliberately declines single-clause tasks.
+#[must_use]
+pub fn next_step(request: &str, messages: &[ChatMessage]) -> Option<ObligationStep> {
+    obligations(request)?;
+    let ledger = observed_ledger(request, messages);
+    let mut leaves = Vec::new();
+    ledger.root.collect_leaves(&mut leaves);
+    let open: Vec<&ObligationNode> = leaves
+        .into_iter()
+        .filter(|node| !node.discharged())
+        .collect();
+    if let Some(node) = open
+        .iter()
+        .find(|node| node.expectation.is_observable())
+    {
+        return Some(ObligationStep::Observe((*node).clone()));
     }
-    let mut boundaries = vec![0_usize];
-    for (index, _) in request.char_indices() {
-        if index == 0 || !opens_a_clause(request, index) {
-            continue;
-        }
-        let rest = request[index..].to_lowercase();
-        if cues.iter().any(|cue| starts_with_cue(&rest, cue)) {
-            boundaries.push(index);
-        }
+    if let Some(node) = open.iter().find(|node| {
+        node.depth < crate::recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND
+            && crate::task_decomposition::split_once_checkable(&node.clause).len() >= 2
+    }) {
+        return Some(ObligationStep::Decompose((*node).clone()));
     }
-    boundaries.push(request.len());
-    boundaries.dedup();
-    boundaries
-        .windows(2)
-        .map(|window| request[window[0]..window[1]].trim().to_owned())
-        .filter(|clause| !clause.is_empty())
-        .collect()
+    let node = *open.first()?;
+    let reason = match &node.expectation {
+        ObligationExpectation::Underivable { reason } => reason.clone(),
+        expectation => expectation.slug().to_owned(),
+    };
+    Some(ObligationStep::ReportGap {
+        node_id: node.node_id.clone(),
+        clause: node.clause.clone(),
+        span: node.span,
+        reason,
+    })
 }
 
-/// Whether the byte at `index` begins a clause: the text before it ends a
-/// sentence, or is nothing but whitespace.
-fn opens_a_clause(request: &str, index: usize) -> bool {
-    let before = request[..index].trim_end();
-    before.is_empty() || before.ends_with(['.', '!', '?', ';', ':', '\n'])
-}
-
-/// Whether `rest` opens with `cue` as a whole word (or, for scripts without
-/// word spacing, as its own leading run of characters).
-fn starts_with_cue(rest: &str, cue: &str) -> bool {
-    let Some(after) = rest.strip_prefix(cue) else {
+/// Whether an enumerated request has crossed the successful completion gate.
+///
+/// Unsatisfiable nodes are reportable, but they are not successful completion.
+/// At least one evidence-backed satisfaction is required in addition to every
+/// node being discharged.
+#[must_use]
+pub(super) fn successfully_discharged(request: &str, messages: &[ChatMessage]) -> bool {
+    let Some(_) = obligations(request) else {
         return false;
     };
-    after
-        .chars()
-        .next()
-        .is_none_or(|character| !character.is_alphanumeric())
+    let ledger = observed_ledger(request, messages);
+    ledger.every_obligation_discharged()
+        && ledger.unsatisfiable_count() == 0
+        && ledger.satisfied_count() >= 1
 }
 
-/// The first obligation this session has not yet satisfied.
-///
-/// An obligation is satisfied once the workspace has been written at its
-/// target. That is the same evidence the single-target path already requires
-/// before it answers, so a multi-artifact request is held to exactly the
-/// standard each of its clauses would be held to alone -- no more, and no less.
+/// Render a terminal, machine-readable account of an obligation that cannot be
+/// observed or split. The record names the original clause, its UTF-8 byte
+/// span, and the derivation reason; it contains no completion claim.
 #[must_use]
-pub fn outstanding(request: &str, messages: &[ChatMessage]) -> Option<Obligation> {
-    let obligations = obligations(request)?;
-    let progress = Progress::scan(messages);
-    obligations
-        .into_iter()
-        .find(|obligation| !progress.successful_write_for(&obligation.target))
+pub(super) fn gap_answer(
+    node_id: &str,
+    clause: &str,
+    span: (usize, usize),
+    reason: &str,
+) -> String {
+    crate::links_format::format_lino_record(
+        node_id,
+        &[
+            ("record_type", String::from("obligation_gap")),
+            ("clause", clause.to_owned()),
+            ("span_start", span.0.to_string()),
+            ("span_end", span.1.to_string()),
+            ("reason", reason.to_owned()),
+        ],
+    )
 }
 
+/// Read a file-delivery outcome through the same ledger judgement as every
+/// other agentic obligation.
+///
+/// `evidence_record` previously had its own private `Obligation` and decided
+/// completion from two write-only booleans. Its delivery parser still owns the
+/// constraints needed to render the file, but the decision about what the
+/// transcript proves now passes through `ObligationLedger::observe` here.
+#[must_use]
+pub(super) fn observed_file_outcome(
+    request: &str,
+    path: &str,
+    messages: &[ChatMessage],
+) -> ObligationOutcome {
+    let node_id = stable_id("obligation", &format!("delivery:{path}:{request}"));
+    let mut ledger = ObligationLedger {
+        frame_id: stable_id("obligation_ledger", request),
+        root: ObligationNode {
+            node_id,
+            parent: None,
+            clause: request.to_owned(),
+            span: (0, request.len()),
+            need_id: None,
+            depth: 0,
+            expectation: ObligationExpectation::FileBytes {
+                path: path.to_owned(),
+                // A derived evidence file has no caller-declared digest. The
+                // record must still name the path and report success.
+                sha256: None,
+            },
+            outcome: ObligationOutcome::Unattempted,
+            children: Vec::new(),
+        },
+    };
+    let progress = super::progress::Progress::scan(messages);
+    if progress.attempted_write_for(path) && !progress.successful_write_for(path) {
+        // The client reported an attempted write but no successful one. Keep
+        // the exit status explicitly absent and observe no file bytes; this
+        // refutes a file expectation without upgrading a harness claim into a
+        // local-process result.
+        ledger.observe(&Evidence::observed(
+            crate::repository_workspace::render_protocol_template(
+                "obligation_write_observation",
+                &[("path", path)],
+            )
+            .unwrap_or_else(|| String::from("obligation_write_observation")),
+            vec![path.to_owned()],
+            None,
+            b"",
+            ObservationKind::ToolResult,
+            EvidenceSource::Harness,
+        ));
+        return ledger.root.outcome;
+    }
+    for record in super::transcript_evidence::records(messages) {
+        let is_write = record
+            .command
+            .split_whitespace()
+            .next()
+            .and_then(super::capability_router::classify_tool)
+            == Some(super::planner::Capability::Write);
+        if is_write {
+            ledger.observe(&record);
+        }
+    }
+    ledger.root.outcome
+}
+
+/// Rebuild the ledger from transcript evidence; planner state remains purely
+/// derived from the conversation and survives process boundaries.
+fn observed_ledger(request: &str, messages: &[ChatMessage]) -> ObligationLedger {
+    let mut ledger = ObligationLedger {
+        frame_id: stable_id("obligation_ledger", request),
+        root: agentic_root(request),
+    };
+    for record in super::transcript_evidence::records(messages) {
+        ledger.observe(&record);
+    }
+    ledger
+}
+
+/// The runtime tree projected onto the bytes the agentic writer actually asks
+/// the client to persist.
+///
+/// The general derivation trims a sentence's final full stop before hashing,
+/// because it has no execution plan yet. The live composer does: its `content`
+/// field is the exact write operand. Hash that operand exactly so the
+/// observation and expectation describe the same bytes instead of repeatedly
+/// reopening an already verified node. A read tool may display a trailing
+/// newline, but it must not invent one in the file's content address.
+fn agentic_root(request: &str) -> ObligationNode {
+    let mut root = ObligationNode::build(
+        request,
+        crate::recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND,
+    );
+    align_file_expectations(&mut root);
+    root
+}
+
+fn align_file_expectations(node: &mut ObligationNode) {
+    if node.children.is_empty()
+        && let Some(plan) = super::general_planner::compose_general_change_plan(&node.clause)
+        && matches!(node.expectation, ObligationExpectation::FileBytes { .. })
+    {
+        node.expectation = ObligationExpectation::FileBytes {
+            path: plan.target,
+            sha256: Some(crate::source_fetch::sha256_hex(plan.content.as_bytes())),
+        };
+    }
+    for child in &mut node.children {
+        align_file_expectations(child);
+    }
+}

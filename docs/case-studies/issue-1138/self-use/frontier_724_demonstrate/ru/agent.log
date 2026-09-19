@@ -1,0 +1,2156 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.134Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.135Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Скажи что то на Китайском --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.135Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.135Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.267Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Скажи что то на Китайском",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Скажи что то на Китайском",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.267Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.268Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.277Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.278Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.285Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.286Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.292Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7084,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.292Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.308Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 48,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.316Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:13:53.317Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.323Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.324Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.326Z",
+  "service": "session",
+  "id": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ",
+  "title": "New session - 2026-09-16T03:13:53.326Z",
+  "time": {
+    "created": 1789528433326,
+    "updated": 1789528433326
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.327Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.328Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.328Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57cb1d51ffeP0mGVnPn4Nc6oJ/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.328Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57cb1d51ffeP0mGVnPn4Nc6oJ/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.335Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 7,
+  "method": "POST",
+  "path": "/session/ses_f57cb1d51ffeP0mGVnPn4Nc6oJ/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.354Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.358Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.364Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.364Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.365Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.365Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.365Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.365Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.365Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.365Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.365Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.644Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.650Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.680Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.697Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.697Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.697Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:53.697Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:54.188Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528434188,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a834e606001HPRTTJ2R5lJgjI",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a834e3ef0018izuyoUJvUIcxZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:54.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:54.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528434189,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a834e60d001L6edYd0yaGSwaz",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a834e3ef0018izuyoUJvUIcxZ",
+    "type": "tool",
+    "callID": "call_f5b9b5f56e2045bf",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:54.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528434189,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a834e60c001JGJ25RCjddV0BS",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a834e3ef0018izuyoUJvUIcxZ",
+    "type": "text",
+    "text": "Поищу в интернете: Скажи что то на Китайском.",
+    "time": {
+      "start": 1789528434189,
+      "end": 1789528434189
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:13:54.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528434190,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a834e60d001L6edYd0yaGSwaz",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a834e3ef0018izuyoUJvUIcxZ",
+    "type": "tool",
+    "callID": "call_f5b9b5f56e2045bf",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Скажи что то на Китайском"
+      },
+      "time": {
+        "start": 1789528434189
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.866Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528440867,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a834e60d001L6edYd0yaGSwaz",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a834e3ef0018izuyoUJvUIcxZ",
+    "type": "tool",
+    "callID": "call_f5b9b5f56e2045bf",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Скажи что то на Китайском"
+      },
+      "output": "Title: Фразы на китайском для туристов | Разговорник для путешествий по Китаю\nURL: https://chineseonline.ru/blog/frazy-na-kitajskom-dlya-turistov\nPublished: 2026-01-15T00:00:00.000Z\nAuthor: nurka85\nHighlights:\nПредставьте, что вы поехали в Китай, но вы совсем не знаете китайский, ни слова. В Китае на английском говорят единицы, даже в сфере обслуживания, то есть если в аэропорту вы ещё справитесь, имея в запасе английский, то в городе, скорее всего, это уже не поможет. Чтобы ваше путешествие прошло гладко, мы подготовили для вас русско-китайский разговорник. В него вошли ключевые фразы на китайском для туристов: вопросы о дороге, лексика для заказа еды и покупок, а также полезные советы о нормах поведения в Китае.\n...\n| Китайский вариант | Пиньинь (с тонами) | Китайский вариант | Перевод и применение |\n| --- | --- | --- | --- |\n| 你好 | Nǐ hǎo | Ни хао | Здравствуйте!/Привет! Универсальное приветствие для любого времени суток. |\n| 您好 | Nín hǎo | Нин хао | Вежливая форма «Здравствуйте». Используйте с пожилыми людьми, начальством, чтобы выразить уважение. |\n| 你们好 | Nǐmen hǎo | Нимэнь хао | Привет всем! (обращение к группе) |\n| 早上好 | Zǎoshang hǎo | Цзаошан хао | Доброе утро! (до полудня) |\n| 下午好 | Xiàwǔ hǎo | Сяо у хао | Добрый день! (после полудня) |\n| 晚上好 | Wǎnshang hǎo | Ваньшан хао | Добрый вечер! |\n| 再见 | Zàijiàn | Цзайцзиень | До свидания! (самое распространённое) |\n| 明天见 | Míngtiān jiàn | Минтиень цзиень | До завтра! |\n| 拜拜 | Bāi bāi | Бай-бай | Пока-пока! (заимствование от Bye-bye, очень популярно в разговорной речи) |\n...\n| Китайский вариант | Пиньинь (с тонами) | Китайский вариант | Перевод и применение |\n| --- | --- | --- | --- |\n| 谢谢 | Xièxie | Сесе | Спасибо. Говорите это чаще! |\n| 不客气 | Bù kèqi | Бу кэци | Не за что/Пожалуйста (в ответ на благодарность) |\n| 对不起 | Duìbuqǐ | Дуэйбуци | Извините (если виноваты). Простите (чтобы привлечь внимание) |\n| 没关系 | Méi guānxi | Мэй гуаньси | Ничего страшного/ Неважно (в ответ на извинения) |\n| 请问 | Qǐng wèn | Цин вэнь | Подскажите, пожалуйста… + вопрос(вежливое начало любого вопроса) |\n| 请 | Qǐng | Цин | Пожалуйста |\n| 是的 | Shì de | Ши дэ | Да |\n| 不是 | Bù shì | Бу ши | Нет |\n| 好吗？ | Hǎo ma? | Хао ма? | Хорошо?/Ладно? (в конце предложения для получения согласия собеседника) |\n| 我听得懂 | Wǒ tīng de dǒng | Во тин дэ дун | Я понимаю / Я понял (на слух). Ключевая фраза! |\n| 我听不懂 | Wǒ tīng bu dǒng | Во тин бу дун | Я не понимаю (на слух). Самая частая и полезная фраза для туриста, сразу даёт понять, что нужен другой способ коммуникации. |\n| 我明白 | Wǒ míngbái | Во минбай | Я понимаю / Я понял (чаще всего так говорится про суть, то есть не просто услышал, а понял суть сказанного) |\n| 我不明白 | Wǒ bù míngbái | Во бу минбай | Я не понимаю(то же самое — не понимаю сути сказанного) |\n| 请再说一遍 | Qǐng zài shuō yī biàn | Цин цзай шуо и биэнь | Повторите, пожалуйста, ещё раз |\n| 请说慢一点 | Qǐng shuō màn yīdiǎn | Цин шуо ман идиен | Говорите, пожалуйста, медленнее |\n...\n| Китайский вариант | Пиньинь (с тонами) | Китайский вариант | Перевод и применение |\n| --- | --- | --- | --- |\n| 请问，厕所在哪儿？ | Qǐng wèn, cèsuǒ zài nǎr? | Цин вэнь, цэсо цзай нар? | Подскажите, пожалуйста, где туалет? (очень важный вопрос, отдельно запомните слово 厕所 — cèsuǒ / цэсо — туалет) |\n| 请问，地铁站在哪里？ | Qǐng wèn, dìtiě zhàn zài nǎli? | Цин вэнь, дитие чжань цзай нали? | Подскажите, пожалуйста, где станция метро? |\n...\n| 请问，公交车站在哪里？ | Qǐng wèn, gōngjiāochē zhàn zài nǎli? | Цин вэнь, гунцзяочэ чжань цзай нали? | Подскажите, пожалуйста, где автобусная остановка? |\n...\n| ……怎么走？ | ……zěnme zǒu? | …цзэньмэ цзоу? | Как добраться до…? (универсальная конструкция: место + цзэньмэ цзоу?) |\n...\n| 我想去这里。 | Wǒ xiǎng qù zhèlǐ | Во сян цюй чжэли | Я хочу поехать сюда (показываете на карте/в телефоне адрес или достопримечательность) |\n...\n| 请帮我叫一辆出租车。 | Qǐng bāng wǒ jiào yī liàng chūzūchē | Цин бан во цзяо и лян чуцзучэ | Помогите мне, пожалуйста, вызвать такси |\n...\n| 车费多少钱？ | Chēfèi duōshao qián? | Чэфэй дуошао циень? | Сколько стоит проезд? (для такси) |\n| 票价多少钱？ | Piàojià duōshao qián? | Пяоцзя дуошао циень? | Сколько стоит билет? (для метро, автобуса, поезда) |\n...\n| Китайский вариант | Пиньинь (с тонами) | Китайский вариант | Перевод и применение |\n| --- | --- | --- | --- |\n| 远吗？ | Yuǎn ma? | Юань ма? | Далеко? (спросите после того, как вам указали направление) |\n| 走路可以到吗？ | Zǒulù kěyǐ dào ma? | Цзоулу кэи дао ма? | Можно ли дойти пешком? |\n| 需要坐车吗？ | Xūyào zuò chē ma? | Сюяо цзуо чэ ма? | Нужно ехать на транспорте? |\n| 就是这个方向吗？ | Jiù shì zhège fāngxiàng ma? | Цзиу ши чжэгэ фансян ма? | Это в том направлении? (показывайте рукой) |\n| 你能在地图上指给我看吗？ | Nǐ néng zài dìtú shang zhǐ gěi wǒ kàn ma? | Ни нэн цзай диту шан чжи гэй во кань ма? | Вы можете показать мне на карте? (откройте карту Baidu на телефоне) |\n| 我迷路了。 | Wǒ mílù le | Во милу лэ | Я заблудился |\n...\n(более сдержанная, но чёткая просьба) |\n| 帮我叫警察！ | Bāng wǒ jiào jǐngchá! | Бан во цзяо цзинча! | Помогите мне вызвать полицию! |\n| 帮我叫救护车！ | Bāng wǒ jiào jiùhùchē! | Бан во цзяо цзюхучэ! |\n\n---\n\nTitle: Изучайте языки, используя наш разговорник | китайский (упрощенный) фразы онлайн бесплатно со звуками\nURL: https://www.50languages.com/ru/learn/phrasebook/zh\nPublished: N/A\nAuthor: N/A\nHighlights:\nИзучайте языки, используя наш разговорник | китайский (упрощенный) фразы онлайн бесплатно со звуками\n...\n## китайский (упрощенный) для начинающих\n...\n091 Подчиненные предложения с что 1\n...\nMP3 русский + китайский (упрощенный) (1-100) MP3 китайский (упрощенный) (1-100)\n...\nИзучите китайский (упрощенный) быстро и легко с помощью языковых курсов в формате MP3 на 50languages.com! китайский (упрощенный) как иностранный язык включает 100 простых уроков. Все диалоги и предложения записаны носителями языка. Никаких предварительных знаний грамматики не требуется. Вы можете начать обучение прямо сейчас! Просто нажмите на предложения, чтобы увидеть ответы.50languages.com - русский » китайский (упрощенный) для начинающихКУПИТЬ КНИГУ!Приобретите учебник для этого курса на Amazon.\n\n---\n\nTitle: Учить китайский онлайн | SpeakPal\nURL: https://ru.speakpal.ai/izuchat-kitayskiy.html\nPublished: N/A\nAuthor: SpeakPal AI\nHighlights:\n# Учить китайский онлайн\n\n Практикуйте разговорный китайский с ИИ-репетитором 24/7. Освойте тоны, произношение и иероглифы в живых диалогах. Бесплатно для начала!\n...\nТоны и произношение 4 тона + нейтральный в контексте\n...\nероглифы\n...\nпиньинь\n...\nПрактикуйте разговорный китайский в реалистичных сценариях: от заказа еды до деловых переговоров. ИИ-репетитор поддержит диалог и поможет выразить мысль правильно.\n...\n### Живые диалоги на китайском\n...\nОбщайтесь с ИИ на повседневные и деловые темы. Учитесь отвечать быстро и естественно, как в реальном разговоре с носителем языка.\n...\n## Китайская лексика: слова, которые работают\n...\nИзучайте полезную лексику в контексте реальных диалогов. Иероглифы и пиньинь — всё вместе для быстрого запоминания.\n...\nКаждое слово показывается с иероглифом, пиньинь и переводом. Постепенно привыкаете читать китайские символы без транскрипции.\n...\n## Китайское произношение: освойте тоны\n...\nТоны — ключ к пониманию китайского. ИИ-тренажёр анализирует ваше произношение и помогает освоить все 4 тона + нейтральный.\n...\n### Тренажёр тонов\n...\nПроизносите слова — ИИ показывает, правильно ли вы взяли тон. Мгновенная обратная связь помогает исправить ошибки сразу.\n...\nПерсональный репетитор на базе искусственного интеллекта доступен 24/7. Адаптируется под ваш уровень и цели обучения.\n...\nМожно ли выучить китайский онлайн с нуля?\n...\nДа, SpeakPal AI идеально подходит для начинающих. ИИ-репетитор адаптируется под ваш уровень и помогает освоить тоны, пиньинь и базовую лексику с первых уроков. Вы начинаете говорить с первого дня!\n\n Как\n...\nПри регулярной практике 15-20 минут в день уже через месяц вы сможете вести простые диалоги. Через 3-6 месяцев — уверенно общаться на базовые темы: представиться, заказать еду, спросить дорогу.\n...\nПомогает ли SpeakPal с китайскими тонами? + \n\nДа! Это одна из главных функций. Тренажёр произношения анализирует ваши тоны в реальном времени и даёт мгновенную обратную связь. Освоение тонов — ключ к тому, чтобы носители вас понимали.\n...\nероглифы сразу\n...\nНет, для разговорной практики можно начать с пиньинь (латинской транскрипции). SpeakPal помогает освоить иероглифы постепенно, когда вы будете готовы. Многие ученики сначала фокусируются на устной речи.\n...\nДа, вы можете практиковать лексику и грамматику для разных уровней HSK (от HSK 1 до HSK\n...\n6). Разговорная практика особенно полезна для устной части экзамена, а диалоги помогают закрепить материал.\n...\nНачать можно бесплатно! Базовая практика доступна без оплаты. Для расши\n...\nфункций и неограниченного доступа есть подписка. Попробуйте бесплатно и решите, подходит ли вам формат.\n\n---\n\nTitle: Китайский язык с нуля: бесплатный онлайн-курс | Lingust\nURL: https://lingust.ru/chinese\nPublished: N/A\nAuthor: N/A\nHighlights:\nРешили выучить китайский язык? Отличный выбор! На китайском языке говорят более 1,3 миллиарда человек – это больше, чем на любом другом языке мира. Наш курс основан на мандаринском диалекте (путунхуа) – официальном языке КНР, который понимают по всему Китаю.\n...\nКитайский язык устроен совершенно иначе, чем европейские языки, и это может пугать на первый взгляд. Однако у него есть и неожиданные преимущества: в китайском нет спряжений глаголов, нет склонений, нет грамматического рода и даже нет множественного числа в привычном понимании. Грамматика китайского во многом проще, чем, например, в русском или немецком.\n...\nГлавные трудности – это иероглифы и система тонов (в мандаринском их четыре + нейтральный). Именно поэтому наш курс начинается с тонов и произношения, а анимация иероглифов помогает освоить правильный порядок написания черт. Шаг за шагом вы привыкнете к этой системе, и она перестанет казаться сложной.\n...\n- В китайском языке нет алфавита. Каждый иероглиф обозначает слог или слово. Для базового чтения газет нужно знать около 2000–3000 иероглифов, а всего их существует более 50 000.\n...\n- Одно и то же слово, произнесённое разными тонами, имеет совершенно разное значение. Например, mā (妈) – мама, má (麻) – конопля, mǎ (马) – лошадь, mà (骂) – ругать.\n...\n- В китайском нет слов «да» и «нет» в привычном европейском смысле. Вместо этого используется повторение глагола из вопроса (утвердительно или отрицательно).\n...\n- Для ввода иероглифов на компьютере и телефоне китайцы используют латинскую транскрипцию пиньинь (pīnyīn) – они набирают слово латиницей, а система предлагает нужный иероглиф.\n...\nКитайский – язык, который открывает доступ к одной из величайших культур мира и крупнейшей экономике планеты. Наш курс проведёт вас от тонов и первых иероглифов\n...\nчтения текстов и понимания грамматики. Анимация иероглифов и аудио помогут на каждом шагу. Всё бесплатно, всё онлайн.\n\n---\n\nTitle: Как построить своё первое предложение на китайском языке - Skyeng\nURL: https://skyeng.ru/articles-kitajskij/dlya-nachinayushchih-cn/kak-postroit-svoe-pervoe-predlozhenie-na-kitayskom-yazyke/\nPublished: 2025-07-10T10:48:39.000Z\nAuthor: Skyeng\nHighlights:\nПервое предложение на китайском языке — это как первый шаг ребёнка: неуверенный, но крайне важный. Многие убеждены, что китайский язык недоступен для понимания из-за иероглифов и тонов. Однако структура предложений в китайском поразительно логична и последовательна, что делает его гораздо более предсказуемым, чем большинство европейских языков. Правильно построенная первая фраза станет не только вашим пропуском в мир китайской коммуникации, но и фундаментом для дальнейшего изучения этого древнего и влиятельного языка, на котором говорит более миллиарда людей. 🀄\n...\nКитайское предложение следует структуре, которая может показаться знакомой носителям русского языка: подлежащее-сказуемое-дополнение (SVO). Эта базовая конструкция делает первые шаги в изучении китайского удивительно простыми и логичными. 📝\n...\n| Китайский | Пиньинь | Дословный перевод | Литературный перевод |\n| --- | --- | --- | --- |\n| 我学中文 | Wǒ xué zhōngwén | Я учить китайский язык | Я учу китайский язык |\n| 他喜欢咖啡 | Tā xǐhuān kāfēi | Он любить кофе | Он любит кофе |\n| 我们去北京 | Wǒmen qù Běijīng | Мы идти Пекин | Мы едем в Пекин |\n...\n- Подлежащее (主语 zhǔyǔ): 我 (wǒ) — я\n- Сказуемое (谓语 wèiyǔ): 喝 (hē) — пить\n- Дополнение (宾语 bīnyǔ): 茶 (chá) — чай\n...\nПолное предложение: 我喝茶 (Wǒ hē chá) — Я пью чай.\n...\nЧтобы составить первое предложение на китайском, необходимо освоить базовый набор слов и местоимений, которые станут строительными блоками для ваших фраз. Начнем с личных местоимений, без которых сложно представить любую коммуникацию. 👥\n...\n| Местоимение | Иероглиф | Пиньинь |\n| --- | --- | --- |\n| Я | 我 | wǒ |\n| Ты | 你 | nǐ |\n| Он | 他 | tā |\n| Она | 她 | tā |\n| Мы | 我们 | wǒmen |\n| Вы | 你们 | nǐmen |\n| Они | 他们/她们 | tāmen |\n...\n- 是 (shì) — быть, являться\n- 有 (yǒu) — иметь\n- 想 (xiǎng) — хотеть, думать\n- 喜欢 (xǐhuān) — любить, нравиться\n- 去 (qù) — идти, ехать (куда-то)\n- 来 (lái) — приходить, приезжать\n- 看 (kàn) — смотреть, видеть\n- 说 (shuō) — говорить\n...\n- 朋友 (péngyǒu) — друг\n- 家 (jiā) — дом, семья\n- 书 (shū) — книга\n- 电影 (diànyǐng) — фильм\n- 饭 (fàn) — еда, прием пищи\n- 水 (shuǐ) — вода\n...\n我是学生 (Wǒ shì xuéshēng) — Я студент.\n...\n我有一本书 (Wǒ yǒu yì běn shū) — У меня есть книга.\n...\n我喜欢中国菜 (Wǒ xǐhuān Zhōngguó cài) — Мне нравится китайская кухня.\n\n我们去北京 (Wǒmen qù Běijīng) — Мы едем в Пекин.\n...\nПостроение вопросов в китайском языке значительно проще, чем во многих других языках. В отличие от русского или английского, здесь не требуется изменение порядка слов или добавление вспомогательных глаголов. Существует несколько основных способов задать вопрос, и каждый из них логичен и прост в использовании. ❓\n...\nПервый способ — это добавление вопросительной частицы 吗 (ma) в конец повествовательного предложения. Это превращает утверждение в общий вопрос, аналогичный вопросам \"да/нет\" в русском:\n...\nТретий способ — использование вопросительных слов. В китайском языке вопросительные слова остаются на том же месте, где находилось бы соответствующее им слово в утвердительном предложении:\n...\n- 什么 (shénme) — что\n- 谁 (shéi) — кто\n- 哪里/哪儿 (nǎlǐ/nǎr) — где, куда\n- 为什么 (wèishénme) — почему\n- 怎么 (zěnme) — как\n- 几 (jǐ) — сколько (для небольших чисел)\n- 多少 (duōshǎo) — сколько (для больших чисел)\n...\nОдной из наиболее привлекательных особенностей китайского языка для начинающих является отсутствие сложных временных форм глаголов. В отличие от европейских языков, где глаголы изменяются в зависимости от времени, в китайском глаголы остаются неизменными. Время действия выражается с помощью временных маркеров и контекста. ⏰\n...\n- 现在 (xiànzài) — сейчас, в настоящее время\n- 昨天 (zuótiān) — вчера\n- 明天 (míngtiān) — завтра\n- 以前 (yǐqián) — раньше, в прошлом\n- 将来 (jiānglái) — в будущем\n- 已经 (yǐjīng) — уже\n- 正在 (zhèngzài) — в процессе (сейчас происходит)\n...\nyǔ) — Я умею говорить по-английски.\n- Отрицательное: 我不会说英语 (Wǒ bú huì shuō Yīngyǔ) — Я не умею говорить по-английски.\n- Вопросительное: 你会说英语吗? (Nǐ huì shuō\n...\n- Прямой перевод с русского. Не пытайтесь дословно переводить русские фразы на китайский. Это часто приводит к неправильным конструкциям.\n- Игнорирование счётных слов. В китайском между числительным и существительным обычно стоит счётное слово: 一个人 (yí gè rén) — один человек, 三本书 (sān běn shū) — три книги.\n- Переусложнение. Начинайте с максимально простых предложений, постепенно добавляя сложности.\n...\n- 你好 (Nǐ hǎo) — Здравствуй(те)\n- 我叫安娜 (Wǒ jiào Anna) — Меня зовут Анна\n- 我是俄罗斯人 (Wǒ shì Éluósī rén) — Я русский/русская\n- 你叫什么名字？(Nǐ jiào shénme míngzì?) — Как тебя зовут?\n- 你好吗？(Nǐ hǎo ma?) — Как дела?\n- 谢谢 (Xièxie) — Спасибо\n- 我不明白 (Wǒ bù míngbái) — Я не понимаю\n- 请再说一遍 (Qǐng zài shuō yíbiàn) — Пожалуйста, повторите еще раз\n\n---\n\nTitle: Обращение - Русско-китайский разговорник - Китайский язык онлайн StudyChinese.ru\nURL: https://www.studychinese.ru/razgovornik/3/\nPublished: N/A\nAuthor: N/A\nHighlights:\n| 女士们 | 先生们！ |\n| --- | --- |\n| nǚshìmen | xiānshēngmen |\n| дама + суф. мн. ч. | господин + суф. мн. ч. |\n\n| Дамы и господа! |\n| --- |\n...\n| 尊敬 | 的 | 同事们！ |\n| --- | --- | --- |\n| zūnjìng | de | tóngshìmen |\n| уважаемый | (служ. слово) | коллега + суф. мн. ч. |\n\n| У\n...\n| --- |\n|\n...\nС помощью служебного слова 的 de можно обозначать принадлежность чего-либо, образовывать притяжательные местоимения и добавлять определения к существительным.\n...\nЗдесь с помощью суффикса 们 men было образовано множественное число слова «коллега» — 同事们 tóngshì men — коллеги.\n...\n| 亲爱 | 的 | 朋友们！ |\n| --- | --- | --- |\n| qīn'ài | de | péngyǒumen |\n| дорогой | (служ. слово) | друг + суф. мн. ч. |\n...\n| 夫人 |\n| --- |\n| fūrén |\n| госпожа |\n...\n| 小姐 |\n| --- |\n| xiǎojie |\n| маленький + старшая сестра, барышня |\n...\n| 先生 |\n| --- |\n| xiānshēng |\n| прежде + родиться |\n...\nГосподин... |\n| --- |\n...\n| Слушать |\n...\n| 年轻 | 人！ | 小伙子！ |\n| --- | --- | --- |\n| niánqīng | rén | xiǎohuǒzi |\n| молодой | человек | маленький + товарищ, сын |\n...\n| 小 | 男 | 孩儿！ |\n| --- | --- | --- |\n| xiǎo | nán | hái'ér |\n| маленький | мужской пол | ребёнок |\n...\n| 小 | 姑娘！ |\n| --- | --- |\n| xiǎo | gūniáng |\n| маленький | барышня |\n...\n| 服务员 |\n| --- |\n| fúwùyuán |\n| служить, обслуживать + персонал |\n...\n| 搬运工 |\n| --- |\n| bānyùngōng |\n| передвигать + перемещать + рабочий |\n...\n| 不 | 好意思， | 请问 |\n| --- | --- | --- |\n| bù | hǎoyìsi | qǐngwèn |\n| не | без смущения | просить разрешения + спросить |\n...\n| - 到…… | 怎么 | 走？ |\n| --- | --- | --- |\n| dào | zěnme | zǒu |\n| до | как? | идти |\n...\n| - 去…… | 怎么 | 走？ |\n| --- | --- | --- |\n| qù | zěnme | zǒu |\n| уходить, уезжать | как? | идти |\n...\n| - ……在 | 哪儿？ |\n| --- | --- |\n| zài | nǎ'er |\n| находиться | где? |\n...\n| 几 | 点 | 了？ |\n| --- | --- | --- |\n| jǐ | diǎn | le |\n| сколько? | час | (служ. частица) |\n...\nкитайском языке\n...\nцелью обозначить завершенность действия или смену состояния. Под\n...\nсть здесь.\n...\n| 同志 |\n| --- |\n| tóngzhì |\n| товарищ |\n\n---\n\nTitle: Как задавать простые вопросы на китайском языке для начинающих - Skyeng\nURL: https://skyeng.ru/articles-kitajskij/dlya-nachinayushchih-cn/kak-zadavat-prostye-voprosy-na-kitayskom-yazyke-dlya-nachinayushchikh/\nPublished: 2025-07-10T10:40:47.000Z\nAuthor: Skyeng\nHighlights:\n| Китайское слово | Пиньинь | Перевод | Пример употребления |\n| --- | --- | --- | --- |\n| 什么 | shénme | что | 这是什么？ (Zhè shì shénme?) — Что это? |\n| 谁 | shuí | кто | 他是谁？ (Tā shì shuí?) — Кто он? |\n| 哪里/哪儿 | nǎlǐ/nǎr | где | 厕所在哪里？ (Cèsuǒ zài nǎlǐ?) — Где туалет? |\n| 什么时候 | shénme shíhòu | когда | 你什么时候来？ (Nǐ shénme shíhòu lái?) — Когда ты придёшь? |\n| 为什么 | wèishénme | почему | 为什么你不吃？ (Wèishénme nǐ bù chī?) — Почему ты не ешь? |\n| 怎么 | zěnme | как | 怎么说中文? (Zěnme shuō Zhōngwén?) — Как говорить по-китайски? |\n| 多少 | duōshao | сколько | 这个多少钱? (Zhège duōshao qián?) — Сколько это стоит? |\n...\n(Nǐ\n...\nē shénme?) —\n...\n1. Общие вопросы с частицей 吗 (ma): Самый простой способ задать вопрос, требующий ответа \"да\" или \"нет\". Просто добавьте 吗 в конце утвердительного предложения. 例如 (Lìrú/Например): 你是学生吗？(Nǐ shì xuésheng ma?) — Ты студент?\n...\n吗？ |\n...\nn cài? | Ты\n...\nNǐ wèishénme xǐhuan\n...\ncài? | Почему ты\n...\nшь китайскую еду?\n...\n| 你喜欢不喜欢中国菜？ | Nǐ xǐhuan bù x\n...\nhuan Zhōngguó cài? | Ты любишь китайскую еду или нет?\n...\nВопросы, начинающиеся с \"кто\", \"что\", \"где\" и \"когда\", составляют основу повседневного общения на любом языке. В китайском языке эти вопросы формируются с использованием специфических вопросительных слов, которые следуют определённым правилам расположения в\n...\nВопросы с \"что\" (什么 / shénme)\n...\n什么 (shénme) используется для запроса информации о предметах, явлениях или понятиях:\n...\n- 这是什么？(Zhè shì shénme?) — Что это?\n- 你在做什么？(Nǐ zài zuò shénme?) — Что ты делаешь?\n- 你喜欢什么水果？(Nǐ xǐhuan shénme shuǐguǒ?) — Какие фрукты ты любишь?\n...\n1. Соблюдайте порядок слов. В китайском языке вопросительные слова обычно стоят на месте ожидаемого ответа: 你去哪里？(Nǐ qù nǎlǐ?) — Куда ты идёшь?\n2. Используйте 请问 (qǐngwèn). Добавление вежливой фразы \"извините, можно спросить\" перед вопросом значительно повышает шансы получить ответ: 请问，火车站在哪里？(Qǐngwèn, huǒchēzhàn zài nǎlǐ?) — Извините, где находится вокзал?\n...\n\"Где туалет?\",\n...\n<li><b>Частица 吗 (ma).</b>\n...\nсительная частица всегда произносится нейтральным тоном, независимо от\n...\n: 你好吗？(Nǐ hǎo ma?)</li>\n...\n- 这个菜怎么样？(Zhège cài zěnmeyàng?) — Как это блюдо? (На что оно похоже?)\n- 有英文菜单吗？(Yǒu yīngwén càidān ma?) — Есть меню на английском?\n- 您能推荐什么？(Nín néng tuījiàn shénme?) — Что вы можете порекомендовать?\n- 这个多辣？(Zhège duō là?) — Насколько это острое?\n- 请问，洗手间在哪里？(Qǐngwèn, xǐshǒujiān zài nǎlǐ?) — Извините, где туалет?\n- 可以刷卡吗？(Kěyǐ shuākǎ ma?) — Можно оплатить картой?\n...\n- 请问，地铁站在哪里？(Qǐngwèn, dìtiě zhàn zài nǎlǐ?) — Извините, где находится станция метро?\n- 如何去机场？(Rúhé qù jīchǎng?) — Как добраться до аэропорта?\n- 这是通往中心的正确方向吗？(Zhè shì tōngwǎng zhōngxīn de zhèngquè fāngxiàng ma?) — Это правильное направление к центру?\n- 多久能到？(Duōjiǔ néng dào?) — Сколько времени займёт дорога?\n- 有公共汽车到那里吗？(Yǒu gōnggòng qìchē dào nàlǐ ma?) — Есть автобус до того места?\n- 出租车多少钱？(Chūzūchē duōshao qián?) — Сколько стоит такси?\n...\n- 这个多少钱？(Zhège duōshao qián?) — Сколько это стоит?\n- 可以便宜一点吗？(Kěyǐ piányi yīdiǎn ma?) — Можно подешевле?\n...\n- 有其他颜色吗？(Yǒu qítā yánsè ma?) — Есть другие цвета?\n- 有更大的尺码吗？(Yǒu gèng dà de chǐmǎ ma?) — Есть размер побольше?\n- 可以试穿吗？(Kěyǐ shìchuān ma?) — Можно примерить?\n- 退货政策是什么？(Tuìhuò zhèngcè shì shénme?) — Какова политика возврата?\n...\n- 你叫什么名字？(Nǐ jiào shénme míngzi?) — Как тебя зовут?\n- 你是哪国人？(Nǐ shì nǎ guó rén?) — Из какой ты страны?\n- 你会说英语吗？(Nǐ huì shuō yīngyǔ ma?) — Ты говоришь по-английски?\n- 你在中国多久了？(Nǐ zài Zhōngguó duōjiǔ le?) — Как долго ты в Китае?\n- 你是做什么工作的？(Nǐ shì zuò shénme gōngzuò de?) — Чем ты занимаешься? (Какая у тебя работа?)\n...\n- 您能帮助我吗？(Nín néng bāngzhù wǒ ma?) — Можете мне помочь?\n- 我生病了，哪里有医院？(Wǒ shēngbìng le, nǎlǐ yǒu yīyuàn?) — Я заболел, где есть больница?\n- 请问，警察局在哪里？(Qǐngwèn, jǐngchá jú zài nǎlǐ?) — Извините, где находится полицейский участок?\n- 我的东西丢了，怎么办？(Wǒ de dōngxi diū le, zěnme bàn?) — Я потерял свои вещи, что делать?\n- 我迷路了，怎么回酒店？(Wǒ mílù le, zěnme huí jiǔdiàn?) — Я заблудился, как вернуться в отель?\n\n---\n\nTitle: Китайский ー Слушать и Говорить\nURL: https://play.google.com/store/apps/details?id=com.smartlingo.cconversation&hl=ru\nPublished: N/A\nAuthor: N/A\nHighlights:\n# КитайскийーСлушатьиГоворить[PORO ZHŌNGWÉN](https://play.google.com/store/apps/developer?id=PORO+ZH%C5%8CNGW%C3%89N)\n...\narrow\\_forward*\n...\nНАУЧИМСЯГОВОРИТЬНАКИТАЙСКОМКАКНОСИТЕЛЬЯЗЫКА!\n...\n\"Учить Китайский- СлушатьиГоворить\" одноизразвивающихсяприложенийPORO длясамообучающихся, которыехотятлегкоиэффективнообщатьсянакитайскомязыке. 750 ежедневныхдиалогов, списокуроковсразличнойтематикойотпоздравления, совершенияпокупок, работы, семейногоразговораит.д. Подходитдлявсехизучающихкитайскийязык−отначинающегодосреднегоипродвинутого, чтобыпрактиковатьсявобщениинакитайскомязыке.\n...\nВовремяпрослушиванияречиносителяязыка, попробуйтевоспроизвестиполноепредложениесинтонациейипроизношениемпохожимнаносителяязыка.\n...\nБлагодаряэтомуприложению, вынетольконаучитесьговорить, произносить, интонировать, какносительязыкаиулучшитьнавыкивосприятиянаслух, носможететакжевыучитьгруппысловиполезныефразы, чтобыспрашиватьиотвечатьвповседневнойжизни.\n...\nОсновныеособенности:\n...\n★Общиеразговоры:\n...\n- Более750 уроковпокитайскимразговорам, которыеиспользуютсявповседневнойжизни.\n- Различныетемыотприветствия, представления, отобычногоразговорадоделовогоразговора...\n- Содержиттакжетранскрипциюбеседыдляследования.\n...\n★Показать/ Скрытьтранскрипциюиперевод.\n...\n- Понятьизапомнитьманеручтенияносителяязыканастроиврежимпоказать/скрыть транскрипцию, перевод.\n- Понятьзначениеновыхсловизначениецелогопредложениявкаждойситуациисиспользованиемрежимаперевода.\n...\n★Выделенныепредложениясопровождаютсяголосовойзаписью:\n...\n- Режим, вкоторомпредложенияподсвечиваютсясозвуком, поможетвамследитьзаразговоромнапрямую.\n- Выможетенажатьнапредложение, чтобыпрослушать/ проработатьфразуещераз.\n...\n★Режимплейлист:\n...\nНаслаждайтесьпрактикойкитайскогодажевовремявожденияилипутешествий..., простооткройтеприложениеивключитережимплейлист.\n...\n★Практикаигры:\n...\nБлагодаряигревзавершенияпредложенияупорядочиваяслова, выможетепроверитьсебя, запомниливыужепредложениецеликомиегоструктуруилинет.\n...\n★Учитькитайскийчерезновости:\n...\nВыможетенетолькоулучшитьвашуспособностьслушатьисловарныйзапас, нотакжеулучшитьзнания, обновлятьновостиповсемумиру.\n...\n★Учитькитайскийчерезистории:\n...\nИзучениекитайскогоязыкастановитсяболееинтересным, потомучтоPORO добавилфункциюизучениякитайскогоязыкачерезсказки, повседневныеисторииит.д. Выможетепонятьсмысливыучитьмногослов, выраженийпредложенийизрассказов, которыевамнравятся.\n...\n★★★★Приложение-«Учить Китайский- СлушатьиГоворить»подходитдля:\n...\n★Зановоизучающихидлятех, ктохочетулучшитьсвоинавыкиобщениянакитайском.\n...\n★Тех, ктоучиткитайскийсамостоятельнодома.\n...\n★Изучениякитайскогодляпрохождениятестирований.\n...\n★Тех, ктолюбитговоритьпо-китайски ипрактиковатькитайскийповторяя.\n...\n★Тех, ктохочетпроверитьсвойуровень.",
+      "title": "Web search: Скажи что то на Китайском",
+      "metadata": {},
+      "time": {
+        "start": 1789528434189,
+        "end": 1789528440865
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528440869,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350024001O0yGXurs3i4xWY",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a834e3ef0018izuyoUJvUIcxZ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8521,
+      "output": 91,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8612,
+      "headroom": 30244,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.870Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.870Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.871Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.871Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.871Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.871Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.872Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.872Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.887Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8612,
+  "providerTokens": 8612,
+  "estimatedInputTokens": 9078,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8521,
+    "cacheRead": 0,
+    "output": 91
+  },
+  "overflow": false,
+  "headroom": 30244,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.888Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.888Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.890Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:00.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:01.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528441872,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a835040e001Zm3F8HeN0VahEd",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350037001NrE92gTq82I718",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:01.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:01.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528441873,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350410002zJCGAUxJ1n631X",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350037001NrE92gTq82I718",
+    "type": "tool",
+    "callID": "call_cc0a7a57c00b5438",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:01.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528441873,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350410001PMJsX0dJpSpZXC",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350037001NrE92gTq82I718",
+    "type": "text",
+    "text": "Открою https://chineseonline.ru/blog/frazy-na-kitajskom-dlya-turistov и прочитаю содержимое.",
+    "time": {
+      "start": 1789528441873,
+      "end": 1789528441873
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:01.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528441873,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350410002zJCGAUxJ1n631X",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350037001NrE92gTq82I718",
+    "type": "tool",
+    "callID": "call_cc0a7a57c00b5438",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://chineseonline.ru/blog/frazy-na-kitajskom-dlya-turistov"
+      },
+      "time": {
+        "start": 1789528441873
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.488Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528443488,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350410002zJCGAUxJ1n631X",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350037001NrE92gTq82I718",
+    "type": "tool",
+    "callID": "call_cc0a7a57c00b5438",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://chineseonline.ru/blog/frazy-na-kitajskom-dlya-turistov"
+      },
+      "output": "Фразы на китайском для туристов | Разговорник для путешествий по Китаю\n\n\n\n\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\n\n\n\n\n\r\n\n    \n    \n    \n        \n        \n            \n                \n                    \n                    Онлайн-школа китайского языка\n                \n                Блог\nО нас\n            \n                            \n                    \n                        \n                                                            О компании\n                                                            Вакансии\n                                                            Правовая информация\n                                                    \n                    \n                \n                    \n                    \n                \n                    Статьи\n                    \n                        \n                            Поиск по блогу\n                            \n                                \n                                    \n                                \n                            \n                        \n                    \n                    \n                                            \n                                                            \n                                    📖 Тексты и топики 1\n📖 Тексты и топики 2\n📖 Тексты и топики 3\n📖 Тексты и топики 4\n📖 Тексты и топики 5\n📖 Тексты и топики 5\n📖 Тексты и топики 6\n                                \n                            \n                                                            \n                                    Грамматика\nИнтересное\nКарьера в Китае\nКультура и праздники\nЛексика\nМузыка\nУчёба в Китае\nФильмы и сериалы\n                                \n                                                    \n                                    \n            \n            \n\n\t\n\n\t\t\n    \n        \n            \n                \n\r\n   \r\n      Главная\r\n   \r\n   \r\nБлог о китайском языкеЛексикаРусско-китайский разговорник для туристов            \n        \n    \n\n\n\n\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tЛексика\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t15 января 2026\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t \n\t\t\t\t\t\t\t8 мин чтения\n\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\tРусско-китайский разговорник для туристов\n\n\t\t\t\t\t\n\t\t\t\t\t\t15 января 2026\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t \n\t\t\t\t\t\t\t8 мин чтения\n\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\tСодержание\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\nПредставьте, что вы поехали в Китай, но вы совсем не знаете китайский, ни слова. В Китае на английском говорят единицы, даже в сфере обслуживания, то есть если в аэропорту вы ещё справитесь, имея в запасе английский, то в городе, скорее всего, это уже не поможет. Чтобы ваше путешествие прошло гладко, мы подготовили для вас русско-китайский разговорник. В него вошли ключевые фразы на китайском для туристов: вопросы о дороге, лексика для заказа еды и покупок, а также полезные советы о нормах поведения в Китае.\n\n\n\n\n\n\n\n\n\n\n\n\n\nБазовые фразы вежливости\n\n\n\nПервое, что обязательно нужно знать всем туристам — это приветствие и, конечно же, прощания.\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение你好Nǐ hǎoНи хаоЗдравствуйте!/Привет! Универсальное приветствие для любого времени суток.您好Nín hǎoНин хаоВежливая форма «Здравствуйте». Используйте с пожилыми людьми, начальством, чтобы выразить уважение.你们好Nǐmen hǎoНимэнь хаоПривет всем! (обращение к группе)早上好Zǎoshang hǎoЦзаошан хаоДоброе утро! (до полудня)下午好Xiàwǔ hǎoСяо у хаоДобрый день! (после полудня)晚上好Wǎnshang hǎoВаньшан хаоДобрый вечер!再见ZàijiànЦзайцзиеньДо свидания! (самое распространённое)明天见Míngtiān jiànМинтиень цзиеньДо завтра!拜拜Bāi bāiБай-байПока-пока! (заимствование от Bye-bye, очень популярно в разговорной речи)\n\n\n\nБлагодарность, извинения тоже важны в коммуникации с носителями, поэтому используйте следующие фразы:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение谢谢XièxieСесеСпасибо.&nbsp;Говорите это чаще!不客气Bù kèqiБу кэциНе за что/Пожалуйста (в ответ на благодарность)对不起DuìbuqǐДуэйбуциИзвините (если виноваты). Простите (чтобы привлечь внимание)没关系Méi guānxiМэй гуаньсиНичего страшного/ Неважно (в ответ на извинения)请问Qǐng wènЦин вэньПодскажите, пожалуйста&#8230; + вопрос(вежливое начало любого вопроса)请QǐngЦинПожалуйста是的Shì deШи дэДа不是Bù shìБу шиНет好吗？Hǎo ma?Хао ма?Хорошо?/Ладно? (в конце предложения для получения согласия собеседника)我听得懂Wǒ&nbsp;tīng de&nbsp;dǒngВо тин дэ дунЯ понимаю / Я понял (на слух).&nbsp;Ключевая фраза!我听不懂Wǒ&nbsp;tīng bu dǒngВо тин бу дунЯ не понимаю (на слух).&nbsp;Самая частая и полезная фраза для туриста, сразу даёт понять, что нужен другой способ коммуникации.我明白Wǒ míngbáiВо минбайЯ понимаю / Я понял (чаще всего так говорится про суть, то есть не просто услышал, а понял суть сказанного)我不明白Wǒ bù míngbáiВо бу минбайЯ не понимаю(то же самое — не понимаю сути сказанного)请再说一遍Qǐng zài shuō yī biànЦин цзай шуо и биэньПовторите, пожалуйста, ещё раз请说慢一点Qǐng shuō màn yīdiǎnЦин шуо ман идиенГоворите, пожалуйста, медленнее\n\n\n\nКак спросить дорогу и разобраться в транспорте\n\n\n\nЭто очень важный аспект, так как вам обязательно нужно понимать, где находятся остановки общественного транспорта, метро и так далее, как добраться до того или иного места, сколько стоит проезд.&nbsp;\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение请问，厕所在哪儿？Qǐng wèn, cèsuǒ zài nǎr?Цин вэнь, цэсо цзай нар?Подскажите, пожалуйста, где туалет? (очень важный вопрос, отдельно запомните слово&nbsp;厕所 — cèsuǒ / цэсо — туалет)请问，地铁站在哪里？Qǐng wèn, dìtiě zhàn zài nǎli?Цин вэнь, дитие чжань цзай нали?Подскажите, пожалуйста, где станция метро?请问，公交车站在哪里？Qǐng wèn, gōngjiāochē zhàn zài nǎli?Цин вэнь, гунцзяочэ чжань цзай нали?Подскажите, пожалуйста, где автобусная остановка?……怎么走？……zěnme zǒu?…цзэньмэ цзоу?Как добраться до&#8230;?&nbsp;(универсальная конструкция: место + цзэньмэ цзоу?)我想去这里。Wǒ xiǎng qù zhèlǐВо сян цюй чжэлиЯ хочу поехать сюда (показываете на карте/в телефоне адрес или достопримечательность)怎么打车？Zěnme dǎ chē?Цзэньмэ да чэ?Как поймать такси?请帮我叫一辆出租车。Qǐng bāng wǒ jiào yī liàng chūzūchēЦин бан во цзяо и лян чуцзучэПомогите мне, пожалуйста, вызвать такси车费多少钱？Chēfèi duōshao qián?Чэфэй дуошао циень?Сколько стоит проезд? (для такси)票价多少钱？Piàojià duōshao qián?Пяоцзя дуошао циень?Сколько стоит билет? (для метро, автобуса, поезда)\n\n\n\nЧтобы не растеряться, когда услышите ответ, просмотрите следующие фразы и слова:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение直走Zhí zǒuЧжи цзоуИдите прямо直走到十字路口Zhí zǒu dào shízì lùkǒuЧжи цзоу дао шицзы лукоуИдите прямо до перекрёстка你需要右转。Nǐ xūyào yòu zhuǎn.Ни сюяо йоу чжуань.Вам нужно повернуть направо你需要左转。Nǐ xūyào zuǒ zhuǎn.Ни сюяо цзо чжуань.Вам нужно повернуть налево右边YòubiānЙоубиеньНаправо/справа左边ZuǒbiānЦзобиеньНалево/слева前面QiánmiànЦиеньмиеньВпереди后面HòumiànХоумиеньСзади附近FùjìnФуцзиньРядом/неподалёку远YuǎnЮаньДалеко近JìnЦзиньБлизко\n\n\n\nПолезные фразы для уточнения пути, направления:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение远吗？Yuǎn ma?Юань ма?Далеко? (спросите после того, как вам указали направление)走路可以到吗？Zǒulù kěyǐ dào ma?Цзоулу кэи дао ма?Можно ли дойти пешком?需要坐车吗？Xūyào zuò chē ma?Сюяо цзуо чэ ма?Нужно ехать на транспорте?就是这个方向吗？Jiù shì zhège fāngxiàng ma?Цзиу ши чжэгэ фансян ма?Это в том направлении? (показывайте рукой)你能在地图上指给我看吗？Nǐ néng zài dìtú shang zhǐ gěi wǒ kàn ma?Ни нэн цзай диту шан чжи гэй во кань ма?Вы можете показать мне на карте?&nbsp;(откройте карту Baidu на телефоне)我迷路了。Wǒ mílù leВо милу лэЯ заблудился\n\n\n\nПолезная информация:\n\n\n\n\nКогда садитесь в такси, показывайте адрес, написанный&nbsp;иероглифами. У водителей часто нет английских карт. Идеально — показать точку на карте в мобильном приложении, лучше всего используйте Baidu Maps.\n\n\n\nКупите одноразовую карту для поездок в метро в автомате (есть английский интерфейс). Вы также можете зарегистрировать транспортную карту в мобильном кошельке (Alipay/WeChat Pay).\n\n\n\nГлавное: сфотографируйте или сохраните в телефоне иероглифы названия вашего отеля и ключевых достопримечательностей. Просто показывайте их, когда спрашиваете дорогу или если потерялись.\n\n\n\n\nВ ресторане\n\n\n\nВ ресторане также важно соблюдать нормы поведения и вежливость от момента заказа блюд и до момента закрытия счёта, поэтому вам пригодятся следующие фразы:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение请给我菜单。Qǐng gěi wǒ càidānЦин гэй во цайданьПринесите/дайте мне меню, пожалуйста菜单，谢谢。Càidān, xièxieЦайдань, сесеМеню, пожалуйста. (более короткая форма)请问，你们有英文菜单吗？Qǐng wèn, nǐmen yǒu Yīngwén càidān ma?Цин вэнь, нимэнь йщу Инвэнь цайдань ма?Скажите, пожалуйста, у вас есть меню на английском?&nbsp;有英文菜单吗？Yǒu Yīngwén càidān ma?Йоу Инвэнь цайдань ма?Есть меню на английском? (более короткий вариант)我想要这个。Wǒ xiǎng yào zhège.Во сян яо чжэгэ.Я хочу вот это&nbsp;(указывая пальцем на блюдо в меню)服务员！Fúwùyuán!Фууюань!Официант! (чтобы привлечь внимание. Говорите чётко и не очень громко)辣吗？Là ma?Ла ма?Это острое?不要辣。Bùyào làБуяо лаБез острого /не нужно острое (можно сказать при заказе)我不吃辣。Wǒ bù chī làВо бу чши лаЯ не ем острое (более полное объяснение)请做不辣的。Qǐng zuò bú là deЦин цзуо бу ла дэПриготовьте, пожалуйста, неострое微辣。Wēi làВэй лаСлегка острое.我不吃肉。Wǒ bù chī ròuВо бу чши жоуЯ не ем мясо (подразумевается любое мясо)我是素食者。Wǒ shì sùshí zhěВо ши суши чжэЯ вегетарианец我不吃海鲜。Wǒ bù chī hǎixiān.Во бу чши хайсянь.Я не ем морепродукты我对海鲜过敏。Wǒ duì hǎixiān guòmǐnВо дуэй хайсянь гуоминьУ меня аллергия на морепродукты太好吃了！Tài hǎo chī le!Тай хао чши лэ!Очень вкусно!请买单。Qǐng mǎidānЦин майданьСчёт, пожалуйста可以分开付吗？Kěyǐ fēnkāi fù ma?Кэи фэнькай фу ма?Можно оплатить отдельно? (лучше спрашивать до того, как принесут счёт)我要打包。Wǒ yào dǎbāoВо яо дабаоМне нужно упаковать с собой (то, что не съели)请给我一杯水。Qǐng gěi wǒ yī bēi shuǐЦин гэй во и бэй шуэйДайте мне, пожалуйста, стакан воды&nbsp;冰水。Bīng shuǐБин шуэйХолодная вода (со льдом)热水。Rè shuǐЖэ шуэйГорячая вода筷子，谢谢。Kuàizi, xièxieКуайцзы, сесеПалочки, пожалуйста有叉子吗？Yǒu chāzi ma?Йоу чацзы ма?У вас есть вилка? (если совсем не дружите с палочками)这个不要了。Zhège bù yào leЧжэгэ бу яо лэЭто не нужно (больше) (чтобы убрали пустые тарелки)\n\n\n\nПокупки: магазины и рынки&nbsp;\n\n\n\nЭто основной список фраз, который пригодится вам в магазинах:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение请问，这个多少钱？Qǐng wèn, zhège duōshao qián?Цин вэнь, чжэгэ дуошао циень?Подскажите, пожалуйста, сколько это стоит?多少钱？Duōshao qián?Дуошао циень?Сколько стоит? (короткий и частый вариант)太贵了！Tài guì le!Тай гуэй лэ!Слишком дорого! (говорите с улыбкой и лёгкой интонацией удивления)可以便宜一点吗？Kěyǐ piányi yīdiǎn ma?Кэи пиэньи идиень ма?Можно немного дешевле?便宜点吧。Piányi diǎn ba.Пиэньи диень ба.Сделай дешевле. (более прямой, разговорный вариант для рынков)我要这个。Wǒ yào zhègeВо яо чжэгэЯ беру это/Я хочу это这个我要了。Zhège wǒ yào leЧжэгэ во яо лэЭто я беру我只是看看。Wǒ zhǐshì kànkanВо чжиши каньканьЯ просто смотрю (можно использовать, если продавец слишком настойчив)\n\n\n\nЕсли вы отправились в магазины одежды, и вам необходимо уточнить про цвета и размеры, то используйте следующие слова и фразы:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение有什么颜色？Yǒu shénme yánsè?Йоу шэньмэ еньсэ?Какие есть цвета?有其他颜色吗？Yǒu qítā yánsè ma?Йоу цита еньсэ ма?Есть другие цвета?我要红色的。Wǒ yào hóngsè deВо яо хунсэ дэМне нужен красный我要黑色的。Wǒ yào hēisè deВо яо хэйсэ дэМне нужен чёрный白色BáisèБайсэБелый蓝色LánsèЛаньсэСиний绿色LǜsèЛюйсэЗелёный黄色HuángsèХуансэЖёлтый有大一点的吗？Yǒu dà yīdiǎn de ma?Йоу да идиень дэ ма?Есть побольше?有小一点的吗？Yǒu xiǎo yīdiǎn de ma?Йоу сяо идиень дэ ма?Есть поменьше?我穿L码。Wǒ chuān L mǎ.Во чуань эль ма.Я ношу размер L. (имеется в виду размер одежды. Можно заменить на любой размер, подходящий вам:&nbsp;S, M, L, XL)我可以试穿吗？Wǒ kěyǐ shìchuān ma?Во кэи шичуань ма?Можно примерить?\n\n\n\nОчень важно правильно завершить покупку, чтобы не возникло никаких проблем. Для этого можете задать следующие уточняющие вопросы и полезные фразы:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение刷卡还是现金？Shuākǎ háishì xiànjīn?Шуака хайши сиеньцзинь?Картой или наличными? (Так часто может спросить продавец, но и покупатель для уточнения).可以用支付宝/微信吗？Kěyǐ yòng Zhīfùbǎo / Wēixìn ma?Кэи юн Чжифубао / Вэйсинь ма?Можно Alipay/WeChat?我要一个袋子。Wǒ yào yī gè dàiziВо яо и гэ дайцзыМне нужен пакет有没有打折？Yǒu méiyǒu dǎzhé?Йоу мэййоу дачжэ?У вас есть скидки?哪里付款？Nǎlǐ fùkuǎn?Нали фукуань?Где оплатить?\n\n\n\nЗдоровье, безопасность и другие экстренные и полезные фразы\n\n\n\nНикто не застрахован от проблем со здоровьем и других проблем даже в путешествии. На случай непредвиденных обстоятельств можете использовать следующие просьбы о помощи:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение救命！Jiù mìng!Цзю минь!Помогите! / На помощь! (только в реальной опасности для жизни)请帮帮我！Qǐng bāngbang wǒ!Цин банбан во!Помогите мне, пожалуйста! (универсальная просьба о срочной помощи в любой ситуации)我需要帮助。Wǒ xūyào bāngzhùВо сюяо банчжуМне нужна помощь (более сдержанная, но чёткая просьба)帮我叫警察！Bāng wǒ jiào jǐngchá!Бан во цзяо цзинча!Помогите мне вызвать полицию!帮我叫救护车！Bāng wǒ jiào jiùhùchē!Бан во цзяо цзюхучэ!Помогите мне вызвать скорую помощь!\n\n\n\nЕсли у вас возникли проблемы со здоровьем, с помощью этих фраз вы можете сообщить об этом:\n\n\n\nКитайский вариантПиньинь (с тонами)Китайский вариантПеревод и применение我不舒服。Wǒ bù shūfuВо бу шуфуМне плохо / Я нездоров / Я недомогаю我生病了。Wǒ shēngbìng leВо шэнбинь лэЯ заболел我头疼/肚子疼。Wǒ tóuténg / dùzi téng.Во тоутэн / дуцзы тэн.У меня болит голова/живот我过敏。Wǒ guòmǐnВо гуоминьУ меня аллергия我发烧了。Wǒ fāshāo leВо фашао лэУ меня температура药店在哪里？Yàodiàn zài nǎli?Яодиень цзай нали?Где аптека?医院在哪里？Yīyuàn zài nǎli?Июань цзай нали?Где больница?请带我去医院。Qǐng dài wǒ qù yīyuànЦин дай во цюй июаньОтвезите меня, пожалуйста, в больницу\n\n\n\nПроблемы с документами или потеря какого-либо имущества — тоже одна из проблем, которые могут возникнуть в путешествии. Конечно, все мы знаем, что нужно внимательно следить за вещами, особенно в туристических местах, где собираются толпы людей, но если уж такой вопрос возник, то пользуйтесь следующими фразами:\n\n\n\nКак вести себя в Китае\n\n\n\nЕсли вы турист в любой стране мира, нужно понимать, что это другая страна со своей культурой, обычаями, а главное — законами. Поэтому есть некоторые вещи, которые стоит соблюдать.\n\n\n\nНа эту тему у нас есть отдельная статья, которую важно прочесть, прежде чем вы отправитесь в путешествие по Китаю.\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\tДля начинающихПутешествия\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t&lt; На главную блога\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tСтатья обновлена: 15.01.2026\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\tЮлия Ермакова\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\tЭксперт блога Chinese Online\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\tСодержание\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\n    \n        Другие статьи\n        \n            \n                    \n                    \n                \n            \n            \n                    \n                    \n                \n            \n        \n    \n    \n        \n    \n                    \n            \n    \n        \n            01.09.2026\n            \n                \n                3 мин\n            \n        \n        Китайские слова на тему «Школа»\n        \n            Узнаем, как называются школьные предметы на китайском        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            29.08.2026\n            \n                \n                2 мин\n            \n        \n        Китайские слова на тему «Осень»\n        \n            Разберём осеннюю лексику на китайском        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            28.04.2026\n            \n                \n                55 сек\n            \n        \n        Овощи на китайском языке\n        \n            Узнаем названия овощей на китайском и разберём полезные выражения по теме         \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            21.04.2026\n            \n                \n                2 мин\n            \n        \n        Лексика по теме «Весна» на китайском языке\n        \n            Узнаем, как будет весна по-китайски и разберём полезные фразы и выражения по теме        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            10.03.2026\n            \n                \n                46 сек\n            \n        \n        Фрукты на китайском\n        \n             В Китае фрукты часто дарят в качестве подарка, поэтому их названия полезно знать для понимания культурных особенностей        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            12.02.2026\n            \n                \n                5 мин\n            \n        \n        Как сказать «Я тебя люблю» по-китайски\n        \n            Cегодня узнаем, как признаться в любви по-китайски        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            06.02.2026\n            \n                \n                3 мин\n            \n        \n        Китайские мемы 2026\n        \n            Разберём самые популярные китайские мемы        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            06.02.2026\n            \n                \n                3 мин\n            \n        \n        Китайская мудрость в пословицах и поговорках\n        \n            Разберём китайские пословицы и поговорки и узнаем их перевод        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n\n    \n                    \n            \n    \n        \n            06.02.2026\n            \n                \n                4 мин\n            \n        \n        Как написать русское имя на китайском языке\n        \n            Узнаем, как строятся и переводятся китайские имена, как записать своё имя на китайском        \n    \n    \n                    \n                \n                Лексика\n            \n            \n\n    \n\n\t\t\n\t\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n    \n    \n        \n            \n                Скоро старт продаж! \n                Выгодные цены для&nbsp;первых учеников\n                Подпишитесь на&nbsp;рассылку, чтобы узнать раньше&nbsp;всех\n                \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                        \n                            \n                        \n                        \n                            \n                        \n                        \n                            \n                        \n                        \n                            Оставить заявку\n                        \n                    \n                    \n                        \n                        \n                        \n                            \tЯ&nbsp;соглашаюсь с&nbsp;\n\t\tполитикой конфиденциальности, публичной офертой\n\t\n\t \n\tи&nbsp;на&nbsp;получение информационных и&nbsp;рекламных рассылок\n                        \n                    \n                \n            \n        \n        \n            \n                \n            \n        \n    \n\n\n\n\n\n    \n        \n            \n                \n                    \n                                                  \n                            \n                                8 (800) 350-03-83                            \n                            Звонок по&nbsp;России\n                          \n                                                                          \n                                \n                                    +48 (22) 602 25 55                                \n                                Звонок из-за&nbsp;рубежа\n                          \n                                            \n                    \n                                                    \n                                \n                            \n                                                                            \n                                \n                            \n                                                                                                                                            \n                \n                \n                    \n                        О нас\n                        Правовая информация\nКарта сайта\n                    \n                \n            \n            \n                \n                    Подписаться на&nbsp;рассылку\n                    Получайте новые материалы первыми! Отправляем раз в&nbsp;2&nbsp;недели\n                \n                \n                    \n    \n    \n    \n\n    \n        \n            \n        \n        Подписаться\n    \n    \n        \n            \n            \n            \n                \tЯ&nbsp;соглашаюсь с&nbsp;\n\t\tполитикой конфиденциальности, публичной офертой\n\t\n\t \n\tи&nbsp;на&nbsp;получение информационных и&nbsp;рекламных рассылок\n            \n        \n    \n\n                \n            \n        \n    \n    \n        \n            \n                \n                    \n                        \n                            \n                        \n                        \n                            Зарегистрированный товарный знак\n                        \n                    \n                    \n                                                    \n                                5/5 Сравни.ру\n                            \n                                                                            \n                                5/5 Яндекс.Отзывы\n                            \n                                            \n                \n                \n                    \n                        Сведения об образовательной организации\n                    \n                    \n                        Политика обработки персональных данных\n                    \n                    \n                        Лицензия на осуществление образовательной деятельности № 039605 от 04.09.2018 года\n                    \n                    © 2026. Chinese Online,\n                        ООО «ЛернПроект», все права защищены\n                    \n                \n            \n            \n                \n                    \n                    \n                    \n                \n                \n                                            \n                            5/5 Сравни.ру\n                        \n                                                                \n                            5/5 Яндекс.Отзывы\n                        \n                                    \n            \n        \n    \n\n\n\n    \n        \n        \n    \n\n\n\n    \n        \n            \n                \n            \n            \n        \n        \n            \n        \n    \n\n\n\n\n    \n        \n            \n                \n                    Запишитесь на бесплатный вводный урок\n                \n                \n    \n    \n    \n    \n    \n            \n                \n                \n                \n    \n    \n        \n            \n        \n        \n            \n        \n        \n            \n        \n        \n            Оставить заявку\n        \n    \n    \n    \n        \n        \n        \n            \tЯ&nbsp;соглашаюсь с&nbsp;\n\t\tполитикой конфиденциальности, публичной офертой\n\t\n\t \n\tи&nbsp;на&nbsp;получение информационных и&nbsp;рекламных рассылок",
+      "title": "https://chineseonline.ru/blog/frazy-na-kitajskom-dlya-turistov (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528441873,
+        "end": 1789528443487
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.489Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528443489,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350a61001u8pEEN7tAlpDFU",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350037001NrE92gTq82I718",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 33557,
+      "output": 188,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33745,
+      "headroom": 5111,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.490Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.490Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.492Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.492Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.495Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.496Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.496Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.497Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.497Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.516Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 33745,
+  "providerTokens": 33745,
+  "estimatedInputTokens": 15459,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 33557,
+    "cacheRead": 0,
+    "output": 188
+  },
+  "overflow": false,
+  "headroom": 5111,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.517Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.517Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.521Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.522Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.741Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528443741,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350b5c001ngGkA9h3638Hoe",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350a7c001PN1Vojj9hcV0bS",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.741Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.741Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528443741,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350b5d002UMzOS828mC4QMS",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350a7c001PN1Vojj9hcV0bS",
+    "type": "tool",
+    "callID": "call_c817ceb789ce4b16",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.741Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528443741,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350b5d001c7HQlRWOYx6tyi",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350a7c001PN1Vojj9hcV0bS",
+    "type": "text",
+    "text": "Открою https://www.50languages.com/ru/learn/phrasebook/zh и прочитаю содержимое.",
+    "time": {
+      "start": 1789528443741,
+      "end": 1789528443741
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:03.741Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528443741,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350b5d002UMzOS828mC4QMS",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350a7c001PN1Vojj9hcV0bS",
+    "type": "tool",
+    "callID": "call_c817ceb789ce4b16",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.50languages.com/ru/learn/phrasebook/zh"
+      },
+      "time": {
+        "start": 1789528443741
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.152Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528444153,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350b5d002UMzOS828mC4QMS",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350a7c001PN1Vojj9hcV0bS",
+    "type": "tool",
+    "callID": "call_c817ceb789ce4b16",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.50languages.com/ru/learn/phrasebook/zh"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789528443741,
+        "end": 1789528444151
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528444153,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.154Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528444155,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350cfa001Qn5UD3FcsTOPk5",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350a7c001PN1Vojj9hcV0bS",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 57598,
+      "output": 164,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 57762,
+      "headroom": -18906,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.155Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.155Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.160Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.163Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.164Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.165Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.165Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.171Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 57762,
+  "providerTokens": 57762,
+  "estimatedInputTokens": 15486,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 57598,
+    "cacheRead": 0,
+    "output": 164
+  },
+  "overflow": true,
+  "headroom": -18906,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.174Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.180Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.180Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.181Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.182Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.183Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528444595,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350eb2001RTsfelQkvvdTP0",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350d15001ZmjF7zhFpmnK3t",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.596Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.597Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.597Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528444597,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350eb4001BYQUmn2445WFYj",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350d15001ZmjF7zhFpmnK3t",
+    "type": "text",
+    "text": "Conversation summary: Скажи что то на Китайском.  Поищу в интернете: Скажи что то на Китайском.\n\nTitle: What did we do so\n\nUser turns:\n  1. Скажи что то на Китайском\n  2.",
+    "time": {
+      "start": 1789528444597,
+      "end": 1789528444597
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.597Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528444597,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350eb5001AsZLRGokUs30e5",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350d15001ZmjF7zhFpmnK3t",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 49959,
+      "output": 170,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 50129,
+      "headroom": -11273,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.597Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.597Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.598Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.598Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.598Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528444598,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350eb6002p4mxcJ1YwtCBKC",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350eb6001WMnftE9y7FABCz",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528444598,
+      "end": 1789528444598
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.598Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.599Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.599Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.600Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.600Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.600Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.600Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.600Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.600Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.601Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.602Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528444663,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350ef6001FFj1bWs0wNZukc",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350eb8001Ef8tQs507ik7PJ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528444663,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350ef7002wf0t3H7xE0YoHW",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350eb8001Ef8tQs507ik7PJ",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528444663,
+      "end": 1789528444663
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.664Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528444664,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "part": {
+    "id": "prt_0a8350ef8001e0dff44pqIeiPW",
+    "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+    "messageID": "msg_0a8350eb8001Ef8tQs507ik7PJ",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8719,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8792,
+      "headroom": 30064,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.664Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.664Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.666Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.666Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.666Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.667Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.667Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.667Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528444667,
+  "sessionID": "ses_f57cb1d51ffeP0mGVnPn4Nc6oJ"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.668Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.668Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.668Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.668Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.gpWIBNyjbZ",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:04.668Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 12,
+  "message": "Agent exiting"
+}
+

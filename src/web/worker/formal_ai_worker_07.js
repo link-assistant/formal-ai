@@ -435,6 +435,7 @@ function tryProgramSynthesis(prompt, normalized) {
   const functionName = extractPythonFunctionName(prompt);
   if (!functionName) return null;
   const structures = discoveredCodingStructures(canonical);
+  const composed = browserComposeProgramIr(prompt, canonical, structures);
   const discovered = structures.length > 0 ? structures.join(", ") : "none yet";
   const evidence = [
     `response:write_program:formalized:python:${functionName}`,
@@ -443,11 +444,21 @@ function tryProgramSynthesis(prompt, normalized) {
     `synthesis:discovered_parts:${structures.join(",")}`,
     "synthesis:verification:unverified_browser_boundary",
   ];
+  if (composed) {
+    evidence.push(
+      "synthesis:ir:type_checked",
+      `synthesis:ir:content_id=${composed.contentId}`,
+      ...composed.fragments.map((fragment) => `synthesis:fragment:${fragment}`),
+      ...composed.sources.map((source) => `synthesis:source:${source}`),
+      ...composed.licenses.map((license) => `synthesis:license:${license}`),
+    );
+  }
   const body = [
     `Coding task formalized for Python function \`${functionName}\`.`,
     `Discovered structural parts: ${discovered}.`,
-    "Verification status: unverified in the browser boundary; run the Rust/native solver to compose candidates and execute Python tests.",
-  ];
+    composed ? `\`\`\`python\n${composed.source.trimEnd()}\n\`\`\`` : "",
+    "Verification status: unverified in the browser boundary; run the Rust/native solver to execute the derived program and its tests.",
+  ].filter(Boolean);
   return {
     intent: "write_program",
     content: body.join("\n"),
@@ -456,6 +467,7 @@ function tryProgramSynthesis(prompt, normalized) {
     trace: [
       `synthesis:spec:language=python function=${functionName}`,
       `synthesis:discovered_parts:${structures.join(",")}`,
+      ...(composed ? ["synthesis:ir:type_checked", `synthesis:ir:content_id=${composed.contentId}`] : []),
       "synthesis:verification:unverified_browser_boundary",
     ],
   };

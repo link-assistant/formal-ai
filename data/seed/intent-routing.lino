@@ -378,9 +378,7 @@ intent_routing
   intent intent_clarification
     slug clarification
     response_link "response:clarification"
-    phrase "не понял"
     phrase "не понимаю"
-    phrase "не поняла"
     phrase "не понятно"
     phrase непонятно
     phrase "i don't understand"
@@ -397,7 +395,6 @@ intent_routing
     phrase "i am confused"
     phrase "समझ नहीं आया"
     phrase "समझ नहीं आई"
-    phrase 我不明白
     phrase 我不懂
     phrase 听不懂
   intent intent_http_fetch

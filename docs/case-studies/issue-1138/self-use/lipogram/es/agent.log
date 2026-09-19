@@ -1,0 +1,2156 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.196Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.197Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt ¿La frase \"quick brown fox\" es un lipograma en e? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.197Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.197Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.206Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "¿La frase \"quick brown fox\" es un lipograma en e?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "¿La frase \"quick brown fox\" es un lipograma en e?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.206Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.206Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.207Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.207Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.210Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.211Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.213Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4767,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.213Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.226Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T02:48:58.230Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.230Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.230Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.230Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.231Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.231Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.231Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.231Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.231Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T02:48:58.231Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.235Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.235Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.235Z",
+  "service": "session",
+  "id": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7",
+  "title": "New session - 2026-09-16T02:48:58.235Z",
+  "time": {
+    "created": 1789526938235,
+    "updated": 1789526938235
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.236Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.236Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.236Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57e1ed84ffeDSoqB1e9CjZHD0/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.236Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57e1ed84ffeDSoqB1e9CjZHD0/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.239Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57e1ed84ffeDSoqB1e9CjZHD0/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.242Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.243Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.243Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.244Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.244Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.244Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.244Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.244Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.244Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.244Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.364Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.368Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.368Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.375Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.380Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.385Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.385Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.385Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.385Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.817Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526938817,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e14be001WxUz8R7OzlzrVb",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e12ff0013mYGeGduxffXtB",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.817Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.817Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526938817,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e14c1002AQ6wO4QZZHozWM",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e12ff0013mYGeGduxffXtB",
+    "type": "tool",
+    "callID": "call_b2b099efdadd4d1e",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.818Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526938818,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e14c1001oSZf4q3kTpt6PZ",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e12ff0013mYGeGduxffXtB",
+    "type": "text",
+    "text": "Let me search the web for ¿La frase \"quick brown fox\" es un lipograma en e.",
+    "time": {
+      "start": 1789526938818,
+      "end": 1789526938818
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:58.818Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526938818,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e14c1002AQ6wO4QZZHozWM",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e12ff0013mYGeGduxffXtB",
+    "type": "tool",
+    "callID": "call_b2b099efdadd4d1e",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "¿La frase \"quick brown fox\" es un lipograma en e"
+      },
+      "time": {
+        "start": 1789526938818
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.446Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526940447,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e14c1002AQ6wO4QZZHozWM",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e12ff0013mYGeGduxffXtB",
+    "type": "tool",
+    "callID": "call_b2b099efdadd4d1e",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "¿La frase \"quick brown fox\" es un lipograma en e"
+      },
+      "output": "Title: Pangrama\nURL: https://es.wikipedia.org/wiki/El_veloz_zorro_marr%C3%B3n_salta_el_perro_perezoso\nPublished: N/A\nAuthor: N/A\nHighlights:\nEn cierto sentido, los pangramas son lo opuesto a los lipogramas, donde el objetivo es omitir una o más letras.\n...\n- Jackdaws love my big sphinx of quartz (A las grajillas les encanta mi gran esfinge de cuarzo).\n- The quick brown fox jumps over the lazy dog(El veloz zorro marrón salta sobre el perro perezoso).\n- Grumpy wizards make toxic brew for the evil queen and Jack (Brujos gruñones preparan pócimas tóxicas para la malvada reina y Jack).\n...\n- Pack my box with five dozen liquor jugs (Empaca mi caja con cinco docenas de jarras de licor).\n- The five boxing wizards jump quickly (Los cinco magos boxeadores saltan rápidamente).\n...\n- The quick brown fox jumps over the lazy dog\n- Pangrama perfecto\n...\nBrown Fox and other pangrams». Type Design Class (en inglés estadounidense).\n...\nel 11 de agosto de 2025.\n\n---\n\nTitle: ¿Qué es un pangrama? - Bauer Types\nURL: https://bauertypes.com/que-es-un-pangrama/\nPublished: 2018-03-13T10:38:10.000Z\nAuthor: Bauer Types\nHighlights:\nUn pangrama es un recurso utilizado por diseñadores de tipos para visualizar una fuente tip\n...\nllama frase holoalfabética. Se trata\n...\n. Permite\n...\nes muy útil\n...\nque se usan todas\n...\nUn pangrama ideal debería ser lo más corto posible y mantener a la vez cierta coherencia en el significado de su frase. En este sentido el “quick brown fox” del inglés se ha convertido ya en todo un clásico por ser corto, usar todas las letras del alfabeto inglés y ser fácil de memorizar.\n\n---\n\nTitle: The quick brown fox jumps over the lazy dog\nURL: https://en.wikipedia.org/wiki/The_Quick_Brown_Fox_Jumps_Over_The_Lazy_Dog\nPublished: N/A\nAuthor: N/A\nHighlights:\nThe quick brown fox jumps over the lazy dog\n...\n\"**The quick brown fox jumps over the lazy dog**\" is an [English](./English_language)-language [pangram](./Pangram); it contains all 26 letters of the [English alphabet](./English_alphabet); because of this, the phrase is commonly used for [touch-typing](./Touch_typing) practice, testing [typewriters](./Typewriter) and [computer keyboards](./Computer_keyboard), displaying examples of [fonts](./Font), and other applications involving text where the use of all letters in the alphabet is desired.\n...\narticle titled \"\n...\n\" in the\n...\n885, edition\n...\nthe phrase is mentioned as a\n...\npractice [sentence](./Sentence\n...\nfox jumps over\n...\nother newspapers published the phrase\n...\n\"A\"\n...\n\" is used later\n...\nmodern form (\n...\nThe [lipogrammatic](./Lipogram) novel *[Ella Minnow Pea](./Ella_Minnow_Pea)* by [Mark Dunn](./Mark_Dunn) is built entirely around the \"quick brown fox\" pangram and its inventor. It depicts a fictional island off the [South Carolina](./South_Carolina) coast that idealizes the pangram, chronicling the effects on literature and social structure as various letters are banned from daily use by government dictum.\n\n---\n\nTitle: María Moliner. Pangramas – Blog de Vicente Toledo Tolsada\nURL: https://portal.edu.gva.es/blogs/s1/vicentetoledotolsada/maria-moliner-pangramas/\nPublished: N/A\nAuthor: N/A\nHighlights:\nGeorges Perec: Lipogramas\n...\ncon María Moliner\n...\nAsí como un lipograma es un texto en el que voluntariamente se evita el uso de una letra determinada, un pangrama o frase holoalfabética es un texto que usa todas las letras posibles del alfabeto de un idioma\n...\nEvidentemente, el reto es escribir un texto en\n...\nque aparezcan todas las letras del abecedario usando el menor número de letras.\n...\nThe quick brown fox jumps over the lazy dog\n\n---\n\nTitle: El zorro que salta un perro – Canela Visual\nURL: https://canelavisual.es/el-zorro-que-salta-un-perro/\nPublished: 2023-12-12T09:00:00.000Z\nAuthor: N/A\nHighlights:\nqué diantres son esas\n...\nveces hemos visto\n...\npangramas, frases\n...\nmecanógrafos\n...\nnuestro sector) poder visualizar todos\n...\nde una fuente\n...\nThe quick brown fox jumps over the lazy dog («el veloz zorro marrón salta sobre el perezoso perro» en el idioma más hablado en Badajoz) es un pangrama inglés que tiene 35 letras y utiliza las 26 que se usan en el idioma anglosajón.\n\n---\n\nTitle: ¿Qué es un pangrama?\nURL: https://2001online.com/curiosidades/mundo-loco/que-es-un-pangrama\nPublished: 2013-06-28T00:00:00.000Z\nAuthor: 2001online\nHighlights:\nmínima que utiliza todas\n...\ndeterminado idioma.\n...\n\"La cigüeña tocaba el saxofón detrás del palenque de paja.\" O también\n...\n\"Fabio me exige, sin tapujos, que añada cerveza al whisky\".\n...\nEn inglés, se ha convertido ya en un clásico el pangrama \"The quick brown fox jumps over the lazy dog\", frase muy usada por los linotipistas y tipógrafos para comprobar todos los caracteres disponibles de una fuente.\n\n---\n\nTitle: LIPOGRAMA | cceia\nURL: https://edtl.fcsh.unl.pt/encyclopedia/lipograma\nPublished: 2009-12-30T00:00:00.000Z\nAuthor: Carlos Ceia\nHighlights:\nDo grego lipógramma, -atos, “ falta de uma letra “, configura um jogo de palavras ou de símbolos que se utiliza para puro divertimento poético ou para marcar um determinado estilo. Se se eliminar uma palavra inteira num texto, utilizamos o lipónimo; se eliminarmos um determinado som, falamos de um lipófono. Muitos lipogramas são, na verdade, lipófonos. A técnica oposta chama-se pangrama, ou seja, quando se utilizam todas as letras do alfabeto num dado texto. O exemplo mais conhecido de pangrama talvez seja o padrão de representação das fontes de um programa de processamento digital de texto, reconhecido internacionalmente na frase: The quick brown fox jumps over de lazy dog, que serve de teste de visualização de uma fonte gráfica.\n\n---\n\nTitle: Textos para pruebas tipográficas | Oscar Cubo Medina\nURL: https://ocubom.page/es/post/textos-pruebas-tipograficas/\nPublished: 2024-04-01T00:00:00.000Z\nAuthor: Oscar Cubo Medina\nHighlights:\nEl texto utilizado para este caso son los pangramas. Un pangrama no\n...\nmás que un texto que utiliza todas y cada una de las letras de un alfabeto con una extensión mínima 2\n...\nlo que implica que se repita el menor número de letras. También es posible crear pangramas que incluyan símbolos de puntuación, acentos, números…\n...\nCada idioma tiene sus propios pangramas 3 aunque, sin duda, los más conocidos son los usados por Windows en su visor 4 para español («El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja.») e inglés (« The quick brown fox jumps over the lazy dog.»)\n...\nEn el caso del pangrama usado en español, tiene la peculiaridad de incluir todas las letras acentuadas y una diéresis aunque es bastante largo y comprende dos frases.",
+      "title": "Web search: ¿La frase \"quick brown fox\" es un lipograma en e",
+      "metadata": {},
+      "time": {
+        "start": 1789526938818,
+        "end": 1789526940439
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526940456,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e1b24001hpnEhH3ynv27Os",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e12ff0013mYGeGduxffXtB",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8545,
+      "output": 146,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8691,
+      "headroom": 30165,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.458Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.459Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.462Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.462Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.464Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.465Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.465Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.472Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8691,
+  "providerTokens": 8691,
+  "estimatedInputTokens": 1771,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8545,
+    "cacheRead": 0,
+    "output": 146
+  },
+  "overflow": false,
+  "headroom": 30165,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.472Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.473Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.476Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:00.478Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:01.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526941168,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e1deb001Rn6FwjUiUgFqPj",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e1b38001lOIjHXgZbYEAat",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:01.169Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:01.170Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526941170,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e1df10014VviQa1IIEh9o0",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e1b38001lOIjHXgZbYEAat",
+    "type": "tool",
+    "callID": "call_9fe836776531dfc3",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:01.170Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526941170,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e1df0001ENka16zvIKPVTD",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e1b38001lOIjHXgZbYEAat",
+    "type": "text",
+    "text": "Let me open https://es.wikipedia.org/wiki/El_veloz_zorro_marr%C3%B3n_salta_el_perro_perezoso and read what it says.",
+    "time": {
+      "start": 1789526941170,
+      "end": 1789526941170
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:01.170Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526941170,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e1df10014VviQa1IIEh9o0",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e1b38001lOIjHXgZbYEAat",
+    "type": "tool",
+    "callID": "call_9fe836776531dfc3",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://es.wikipedia.org/wiki/El_veloz_zorro_marr%C3%B3n_salta_el_perro_perezoso"
+      },
+      "time": {
+        "start": 1789526941170
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.305Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526942305,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e1df10014VviQa1IIEh9o0",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e1b38001lOIjHXgZbYEAat",
+    "type": "tool",
+    "callID": "call_9fe836776531dfc3",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://es.wikipedia.org/wiki/El_veloz_zorro_marr%C3%B3n_salta_el_perro_perezoso"
+      },
+      "output": "Pangrama - Wikipedia, la enciclopedia libre\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIr al contenido\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nMenú principal\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tMenú principal\n\tmover a la barra lateral\n\tocultar\n\n\n\t\n\n\t\n\t\tNavegación\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tPortadaPortal de la comunidadActualidadCambios recientesPáginas nuevasPágina aleatoriaAyudaNotificar un errorPáginas especiales\n\t\t\n\t\t\n\t\n\n\n\t\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nBuscar\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tBuscar\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nApariencia\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tDonaciones\n\nCrear una cuenta\n\nAcceder\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nHerramientas personales\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nDonaciones\n\n\n\nCrear una cuenta\n\n\n\nAcceder\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tContenidos\n\tmover a la barra lateral\n\tocultar\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tInicio\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tEjemplos en otros idiomas\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tVéase también\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tReferencias\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tEnlaces externos\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nCambiar a la tabla de contenidos\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tPangrama\n\t\t\t\n\n\t\n\t\n\n60 idiomas\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tالعربيةAzərbaycancaŽemaitėškaБеларуская (тарашкевіца)БеларускаяБългарскиবাংলাCatalàČeštinaDanskDeutschΕλληνικάEnglishEsperantoEuskaraفارسیSuomiFrançaisNordfriiskGaeilgeGàidhligGalegoAvañe&#039;ẽעבריתHrvatskiMagyarՀայերենBahasa IndonesiaIdoMedžuslovjanskyItaliano日本語한국어KurdîLëtzebuergeschLietuviųLatviešuമലയാളംBahasa Melayuမြန်မာဘာသာNederlandsNorsk bokmålPicardPolskiPortuguêsRomânăРусскийSimple EnglishSlovenčinaSlovenščinaСрпски / srpskiSvenskaதமிழ்ไทยToki ponaTürkçeУкраїнськаOʻzbekcha / ўзбекча粵語中文\n\t\t\t\n\t\t\tEditar enlaces\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tArtículo\n\nDiscusión\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tespañol\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tLeer\n\nEditar\n\nVer historial\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nHerramientas\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tHerramientas\n\tmover a la barra lateral\n\tocultar\n\n\n\t\n\n\t\n\t\tAcciones\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nLeer\n\n\n\nEditar\n\n\n\nVer historial\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tGeneral\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tLo que enlaza aquíCambios en enlazadasSubir archivoEnlace permanenteInformación de la páginaCitar esta páginaObtener URL acortadoCambiar al analizador antiguo\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tImprimir/exportar\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tCrear un libroDescargar como PDFVersión para imprimir\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tEn otros proyectos\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWikimedia CommonsElemento de Wikidata\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tApariencia\n\tmover a la barra lateral\n\tocultar\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tDe Wikipedia, la enciclopedia libre\n\t\t\t\t\t\n\t\t\t\t\t(Redirigido desde «El veloz zorro marrón salta el perro perezoso»)\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tUn pangrama (del griego: παν γραμμα, 'todas las letras') o frase holoalfabética es un texto que usa todas las letras posibles del alfabeto de un idioma.[1] Los pangramas más llamativos y desafiantes son por lo general los que usan el menor número de letras, adeptamente llamados pangramas perfectos o heterogramas.[2] Sin embargo, los pangramas que son largos, extremadamente adornados, cómicos o excéntricos son igualmente llamativos. \n\nTodos los tipos de pangramas son comúnmente utilizados didácticamente para cursos de caligrafía y tipografía,[3] así como para visualizar fuentes tipográficas en editores de texto.[4]\n\nEn cierto sentido, los pangramas son lo opuesto a los lipogramas, donde el objetivo es omitir una o más letras.Práctico uso en tipografía de un pangrama en inglés con mayúsculas y minúsculas.\n\nEjemplos de pangramas en español (con y sin marcas diacríticas) son:\n(Simple y con sentido) Un jugoso zumo de piña y kiwi bien frío es exquisito y no lleva alcohol.\n(De dos narraciones) Benjamín pidió una bebida de kiwi y fresa. Noé, sin vergüenza, la más exquisita champaña del menú.\n(De una sola narración) Jovencillo emponzoñado de whisky: ¡qué figurota exhibe!\nEs de notar que, además de ser un pangrama memorable y eficiente, presenta ligaduras de interés para el habla hispana.\n(De dos narraciones) José compró en Perú una vieja zampoña. Excusándose, Sofía tiró su whisky al desagüe de la banqueta.\n(De dos narraciones) El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja. (Este es usado para mostrar los estilos de letra en el sistema operativo Windows de Microsoft)[5]\n\nEjemplos en otros idiomas[editar]\nAlemán: \n(sin umlauts ni ß): Sylvia wagt quick den Jux bei Pforzheim (Sylvia se atrevió rápidamente a bromear en  Pforzheim).[6]\n(sin umlauts ni ß): Franz jagt im komplett verwahrlosten Taxi quer durch Bayern (Franz cruzó Baviera a toda velocidad en el taxi completamente degradado).\n(con umlauts y ß): Zwölf Boxkämpfer jagten Victor quer über den großen Sylter Deich (Doce boxeadores persiguieron a Víctor a través del gran dique de Sylt).\n(con umlauts y ß, cada letra aparece una vez exactamente): \"Fix, Schwyz!\" quäkt Jürgen blöd vom Paß (\"¡Vamos, Schwyz!\", gimotea Jürgen tontamente desde el paso).\nÁrabe:\nنص حكيم له سر قاطع وذو شأن عظيم مكتوب على ثوب أخضر ومغلف بجلد أزرق (Un texto sabio con un secreto decisivo y de gran importancia, escrito sobre una tela verde y cubierto de cuero azul.)\nArmenio:\nՉին ֆիզիկոսը օճառաջուր ցողելով բժշկում է հայ գնդապետի փքված ձախ թևը (Un físico chino cura el brazo izquierdo hinchado de un coronel armenio rociándole aloe vera).\nAzerbaiyano:\nZəfər, jaketini də papağını da götür, bu axşam hava çox soyuq olacaq. (Zafar, coge tu chaqueta y tu sombrero, esta noche hará mucho frío.)\nGecə ürəyiyumşaq əjdaha paxıl ovçunun tüfəngini söküb kağıza bükdü. (Por la noche, el dragón bondadoso desmanteló el rifle del envidioso cazador y lo envolvió en papel.)\nBielorruso\nУ Іўі худы жвавы чорт у зялёнай камізэльцы пабег пад'есці фаршу з юшкай (En el peor de los rasgos enérgicos del Ivie en el chaleco verde corrió a comer carne a la sopa). Traducción mediante el Traductor de Google.\nBúlgaro:\nАх чудна българска земьо, полюшвай цъфтящи жита. (Ah, maravillosa tierra búlgara, agita tus trigos florecientes).\nЗа миг бях в чужд плюшен скърцащ фотьойл. (Por un momento estuve en un extraño sillón de felpa chirriante).\nBirmano:\nသီဟိုဠ်မှ ဉာဏ်ကြီးရှင်သည် အာယုဝဍ္ဎနဆေးညွှန်းစာကို ဇလွန်ဈေးဘေးဗာဒံပင်ထက် အဓိဋ္ဌာန်လျက် ဂဃနဏဖတ်ခဲ့သည်။ (El gran sabio de Ceilán recitó las prescripciones ayurvédicas con gran concentración, sentado bajo un almendro junto al mercado.)\nCatalán: \n(con ç) Jove xef, porti whisky amb quinze glaçons d'hidrogen, coi! (Joven cocinero, traiga whisky con quince cubitos de hidrógeno, ¡caray!).\n(con ŀl, ç, diéresis y tildes abierta y cerrada) El faŀlaç pingüí zoòfob menja un yg d'haixix, roques i kiwis covats. (El falaz pingüino zoófobo que come un yottagramo de hachís, rocas y kiwis hechos a fuego lento).\nCheco:\nPříliš žluťoučký kůň úpěl ďábelské ódy. (El caballo demasiado amarillo relinchaba odas diabólicas.)\nNechť již hříšné saxofony ďáblů rozezvučí síň úděsnými tóny waltzu, tanga a quickstepu. (Que los saxofones pecaminosos de los demonios llenen la sala con tonos aterradores de vals, tango y quickstep.)\nGallego: \nNecesitamos unha tipografía chuliña de cor kiwi, que lle zorregue unha labazada visual á xente (Necesitamos una tipografía chula de color kiwi, que impacte visualmente a la gente).[6]\nDanés: \nQuizdeltagerne spiste jordbær med fløde, mens cirkusklovnen Walther spillede på xylofon (Los participantes del examen comieron fresas con crema mientras Walther, el payaso de circo, tocaba el xilófono).\nEsloveno: \nŠerif bo za vajo spet kuhal domače žgance (Para un ejercicio, el comisario volverá a hacer papilla casera).\nPiškur molče grabi fižol z dna cezijeve hoste (Lambry agarra silenciosamente frijoles desde el fondo del bosque cezij).\nEspañol:\nWhisky bueno: ¡excitad mi frágil pequeña vejez! (47 caracteres)\nExtraño pan de col y kiwi se quemó bajo fugaz vaho. (50 caracteres)\nCada vez que trabajo Félix me paga con whisky añejo. (51 caracteres)\nQuiere la boca exhausta vid, kiwi, piña y fugaz jamón (53 caracteres)\nJovencillo emponzoñado de whisky: ¡qué figurota exhibe! (para las fuentes tipográficas bajo las distribuciones GNU/Linux) (55 caracteres)\nEmpeñado en ir a Washington: ¡qué gran viaje! (para las fuentes tipográficas bajo las distribuciones GNU/Linux) (45 caracteres)\nEl viejo Señor Gómez pedía queso, kiwi y habas, pero le ha tocado un saxofón. (77 caracteres)\nEl jefe buscó el éxtasis en un imprevisto baño de whisky y gozó como un duque. (78 caracteres)\nEl pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro. (99 caracteres)\nJosé compró una vieja zampoña en Perú. Excusándose, Sofía tiró su whisky al desagüe de la banqueta. (99 caracteres)\nEl cadáver de Wamba, rey godo de España, fue exhumado y trasladado en una caja de zinc que pesó un kilo. (104 caracteres)\nEl veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja. (Para las fuentes de Microsoft) (112 caracteres)\nSegún Martín, Julián, José y Pedro, comer un quesillo nicaragüense con bistek dando vueltas escuchando una ópera de Borgoña y pidiendo whisky con frutas exóticas y luego comprar zapallo es beneficioso. (201 caracteres, escrito por Sebastián Minaya)\nYo oí que en Perú, Benín, Afganistán, Venezuela y Suecia, recorren varios kilómetros para lograr conseguir bebidas, comida, huertos, juegos, drogas enérgicas, whiskys, cuadernos para xerografía y fotos de pingüinos, qué extraño. (228 caracteres, escrito por Sebastián Minaya)\nEsperanto: \nHe, Miĥĉj', ĵaŭdgrafbluzpec' vektŝanĝos! (Oye, Mitch, ¡la camiseta del jueves se cambiará!, 32 letras, publicado en el foro de soc.culture.esperanto)\nLaŭtgorĝa ĉeĥ' poŝbaze havas kafmucidaĵojn. (Un checo de voz ruidosa tiene posos de café en su bolsillo, 37 letras, publicado por Viktor Aroloviĉ)\nGajecvoĉa fuŝmuĝaĵo de knabĥoro haltpaŭzis. (El alegre balbuceo de un coro de niños se detuvo, 38 letras)\nĈu kvazaŭdeca fuŝĥoraĵo ĝojigeblas homtipon? (¿Puede una tontería aparentemente decente hacer feliz a un ser humano?, 39 letras, variación de Marc van Oostendorp)\nEble ĉiu kvazaŭ-deca fuŝĥoraĵo ĝojigos homtipon? (¿Tal vez cualquier tontería semidecente pueda hacer feliz a la humanidad?, 41 letras, publicado por Marc van Oostendorp)\nLaŭ poŝtaĵoj, eĥis baseca voĉo de Zamenhof kuraĝige. (Según el correo, la voz grave de Zamenhof resonó de manera alentadora, 43 letras, publicado por Sibayama Zyun'iti)\nĈi-ĵaŭde ŝi havigu informojn pri biciklista ĝazo-ĥoro. (Este jueves debería ofrecer información sobre un coro de jazz ciclista, 45 letras, publicado por Paul Peeraerts)\nAĥ! Kaŝiĝu vi hejme! Apenaŭ uzeblas ĉi fieca langtordaĵ'. (¡Ah! ¡Escóndete en casa! Este vil trabalenguas es casi inútil, 45 letras)\nKuba harpisto ŝajnis amuziĝi facilege ĉe via ĵaŭda ĥoro. (Un arpista cubano parecía estar pasándoselo muy bien en su coro del jueves, 47 letras[6])\nHamake ĉi-ĵaŭdvespere, eĥata bonfik' plezurece ĝojigos ŝin. (En una hamaca este jueves por la noche, un buen polvo resonante la deleitará de placer, 49 letras)\nDeca paroĥo havebligas ŝinkon. Almozatoj furaĝas ĉiuĵaŭde. (Una parroquia decente pone a disposición el jamón. Los limosneros recogen comida todos los jueves, 50 letras)\nŜajnas ke sagaca monaĥo laŭtvoĉe rifuzadis preĝi sur herbaĵo. (Parece que un monje astuto se negó rotundamente a rezar sobre un trozo de hierba, 52 letras)\nLaŭ Ludoviko Zamenhof bongustas freŝa ĉeĥa manĝaĵo kun spicoj. (Según Ludwik Zamenhof, la comida checa fresca con especias tiene un sabor delicioso, 53 letras, escrito por Aaron Chapman)\nHekatombaj basŝafoj, ĝue zorgu pri viaj ĉiuĵaŭdaj ĥorlecionoj! (Ovejas bajas de Hecatomb, ¡disfruten de sus lecciones de coro del jueves!, 53 letras, publicado por Marko Rauhamaa)\nHo ve, ĵus nia ĥorestro preskaŭ ŝokiĝis ĉe l' fiecaj zumadbruegoj (Oh, Dios mío, justo ahora nuestro director de coro casi se sorprendió por los desagradables zumbidos, 53 letras)\nEstonio:\nSee väike mölder jõuab rongile hüpata. (Este pequeño molinero consigue subirse al tren.)\nEuskera:\nVaudeville itxurako filmean yogi ñaño bat jipoitzen dute Quebec-en whiski truk (En la película con pinta de vodevil dan una paliza a un yogui enano en Quebec a cambio de whisky).[6]\nEwé:\n\"Dzigbe zã nyuie na wò, ɣeyiɣi didi aɖee nye sia no see, ɣeyiɣi aɖee nye sia tso esime míeyi suku\", \"Ŋdɔ nyui, ɛ nyteƒe, míagakpɔ wò ake wuieve kele ʋ heda kpedeŋu\". (\"Buenas noches, hace mucho tiempo que no nos vemos, hace tiempo que no vamos a la escuela\", \"Buenas tardes, ɛ nyté, nos vemos de nuevo doce kele ɛlɛ heda stone\")\nFinés:\n(Un pangrama perfecto que no incluye caracteres que solo se encuentran en términos de origen extranjero: b, c, f, q, w, x, z, å): Törkylempijä vongahdus (Un amante excesivo, un cortejador).\nFrancés: \nPortez ce whisky au vieux juge blond qui fume (Lleve este whisky al viejo juez rubio que fuma).\n(con signos diacríticos) Le cœur déçu mais l'âme plutôt naïve, Louÿs rêva de crapaüter en canoë au delà des îles, près du mälströn où brûlent les novæ.\nGaélico irlandés:\nD'fhuascail íosa, Úrmhac na hóighe Beannaithe, pór Éava agus adhaimh. (Jesús, el Hijo de la Santísima Virgen, redimió la raza de Eva y Adán.)\nD'ith cat mór dubh na héisc lofa go pras (Un gran gato negro se comió rápidamente el pescado podrido.)\nGeorgiano:\nგვიპყრობდა კვამლი, ჩიტებს გაჰქონდათ ჟღურტული ზეცაში, ძილს უფრთხობს ჭიქების ჯახუნი მიწებში (El humo nos envolvió, los pájaros se dejaron llevar por el cielo veloz, el choque de los cristales en los campos nos mantiene despiertos.)\nGriego:\nΞεσκεπάζω τὴν ψυχοφθόρα βδελυγμία (Desenmascaro la repugnante depravación del alma).\n(con sigma final (ς)): Σὲ γνωρίζω ἀπὸ τὴν κόψη τοῦ σπαθιοῦ τὴν τρομερή (Te reconozco por el terrible filo de tu espada). (Aparece en el Himno a la Libertad (Ύμνος εις την Ελευθερίαν), himno nacional de Grecia y Chipre).\nHebreo: \nדג סקרן שט בים מאוכזב ולפתע מצא לו חברה (Un pez curioso nadaba en el mar y de pronto encontró una amiga).\nעטלף אבק נס דרך מזגן שהתפוצץ כי חם pangrama perfecto (contiene todas las formas medias de las letras más las formas finales solo una vez) (Un murciélago de polvo huyó a través de un acondicionador de aire el cual explotó por el calor).\nאו הנסה אלהים, לבוא לקחת לו גוי מקרב גוי, במסת באתת ובמופתים ובמלחמה וביד חזקה ובזרוע נטויה, ובמוראים גדלים: ככל אשר-עשה לכם יהוה אלהיכם, במצרים--לעיניך [ Deuteronomio 4:34].\nלכן חכו לי נאם ידוד ליום קומי לעד, כי משפטי לאסף גוים לקבצי ממלכות, לשפך עליהם זעמי כל חרון אפי, כי באש קנאתי תאכל כל הארץ (Libro de Sofonías 3:8 - El único verso en el Tanaj que contiene todas las formas medias de las letras más las formas finales.\nשפן אכל קצת גזר בטעם חסה, ודי. (Un conejo comió un poco de zanahoria que sabía a lechuga, y eso es todo).\nHúngaro:\nEgy hűtlen vejét fülöncsípő, dühös mexikói úr ázik Quitóban. (Un señor mexicano enojado, que acecha a su yerno infiel, está en Quito.)\nEgy hűtlen vejét fülöncsípő, dühös mexikói úr Wesselényinél mázol Quitóban. (Un caballero mexicano enojado, que espía a su yerno infiel, visita a Wesselényi en Quito.)\nIndonesio:\nMuharjo seorang xenofobia universal yang takut pada warga jazirah, contohnya Qatar. (Muharjo es un xenófobo universal que teme a la gente de la península, por ejemplo de Catar.)\nInglés: \nJackdaws love my big sphinx of quartz (A las grajillas les encanta mi gran esfinge de cuarzo).\n The quick brown fox jumps over the lazy dog (El veloz zorro marrón salta sobre el perro perezoso).\nGrumpy wizards make toxic brew for the evil queen and Jack (Brujos gruñones preparan pócimas tóxicas para la malvada reina y Jack).\nPack my box with five dozen liquor jugs (Empaca mi caja con cinco docenas de jarras de licor).\nThe five boxing wizards jump quickly (Los cinco magos boxeadores saltan rápidamente).\nIslandés: \nKæmi ný öxi hér ykist þjófum nú bæði víl og ádrepa (Si hubiere un hacha aquí, los ladrones serían disuadidos y castigados).\nItaliano: \n\"Ma la volpe col suo balzo ha raggiunto il quieto Fido\" (Pero el zorro con su salto ha alcanzado al calmoso Fido) - sin las letras extranjeras j, k, w, x, y.\n\"Quel vituperabile xenofobo zelante assaggia il whisky ed esclama: alleluja! (Aquel vituperable xenófobo apasionado prueba su whisky y exclama: ¡Aleluya!).\nJaponés: \nIroha. Construir un pangrama corto en japonés es fácil, pues prácticamente todos los caracteres del silabario contienen vocales; construir un pangrama perfecto en japonés, en cambio, es un poco más difícil debido al gran número de caracteres: hay más de 100 grafemas básicos o \"kana\" (incluyendo los dígrafos). El poema llamado \"Iroha\" es un pangrama perfecto cuando se consideran solo los caracteres básicos sin modificar del silabario.\nLatín:\nGaza frequens Lybicum duxit Karthago triumphum (que podría traducirse como: La abundante riqueza de Libia llevó a Cartago al triunfo) ( Este texto aparece en libros de caligrafía hacia los siglos XVII y XVIII, e incluye las letras del latín; algunas están repetidas).\nLituano:\nĮlinkdama fechtuotojo špaga sublykčiojusi pragręžė apvalų arbūzą (Encorvar la espada de esgrima apagó y perforó una sandía).\nLojban: \n.o'i mu xagji sofybakni cu zvati le purdi (¡Cuidado, cinco vacas soviéticas hambrientas están en el jardín!).\nNeerlandés:\nSexy qua lijf, doch bang voor 't zwempak (De cuerpo sexy, pero con miedo al traje de baño).\nPa's wijze lynx bezag vroom het fikse aquaduct (El sabio lince de papá observó devotamente el formidable acueducto).\nNoruego\nVår sære Zulu fra badeøya spilte jo whist og quickstep i min taxi (Nuestro extraño Zulú de la Isla del Baño realmente jugó whist y quickstep en mi taxi).\nHøvdingens kjære squaw får litt pizza i Mexico by (La querida esposa del jefe indio obtiene un poco de pizza en Ciudad de México).\nPolaco: \n(exactamente una vez cada letra) Pójdźże, kiń tę chmurność w głąb flaszy (Vamos, echa tu tristeza en el fondo de una botella).\nPchnąć w tę łódź jeża lub ośm skrzyń fig (Empujar en este barco un erizo u ocho cajas de higo).\nStróż pchnął kość w quiz gędźb myjń. (El vigilante metió el hueso en el cuestionario de lavado de fax.) - todas las letras[7]\nPortugués \n(sin signos diacríticos)\nUm pequeno jabuti xereta viu dez cegonhas felizes. (Una curiosa tortuguita vio diez felices cigüeñas).\nZebras caolhas de Java querem mandar fax para gigante em New York (Zebras de un solo ojo de Java quieren enviar fax para gigante en New York).\nGazeta publica hoje no jornal uma breve nota de faxina na quermesse (La gaceta publica hoy en el diario una breve nota sobre la limpieza de la kermesse).\n(con signos diacríticos)\nJaz em prisão bota que vexa dez cegonhas felizes  (Yace en prisión la bota que veja a diez cigüeñas felices).\nLuís argüia à Júlia que «brações, fé, chá, óxido, pôr, zângão» eram palavras do português  (Luis le argüía a Julia que «brações (brazotes), fé (fe), chá (té), óxido, pôr (poner), zângão (zángano)» eran palabras del portugués).\nRumano: \nGheorghe, obezul, a reuşit să obţină jucându-se un flux în Quebec de o mie kilowaţioră (Gheorghe, el obeso, se las arregló para obtener mil kilovatios-hora tocando el flux en Quebec).[cita requerida]\nRuso: \n(sin ъ) В чащах юга жил бы цитрус? Да, но фальшивый экземпляр! (¿Una fruta cítrica viviría en los arbustos del sur? ¡Sí, pero solamente una de mentira!).\n(Cada letra aparece exactamente una vez) Эх, чужак! Общий съём цен шляп (юфть)—вдрызг! (¡Eh, alien! ¡Las recaudaciones generales de los precios de los sombreros (de cuero grueso) se han estrellado!).\n(Cada letra aparece exactamente una vez) Экс-граф? Плюш изъят. Бьём чуждый цен хвощ! (¿Exconde? La felpa ha sido confiscada. ¡Superamos el precio de la desconocida cola de caballo!).\nСъешь ещё этих мягких французских булок, да выпей же чаю. (Utilizado en las fuentes tipográficas de Windows) (Coma más de estos suaves rollitos franceses, y beba té).\nSánscrito:\nघटाश्च शङ्खाश्च धरन्ति तोयम् ।\nशठादिमूढा न भजन्ति सत्यम् ।\nवराहयूथानि किलन्ति पुच्छैः ।\nगडेषु झञ्झाः सबलं फणन्ते ॥ (Ollas y caracolas retienen agua.\nLos necios, como los tramposos, no adoran la verdad.\nManadas de jabalíes pululan con sus colas.\nLos jhanjhas en los gades tienen capuchas robustas.)\nSerbio: \nЉубазни фењерџија чађавог лица хоће да ми покаже штос.\nLjubazni fenjerdžija čađavog lica hoće da mi pokaže štos (Un sereno bueno con la cara mugrienta quiere enseñarme un truco).\nSueco: \n(faltan la \"q\", \"x\" y \"z\") Flygande bäckasiner söka hwila på mjuka tuvor. (Las agachadizas vuelan buscando reposo en mullidos mechones [de hierba]).\n(Cada letra aparece exactamente una vez) Yxskaftbud, ge vår wc-zon-mö iq-hjälp (Mensajero asidor de hacha, proporciona a nuestra doncella de zona váter ayuda intelectual).\nTailandés:\nนายสังฆภัณฑ์ เฮงพิทักษ์ฝั่ง ผู้เฒ่าซึ่งมีอาชีพเป็นฅนขายฃวด ถูกตำรวจปฏิบัติการจับฟ้องศาล ฐานลักนาฬิกาคุณหญิงฉัตรชฎา ฌานสมาธิ (El Sr. Sangkhaphan Hengphithakfang, un anciano que trabaja como vendedor de botellas, arrestado por la policía y acusado en el tribunal La base del reloj robado de Lady Chatchada Jhana Samadhi).\nTurco:\nPijamalı hasta yağız şoföre çabucak güvendi. (El conductor moreno rápidamente confió en el paciente en pijamas).\nSaf ve haydut kız çocuğu bin plaj görmüş. (La ingenua y bandida niña pequeña ha visto mil playas).\nUcraniano: \n(Sin apóstrofo)Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів! (Los oíste a ellos, hija, ¿eh? Eres graciosa, ¡despídete sin esos calcetines!).\n(con apóstrofo) Жебракують філософи при ґанку церкви в Гадячі, ще й шатро їхнє п’яне знаємо. (Los filósofos mendigaban en el pórtico de la iglesia de Hadiach, además de que los sabemos borrachos en una carpa).\nVietnamita:\nTrường quê em do bố của em xây kỹ nên sạch và đẹp lắm (La escuela de mi ciudad natal fue construida cuidadosamente por mi padre, por lo que es muy limpia y hermosa.)\n\nVéase también[editar]\nThe quick brown fox jumps over the lazy dog\nPangrama perfecto\n\nReferencias[editar]\n↑ Calzado, Juan Luis Roldán (2 de octubre de 2008). Me la Juego a Letras. Lulu.com. ISBN 978-1-4092-2893-6. Consultado el 11 de agosto de 2025. \n↑ Serra, Màrius (2000). Verbalia: juegos de palabras y esfuerzos del ingenio literario. Ediciones Península. ISBN 978-84-8307-321-6. Consultado el 11 de agosto de 2025. \n↑ «The Quick Brown Fox and other pangrams». Type Design Class (en inglés estadounidense). Consultado el 11 de agosto de 2025. \n↑ Dyson, Mary C.; Suen, Ching Y. (2016). Digital Fonts and Reading (en inglés). World Scientific. ISBN 978-981-4759-54-0. Consultado el 11 de agosto de 2025. \n↑ Evans, Rod L. (5 de junio de 2012). Tyrannosaurus Lex: The Marvelous Book of Palindromes, Anagrams, and Other Delightful and Outrageous Wordplay. Penguin. p. 51. ISBN 978-1-10-158863-5. \n1 2 3 4 Rutter, Richard (30 de octubre de 2014). «List of pangrams» (en inglés). Brighton Reino Unido Reino Unido: Colophon. Consultado el 3 de agosto de 2022. \n↑ Ciura, Marcin (17 de diciembre de 2018). «More perfect Polish pangrams». marcinciura.wordpress.com. \n\n\nEnlaces externos[editar]\nControl de autoridades\nProyectos Wikimedia\n Datos: Q188546\n Multimedia: Pangrams / Q188546\n\n\n\n\n Datos: Q188546\n Multimedia: Pangrams / Q188546\n\n\n\n\n\n\n\n\n\n\n\n\nObtenido de «https://es.wikipedia.org/w/index.php?title=Pangrama&amp;oldid=170956539»\n\t\t\t\t\tCategorías: EscrituraJuegos de palabrasTipografíaCategoría oculta: Wikipedia:Artículos con pasajes que requieren referencias\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t Esta página se editó por última vez el 13 dic 2025 a las 01:35.\n\tLa página fue renderizada con Parsoid.\n\tEl texto está disponible bajo la Licencia Creative Commons Atribución-CompartirIgual 4.0; pueden aplicarse cláusulas adicionales. Al usar este sitio aceptas nuestros términos de uso y nuestra política de privacidad.Wikipedia&#174; es una marca registrada de la Fundación Wikimedia, una organización sin ánimo de lucro.\n\n\n\t\t\t\t\n\tPolítica de privacidad\n\tAcerca de Wikipedia\n\tLimitación de responsabilidad\n\tContacto legal y de seguridad\n\tCódigo de conducta\n\tDesarrolladores\n\tEstadísticas\n\tDeclaración de cookies\n\tVersión para móviles\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nBuscar\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tBuscar\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nCambiar a la tabla de contenidos\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tPangrama\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n60 idiomas\n\t\t\t\n\t\t\t\n\nAñadir tema",
+      "title": "https://es.wikipedia.org/wiki/El_veloz_zorro_marr%C3%B3n_salta_el_perro_perezoso (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789526941170,
+        "end": 1789526942304
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526942306,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e2262001emwFnIy83v6WyV",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e1b38001lOIjHXgZbYEAat",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 15259,
+      "output": 229,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15488,
+      "headroom": 23368,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.308Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.308Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.309Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.310Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.310Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.326Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 15488,
+  "providerTokens": 15488,
+  "estimatedInputTokens": 9326,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 15259,
+    "cacheRead": 0,
+    "output": 229
+  },
+  "overflow": false,
+  "headroom": 23368,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.326Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.328Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.328Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.534Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526942534,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e2345001RxNHbPIOWdUeOP",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e2276001tuZT2QDLkbyED9",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526942535,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e23470014bpKceiwsuqogB",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e2276001tuZT2QDLkbyED9",
+    "type": "tool",
+    "callID": "call_90f49ee1b9120e1b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526942535,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e2346001N3D1P31MOVGnq1",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e2276001tuZT2QDLkbyED9",
+    "type": "text",
+    "text": "Let me open https://bauertypes.com/que-es-un-pangrama/ and read what it says.",
+    "time": {
+      "start": 1789526942535,
+      "end": 1789526942535
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:02.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526942535,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e23470014bpKceiwsuqogB",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e2276001tuZT2QDLkbyED9",
+    "type": "tool",
+    "callID": "call_90f49ee1b9120e1b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://bauertypes.com/que-es-un-pangrama/"
+      },
+      "time": {
+        "start": 1789526942535
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.000Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526943000,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e23470014bpKceiwsuqogB",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e2276001tuZT2QDLkbyED9",
+    "type": "tool",
+    "callID": "call_90f49ee1b9120e1b",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://bauertypes.com/que-es-un-pangrama/"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789526942535,
+        "end": 1789526942999
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789526943000,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.000Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526943000,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e2518001UngJ30R5WZAcz6",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e2276001tuZT2QDLkbyED9",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 40035,
+      "output": 153,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 40188,
+      "headroom": -1332,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.000Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.000Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.001Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.001Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.002Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.002Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.002Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.005Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 40188,
+  "providerTokens": 40188,
+  "estimatedInputTokens": 9349,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 40035,
+    "cacheRead": 0,
+    "output": 153
+  },
+  "overflow": true,
+  "headroom": -1332,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.005Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.006Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.006Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.007Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.007Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.007Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.007Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.007Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.008Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.433Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526943433,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e26c9001IB2ASE915nX3mT",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e251f001FQczpHxyhsAg8z",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.434Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526943434,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e26ca001PaSorYpUKezVT1",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e251f001FQczpHxyhsAg8z",
+    "type": "text",
+    "text": "Let me search the web for ¿La frase \"quick brown fox\" es un lipograma en e.\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789526943434,
+      "end": 1789526943434
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526943435,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e26cb001BaClUZSx3CVt32",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e251f001FQczpHxyhsAg8z",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 32393,
+      "output": 124,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 32517,
+      "headroom": 6339,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.435Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.436Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526943436,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e26cb003xOR79rqc2X5QQa",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e26cb00253fgX33Kmr5GW5",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789526943435,
+      "end": 1789526943435
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.436Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.436Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.436Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.437Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.437Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.438Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.438Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.506Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526943507,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e27120019ydjRfBhcRo2kU",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e26cc001yXRF3InJPcqsbn",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.507Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.507Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.507Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.507Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526943507,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e2713002nfG1rhxgQuLzgP",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e26cc001yXRF3InJPcqsbn",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789526943507,
+      "end": 1789526943507
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.507Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526943507,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "part": {
+    "id": "prt_0a81e2713003ZN43mKinzL9Qv3",
+    "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+    "messageID": "msg_0a81e26cc001yXRF3InJPcqsbn",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8673,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8746,
+      "headroom": 30110,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.507Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.508Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.508Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.508Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.508Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.509Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.509Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.509Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.509Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789526943509,
+  "sessionID": "ses_f57e1ed84ffeDSoqB1e9CjZHD0"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.510Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.510Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.510Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.510Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mdUtM2DRZ7",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:49:03.510Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

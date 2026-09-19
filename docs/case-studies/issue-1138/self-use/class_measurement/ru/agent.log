@@ -1,0 +1,2825 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.853Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.854Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Насколько глубоко обычно уходят корни дуба? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.854Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.854Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.880Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Насколько глубоко обычно уходят корни дуба?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Насколько глубоко обычно уходят корни дуба?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.880Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.882Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.884Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.884Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.890Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.893Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.903Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7420,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.904Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.924Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:19:24.936Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.937Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.937Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.937Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.937Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.937Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.937Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.937Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 55,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.938Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:19:24.938Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.950Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.950Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.952Z",
+  "service": "session",
+  "id": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU",
+  "title": "New session - 2026-09-16T03:19:24.952Z",
+  "time": {
+    "created": 1789528764952,
+    "updated": 1789528764952
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.953Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.953Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.953Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.964Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.965Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c60de7fferRZM6u5B2FmYYC/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.965Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c60de7fferRZM6u5B2FmYYC/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.973Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 8,
+  "method": "POST",
+  "path": "/session/ses_f57c60de7fferRZM6u5B2FmYYC/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.979Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.981Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.983Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.986Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.986Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.987Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.988Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.988Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.988Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.988Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.989Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:24.989Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.385Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.391Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.414Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.441Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:25.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:26.059Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528766059,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839f666001aDDTK2tHG0Uc8s",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839f3cd001sTzaM9Trb0vFQx",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:26.059Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:26.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528766060,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839f66b0029Py4JZ17yMPkWS",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839f3cd001sTzaM9Trb0vFQx",
+    "type": "tool",
+    "callID": "call_00ea5396d59a2abe",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:26.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528766060,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839f66b001vLrbxaeJ0PbpfH",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839f3cd001sTzaM9Trb0vFQx",
+    "type": "text",
+    "text": "Поищу в интернете: Насколько глубоко обычно уходят корни дуба.",
+    "time": {
+      "start": 1789528766060,
+      "end": 1789528766060
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:26.060Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528766060,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839f66b0029Py4JZ17yMPkWS",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839f3cd001sTzaM9Trb0vFQx",
+    "type": "tool",
+    "callID": "call_00ea5396d59a2abe",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Насколько глубоко обычно уходят корни дуба"
+      },
+      "time": {
+        "start": 1789528766060
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528767658,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839f66b0029Py4JZ17yMPkWS",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839f3cd001sTzaM9Trb0vFQx",
+    "type": "tool",
+    "callID": "call_00ea5396d59a2abe",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Насколько глубоко обычно уходят корни дуба"
+      },
+      "output": "Title: PREDAWN WATER POTENTIAL, AS AN INDICATOR OF WATER AVAILABILITY OF TREE STANDS\nURL: https://doi.org/10.21513/0207-2564-2018-3-79-92\nPublished: 2018-01-01T00:00:00.000Z\nAuthor: А. Г. Молчанов\nHighlights:\nРазличные породы деревьев обладают корневой системой, достигающей разной глубины. В среднем, наибольшее количество всасывающих корней расположено в верхнем 0-50-см слое почвы. Однако отдельные тяжи проводящих корней могут проникать и в более глубокие горизонты. Например, у дуба корни могут уходить на глубину более 10 метров, до самых глубоких слоев почвы (Ванин, 1960; Иванов, 1991) .\n...\nРаскопки корневых систем в нагорной дубраве в Теллермановском опытном лесничестве Института лесоведения РАН показали, что корни взрослых растений дуба проникают на глубину до 9 м и больше, достигая не только зоны капиллярной каймы, но и грунтовых вод. По данным М.Г. Романовского и В.В. Мамаева (2002) масса тонких сосущих корней дуба на глубине 6-9.5 м составляет около 10% от общей массы корней толщиной до 1 мм.\n...\nВ лесостепной зоне Теллермановской дубравы, в лизиметре, где ВП почвы относительно равномерен по глубине, взаимосвязь ПВП листа с ВП в почве была довольно близка, R 2 = 0.862 на глубине 25 см и 0.748 на глубине 55 см (рис. 1Б). В 250-летней полево-кленовой дубраве, в период значительного недостатка влаги, когда ВП в слое почвы 0-4 м составлял 2.8-3.2 МПа, взаимосвязь ВП почвы и ПВП растений практически отсутствовала: R 2 = 0.191 на глубине 25 см и 0.064 на глубине 55 см (рис. 1А) (Молчанов, 2007) . В полевокленовой дубраве наблюдение за влажностью почвы проводилось в течение нескольких десятилетий. Исследования показали, что во многие годы, когда наблюдалось пересыхание верхних горизонтов почвы, на глубине от 3 до 6 м находился почти полностью сухой слой, так называемый «мертвый горизонт», ВП которого был ниже 3-4 МПа. Однако значительного усыхание дубрав в регионе не наблюдалось, так как УПГВ находился на глубине 10 м, и при этом проводящие корни дуба были достаточной длины, чтобы достигать капиллярной каймы грунтовых вод (Романовский, Мамаев, 2002) . При определении ПВП листьев оказалось, что его значение не опускалось ниже 1.5-2 МПа, тогда как ВП почвы в слое 0÷4 м составлял менее 3 МПа, что говорит нам о том, что деревья находились в состоянии лучшего влагообеспечения, чем этот горизонт (Молчанов, 2007) .\n...\nОднако такое снижения интенсивности фотосинтеза в течение дня происходят только в малооблачные дни. В пасмурные или в дни с переменной облачностью при низком ПВП листьев интенсивность фотосинтеза может за световой день выше, чем в безоблачный (рис. 3). Это происходит, как указано выше в связи с тем, в пасмурный день в меньшей степени происходит перегрева листвы и полуденный ВП не увеличивается в значительной степени. Таким образом, исследования в дубравах Теллермановского опытного лесничества Института лесоведения РАН показали, что дубовые древостои в засуху, когда влага в горизонтах почвы от 0 до 500 см становится практически недоступной, а водный потенциал почвы становится ниже 3 МПа, предрассветный водный потенциал деревьев дуба достигает 2 МПа, однако деревья дуба продолжают фотосинтезировать. Это происходит в результате того, что корни дуба достигают капиллярной каймы грунтовых вод, уровень которых находится на глубине 10-14 м.\n\n---\n\nTitle: Корневая система дуба обыкновенного 60 фото - BudetDom.com\nURL: https://budetdom.com/stroyka/kornevaya-sistema-duba-obyknovennogo\nPublished: N/A\nAuthor: N/A\nHighlights:\nУже в первый год жизни корневой стержень прорастает на глубину до 1 м. К 40 годам он достигает 10 м, а к 500 годам, по некоторым данным, корни дуба проникают в глубину до 100 м, доставая до глубоких водоносных горизонтов.\n...\nУ дуба наибольшее количество корней сосредоточено на глубине 40–50 см (28 %). На корневые взаимоотношения между дубом и сосной влияет тепловой и водный режим почвы. Якорная корневая система дуба проникает в нижние горизонты почвы.\n...\nДуб имеет хорошо развитую корневую систему со стержневым ветвящимся корнем, уходящим на значительную глубину. Благодаря этому дуб использует для питания большой объем почвы и фунта, хорошо противостоит ветрам и мало подвержен ветровалу.\n\n---\n\nTitle: Дуб черешчатый - Википедия\nURL: https://ru.wikipedia.org/wiki/%D0%94%D1%83%D0%B1_%D1%87%D0%B5%D1%80%D0%B5%D1%88%D1%87%D0%B0%D1%82%D1%8B%D0%B9\nPublished: N/A\nAuthor: N/A\nHighlights:\nКорневая система состоит из очень длинного стержневого корня; с шести—восьми лет начинают развиваться боковые корни, тоже уходящие глубоко в землю.\n\n---\n\nTitle: Корневая система дуба\nURL: https://stroy-podskazka.ru/dub/kornevaya-sistema/\nPublished: N/A\nAuthor: N/A\nHighlights:\nУ молодого дуба в первые 10 лет жизни укоренение идёт на глубину 3-4 м. Ещё через 10 лет оно может достичь 5 м. Отметка 15-20 м характерна для экземпляров, растущих 150-200 лет и более. Среднегодовой прирост, по данным ряда исследований, составляет 200 мм.\n...\nТип корневой системы дуба черешчатого, как уже отмечалось, стержневой. Вертикальные отходы от основной части начинаются в возрасте 10 лет. К 18 годам на них приходится около 20% длины горизонтальных корней. Разветвление происходит достаточно слабо. В основном преобладают скелетные сегменты первого порядка.\n...\nПри посадке саженцев в первый год корни дуба будут столь же посредственными, сколько и появившиеся из желудя. Но тонкими именуют не их, а отростки от мощно развившихся. Такие отростки уходят в землю, формируя плотную корневую массу. Находится она на отметке примерно 900 мм ниже уровня грунта. Основная задача этой части корневой системы — уже не механическое удержание ствола с ветвями и желудями, а снабжение их питательными компонентами и водой; отсюда следует важность поверхностного плодородия для дубрав.\n\n---\n\nTitle: Формирование корневой системы дуба обыкновенного (Quercus robur L.) в зависимости от метода создания культур | Статья в журнале «Молодой ученый»\nURL: https://articles.moluch.ru/archive/62/9537\nPublished: 2014-02-27T15:46:55.000Z\nAuthor: Молодой учёный\nHighlights:\nе: А. И. Ахромейко [1], П. П. Похитон [10], П. С. Погребняк [9], А. Г. Солдатов [12], И. Н. Рахтеенко [11], М. И. Калинин [5], Н. Н. Гузь [4] и др. В чистых насаждениях дуб развивает более\n...\nРезультаты исследования. Проведя раскапывание корневой системы однолетних культур, созданных посевом и посадкой, стоит отметить, что уже в первые годы жизни растений наблюдаются различия в строении корневой системы. Однолетние посевы формируют стержневую корневую систему и образуют горизонтальные ответвления первого порядка. Стоит заметить, что при средней высоте однолетних посевов 19,1 см корневая система имеет среднюю глубину 33,2 см с отклонениями 24–41 см. Графическое изображение глубины проникновения корневой системы в почву показано на рис. 1.\n...\nПри раскапывании 2-летних высеянных культур обнаружено, что дуб создает полностью вертикальную стержневую корневую систему. Корни дуба достигли максимальной глубины 101 см со средней глубиной проникновения стержневого корня на глубину 77,4 ± 8,3 см. Горизонтальные корни представлены корнями первого порядка и незначительными разветвлениями корней второго и третьего порядков. В культурах, созданных посадкой, корневая система хорошо развита, мочковатая, но сосредоточена преимущественно в гумусовом и элювиальном горизонтах. Стержневой корень отсутствует. Наибольшая глубина проникновения корней в почву составляет 61 см со средним проникновением на глубину 48,4 ± 4,6 см. В корневой системе преобладают корни горизонтального направления, которые представлены корнями первого- третьего порядков. Важной биологической особенностью дуба является его регенеративная способность. Это выступает залогом удачного приживления дуба после пересадки. В одно-трехлетних растений дуба с подрезанными корнями происходит восстановление каждого из них. Общая масса корней сеянцев с подрезанной корневой системой после восстановления значительно больше массы корней сеянцев без подрезания.\n...\nПри исследовании корневой системы культур дуба, созданного посадкой, в возрасте 3 лет не выявлено экземпляров, которые бы сформировали стержневую корневую систему. По утверждению А. А. Бондаря [2], в трехлетних культурах формируется такая корневая система, которая в будущем мало изменяться по форме и будет только увеличиваться в размере. Корневая система высаженных растений мочковатая, стержневой корень отсутствует. Средняя глубина залегания корней 76,0 ± 6,8 см, при этом максимальная глубина проникновения отдельных корней третьего-четвертого порядка составляет 94,0 см. Стоит отметить, что средняя высота высаженных культур — 92,0 см. Основная масса корней сосредоточена в верхнем слое почвы глубиной 10–40 см. Раскапыванием трехлетних высаженных растений дуба установлено, что горизонтальные корни распространены в ширину на 46–120 см. Это корни второго порядка с разветвлениями третьего–пятого порядков.\n...\nВ трехлетних культурах дуба, созданных посевом, корни достигли средней глубины 158,6 ± 11,7 см, при этом средняя высота растений составляет 105,8 см. Это указывает на более быстрый рост подземной части растения, чем надземной. Исследованиями было обнаружено, что в верхнем гумусовом слое находится значительное количество тонких горизонтальных корней, что указывает на освоение верхних, богатых питательными веществами, горизонтов. С углублением в почву корненаселеность уменьшается, вертикальные корни встречаются в небольшом количестве, а стержневые проникают в материнскую породу. Особенно развита сеть корней в верхнем 20-сантиметровом слое почвы. Максимальная глубина, на которую проник стержневой корень, составила 194,0 см. Это значит, что корни овладели верхними влагоемкими горизонтами материнской породы. По характеру размещения и внешним признакам мелкие корни на глубине отличаются от корней поверхностных слоев — они слабо разветвленные и тянутся в почве в виде шнуров, а в ходах, созданных отмершими корнями других пород, переплетаются между собой, формируют пучки. Как указывает М. И. Калинин [6], система стержневого корня формируется у 70 % деревьев дуба естественного происхождения. У высаженных культурах количество особей с выраженным доминирующим главным корнем не превышает 45–50 %. Примерно у 30 % растений дуба, созданных посевом, главный корень на глубине 40–60 см разделяется на 2–3 стержневые корни, которые после разветвления почти не отличаются по линейно-весовым характеристикам. Это подтверждается и нашими исследованиями.\n\n---\n\nTitle: Корневая система дуба фото Art-and-Stone.ru\nURL: https://art-and-stone.ru/remont/s0000010930\nPublished: N/A\nAuthor: N/A\nHighlights:\nКак глубоко уходят корни дуба\n...\nУже в первый год жизни корневой стержень прорастает на глубину до 1 м. К 40 годам он достигает 10 м, а к 500 годам, по некоторым данным, корни дуба проникают в глубину до 100 м, доставая до глубоких водоносных горизонтов.\n...\nНаибольшая глубина проникновения корней в почву составляет 61 см со средним проникновением на глубину 48,4 ± 4,6 см. В корневой системе преобладают корни горизонтального направления, которые представлены корнями первого- третьего порядков. Важной биологической особенностью дуба является его регенеративная способность.\n\n---\n\nTitle: ОСОБЕННОСТИ СТРУКТУРНОЙ ОРГАНИЗАЦИИ ЛЕСНЫХ ПОЧВ ДУБРАВ РАЗЛИЧНЫХ ТИПОВ МЕСТНОСТИ\nURL: https://cyberleninka.ru/article/n/osobennosti-strukturnoy-organizatsii-lesnyh-pochv-dubrav-razlichnyh-tipov-mestnosti\nPublished: N/A\nAuthor: Алаева Л. А., Негробова Е. А., Румянцева И. В., Девятова Т.А.\nHighlights:\nСтруктура корневой системы древесных растений зависит от почвенной среды обитания. Условия почвенной среды влияют на длину корней, а также на их распространение в глубину и по горизонтам почвенного профиля [1] . Поэтому исследование структурной организации лесных почв ландшафтной катены проводили в толще корнеобитаемого слоя мощно-стью 50 см. На этой глубине сосредоточена основная масса сосущих корней деревьев и корневых систем травянистых растений дубрав (табл. 2).\n...\nМощная корневая система, ростовые корни длиной до 15 см и диаметром (ø) -0,25-2 мм. У молодых деревьев главный корень есть всегда, у взрослых отсутствует. При близком залегании карбонатов, оподзоленного горизонта и грунтовых вод у дуба формируется поверхностная корневая система. СВОЙСТВА ПОЧВ _____________________________________________________________________________________________________ 2. Стержневые и боковые (якорные) корни углубляются до 10-12 м. В отдельных случаях при глубоком залегании грунтовых вод до 22 м. Клен остролистный Acer platanoídes L., Sp. pl. [14] В возрасте 5-8 лет главный корень и несколько (1-3) самых крупных боковых | Корневая система по своему характеру приближа- корней практически не различаются по размеру. В 9-10 лет начинают домини- | ется к поверхностной. Глубина проникновения ровать боковые корни. Диаметр корневой системы в 10 лет достигает 50 см. | корней около 23 см. Основная масса корней расположена на глубине до 7,5 см. Ясень Агрохимический вестник • № 3 -2026 | 31\n...\nТип корневой системы зависит от экологических условий произрастания. При дефиците влаги и глубоком залегании грунтовых вод хорошо развит стержневой вертикальный корень наряду с массой боковых горизонтальных, расположенных в гумусовом горизонте. При неглубоком залегании грунтовых вод развивается поверхностно-якорная корневая система с множеством боковых вертикальных корней, среди которых главный не выделяется. В условиях близкого стояния грунтовых вод (30-50 см) развивается поверхностная корневая система, состоящая из многочисленных придаточных корней, возникающих в базальной части ствола. Радиус корневой системы 14-15 м. В лесостепных дубравах корни доходят до суглинков на глубине 150-200 см и проникают еще на 50-70 см. 90% сосущих корней находятся на глубине 0-30 см. Распространение мелких корней напрямую зависит от содержания гумуса, водопроницаемости почвы и емкости поглощения. По мере уменьшения этих показателей снижается количество мелких корней. Ландыш майский Convallaria majalis L. [14] Система ортотропных и плагиотропных корневищ (толщина 2-4 мм) | Корневища до 1-2 см, придаточные корни с придаточными корнями. | до 10-18 см. Копытень\n\n---\n\nTitle: Корни дуба: насколько глубоко они растут и почему? | Садоводство\nURL: https://ru.hobbygardeners.com/33183170-oak-roots-how-deep-do-they-grow-and-why\nPublished: 2023-12-16T16:57:14.000Z\nAuthor: N/A\nHighlights:\nДубы относятся к лиственным деревьям с глубокой корневой системой. У них развиваются очень сильные стержневые корни, которые проникают так глубоко в землю, что могут достигать грунтовых вод. Если корень поврежден, дерево быстро погибнет.\n...\nУ дубов глубокие стержневые корни, которые проникают в землю на многие метры и достигают грунтовых вод, а также боковые побеги. Эти корни придают дубу высокую устойчивость и устойчивость к штормам, позволяют ему поглощать питательные вещества и воду из глубоких слоев земли.\n...\nСразу после того, как желудь пророс, садовник может заметить, что в нижней части плода развиваются маленькие сильные корни, которые опускаются вниз. Это так называемые\n...\nвые корни. По\n...\nкам этих ст\n...\nневых корней образуются небольшие корневые отростки, похожие на маленькие волоски.\n...\nБлагодаря своей корневой системе дубы считаются особенно устойчивыми к штормам, поскольку их длинные стержневые корни уходят в землю на много метров. Это придает дереву большую устойчивость.\n...\nБлагодаря длинному стержневому корню дубы могут получать питательные вещества и воду даже из очень глубоких слоев земли. Поэтому нет необходимости удобрять или поливать старые дубы в саду.",
+      "title": "Web search: Насколько глубоко обычно уходят корни дуба",
+      "metadata": {},
+      "time": {
+        "start": 1789528766060,
+        "end": 1789528767654
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.663Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528767663,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839fcad001J5jRG1buoAc3Ri",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839f3cd001sTzaM9Trb0vFQx",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8539,
+      "output": 125,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8664,
+      "headroom": 30192,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.665Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.665Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.668Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.668Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.669Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.669Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.669Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.670Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.671Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.671Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.687Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8664,
+  "providerTokens": 8664,
+  "estimatedInputTokens": 4653,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8539,
+    "cacheRead": 0,
+    "output": 125
+  },
+  "overflow": false,
+  "headroom": 30192,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.688Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.688Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.695Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:27.697Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:28.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528768419,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839ffa0001QXInl9EKU3z3MU",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839fcc7001LFYe7nboOKV1UU",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:28.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:28.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528768420,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839ffa4001Nf9HWYxmLHB6cE",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839fcc7001LFYe7nboOKV1UU",
+    "type": "tool",
+    "callID": "call_8f6db660249ce46b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:28.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528768420,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839ffa3001y4ljz4mk71JvjO",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839fcc7001LFYe7nboOKV1UU",
+    "type": "text",
+    "text": "Открою https://doi.org/10.21513/0207-2564-2018-3-79-92 и прочитаю содержимое.",
+    "time": {
+      "start": 1789528768420,
+      "end": 1789528768420
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:28.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528768420,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839ffa4001Nf9HWYxmLHB6cE",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839fcc7001LFYe7nboOKV1UU",
+    "type": "tool",
+    "callID": "call_8f6db660249ce46b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://doi.org/10.21513/0207-2564-2018-3-79-92"
+      },
+      "time": {
+        "start": 1789528768420
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.750Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528769750,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a839ffa4001Nf9HWYxmLHB6cE",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839fcc7001LFYe7nboOKV1UU",
+    "type": "tool",
+    "callID": "call_8f6db660249ce46b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://doi.org/10.21513/0207-2564-2018-3-79-92"
+      },
+      "output": ", & Molchanov, A. G. (2018). PREDAWN WATER POTENTIAL, AS AN INDICATOR OF WATER AVAILABILITY OF TREE STANDS. Problems of Ecological Monitoring and Ecosystem Modelling, 29(3), 79–92. https://doi.org/10.21513/0207-2564-2018-3-79-92\n",
+      "title": "https://doi.org/10.21513/0207-2564-2018-3-79-92 (text/plain)",
+      "metadata": {},
+      "time": {
+        "start": 1789528768420,
+        "end": 1789528769750
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528769751,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a04d7001PHRQJ8ssNKivVT",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a839fcc7001LFYe7nboOKV1UU",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 24132,
+      "output": 158,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 24290,
+      "headroom": 14566,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.751Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.752Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.752Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.753Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.753Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.753Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.753Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.753Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.753Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.755Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 24290,
+  "providerTokens": 24290,
+  "estimatedInputTokens": 4768,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 24132,
+    "cacheRead": 0,
+    "output": 158
+  },
+  "overflow": false,
+  "headroom": 14566,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.755Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.757Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:29.757Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:30.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528770373,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0744001d1AWVlaSqHDHnB",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a04db001SufpSaplqE9oNm",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:30.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:30.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528770374,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0746001KqD777VHEO9Fo7",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a04db001SufpSaplqE9oNm",
+    "type": "tool",
+    "callID": "call_7ac9c91c17a7bc2f",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:30.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528770374,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0745001TNNeGU9oBSlWD2",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a04db001SufpSaplqE9oNm",
+    "type": "text",
+    "text": "Открою https://budetdom.com/stroyka/kornevaya-sistema-duba-obyknovennogo и прочитаю содержимое.",
+    "time": {
+      "start": 1789528770374,
+      "end": 1789528770374
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:30.374Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528770374,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0746001KqD777VHEO9Fo7",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a04db001SufpSaplqE9oNm",
+    "type": "tool",
+    "callID": "call_7ac9c91c17a7bc2f",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://budetdom.com/stroyka/kornevaya-sistema-duba-obyknovennogo"
+      },
+      "time": {
+        "start": 1789528770374
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.277Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528771278,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0746001KqD777VHEO9Fo7",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a04db001SufpSaplqE9oNm",
+    "type": "tool",
+    "callID": "call_7ac9c91c17a7bc2f",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://budetdom.com/stroyka/kornevaya-sistema-duba-obyknovennogo"
+      },
+      "output": "Корневая система дуба обыкновенного 60 фото - BudetDom.com\n\n\r\n\r\n\r\n\r\n\r\n\n\n\n\n\n\n\n\n\n\n\n\r\n\r\n\t\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\tБудетДом.com\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\t\t\t\t\r\n\t\r\n\t\t\r\n\t\tКатегории\r\n\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\tДизайнФотоГалереяСтройматериалыНовые постыРемонтСтроительство\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\r\n\t\r\n\t\r\n\t\tПопулярное\r\n\t\t\r\n\t\t\t\r\n\t\r\n\t\r\n\t\tОт воды разбухла мебель как исправить\r\n\t\r\n\r\n\t\r\n\t\r\n\t\tКак снять жалюзи горизонтальные чтобы помыть\r\n\t\r\n\r\n\t\r\n\t\r\n\t\tФомарин\r\n\t\r\n\r\n\t\r\n\t\r\n\t\tВик эксперт с поверкой\r\n\t\r\n\t\t\r\n\t\r\n\t\r\n\t\tВыбор редакции\r\n\t\t\r\n\t\t\t\r\n\t\r\n\t\t\r\n\t\r\n\r\n\t\r\n\t\t\r\n\t\r\n\r\n\t\r\n\t\t\r\n\t\r\n\r\n\t\r\n\t\t\r\n\t\r\n\t\t\r\n\t\r\n\t\r\n\t\r\n\t\t\r\n\t\t\t\r\n\t\t\tБудетДом.com  »  Строительство\t\t\r\n\t\t\r\n\t\t\t\r\n\t  \t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\tКорневая система дуба обыкновенного\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\tСтроительство\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\t\tЧастые вопросыКак глубоко уходят корни дуба?Уже в первый год жизни корневой стержень прорастает на глубину до 1 м. К 40 годам он достигает 10 м, а к 500 годам, по некоторым данным, корни дуба проникают в глубину до 100 м, доставая до глубоких водоносных горизонтов.Как располагаются корни у дуба?У дуба наибольшее количество корней сосредоточено на глубине 40–50 см (28 %). На корневые взаимоотношения между дубом и сосной влияет тепловой и водный режим почвы. Якорная корневая система дуба проникает в нижние горизонты почвы.Какой тип корневой системы у дуба?Дуб имеет хорошо развитую корневую систему со стержневым ветвящимся корнем, уходящим на значительную глубину. Благодаря этому дуб использует для питания большой объем почвы и фунта, хорошо противостоит ветрам и мало подвержен ветровалу.Сколько лет нужно, чтобы вырос дуб?Дуб – дерево-долгожитель, при благоприятных условиях может прожить в среднем от 500 до 1500 лет. Растет дерево очень медленно, наиболее интенсивный рост отмечается в период от 5 до 20 лет жизни растения.Могу ли я посадить дуб рядом с домом?Это не только защитит ваш фундамент, но и ваш дом, если дерево упадет во время шторма. Крупные виды деревьев, такие как вяз или дуб, следует сажать на расстоянии не менее 50 футов от дома , а более мелкие, такие как кизил или магнолия, можно сажать всего в 10 футах.Корневая система дуба фотоОсобенности строения корневой системы дубаКак ускорить рост дубаПродолжительность жизни дубаКакой отдел у дубаДуб описаниеРост дуба по годамТип корневой системы дубаКак устроена корневая система дуба и как Дуб черешчатый, или Дуб обыкновенный — Quercus фотоснимкиПосадка растений - основные правила, типы саженцев. как выглядит\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\tЧитайте также\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\r\n\t\r\n\t\tCm121000hdz\r\n\t\t\r\n\t\r\n\r\n\t\r\n\t\tРоза ля калиссон\r\n\t\t\r\n\t\r\n\r\n\t\r\n\t\tРейтинг электродов для сварки\r\n\t\t\r\n\t\r\n\r\n\t\r\n\t\tФронтон из кирпича\r\n\t\t\r\n\t\r\n\r\n\t\r\n\t\tУгольник сварочный\r\n\t\t\r\n\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\r\n\t\r\n\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\t&copy; 2026 BudetDom.com\r\n\t\t\t\t\tКонтакты | Политика конфиденциальности | Политика файлов Cookie | Отказ от ответственности | Правила использования сайта | О нас\t\t\t\t\r\n\t\t\t\r\n\t\t\t\r\n\t\t\r\n\t\t\r\n\t\r\n\t\r\nМы используем файлы cookie, чтобы обеспечить вам наилучшее взаимодействие с нашим сайтом. Если вы продолжите использовать этот сайт, мы будем считать, что вы согласны с этим.ПринятьОтклонитьБольше о Cookie",
+      "title": "https://budetdom.com/stroyka/kornevaya-sistema-duba-obyknovennogo (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528770374,
+        "end": 1789528771277
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.278Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528771278,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0ace001VlIX9jf9D4NgrE",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a04db001SufpSaplqE9oNm",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 24438,
+      "output": 194,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 24632,
+      "headroom": 14224,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.278Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.278Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.279Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.279Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.280Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.280Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.281Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.283Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 24632,
+  "providerTokens": 24632,
+  "estimatedInputTokens": 5689,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 24438,
+    "cacheRead": 0,
+    "output": 194
+  },
+  "overflow": false,
+  "headroom": 14224,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.283Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.283Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.285Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.286Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.639Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528771639,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0c36001polre1GBcIjzLx",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0ad3001nl3EG27DVuLaWr",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.639Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.639Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528771639,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0c370027YKaWBeQifD0w7",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0ad3001nl3EG27DVuLaWr",
+    "type": "tool",
+    "callID": "call_19bd3da660566400",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.639Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528771639,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0c37001qKM4T4rV5uERcz",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0ad3001nl3EG27DVuLaWr",
+    "type": "text",
+    "text": "Открою https://ru.wikipedia.org/wiki/%D0%94%D1%83%D0%B1_%D1%87%D0%B5%D1%80%D0%B5%D1%88%D1%87%D0%B0%D1%82%D1%8B%D0%B9 и прочитаю содержимое.",
+    "time": {
+      "start": 1789528771639,
+      "end": 1789528771639
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.640Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528771640,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0c370027YKaWBeQifD0w7",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0ad3001nl3EG27DVuLaWr",
+    "type": "tool",
+    "callID": "call_19bd3da660566400",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://ru.wikipedia.org/wiki/%D0%94%D1%83%D0%B1_%D1%87%D0%B5%D1%80%D0%B5%D1%88%D1%87%D0%B0%D1%82%D1%8B%D0%B9"
+      },
+      "time": {
+        "start": 1789528771639
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528771932,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0c370027YKaWBeQifD0w7",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0ad3001nl3EG27DVuLaWr",
+    "type": "tool",
+    "callID": "call_19bd3da660566400",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://ru.wikipedia.org/wiki/%D0%94%D1%83%D0%B1_%D1%87%D0%B5%D1%80%D0%B5%D1%88%D1%87%D0%B0%D1%82%D1%8B%D0%B9"
+      },
+      "output": "Дуб черешчатый — Википедия\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nПерейти к содержанию\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nГлавное меню\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tГлавное меню\n\tпереместить в боковую панель\n\tскрыть\n\n\n\t\n\n\t\n\t\tНавигация\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tЗаглавная страницаСодержаниеИзбранные статьиСлучайная статьяТекущие события\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tУчастие\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСообщить об ошибкеКак править статьиСообществоФорумСправкаСвежие правкиНовые страницыСлужебные страницы\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tНа других языках\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tAfrikaansAragonésالعربيةمصرىAsturianuAzərbaycancaتۆرکجهŽemaitėškaБеларускаяБългарскиBosanskiCatalàCebuanoکوردیCorsuČeštinaЧӑвашлаCymraegDanskDeutschEmiliàn e rumagnòlEnglishEsperantoEspañolEestiEuskaraفارسیSuomiVõroFrançaisNordfriiskGaeilgeGalegoעבריתHrvatskiHornjoserbsceMagyarՀայերենInterlinguaBahasa IndonesiaIdoÍslenskaItaliano日本語ქართულიҚазақша한국어KernowekLatinaLëtzebuergeschLombardLietuviųLatviešuОлык марийМакедонскиКырык марыЭрзяньNederlandsNorsk nynorskNorsk bokmålLivvinkarjalaPolskiPiemontèisپنجابیPortuguêsRuna SimiRumantschRomânăDavvisámegiellaSrpskohrvatski / српскохрватскиSlovenčinaSlovenščinaСрпски / srpskiSvenskaTürkçeУкраїнськаOʻzbekcha / ўзбекчаTiếng ViệtWinaray吴语粵語中文\n\t\t\n\t\tПравить ссылки\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nПоиск\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tНайти\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nВнешний вид\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tПожертвовать\n\nСоздать учётную запись\n\nВойти\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nПерсональные инструменты\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nПожертвовать\n\n\n\nСоздать учётную запись\n\n\n\nВойти\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tСодержание\n\tпереместить в боковую панель\n\tскрыть\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tНачало\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tНазвание\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tБотаническое описание\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tОтобразить/Скрыть подраздел Ботаническое описание\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t2.1\n\t\t\t\t\tГеном\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tРаспространение и экология\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tКлассификация\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tОтобразить/Скрыть подраздел Классификация\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t4.1\n\t\t\t\t\tТаксономия\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t4.2\n\t\t\t\t\tВнутривидовые таксоны\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t4.3\n\t\t\t\t\tСинонимы\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t4.4\n\t\t\t\t\tЗнаменитые деревья\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t4.5\n\t\t\t\t\tГалерея\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5\n\t\t\t\tВредители и болезни\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tОтобразить/Скрыть подраздел Вредители и болезни\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t5.1\n\t\t\t\t\tПатогенные грибы\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t5.2\n\t\t\t\t\tПатогенные бактерии\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t6\n\t\t\t\tХимический состав\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t7\n\t\t\t\tХозяйственное значение и применение\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tОтобразить/Скрыть подраздел Хозяйственное значение и применение\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t7.1\n\t\t\t\t\tВ медицине\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t7.2\n\t\t\t\t\tВ зелёном строительстве и декоративном садоводстве\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t7.2.1\n\t\t\t\t\tСадовые формы и культивары\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\t\t\n\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t8\n\t\t\t\tСбор, переработка и хранение лесопродукции\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t9\n\t\t\t\tЗаготовка посевного материала\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t10\n\t\t\t\tСм. также\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t11\n\t\t\t\tПримечания\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t12\n\t\t\t\tЛитература\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t13\n\t\t\t\tСсылки\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nОтобразить/Скрыть содержание\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tДуб черешчатый\n\t\t\t\n\n\t\n\t\n\n82 языка\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tAfrikaansAragonésالعربيةمصرىAsturianuAzərbaycancaتۆرکجهŽemaitėškaБеларускаяБългарскиBosanskiCatalàCebuanoکوردیCorsuČeštinaЧӑвашлаCymraegDanskDeutschEmiliàn e rumagnòlEnglishEsperantoEspañolEestiEuskaraفارسیSuomiVõroFrançaisNordfriiskGaeilgeGalegoעבריתHrvatskiHornjoserbsceMagyarՀայերենInterlinguaBahasa IndonesiaIdoÍslenskaItaliano日本語ქართულიҚазақша한국어KernowekLatinaLëtzebuergeschLombardLietuviųLatviešuОлык марийМакедонскиКырык марыЭрзяньNederlandsNorsk nynorskNorsk bokmålLivvinkarjalaPolskiPiemontèisپنجابیPortuguêsRuna SimiRumantschRomânăDavvisámegiellaSrpskohrvatski / српскохрватскиSlovenčinaSlovenščinaСрпски / srpskiSvenskaTürkçeУкраїнськаOʻzbekcha / ўзбекчаTiếng ViệtWinaray吴语粵語中文\n\t\t\t\n\t\t\tПравить ссылки\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tСтатья\n\nОбсуждение\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tрусский\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tЧитать\n\nПравить\n\nПравить код\n\nИстория\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nИнструменты\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tИнструменты\n\tпереместить в боковую панель\n\tскрыть\n\n\n\t\n\n\t\n\t\tДействия\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nЧитать\n\n\n\nПравить\n\n\n\nПравить код\n\n\n\nИстория\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tОсновное\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСсылки сюдаСвязанные правкиПостоянная ссылкаСведения о страницеЦитировать страницуПолучить сокращённый URLПереключиться на устаревший парсер\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tПечать/экспорт\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tСкачать как PDFВерсия для печати\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tВ других проектах\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tВикискладВикивидыЭлемент Викиданных\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tВнешний вид\n\tпереместить в боковую панель\n\tскрыть\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\tМатериал из Википедии — свободной энциклопедии\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tДуб черешчатый Общий вид взрослого дерева \n\nНаучная классификация\n\n\n\nДомен:ЭукариотыЦарство:РастенияПодцарство:Зелёные растенияКлада:Высшие растенияКлада:Сосудистые растенияКлада:Семенные растенияОтдел:ЦветковыеКлада:Срединные покрытосеменныеКлада:ЭвдикотыКлада:ПятилепестковыеКлада:СуперрозидыКлада:РозидыКлада:ФабидыПорядок:БукоцветныеСемейство:БуковыеПодсемейство:БуковыеРод:ДубВид:Дуб черешчатый\n\n\nМеждународное научное название\n\n\n\nQuercus robur L., 1753\n\n\nСинонимы\n\n\n\n\nСм. текст\n\n\nВнутривидовые таксоны\n\n\n\n\nСм. текст\n\n\nАреал\n\n\n\n\n\n\nОхранный статус\n\n\n\nВызывающие наименьшие опасенияIUCN 3.1 Least Concern: 63532 \nСистематикав ВикивидахИзображенияна Викискладе\nITIS  19405NCBI  38942EOL  1151323GRIN  t:30739IPNI  296690-1POWO 304293-2WFO  0000292858\n\n\nДуб чере́шчатый, или Дуб ле́тний, или Дуб обыкнове́нный, или Дуб англи́йский (лат. Quércus róbur) — типовой вид рода Дуб (Quercus) семейства Буковые (Fagaceae); крупное дерево, достигающее в высоту 30—40 м, образующее широколиственные леса (дубравы) на юге лесной и в лесостепной зонах.\n\nВид внесён в Красную книгу Международного союза охраны природы, имеет в ней статус «Находятся под наименьшей угрозой» (LC).\n\nДуб черешчатый — официальная цветочная эмблема шведской провинции Блекинге[1].\n\nНазвание[править | править код]\nВидовой эпитет «черешчатый» этот вид получил за длинные плодоножки, отличающие его от других видов.\n\nБотаническое описание[править | править код]\nБотаническая иллюстрация из книги О. В. Томе Flora von Deutschland, Österreich und der Schweiz, 1885\nНа почтовой марке Белоруссии, 2004\nКрупное, обычно сильно ветвящееся дерево с огромной кроной и мощным стволом. Достигает высоты 20-40 м. Может дожить до 2000 лет, но обычно живёт 300—400 лет. Рост в высоту прекращается в возрасте 100—200 лет; прирост в толщину, хоть и незначительный, продолжается всю жизнь[2]. Вероятно, старейшим представителем следует считать Стелмужский дуб с окружностью ствола 13 м в Литве. Его возраст, по разным оценкам, — от 700 до 2000 лет.\n\nКорневая система состоит из очень длинного стержневого корня; с шести—восьми лет начинают развиваться боковые корни, тоже уходящие глубоко в землю.\n\nКрона густая шатроподобная или широкопирамидальная, асимметричная, раскидистая, с крепкими ветвями и толстым стволом (до 3 м[3] в диаметре). У молодых деревьев ствол неправильный, коленчатый, с возрастом становится прямым и цилиндрическим. В сомкнутых насаждениях кроны меньше и стволы более стройные (до 1 м в диаметре[3]). Диаметр кроны до 20 м, площадь её проекции достигает ~400м²[4].\n\nКора тёмно-серая, черноватая, толстая. У молодых дубков кора серая, гладкая. На 20-30-м году на коре образуются более-менее глубокие трещины. У деревьев, выросших на свободе, кора до 10 см толщины.\n\nМолодые побеги пушистые, бурые или красновато-серые, блестящие, с бурыми пятнами и слегка продолговатыми чечевичками.\n\nПочки тупо-пятигранные, 5 мм длиной и 4 мм шириной, боковые немного мельче и отстоящие; чешуйки многочисленные, пятирядные, округлённые, бурые, голые и лишь по краю реснитчатые. Все почки обычно яйцевидные, почти шарообразные, светло-бурые, на вершине округлённые или тупо заострённые, листовой рубец с 7—15 следами. Верхушечные почки окружены, большей частью, несколькими боковыми.\n\n\n \n\n \n \nСверху вниз: форма кроны, мужские соцветия, плоды\n\n«дуб зимний» в декабре. Листья высохли, но не опали\nЛисторасположение очерёдное, на вершине веток в виде пучков. Листья продолговатые, продолговато-обратнояйцевидные, книзу суженные или сердцевидные, часто с ушками, на вершине тупые или выемчатые, перистолопастные, крупные (40-150 мм длиной, 25-70 мм шириной), с четырьмя—семью лопастями, твёрдые, почти кожистые, сверху тёмно-зелёные, блестящие, снизу желтоватые или зелёные, с сильно выдающимися более светлыми жилками, голые с обеих сторон, с короткими черешками длиной до 10 мм, на зиму всегда опадающие. Лопасти тупые, округлые, вырезы между ними неглубокие.\n\n\n \n\n \nСверху вниз: листовые почки, осенняя окраска листвы\n\nЦветки раздельнополые. Цветение начинается у деревьев возрастом от 40 до 60 лет, вместе с распусканием листьев — обычно в мае. Растение однодомное. Тычиночные цветки собраны в длинные свисающие серёжки 20-30 мм длиной, с десятью и более цветками, по два—три вместе или одиночно на вершинах прошлогодних побегов или в нижней части молодых побегов. Каждый цветок сидит удалённо от другого, поэтому между ними ясно виден цветонос, имеет пяти- или семираздельный, по краям бахромчатый, перепончатый, зеленоватый околоцветник, а также пять—шесть и более (до 12[3]) тычинок с короткими нитями и жёлтыми крупными пыльниками. Женские цветки обычно располагаются на молодых побегах выше мужских, собраны в мелкие по два—три вместе на отдельном красноватом стебельке, имеют шестираздельный, по краям красноватый околоцветник, окружённый волосистыми зелёными, на вершине красноватыми чешуйками, представляющими собой будущую плюску. Завязь трёхлопастная, красного цвета, рыльце нитевидное, немного выдающееся наружу. Гнёзда в завязи формируются только после опыления, в числе трёх, с двумя семязачатками в каждом. Из каждой завязи обычно развивается только по одному жёлудю. Жёлуди висят попарно, реже — по одному—пять на стебельке до 80 мм длиной.\n\nФормулы цветков: \n  \n    \n      \n        \n          ∗\n          \n          \n            P\n            \n              (\n              4\n              −\n              8\n              )\n            \n          \n          \n          \n            A\n            \n              4\n              −\n              12\n            \n          \n        \n      \n    \n    {\\displaystyle \\mathrm {\\ast \\;P_{(4-8)}\\;A_{4-12}} }\n  \n; \n  \n    \n      \n        \n          ∗\n          \n          \n            P\n            \n              (\n              8\n              )\n            \n          \n          \n          \n            G\n            \n              (\n              \n                \n                  3\n                  ¯\n                \n              \n              )\n            \n          \n        \n      \n    \n    {\\displaystyle \\mathrm {\\ast \\;P_{(8)}\\;G_{({\\overline {3}})}} }\n  \n[5].\n\nПлод — орех (жёлудь) голый, буровато-коричневый (1,5-3,5 см длиной и 1,2-2 см в диаметре[3]), на длинной (3-8 см) плодоножке. Жёлудь размещён в блюдце, или чашевидной мисочке — плюске (0,5-1 см длиной). Плоды созревают в сентябре — октябре.\n\nИзвестны две формы дуба обыкновенного — ранняя и поздняя. У ранней («дуб летний») листья распускаются в апреле — мае и на зиму опадают, а у поздней («дуб зимний») распускаются на две—четыре недели позднее. Одновременно с распусканием листьев дуб цветёт. Опыляется ветром. Листья опадают позже, чем у многих других деревьев, в конце сентября — октябре. На молодых растениях дуба зимнего листья осенью буреют, но остаются на дереве иногда на всю зиму[3].\n\nЖёлуди обладают хорошей всхожестью, распространяются птицами, главным образом сойками. До восьми—десяти лет сеянцы растут медленно, позже средний прирост в высоту составляет 30—35 см в год, а временами — 1-1,5 м в год. В середине лета трогаются в рост вторичные («Ивановы») побеги. Рост в высоту продолжается до 120—200 лет. Возобновление обеспечивается также пнёвой порослью. Большинство современных дубрав порослевого происхождения. Дуб рано развивает мощную корневую систему, что позволяет ему использовать большой объём почвы и противостоять ветровалу. Одиночно стоящие деревья начинают плодоносить с 40-60 лет, в сомкнутых насаждениях — ещё позже[3].\n\nГеном[править | править код]\nЧисло хромосом — 2n = 24. Геном состоит примерно из 1,5 млрд пар оснований и содержит приблизительно 50 тысяч генов. В 2012 году во Франции стартовал проект по полной расшифровке генома дуба черешчатого; в 2015 году расшифровка генома была завершена[6][7]. Встречаются также формы с геномом 2n = 22 и 2n = 36[8].\n\nРаспространение и экология[править | править код]\nШироко распространён в Западной Европе и европейской части России, встречается на севере Африки и в западной Азии. Северная граница ареала проходит по южной Финляндии и северу Ленинградской области, при этом на западном побережье Норвегии, ввиду влияния Гольфстрима, она достигает 65-й параллели. По мере продвижения на восток граница ареала резко сдвигается к югу, а в Сибири в настоящее время в естественных условиях не встречается. Восточными пределами ареала дуба черешчатого служат водораздел рек Волги и Урала (возвышенность Общий Сырт), а также долины рек Юрюзани и Сылвы[9]. Широко используется в полезащитном лесоразведении[3].\n\nИнтродуцирован на северо-востоке Северной Америки.\n\nДуб обыкновенный — одна из основных лесообразующих пород широколиственных лесов Европы, а также сообществ европейской лесостепи; растёт рядом с грабом, ясенем, липой, клёном, вязом, буком, берёзой, елью, пихтой, сосной и некоторыми другими деревьями. В средней лесной зоне крупных массивов не образует.\n\nВ таёжной зоне растёт по долинам рек, южнее на водоразделах в смешанных лесах с елью; в зоне широколиственных лесов и лесостепи образует дубовые леса или дубравы с примесью липы, клёна, вяза; в степной зоне — по оврагам, балкам, в поймах рек. Довольно теплолюбивая порода, поэтому не идет далеко на север и высоко в горы. Страдает от поздних весенних заморозков, не выносит затенения сверху, но боковое притенение стимулирует рост подроста. Требователен к почвенному плодородию, наилучшие древостои — на мощных серых лесных суглинистых почвах и деградированных чернозёмах. Запас древесины в них составляет 250—600 м3/га[3].\n\nКлассификация[править | править код]\nОсновной источник: [10]\n\nТаксономия[править | править код]\nQuercus robur L., 1753, Sp. Pl. : 996\n\nВид Дуб черешчатый относится к роду Дуб (Quercus) семейства Буковые (Fagaceae) порядка Букоцветные (Fagales). Таксономическая схема в соответствии с Системой APG IV по состоянию на декабрь 2023 года:\n\n\n\n \nещё 6 семейств\n \nеще 626 подтвержденных видов и 234 вида, ожидающих подтверждения\n\n \n \n \n \n\n \nпорядок Букоцветные\n \n \nрод Дуб\n \n \n\n \n \n \n \n \n \n \n\n \nотдел Цветковые, или Покрытосеменные\n \n \nсемейство Буковые\n \n \nвид Дуб черешчатый\n\n \n \n \n \n \n \n\n \nещё 63 порядка цветковых растений\n \nеще 7 родов\n \n\n \n \n \n\n\nВнутривидовые таксоны[править | править код]\nQuercus robur subsp. broteroana O.Schwarz\nQuercus robur subsp. brutia (Ten.) O.Schwarz\nQuercus robur subsp. imeretina (Steven ex Woronow) Menitsky — Дуб имеретинский\nQuercus robur subsp. pedunculiflora (K.Koch) Menitsky — Дуб ножкоцветный\nQuercus robur subsp. robur\n= [syn. Quercus robur f. fastigiata (Lam.) O.Schwarz — Дуб черешчатый пирамидальный[11][12]]\n= [syn. Quercus pedunculata Hoffm.]\n\nСинонимы[править | править код]\nСинонимы вида Дуб черешчатый\n\nЗнаменитые деревья[править | править код]\nСанкт-Петербург. Елагин остров\nПродолжительность жизни дуба черешчатого — 400—500 лет, но известны деревья, имеющие возраст до 1000 и даже 1500 лет. По продолжительности жизни дуб стоит на одном из первых мест в растительном мире[3].\n\nСреди дубов есть немало знаменитых деревьев. Наиболее известные: Дуб Кайзера, Запорожский дуб, Царь-дуб, Стелмужский дуб, дуб «Богатырь Тавриды», дуб-часовня, дуб Тамме-Лаури, Дуб-Майор (Шервудский лес). Возраст таких деревьев составляет несколько веков — например, Грюнвальдский дуб[13], растущий в городе Ладушкине Калининградской области, живёт более 800 лет, а Гранитскому дубу — достопримечательности Болгарии — уже более 1700 лет.\n\nСамым старым дубом России признан «Старожил Древних Печор» — дуб черешчатый возрастом более 600 лет, произрастающий на Святой горке Свято-Успенского Псково-Печерского монастыря Псковской области[14].\n\nГалерея[править | править код]\n\nДуб на Елагином острове в Санкт-Петербурге, по преданию, посаженный Петром I\nДуб Петровского времени в Летнем саду Санкт-Петербурга\n550-летний «Панский дуб» в Яблочкове Шебекинского района Белгородской области\n100-летний дуб во Владимире. Памятник живой природы общероссийского значения\n\n\nВредители и болезни[править | править код]\n\nПатогенные грибы[править | править код]\nНа дубе черешчатом паразитирует сумчатый гриб Taphrina caerulescens, вызывающий пятнистость и отмирание листьев. Этот гриб встречается и на других видах дуба[15].\n\nНа юго-востоке ареала и в лесополосах Волгоградской области с конца XX века отмечено массовое усыхание взрослых деревьев вследствие поражения другим аскомицетом — Ophiostoma roboris Georg. et Teod.. Может поражаться также мучнистой росой дуба, осенним опёнком и серно-жёлтым трутовиком.\n\nПатогенные бактерии[править | править код]\nНа территории Восточной Европы у дуба черешчатого отмечены следующие основные бактериальные заболевания:\nБактериальная водянка. При этом заболевании кора и древесина быстро (в течение 1-2 сезонов) «мокнут» и отмирают, листья покрываются бурыми пятнами неправильной формы и долго не опадают зимой. Из сильно поражённых стволов выделяется обильная бурая слизь. Возбудитель — Erwinia multivora.\nПоперечный рак. На молодых ветвях образуются эллиптические наросты, со временем увеличивающиеся и часто охватывающие ветвь или ствол по окружности. Заражённые деревья не погибают, но стволы и ветви обламываются по местам поражения. Возбудитель точно не выявлен, чаще всего обнаруживается Pseudomonas quercina[16].\n\nЭтот раздел нужно дополнить. Пожалуйста, улучшите и дополните раздел.  (26 марта 2014)\n\nХимический состав[править | править код]\nВ коре содержится 10-20 % дубильных веществ пирогалловой группы, галловая и эллаговая кислоты, кверцетин; также присутствует сахар, жиры. В желудях содержится до 40 % крахмала, 5-8 % дубильных веществ, белковые вещества, сахара, жирное масло — до 5 %. В листьях найдены дубильные вещества кверцетин и кверцетрин, а также пентозаны. В древесине содержание танинов составляет 4—6 %[3].\n\nХозяйственное значение и применение[править | править код]\nДуб черешчатый — древесинное, лекарственное, фитонцидное, пищевое, медоносное, красильное, кормовое, декоративное и фитомелиоративное растение.\n\n\n \n\n \n \nСверху вниз: древесина — продольный и поперечный распилы; бонсай\n\nКора и древесина дуба являются источником для получения одного из лучших дубителей. Для дубильной промышленности наилучшей считается кора дуба в возрасте 15-20 лет. Поскольку кора его является красивым дубителем, её используют непосредственно как дубильный материал, а из дерева производят дубильные экстракты. На практике основную массу дубильных веществ получают из отходов деревообрабатывающей промышленности, которые составляют обычно не менее 20 %[3]. Имея большую массу, дубовое дерево является одним из основных источников для производства таннидов. Получаемые из дуба первоклассные дубильные экстракты — основа современного дубильного производства[3].\n\nДревесина дуба имеет красивую окраску и текстуру. Она плотная, крепкая, упругая, хорошо сохраняется на воздухе, в земле и под водой, умеренно растрескивается и коробится, легко колется, стойка против загнивания и домашнего грибка.\n\nПрочная и долговечная древесина дуба издавна используется в судостроении, мебельной промышленности, при сооружении шахтных («рудничная стойка») и гидротехнических сооружений (мостов, мельниц), жилых зданий, для производства паркета, шпал, дверей, рам, для изготовления ободьев, полозков, фанеры и строганого шпона, токарных и резных изделий, деталей конных повозок: дышел, оглобель, разводов, колёс. Древесина дуба не имеет особого запаха, из неё изготовляют бочки под виски, бурбон, коньяк, вино (содержащиеся в дубовой древесине танины придают напиткам своеобразный вкус и аромат), пиво, спирт, уксус, масло[3].\n\nДревесина дуба также используется для изготовления гробов. Обычай хоронить покойников в деревянных гробах, заимствованный христианством из верований славянских и иных индоевропейских племен, был распространён им почти по всей Северной Европе (как Восточной, так и Западной). Установлено, что на этих территориях в своё время было характерно погребение покойников в колодах, срубах или гробах, изготовленных из различных пород дерева, в том числе и из дуба. В этом отношении древесина дуба уже приобретает в некотором роде ритуальный характер (отсюда пошло шуточное выражение «дать дуба», в смысле «скончаться», «умереть»). Отголоски этих традиций дошли до наших дней в обычной росписи сосновых (или из иной дешёвой хвойной породы) гробов «под дуб»[17].\n\nОсобенно ценится в мебельном производстве «морёный дуб». Под воздействием содержащихся в воде солей железа древесина дуба темнеет, упрочняется.\n\nНеделовая древесина дуба идёт на дрова, даёт прекрасное топливо, обладающие высокой теплотворной способностью[3].\n\nДуб обыкновенный — весенний пыльценос. Пчёлы собирают на нём много высокопитательной пыльцы, в отдельные годы с женских цветков собирают нектар[18]. Но на дубе часто появляются медвяная роса и падь. В местах, где дуб занимает большие массивы, пчёлы собирают много медвяной росы и пади, из которых вырабатывают непригодный для зимнего поедания падевый мёд. Во избежание массовой гибели пчёл во время зимовки такой мёд откачивают.\n\nЛистья дуба содержат пигмент кверцетин, которым в зависимости от концентрации красят шерсть и валяные изделия в жёлтый, зелёный, зеленовато-жёлтый, коричневый и чёрный цвета. Из коры получают светоустойчивый долговечный краситель для ковров и гобеленов[3].\n\nЖёлуди дуба являются высокопитательным кормом домашних свиней, однако известны случаи отравления желудями (особенно зелёными) других домашних животных. Наиболее чувствительны к отравлению коровы (особенно дойные) и кони, менее чувствительны овцы. Одиночные деревья дуба плодоносят ежегодно, в насаждениях обильное плодоношение повторяется через 4—8 лет, причём на севере ареала реже, чем на юге. Отдельные деревья дают до 40—100 кг желудей. Урожайность желудей в дубовом лесу — 700—2000 кг/га[3].\n\nЖёлуди, содержащие до 40 % крахмала, истолчённые в муку, в голодные годы добавляли в хлеб; горький вкус из-за большого количества танина ограничивает их пищевое применение[3][19].\n\nЖёлуди служат кормом многим диким животным, в том числе промысловым, их используют и для откорма домашних свиней[3]. Нередко в посадках дуба выпасают скот, который наносит большой ущерб нормальному росту и развитию молодых растений.\n\nВ старину из болезненных разрастаний на листьях дуба, вызванных галлицами, — «чернильных орешков» — приготовляли чернила.\n\nГаллы на растениях дуба черешчатого, вызываемые орехотворками (слева направо): Andricus kollari, Andricus fecundator, Andricus grossulariae, Andricus lignicola\n\nВ медицине[править | править код]\nВ качестве лекарственного сырья используют кору дуба (лат. Cortex Quercus). Сырьё заготавливают с молодых побегов в период сокодвижения с апреля до июня. Сушат его, разложив тонким слоем в хорошо проветриваемых помещениях, а также на солнце[20].\n\nКора имеет вяжущие, противовоспалительные, антисептические и кровоостанавливающие свойства. Отвар коры используют для полосканий полости рта и горла при гингивитах, стоматитах, ангинах, дурном запахе изо рта и при воспалении слизистой оболочки глотки и гортани, в виде ванн, обмываний и компрессов используют для лечения ожогов, обморожений, гнойников и других кожных заболеваний, для ножных ванн при потливости ног, для обмываний кровоточащих геморроидальных узлов, пьют при поносах, дизентерии, при отравлениях алкалоидами и солями тяжёлых металлов, желудочно-кишечных кровотечениях, обильных менструациях[3].\n\nСвежие измельчённые листья прикладывают к гнойникам и ранам для их заживления.\n\nВысушенные семена дуба, растолчённые в порошок, применяют при заболевании мочевого пузыря, при поносах.\n\nИз желудей изготовляют суррогат кофе, который является не только питательным, но и лечебным средством при желудочно-кишечных заболеваниях, рахите, анемии и золотухе у детей. Он полезен также нервнобольным и при чрезмерных менструальных кровотечениях.\n\nВ ветеринарии кору дуба широко применяют как средство против расстройств желудка.\n\nВ зелёном строительстве и декоративном садоводстве[править | править код]\nДуб обыкновенный используют в зелёном строительстве как декоративное и фитонцидное растение при создании пригородных рощ, аллей, куртин, одиночных насаждений в парках и лесопарках. Известны такие декоративные формы дуба обыкновенного: с пирамидальной кроной и формой, у которой листва опадает на 15-20 дней позднее, чём у обыкновенного.\n\nДуб обыкновенный рекомендуется как главная порода в лесомелиоративных насаждениях, в полезащитных лесных полосах, в противоэрозионных насаждениях по балкам и оврагам, на смытых грунтах. Его можно высаживать вдоль оросительных каналов, поскольку его корневая система не дренирует стенок каналов и не разрушает их покрытия.\n\nСадовые формы и культивары[править | править код]\n\nСлева направо: 'Filicifolia', 'Concordia', 'Fastigiata'\n\nСбор, переработка и хранение лесопродукции[править | править код]\nКору дуба обыкновенного для врачебных целей заготовляют преимущественно во время сокодвижения (апрель — май), снимая её с молодых ветвей и тонких стволов (до 10 см в диаметре) на лесосеках или рубках ухода. Чтобы снять кору, через каждые 30 см делают кольцевидные надрезы, которые соединяют продольными разрезами, после этого кора легко снимается. Сушат под навесом с хорошей вентиляцией. Выход сухого сырья 40-50 %. Сухую кору пакуют в тюки весом по 100 кг. Сохраняют в сухом, хорошо проветриваемом помещении. Срок хранения пять лет.\n\nПлоды дуба (жёлуди) собирают осенью под деревьями после опадания. Сушат на чердаках под железной крышей или под навесами с хорошей вентиляцией, расстилая в один слой на бумаге или ткани и периодически перемешивая. Досушивают в печах, на печах или в сушилках. Жёлуди очищают от кожистого оплодия и семенной кожуры. Сырьё состоит из отдельных семядолей. Его пакуют в мешки по 60 кг. Сохраняют в сухих, хорошо проветриваемых помещениях. Срок хранения не установлен.\n\nСырьём для получения дубильных экстрактов из дерева дуба являются пеньки, корни, а также отходы лесозаготовок и деревообрабатывающей промышленности в виде поленьев в коре или без коры. Для дубления шкур кору дуба заготовляют с молодых деревьев (до 20-летнего возраста). На более старых деревьях образуется корка, которая совсем непригодна и даже вредна при использовании её для дубления. Заготовлять кору можно в любую пору года, но лучше в период сокодвижения (апрель — май) во время основных рубок и рубок ухода. Снятую со стволов и ветвей кору сушат под навесом с хорошей вентиляцией. Относительная влажность сухой коры не должна превышать 16 %.\n\nЗаготовка посевного материала[править | править код]\nВремя созревания и сбора семян — сентябрь — октябрь[21]. Предельная длительность хранения (без специального оборудования) — 1 год. Оптимальными условиями для хранения желудей до весны являются 0 градусов Цельсия в проветриваемом помещении или прикопкой под снег[22].\n\nСм. также[править | править код]\nООПТ «Дубовая роща в окрестностях села Шемаха»[23].\nПушкинский дуб\n\nПримечания[править | править код]\n\n↑ Svenska landskapsblommor : [арх. 29.09.2017] : [швед.]. — Naturhistoriska riksmuseet, 1996. — 15 september. — Дата обращения: 04.04.2018.\n↑ Нейштадт М. И. Определитель растений средней полосы европейской части СССР. Пособие для средней школы. — М.: ГУПИ МП РСФСР, 1954. — С. 169—171. — 495 с.\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 Губанов И. А. и др. Дикорастущие полезные растения СССР / отв. ред. Т. А. Работнов. — М.: Мысль, 1976. — С. 95—97. — 360 с. — (Справочники-определители географа и путешественника).\n↑ Дуб черешчатый в Красноярске . Дата обращения: 29 июня 2021. Архивировано 29 июня 2021 года.\n↑ Сербин А. Г. и др. Медицинская ботаника. Учебник для студентов вузов. — Харьков: Изд-во НФаУ: Золотые страницы, 2003. — С. 134. — 364 с. — ISBN 966-615-125-1.\n↑ Французские ученые впервые в мировой практике расшифровали геном дуба Архивная копия от 1 августа 2015 на Wayback Machine // ТАСС, 15 мая 2015.\n↑ Le génome du chêne séquencé Архивная копия от 30 июля 2015 на Wayback Machine // INRA, 10.5.2015 (фр.)\n↑ Дуб черешчатый (летний, обыкновенный) — Quercus robur . Дата обращения: 26 сентября 2015. Архивировано 22 июня 2023 года.\n↑ Семериков Л. Ф. Популяционная структура древесных растений на примере видов дуба европейской части СССР и Кавказа / отв. ред. С. А. Мамаев. — М.: Наука, 1986. — С. 48. — 140 с.\n↑ Quercus robur L. (англ.). WFOPL. Дата обращения: 15 марта 2024. Архивировано 15 марта 2024 года.\n↑ Quercus robur f. fastigiata (lam.) o.schwarz (англ.). GBIF Backbone Taxonomy. GBIF. doi:10.15468/39omei. Дата обращения: 21 марта 2024. Архивировано 21 марта 2024 года.\n↑ Перечень субтаксонов: Дуб черешчатый пирамидальный — Quercus robur f. fastigiata  (рус.). Плантариум. Дата обращения: 21 марта 2024. Архивировано 21 марта 2024 года.\n↑ ИТАР-ТАСС.\n↑ Назван возраст самого старого дуба в России\nВ Псковской области растёт самый старый дуб России\n↑ Каратыгин И. В. Порядки Тафриновые, Протомициевые, Экзобазидиевые, Микростромациевые. — СПб.: «Наука», 2002. — С. 40. — (Определитель грибов России). — ISBN 5-02-026184-X.\n↑ Гвоздяк Р. И., Яковлева Л. М. Бактериальные болезни лесных древесных пород / Отв. ред. Билай В. И.; Ин-т микробиологии и вирусологии им. Д. К. Заболотного АН УССР. — Киев: Наукова думка, 1979. — С. 28—36. — 244 с. — 850 экз.\n↑ Яценко-Хмелевский А. А., Кобак К. И. Анатомическое строение древесины основных лесообразующих пород СССР / Ленингр. лесотехнич. акад. им. С. М. Кирова. — Л.: РИО ЛТА, 1978. — С. 26—27. — 64 с. — 1000 экз.\n↑ Суворова С. А. Медоносные ресурсы лесной мещеры // Пчеловодство : журнал. — 2009. — № 7. — С. 27. — ISSN 0369—8629.\n↑ The Oxford Companion to Food / Alan Davidson, Tom Jaine. — Oxford University Press, 2014. — С. 197—198. — ISBN 978-0-19-104072-6.\n↑ Блинова К. Ф. и др. Ботанико-фармакогностический словарь: Справ. пособие / Под (недоступная ссылка) ред. К. Ф. Блиновой, Г. П. Яковлева. — М.: Высш. шк., 1990. — С. 186. — ISBN 5-06-000085-0.\n↑ По данным EOL. См. Карточку организма.\n↑ Захаров В. П., Григорьев А. Ю. Как посадить свою дубраву . МСоЭС (2002). Дата обращения: 23 декабря 2017. Архивировано 18 декабря 2017 года.\n↑ Дубовая роща в окрестностях села Шемаха Архивная копия от 26 ноября 2021 на Wayback Machine, Сайт информационно-аналитической системы «Особо охраняемые природные территории России».\n\n\nЛитература[править | править код]\n\n\n\nВ Викитеке есть тексты по теме: «Quercus pedunculata»\n\n\nАлтымышев А. Лекарственные богатства Киргизии (природного происхождения). — Фрунзе: Кыргызстан, 1976. — С. 105–106. — 352 с.\nГубанов И. А. 436. Quercus robur L. — Дуб черешчатый // Иллюстрированный определитель растений Средней России : в 3 т. / И. А. Губанов, К. В. Киселёва, В. С. Новиков, В. Н. Тихомиров. — М. : Товарищество науч. изд. КМК : Ин-т технол. исслед., 2003. — Т. 2 : Покрытосеменные (двудольные: раздельнолепестные). — С. 34. — 666 с. — 3000 экз. — ISBN 5-87317-128-9.\nКотуранов Д. Л. Опыт и перспективы искусственного восстановления дубрав в средней полосе России. Автореф. дисс. … канд. сельскохоз. наук. М., 2005.\nНейштадт М. И. Определитель растений средней полосы европейской части СССР. Пособие для средней школы. — М.: ГУПИ МП РСФСР, 1954. — С. 169—171. — 495 с.\nОвсянников Г. Ф. Лиственные породы. Пособие для учащихся и лесных специалистов. — Владивосток: ОГИЗ — Далькрай, 1931. — С. 83. — 376 с.\nСоколов С. Я. Род 6. Quercus — Дуб L. // Деревья и кустарники СССР : дикорастущие, культивируемые и перспективные для интродукции : в 6 т. — М. ; Л. : Изд-во АН СССР, 1951. — Т. 2 : Покрытосеменные / ред. С. Я. Соколов. — С. 468–474. — 612 с. — 2500 экз.\nМалеев В. П. Род 367 Дуб — Quercus; 7. Q. robur // Флора СССР = Flora URSS : в 30 т. / гл. ред. В. Л. Комаров. — М. ; Л. : Изд-во АН СССР, 1936. — Т. 5 / ред. тома В. Л. Комаров. — С. 339–340. — 762, XXVI с. — 5175 экз.\nЧемарина О. В. Изучение структуры популяций дуба черешчатого в тульских засеках в связи с его селекцией. Автореф. дисс. … канд. сельскохоз. наук. — М.: МЛТИ, 1977. — 28 с.\nШирнин В. К. Селекция на качество древесины: На примере дуба черешчатого и других пород в ЦЧО. Дисс. … доктор сельскохоз. наук. — Воронеж, 1999. — 302 с.\nЄлін Ю. Я., Зерова М. Я., Лушпа В. І., Шабарова С. І. Дари лісів. — К.: Урожай, 1979 (укр.)\n\nСсылки[править | править код]\nДуб // Большая советская энциклопедия : [в 30 т.] / гл. ред.  А. М. Прохоров. — 3-е изд. — М. : Советская энциклопедия, 1969—1978.  (Дата обращения: 7 декабря 2009)\nСибирь даст дуба: Алтайские лесоводы пустили в рост ценную породу\nOaks from Bialowieza Forest (biggest oak cluster with the monumental sizes in Europe) (англ.)\n400-летний дуб в Великом Новгороде получил «охранную грамоту» / ИТАР-ТАСС  (рус.) (13 ноября 2013).\n\nСсылки на внешние ресурсы   Словари и энциклопедии\nБольшая норвежская\nБольшая российская (научно-образовательный портал)\nБотанический (рус.)\nКирилла и Мефодия\nНациональная (Латвия)\nBritannica (онлайн)\n\nТаксономия\nAPNI\nEOL\nGBIF\nGRIN\niNaturalist\nNCBI\nIPNI\nIRMNG\nITIS TSN\nPOWO\nPlantarium\nPlant Finder\nTropicos\nWFO\nГербарий МГУ\nФлора Китая\n\nВ библиографических каталогах\nBNF: 123953078\nGND: 4128387-9\nJ9U: 987007548267005171\nLCCN: sh85043922\nNKC: ph114370\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nИсточник — https://ru.wikipedia.org/w/index.php?title=Дуб_черешчатый&amp;oldid=154586904\n\t\t\t\t\tКатегории: Виды вне опасностиРастения по алфавитуДубФлора ЕвразииФлора Северной АфрикиРастения лесовРастения лесостепейЛекарственные растенияДубильные растенияСимволы ЛатвииСкрытые категории: Страницы, использующие волшебные ссылки ISBNВикипедия:Cite web (не указан язык)Википедия:Статьи для обновления по WFOPLВикипедия:Статьи с незавершёнными разделами с марта 2014 годаВикипедия:Статьи с незавершёнными разделамиВикипедия:Статьи с шаблонами недостатков по алфавитуФоторяды с перечислением слева направоВикипедия:Статьи с нерабочими ссылкамиВикипедия:Ссылка на Викитеку непосредственно в статье\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t Страница в последний раз была отредактирована 22 августа 2026 года в 08:26.\n\tСтраница была сгенерирована с помощью Parsoid.\n\tТекст доступен по лицензии Creative Commons «С указанием авторства — С сохранением условий» (CC BY-SA); в отдельных случаях могут действовать дополнительные условия.\nПодробнее см. Условия использования.\nWikipedia®&#160;— зарегистрированный товарный знак некоммерческой организации «Фонд Викимедиа» (Wikimedia Foundation, Inc.)\n\n\n\t\t\t\t\n\tПолитика конфиденциальности\n\tОписание Википедии\n\tОтказ от ответственности\n\tСвяжитесь с нами\n\tКонтакты по вопросам права и безопасности\n\tКодекс поведения\n\tРазработчики\n\tСтатистика\n\tЗаявление о куки\n\tМобильная версия\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nПоиск\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tНайти\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nОтобразить/Скрыть содержание\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tДуб черешчатый\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n82 языка\n\t\t\t\n\t\t\t\n\nДобавить тему",
+      "title": "https://ru.wikipedia.org/wiki/%D0%94%D1%83%D0%B1_%D1%87%D0%B5%D1%80%D0%B5%D1%88%D1%87%D0%B0%D1%82%D1%8B%D0%B9 (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528771639,
+        "end": 1789528771932
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528771933,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0d5c001jCZv6UUmyYsHj7",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0ad3001nl3EG27DVuLaWr",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 27717,
+      "output": 282,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 27999,
+      "headroom": 10857,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.934Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.934Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.935Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.935Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.935Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.935Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.935Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.936Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.955Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 27999,
+  "providerTokens": 27999,
+  "estimatedInputTokens": 17838,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 27717,
+    "cacheRead": 0,
+    "output": 282
+  },
+  "overflow": false,
+  "headroom": 10857,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.955Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.956Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.959Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:31.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:32.426Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528772428,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0f49001k6ZDI9626L3rkg",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0d73001BDOn3KrFHgPYe3",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:32.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:32.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528772429,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0f4d002Za5qvxgWVaXggs",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0d73001BDOn3KrFHgPYe3",
+    "type": "tool",
+    "callID": "call_d9a28b662fb1d7e9",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:32.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528772429,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0f4d001XTSngcDH7L6cOp",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0d73001BDOn3KrFHgPYe3",
+    "type": "text",
+    "text": "Поищу в интернете: насколько.",
+    "time": {
+      "start": 1789528772429,
+      "end": 1789528772429
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:32.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528772429,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0f4d002Za5qvxgWVaXggs",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0d73001BDOn3KrFHgPYe3",
+    "type": "tool",
+    "callID": "call_d9a28b662fb1d7e9",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "насколько"
+      },
+      "time": {
+        "start": 1789528772429
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.404Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528774404,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a0f4d002Za5qvxgWVaXggs",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0d73001BDOn3KrFHgPYe3",
+    "type": "tool",
+    "callID": "call_d9a28b662fb1d7e9",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "насколько"
+      },
+      "output": "Title: «насколько» в словарях портала | Поиск по Грамоте\nURL: https://gramota.ru/poisk?mode=slovari&query=%D0%BD%D0%B0%D1%81%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE\nPublished: N/A\nAuthor: N/A\nHighlights:\nнаско́лько, нареч. (наско́лько мо́жно суди́ть), но числит. на ско́лько (на ско́лько дне́й)\n...\nНАСКО́ЛЬКО, мест. адверб.\n...\n1.0. вопросит. Употр. для формирования вопроса о мере, степени проявления чего-л. Син. как1.\n...\n□ Насколько это важно для тебя? Насколько правильно я поступил? Насколько хорошо вы его знаете? Насколько далеко распространяются мои полномочия? Насколько надëжен этот прибор?\n...\n1.1. вопросит. Употр. для присоединения изъяснительной придаточной части сложноподчинëнного предложения, представляющей собой вопрос о содержании того слова в главной части, к к-рому она относится. Син. как1.\n...\n□ Можно мне узнать, насколько долго мне придëтся ждать заказ? Насколько это важно для тебя, объясни. Вы сами знаете, насколько трудно нам пришлось. Интересно, насколько далеко распространяются полномочия проверяющих.\n...\n2.0. относит. (сз. сл.), обычно с соотносит. сл. «настолько». Употр. для присоединения придаточной части сложноподчинëнного предложения, к-рая указывает на меру того, о чëм говорится в главной части (придаточная часть обычно следует за главной).\n...\n□ Я осведомлён об обстоятельствах происшествия ровно настолько, насколько счёл возможным рассказать мне о нём наш общий друг. Мы спокойны, насколько позволяет обстановка.\n...\n3.0. эмоц., со сравн. ст. прил., нареч. или сост. Употр. в начале предложений (обычно восклицательных) для выражения эмоционально подчёркнутого указания на значительное, заметное превышение меры, степени проявления чего-л. в сравнении с уже известным или предполагаемым уровнем.\n...\n□ Насколько легче нам тогда жилось! Насколько веселее проходили раньше наши вечера, совсем не то, что теперь! Насколько вкуснее стал борщ, когда в него добавили перец. Насколько труднее тебе было бы без нас! Насколько здесь светлее! Насколько же он безрассуден!\n...\n4.0. относит. (сз. сл.). Употр. для присоединения изъяснительной придаточной части сложноподчинённого предложения, в к-рой сообщается о том, что стало причиной состояния, названного в главной части (придаточная часть следует за главной или предшествует ей).\n...\n□ Посетитель возмущëн тем, насколько невежливо с ним разговаривал официант. Я удивился, насколько постарел мой приятель. ● 5.0. определит. Употр. для указания на то, что мера, степень проявления признака, состояния или интенсивности действия ограничиваются возможностями их носителя. Син. ско́лько1 употр. реже. Н. в моих силах, помогу.\n...\n5.1. определит., обычно в составе вводных предложений. Употр. для указания на то, что достоверность сообщения определяется уровнем знаний, информированности, осведомлëнности и т. д. субъекта высказывания.\n...\n□ Насколько я помню, их знакомство произошло в каких-то романтических обстоятельствах. Заседание, насколько мне известно, перенесено на среду.\n...\n6.0. относит. (сз. сл.), часто с соотносит. сл. «то». Употр. для присоединения изъяснительной придаточной части сложноподчинённого предложения, к-рая устраняет информационную недостаточность соответствующего слова главной части и касается главным образом обстоятельственных (количественно-качественных) характеристик действия и т. п., о к-ром идёт речь (придаточная часть следует за главной, предшествует ей или – реже – находится в середине еë).\n...\n□ Надеюсь, вы сами убедитесь в том, насколько хорошо в нашем санатории. Насколько ребëнок талантлив, теперь видит вся школа.\n...\nНаско́лько хвата́ет глаз – см. глаз. Наско́лько я по́мню – см. по́мнить.\n...\n|| Морф. на=ско́льк=о. Дер. сз. наско́лько…, насто́лько – . От мест. ско́лько1 (См.).\n...\nНАСКО́ЛЬКО. I. местоим. нареч. В какой мере, степени. Н. помню, это произошло десять лет назад. Н. этот фильм лучше! Н. здесь теплее! II. союзн. сл. (присоединяет придат. дополнит. или вводн. словосоч.). Все понимали, н. разные эти две программы. Было известно, н. опасно это путешествие. Н. мне известно, это случилось два года назад. Наско́лько..., настолько (же)..., союз. Выражает противопоставление, сопоставление признаков, равноценных по своему характеру. Насколько он был весел, настолько она скучна. Настолько..., наско́лько..., союз. Выражает сопоставление соизмеримых, не исключающих друг друга понятий, признаков. Ушить платье настолько, насколько нужно.\n...\nнаско́лько\n...\nВ какой мере, степени.\n\n---\n\nTitle: Ответ справочной службы на вопрос №325619 — справочно-информационный портал Грамота.ру\nURL: https://gramota.ru/spravka/vopros/325619\nPublished: 2025-09-09T19:30:31.000Z\nAuthor: N/A\nHighlights:\nКак правильно \"на сколько\" или \"насколько\" в следующем примере? 1) \"Посмотрим, насколько её хватит.\" или 2) \"Посмотрим, на сколько её хватит.\"\n...\nКорректно раздельное написание: Посмотрим, на сколько (на какое время) её хватит.\n\n---\n\nTitle: насколько\nURL: https://ru.wiktionary.org/wiki/%D0%BD%D0%B0%D1%81%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE\nPublished: N/A\nAuthor: N/A\nHighlights:\nна-ско́ль-ко\n...\nНаречие, также вопросительное слово; неизменяемое.\n...\nПриставка:на-; корень: -скольк-; суффикс:-о [Тихонов, 1996].\n...\nМФА: [nɐˈskolʲkə]\n...\n1. в какой мере,степени◆ Насколько это верно? ◆ Насколько мне известно, он прибыл недавно. ◆ Располагайте мной, насколько я могу быть вам полезен. ◆ Насколько эта картина удачнее прежней! ◆ Насколько лучше играла бы Ермолова вечером, если бы утром она стояла у шлифовального станка! «К/ф „Берегись автомобиля“»\n...\n1. в какой мере,в какой степени,до какой степени,как,сколь\n...\n- наречия:сколь,сколько\n...\nИзна-+сколько, далее отпраслав. kolikъ, от которого в числе прочего произошли: др.-русск.колико« quantum»,коликыи« quantus», такжеколько«сколько» (Грам. новгор. 1307 г.),сколь«как много», (с 1462 г.), ст.-слав.коликъ(др.-греч.πόσος,ποῖος,ὁπόσος), укр. скíльки, кíлька, кíлько, кíльки, белор. ко́лькi, болг. ко́лко, сербохорв. ко̏лико «сколько», ко̀лик «сколький», словенск. kȯ́lik «сколький», чешск. koliko«сколько», словацк. kоľkо. Праслав. kolikъ от и.-е. *ku̯o- (см.кто). Ср. греч.πηλίκος«сколький», лит. kelì «несколько», kõl «пока», kõliai — то же, лат. quālis «каковой». Начальное s-, вероятно, от предл. sъ «примерно, около». Использованы данныесловаря М. Фасмера.См. Список литературы.\n\n---\n\nTitle: «Насколько» или «на сколько», как пишется правильно?\nURL: https://russkiiyazyk.ru/orfografiya/pravopisanie/na-skolko-ili-naskolko.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n«На сколько» или «насколько», как правильно?\n...\n# «Насколько» или «на сколько», как пишется правильно?\n...\nСлово «насколько», являющееся наречием, пишется слитно. Местоимение в падежной форме «на сколько» (частей) пишется раздельно с предлогом.\n...\nВ русском языке существуют оба слова: «на сколько» и «насколько». Узнаем, когда пишется «наско́лько» слитно, а когда «на сколько» — раздельно. Выбор слитного или раздельного написания этих слов зависит от того, к какой части речи они принадлежат в определенном контексте.\n...\nВ русском языке слово «насколько» является местоименным наречием. Оно образовано от однокоренного местоимения «сколько» с помощью приставки и суффикса:\n...\nсколько → наско́лько\n...\nНаречие «наско́лько» пишется слитно с приставкой, например:\n...\nЭто сложноподчиненное предложение, в котором употреблено союзное слово «наско́лько» — местоименное наречие, к которому можно задать синтаксический вопрос как к полноправному члену предложения:\n...\nИсследуемое слово не изменяется по падежам и числам. У наречия нет зависимого от него слова. В предложениях, обратите внимание, оно поясняет сказуемое, выраженное глаголом, кратким прилагательным или предикативным наречием. Слово «наско́лько» является второстепенным членом предложения — обстоятельством меры и степени, выраженным местоименным наречием. По смыслу его заменить наречием «как» или синонимичным сочетанием слов «в какой мере», «в какой степени».\n...\n## Раздельное написание слова «на сколько»\n...\nВ этих предложениях употреблено вопросительное и относительное местоимение в форме винительного падежа:\n...\nразделим (на что?) на сколько частей.\n...\nУ местоимения есть зависимое слово — существительное «частей» в форме родительного падежа множественного числа. К заданному вопросу с местоимением «на сколько», предполагается ответ с числительным или словом с количественным значением:\n...\nРазделим на сколько частей? — На три, четыре части, много частей.\n...\nЭто кардинально отличает его от похожего по звучанию наречия «насколько».\n...\nМестоимение с предлогом в форме винительного падежа пишется раздельно.\n...\nМестоимение в падежной форме «на сколько» выступает в роли вопросительного слова или союзного слова в сложноподчиненных предложениях.\n...\nМестоимение «на сколько» пишется раздельно, а наречие «насколько» пишется слитно. Различаем эти слова по их грамматическим признакам в контексте.\n...\n- РЯ - RusskiiYazyk.ru says:\n\n в 08:31 \n\nВ этом высказывании слово «насколько» пишется слитно, так как это местоименное наречие, которое имеет обстоятельственное значение «в какой мере». У него нет зависимого слова (сравним: на сколько дней, на сколько часов).\n\n Ответить\n\n---\n\nTitle: НАСКОЛЬКО - что такое в Толковом словаре русского языка\nURL: https://ushakov.slovaronline.com/33686-NASKOLKO\nPublished: N/A\nAuthor: N/A\nHighlights:\nНАСКОЛЬКО нареч. В какой мере, степени. Насколько это верно? Насколько мне известно, он прибыл недавно. Располагайте мной, насколько я могу быть вам полезен. Насколько эта картина удачнее прежней!\n...\nНАСКОЛЬКО, нареч. В какой мере, степени. Н. лучше дома! * Насколько...настолько (же)..., союз - выражает противопоставление, сопоставлениепризнаков, равноценных по своему характеру. Насколько общителен сын,настолько дочка замкнута и застенчива....смотреть\n...\nнасколько нареч. В какой степени, мере.\n...\nнасколько нареч.1. (восклицат.) how much насколько здесь лучше! — how much better it is here! 2. (относит.) as far as, so far as насколько мне извест...смотреть\n...\nнимов. Контекст 5.0 — Информатик.2012. насколько нареч, кол-во синонимов: 8 • в какой мере (6) • в какой степени (7) • до какой степени (6) • до чего (17) • елико (2) • как (37) • сколь (6) • сколько (19) Словарь синонимов ASIS.В.Н. Тришин.2013. . Синонимы: в какой мере,\n...\nнрч. скільки, (при нрч. и глаг.) як, (при прлг.) який (яка, яке, які), (канцел.) наскільки, (поскольку, зап.) оскільки, (в какой мере) якою мірою, в якій мірі, в яку міру. [В цій спірці (вони) стають при (його) боці (на его стороне), але скільки щиро, - то воно хто й зна (Грінч.). Перетворившися з наукового видання на живий, скільки це можна було під цензурною довбнею, орган сучасности (Рада). За орбітою Нептуна простягається простір, так само порожній, скільки може пройняти людське спостереження (Країна Сліпих). Такі статті зацікавлювали мало і дуже не надовго; а як мало, то се видно з того, що… (Грінч.). Наскільки можу я пригадати, це були… (Крим.)]. -ко возможно - як(о)-мога, скільки можна. [Будемо дбати, яко-мога, за добробут краю й народа (Н.-Лев.)]. -ко мне известно - скільки я знаю. -ко припоминаю - скільки пригадую. -ко - настолько - скільки - стільки, (канцел.) наскільки - настільки, (зап.) оскільки - остільки, (в как...смотреть\n...\n1) вопр., косвенно-вопр. à quel point?насколько это верно? — à quel point est-ce juste?2) относ. autant que насколько, настолько — autant queнасколько ...смотреть\n...\nнар. 1) (в какой мере, степени) in che misura, di quanto насколько это возможно — per quanto possibile насколько лучше дома! — in casa si sta meglio, non c'è paragone! 2) насколько... настолько (же)... союз — (per) quanto... (per) tanto... насколько общителен сын, настолько дочка замкнута — è tanto estroverso il figlio quanto introversa la figlia насколько мне известно... — che io sappia... насколько я понимаю... — a quanto ho capito 3) вопр. насколько он быстрее? — di quanto è più veloce? Итальяно-русский словарь.2003. Синонимы: в какой мере, в какой степени, до какой степени, до чего, елико, как, сколь, сколько...смотреть\n...\n到什么程度 dào shénmechéngdù, 多少 duōshǎo, 如何 rúhéнасколько это верно? - 究竟, 这正确到什么程度呢?насколько мне известно - 据我所知насколько здесь лучше! - 这里好得多啊!Синонимы:...смотреть\n...\nнасколько нареч. 1. (вопр., косвенно вопр.) um wieviel; inwiefern насколько это верно? inwiefern stimmt das? 2. (относ.) soviel (als); soweit, sofern; inwieweit, inwiefern насколько мне известно soviel ich weiß Синонимы: в какой мере, в какой степени, до какой степени, до чего, елико, как, сколь, сколько...смотреть\n...\nнасколько, нареч. (насколько я могу судить, но числит, на сколько: на сколько частей) Синонимы: в какой мере, в какой степени, до какой степени, до че...смотреть\n...\nНасколько возможно.Якмога (якомога); як спромога; що спроможність.Насколько мне известно.Як (скільки) мені відомо; скільки я знаю.Насколько... настольк...смотреть\n...\nнасколько, наск′олько, нареч. В какой мере, степени. Н. лучше дома!• Насколько... настолько (же)..., союз выражает противопоставление, сопоставление пр...смотреть\n...\nНАСКОЛЬКО, наречие В какой мере, степени. Насколько лучше дома! Насколько... настолько (же)..., союз — выражает противопоставление, сопоставление признаков, равноценных по своему характеру. Насколько общителен сын, настолько дочка замкнута и застенчива....смотреть\n...\n1) as far as2) how much3) to what extent– насколько нам известноСинонимы: в какой мере, в какой степени, до какой степени, до чего, елико, как, сколь, ...смотреть\n...\nнасколько = нареч. as far as; (в вопросах, восклицаниях) how much; насколько мне известно as far as I know; насколько второе издание лучше первого! how much better the second edition is than the first one!...смотреть\n...\nнаскольконареч 1. вопр. πόσο, κατά πόσον: ~ он старше вас? πόσο μεγάλήτερος εἶναι ἀπό σᾶς;· 2. относ. καθ'ὅσον: ~ мне известно καθ' ὅσον μοῦ εἶναι γνωστόν, ἀπ' δτι ξέρω....смотреть\n...\nнасколько как, сколь(ко), до какой (степени, мере), сколько, до чего, в какой мере, до какой степени, елико, в какой степени\n...\nнасколько наск`олько, нареч. (наск`олько м`ожно суд`ить), но числит. на ск`олько (на ск`олько дн`ей)\n...\nНареч. nə qədər, nə dərəcədə; насколько это верно? bu nə qədər (nə dərəcədə) doğrudur?\n\n---\n\nTitle: \"Насколько\" или \"на сколько\": как правильно пишется\nURL: https://www.kp.ru/edu/shkola/naskolko-ili-na-skolko-kak-pishetsya/\nPublished: N/A\nAuthor: N/A\nHighlights:\n«Насколько» или «на сколько»: слитно или раздельно пишется слово по правилам русского языка\n...\n# «Насколько» или «на сколько»: как правильно пишется\n...\n## Правило «насколько»\n...\nМестоименное наречие «насколько» пишется слитно. Оно состоит из наречия «сколько» и приставки «на». Данное слово не изменяется по числам и падежам. Слово «насколько» является обстоятельством степени и меры. Если его можно заменить без потери смысла на слова «как», «до какой степени», «в какой мере», то пишем слитно.\n...\n## Правило «на сколько»\n...\n«Сколько» является вопросительным и относительным местоимением, которое пишется раздельно с предлогом «на». У местоимения, в отличие от наречия, всегда есть зависимое слово. В предложении «На сколько дней вы идете в отпуск?» зависимым словом выступает «дней». Местоимение «на сколько» является вопросительным словом или союзным словом в сложноподчиненных предложениях.\n...\n– Выбор написания лексической пары «насколько» и «на сколько» зависит от конкретной части речи. Если мы говорим о слитном написании слова «насколько», то перед нами местоименное наречие, образованное от производящей лексемы «сколько» с помощью суффикса и приставки. По падежам и числам оно не изменяется, и встретить слово «насколько» можно в сложноподчиненных предложениях, где к нему напрямую можно задать вопрос. Например: «Я не уверен точно, насколько он был прав тогда» или «Кстати, насколько долго они остановятся здесь?»\n...\nЕсли же мы видим раздельное написание сочетания «на сколько», то это относительное или вопросительное местоимение. В отличие от слитного «близнеца», мы можем подставить для проверки существительное в винительном падеже: на сколько (элементов, частей, кусков)? Подтвердим сказанное выше примерами: «На сколько часов хватит заряда батареи?» или «На сколько дней у него планируется отпуск?»\n...\n– В русском языке существует два варианта написания: «насколько» и «на сколько». Если слово «насколько» является наречием, к которому можно задать вопрос «в какой степени?», то оно пишется слитно. Наречие состоит из приставки «на», корня «скольк» и суффикса «о». Примеры: «Насколько здорово мы отдохнули!» «Насколько красиво пели птицы!» «Насколько это реально, я не знаю».\n...\nА теперь рассмотрим раздельное написание. Это вопросительное местоимение «сколько» с предлогом «на». В этом случае подразумевается количество частей. Примеры: «На сколько частей надо нарезать торт?» «На сколько часов хватает зарядки мобильника?» «На сколько дней муж уехал в командировку, жена не знала».\n\n---\n\nTitle: «Насколько» как пишется правильно слово?\nURL: https://obrazovaka.ru/kak-pishetsya/naskolko.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n# Как пишется «насколько»?\n...\nСлово «насколько» пишется как слитно «насколько», так и раздельно «на сколько».\n...\nВ первом случае это наречие, во втором — вопросительное местоимение «сколько» с предлогом «на».\n...\nКак правильно пишется слово «насколько», слитно или раздельно, зависит от контекста.\n...\n## Правило для «насколько» (наречие)\n...\nЕсли местоименное наречие «насколько» можно заменить вопросительными конструкциями «в какой степени», «в какой мере», и наречием «как» — написание будет слитным.\n...\n- Насколько я знаю, ты великолепный танцор.\n- Насколько я могу судить, мы не виделись около десяти лет.\n- Я знаю, что твой каблук выше, вопрос, насколько?\n...\n## Правило для «на сколько» (вопросительное местоимение с предлогом)\n...\nВопрос «на сколько» предполагает ответ с содержанием числительных.\n...\n- На сколько сантиметров ты сможешь прыгнуть дальше меня? — На два.\n- На сколько лет я выгляжу в этом платье?\n- На сколько кусков разрезать торт?\n...\nУкажите прави\n...\nвариант написания:\n...\n- на-сколько\n- насколько\n- на сколько\n- насколько и на сколько\n\n---\n\nTitle: или «насколько»? Когда слово нужно писать слитно, а ...\nURL: https://mel.fm/gramotnost/kak-pisat/7128409-na-skolko-ili-naskolko-kogda-slovo-nuzhno-pisat-slitno-a-kogda--net\nPublished: 2022-08-14T00:00:00.000Z\nAuthor: N/A\nHighlights:\n«На сколько» или «насколько»? Когда слово нужно писать слитно, а когда — нет | Мел\n...\n# «На сколько» или «насколько»? Когда слово нужно писать слитно, а когда — нет\n...\nНеумение отличать наречия от местоимений с предлогами встречается везде — от школьных чатов до деловых переписок. Время от времени кто-нибудь обязательно поделит наречие на две части и заставит за себя краснеть. Поэтому ещё раз рассказываем про разницу «насколько» и «на сколько».\n...\nМестоименное наречие «насколько» пишется слитно. Определить, с наречием мы имеем дело или с местоимением «сколько», можно так: если слово «насколько» без потери смысла можно заменить на «как» или «в какой мере», то это наречие и пишется оно слитно. В нашем примере фраза «Как мне известно, всё было не так» будет означать ровно то же самое, что и фраза «Насколько мне известно, всё было не так».\n...\nПравильно: на сколько\n...\nВопросительное местоимение «сколько» с предлогом «на» пишется раздельно. Местоимение можно опознать по наличию зависимого слова (в нашем примере это «дни») или по возможности добавить в фразу подразумеваемое зависимое слово: «На сколько я тебя старше?» — «На сколько (лет) я тебя старше?»\n\n Stranger Man / Shutterstock / Fotodom",
+      "title": "Web search: насколько",
+      "metadata": {},
+      "time": {
+        "start": 1789528772429,
+        "end": 1789528774403
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.404Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528774404,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a1704001JYC4VuDX911WZd",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a0d73001BDOn3KrFHgPYe3",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 64194,
+      "output": 59,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 64253,
+      "headroom": -25397,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.405Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.405Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.405Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.405Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.407Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.407Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.407Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.407Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.418Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 64253,
+  "providerTokens": 64253,
+  "estimatedInputTokens": 23941,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 64194,
+    "cacheRead": 0,
+    "output": 59
+  },
+  "overflow": true,
+  "headroom": -25397,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.421Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.421Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.424Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.424Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.424Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 7,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.424Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528774868,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a18d3001KYlY6g8yekY5nQ",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a1718001GqyZYNE7pLTbfe",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528774869,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a18d5001BciQD0Nf8BEdJj",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a1718001GqyZYNE7pLTbfe",
+    "type": "text",
+    "text": "Поищу в интернете: Насколько глубоко обычно уходят корни дуба. Открою https://doi.org/10.21513/0207-2564-2018-3-79-92 и прочитаю содержимое.\n\nTitle: What did we do so\n\nUser turns:\n  1.\n  2.",
+    "time": {
+      "start": 1789528774869,
+      "end": 1789528774869
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528774869,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a18d5002o2TYZp3RJ2evyL",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a1718001GqyZYNE7pLTbfe",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 75948,
+      "output": 189,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 76137,
+      "headroom": -37281,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.870Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.870Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.870Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528774870,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a18d60022RovJfzKNIR45w",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a18d6001vd6gG0vCRMsu16",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528774870,
+      "end": 1789528774870
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.870Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.871Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "step": 8,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.871Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.872Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.873Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.874Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.874Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.874Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.874Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.948Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528774948,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a1923001d0ooDyYg3maG0B",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a18d7001aDHJPfxXSgQtMh",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.948Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.948Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528774949,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a1924002NO2bWLCeGgn53R",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a18d7001aDHJPfxXSgQtMh",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528774949,
+      "end": 1789528774949
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528774949,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "part": {
+    "id": "prt_0a83a1925001BVjSpWP1LaREQk",
+    "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+    "messageID": "msg_0a83a18d7001aDHJPfxXSgQtMh",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8738,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8811,
+      "headroom": 30045,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.949Z",
+  "service": "session.prompt",
+  "step": 8,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.950Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.950Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.951Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.951Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.951Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528774951,
+  "sessionID": "ses_f57c60de7fferRZM6u5B2FmYYC"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.952Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.952Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.952Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.952Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.2K5dGuTpHU",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:34.952Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 11,
+  "message": "Agent exiting"
+}
+

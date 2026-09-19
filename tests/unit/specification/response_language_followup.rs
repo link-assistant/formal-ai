@@ -131,6 +131,26 @@ fn capabilities_follow_up_returns_to_english_on_request() {
         solver.solve_with_history("I do not understand Russian, write in English", &history);
 
     assert_eq!(
+        response.answer,
+        r#"I am formal-ai, a deterministic symbolic AI. Here is what I can do:
+
+- **Greetings**: respond to «Hi», «Hello», and similar.
+- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.
+- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.
+- **Concept lookup**: explain terms — try «What is Wikipedia?»
+- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»
+- **Translation**: translate phrases between languages.
+- **Memory**: recall context within the current session.
+- **Behavior rules**: send `List behavior rules` to see the built-in routing rules, and `Show behavior rule unknown` to read one in Links Notation.
+- **Teach this dialog**: send «When I say `your prompt`, answer `your answer`» to add a dialog-local rule for the current conversation.
+- **Self facts**: send `List all facts you know about yourself` to see what I know about myself.
+- **Report a missing rule**: use the top-bar **Report issue** button; unknown-prompt message links include the diagnostic trace for maintainers.
+- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.
+
+I run on local symbolic rules, without any neural network inference."#
+    );
+
+    assert_eq!(
         response.intent, "capabilities",
         "English follow-up should replay the capabilities answer, got {} -> {}",
         response.intent, response.answer,
@@ -167,6 +187,11 @@ fn identity_follow_up_retargets_between_non_english_languages() {
 
     // Terse Chinese switch — no fresh subject, so it must be read as a re-answer.
     let response = solver.solve_with_history("用中文", &history);
+
+    assert_eq!(
+        response.answer,
+        "我是 formal-ai —— 一个确定性的符号化 AI 系统,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。"
+    );
 
     assert_eq!(
         response.intent, "identity",

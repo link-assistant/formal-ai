@@ -2,10 +2,10 @@ self_ast_census
   target src/engine.rs
   language rust
   fidelity signature
-  byte_len 38202
-  line_count 963
-  content_id source_module_fd9af738bc9d5974
-  symbol_count 45
+  byte_len 40291
+  line_count 986
+  content_id source_module_29e22450b63eeda3
+  symbol_count 46
   symbols
     const DEFAULT_MODEL 43 43
     struct SymbolicAnswer 55 65
@@ -16,39 +16,40 @@ self_ast_census
     function announces_a_list_it_does_not_make 139 141
     struct FormalAiEngine 145 145
     function answer 150 152
-    const KNOWLEDGE_SCHEMA_VERSION 155 155
-    function knowledge_links_notation 158 268
-    function format_concept_index_record 274 297
-    function format_type_system_record 301 322
-    function format_doublet_reduction_record 327 340
-    function estimate_tokens 343 345
-    struct GraphNode 349 353
-    struct GraphEdge 357 361
-    struct KnowledgeGraph 366 369
-    function known_intent_slugs 371 382
-    static CELL 372 372
-    function trace_prefixes 384 388
-    static CELL 385 385
-    function is_known_trace_id 391 401
-    function knowledge_graph 404 544
-    function knowledge_graph_dot 547 563
-    function stable_id 566 568
-    enum SelectedRule 570 585
-    function intent 588 606
-    function response_link 608 625
-    function answer 627 645
-    function language_aware_intent_for 648 650
-    function language_aware_answer_for 652 715
-    function response_link_for_intent 717 719
-    function hello_world_program_by_alias 722 725
-    function normalize_prompt 727 745
-    function is_script_combining_mark 747 760
-    function answer_links_notation 762 808
-    function format_write_program_rule_record 810 834
-    function program_template_sources 836 844
-    function write_program_answer 846 878
-    function write_program_intro 880 891
-    function execution_report 893 925
-    function execution_status_phrase 927 937
-    function execution_output_label 939 950
-    function execution_command_lines 958 963
+    function answer_with_memory 162 173
+    const KNOWLEDGE_SCHEMA_VERSION 176 176
+    function knowledge_links_notation 179 289
+    function format_concept_index_record 295 318
+    function format_type_system_record 322 343
+    function format_doublet_reduction_record 348 361
+    function estimate_tokens 364 366
+    struct GraphNode 370 374
+    struct GraphEdge 378 382
+    struct KnowledgeGraph 387 390
+    function known_intent_slugs 392 403
+    static CELL 393 393
+    function trace_prefixes 405 409
+    static CELL 406 406
+    function is_known_trace_id 412 422
+    function knowledge_graph 425 565
+    function knowledge_graph_dot 568 584
+    function stable_id 587 589
+    enum SelectedRule 591 606
+    function intent 609 627
+    function response_link 629 646
+    function answer 648 666
+    function language_aware_intent_for 669 671
+    function language_aware_answer_for 673 736
+    function response_link_for_intent 738 740
+    function hello_world_program_by_alias 743 746
+    function normalize_prompt 748 766
+    function is_script_combining_mark 768 781
+    function answer_links_notation 783 829
+    function format_write_program_rule_record 831 855
+    function program_template_sources 857 865
+    function write_program_answer 867 899
+    function write_program_intro 901 912
+    function execution_report 914 935
+    function execution_status_phrase 937 950
+    function execution_output_label 958 973
+    function execution_command_lines 981 986

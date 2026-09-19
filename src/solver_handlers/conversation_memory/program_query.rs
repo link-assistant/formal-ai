@@ -1,20 +1,20 @@
 //! Bounded memory-program integration for natural-language memory queries.
 
 use super::{
-    answer_memory_recall, recalled_event_indices, try_link_substitution_query, try_memory_write,
-    MemoryQueryExecution,
+    MemoryQueryExecution, answer_memory_recall, recalled_event_indices,
+    try_link_substitution_query, try_memory_write,
 };
 use crate::engine::normalize_prompt;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::memory::MemoryStore;
 use crate::memory_program::{
-    compile_memory_program, execute_memory_program, MemoryProgramAuthorization,
-    MemoryProgramCompileError, MemoryProgramHalt, MemoryProgramLimits, MemoryProgramOutcome,
+    MemoryProgramAuthorization, MemoryProgramCompileError, MemoryProgramHalt, MemoryProgramLimits,
+    MemoryProgramOutcome, compile_memory_program, execute_memory_program,
 };
 use crate::memory_query_language::{
-    compile_memory_query as compile_exact_memory_query, detect_exact_memory_query,
-    execute_memory_query as execute_exact_memory_query, QueryDialect,
+    QueryDialect, compile_memory_query as compile_exact_memory_query, detect_exact_memory_query,
+    execute_memory_query as execute_exact_memory_query,
 };
 use crate::seed;
 use crate::solver_handlers::finalize_simple;

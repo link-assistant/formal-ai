@@ -1,6 +1,8 @@
 work "tale:fisherman-and-fish"
   doc_id "tale:fisherman-and-fish"
   title "Сказка о рыбаке и рыбке"
+  alias "fisherman tale"
+  alias "tale of the fisherman and the fish"
   signature "поймал рыбка старуха корыто"
 lexeme "старик"
   work "tale:fisherman-and-fish"

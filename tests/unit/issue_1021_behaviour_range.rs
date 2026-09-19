@@ -577,6 +577,10 @@ fn a_one_letter_alias_does_not_match_inside_an_accented_word() {
 fn the_languageless_coding_request_is_answered_in_its_own_language() {
     let english = UniversalSolver::default().solve("I need code");
     assert_eq!(
+        english.answer,
+        "I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.\n\nSay what the program should do and which language it should be written in, and I will derive it."
+    );
+    assert_eq!(
         english.intent, "write_program_request_unspecified",
         "{}",
         english.answer
@@ -584,6 +588,10 @@ fn the_languageless_coding_request_is_answered_in_its_own_language() {
     assert!(english.answer.contains("language"), "{}", english.answer);
 
     let russian = UniversalSolver::default().solve("мне нужен код");
+    assert_eq!(
+        russian.answer,
+        "Я не угадываю, что писать. Это похоже на запрос программы, но в нём не названо ни что программа должна делать, ни на каком языке программирования её написать.\n\nСкажите, что должна делать программа и на каком языке, и я её выведу."
+    );
     assert_eq!(
         russian.intent, "write_program_request_unspecified",
         "{}",
@@ -599,6 +607,35 @@ fn the_languageless_coding_request_is_answered_in_its_own_language() {
 #[test]
 fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
     let response = UniversalSolver::default().solve("write a hello world program in php");
+    assert_eq!(
+        response.answer,
+        r#"Here is a minimal PHP hello world program:
+
+```php
+<?php
+
+echo "Hello, world!", PHP_EOL;
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `php -l main.php`
+Run command: `php main.php`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program prints the text `Hello, world!` to standard output and then exits.
+
+How to test it yourself:
+1. Install PHP from https://www.php.net/downloads.
+2. Save the code above to a file named `main.php`.
+3. Check that it compiles: `php -l main.php`.
+4. Run it: `php main.php`.
+5. Compare the output with the expected output shown above."#
+    );
     assert_eq!(response.intent, "write_program", "{}", response.answer);
     assert!(response.answer.contains("```php"), "{}", response.answer);
     assert!(response.answer.contains("<?php"), "{}", response.answer);
@@ -612,11 +649,78 @@ fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
     // composer derives from `data/seed/coding-idioms.lino` rather than from a
     // template — both must reach PHP now that the language is catalogued.
     let fizzbuzz = UniversalSolver::default().solve("write a fizzbuzz program in php");
+    assert_eq!(
+        fizzbuzz.answer,
+        r#"Here is a minimal PHP FizzBuzz program:
+
+```php
+<?php
+
+foreach (range(1, 15) as $number) {
+    if ($number % 15 === 0) {
+        echo "FizzBuzz", PHP_EOL;
+    } elseif ($number % 3 === 0) {
+        echo "Fizz", PHP_EOL;
+    } elseif ($number % 5 === 0) {
+        echo "Buzz", PHP_EOL;
+    } else {
+        echo $number, PHP_EOL;
+    }
+}
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `php -l main.php`
+Run command: `php main.php`
+Output:
+```text
+1
+2
+Fizz
+4
+Buzz
+Fizz
+7
+8
+Fizz
+Buzz
+11
+Fizz
+13
+14
+FizzBuzz
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program loops over the numbers 1 to 15. For each number it prints `FizzBuzz` when the number is divisible by both 3 and 5, `Fizz` when it is divisible by 3, `Buzz` when it is divisible by 5, and otherwise the number itself — each on its own line.
+
+How to test it yourself:
+1. Install PHP from https://www.php.net/downloads.
+2. Save the code above to a file named `main.php`.
+3. Check that it compiles: `php -l main.php`.
+4. Run it: `php main.php`.
+5. Compare the output with the expected output shown above."#
+    );
     assert_eq!(fizzbuzz.intent, "write_program", "{}", fizzbuzz.answer);
     assert!(fizzbuzz.answer.contains("```php"), "{}", fizzbuzz.answer);
 
     let sorted =
         UniversalSolver::default().solve("Sort the numbers 3, 1, 2 in PHP, give me the code");
+    assert_eq!(
+        sorted.answer,
+        r#"Here is PHP code that sorts the numbers 3, 1, 2 in ascending order:
+
+```php
+<?php
+
+$numbers = [3, 1, 2];
+sort($numbers);
+echo implode(", ", $numbers), PHP_EOL;
+```
+
+Result: 1, 2, 3"#
+    );
     assert_eq!(sorted.intent, "write_program", "{}", sorted.answer);
     assert!(
         sorted.answer.contains("sort($numbers);"),

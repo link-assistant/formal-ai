@@ -206,6 +206,11 @@ meanings
     lexeme zh
       surface
         text 开发
+    lexeme es
+      surface
+        text desarrolla
+      surface
+        text desarrollar
   design
     defined-by program
     role software_authoring_action
@@ -223,6 +228,11 @@ meanings
     lexeme zh
       surface
         text 设计
+    lexeme es
+      surface
+        text diseña
+      surface
+        text diseñar
   scaffold
     defined-by code
     defined-by program

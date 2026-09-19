@@ -7,6 +7,12 @@ use super::parser::{parse_lino, split_pipe_list};
 pub struct AgenticToolCapability {
     pub id: String,
     pub aliases: Vec<String>,
+    /// Aliases whose input schema accepts a shell command string.
+    ///
+    /// Some broad execution tools share the `shell` capability without
+    /// accepting `{ "command": ... }`.  Command planning therefore uses this
+    /// narrower, data-declared subset instead of guessing from a tool name.
+    pub command_aliases: Vec<String>,
     pub cues: Vec<String>,
 }
 
@@ -32,6 +38,7 @@ pub fn agentic_tool_capabilities() -> Vec<AgenticToolCapability> {
             AgenticToolCapability {
                 id: node.id.clone(),
                 aliases: split_pipe_list(node.find_child_value("aliases")),
+                command_aliases: split_pipe_list(node.find_child_value("command_aliases")),
                 cues,
             }
         })

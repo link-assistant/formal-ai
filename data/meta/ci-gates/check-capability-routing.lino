@@ -1,0 +1,4 @@
+ci_gate check_capability_routing
+  stage rust
+  description "Capability-routing coverage is re-measured from the held-out corpus and the production router; every recorded value must equal the tree, upward measures may not fall, and routing debt may not rise."
+  run "rust-script --test scripts/check-capability-routing.rs && rust-script scripts/check-capability-routing.rs --base origin/main"

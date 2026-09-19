@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.785Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.785Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.785Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.786Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.815Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.815Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.816Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.820Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.820Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.827Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.840Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.849Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 10454,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.849Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.867Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:19:35.876Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.877Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.877Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.877Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.877Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.877Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.877Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.877Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 61,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.878Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:19:35.878Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.884Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.884Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.885Z",
+  "service": "session",
+  "id": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb",
+  "title": "New session - 2026-09-16T03:19:35.885Z",
+  "time": {
+    "created": 1789528775885,
+    "updated": 1789528775885
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.885Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.885Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.885Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.886Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.886Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c5e332ffeRrlDI9vnt3cDcI/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.886Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c5e332ffeRrlDI9vnt3cDcI/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.892Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 6,
+  "method": "POST",
+  "path": "/session/ses_f57c5e332ffeRrlDI9vnt3cDcI/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.897Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.899Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.900Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.902Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.904Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.904Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.904Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.905Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.905Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.905Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.905Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.905Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:35.905Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.194Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.206Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.241Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.246Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.269Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.269Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.270Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.270Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.708Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528776708,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a1ffe001rAyNt2dhLv007C",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a1e0a001hLzeHltajMFFmK",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.710Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.711Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528776711,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2006001jhPFS3Xie38f1W",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a1e0a001hLzeHltajMFFmK",
+    "type": "tool",
+    "callID": "call_a39fcbf40ac6589e",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.712Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528776712,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2004001WdSh18oWnT2fbU",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a1e0a001hLzeHltajMFFmK",
+    "type": "text",
+    "text": "मैं इंटरनेट पर बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं खोजता हूँ।",
+    "time": {
+      "start": 1789528776711,
+      "end": 1789528776711
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:36.713Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528776713,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2006001jhPFS3Xie38f1W",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a1e0a001hLzeHltajMFFmK",
+    "type": "tool",
+    "callID": "call_a39fcbf40ac6589e",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं"
+      },
+      "time": {
+        "start": 1789528776712
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.919Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528779919,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2006001jhPFS3Xie38f1W",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a1e0a001hLzeHltajMFFmK",
+    "type": "tool",
+    "callID": "call_a39fcbf40ac6589e",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं"
+      },
+      "output": "Title: ओक की संपूर्ण मार्गदर्शिका: विशेषताएँ, देखभाल, प्रजातियाँ और रोचक तथ्य\nURL: https://hi.jardineriaon.com/%E0%A4%93%E0%A4%95.html\nPublished: 2025-07-21T19:48:27.000Z\nAuthor: Mónica Sánchez\nHighlights:\n- कोर्टेक्स: प्रारंभ में यह चिकना होता है, लेकिन समय के साथ इसमें दरारें पड़ जाती हैं और यह कठोर हो जाता है, तथा टैनिन की उच्च सांद्रता के कारण यह कीटों के प्रति प्रतिरोधी होता है।\n- चादरें: एकांतर, 5 से 18 सेमी., गहरे हरे रंग का, हल्के रंग का पृष्ठ भाग, स्पष्ट शिराविन्यास के साथ।\n- फ्लोरेस: उभयलिंगी; नर लटकते हुए, हरे या पीले रंग के कैटकिंस में, और मादाएं अकेले या छोटे समूहों में।\n- बलूत: अंडाकार फल, पकने पर भूरे रंग के, शल्कदार गुम्बद द्वारा संरक्षित, प्रतिवर्ष बड़ी संख्या में उत्पादित।\n- गहरी जड़ प्रणाली: मुख्य मूसला जड़, व्यापक पार्श्व शाखाओं के साथ, जो स्थिरता और भूजल तक पहुंच को सुगम बनाती है।\n...\n- मध्यम आवश्यकताएं: पहले दो वर्षों में लम्बे समय तक सूखे से बचने के लिए नियमित रूप से पानी देना तथा सब्सट्रेट को संतृप्त किए बिना सिंचाई करना महत्वपूर्ण है।\n- गहरी जड़ें: परिपक्व ओक के पेड़ों को भूजल की आवश्यकता होती है तथा अत्यधिक जल संकट की अवधि को छोड़कर, उन्हें शायद ही कभी अतिरिक्त सिंचाई की आवश्यकता होती है।\n- नियंत्रित आर्द्रता: पानी देने से पहले मिट्टी की नमी की जांच करें; क्लोरोसिस से बचने के लिए वर्षा जल या कम खनिज वाला पानी बेहतर होता है।\n\n---\n\nTitle: बाँज\nURL: https://hi.wikipedia.org/wiki/%E0%A4%B6%E0%A4%BE%E0%A4%B9%E0%A4%AC%E0%A4%B2%E0%A5%82%E0%A4%A4\nPublished: N/A\nAuthor: N/A\nHighlights:\nबाँज या बलूत या शाहबलूत एक तरह का वृक्ष है जिसे अंग्रेज़ी में 'ओक' (Oak) कहा जाता है। बाँज (Oak) फागेसिई (Fagaceae) कुल के क्वेर्कस (quercus) गण का एक पेड़ है। इसकी लगभग ४०० किस्में ज्ञात हैं, जिनमें कुछ की लकड़ियाँ बड़ी मजबूत और रेशे सघन होते हैं। इस कारण ऐसी लकड़ियाँ निर्माणकाष्ठ के रूप में बहुत अधिक व्यवहृत होती है।\n\n---\n\nTitle: English Oak (Quercus robur) - तथ्य, आवास और देखभाल - Plantnimals\nURL: https://plantnimals.com/hi/species/english-oak/\nPublished: 2026-06-30T00:00:00.000Z\nAuthor: N/A\nHighlights:\nअंग्रेजी ओक, वैज्ञानिक नाम Quercus robur, यूरोप के सबसे प्रतिष्ठित और शक्तिशाली पेड़ों में से एक है। यह विशाल पर्णपाती वृक्ष अपनी मजबूत, घुमावदार शाखाओं और गहरी जड़ों के लिए जाना जाता है, जो इसे सदियों तक जीवित रहने की क्षमता देती है। इस प्रजाति को पृथ्वी पर 17 देशों में पाया जाता है और यह वर्तमान में संरक्षण की दृष्टि से सुरक्षित स्थिति में है, जिसे IUCN ने “Least Concern” (न्यूनतम चिंता) के रूप में वर्गीकृत किया है।\n...\nQuercus robur, जिसे English Oak या Common Oak के नाम से जाना जाता है, एक विशाल पर्णपाती वृक्ष है जो यूरोप के परिदृश्य को परिभाषित करता है। यह पेड़ आमतौर पर 20 मीटर की ऊँचाई तक बढ़ता है, लेकिन अनुकूल परिस्थितियों में 40 मीटर तक पहुँच सकता है। इसका मजबूत, व्यापक मुकुट और गहरी, फैली हुई जड़ प्रणाली इसे एक दीर्घजीवी और अत्यंत टिकाऊ प्रजाति बनाती है, जो 930 वर्षों तक जीवित रह सकती है।\n...\nनए पत्तों के साथ, यह पेड़ लाल-कांस्य रंग की नई\n...\nदिखाता है जो धीरे-धीरे\n...\nहरे में बदल जाती है। गर्मियों में,\n...\nछोटे, हरे-भ\n...\nपुष्पक्रमों\n...\nसिन्द्रूखी (ac\n...\n। ये अकोर्न\n...\nपरागण हवा द्वारा होता है, और सफल निषेचन के बाद, वृक्ष गर्मियों के दौरान एकोर्न (बलूत) विकसित करता है। ये बीज अगस्त और सितंबर में परिपक्व होते हैं। एकोर्न को एक कप्पी से ढका होता है और विभिन्न जंतु—विशेषकर चिड़िया और स्तनधारी—द्वारा छितराए जाते हैं, जो इस वृक्ष के प्रसार में महत्वपूर्ण भूमिका निभाते हैं।\n\n---\n\nTitle: शाहबलूत बोयें। फोटो और पेड़ का विवरण। शाहबलूत नट की रासायनिक संरचना\nURL: https://hie.tomathouse.com/kashtan-posevnoj/\nPublished: N/A\nAuthor: N/A\nHighlights:\nशाहबलूत गिरने वाले पत्तों वाला एक काफी बड़ा पेड़ है। औसतन, ऐसे पेड़ की ऊंचाई 35-40 मीटर ऊंचाई तक पहुंचती है। इसकी एक शक्तिशाली, लगभग सीधी सूंड है, जिसका व्यास लगभग 2 मीटर है। पेड़ की छाल गहरे भूरे रंग की होती है, जिसके साथ दरारें होती हैं। पेड़ को लंबा और भारी बनाते हुए शाखाएं व्यापक रूप से फैली हुई हैं।\n\n---\n\nTitle: कॉर्क ओक और उसके फल: बलूत, उसके उपयोग, अंतर और पारिस्थितिकी के बारे में सब कुछ\nURL: https://hi.jardineriaon.com/%E0%A4%95%E0%A5%89%E0%A4%B0%E0%A5%8D%E0%A4%95-%E0%A4%93%E0%A4%95-%E0%A4%95%E0%A5%8D%E0%A4%AF%E0%A4%BE-%E0%A4%AB%E0%A4%B2-%E0%A4%A6%E0%A5%87%E0%A4%A4%E0%A4%BE-%E0%A4%B9%E0%A5%88.html\nPublished: 2025-07-05T20:00:59.000Z\nAuthor: Encarni Arcoya\nHighlights:\n- जैव विविधता: कॉर्क ओक के जंगल विभिन्न प्रकार के पशु और वनस्पति प्रजातियों का घर हैं, जिनमें प्रवासी पक्षी, स्तनधारी, कीड़े और कवक शामिल हैं, जिनमें से कई लुप्तप्राय या स्थानिक हैं।\n- कटाव की रोकथाम: इसकी गहरी जड़ें मिट्टी को स्थिर रखती हैं तथा उसका क्षरण रोकती हैं, विशेष रूप से ढलानों और पहाड़ियों पर।\n- जल विनियमन: यह मिट्टी में जल प्रतिधारण को बढ़ावा देता है और सतही जलभृतों को बनाए रखने में मदद करता है।\n- भूदृश्य और सांस्कृतिक भूमिका: कॉर्क ओक का अंडालूसिया, एक्स्ट्रीमादुरा, कैटेलोनिया और पुर्तगाल जैसे क्षेत्रों की लोकप्रिय संस्कृति, पाककला और अर्थव्यवस्था से गहरा संबंध है।\n\n---\n\nTitle: बबूल टॉर्टिलिस: विशेषताएं, उप-प्रजातियां, उपयोग, प्रजनन और पूर्ण देखभाल\nURL: https://hi.jardineriaon.com/%E0%A4%B8%E0%A4%B5%E0%A4%BE%E0%A4%A8%E0%A4%BE-%E0%A4%AC%E0%A4%AC%E0%A5%82%E0%A4%B2-%E0%A4%95%E0%A5%80-%E0%A4%AF%E0%A4%BE%E0%A4%A4%E0%A4%A8%E0%A4%BE%E0%A4%93%E0%A4%82-%E0%A4%AE%E0%A5%87%E0%A4%82-%E0%A4%9C%E0%A5%80-%E0%A4%B0%E0%A4%B9%E0%A4%BE-%E0%A4%B9%E0%A5%88.html\nPublished: 2025-07-03T17:36:54.000Z\nAuthor: Mónica Sánchez\nHighlights:\nबबूल टॉर्टिलिस ऊंचाई में 12 और 18 मीटर के बीच पहुंच सकता है, हालांकि यह अक्सर अपने पर्यावरण की कठोर परिस्थितियों के कारण कम देखा जाता है। मुकुट चौड़ा, छत्र के आकार का और फैला हुआ होता है, जो सवाना के तीव्र सौर विकिरण से प्राकृतिक शरणस्थल के रूप में कार्य करता है। ट्रंक सीधा या थोड़ा घुमावदार है, जिसकी छाल आमतौर पर लम्बी परतों में निकलती है, खासकर वयस्क नमूनों में। यह अपनी खासियत के लिए जाना जाता है गहरी जड़ प्रणाली, जो सूखे के समय में भूजल तक पहुंच प्रदान करता है।\n...\n- समर्थन अत्यधिक तापमान इसके तने और छोटी पत्तियों में पानी जमा करने की क्षमता के कारण यह लम्बे समय तक\n...\nसे भी बचा रह सकता है।\n...\n- विस्तृत जड़\n...\nमिलती है कटाव\n...\nक्षीण मिट्टी पर.\n\n---\n\nTitle: مقاله بررسی الگوی پراکنش ریشه گونه های بلوط ایرانی و زالزالک به منظور استفاده در مدل های زیست مهندسی  (مطالعه موردی: جنگل های منطقه بلوران کوهدشت)\nURL: https://civilica.com/doc/1283567/\nPublished: 2021-10-06T22:57:38.000Z\nAuthor: N/A\nHighlights:\nپوشش گیاهی به­ واسطه سیستم ریشه­ ای خود با ایجاد چسبندگی اضافی ذرات خاک، تاثیر معنی­ داری در مسلح سازی دامنه­ ها دارد. در این خصوص ویژگی­های زیست فنی ریشه گونه ­های مختلف اهمیت بسزایی دارد. این پژوهش با هدف بررسی الگوی پراکنش ریشه دو گونهبلوط ایرانیوزالزالکدر جنگل­های بلوط غرب انجام گرفت. به ­این منظور پنج پایه درختی از دو گونهبلوط ایرانیوزالزالکبه­ صورت تصادفی جهت بررسی پراکنش ریشه آنها انتخاب شدند. نمونه­ برداری با استفاده از رینگ نمونه­ برداری هسته خاک و از سه فاصله افقی و سه عمق انجام شد. برای بررسی پراکنش ریشه از شاخص نسبت سطح ریشه به­ سطح خاک استفاده شد. نتایج نشان داد که نسبت سطح ریشه به سطح خاک و همچنین تراکم طولی ریشه­ ها با افزایش عمق خاک و افزایش فاصله از تنه کاهش می­ یابند. بیشترین میزان تراکم طولی ریشه ­ها در افق­ های بالایی خاک و نزدیک­ترین فاصله به تنه درختان مشاهده شد. بیشترین میزان تراکم حجمی ریشه ­ها نیز در عمق ۱۵-۰ سانتی­متری خاک مشاهده شد. براساس نتایج تحقیق مشخص شد که بین میزان تراکم حجمی ریشه دو گونهبلوط ایرانیوزالزالکاختلاف معنی­ داری وجود داشت و تراکم حجمی و طولی ریشه در گونهبلوط ایرانینسبت بهزالزالکبیشتر بود. به طور کلی، نتایج این تحقیق اهمیتبلوط ایرانیرا نسبت بهزالزالکدر مسلح سازی خاک دامنه­ ها نشان داد.\n\n---\n\nTitle: Flora-Hort. all about Horticulture, Floriculture and Landscaping : Quercus baloot بونج\nURL: http://florahort.blogspot.com/2017/02/quercus-baloot.html\nPublished: 2017-02-10T14:38:05.000Z\nAuthor: Posted by\n \n \n \n Flora-Hort\nHighlights:\nFlora-Hort. all about Horticulture, Floriculture and Landscaping : Quercus baloot بونج\n\nنباتاتی نام :کرکس بلوٹ Botanical Name: Quercus baloot Griff.\n\nخاندان ©: فاگیسی Family: Fagaceae\n\nانگریزی نام: ہولی اوک Holy Oak\n\nدیسی نام:بونج Bunj\n\nابتدائی مسکن(ارتقائ): پاکستان ،بھارت اور افغانستان ۔پاکستان میں ہمالیہ اور ہندوکش کی پہاڑیوں پور اور خاص طور پر دیر،چترال،سوات،ہزارہ ،تیرہ اور کُرم کے علاقوں میں پایا جاتا ہے۔\n\nقسم: سدا بہا ر\n\nشکل: قد: 12-2 میٹر پھیلاﺅ : 0.6-0.5 میٹر\n\nپتے: پتے سادہ ہیں اور کنارے ہموار یا دنددانوں والے ہوسکتے ہیں ،چھال کھردری اور ہلکی خاکستری کے ساتھ سیاہ۔\n\nپھولوں کا رنگ: پھول آنے کا وقت: اپریل اور مئی۔نر پھول katkins اور گروپوں میں لٹکے ہوئے5-3 سینٹی میٹر لمبے۔اور مادہ پھول\n\nگروپوں ہوتے ہیں 4-2 سینٹی میٹر لمبے\n\nپھل : پھل بلوط اور nut ،قطر میں 1.3-1.2 سینٹی میٹر،pollination) ) پولینیشن کے 18-12 ماہ بود پھل لگتا ہے۔\n\nکاشت:بیج , اور غیر جنسی طریقے دونوں سے،۔ یہ پھل ایک سخت پوست کا میوہ ہے تنہا اور اسے سٹور نہیں کیا جاتا ۔\n\nجگہ کا انتخاب:ایک اعتدال غیر روادار درخت جو مختلف قسم کی خشک پتھریلی اور بارانی زمینوں پر بڑھتا ہے۔بارش کی حد 1000-200 ملی میٹر سالانہ یا اس سے زیادہ۔نیم مرطوب،نیم بارانی(mediterranean) آب کو ترجیح دیتا ہے درجہ حرارت منفی 35-20 ڈگری سینٹی گریڈ۔سطح سمندر سے بلندی 3000-1500 میٹر۔\n\nنمایاں خصوصیات:جھاڑی آسانی سے بنا لیتا ہے۔ شاخ تراشی:\n\nبیماریاں:\n\nپیداوار: آہستہ بڑھوتری ، اوسط MAI 0.25 cm کیو بک میٹر فی ہیکٹر سالانہ ،اور ایک سیزن میں قطر پیداوار25cm ہے۔\n\nلکڑی کی خصوصیات\n\nدانہ :سیدھے سے بہت عمدہ،ہموار لچکدار۔\n\nرنگ :سخت لکڑی سرخ سے سرخ مائل براﺅن۔\n\nکثا فت: sg 0.94 ۔ کلوریز کی مقدار 5100کلوریز فی کلو گرام\n\nمظبوطی :سخت،بھاری اور لچکدار.\n\nاستعمال:ایندھن،دستے،زرعی آلات ،چارہ ،چار کول اور Tannin ۔",
+      "title": "Web search: बलूत की जड़ें आमतौर पर कितनी गहरी जाती हैं",
+      "metadata": {},
+      "time": {
+        "start": 1789528776712,
+        "end": 1789528779917
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.920Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528779920,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2c90001eBuCGckTjXxb5i",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a1e0a001hLzeHltajMFFmK",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8539,
+      "output": 131,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8670,
+      "headroom": 30186,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.921Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.921Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.922Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.928Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8670,
+  "providerTokens": 8670,
+  "estimatedInputTokens": 3409,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8539,
+    "cacheRead": 0,
+    "output": 131
+  },
+  "overflow": false,
+  "headroom": 30186,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.928Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.930Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:39.930Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.576Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528780576,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2f1f001LwlMhD6v24nk4q",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2c98001EYzMB1RjhJma5v",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.576Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.576Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528780576,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2f20002n7TTVq0sJ01AXy",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2c98001EYzMB1RjhJma5v",
+    "type": "tool",
+    "callID": "call_a50a6ed9be34eb66",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.577Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528780577,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2f20001HvRCzzq34YyUju",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2c98001EYzMB1RjhJma5v",
+    "type": "text",
+    "text": "मैं https://hi.jardineriaon.com/%E0%A4%93%E0%A4%95.html खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528780576,
+      "end": 1789528780576
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.577Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528780577,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2f20002n7TTVq0sJ01AXy",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2c98001EYzMB1RjhJma5v",
+    "type": "tool",
+    "callID": "call_a50a6ed9be34eb66",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://hi.jardineriaon.com/%E0%A4%93%E0%A4%95.html"
+      },
+      "time": {
+        "start": 1789528780577
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.654Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528780654,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2f20002n7TTVq0sJ01AXy",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2c98001EYzMB1RjhJma5v",
+    "type": "tool",
+    "callID": "call_a50a6ed9be34eb66",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://hi.jardineriaon.com/%E0%A4%93%E0%A4%95.html"
+      },
+      "error": "Error: Unable to connect. Is the computer able to access the url?",
+      "time": {
+        "start": 1789528780577,
+        "end": 1789528780653
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528780654,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "message": "Error: Unable to connect. Is the computer able to access the url?",
+  "error": "Error: Unable to connect. Is the computer able to access the url?"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528780655,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a2f6e001wyhBzBVmYFOX3m",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2c98001EYzMB1RjhJma5v",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 17696,
+      "output": 170,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 17866,
+      "headroom": 20990,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.655Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.656Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.656Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.656Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.657Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 17866,
+  "providerTokens": 17866,
+  "estimatedInputTokens": 3441,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 17696,
+    "cacheRead": 0,
+    "output": 170
+  },
+  "overflow": false,
+  "headroom": 20990,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.657Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.658Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.659Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.940Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528780940,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a308c001n2B9iAaxi3Vlb9",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2f71001OhssuEIQQ0OlSd",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528780941,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a308c002XE0NPdUK5SNGna",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2f71001OhssuEIQQ0OlSd",
+    "type": "text",
+    "text": "कमांड विफल रही: Error: Unable to connect. Is the computer able to access the url?\n\nइस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप चाहेंगे कि मैं diagnostic context के साथ issue report तैयार करूँ? जवाब दें: `Report issue`.",
+    "time": {
+      "start": 1789528780941,
+      "end": 1789528780941
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528780941,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "part": {
+    "id": "prt_0a83a308d001ZLowCLhIQZrdww",
+    "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+    "messageID": "msg_0a83a2f71001OhssuEIQQ0OlSd",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 17846,
+      "output": 229,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 18075,
+      "headroom": 20781,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.942Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.942Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.942Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.942Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.942Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.943Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.943Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.943Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528780943,
+  "sessionID": "ses_f57c5e332ffeRrlDI9vnt3cDcI"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.943Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.944Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.944Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.944Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.yrKojYVCnb",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:40.944Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

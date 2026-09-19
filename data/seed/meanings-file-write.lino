@@ -140,6 +140,29 @@ meanings
         text 检查文件
       surface
         text 预览
+    lexeme es
+      surface
+        text lee
+      surface
+        text leer
+      surface
+        text "lee el archivo"
+      surface
+        text "muestra el contenido de"
+      surface
+        text abre
+      surface
+        text imprime
+      surface
+        text muestra
+      surface
+        text visualiza
+      surface
+        text carga
+      surface
+        text inspecciona
+      surface
+        text "vista previa"
   file_write_action
     defined-by action
     role file_write_action_cue
@@ -273,6 +296,37 @@ meanings
         text 产出
       surface
         text 输出
+      surface
+        text 写入
+    lexeme es
+      surface
+        text crea
+      surface
+        text crear
+      surface
+        text escribe
+      surface
+        text escribir
+      surface
+        text guarda
+      surface
+        text guardar
+      surface
+        text genera
+      surface
+        text generar
+      surface
+        text añade
+      surface
+        text agrega
+      surface
+        text registra
+      surface
+        text deja
+      surface
+        text coloca
+      surface
+        text almacena
   file_write_content
     defined-by relation
     role file_write_content_lead
@@ -317,6 +371,8 @@ meanings
       surface
         text "с содержанием …"
       surface
+        text "с содержимым …"
+      surface
         text "содержащий …"
       surface
         text "содержащей …"
@@ -326,6 +382,8 @@ meanings
       surface
         text "जिसमें लिखा हो …"
       surface
+        text "जिसमें … हो"
+      surface
         text "सामग्री के साथ …"
     lexeme zh
       surface
@@ -333,7 +391,22 @@ meanings
       surface
         text "内容为 …"
       surface
+        text "把 … 写入"
+      surface
         text "包含 …"
+    lexeme es
+      surface
+        text "con el contenido …"
+      surface
+        text "con contenido …"
+      surface
+        text "con el texto …"
+      surface
+        text "que contenga …"
+      surface
+        text "conteniendo …"
+      surface
+        text "con …"
   file_write_literal_qualifier
     defined-by relation
     role file_write_content_qualifier
@@ -373,6 +446,15 @@ meanings
         text 正好
       surface
         text 完全
+    lexeme es
+      surface
+        text exactamente
+      surface
+        text precisamente
+      surface
+        text literalmente
+      surface
+        text textualmente
   file_write_authoritative_content
     defined-by relation
     role file_write_authoritative_content_lead
@@ -388,6 +470,9 @@ meanings
     lexeme zh
       surface
         text "内容与以下完全相同 …"
+    lexeme es
+      surface
+        text "con exactamente este contenido …"
   file_write_command_output
     defined-by relation
     role file_write_command_output_reference
@@ -419,6 +504,13 @@ meanings
         text 标准输出
       surface
         text 命令输出
+    lexeme es
+      surface
+        text "salida estándar"
+      surface
+        text "salida del comando"
+      surface
+        text "su salida"
   file_write_deferred_content
     defined-by relation
     role file_write_deferred_content_reference
@@ -480,6 +572,25 @@ meanings
         text "… 答案"
       surface
         text "… 证据"
+    lexeme es
+      surface
+        text "… hallazgo"
+      surface
+        text "… hallazgos"
+      surface
+        text "… resultado"
+      surface
+        text "… resultados"
+      surface
+        text "… respuesta"
+      surface
+        text "… conclusión"
+      surface
+        text "… conclusiones"
+      surface
+        text "… evidencia"
+      surface
+        text "… prueba"
   file_write_target
     defined-by relation
     role file_write_target_cue
@@ -515,6 +626,17 @@ meanings
     lexeme zh
       surface
         text 文件
+    lexeme es
+      surface
+        text archivo
+      surface
+        text fichero
+      surface
+        text llamado
+      surface
+        text llamada
+      surface
+        text nombrado
   file_write_destination
     defined-by relation
     role file_write_destination_cue
@@ -538,6 +660,11 @@ meanings
         text 到
       surface
         text 在
+    lexeme es
+      surface
+        text en
+      surface
+        text hacia
   file_leading_line_constraint
     defined-by relation
     role file_leading_line_constraint_lead
@@ -581,3 +708,12 @@ meanings
         text "第一行必须是 …"
       surface
         text "文件的第一行是 …"
+    lexeme es
+      surface
+        text "la primera línea debe ser exactamente …"
+      surface
+        text "la primera línea debe ser …"
+      surface
+        text "la primera línea del archivo debe ser …"
+      surface
+        text "empieza el archivo con la línea …"

@@ -86,6 +86,10 @@ fn issue_535_russian_attachment_originality_request_is_not_unknown() {
     let response = FormalAiEngine.answer(ISSUE_535_REPORTED_PROMPT);
 
     assert_eq!(
+        response.answer,
+        "Распознал проверку текста на уникальность и плагиат для `variation-tech-model-manual.txt`.\n\nРабочий план: прочитать приложенный текст, взять устойчивые фрагменты, выполнить веб-поиск точных совпадений по этим фрагментам, затем сравнить найденные источники с документом и отметить совпадения, цитирования и подозрительные заимствования. Я не буду объявлять процент уникальности без найденных источников и сопоставления текста.\n\nТекстовый фрагмент от клиента: нужно прочитать из вложения."
+    );
+    assert_eq!(
         response.intent, "document_originality_check",
         "reported prompt should route to document_originality_check, got {} with answer {}",
         response.intent, response.answer,

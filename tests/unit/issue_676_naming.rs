@@ -10,6 +10,10 @@ fn setting_the_assistant_name_is_acknowledged() {
     let answer = solver.solve("Now your name is Ineffa");
 
     assert_eq!(
+        answer.answer,
+        "Nice to meet you! I'll go by Ineffa from now on."
+    );
+    assert_eq!(
         answer.intent, "set_assistant_name",
         "naming the assistant should route to set_assistant_name, got {} -> {}",
         answer.intent, answer.answer,
@@ -35,6 +39,10 @@ fn assistant_name_is_recalled_after_being_set() {
     ];
     let answer = solver.solve_with_history("What is your name?", &history);
 
+    assert_eq!(
+        answer.answer,
+        "My name is Ineffa — that's what you named me."
+    );
     assert_eq!(
         answer.intent, "assistant_name",
         "asking after a rename should recall it, got {} -> {}",
@@ -92,6 +100,10 @@ fn i_will_call_you_variant_sets_the_name() {
     let solver = UniversalSolver::default();
     let answer = solver.solve("I'll call you Ada");
 
+    assert_eq!(
+        answer.answer,
+        "Nice to meet you! I'll go by Ada from now on."
+    );
     assert_eq!(
         answer.intent, "set_assistant_name",
         "\"I'll call you X\" should set the assistant name, got {} -> {}",

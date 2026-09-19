@@ -1311,6 +1311,42 @@ multilingual_responses
     intent external_benchmark_swe_infrastructure_error
     language en
     text "official SWE-bench evaluator reported infrastructure errors for: {cases}"
+  response response_external_benchmark_pytest_command_en
+    intent external_benchmark_pytest_command
+    language en
+    text "python3 -m pytest {tests}"
+  response response_external_benchmark_test_field_missing_en
+    intent external_benchmark_test_field_missing
+    language en
+    text "{suite}: record {index} is missing the test field `{field}`"
+  response response_external_benchmark_test_field_invalid_json_en
+    intent external_benchmark_test_field_invalid_json
+    language en
+    text "{suite}: record {index} has invalid JSON in `{field}`: {error}"
+  response response_external_benchmark_test_field_not_array_en
+    intent external_benchmark_test_field_not_array
+    language en
+    text "{suite}: record {index} has a non-array test field `{field}`"
+  response response_external_benchmark_recovery_not_permitted_en
+    intent external_benchmark_recovery_not_permitted
+    language en
+    text "SWE-bench harness recovery was not permitted: {reason}"
+  response response_external_benchmark_publisher_exhausted_en
+    intent external_benchmark_publisher_exhausted
+    language en
+    text "SWE-bench harness publisher search was exhausted: {consulted}"
+  response response_external_benchmark_recovery_still_missing_en
+    intent external_benchmark_recovery_still_missing
+    language en
+    text "SWE-bench harness remained unavailable after recovery: {after}"
+  response response_external_benchmark_full_floor_regression_en
+    intent external_benchmark_full_floor_regression
+    language en
+    text "{suite}: full_minimum_pass_count fell from {previous} to {current}"
+  response response_external_benchmark_floor_below_best_en
+    intent external_benchmark_floor_below_best
+    language en
+    text "{suite}: {field}={floor} is below the best recorded pass count {best} at slice {slice}"
   response response_external_benchmark_unavailable_observation_en
     intent external_benchmark_unavailable_observation
     language en

@@ -2,55 +2,73 @@ self_ast_census
   target src/rule_interpreter.rs
   language rust
   fidelity signature
-  byte_len 26679
-  line_count 775
-  content_id source_module_f8a43dce5ae5f2b5
-  symbol_count 47
+  byte_len 34295
+  line_count 960
+  content_id source_module_dc213b990c9f2819
+  symbol_count 65
   symbols
-    struct HandlerRules 23 25
-    struct HandlerRuleSet 29 32
-    struct Rule 35 44
-    enum Subject 47 53
-    enum RoleMode 56 63
-    enum Condition 66 81
-    enum ValueSource 84 89
-    enum ValueRef 92 97
-    enum Step 100 102
-    enum Fallback 105 109
-    enum Response 112 119
-    struct Node 121 126
-    struct Context 128 135
-    function rules 144 149
-    static CACHE 145 145
-    function handler_names 153 155
-    function run_handler 159 168
-    function handler_matches 172 176
-    function parse 185 204
-    function handler 208 210
-    function handler_names 213 215
-    function rule_count 219 221
-    function name 227 229
-    function rule_names 232 234
-    function run_with 238 248
-    function matches_with 252 259
-    function new 263 272
-    function text 274 282
-    function languages 284 290
-    function run 294 320
-    function resolve_values 322 343
-    function resolve 347 357
-    function render 361 392
-    function substitute 395 401
-    function holds 404 509
-    function parse_rule 512 589
-    function parse_conditions 591 593
-    function parse_condition 595 625
-    function split_subject 627 639
-    function parse_subject 641 650
-    function parse_value 652 682
-    function parse_value_ref 684 693
-    function first_arg 696 701
-    function error 703 707
-    function parse_tree 714 743
-    function attach 745 750
-    function tokenize 752 775
+    module parser 23 23
+    struct HandlerRules 29 31
+    struct HandlerRuleSet 35 38
+    struct Rule 41 50
+    enum Subject 53 70
+    enum Shape 81 96
+    enum RoleMode 99 108
+    enum Condition 111 127
+    struct ConditionSurface 132 136
+    trait ConditionSource 142 145
+    function role_surfaces 143 143
+    function exact_route_surfaces 144 144
+    struct SeedTables 149 151
+    function new 155 157
+    struct LinkStoreSource 162 165
+    enum ValueSource 168 173
+    enum ValueRef 176 181
+    enum Step 184 186
+    enum Fallback 189 193
+    enum Response 196 203
+    struct Node 205 210
+    struct Context 212 222
+    function role_surfaces 225 239
+    function exact_route_surfaces 241 255
+    function from_store 262 340
+    function role_surfaces 344 346
+    function exact_route_surfaces 348 350
+    function queried_nodes 353 359
+    function stored_surface 361 376
+    function slot_of 378 388
+    function rules 397 402
+    static CACHE 398 398
+    function handler_names 406 408
+    function run_handler 412 422
+    function handler_matches 426 431
+    struct ConditionVerdict 435 438
+    function parse 447 466
+    function handler 470 472
+    function handler_names 475 477
+    function rule_count 481 483
+    function condition_verdicts 488 507
+    function name 513 515
+    function rule_names 518 520
+    function run_with 524 533
+    function run_with_source 537 547
+    function matches_with 551 554
+    function matches_with_source 558 570
+    function new 574 595
+    function text 597 606
+    function languages 608 614
+    function run 618 644
+    function resolve_values 646 667
+    function resolve 671 681
+    function render 685 716
+    function substitute 719 725
+    function holds 728 837
+    function spelled_surface_present 849 872
+    function bounded_surface_present 874 885
+    const SEPARATED_ROLE_OBJECT_LIMIT 892 892
+    function separated_surface_present 894 908
+    function before_slot 910 912
+    const QUOTE_PAIRS 919 919
+    function holds 930 950
+    const URL_PREFIXES 955 955
+    function is_url 958 960

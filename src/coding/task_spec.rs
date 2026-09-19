@@ -61,6 +61,49 @@ pub struct CodingTaskSpec {
     pub prose_language: String,
 }
 
+impl From<&crate::verifiable_task::VerifiableTask> for CodingTaskSpec {
+    fn from(task: &crate::verifiable_task::VerifiableTask) -> Self {
+        use crate::verifiable_task::TaskExpectation;
+
+        let (artifact_shape, name, examples, expected_stdout) = match &task.expectation {
+            TaskExpectation::Callable { examples } => (
+                ArtifactShape::Function,
+                String::from("main"),
+                examples.clone(),
+                None,
+            ),
+            TaskExpectation::Stdout { expected } => (
+                ArtifactShape::Program,
+                String::from("main"),
+                Vec::new(),
+                expected.clone(),
+            ),
+            TaskExpectation::Numeric { .. }
+            | TaskExpectation::Count { .. }
+            | TaskExpectation::EditedText { .. }
+            | TaskExpectation::Unknown { .. }
+            | TaskExpectation::Boolean => (
+                ArtifactShape::Program,
+                String::from("main"),
+                Vec::new(),
+                None,
+            ),
+        };
+        Self {
+            language: String::from("python"),
+            artifact_shape,
+            name,
+            parameters: Vec::new(),
+            return_annotation: None,
+            imports: Vec::new(),
+            requirement_sentences: task.requirement_sentences.clone(),
+            examples,
+            expected_stdout,
+            prose_language: task.prose_language.clone(),
+        }
+    }
+}
+
 impl CodingTaskSpec {
     /// A compact signature identity used by cross-language transfer tests.
     #[must_use]
@@ -187,10 +230,11 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
     let conversational_prompt = outside_markdown_fences(prompt);
     let normalized = crate::engine::normalize_prompt(&conversational_prompt);
     let lexicon = crate::seed::lexicon();
+    let target_language = crate::coding::composition_language(&normalized, None)?;
     let is_conversational_request = lexicon
         .mentions_role(crate::seed::ROLE_CODING_REQUEST_VERB, &normalized)
         && lexicon.mentions_role(crate::seed::ROLE_CODING_REQUEST_OBJECT, &normalized)
-        && normalized.split_whitespace().any(|word| word == "python");
+        && !target_language.slug.is_empty();
     if !is_conversational_request {
         return None;
     }
@@ -202,7 +246,15 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         .meaning("coding_request_program")
         .is_some_and(|meaning| meaning.evidenced_in(&normalized))
     {
-        (ArtifactShape::Program, "main".to_owned(), Vec::new(), None)
+        // A program has no callable signature, so its stable name is the
+        // semantic task identity when the seed can resolve one. `main` remains
+        // the honest fallback for an open-ended program request. Keeping the
+        // task here lets a failed synthesis name the missing capability rather
+        // than leaking an implementation entry-point into the skill gap.
+        let name = crate::coding::program_task_by_alias(&normalized)
+            .map_or("main", |task| task.slug)
+            .to_owned();
+        (ArtifactShape::Program, name, Vec::new(), None)
     } else if lexicon.mentions_role(crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT, &normalized) {
         // The source catalog owns the callable identity and arity when prose
         // names a concept rather than spelling a signature. This provisional
@@ -216,6 +268,19 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
     } else {
         return None;
     };
+    // A callable whose requirement names no parameter still denotes an
+    // anonymous input ("a string", "una cadena"): the artifact reads
+    // *something*. The search types that input by unification against the
+    // fragments it applies; without it there is no variable to ground in and
+    // every composition degenerates to constants.
+    let parameters = if artifact_shape == ArtifactShape::Function && parameters.is_empty() {
+        vec![Parameter {
+            name: "input".to_owned(),
+            annotation: None,
+        }]
+    } else {
+        parameters
+    };
     let language_priority = crate::language::registered_languages()
         .into_iter()
         .map(crate::language::Language::slug)
@@ -228,7 +293,7 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         )
         .map_or(detected_prose_language, str::to_owned);
     Some(CodingTaskSpec {
-        language: "python".to_owned(),
+        language: target_language.slug.to_owned(),
         artifact_shape,
         name,
         parameters,

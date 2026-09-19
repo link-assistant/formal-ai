@@ -38,7 +38,7 @@ pub(super) fn sentences(prompt: &str) -> Vec<Sentence<'_>> {
     split_sentences(prompt, |character| {
         matches!(
             character,
-            '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；'
+            '.' | '!' | '?' | ';' | '\n' | '。' | '！' | '？' | '；' | '।'
         )
     })
 }
@@ -56,7 +56,7 @@ pub(super) fn sentences(prompt: &str) -> Vec<Sentence<'_>> {
 /// because the two readings disagree about one character and nothing more.
 pub(super) fn prose_sentences(prompt: &str) -> Vec<Sentence<'_>> {
     split_sentences(prompt, |character| {
-        matches!(character, '.' | '!' | '?' | '\n' | '。' | '！' | '？')
+        matches!(character, '.' | '!' | '?' | '\n' | '。' | '！' | '？' | '।')
     })
 }
 /// The prompt split wherever `ends_sentence` says a sentence ends.

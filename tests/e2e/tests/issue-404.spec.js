@@ -60,7 +60,7 @@ test.describe('Issue #404 - calendar event request', () => {
     );
     const body = answer.locator('.markdown-body');
 
-    await expect(body).not.toContainText('Я тебя не понял');
+    await expect(body).not.toContainText('Мне не удалось тебя понять');
     await expect(body).not.toContainText('Я пока не знаю');
     // The subject is extracted from "на встречу с Леваном" and capitalized for
     // the .ics SUMMARY ("Встречу с леваном").

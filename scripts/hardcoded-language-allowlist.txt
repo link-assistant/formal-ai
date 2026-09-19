@@ -139,6 +139,8 @@ src/cli_benchmark.rs	formal-ai benchmark run --suite {} --slice {slice}{}
 src/cli_benchmark.rs	ledger ratchet violated:\n{}
 src/cli_benchmark.rs	unavailable: {reason}
 src/cli_benchmark.rs	unknown suite `{selector}`; known suites: {}
+src/cli_bundle.rs	Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.
+src/cli_bundle.rs	{} does not appear to be a formal_ai_bundle Links Notation document
 src/cli_improve.rs	Appended {appended} promotion event(s) to {}; total now {}.
 src/cli_improve.rs	Dry run only; no files were changed. Rerun with `--apply --confirm` and preferably `--seed-root <workspace>` to materialize the {promoted} accepted seed edit(s).
 src/cli_improve.rs	Materialized {} ({} byte(s)) at {}.
@@ -166,6 +168,7 @@ src/cli_memory.rs	Wrote full memory: {} event(s) + {} seed file(s)
 src/cli_memory.rs	Wrote full-memory backup with {} event(s) to {}.
 src/cli_memory.rs	Wrote {} events (events-only)
 src/cli_shared_dialog.rs	Wrote demo_memory to {}.
+src/cli_telegram.rs	Telegram polling mode requires a bot token. Pass --token or set TELEGRAM_BOT_TOKEN.
 src/client_integrations.rs	temporary config path escapes its root: {relative}
 src/client_integrations.rs	temporary config path must be relative: {relative}
 src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
@@ -276,7 +279,7 @@ src/dreaming/learning.rs	learned standing requirement ({topic}):
 src/dreaming_application.rs	Learned standing requirement ({}): {}
 src/dreaming_application.rs	Standing requirement ({}): {}
 src/engine.rs	Check command: `{check_command}`\nRun command: `{run_command}`
-src/engine.rs	Execution status: {status_phrase} in {}.
+src/engine.rs	Execution status: {status_phrase} in {environment}.
 src/engine.rs	Here is a minimal {language_name} {task_label} program:
 src/engine.rs	Run command: `{run_command}`
 src/engine.rs	Write-program template catalog is unavailable.
@@ -290,8 +293,8 @@ src/engine.rs	rule_unknown answer={}
 src/engine.rs	rule_write_program parameters=language,task languages={} tasks={}
 src/engine.rs	step_{index} {} {}
 src/engine.rs	Вот минимальная программа на языке {language_name} ({task_label}):
-src/engine.rs	Статус выполнения: {status_phrase} в среде «{}».
-src/engine.rs	निष्पादन स्थिति: {status_phrase} ({} में)।
+src/engine.rs	Статус выполнения: {status_phrase} в среде «{environment}».
+src/engine.rs	निष्पादन स्थिति: {status_phrase} ({environment} में)।
 src/engine.rs	यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):
 src/engine.rs	这是一个最小的 {language_name} 程序（{task_label}）：
 src/engine_assistant_name.rs	I'm formal AI, and currently I don't have a name. But you can name me as you like.
@@ -306,7 +309,6 @@ src/engine_responses.rs	What is formal-ai?
 src/engine_responses.rs	Who are you?
 src/engine_responses.rs	add a rule in Links Notation, then run the request again.
 src/engine_responses.rs	Что делаешь в свободное время?
-src/external_benchmarks/cases.rs	Repository {repository}. Resolve this issue and reply with the fix as a unified diff patch.\n\n{statement}
 src/external_benchmarks/cases.rs	no case parser for suite `{other}`
 src/external_benchmarks/cases.rs	{}: record {index} is missing a `target`
 src/external_benchmarks/cases.rs	{}: record {index} is missing the numeric field `{field}`
@@ -340,7 +342,6 @@ src/external_benchmarks/mod.rs	suite={} passed={} failed={} total={}
 src/external_benchmarks/mod.rs	{} provided only {} upstream cases, {slice} were requested
 src/external_benchmarks/ratchet.rs	result row for `{}` has no external_benchmark_suite record
 src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count fell from {} to {}
-src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count={} is below the best recorded pass count {best} at slice {}
 src/external_benchmarks/ratchet.rs	{suite_id}: the external_benchmark_suite record was removed
 src/external_benchmarks/ratchet.rs	{} {}: passed={} + failed={} does not equal total={}
 src/external_benchmarks/ratchet.rs	{} {}: passed={} is below the recorded minimum_pass_count={}
@@ -416,10 +417,7 @@ src/links_substitution_query/text.rs	{TWO_SIDES}; found only one
 src/links_substitution_query/text.rs	{TWO_SIDES}; found trailing input
 src/links_substitution_query/text.rs	{matching} {substituting}
 src/main.rs	Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base covering all nine protocol primitives.
-src/main.rs	Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.
-src/main.rs	Telegram polling mode requires a bot token. Pass --token or set TELEGRAM_BOT_TOKEN.
 src/main.rs	the agentic loop did not finish within its turn cap after {} tool call(s)
-src/main.rs	{} does not appear to be a formal_ai_bundle Links Notation document
 src/memory/bundle.rs	  exported_at \"
 src/memory/bundle.rs	  seed_files\n
 src/memory/bundle.rs	Imported bundle was authored against seed version {imported_v} but the running app does not expose a seed version. Update the app to compare.
@@ -714,7 +712,6 @@ src/rule_synthesis.rs	write_program task={} language={}
 src/seed.rs	formal_ai_seed_bundle\n
 src/seed/meanings/parse.rs	{surface} denotes {parent_meaning}
 src/seed/meanings/parse.rs	{} defined by {}
-src/seed/summary_topics.rs	{topic} summary recorded.
 src/self_explanation.rs	An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning.
 src/self_explanation.rs	Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests.
 src/self_explanation.rs	Explained how Formal AI works across {sections} grounded topics with {citations} citations into its own source ({files} owned files), generated data, and tests.
@@ -1004,22 +1001,22 @@ src/solver_handlers/meta_explanation.rs	Я ответил так, потому �
 src/solver_handlers/meta_explanation.rs	मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: {} (`{}`). Runtime: {}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory ({}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: {}. पूरा internet local rules में preload नहीं है.
 src/solver_handlers/meta_explanation.rs	मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt deterministic Links Notation rule से मेल खाता था. evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें.
 src/solver_handlers/meta_explanation.rs	我不是 LLM runtime, 也不执行神经网络推理。当前环境: {} (`{}`)。Runtime: {}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 ({}); 然后只在当前环境允许时使用 web search: {}。整个互联网不会预加载到本地规则中。
-src/solver_handlers/mod.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
+src/retrieval_procedures.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
 src/solver_handlers/mod.rs	Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link.
-src/solver_handlers/mod.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
+src/retrieval_procedures.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
 src/solver_handlers/mod.rs	I could not identify a source phrase to translate from {source_slug} to {target_slug}.
 src/solver_handlers/mod.rs	I could not translate \"{surface}\" from {source_slug} to {target_slug} with the available formalization data. I recorded this as a translation gap for follow-up.
 src/solver_handlers/mod.rs	I do not embed a JavaScript runtime in this build, so I cannot execute the program for you. The deterministic solver only runs code that has been verified offline; running arbitrary JavaScript would violate that contract. Here is the program you asked me to run, copy-paste reviewable:\n\n```js\n{program}\n```\n\nTo execute it yourself, save the snippet as `program.js` and run `node program.js` (or `deno run program.js`).
 src/solver_handlers/mod.rs	I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}.
-src/solver_handlers/mod.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
-src/solver_handlers/mod.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
-src/solver_handlers/mod.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
-src/solver_handlers/mod.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
+src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
+src/concepts.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
+src/retrieval_procedures.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
+src/retrieval_procedures.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
 src/solver_handlers/mod.rs	Step {}: {step}
 src/solver_handlers/mod.rs	Therefore, there are {formatted} {label} in total.
 src/solver_handlers/mod.rs	{expression} = {formatted}
-src/solver_handlers/mod.rs	{intro}\n\n{summary}
-src/solver_handlers/mod.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
+src/retrieval_procedures.rs	{intro}\n\n{summary}
+src/concepts.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
 src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
 src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
 src/solver_handlers/natural_language_tools.rs	Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
@@ -1070,27 +1067,10 @@ src/solver_handlers/playwright_script.rs	Даю стартовый TypeScript-п
 src/solver_handlers/playwright_script.rs	Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.
 src/solver_handlers/playwright_script.rs	Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.\n\n
 src/solver_handlers/program_synthesis.rs	tests_passed assertion_count={}
-src/solver_handlers/research_table.rs	Broad family of data-driven methods; includes supervised, unsupervised, and reinforcement approaches.
-src/solver_handlers/research_table.rs	Built from weighted layers, activations, losses, and optimization; provides the base mechanism for deep learning.
-src/solver_handlers/research_table.rs	Captures nonlinear relationships and can be trained end-to-end for complex perception tasks.
-src/solver_handlers/research_table.rs	Classification, regression, clustering, recommendation, anomaly detection, and forecasting.
-src/solver_handlers/research_table.rs	Deep learning fits images, speech, and language at scale; traditional ML fits many tabular and smaller-data tasks.
-src/solver_handlers/research_table.rs	Deep learning learns layered representations; traditional ML often relies more on explicit feature engineering.
-src/solver_handlers/research_table.rs	Deep learning needs more data/compute and is harder to explain; traditional ML may underfit unstructured signals.
-src/solver_handlers/research_table.rs	Deep learning scales with data and reduces manual features; traditional ML is usually faster and more interpretable.
-src/solver_handlers/research_table.rs	Extract limitations reported by the prior search sources before treating them as verified.
-src/solver_handlers/research_table.rs	Extract strengths reported by the prior search sources before treating them as verified.
-src/solver_handlers/research_table.rs	Flexible toolkit; often efficient on structured data; many models are easier to inspect than deep nets.
-src/solver_handlers/research_table.rs	Model choice, preprocessing, and feature design can dominate results; overfitting remains a risk.
-src/solver_handlers/research_table.rs	Pattern recognition, embeddings, sequence modeling, vision, speech, and nonlinear function approximation.
-src/solver_handlers/research_table.rs	Requires tuning and regularization; decisions can be opaque; training can be unstable on poor data.
-src/solver_handlers/research_table.rs	Research comparison table (draft; verify claims against the Step 1 source links).\n\n
-src/solver_handlers/research_table.rs	Summarize the practical settings where the Step 1 sources apply this topic.
 src/solver_handlers/research_table.rs	The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: `{preview}`\n\nNext step: run the source search and use the returned sources to finish the calculation.
 src/solver_handlers/research_table.rs	The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `{preview}`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources.
 src/solver_handlers/research_table.rs	The result of the previous research step is: web search could not run because the CORS-readable search providers were disabled. No verified research result was produced yet.\n\nPrior research task: `{preview}`\n\nNext step: enable a search provider or provide source links; then I can complete the requested analysis from those sources.
 src/solver_handlers/research_table.rs	There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `{preview}`\n\nNext step: run the search or provide source links; then I can produce the requested result.
-src/solver_handlers/research_table.rs	Use the prior search sources to identify what distinguishes this topic from the others.
 src/solver_handlers/self_awareness.rs	- **Conversation memory**: {}.
 src/solver_handlers/self_awareness.rs	- **Conversation memory**: {}。
 src/solver_handlers/self_awareness.rs	- **Execution surface**: {} (`{}`).\n
@@ -1225,10 +1205,7 @@ src/solver_helpers/code.rs	{} translation gap for `{subject}` from {source} to {
 src/solver_helpers/mod.rs	Check command: `{check}`\nRun command: `{}`
 src/solver_helpers/mod.rs	Run command: `{}`
 src/solver_synthesis.rs	({total} - {consumed}) * {price}
-src/solver_synthesis.rs	category={category_label} rule=all_listed_items
-src/solver_synthesis.rs	category={category_label} rule={}
 src/solver_synthesis.rs	composition:{} from={}
-src/solver_synthesis.rs	items={} matched={} ignored={} count={count}
 src/solver_synthesis.rs	parts={} from={}
 src/solver_synthesis.rs	sub_impulse={} independent={} intent={} answer={}
 src/solver_synthesis.rs	total={total} consumed={consumed} remainder={remainder} price={price}

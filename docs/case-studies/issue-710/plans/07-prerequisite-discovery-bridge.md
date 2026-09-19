@@ -1,7 +1,8 @@
 # Prerequisite discovery bridge: evidence before execution
 
 Status: design recorded before implementation. This is a subplan of Plan 06,
-not a replacement or a completed capability claim.
+not a replacement or a completed capability claim; it stays active under
+issue #710, restated as issue #1138 B6.
 
 ## Observed limits, not assumptions
 
@@ -66,16 +67,47 @@ do not create one state machine per programming language or benchmark.
   excerpts require both observations, regardless of order or duplicates.
 - [ ] Lost/unknown requirement clauses remain explicitly unresolved, including
   unnumbered bullets and extra behavior after an otherwise supported literal.
-- [ ] Failure classification and call binding: missing command, permission
+  *(Not prerequisite discovery: this box belongs to obligation retention and is
+  covered by plan 05 of issue #1138 — `tests/unit/requirement_span_integrity.rs::
+  unnumbered_requirements_are_distinct_and_unknown_text_is_retained` pins
+  distinct unnumbered requirements and retained unknown text. Left open here
+  because ticking it is that plan's claim to make.)*
+- [x] Failure classification and call binding: missing command, permission
   denied, ordinary compile error, unrelated output, failed recovery and retry.
-- [ ] Source selection: official project evidence, misleading search ranking,
+  *(Closed by issue #1138 plan 06: `exit_127_becomes_a_need_not_an_error`,
+  `a_permission_denial_is_not_installation_consent`,
+  `an_ordinary_compile_error_is_not_a_missing_prerequisite` in
+  `tests/unit/issue_1138_prerequisite_need.rs`; a need stays
+  `Blocked` until the re-probe passes in the same file.)*
+- [x] Source selection: official project evidence, misleading search ranking,
   lookalike host, stale/corrupt cache and absent provenance.
-- [ ] Dependency scheduling: nested runtime, two dependents sharing one setup,
+  *(Closed by plan 06: `a_lookalike_host_is_refused` and
+  `exhausted_search_names_every_source_consulted` in
+  `tests/unit/issue_1138_setup_publisher.rs`; a corrupt artifact is the
+  digest-mismatch refusal in `tests/unit/issue_1138_install_scope.rs`; the
+  toolchain ledger keeps the provenance and rediscovery URL
+  (`tests/unit/issue_1138_toolchain_ledger.rs`).)*
+- [x] Dependency scheduling: nested runtime, two dependents sharing one setup,
   cycle, interrupted replay and a second held-out toolchain using the same plan.
-- [ ] Execution: isolated successful setup plus original-step retry; wrong
+  *(Closed by plan 06: `a_cycle_is_detected_and_reported` and
+  `two_dependents_share_one_setup` in `issue_1138_setup_publisher.rs`;
+  `forget_and_rediscover_reproduces_the_content_id` and
+  `a_restart_reattaches_from_the_ledger` in `issue_1138_toolchain_ledger.rs`
+  are the interrupted-replay and second-toolchain halves, with the held-out
+  program absence pinned by `tests/unit/issue_1138_held_out_toolchain.rs`.)*
+- [x] Execution: isolated successful setup plus original-step retry; wrong
   artifact/checksum/path and insufficient disk are refused without data loss.
+  *(Closed by plan 06: `a_step_writing_outside_the_root_is_refused_before_execution`,
+  `a_digest_mismatch_is_refused_without_data_loss`,
+  `insufficient_disk_is_refused_before_download`, and
+  `a_successful_command_with_a_failing_postcondition_is_still_missing` in
+  `tests/unit/issue_1138_install_scope.rs`; the retry half is the re-probe-gated
+  need in `issue_1138_prerequisite_need.rs`.)*
 - [ ] Live Formal AI/Agent CLI Kotlin and Scala projects from a missing-runtime
   workspace, with independently executed verifiers and source-only Git changes.
+  *(Still open, deliberately: it needs a live missing-runtime workspace and
+  independently executed verifiers — the same live-run gate as plan 03's L11/L17.
+  No offline test may count as this box.)*
 
 Do not install a compiler manually and count that as the system's recovery.
 Do not count source-token coverage or a read-back plan as executed semantics.
@@ -401,7 +433,9 @@ that publication is authorized or guaranteed.
   release build: **5,997 files**, **7,072,145 bytes compressed**, below 10 MiB.
   This is package construction, not a fresh installed-release-binary proof.
 - Eight self-AST documents regenerated (541 total); the reviewed method-proposal
-  generator remains byte-identical; requirements aggregate has 110 shards.
+  generator remains byte-identical; requirements aggregate had 110 shards at
+  this 2026-09-15 checkpoint (the live count is read, never quoted from
+  memory -- the closing log in [README.md](README.md) records the later reads).
 - Remaining disk space: **25 GiB**. Shared target only; no cache, Docker, volume
   or user-data pruning. Commits must still set both no-prune environment flags.
 

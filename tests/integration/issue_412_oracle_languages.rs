@@ -16,6 +16,87 @@
 
 use formal_ai::UniversalSolver;
 
+const KOTLIN_CATALOG_ANSWER: &str = r#"Here is a minimal Kotlin hello world program:
+
+```kotlin
+fun main() {
+    println("Hello, world!")
+}
+```
+
+Execution status: not compiled or run in Kotlin toolchain is not configured in this repository runtime.
+Check command: `kotlinc Main.kt -include-runtime -d Main.jar`
+Run command: `java -jar Main.jar`
+Expected output after verification:
+```text
+Hello, world!
+```
+The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.
+
+How it works:
+The program prints the text `Hello, world!` to standard output and then exits.
+
+How to test it yourself:
+1. Install the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well).
+2. Save the code above to a file named `Main.kt`.
+3. Check that it compiles: `kotlinc Main.kt -include-runtime -d Main.jar`.
+4. Run it: `java -jar Main.jar`.
+5. Compare the output with the expected output shown above."#;
+
+const PHP_CATALOG_ANSWER: &str = r#"Here is a minimal PHP hello world program:
+
+```php
+<?php
+
+echo "Hello, world!", PHP_EOL;
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `php -l main.php`
+Run command: `php main.php`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program prints the text `Hello, world!` to standard output and then exits.
+
+How to test it yourself:
+1. Install PHP from https://www.php.net/downloads.
+2. Save the code above to a file named `main.php`.
+3. Check that it compiles: `php -l main.php`.
+4. Run it: `php main.php`.
+5. Compare the output with the expected output shown above."#;
+
+const RUST_CATALOG_ANSWER: &str = r#"Here is a minimal Rust hello world program:
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `rustc main.rs -o main`
+Run command: `./main`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
+
+How it works:
+The program prints the text `Hello, world!` to standard output and then exits.
+
+How to test it yourself:
+1. Install the Rust toolchain from https://rustup.rs.
+2. Save the code above to a file named `main.rs`.
+3. Check that it compiles: `rustc main.rs -o main`.
+4. Run it: `./main`.
+5. Compare the output with the expected output shown above."#;
+
 /// Kotlin used to be the headline example here, because the catalog did not
 /// template it. Issue #921 added it — the hive-mind#2158 production matrix
 /// dispatched a Kotlin Hello World and could not be answered — so Kotlin has
@@ -53,6 +134,7 @@ fn kotlin_graduated_from_the_oracle_to_the_catalog() {
         "an unverified toolchain must not be reported as executed, got: {}",
         response.answer
     );
+    assert_eq!(response.answer, KOTLIN_CATALOG_ANSWER);
 }
 
 /// Swift is still uncatalogued, so it still resolves from the oracle: the
@@ -120,6 +202,7 @@ fn php_graduated_from_the_oracle_to_the_catalog() {
         "the verified PHP toolchain must be reported as executed, got: {}",
         response.answer
     );
+    assert_eq!(response.answer, PHP_CATALOG_ANSWER);
 }
 
 #[test]
@@ -139,4 +222,5 @@ fn catalogued_languages_still_use_the_verified_catalog() {
         "catalog answer must keep its verified execution status, got: {}",
         response.answer
     );
+    assert_eq!(response.answer, RUST_CATALOG_ANSWER);
 }

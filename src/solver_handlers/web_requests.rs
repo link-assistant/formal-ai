@@ -1,24 +1,31 @@
 //! URL fetch, URL navigation, and browser-search handlers.
 
 use crate::concepts::extract_concept_query;
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, projects_registry, ProjectRecord};
+use crate::seed::{self, ProjectRecord, projects_registry};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
-use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
+use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
 
 mod live_search;
+mod url_parse;
 
 use super::curated_project_fetch::try_curated_http_fetch;
 use super::finalize_simple;
 use super::installation_conversion::is_install_conversion_request;
-use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
+use super::web_search_intent::{WebSearchQueryKind, extract_web_search_request};
 
 pub use live_search::{try_web_search_with_client, try_web_search_with_offline};
+pub(super) use url_parse::normalize_url_candidate;
+pub use url_parse::agentic_fetch_url_for;
+use url_parse::{
+    extract_http_fetch_url, extract_url_navigate_url, first_url_candidate,
+    is_url_trailing_punctuation, is_url_wrapper_punctuation, looks_like_hostname,
+};
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
@@ -43,43 +50,60 @@ pub fn try_http_fetch_with_offline(
     offline: bool,
 ) -> Option<SymbolicAnswer> {
     let url = extract_http_fetch_url(prompt, normalized)?;
-    log.append("http_fetch:request", url.clone());
-    if let Some(answer) = try_curated_http_fetch(prompt, &url, log) {
-        return Some(answer);
+    Some(answer_http_fetch_url(prompt, &url, log, offline))
+}
+
+/// Execute the URL selected by the shared object/act/locus capability table.
+///
+/// Unlike [`try_http_fetch_with_offline`], this entry point does not ask a
+/// second verb recognizer whether the already-routed request really meant
+/// fetch.  The URL remains structural and is parsed from the original prompt;
+/// all execution, cache, provenance, and offline behaviour is the same.
+pub fn try_routed_http_fetch_with_offline(
+    prompt: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
+    let url = crate::capability_routing::first_url(prompt)?;
+    Some(answer_http_fetch_url(prompt, &url, log, offline))
+}
+
+fn answer_http_fetch_url(
+    prompt: &str,
+    url: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> SymbolicAnswer {
+    log.append("http_fetch:request", url);
+    if let Some(answer) = try_curated_http_fetch(prompt, url, log) {
+        return answer;
     }
     if offline {
-        log.append("policy:offline", url.clone());
+        log.append("policy:offline", url);
         let body = seed::response_for("lexeme_import_cache_miss_offline", "en")
             .unwrap_or_else(|| String::from("lexeme_import_cache_miss_offline"))
-            .replace("{qid}", &url);
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "http_fetch",
-            "response:http_fetch",
-            &body,
-            1.0,
-        ));
+            .replace("{qid}", url);
+        return finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0);
     }
     let cache_dir =
         std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
     let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(true);
-    let capture = match client.fetch(&url) {
+    let capture = match client.fetch(url) {
         Ok(capture) => capture,
         Err(error) => {
             log.append("error:fetch", error.to_string());
             let body = seed::response_for("lexeme_import_fetch_failed", "en")
                 .unwrap_or_else(|| String::from("lexeme_import_fetch_failed"))
-                .replace("{qid}", &url)
+                .replace("{qid}", url)
                 .replace(&["{", "error", "}"].concat(), &error.to_string());
-            return Some(finalize_simple(
+            return finalize_simple(
                 prompt,
                 log,
                 "http_fetch",
                 "response:http_fetch_failed",
                 &body,
                 0.0,
-            ));
+            );
         }
     };
     capture.record(log);
@@ -87,14 +111,7 @@ pub fn try_http_fetch_with_offline(
         .chars()
         .take(8_000)
         .collect::<String>();
-    Some(finalize_simple(
-        prompt,
-        log,
-        "http_fetch",
-        "response:http_fetch",
-        &body,
-        1.0,
-    ))
+    finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0)
 }
 
 /// Match prompts that ask the assistant to navigate to or display a URL
@@ -414,14 +431,15 @@ fn try_project_lookup_internal(
     }
     if let Some(repo) = repository_from_prompt(lookup_prompt) {
         if promote_associative_repositories
-            && let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name) {
-                return Some(render_project_lookup(
-                    prompt,
-                    log,
-                    project,
-                    response_language,
-                ));
-            }
+            && let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name)
+        {
+            return Some(render_project_lookup(
+                prompt,
+                log,
+                project,
+                response_language,
+            ));
+        }
         return Some(render_generic_repository_lookup(
             prompt,
             log,
@@ -789,204 +807,4 @@ pub(super) fn registry_static() -> &'static crate::seed::ProjectsRegistry {
     use std::sync::OnceLock;
     static REGISTRY: OnceLock<crate::seed::ProjectsRegistry> = OnceLock::new();
     REGISTRY.get_or_init(projects_registry)
-}
-
-fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
-    let (raw_candidate, url) = first_url_candidate(prompt)?;
-    if !is_http_fetch_prompt(prompt, normalized, &raw_candidate) {
-        return None;
-    }
-    Some(url)
-}
-
-/// Capability-intent probe (issue #680): the absolute URL a fetch-intent prompt
-/// names — for *any* phrasing — or [`None`] when the prompt carries no HTTP-fetch
-/// intent. This is the same `http_fetch` meaning the prose handler
-/// ([`try_http_fetch`]) recognises, exposed so the deterministic agentic planner
-/// (`crate::agentic_coding::planner`) can route a web-fetch request to the
-/// advertised fetch tool instead of answering in prose. The planner and the prose
-/// path therefore reason about fetch intent through one lexicon-driven detector
-/// and never drift. `normalized` mirrors what the specialized-handler dispatch
-/// passes every handler — the lowercased prompt (see `meta_method_dispatch`).
-#[must_use]
-pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
-    extract_http_fetch_url(prompt, &prompt.to_lowercase())
-}
-
-/// URL that an advertised agent fetch tool can satisfy.
-///
-/// Agent CLIs expose one fetch capability for both explicit HTTP requests and
-/// requests to open or visit a URL. The prose solver keeps those intents
-/// distinct, while this probe maps either intent onto that available tool.
-#[must_use]
-pub fn agentic_fetch_url_for(prompt: &str) -> Option<String> {
-    let normalized = prompt.to_lowercase();
-    http_fetch_url_for(prompt).or_else(|| extract_url_navigate_url(prompt, &normalized))
-}
-
-fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option<String> {
-    let (raw_candidate, url) = first_url_candidate(prompt)?;
-    if !is_url_navigate_prompt(prompt, normalized, &raw_candidate) {
-        return None;
-    }
-    Some(url)
-}
-
-fn first_url_candidate(prompt: &str) -> Option<(String, String)> {
-    for token in prompt.split_whitespace() {
-        let trimmed = trim_url_token(token);
-        if let Some(url) = normalize_url_candidate(trimmed) {
-            return Some((trimmed.to_owned(), url));
-        }
-    }
-    None
-}
-
-fn trim_url_token(token: &str) -> &str {
-    token
-        .trim_matches(is_url_wrapper_punctuation)
-        .trim_end_matches(is_url_trailing_punctuation)
-}
-
-const fn is_url_wrapper_punctuation(character: char) -> bool {
-    matches!(
-        character,
-        '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | '"' | '\'' | '`' | '«' | '»'
-    )
-}
-
-const fn is_url_trailing_punctuation(character: char) -> bool {
-    matches!(character, '.' | ',' | '!' | '?' | ';' | ':' | '…')
-}
-
-pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
-    let candidate = candidate.trim();
-    if candidate.is_empty() || candidate.contains(char::is_whitespace) || candidate.contains('@') {
-        return None;
-    }
-    let lower = candidate.to_lowercase();
-    let url = if lower.starts_with("http://") || lower.starts_with("https://") {
-        candidate.to_owned()
-    } else {
-        let host_candidate = candidate.split(['/', '?', '#']).next().unwrap_or_default();
-        if super::web_search_intent::probable_local_file_name(host_candidate) {
-            return None;
-        }
-        if lower.starts_with("www.") || looks_like_hostname(host_candidate) {
-            format!("https://{candidate}")
-        } else {
-            return None;
-        }
-    };
-    let after_scheme = url.split_once("://")?.1;
-    let host_port = after_scheme
-        .split(['/', '?', '#'])
-        .next()
-        .unwrap_or_default();
-    let host = host_port.split(':').next().unwrap_or_default();
-    if !looks_like_hostname(host) {
-        return None;
-    }
-    Some(url)
-}
-
-fn looks_like_hostname(value: &str) -> bool {
-    let host = value.trim();
-    if !host.contains('.') || host.starts_with('.') || host.ends_with('.') {
-        return false;
-    }
-    let labels: Vec<&str> = host.split('.').collect();
-    if labels.iter().any(|label| label.is_empty()) {
-        return false;
-    }
-    let Some(tld) = labels.last() else {
-        return false;
-    };
-    if tld.len() < 2 {
-        return false;
-    }
-    labels.iter().all(|label| {
-        label
-            .chars()
-            .all(|character| character.is_ascii_alphanumeric() || character == '-')
-            && !label.starts_with('-')
-            && !label.ends_with('-')
-    })
-}
-
-/// Does a meaning carrying `role` evidence one of the prompt's lowercased forms?
-///
-/// The surface words for the web intents are no longer a hardcoded per-language
-/// list — they live once in `data/seed/meanings-web-navigation.lino` as the
-/// `http_fetch` and `url_navigate` meanings, and this code names only the
-/// language-independent role plus the `…` (U+2026) slot shape (issue #386). Each
-/// surface form is bucketed by [`seed::Slot`] exactly as the how-cluster handler
-/// does ([`crate::solver_handler_how`]):
-/// * [`seed::Slot::Prefix`] — the literal before `…` must *begin* a form (so
-///   "fetch …" matches "fetch google.com"); [`WordForm::before_slot`] keeps the
-///   trailing space, reproducing the prior `"fetch "` prefix exactly.
-/// * [`seed::Slot::Bare`] — the whole text must appear *anywhere* in a form (so
-///   "запрос к" matches "сделать запрос к google.com").
-///
-/// `forms` are the lowercased views a web prompt is matched against (the
-/// word-normalized prompt, the engine-normalized prompt, and the raw lowercased
-/// prompt — see [`is_http_fetch_prompt`]). The result is a pure OR over every
-/// (form, surface) pair, so the bucket order only affects short-circuiting, not
-/// the outcome — behaviour is identical to the prior inline arrays.
-fn role_evidences_web_intent(role: &str, forms: &[&str]) -> bool {
-    let word_forms = seed::lexicon().role_word_forms(role);
-    if word_forms
-        .iter()
-        .filter(|form| form.slot() == seed::Slot::Prefix)
-        .any(|form| {
-            let prefix = form.before_slot();
-            forms.iter().any(|form_text| form_text.starts_with(prefix))
-        })
-    {
-        return true;
-    }
-    word_forms
-        .iter()
-        .filter(|form| form.slot() == seed::Slot::Bare)
-        .any(|form| {
-            let marker = form.text.as_str();
-            forms.iter().any(|form_text| form_text.contains(marker))
-        })
-}
-
-/// Does the prompt ask the engine to perform an HTTP request?
-///
-/// Recognised by the `http_fetch` meaning's surface forms (see
-/// [`role_evidences_web_intent`]): the browser worker will attempt a real
-/// `fetch()` for these prompts before falling back to iframe. The match runs
-/// over three lowercased views — the word-normalized prompt, the
-/// engine-normalized prompt, and the raw lowercased prompt — so both
-/// punctuation-stripped and verbatim phrasings are covered.
-fn is_http_fetch_prompt(prompt: &str, normalized: &str, _raw_candidate: &str) -> bool {
-    let normalized_words = normalize_prompt(prompt);
-    let raw = prompt.trim_start().to_lowercase();
-    role_evidences_web_intent(
-        seed::ROLE_HTTP_FETCH,
-        &[normalized_words.as_str(), normalized, raw.as_str()],
-    )
-}
-
-/// Does the prompt ask the engine to open / show a page (not fetch its bytes)?
-///
-/// A bare URL is navigation by itself; otherwise recognised by the
-/// `url_navigate` meaning's surface forms (see [`role_evidences_web_intent`]).
-/// For these prompts the browser worker must NOT attempt `fetch()` — it returns
-/// a direct external link the user can open in a new tab.
-fn is_url_navigate_prompt(prompt: &str, normalized: &str, raw_candidate: &str) -> bool {
-    let normalized_words = normalize_prompt(prompt);
-    let prompt_trimmed = prompt.trim_start();
-    if prompt_trimmed.starts_with(raw_candidate) {
-        // Bare URL — treat as navigation, not a request to fetch.
-        return true;
-    }
-    let raw = prompt_trimmed.to_lowercase();
-    role_evidences_web_intent(
-        seed::ROLE_URL_NAVIGATE,
-        &[normalized_words.as_str(), normalized, raw.as_str()],
-    )
 }

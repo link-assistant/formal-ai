@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/numeric_list/codegen.rs
   language rust
   fidelity signature
-  byte_len 18578
-  line_count 521
-  content_id source_module_84dccce610608902
+  byte_len 18550
+  line_count 520
+  content_id source_module_a38d0ae09b00591c
   symbol_count 27
   symbols
     const MAX_EXPANSION_DEPTH 37 37
@@ -23,14 +23,14 @@ self_ast_census
     function literal 236 238
     struct Composer 243 247
     function new 250 272
-    function resolved_name 276 289
-    function resolved_type 293 302
-    function scaffold 306 317
-    function idiom 322 333
-    function select_case 341 362
-    function expand 369 405
-    function is_slot_char 408 410
-    function mutates_list_in_place 415 429
-    function build 433 486
-    function item_literals 491 505
-    function quoted_string_literal 507 521
+    function resolved_name 276 286
+    function resolved_type 290 300
+    function scaffold 304 315
+    function idiom 320 331
+    function select_case 339 361
+    function expand 368 404
+    function is_slot_char 407 409
+    function mutates_list_in_place 414 428
+    function build 432 485
+    function item_literals 490 504
+    function quoted_string_literal 506 520

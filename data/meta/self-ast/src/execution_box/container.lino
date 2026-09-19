@@ -1,0 +1,28 @@
+self_ast_census
+  target src/execution_box/container.rs
+  language rust
+  fidelity signature
+  byte_len 12872
+  line_count 321
+  content_id source_module_ca9541b133d253ed
+  symbol_count 19
+  symbols
+    const CONVERSATIONS_DIR 19 19
+    const RUNNING_MARKER 22 22
+    const IMAGE_MARKER 25 25
+    const SNAPSHOT_MARKER 28 28
+    enum SnapshotPolicy 32 39
+    enum ContainerLifecycle 43 50
+    struct RestoreComparison 54 61
+    struct ConversationContainer 65 76
+    function workspace 81 85
+    function attach 96 138
+    function stop_if_idle 144 169
+    function idle_for 180 188
+    function restore 194 196
+    function lifecycle 200 209
+    function compare_restores 221 259
+    function from_ledger 263 281
+    function conversation_snapshot_image 286 289
+    function docker 291 305
+    function container_state_digest 307 321

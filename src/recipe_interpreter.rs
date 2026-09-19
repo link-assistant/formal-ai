@@ -34,6 +34,7 @@ use crate::links_format::format_lino_record;
 use crate::meta_construction::RecursionMode;
 use crate::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
 use crate::method_registry::MethodRegistry;
+use crate::obligation_ledger::ObligationLedger;
 use crate::selection::SelectionMode;
 use crate::skill_ledger::SkillMode;
 use crate::solution_evidence::SolutionEvidence;
@@ -141,6 +142,8 @@ impl RecipeProgram {
             need_ledger: None,
             method_registry: None,
             solution_evidence: None,
+            obligation_ledger: None,
+            executed_need_ledger: None,
         };
         let mut executed = Vec::new();
         let mut skipped = Vec::new();
@@ -260,6 +263,10 @@ struct ExecutionContext<'a> {
     need_ledger: Option<NeedLedger>,
     method_registry: Option<MethodRegistry>,
     solution_evidence: Option<SolutionEvidence>,
+    /// The obligation tree the execution pass records (plan 05 leaf 11).
+    obligation_ledger: Option<ObligationLedger>,
+    /// The need ledger projected from what was observed, beside the planned one.
+    executed_need_ledger: Option<NeedLedger>,
 }
 
 impl ExecutionContext<'_> {
@@ -340,6 +347,28 @@ impl ExecutionContext<'_> {
                         .is_some();
                 Ok(emitted)
             }
+            "record_obligation_ledger" => {
+                let frame = self.require_problem_frame(recorder)?.clone();
+                let planned = self.require_need_ledger(recorder)?.clone();
+                self.obligation_ledger =
+                    Some(crate::obligation_ledger::ObligationLedger::for_frame(
+                        &frame,
+                        &self.formalization.source_text,
+                        crate::recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND,
+                    ));
+                // Read back through the same guard every other stage reads its
+                // inputs through, so a recipe that reorders this pass errors
+                // with a misordering instead of silently rebuilding the tree.
+                let obligations = self.require_obligation_ledger(recorder)?.clone();
+                let executed = crate::obligation_ledger::record_obligation_ledger(
+                    log,
+                    &frame,
+                    &planned,
+                    &obligations,
+                );
+                self.executed_need_ledger = Some(executed);
+                Ok(true)
+            }
             "record_reasoning_standard" => {
                 // No mode gate: the reasoning-standard checklist is enumerated on
                 // every request, so this recorder always emits (R1073).
@@ -375,6 +404,18 @@ impl ExecutionContext<'_> {
         self.method_registry
             .as_ref()
             .ok_or_else(|| dependency_error(recorder, "method registry"))
+    }
+
+    /// The obligation tree a later step would read, once one does.
+    ///
+    /// Nothing consumes it yet — the execution pass is the last step of the
+    /// program — but the guard exists beside `require_need_ledger` so a recipe
+    /// that reorders the pass errors with a misordering rather than rebuilding
+    /// the tree from nothing.
+    fn require_obligation_ledger(&self, recorder: &str) -> Result<&ObligationLedger, String> {
+        self.obligation_ledger
+            .as_ref()
+            .ok_or_else(|| dependency_error(recorder, "obligation ledger"))
     }
 
     fn require_solution_evidence(&self, recorder: &str) -> Result<&SolutionEvidence, String> {

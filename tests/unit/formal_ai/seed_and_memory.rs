@@ -151,7 +151,12 @@ fn url_navigation_variations_return_https_link_without_fetch_advice() {
 
     for (prompt, expected_url) in cases {
         let response = FormalAiEngine.answer(prompt);
+        let expected_answer = format!(
+            "I suggest opening this in a new tab: [{expected_url}]({expected_url}).\n\n\
+             In the browser web app, this URL is checked with browser-readable frame-policy metadata before any embedded preview is attempted. If X-Frame-Options or CSP frame-ancestors blocks embedding, the web app keeps the direct external link instead."
+        );
 
+        assert_eq!(response.answer, expected_answer, "prompt {prompt:?}");
         assert_eq!(
             response.intent, "url_navigate",
             "prompt {prompt:?} should resolve to url_navigate, got {:?} — answer: {}",

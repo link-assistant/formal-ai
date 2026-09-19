@@ -281,8 +281,20 @@ fn wikidata_references_from_paths(paths: Vec<PathBuf>) -> BTreeMap<String, Vec<S
 
     for path in paths {
         let content = fs::read_to_string(&path).expect("source file should be readable");
-        for (index, line) in content.lines().enumerate() {
-            for id in source_id.find_iter(line).map(|matched| matched.as_str()) {
+        let source = if path.extension().and_then(|extension| extension.to_str()) == Some("rs") {
+            strip_rust_comments(&content)
+        } else {
+            content
+        };
+        for (index, line) in source.lines().enumerate() {
+            let searchable = match path.extension().and_then(|extension| extension.to_str()) {
+                Some("lino") => remove_quoted_segments(strip_comment(line)),
+                _ => line.to_owned(),
+            };
+            for id in source_id
+                .find_iter(&searchable)
+                .map(|matched| matched.as_str())
+            {
                 references.entry(id.to_string()).or_default().push(format!(
                     "{}:{}",
                     path.display(),
@@ -293,6 +305,190 @@ fn wikidata_references_from_paths(paths: Vec<PathBuf>) -> BTreeMap<String, Vec<S
     }
 
     references
+}
+
+/// Replace Rust comments with whitespace while preserving strings and line
+/// boundaries. Runtime grounding ids may legitimately occur in ordinary, byte
+/// or raw string literals (including Wikidata URLs); plan leaf labels in line,
+/// documentation or nested block comments are prose rather than references.
+fn strip_rust_comments(source: &str) -> String {
+    #[derive(Clone, Copy)]
+    enum State {
+        Code,
+        String { escaped: bool },
+        Character { escaped: bool },
+        RawString { hashes: usize },
+        LineComment,
+        BlockComment { depth: usize },
+    }
+
+    let bytes = source.as_bytes();
+    let mut output = bytes.to_vec();
+    let mut state = State::Code;
+    let mut index = 0;
+
+    while index < bytes.len() {
+        match state {
+            State::Code => {
+                if bytes[index] == b'/' && bytes.get(index + 1) == Some(&b'/') {
+                    output[index] = b' ';
+                    output[index + 1] = b' ';
+                    state = State::LineComment;
+                    index += 2;
+                    continue;
+                }
+                if bytes[index] == b'/' && bytes.get(index + 1) == Some(&b'*') {
+                    output[index] = b' ';
+                    output[index + 1] = b' ';
+                    state = State::BlockComment { depth: 1 };
+                    index += 2;
+                    continue;
+                }
+                if bytes[index] == b'"' {
+                    state = State::String { escaped: false };
+                    index += 1;
+                    continue;
+                }
+                if bytes[index] == b'\'' {
+                    let character_len = source[index + 1..]
+                        .chars()
+                        .next()
+                        .map(char::len_utf8)
+                        .unwrap_or_default();
+                    let closes_character = if bytes.get(index + 1) == Some(&b'\\') {
+                        bytes[index + 2..]
+                            .iter()
+                            .position(|byte| *byte == b'\'')
+                            .is_some_and(|offset| {
+                                !bytes[index + 2..index + 2 + offset].contains(&b'\n')
+                            })
+                    } else {
+                        bytes.get(index + 1 + character_len) == Some(&b'\'')
+                    };
+                    if closes_character {
+                        state = State::Character { escaped: false };
+                        index += 1;
+                        continue;
+                    }
+                }
+                if bytes[index] == b'r' {
+                    let mut cursor = index + 1;
+                    while bytes.get(cursor) == Some(&b'#') {
+                        cursor += 1;
+                    }
+                    if bytes.get(cursor) == Some(&b'"') {
+                        state = State::RawString {
+                            hashes: cursor - index - 1,
+                        };
+                        index = cursor + 1;
+                        continue;
+                    }
+                }
+                index += 1;
+            }
+            State::String { escaped } => {
+                if escaped {
+                    state = State::String { escaped: false };
+                } else if bytes[index] == b'\\' {
+                    state = State::String { escaped: true };
+                } else if bytes[index] == b'"' {
+                    state = State::Code;
+                }
+                index += 1;
+            }
+            State::Character { escaped } => {
+                if escaped {
+                    state = State::Character { escaped: false };
+                } else if bytes[index] == b'\\' {
+                    state = State::Character { escaped: true };
+                } else if bytes[index] == b'\'' {
+                    state = State::Code;
+                }
+                index += 1;
+            }
+            State::RawString { hashes } => {
+                if bytes[index] == b'"'
+                    && bytes
+                        .get(index + 1..index + 1 + hashes)
+                        .is_some_and(|suffix| suffix.iter().all(|byte| *byte == b'#'))
+                {
+                    index += hashes + 1;
+                    state = State::Code;
+                } else {
+                    index += 1;
+                }
+            }
+            State::LineComment => {
+                if bytes[index] == b'\n' {
+                    state = State::Code;
+                } else {
+                    output[index] = b' ';
+                }
+                index += 1;
+            }
+            State::BlockComment { depth } => {
+                if bytes[index] == b'/' && bytes.get(index + 1) == Some(&b'*') {
+                    output[index] = b' ';
+                    output[index + 1] = b' ';
+                    state = State::BlockComment { depth: depth + 1 };
+                    index += 2;
+                } else if bytes[index] == b'*' && bytes.get(index + 1) == Some(&b'/') {
+                    output[index] = b' ';
+                    output[index + 1] = b' ';
+                    state = if depth == 1 {
+                        State::Code
+                    } else {
+                        State::BlockComment { depth: depth - 1 }
+                    };
+                    index += 2;
+                } else {
+                    if bytes[index] != b'\n' {
+                        output[index] = b' ';
+                    }
+                    index += 1;
+                }
+            }
+        }
+    }
+
+    String::from_utf8(output).expect("comment stripping preserves UTF-8 bytes")
+}
+
+#[test]
+fn rust_documentation_leaf_labels_are_not_wikidata_references() {
+    let source_id = Regex::new(r"\b[QLP][0-9]+\b").expect("source id regex should compile");
+    let stripped = strip_rust_comments(
+        "//! Plan L1 through L19\n/* outer Q1 /* nested P2 */ L3 */\n\
+         let quote = '\"'; // plan Q7\n\
+         let lifetime: &'static str = \"https://www.wikidata.org/wiki/Q42\"; // plan L2\n\
+         let raw = r#\"https://www.wikidata.org/wiki/L3743\"#;",
+    );
+    let ids: Vec<&str> = source_id
+        .find_iter(&stripped)
+        .map(|matched| matched.as_str())
+        .collect();
+    assert_eq!(
+        ids,
+        ["Q42", "L3743"],
+        "comments are prose, while ordinary and raw string data stay searchable"
+    );
+}
+
+#[test]
+fn lino_prose_is_not_a_grounding_reference() {
+    let source_id = Regex::new(r"\b[QLP][0-9]+\b").expect("source id regex should compile");
+    let prose =
+        remove_quoted_segments(strip_comment("    note \"plan L10 compared Q1\" # plan P2"));
+    let grounding = remove_quoted_segments(strip_comment("    grounded-in Q42"));
+
+    assert!(source_id.find_iter(&prose).next().is_none());
+    assert_eq!(
+        source_id
+            .find_iter(&grounding)
+            .map(|matched| matched.as_str())
+            .collect::<Vec<_>>(),
+        ["Q42"]
+    );
 }
 
 /// Structural grounding ids referenced by a cache record — the lexical-category

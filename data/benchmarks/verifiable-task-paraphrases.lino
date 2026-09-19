@@ -1,0 +1,138 @@
+verifiable_task_paraphrases
+  record_type "benchmark_suite"
+  id "issue_1138_verifiable_task_paraphrases"
+  title "Held-out verifiable-task paraphrases in five languages"
+  purpose "Issue #1138 B8 (plan 08): thirty held-out prompts covering every TaskExpectation kind in en/ru/hi/zh/es. No sentence here appears in any upstream suite or in any seed file, so a pass cannot come from memorization; it must come from recognising the expectation, composing a derivation and executing it. Case 6 is an honest gap: a verifiable-looking question no trusted source supplies a method for, asserted to produce the skill gap with a research trail and no number."
+  runner "cargo test --test unit verifiable_task -- --nocapture"
+  report_mode "Per-case recognition, derivation and execution outcomes are recorded; a case that produces a number without an observation is a failure, and so is a gap case that produces a number at all."
+  held_out_policy "Every prompt is authored for this corpus and checked absent from data/seed/** and src/** by the extended no-memorization gate before the corpus is committed."
+  topic "verifiable_task / routing"
+  case_count "6"
+  language_count "5"
+verifiable_task_case_arithmetic_narrative
+  record_type "benchmark_case_family"
+  id "arithmetic_narrative"
+  expectation "numeric"
+  shape "trailing_number"
+  note "Multi-step arithmetic narrative. The answer is one number and nothing else."
+  paraphrase arithmetic_narrative_en
+    language en
+    prompt "A baker makes 24 rolls each morning and 18 each afternoon. She sells 35 rolls during the day and gives 4 to her neighbour. How many rolls does she have left at closing time?"
+  paraphrase arithmetic_narrative_ru
+    language ru
+    prompt "Пекарь печёт 24 булочки утром и 18 днём. За день она продаёт 35 булочек и отдаёт 4 соседке. Сколько булочек остаётся у неё к закрытию?"
+  paraphrase arithmetic_narrative_hi
+    language hi
+    prompt "एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं?"
+  paraphrase arithmetic_narrative_zh
+    language zh
+    prompt "一位面包师每天早上做 24 个面包卷，下午做 18 个。她白天卖出 35 个，又送给邻居 4 个。打烊时她还剩多少个面包卷？"
+  paraphrase arithmetic_narrative_es
+    language es
+    prompt "Una panadera hace 24 panecillos cada mañana y 18 cada tarde. Vende 35 durante el día y le da 4 a su vecina. ¿Cuántos panecillos le quedan al cerrar?"
+verifiable_task_case_counted_category
+  record_type "benchmark_case_family"
+  id "counted_category"
+  expectation "count"
+  shape "trailing_number"
+  note "Counting with multiplicity over a category no authored table declares. Passing requires retrieved category membership, and the stated multiplicities must attach to their own entities."
+  paraphrase counted_category_en
+    language en
+    prompt "I have two oboes, a stethoscope, three scalpels, a harp and a thermometer. How many medical instruments do I have?"
+  paraphrase counted_category_ru
+    language ru
+    prompt "У меня есть два гобоя, стетоскоп, три скальпеля, арфа и термометр. Сколько у меня медицинских инструментов?"
+  paraphrase counted_category_hi
+    language hi
+    prompt "मेरे पास दो ओबो, एक स्टेथोस्कोप, तीन स्कैल्पेल, एक वीणा और एक थर्मामीटर है। मेरे पास कितने चिकित्सा उपकरण हैं?"
+  paraphrase counted_category_zh
+    language zh
+    prompt "我有两支双簧管、一个听诊器、三把手术刀、一架竖琴和一支体温计。我有多少件医疗器械？"
+  paraphrase counted_category_es
+    language es
+    prompt "Tengo dos oboes, un estetoscopio, tres bisturís, un arpa y un termómetro. ¿Cuántos instrumentos médicos tengo?"
+verifiable_task_case_instructed_edit
+  record_type "benchmark_case_family"
+  id "instructed_edit"
+  expectation "edited_text"
+  shape "whole_body"
+  note "An instructed text edit with no quoted operand, which the quoted-operand parser declines outright today."
+  paraphrase instructed_edit_en
+    language en
+    prompt "Make this sentence more concise: The committee members who were present at the meeting all agreed unanimously with one another about the proposal."
+  paraphrase instructed_edit_ru
+    language ru
+    prompt "Сделай это предложение короче: Члены комитета, которые присутствовали на заседании, все единогласно согласились друг с другом по поводу предложения."
+  paraphrase instructed_edit_hi
+    language hi
+    prompt "इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे।"
+  paraphrase instructed_edit_zh
+    language zh
+    prompt "把这句话改得更简洁：出席会议的委员会成员全都一致地彼此同意该提案。"
+  paraphrase instructed_edit_es
+    language es
+    prompt "Haz esta frase más concisa: Los miembros del comité que estuvieron presentes en la reunión estuvieron todos de acuerdo unánimemente entre sí sobre la propuesta."
+verifiable_task_case_named_unknown
+  record_type "benchmark_case_family"
+  id "named_unknown"
+  expectation "unknown"
+  shape "delimited_value"
+  note "A named unknown declared with a colon. The terminal-command route claims this shape today; a verifiable expectation must outrank a lexical route."
+  paraphrase named_unknown_en
+    language en
+    prompt "Find y: 7 * y = 84"
+  paraphrase named_unknown_ru
+    language ru
+    prompt "Найди y: 7 * y = 84"
+  paraphrase named_unknown_hi
+    language hi
+    prompt "y ज्ञात करो: 7 * y = 84"
+  paraphrase named_unknown_zh
+    language zh
+    prompt "求 y：7 * y = 84"
+  paraphrase named_unknown_es
+    language es
+    prompt "Halla y: 7 * y = 84"
+verifiable_task_case_unit_conversion
+  record_type "benchmark_case_family"
+  id "unit_conversion"
+  expectation "numeric_with_unit"
+  shape "trailing_number"
+  note "A number whose unit must be converted before the arithmetic is valid; the unit-carrying limitation class of the equation corpus, paraphrased so it is held out."
+  paraphrase unit_conversion_en
+    language en
+    prompt "A tank holds 2 litres of water and 750 millilitres are poured out. How many millilitres remain?"
+  paraphrase unit_conversion_ru
+    language ru
+    prompt "В баке 2 литра воды, из него вылили 750 миллилитров. Сколько миллилитров осталось?"
+  paraphrase unit_conversion_hi
+    language hi
+    prompt "एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं?"
+  paraphrase unit_conversion_zh
+    language zh
+    prompt "一个水箱里有 2 升水，倒出 750 毫升。还剩多少毫升？"
+  paraphrase unit_conversion_es
+    language es
+    prompt "Un depósito contiene 2 litros de agua y se vierten 750 mililitros. ¿Cuántos mililitros quedan?"
+verifiable_task_case_honest_gap
+  record_type "benchmark_case_family"
+  id "honest_gap"
+  expectation "numeric"
+  shape "trailing_number"
+  outcome "skill_gap"
+  note "A verifiable-looking question whose method no trusted source supplies. The required answer is the localized skill gap plus the research trail: the phrases searched, the fragments found and the check that failed. Any numeric answer here is the specific failure this case exists to catch."
+  paraphrase honest_gap_en
+    language en
+    prompt "How many litres of rainwater did the roof of the old granary collect during last night's storm?"
+  paraphrase honest_gap_ru
+    language ru
+    prompt "Сколько литров дождевой воды собрала крыша старого амбара во время вчерашней ночной грозы?"
+  paraphrase honest_gap_hi
+    language hi
+    prompt "पुरानी बखारी की छत ने कल रात के तूफ़ान में कितने लीटर बारिश का पानी इकट्ठा किया?"
+  paraphrase honest_gap_zh
+    language zh
+    prompt "昨晚的暴风雨中，那座旧谷仓的屋顶收集了多少升雨水？"
+  paraphrase honest_gap_es
+    language es
+    prompt "¿Cuántos litros de agua de lluvia recogió el tejado del viejo granero durante la tormenta de anoche?"

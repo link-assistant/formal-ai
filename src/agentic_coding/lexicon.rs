@@ -137,6 +137,7 @@ pub struct Work {
     pub id: String,
     pub doc_id: String,
     pub title: String,
+    aliases: Vec<Vec<String>>,
     signature: Vec<String>,
     lexemes: Vec<Lexeme>,
     pub concepts: Vec<WorkConcept>,
@@ -168,18 +169,19 @@ impl Work {
         let mut index = 0;
         while index < tokens.len() && predicate.is_none() {
             if let Some((width, lexeme)) = self.match_at(&tokens, index)
-                && matches!(lexeme.kind, LexemeKind::Predicate) {
-                    predicate = Some((
-                        index,
-                        index + width,
-                        PredicateLexeme {
-                            id: lexeme.id.clone(),
-                            label: lexeme.label.clone(),
-                            modal: lexeme.modal.clone(),
-                            time: lexeme.time.clone(),
-                        },
-                    ));
-                }
+                && matches!(lexeme.kind, LexemeKind::Predicate)
+            {
+                predicate = Some((
+                    index,
+                    index + width,
+                    PredicateLexeme {
+                        id: lexeme.id.clone(),
+                        label: lexeme.label.clone(),
+                        modal: lexeme.modal.clone(),
+                        time: lexeme.time.clone(),
+                    },
+                ));
+            }
             index += 1;
         }
         let (pred_start, pred_end, predicate) = predicate?;
@@ -266,6 +268,11 @@ impl Lexicon {
                     id: record.head.clone(),
                     doc_id: record.field("doc_id").unwrap_or(&record.head).to_owned(),
                     title: record.field("title").unwrap_or(&record.head).to_owned(),
+                    aliases: record
+                        .fields("alias")
+                        .map(tokenize)
+                        .filter(|tokens| !tokens.is_empty())
+                        .collect(),
                     signature: record
                         .field("signature")
                         .map(|value| value.split_whitespace().map(str::to_lowercase).collect())
@@ -327,20 +334,26 @@ impl Lexicon {
     /// Resolve a document title by identity, not by its topic or lexeme overlap.
     /// Case and whitespace may vary; additional words or punctuation may not.
     pub fn work_for_title(&self, title: &str) -> Option<&Work> {
-        let words: Vec<String> = title.split_whitespace().map(str::to_lowercase).collect();
+        let words = tokenize(title);
         if words.is_empty() {
             return None;
         }
         self.works.iter().find(|work| {
-            work.title
-                .split_whitespace()
-                .map(str::to_lowercase)
-                .eq(words.iter().cloned())
+            tokenize(&work.title) == words || work.aliases.iter().any(|alias| alias == &words)
         })
     }
 
     pub fn best_work_for(&self, text: &str) -> Option<&Work> {
         let tokens: Vec<String> = tokenize(text);
+        if let Some(work) = self.works.iter().find(|work| {
+            phrase_occurs(&tokens, &tokenize(&work.title))
+                || work
+                    .aliases
+                    .iter()
+                    .any(|alias| phrase_occurs(&tokens, alias))
+        }) {
+            return Some(work);
+        }
         let mut best: Option<(&Work, usize)> = None;
         for work in &self.works {
             if work.signature.is_empty() {
@@ -386,6 +399,17 @@ impl Record {
             .find(|(name, _)| name == key)
             .map(|(_, value)| value.as_str())
     }
+
+    fn fields<'a>(&'a self, key: &'a str) -> impl Iterator<Item = &'a str> {
+        self.fields
+            .iter()
+            .filter(move |(name, _)| name == key)
+            .map(|(_, value)| value.as_str())
+    }
+}
+
+fn phrase_occurs(tokens: &[String], phrase: &[String]) -> bool {
+    !phrase.is_empty() && tokens.windows(phrase.len()).any(|window| window == phrase)
 }
 
 fn parse_records(source: &str) -> Vec<Record> {

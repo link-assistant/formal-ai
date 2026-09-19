@@ -1,8 +1,11 @@
 use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
-use formal_ai::composition::compose;
+use formal_ai::composition::{compose, compose_with_ir};
 use formal_ai::concept_discovery::{
-    CandidatePart, ConceptMap, ConceptNeed, StructuralMeaning, structural_meanings,
+    CandidatePart, ConceptMap, ConceptRequirement, StructuralMeaning, structural_meanings,
 };
+use formal_ai::fragment_catalog::FragmentCatalog;
+use formal_ai::needs::{NeedKind, NeedState};
+use formal_ai::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
 
 fn parameter(name: &str, annotation: Option<&str>) -> Parameter {
     Parameter {
@@ -87,12 +90,13 @@ fn map(structure_ids: &[&str], candidates: Vec<CandidatePart>) -> ConceptMap {
         })
         .collect();
     ConceptMap {
-        needs: vec![ConceptNeed {
-            phrase: "fixture need".to_owned(),
+        needs: vec![ConceptRequirement::new(
+            "fixture need",
+            "en",
+            NeedState::Satisfied,
             structures,
             candidates,
-            status: "satisfied".to_owned(),
-        }],
+        )],
         evidence: Vec::new(),
     }
 }
@@ -183,7 +187,7 @@ fn structural_compositions_cover_tuple_pairwise_and_vowel_counting() {
         ),
     );
     let close = close.selected.expect("pairwise composition passes");
-    assert!(close.source.contains("itertools.combinations(numbers, 2)"));
+    assert!(close.source.contains(".combinations(numbers, 2)"));
     assert!(close.source.contains("abs(left - right) < threshold"));
 
     let vowels = compose(
@@ -196,7 +200,7 @@ fn structural_compositions_cover_tuple_pairwise_and_vowel_counting() {
     );
     let vowels = vowels.selected.expect("vowel composition passes");
     assert!(vowels.source.contains("sum(1 for character in text"));
-    assert!(vowels.id.contains("structure"));
+    assert!(vowels.composition.starts_with("typed_search("));
 }
 
 #[test]
@@ -221,6 +225,74 @@ fn failed_parts_return_no_answer_and_name_the_failed_example() {
 }
 
 #[test]
+fn a_missing_catalog_fragment_is_a_blocked_need_and_never_an_answer() {
+    let task = spec(
+        "unknown_operation",
+        vec![parameter("value", Some("int"))],
+        vec![example(&["1"], "1")],
+    );
+    let missing_id = "rediscover_this_operation";
+    let program = ProgramIr {
+        name: task.name.clone(),
+        parameters: vec![("value".to_owned(), IrType::Integer)],
+        result: IrType::Integer,
+        body: IrNode::Apply {
+            fragment: missing_id.to_owned(),
+            arguments: vec![IrNode::Parameter {
+                name: "value".to_owned(),
+                ty: IrType::Integer,
+            }],
+        },
+        fragments: vec![missing_id.to_owned()],
+        source_urls: Vec::new(),
+        source_licenses: Vec::new(),
+        reuse: ReuseMode::ShapeOnly,
+    };
+
+    let outcome = compose_with_ir(
+        &task,
+        &map(&[], Vec::new()),
+        &FragmentCatalog::default(),
+        [program],
+    );
+
+    assert!(outcome.selected.is_none());
+    assert!(outcome.unverified.is_empty());
+    assert_eq!(outcome.blocked_needs.len(), 1);
+    assert_eq!(outcome.blocked_needs[0].kind, NeedKind::Part);
+    assert_eq!(outcome.blocked_needs[0].state, NeedState::Unsatisfiable);
+    assert_eq!(
+        outcome.blocked_needs[0].subject,
+        format!("fragment:{missing_id}")
+    );
+    assert!(outcome.research_trail.contains(missing_id));
+}
+
+#[test]
+fn legacy_composition_cannot_bypass_the_callers_empty_catalog() {
+    let task = spec(
+        "unique_count",
+        vec![parameter("values", Some("list[int]"))],
+        vec![example(&["[1, 1, 2]"], "2")],
+    );
+    let outcome = compose_with_ir(
+        &task,
+        &map(&["distinct_elements", "reduce_len"], Vec::new()),
+        &FragmentCatalog::default(),
+        [],
+    );
+
+    assert!(outcome.selected.is_none());
+    assert!(
+        outcome
+            .blocked_needs
+            .iter()
+            .any(|need| need.subject.starts_with("fragment:")),
+        "the injected empty catalog must be authoritative: {outcome:#?}"
+    );
+}
+
+#[test]
 fn runnable_programs_are_composed_from_output_and_range_observations() {
     let literal = compose(
         &program("Print Alpha, beta!", Some("Alpha, beta!")),
@@ -237,8 +309,9 @@ fn runnable_programs_are_composed_from_output_and_range_observations() {
     )
     .selected
     .expect("a seeded cardinal and inclusive range should derive stdout");
-    assert!(range.source.contains("for number in range(1, 5 + 1):"));
+    assert!(range.source.contains("for number in range(1, 5 + 1)"));
     assert!(range.source.contains("print(number)"));
+    assert!(range.composition.starts_with("typed_search("));
 }
 
 #[test]
@@ -370,10 +443,18 @@ fn held_out_grid_examples_select_the_supported_predecessor_relation() {
             outcome.attempts
         )
     });
-    assert!(selected.composition.contains("orthogonal_or_diagonal"));
-    assert!(selected.source.contains("last_row + 1"));
-    assert_eq!(
-        selected.source_urls,
-        ["https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf"]
+    assert!(
+        selected.source.contains("lambda self, state_0, state_1"),
+        "the selected candidate is a general recursive-reduction IR: {}",
+        selected.source
     );
+    assert!(selected.source.contains("(-1, -1)"));
+    assert!(
+        selected
+            .source_urls
+            .iter()
+            .any(|url| url
+                == "https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf")
+    );
+    assert!(selected.composition.starts_with("typed_search("));
 }

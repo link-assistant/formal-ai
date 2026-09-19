@@ -5,40 +5,27 @@ coding_discovery_runtime
     text "return {expression}"
   template python_materialize_list
     text "list({items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#func-list"
+    license "PSF-2.0"
+    rediscovery_query "materialize iterable as list"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "sequence<unknown:0>"
+    supports running_prefix
+    supports range_inclusive
   template python_materialize_tuple
     text "tuple({items})"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#tuple"
+    license "PSF-2.0"
+    rediscovery_query "materialize iterable as tuple"
+    fragment_signature "ordered<unknown:0>"
+    fragment_result "sequence<unknown:0>"
+    supports set_intersection
   template python_test_entrypoint
     text "\nif __name__ == '__main__':\n"
   template python_for_each
     text "for {item} in {items}:\n    {body}"
   template python_doc_probe
     text "print(({expression}).__doc__ or '')"
-  template balanced_delimiter_groups
-    text "groups = []\ncurrent = []\ndepth = 0\nfor symbol in {items}:\n    if symbol.isspace():\n        continue\n    current.append(symbol)\n    depth += 1 if symbol == '(' else -1\n    if depth == 0:\n        groups.append(''.join(current))\n        current = []\nreturn groups"
-  template group_max_nesting
-    text "depths = []\nfor group in {items}.split():\n    depth = 0\n    maximum = 0\n    for symbol in group:\n        depth += 1 if symbol == '(' else -1\n        maximum = max(maximum, depth)\n    depths.append(maximum)\nreturn depths"
-  template aligned_binary_xor
-    text "''.join('0' if left == right else '1' for left, right in zip({left}, {right}))"
-  template explicit_value_mapping
-    text "mapping = {mapping}\nreturn [mapping[item] for item in {items}.split()]"
-  template explicit_ordering
-    text "order = {order}\nreturn ' '.join(sorted({items}.split(), key=order.__getitem__))"
-  template regex_minimum_word_length
-    text "re.findall(r'\\b\\w{{minimum},}\\b', {text})"
-  template regex_lowercase_chunks
-    text "re.findall(r'[a-z][^a-z]*', {text})"
-  template regex_lowercase_underscore
-    text "return {matched} if re.fullmatch(r'[a-z]+_[a-z]+', {text}) else {unmatched}"
-  template composite_number
-    text "{value} > 1 and any({value} % divisor == 0 for divisor in range(2, math.isqrt({value}) + 1))"
-  template one_bit_difference
-    text "difference = {left} ^ {right}\nreturn bool(difference and not (difference & (difference - 1)))"
-  template remove_boundary_occurrences
-    text "first = {text}.find({marker})\nif first != -1:\n    {text} = {text}[:first] + {text}[first + 1:]\nlast = {text}.rfind({marker})\nif last != -1:\n    {text} = {text}[:last] + {text}[last + 1:]\nreturn {text}"
-  template rotation_period
-    text "for offset in range(1, len({text}) + 1):\n    if {text}[offset:] + {text}[:offset] == {text}:\n        return offset\nreturn 0"
-  template grid_minimum_cost_path
-    text "rows = {row} + 1\ncolumns = {column} + 1\ncosts = [[float('inf')] * columns for _ in range(rows)]\ncosts[0][0] = {grid}[0][0]\nfor row_index in range(rows):\n    for column_index in range(columns):\n        if row_index == 0 and column_index == 0:\n            continue\n        predecessors = [costs[row_index + row_offset][column_index + column_offset] for row_offset, column_offset in ({offsets}) if row_index + row_offset >= 0 and column_index + column_offset >= 0]\n        costs[row_index][column_index] = min(predecessors) + {grid}[row_index][column_index]\nreturn costs[{row}][{column}]"
   template mapping_entry
     text "{key}: {value}"
   template ordering_entry
@@ -48,8 +35,105 @@ coding_discovery_runtime
   template oeis_dimension_query
     text "{left} x {right} {object} tilings"
   template oeis_formula_membership
-    text "for source_index in range({start}, 100000):\n    candidate = {expression}\n    if candidate >= {parameter}:\n        return candidate == {parameter}\nreturn False"
+    text "any(({expression}) == {parameter} for source_index in range({start}, 100000) if ({expression}) <= {parameter})"
   template oeis_recurrence_term
     text "({coefficient} * values[-{index}])"
-  template oeis_linear_recurrence
-    text "if {parameter} < 0 or {parameter} % {divisor} != 0:\n    return 0\nsource_index = {parameter} // {divisor} + ({offset})\nif source_index < 0:\n    return 0\nvalues = {initial}\nwhile len(values) <= source_index:\n    values.append({transition})\nreturn values[source_index]"
+coding_runtime_templates
+  template python_ir_function
+    text "def {name}({parameters}):\n    return {expression}\n"
+  template python_ir_predicate
+    text " if {predicate}"
+  template python_ir_each
+    text "[{body} for {item} in {items}{predicate}]"
+  template python_ir_fold
+    text "__import__('functools').reduce(lambda {accumulator}, {item}: {body}, {items}, {initial})"
+  template python_ir_repeat
+    text "[{body} for {counter} in range({from}, {to})]"
+  template python_ir_recurrence
+    text "(lambda sequence_index: 0 if sequence_index < 0 else (([{base}])[sequence_index] if sequence_index < {base_count} else __import__('functools').reduce(lambda values, _: values + [{transition}], range({base_count}, sequence_index + 1), [{base}])[sequence_index]))({index})"
+  template python_ir_recursive_values
+    text "(self(self, {next}) for {item} in {items}{predicate})"
+  template python_ir_recursive_reduce
+    text "(lambda visit: visit(visit, {target}))(lambda self, {state}: {base} if {base_test} else {combined})"
+  template python_ir_recursive_shape
+    text "state, target, next, and predecessor bindings must be non-empty and aligned"
+  template python_ir_recursive_reducer
+    text "reducer fragment `{fragment}`"
+  template python_ir_recursive_combine
+    text "combine fragment `{fragment}`"
+  template python_ir_condition
+    text "({then} if {test} else {otherwise})"
+  template python_ir_emit
+    text "(print({value}), {value})[1]"
+  template python_ir_missing_fragment
+    text "fragment `{fragment}` has no compatible Python realization"
+  template rust_ir_filter
+    code ".filter(|{item}| {predicate})"
+  template rust_ir_fold
+    code "({items}).into_iter().fold({initial}, |{accumulator}, {item}| {body})"
+  template rust_ir_condition
+    text "if {test} {open} {then} {close} else {open} {otherwise} {close}"
+  template rust_ir_emit
+    text "{open} let value = {value}; println!(""{debug_format}"", value); value {close}"
+  template rust_ir_missing_fragment
+    text "fragment `{fragment}` is absent"
+  template rust_ir_recursive_reduce_gap
+    text "well-founded recursive reduction needs an explicit ownership strategy"
+  template coding_invalid_cst
+    text "candidate did not form a valid {language} CST"
+  template fragment_definition_query
+    text "definition of {fragment}"
+  template ir_parameter_error
+    text "Parameter {name}: {detail}"
+  template ir_apply_missing
+    text "Apply {fragment}: fragment not found"
+  template ir_apply_arity
+    text "Apply {fragment}: expected {expected} arguments, received {observed}"
+  template ir_apply_argument
+    text "Apply {fragment} argument {position}: {detail}"
+  template ir_each_predicate
+    text "Each predicate: {detail}"
+  template ir_fold_error
+    text "Fold {accumulator}: {detail}"
+  template ir_repeat_error
+    text "Repeat {counter}: {detail}"
+  template ir_recurrence_index
+    text "Recurrence index: {detail}"
+  template ir_recurrence_base
+    text "Recurrence base: {detail}"
+  template ir_recurrence_transition
+    text "Recurrence transition: {detail}"
+  template ir_recursive_arity
+    text "RecursiveReduce state, target and next arity differ"
+  template ir_recursive_next
+    text "RecursiveReduce next state {position}: {detail}"
+  template ir_recursive_admissible
+    text "RecursiveReduce admissible: {detail}"
+  template ir_recursive_base_test
+    text "RecursiveReduce base test: {detail}"
+  template ir_recursive_local
+    text "RecursiveReduce local value: {detail}"
+  template ir_recursive_destructure
+    text "RecursiveReduce cannot bind {arity} names from {type}"
+  template ir_recursive_reducer_missing
+    text "RecursiveReduce reducer {fragment}: fragment not found"
+  template ir_recursive_reducer_arity
+    text "RecursiveReduce reducer {fragment}: expected one argument"
+  template ir_recursive_combine_missing
+    text "RecursiveReduce combine {fragment}: fragment not found"
+  template ir_recursive_combine_arity
+    text "RecursiveReduce combine {fragment}: expected two arguments"
+  template ir_condition_test
+    text "Condition test: {detail}"
+  template ir_condition_branches
+    text "Condition branches: {detail}"
+  template ir_type_mismatch
+    text "expected {expected}, observed {observed}"
+  template publisher_python_import
+    text "import {module}"
+  template verifiable_exact_division
+    text "{target} // {coefficient}"
+  template verifiable_division
+    text "{target} / {coefficient}"
+  template verifiable_parenthesized_division
+    text "({target}) / ({coefficient})"

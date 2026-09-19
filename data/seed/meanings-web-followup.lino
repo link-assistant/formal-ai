@@ -60,6 +60,19 @@ meanings
         text 显示
       surface
         text 告诉
+    lexeme es
+      surface
+        text compara
+      surface
+        text resume
+      surface
+        text explica
+      surface
+        text describe
+      surface
+        text muestra
+      surface
+        text cuenta
   clause_continuation_marker
     defined-by relation
     role clause_continuation_marker
@@ -89,3 +102,10 @@ meanings
         text 然后
       surface
         text 接着
+    lexeme es
+      surface
+        text y
+      surface
+        text luego
+      surface
+        text después

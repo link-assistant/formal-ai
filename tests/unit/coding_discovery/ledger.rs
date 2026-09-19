@@ -3,8 +3,9 @@ use std::path::PathBuf;
 
 use formal_ai::coding_task_spec::recognise;
 use formal_ai::composition::VerifiedDraft;
-use formal_ai::concept_discovery::{CandidatePart, ConceptMap, ConceptNeed};
+use formal_ai::concept_discovery::{CandidatePart, ConceptMap, ConceptRequirement};
 use formal_ai::discovered_procedures::DiscoveredProcedureLedger;
+use formal_ai::needs::NeedState;
 
 fn temporary_directory(name: &str) -> PathBuf {
     let nonce = std::time::SystemTime::now()
@@ -41,12 +42,13 @@ fn solution() -> (
         score: 9.0,
     };
     let concepts = ConceptMap {
-        needs: vec![ConceptNeed {
-            phrase: "greatest common divisor".to_owned(),
-            structures: Vec::new(),
-            candidates: vec![candidate],
-            status: "satisfied".to_owned(),
-        }],
+        needs: vec![ConceptRequirement::new(
+            "greatest common divisor",
+            "en",
+            NeedState::Satisfied,
+            Vec::new(),
+            vec![candidate],
+        )],
         evidence: Vec::new(),
     };
     let draft = VerifiedDraft {

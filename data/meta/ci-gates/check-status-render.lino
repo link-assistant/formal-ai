@@ -1,0 +1,4 @@
+ci_gate check_status_render
+  stage rust
+  description "The generated status document and its two pinned summaries are byte-current against committed ledgers."
+  run "rust-script scripts/render-status.rs --check"

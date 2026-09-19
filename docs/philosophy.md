@@ -42,6 +42,25 @@ a rule or code change; held-out tests, provenance checks, and human review decid
 whether it becomes durable. Formal AI does not silently rewrite production code
 or promote external model output.
 
+## Knowing how to get to know
+
+The architect's 2026-09-14 instruction gives learning its direction: "the goal
+is not to know everything in advance, the goal to know how to get know anything
+when it is needed"
+([`docs/architect-notes/2026-09-14-know-how-to-get-to-know-anything.md`](architect-notes/2026-09-14-know-how-to-get-to-know-anything.md)).
+The seed is not a memoization of the world; it is enough general knowledge to
+solve any task on demand, with dynamic discovery from trusted sources doing the
+rest. What a prompt leaves unresolved is asked of the registered sources
+(`data/seed/sources-registry.lino`) through the live lookup delivered by issue
+#1138 B1; what a source returns is formalized and verified before it is
+believed; and what still cannot be resolved is recorded as an explicit need
+rather than silently dropped. Since issue #1138 B4 the same holds for
+requirements: every surface a requirement leaves unresolved becomes part of a
+concept graph whose unresolved parts are retrieved, not assumed. Memory may
+grow to cache discovered knowledge, and rediscoverable knowledge may be freed
+under constraint — but chat history and retained experience are kept by
+default until the user decides otherwise.
+
 ## Transformation and substitution networks
 
 An algorithm can be represented as a transformation network: input-state links

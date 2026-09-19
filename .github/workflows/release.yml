@@ -583,7 +583,7 @@ jobs:
       # Issue #1055: the binary exists; packaging needs no rebuild.
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
-        run: cargo package --list --allow-dirty
+        run: cargo package --locked -p formal-ai
       - name: Check crate package size
         run: rust-script scripts/check-crate-package-size.rs
   auto-release:
@@ -668,16 +668,31 @@ jobs:
           FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
         run: |
           rust-script scripts/version-and-commit.rs \
-            --bump-type "${{ steps.bump_type.outputs.bump_type }}"
+            --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
+            --resume-prepared \
+            --branch main
       - name: Get current version
         id: current_version
         if: steps.check.outputs.should_release == 'true'
         run: rust-script scripts/get-version.rs
+      # Re-read publication state after the version command has synchronized
+      # with main. A rerun may have resumed a version prepared by the first
+      # attempt, so the pre-sync `check` output can describe the wrong version.
+      - name: Recheck prepared release state
+        id: prepared
+        if: steps.check.outputs.should_release == 'true'
+        env:
+          HAS_FRAGMENTS: 'false'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: rust-script scripts/check-release-needed.rs
       - name: Build release
         if: steps.check.outputs.should_release == 'true'
         run: cargo build --release
+      - name: Verify packaged crate archive
+        if: steps.check.outputs.should_release == 'true'
+        run: cargo package --locked -p formal-ai
       - name: Publish to Crates.io
-        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
+        if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'
         id: publish-crate
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
@@ -686,28 +701,28 @@ jobs:
       - name: Wait for Crate availability on Crates.io
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
       - name: Smoke test the published crate
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
       - name: Free up runner disk space
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/free-runner-disk.sh
       - name: Log in to GitHub Container Registry
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: docker/login-action@v4
@@ -718,14 +733,14 @@ jobs:
       - name: Set up Docker Buildx
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: ./.github/actions/setup-buildx-resilient
       - name: Extract GHCR Docker metadata
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         id: ghcr-meta
@@ -740,7 +755,7 @@ jobs:
       - name: Publish Docker image to GHCR
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
@@ -759,14 +774,14 @@ jobs:
       - name: Verify the published GHCR image is anonymously pullable
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/verify-ghcr-visibility.sh
       - name: Configure Docker Hub publishing
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         id: dockerhub
@@ -805,7 +820,7 @@ jobs:
       - name: Create GitHub Release
         if: |
           steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
+            steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
         env:
@@ -888,6 +903,9 @@ jobs:
       - name: Build release
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         run: cargo build --release
+      - name: Verify packaged crate archive
+        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        run: cargo package --locked -p formal-ai
       - name: Publish to Crates.io
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         id: publish-crate

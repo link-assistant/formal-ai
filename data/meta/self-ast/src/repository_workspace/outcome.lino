@@ -1,0 +1,18 @@
+self_ast_census
+  target src/repository_workspace/outcome.rs
+  language rust
+  fidelity signature
+  byte_len 6504
+  line_count 169
+  content_id source_module_10ca9b71acb5ad1f
+  symbol_count 9
+  symbols
+    const COMMAND_OUTCOME_LINO 20 20
+    const RECORD_OUTCOME 23 23
+    enum CommandOutcome 27 61
+    function of_exit 67 78
+    function seed_id 82 91
+    function is_completion 95 97
+    function describe_outcome 106 131
+    function seed_sentence 135 148
+    function seeded_languages 152 169

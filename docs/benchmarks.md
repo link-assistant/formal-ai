@@ -21,16 +21,37 @@ source provenance for download-on-test integration. Only permissive licenses
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
 | Held-out algorithm discovery | #531 | [`issue-531-algorithm-traces.lino`](../data/benchmarks/issue-531-algorithm-traces.lino) | `repeated_event_sequences_become_a_validated_parameterized_algorithm` | 1 |
+| Repository world-model canaries | #1138 | [`repository-world-model-canaries.lino`](../data/benchmarks/repository-world-model-canaries.lino) | `issue_1138_repository_world_model::an_unrelated_case_completes_only_with_matching_evidence_for_every_goal` | 3 canaries, requirement-complete |
+| TRIZ selection points | #901 | [`selection-triz.lino`](../data/benchmarks/selection-triz.lino) | `issue_1138_selection_heuristics::a_held_out_paraphrase_produces_the_same_split_shape_and_imbalance` | 20 |
+| Telegram execution outcomes | #1138 | [`telegram-execution-outcomes.lino`](../data/benchmarks/telegram-execution-outcomes.lino) | `issue_1138_telegram_execution::telegram_without_a_backend_is_honest_in_five_languages` | 5 languages × 2 permission outcomes |
 | External (upstream) harness | #698, #923 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
 | bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 | Held-out computer-use generalization | #707 | [`computer-use-generalization.lino`](../data/benchmarks/computer-use-generalization.lino) | `every_synthesized_plan_executes_with_every_step_verified` | 12 |
 | Search-fusion learning generalization | #709 | [`search-fusion-learning-generalization.lino`](../data/benchmarks/search-fusion-learning-generalization.lino) | `approved_recipe_round_trips_and_executes_a_held_out_task` | 1 |
 | Dynamic coding discovery paraphrases | #710 | [`coding-discovery-paraphrases.lino`](../data/benchmarks/coding-discovery-paraphrases.lino) | `coding_discovery::multilingual` | 25 |
+| Composition from retrieved sources | #1138 B2 | [`coding-composition-from-sources.lino`](../data/benchmarks/coding-composition-from-sources.lino) | `coding_discovery::multilingual` | 25 |
+| Live concept-lookup paraphrases | #1138 B1 | [`concept-lookup-paraphrases.lino`](../data/benchmarks/concept-lookup-paraphrases.lino) | `issue_1138_universal_loop_lookup` | 10 |
+| Deep requirement formalization | #1138 B4 | [`formalization-depth-requirements.lino`](../data/benchmarks/formalization-depth-requirements.lino) | `issue_1138_formalization_depth` | 10 |
+| Verifiable-task paraphrases | #1138 B8 | [`verifiable-task-paraphrases.lino`](../data/benchmarks/verifiable-task-paraphrases.lino) | `verifiable_task` | 30 |
+| Handler-family paraphrases | #1138 B9 | [`handler-family-paraphrases-suite.lino`](../data/benchmarks/handler-family-paraphrases-suite.lino) | `issue_1138_family_migration` | seed-defined |
+| Capability-routing paraphrases | #1138 B10 | [`capability-routing-suite.lino`](../data/benchmarks/capability-routing-suite.lino) | `issue_1138_capability_routing` | seed-defined |
+| Self-use: live concept lookup | #1138 B1 | [`self-use-concept-lookup.lino`](../data/benchmarks/self-use-concept-lookup.lino) | `issue_1138_self_use_concept_lookup` | observation corpus |
+| Self-use: verifiable tasks | #1138 B8 | [`self-use-verifiable-task.lino`](../data/benchmarks/self-use-verifiable-task.lino) | `issue_1138_self_use_verifiable_task` | observation corpus |
+| Self-use: intent routing | #1138 B10 | [`self-use-intent-routing.lino`](../data/benchmarks/self-use-intent-routing.lino) | `issue_1138_self_use_intent_routing` | observation corpus |
+| Self-use: prerequisite recovery | #1138 B6 | [`self-use-prerequisite.lino`](../data/benchmarks/self-use-prerequisite.lino) | `issue_1138_self_use_toolchain` | observation corpus |
+| Self-use: repository workspace | #1138 B3 | [`self-use-repository-workspace.lino`](../data/benchmarks/self-use-repository-workspace.lino) | `issue_1138_self_use_repository_workspace` | observation corpus |
 | Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 | Workspace-change learning generalization | #848 | [`workspace-change-learning-generalization.lino`](../data/benchmarks/workspace-change-learning-generalization.lino) | `only_a_green_named_review_promotes_and_replays_the_held_out_rewrite` | 1 |
 | Equation-type corpus | #891 (from #406) | [`equation-type-corpus.lino`](../data/benchmarks/equation-type-corpus.lino) | `issue_891_equation_corpus_solves_every_type` | 72 (and ≥50 distinct verified types) |
 | Question necessity | #920 | [`question-necessity-suite.lino`](../data/benchmarks/question-necessity-suite.lino) | `issue_920_question_necessity_benchmark_ratchets_down` | ≤60 questions per 100 tasks |
 | Conversational wording variations | #933 (from #123) | [`conversational-variations-suite.lino`](../data/benchmarks/conversational-variations-suite.lino) | `conversational_variation_benchmark_routes_every_case` | 228 (and ≥5 wordings per case per language) |
+
+The `minimum_pass_count` column is the **curated** floor: it counts cases the
+repository's own suite must pass before a run counts, and it never measures the
+upstream score. The upstream scores are published in
+[Honest current numbers](#honest-current-numbers), kept byte-honest against
+`data/benchmarks/external-results.lino`; a curated number is never cited
+without the upstream number beside it (`NON-GOALS.md`).
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -105,6 +126,58 @@ the subject binding. The ratchet requires the link-native learner to infer the
 shared dataflow, parameterize the changing value, reproduce the held-out trace
 losslessly, and keep the resulting algorithm inert until explicit approval.
 No third-party benchmark payload is imported.
+
+### Recursive discovery and self-use — issue #1138
+
+The six held-out paraphrase suites above exercise one shared discovery loop at
+different boundaries: retrieve missing concepts, compose procedures from
+sources, formalize requirements to observed primitives, derive verifiable
+answers, select handler families, and route capabilities. Their cases are
+self-authored in English, Russian, Hindi, Chinese, and Spanish; benchmark words
+and expected answers are not embedded in production code. The five `self-use-*`
+fixtures are a separate observation layer: they preserve prompts and measured
+outcomes from real Formal AI sessions, including failures, without turning
+those observations into accepted answers or a pass floor. No third-party
+payload is imported by these suites; source licenses and retrieval evidence are
+recorded by the runtime artifacts each case produces.
+
+### Deep formalization of unfamiliar requirements — issue #1138 B4
+
+Ten held-out requirements — two families (`isogram_requirement`,
+`lipogram_procedure`) in en, ru, hi, zh and es — live in
+[`data/benchmarks/formalization-depth-requirements.lino`](../data/benchmarks/formalization-depth-requirements.lino).
+Neither family says what its key term means, so coverage can only come from the
+trusted sources. Every run is offline, replaying the committed plan 01 captures
+(`tests/fixtures/issue-1138-b1`) through the registry lookup; the per-language
+grounded ratio and the observed-primitive count below are measured, never
+asserted as targets (`tests/unit/issue_1138_formalization_depth.rs`,
+`tests/integration/issue_1138_formalization_agent.rs`).
+
+| Source | License | Domain | Upstream |
+| --- | --- | --- | --- |
+| Wiktionary (per-language extracts API) | CC BY-SA 3.0 | dictionary | <https://www.wiktionary.org> |
+| Open English WordNet 2024 | CC BY 4.0 | lexical database | <https://en-word.net> |
+| Wikipedia article summaries | CC BY-SA 4.0 | encyclopedia | <https://www.wikipedia.org> |
+
+Measured 2026-09-18, cold-offline over the committed captures — needs raised /
+grounded / unresolved per requirement, and the observed-primitive count of the
+nine-primitive knowledge base:
+
+| Family | en | ru | hi | zh | es |
+| --- | --- | --- | --- | --- | --- |
+| `isogram_requirement` needs grounded | 1 of 15 | 0 of 5 | 0 of 5 | 1 of 5 | 1 of 27 |
+| `lipogram_procedure` needs grounded | 1 of 19 | 0 of 7 | 0 of 6 | 0 of 6 | 0 of 8 |
+| observed primitives (all ten) | 1 of 9 | 1 of 9 | 1 of 9 | 1 of 9 | 1 of 9 |
+
+The table is the honest reading, not a shortfall to paper over. Only the
+English and Spanish surfaces have captured definitions, so only those runs
+ground their key concept (the zh isogram run matches the Latin-script
+`isogram`); ru and hi are measured unserved, and those runs report every need
+unsatisfiable with its exact span rather than a stored sentence. Grounding adds
+no nine-primitive coverage: a grounded concept is a concept-graph record with
+its source URL, sha256 and license, so the observed-primitive count stays 1 of 9
+(the annotation carrying the preserved span) in every language, and depth is
+reported as `needs_raised` / `needs_grounded`, never as primitive inflation.
 
 ### bAbI-style world-state tracking — issue #702
 
@@ -276,33 +349,67 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-The latest committed rows are dated `2026-09-15` for the coding suites, use
-solver version `0.349.2`, and keep the deterministic solver at
-`temperature = 0.0`. Other suite rows remain at their latest `2026-09-07`
-measurements:
+Pinned by `docs_benchmarks::latest_external_rows_are_published_from_the_ledger`
+(`tests/unit/docs_benchmarks.rs`): every table row below must equal the latest
+committed row for its suite in
+[`data/benchmarks/external-results.lino`](../data/benchmarks/external-results.lino),
+so editing this table without a matching ledger row — or the reverse — fails
+CI. The same test holds `VISION.md` to every suite's latest passed/total and
+`ROADMAP.md`, `ARCHITECTURE.md`, and `README.md` to the latest committed
+HumanEval and MBPP rows, and
+`docs_benchmarks::curated_pass_ratios_publish_an_upstream_comparison_beside_them`
+refuses a curated ratio published without an upstream one beside it.
 
-| Suite | License | Grading | Passed | Total |
-| --- | --- | --- | ---: | ---: |
-| HumanEval | MIT | upstream unit test executed | 20 | 20 |
-| MBPP | Apache-2.0 | upstream `test_list` asserts executed with live source discovery | 20 | 20 |
-| GSM8K | MIT | final number vs. `####` gold | 2 | 20 |
-| MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
-| BIG-bench object counting | Apache-2.0 | final number vs. target | 0 | 20 |
-| CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
-| egg rewrite laws | MIT | structured `proof_outcome proven` | 20 | 20 |
-| Ascent closure assertions | MIT | structured `proof_outcome proven` | 5 | 5 |
-| SWE-bench Lite (dev) | MIT | official upstream instance tests executed | 0 | 1 |
-| EditEval | — | `benchmark_unavailable` | — | — |
+The latest committed rows are dated `2026-09-18`: HumanEval's coding row is the
+`2026-09-17` full-slice run and MBPP's is the `2026-09-18` full-slice run
+(HumanEval 164 with `--online`; MBPP 500 cold-offline, recorded with its
+`mode offline` field so the runner command in the ledger reproduces it exactly),
+all on solver version `0.350.0` with the deterministic solver at
+`temperature = 0.0`. The `2026-09-15` first-20 rows remain as regression
+controls. Other suite rows remain at their latest `2026-09-07` measurements:
 
-The same-day empty-source-cache control scored HumanEval **20/20** and MBPP
-**18/20**. The two remaining MBPP cases require externally defined sequence
-knowledge: with `--online`, the solver searches official OEIS JSON, follows a
-bounded cross-reference frontier, formalizes a strict arithmetic or linear
-recurrence, verifies it against task examples, and reaches **20/20**. Retrieved
-bytes live only in the ignored content-addressed cache; a fresh offline run
-therefore reports those two gaps instead of relying on benchmark-specific
-built-ins. The ledger's MBPP runner includes `--online` so its result is exactly
-reproducible.
+| Suite | License | Slice | Grading | Passed | Total |
+| --- | --- | ---: | --- | ---: | ---: |
+| HumanEval | MIT | 164 | upstream unit test executed | 14 | 164 |
+| HumanEval | MIT | 20 | upstream unit test executed | 20 | 20 |
+| MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery | 49 | 500 |
+| MBPP | Apache-2.0 | 20 | upstream `test_list` asserts executed with live source discovery | 20 | 20 |
+| GSM8K | MIT | 20 | final number vs. `####` gold | 2 | 20 |
+| MATH (`prm800k` 500-problem split) | MIT | 20 | final `\boxed{...}` vs. gold | 0 | 20 |
+| BIG-bench object counting | Apache-2.0 | 20 | final number vs. target | 0 | 20 |
+| CoEdIT | Apache-2.0 | 20 | edited text vs. gold target | 0 | 20 |
+| egg rewrite laws | MIT | 20 | structured `proof_outcome proven` | 20 | 20 |
+| Ascent closure assertions | MIT | 20 | structured `proof_outcome proven` | 5 | 5 |
+| SWE-bench Lite (dev) | MIT | 1 | official upstream instance tests executed | 0 | 1 |
+| EditEval | — | — | `benchmark_unavailable` | — | — |
+
+The scheduled SWE-bench measurement now requests all 23 pinned dev cases. The
+latest committed evidence is still the honest `0/1` row above: no `0/23` (or
+better) row is published until the official evaluator has actually completed
+that width. Ratchet history is keyed by `(suite, slice)`, so opening the
+23-case series neither erases nor weakens the independent one-case history.
+
+The 2026-09-15 empty-source-cache control scored HumanEval **20/20** and MBPP
+**18/20** at the first-20 slice. The two remaining MBPP cases require externally
+defined sequence knowledge: with `--online`, the solver searches official OEIS
+JSON, follows a bounded cross-reference frontier, formalizes a strict arithmetic
+or linear recurrence, verifies it against task examples, and reaches **20/20**.
+Retrieved bytes live only in the ignored content-addressed cache; a fresh
+offline run therefore reports those two gaps instead of relying on
+benchmark-specific built-ins. The ledger's MBPP runner includes `--online` so
+its result is exactly reproducible.
+
+The 2026-09-17 HumanEval full-slice run repeats the same honesty at suite
+width: the same session's cold-offline run honestly scored **9/164**; with
+`--online`, live source discovery raised it to **14/164**, which is the
+committed row and the suite's full-slice floor. The delta is the measured
+live-source contribution, not a solver change — both runs used solver
+`0.350.0` and the same seed corpus. The first committed MBPP full-slice row is
+the cold-offline `2026-09-18` run at **49/500**: at suite width most cases need
+retrieved context the offline run does not have, and that low number is
+published as measured. The same day's `--online` full-slice run reached
+**60/500** and set the suite's full-slice floor — the eleven-case delta is
+live-source evidence at suite width, mirroring HumanEval.
 
 `20 / 20` on egg and `5 / 5` on Ascent are the real measurements of the new
 symbolic kernel against mechanically adapted declarations and assertions from
@@ -327,6 +434,12 @@ is independently measured by the Apache-2.0 CoEdIT suite; that score is never
 recorded as an EditEval result. Runtime download, decode, or upstream-schema
 failures likewise produce a concrete `benchmark_unavailable` row so scheduled
 runs do not silently lose the reason that no score exists.
+
+The observed-primitive count for an unfamiliar document is recorded separately from
+the nine declared kinds. Before issue #1138 B4 it was 2 of 9 in every language,
+because an unrecognised sentence became a preserved span and nothing else; the
+deep-formalization corpus records what it is now, per language, including the
+languages where no source served a definition.
 
 ### Ratchet
 
@@ -353,9 +466,24 @@ cargo run --bin formal-ai -- benchmark list
 # (network + python3 required). Offline remains the default when omitted.
 cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20 --online
 
-# Refresh every suite locally. SWE-bench additionally needs the pinned official
-# Python harness and Docker; scheduled CI bounds it separately to one case.
-cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --online --append
+# Full-suite runs are the suite score; a first-20 slice is only a regression
+# control and is never cited without its slice. Cold-offline is the default;
+# `--online` adds live source discovery for externally defined knowledge.
+# `--frontier-record` writes the per-suite failure frontier next to the row.
+cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 164 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 164 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --bin formal-ai -- benchmark run --suite mbpp --slice 500 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --bin formal-ai -- benchmark run --suite mbpp --slice 500 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+
+# The forget/rediscover round trip: delete the discovered-procedure ledger,
+# rediscover from the same trusted sources, and require the same content id.
+cargo test --test unit coding_discovery::ledger -- --nocapture
+
+# Refresh every suite locally. SWE-bench's pinned official Python harness and
+# Docker are prerequisites the run discovers. `--allow-install` grants only the
+# pinned workspace-scoped harness procedure; without it a missing harness is
+# reported as unavailable instead of becoming a solver failure.
+cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --online --allow-install --append
 
 # Verify the monotonic ratchet without running any suite.
 cargo run --bin formal-ai -- benchmark ratchet
@@ -418,3 +546,19 @@ npm run --prefix tests/e2e check:variation-floor   # the per-language floor
   cases, update [`data/benchmarks/LICENSES.md`](../data/benchmarks/LICENSES.md)
   when a payload slice is vendored, and add a row to the tables above so this
   catalog stays the complete index.
+
+<!-- status:begin benchmarks -->
+Generated from `data/benchmarks/external-results.lino`.
+
+| Suite | Date | Slice | Passed | Total | Solver |
+| --- | --- | ---: | ---: | ---: | --- |
+| `ascent_transitive_closure` | 2026-09-07 | 5 | 5 | 5 | 0.347.0 |
+| `coedit` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
+| `egg_math` | 2026-09-07 | 20 | 20 | 20 | 0.347.0 |
+| `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
+| `humaneval` | 2026-09-17 | 164 | 14 | 164 | 0.350.0 |
+| `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
+| `mbpp` | 2026-09-18 | 500 | 49 | 500 | 0.350.0 |
+| `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
+| `swebench_lite` | 2026-09-07 | 1 | 0 | 1 | 0.347.0 |
+<!-- status:end benchmarks -->

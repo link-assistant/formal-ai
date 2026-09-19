@@ -18,7 +18,29 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
 
 function readRepoFile(relativePath) {
-  return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
+  const filePath = path.join(repoRoot, relativePath);
+  const sources = [fs.readFileSync(filePath, 'utf8')];
+  if (!relativePath.endsWith('.rs')) return sources[0];
+
+  // Rust test modules may be split into a same-named directory to satisfy the
+  // repository line budget. Coverage belongs to the module tree, not to one
+  // physical file, so discover every child instead of pinning the checker to
+  // the former monolith.
+  const moduleDirectory = filePath.slice(0, -'.rs'.length);
+  if (!fs.existsSync(moduleDirectory)) return sources[0];
+  const pending = [moduleDirectory];
+  while (pending.length > 0) {
+    const directory = pending.pop();
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        pending.push(entryPath);
+      } else if (entry.name.endsWith('.rs')) {
+        sources.push(fs.readFileSync(entryPath, 'utf8'));
+      }
+    }
+  }
+  return sources.join('\n');
 }
 
 function readWorkerSource() {

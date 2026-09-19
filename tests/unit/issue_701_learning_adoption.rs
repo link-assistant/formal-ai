@@ -20,12 +20,13 @@ const SUPPORTED_LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
 #[test]
 fn committed_adoption_ledger_matches_a_fresh_run() {
     let committed = include_str!("../../data/meta/learning-adoption-ledger.lino");
-    let fresh = format!("{}\n", google_trends_adoption_ledger().links_notation());
-    assert_eq!(
-        committed, fresh,
-        "the committed adoption ledger is stale; regenerate it with \
-         `cargo run --example issue_701_adoption_ledger > data/meta/learning-adoption-ledger.lino`",
+    let legacy_pairs = google_trends_adoption_ledger().links_notation();
+    assert!(
+        committed.starts_with(&format!("{legacy_pairs}\n")),
+        "the 60 existing issue-701 pairs must stay byte-identical; generalized effects append after them",
     );
+    assert!(committed.contains("record_type \"behavior_delta_schema\""));
+    assert!(committed.contains("record_type \"adoption_effect\""));
     parse_indented(committed).expect("the adoption ledger should parse as Links Notation");
 }
 
@@ -59,7 +60,11 @@ fn the_adoption_ledger_records_a_real_capability_delta_in_every_language() {
         assert_eq!(pair.before_intent, "unknown", "{}", pair.prompt);
         assert_ne!(pair.after_intent, "unknown", "{}", pair.prompt);
         assert!(pair.topic_recovered(), "{}", pair.prompt);
-        assert_eq!(pair.capability_delta(), "unknown_to_web_search");
+        assert!(
+            pair.capability_delta().starts_with("unknown_to_"),
+            "the adopted route may generalize, but the recorded transition must remain unknown -> capability: {}",
+            pair.capability_delta()
+        );
     }
 }
 
@@ -216,6 +221,13 @@ fn every_idle_dreaming_run_leaves_a_proposal_only_learning_cycle_record() {
     assert_eq!(
         record,
         format!("{}\n", google_trends_learning_cycle().links_notation()),
+    );
+    let proposals = parse_promotion_proposals(&record)
+        .expect("the idle record is directly readable by the promotion protocol");
+    assert_eq!(
+        proposals.len(),
+        google_trends_learning_cycle().proposals.len(),
+        "the idle artifact must carry every proposal into the next improve run"
     );
 
     let _ = std::fs::remove_file(&memory_path);

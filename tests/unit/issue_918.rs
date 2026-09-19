@@ -211,21 +211,33 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     assert_eq!(active, actual);
     // 46 until issue #1085 moved `github_repository_traffic.rs` into
     // `data/seed/handler-rules.lino`; the ledger and the tree dropped together.
-    assert_eq!(actual.len(), 45);
+    // 45 until issue #1138 B9, plan 09 leaf 1: the gate scanned
+    // `src/solver_handlers` only, so `solver_handler_how.rs`,
+    // `solver_handler_how_synthesis.rs`, `solver_handler_units.rs` and
+    // `solver_handler_oracle.rs` — four handler files one directory up — were
+    // neither counted nor ledgered, and a migration could have lowered the
+    // ratchet by moving a file out of the scanned directory. The rise to 49 is a
+    // corrected undercount recorded in the ledger's `note`, not new debt.
+    // Plan 08 then added one generic interpreter of seed-declared verifiable
+    // tasks. It is compiled core machinery rather than another domain handler.
+    // The URL parsing split then exposed another generic interpreter. Its
+    // structural parser reads language evidence from seed roles, so recursive
+    // source count rises while migration debt continues to fall.
+    assert_eq!(actual.len(), 51);
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        45
+        49
     );
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "promote")
             .count(),
-        0,
-        "mixed handler files cannot be promoted into the minimal core"
+        2,
+        "both generic seed-driven interpreters are promoted"
     );
     for entry in entries
         .iter()
@@ -257,6 +269,60 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
         .map(|entry| lines[&entry.path])
         .sum();
     assert!(ledger.contains(&format!("outside_core_lines_max {outside_core_lines}")));
+}
+
+#[test]
+fn generic_interpreter_components_are_registered_outside_the_census() {
+    // Issue #1138 B9, plan 09 leaf 17: the migration families need compiled
+    // homes that are not themselves handler debt. A `component` block in the
+    // ledger names one such file outside the census, the boundary category it
+    // was promoted under, and the reason it passes the promotion test. The
+    // test reads the ledger through the gate's own parser so the gate and the
+    // suite cannot disagree about what a component is.
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let ledger_text = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
+        .expect("issue #918 must provide the source-file core-boundary ledger");
+    let ledger = check_minimal_core_boundary::parse_ledger(&ledger_text)
+        .expect("the boundary ledger parses, components included");
+    let census = handler_sources();
+    assert!(
+        !ledger.components.is_empty(),
+        "the migration families register their generic interpreters as components"
+    );
+    let mut names = BTreeSet::new();
+    for record in &ledger.components {
+        assert!(
+            names.insert(record.name.as_str()),
+            "component names are unique: {}",
+            record.name
+        );
+        assert_eq!(
+            record.kind, "Generic interpreter",
+            "component {} is registered under the boundary document's interpreter category",
+            record.name
+        );
+        assert!(
+            !record.reason.is_empty(),
+            "component {} explains the promotion decision",
+            record.name
+        );
+        assert!(
+            !census.contains(&record.file),
+            "component {} file {} must sit outside the handler census",
+            record.name,
+            record.file
+        );
+        assert!(
+            root.join(&record.file).is_file(),
+            "component {} file {} must exist",
+            record.name,
+            record.file
+        );
+    }
+    assert!(
+        names.contains("retrieval_method_interpreter"),
+        "the M2 retrieval family's interpreter is registered"
+    );
 }
 
 #[test]
@@ -367,7 +433,11 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // `file_edit_position_*` cues of an additive edit -- moving the floor
     // from 96 to 101: each was a hardcoded English sentence or a missing route
     // before it was data. None is allowed to become a metadata gap.
-    assert_eq!(coding_records, 101, "coding-path regression floor");
+    // Issue #1138 moved five repository-workflow meanings out of the coding
+    // task source into their own complete domain source, then added four
+    // language-neutral repository-target meanings here. The net floor is 100;
+    // none of the nine records became an unreviewed metadata gap.
+    assert_eq!(coding_records, 100, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -502,5 +572,19 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // Issue #710 moved the total from 4,062 to 4,250: the generalized coding
     // structures, discoverable runtime templates, and source-backed recurrence
     // vocabulary entered the total closure instead of remaining Rust literals.
-    assert_eq!(expected_gaps.len(), 4_250);
+    //
+    // Issue #1138 B9, plan 09 leaf 8 moved it from 4,250 to 695, and the drop is
+    // the point of the leaf rather than progress against this floor. 3,555 of
+    // those 4,250 rows were records in `data/seed/closure-generated-*.lino` --
+    // files `scripts/close-total.py` wrote and `scripts/audit-total-closure.py`
+    // then read back as definitions, so the closure metric reported zero while
+    // 17,791 lines of English-only glosses no runtime loads stood in for
+    // grounding. Every one of them was a metadata gap by construction: a
+    // generated record carries `defined-by` and an English `lexeme` and none of
+    // the five reviewed fields. Deleting the generator's output did not ground
+    // anything, and the grounding work it was standing in for is now counted
+    // honestly, in one place, by `data/meta/closure-audit.lino` -- 3,569 distinct
+    // tokens as measured on 2026-09-16. The 695 rows that remain are the
+    // hand-written gaps this audit has always been about.
+    assert_eq!(expected_gaps.len(), 695);
 }

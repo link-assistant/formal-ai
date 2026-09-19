@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_20.js"
-  ceiling 1392
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into src/web/wasm-worker. Issue #710 raised it from 1367 to 1392 for the browser half of three conversational recoveries the Rust core already had: ordered multi-question composition, the free-time guard, and the target-less modification clarification. The mirror has to answer as the core does, so the parity tests fail without them."
+  ceiling 1459
+  rationale "Part of the mechanically split browser mirror of the Rust solver. The synchronous handler capability bindings moved to formal_ai_worker_dispatch.js; this shard keeps orchestration, the issue #710 browser parity recoveries, and since issue #1138 B8 / plan 09 leaves 13-15 the worker handler registry: the exact-permutation mirror of data/seed/handler-precedence.lino that binds the seed vocabulary (verifiable_task included) to worker implementations, which is why the ceiling moved from 1308 to 1459."

@@ -392,8 +392,10 @@ fn solver_routes_exact_sql_and_graphql_with_auditable_results() {
         access_count: 2,
         ..MemoryEvent::default()
     }]);
+    let sql = "SELECT id, content FROM memory WHERE id = 'm1'";
+    let compiled_id = compile(sql, QueryDialect::SqlAnsi).id;
     let selected = execute_memory_query_with_options(
-        "SELECT id, content FROM memory WHERE id = 'm1'",
+        sql,
         &mut store,
         None,
         LIMITS,
@@ -401,6 +403,20 @@ fn solver_routes_exact_sql_and_graphql_with_auditable_results() {
     )
     .expect("exact SQL route");
     assert_eq!(selected.answer.intent, "memory_exact_query");
+    let expected = [
+        String::from("memory_query_result"),
+        format!("  query \"{compiled_id}\""),
+        String::from("  dialect \"sql_ansi\""),
+        String::from("  matched 1"),
+        String::from("  changed 0"),
+        String::from("  halt \"complete\""),
+        String::from("  matched_id \"m1\""),
+        String::from("  row"),
+        String::from("    content 'text:\"original\"'"),
+        String::from("    id 'text:\"m1\"'"),
+    ]
+    .join("\n");
+    assert_eq!(selected.answer.answer, expected);
     assert!(selected.answer.answer.contains("memory_query_result"));
     assert!(
         selected

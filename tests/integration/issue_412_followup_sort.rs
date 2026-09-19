@@ -11,6 +11,16 @@
 
 use formal_ai::{ConversationTurn, UniversalSolver};
 
+fn numeric_answer(
+    intro: &str,
+    code_fence: &str,
+    code: &str,
+    result_label: &str,
+    result: &str,
+) -> String {
+    format!("{intro}\n\n```{code_fence}\n{code}\n```\n\n{result_label} {result}")
+}
+
 /// The active coding context from the previous turn (JavaScript, code+result).
 fn javascript_sort_context() -> Vec<ConversationTurn> {
     vec![
@@ -67,6 +77,16 @@ fn issue_412_bare_followup_inherits_language_and_is_not_unknown() {
         "trace must record the inherited language, got: {}",
         response.links_notation
     );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "Вот код на JavaScript, который сортирует числа 4, 3, 1, 17, 8, 9, 15 по возрастанию:",
+            "javascript",
+            "const numbers = [4, 3, 1, 17, 8, 9, 15];\nconst sorted = [...numbers].sort((a, b) => a - b);\nconsole.log(sorted.join(\", \"));",
+            "Результат:",
+            "1, 3, 4, 8, 9, 15, 17",
+        )
+    );
 }
 
 /// Without any prior coding context, the same bare prompt stays `unknown`: the
@@ -113,6 +133,16 @@ fn issue_412_reduction_followup_inherits_code_request() {
         "result must be the computed sum, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "Вот код на JavaScript, который суммирует числа 2, 4, 6:",
+            "javascript",
+            "const numbers = [2, 4, 6];\nconst result = numbers.reduce((a, b) => a + b, 0);\nconsole.log(result);",
+            "Результат:",
+            "12",
+        )
+    );
 }
 
 /// English parity: an English coding context followed by a bare English sort
@@ -139,6 +169,16 @@ fn issue_412_english_followup_inherits_language() {
         response.answer.contains("Result: 1, 2, 7, 9"),
         "result must be sorted ascending, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "Here is Python code that sorts the numbers 9, 2, 7, 1 in ascending order:",
+            "python",
+            "numbers = [9, 2, 7, 1]\nsorted_numbers = sorted(numbers)\nprint(\", \".join(str(n) for n in sorted_numbers))",
+            "Result:",
+            "1, 2, 7, 9",
+        )
     );
 }
 
@@ -181,6 +221,16 @@ fn issue_412_hindi_followup_inherits_language() {
         "trace must record the inherited language, got: {}",
         response.links_notation
     );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "यह JavaScript कोड है जो संख्याओं 4, 3, 1, 17, 8, 9, 15 को आरोही क्रम में क्रमबद्ध करता है:",
+            "javascript",
+            "const numbers = [4, 3, 1, 17, 8, 9, 15];\nconst sorted = [...numbers].sort((a, b) => a - b);\nconsole.log(sorted.join(\", \"));",
+            "परिणाम:",
+            "1, 3, 4, 8, 9, 15, 17",
+        )
+    );
 }
 
 /// Chinese parity: a Chinese coding context — "…请用 Python 排序，给我代码和结果"
@@ -218,5 +268,15 @@ fn issue_412_chinese_followup_inherits_language() {
             .contains("numeric_list_coreference inherited_language=python"),
         "trace must record the inherited language, got: {}",
         response.links_notation
+    );
+    assert_eq!(
+        response.answer,
+        numeric_answer(
+            "这是用 Python 编写的将数字 4, 3, 1, 17, 8, 9, 15 按升序排序的代码:",
+            "python",
+            "numbers = [4, 3, 1, 17, 8, 9, 15]\nsorted_numbers = sorted(numbers)\nprint(\", \".join(str(n) for n in sorted_numbers))",
+            "结果:",
+            "1, 3, 4, 8, 9, 15, 17",
+        )
     );
 }

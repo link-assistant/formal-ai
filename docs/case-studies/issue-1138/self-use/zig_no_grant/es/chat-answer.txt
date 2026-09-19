@@ -1,0 +1,3 @@
+No voy a adivinar qué escribir. Esto se lee como una solicitud de programa, pero no nombra ni lo que el programa debe hacer ni en qué lenguaje de programación escribirlo.
+
+Di qué debe hacer el programa y en qué lenguaje debe escribirse, y lo derivaré.

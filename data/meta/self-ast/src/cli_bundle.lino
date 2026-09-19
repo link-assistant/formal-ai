@@ -1,0 +1,10 @@
+self_ast_census
+  target src/cli_bundle.rs
+  language rust
+  fidelity signature
+  byte_len 2889
+  line_count 76
+  content_id source_module_db9f81c94e8d7cfc
+  symbol_count 1
+  symbols
+    function run_bundle 13 76

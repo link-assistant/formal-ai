@@ -5,13 +5,16 @@ summary_topics
   constraint_marker "one paragraph"
   constraint_marker one-paragraph
   constraint_label one_paragraph
-  fallback_body "<topic> summary: the request is recorded as a bounded summarization task with a topic, constraint, and trace link."
+  fallback_response unknown
   topic Rust
     detection_keywords ("rust" "раст" "러스트" "रस्ट" "锈语言")
-    body "Rust is a systems programming language focused on performance, memory safety, and concurrency. It prevents many memory errors at compile time through ownership and borrowing, while still compiling to native machine code."
+    source_kind concept
+    source_id concept_rust
   topic Wikipedia
     detection_keywords ("wikipedia" "википедии" "википедия" "википедию" "विकिपीडिया" "维基百科")
-    body "Wikipedia is a free multilingual encyclopedia maintained by volunteer contributors. Its articles are collaboratively edited, cite external sources, and are connected to structured Wikimedia projects such as Wikidata."
+    source_kind concept
+    source_id concept_wikipedia
   topic formal-ai
     detection_keywords ("formal-ai" "formal ai" "формал-ай" "formalाई" "福尔玛尔-人工智能")
-    body "formal-ai is a deterministic symbolic assistant that routes prompts through Links Notation-backed rules, records reasoning events, and exposes OpenAI-shaped API surfaces without neural-network inference."
+    source_kind project
+    source_id project_link_assistant_formal_ai

@@ -34,8 +34,10 @@ use crate::engine::stable_id;
 use crate::memory::MemoryEvent;
 use crate::self_improvement::LearningRun;
 
+mod draft_pull_request;
 mod gates;
 mod materialize;
+pub use draft_pull_request::{DraftPullRequest, open_draft_pull_request};
 pub use gates::{GateCommandOutput, replay_promotion_gates, replay_promotion_gates_with};
 pub use materialize::apply_promotions;
 

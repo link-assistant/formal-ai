@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.742Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.742Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.742Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.743Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.751Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.752Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.752Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.753Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.753Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.756Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.757Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.759Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 120365,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.759Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.773Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:03:12.777Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.781Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.781Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.782Z",
+  "service": "session",
+  "id": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s",
+  "title": "New session - 2026-09-16T03:03:12.782Z",
+  "time": {
+    "created": 1789527792782,
+    "updated": 1789527792782
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.782Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.782Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.782Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.783Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.783Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d4e371ffemXJJjigSwzOIWE/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.783Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d4e371ffemXJJjigSwzOIWE/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.785Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57d4e371ffemXJJjigSwzOIWE/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.800Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.801Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.801Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.803Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.804Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.804Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.804Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.804Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.804Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.804Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.804Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.805Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.805Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.925Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.929Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.935Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.945Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:12.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:13.450Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527793450,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b1f26001OJ2HS3uStbZPnD",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b1d1f001Bp3VA0OTPHMI71",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:13.450Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:13.451Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527793451,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b1f2a002vLbaKvn2LI58xC",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b1d1f001Bp3VA0OTPHMI71",
+    "type": "tool",
+    "callID": "call_389f89b2647bc1f6",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:13.451Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527793451,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b1f2a001E02cDpPHSPfLEs",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b1d1f001Bp3VA0OTPHMI71",
+    "type": "text",
+    "text": "मैं इंटरनेट पर एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं खोजता हूँ।",
+    "time": {
+      "start": 1789527793451,
+      "end": 1789527793451
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:13.451Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527793452,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b1f2a002vLbaKvn2LI58xC",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b1d1f001Bp3VA0OTPHMI71",
+    "type": "tool",
+    "callID": "call_389f89b2647bc1f6",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं"
+      },
+      "time": {
+        "start": 1789527793451
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.599Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527796599,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b1f2a002vLbaKvn2LI58xC",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b1d1f001Bp3VA0OTPHMI71",
+    "type": "tool",
+    "callID": "call_389f89b2647bc1f6",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं"
+      },
+      "output": "Title: अमीना की पानी की बोतल में 1 लीटर पानी आता है। उसने 250 ...\nURL: https://www.shaalaa.com/hin/question-bank-solutions/aminaa-ki-paani-ki-botl-men-1-litr-paani-aataa-hai-usne-250-mililitr-paani-pi-liyaa-aur-uske-dost-gaovind-ne-150-mililitr-paani-pi-liyaa-botl-men-kitnaa-paani-bchaa-hai_281970\nPublished: N/A\nAuthor: Shaalaa.com\nHighlights:\nअमीना\n...\n1 लीटर पानी आता है।\n...\nमिलीलीटर पानी\n...\n150\n...\nबोतल में कुल पानी = 1 लीटर = 1000 mL\n...\nउन्होंने कुल पानी पिया = अनिमा द्वारा पिया पानी + गोविंद द्वारा पिया गया पानी\n...\n= 250 mL + 150 mL = 400 mL\n...\nउसकी बोतल में बचा पानी = 1000 mL - 400 mL = 600 mL।\n\n---\n\nTitle: अमीना की पानी की बोतल में 1 लीटर पानी आता है। उसने 250 मिलीलीटर पानी पी लिया और उसके दोस्त गोविंद ने 150 मिलीलीटर पानी पी लिया। बोतल में कितना पानी बचा है ? | Shaalaa.com\nURL: https://www.shaalaa.com/question-bank-solutions/aminaa-ki-paani-ki-botl-men-1-litr-paani-aataa-hai-usne-250-mililitr-paani-pi-liyaa-aur-uske-dost-gaovind-ne-150-mililitr-paani-pi-liyaa-botl-men-kitnaa-paani-bchaa-hai_281970\nPublished: 2022-01-29T00:00:00.000Z\nAuthor: Shaalaa.com\nHighlights:\nअमीना\n...\nपानी आता है।\n...\n250 मिलीलीटर पानी\n...\nदोस्त गोविंद ने\n...\n150\n...\nबचा है ?\n...\nबोतल में कुल पानी = 1 लीटर = 1000 mL\n...\nउन्होंने कुल पानी पिया = अनिमा द्वारा पिया पानी + गोविंद द्वारा पिया गया पानी\n...\n= 250 mL + 150 mL = 400 mL\n...\nउसकी बोतल में बचा पानी = 1000 mL - 400 mL = 600 mL।\n\n---\n\nTitle: प्र-16 एक बाल्टी में 15 लीटर पानी आता है, तो\nURL: https://studyx.ai/questions/4lnj9mf/16-15-6-17-15-18-1-19-2-500-20-32-21-3-22-423589\nPublished: 2025-03-07T08:55:42.000Z\nAuthor: N/A\nHighlights:\nएक बाल्टी में\n...\n15 लीटर पानी आता है,\n...\nियों में पानी\n...\n15 लीटर/बाल्टी *\n...\n6 बाल्टी =\n...\n90 लीटर\n...\n2 लीटर पानी की बोतल में 500 मिलीलीटर पानी भरा गया। बोतल में और कितना पानी भरा जा सकता है, यह ज्ञात करने के लिए, पहले 2 लीटर को मिलीलीटर में बदलें।1 लीटर = 1000 मिलीलीटर2 लीटर = 2 * 1000 = 2000 मिलीलीटरअब, 2000 मिलीलीटर में से 500 मिलीलीटर घटाएं।2000 मिलीलीटर - 500 मिलीलीटर = 1500 मिलीलीटर\n...\nप्र-1\n...\n8 घंटेप्र-19:\n\n---\n\nTitle: अमीना की पानी की बोतल में 1 लीटर पानी आता है। उसने 250 मिलीलीटर पानी पी लिया और उसके दोस्त गोविंद ने 150 मिलीलीटर पानी पी लिया। बोतल में कितना पानी बचा है ? | Shaalaa.com\nURL: https://www.shaalaa.com/mar/question-bank-solutions/aminaa-ki-paani-ki-botl-men-1-litr-paani-aataa-hai-usne-250-mililitr-paani-pi-liyaa-aur-uske-dost-gaovind-ne-150-mililitr-paani-pi-liyaa-botl-men-kitnaa-paani-bchaa-hai_281970\nPublished: 2022-01-29T00:00:00.000Z\nAuthor: Shaalaa.com\nHighlights:\nबोतल में कुल पानी = 1 लीटर = 1000 mL\n...\nउन्होंने कुल पानी पिया = अनिमा द्वारा पिया पानी + गोविंद द्वारा पिया गया पानी\n...\n= 250 mL + 150 mL = 400 mL\n...\nउसकी बोतल में बचा पानी = 1000 mL - 400 mL = 600 mL।\n\n---\n\nTitle: विद्या और प्रताप पिकनिक पर गए। उनकी माँ ने उन्हें 5 लीटर पानी वाली एक बोतल दी। विद्या ने कुल पानी का 25 उपयोग किया। शेष पानी प्रताप ने पिया। i. विद्या ने कितना पानी पिया? | Shaalaa.com\nURL: https://www.shaalaa.com/question-bank-solutions/vidyaa-aur-prtaap-piknik-pr-gae-unki-maan-ne-unhen-5-litr-paani-vaali-ek-botl-di-vidyaa-ne-kul-paani-kaa-25-upyoga-kiyaa-shes-paani-prtaap-ne-piyaa-i-vidyaa-ne-kitnaa-paani-piyaa_283872\nPublished: 2022-02-08T00:00:00.000Z\nAuthor: Shaalaa.com\nHighlights:\nविद्या और प्रताप पिकनिक पर गए। उनकी माँ ने उन्हें 5 लीटर पानी वाली एक बोतल दी। विद्या ने कुल पानी का `2/5` उपयोग किया। शेष पानी प्रताप ने पिया।\n...\ni. विद्या द्वारा पिए गए पानी का भाग = `2/5`\n...\n= `2/5 xx 5 \"लीटर\"`\n...\n= 2 लीटर\n...\nii. प्रताप द्वारा पिये गये पानी की मात्रा का भिन्न = कुल पानी – विद्या द्वारा पिए गये पानी का भाग\n...\n= 1 – `2/5`\n...\nपानी का कुल भाग 1 है।]\n...\n= `(5 - 2)/5`\n...\n= `3/5`\n...\nअत: प्रताप द्वारा पिए गये पानी का भाग = `3/5`\n...\nअत: विद्या द्वारा पिए गये पानी की मात्रा = 2 लीटर तथा प्रताप द्वारा पिए गये पानी का भाग = `3/5`\n\n---\n\nTitle: UP Board Solutions for Class 2 Maths गिनतारा Chapter 15 लोटा और गिलास से नापें – UP Board Guide\nURL: https://www.upboardguide.com/class-2-maths-chapter-15/\nPublished: 2020-09-10T00:00:00.000Z\nAuthor: Safia\nHighlights:\n- धारिता नापने की मानक इकाई लीटर है, इसे ली० भी लिखते हैं। इसकी छोटी इकाई मिलीलीटर है, इसे मिली० भी लिखते हैं।\n- 1 ली० = 1000 मिली० या 1000 मिली० = 1 ली०\n\nअभ्यास\n...\n. खाली जगह भरो (खाली जगह भरकर)- हल: 12 किलोग्राम = 10 किग्रा० + 2 किग्रा०\n...\n0 ग्राम = 500 ग्राम + 200 ग्राम + 100 ग्राम 1 किग्रा = 1000 ग्राम 2000 मिली० = 2 ली०\n\n---\n\nTitle: Q46. यदि एक पानी के टेंक में 500 लीटर पानी है तो उसमें से 250 मिलीमीटर की..\nURL: https://askfilo.com/user-question-answers-smart-solutions/q46-ydi-ek-paanii-ke-ttenk-men-500-liittr-paanii-hai-to-3139323231353831\nPublished: 2025-01-09T08:15:30.000Z\nAuthor: N/A\nHighlights:\nइस प्रश्न में हमें एक टैंक में 500 लीटर पानी है और हमें यह पता करना है कि 250 मिलीलीटर की क्षमता वाले चर्तनों में से अधिकतम कितने भरे जा सकते हैं। पहले, हमें लीटर को मिलीलीटर में बदलना होगा। 1 लीटर = 1000 मिलीलीटर होता है। इसलिए, 500 लीटर = 500 × 1000 = 500000 मिलीलीटर। अब, हमें यह पता करना है कि 500000 मिलीलीटर में से 250 मिलीलीटर के कितने चर्तन भरे जा सकते हैं। इसके लिए हम 500000 को 250 से भाग देंगे।\n...\n500 लीटर को मिलीलीटर में बदलें: 500 लीटर = 500 × 1000 = 500000 मिलीलीटर।\n...\n250 मिलीलीटर की क्षमता वाले चर्तनों की संख्या निकालने के लिए 500000 को 250 से भाग दें: 500000 ÷ 250।\n...\nगणना करें: 500000 ÷ 250 = 2000।\n...\nइसलिए, अधिकतम 2000 चर्तन भरे जा सकते हैं।\n...\n2000\n\n---\n\nTitle: प्र-16 एक बाल्टी में 15 लीटर पानी आता है, तो\nURL: https://studyx.ai/questions/4lnjg7z/16-15-6-17-15-18-1-19-2-500-20-32-21-3-22-423589-23-200-24-1-5-2-9\nPublished: 2025-03-07T09:55:24.000Z\nAuthor: N/A\nHighlights:\n- प्र-16: 6 बाल्टियों में 90 लीटर पानी आएगा।\n- प्र-17: दो बसों में डीजल भरने में 30 मिनट लगेंगे।\n- प्र-18: 1 सप्ताह में 168 घंटे होते हैं।\n- प्र-19: बोतल में अब 1500 मिलीलीटर पानी और भरा जा सकता है।\n- प्र-20: पल्लवी के पास 24 लीटर तेल शेष बचा।\n- प्र-21: = 9 के बराबर होंगे।\n- प्र-22: 423589 का बीजांक 4 है।\n- प्र-23: प्रत्येक मित्र को 40 चॉकलेट मिलेंगी।\n- प्र-24: प्रश्न अधूरा है। कबाड़ की दुकान से संबंधित प्रश्न को पूरा करने के लिए और जानकारी की आवश्यकता है।\n...\n- कारण 1: 2 लीटर = 2000 मिलीलीटर\n- कारण 2: बोतल में पहले से भरा पानी = 500 मिलीलीटर\n- कारण 3: और भरा जा सकने वाला पानी = 2000 मिलीलीटर - 500 मिलीलीटर = 1500 मिलीलीटर",
+      "title": "Web search: एक टंकी में 2 लीटर पानी है और उसमें से 750 मिलीलीटर निकाल दिया जाता है। कितने मिलीलीटर बचते हैं",
+      "metadata": {},
+      "time": {
+        "start": 1789527793451,
+        "end": 1789527796592
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527796607,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b2b7b001A6Vj1blK1UDnDi",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b1d1f001Bp3VA0OTPHMI71",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8592,
+      "output": 237,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8829,
+      "headroom": 30027,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.609Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.609Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.612Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.612Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.613Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.613Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.613Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.614Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.614Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.614Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.619Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8829,
+  "providerTokens": 8829,
+  "estimatedInputTokens": 2422,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8592,
+    "cacheRead": 0,
+    "output": 237
+  },
+  "overflow": false,
+  "headroom": 30027,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.620Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.624Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:16.626Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527797345,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b2e5d001CP3uypMJLz3YA0",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2b8c001hRQg6MhbJQHNGf",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.345Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527797346,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b2e61002armSzSg6zqDaNR",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2b8c001hRQg6MhbJQHNGf",
+    "type": "tool",
+    "callID": "call_f671ee07da60ea59",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527797346,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b2e610010hnlsV16T5X2Ry",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2b8c001hRQg6MhbJQHNGf",
+    "type": "text",
+    "text": "मैं https://www.shaalaa.com/hin/question-bank-solutions/aminaa-ki-paani-ki-botl-men-1-litr-paani-aataa-hai-usne-250-mililitr-paani-pi-liyaa-aur-uske-dost-gaovind-ne… खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527797346,
+      "end": 1789527797346
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527797346,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b2e61002armSzSg6zqDaNR",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2b8c001hRQg6MhbJQHNGf",
+    "type": "tool",
+    "callID": "call_f671ee07da60ea59",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.shaalaa.com/hin/question-bank-solutions/aminaa-ki-paani-ki-botl-men-1-litr-paani-aataa-hai-usne-250-mililitr-paani-pi-liyaa-aur-uske-dost-gaovind-ne-150-mililitr-paani-pi-liyaa-botl-men-kitnaa-paani-bchaa-hai_281970"
+      },
+      "time": {
+        "start": 1789527797346
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.491Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527797491,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b2e61002armSzSg6zqDaNR",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2b8c001hRQg6MhbJQHNGf",
+    "type": "tool",
+    "callID": "call_f671ee07da60ea59",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.shaalaa.com/hin/question-bank-solutions/aminaa-ki-paani-ki-botl-men-1-litr-paani-aataa-hai-usne-250-mililitr-paani-pi-liyaa-aur-uske-dost-gaovind-ne-150-mililitr-paani-pi-liyaa-botl-men-kitnaa-paani-bchaa-hai_281970"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789527797346,
+        "end": 1789527797490
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789527797491,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.491Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527797491,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b2ef3001FqgxTM5DKvE5l9",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2b8c001hRQg6MhbJQHNGf",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 14867,
+      "output": 456,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15323,
+      "headroom": 23533,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.492Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.492Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.492Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.492Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.493Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.493Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.493Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.493Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.494Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 15323,
+  "providerTokens": 15323,
+  "estimatedInputTokens": 2490,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 14867,
+    "cacheRead": 0,
+    "output": 456
+  },
+  "overflow": false,
+  "headroom": 23533,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.495Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.496Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.497Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.797Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527797797,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b3025001PO581EAY9t5bUH",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2ef6001y7RQ6Iw4ULB7xs",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.797Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.797Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527797797,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b3025002wenO0tnagGiOqu",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2ef6001y7RQ6Iw4ULB7xs",
+    "type": "text",
+    "text": "कमांड विफल रही: Error: Request failed with status code: 403\n\nइस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप चाहेंगे कि मैं diagnostic context के साथ issue report तैयार करूँ? जवाब दें: `Report issue`.",
+    "time": {
+      "start": 1789527797797,
+      "end": 1789527797797
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527797798,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "part": {
+    "id": "prt_0a82b3025003RAHs5WjXQg7d3t",
+    "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+    "messageID": "msg_0a82b2ef6001y7RQ6Iw4ULB7xs",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 15105,
+      "output": 207,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15312,
+      "headroom": 23544,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.798Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.799Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.799Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.799Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.799Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.800Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.800Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527797800,
+  "sessionID": "ses_f57d4e371ffemXJJjigSwzOIWE"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.800Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.800Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.800Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.800Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.MpoGSFRX6s",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:17.800Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

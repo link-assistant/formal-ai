@@ -25,14 +25,15 @@ use crate::solver_handlers::{
     try_fact_lookup, try_http_fetch, try_http_fetch_with_offline, try_installation_conversion,
     try_javascript_execution, try_learn_from_source, try_meta_explanation,
     try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
-    try_numeric_list_with_history, try_pattern_inference, try_program_synthesis,
-    try_program_synthesis_with_online, try_proof_request, try_proof_request_with_config,
-    try_research_comparison_table, try_research_result_followup, try_response_language_followup,
-    try_roleplay_request, try_shell_command_transform, try_shell_command_transform_with_history,
+    try_numeric_list_with_history, try_program_synthesis, try_program_synthesis_with_online,
+    try_proof_request, try_proof_request_with_config, try_research_comparison_table,
+    try_research_result_followup, try_response_language_followup, try_roleplay_request,
+    try_shell_command_transform, try_shell_command_transform_with_history,
     try_software_project_followup, try_software_project_request, try_source_conflict,
     try_source_refresh, try_summarization_request, try_task_decomposition_with_depth,
     try_text_manipulation, try_text_manipulation_with_history, try_translation, try_url_navigate,
-    try_web_search, try_web_search_with_offline, try_world_state, try_write_script,
+    try_verifiable_task, try_web_search, try_web_search_with_offline, try_world_state,
+    try_write_script,
 };
 
 /// Uniform signature every specialized handler conforms to. Handlers that
@@ -315,6 +316,7 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // `software_project_request`, so it sits above the general lookups.
     ("software_project_followup", try_software_project_followup),
     ("summarization", try_summarization_request),
+    ("verifiable_task", try_verifiable_task),
     ("text_manipulation", try_text_manipulation),
     ("brainstorming", try_brainstorming_request),
     ("conversation_topic", try_conversation_topic_request),
@@ -348,7 +350,6 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // bare "what is a pattern?" still falls through to the concept lookup, and
     // it sits before `arithmetic` so a numeric sequence is analysed structurally
     // rather than mistaken for a calculation.
-    ("pattern_inference", try_pattern_inference),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", merge_definitions),
@@ -395,22 +396,33 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
 #[must_use]
 pub fn specialized_handlers() -> Vec<(&'static str, SpecializedHandler)> {
     let precedence = crate::seed::handler_precedence();
+    // Plan 09 leaf 13 (issue #1138): rows the seed marks `browser_only` name
+    // handlers only the browser worker runs. The native surface partitions by
+    // phase instead of pretending those rows do not exist.
+    let browser_only = crate::seed::browser_only_handlers();
+    let native: Vec<&String> = precedence
+        .iter()
+        .filter(|name| !browser_only.iter().any(|slug| slug == name.as_str()))
+        .collect();
     let rule_names = crate::rule_interpreter::handler_names();
     assert_eq!(
-        precedence.len(),
+        native.len(),
         HANDLER_FUNCTIONS.len() + rule_names.len(),
-        "handler-precedence.lino lists {} handlers but {} native functions and {} rule sets \
-         are registered; the seed must be an exact permutation of both",
+        "handler-precedence.lino lists {} native handlers ({} total minus {} browser-only) \
+         but {} native functions and {} rule sets are registered; the seed must be an \
+         exact permutation of both",
+        native.len(),
         precedence.len(),
+        browser_only.len(),
         HANDLER_FUNCTIONS.len(),
         rule_names.len(),
     );
     let mut seen = std::collections::BTreeSet::new();
-    let ordered: Vec<(&'static str, SpecializedHandler)> = precedence
+    let ordered: Vec<(&'static str, SpecializedHandler)> = native
         .iter()
         .map(|name| {
             assert!(
-                seen.insert(name.clone()),
+                seen.insert((*name).clone()),
                 "handler-precedence.lino lists handler `{name}` more than once"
             );
             resolve_handler(name, &rule_names).unwrap_or_else(|| {

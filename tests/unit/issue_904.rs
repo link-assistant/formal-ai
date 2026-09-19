@@ -246,10 +246,10 @@ fn the_bounded_hive_mind_objective_reads_the_issue_it_names() {
     .expect("the production request must have an agentic plan") else {
         panic!("the production request must read the issue it names")
     };
-    assert_eq!(calls[0].tool, "fetch_url");
+    assert_eq!(calls[0].tool, "run_command");
     assert!(
         calls[0].arguments.contains(&plan.target),
-        "the fetch must address the issue Hive Mind named: {}",
+        "the structured read must address the issue Hive Mind named: {}",
         calls[0].arguments,
     );
 }
@@ -278,10 +278,10 @@ fn a_repository_work_item_is_read_before_anything_is_concluded() {
     .expect("the harness prompt must have an agentic plan") else {
         panic!("the first step must read the work item")
     };
-    assert_eq!(calls[0].tool, "fetch_url");
+    assert_eq!(calls[0].tool, "run_command");
     assert!(
         calls[0].arguments.contains(&plan.target),
-        "the fetch must address the work item, not some other page: {}",
+        "the structured read must address the work item, not some other page: {}",
         calls[0].arguments,
     );
 }

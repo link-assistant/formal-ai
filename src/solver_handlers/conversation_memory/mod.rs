@@ -12,7 +12,7 @@ pub use program_query::{execute_memory_query, execute_memory_query_with_options}
 
 use super::finalize_simple;
 
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::intent_formalization::formalize_intent;
 use crate::language::detect as detect_language;

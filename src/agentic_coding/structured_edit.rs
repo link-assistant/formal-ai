@@ -296,6 +296,54 @@ fn insert_members(source: &str, edit: &MemberInsertion) -> Option<(String, Vec<S
     Some((updated, absent))
 }
 
+/// Apply the existing member-list editor to one declaration selected by a
+/// repository census.
+///
+/// This is the narrow bridge used by the repository workspace protocol. The
+/// requirement still has to carry the registry-grounded edit/list/add intents,
+/// and only quoted literal slots are eligible values. A locator-selected
+/// declaration replaces the ambient-checkout target inference used by the
+/// conversational route, so the same structural algorithm works in a clone.
+#[must_use]
+pub fn insert_quoted_members_into_named_list(
+    source: &str,
+    declaration: &str,
+    requirement: &str,
+) -> Option<(String, Vec<String>)> {
+    let normalized = requirement
+        .to_lowercase()
+        .split(|character: char| !character.is_alphanumeric())
+        .filter(|token| !token.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ");
+    let lexicon = seed::lexicon();
+    let changes_a_file = lexicon.mentions_role(seed::ROLE_FILE_WRITE_ACTION_CUE, &normalized)
+        || lexicon.mentions_role(seed::ROLE_FILE_EDIT_ACTION_CUE, &normalized);
+    if !changes_a_file
+        || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_LIST_KIND, &normalized)
+        || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, &normalized)
+    {
+        return None;
+    }
+    let values = quoted_segment_spans(requirement)
+        .into_iter()
+        .filter(|segment| !requirement[segment.start..].starts_with('`'))
+        .map(|segment| segment.text)
+        .filter(|value| is_member_literal(value))
+        .collect::<Vec<_>>();
+    if values.is_empty() {
+        return None;
+    }
+    insert_members(
+        source,
+        &MemberInsertion {
+            target: String::new(),
+            values,
+            named: vec![declaration.to_owned()],
+        },
+    )
+}
+
 /// The members named the way the source spells them, for a sentence.
 fn quoted_list(values: &[String]) -> String {
     values

@@ -1,0 +1,5 @@
+toolchain_ledger
+  record_type "toolchain_ledger"
+  issue "1138"
+  policy "append_only"
+  forget_command "formal-ai learn forget --toolchain <program>"

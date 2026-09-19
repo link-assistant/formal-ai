@@ -1,0 +1,21 @@
+self_ast_census
+  target src/prerequisite/ledger.rs
+  language rust
+  fidelity signature
+  byte_len 7810
+  line_count 206
+  content_id source_module_1d69873efd1d9649
+  symbol_count 12
+  symbols
+    const RECORD_TOOLCHAIN 20 20
+    const REPOSITORY_LEDGER 23 23
+    struct ToolchainRecord 27 46
+    function to_links_notation 51 94
+    struct ToolchainLedger 99 102
+    function new 107 111
+    function from_repo 115 117
+    function records 121 146
+    function record_for 150 155
+    function append 161 168
+    function forget 175 188
+    function reattach 193 205

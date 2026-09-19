@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_formalization.js"
+  ceiling 89
+  rationale "Issue #1138 deep-formalization browser mirror with honest needs and unverified procedure steps."

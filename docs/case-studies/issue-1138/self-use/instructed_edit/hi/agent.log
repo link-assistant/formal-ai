@@ -1,0 +1,1853 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.987Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.987Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे। --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.987Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.987Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.996Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.996Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.997Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.997Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:31.998Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.000Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.001Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.003Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 754,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.003Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.016Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:00:32.018Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 22,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:00:32.019Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.024Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.024Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.025Z",
+  "service": "session",
+  "id": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr",
+  "title": "New session - 2026-09-16T03:00:32.025Z",
+  "time": {
+    "created": 1789527632025,
+    "updated": 1789527632025
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.025Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.025Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.025Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.025Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.025Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d75766ffeXeyNPR1GpN304f/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.025Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d75766ffeXeyNPR1GpN304f/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.028Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57d75766ffeXeyNPR1GpN304f/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.030Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.030Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.031Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.032Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.033Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.033Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.033Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.033Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.033Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.033Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.033Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.034Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.034Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.149Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.153Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.153Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.164Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.168Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.172Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.172Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.172Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.172Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.615Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527632615,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828aae2001NzX5e6nuN6Cf40",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828a918001enNZukOGI4pb6P",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.616Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527632617,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828aae8001NXOVJ77j2HMIyo",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828a918001enNZukOGI4pb6P",
+    "type": "tool",
+    "callID": "call_695f9bff5f7acca5",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527632617,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828aae7001zaPH32Hr3GPTxx",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828a918001enNZukOGI4pb6P",
+    "type": "text",
+    "text": "मैं इंटरनेट पर इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे। खोजता हूँ।",
+    "time": {
+      "start": 1789527632617,
+      "end": 1789527632617
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:32.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527632617,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828aae8001NXOVJ77j2HMIyo",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828a918001enNZukOGI4pb6P",
+    "type": "tool",
+    "callID": "call_695f9bff5f7acca5",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे।"
+      },
+      "time": {
+        "start": 1789527632617
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.099Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527635099,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828aae8001NXOVJ77j2HMIyo",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828a918001enNZukOGI4pb6P",
+    "type": "tool",
+    "callID": "call_695f9bff5f7acca5",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे।"
+      },
+      "output": "Title: सर्व सहमति | अमरकोश\nURL: https://xn--84b2eds0ge.xn--45brj9c/hi/dictionary/hindi/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5+%E0%A4%B8%E0%A4%B9%E0%A4%AE%E0%A4%A4%E0%A4%BF/\nPublished: N/A\nAuthor: N/A\nHighlights:\n### सर्व सहमति संज्ञा \n\n १. संज्ञा / अवस्था \n\n अर्थ : ऐसी स्थिति जिसमें उपस्थित या संबद्ध सभी लोग किसी एक बात या विचार से सहमत हों।\n\n उदाहरण : सर्व सहमति से राम को इस संस्था का सचिव चुना गया। \n\n पर्यायवाची : अवैमत्य, आम राय, आम सहमति, एकमतता, एकवाक्यता, ऐकमत्य, मतैक्य, सर्व सम्मति, सर्वसम्मति, सर्वसहमति\n\n अन्य भाषाओं में अनुवाद :తెలుగు ଓଡ଼ିଆ ಕನ್ನಡ मराठी English বাংলা தமிழ் മലയാളം\n...\nउपस्थित किंवा संबंधित सर्व लोकांनी एका विचाराने सहमत असण्याची स्थिती.\n...\nएकमताने रामला ह्या संस्थेचा सचीव म्हणून निवडण्यात आले. एकमत, सर्वसंमती\n...\nএমন অবস্হা যাতে উপস্হিত বা সম্পর্কিত সকলে কোনো বক্তব্যের সঙ্গে সহমত হয়\n...\nসর্ব সম্মতিতে রামকে এই সংস্হার সচিব বানানো হয়েছে সর্ব সম্মতি, সর্বমত\n...\nഹാജരായ എല്ലാവരും ഒരേ വിഷയത്തില് അഭിപ്രായം പറഞ്ഞുറപ്പിച്ചത്.\n\n---\n\nTitle: सर्वसम्मति वाक्य - \"सर्वसम्मति\" द्विभाषी वाक्य\nURL: https://www.hindlish.in/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5%E0%A4%B8%E0%A4%AE%E0%A5%8D%E0%A4%AE%E0%A4%A4%E0%A4%BF-sentence-in-hindi\nPublished: N/A\nAuthor: N/A\nHighlights:\n- Other team members were not favoring this,but ultimately हंलांकि उनके दल के सब लोग एसा ही नहीं सोचते थे पर अंत में सर्वसम्मति से भगत सिंह तथा बटुकेश्वर दत्त का नाम चुना गया ।\n...\n- Everyone in the office reached a consensus on organizing a holiday party over the coming weekend. कार्यालय में सभी अागामी सप्ताहांत में छुट्टी की पार्टी का आयोजन करने के लिए सर्वसम्मति पर पहुंच गए।\n...\n- Infact in their party no one thought this but at end with respect bhagat singh and battukeshwar dutt were selected हंलांकि उनके दल के सब लोग एसा ही नहीं सोचते थे पर अंत में सर्वसम्मति से भगत सिंह तथा बटुकेश्वर दत्त का नाम चुना गया ।\n...\n- Though not every one in his group agreed with him but the names of Bhagat Singh and Battukeshwar Dutt were unanimously decided. हंलांकि उनके दल के सब लोग एसा ही नहीं सोचते थे पर अंत में सर्वसम्मति से भगत सिंह तथा बटुकेश्वर दत्त का नाम चुना गया ।\n...\n- Though his team think so not everyone used to think in the end unanimously selected the name of Bhagat Singh and Dutt Boukkeshwar हंलांकि उनके दल के सब लोग एसा ही नहीं सोचते थे पर अंत में सर्वसम्मति से भगत सिंह तथा बटुकेश्वर दत्त का नाम चुना गया ।\n...\n- The Union Powers Committee was unanimous in its view that it would be injurious to the interests of the country to provide for a weak central authority which would be incapable of ensuring peace , of coordinating vital matters of common concern , and of speaking effectively for the whole country in the international sphere . समिति ने सर्वसम्मति से यह दृष्टिकोण अपनाया कि यह देश के लिए हितकर नहीं होगा कि एक अशक्त केंद्रीय प्राधिकार की व्यवस्था की जाए क्योंकि ऐसा प्राधिकार न तो शांति की एवं सामूहिक हित संबंधी महत्वपूर्ण मामलों में समन्वय की व्यवस्था कर सकेगा और न ही अंतर्राष्ट्रीय क्षेत्र में समूचे देश के लिए प्रभावशाली ढंग से आवाज उठा सकेगा .\n\n---\n\nTitle: Unanimous Approval Meaning in Hindi: सर्वसम्मत स्वीकृति\nURL: https://ones.com/blog/ones-solutions/unanimous-approval-meaning-in-hindi-%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5%E0%A4%B8%E0%A4%AE%E0%A5%8D%E0%A4%AE%E0%A4%A4-%E0%A4%B8%E0%A5%8D%E0%A4%B5%E0%A5%80%E0%A4%95%E0%A5%83%E0%A4%A4%E0%A4%BF/\nPublished: 2026-07-17T04:31:24.000Z\nAuthor: Evan Brooks\nHighlights:\nAt its core, unanimous approval is the highest bar of agreement. It’s not a majority vote or a “most people are okay with it” situation. Every member has to give a thumbs‑up. In Hindi, सर्वसम्मत स्वीकृति breaks down to सर्व (all) + सम्मत (agreed) + स्वीकृति (approval). The phrase captures complete harmony. You’ll also hear सर्वसम्मति (sarvsammati), which is a shorter synonym often used in boardrooms and parliamentary proceedings. But here’s why the distinction matters: सर्वसम्मति leans more toward “consensus,” while सर्वसम्मत स्वीकृति explicitly means formal approval with no opposition.\n...\nProblem: The term “सर्वसम्मति” is used loosely. In casual conversation, people often say “सर्वसम्मति से फैसला हुआ” (the decision was unanimous) when they really mean “most people agreed.” This dilutes the requirement. Solution: Always clarify the expectation upfront. Use the full phrase सर्वसम्मत स्वीकृति and emphasize that it means 100% agreement, with no exceptions. You can say, “हर एक सदस्य की सहमति आवश्यक है।” (Every member’s consent is mandatory.)\n...\nWritten records in Hindi\n...\n“सभी ने\n...\nदे दी” (everyone gave\n...\nwhether it was unanimous or just a majority. Solution: Standardize the phrase. Always record “सर्वसम्मत स्वीकृति प्राप्त हुई” (unanimous approval was obtained) and include the list of approvers.\n...\nक्या सर्वसम्मत स्वीकृति का मतलब 100% सहमति है? हाँ, बिल्कुल। सर्वसम्मत स्वीकृति का अर्थ है कि निर्णय में शामिल हर व्यक्ति ने बिना किसी विरोध के सहमति दी है। इसमें कोई भी असहमति नहीं होनी चाहिए। अगर एक भी व्यक्ति मना करता है, तो उसे सर्वसम्मत नहीं माना जाएगा।\n...\nWhat is the difference between सर्वसम्मति and सर्वसम्मत स्वीकृति? सर्वसम्मति (sarvsammati) is a broader term for general consensus or agreement, while सर्वसम्मत स्वीकृति specifically refers to formal approval that is unanimous. In legal and corporate contexts, you’ll often see the longer form. You can use सर्वसम्मति informally, but for official records, stick to सर्वसम्मत स्वीकृति.\n...\nHow do you say “unanimous approval was granted” in Hindi? The most common phrase is “सर्वसम्मत स्वीकृति प्रदान की गई।” In a more formal minute, you might write, “सदस्यों ने सर्वसम्मत स्वीकृति प्रदान की।” Both convey that all members gave their consent.\n\n---\n\nTitle: सर्वसम्मत का अंग्रेजी अनुवाद | कोलिन्स हिंदी-अंग्रेज़ी शब्दकोश\nURL: https://www.collinsdictionary.com/hi/dictionary/hindi-english/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5%E0%A4%B8%E0%A4%AE%E0%A5%8D%E0%A4%AE%E0%A4%A4\nPublished: N/A\nAuthor: Susie Gilbert and Jay Shir\nHighlights:\n1. unanimous विशेषण\n...\nWhen a group of people or their opinion is unanimous, they all agree about something.\n...\nThe board was in unanimous agreement.\n\n---\n\nTitle: मीटिंग मिनट्स: 2025 में सर्वश्रेष्ठ लेखन गाइड, उदाहरण (+ निःशुल्क टेम्पलेट) - AhaSlides\nURL: https://ahaslides.com/hi/blog/meeting-minutes/\nPublished: 2023-02-14T03:54:53.000Z\nAuthor: N/A\nHighlights:\nमीटिंग मिनट मीटिंग के दौरान होने वाली चर्चाओं, निर्णयों और कार्रवाई मदों का एक लिखित रिकॉर्ड है। \n\n- वे सभी उपस्थित लोगों और उपस्थित होने में असमर्थ लोगों के लिए एक संदर्भ और सूचना के स्रोत के रूप में कार्य करते हैं।\n- वे यह सुनिश्चित करने में मदद करते हैं कि महत्वपूर्ण जानकारी को भुलाया न जाए और यह कि क्या चर्चा की गई थी और क्या कार्रवाई की जानी चाहिए, इस बारे में सभी एक ही पृष्ठ पर हैं।\n- वे बैठक के दौरान किए गए निर्णयों और प्रतिबद्धताओं का दस्तावेजीकरण करके जवाबदेही और पारदर्शिता भी प्रदान करते हैं।\n...\n1. बैठक की तिथि, समय और स्थान\n2. उपस्थित लोगों की सूची और अनुपस्थिति के लिए क्षमा याचना\n3. बैठक का एजेंडा और उद्देश्य\n4. चर्चाओं और किए गए निर्णयों का सारांश\n5. कोई भी वोट लिया गया और उसके परिणाम\n6. जिम्मेदार पार्टी और पूरा होने की समय सीमा सहित एक्शन आइटम\n7. कोई अगला कदम या अनुवर्ती आइटम\n8. बैठक का समापन टिप्पणी या स्थगन\n...\nबैठक के दौरान, चर्चाओं और किए गए निर्णयों पर स्पष्ट और संक्षिप्त नोट लें। आपको पूरी बैठक को शब्दशः लिप्यंतरित करने के बजाय प्रमुख बिंदुओं, निर्णयों और कार्रवाई की वस्तुओं को कैप्चर करने पर ध्यान देना चाहिए। वक्ताओं के नाम या किसी भी प्रमुख उद्धरण, और किसी भी कार्य आइटम या निर्णय को शामिल करना सुनिश्चित करें। और संक्षिप्ताक्षर या आशुलिपि में लिखने से बचें जो दूसरों को समझ में न आए।\n...\nमीटिंग के बाद अपने मिनटों का सुसंगत और संक्षिप्त सारांश बनाने के लिए अपने नोट्स की समीक्षा करें और उन्हें व्यवस्थित करें। मिनटों को पढ़ने में आसान बनाने के लिए आप शीर्षकों और बुलेट बिंदुओं का उपयोग कर सकते हैं। चर्चा की व्यक्तिगत राय या व्यक्तिपरक व्याख्या न करें। तथ्यों पर ध्यान दें और बैठक के दौरान क्या सहमति हुई।\n...\nआपकी बैठक के मिनटों में सभी प्रासंगिक विवरण शामिल होने चाहिए, जैसे दिनांक, समय, स्थान और उपस्थित लोग। और चर्चा किए गए किन्हीं महत्वपूर्ण विषयों, निर्णयों और सौंपे गए कार्यों का उल्लेख करें। लिए गए किसी भी वोट और किसी भी चर्चा के परिणाम को रिकॉर्ड करना सुनिश्चित करें।\n...\n| बैठक का शीर्षक: [बैठक का शीर्षक डालें] दिनांक: [तारीख डालें] समय: [समय डालें] स्थान: [स्थान डालें] सहभागी: [उपस्थित लोगों के नाम डालें] अनुपस्थिति के लिए क्षमा याचना: [नाम डालें] एजेंडा: [एजेंडा आइटम 1 डालें] [एजेंडा आइटम 2 डालें] [एजेंडा आइटम 3 डालें] बैठक का सारांश: [बैठक के दौरान की गई चर्चाओं और निर्णयों का सारांश सम्मिलित करें, जिसमें कोई मुख्य बिंदु या कार्य आइटम शामिल हैं।] एक्शन आइटम्स: [जिम्मेदार पार्टी और पूरा होने की समय सीमा सहित, मीटिंग के दौरान असाइन किए गए किसी भी एक्शन आइटम की सूची डालें।] अगले कदम: [बैठक के दौरान चर्चा की गई कोई भी अगला चरण या अनुवर्ती आइटम सम्मिलित करें।] अंतिम शब्द: [बैठक के किसी समापन टिप्पणी या स्थगन को सम्मिलित करें।] हस्ताक्षर: [मिनट लेने वाले व्यक्ति के हस्ताक्षर डालें] |\n| --- |\n...\n: [तारीख डालें] समय: [समय डालें] स्थान: [स्थान डालें] सहभागी: [उपस्थित लोगों के नाम डालें] अनुपस्थिति के लिए क्षमा याचना: [अनुपस्थिति के लिए क्षमा मांगने वालों के नाम डालें] एजेंडा: 1. पिछली बैठक के कार्यवृत्त का अनुमोदन 2. वित्तीय रिपोर्ट की समीक्षा 3. सामरिक योजना की चर्चा 4. कोई अन्य\n...\nमीटिंग मिनट्स का उद्देश्य उन लोगों के लिए मीटिंग का उच्च-स्तरीय अवलोकन प्रदान करना है जो इसमें शामिल नहीं हो पाए थे, साथ ही मीटिंग के परिणामों का रिकॉर्ड रखना था। इसलिए, कार्यवृत्त को व्यवस्थित और समझने में आसान होना चाहिए, सबसे महत्वपूर्ण जानकारी को स्पष्ट और संक्षिप्त रूप से हाइलाइट करना चाहिए।\n\n---\n\nTitle: \"aapsi sahamati se\" — \"आपसी सहमति से।\" — Meaning & Examples | हिन्दी Phrases - SubLearn\nURL: https://www.sublearn.com/hi/learn/hi/phrases/hi-aapasa-sahamata-sa\nPublished: N/A\nAuthor: N/A\nHighlights:\naapsi sahamati se\n...\nBy mutual consent.\n\n## मतलब \n\nWith the agreement of all parties involved.\n\n### सांस्कृतिक पृष्ठभूमि\n\nIn Indian corporate culture, this phrase is often used to soften the blow of a difficult decision, implying that everyone was heard.\n\n### Use in Writing\n\nAlways use this in formal emails regarding project changes.\n\n## मतलब\n\nWith the agreement of all parties involved.\n\n### Use in Writing\n\nAlways use this in formal emails regarding project changes.\n...\nगया है।\n...\nIt fits the context of a group decision.\n\n 🎉 स्कोर: /1\n...\n_____ लिया गया है।\n...\nदस्ती\n...\nIt fits the context of a group decision.\n\n 🎉 स्कोर\n...\n/1\n\n---\n\nTitle: AI सारांशकर्ता: टेक्स्ट को मुख्य बिंदुओं में छोटा करें | WPS\nURL: https://hi.wps.com/tools/ai-summarizer/\nPublished: N/A\nAuthor: N/A\nHighlights:\nहमारे AI सारांशकर्ता से लेख, रिपोर्ट, निबंध और शोध पत्रों को सेकंडों में सारांशित करें। स्पष्ट मुख्य बिंदु पाएं, पढ़ने का समय घटाएं और अपने दर्शकों के अनुरूप सारांश बनाएं।\n...\nकिसी भी लेख, रिपोर्ट या नोट्स को कॉपी और पेस्ट करें। हमारा AI सारांश\n...\nछोटे पैराग्राफ से लेकर लंबे दस्तावेज़ों तक सब संभालता है\n...\nलंबे लेखों, रिपोर्टों और पेपरों को तेजी से स्पष्ट निष्कर्षों में बदलने के लिए इस AI सारांशकर्ता का उपयोग करें। ऑनलाइन AI सारांशकर्ता संदर्भ बनाए रखता है और व्यस्त पाठकों के लिए परिणाम संक्षिप्त रखता है।\n...\nलेख, शोध पत्र, समाचार, मीटिंग नोट्स, पुस्तक अध्याय — लगभग कोई भी टेक्स्ट काम करता है। हमारा AI सारांशकर्ता लंबे और छोटे दोनों कंटेंट संभालता है।\n...\nयह शब्दावली, वाक्य जटिलता और विवरण स्तर को समायोजित करता है। बच्चों के सारांश सरल भाषा का उपयोग करते हैं, जबकि पेशेवर सारांश उद्योग शब्दों को बनाए रखते हैं।\n...\nहाँ। कुछ मुख्य वाक्यों के लिए छोटा, संतुलित कवरेज के लिए मध्यम, या अधिक विस्तृत अवलोकन के लिए लंबा चुनें। सारांशकर्ता आपकी पसंद के अनुसार अनुकूल होता है।\n...\nहाँ। हम मूल विचारों, मुख्य तर्कों और आवश्यक तथ्यों को सुरक्षित रखने पर ध्यान देते हैं — ताकि आपको अतिरिक्त शब्दों के बिना सटीक संस्करण मिले।\n\n---\n\nTitle: AI मीटिंग नोट्स सारांश टूल | मुफ्त ऑनलाइन मीटिंग सारांश\nURL: https://www.toolszone.net/hi/tools/ai-meeting-notes-summarizer\nPublished: N/A\nAuthor: N/A\nHighlights:\nकच्चे मीटिंग नोट्स या ट्रांसक्रिप्ट पेस्ट करें और AI-संरचित सारांश प्राप्त करें जिसमें एक्शन आइटम, मुख्य निर्णय, जिम्मेदार व्यक्ति और फॉलो-अप की समयसीमा शामिल हो।\n...\nAI मीटिंग नोट्स सारांश टूल कच्चे, असंरचित मीटिंग नोट्स या ट्रांसक्रिप्ट को स्पष्ट संरचित सारांश में बदलता है। यह स्वचालित रूप से मुख्य निर्णय निकालता है, एक्शन आइटम को जिम्मेदार व्यक्तियों और समयसीमाओं के साथ असाइन करता है, चर्चा किए गए विषयों को सूचीबद्ध करता है और खुले फॉलो-अप प्रश्नों को व्यवस्थित करता है।\n...\nAI प्रत्येक वाक्य में कार्य-संबंधी भाषा पढ़ता है — प्रतिबद्धताएं, समझौते, असाइनमेंट और उल्लिखित समयसीमाएं। यह पहचानता है कि कौन जिम्मेदार है और कब कार्य पूरा होना चाहिए।\n...\nसारांश में शामिल है: (1) संक्षिप्त एग्जीक्यूटिव सारांश पैराग्राफ, (2) वैकल्पिक तर्क के साथ मुख्य निर्णय, (3) जिम्मेदार और समयसीमाओं के साथ एक्शन आइटम, (4) चर्चा किए गए विषय, (5) नोट्स में पहचाने गए प्रतिभागी, और (6) खुले फॉलो-अप प्रश्न।\n...\nकोई विशेष प्रारूप आवश्यक नहीं है। यह टूल असंरचित नोट्स के साथ काम करता है। हालांकि, स्पष्ट नोट्स प्रदान करने से — नाम, तारीखें और स्पष्ट बयानों के साथ — जिम्मेदारों, समयसीमाओं और निर्णयों की अधिक सटीक पहचान होगी।\n...\nहां। परिणाम\n...\nके शीर्ष पर कॉपी बटन पर क्लिक करके फॉर्मेटेड प्लेन टेक्स्ट के रूप में पूरा संरचित सारांश कॉपी करें। इसमें सभी सेक्शन शामिल हैं — सारांश, निर्णय, एक्शन आइटम, विषय और फॉलो-अप।\n...\nमें स्पीकर के नाम या\n...\nएं हैं (\n...\n\"PM: हमें शुक्रवार तक शिप करना होगा\" या\n...\nJohn ने उल्लेख किया...\"), तो\n...\nएक्शन आइटम सही जिम्मेदारों को असा\n...\nएक सामान्य सारांश टूल टेक्स्ट का संक्षिप्त संस्करण बनाता है। यह टूल मीटिंग संरचना को विशेष रूप से समझता है — निर्णयों को एक्शन आइटम से अलग करता है, जिम्मेदारों की पहचान करता है, समयसीमाएं निकालता है और अनुत्तरित प्रश्नों को व्यवस्थित करता है।",
+      "title": "Web search: इस वाक्य को अधिक संक्षिप्त बनाओ: बैठक में उपस्थित समिति के सभी सदस्य प्रस्ताव पर एक-दूसरे से सर्वसम्मति से सहमत थे।",
+      "metadata": {},
+      "time": {
+        "start": 1789527632617,
+        "end": 1789527635092
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.107Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527635107,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828b4a0001rPeyDalle8wpBA",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828a918001enNZukOGI4pb6P",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8611,
+      "output": 277,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8888,
+      "headroom": 29968,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.109Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.110Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.117Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.117Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.119Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.119Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.120Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.120Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.121Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.121Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.134Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8888,
+  "providerTokens": 8888,
+  "estimatedInputTokens": 4152,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8611,
+    "cacheRead": 0,
+    "output": 277
+  },
+  "overflow": false,
+  "headroom": 29968,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.134Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.134Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.139Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.141Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.802Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527635802,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828b755001FIbXh2Sn43bdZY",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828b4be001Ktu0B72UxxH6nu",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.803Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.803Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527635803,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828b75b0011KRecpwvHVecHG",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828b4be001Ktu0B72UxxH6nu",
+    "type": "tool",
+    "callID": "call_986adc8fc8f51b30",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.804Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527635804,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828b75a0012chsLw55yjY113",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828b4be001Ktu0B72UxxH6nu",
+    "type": "text",
+    "text": "मैं https://xn--84b2eds0ge.xn--45brj9c/hi/dictionary/hindi/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5+%E0%A4%B8%E0%A4%B9%E0%A4%AE%E0%A4%A4%E0%A4%BF/ खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527635804,
+      "end": 1789527635804
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:35.804Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527635804,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828b75b0011KRecpwvHVecHG",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828b4be001Ktu0B72UxxH6nu",
+    "type": "tool",
+    "callID": "call_986adc8fc8f51b30",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://xn--84b2eds0ge.xn--45brj9c/hi/dictionary/hindi/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5+%E0%A4%B8%E0%A4%B9%E0%A4%AE%E0%A4%A4%E0%A4%BF/"
+      },
+      "time": {
+        "start": 1789527635804
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.610Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527636610,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828b75b0011KRecpwvHVecHG",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828b4be001Ktu0B72UxxH6nu",
+    "type": "tool",
+    "callID": "call_986adc8fc8f51b30",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://xn--84b2eds0ge.xn--45brj9c/hi/dictionary/hindi/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5+%E0%A4%B8%E0%A4%B9%E0%A4%AE%E0%A4%A4%E0%A4%BF/"
+      },
+      "output": "सर्व सहमति | अमरकोश\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t \n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tहिन्दी\n\t\t\t\t\t\t\t\t\tमराठी\n\t\t\t\t\t\t\t\t\tతెలుగు\n\t\t\t\t\t\t\t\t\tதமிழ்\n\t\t\t\t\t\t\t\t\tമലയാളം\n\t\t\t\t\t\t\t\t\tಕನ್ನಡ\n\t\t\t\t\t\t\t\t\tଓଡ଼ିଆ\n\t\t\t\t\t\t\t\t\tবাংলা\n\t\t\t\t\t\t\t\t\tঅসমীয়া\n\t\t\t\t\t\t\t\t\tEnglish\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t  \n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t लॉगिन\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\tहिन्दी\n\t\t\t\t\t\tमराठी\n\t\t\t\t\t\tతెలుగు\n\t\t\t\t\t\tதமிழ்\n\t\t\t\t\t\tമലയാളം\n\t\t\t\t\t\tಕನ್ನಡ\n\t\t\t\t\t\tଓଡ଼ିଆ\n\t\t\t\t\t\tবাংলা\n\t\t\t\t\t\tঅসমীয়া\n\t\t\t\t\t\tEnglish\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tखोजें\n\t\t\n\t\n\n\t\tवेबसाइट एवम् मोबाइल ऐप से विज्ञापनों को हटाने के लिए कृपया सदस्यता ग्रहण करें। सदस्यता शुल्क अमरकोश में नए शब्द एवम् परिभाषाएँ सम्मिलित करने तथा अन्य भाषा से सम्बन्धित सुविधाएँ जोड़ने में सहायक होगा।\n\t\t\tसदस्य&nbsp;बनें\n\t\t\n\t\n\n\t   \n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tपृष्ठ के पते की प्रतिलिपि क्लिपबोर्ड पर बना दी है।\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tठीक है\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tक्या आप इस पृष्ठ को ट्वीट करना चाहते हैं या केवल ट्वीट करने के लिए पृष्ठ के पते की प्रतिलिपि चाहते हैं?\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tप्रतिलिपि बनाएँ\n\t\t\t\t\t\n\t\t\t\t\t\tट्वीट करें\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\t\t\n\t\t\tअमरकोश\n\t\t\tहिन्दी\n\t\t\tशब्द\n\t\t\tसर्व सहमति\n\t\t\n\t\n\n\t\n\t\t\n\t\t\t\n\t\t\t\tहिन्दी शब्दकोश से सर्व सहमति शब्द का अर्थ तथा उदाहरण पर्यायवाची एवम् विलोम शब्दों के साथ।\n\t\t\t\n\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tसर्व सहमति \n\t\t\t\t\t\t\t\t&nbsp;&nbsp;संज्ञा\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t१. संज्ञा\n\t\t\t\t\t\t\t\t /  अवस्था\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tअर्थ : ऐसी स्थिति जिसमें उपस्थित या संबद्ध सभी लोग किसी एक बात या विचार से सहमत हों।\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\tउदाहरण : \n\t\t\t\t\t\t\tसर्व सहमति से राम को इस संस्था का सचिव चुना गया।\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\tपर्यायवाची : \n\t\t\t\t\t\t\tअवैमत्य, आम राय, आम सहमति, एकमतता, एकवाक्यता, ऐकमत्य, मतैक्य, सर्व सम्मति, सर्वसम्मति, सर्वसहमति\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tअन्य भाषाओं में अनुवाद :తెలుగు\n\t\t\t\t\t\t\tଓଡ଼ିଆ\n\t\t\t\t\t\t\tಕನ್ನಡ\n\t\t\t\t\t\t\tमराठी\n\t\t\t\t\t\t\tEnglish\n\t\t\t\t\t\t\tবাংলা\n\t\t\t\t\t\t\tதமிழ்\n\t\t\t\t\t\t\tമലയാളം\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tతెలుగులో అర్థం\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tఅందరు ఒకే మాట లేక ఆలోచన కలిగి ఉండుట\n\t\t\t\t\t\t\t\t\t\t\t\tఎకాభిప్రాయంగా రామున్ని ఈ సంస్థకు అధ్యక్షునిగా ఎంపిక చేయడం జరిగింది.\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tఎకాభిప్రాయం, ఏకచిత్తత, ఏకవాక్కు, ఏకవాక్యత, ఐకకంఠ్యము, ఐక్యమత్యము, ఒకేభిప్రాయం\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tହିନ୍ଦୀରେ ଅର୍ଥ |\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tଏଭଳି ସ୍ଥିତି ଯେଉଁଥିରେ ଉପସ୍ଥିତ ବା ସମ୍ବନ୍ଧିତ ସମସ୍ତ ଲୋକ କୌଣସି ଏକ କଥା ବା ବିଚାରରେ ସହମତ\n\t\t\t\t\t\t\t\t\t\t\t\tସର୍ବ ସମ୍ମତିକ୍ରମେ ରାମଙ୍କୁ ଏହି ସଂସ୍ଥାର ସଚିବ ବଛା ଯାଇଛି\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tସର୍ବ ସମ୍ମତି, ସର୍ବ ସହମତି\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tಕನ್ನಡದಲ್ಲಿ ಅರ್ಥ\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tಯಾವುದಾದರೂ ಒಂದು ಸಂಗತಿಗೆ ಎಲ್ಲರೂ ಒಂದೇ ಅಭಿಪ್ರಾಯವನ್ನು ಸೂಚಿಸುವುದು\n\t\t\t\t\t\t\t\t\t\t\t\tಅವರ ಆಯ್ಕೆಗೆ ಸರ್ವಾನುಮತ ದೊರೆತಿದೆ.\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tಏಕಾಭಿಪ್ರಾಯ, ಒಮ್ಮತ, ಸರ್ವಾನುಮತ\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tमराठी में अर्थ\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tउपस्थित किंवा संबंधित सर्व लोकांनी एका विचाराने सहमत असण्याची स्थिती.\n\t\t\t\t\t\t\t\t\t\t\t\tएकमताने रामला ह्या संस्थेचा सचीव म्हणून निवडण्यात आले.\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tएकमत, सर्वसंमती\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tMeaning in English\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tEveryone being of one mind.\n\t\t\t\t\t\t\t\t\t\t\t\tunanimity\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tবাংলা ভাষায় অর্থ\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tএমন অবস্হা যাতে উপস্হিত বা সম্পর্কিত সকলে কোনো বক্তব্যের সঙ্গে সহমত হয়\n\t\t\t\t\t\t\t\t\t\t\t\tসর্ব সম্মতিতে রামকে এই সংস্হার সচিব বানানো হয়েছে\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tসর্ব সম্মতি, সর্বমত\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tதமிழில் பொருள்\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tசெயல்படுத்தத் திட்டமிட்டிருக்கும் எண்ணம்\n\t\t\t\t\t\t\t\t\t\t\t\tபொதுஅபிப்பிராயத்தால் ராமுவை இந்த நிறுவனத்தின் செயலாளராக தேர்ந்தெடுக்கப்பட்டது\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tஒரேஅபிப்பிராயம், பொதுஅபிப்பிராயம்\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tമലയാളത്തിൽ അർത്ഥം\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\tഹാജരായ എല്ലാവരും ഒരേ വിഷയത്തില് അഭിപ്രായം പറഞ്ഞുറപ്പിച്ചത്.\n\t\t\t\t\t\t\t\t\t\t\t\tഒത്തൊരുമയോടുകൂടി രാമനെ ഈ പ്രസ്ഥാനത്തിന്റെ സെക്രട്ടറിയായി തിരഞ്ഞെടുത്തു.\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\tഏകകണ്ഠമായി, ഐകകണ്ഠ്യേന, ഐകമത്യം, ഐക്യം, ഒത്തൊരുമ\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\n\t\n\t\t\n\t\t\t\n\t\t\t\tसूची में शब्द जोड़ने के लिए कृपया लॉगिन करें।\n\t\t\t\n\t\t\t\tरद्द करें\n\t\t\t\tलॉगिन करें\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tएक सूची चुनें\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tया नई सूची बनाएँ\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\tसहेजें\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tइंस्टॉल करें\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t  पिछला\n\t\t   अगला\n\t\t\n\t\n\n \n\t\t\t\t\tमुहावरे भाषा को सजीव एवम् रोचक बनाते हैं। हिन्दी भाषा के मुहावरे यहाँ पर उपलब्ध हैं।\n\t\t\t\n\t\t\n\t\t\t\n\t\n\t\tचर्चित शब्द\n\t\n\t\t\tमिश्रित (विशेषण) मिलाया हुआ।\n\t\t\n\t\t\n\t\t\tजौ (संज्ञा) गेहूँ की तरह का एक पौधा जिसके दानों का आटा बनता है।\n\t\t\n\t\t\n\t\t\tदवाखाना (संज्ञा) वह स्थान जहाँ दवाएँ मिलती या बिकती हों।\n\t\t\n\t\t\n\t\t\tकिसी भी हालत में (क्रिया-विशेषण) कैसी भी परिस्थिति में।\n\t\t\n\t\t\n\t\t\tबागडोर (संज्ञा) किसी कार्य, व्यवस्था आदि का प्रबंध और उसका संचालन करने की क्रिया।\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\tपेला-पेली (संज्ञा) भीड़-भाड़ के कारण या और किसी कारण से एक दूसरे को धक्का देने या ठेलने की क्रिया।\n\t\t\n\t\t\n\t\t\tसहमत (विशेषण) जिसकी राय दूसरे से मिलती हो या एक राय या मत का।\n\t\t\n\t\t\n\t\t\tएकमुश्त (क्रिया-विशेषण) समूह के रूप में या एक-दूसरे के संग।\n\t\t\n\t\t\n\t\t\tलगाम (संज्ञा) वह कार्य जो किसी को रोकने या दबाव में रखने के लिए हो।\n\t\t\n\t\t\n\t\t\tहमउम्र (विशेषण) बराबर की उमर का।\n\t\t\n\n\t\n\t\n\t\t\n\t\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t  support[@]amarkosh.tech\n\n\t\t\t\t\t  ए-८ / ५०४ ऑलिव काउण्टी, सैक्टर ५, वसुन्धरा, गाजियाबाद, २०१०१२ उत्तर प्रदेश, भारत\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tसंगठन\n\t\t\t\t\n\t\t\t\t\tपरिचय\n\t\t\t\t\tनिजता नीति\n\t\t\t\t\tउपयोग के नियम\n\t\t\t\t\tसम्पर्क करें\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tहमारी वेबसाइटें\n\t\t\t\t\n\t\t\t\t\tअमरकोश.भारत\n\t\t\t\t\t\tमराठी.भारत\n\t\t\t\t\t\tఅమర్కోష్.భారత్\n\t\t\t\t\t\tஅகராதி.இந்தியா\n\t\t\t\t\t\tനിഘണ്ടു.ഭാരതം\n\t\t\t\t\t\tನಿಘಂಟು.ಭಾರತ\n\t\t\t\t\t\tଅଭିଧାନ.ଭାରତ\n\t\t\t\t\t\tamarkosh.tech\n\t\t\t\t\t\tचौपाल.भारत\n\t\t\t\t\tसारथी.भारत\n\t\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tअनुसरण करें\n\t\t\t\t\n\t\t\t\t\t एक्स (ट्विटर)\n\t\t\t\t\t\n\t\t\t\t\t लिंक्डइन\n\t\t\t\t\t\n\t\t\t\t\t फेसबुक\n\t\t\t\t\t\n\t\t\t\t\t इन्स्टाग्राम\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t© २०२६ अमरकोश लिङ्ग्विस्टिक्स प्रा॰ लिमिटेड सर्वाधिकार सुरक्षित।",
+      "title": "https://xn--84b2eds0ge.xn--45brj9c/hi/dictionary/hindi/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5+%E0%A4%B8%E0%A4%B9%E0%A4%AE%E0%A4%A4%E0%A4%BF/ (text/html;charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527635804,
+        "end": 1789527636608
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.611Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527636611,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828ba82001Y2mZ6QpggMaQy7",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828b4be001Ktu0B72UxxH6nu",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 22138,
+      "output": 344,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 22482,
+      "headroom": 16374,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.612Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.613Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.614Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.614Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.616Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.616Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.618Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.618Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.628Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 22482,
+  "providerTokens": 22482,
+  "estimatedInputTokens": 6316,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 22138,
+    "cacheRead": 0,
+    "output": 344
+  },
+  "overflow": false,
+  "headroom": 16374,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.628Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.631Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.915Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527636916,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bbb3001d955SA5kTVVrhx",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828ba94001TXu2GfR0bSUe0q",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527636916,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bbb40024zz8jsxFsQm8Rf",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828ba94001TXu2GfR0bSUe0q",
+    "type": "tool",
+    "callID": "call_96d2939540c192aa",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527636916,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bbb4001lxQgYGdM5bmgfS",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828ba94001TXu2GfR0bSUe0q",
+    "type": "text",
+    "text": "मैं https://www.hindlish.in/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5%E0%A4%B8%E0%A4%AE%E0%A5%8D%E0%A4%AE%E0%A4%A4%E0%A4%BF-sentence-in-hindi खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527636916,
+      "end": 1789527636916
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:36.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527636916,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bbb40024zz8jsxFsQm8Rf",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828ba94001TXu2GfR0bSUe0q",
+    "type": "tool",
+    "callID": "call_96d2939540c192aa",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.hindlish.in/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5%E0%A4%B8%E0%A4%AE%E0%A5%8D%E0%A4%AE%E0%A4%A4%E0%A4%BF-sentence-in-hindi"
+      },
+      "time": {
+        "start": 1789527636916
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.181Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527637181,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bbb40024zz8jsxFsQm8Rf",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828ba94001TXu2GfR0bSUe0q",
+    "type": "tool",
+    "callID": "call_96d2939540c192aa",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.hindlish.in/%E0%A4%B8%E0%A4%B0%E0%A5%8D%E0%A4%B5%E0%A4%B8%E0%A4%AE%E0%A5%8D%E0%A4%AE%E0%A4%A4%E0%A4%BF-sentence-in-hindi"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789527636916,
+        "end": 1789527637179
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789527637181,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527637184,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bcbe001jAjLD0F6dXtgsr",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828ba94001TXu2GfR0bSUe0q",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 28714,
+      "output": 332,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 29046,
+      "headroom": 9810,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.186Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.187Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.189Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.190Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.190Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.191Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.191Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.194Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 29046,
+  "providerTokens": 29046,
+  "estimatedInputTokens": 6400,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28714,
+    "cacheRead": 0,
+    "output": 332
+  },
+  "overflow": false,
+  "headroom": 9810,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.195Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.195Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.197Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.199Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.423Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527637423,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bdaf001JfHZPEGNpTY87G",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828bcca001rWeAzuv2SBXkQN",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.423Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.423Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527637423,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bdaf002rZ87ENtULGs7T5",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828bcca001rWeAzuv2SBXkQN",
+    "type": "text",
+    "text": "कमांड विफल रही: Error: Request failed with status code: 403\n\nइस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप चाहेंगे कि मैं diagnostic context के साथ issue report तैयार करूँ? जवाब दें: `Report issue`.",
+    "time": {
+      "start": 1789527637423,
+      "end": 1789527637423
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527637424,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "part": {
+    "id": "prt_0a828bdaf0031fZ16dQZKyPGRt",
+    "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+    "messageID": "msg_0a828bcca001rWeAzuv2SBXkQN",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 28923,
+      "output": 207,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 29130,
+      "headroom": 9726,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.424Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.425Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.425Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.425Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527637426,
+  "sessionID": "ses_f57d75766ffeXeyNPR1GpN304f"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.o7CUriSGzr",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:00:37.426Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

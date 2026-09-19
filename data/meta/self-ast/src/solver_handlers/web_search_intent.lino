@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/web_search_intent.rs
   language rust
   fidelity signature
-  byte_len 35267
-  line_count 872
-  content_id source_module_66245e1a2ee03f19
+  byte_len 35263
+  line_count 877
+  content_id source_module_47c0fe5abeb9e035
   symbol_count 47
   symbols
     function probable_local_file_name 32 58
@@ -18,39 +18,39 @@ self_ast_census
     function is_url_wrapper_punctuation 217 222
     function is_url_trailing_punctuation 224 226
     function is_sentence_boundary 231 236
-    function extract_semantic_web_search_query 238 280
-    function imperative_lead_candidate 288 308
-    function extract_source_grounded_question 313 321
-    function extract_current_source_information_request 326 335
-    function extract_topic_subject 340 357
-    function extract_explicit_web_search_query 359 389
-    function is_text_extraction_request 391 396
-    function extract_latest_news_search_request 398 406
-    function extract_records_information_request 419 433
-    function extract_current_public_event_question 442 453
-    function extract_term_information_request 465 499
-    function concept_lookup_resolves 501 505
-    function term_information_prompt_is_local_context 507 512
-    function term_information_query_is_local_context 514 519
-    function extract_implicit_research_question 521 544
-    function extract_externally_verifiable_question 575 596
-    function question_is_interrogative 602 605
-    function prompt_names_engineered_brand 619 628
-    function extract_enumeration_research_request 630 636
-    function starts_with_any 638 640
-    function strip_implicit_research_prefix 642 649
-    function strip_enumeration_research_prefix 651 658
-    function looks_like_enumeration_research_query 660 665
-    function contains_any_search_marker 667 671
-    function contains_search_marker 673 680
-    function states_when_to_search 699 704
-    function opens_with_non_referential_subject 718 726
-    function valid_search_query 728 731
-    function valid_news_search_query 733 736
-    function valid_clean_search_query 738 747
-    function truncate_search_instruction_tail 760 785
-    function is_token_start 789 794
-    function is_token_end 798 803
-    function boundary_before 808 837
-    function ends_with_token 842 851
-    function clean_semantic_search_query 853 872
+    function extract_semantic_web_search_query 238 281
+    function imperative_lead_candidate 289 309
+    function extract_source_grounded_question 314 322
+    function extract_current_source_information_request 327 336
+    function extract_topic_subject 341 358
+    function extract_explicit_web_search_query 360 391
+    function is_text_extraction_request 393 398
+    function extract_latest_news_search_request 400 408
+    function extract_records_information_request 421 435
+    function extract_current_public_event_question 444 455
+    function extract_term_information_request 467 501
+    function concept_lookup_resolves 503 507
+    function term_information_prompt_is_local_context 509 514
+    function term_information_query_is_local_context 516 521
+    function extract_implicit_research_question 523 546
+    function extract_externally_verifiable_question 577 601
+    function question_is_interrogative 607 610
+    function prompt_names_engineered_brand 624 633
+    function extract_enumeration_research_request 635 641
+    function starts_with_any 643 645
+    function strip_implicit_research_prefix 647 654
+    function strip_enumeration_research_prefix 656 663
+    function looks_like_enumeration_research_query 665 670
+    function contains_any_search_marker 672 676
+    function contains_search_marker 678 685
+    function states_when_to_search 704 709
+    function opens_with_non_referential_subject 723 731
+    function valid_search_query 733 736
+    function valid_news_search_query 738 741
+    function valid_clean_search_query 743 752
+    function truncate_search_instruction_tail 765 790
+    function is_token_start 794 799
+    function is_token_end 803 808
+    function boundary_before 813 842
+    function ends_with_token 847 856
+    function clean_semantic_search_query 858 877

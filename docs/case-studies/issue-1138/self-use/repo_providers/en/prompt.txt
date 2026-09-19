@@ -1,0 +1,1 @@
+In the repository at commit 74875c1b9b6e36bee9b942343ba295541fdb6997, the list of trusted search providers is missing the encyclopaedia of quotations. Add it, keep the file valid, and run the tests that cover that list.

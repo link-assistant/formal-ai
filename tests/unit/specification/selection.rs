@@ -207,6 +207,10 @@ fn the_knob_changes_only_the_trace_not_the_answer() {
     })
     .solve(prompt);
     assert_eq!(
+        off.answer,
+        "Here is a minimal Python hello world program:\n\n```python\nprint(\"Hello, world!\")\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `python3 -m py_compile main.py`\nRun command: `python3 main.py`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
+    );
+    assert_eq!(
         off.answer, record.answer,
         "the answer must not depend on the selection mode"
     );

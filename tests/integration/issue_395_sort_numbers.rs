@@ -6,6 +6,30 @@
 
 use formal_ai::UniversalSolver;
 
+fn javascript_sort_answer(
+    intro: &str,
+    given: &str,
+    comparator: &str,
+    result_label: &str,
+    result: &str,
+) -> String {
+    format!(
+        "{intro}\n\n```javascript\nconst numbers = [{given}];\nconst sorted = [...numbers].sort({comparator});\nconsole.log(sorted.join(\", \"));\n```\n\n{result_label} {result}"
+    )
+}
+
+fn python_sort_answer(
+    intro: &str,
+    given: &str,
+    reverse_argument: &str,
+    result_label: &str,
+    result: &str,
+) -> String {
+    format!(
+        "{intro}\n\n```python\nnumbers = [{given}]\nsorted_numbers = sorted(numbers{reverse_argument})\nprint(\", \".join(str(n) for n in sorted_numbers))\n```\n\n{result_label} {result}"
+    )
+}
+
 /// The exact prompt from the issue must no longer be `unknown`; it must produce
 /// a `write_program` answer containing runnable JavaScript and the sorted result.
 #[test]
@@ -35,6 +59,16 @@ fn issue_395_russian_javascript_prompt_is_not_unknown() {
         "answer must show the deterministically computed sorted result, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        javascript_sort_answer(
+            "Вот код на JavaScript, который сортирует числа 3, 5, 6, 7, 8 по возрастанию:",
+            "3, 5, 6, 7, 8",
+            "(a, b) => a - b",
+            "Результат:",
+            "3, 5, 6, 7, 8",
+        )
+    );
 }
 
 /// An unsorted English JavaScript request must actually reorder the numbers in
@@ -56,6 +90,16 @@ fn issue_395_english_javascript_computes_sorted_result() {
         response.answer.contains("Result: 1, 3, 5, 8, 9"),
         "result must be sorted ascending, got: {}",
         response.answer
+    );
+    assert_eq!(
+        response.answer,
+        javascript_sort_answer(
+            "Here is JavaScript code that sorts the numbers 5, 3, 8, 1, 9 in ascending order:",
+            "5, 3, 8, 1, 9",
+            "(a, b) => a - b",
+            "Result:",
+            "1, 3, 5, 8, 9",
+        )
     );
     assert!(
         response
@@ -124,6 +168,16 @@ fn issue_395_string_list_sort_uses_cst_validated_code_path() {
         "result must be sorted lexically, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        javascript_sort_answer(
+            "Here is JavaScript code that sorts the strings pear, apple, banana in ascending order:",
+            r#""pear", "apple", "banana""#,
+            "",
+            "Result:",
+            "apple, banana, pear",
+        )
+    );
     assert!(
         response.links_notation.contains("value_type=string")
             && response.links_notation.contains("value_type string"),
@@ -162,6 +216,16 @@ fn issue_395_python_descending_uses_reverse_sort() {
         "result must be sorted descending, got: {}",
         response.answer
     );
+    assert_eq!(
+        response.answer,
+        python_sort_answer(
+            "Here is Python code that sorts the numbers 4, 2, 7, 1 in descending order:",
+            "4, 2, 7, 1",
+            ", reverse=True",
+            "Result:",
+            "7, 4, 2, 1",
+        )
+    );
 }
 
 /// The recognizer is seed-driven, so non-English sort verbs work too: a Hindi
@@ -178,6 +242,16 @@ fn issue_395_multilingual_sort_verbs_are_recognized() {
         "Hindi answer must show the localized result, got: {}",
         hindi.answer
     );
+    assert_eq!(
+        hindi.answer,
+        javascript_sort_answer(
+            "यह JavaScript कोड है जो संख्याओं 3, 5, 6, 7, 8 को आरोही क्रम में क्रमबद्ध करता है:",
+            "3, 5, 6, 7, 8",
+            "(a, b) => a - b",
+            "परिणाम:",
+            "3, 5, 6, 7, 8",
+        )
+    );
 
     let chinese = solver.solve("我有数字 3, 5, 6, 7, 8，用 Python 排序，给我代码和结果");
     assert_eq!(chinese.intent, "write_program", "got: {}", chinese.answer);
@@ -185,6 +259,16 @@ fn issue_395_multilingual_sort_verbs_are_recognized() {
         chinese.answer.contains("结果: 3, 5, 6, 7, 8"),
         "Chinese answer must show the localized result, got: {}",
         chinese.answer
+    );
+    assert_eq!(
+        chinese.answer,
+        python_sort_answer(
+            "这是用 Python 编写的将数字 3, 5, 6, 7, 8 按升序排序的代码:",
+            "3, 5, 6, 7, 8",
+            "",
+            "结果:",
+            "3, 5, 6, 7, 8",
+        )
     );
 }
 

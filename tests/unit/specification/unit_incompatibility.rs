@@ -10,6 +10,10 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 fn russian_meters_in_kilogram_returns_unit_incompatibility() {
     let response = answer("Сколько метров в килограмме?");
     assert_eq!(
+        response.answer,
+        "метр measures length; килограмм measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network."
+    );
+    assert_eq!(
         response.intent, "unit_incompatibility",
         "mixing length and mass units must not fall through to unknown: {:?}",
         response.answer,
@@ -37,6 +41,12 @@ fn incompatible_length_mass_unit_variations_return_unit_incompatibility() {
         ("Chinese", "5千克 多少 米？"),
     ] {
         let response = answer(prompt);
+        if language == "English" && prompt == "How many meters are in a kilogram?" {
+            assert_eq!(
+                response.answer,
+                "meters measures length; kilogram measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network."
+            );
+        }
         assert_eq!(
             response.intent, "unit_incompatibility",
             "{language} prompt {prompt:?} must explain incompatible unit dimensions: {}",

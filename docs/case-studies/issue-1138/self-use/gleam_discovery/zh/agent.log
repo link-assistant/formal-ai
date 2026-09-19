@@ -1,0 +1,2151 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.664Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.664Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令。 --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.664Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.665Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.674Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.674Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.675Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.675Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.675Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.678Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.678Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.681Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 6129,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.681Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.694Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 23,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:31:28.698Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.702Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.702Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.703Z",
+  "service": "session",
+  "id": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF",
+  "title": "New session - 2026-09-16T03:31:28.703Z",
+  "time": {
+    "created": 1789529488703,
+    "updated": 1789529488703
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.703Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.703Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.704Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.704Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57bb02c0ffeAuvYAKgJQoCa75/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.704Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57bb02c0ffeAuvYAKgJQoCa75/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.706Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57bb02c0ffeAuvYAKgJQoCa75/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.708Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.709Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.709Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.710Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.711Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.711Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.712Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.712Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.712Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.712Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.712Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.712Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.712Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.844Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.848Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.848Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.861Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.865Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.871Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.871Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.872Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:29.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529489356,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a844ffc9001YiB3K5Arv1Edax",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a844fdcf001YsnV9G3ZVD3Tdr",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:29.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:29.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529489357,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a844ffcc0028MFKEJH1nGqUon",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a844fdcf001YsnV9G3ZVD3Tdr",
+    "type": "tool",
+    "callID": "call_fd9cd8185341017a",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:29.357Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529489357,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a844ffcc001hssAiQzdSRZLj8",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a844fdcf001YsnV9G3ZVD3Tdr",
+    "type": "text",
+    "text": "我来上网搜索 这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令。",
+    "time": {
+      "start": 1789529489357,
+      "end": 1789529489357
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:29.357Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529489357,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a844ffcc0028MFKEJH1nGqUon",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a844fdcf001YsnV9G3ZVD3Tdr",
+    "type": "tool",
+    "callID": "call_fd9cd8185341017a",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令"
+      },
+      "time": {
+        "start": 1789529489357
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.223Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529491224,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a844ffcc0028MFKEJH1nGqUon",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a844fdcf001YsnV9G3ZVD3Tdr",
+    "type": "tool",
+    "callID": "call_fd9cd8185341017a",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令"
+      },
+      "output": "Title: 构建 carbon-lang 失败且 Clang/LLVM 版本低于最低要求 19 时如何解决？ - AtomGit | GitCode博客\nURL: https://blog.gitcode.com/e2fb2a56c60e4531d3aca9dc9323a185.html\nPublished: 2026-09-09T00:00:00.000Z\nAuthor: N/A\nHighlights:\n在按 contribution tools 文档 的 Setup commands 搭建 carbon-lang 开发环境时，Bazel 构建可能会失败，而失败的一个常见原因是系统上的 Clang/LLVM 版本低于项目要求的最低版本 19。官方文档明确指出：运行 `clang --version` 时至少应看到 19；如果看到更旧的版本，要么升级，要么改用显式带版本号的 `clang-19` 安装方式。大量构建问题实际上来自 `clang` 和 `llvm` 被编译时的选项，尤其是系统预装的版本。本文只覆盖 Debian/Ubuntu（以及文档给出的 macOS 补充说明）这一条排查与修复路径，适用前提是你已经克隆了 carbon-lang 仓库并准备构建其 toolchain。\n...\n确认版本 1\n...\n安装一组显\n...\n```\n# Install explicitly versioned Clang tools.\nsudo apt install \\\n  clang-19 \\\n  libc++-19-dev \\\n  libc++abi-19-dev \\\n  lld-19 \\\n  lldb-19\n...\n装好 `clang-19` 后，默认 `clang` 可能仍指向旧版本，需要告诉 Bazel 去哪个路径找 Clang。在 carbon-lang 仓库检出目录内执行：\n...\n```\n# In your Carbon checkout, tell\n...\nel where to find `clang`. You can also\n# export this path as the `CC` environment variable, or add it directly to\n# your `PATH`.\n...\necho \"build --repo_env=CC=$(readlink -f $(which clang-19))\" >> user.bazelrc\n...\n副作用说明：这条\n...\necho ... >>` 会把一行 Bazel\n...\n追加到当前目录下名为 `user\n...\nelrc` 的本地用户配置文件（不存在则新建）。它只影响本机该次检\n...\n，不修改仓库中的受版本\n...\n内容，但务必在 carbon-lang 检出目录里运行。文档同时给出两个等价替代方案，任选其一：把\n...\n`readlink -f $(which clang-19)` 路径导出为\n...\nCC` 环境变量，或直接把 `clang\n...\n19` 所在目录加入 `PATH`。\n...\n安装或更换 LLVM 版本之后，Bazel 不一定会注意到系统包的变化——文档在 \"Troubleshooting build issues\" 中明确写道：对系统已安装包的更改（例如更换 LLVM 版本、安装 libc++）可能不被 `bazel` 察觉，需要执行 `bazel clean` 强制重建缓存状态，并且\"Run `bazel clean` when changing the installed LLVM version\"是原文给出的操作要求：\n...\n清理缓存后，重新运行文档中给出的测试命令来触发完整构建：\n...\n```\n./scripts/run_bazelisk.py test //...:all\n...\n），在仓库根目录执行。\n...\n1. `clang --version` 输出至少为 19——这是文档给出的直接判据。\n2. 重新执行 `./scripts/run_bazelisk.py test //...:all` 不再出现与 Clang/LLVM 版本相关的构建错误。\n3. 如果仍然异常，运行文档 \"Asking for help\" 一节列出的诊断命令，它们用于显示当前实际在用的工具链：\n...\n```\necho $CC\nwhich clang\nwhich clang-19\n...\nclang --version\ngrep llvm_bindir $(bazel info workspace)/bazel-execroot/external/+clang_toolchain_extension+bazel_cc_toolchain/clang_detected_variables.bzl\n...\n# If on macOS:\nbrew --prefix llvm\n...\n如果你的环境是 macOS，文档说明系统自带的 LLVM 通常无法用于构建 Carbon，原因包括版本过旧或缺少 `llvm-ar`，因此 setup 流程改用 Homebrew 安装的 `llvm`。安装方式为 `brew install llvm`，并且必须把它加入 `PATH`（文档给出的 rc 文件示例）：\n...\n```\n# For `llvm`:\nexport PATH=\"$(brew --prefix llvm)/bin:${PATH}\"\n...\n改完 `PATH` 后同样建议 `bazel clean` 再重新构建，验证方式与上面一致；`brew --prefix llvm` 可确认 Bazel 实际应使用的 LLVM 前缀。\n\n---\n\nTitle: docs/build_and_test_guide.md\nURL: https://github.com/Hical61/Hical/blob/main/docs/build_and_test_guide.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n| 组件 | 最低版本 | 用途 |\n| ----------- | -------------------------------- | --------------------------- |\n| C++ 编译器 | GCC 14+ / Clang 20+ / MSVC 2022+ | C++20 编译器（协程支持） |\n| CMake | 3.20+ | 构建系统 |\n| Ninja | 1.10+ | 构建工具（比 Make 更快） |\n| Boost | 1.82+（DB 中间件 1.85+） | Asio / JSON / MySQL |\n| OpenSSL | 3.0+ | SSL/TLS 支持 |\n| zlib | — | WebSocket permessage-deflate 压缩 |\n| liburing | —（Linux 可选） | Boost.Asio 异步文件 I/O |\n| Google Test | 1.10+ | 单元测试框架 |\n...\n**安装编译工具链：** 打开 **MSYS2 MINGW64** 终端，执行：\n...\n```bash\npacman -Syu\npacman -S mingw-w64-x86_64-gcc\npacman -S mingw-w64-x86_64-cmake\npacman -S mingw-w64-x86_64-ninja\npacman -S mingw-w64-x86_64-boost\npacman -S mingw-w64-x86_64-openssl\npacman -S mingw-w64-x86_64-zlib\npacman -S mingw-w64-x86_64-gtest\n```\n...\ng++ --version      # 应显示 GCC\n...\ncmake --\n...\n# 应\n...\n.x.\n...\n# 应显示\n...\nopenssl version\n...\n```bash\nsudo apt update\nsudo apt install -y build-essential g++ cmake ninja-build \\\n                    libboost-all-dev libssl-dev libgtest-dev liburing-dev\n```\n...\n> Ubuntu 24.04+ 开箱即用（GCC 14+、Boost 1.83+）。Ubuntu 22.04 的 Boost 1.74 不满足 1.82+ 要求，需手动升级 Boost 或使用 Ubuntu 24.04。\n...\n```bash\n# Ubuntu 22.04 升级 GCC\nsudo add-apt-repository ppa:ubuntu-toolchain-r/test\nsudo apt update\nsudo apt install g++-14\n...\n```bash\ng\n...\ncmake --\n...\n20+\n...\nmacOS（Homebrew）\n...\n**安装依赖：\n...\n```bash\nbrew install cmake ninja boost openssl@3 googletest\n...\n验证安装：**\n...\n```bash\nclang++ --version                   # 需要 Xcode 14+（Apple Clang 14+）\ncmake --version                     # 需要 3.20+\nbrew list --versions boost          # 需要 1.82+（DB 中间件需 1.85+）\n$(brew --prefix openssl@3)/bin/openssl version  # 需要 3.0+\n```\n...\n```bash\n# Windows (MSYS2)\ncmake -B build -G \"Ninja\" -DCMAKE_PREFIX_PATH=C:/msys64/mingw64\n...\n# Linux (Ubuntu / Fedora / Arch)\ncmake -B build -G \"Ninja\"\n...\n# Linux (Ubuntu 22.04 — 需指定升级后的编译器)\ncmake -B build -G \"Ninja\" -DCMAKE_CXX_COMPILER=g++-14\n...\n# macOS (Homebrew)\ncmake -B build -G \"Ninja\" \\\n    -DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3) \\\n    -DCMAKE_PREFIX_PATH=\"$(brew --prefix boost);$(brew --prefix openssl@3)\"\n```\n...\n## 4. 运行测试\n...\n```bash\nctest --test-dir build --output-on-failure -j4\n```\n...\n```bash\n# 基础环境测试\n./build/tests/test_basic.exe\n...\n# 错误码测试\n./build/tests/test_error.exe\n...\n# EventLoop 测试\n./build/tests/test_asio_event_loop.exe\n...\n# TcpConnection 测试（含 GenericConnection 兼容性）\n./build/tests/test_asio_tcp_connection.exe\n...\n# MemoryPool + PmrBuffer 测试\n./build/tests/test_memory_pool.exe\n...\n# Timer 测试\n./build/tests/test_asio_timer.exe\n...\n# SSL 连接测试（需要先生成测试证书，见 4.4）\n./build/tests/test_ssl_connection.exe\n...\n# 协程工具测试\n./build/tests/test_coroutine.exe\n...\n# HTTP 类型测试（HttpRequest / HttpResponse）\n./build/tests/test_http_types.exe\n...\n# 路由器测试（含路径参数）\n./build/tests/test_router.exe\n...\n# TcpServer + EventLoopPool 测试\n./build/tests/test_tcp_server.exe\n...\n# 中间件测试\n./build/tests/test_middleware.exe\n...\n# HttpServer 集成测试\n./build/tests/test_http_server.exe\n...\n# WebSocket 测试\n./build/tests/test_websocket.exe\n...\n# C++20 Concepts 编译期约束测试\n./build/tests/test_concepts.exe\n...\nJson + MetaRoutes 反\n...\n层测试\n./build/tests/test_reflection.exe\n...\n解析与 Set-Cookie 测试\n./build/tests/\n...\n# 静态\n...\n服务测试\n./build/tests/test_\n...\n_files.exe\n...\n# Session 生命周期 / 线程安全 / regenerate 测试\n./build/tests/test_session.exe\n...\n# OpenAPI 自动生成测试（Schema/Registry/Document/Endpoint）\n./build/tests/test_openapi.exe\n...\n# 查询参数解析测试\n./build/tests/test_query_params.exe\n...\n单参数解析测试\n./build/tests/test_\n...\n_params.exe\n...\n定向测试\n./build/tests/test_redirect.exe\n...\n# CORS 中间\n...\n测试\n./build/tests/test_cors.\n...\n./build\n...\n# 日志核心测试（36 个\n...\n）\n./build/tests/test_log.exe\n...\n/tests/\n...\n_log_\n...\n./build/tests/\n...\n./build\n...\n日志测试（7\n...\n./build/tests/test_\n...\n./build\n...\n# 完整 HTTP 请求/响应周期集成测试\n./build/tests/test_integration.exe\n...\n```bash\n# Windows (MSYS2)\ncmake -B build-release -G \"Ninja\" -DCMAKE_PREFIX_PATH=C:/msys64/mingw64 -DCMAKE_BUILD_TYPE=Release\n...\n# Linux\ncmake -B build-release -G \"Ninja\" -DCMAKE_BUILD_TYPE=Release\n...\n# macOS (Homebrew)\ncmake -B build-release -G \"Ninja\" -DCMAKE_BUILD_TYPE=Release \\\n    -DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3) \\\n    -DCMAKE_PREFIX_PATH=\"$(brew --prefix boost);$(brew --prefix openssl@3)\"\n...\n# 编译并运行\ncmake --build build-release --target pmr_poc\n./build-release/examples/pmr_poc        # Linux / macOS\n./build-release/examples/pmr_poc.exe    # Windows\n\n---\n\nTitle: docs/project_guide.md\nURL: https://github.com/HuLaSpark/HuLa/blob/master/docs/project_guide.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n1. **安装 Microsoft C++ Build Tools**\n   ```bash\n   # 方法1: 使用 winget 安装\n   winget install Microsoft.VisualStudio.2022.BuildTools\n\n   # 方法2: 下载安装包\n   # 访问 https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022\n   ```\n...\n2. **或者安装 Visual Studio Community 2022**\n   ```bash\n   # 使用 winget 安装\n   winget install Microsoft.VisualStudio.2022.Community\n\n   # 必须勾选以下工作负载：\n   # - 使用 C++ 的桌面开发\n   # - MSVC v143 编译器工具集\n   # - Windows 10/11 SDK (最新版本)\n   ```\n...\n3. **安装 WebView2 Runtime (通常已预装)**\n   ```bash\n   # 检查是否已安装 WebView2\n   winget list --name \"Microsoft Edge WebView2\"\n\n   # 如未安装，执行：\n   winget install Microsoft.EdgeWebView2Runtime\n   ```\n...\n### 6. 测试\n...\n```bash\n# 运行单元测试\npnpm run test:run\n...\n# 运行测试 UI 界面\npnpm run test:ui\n...\n# 生成测试覆盖率\n...\npnpm run coverage\n```\n...\n环境\n\n---\n\nTitle: N/A\nURL: https://taichi-zh.readthedocs.io/zh-cn/latest/dev_install.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n请注意，本章节是为 Taichi 语言编译器的开发人员所准备的。终端用户应该使用 pip 进行安装，而不是从源代码开始构建。要在构建加入对 NVIDIA GPU 的支持，CUDA 10.0+是必需的。本安装指南适用于 Ubuntu 16.04+ 和 OS X 10.14+。Windows 上进行构建的详细说明，请查看 [appveyor.yml](https://github.com/taichi-dev/taichi/blob/master/appveyor.yml)，Windows 下的教程基本上与 Ubtuntu 和 OS X 的教程相同。我们使用 MSBUILD.exe 来构建生成的项目。需要注意的是，Windows 拥有多个 MSBUILD.exe 实例，它们附带在各种版本的 MSVS 上。请确保在 MSVS 目录中添加 MSBUILD.exe 的路径，并使其具有更高的优先级（例如，比附带的 .NET 优先级更高）。\n...\n请注意 `clang` 是在 Linux/OS X 下唯一支持的可以编译 Taichi 编译器的编译器。相应的在 Windows 下只有 MSVC 是支持的编译器。\n...\n* 确保你的 `clang` 版本号 >= 7:\n\n * Windows 上: 下载 [clang-10](https://github.com/taichi-dev/taichi%5Fassets/releases/download/llvm10/clang-10.0.0-win.zip). 确保将包含 `clang.exe` 的 `bin` 文件夹路径添加到 `PATH` 环境变量中。\n * OS X 上: 不需要额外再准备什么（安装完 Xcode 命令行工具后 clang 就已经默认安装完毕了）。\n * Ubuntu 上：执行 `sudo apt install libtinfo-dev clang-8`。\n * Arch Linux 上： 执行 `sudo pacman -S clang` (这会安装 `clang-10`)。\n * 关于其他 Linux 发行版，请从 [此网站](https://taichi-zh.readthedocs.io/zh-cn/latest/pkgs.org) 搜寻安装版本号 >= 7 的 clang。\n...\n* 确保你已经安装了 LLVM 10.0.0。注意，Taichi 使用的是 **定制版 LLVM**，所以从 LLVM 官网或其他来源下载的预构建可执行文件可能不起作用。这里我们提供了 Taichi 的定制版 LLVM 可执行文件，它是否能正常运行取决于你的系统环境:\n\n * [LLVM 10.0.0 for Linux](https://github.com/taichi-dev/taichi%5Fassets/releases/download/llvm10/taichi-llvm-10.0.0-linux.zip)\n * [LLVM 10.0.0 for Windows MSVC 2019](https://github.com/taichi-dev/taichi%5Fassets/releases/download/llvm10/taichi-llvm-10.0.0-msvc2019.zip)\n * [LLVM 10.0.0 for OS X](https://github.com/taichi-dev/taichi%5Fassets/releases/download/llvm10/taichi-llvm-10.0.0-macos.zip)\n...\n* 如果下载的 LLVM 不能正常工作，请从源代码开始构建：\n\n * Linux 或 OS X 上: \n > wget https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/llvm-10.0.0.src.tar.xz \n > tar xvJf llvm-10.0.0.src.tar.xz \n > cd llvm-10.0.0.src \n > mkdir build \n > cd build \n > cmake .. -DLLVM_ENABLE_RTTI:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD=“X86;NVPTX” -DLLVM_ENABLE_ASSERTIONS=ON \n > # 如果你想在 NVIDIA Jetson TX2 上进行构建, 请使用 -DLLVM_TARGETS_TO_BUILD=\"ARM;NVPTX\" \n > \n > make -j 8 \n > sudo make install \n > \n > # 检查你安装的 LLVM 版本 \n > llvm-config —version # 应该是 10.0.0\n...\n* Windows上: \n # LLVM 10.0.0 + MSVC 2019 \n cmake .. -G\"Visual Studio 16 2019\" -A x64 -DLLVM_ENABLE_RTTI:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD=\"X86;NVPTX\" -DLLVM_ENABLE_ASSERTIONS=ON -Thost=x64 -DLLVM_BUILD_TESTS:BOOL=OFF -DCMAKE_INSTALL_PREFIX=installed\n\n * 然后打开 `LLVM.sln` 并使用 Visual Studio 2017+ 进行构建.\n * 请确保你正在使用的是 `Release` 模式。随后进行构建 `INSTALL` （在 Solution Explorer 窗口的 `CMakePredefinedTargets` 文件夹下）。\n * 如果你使用的是 MSVC 2019, **确保你通过 C++17** 构建 `INSTALL` 。\n * 在完成构建之后，你可以在 `build/installed` 中找到 LLVM 可执行文件和头文件。 \n 请将 `build/installed/bin` 添加到 `PATH`。随后，当你使用 `CMake` 构建 Taichi 时，将 `LLVM_DIR` 设置到 `build/installed/lib/cmake/llvm`.\n...\n* 请 **递归地** 克隆 Taichi 代码库，然后构建： \ngit clone https://github.com/taichi-dev/taichi —depth=1 —branch=master \ncd taichi \ngit submodule update —init —recursive —depth=1 \nmkdir build \ncd build \ncmake .. \n# 在 Linux / OS X 下, 如果你没有将clang设置为默认编译器 \n# 或者，如果你希望将 clang 设置为默认编译器 \n# 请使用下面这行命令: \n# cmake .. -DCMAKE_CXX_COMPILER=clang \n# \n# 在Unix上，在决定对C和C++使用哪个编译器时，CMake会考虑到环境变量$CC和$CXX \nmake -j 8\n...\n* 查看 `examples` 下提供的可运行示例程序。例如使用 `python3 examples/mpm128.py` 这种方式运行它们。\n* 执行 `python3 -m taichi test` 来运行所有的测试。运行所有测试用例可能会耗费长达5分钟的时间。\n...\n* 如果构建过程是顺利的，但运行任何 Taichi 代码时却有报错信息，如 `Bitcode file (/tmp/taichi-tero94pl/runtime//runtime_x64.bc) not found`，请再检查一遍 `clang` 是否在你的 `PATH` 中: \nclang --version \n# 版本号应该 >= 7 \n还有我们的 **Taichi 定制版配置** `llvm-as`: \nllvm-as —version \n# 版本号应该 >= 8 \nwhich llvm-as \n# 应该输出 /usr/local/bin/llvm-as 或 /opt/XXX/bin/llvm-as, 这是我们的定制版 LLVM 所在位置 \n如果不是, 请按照上面的教程 [Developer installation](https://taichi-zh.readthedocs.io/zh-cn/latest/taichi/docs/dev%5Finstall.html#dev-install) 安装 `clang` 并 **从源码开始构建 LLVM** , 然后将它们的路径添加到环境变量 `PATH` 中。\n\n---\n\nTitle: 使用 MSYS2 在 Windows 上从源码构建 Lean 4：依赖安装、clang 编译与独立分发实战指南 - AtomGit | GitCode博客\nURL: https://blog.gitcode.com/3bb05694cf8968e04801c2faf77e2899.html\nPublished: 2026-09-15T00:00:00.000Z\nAuthor: N/A\nHighlights:\n证明助手的\n...\n环境中用 clang 编译器\n...\n刚编译出的\n...\nLean 4 的官方源码构建流程（见 通用构建说明）要求一套类 Unix 的工具链环境：make、CMake、GMP、LibUV、OpenSSL 以及 C++14 兼容编译器。在原生 Windows 上满足这些条件，MSYS2 是最省事的一条路，其优势在官方文档中被明确列出：\n...\n- 依赖安装极其简单：MSYS2 自带包管理器 pacman，一条命令即可装齐所有依赖，无需手工下载、解压、配置第三方库；\n- 产出真正的原生二进制：能同时生成原生 64 位与 32 位可执行程序（当前官方构建以 64 位为主）；\n- 自带 C++14 编译器：CLANG64 环境内置 clang/clang++，满足 Lean 构建对现代 C++ 编译器的要求。\n...\n### 安装 MSYS2 并进入 CLANG64 环境\n...\n从 MSYS2 官方网站下载一键安装程序并完成安装。之后的关键一步是启动方式的选择：必须从开始菜单运行 \"MSYS2 CLANG64\" shell（即执行 `clang64.exe` 的那个），不要误用 \"MSYS2 MSYS\" 或 \"MSYS2 MINGW64\" shell。\n...\n原因在于：Lean 的构建链路以 clang 工具链为核心（clang 作为 C/C++ 编译器、LLD 作为链接器），而 CLANG64 环境才是 clang 生态的完整宿主——它提供了 `/clang64/bin` 下的 clang、cmake 等可执行文件以及 `/clang64/lib` 下的运行时库。仓库的 Windows 发布脚本 script/prepare-llvm-mingw.sh 开头也明确注释：必须在 clang64 shell（而非 mingw64）中运行。选错 shell 是新手最常见的失败原因，下文\"故障排查\"一节会再次提到。\n...\nMSYS2 内置 Arch Linux 系的 pacman 包管理器。在 CLANG64 shell 中执行下面这条命令，即可一次性装齐编译 Lean 所需的全部依赖：\n...\n```\npacman -S make python mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-clang mingw-w64-clang-x86_64-ccache mingw-w64-clang-x86_64-libuv mingw-w64-clang-x86_64-gmp mingw-w64-clang-x86_64-openssl git unzip diffutils binutils\n\n```\n...\n### 使用 release 预设并覆盖编译器\n...\n通用构建流程使用 `cmake --preset release`（详见 doc/make/index.md），但在 MSYS2 环境下必须额外指定 clang 作为 C/C++ 编译器，因为 MSYS2 的默认 gcc 工具链与 Lean 的构建链路不兼容：\n...\n```\ncmake --preset release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++\n\n```\n...\n这里的 `--preset release` 由仓库根目录的 CMakePresets.json 定义：它使用 Unix Makefiles 生成器，输出目录固定为 `build/release`，并默认关闭二进制裁剪（`STRIP_BINARIES: OFF`）。`-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++` 则把 C 与 C++ 编译器均指向 clang 工具链。\n...\n配置完成后，在项目根目录执行：\n...\n```\nmake -C build/release -j$(nproc || sysctl -n hw.logicalcpu)\n...\n在 MSYS2 环境下 `nproc` 可用；`-j` 参数可按需替换为期望的并行度。构建产物会落入 `build/release/stage1` 子目录——仓库根目录的 lean-toolchain 文件内容正是 `build/release/stage1`，印证了 stage1 是开发时面向源码目录的默认工具链。\n...\n离开 MSYS2 环境、在普通 Windows 命令提示符\n...\ncmd）里用刚\n...\nLean 通过 `lake build` 把 Lean 程序编译成可执行文件，\n...\n除了上述 DLL 外，\n...\n必须把 Windows 版本的\n...\n。因为 `lake build` 编译到 C 代码后需要调用 clang 将其链接成最终可执行文件——这个 clang 必须在 cmd 环境下也能被找到，而不能只存在于 MSYS2 的 shell 环境中。\n...\n工具链没有被找到\n...\n检查 `/clang64/bin` 是否在\n...\n若不在，请确认\n...\n的是开始菜单里的 \"MSYS2 CLANG64\" shell\n...\n运行 `clang64.exe` 的\n...\n\"MSYS2\n...\nYS\" 或 \"MSYS2 MINGW64\" shell。MSYS shell 默认只暴露 `/usr/bin`，自然找不到 clang\n\n---\n\nTitle: DeepCode Windows 源码构建报 linker 'link.exe' not found 怎么解决？ - AtomGit | GitCode博客\nURL: https://blog.gitcode.com/d6c36489e56cde3f26988085a3e0ab56.html\nPublished: 2026-09-13T00:00:00.000Z\nAuthor: N/A\nHighlights:\ndesktop/README.md 的 Windows 排查表给出了这个报错的直接结论：缺少 Visual C++ workload，需要通过 Visual Studio Installer 给 Build Tools 2022 补装 Desktop development with C++，或者用 winget 命令行安装该 workload。本文按“定位原因 → 安装 workload → 重启终端验证工具链 → 重新跑构建”的顺序走完这条修复路径。\n...\n> Tauri development on Windows requires Microsoft Edge WebView2 and the Visual Studio 2022 Build Tools workload Desktop development with C++. Rust must use the MSVC host toolchain; Rustup alone does not install Microsoft's `link.exe`.\n...\n- Tauri 在 Windows 上开发依赖 WebView2 和 Visual Studio 2022 Build Tools 的 Desktop development with C++ workload；\n- Rust 必须使用 MSVC host 工具链，而 Rustup 本身只装 Rust 工具链，不包含 Microsoft 的 `link.exe` 链接器；\n- 只要 C++ workload 缺失，链接阶段就会找不到 `link.exe`，报出标题中的错误。\n...\n所以修复目标不是重装 Rust，而是把 Build Tools 2022 的 VCTools workload 装好，并确认 Rust 指向 `stable-msvc` 工具链。\n...\n1. 打开 Visual Studio Installer；\n2. 找到 Visual Studio Build Tools 2022，选择 修改（Modify）；\n3. 在 workload 列表中勾选 Desktop development with C++；\n4. 完成安装。\n...\n## 修复路径二：用 winget 安装 C++ workload（全新环境）\n...\n如果环境还没装 Build Tools，或者希望全程命令行完成，README 提供了 winget 命令（在 PowerShell 中执行，Build Tools 安装器会弹出 UAC 提示，需要接受）：\n...\n```\nwinget install --id Microsoft.VisualStudio.2022.BuildTools --exact `\n  --override \"--wait --passive --norestart --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended\"\n\n```\n...\n其中 `Microsoft.VisualStudio.Workload.VCTools` 就是 C++ 构建工具（对应 Desktop development with C++ workload）。同一段 README 还为全新环境列出了 uv、Node.js、Rustup 的 winget 安装命令，如果这三者已装好可跳过：\n...\n```\nwinget install --id astral-sh.uv --exact\nwinget install --id OpenJS.NodeJS.LTS --exact\nwinget install --id Rustlang.Rustup --exact\n\n```\n...\n## 重启 PowerShell 并验证工具\n...\n安装器装完后，README 明确要求：关闭所有已打开的 PowerShell 窗口，新开一个窗口（加载更新后的用户 `PATH`），然后运行：\n...\n```\nuv --version\nnode --version\nrustup default stable-msvc\nrustc --version\ncargo --version\n\n```\n...\n其中 `rustup default stable-msvc` 把默认工具链设为 MSVC host 版本——这是 `link.exe` 能被找到的前提之一。如果 `rustup`、`cargo` 或 `npm` 提示“无法识别”，README 排查表说明这是终端还在用旧 `PATH`，关掉所有 PowerShell 窗口重开即可。\n...\n## 重新\n...\n工具链验证通过后，按 README 的主路径重跑构建。以下命令从仓库根目录开始：\n...\n```\nuv venv --python 3.12\nuv pip install --python .venv\\Scripts\\python.exe -e .\nSet-Location desktop\nnpm ci\n$env:DEEPCODE_PYTHON = (Resolve-Path ..\\.venv\\Scripts\\python.exe)\nnpm run setup:sidecar\nnpm run build:sidecar\n\n```\n...\n- `--python .venv\\Scripts\\python.exe` 是显式指定解释器，防止当前激活的 Conda 或其他环境收到 editable 安装。README 排查表提到：如果 `uv pip` 报告的是 Conda 路径而不是 `.venv`，说明有其他 Python\n...\n处于激活状态，保留这个显式参数即可；\n...\n- 如果你之前已经建\n...\nvenv` 并装过依赖，可以只重设环境变量，不必重复前两条；\n-\n...\n要求重开 PowerShell 窗口，`DEEPCODE_PYTHON` 在新窗口里需要重新设置（README\n...\n“后续启动”一段专门强调这一点）。\n...\n然后在同一个 `desktop` 目录和同一个 PowerShell 窗口中启动开发应用：\n...\n```\nnpm run tauri -- dev\n\n```\n...\nDeepCode Desktop 开发模式跑起来后，说明链接阶段已能通过：此前报 `linker 'link.exe' not found` 的 Tauri/Rust 编译不再中断。运行期间保持终端窗口打开，需要停止时在该终端按 `Ctrl+C`。\n...\n如果重开窗口、确认 `rustc --version` 正常后仍然报同样的 linker 错误，检查 Build Tools 2022 里 Desktop development with C++ 是否确实完成安装（安装器里该 workload 应处于已启用状态），这是 README 为该错误指向的唯一根因。\n\n---\n\nTitle: 3.x/zh_CN/docs/tutorial/compile_binary.md\nURL: https://github.com/FISCO-BCOS/FISCO-BCOS-DOC/blob/release-3/3.x/zh_CN/docs/tutorial/compile_binary.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n```eval_rst\n.. note::\n   - FISCO BCOS支持在Linux，macOS和银河麒麟操作系统上编译; Linux和麒麟系统编译二进制时，要求gcc版本不小于10; macOS系统编译二进制时，要求clang版本不小于12.0\n   - FISCO BCOS 3.x支持带有Apple Silicon的macOS编译，编译步骤与x86_64相同。\n   - FISCO BCOS 3.x的编译依赖rust环境，编译源码前请先安装rust环境\n   - 源码编译适合于有丰富开发经验的用户，编译过程中需要下载依赖库，请保持网络畅通\n   - FISCO BCOS会同时编译出Air版本和Pro版本的二进制\n```\n...\nFSICO-BCOS使用通用`CMake`构建系统\n...\n特定平台的构建文件，这意味着无论您使用什么操作系统工作流都非常相似：\n...\n```shell\nsudo apt update\nsudo apt install -y wget python3-dev git curl zip unzip tar\nsudo apt install -y --no-install-recommends clang make build-essential cmake libssl-dev zlib1g-dev ca-certificates libgmp-dev flex bison patch libzstd-dev ninja-build pkg-config autoconf\n...\n# 安装rust\ncurl\n...\nrustup.rs -sSf | bash -s -- -y\nsource $HOME/.cargo/env\n...\nsudo yum install -y epel-release centos-release-scl flex bison patch gmp-static\nsudo yum install -y devtoolset-10 devtoolset-11 llvm-toolset-7 rh-perl530-perl cmake3 zlib-devel ccache lcov python-devel python3-devel\n...\n```shell\n# 安装xcode开发工具，若已经安装可略过\nxcode-select --install\n\nbrew install git zstd wget gmp\n...\nrs -sSf | bash -s -- -y\n...\nsource $HOME/.\n...\n- **kyl\n...\n```shell\n# 安装依赖\nsudo yum update\nsudo yum install -y wget curl tar \nsudo yum install -y build-essential clang flex bison patch glibc-static glibc-devel libzstd-devel libmpc cpp \n\n# 查看gcc版本，若gcc版本低于10，安装版本高于10的gcc\ngcc -v\n...\n# 查看cmake版本，是否大于等于3.14，若不满足，安装符合要求的cmake版本\ncmake --version\n```\n...\n# 创建编译目录\nmkdir -p build && cd build\ncmake -DBUILD_STATIC=ON .. || cat *.log\n...\n# 编译源码(高性能机器可添加-j4使用4核\n...\n编译)\nmake -j4\n...\n```shell\n# 使用gcc10\nsource /opt/rh/devtoolset-10/enable\nsource /opt/rh/rh-perl530/enable\nexport LIBCLANG_PATH=/opt/rh/llvm-toolset-7/root/lib64/\nsource /opt/rh/llvm-toolset-7/enable\n...\n进入源码编译\n...\n-p build && cd\n...\ncmake3 -DBUILD_STATIC=ON .. || cat *.log\n...\n# 若编译依赖过程中遇到了vcpkg失败的问题，请根据报错提示查看错误日志\n# 若为网络原因可按照上文提示配置vcpkg代理\n...\n# 高性能机器可添加-j4使用4核加速编译\nmake -j4\n...\nshell\n#\n...\ny devtoolset-10\n...\n# 使用gcc10\nsource /opt/rh/devtoolset-10/enable\nexport LIBCLANG_PATH=/opt/rh/llvm-toolset-7.0/root/lib64/\nsource /opt/rh/llvm-toolset-7.0/enable\n...\n**推荐xcode11以上版本。**\n...\n```shell\n# 进入源码编译目录\ncd\n...\nfisco/FISCO-BCOS\nmkdir -p build && cd build\ncmake -DBUILD_STATIC=ON ..|| cat *.log\n...\n# 若编译依赖过程中遇到了vcpkg失败的问题，请根据报错提示查看错误日志\n# 若为\n...\n按照上文提示\n...\n# 若执行以上过程报错，请尝试执行如下命令指定SDKROOT\n#rm -rf CMakeCache.txt && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake ..\n...\n# 高性能机器可添加-j8使用8核加速编译\nmake -j4\n...\n# 导入\n...\n编译文件\nexport\n...\n64/\n\n---\n\nTitle: docs/environment.md\nURL: https://github.com/thuasta/minigit/blob/main/docs/environment.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n你需要四样东西：**C++ 编译器**、**编辑器**、**CMake**、**真实的 Git（含 SSH 客户端）**。\n装完照最后一节自检一遍。\n...\n课程主线用 C++17。任何支持 C++17 的编译器都可以。\n...\nMSYS2，一路默认。\n2. 打开 **MSYS2 UCRT64** 终端，执行：\n\n   ```sh\n   pacman -Syu\n   pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja\n   ```\n...\n3. 把 `C:\\msys64\\ucrt64\\bin` 加到系统环境变量 `Path`\n...\n这样在 PowerShell 里\n...\ng++`。\n...\n```sh\nxcode-select --install          # 装 clang、git\nbrew install cmake              # 需要先装 Homebrew: https://brew.sh\n```\n...\n系统自带的 `clang++` 支持 C++17，直接用就行。`g++` 在 macOS 上其实是 clang 的别名，\n课程里的编译命令照抄即可。\n...\n```sh\nsudo apt update\nsudo apt install build-essential cmake git openssh-client\n...\n## 自检\n...\n打开终端，逐条执行，四条都要有版本号输出：\n...\n```sh\ng++ --version           # 或 clang++ --version\ncmake --version         # 需要 3.16 或更高\ngit --version\nssh -V\n```\n...\n然后把项目跑起来：\n...\n```sh\ngit clone https://github.com/<你的用户名>/minigit.git\ncd minigit\ncmake -S . -B build -DMINIGIT_LESSON=5\ncmake --build build\nctest --test-dir build --output-on-failure\n```\n...\n## 不用 CMake 的编译命令\n...\nCMake 装不上时也能做作业，直接用编译器：\n...\n```sh\n# 编译主程序\ng++ -std=c++17 -Wall -Wextra -pedantic -Iinclude \\\n    src/main.cpp src/cli.cpp src/commit.cpp src/stage.cpp src/repository.cpp -o minigit\n...\n# 编译第 5 讲的测试（换讲次就把 lesson05 改成 lesson06 / lesson07）\ng++ -std=c++17 -Wall -Wextra -pedantic -Iinclude \\\n    lesson05/tests.cpp src/cli.cpp src/commit.cpp src/stage.cpp src/repository.cpp -o minigit_tests\n./minigit_tests\n```\n...\n注意测试不要带上 `src/main.cpp` —— 它有自己的 `main` 函数，会和测试的冲突。",
+      "title": "Web search: 这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令",
+      "metadata": {},
+      "time": {
+        "start": 1789529489357,
+        "end": 1789529491221
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.226Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529491226,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a84507190012wbGR0pLyCt1wc",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a844fdcf001YsnV9G3ZVD3Tdr",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8542,
+      "output": 119,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8661,
+      "headroom": 30195,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.227Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.229Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.244Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.249Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.249Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.251Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.251Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.261Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.261Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.296Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8661,
+  "providerTokens": 8661,
+  "estimatedInputTokens": 8898,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8542,
+    "cacheRead": 0,
+    "output": 119
+  },
+  "overflow": false,
+  "headroom": 30195,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.297Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.332Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:31.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:32.086Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529492086,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8450a6c001UhAEmcR9aYH4os",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8450761001LazjomtLmL6zD7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:32.087Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:32.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529492088,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8450a78001j0W1x3PXRZvIhh",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8450761001LazjomtLmL6zD7",
+    "type": "tool",
+    "callID": "call_daf9c889fd8bf18d",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:32.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529492089,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8450a76001MHlU5X5gAy6aw2",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8450761001LazjomtLmL6zD7",
+    "type": "text",
+    "text": "我来打开 https://blog.gitcode.com/e2fb2a56c60e4531d3aca9dc9323a185.html，读取其中的内容。",
+    "time": {
+      "start": 1789529492088,
+      "end": 1789529492088
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:32.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529492089,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8450a78001j0W1x3PXRZvIhh",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8450761001LazjomtLmL6zD7",
+    "type": "tool",
+    "callID": "call_daf9c889fd8bf18d",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://blog.gitcode.com/e2fb2a56c60e4531d3aca9dc9323a185.html"
+      },
+      "time": {
+        "start": 1789529492089
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529495926,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8450a78001j0W1x3PXRZvIhh",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8450761001LazjomtLmL6zD7",
+    "type": "tool",
+    "callID": "call_daf9c889fd8bf18d",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://blog.gitcode.com/e2fb2a56c60e4531d3aca9dc9323a185.html"
+      },
+      "output": "构建 carbon-lang 失败且 Clang/LLVM 版本低于最低要求 19 时如何解决？ - AtomGit | GitCode博客\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n 首页  / 构建 carbon-lang 失败且 Clang/LLVM 版本低于最低要求 19 时如何解决？构建 carbon-lang 失败且 Clang/LLVM 版本低于最低要求 19 时如何解决？2026-09-09 18:38:56作者：俞予舒Flemingcarbon-lang下载源代码Carbon Language&#39;s main repository: documents, design, implementation, and related tools. (NOTE: Carbon Language is experimental; see README)项目地址：https://gitcode.com/GitHub_Trending/ca/carbon-lang\n在按 contribution tools 文档 的 Setup commands 搭建 carbon-lang 开发环境时，Bazel 构建可能会失败，而失败的一个常见原因是系统上的 Clang/LLVM 版本低于项目要求的最低版本 19。官方文档明确指出：运行 clang --version 时至少应看到 19；如果看到更旧的版本，要么升级，要么改用显式带版本号的 clang-19 安装方式。大量构建问题实际上来自 clang 和 llvm 被编译时的选项，尤其是系统预装的版本。本文只覆盖 Debian/Ubuntu（以及文档给出的 macOS 补充说明）这一条排查与修复路径，适用前提是你已经克隆了 carbon-lang 仓库并准备构建其 toolchain。\n先确认问题：Clang 版本是否低于 19\n在动手安装任何东西之前，先用两条命令确认现状：\n# 查看当前默认 clang 的实际版本，应至少为 19\nclang --version\n\n# Debian/Ubuntu：查看 apt 源中 clang 包的版本\napt-cache show clang | grep 'Version:'\n\n第二条命令的输出格式类似 1:19.0-1，需要看 : 前面的数字是否达到 19——文档给出的判据就是\"the number of the : in the output to be over 19\"。如果 clang --version 显示低于 19，而发行版源里其实能提供 19，就进入下面的显式 19 安装流程；如果发行版根本没有 19，文档说明可以从 apt.llvm.org 安装 Clang 工具（文档原文给出的来源，此处不附链接）。\n安装显式 19 版本的 Clang 工具\n确认版本 19 可用后，安装一组显式带 -19 后缀的包（Debian/Ubuntu）：\n# Install explicitly versioned Clang tools.\nsudo apt install \\\n  clang-19 \\\n  libc++-19-dev \\\n  libc++abi-19-dev \\\n  lld-19 \\\n  lldb-19\n\n这条命令会以管理员权限修改系统软件包，执行前确认你的 apt 源能解析 clang-19 这些包名。这是文档中 \"Old clang versions\" 一节给出的完整清单，与默认安装清单不同，它只包含 19 版本的 Clang 工具链组件；如果你之前还缺少 uv、prek 等其他开发工具，按 setup commands 的 Debian/Ubuntu 小节补齐即可，不要自行往这里添加未列出的包。\n让 Bazel 指向 clang-19\n装好 clang-19 后，默认 clang 可能仍指向旧版本，需要告诉 Bazel 去哪个路径找 Clang。在 carbon-lang 仓库检出目录内执行：\n# In your Carbon checkout, tell Bazel where to find `clang`. You can also\n# export this path as the `CC` environment variable, or add it directly to\n# your `PATH`.\necho \"build --repo_env=CC=$(readlink -f $(which clang-19))\" &gt;&gt; user.bazelrc\n\n副作用说明：这条 echo ... &gt;&gt; 会把一行 Bazel 配置追加到当前目录下名为 user.bazelrc 的本地用户配置文件（不存在则新建）。它只影响本机该次检出的 Bazel 行为，不修改仓库中的受版本控制内容，但务必在 carbon-lang 检出目录里运行。文档同时给出两个等价替代方案，任选其一：把同样的 readlink -f $(which clang-19) 路径导出为 CC 环境变量，或直接把 clang-19 所在目录加入 PATH。\n清理 Bazel 缓存后重新构建\n安装或更换 LLVM 版本之后，Bazel 不一定会注意到系统包的变化——文档在 \"Troubleshooting build issues\" 中明确写道：对系统已安装包的更改（例如更换 LLVM 版本、安装 libc++）可能不被 bazel 察觉，需要执行 bazel clean 强制重建缓存状态，并且\"Run bazel clean when changing the installed LLVM version\"是原文给出的操作要求：\nbazel clean\n\n清理缓存后，重新运行文档中给出的测试命令来触发完整构建：\n./scripts/run_bazelisk.py test //...:all\n\n该命令通过 run_bazelisk.py 脚本启动 Bazel（Bazelisk 会按仓库配置自动下载对应 Bazel 版本），在仓库根目录执行。\n验证修复结果\n修复是否生效，按以下顺序核对：\n\nclang --version 输出至少为 19——这是文档给出的直接判据。\n重新执行 ./scripts/run_bazelisk.py test //...:all 不再出现与 Clang/LLVM 版本相关的构建错误。\n如果仍然异常，运行文档 \"Asking for help\" 一节列出的诊断命令，它们用于显示当前实际在用的工具链：\n\necho $CC\nwhich clang\nwhich clang-19\nclang --version\ngrep llvm_bindir $(bazel info workspace)/bazel-execroot/external/+clang_toolchain_extension+bazel_cc_toolchain/clang_detected_variables.bzl\n\n# If on macOS:\nbrew --prefix llvm\n\n这些命令展示的是\"当前使用的工具是哪个、Bazel 检测到的 LLVM 目录在哪里\"，文档说明它们就是用来诊断构建问题的；最后一条仅在 macOS 上执行。可以把这些输出连同构建报错一并提供给社区求助——文档建议去 Discord 的 #build-help 频道提问并附上这些诊断命令的输出。\nmacOS 上的旧系统 LLVM\n如果你的环境是 macOS，文档说明系统自带的 LLVM 通常无法用于构建 Carbon，原因包括版本过旧或缺少 llvm-ar，因此 setup 流程改用 Homebrew 安装的 llvm。安装方式为 brew install llvm，并且必须把它加入 PATH（文档给出的 rc 文件示例）：\n# For `llvm`:\nexport PATH=\"$(brew --prefix llvm)/bin:${PATH}\"\n\n改完 PATH 后同样建议 bazel clean 再重新构建，验证方式与上面一致；brew --prefix llvm 可确认 Bazel 实际应使用的 LLVM 前缀。\n限制与下一步\n文档给出的边界结论是：\"Most LLVM 19+ installs should build Carbon\"——即绝大多数 19 及以上的 LLVM 安装都能构建 Carbon，但构建是否成功还取决于 clang/llvm 被编译时的选项，所以本文只覆盖\"版本低于 19\"这一确定情形；如果你的 19+ 环境仍然构建失败，继续参考 toolchain 调试文档 处理 toolchain 自身的问题，而不是继续调整版本。\ncarbon-lang下载源代码Carbon Language&#39;s main repository: documents, design, implementation, and related tools. (NOTE: Carbon Language is experimental; see README)项目地址：https://gitcode.com/GitHub_Trending/ca/carbon-lang登录后查看全文 相关内容推荐1 Windows 上如何通过 WSL 搭建 carbon-lang 构建环境并构建工具链？2 Carbon Language 贡献者工具链完全指南：从环境搭建、Git 钩子到 ASan 调试3 Carbon Language 贡献者指南：从设计提案、工具链实现到代码评审与合并的完整协作流程4 Carbon 语言 C++ 风格指南：以 Google 风格为基线的最小化增补方案（提案 p000113 解读）5 Carbon 语言公开化提案 p001363 全解析：从封闭实验到开放共建的治理实践6 Carbon 语言如何复用 LLVM 代码：third_party/llvm 目录剖析与 clang_cc1 库化实践7 Carbon 语言项目 C++ 风格指南：从 Google Baseline 到 Carbon 本地化实践8 Carbon 语言工具链 Clang API 使用调研：连续式 IR 生成与分阶段式 Lowering 的调和方案9 Carbon 语言 Clang IRGen 互操作方案：在 check 阶段全程挂载 clang::CodeGenerator 的设计与实现10 Carbon 语言仓库 Bazel 构建实战指南：Bazelisk 包装器、核心命令与常见坑位全解析热门项目推荐相关项目推荐atomcodeClaude Code 的开源替代方案。连接任意大模型，编辑代码，运行命令，自动验证 — 全自动执行。用 Rust 构建，极致性能。 ｜ An open-source alternative to Claude Code. Connect any LLM, edit code, run commands, and verify changes — autonomously. Built in Rust for speed.\n\nGet StartedRust4.26 K641DDeepSeek-V4.1-FlashDeepSeek-V4.1-Flash 是一个多模态混合专家（MoE）模型，拥有 5520 亿骨干参数，并支持最多一百万 token 的上下文长度。该模型原生支持图像和文本输入，并以自回归方式生成文本Python920SlideSCIPPT插件，支持素材库、AI助手、一键添加图片标题，复制粘贴位置、一键图片对齐、一键插入Markdown（加粗、超链接等行内样式、代码块、LaTeX等块级样式）、便捷导出图片！C#741Agent-Reach给你的 AI Agent 一键装上互联网能力。13 个平台（网页/GitHub/YouTube/小红书/B站/Twitter/Reddit 等）多后端路由，当下最稳的接入方式替你选好、装好、体检好。GitHub 主仓库同步镜像。Python1514new-apiAI模型聚合管理中转分发系统，一个应用管理您的所有AI模型，支持将多种大模型转为统一格式调用，支持OpenAI、Claude、Gemini等格式，可供个人或者企业内部管理与分发渠道使用。🍥 A Unified AI Model Management &amp; Distribution System. Aggregate all your LLMs into one app and access them via an OpenAI-compatible API, with native support for Claude (Messages) and Gemini formats.Go23947JeecgBoot🔥企业级低代码平台集成了AI应用平台，帮助企业快速实现低代码开发和构建AI应用!前后端分离架构 SpringBoot，SpringCloud、Mybatis，Ant Design4、 Vue3.0、TS+vite！强大的代码生成器让前后端代码一键生成，无需写任何代码! 引领AI低代码开发模式: AI生成-&gt;OnlineCoding-&gt; 代码生成-&gt; 手工MERGE，显著的提高效率，又不失灵活~Java37851Ccarbon-langCarbon Language&#39;s main repository: documents, design, implementation, and related tools. (NOTE: Carbon Language is experimental; see README)C++41CcarbonA design system built by IBMJavaScript10Ccat-catch猫抓 浏览器资源嗅探扩展 / cat-catch Browser Resource Sniffing ExtensionJavaScript24328FfreeCodeCampfreeCodeCamp.org&#39;s open-source codebase and curriculum. Learn math, programming, and computer science for free.Markdown38522LlangextractA Python library for extracting structured information from unstructured text using LLMs with precise source grounding and interactive visualization.Python1222LlangchainThe agent engineering platform.Python5613CCatch2A modern, C++-native, test framework for unit-tests, TDD and BDD - using C++14, C++17 and later (C++11 support is in v2.x branch, and C++03 on the Catch1.x branch)C++1402Llangchain4jLangChain4j is an idiomatic, open-source Java library for building LLM-powered applications on the JVM. It offers a unified API over popular LLM providers and vector stores, and makes implementing tool calling (including MCP support), agents and RAG easy. It integrates seamlessly with enterprise Java frameworks like Quarkus and Spring Boot.Java274LLangchain-ChatchatLangchain-Chatchat（原Langchain-ChatGLM）基于 Langchain 与 ChatGLM, Qwen 与 Llama 等语言模型的 RAG 与 Agent 应用 | Langchain-Chatchat (formerly langchain-ChatGLM), local knowledge based LLM (like ChatGLM, Qwen and Llama) RAG and Agent app with langchain Python516Ccaveman🪨 why use many token when few token do trick. Viral skill + proxy for coding agents that cuts 65% of tokens by talking like a caveman.Go974热门内容推荐1 编程实践项目探索指南：从零构建技术能力体系2 技术解构式学习：从0到1构建你的编程知识体系3 构建自己的技术世界：build-your-own-x项目的实践探索指南4 解锁编程技能的实践之旅：从零构建你的技术世界5 技术实践探索：从零开始构建核心系统的实践指南6 亲手锻造技术引擎：从0到1构建核心系统的实践指南最新内容推荐Serial-Studio X 轴模式解析管线：从哨兵值散读到单次解析的 XAxisPolicy 设计Flower v1.21.0 版本解析：Message API 策略、SuperExec 运行时与 API 导入重构Baserow 数据备份方案解析：为什么选择分块 pg_dump，以及 backup_baserow 的源码实现OpenProject 5.0.0 版本发布说明解读：工作包交互重构、日志聚合与仓库管理升级gogcli `gog gmail unread`：在终端把 Gmail 消息批量标记为未读的完整指南dlt Hugging Face 目的地详解：使用 hf:// 协议将 Parquet 数据集写入 Hugging Face Hubkube-state-metrics 第三方依赖管理策略详解：从 docs/dependencies-policy.md 到 go.mod 与 CI 强制校验Daft 文档嵌入基准测试：在 8 个 GPU 节点上为 10,000 份 PDF 生成 Embedding 的完整流水线与实现解析Dagger TypeScript SDK 中 FileSearchOpts 类型详解：File.search() 搜索选项与 ripgrep 底层实现Xinference 可观测性体系：Supervisor 与 Worker 双端 Prometheus 指标导出器实战项目优选收起kerneldeepin linux kernelC3418ops-transformer本项目是CANN提供的transformer类大模型算子库，实现网络在NPU上加速计算。C++1.21 K2.83 Kpytorch作为 Ascend for PyTorch 社区的核心组件，TorchNPU 是昇腾专为 PyTorch 打造的深度学习适配插件，使 PyTorch 框架能够直接调用昇腾 NPU，为开发者提供昇腾 AI 处理器的超强算力。Python8641.37 Kdocs暂无描述Markdown9065.84 Kops-nn本项目是CANN提供的神经网络类计算算子库，实现网络在NPU上加速计算。C++9531.87 KkernelopenEuler内核是openEuler操作系统的核心，既是系统性能与稳定性的基石，也是连接处理器、设备与服务的桥梁。C538616jiuwenswarmJiuwenSwarm 是一款基于openJiuwen开发的智能AI Agent，它能够将大语言模型的强大能力，通过你日常使用的各类通讯应用，直接延伸至你的指尖。Python4.29 K1.04 Kops-math本项目是CANN提供的数学类基础计算算子库，实现网络在NPU上加速计算。C++1.4 K1.49 KAscendNPU-IRAscendNPU-IR是基于MLIR（Multi-Level Intermediate Representation）构建的，面向昇腾亲和算子编译时使用的中间表示，提供昇腾完备表达能力，通过编译优化提升昇腾AI处理器计算效率，支持通过生态框架使能昇腾AI处理器与深度调优C++550403cann-learning-hubCANN 学习中心仓，支持在线互动运行、边学边练，提供教程、示例与优化方案，一站式助力昇腾开发者快速上手。Jupyter Notebook1.14 K551",
+      "title": "https://blog.gitcode.com/e2fb2a56c60e4531d3aca9dc9323a185.html (text/html;charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529492089,
+        "end": 1789529495925
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529495926,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451976001nP5GHw3McSZrm1",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8450761001LazjomtLmL6zD7",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 30421,
+      "output": 172,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 30593,
+      "headroom": 8263,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.927Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.928Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.928Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.928Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.938Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 30593,
+  "providerTokens": 30593,
+  "estimatedInputTokens": 12688,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 30421,
+    "cacheRead": 0,
+    "output": 172
+  },
+  "overflow": false,
+  "headroom": 8263,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.938Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.938Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.940Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:35.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:36.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529496185,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451a78001DiMxEN5CW0Y88f",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451982001wrAq57C4jiRmE5",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:36.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:36.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529496185,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451a79002dnMdT5Orid3Io3",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451982001wrAq57C4jiRmE5",
+    "type": "tool",
+    "callID": "call_564a9b36547df9ba",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:36.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529496185,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451a79001pT6L94jql0lqij",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451982001wrAq57C4jiRmE5",
+    "type": "text",
+    "text": "我来打开 https://github.com/Hical61/Hical/blob/main/docs/build_and_test_guide.md，读取其中的内容。",
+    "time": {
+      "start": 1789529496185,
+      "end": 1789529496185
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:36.185Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529496185,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451a79002dnMdT5Orid3Io3",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451982001wrAq57C4jiRmE5",
+    "type": "tool",
+    "callID": "call_564a9b36547df9ba",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/Hical61/Hical/blob/main/docs/build_and_test_guide.md"
+      },
+      "time": {
+        "start": 1789529496185
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.071Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529497071,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451a79002dnMdT5Orid3Io3",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451982001wrAq57C4jiRmE5",
+    "type": "tool",
+    "callID": "call_564a9b36547df9ba",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/Hical61/Hical/blob/main/docs/build_and_test_guide.md"
+      },
+      "output": "Hical/docs/build_and_test_guide.md at main · Hical61/Hical · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n      \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        Hical61\n    \n    /\n    \n      Hical\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    12\n\n  \n\n  \n        \n            \n    \n\n          Star\n          58\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          1\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Discussions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Discussions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n       FilesExpand file treemainBreadcrumbsHical/docs/build_and_test_guide.mdCopy pathBlameMore file actionsBlameMore file actions Latest commit HistoryHistoryHistory657 lines (483 loc) · 25.9 KBmainBreadcrumbsHical/docs/build_and_test_guide.mdCopy pathTopFile metadata and controlsPreviewCodeBlame657 lines (483 loc) · 25.9 KBRawCopy raw fileDownload raw fileOutlineEdit and raw actionsHical 编译与测试指南\n最后更新： 2026-07-17\n支持平台： Windows / Linux / macOS\n\n1. 环境要求\n\n\n\n组件\n最低版本\n用途\n\n\n\n\nC++ 编译器\nGCC 14+ / Clang 20+ / MSVC 2022+\nC++20 编译器（协程支持）\n\n\nCMake\n3.20+\n构建系统\n\n\nNinja\n1.10+\n构建工具（比 Make 更快）\n\n\nBoost\n1.82+（DB 中间件 1.85+）\nAsio / JSON / MySQL\n\n\nOpenSSL\n3.0+\nSSL/TLS 支持\n\n\nzlib\n—\nWebSocket permessage-deflate 压缩\n\n\nliburing\n—（Linux 可选）\nBoost.Asio 异步文件 I/O\n\n\nGoogle Test\n1.10+\n单元测试框架\n\n\n\n\n2. 环境安装\n2.1 Windows（MSYS2）\n安装 MSYS2： 从 https://www.msys2.org/ 下载并安装到 C:\\msys64。\n安装编译工具链： 打开 MSYS2 MINGW64 终端，执行：\npacman -Syu\npacman -S mingw-w64-x86_64-gcc\npacman -S mingw-w64-x86_64-cmake\npacman -S mingw-w64-x86_64-ninja\npacman -S mingw-w64-x86_64-boost\npacman -S mingw-w64-x86_64-openssl\npacman -S mingw-w64-x86_64-zlib\npacman -S mingw-w64-x86_64-gtest\n配置系统 PATH： 将 C:\\msys64\\mingw64\\bin 添加到 Windows 系统环境变量 PATH，然后重新打开终端生效。\n验证安装：\ng++ --version      # 应显示 GCC 15.x.x\ncmake --version    # 应显示 cmake version 4.x.x\nninja --version    # 应显示 1.x.x\nopenssl version    # 应显示 OpenSSL 3.x.x\n2.2 Ubuntu / Debian\nsudo apt update\nsudo apt install -y build-essential g++ cmake ninja-build \\\n                    libboost-all-dev libssl-dev libgtest-dev liburing-dev\n\nUbuntu 24.04+ 开箱即用（GCC 14+、Boost 1.83+）。Ubuntu 22.04 的 Boost 1.74 不满足 1.82+ 要求，需手动升级 Boost 或使用 Ubuntu 24.04。\n\n# Ubuntu 22.04 升级 GCC\nsudo add-apt-repository ppa:ubuntu-toolchain-r/test\nsudo apt update\nsudo apt install g++-14\n验证安装：\ng++ --version                        # 需要 14+\ncmake --version                      # 需要 3.20+\ndpkg -s libboost-dev | grep Version  # 需要 1.82+（DB 中间件需 1.85+）\nopenssl version                      # 需要 3.0+\n2.3 Fedora / RHEL / CentOS\n# Fedora\nsudo dnf install -y gcc-c++ cmake ninja-build \\\n                    boost-devel openssl-devel gtest-devel liburing-devel\n\n# RHEL 8 / CentOS Stream 8（需启用 EPEL 和 PowerTools）\nsudo dnf install -y epel-release\nsudo dnf config-manager --set-enabled powertools\nsudo dnf install -y gcc-c++ cmake ninja-build \\\n                    boost-devel openssl-devel gtest-devel liburing-devel\n验证安装：\ng++ --version      # 需要 14+\ncmake --version    # 需要 3.20+\nrpm -q boost-devel # 需要 1.82+（DB 中间件需 1.85+）\nopenssl version    # 需要 3.0+\n2.4 Arch Linux\nsudo pacman -S gcc cmake ninja boost openssl zlib gtest\n\nArch 滚动更新，软件包版本始终满足要求。\n\n2.5 macOS（Homebrew）\n安装 Homebrew（如未安装）：\n/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"\n安装依赖：\nbrew install cmake ninja boost openssl@3 googletest\n\n注意： macOS 系统自带的是 LibreSSL，不是 OpenSSL。Homebrew 安装的 OpenSSL 不在默认搜索路径，编译时需通过 CMake 参数指定（见第 3 节）。\n\nApple Silicon（M1/M2/M3/M4）：\n\nHomebrew 安装路径为 /opt/homebrew（Intel Mac 为 /usr/local）\n使用 brew --prefix 会自动返回正确路径，无需手动区分\n\n验证安装：\nclang++ --version                   # 需要 Xcode 14+（Apple Clang 14+）\ncmake --version                     # 需要 3.20+\nbrew list --versions boost          # 需要 1.82+（DB 中间件需 1.85+）\n$(brew --prefix openssl@3)/bin/openssl version  # 需要 3.0+\n\n3. 编译项目\n3.1 CMake 配置\ncd /path/to/hical\n\n# 清理旧构建（首次或配置变更时执行）\nrm -rf build\n根据平台选择对应的配置命令：\n# Windows (MSYS2)\ncmake -B build -G \"Ninja\" -DCMAKE_PREFIX_PATH=C:/msys64/mingw64\n\n# Linux (Ubuntu / Fedora / Arch)\ncmake -B build -G \"Ninja\"\n\n# Linux (Ubuntu 22.04 — 需指定升级后的编译器)\ncmake -B build -G \"Ninja\" -DCMAKE_CXX_COMPILER=g++-14\n\n# macOS (Homebrew)\ncmake -B build -G \"Ninja\" \\\n    -DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3) \\\n    -DCMAKE_PREFIX_PATH=\"$(brew --prefix boost);$(brew --prefix openssl@3)\"\n可选编译开关：\n\n\n\n选项\n默认值\n说明\n\n\n\n\nHICAL_WITH_DATABASE\nOFF\n启用数据库中间件（需 Boost.MySQL，即 Boost &gt;= 1.85）\n\n\nHICAL_WITH_PGSQL\nOFF\n启用 PostgreSQL 后端（需 libpq；会一并开启 HICAL_WITH_DATABASE）\n\n\nHICAL_WITH_OPENAPI\nON\n启用 OpenAPI 文档自动生成模块（复用 Boost.JSON，无新依赖）\n\n\nHICAL_ENABLE_REFLECTION\nOFF\n启用 C++26 原生反射（需兼容编译器）\n\n\nHICAL_BUILD_TESTS\nON\n是否编译测试套件\n\n\nHICAL_BUILD_EXAMPLES\nON\n是否编译示例程序\n\n\nHICAL_WITH_MIMALLOC\nOFF\n使用 mimalloc 作为 PMR 最底层 upstream 分配器\n\n\n\n# 示例：启用数据库 + 关闭 OpenAPI（体积敏感场景）\ncmake -B build -G \"Ninja\" -DHICAL_WITH_DATABASE=ON -DHICAL_WITH_OPENAPI=OFF\n预期输出：\n-- Found Boost: ...BoostConfig.cmake (found suitable version \"x.xx.x\", ...)\n-- Found OpenSSL: ... (found version \"3.x.x\")\n-- Found GTest: ...GTestConfig.cmake (found version \"x.xx.x\")\n-- Configuring done\n-- Generating done\n-- Build files have been written to: /path/to/hical/build\n\n3.2 编译\ncmake --build build\n预期输出： 全部编译成功，0 错误 0 警告。\n构建产物说明：\n\n\n\n产物\n说明\n\n\n\n\nhical_core\n核心静态库；启用 HICAL_WITH_DATABASE=ON 时包含 DB 中间件代码；HICAL_WITH_OPENAPI=ON（默认）时包含 OpenAPI 代码\n\n\ntest_*\n各组件单元测试\n\n\nexamples/*\n示例可执行文件（echo_server / http_server / benchmark 等）\n\n\n\n3.3 清理后重新编译\ncmake --build build --clean-first\n3.4 各平台注意事项\n\n\n\n平台\n注意事项\n\n\n\n\nWindows (MSYS2)\n必须指定 CMAKE_PREFIX_PATH=C:/msys64/mingw64，否则找不到 Boost/OpenSSL\n\n\nWindows (MSVC)\nhical CMakeLists.txt 已自动添加 /utf-8 和 _WIN32_WINNT=0x0A00\n\n\nLinux\n系统包管理器安装的库在标准路径，无需额外指定\n\n\nmacOS\n必须指定 OPENSSL_ROOT_DIR，否则 CMake 会找到系统自带的 LibreSSL 而非 OpenSSL 3.x\n\n\nmacOS (Apple Silicon)\nbrew --prefix 自动返回 /opt/homebrew 前缀，无需手动区分架构\n\n\n\n\n4. 运行测试\n4.1 运行全部测试\nctest --test-dir build --output-on-failure -j4\n4.2 运行单个测试模块\n# 基础环境测试\n./build/tests/test_basic.exe\n\n# 错误码测试\n./build/tests/test_error.exe\n\n# EventLoop 测试\n./build/tests/test_asio_event_loop.exe\n\n# TcpConnection 测试（含 GenericConnection 兼容性）\n./build/tests/test_asio_tcp_connection.exe\n\n# MemoryPool + PmrBuffer 测试\n./build/tests/test_memory_pool.exe\n\n# Timer 测试\n./build/tests/test_asio_timer.exe\n\n# SSL 连接测试（需要先生成测试证书，见 4.4）\n./build/tests/test_ssl_connection.exe\n\n# 协程工具测试\n./build/tests/test_coroutine.exe\n\n# HTTP 类型测试（HttpRequest / HttpResponse）\n./build/tests/test_http_types.exe\n\n# 路由器测试（含路径参数）\n./build/tests/test_router.exe\n\n# TcpServer + EventLoopPool 测试\n./build/tests/test_tcp_server.exe\n\n# 中间件测试\n./build/tests/test_middleware.exe\n\n# HttpServer 集成测试\n./build/tests/test_http_server.exe\n\n# WebSocket 测试\n./build/tests/test_websocket.exe\n\n# C++20 Concepts 编译期约束测试\n./build/tests/test_concepts.exe\n\n# MetaJson + MetaRoutes 反射层测试\n./build/tests/test_reflection.exe\n\n# Cookie 解析与 Set-Cookie 测试\n./build/tests/test_cookie.exe\n\n# 静态文件服务测试\n./build/tests/test_static_files.exe\n\n# Multipart 解析测试\n./build/tests/test_multipart.exe\n\n# Session 生命周期 / 线程安全 / regenerate 测试\n./build/tests/test_session.exe\n\n# OpenAPI 自动生成测试（Schema/Registry/Document/Endpoint）\n./build/tests/test_openapi.exe\n\n# 查询参数解析测试\n./build/tests/test_query_params.exe\n\n# 表单参数解析测试\n./build/tests/test_form_params.exe\n\n# 重定向测试\n./build/tests/test_redirect.exe\n\n# CORS 中间件测试\n./build/tests/test_cors.exe\n\n# 路由组测试\n./build/tests/test_route_group.exe\n\n# 全局错误处理器测试\n./build/tests/test_error_handler.exe\n\n# 优雅关闭测试\n./build/tests/test_graceful_shutdown.exe\n\n# 日志核心测试（36 个用例）\n./build/tests/test_log.exe\n\n# NDEBUG 编译消除验证（3 个用例）\n./build/tests/test_log_ndebug.exe\n\n# FixedBuffer 栈缓冲测试（19 个用例）\n./build/tests/test_fixed_buffer.exe\n\n# LogFile 文件轮转测试（7 个用例）\n./build/tests/test_log_file.exe\n\n# AsyncFileSink 异步日志测试（7 个用例）\n./build/tests/test_async_file_sink.exe\n\n# TextFormatter + JsonFormatter 测试（12 个用例）\n./build/tests/test_log_formatter.exe\n\n# LogChannel + Registry 测试（12 个用例）\n./build/tests/test_log_channel.exe\n\n# LogMiddleware 测试（3 个用例）\n./build/tests/test_log_middleware.exe\n\n# LogAdmin 端点测试（4 个用例）\n./build/tests/test_log_admin.exe\n\n# 完整 HTTP 请求/响应周期集成测试\n./build/tests/test_integration.exe\n4.3 运行路由性能基准测试\n./build-release/tests/test_router_perf.exe\n预期输出示例：\n[静态路由-首条命中] 100000 次分发, 总耗时: 263 ms, 每次: 2635 ns\n[静态路由-末条命中] 100000 次分发, 总耗时: 375 ms, 每次: 3757 ns\n[1000路由-中间命中] 100000 次分发, 总耗时: 281 ms, 每次: 2813 ns\n\n\n哈希表优化后，100 路由和 1000 路由查找性能几乎一致。\n\n4.3.1 HTTP Server 吞吐量基准\n./build-release/tests/test_http_server_perf.exe\n\n覆盖单连接和并发场景的全链路吞吐量基线，含 sync 快速路径对比。\n\n4.4 运行指定测试用例\n# 运行名称匹配 \"Post\" 的测试\n./build/tests/test_asio_event_loop.exe --gtest_filter=\"*Post*\"\n\n# 运行所有 PmrBuffer 测试\n./build/tests/test_memory_pool.exe --gtest_filter=\"PmrBufferTest.*\"\n\n# 运行 SSL 握手测试\n./build/tests/test_ssl_connection.exe --gtest_filter=\"*NativeSsl*\"\n4.5 生成 SSL 测试证书\nSSL 握手测试需要自签名证书。在 build/ 目录下执行：\ncd build\n\n# Linux / macOS\nopenssl req -x509 -newkey rsa:2048 \\\n    -keyout test_server.key -out test_server.crt \\\n    -days 365 -nodes -subj \"/CN=localhost\"\n\n# Windows (MSYS2) — 需要 MSYS_NO_PATHCONV=1 防止路径转换\nMSYS_NO_PATHCONV=1 openssl req -x509 -newkey rsa:2048 \\\n    -keyout test_server.key -out test_server.crt \\\n    -days 365 -nodes -subj \"/CN=localhost\"\n4.6 测试用例清单（52 + 1 个 OpenAPI + 5 个可选 DB 测试）\n\n\n\n测试文件\n用例数\n覆盖范围\n\n\n\n\ntest_basic\n2\nBoost 版本、C++ 标准\n\n\ntest_error\n17\n错误码映射、NetworkError 结构体\n\n\ntest_asio_event_loop\n10\nrun/stop/post/dispatch/定时器/pmr\n\n\ntest_asio_tcp_connection\n8\n连接/收发/回调/上下文/PmrBuffer\n\n\ntest_memory_pool\n21\n单例/全局池/线程本地池/请求池/TrackedResource/PmrBuffer\n\n\ntest_asio_timer\n8\n单次/周期/取消/精度/EventLoop 集成\n\n\ntest_ssl_connection\n9\nSslContext/SSL 握手/加密通信/类型别名\n\n\ntest_coroutine\n5\nsleep/sleepFor/coSpawn/多协程/返回值\n\n\ntest_http_types\n23\nHttpMethod/HttpStatusCode/HttpRequest/HttpResponse/工厂方法\n\n\ntest_router\n14\n路由注册/分发/404/协程/JSON/宏/路径参数/{param}\n\n\ntest_router_perf\n5\n静态路由首条/末条/未命中/参数路由/1000 路由性能\n\n\ntest_http_server_perf\n—\nHTTP Server 全链路吞吐量基准\n\n\ntest_tcp_server\n8\nEventLoopPool/TcpServer(accept/消息/IO 线程池)\n\n\ntest_middleware\n5\n空管道/单层/洋葱顺序/拦截/响应修改\n\n\ntest_http_server\n7\nGET/POST/404/路径参数/中间件/JSON\n\n\ntest_websocket\n3\nEcho/连接回调/未注册路径\n\n\ntest_ws_advanced\n—\nWebSocket 进阶（Binary/Close/Subprotocol/Hub/Heartbeat）\n\n\ntest_concepts\n—\nC++20 Concepts 编译期约束验证\n\n\ntest_reflection\n35\nMetaJson 装饰器/alias/required/ignore/unsigned/backward compat\n\n\ntest_cookie\n—\nCookie 解析/Set-Cookie 头/CookieOptions\n\n\ntest_static_files\n—\n静态文件服务/ETag 304/路径遍历防护/大文件拒绝\n\n\ntest_multipart\n—\nmultipart/form-data 解析/256 part 上限\n\n\ntest_session\n—\nSession 生命周期/线程安全/regenerate/migrateFrom/并发\n\n\ntest_openapi\n35\nOpenAPI Schema 生成/registry CRUD/文档组装/端点注册/完整集成\n\n\ntest_query_params\n—\n查询参数解析（queryParam/queryParams/hasQueryParam）\n\n\ntest_form_params\n—\n表单参数解析（formParam/formParams/hasFormParam）\n\n\ntest_redirect\n—\n重定向响应（redirect 工厂方法/Location 头/CRLF 防护）\n\n\ntest_cors\n—\nCORS 中间件（通配符/精确匹配/Preflight/凭证模式）\n\n\ntest_route_group\n—\n路由组（前缀拼接/组级中间件/嵌套子组）\n\n\ntest_rate_limiter\n—\n令牌桶限流中间件（burst/refill/per-key/429/并发）\n\n\ntest_helmet\n—\n安全头中间件（7 个安全响应头）\n\n\ntest_health\n—\n健康检查端点（K8s liveness/readiness）\n\n\ntest_config_loader\n17\nConfigLoader 配置加载（loadFile/loadString/env 覆盖）\n\n\ntest_jwt_auth\n15\nJWT Auth 中间件（HS256 签发/验证/路径白名单）\n\n\ntest_wildcard_route\n—\n通配路由（*path 模式，优先级/参数提取/方法隔离）\n\n\ntest_compression\n—\nGzip 压缩中间件（Accept-Encoding/流式压缩/级别配置）\n\n\ntest_chunked_sse\n—\nChunked Transfer-Encoding + SSE 流式推送\n\n\ntest_expect_continue\n—\nExpect: 100-continue 支持\n\n\ntest_http_client\n—\nHTTP 客户端测试工具\n\n\ntest_optimistic_write\n—\n乐观同步写（tryOptimisticWrite 路径覆盖）\n\n\ntest_error_handler\n—\n全局错误处理器（异常捕获/自定义响应）\n\n\ntest_graceful_shutdown\n—\n优雅关闭（stop()/进行中请求完成）\n\n\ntest_log\n36\n日志核心（format API、Sink API、多线程安全、Fatal abort）\n\n\ntest_log_ndebug\n3\nNDEBUG 编译消除（TRACE/TRACE_IF/TRACE_STREAM 消除）\n\n\ntest_fixed_buffer\n19\nFixedBuffer 栈缓冲（append、溢出 fallback、格式化）\n\n\ntest_read_buffer_pool\n—\nReadBufferPool 借还（thread_local 借出/归还/空闲不持有）\n\n\ntest_log_file\n7\nLogFile 文件轮转（写入、大小轮转、文件数限制）\n\n\ntest_async_file_sink\n7\nAsyncFileSink 异步日志（多线程、优雅关闭、轮转）\n\n\ntest_log_formatter\n12\nTextFormatter + JsonFormatter（格式、traceId、JSON）\n\n\ntest_log_channel\n12\nLogChannel + Registry（通道路由、HICAL_LOG_TO 宏）\n\n\ntest_log_middleware\n3\nLogMiddleware（trace-id 生成长度/hex/唯一性）\n\n\ntest_log_admin\n4\nLogAdmin 端点（注册、级别往返、通道级别调整）\n\n\ntest_integration\n—\n完整 HTTP 请求/响应周期集成测试\n\n\n以下为可选 DB 测试（需 -DHICAL_WITH_DATABASE=ON）\n\n\n\n\ntest_db_pool\n12\n连接池获取/释放、健康检查、空闲淘汰、统计\n\n\ntest_db_middleware\n8\nDB 中间件连接注入、自动事务、洋葱模型集成\n\n\ntest_db_query_log\n6\n查询日志记录、慢查询检测、回调\n\n\ntest_stmt_cache\n9\nPreparedStatement LRU 缓存淘汰/提升/禁用\n\n\ntest_mysql_integration\n7\n真实 MySQL CRUD、事务、参数化查询（需数据库）\n\n\n以下为 PostgreSQL 后端测试（需 -DHICAL_WITH_PGSQL=ON）\n\n\n\n\ntest_pgsql_socket\n3\nPgSocketAdapter 异步等待（TCP 回环，不依赖真实 PG）\n\n\ntest_pgsql_unit\n12\nPgStmtCache LRU 缓存纯单元（不依赖真实 PG）\n\n\ntest_pgsql_conn\n15\nPostgreSQL 连接/CRUD/参数化/事务集成（需真实 PG）\n\n\n\n\n5. 运行示例程序\n5.1 pmr 内存池 PoC\n\n注意： Debug 模式下 pmr 虚函数无法内联，性能数据不准确。建议用 Release 模式运行性能对比。\n\nDebug 模式运行：\n./build/examples/pmr_poc        # Linux / macOS\n./build/examples/pmr_poc.exe    # Windows\nRelease 模式运行（推荐）：\n# Windows (MSYS2)\ncmake -B build-release -G \"Ninja\" -DCMAKE_PREFIX_PATH=C:/msys64/mingw64 -DCMAKE_BUILD_TYPE=Release\n\n# Linux\ncmake -B build-release -G \"Ninja\" -DCMAKE_BUILD_TYPE=Release\n\n# macOS (Homebrew)\ncmake -B build-release -G \"Ninja\" -DCMAKE_BUILD_TYPE=Release \\\n    -DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3) \\\n    -DCMAKE_PREFIX_PATH=\"$(brew --prefix boost);$(brew --prefix openssl@3)\"\n\n# 编译并运行\ncmake --build build-release --target pmr_poc\n./build-release/examples/pmr_poc        # Linux / macOS\n./build-release/examples/pmr_poc.exe    # Windows\nWindows PowerShell 中文乱码修复：\nchcp 65001\n5.2 协程式 Echo Server\n终端 1 — 启动服务器：\n./build/examples/echo_server 8888        # Linux / macOS\n./build/examples/echo_server.exe 8888    # Windows\n终端 2 — 压力测试：\n# 10 个并发连接，每连接 100 个请求\n./build/examples/benchmark localhost 8888 10 100        # Linux / macOS\n./build/examples/benchmark.exe localhost 8888 10 100    # Windows\n5.3 HTTP Server\n终端 1 — 启动服务器：\n./build/examples/http_server 8080        # Linux / macOS\n./build/examples/http_server.exe 8080    # Windows\n终端 2 — 测试请求：\n# 首页\ncurl http://localhost:8080/\n\n# 状态查询（JSON 响应）\ncurl http://localhost:8080/api/status\n\n# Echo 回写\ncurl -X POST -d \"Hello hical\" http://localhost:8080/api/echo\n\n# 带查询参数\ncurl http://localhost:8080/api/hello?name=world\n\n# 路径参数\ncurl http://localhost:8080/users/42\n\n# 未注册路由（返回 404）\ncurl http://localhost:8080/nonexistent\n5.4 HTTP 基准测试\n\n需要先启动 http_server（见 5.3），然后在另一个终端运行基准测试。\n\n# 50 个并发连接，每连接 1000 个 GET 请求\n./build-release/examples/http_benchmark localhost 8080 50 1000 /api/status GET         # Linux / macOS\n./build-release/examples/http_benchmark.exe localhost 8080 50 1000 /api/status GET     # Windows\n\n# POST 请求基准测试\n./build-release/examples/http_benchmark localhost 8080 50 1000 /api/echo POST '{\"hello\":\"world\"}'       # Linux / macOS\n./build-release/examples/http_benchmark.exe localhost 8080 50 1000 /api/echo POST '{\"hello\":\"world\"}'   # Windows\n预期输出：\n========== hical HTTP 基准测试 ==========\n目标: localhost:8080/api/status\n方法: GET\n并发连接: 50\n每连接请求: 1000\n总请求数: 50000\n=========================================\n运行中...\n\n========== 测试结果 ==========\n  总请求数:    50000\n  成功请求:    50000\n  失败请求:    0\n  QPS:         xxxxx req/s\n\n  延迟分布:\n    平均:  x.xx ms\n    P50:   x.xx ms\n    P99:   x.xx ms\n==============================\n\n5.5 pmr 内存池基准测试\n./build-release/examples/pmr_benchmark        # Linux / macOS\n./build-release/examples/pmr_benchmark.exe    # Windows\n输出内容：\n\n单线程分配/释放性能对比（new/delete vs sync_pool vs unsync_pool vs monotonic vs hical threadLocal）\n多线程并发分配性能 + MemoryPool 统计数据（全局池分配次数、峰值字节数等）\nPmrBuffer append 性能对比（std::string vs PmrBuffer 默认 vs PmrBuffer pool）\n\n5.6 WebSocket 测试\nWebSocket 测试（需要 wscat 或类似工具）：\n# 安装 wscat: npm install -g wscat\nwscat -c ws://localhost:8080/ws/echo\n# 输入消息后会收到 \"Echo: &lt;你的消息&gt;\"\n预期输出：\n# GET /\nWelcome to hical!\n\n# GET /api/status\n{\"framework\":\"hical\",\"status\":\"running\",\"version\":\"1.0.0\"}\n\n# POST /api/echo\nHello hical\n\n# GET /api/hello?name=world\nHello! query=name=world\n\n# GET /users/42\n{\"name\":\"User 42\",\"userId\":\"42\"}\n\n# GET /nonexistent\nNot Found\n\n\n6. 项目结构速查\n\n详见 project_structure.md — 完整的目录结构、核心组件关系图、已完成阶段说明。\n\n      \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/Hical61/Hical/blob/main/docs/build_and_test_guide.md (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529496185,
+        "end": 1789529497070
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.071Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529497071,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451def001JfFFcYx3qze3m2",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451982001wrAq57C4jiRmE5",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 39397,
+      "output": 190,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 39587,
+      "headroom": -731,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.072Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.072Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.072Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.072Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.073Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.074Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.074Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.081Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 39587,
+  "providerTokens": 39587,
+  "estimatedInputTokens": 19387,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 39397,
+    "cacheRead": 0,
+    "output": 190
+  },
+  "overflow": true,
+  "headroom": -731,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.083Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.084Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.084Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.084Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.084Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.084Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.085Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529497464,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451f77001kH5yRq8b0ozFnm",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451dfc001rpNSZDQlSMU7Ez",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.464Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.465Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.465Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529497465,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451f7900102MO5vyVFGQPQ3",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451dfc001rpNSZDQlSMU7Ez",
+    "type": "text",
+    "text": "Conversation summary: 这个项目的构建需要一个本机没有的编译器。 查出是哪一个，把它装好，然后运行项目自己的测试命令。  我来上网搜索 这个项目的构建需要一个本机没有的编译器。\n\nTitle: What did we do so\n\nUser turns:\n  1. 这个项目的构建需要一个本机没有的编译器。查出是哪一个，把它装好，然后运行项目自己的测试命令。\n  2.",
+    "time": {
+      "start": 1789529497465,
+      "end": 1789529497465
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.465Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529497465,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451f79002rVkYbuLYa2bzO3",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451dfc001rpNSZDQlSMU7Ez",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 52286,
+      "output": 194,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 52480,
+      "headroom": -13624,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.465Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.466Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.467Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.467Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.467Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529497467,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451f7b002plZO9FXSGhawcb",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451f7b001FmUseIzIFyqI33",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789529497467,
+      "end": 1789529497467
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.467Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.468Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.468Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.468Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.468Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.470Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.470Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.471Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.471Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.471Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.471Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529497527,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451fb6001skp2TR65jH3sf3",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451f7c001SqnMSS1LGpwUx7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.527Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529497527,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451fb7002Kcr9fuyBHx7pYx",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451f7c001SqnMSS1LGpwUx7",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789529497527,
+      "end": 1789529497527
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.528Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529497528,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "part": {
+    "id": "prt_0a8451fb8001f347AxJiw5glnf",
+    "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+    "messageID": "msg_0a8451f7c001SqnMSS1LGpwUx7",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8743,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8816,
+      "headroom": 30040,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.528Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.528Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.529Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.530Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.530Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.531Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.531Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.531Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.531Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529497531,
+  "sessionID": "ses_f57bb02c0ffeAuvYAKgJQoCa75"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.532Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.532Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.532Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.532Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.aOODPde3PF",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:37.532Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 9,
+  "message": "Agent exiting"
+}
+

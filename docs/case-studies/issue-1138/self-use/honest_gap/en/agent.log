@@ -1,0 +1,1853 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.790Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.791Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt How many litres of rainwater did the roof of the old granary collect during last night's storm? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.791Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.791Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.799Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "How many litres of rainwater did the roof of the old granary collect during last night's storm?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "How many litres of rainwater did the roof of the old granary collect during last night's storm?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.799Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.800Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.801Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.801Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.803Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.804Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.806Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4208,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.806Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.818Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.820Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 20,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.821Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:03:24.821Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.825Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.825Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.826Z",
+  "service": "session",
+  "id": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa",
+  "title": "New session - 2026-09-16T03:03:24.826Z",
+  "time": {
+    "created": 1789527804826,
+    "updated": 1789527804826
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.826Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.826Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.827Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.827Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.827Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d4b465ffeTdlTWM4G9BtxAj/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.827Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d4b465ffeTdlTWM4G9BtxAj/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.829Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57d4b465ffeTdlTWM4G9BtxAj/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.831Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.831Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.832Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.833Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.834Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.835Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.946Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.949Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.949Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.955Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.965Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:24.965Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:25.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527805313,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b4d7d00103pZZM1lM8zr9g",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b4c140015QCNKqxtyDrU5g",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:25.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:25.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527805314,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b4d82001LBm9uUfPub3fAY",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b4c140015QCNKqxtyDrU5g",
+    "type": "tool",
+    "callID": "call_2da93e90da5a9583",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:25.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527805314,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b4d81001mYCOpQHNHM7Iz3",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b4c140015QCNKqxtyDrU5g",
+    "type": "text",
+    "text": "Let me search the web for many litres of rainwater did the roof of the old granary collect during last night s storm.",
+    "time": {
+      "start": 1789527805314,
+      "end": 1789527805314
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:25.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527805315,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b4d82001LBm9uUfPub3fAY",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b4c140015QCNKqxtyDrU5g",
+    "type": "tool",
+    "callID": "call_2da93e90da5a9583",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "many litres of rainwater did the roof of the old granary collect during last night s storm"
+      },
+      "time": {
+        "start": 1789527805314
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.865Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527807865,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b4d82001LBm9uUfPub3fAY",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b4c140015QCNKqxtyDrU5g",
+    "type": "tool",
+    "callID": "call_2da93e90da5a9583",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "many litres of rainwater did the roof of the old granary collect during last night s storm"
+      },
+      "output": "Title: Figure out how many gallons of rain fell on your barn – Half Hill Farm\nURL: https://www.halfhillfarm.com/2013/04/28/figure-out-how-many-gallons-of-rain-fell-on-your-barn/\nPublished: 2013-04-28T00:00:00.000Z\nAuthor: Christian Grantham\nHighlights:\nIf you’ve ever wondered how many gallons of rain water fell on your roof or your property, here is some rain math I whipped up this morning to figure it out after a weekend of heavy rain:\n...\n( ______ square feet X 144 square inches ) X _____ inches of rain / 231 cubic inches per gallon = _______ gallons of rain!\n\n---\n\nTitle: Rainwater Collection Calculator: How Much Water Can You Collect? | PickShack\nURL: https://www.pickshack.com/preparedness/food-water/rainwater-collection-calculator.html\nPublished: N/A\nAuthor: N/A\nHighlights:\ncatchment area and rainfall amount. This calculator estimates collected water\n...\nUS gallons and litres.\n...\n623 gallons\n\n Based on 1,000 sq ft of catchment area and 1 inch of rainfall. \n\n 1,000 Square feet 623 US gallons 2,359 Litres\n...\n- Catchment area 1,000 sq ft\n- Rainfall depth 1 in\n- US gallons 623\n- Litres 2,359\n- Realistic yield (90%) 561 gal\n\n Annual harvest (gal) Realistic yield \n\n—\n...\nEnter the footprint area of your roof or catchment surface in square feet, then a rainfall amount (one event, a storm total, or a monthly average). The calculator multiplies these by 0.623 gal/sq ft per inch, the standard hydrologic coefficient for impermeable surfaces, and converts to litres.\n...\nHow much rain can I collect from 1,000 square feet of roof?\n\n About 623 gallons per inch of rainfall, using the standard 0.623 gal per sq ft per inch estimate. Real yield is usually 85 to 90 percent of that after losses from splash, first-flush diverters, and evaporation, so closer to 530 to 560 gallons per inch. A single 1-inch rainstorm on a 1,000 sq ft roof fills about 10 standard 55-gallon barrels.\n\n---\n\nTitle: Rainwater Collection Calculator: Free Barrel Sizing Tool\nURL: https://theyieldgrid.com/rainwater-collection-calculator/\nPublished: 2026-04-28T04:55:21.000Z\nAuthor: N/A\nHighlights:\nThis tool calculates two figures: the gross theoretical volume your roof can intercept and the net collectable volume after applying a 10-point efficiency reduction. It uses horizontal projected roof area (not sloped surface area) multiplied by rainfall depth and a unit-conversion factor of 0.623, which converts square-foot-inch units into US gallons. The tool does not predict your actual harvesting outcome, which depends on gutter condition, tank inlet design, and local evaporation rates that vary by climate zone.\n...\n, evaporation,\n...\n-flush diversion, and\n...\n- Rainfall Amount (inches): Use total event depth, not intensity (inches per hour). Check NOAA’s precipitation\n...\ndata or a local rain gauge for your design storm. A 1-inch event is a common planning baseline in moderate climates.\n...\nArea = 10 × 12 = 120 sq ft Gross = 120 × 1.0 × 0.623 = 74.76 gal Net = 74.76 × 0.90 = 67.28 gal\n...\nResult: 68 gallons, requiring 2 standard 55-gallon barrels to capture without overflow.\n...\nArea = 20 × 20 = 400 sq ft Gross = 400 × 2.0 × 0.623 = 498.4 gal Net = 498.4 × 0.90 = 448.6 gal\n...\nResult: 449 gallons, requiring 9 standard 55-gallon barrels.\n...\nArea = 40 × 50 = 2,000 sq ft Gross = 2,000 × 0.75 × 0.623 = 934.5 gal Net = 934.5 × 0.90 = 841.1 gal\n...\nResult: 842 gallons, requiring 16 standard 55-gallon barrels.\n...\n| Roof Area\n...\nsq ft) | Rainfall (in) | Gross Volume\n...\n10% (gal) |\n...\ntern Size |\n...\n--- | --- | --- | --- | --- | --- |\n...\n0.5 |\n...\n33.6\n...\n0-gal\n...\n| Three\n...\n50-gal\n...\n| 1.\n...\n| 24\n...\n.2 |\n...\n.3 |\n...\n| Five 5\n...\n-gal drums or one 250-gal\n...\n| 33\n...\n4 |\n...\n| One 350-gal tank |\n...\n1,200\n...\n1.0 |\n...\n47.6 | 67\n...\n.8 | 13 | One\n...\n50-gal cistern |\n...\n.0 | 1,49\n...\n.2 | 1,34\n...\n500-gal\n...\n,500-\n...\nThe 0.90 multiplier accounts for a combined 10-point loss from splash at gutter edges, evaporation from the roof surface before runoff begins, and water retained in first-flush diverters. This is a conservative default for standard asphalt shingle and metal roofs in temperate climates.\n...\n- No allowance\n...\nmade for the dry period between storms. Tank capacity from a prior event may reduce what can be captured in the next one unless the tank was drawn down in the interval.\n...\n- The gross volume is not your collection target. Every calculation starts with a theoretical maximum that assumes all rain reaching the roof makes it to the tank. The 10-point efficiency adjustment is the minimum correction. Systems with clogged gutters, undersized downspouts, or poorly fitted first-flush devices will underperform even the net figure.\n...\n- Rainfall intensity creates a hard physical limit. A 2-inch storm that delivers most of its volume in 30 minutes can exceed the flow capacity of a standard 4-inch gutter, causing overflow that bypasses the collection inlet entirely. The net gallon figure will overstate actual capture in high-intensity events unless your gutters and downspouts are sized for the peak flow rate. The rainwater harvesting calculator can help model full-system capacity including inlet constraints.\n...\n- Size storage to the net collectable volume for your local 2-year, 24-hour design storm at minimum. Sizing only to a 1-inch event in a climate that regularly delivers 3-inch events results in chronic overflow and collection losses.\n...\nIf the previous storm half-filled the tank and no water was used before the next event, the effective additional storage capacity for the next storm is only the remaining empty volume, not the full tank size. Planners\n...\ncalculate total annual collection potential by summing individual storm events without accounting for drawdown intervals consistently overstate how much water their system can actually capture over a season. The yard drainage catch basin calculator can help model sites where tank overflow needs to integrate with a wider drainage network\n...\n0 square feet\n...\nThis tool models total event depth, not rate. If rainfall intensity exceeds your gutter system’s drainage capacity, water overflows the gutter and never reaches the downspout. High-intensity events, such as convective summer storms that deliver 2 inches in under an hour, routinely exceed standard residential gutter flow capacity. The tool’s net figure may overstate real capture in those conditions by a material amount.\n\n---\n\nTitle: Rainwater Calculator for Farm Water Storage - Farmer Grows\nURL: https://farmergrows.com/rainwater-storage-calculator/\nPublished: 2026-07-13T19:00:00.000Z\nAuthor: Russell\nHighlights:\nCaptured water,\n...\nwill appear here\n...\nGross roof runoff 0 gal 0 L before losses\n...\nUsable captured 0 gal 0 L after first flush\n...\nTank after storm 0 gal 0% full, overflow 0 gal\n...\n0.623 Gallons per sq ft inch Before runoff losses\n...\n3.785 Liters per gallon Storage conversion\n...\n| Catchment area | 0.5 inch rain | 1 inch rain | 25 mm rain |\n| --- | --- | --- | --- |\n| 250 sq ft / 23.2 sq m | 78 gal / 295 L | 156 gal / 590 L | 154 gal / 583 L |\n| 500 sq ft / 46.5 sq m | 156 gal / 590 L | 312 gal / 1,180 L | 309 gal / 1,167 L |\n| 1,000 sq ft / 92.9 sq m | 312 gal / 1,180 L | 623 gal / 2,358 L | 617 gal / 2,335 L |\n| 2,500 sq ft / 232 sq m | 779 gal / 2,948 L | 1,558 gal / 5,897 L | 1,542 gal / 5,837 L |\n...\nTank sizing: Compare a typical storm capture against the dry-day reserve, not just the biggest rain event. Oversized tanks still need enough roof area and rainfall to refill.\n...\nAdditionally, the initial portion of rain may contain sediment that you should account for in the system; the initial portion of rain will not necessarily provide usable water for the farm. One way that the farm can remove the initial portion of rainwater from the system is through the use of a first-flush diversion system. Because the first gallons of rain that fall on the roof will contain the most sediment, these initial gallon can be diverted away from the collection tank.\n...\nupon the amount\n...\nthat falls and\n...\na calculator to determine the supply and demand for water\n...\nunderstand the limitation of the\n...\nA large roof\n...\nand the efficiency of the\n...\nA large collection\n...\nthe water that is needed\n...\ndry periods last for several days.\n\n---\n\nTitle: Rainwater Harvesting Calculator — d.calculators\nURL: https://dcalculators.com/en/ecology/rainwater-harvesting-calculator/\nPublished: N/A\nAuthor: N/A\nHighlights:\nThis calculator estimates how much rainwater you can collect from a roof, based on its area, the rainfall and a runoff coefficient. It multiplies the three together, using the fact that 1 mm of rain on 1 m² gives 1 litre of water. The figures are estimates: real collection depends on the roof material, gutters, first-flush losses and evaporation.\n...\nEnter the roof (catchment) area in square metres, the rainfall in millimetres and a runoff coefficient between 0 and 1. For a 100 m² roof, 500 mm of rain and a coefficient of 0.85, the yield is 100 × 500 × 0.85 = 42,500 litres. That is 42.5 cubic metres, or about 11,227 US gallons. Use annual rainfall for a yearly total, or a single storm’s depth for one event.\n...\nThe volume collected is $V=A×R×CV = A \\times R \\times C$ V= A× R× C, where $AA$ A is the roof area in square metres, $RR$ R is the rainfall in millimetres and $CC$ C is the runoff coefficient. Because 1 mm over 1 m² is exactly 1 litre, the product comes out directly in litres. Divide by 1,000 for cubic metres, or multiply by 0.264172 for US gallons.\n...\nThe litres figure is the maximum you could realistically collect from that roof over that rainfall period, before accounting for tank overflow or how much you actually use. It scales in direct proportion to each input, so halving the roof area or the rainfall halves the yield, and a lower runoff coefficient always reduces it. Comparing the litres, cubic metres and gallons figures side by side is useful because storage tanks are often sold in litres or gallons, while irrigation needs are sometimes discussed in cubic metres. Treat the figure as a supply estimate, not a guarantee — the water you actually store also depends on tank size and how quickly you draw it down.\n\n---\n\nTitle: Rainwater Harvesting Calculator – Litres, Gallons & Annual Yield\nURL: https://watertankcalculator.com/calculators/rainwater/rainwater-harvesting-calculator\nPublished: 2026-04-01T00:00:00.000Z\nAuthor: N/A\nHighlights:\n5. Read your results The primary result shows annual harvestable litres. The secondary grid shows monthly/daily breakdown, recommended tank size (based on 1–2 months' peak collection), supply ratio, and more.\n...\nThe standard rainwater harvesting yield formula used worldwide by engineers and planners:\n\n Annual Yield (L) = Roof Area (m²) × Annual Rainfall (mm) × Runoff Coefficient (Cr) Where: Roof Area = Length (m) × Width (m) [horizontal footprint] Annual Rainfall = mm/year from local weather data Runoff Coefficient (Cr) = 0.3 – 0.95 depending on roof surface Note: 1 mm of rain on 1 m² of roof = 1 litre of water (before losses)\n...\nThis formula works because 1 mm of rainfall depth across 1 square metre equals exactly 1 litre. Multiplying by the runoff coefficient accounts for real-world collection losses.\n...\nThis calculator recommends a tank sized to capture approximately 6 weeks of average rainfall collection — balancing cost, space, and yield. The formula used is:\n\n Recommended Tank (L) = (Annual Yield ÷ 12) × 1.5 [i.e., 1.5 × average monthly collection] \n\nFor regions with distinct wet/dry seasons, size the tank to capture an entire wet-season month's peak rainfall rather than the annual average.\n...\nMultiply your roof's catchment area (m²) by your annual rainfall (mm) and by your roof's runoff coefficient. For example, a 100 m² concrete tile roof in a city with 800 mm annual rainfall: 100 × 800 × 0.85 = 68,000 litres per year. This calculator does this math instantly.\n...\n(Cr) represents the proportion of\n...\nthat actually reaches your\n...\ntank after losses\n...\nevaporation, splash, initial surface\n...\n, and first-flush diversion. A metal\n...\nhas Cr ≈\n...\nmeaning 90% of rainfall is collectible. An asphalt shingle roof has Cr ≈ 0.\n...\nwrong coefficient can over-\n...\nunder-size your system by 15–30%.\n...\nTank size depends on your daily demand and the gap between rainfall events. A common rule of thumb is to size the tank to hold 4–8 weeks of average collection, or 1–2 months of your household's daily water usage, whichever is larger. This calculator recommends 1.5× your average monthly yield as a starting point. Use our First Flush Diverter Size Calculator for additional guidance on pre-tank filtration volumes.\n...\nUse the horizontal\n...\n) of your\n...\n10 m × 8\n...\nhas 80 m² of catchment regardless\n...\npitch angle —\n...\n. Only include\n...\nsections whose gutters drain to your collection\n...\n. Exclude areas that drain to the street or neighbouring properties.\n...\nA first flush diverter automatically discards the first few litres of rain from each storm event — the most contaminated water that washes accumulated dust, bird droppings, and debris off the roof. Most engineers recommend diverting the first 1–2 mm of rainfall per event (1–2 litres per m² of catchment). This device significantly improves water quality and is considered best practice for all potable and many non-potable systems. Use our First Flush Diverter Size Calculator to size yours.\n\n---\n\nTitle: Rainwater Collection Calculator — Roof Yield and Storage | CalcurHome\nURL: https://calcurhome.com/calculators/rainwater-collection-calculator\nPublished: N/A\nAuthor: CalcurHome Editorial Team\nHighlights:\n1,\n...\nPotential event yield\n...\n06 gal Estimated\n...\n106 gal\n...\nThe entered event can yield about 606 gallons; available storage captures up to 500 gallons.\n...\nOne inch of rain on one square foot equals about 0.623 gallon. Multiply roof footprint by rainfall, then apply runoff and collection efficiency. Storage limits the captured amount. This is a planning estimate; potable use, overflow routing, mosquito control, roof materials, and permits need local verification.\n...\nPotential gallons = roof footprint (ft²) × rainfall (in) × 0.623 × runoff coefficient × collection efficiency; captured gallons = lesser of yield or available storage.\n...\nThe 0.623 factor converts one inch of water over one square foot to U.S. gallons. Separate coefficients account for roof runoff losses and collection-system losses before comparing the event yield with empty tank capacity.\n...\nA 40 ft by 30 ft roof receives 1 in of rain with 90% runoff, 90% efficiency, and 500 gal of empty storage.\n...\nPotential yield is about 606 gal; the tank captures 500 gal and roughly 106 gal requires managed overflow.\n...\nOne inch falling on one square foot is approximately 0.623 U.S. gallon. Therefore, a 1,000-square-foot catchment has a theoretical yield near 623 gallons. Real collection is lower because of roof wetting, first flush, gutter loss, leaks, splash, and system inefficiency.\n\n---\n\nTitle: Rainwater Collection Calculator: Gallons & Tank Size | Tallyard\nURL: https://www.tallyard.com/rainwater-calculator\nPublished: 2026-04-14T00:00:00.000Z\nAuthor: N/A\nHighlights:\nThe core formula\n...\nevery inch of rain on one square foot of roof produces 0.623 gallons. Multiply roof footprint by inches of rain to get theoretical gallons\n...\nActual yield depends on collection efficiency.\n...\nA 1,500 square foot roof in a place that gets 30 inches of rain a year sheds about 28,000 gallons. That water lands, runs down the gutters, and vanishes into the storm drain. All of it. A single rain barrel catches a thimbleful of it. A tank sized to your actual garden can catch enough to cut your summer water bill to almost nothing.\n...\nPeople underestimate this badly. An inch of rain sounds like nothing, a damp afternoon. But rain is measured as depth over an area, and roofs are large, so the volumes add up fast. One inch of rain falling on one square foot of roof is 0.623 gallons. That 0.623 is the number that runs every rainwater calculation, and it is just unit conversion: a square foot of surface, one inch deep, is 144 cubic inches of water, which works out to 0.623 gallons.\n...\nNow scale it to a real roof. One inch of rain on a 1,500 square foot roof is 1,500 times 0.623, which is 934 gallons. From one inch. On a 2,000 square foot roof, that same inch delivers about 1,246 gallons. So when the forecast says an inch of rain, your roof is quietly handling close to a thousand gallons, and if you have nowhere to put it, all of it runs off. That is the whole case for harvesting in a single number.\n...\nFor the sky, no, an inch is a routine soaking. For your roof, yes. An inch over an average house roof is roughly a thousand gallons, which is about eighteen full 55-gallon rain barrels. That gap between how small an inch sounds and how much water it actually is on a roof is exactly why a single barrel overflows in the first ten minutes of a real storm.\n...\nThe math is one line. Gallons equals roof area in square feet, times rainfall in inches, times 0.623. That is the theoretical maximum, the water that lands on the roof. What you actually capture is less, because real systems lose some along the way. Plan on catching 75 to 90 percent of the theoretical number once you account for the first-flush diverter throwing away the first rinse, a bit of gutter overflow in hard downpours, splash, and evaporation off a wet roof before the water reaches the tank.\n...\nA 1,800 square foot roof. Theoretical annual yield: 1,800 times 32 times 0.623, which is about 35,900 gallons a year. Apply an 85 percent real-world capture rate and you land near 30,500 usable gallons. Spread across a typical 200-day growing season, that is roughly 150 gallons a day of free irrigation water, which covers a large vegetable garden and a good stretch of landscape beds. The catch is timing: most of that water falls in a few big storms, so the question is never really the annual total. It is how much you can store between rains.\n...\nThis is where most first systems go wrong. People buy one 55-gallon barrel, feel good about it, and then watch it fill and overflow in\n...\nfirst ten minutes of the first storm. A barrel is a fine start for hand-watering a few beds. It is not a water supply. Size the storage to what you draw between rains, not to what feels tidy next to the house\n...\nRoughly 600 gallons per 1,000 sq ft of roof per inch of rain (at 85% efficiency). A 2,000 sq ft roof in a 40-inch annual rainfall region yields about 42,000 gallons per year - more than most households use for outdoor irrigation.\n...\nFor 1 inch of rain on 1,000 sq ft of roof catchment: about 530 gallons - 10 standard 55-gallon barrels, or 2 × 275-gal IBC totes. Most DIYers start with 1-2 barrels (55-110 gallons) because that's what a single downspout realistically fills.\n...\nA simple device that dumps the first 10-30 gallons of a storm to storage overflow instead of your collection tank. Those first gallons wash debris, pollen, and bird droppings off the roof. After the first flush, cleaner water enters storage. Adds about $50-100 to a basic system.",
+      "title": "Web search: many litres of rainwater did the roof of the old granary collect during last night s storm",
+      "metadata": {},
+      "time": {
+        "start": 1789527805314,
+        "end": 1789527807858
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.873Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527807873,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b577d001kp5eo2befsw9to",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b4c140015QCNKqxtyDrU5g",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8591,
+      "output": 228,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8819,
+      "headroom": 30037,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.875Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.876Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.879Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.880Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.882Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.882Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.882Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.882Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.883Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.883Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.895Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8819,
+  "providerTokens": 8819,
+  "estimatedInputTokens": 4756,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8591,
+    "cacheRead": 0,
+    "output": 228
+  },
+  "overflow": false,
+  "headroom": 30037,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.896Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.896Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.902Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:27.904Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:28.543Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527808543,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b5a1c001kWTPfJccaVfQyW",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b57970011AUiYm1N6RNjba",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:28.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:28.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527808544,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b5a200012RWYvnL4mnVSvl",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b57970011AUiYm1N6RNjba",
+    "type": "tool",
+    "callID": "call_d764e8321b9792a6",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:28.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527808544,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b5a1f001pXZip3lG2wueIM",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b57970011AUiYm1N6RNjba",
+    "type": "text",
+    "text": "Let me open https://www.halfhillfarm.com/2013/04/28/figure-out-how-many-gallons-of-rain-fell-on-your-barn/ and read what it says.",
+    "time": {
+      "start": 1789527808544,
+      "end": 1789527808544
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:28.544Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527808544,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b5a200012RWYvnL4mnVSvl",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b57970011AUiYm1N6RNjba",
+    "type": "tool",
+    "callID": "call_d764e8321b9792a6",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.halfhillfarm.com/2013/04/28/figure-out-how-many-gallons-of-rain-fell-on-your-barn/"
+      },
+      "time": {
+        "start": 1789527808544
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.714Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527812714,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b5a200012RWYvnL4mnVSvl",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b57970011AUiYm1N6RNjba",
+    "type": "tool",
+    "callID": "call_d764e8321b9792a6",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.halfhillfarm.com/2013/04/28/figure-out-how-many-gallons-of-rain-fell-on-your-barn/"
+      },
+      "output": "Figure out how many gallons of rain fell on your barn &#8211; Half Hill Farm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n\r\n\n\n\n\n\t\r\n\r\n\t\t\r\n\t\r\n    \t\r\n\r\n    \r\n\r\n    \r\n        \r\n                            \r\n                    \r\n                        \r\n                                110 West High Street Woodbury, TN 37190sales@halfhillfarm.com615-469-7778\r\n                                                \r\n                \r\n                            \r\n                    \r\n                        \r\n                                Tue - Fri 10 am to 6 pm | Sat - Mon 10 am to 4 pm\r\n\t\t\r\n\t\t\r\n\t\t\r\n                                                \r\n                \r\n                    \r\n    \r\n\r\n\r\n\r\n\t\r\n        \r\n        \t\r\n                                    \r\n                            \r\n            \r\n                \r\n            \r\n        \r\n        \r\n            Home\nAbout Us\nShop Online\nNews &#038; Info\nContact Us\nWholesale\nShop        \r\n    \r\n\r\n\r\n\t\r\n\r\n    \r\n        \r\n                            \r\n                    \r\n                        \r\n                                110 West High Street Woodbury, TN 37190sales@halfhillfarm.com615-469-7778\r\n                                                \r\n                \r\n                            \r\n                    \r\n                        \r\n                                Tue - Fri 10 am to 6 pm | Sat - Mon 10 am to 4 pm\r\n\t\t\r\n\t\t\r\n\t\t\r\n                                                \r\n                \r\n                    \r\n    \r\n\r\n\r\n\t\r\n\t\t\r\n\r\n\t\t\t\r\n\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\t\t\t\r\n\t\t\t\t\r\n\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\tHome\nAbout Us\nShop Online\nNews &#038; Info\nContact Us\nWholesale\n\t\t\t\t\t\t\r\n\t\t\t\t\t\tShop\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\r\n\t\t\r\n\t\r\n\r\n                           \r\n        \r\n            \r\n                Figure out how many gallons of rain fell on your barn            \r\n        \r\n    \r\n\r\n\r\n\r\n\r\n    \r\n        \r\n        \t\r\n\t\t\t\t                    \r\n    \r\n    \t\r\n            \r\n                \r\n                     Christian Grantham\r\n                     how to, irrigation\r\n                     Comments are off for this post.\r\n                \r\n            \r\n        \r\n                        \t                    \r\n\t\t\t\nIf you&#8217;ve ever wondered how many gallons of rain water fell on your roof or your property, here is some rain math I whipped up this morning to figure it out after a weekend of heavy rain:\n( ______ square feet  X  144 square inches )  X   _____ inches of rain / 231 cubic inches per gallon  =  _______ gallons of rain!\nKnowing how much rain you could collect from a barn or shed roof is important information to know, especially for a farm with irrigation needs. Just like the abundance of free solar energy, rain water is one of those amazing natural resources that literally hits us in the face while we barely even think about it.\nKnowing what natural resources are freely available to you is the first step toward harnessing and managing those resources into more sustainable living. This rain math tells me what size cisterns and pumps I would need. It also shows me how much municipal water we can save and understanding our impact on the Stones River watershed.\n        \r\n        \r\n        \t\r\n\t\t\t\tcalculatecisternconversionconvertfarmgallonsinchesorganicrainrain calculatorStones RiverTennesseewatershedWoodbury            \r\n            \r\n\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t\t\r\n\t\t\t\t\t\t            \r\n        \r\n    \r\n    \t\t\r\n\t\tPost navigation\r\n\r\n\t Using mycorrhizal fungi in organic farmingThe five little winters of Tennessee \r\n\t\t\t\r\n\t\r\n\t          \r\n                                    \r\n                        \t    \r\n        \r\n        \r\n    \t\r\n\t   Shop Mushroom Dual Extracts\t   \t   \r\n\t\r\n\r\n \tTurkey Tail Mushroom Dual Extract\r\n \tLion’s Mane Mushroom Dual Extract\r\n \tChaga Mushroom Dual Extract\r\n \tRed Reishi Mushroom Dual Extract\r\n \tCordyceps Mushroom Dual Extract\r\n \tFive Mushroom Dual Extract\r\n\r\n\r\n\r\nStay Connected\r\n\r\n \tCALL US: 615-469-7778\r\n \tShop our functional mushroom supplements online\r\n \tFollow us on Facebook\r\n \tFollow us on Instagram\r\n\r\n\r\nRecent PostsMushroom Supplement Serving Size Guide: How Much Should You Take?\n3 Ways Turkey Tail Mushrooms Support Healthy Immune Function\n4 Ways Red Reishi Mushrooms Support a Healthy Stress Response\n4 Ways Lion&#8217;s Mane Mushrooms Support Healthy Cognitive Function\n4 Ways Cordyceps Mushrooms Support Healthy Stamina\n\r\nSearchSearch\t\r\n        \r\n    \r\n\r\n\r\n\t\r\n\t\t            \r\n                \r\n                            \r\n\t\t\tWellness Emporium110 West High Street Woodbury, TN 37190(615) 469-7778sales@halfhillfarm.comTuesday - Friday 10am - 6pm | Saturday - Monday 10am - 4pm        \r\n        \r\n                    Shop Functional Mushroom Extracts\t\t\t\nTurkey Tail Mushroom Dual Extract\nLion’s Mane Mushroom Dual Extract\nChaga Mushroom Dual Extract\nRed Reishi Mushroom Dual Extract\nCordyceps Mushroom Dual Extract\nFive Mushroom Dual Extract\n\n\n\t\t\r\n                    Half Hill Farm®\t\t\tStay on your path to Better Health &amp; Well-Being. Shop Half Hill Farm Online\nCorporate Registration:\n&#8211; FDA FEI: #3012126107\n&#8211; DUNS: #059120502\n&#8211; USPTO Reg: #7610869\n&#8211; GS1 GLN: #0867202000302\n\n\t\t\r\n                \r\n            \r\n            \r\n\r\n\r\n\r\n    \r\n        \r\n            © Copyright 2026 Half Hill Farm®. All Rights Reserved.",
+      "title": "https://www.halfhillfarm.com/2013/04/28/figure-out-how-many-gallons-of-rain-fell-on-your-barn/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527808544,
+        "end": 1789527812714
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527812715,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6a6a0011wSjgWEvTf0TFc",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b57970011AUiYm1N6RNjba",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 27876,
+      "output": 257,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28133,
+      "headroom": 10723,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.715Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.715Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.716Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.716Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.716Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.716Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.716Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.716Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.719Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 28133,
+  "providerTokens": 28133,
+  "estimatedInputTokens": 5804,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 27876,
+    "cacheRead": 0,
+    "output": 257
+  },
+  "overflow": false,
+  "headroom": 10723,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.719Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.719Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.721Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.721Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.961Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527812961,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6b60001zfxyr0yasiRdZQ",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6a6f001yD3X99f2cxpgRL",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.961Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527812962,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6b61002F9nu7ZARkITXsI",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6a6f001yD3X99f2cxpgRL",
+    "type": "tool",
+    "callID": "call_ae76e8ea075968d7",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527812962,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6b61001Oijp4n0hl5GW27",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6a6f001yD3X99f2cxpgRL",
+    "type": "text",
+    "text": "Let me open https://www.pickshack.com/preparedness/food-water/rainwater-collection-calculator.html and read what it says.",
+    "time": {
+      "start": 1789527812962,
+      "end": 1789527812962
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:32.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527812962,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6b61002F9nu7ZARkITXsI",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6a6f001yD3X99f2cxpgRL",
+    "type": "tool",
+    "callID": "call_ae76e8ea075968d7",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.pickshack.com/preparedness/food-water/rainwater-collection-calculator.html"
+      },
+      "time": {
+        "start": 1789527812962
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.742Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527813742,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6b61002F9nu7ZARkITXsI",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6a6f001yD3X99f2cxpgRL",
+    "type": "tool",
+    "callID": "call_ae76e8ea075968d7",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.pickshack.com/preparedness/food-water/rainwater-collection-calculator.html"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789527812962,
+        "end": 1789527813741
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789527813742,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527813743,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6e6e001GBQ1z4d2otBvAJ",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6a6f001yD3X99f2cxpgRL",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 33478,
+      "output": 241,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33719,
+      "headroom": 5137,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.743Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.744Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.744Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.744Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.746Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 33719,
+  "providerTokens": 33719,
+  "estimatedInputTokens": 5834,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 33478,
+    "cacheRead": 0,
+    "output": 241
+  },
+  "overflow": false,
+  "headroom": 5137,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.746Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.746Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.747Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.748Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527813958,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6f45001kc8wFY1nlAAQec",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6e720014AKGJTI4yNO3G9",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527813958,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6f46001Kvoc17EtHewjXe",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6e720014AKGJTI4yNO3G9",
+    "type": "text",
+    "text": "The command failed: Error: Request failed with status code: 403\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+    "time": {
+      "start": 1789527813958,
+      "end": 1789527813958
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527813958,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "part": {
+    "id": "prt_0a82b6f46002xHm79fnX7KrtSS",
+    "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+    "messageID": "msg_0a82b6e720014AKGJTI4yNO3G9",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 33642,
+      "output": 212,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33854,
+      "headroom": 5002,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.959Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.959Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.960Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527813960,
+  "sessionID": "ses_f57d4b465ffeTdlTWM4G9BtxAj"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.961Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.961Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.961Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.961Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.qbak4uBLOa",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:03:33.961Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 9,
+  "message": "Agent exiting"
+}
+

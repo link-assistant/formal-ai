@@ -216,6 +216,10 @@ fn translate_markdown_to_html_routes_to_document_conversion() {
     );
 
     assert_eq!(response.intent, "document_format_conversion");
+    assert_eq!(
+        response.answer,
+        "Document format conversion via link-foundation/meta-language (meta_language).\nSource: Markdown; target: HTML.\nSupported document formats: txt, Markdown, HTML, PDF, DOCX.\nNative target concepts: heading, paragraph, bullet-list, ordered-list, list-item, strong, emphasis, hyperlink.\n\n```html\n<h1>Status</h1>\n<p>Visit <a href=\"https://example.com\">the site</a>.</p>\n```"
+    );
     assert!(
         response
             .answer

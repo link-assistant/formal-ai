@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://zh.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=isogram
+fetched_at=1789540440
+sha256=becbe09bb91419f937a4b359eeecd74aa2bb47443cb6110bffe253498189d9d6

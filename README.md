@@ -25,7 +25,7 @@ The current implementation covers the surface area requested in issue #1:
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
-**[VISION.md](VISION.md) is the standing guideline: read it before analysing, planning or concluding anything in this repository. Where any other document contradicts it, that document is wrong and must be fixed.** It is kept up to date from the architect's own notes, which are recorded in chronological order in [docs/architect-notes/](docs/architect-notes/). Project direction is tracked alongside it in [GOALS.md](GOALS.md) and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+**[VISION.md](VISION.md) is the standing guideline: read it before analysing, planning or concluding anything in this repository. Where any other document contradicts it, that document is wrong and must be fixed.** The mechanically checkable part of that rule is enforced: `scripts/check-issue-citations.rs` (run as the `docs_issue_citations` test) fails a document that cites a closed issue as open, and `tests/unit/docs_benchmarks.rs` fails a benchmark claim that diverges from the committed ledger. It is kept up to date from the architect's own notes, which are recorded in chronological order in [docs/architect-notes/](docs/architect-notes/). Project direction is tracked alongside it in [GOALS.md](GOALS.md) and [NON-GOALS.md](NON-GOALS.md). The design theses behind its linked transformation model are separated from mathematical and implementation claims in [docs/philosophy.md](docs/philosophy.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). Per-delivery traceability rows — which pull request delivered each requirement, which test pins it, and whether it is manually confirmed — live in [docs/requirements-traceability.md](docs/requirements-traceability.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
 Legal and provenance guidance starts with [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md). Focused guides explain the [Formal AI/language-model boundary](docs/legal/formal-ai-and-language-models.md), [public-domain dedication of AI-assisted output](docs/legal/public-domain-output.md), [candidate datasets](docs/legal/compatible-datasets.md), and [candidate locally transformable or distillable model families](docs/legal/distillable-models.md). Those dated matrices are source-review queues, not approvals; the machine-readable training registry remains authoritative.
 
@@ -99,7 +99,8 @@ including the reasoning-under-unknowns path (`src/solver_unknown_reasoning.rs`)
 and intent formalization (`src/intent_formalization.rs`), is documented in
 [VISION.md](VISION.md#universal-problem-solving-algorithm) and
 [ARCHITECTURE.md](ARCHITECTURE.md). How much of the vision is built versus still
-planned — including the open industry-benchmark coverage gap — is tracked in
+planned — including the benchmark floors still open (GSM8K, MATH, BIG-bench
+object counting, CoEdIT, and SWE-bench Lite) — is tracked in
 [ROADMAP.md](ROADMAP.md). Every benchmark suite the repository has ever touched
 is catalogued in [docs/benchmarks.md](docs/benchmarks.md), and the grounded
 meta-algorithm that reproduces a topic's Rust handler on demand is described in
@@ -1021,6 +1022,26 @@ assert_eq!(
 );
 ```
 
+## Measured Today
+
+Curated industry-suite slice: **13/13**, gated by a rising `minimum_pass_count` ratchet; the upstream suites the same solver runs score HumanEval 14/164 on the full slice (`--online`) and MBPP 49/500 cold-offline, with the 2026-09-15 first-20 rows (HumanEval 20/20, MBPP 20/20) kept as regression controls. Every number below is the latest committed row of [`data/benchmarks/external-results.lino`](data/benchmarks/external-results.lino) (latest run of 2026-09-18, solver `0.350.0`), rendered per suite in [docs/status.md](docs/status.md) and explained per slice in [docs/benchmarks.md](docs/benchmarks.md).
+
+| Suite | Slice | Passed / total |
+| --- | ---: | ---: |
+| HumanEval (`--online`, full slice) | 164 | 14 / 164 |
+| MBPP (cold-offline, full slice) | 500 | 49 / 500 |
+| HumanEval (first-20 control) | 20 | 20 / 20 |
+| MBPP (first-20 control, `--online`) | 20 | 20 / 20 |
+| GSM8K | 20 | 2 / 20 |
+| MATH | 20 | 0 / 20 |
+| BIG-bench object counting | 20 | 0 / 20 |
+| CoEdIT | 20 | 0 / 20 |
+| egg rewrite laws | 20 | 20 / 20 |
+| Ascent closure assertions | 5 | 5 / 5 |
+| SWE-bench Lite | 1 | 0 / 1 |
+
+A first-20 score is not a suite score and is never cited without its slice.
+
 ## Self-Development Share
 
 How much of each release the formal-ai model authored is recorded in
@@ -1035,6 +1056,11 @@ are outside both the numerator and the denominator. Earlier versions credited
 trailer-bearing commits produced by hosted models and counted case studies as
 authored work; their rows stay in the ledger as recorded, and the history is
 restated under version 3 beside them. A figure of 0.00% is an honest figure.
+The rendered current figure and its trend are generated from the ledger — never
+typed by hand — into [docs/status.md](docs/status.md) ("Latest self-hosting
+release") and into the status region at the end of this file; today they read
+`v0.350.0` at 171 basis points on the release basis and 389 basis points
+trailing, against a 267-basis-point target.
 
 ## Formal AI as a GitHub Action
 
@@ -1167,3 +1193,7 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as
 ```
 
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
+
+<!-- status:begin self-hosting -->
+Latest ledger row: `v0.350.0`; release share `171` basis points, trailing share `389` basis points, target `267` basis points.
+<!-- status:end self-hosting -->

@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/agentic_tool_capabilities.rs
   language rust
   fidelity signature
-  byte_len 1201
-  line_count 39
-  content_id source_module_727e97976d041ae3
+  byte_len 1633
+  line_count 46
+  content_id source_module_8c7abc2ee318c23e
   symbol_count 2
   symbols
-    struct AgenticToolCapability 7 11
-    function agentic_tool_capabilities 14 39
+    struct AgenticToolCapability 7 17
+    function agentic_tool_capabilities 20 46

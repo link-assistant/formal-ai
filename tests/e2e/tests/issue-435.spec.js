@@ -63,7 +63,7 @@ test.describe('Issue #435 - relative-date calendar request', () => {
     );
     const body = answer.locator('.markdown-body');
 
-    await expect(body).not.toContainText('Я тебя не понял');
+    await expect(body).not.toContainText('Мне не удалось тебя понять');
     await expect(body).not.toContainText('Я пока не знаю');
     // Title is derived from the event noun «созвон».
     await expect(body).toContainText('Созвон');

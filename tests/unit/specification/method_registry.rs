@@ -296,3 +296,207 @@ fn the_registry_is_the_sole_authority_that_closes_over_the_route_corpus() {
         );
     }
 }
+
+// ---------------------------------------------------------------------------
+// Issue #1138, plan 07 leaves 4-6 and plan 12 leaf 2: one registry, three
+// collections, one dispatch authority (R344).
+//
+// Plan 07 makes `learned_methods` executable at last precedence; plan 12 adds
+// `heuristics`, which are never route targets. Both grow the same struct, so
+// both are asserted here against the single declaration (plan 00 section 9 R16).
+//
+// Written before the leaves that make them pass (plan 14 wave T).
+
+use formal_ai::method_registry::{LearnedMethod, LearnedMethodStatus};
+use formal_ai::selection_heuristics::HeuristicRole;
+
+/// The one adopted learned record the shipped seed carries.
+const ADOPTED: &str = "learned_recursive_core_e17957243eaaf6db";
+
+fn shipped_method(registry: &MethodRegistry) -> &LearnedMethod {
+    registry
+        .learned_methods
+        .iter()
+        .find(|method| method.name == ADOPTED)
+        .expect("data/seed/learned-methods.lino carries the one adopted record")
+}
+
+#[test]
+fn an_adopted_learned_method_is_dispatchable() {
+    let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
+        .expect("learned-methods seed readable");
+    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+        .expect("an effect-qualified learned method loads");
+    let adopted = shipped_method(&registry);
+    assert_eq!(adopted.status, LearnedMethodStatus::Adopted);
+    assert!(
+        adopted.is_executable(),
+        "every operation of the adopted record is already a recorder event kind the \
+         recipe interpreter dispatches on, so it must bind"
+    );
+    assert!(
+        adopted.to_recipe_program().is_ok(),
+        "the learned operations project onto a recipe program; no second interpreter is \
+         written"
+    );
+
+    let relevants = vec![format!("method:{ADOPTED}")];
+    let ordered = registry.ordered_method_names_for_relevants(&relevants);
+    assert!(
+        ordered.iter().any(|name| name == ADOPTED),
+        "an adopted learned method must appear in the one ordered selection path, or it \
+         is knowledge nothing can reach: {ordered:?}"
+    );
+}
+
+#[test]
+fn learned_methods_rank_after_every_compiled_method() {
+    let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
+        .expect("learned-methods seed readable");
+    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+        .expect("an effect-qualified learned method loads");
+    let relevants = vec!["method:arithmetic".to_owned(), format!("method:{ADOPTED}")];
+    let ordered = registry.ordered_method_names_for_relevants(&relevants);
+    let learned_at = ordered.iter().position(|name| name == ADOPTED);
+    let Some(learned_at) = learned_at else {
+        panic!("the learned method must be reachable at all: {ordered:?}");
+    };
+    let compiled_names: Vec<&str> = registry
+        .methods
+        .iter()
+        .map(|method| method.name.as_str())
+        .collect();
+    for (index, name) in ordered.iter().enumerate() {
+        if compiled_names.contains(&name.as_str()) {
+            assert!(
+                index < learned_at,
+                "compiled method `{name}` ranks after the learned method; learned \
+                 methods are last, always (R331's signature and name are unchanged)"
+            );
+        }
+    }
+}
+
+#[test]
+fn an_ineffective_adoption_is_preserved_but_cannot_dispatch() {
+    let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
+        .expect("learned-methods seed readable")
+        .replace("status \"adopted\"", "status \"adopted_not_effective\"");
+    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+        .expect("the measured negative counterexample remains representable");
+    let method = shipped_method(&registry);
+    assert_eq!(method.status, LearnedMethodStatus::AdoptedNotEffective);
+    assert!(
+        method.is_executable(),
+        "the negative result is about effect, not binding"
+    );
+    let ordered = registry.ordered_method_names_for_relevants(&[format!("method:{ADOPTED}")]);
+    assert!(
+        !ordered.iter().any(|name| name == ADOPTED),
+        "changed-but-unverified experience is retained in the registry and never allowed to alter answers"
+    );
+}
+
+#[test]
+fn a_learned_method_with_an_unbound_operation_is_not_dispatched_and_is_named() {
+    // An operation that binds to no recorder makes the whole method
+    // non-executable; the method stays in the registry event as data and the
+    // unbound operation is named. Silent skipping is forbidden.
+    let seed = concat!(
+        "learned_method \"learned_unbound_wave_t\"\n",
+        "  algorithm_id \"algorithm_unbound_wave_t\"\n",
+        "  evidence_id \"evidence_unbound_wave_t\"\n",
+        "  operation \"need:status\"\n",
+        "  operation \"operation_that_binds_to_nothing\"\n",
+        "  support_trace_id \"trace_support_wave_t\"\n",
+        "  held_out_trace_id \"trace_held_out_wave_t\"\n",
+    );
+    let registry = MethodRegistry::from_dispatch_with_learned_seed(seed)
+        .expect("a syntactically valid learned record parses");
+    let unbound = registry
+        .learned_methods
+        .iter()
+        .find(|method| method.name == "learned_unbound_wave_t")
+        .expect("the record is present as data");
+    assert!(
+        !unbound.is_executable(),
+        "one unbound operation makes the method non-executable"
+    );
+    let error = unbound
+        .to_recipe_program()
+        .expect_err("an unbound operation cannot produce a program");
+    assert!(
+        error.contains("operation_that_binds_to_nothing"),
+        "the error must name the operation that did not bind, got {error:?}"
+    );
+
+    let relevants = vec!["method:learned_unbound_wave_t".to_owned()];
+    assert!(
+        !registry
+            .ordered_method_names_for_relevants(&relevants)
+            .iter()
+            .any(|name| name == "learned_unbound_wave_t"),
+        "a non-executable learned method is never dispatched"
+    );
+}
+
+#[test]
+fn an_answer_that_used_a_learned_method_says_so_in_the_trace() {
+    // Plan 07 leaf 5 adds the fourth loop to `ordered_method_names_for_relevants`
+    // plus the `method:learned` trace event, keeping the signature and the name
+    // unchanged (R331).
+    let source = fs::read_to_string(repo_root().join("src/method_registry.rs"))
+        .expect("method_registry.rs readable");
+    assert!(
+        source.contains("method:learned"),
+        "src/method_registry.rs must emit the `method:learned` trace event, so an answer \
+         that used a learned method says so"
+    );
+
+    let registry = MethodRegistry::from_dispatch();
+    let rendered = registry.to_links_notation();
+    assert!(
+        rendered.contains(ADOPTED),
+        "the registry event names the adopted learned method: {rendered}"
+    );
+}
+
+#[test]
+fn a_heuristic_is_never_returned_by_method_for_route() {
+    let registry = MethodRegistry::from_dispatch();
+    assert!(
+        !registry.heuristics.is_empty(),
+        "plan 12 leaf 2 loads data/meta/selection-heuristics.lino into the registry"
+    );
+    for heuristic in &registry.heuristics {
+        assert!(
+            registry.method_for_route(&heuristic.name).is_none(),
+            "`{}` is a heuristic, not a route target; a heuristic that answers a route \
+             is a second dispatch authority",
+            heuristic.name
+        );
+    }
+    let ranking = registry.heuristics_for(HeuristicRole::Rank, "");
+    assert!(
+        !ranking.is_empty(),
+        "the rank role must be seeded, since `least_action` is the migration identity"
+    );
+}
+
+#[test]
+fn the_registry_event_lists_every_heuristic_with_its_role_and_order() {
+    let registry = MethodRegistry::from_dispatch();
+    let rendered = registry.to_links_notation();
+    for heuristic in &registry.heuristics {
+        assert!(
+            rendered.contains(&heuristic.name),
+            "the registry event must list `{}`; one authority, one event",
+            heuristic.name
+        );
+    }
+    assert!(
+        rendered.contains("heuristic_count"),
+        "the event states how many heuristics the registry holds, beside the method and \
+         learned counts"
+    );
+}

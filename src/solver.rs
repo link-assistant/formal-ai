@@ -48,7 +48,7 @@ use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
     is_unbounded_loop, record_candidates, record_decomposition, record_validation,
-    requires_external_lookup,
+    unresolved_surfaces_present,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{UnknownReasoningConfig, answer_unknown_prompt};
@@ -324,9 +324,16 @@ impl UniversalSolver {
         // detection so every localizable handler renders in the requested
         // language. The guard restores the previous value when this function
         // returns, keeping nested replays balanced.
+        //
+        // Plan 10 leaf 15 (issue #724): a language the conversation has
+        // already established binds the same way — the demonstration or
+        // retarget that named it speaks for the turns that follow, until the
+        // user names another language. An explicit per-run forcing in the
+        // config is the stronger statement and wins.
         let _forced_language_guard = crate::language::set_forced_language(
             self.config
                 .forced_response_language
+                .or_else(|| crate::meta_method_dispatch::established_response_language(history))
                 .and_then(crate::language::from_slug),
         );
 
@@ -618,8 +625,9 @@ impl UniversalSolver {
             // Issue #513: recognize terminal-command requests (visible fix for
             // #511) before falling through to the unknown answer, so a shell
             // request returns an agent_suggestion intent in both engines.
-            if let Some(answer) =
-                crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
+            if crate::verifiable_task::recognise_verifiable(prompt).is_none()
+                && let Some(answer) =
+                    crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
             {
                 return answer;
             }
@@ -633,9 +641,19 @@ impl UniversalSolver {
             {
                 return answer;
             }
-            if requires_external_lookup(prompt) {
-                self.record_external_search(&mut log, prompt);
-            }
+            let senses = if unresolved_surfaces_present(
+                &crate::engine::normalize_prompt(prompt),
+                language.slug(),
+            ) {
+                crate::solver_search::record_external_search(
+                    &self.config,
+                    &mut log,
+                    prompt,
+                    language,
+                )
+            } else {
+                Vec::new()
+            };
             return answer_unknown_prompt(
                 prompt,
                 language,
@@ -644,6 +662,7 @@ impl UniversalSolver {
                     questioning_rigor: self.config.questioning_rigor,
                     offline: self.config.offline,
                 },
+                &senses,
             );
         }
 
@@ -656,12 +675,9 @@ impl UniversalSolver {
             }
             log.append(
                 "execution_status",
-                spec.language.execution.status.label().to_owned(),
+                spec.language.execution_status().label().to_owned(),
             );
-            log.append(
-                "execution_environment",
-                spec.language.execution.environment.to_owned(),
-            );
+            log.append("execution_environment", spec.language.environment());
             log.append("program_parameter:language", spec.language.slug.to_owned());
             log.append("program_parameter:task", spec.task.slug.to_owned());
             log.append("program_parameters", spec.parameter_summary());
@@ -869,18 +885,6 @@ impl UniversalSolver {
         let intent = format!("policy_{intent_slug}");
         let response_link = format!("response:policy:{intent_slug}");
         finalize_simple(prompt, log, &intent, &response_link, body, 0.5)
-    }
-
-    fn record_external_search(&self, log: &mut EventLog, prompt: &str) {
-        if self.config.offline {
-            log.append("search:external", "skipped:offline".to_owned());
-            return;
-        }
-        log.append("search:external", prompt.to_owned());
-        log.append(
-            "policy:no_fetch_capability",
-            "external search requested but no retrieval was executed".to_owned(),
-        );
     }
 }
 

@@ -5,7 +5,7 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::coding::composition;
-use crate::coding::concept_discovery::{CatalogFunction, ConceptMap, DiscoveryCatalog, discover};
+use crate::coding::concept_discovery::{CatalogFunction, ConceptMap, DiscoveryCatalog};
 use crate::coding::discovered_procedures::DiscoveredProcedureLedger;
 use crate::coding::function_catalog::oeis::discover_programs;
 use crate::coding::function_catalog::python_docs::{StdlibIndex, fetch_index};
@@ -20,14 +20,26 @@ use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
+/// Where every capture is read from and written to.
+///
+/// `FORMAL_AI_SOURCE_CACHE_DIR`, then `FORMAL_AI_CACHE_DIR`, then `data`. It is
+/// a function rather than three lines repeated per caller because the universal
+/// loop and the coding path must share one cache: two roots would be two
+/// different answers to the same question about the same word (issue #1138,
+/// plan 01 L11).
+#[must_use]
+pub fn source_cache_root() -> String {
+    std::env::var("FORMAL_AI_SOURCE_CACHE_DIR")
+        .or_else(|_| std::env::var("FORMAL_AI_CACHE_DIR"))
+        .unwrap_or_else(|_| String::from("data"))
+}
+
 pub fn discovery_catalog(
     spec: &CodingTaskSpec,
     log: &mut EventLog,
     live: bool,
 ) -> DiscoveryCatalog {
-    let cache_dir = std::env::var("FORMAL_AI_SOURCE_CACHE_DIR")
-        .or_else(|_| std::env::var("FORMAL_AI_CACHE_DIR"))
-        .unwrap_or_else(|_| String::from("data"));
+    let cache_dir = source_cache_root();
     let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(live);
     let stdlib = if live {
         fetch_index(&client).unwrap_or_default()
@@ -160,7 +172,7 @@ pub fn extend_with_sequence_programs(
     spec: &CodingTaskSpec,
     log: &mut EventLog,
     live: bool,
-) -> DiscoveryCatalog {
+) -> (DiscoveryCatalog, Vec<crate::coding::program_ir::ProgramIr>) {
     let cache_dir = std::env::var("FORMAL_AI_SOURCE_CACHE_DIR")
         .or_else(|_| std::env::var("FORMAL_AI_CACHE_DIR"))
         .unwrap_or_else(|_| String::from("data"));
@@ -169,18 +181,20 @@ pub fn extend_with_sequence_programs(
     for diagnostic in sequence_discovery.diagnostics {
         log.append("synthesis:source_miss", diagnostic);
     }
-    let source_candidates = sequence_discovery
-        .programs
-        .into_iter()
-        .map(|program| {
-            log.append(
-                "source:http",
-                format!(
-                    "url={};fetched_at={};sha256={};catalog_match={}",
-                    program.source_url, program.fetched_at, program.sha256, program.id
-                ),
-            );
-            crate::coding::concept_discovery::CandidatePart {
+    let mut source_candidates = Vec::new();
+    let mut programs = Vec::new();
+    for program in sequence_discovery.programs {
+        log.append(
+            "source:http",
+            format!(
+                "url={};fetched_at={};sha256={};catalog_match={}",
+                program.source_url, program.fetched_at, program.sha256, program.id
+            ),
+        );
+        if let Some(ir) = program.program_ir {
+            programs.push(ir);
+        } else {
+            source_candidates.push(crate::coding::concept_discovery::CandidatePart {
                 id: program.id,
                 kind: "source_program".to_owned(),
                 label: program.composition,
@@ -193,10 +207,10 @@ pub fn extend_with_sequence_programs(
                 sha256: program.sha256,
                 fetched_at: program.fetched_at,
                 score: 1.0,
-            }
-        })
-        .collect();
-    catalog.with_source_candidates(source_candidates)
+            });
+        }
+    }
+    (catalog.with_source_candidates(source_candidates), programs)
 }
 
 /// Discover candidate parts, compose them, and expand to sequence sources only
@@ -207,16 +221,120 @@ pub fn discover_and_compose(
     live: bool,
 ) -> (ConceptMap, composition::CompositionOutcome) {
     let mut catalog = discovery_catalog(spec, log, live);
-    let mut concepts = discover(spec, &catalog);
+    let mut concepts = discover_over_registry(spec, &catalog, log, live);
     let mut outcome = composition::compose(spec, &concepts);
     if outcome.selected.is_none() {
-        catalog = extend_with_sequence_programs(catalog, spec, log, live);
-        if !catalog.source_candidates.is_empty() {
-            concepts = discover(spec, &catalog);
+        let cache_dir = source_cache_root();
+        let client = CachedSourceClient::new(&cache_dir, CurlSourceTransport).with_online(live);
+        let ledger = crate::coding::fragment_catalog::FragmentLedger::new(&cache_dir);
+        let fragment_catalog = crate::coding::fragment_catalog::FragmentCatalog::bootstrap()
+            .with_rediscovered(&ledger);
+        let absent_seeds = crate::coding::fragment_catalog::FragmentCatalog::absent_seed_files(
+            crate::coding::fragment_catalog::bootstrap_seed_directory(),
+        );
+        if !absent_seeds.is_empty() {
+            log.append("bootstrap_absent", &absent_seeds.join(", "));
+        }
+        let lookup_bounds = crate::source_walk::LookupBounds::default();
+        let elaboration_bounds = crate::coding::program_ir::ElaborationBounds {
+            max_candidates: 64,
+            max_depth: 4,
+        };
+        let phrases = concepts
+            .needs
+            .iter()
+            .map(|need| need.phrase().to_owned())
+            .collect::<Vec<_>>();
+        let mut programs = Vec::new();
+        for phrase in phrases {
+            for (_, steps) in crate::procedure_text::retrieve_procedure(
+                &phrase,
+                &spec.prose_language,
+                &client,
+                &lookup_bounds,
+                log,
+            ) {
+                programs.extend(crate::coding::program_ir::elaborate(
+                    spec,
+                    &steps,
+                    &fragment_catalog,
+                    elaboration_bounds,
+                ));
+            }
+        }
+        programs.sort_by_key(crate::coding::program_ir::ProgramIr::content_id);
+        programs.dedup_by(|left, right| left.content_id() == right.content_id());
+        if !programs.is_empty() {
+            log.append(
+                "synthesis:procedure_elaboration",
+                format!("candidate_count={}", programs.len()),
+            );
+            outcome = composition::compose_with_ir(spec, &concepts, &fragment_catalog, programs);
+        }
+    }
+    if outcome.selected.is_none() {
+        let (extended, programs) = extend_with_sequence_programs(catalog, spec, log, live);
+        catalog = extended;
+        if !programs.is_empty() {
+            let cache_dir = source_cache_root();
+            let ledger = crate::coding::fragment_catalog::FragmentLedger::new(&cache_dir);
+            let fragments = crate::coding::fragment_catalog::FragmentCatalog::bootstrap()
+                .with_rediscovered(&ledger);
+            outcome = composition::compose_with_ir(spec, &concepts, &fragments, programs);
+        }
+        if outcome.selected.is_none() && !catalog.source_candidates.is_empty() {
+            concepts = discover_over_registry(spec, &catalog, log, live);
             outcome = composition::compose(spec, &concepts);
         }
     }
     (concepts, outcome)
+}
+
+/// Discover with the registry lookup under it, so a word the seed does not
+/// contain is *asked about* rather than skipped (issue #1138, plan 01 L10).
+///
+/// The lookup is the same one the universal loop builds — one cache root, one
+/// registry, one set of bounds — and every source it consulted is written to
+/// the event log, including the ones that could not serve the language, so an
+/// absent gloss stays attributable.
+pub fn discover_over_registry(
+    spec: &CodingTaskSpec,
+    catalog: &DiscoveryCatalog,
+    log: &mut EventLog,
+    live: bool,
+) -> ConceptMap {
+    let client =
+        CachedSourceClient::new(source_cache_root(), CurlSourceTransport).with_online(live);
+    let preferences = crate::how_to_guide::ServicePreferences::default();
+    let mut availability = crate::service_accessibility::ServiceAccessibilityCache::new(
+        std::path::Path::new(&source_cache_root()).join("cache/service-accessibility"),
+    );
+    let bounds = crate::source_walk::LookupBounds::default();
+    let now = crate::service_accessibility::unix_now();
+    let mut lookup = crate::concept_lookup::RegistrySourceLookup::new(
+        &client,
+        &preferences,
+        &mut availability,
+        bounds,
+        &spec.prose_language,
+        now,
+    );
+    let map = crate::coding::concept_discovery::discover_with_lookup(
+        spec,
+        catalog,
+        &mut lookup,
+        crate::coding::concept_discovery::DiscoveryBounds::default(),
+    );
+    for row in lookup.outcomes() {
+        log.append(
+            "concept_lookup:source",
+            format!(
+                "source={};status={};detail={}",
+                row.source_id, row.status, row.detail
+            ),
+        );
+    }
+    map
 }
 
 /// Preserve a verified artifact as a typed execution recipe so every agent

@@ -1,0 +1,27 @@
+--- cli error (claude-oauth) ---
+{"name": "ZodError", "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"}
+--- assistant text ---
+मैं इंटरनेट पर वाक्य quick brown fox e का लिपोग्राम है खोजता हूँ।
+--- step finish: tool-calls ---
+--- assistant text ---
+मैं https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog खोलकर उसकी सामग्री पढ़ता हूँ।
+--- step finish: tool-calls ---
+--- assistant text ---
+मैं https://dyn.urbit.org/urbit-news/the-quick-brown-fox-in-hindi-a-fun-translation-1764802323 खोलकर उसकी सामग्री पढ़ता हूँ।
+--- step finish: tool-calls ---
+--- assistant text ---
+मैं https://www.typequicker.com/typing-speed-test/quick-brown-fox खोलकर उसकी सामग्री पढ़ता हूँ।
+--- step finish: tool-calls ---
+--- assistant text ---
+↑ "Search for 'quick brown fox'". ↑ "The Fox Typewriter". title=The_quick_brown_fox_jumps_over_the_lazy_dog&amp;oldid=1371830068"
+
+Source: https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog
+
+AbortError: The operation was aborted.
+
+Source: https://dyn.urbit.org/urbit-news/the-quick-brown-fox-in-hindi-a-fun-translation-1764802323
+
+The Quick Brown Fox Typing Test | Pangram WPM TestTyping Speed TestQuick Brown Fox Typing TestQuick Brown Fox Typing TestType the famous pangram that contains every letter. It&#x27;s been the gold standard for typing practice since typewriter days.Why is the quick brown fox used for typing tests? The quick brown fox sentence is ideal for typing tests because it exercises all letters equally, helping you identify weak spots in your typing technique.
+
+Source: https://www.typequicker.com/typing-speed-test/quick-brown-fox
+--- step finish: stop ---

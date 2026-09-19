@@ -1,0 +1,1 @@
+Write a program in Zig that prints the sum of the numbers from one to ten, then actually compile and run it here and show me the real output.

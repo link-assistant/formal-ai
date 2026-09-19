@@ -35,7 +35,7 @@ does not reach.
 | #1088 (E110) | a fresh clone below 150 MB; a second repository | needs a repository that does not exist yet; its item 3 (#1072) landed here |
 | #1089 (E111) | `ls tests/unit \| grep -c docs_` at most 5, from 48 | a 43-file consolidation; its item 4 (a wall-clock ceiling) landed here |
 | #1090 (E112) | unconfirmed traceability rows below 100, from 716 | 716 manual confirmations |
-| #959 (E107) | handler ledger ratcheted, promotion predicates in seed | the ratchet landed (`kernel-ratchet.lino`); the seed migration is #1085 D1, in progress across many pushes |
+| #959 (E107) | handler ledger ratcheted, promotion predicates in seed | the ratchet landed (`data/meta/debt-ratchet.lino`, renamed from `kernel-ratchet.lino` on 2026-09-12); the seed migration is #1085 D1, in progress across many pushes |
 | #954 (E102) | `src/` reorganised into directory modules + generated module map | a repository-wide move |
 | #957 (E105) | three CI-enforced columns on every REQUIREMENTS.md row | 776 rows |
 

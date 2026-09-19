@@ -1,0 +1,1853 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.920Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.920Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए। --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.921Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.921Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.931Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.931Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.932Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.932Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.932Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.935Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.936Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.939Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7537,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.939Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.954Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.959Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 27,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.960Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:18:40.960Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.964Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.964Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.965Z",
+  "service": "session",
+  "id": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6",
+  "title": "New session - 2026-09-16T03:18:40.965Z",
+  "time": {
+    "created": 1789528720965,
+    "updated": 1789528720965
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.966Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.966Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.966Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.966Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.966Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c6b9baffeekafHJZZezt9BN/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.966Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c6b9baffeekafHJZZezt9BN/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.969Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c6b9baffeekafHJZZezt9BN/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.972Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.972Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.974Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.975Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.975Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.975Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.975Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.975Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.975Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.976Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.976Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.976Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.140Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.144Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.144Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.151Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.157Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.162Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.162Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.162Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.705Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528721705,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8394926001aBOOqYw7tYb7Lt",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83946f7001QbLOccipbgiQmY",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.705Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528721706,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8394929002rt7v4n4bfIfXWT",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83946f7001QbLOccipbgiQmY",
+    "type": "tool",
+    "callID": "call_388a1a1cb5a7101f",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528721706,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8394929001jVZPJ9BQEGLUUl",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83946f7001QbLOccipbgiQmY",
+    "type": "text",
+    "text": "मैं इंटरनेट पर आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए। खोजता हूँ।",
+    "time": {
+      "start": 1789528721706,
+      "end": 1789528721706
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:41.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528721706,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8394929002rt7v4n4bfIfXWT",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83946f7001QbLOccipbgiQmY",
+    "type": "tool",
+    "callID": "call_388a1a1cb5a7101f",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।"
+      },
+      "time": {
+        "start": 1789528721706
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.520Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528725520,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8394929002rt7v4n4bfIfXWT",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83946f7001QbLOccipbgiQmY",
+    "type": "tool",
+    "callID": "call_388a1a1cb5a7101f",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।"
+      },
+      "output": "Title: थ्बिलीसी, जॉर्जिया में समय अभी\nURL: https://time.is/hi/Tbilisi\nPublished: N/A\nAuthor: N/A\nHighlights:\n# थ्बिलीसी, जॉर्जिया में समय अभी\n...\n00:07:09\n...\nबुधवार, जुलाई 15, 2026, हफ्ते 29\n...\nसूर्य ↑ 05:38 ↓ 20:36 (14घं 58मि) -अधिक जानकारी-थ्बिलीसी को मूलभूत समय बनाओ-पसंदीदा स्थानों में जोड़ें\n...\n## थ्बिलीसी के लिए सूर्योदय, सूर्यास्त, दिन की लंबाई और सौर समय\n...\n- सूर्योदय: 05:38\n- सूर्यास्त: 20:36\n- दिन की लंबाई: 14घं 58मि\n- सौर दोपहर: 13:07\n- थ्बिलीसी में वर्तमान स्थानीय समय स्पष्ट सौर समय से 67 मिनट से आगे है।\n\n---\n\nTitle: त्बिलिसी से UTC समय परिवर्तक - Datetime360\nURL: https://datetime360.com/hi/tbilisi-utc-time/\nPublished: N/A\nAuthor: N/A\nHighlights:\nKUYT (समारा मानक समय)\n...\nत्बिलिसी\n...\n20:41 06 pm\n...\nशनिवार, अगस्त 8, 2026\n...\nGMT+4 UTC +4\n...\n41 06\n...\n8,\n...\n## त्बिलिसी और UTC के बीच बैठक\n...\nत्बिलिसी: सोम, अग॰ 10 14:00–15:00\n...\nत्बिलिसी: सोम, अग॰ 10 13:00–14:00\n...\n## KUYT (समारा मानक समय)\n...\nत्बिलिसी · जॉर्जिया · KUYT\n...\n: UTC +4\n\n---\n\nTitle: Current time in Tbilisi with seconds - Georgia - Clocks.world\nURL: https://clocks.world/time/georgia/tbilisi/\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Tbilisi\n\n 9:25 p.m. Aug. 15, 2026\n...\n## Local time in Tbilisi\n\n The time in Tbilisi is 4 hours ahead of UTC and 9 hours ahead of Abbeville. The timezone in Tbilisi is Georgia Standard Time (GET). Tbilisi is not using Daylight Saving Time (DST) but used to in the past. The last DST transition was in 2005. \n\n### Details for the\n...\n| Current time | 9:25 p.m. |\n| --- | --- |\n| Time zone | Georgia Standard Time (GET) |\n| IANA time zone | Asia/Tbilisi |\n| Your time difference | 9 hours ahead of Abbeville |\n| UTC time difference | UTC+4 4 hours ahead of UTC |\n...\nTbilisi is not using Daylight\n\n---\n\nTitle: जॉर्जिया में वर्तमान समय\nURL: https://hi.true-time.com/ge/\nPublished: N/A\nAuthor: सटीक समय\nHighlights:\n## जॉर्जिया\n...\nप्रयोग किया जा रहा है राजधानी त्बिलिसी का समय क्षेत्र\n\n समय प्रारूप: 24h 12h \n\n 05:52: 33 PM \n\n शुक्रवार, 12 जून 2026 \n\n मानचित्र पर जॉर्जिया \n\nग्लोब पर जॉर्जिया\n\n---\n\nTitle: जॉर्जिया को सही समय पर कॉल करें - +995 समय क्षेत्र गाइड टूल\nURL: https://www.teloz.com/hi/country-code/georgia/best-time-to-call/\nPublished: N/A\nAuthor: Abubakar Tanwar\nHighlights:\n🇬🇪जॉर्जिया+995 Tbilisi · UTC+4\n...\nकोशिश प्रातः 9:00 – 11:00 बजे या 2:00 - 5:00 अपराह्न में Tbilisi - वह है 10:00 AM – 12:00 PM आपका स्थानीय समय.\n...\nGeorgia uses one time zone, UTC+4, set by Tbilisi. Use the live time below to plan your call.\n...\nTbilisi (Capital) Tbilisi UTC+4 4:00\n...\n1. 1अपना निकास कोड डायल करें - यूएस से 011, अधिकांश यूरोप से 00।\n2. 2 Add the Georgia country code: +995.\n3. 3किसी भी क्षेत्र कोड सहित स्थानीय नंबर दर्ज करें।\n4. 4कॉल दबाएँ और पहले समय क्षेत्र जाँचें।\n...\n- 9:00 AM – 11:00 AM in Tbilisi. Most people are at their desk.\n- 2:00 PM – 5:00 PM in Tbilisi. A productive mid-afternoon slot.\n- स्थानीय समयानुसार सुबह 8 बजे से पहले या रात 8 बजे के बाद कॉल करने से बचें।\n- व्यावसायिक कॉल के लिए सप्ताहांत की तुलना में सप्ताह के दिन बेहतर काम करते हैं।\n...\nAM–1\n...\n0–6:\n...\nand reaching professionals\n\n---\n\nTitle: त्बिलिसी से IST समय परिवर्तक - Datetime360\nURL: https://datetime360.com/hi/tbilisi-ist-time/\nPublished: N/A\nAuthor: N/A\nHighlights:\nKUYT (समारा मानक समय)\n...\nत्बिलिसी\n...\n20:43 22 pm\n...\nशनिवार, अगस्त 8, 2026\n...\nGMT+4 UTC +4\n...\nIST (भारतीय मानक समय)\n...\n22:13 22 pm\n...\nशनिवार, अगस्त 8, 2026\n...\nIST UTC +5:30\n...\n## त्बिलिसी और IST के बीच बैठक योजनाकार\n...\nत्बिलिसी और IST के बीच कॉल करने का सबसे अच्छा समय\n...\nसोम, अग॰ 10, 2026\n...\nत्बिलिसी: सोम, अग॰ 10 09:00–10:00\n...\nIST: सोम, अग॰ 10 10:30–11:30\n...\nत्बिलिसी: सोम, अग॰ 10 09:30–10:30\n...\nIST: सोम, अग॰ 10 11:00–12:00\n...\nत्बिलिसी: सोम, अग॰ 10 14:00–15:00\n...\n## KUYT (समारा मानक समय)\n...\n(भारतीय मानक\n\n---\n\nTitle: Tbilisi time to Detroit time conversion\nURL: https://24timezones.com/difference/tbilisi/detroit\nPublished: N/A\nAuthor: N/A\nHighlights:\nTbilisi\n--:--\n:--\nㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ=\nDetroit\n--:--\n:--\nㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤDetroit, United States time is 8:00 hours behind Tbilisi, Georgia\n**Time Converter\n## Tbilisi time to Detroit time converter\niDrag the handle or click on a cell to convert time\nToday\n-\n...\n[Tbilisi](https://24timezones.com/Tbilisi/time)[-](#)\n[Detroit](https://24timezones.com/Detroit/time)[-](#)\n...\ntime to call from Tbilisi to Detroit\n...\nWhen planning a call between Tbilisi and Detroit, you need to consider that the cities are in different time zones. Tbilisi is 8 hours ahead of Detroit.\n...\nIf you are in Tbilisi, the most convenient time to accommodate all parties is between 5:00 pm and 6:00 pm for a conference call or meeting. In Detroit, this will be a usual working time of between 9:00 am and 10:00 am.\n...\nIf you want to reach out to someone in Detroit and you are available anytime, you can schedule a call between 3:00 pm and 7:00 am your time. This time span will be between 7:00 am and 11:00 pm Detroit time.\n...\nQuickly and easily compare or convert Tbilisi time to Detroit time, or the other way around, with the help of this time converter. Below, you can see the complete table of the conversions between Tbilisi and Detroit.\n\n---\n\nTitle: Tbilisi Time to EST Converter\nURL: https://www.worldtimebuddy.com/georgia-tbilisi-to-est\nPublished: N/A\nAuthor: N/A\nHighlights:\n# Converting Tbilisi Time to EST\n...\ntime zone converter\n...\nconvert Tbilisi, Georgia time\n...\nEST and vice-versa\n...\nSimply mouse over\n...\nand glance at the hours\n...\nby the column\n...\nEST is known as Eastern Standard Time. EST is 8 hours behind Tbilisi, Georgia time. So, when it is \n\n it will be \n\n# Getting Started\n...\n| Tbilisi, Georgia ( in Tbilisi) to Eastern Standard Time (EST) | | |\n| --- | --- | --- |\n| 12 am in Tbilisi | is | 4 pm EST |\n| 1 am in Tbilisi | is | 5 pm EST |\n| 2 am in Tbilisi | is | 6 pm EST |\n| 3 am in Tbilisi | is | 7 pm EST |\n| 4 am in Tbilisi | is | 8 pm EST |\n| 5 am in Tbilisi | is | 9 pm EST |\n| 6 am in Tbilisi | is | 10 pm EST |\n| 7 am in Tbilisi | is | 11 pm EST |\n| 8 am in Tbilisi | is | 12 am EST |\n| 9 am in Tbilisi | is | 1 am EST |\n| 10 am in Tbilisi | is | 2 am EST |\n| 11 am in Tbilisi | is | 3 am EST |\n...\n| Tbilisi, Georgia ( in Tbilisi) to Eastern Standard Time (EST) | | |\n| --- | --- | --- |\n| 12 pm in Tbilisi | is | 4 am EST |\n| 1 pm in Tbilisi | is | 5 am EST |\n| 2 pm in Tbilisi | is | 6 am EST |\n| 3 pm in Tbilisi | is | 7 am EST |\n| 4 pm in Tbilisi | is | 8 am EST |\n| 5 pm in Tbilisi | is | 9 am EST |\n| 6 pm in Tbilisi | is | 10 am EST |\n| 7 pm in Tbilisi | is | 11 am EST |\n| 8 pm in Tbilisi | is | 12 pm EST |\n| 9 pm in Tbilisi | is | 1 pm EST |\n| 10 pm in Tbilisi | is | 2 pm EST |\n| 11 pm in Tbilisi | is | 3 pm EST |",
+      "title": "Web search: आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।",
+      "metadata": {},
+      "time": {
+        "start": 1789528721706,
+        "end": 1789528725519
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.522Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528725522,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395812001OiL7FO36WnoPA0",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83946f7001QbLOccipbgiQmY",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8560,
+      "output": 175,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8735,
+      "headroom": 30121,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.523Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.523Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.524Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.524Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.525Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.525Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.525Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.526Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.526Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.526Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.530Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8735,
+  "providerTokens": 8735,
+  "estimatedInputTokens": 2415,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8560,
+    "cacheRead": 0,
+    "output": 175
+  },
+  "overflow": false,
+  "headroom": 30121,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.530Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.530Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.532Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:45.533Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.277Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528726277,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395b030010KLkjhSr3mVRdL",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a839581a0013miBwFjjjzAn8M",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.279Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528726280,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395b07001R105nRYmEbcwRu",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a839581a0013miBwFjjjzAn8M",
+    "type": "tool",
+    "callID": "call_47137e5cfbade36b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528726280,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395b05001lD1pgEgMcXtmDk",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a839581a0013miBwFjjjzAn8M",
+    "type": "text",
+    "text": "मैं https://time.is/hi/Tbilisi खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528726280,
+      "end": 1789528726280
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.280Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528726280,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395b07001R105nRYmEbcwRu",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a839581a0013miBwFjjjzAn8M",
+    "type": "tool",
+    "callID": "call_47137e5cfbade36b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://time.is/hi/Tbilisi"
+      },
+      "time": {
+        "start": 1789528726280
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528726922,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395b07001R105nRYmEbcwRu",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a839581a0013miBwFjjjzAn8M",
+    "type": "tool",
+    "callID": "call_47137e5cfbade36b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://time.is/hi/Tbilisi"
+      },
+      "output": "थ्बिलीसी, जॉर्जिया में समय अभी - Time.is\n\n\n\n\n\n×\n\n\n\nTime.is\n\n\n\n\n\n\n\n\n\n\n\n\n\nथ्बिलीसी, जॉर्जिया में समय अभी&nbsp;&nbsp;07:18:46बुधवार, सितम्बर 16, 2026, हफ्ते 38International Day for the Preservation of the Ozone Layerसूर्य &uarr; 06:40 &darr; 19:11 (12घं 30मि) - अधिक जानकारी - थ्बिलीसी को मूलभूत समय बनाओ - पसंदीदा स्थानों में जोड़ें\nटोक्यो12:18बीजिंग11:18पैरिस05:18लंदन04:18न्यूयॉर्क23:18लॉस एंजेलिस20:18अधिक\n\n\n\nTime zone info for थ्बिलीसी\nUTC +4\nGeorgia Standard Time (GET)\nalways 3 घंटे behind Ho Chi Minh City\n\n\n\n\n\nथ्बिलीसी does not change between summer time and winter time.थ्बिलीसी के लिए IANA समय क्षेत्र पहचानकर्ता Asia/Tbilisi है।\n\n\n\n\nसमय का अंतर थ्बिलीसी से\nलॉस एंजेलिस−11 घंटे−11 घंटे\nशिकागो−9 घंटे−9 घंटे\nटोरण्टो−8 घंटे−8 घंटे\nन्यूयॉर्क−8 घंटे−8 घंटे\nसाओ पाउलो−7 घंटे−7 घंटे\nUTC−4 घंटे−4 घंटे\nलंदन−3 घंटे−3 घंटे\nलागोस−3 घंटे−3 घंटे\nज़्यूरिख़−2 घंटे−2 घंटे\nजोहान्सबर्ग−2 घंटे−2 घंटे\nपैरिस−2 घंटे−2 घंटे\nCairo−1 घंटे−1 घंटे\nIstanbul−1 घंटे−1 घंटे\nमास्को−1 घंटे−1 घंटे\nदुबई0\nबम्बई+1.5 घंटे\nShanghai+4 घंटे\nसिंगापुर+4 घंटे\nहाँग काँग+4 घंटे\nटोक्यो+5 घंटे\nसिडनी+6 घंटे\n\n\n\n\nअन्य समय क्षेत्रों की तुलना करें\n\nथ्बिलीसी के लिए सूर्योदय, सूर्यास्त, दिन की लंबाई और सौर समय\nसूर्योदय: 06:40सूर्यास्त: 19:11दिन की लंबाई: 12घं 30मिसौर दोपहर: 12:56थ्बिलीसी में वर्तमान स्थानीय समय स्पष्ट सौर समय से 56 मिनट से आगे है।\n\n\n\nनक़्शे पर थ्बिलीसी\nथ्बिलीसी जॉर्जिया की राजधानी है।अक्षांश: 41.69. देशान्तर: 44.83जन - संख्य: 1,049,000\nथ्बिलीसी का बड़ा नक्शा दिखाएं\n\n\n\n\n\nजॉर्जिया में 24 सबसे बड़े शहर\nAkhalts'ikhe Batumi Borjomi Gori K'obulet'i Kaspi Khashuri Kutaisi Marneuli Och'amch'ire Ozurget'i Poti Rustavi Samtredia Senaki Stantsiya Novyy Afon Sukhumi, अबख़ाज़िया Telavi Tkuarchal Ts'khinvali Tsqaltubo Zestaponi Zugdidi थ्बिलीसी \n\n\n\n×\n\n\n\nTime.is - किसी भी समय क्षेत्र का ठीक समय\nसही समयसमय यहाँ-वहाँyour time zoneसमय क्षेत्रडेलाइट सेविंग टाइमसिर्फ समयउल्टी गिनतीtimerकैलेंडरcompact calendarweek numberध्वनिएप्लिकेशनविजेट्ससमय क्षेत्र समाचारसमाचार पत्रUTCUnix घड़ीUnix समय कनवर्टरबदलेंTime.is Ad-freeसामान्य प्रश्नhow to use Time.isके बारे मेंहमसे संपर्क करेंविज्ञापनइस्तेमाल की शर्तेंगोपनीयता नीति\n\n\n\n\n\n\nTime.is किसी भी समय क्षेत्र के लिए सही, परमाणु घडी का समय दिखता है (7 लाख से भी अधिक स्थान) 58 भाषाओँ में.\n\n\nWhat time is it?\n几点了？\nक्या समय हुआ है?\n¿Qué hora es?\nQuelle heure est-il ?\nكم الساعة\nএখন কয়টা বাজে?\nКоторый час?\nQue horas são?\nJam berapa?\nWieviel Uhr ist es?\n今何時ですか？\nSaat kaç?\nஎன்ன நேரம்?\n؟ےہ اوہ تقو ایک\n&gg; more languages",
+      "title": "https://time.is/hi/Tbilisi (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528726280,
+        "end": 1789528726922
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.922Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528726922,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395d8a001UDlLREza7jUYAv",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a839581a0013miBwFjjjzAn8M",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 15247,
+      "output": 120,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15367,
+      "headroom": 23489,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.923Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.923Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.924Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.924Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.924Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.924Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.927Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 15367,
+  "providerTokens": 15367,
+  "estimatedInputTokens": 3365,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 15247,
+    "cacheRead": 0,
+    "output": 120
+  },
+  "overflow": false,
+  "headroom": 23489,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.927Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.928Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:46.929Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528727298,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395f01001y14yclCAh51u63",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a8395d8f0015HA6W7n046ScuZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528727298,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395f02002In17BSpSEJ81BD",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a8395d8f0015HA6W7n046ScuZ",
+    "type": "tool",
+    "callID": "call_60b15ac7f5a8f0c9",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528727299,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395f020016J2LO3mS14tYVi",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a8395d8f0015HA6W7n046ScuZ",
+    "type": "text",
+    "text": "मैं https://datetime360.com/hi/tbilisi-utc-time/ खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789528727298,
+      "end": 1789528727298
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528727299,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395f02002In17BSpSEJ81BD",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a8395d8f0015HA6W7n046ScuZ",
+    "type": "tool",
+    "callID": "call_60b15ac7f5a8f0c9",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://datetime360.com/hi/tbilisi-utc-time/"
+      },
+      "time": {
+        "start": 1789528727299
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.571Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528727571,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8395f02002In17BSpSEJ81BD",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a8395d8f0015HA6W7n046ScuZ",
+    "type": "tool",
+    "callID": "call_60b15ac7f5a8f0c9",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://datetime360.com/hi/tbilisi-utc-time/"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789528727299,
+        "end": 1789528727570
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528727571,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.572Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528727572,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a83960140013ARzAnwJe65D65",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a8395d8f0015HA6W7n046ScuZ",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 17734,
+      "output": 156,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 17890,
+      "headroom": 20966,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.572Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.572Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.573Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.573Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.574Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.574Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.574Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.574Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.574Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.574Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.575Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 17890,
+  "providerTokens": 17890,
+  "estimatedInputTokens": 3388,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 17734,
+    "cacheRead": 0,
+    "output": 156
+  },
+  "overflow": false,
+  "headroom": 20966,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.576Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.576Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.577Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:47.577Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.061Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528728061,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a83961f6001mvUaX2dPC8pmIl",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83960170016x0Bd2qWwJolza",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.062Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.064Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528728064,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a83961fe001pkuufE0768nJQc",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83960170016x0Bd2qWwJolza",
+    "type": "text",
+    "text": "कमांड विफल रही: Error: Request failed with status code: 403\n\nइस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप चाहेंगे कि मैं diagnostic context के साथ issue report तैयार करूँ? जवाब दें: `Report issue`.",
+    "time": {
+      "start": 1789528728062,
+      "end": 1789528728062
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.065Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528728065,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "part": {
+    "id": "prt_0a8396200001uEaHkXwRLKeLJh",
+    "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+    "messageID": "msg_0a83960170016x0Bd2qWwJolza",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 17855,
+      "output": 207,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 18062,
+      "headroom": 20794,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.065Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.065Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.066Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.067Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.067Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.067Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.067Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.067Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.068Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.068Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.068Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.068Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528728068,
+  "sessionID": "ses_f57c6b9baffeekafHJZZezt9BN"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.068Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.069Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.069Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.069Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.JxRTZAFeM6",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:48.069Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

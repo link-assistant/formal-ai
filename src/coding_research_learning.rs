@@ -848,3 +848,45 @@ fn parse_usize(node: &LinoNode, name: &str) -> Result<usize, CodingResearchError
         .parse::<usize>()
         .map_err(|_| error(format!("coding_research_invalid_{name}")))
 }
+
+/// Accept an extracted procedure as a second typed input shape, under the same
+/// execution + review gate the researched path already passes through (issue
+/// #1138, plan 04 L10).
+///
+/// A procedure that has not been executed, or whose license forbids commercial
+/// reuse, is shown to the user but refused for promotion; the refusal names the
+/// license it refused on.
+pub fn adopt_extracted_procedure(
+    procedure: &crate::formalization::procedures::ExtractedProcedure,
+    execution: Option<&CodingResearchExecution>,
+    approval: &CodingResearchApproval,
+) -> Result<ResearchedCodingProcedure, CodingResearchError> {
+    if license_forbids_commercial_reuse(&procedure.license_name) {
+        return Err(error(format!(
+            "coding_research_license_forbids_promotion:{}",
+            procedure.license_name
+        )));
+    }
+    let Some(execution) = execution else {
+        return Err(error("coding_research_execution_missing"));
+    };
+    if !approval.granted || approval.reviewer.trim().is_empty() {
+        return Err(error("coding_research_human_approval_required"));
+    }
+
+    // The legacy execution record names a researched workspace rewrite, not
+    // the individual ordered steps it ran. Accepting it as proof for a
+    // different extracted procedure would manufacture verification. Until the
+    // shared execution-evidence record can name every step, require exact
+    // content identity and otherwise keep the candidate proposal-only.
+    if execution.procedure_id != procedure.id {
+        return Err(error("coding_research_execution_procedure_mismatch"));
+    }
+    Err(error("coding_research_execution_step_evidence_missing"))
+}
+
+fn license_forbids_commercial_reuse(license: &str) -> bool {
+    license
+        .split(|character: char| !character.is_ascii_alphanumeric())
+        .any(|component| component.eq_ignore_ascii_case("nc"))
+}

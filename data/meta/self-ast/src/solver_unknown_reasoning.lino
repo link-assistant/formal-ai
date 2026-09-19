@@ -2,34 +2,38 @@ self_ast_census
   target src/solver_unknown_reasoning.rs
   language rust
   fidelity signature
-  byte_len 16490
-  line_count 504
-  content_id source_module_7247b643c915b753
-  symbol_count 26
+  byte_len 20968
+  line_count 645
+  content_id source_module_5b7942a945b29f96
+  symbol_count 30
   symbols
-    const FOCUS_PLACEHOLDER 19 19
-    struct UnknownReasoningConfig 22 25
-    function answer_unknown_prompt 27 110
-    function record_initial_unknown_trace 112 140
-    function answer_unresolved_unknown 142 159
-    function answer_with_legacy_fallback 161 181
-    function answer_from_link_memory 183 220
-    function answer_from_public_knowledge_cache 222 266
-    function public_concepts 268 271
-    static CELL 269 269
-    function public_concept_candidate_terms 273 300
-    function concept_candidate_surfaces 302 312
-    function render_concept_plain 314 334
-    function concept_source 336 342
-    function render_source_link 344 351
-    function render_unresolved_unknown 353 361
-    function localized_seed_response 363 366
-    function infer_missing_focus 368 398
-    function is_unresolved_bare_term_prompt 400 412
-    function extract_question_subject 414 438
-    function tail_after_marker 440 444
-    function extract_memory_fact 446 462
-    function split_fact_statement 464 475
-    function clean_focus 477 483
-    function normalize_fact_subject 485 493
-    function normalize_search_surface 495 504
+    const FOCUS_PLACEHOLDER 20 20
+    struct UnknownReasoningConfig 23 26
+    function answer_unknown_prompt 28 119
+    function answer_from_retrieved_senses 121 165
+    function disabled_notes 170 195
+    function payload_field 198 205
+    function answer_from_concept_lookup_miss 211 251
+    function record_initial_unknown_trace 253 281
+    function answer_unresolved_unknown 283 300
+    function answer_with_legacy_fallback 302 322
+    function answer_from_link_memory 324 361
+    function answer_from_public_knowledge_cache 363 407
+    function public_concepts 409 412
+    static CELL 410 410
+    function public_concept_candidate_terms 414 441
+    function concept_candidate_surfaces 443 453
+    function render_concept_plain 455 475
+    function concept_source 477 483
+    function render_source_link 485 492
+    function render_unresolved_unknown 494 502
+    function localized_seed_response 504 507
+    function infer_missing_focus 509 539
+    function is_unresolved_bare_term_prompt 541 553
+    function extract_question_subject 555 579
+    function tail_after_marker 581 585
+    function extract_memory_fact 587 603
+    function split_fact_statement 605 616
+    function clean_focus 618 624
+    function normalize_fact_subject 626 634
+    function normalize_search_surface 636 645

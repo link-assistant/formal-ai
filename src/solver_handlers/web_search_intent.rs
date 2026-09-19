@@ -18,12 +18,12 @@ use crate::coding::contains_cjk;
 use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::normalize_prompt;
 use crate::seed::{
-    self, Slot, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY, ROLE_CAPABILITY_QUERY_MORE,
-    ROLE_NON_REFERENTIAL_SUBJECT, ROLE_SELF_INTRODUCTION_REQUEST,
+    self, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY, ROLE_CAPABILITY_QUERY_MORE,
+    ROLE_NON_REFERENTIAL_SUBJECT, ROLE_SELF_INTRODUCTION_REQUEST, Slot,
 };
 
 use super::web_requests::normalize_url_candidate;
-use crate::web_search_markers::{markers, WebSearchMarkers};
+use crate::web_search_markers::{WebSearchMarkers, markers};
 
 /// Keep a schemeless local filename from becoming a synthetic HTTPS host.
 ///
@@ -204,7 +204,7 @@ fn is_personal_fact_filter_request(normalized: &str) -> bool {
         || normalized.contains("my facts")
 }
 
-fn clean_search_query(value: &str) -> String {
+pub(crate) fn clean_search_query(value: &str) -> String {
     value
         .trim()
         .trim_matches(is_url_wrapper_punctuation)
@@ -266,9 +266,10 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     }
     for &marker in &markers.topic_before_markers {
         if let Some(index) = normalized.find(marker)
-            && let Some(query) = valid_search_query(&normalized[..index]) {
-                return Some(query);
-            }
+            && let Some(query) = valid_search_query(&normalized[..index])
+        {
+            return Some(query);
+        }
     }
     if let Some(query) = imperative_candidate
         .filter(|candidate| !states_when_to_search(candidate))
@@ -360,9 +361,10 @@ fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {
     let markers = markers();
     for &prefix in &markers.explicit_prefixes {
         if let Some(query) = normalized.strip_prefix(prefix)
-            && let Some(query) = valid_search_query(query) {
-                return Some(query);
-            }
+            && let Some(query) = valid_search_query(query)
+        {
+            return Some(query);
+        }
     }
     for &(prefix, suffix) in &markers.explicit_circumfixes {
         if let Some(candidate) = normalized.strip_prefix(prefix).and_then(|rest| {
@@ -370,20 +372,20 @@ fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {
                 rest.trim_end_matches(is_url_trailing_punctuation)
                     .strip_suffix(suffix)
             })
-        })
-            && let Some(query) = valid_search_query(candidate) {
-                return Some(query);
-            }
+        }) && let Some(query) = valid_search_query(candidate)
+        {
+            return Some(query);
+        }
     }
     for &suffix in &markers.explicit_suffixes {
         if let Some(query) = normalized.strip_suffix(suffix).or_else(|| {
             normalized
                 .trim_end_matches(is_url_trailing_punctuation)
                 .strip_suffix(suffix)
-        })
-            && let Some(query) = valid_search_query(query) {
-                return Some(query);
-            }
+        }) && let Some(query) = valid_search_query(query)
+        {
+            return Some(query);
+        }
     }
     None
 }
@@ -582,7 +584,10 @@ fn extract_externally_verifiable_question(prompt: &str, normalized: &str) -> Opt
     // Never poach a prompt the solver resolves locally: a seeded concept, a
     // self-introduction / capability question, or a documentation rule (issue
     // #1101 -- the rule decides, not English's `does`) keeps its own handler.
-    if concept_lookup_resolves(prompt) || term_information_prompt_is_local_context(normalized) || crate::rule_interpreter::handler_matches("docs_method_explanation", prompt) {
+    if concept_lookup_resolves(prompt)
+        || term_information_prompt_is_local_context(normalized)
+        || crate::rule_interpreter::handler_matches("docs_method_explanation", prompt)
+    {
         return None;
     }
     // The residual subject, once the question opener is removed, must be a real

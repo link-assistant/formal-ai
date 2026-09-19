@@ -24,6 +24,19 @@ use walkdir::WalkDir;
 
 const LEDGER_PATH: &str = "data/meta/core-boundary-ledger.lino";
 const HANDLER_ROOT: &str = "src/solver_handlers";
+/// Handler files that live one directory up from `HANDLER_ROOT`.
+///
+/// Issue #1138 B9, plan 09 leaf 1: four handlers sit in `src/` itself, so a
+/// scan root of `src/solver_handlers` alone counted 42 where the tree has 46 and
+/// a migration could have lowered a ratchet by moving a file out of the scanned
+/// directory. They are named explicitly rather than matched by prefix so a new
+/// file cannot join the set without a reviewed edit here.
+const HANDLERS_OUTSIDE_ROOT: [&str; 4] = [
+    "src/solver_handler_how.rs",
+    "src/solver_handler_how_synthesis.rs",
+    "src/solver_handler_units.rs",
+    "src/solver_handler_oracle.rs",
+];
 /// The generated `mod` list issue #991 split out of each `mod.rs`.
 ///
 /// It holds one `mod` line per sibling file and nothing else, rewritten by
@@ -34,12 +47,13 @@ const HANDLER_ROOT: &str = "src/solver_handlers";
 const GENERATED_MODULE_LIST: &str = "modules.rs";
 
 #[derive(Debug, Default, PartialEq, Eq)]
-struct Ledger {
+pub struct Ledger {
     source_file_count_max: usize,
     source_lines_max: usize,
     outside_core_file_count_max: usize,
     outside_core_lines_max: usize,
     entries: Vec<Entry>,
+    pub components: Vec<Component>,
 }
 
 #[derive(Debug, Default, PartialEq, Eq)]
@@ -50,6 +64,25 @@ struct Entry {
     data_target: String,
     core_component: String,
     reason: String,
+}
+
+/// A generic interpreter registered outside the handler census.
+///
+/// Issue #1138 B9, plan 09 leaf 17: the migration families need somewhere to
+/// live that is not itself a ledgered handler. A `component` block names one
+/// file outside `src/solver_handlers`, the kind it was promoted under (the
+/// same promotion test the boundary document defines), and the reason it
+/// passes. The block is audited — the file must exist, must carry a kind and
+/// reason, and must NOT sit inside the census, where it would be unledgered
+/// migration debt — but it carries no line baseline: a generic interpreter is
+/// compiled core machinery, and the migration ratchets measure the handlers
+/// it retires, not the interpreter itself.
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct Component {
+    pub name: String,
+    pub file: String,
+    pub kind: String,
+    pub reason: String,
 }
 
 fn unquote(value: &str) -> String {
@@ -66,14 +99,18 @@ fn parse_usize(value: &str, field: &str) -> Result<usize, String> {
         .map_err(|error| format!("invalid {field} value {value:?}: {error}"))
 }
 
-fn parse_ledger(text: &str) -> Result<Ledger, String> {
+pub fn parse_ledger(text: &str) -> Result<Ledger, String> {
     let mut ledger = Ledger::default();
     let mut current: Option<Entry> = None;
+    let mut component: Option<Component> = None;
 
     for (index, line) in text.lines().enumerate() {
         if let Some(path) = line.strip_prefix("  source ") {
             if let Some(entry) = current.take() {
                 ledger.entries.push(entry);
+            }
+            if let Some(record) = component.take() {
+                ledger.components.push(record);
             }
             current = Some(Entry {
                 path: path.to_owned(),
@@ -81,23 +118,26 @@ fn parse_ledger(text: &str) -> Result<Ledger, String> {
             });
             continue;
         }
+        if let Some(name) = line.strip_prefix("  component ") {
+            if let Some(entry) = current.take() {
+                ledger.entries.push(entry);
+            }
+            if let Some(record) = component.take() {
+                ledger.components.push(record);
+            }
+            component = Some(Component {
+                name: name.trim().to_owned(),
+                ..Component::default()
+            });
+            continue;
+        }
 
+        let indented_field = line.starts_with("    ");
         let trimmed = line.trim();
         let Some((field, value)) = trimmed.split_once(' ') else {
             continue;
         };
-        if let Some(entry) = current.as_mut() {
-            match field {
-                "disposition" => entry.disposition = unquote(value),
-                "baseline_lines" => {
-                    entry.baseline_lines = parse_usize(value, field)?;
-                }
-                "data_target" => entry.data_target = unquote(value),
-                "core_component" => entry.core_component = unquote(value),
-                "reason" => entry.reason = unquote(value),
-                _ => {}
-            }
-        } else {
+        if !indented_field {
             match field {
                 "source_file_count_max" => {
                     ledger.source_file_count_max = parse_usize(value, field)?;
@@ -113,9 +153,27 @@ fn parse_ledger(text: &str) -> Result<Ledger, String> {
                 }
                 _ => {}
             }
+            continue;
         }
-
-        if line.starts_with("    ") && current.is_none() {
+        if let Some(record) = component.as_mut() {
+            match field {
+                "file" => record.file = unquote(value),
+                "kind" => record.kind = unquote(value),
+                "reason" => record.reason = unquote(value),
+                _ => {}
+            }
+        } else if let Some(entry) = current.as_mut() {
+            match field {
+                "disposition" => entry.disposition = unquote(value),
+                "baseline_lines" => {
+                    entry.baseline_lines = parse_usize(value, field)?;
+                }
+                "data_target" => entry.data_target = unquote(value),
+                "core_component" => entry.core_component = unquote(value),
+                "reason" => entry.reason = unquote(value),
+                _ => {}
+            }
+        } else {
             return Err(format!(
                 "line {} has a source field without a source",
                 index + 1
@@ -124,6 +182,9 @@ fn parse_ledger(text: &str) -> Result<Ledger, String> {
     }
     if let Some(entry) = current {
         ledger.entries.push(entry);
+    }
+    if let Some(record) = component {
+        ledger.components.push(record);
     }
     Ok(ledger)
 }
@@ -164,6 +225,15 @@ pub fn source_files(root: &Path) -> Result<BTreeMap<String, usize>, String> {
         let content =
             fs::read_to_string(path).map_err(|error| format!("read {relative}: {error}"))?;
         files.insert(relative, content.lines().count());
+    }
+    for outside in HANDLERS_OUTSIDE_ROOT {
+        let path = root.join(outside);
+        if !path.is_file() {
+            continue;
+        }
+        let content =
+            fs::read_to_string(&path).map_err(|error| format!("read {outside}: {error}"))?;
+        files.insert(outside.to_owned(), content.lines().count());
     }
     Ok(files)
 }
@@ -263,6 +333,42 @@ fn audit(ledger: &Ledger, files: &BTreeMap<String, usize>) -> Vec<String> {
         }
     }
 
+    // Generic interpreters registered outside the census. Their file must be
+    // real (checked against the tree by the caller), must state the kind it
+    // was promoted under and why, and must not appear in the census itself --
+    // a file both census and component would be handler debt wearing core
+    // clothing.
+    let mut component_names = BTreeSet::new();
+    let mut component_files = BTreeSet::new();
+    for record in &ledger.components {
+        if record.name.is_empty() || !component_names.insert(record.name.as_str()) {
+            errors.push(format!(
+                "duplicate or empty component name {:?}",
+                record.name
+            ));
+        }
+        if record.file.trim().is_empty() {
+            errors.push(format!("component {} has no file", record.name));
+        } else if !component_files.insert(record.file.as_str()) {
+            errors.push(format!(
+                "component {} repeats file {}",
+                record.name, record.file
+            ));
+        }
+        if record.kind.trim().is_empty() {
+            errors.push(format!("component {} has no kind", record.name));
+        }
+        if record.reason.trim().is_empty() {
+            errors.push(format!("component {} has no audit reason", record.name));
+        }
+        if files.contains_key(&record.file) {
+            errors.push(format!(
+                "component {} file {} is inside the handler census; ledger it as a source",
+                record.name, record.file
+            ));
+        }
+    }
+
     for (label, actual, ceiling) in [
         (
             "source_file_count_max",
@@ -312,7 +418,18 @@ fn main() {
             .map_err(|error| format!("read {LEDGER_PATH}: {error}"))?;
         let ledger = parse_ledger(&text)?;
         let files = source_files(&root)?;
-        let errors = audit(&ledger, &files);
+        let mut errors = audit(&ledger, &files);
+        for record in &ledger.components {
+            if record.file.trim().is_empty() {
+                continue; // audit already reports the missing file
+            }
+            if !root.join(&record.file).is_file() {
+                errors.push(format!(
+                    "component {} file {} is absent",
+                    record.name, record.file
+                ));
+            }
+        }
         if !errors.is_empty() {
             return Err(errors.join("\n"));
         }
@@ -388,5 +505,70 @@ mod tests {
         assert!(!is_handler_source(Path::new(
             "src/solver_handlers/README.md"
         )));
+    }
+
+    /// The sample ledger with one registered generic interpreter beside the
+    /// two sources: the shape plan 09 leaf 17 introduced.
+    fn sample_ledger_with_component() -> Ledger {
+        parse_ledger(
+            "core_boundary_ledger\n  source_file_count_max 2\n  source_lines_max 5\n  outside_core_file_count_max 1\n  outside_core_lines_max 3\n  component retrieval_method_interpreter\n    file src/retrieval_method.rs\n    kind \"Generic interpreter\"\n    reason \"One retrieval procedure over the seed registry.\"\n  source src/solver_handlers/domain.rs\n    disposition migrate\n    baseline_lines 3\n    data_target \"domain rules\"\n    reason \"Domain policy belongs in data.\"\n  source src/solver_handlers/interpreter.rs\n    disposition promote\n    baseline_lines 2\n    core_component rule_interpreter\n    reason \"Executes generic rules.\"\n",
+        )
+        .expect("sample ledger with component")
+    }
+
+    #[test]
+    fn parses_component_blocks_between_sources() {
+        let ledger = sample_ledger_with_component();
+        assert_eq!(ledger.components.len(), 1);
+        let record = &ledger.components[0];
+        assert_eq!(record.name, "retrieval_method_interpreter");
+        assert_eq!(record.file, "src/retrieval_method.rs");
+        assert_eq!(record.kind, "Generic interpreter");
+        assert_eq!(
+            record.reason,
+            "One retrieval procedure over the seed registry."
+        );
+        // The component must not disturb the source entries around it.
+        assert_eq!(ledger.entries.len(), 2);
+        assert_eq!(ledger.entries[0].path, "src/solver_handlers/domain.rs");
+        assert_eq!(ledger.entries[0].data_target, "domain rules");
+        assert_eq!(ledger.entries[1].core_component, "rule_interpreter");
+    }
+
+    #[test]
+    fn a_component_outside_the_census_passes_the_audit() {
+        let files = BTreeMap::from([
+            ("src/solver_handlers/domain.rs".to_owned(), 3),
+            ("src/solver_handlers/interpreter.rs".to_owned(), 2),
+        ]);
+        assert!(audit(&sample_ledger_with_component(), &files).is_empty());
+    }
+
+    #[test]
+    fn a_component_inside_the_census_is_rejected() {
+        let files = BTreeMap::from([
+            ("src/solver_handlers/domain.rs".to_owned(), 3),
+            ("src/solver_handlers/interpreter.rs".to_owned(), 2),
+            // The registered interpreter must not also be counted handler debt.
+            ("src/retrieval_method.rs".to_owned(), 40),
+        ]);
+        let errors = audit(&sample_ledger_with_component(), &files).join("\n");
+        assert!(
+            errors.contains("is inside the handler census"),
+            "a census file cannot double as a component: {errors}"
+        );
+        // ... and the unledgered census file is still reported on its own terms.
+        assert!(errors.contains("unledgered handler source src/retrieval_method.rs"));
+    }
+
+    #[test]
+    fn a_component_without_a_kind_or_reason_is_rejected() {
+        let ledger = parse_ledger(
+            "core_boundary_ledger\n  source_file_count_max 0\n  source_lines_max 0\n  outside_core_file_count_max 0\n  outside_core_lines_max 0\n  component unnamed_interpreter\n    file src/somewhere.rs\n  source src/solver_handlers/domain.rs\n    disposition delete\n",
+        )
+        .expect("ledger with hollow component");
+        let errors = audit(&ledger, &BTreeMap::new()).join("\n");
+        assert!(errors.contains("component unnamed_interpreter has no kind"));
+        assert!(errors.contains("component unnamed_interpreter has no audit reason"));
     }
 }

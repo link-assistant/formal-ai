@@ -1,0 +1,46 @@
+self_ast_census
+  target src/coding/fragment_catalog.rs
+  language rust
+  fidelity signature
+  byte_len 24355
+  line_count 696
+  content_id source_module_ea148c39b7138281
+  symbol_count 37
+  symbols
+    enum FragmentOrigin 20 25
+    enum FragmentKind 29 32
+    struct Fragment 36 57
+    function argument_names 64 68
+    struct FragmentCatalog 72 74
+    function bootstrap 80 82
+    function bootstrap_from 87 108
+    function absent_seed_files 114 130
+    function with_rediscovered 134 166
+    function get 169 171
+    function producing 175 183
+    function fragments 187 189
+    function render 194 205
+    function render_named 211 226
+    function content_id 231 239
+    function bootstrap_seed_directory 242 247
+    function bootstrap_seed_text 249 257
+    struct FragmentLedger 262 264
+    function new 268 272
+    function recall 274 281
+    function forget_all 285 301
+    function remember 303 315
+    function fragment_path 317 322
+    function normalize_catalog 325 333
+    function fragments_from_meanings 335 360
+    function fragments_from_runtime 362 387
+    function fragment_from_seed_node 389 480
+    function placeholders 482 501
+    function inferred_result 503 534
+    function types_may_unify 536 549
+    function valid_rediscovered 551 557
+    function canonical_fragment 559 588
+    function fragment_projection 590 627
+    function parse_fragment 629 675
+    function origin_slug 677 682
+    function kind_slug 684 689
+    function reuse_slug 691 696

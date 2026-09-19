@@ -93,6 +93,24 @@ fn british_behaviour_rule_queries_match_the_rule_catalog() {
     assert_eq!(list.intent, "behavior_rules_list", "{}", list.answer);
 
     let detail = solver.solve("Show behaviour rule unknown");
+    assert_eq!(
+        detail.answer,
+        r#"Unknown fallback rule
+
+When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`).
+
+```links
+rule_unknown
+  topic "unknown_fallback"
+  intent "unknown"
+  matches "Any prompt that no earlier rule or handler can answer"
+  response "I don't know how to answer that yet. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable."
+  source "data/seed/multilingual-responses.lino"
+  when_then "When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`)."
+```
+
+To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``."#
+    );
     assert_eq!(detail.intent, "behavior_rule_detail", "{}", detail.answer);
     assert!(detail.answer.contains("rule_unknown"));
 }

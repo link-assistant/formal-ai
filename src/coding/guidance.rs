@@ -9,7 +9,32 @@
 
 use crate::coding::catalog::ProgramSpec;
 use crate::language::Language;
+use crate::seed::parser::parse_lino;
 use crate::solver::{ConversationRole, ConversationTurn};
+
+/// Issue #1138 plan 06 leaf L2: the Spanish half of this module's guidance.
+///
+/// Every arm below branches on Russian, Hindi, Chinese and Spanish, so no
+/// language falls through to English. The four older branches are today's
+/// recorded `check-hardcoded-language.rs` debt and stay where the burn-down
+/// allowlist already inventories them; Spanish lands in seed because that
+/// allowlist may only shrink.
+const CODING_GUIDANCE_LINO: &str = include_str!("../../data/seed/coding-guidance.lino");
+
+/// The Spanish sentence seed carries for `id`, or the empty string when seed
+/// carries none — an absence the caller renders as the English fallback rather
+/// than as a silent gap.
+fn spanish(id: &str) -> String {
+    parse_lino(CODING_GUIDANCE_LINO)
+        .children
+        .iter()
+        .find(|node| {
+            node.find_child_value("record_type") == "coding_guidance"
+                && node.find_child_value("id") == id
+        })
+        .map(|node| node.find_child_value("es").to_owned())
+        .unwrap_or_default()
+}
 
 /// Issue #330: did an earlier assistant turn already present a fenced code
 /// block? When it did, follow-up code edits omit the verbose setup steps and
@@ -26,10 +51,11 @@ pub fn history_has_prior_code(history: &[ConversationTurn]) -> bool {
 /// for every supported response language.
 pub fn program_explanation_section(spec: ProgramSpec, language: Language) -> String {
     let heading = match language {
-        Language::Russian => "Как это работает:",
-        Language::Hindi => "यह कैसे काम करता है:",
-        Language::Chinese => "工作原理：",
-        _ => "How it works:",
+        Language::Russian => String::from("Как это работает:"),
+        Language::Hindi => String::from("यह कैसे काम करता है:"),
+        Language::Chinese => String::from("工作原理："),
+        Language::Spanish => spanish("how_it_works_heading"),
+        _ => String::from("How it works:"),
     };
     format!(
         "{heading}\n{}",
@@ -40,7 +66,31 @@ pub fn program_explanation_section(spec: ProgramSpec, language: Language) -> Str
 /// Plain-language description of the algorithm for each supported task. Kept
 /// language-agnostic in the *programming* sense (every template implements the
 /// same algorithm) and localized in the *response* sense (issue #330).
-fn program_explanation(task_slug: &str, language: Language) -> &'static str {
+fn program_explanation(task_slug: &str, language: Language) -> String {
+    match (task_slug, language) {
+        ("hello_world", Language::Spanish) => spanish("hello_world"),
+        ("count_to_three", Language::Spanish) => spanish("count_to_three"),
+        ("list_files_arg_reverse_sort", Language::Spanish) => {
+            spanish("list_files_arg_reverse_sort")
+        }
+        ("list_files_arg", Language::Spanish) => spanish("list_files_arg"),
+        ("list_files_reverse_sort", Language::Spanish) => spanish("list_files_reverse_sort"),
+        ("list_files", Language::Spanish) => spanish("list_files"),
+        ("fizzbuzz", Language::Spanish) => spanish("fizzbuzz"),
+        ("factorial", Language::Spanish) => spanish("factorial"),
+        ("reverse_string", Language::Spanish) => spanish("reverse_string"),
+        ("sum_to_ten", Language::Spanish) => spanish("sum_to_ten"),
+        ("fibonacci", Language::Spanish) => spanish("fibonacci"),
+        (_, Language::Spanish) => spanish("default_explanation"),
+        (slug, other) => program_explanation_in(slug, other).to_owned(),
+    }
+}
+
+/// The four languages whose sentences are still Rust literals, inventoried by
+/// `scripts/hardcoded-language-allowlist.txt`. Spanish is served from seed by
+/// [`program_explanation`] above; migrating these four is plan 09's burn-down
+/// rather than this leaf's, and the allowlist may only shrink meanwhile.
+fn program_explanation_in(task_slug: &str, language: Language) -> &'static str {
     match (task_slug, language) {
         ("hello_world", Language::Russian) => {
             "Программа выводит текст `Hello, world!` в стандартный вывод и завершается."
@@ -274,6 +324,9 @@ pub fn program_test_instructions(
                 "像之前一样测试更新后的程序：将代码保存到文件 `{save_as}`，然后再次运行 \
                  `{run_command}`。"
             ),
+            Language::Spanish => spanish("prior_code_note")
+                .replace(concat!("{", "save_as", "}"), save_as)
+                .replace(concat!("{", "run_command", "}"), &run_command),
             _ => format!(
                 "Test the updated program the same way as before: save the code to `{save_as}` \
                  and run `{run_command}` again."
@@ -282,24 +335,29 @@ pub fn program_test_instructions(
     }
 
     let heading = match language {
-        Language::Russian => "Как проверить это самостоятельно:",
-        Language::Hindi => "इसे स्वयं कैसे जाँचें:",
-        Language::Chinese => "如何自行测试：",
-        _ => "How to test it yourself:",
+        Language::Russian => String::from("Как проверить это самостоятельно:"),
+        Language::Hindi => String::from("इसे स्वयं कैसे जाँचें:"),
+        Language::Chinese => String::from("如何自行测试："),
+        Language::Spanish => spanish("how_to_test_heading"),
+        _ => String::from("How to test it yourself:"),
     };
 
     let mut steps: Vec<String> = Vec::new();
-    let setup_hint = spec.language.setup_hint;
+    let setup_hint = spec.language.setup_hint();
     steps.push(match language {
         Language::Russian => format!("Установите инструментарий: {setup_hint}."),
         Language::Hindi => format!("टूलचेन इंस्टॉल करें: {setup_hint}।"),
         Language::Chinese => format!("安装工具链：{setup_hint}。"),
+        Language::Spanish => {
+            spanish("step_install").replace(concat!("{", "setup_hint", "}"), &setup_hint)
+        }
         _ => format!("Install {setup_hint}."),
     });
     steps.push(match language {
         Language::Russian => format!("Сохраните приведённый выше код в файл `{save_as}`."),
         Language::Hindi => format!("ऊपर दिए गए कोड को `{save_as}` फ़ाइल में सहेजें।"),
         Language::Chinese => format!("将上面的代码保存到文件 `{save_as}`。"),
+        Language::Spanish => spanish("step_save").replace(concat!("{", "save_as", "}"), save_as),
         _ => format!("Save the code above to a file named `{save_as}`."),
     });
     if let Some(check_command) = execution.check_command {
@@ -307,6 +365,9 @@ pub fn program_test_instructions(
             Language::Russian => format!("Проверьте, что код компилируется: `{check_command}`."),
             Language::Hindi => format!("जाँचें कि कोड संकलित होता है: `{check_command}`।"),
             Language::Chinese => format!("检查代码能否编译：`{check_command}`。"),
+            Language::Spanish => {
+                spanish("step_check").replace(concat!("{", "check_command", "}"), check_command)
+            }
             _ => format!("Check that it compiles: `{check_command}`."),
         });
     }
@@ -314,12 +375,16 @@ pub fn program_test_instructions(
         Language::Russian => format!("Запустите программу: `{run_command}`."),
         Language::Hindi => format!("प्रोग्राम चलाएँ: `{run_command}`।"),
         Language::Chinese => format!("运行程序：`{run_command}`。"),
+        Language::Spanish => {
+            spanish("step_run").replace(concat!("{", "run_command", "}"), &run_command)
+        }
         _ => format!("Run it: `{run_command}`."),
     });
     steps.push(match language {
         Language::Russian => "Сравните вывод с разделом ожидаемого вывода выше.".to_owned(),
         Language::Hindi => "आउटपुट की तुलना ऊपर दिए गए अपेक्षित आउटपुट से करें।".to_owned(),
         Language::Chinese => "将输出与上面的预期输出部分进行比较。".to_owned(),
+        Language::Spanish => spanish("step_compare"),
         _ => "Compare the output with the expected output shown above.".to_owned(),
     });
 

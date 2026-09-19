@@ -2,33 +2,35 @@ self_ast_census
   target src/event_log.rs
   language rust
   fidelity signature
-  byte_len 35112
-  line_count 769
-  content_id source_module_2c7fe7c756b170fe
-  symbol_count 25
+  byte_len 36473
+  line_count 801
+  content_id source_module_bdd954241e1f38cd
+  symbol_count 27
   symbols
     struct Event 17 21
     struct EventLog 25 27
     function new 31 33
     function append 39 49
-    function events 52 54
-    function first_of 58 60
-    function last_of 64 66
-    function evidence_links 71 76
-    function steps_block 81 93
-    function thinking_steps 108 110
-    function thinking_steps_for_answer 116 178
-    function append_to_link_store 185 199
-    enum StepRole 204 211
-    struct PlannedThinkingStep 214 220
-    function normal 223 236
-    function parent 238 248
-    function child 250 260
-    struct CalculationCluster 267 273
-    function absorb 276 288
-    function has_data 290 296
-    function drain_into 298 335
-    function collapse_thinking_whitespace 340 342
-    function curate_thinking_event 353 414
-    function build_evidence_links 421 762
-    function sanitize_payload 764 769
+    function append_fields 53 56
+    function events 59 61
+    function first_of 65 67
+    function last_of 71 73
+    function evidence_links 78 83
+    function steps_block 88 100
+    function thinking_steps 115 117
+    function thinking_steps_for_answer 123 185
+    function append_to_link_store 192 206
+    function render_fields 211 217
+    enum StepRole 221 228
+    struct PlannedThinkingStep 231 237
+    function normal 240 253
+    function parent 255 265
+    function child 267 277
+    struct CalculationCluster 284 290
+    function absorb 293 305
+    function has_data 307 313
+    function drain_into 315 352
+    function collapse_thinking_whitespace 357 359
+    function curate_thinking_event 370 431
+    function build_evidence_links 438 794
+    function sanitize_payload 796 801

@@ -1,0 +1,67 @@
+capability_routing_ratchet
+  issue 1138
+  purpose "Routing quality is measured, not asserted. Seven intents, five languages, twelve paraphrases each, against data/benchmarks/capability-routing/."
+  checker "rust-script scripts/check-capability-routing.rs"
+  plan "docs/case-studies/issue-1138/plans/10-intent-routing.md leaves 1-3"
+  direction_note "Six of these measures ratchet upward, which plan 00 section 6.7 admits as a declared exception. Each states its direction in its own `direction` field, and the checker fails in both directions either way (plan 00 section 9 X6)."
+  baseline "Measured on 2026-09-16 by `scripts/check-capability-routing.rs`. Runtime outcomes come from `cargo run --example measure_capability_routing`; corpus dimensions and remaining routing debt are derived from the current tree. The earlier 0-of-420 run is retained in plan 14's wave I9 report, while every value below is an exact current measurement rather than a target."
+  ceiling
+    measure intents_measured
+    value 7
+    direction up
+    how "distinct intents covered by data/benchmarks/capability-routing/"
+    note "measured 7 on 2026-09-16; the full issue 758 shared set remains future upward work"
+  ceiling
+    measure languages_measured
+    value 5
+    direction up
+    how "distinct language values in data/benchmarks/capability-routing/"
+    note "measured 5 on 2026-09-16"
+  ceiling
+    measure paraphrases_per_intent_per_language
+    value 12
+    direction up
+    how "minimum case count in any intent-language cell of data/benchmarks/capability-routing/"
+    note "measured 12 on 2026-09-16"
+  ceiling
+    measure capability_routing_cases_passing
+    value 420
+    direction up
+    how "cases of data/benchmarks/capability-routing/ whose expected_capability is the capability actually routed to, counted by `cargo run --example measure_capability_routing`"
+    note "measured 420 of 420 on 2026-09-16 with plan 10 leaves 9-17 landed; the run before them was 0"
+  ceiling
+    measure cross_tool_misroutes
+    value 0
+    direction down
+    how "cases of data/benchmarks/capability-routing/ that reach their case's prohibited_capability, counted by `cargo run --example measure_capability_routing`"
+    note "measured 0 on 2026-09-18. This is the #745 and #758 defect counted directly, and it may only fall. The ledger previously recorded 280 here, which was the cue-phrase count transposed, not a measurement; the honest value is the measured one."
+  ceiling
+    measure silent_unknowns
+    value 0
+    direction down
+    how "cases that reach no capability at all -- an honest gap or an ask rather than a route -- counted by `cargo run --example measure_capability_routing`"
+    note "measured 0 on 2026-09-16; the run before plan 10 leaves 9-17 was 420, every case an honest ask."
+  ceiling
+    measure memorized_capability_cues
+    value 0
+    direction down
+    how "quoted cue values below cues blocks in data/seed/agentic-tool-capabilities.lino"
+    note "measured 280 until plan 10 leaf 11 deleted the seven cues blocks; measured 0 after them (2026-09-18). The ceiling had been written as 0 before the deletion and failed the exact check for that commit's worth of history -- recorded here so the strictness held in the open."
+  ceiling
+    measure intent_routing_phrase_rows
+    value 354
+    direction down
+    how "phrase and keyword rows of data/seed/intent-routing.lino"
+    note "measured 354 on 2026-09-16; 477 was the file's former line count, not this measure"
+  ceiling
+    measure planner_route_arms
+    value 59
+    direction down
+    how "top-level conditional route arms in plan_chat_step_routes and plan_settled_routes in src/agentic_coding/planner.rs"
+    note "re-measured 59 on 2026-09-18 by the checker's own counting rule: the 58 recorded earlier the same day was a miscount, and the honest count was 59 both before and after leaf 11, which swapped the shared cue-phrase arm for the named-capability table arm at the same position (one arm out, one in). The count belongs to leaf 19 to lower; 45 was an unimplemented plan estimate. Correction recorded here rather than silently, per the honest-numbers doctrine."
+  ceiling
+    measure frontier_prompts_open
+    value 0
+    direction down
+    how "issue 1087 frontier classes with no passing class test in tests/unit/issue_1138_frontier_classes.rs"
+    note "measured 0 on 2026-09-16: all seven class tests pass in five languages, each with its honest-gap assertion. The measured start was 7."

@@ -2,9 +2,40 @@
 //! interpreter, and the handlers that migrated into `data/seed/handler-rules.lino`.
 
 use formal_ai::event_log::EventLog;
-use formal_ai::rule_interpreter::{HandlerRules, handler_matches, rules};
-use formal_ai::seed::{HANDLER_RULES_LINO, parse_lexicon_text};
+use formal_ai::rule_interpreter::{
+    ConditionSource, ConditionSurface, HandlerRules, handler_matches, rules,
+};
+use formal_ai::seed::{HANDLER_RULES_LINO, Lexicon, parse_lexicon_text};
 use formal_ai::{FormalAiEngine, SymbolicAnswer};
+
+/// A condition backend over an injected lexicon: the test-side stand-in for the
+/// `SeedTables` struct plan 09 leaf 40 deleted from `src/`. Rules are probed
+/// against fixture meanings without touching the boot projection.
+struct FixtureTables<'a> {
+    lexicon: &'a Lexicon,
+}
+
+impl ConditionSource for FixtureTables<'_> {
+    fn role_surfaces(&self, role: &str) -> Vec<ConditionSurface> {
+        self.lexicon
+            .meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .flat_map(|meaning| meaning.lexemes.iter())
+            .flat_map(|lexeme| {
+                lexeme.words.iter().map(|form| ConditionSurface {
+                    text: form.text.clone(),
+                    language: lexeme.language.clone(),
+                    slot: form.slot(),
+                })
+            })
+            .collect()
+    }
+
+    fn exact_route_surfaces(&self, _slug: &str) -> Vec<String> {
+        Vec::new()
+    }
+}
 
 /// The precedence names that are now data rather than Rust functions.
 const MIGRATED_HANDLERS: [&str; 12] = [
@@ -106,8 +137,9 @@ fn an_injected_seed_rule_routes_an_unseen_intent_in_four_languages_without_rust(
     ];
     for (language, prompt, expected) in cases {
         let mut log = EventLog::default();
+        let tables = FixtureTables { lexicon: &lexicon };
         let response = handler
-            .run_with(&lexicon, prompt, &prompt.to_lowercase(), &mut log)
+            .run_with_source(&tables, prompt, &prompt.to_lowercase(), &mut log)
             .unwrap_or_else(|| panic!("{language}: the injected rule must answer"));
         assert_eq!(response.intent, "moon_phase", "{language}");
         assert_eq!(response.answer, expected, "{language}");
@@ -119,10 +151,11 @@ fn an_injected_seed_rule_routes_an_unseen_intent_in_four_languages_without_rust(
         );
     }
     let mut log = EventLog::default();
+    let tables = FixtureTables { lexicon: &lexicon };
     assert!(
         handler
-            .run_with(
-                &lexicon,
+            .run_with_source(
+                &tables,
                 "What is the capital of France?",
                 "what is the capital of france?",
                 &mut log
@@ -246,4 +279,148 @@ fn conversation_control_recognition_is_the_rule_set_the_planner_consults() {
         "conversation_control",
         "Add wikiquote as a search provider"
     ));
+}
+
+/// Issue #1138 B9, plan 09 leaf 9: the two grammar primitives the promotion
+/// migration needs, and the only ones it adds.
+///
+/// `of padded` is the space-padded subject `role_padded` built privately for
+/// one condition; as a subject, every condition can ask for it, which is what
+/// lets `contains("в ")` in `src/intent_formalization/prompt_relevants.rs`
+/// become `role temporal_preposition of padded` — seed data in every language
+/// rather than one Russian preposition compiled into Rust. `shape` states a
+/// structural property of the input that carries no natural language, so
+/// `contains(':')` becomes `shape time_separator` instead of hiding a
+/// structural test inside a lexical one.
+const SHAPE_RULES: &str = "handler_rules
+  handler padded_probe
+    rule padded_probe
+      when
+        substring \" qed \" of padded
+      respond padded_probe
+        text en \"padded\"
+  handler normalized_probe
+    rule normalized_probe
+      when
+        substring \" qed \" of normalized
+      respond normalized_probe
+        text en \"normalized\"
+  handler digit_probe
+    rule digit_probe
+      when
+        shape digit of trimmed
+      respond digit_probe
+        text en \"digit\"
+  handler time_probe
+    rule time_probe
+      when
+        shape time_separator of trimmed
+      respond time_probe
+        text en \"time\"
+  handler url_probe
+    rule url_probe
+      when
+        shape url of prompt
+      respond url_probe
+        text en \"url\"
+  handler path_probe
+    rule path_probe
+      when
+        shape path of prompt
+      respond path_probe
+        text en \"path\"
+  handler quoted_probe
+    rule quoted_probe
+      when
+        shape quoted of prompt
+      respond quoted_probe
+        text en \"quoted\"
+";
+
+fn probe(parsed: &HandlerRules, handler: &str, prompt: &str) -> bool {
+    let lexicon = parse_lexicon_text("meanings\n");
+    let tables = FixtureTables { lexicon: &lexicon };
+    parsed
+        .handler(handler)
+        .unwrap_or_else(|| panic!("{handler} must exist"))
+        .matches_with_source(&tables, prompt, &prompt.to_lowercase())
+}
+
+#[test]
+fn of_padded_matches_a_boundary_surface_at_the_edges_of_the_input() {
+    let parsed = HandlerRules::parse(SHAPE_RULES).expect("the probe rules must parse");
+
+    // The whole prompt is the word: padded sees " qed ", normalized sees "qed".
+    assert!(
+        probe(&parsed, "padded_probe", "qed"),
+        "`of padded` must match a boundary surface at the start and end of the input"
+    );
+    assert!(
+        !probe(&parsed, "normalized_probe", "qed"),
+        "without padding the same condition cannot match at the edges, which is \
+         the reason the subject exists"
+    );
+
+    // Inside the sentence both agree, so padding widens and never narrows.
+    assert!(probe(&parsed, "padded_probe", "show the qed line"));
+    assert!(probe(&parsed, "normalized_probe", "show the qed line"));
+
+    // A longer word that merely contains the surface is still not a match.
+    assert!(
+        !probe(&parsed, "padded_probe", "qedx"),
+        "padding adds a boundary; it does not remove one"
+    );
+}
+
+#[test]
+fn every_shape_is_a_structural_property_and_carries_no_natural_language() {
+    let parsed = HandlerRules::parse(SHAPE_RULES).expect("the probe rules must parse");
+
+    // digit — any Unicode decimal digit, in any script.
+    assert!(probe(&parsed, "digit_probe", "meet at 7"));
+    assert!(probe(&parsed, "digit_probe", "встреча в ７"));
+    assert!(!probe(&parsed, "digit_probe", "meet at noon"));
+
+    // time_separator — the literal replacement for `contains(':')`.
+    assert!(probe(&parsed, "time_probe", "20:00"));
+    assert!(probe(&parsed, "time_probe", "20：00"));
+    assert!(!probe(&parsed, "time_probe", "2000"));
+
+    // url — an absolute web address or a bare host.
+    assert!(probe(&parsed, "url_probe", "open https://example.org/docs"));
+    assert!(probe(&parsed, "url_probe", "open www.example.org"));
+    assert!(!probe(&parsed, "url_probe", "open the docs"));
+
+    // path — a separator-carrying token that is not a URL.
+    assert!(probe(&parsed, "path_probe", "read src/lib.rs"));
+    assert!(probe(&parsed, "path_probe", "read C:\\\\src\\\\lib.rs"));
+    assert!(
+        !probe(&parsed, "path_probe", "open https://example.org/docs"),
+        "a URL is a URL and not also a path; the two shapes must stay distinguishable"
+    );
+    assert!(!probe(&parsed, "path_probe", "read the file"));
+
+    // quoted — a matched delimiter pair, in any registered script.
+    assert!(probe(&parsed, "quoted_probe", "find \"the qed line\""));
+    assert!(probe(&parsed, "quoted_probe", "найди «строку»"));
+    assert!(probe(&parsed, "quoted_probe", "找到「那一行」"));
+    assert!(
+        !probe(&parsed, "quoted_probe", "find the qed line"),
+        "an unquoted span is not quoted, and one lone mark does not pair"
+    );
+    assert!(!probe(&parsed, "quoted_probe", "find \"the qed line"));
+}
+
+#[test]
+fn an_unknown_shape_or_subject_is_refused_rather_than_ignored() {
+    let unknown_shape = "handler_rules\n  handler probe\n    rule probe\n      when\n        \
+                         shape weather of trimmed\n      respond probe\n        text en \"x\"\n";
+    let error = HandlerRules::parse(unknown_shape).expect_err("an unknown shape must not parse");
+    assert!(error.contains("unknown_shape"), "{error}");
+
+    let unknown_subject = "handler_rules\n  handler probe\n    rule probe\n      when\n        \
+                           shape digit of sideways\n      respond probe\n        text en \"x\"\n";
+    let error =
+        HandlerRules::parse(unknown_subject).expect_err("an unknown subject must not parse");
+    assert!(error.contains("unknown_subject"), "{error}");
 }

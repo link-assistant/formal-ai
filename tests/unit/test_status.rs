@@ -49,6 +49,7 @@ const SPANISH_TEST_STATUS_PROMPTS: &[&str] = &[
 fn test_status_prompts_are_recognized() {
     for prompt in ENGLISH_TEST_STATUS_PROMPTS {
         let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.answer, "Test passed. I'm here.");
 
         assert_eq!(
             response.intent, "test_status",
@@ -72,6 +73,12 @@ fn test_status_prompts_are_recognized() {
 
 #[test]
 fn test_status_matrix_is_classified_across_languages() {
+    const DOCUMENTED_ANSWERS: &[&str] = &[
+        "Test passed. I'm here.",
+        "Тест пройден. Я здесь.",
+        "परीक्षण सफल रहा। मैं यहाँ हूँ।",
+        "测试通过。我在这里。",
+    ];
     for prompts in [
         ENGLISH_TEST_STATUS_PROMPTS,
         RUSSIAN_TEST_STATUS_PROMPTS,
@@ -81,6 +88,7 @@ fn test_status_matrix_is_classified_across_languages() {
     ] {
         for prompt in prompts {
             let response = FormalAiEngine.answer(prompt);
+            assert!(DOCUMENTED_ANSWERS.contains(&response.answer.as_str()));
             assert_eq!(
                 response.intent, "test_status",
                 "prompt {prompt:?} should yield test_status, got intent={} answer={}",

@@ -1,42 +1,41 @@
-# Routing-parity fixture — issue #663 (E44).
+# Routing-parity fixture — issue #663 (E44), unified by issue #1138 plan 09
+# leaves 13-15.
 #
-# The specialized-handler precedence must agree across the two surfaces that run
-# it: the Rust solver (order from data/seed/handler-precedence.lino) and the
-# browser worker (order of the `syncHandlers` array in
-# src/web/worker/formal_ai_worker_20.js).
+# The specialized-handler precedence is one seed document,
+# data/seed/handler-precedence.lino, read by both surfaces that run it: the
+# Rust solver joins the order to its function pointers, and the browser worker
+# derives its dispatch from the same parsed precedence through the seed parser.
+# A rule's winner and loser therefore carry ONE slug — the shared vocabulary;
+# whatever a worker-side implementation is called internally is the registry's
+# business (workerHandlerAliases), not a second test column.
 #
-# Full order-parity is impossible on purpose — the worker names its handlers
-# differently and runs its async fetch/network handlers in a later phase — so
-# this fixture pins the SHARED precedence invariants both surfaces honour. Each
-# `rule` names a winner that must dispatch before a loser on BOTH surfaces, with
-# the Rust handler slug (`rust_*`) and the browser worker function (`worker_*`).
-#
-# `tests/unit/specification/routing_precedence.rs` reads this fixture and checks
-# every rule against both the seed order and the worker source, so a reorder on
-# either surface that breaks a shared invariant fails the build.
+# `tests/unit/specification/routing_precedence.rs` reads this fixture and
+# reorders a copy of the seed per rule: the swap must flip the relation on BOTH
+# surfaces identically, so a reorder on either surface that breaks a shared
+# invariant fails the build.
 routing_parity
   rule numeric_list_before_arithmetic
     rust_winner numeric_list
     rust_loser arithmetic
-    worker_winner tryNumericList
-    worker_loser tryArithmetic
+    worker_winner numeric_list
+    worker_loser arithmetic
   rule numeric_list_before_program_synthesis
     rust_winner numeric_list
     rust_loser program_synthesis
-    worker_winner tryNumericList
-    worker_loser tryProgramSynthesis
-  rule installation_conversion_before_write_program
+    worker_winner numeric_list
+    worker_loser program_synthesis
+  rule installation_conversion_before_write_script
     rust_winner installation_conversion
     rust_loser write_script
-    worker_winner tryInstallationConversion
-    worker_loser tryWriteProgram
+    worker_winner installation_conversion
+    worker_loser write_script
   rule installation_conversion_before_software_project
     rust_winner installation_conversion
     rust_loser software_project
-    worker_winner tryInstallationConversion
-    worker_loser trySoftwareProjectRequest
-  rule write_program_before_software_project
+    worker_winner installation_conversion
+    worker_loser software_project
+  rule write_script_before_software_project
     rust_winner write_script
     rust_loser software_project
-    worker_winner tryWriteProgram
-    worker_loser trySoftwareProjectRequest
+    worker_winner write_script
+    worker_loser software_project

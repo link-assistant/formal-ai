@@ -12,8 +12,8 @@
 use std::fmt::Write as _;
 
 use crate::document_formats::{
-    convert_document_format, cross_format_document_concepts, supported_document_formats,
-    DocumentConversion, DOCUMENT_FORMAT_ENGINE,
+    DOCUMENT_FORMAT_ENGINE, DocumentConversion, convert_document_format,
+    cross_format_document_concepts, supported_document_formats,
 };
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;

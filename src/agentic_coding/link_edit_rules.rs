@@ -164,9 +164,12 @@ fn shape_for(rule: &LinkEditRule) -> Result<RuleShape, LinkEditError> {
         .ok_or_else(|| LinkEditError::RuleUndeclared(rule.name().to_owned()))
 }
 
-/// Apply `rule` to `source` written in `language` (a meta-language grammar
-/// label such as `rust` or `javascript`) and return the rewritten source with
-/// its report.
+/// Apply `rule` to `source` and return the rewritten source with its report.
+///
+/// `language` is a meta-language grammar label such as `rust`, `javascript` or
+/// `lino`. `LiNo` literal replacement selects a quoted value from the
+/// lossless links network; programming-language edits select declared CST node
+/// kinds from `data/meta/link-edit-rules.lino`.
 ///
 /// # Errors
 ///
@@ -183,7 +186,9 @@ pub fn apply_link_edit(
     let mut network = LinkNetwork::parse(source, language, ParseConfiguration::default());
     let links_before = network.len();
     let round_trip_before = network.reconstruct_text() == source;
-    if !has_syntax_links(&network) {
+    let lino_literal = language.eq_ignore_ascii_case("lino")
+        && matches!(rule, LinkEditRule::ReplaceLiteral { .. });
+    if !lino_literal && !has_syntax_links(&network) {
         return Err(LinkEditError::NotParsed(language.to_owned()));
     }
 
@@ -211,18 +216,26 @@ pub fn apply_link_edit(
                 return Err(LinkEditError::EmptyPattern);
             }
             let text = network.reconstruct_text();
-            let mut ranges = Vec::new();
-            for range in spans_of_kinds(&network, &shape.node_kinds) {
-                let Some(slice) = text.get(range.start()..range.end()) else {
-                    continue;
-                };
-                let mut from = 0;
-                while let Some(found) = slice[from..].find(old.as_str()) {
-                    let start = range.start() + from + found;
-                    ranges.push((ByteRange::new(start, start + old.len()), new.clone()));
-                    from += found + old.len();
+            let ranges = if lino_literal {
+                lino_literal_ranges(&text, old)
+                    .into_iter()
+                    .map(|range| (range, new.clone()))
+                    .collect()
+            } else {
+                let mut ranges = Vec::new();
+                for range in spans_of_kinds(&network, &shape.node_kinds) {
+                    let Some(slice) = text.get(range.start()..range.end()) else {
+                        continue;
+                    };
+                    let mut from = 0;
+                    while let Some(found) = slice[from..].find(old.as_str()) {
+                        let start = range.start() + from + found;
+                        ranges.push((ByteRange::new(start, start + old.len()), new.clone()));
+                        from += found + old.len();
+                    }
                 }
-            }
+                ranges
+            };
             if ranges.is_empty() {
                 return Err(LinkEditError::NoMatchingLink {
                     rule: rule.name().to_owned(),
@@ -264,6 +277,20 @@ pub fn apply_link_edit(
             clean_after,
         },
     ))
+}
+
+/// Byte ranges of an exact quoted `LiNo` value, excluding its delimiters.
+///
+/// The generic `LiNo` parser is lossless but exposes relations and concepts, not
+/// programming-language `string_literal` CST nodes. Selecting through the
+/// reconstructed network and applying the edit back through that network keeps
+/// this the same parse → edit → reconstruct path as every other rule.
+#[cfg(feature = "meta-language")]
+fn lino_literal_ranges(text: &str, old: &str) -> Vec<ByteRange> {
+    let quoted = format!("\"{old}\"");
+    text.match_indices(&quoted)
+        .map(|(start, _)| ByteRange::new(start + 1, start + 1 + old.len()))
+        .collect()
 }
 
 /// Without the parsing engine there is no links network to edit.

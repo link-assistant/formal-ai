@@ -6,6 +6,7 @@ mod authorship_composition;
 mod evidence_floor;
 mod ratchet;
 mod retraction;
+mod solve_attribution;
 
 use std::fs;
 use std::path::{Path, PathBuf};

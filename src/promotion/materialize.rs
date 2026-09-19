@@ -51,12 +51,9 @@ pub fn apply_promotions(
         let entry = targets
             .entry(edit.seed_file.clone())
             .or_insert((existing, 0));
-        if !entry.0.is_empty() && !entry.0.ends_with('\n') {
-            entry.0.push('\n');
-            entry.1 = entry.1.saturating_add(1);
-        }
-        entry.0.push_str(&edit.lino);
-        entry.1 = entry.1.saturating_add(edit.lino.len());
+        let before = entry.0.len();
+        append_seed_edit(&mut entry.0, &edit.lino);
+        entry.1 = entry.1.saturating_add(entry.0.len().saturating_sub(before));
     }
 
     let has_targets = !targets.is_empty();
@@ -109,6 +106,38 @@ pub fn apply_promotions(
         branch_plan: run.branch_plan(),
         agent_session_digests,
     })
+}
+
+/// Append one promoted record without creating two document roots.
+///
+/// Program-rule proposals historically carry a complete
+/// `substitution_rules` document because that is independently parseable. Once
+/// the destination seed exists, appending that document verbatim would create
+/// two roots. Merge its children under the checked-in root; other proposal
+/// shapes (for example meaning blocks that already start indented) retain the
+/// historical append behavior.
+fn append_seed_edit(existing: &mut String, edit: &str) {
+    let duplicate_substitution_root = existing.trim_start().starts_with("substitution_rules")
+        && edit.trim_start().starts_with("substitution_rules");
+    let owned;
+    let payload = if duplicate_substitution_root {
+        owned = edit
+            .lines()
+            .skip(1)
+            .filter(|line| line.trim_start() != "id \"learned_program_plan_rules\"")
+            .collect::<Vec<_>>()
+            .join("\n");
+        owned.as_str()
+    } else {
+        edit
+    };
+    if payload.trim().is_empty() {
+        return;
+    }
+    if !existing.is_empty() && !existing.ends_with('\n') {
+        existing.push('\n');
+    }
+    existing.push_str(payload);
 }
 
 fn prepare_local_branch(workspace_root: &Path, branch: &str) -> io::Result<()> {

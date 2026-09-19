@@ -1,0 +1,1853 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.166Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.167Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997 पर मौजूद रिपॉज़िटरी में भरोसेमंद खोज प्रदाताओं की सूची में उद्धरणों का विश्वकोश नहीं है। उसे जोड़ो, फ़ाइल को वैध रखो, और उस सूची को कवर करने वाले परीक्षण चलाओ। --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.167Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.167Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.176Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997 पर मौजूद रिपॉज़िटरी में भरोसेमंद खोज प्रदाताओं की सूची में उद्धरणों का विश्वकोश नहीं है। उसे जोड़ो, फ़ाइल को वैध रखो, और उस सूची को कवर करने वाले परीक्षण चलाओ।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997 पर मौजूद रिपॉज़िटरी में भरोसेमंद खोज प्रदाताओं की सूची में उद्धरणों का विश्वकोश नहीं है। उसे जोड़ो, फ़ाइल को वैध रखो, और उस सूची को कवर करने वाले परीक्षण चलाओ।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.176Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.177Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.177Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.178Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.180Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.181Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.183Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 1197,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.183Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.195Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.199Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 22,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.200Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:32:48.200Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.203Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.203Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.204Z",
+  "service": "session",
+  "id": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh",
+  "title": "New session - 2026-09-16T03:32:48.204Z",
+  "time": {
+    "created": 1789529568204,
+    "updated": 1789529568204
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.204Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.204Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.205Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57b9cc33ffetzn8LHfnrBv49o/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.205Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57b9cc33ffetzn8LHfnrBv49o/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.207Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57b9cc33ffetzn8LHfnrBv49o/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.209Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.209Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.209Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.211Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.211Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.211Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.212Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.212Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.212Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.212Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.212Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.212Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.212Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.327Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.331Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.332Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.338Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.343Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.349Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.349Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.349Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.349Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529568695,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84635b4001fm4GF127yb7AmN",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846344a0011S9jmyeJCdpLdf",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.696Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.697Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529568697,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84635b8001irnqa55DJ3TtfH",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846344a0011S9jmyeJCdpLdf",
+    "type": "tool",
+    "callID": "call_d697f6706e847b0c",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.697Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529568697,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84635b7001blGDV7MfPnq3fJ",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846344a0011S9jmyeJCdpLdf",
+    "type": "text",
+    "text": "मैं इंटरनेट पर कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997 खोजता हूँ।",
+    "time": {
+      "start": 1789529568697,
+      "end": 1789529568697
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:48.697Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529568697,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84635b8001irnqa55DJ3TtfH",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846344a0011S9jmyeJCdpLdf",
+    "type": "tool",
+    "callID": "call_d697f6706e847b0c",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997"
+      },
+      "time": {
+        "start": 1789529568697
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.368Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529570368,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84635b8001irnqa55DJ3TtfH",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846344a0011S9jmyeJCdpLdf",
+    "type": "tool",
+    "callID": "call_d697f6706e847b0c",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997"
+      },
+      "output": "Title: 9a3ba34 feat: add commit skill — conventional message format, approval-gated\nURL: https://github.com/eeshansrivastava89/skills/commit/9a3ba3419d9e1929d67de2775c6ae09f9725644b\nPublished: N/A\nAuthor: N/A\nHighlights:\n# 9a3ba34 feat: add commit skill — conventional message format, approval-gated\n...\nfeat: add commit skill — conventional message format, approval-gated\n...\n- engineering/commit: model-invoked skill for creating focused git commits\n- anti-force-push and anti-secret guardrails built in\n- original skill, not derived from mattpocock/skills\n\n---\n\nTitle: git-commit-message-generator — AI Agent Skill | PromptSpace\nURL: https://skills.promptspace.in/hi/git-commit-message-generator\nPublished: N/A\nAuthor: PromptSpace\nHighlights:\n# git-commit-message-generator\n...\nअपने git diffs से स्वचालित रूप से पेशेवर, Conventional Commit संदेश तैयार करें।\n...\n## Git Diffs से स्वचालित Conventional Commits\n...\nएक स्वच्छ, semantic git इतिहास बनाए रखना स्वचालित वर्शनिंग और टीम सहयोग के लिए आवश्यक है, लेकिन हर बार सटीक commit संदेश लिखना एक थकाऊ काम है। यह skill आपके staged परिवर्तनों का विश्लेषण स्वचालित करती है और Conventional Commits विनिर्देश के अनुसार पेशेवर रूप से स्वरूपित संदेश तैयार करती है।\n...\n- आपके परिवर्तनों के दायरे और उद्देश्य को समझने के लिए git diffs का विश्लेषण करती है।\n- कार्य को मानक प्रकारों में वर्गीकृत करती है: feat, fix, refactor, docs, style, test, और chore।\n- 50/72 नियम लागू करती है (subject के लिए 50 अक्षर, body wrapping के लिए 72)।\n- आवश्यक \"!\" syntax और footer के साथ breaking changes को पहचानती और उजागर करती है।\n- imperative mood में लिखती है, जिससे आपके पूरे प्रोजेक्ट इतिहास में एकरूपता सुनिश्चित होती है।\n...\nसामान्य AI prompting के विपरीत, यह skill बारीकियों (जैसे refactor बनाम style) में अंतर करने के लिए एक विशिष्ट निर्णय heuristic का उपयोग करती है और footers तथा issue references जैसी जटिल git आवश्यकताओं को संभालती है। यह सुनिश्चित करती है कि आपका repository semantic-release जैसे स्वचालित changelog निर्माण टूल के लिए तैयार हो।\n...\nयह skill किसी भी मानक Git वातावरण के साथ काम करती है। यह staged परिवर्तन, unstaged परिवर्तन पढ़ सकती है, या आपके commit संदेश के लिए सबसे सटीक संदर्भ प्रदान करने हेतु विशिष्ट file paths पर ध्यान केंद्रित कर सकती है।\n...\n- semantic-release के साथ काम करने वाले मानकीकृत commit संदेश तैयार करें।\n- code diffs से स्वचालित रूप से breaking changes पहचानें।\n- टीम repositories में imperative mood और character सीमाएँ लागू करें।\n- chore और refactor जैसे रखरखाव कार्यों को सही तरीके से वर्गीकृत करें।\n\n---\n\nTitle: content/v1.0.0/index.hi.md\nURL: https://github.com/conventional-commits/conventionalcommits.org/blob/master/content/v1.0.0/index.hi.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n# कन्वेंशनल कमिट्स 1.0.0\n...\n1. कमिट्स को एक टाइप से शुरू होना चाहिए, जिसमें एक noun, `feat`, `fix`, आदि शामिल है, इसके बाद OPTIONAL स्कोप, OPTIONAL `!`, और REQUIRED terminal colon और space।\n...\n2. टाइप `feat` का इस्तेमाल तब किया जाना चाहिए जब एक कमिट आपके एप्लिकेशन या लाइब्रेरी में एक नई फीचर जोड़ता है।\n...\n3. टाइप `fix` का इस्तेमाल तब किया जाना चाहिए जब एक कमिट आपके एप्लिकेशन के लिए एक बग फिक्स का प्रतिनिधित्व करता है।\n...\n4. एक स्कोप टाइप के बाद प्रदान किया जा सकता है। एक स्कोप को कोडबेस के एक सेक्शन का वर्णन करने वाले noun से मिलकर होना चाहिए, कोष्ठक में घिरा हुआ, जैसे `fix(parser):`\n...\n5. एक विवरण टाइप/स्कोप prefix के बाद colon और space के तुरंत बाद आना चाहिए।\n...\n3. एक या अधिक फुटर बॉडी के बाद एक blank line के बाद प्रदान किए जा सकते हैं। प्रत्येक फुटर को एक word token से मिलकर होना चाहिए, इसके बाद या तो `: ` या ` #` separator, इसके बाद एक string value (यह [git trailer convention](https://git-scm.com/docs/git-interpret-trailers) से प्रेरित है)।\n...\n4. एक\n...\nटर के token में whitespace characters की जगह `-` का इस्तेमाल करना चाहिए,\n...\n`Acked-by` (यह फुटर सेक्शन को multi-paragraph बॉडी से अलग करने में मदद करता है)। `BREAKING CHANGE` के लिए एक अपवाद बनाया गया है, जो token के रूप में भी इस्तेमाल किया जा सकता है।\n...\n7. यदि फुटर के रूप में शामिल किया गया है, तो एक ब्रेकिंग चेंज uppercase text BREAKING CHANGE से मिलकर होना चाहिए, इसके बाद colon, space, और विवरण, जैसे _BREAKING CHANGE: environment variables अब config files पर precedence लेते हैं_।\n...\n8. यदि टाइप/स्कोप prefix में शामिल किया गया है, तो ब्रेकिंग चेंजेस को `!` से इंगित किया जाना चाहिए `:` से पहले। यदि `!` इस्तेमाल किया गया है, तो `BREAKING CHANGE:` फुटर सेक्शन से omitted किया जा सकता है, और कमिट विवरण ब्रेकिंग चेंज का वर्णन करने के लिए इस्तेमाल किया जाएगा।\n...\n9. `feat` और `fix` के अलावा अन्य टाइप्स आपके कमिट संदेशों में इस्तेमाल किए जा सकते हैं, जैसे _docs: update ref docs._।\n\n---\n\nTitle: Git ऑटोपायलट और कमिट — AI Agent Skill | PromptSpace\nURL: https://skills.promptspace.in/hi/smart-commit-1\nPublished: N/A\nAuthor: PromptSpace\nHighlights:\nGit ऑटोप\n...\nलिखता है\n...\nलेकिन कभी कम\n...\nनहीं करता और\n...\nही जो सीखा\n...\nकाम स्वचालित रूप\n...\nऑटोपायलट और कम\n...\nजब आपका AI एजेंट कोई कोडिंग टास्क पूरा करता है, तो काम वहीं पड़ा रह जाता है। बदलाव अनकमिटेड रहते हैं, जो सीखा गया उसका कोई दस्तावेज़ नहीं, आर्किटेक्चरल निर्णयों का कोई रिकॉर्ड नहीं। आखिरकार यह सफाई का काम या तो आप खुद करते हैं या फिर होता ही नहीं।\n...\nSmart Commit हर कोडिंग टास्क के बाद स्वचालित रूप से चलता है और दो काम संभालता है: आपकी CLAUDE.md को अपडेट रखना और साफ-सुथरे git कमिट अच्छे संदेशों के साथ बनाना।\n...\nयह एक जटिलता स्कोरिंग सिस्टम का उपयोग करता है ताकि यह तय किया जा सके कि हर टास्क को किस स्तर की देखभाल की जरूरत है। एक लाइन की टाइपो फिक्स को सिर्फ एक साधारण कमिट मिलता है और कुछ नहीं। तीन डायरेक्टरी को छूने वाला मल्टी-फाइल रिफैक्टर एक विस्तृत कमिट संदेश के साथ-साथ CLAUDE.md अपडेट भी पाता है जो कोडबेस के बारे में सीखी गई बातें दर्ज करता है।\n...\nCLAUDE.md के लिए, यह उन बातों पर ध्यान देता है जो किसी भविष्य के सेशन को मुश्किल तरीके से दोबारा खोजने से बचाएंगी: आर्किटेक्चरल निर्णय, गैर-स्पष्ट डीबगिंग अंतर्दृष्टि, एनवायरनमेंट की विशेषताएं, नए कन्वेंशन। जब बदलाव कोड से ही स्पष्ट हो, तो यह अपडेट छोड़ देता है।\n...\nकमिट के लिए, यह conventional commit फॉर्मेट (feat, fix, refactor, आदि) का पालन करता है और स्कोप्ड संदेशों के साथ इरादा बताता है, न कि केवल कौन सी फाइलें बदलीं। यह फाइलें चुनिंदा तरीके से स्टेज करता है बजाय अंधाधुंध git add चलाने के, ताकि गलती से आपकी .env या बिल्ड आर्टिफैक्ट कमिट न हो जाएं। हर कमिट के बाद पुश करता है ताकि आपका काम हमेशा सिंक रहे।\n...\nकेसेज़ को भी\n...\nके बदलावों वाले\n...\nप्रति-पैकेज\n...\nClaude Code, Cursor, Codex CLI, VS Code Copilot, और किसी भी एजेंट के साथ काम करता है जो SKILL.md स्टैंडर्ड को सपोर्ट करता है।\n...\n- आर्किटेक्चरल निर्णयों के साथ CLAUDE.md को स्वचालित रूप से अपडेट रखें।\n- हर फीचर या फिक्स के लिए पेशेवर Conventional Commits जेनरेट करें।\n- डीबगिंग अंतर्दृष्टि को रियल-टाइम में दर्ज करके \"दस्तावेज़ीकरण ऋण\" से बचें।\n- सत्यापित कोड बदलावों की स्टेजिंग और पुशिंग को स्वचालित करें।\n...\n```\nmkdir -p ~/.claude/skills/smart-commit-1 && curl -s -X POST 'https://api.promptspace.in/api/skills/smart-commit-1/install' | python3 -c \"import sys,json; sys.stdout.write(json.load(sys.stdin).get('installInstructions') or '')\" > ~/.claude/skills/smart-commit-1/SKILL.md\n```\n\n---\n\nTitle: AI गिट कमिट मैसेज जेनरेटर | कन्वेंशनल कमिट्स\nURL: https://www.toolszone.net/hi/tools/ai-git-commit-message-generator\nPublished: N/A\nAuthor: N/A\nHighlights:\nकमिट मैसेज जेनरेटर | कन्\n...\ngit diff पेस्ट करें या अपने बदलाव बताएं और Conventional Commits, Angular, Simple या Semantic फ़ॉर्मैट में AI से लिखे 5 तक कमिट मैसेज पाएं।\n...\nयह एक मुफ़्त ऑनलाइन टूल है जो आपके कोड diff या बदलावों के सादे विवरण को पेशेवर गिट कमिट मैसेज में बदल देता है। यह Conventional Commits, Angular, Simple और Semantic फ़ॉर्मैट सपोर्ट करता है, एक बार में 5 तक वेरिएंट बनाता है, और बताता है कि हर वेरिएंट इस तरह क्यों लिखा गया।\n...\n`git diff` या `git diff --staged` से मिला diff पेस्ट करें, या अपने बदलावों का विवरण टाइप करें, फिर कमिट फ़ॉर्मैट, वेरिएंट की संख्या और आउटपुट भाषा चुनकर Generate दबाएं। हर वेरिएंट का अपना कॉपी बटन है, और कॉपी ऑल सभी मैसेज एक साथ क्लिपबोर्ड पर रख देता है।\n...\nएक अनुरोध में 1 से 5 तक, जिन्हें वेरिएंट संख्या चयनकर्ता से चुना जाता है। हर वेरिएंट वास्तव में अलग होता है, केवल शब्द बदलकर दोहराया गया नहीं, इसलिए आप वही चुन सकते हैं जो बदलाव के उद्देश्य या आपकी टीम की शैली से सबसे मेल खाता हो।\n...\nचार: Conventional Commits (`type(scope): subject`), Angular (वही ढाँचा, सख़्त टाइप और अनिवार्य scope के साथ), Simple (सीधा वाक्य जैसे 'Add user profile page') और Semantic (कोष्ठक वाला उपसर्ग जैसे '[FEAT] Add user profile page')।\n\n---\n\nTitle: Git कमिट संदेश जेनरेटर | Prompie\nURL: https://prompie.ai/hi/tools/git-commit\nPublished: N/A\nAuthor: N/A\nHighlights:\nGit कमिट संदेश जेनरेटर | Prompie\n...\n# Git कमिट संदेश जेनरेटर\n...\nपरिवर्तन स्पष्ट करने वाले संक्षिप्त और प्रभावी Git कमिट संदेशों को तैयार करता है।\n\n---\n\nTitle: git-commit — Agent Skill | SkillsAuth\nURL: https://skillsauth.com/skills/github/git-commit\nPublished: 2026-03-18T16:17:08.000Z\nAuthor: N/A\nHighlights:\n# github/git-commit\n...\nExecute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions \"/commit\". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping\n...\n```\nnpx skillsauth add github/awesome-\n...\n## SKILL.md\n...\nname:\n\ngit-commit\n...\nExecute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions \"/commit\". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping\n...\n## Git Commit with Conventional Commits\n...\nCreate standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.\n...\n## Conventional Commit Format\n...\n```\n<type>[optional scope]: <description>\n\n[optional body]\n\n[optional footer(s)]\n\n```\n...\n## Commit Types\n...\n| Type | Purpose | | ---------- | ------------------------------ | | `feat` | New feature | | `fix` | Bug fix | | `docs` | Documentation only | | `style` | Formatting/style (no logic) | | `refactor` | Code refactor (no feature/fix) | | `perf` | Performance improvement | | `test` | Add/update tests | | `build` | Build system/dependencies | | `ci` | CI/config changes | | `chore` | Maintenance/misc | | `revert` | Revert commit |\n...\n### 1. Analyze Diff\n...\n```bash\n# If files are staged, use staged diff\ngit diff --staged\n...\n# If nothing staged, use working tree diff\ngit diff\n...\n# Also check status\ngit status --porcelain\n...\n### 2. Stage Files (if needed)\n...\nIf nothing is staged or you want to group changes differently:\n...\n```bash\n# Stage specific files\ngit add path/to/file1 path/to/file2\n...\n# Stage by pattern\ngit add *.test.*\ngit add src/components/*\n...\n# Interactive staging\ngit add -p\n...\nNever commit secrets (.env, credentials.json, private keys).\n...\n### 3. Generate Commit Message\n...\nAnalyze the diff to determine:\n...\n- Type: What kind of change is this?\n- Scope: What area/module is affected?\n- Description: One-line summary of what changed (present tense, imperative mood, <72 chars)\n...\n### 4. Execute Commit\n...\n```bash\n# Single line\ngit commit -m \"<type>[scope]: <description>\"\n...\n# Multi-line with body/footer\ngit commit -m \"$(cat <<'EOF'\n<type>[scope]: <description>\n\n<optional body>\n\n<optional footer>\nEOF\n)\"\n\n```\n...\n## Best Practices\n...\n- One logical change per commit\n- Present tense: \"add\" not \"added\"\n- Imperative mood: \"fix bug\" not \"fixes bug\"\n- Reference issues: `Closes #123`, `Refs #456`\n- Keep description under 72 characters\n...\n- NEVER update git config\n...\n- NEVER run destructive commands (--force\n...\nhard reset) without\n...\nskip hooks (--no-verify\n...\nforce push to main/master\n...\n25,\n\n---\n\nTitle: git-commit-writer-codex — AI Agent Skill | PromptSpace\nURL: https://skills.promptspace.in/hi/git-commit-writer-codex\nPublished: N/A\nAuthor: PromptSpace\nHighlights:\nस्टेज किए गए Git परिवर्तनों से रूसी भाषा में पेशेवर Conventional Commits तैयार करें।\n...\n- रूसी भाषी टीम में कमिट इतिहास को मानकीकृत करें\n- स्टेज किए गए कोड में breaking changes को स्वचालित रूप से पहचानें\n- जटिल diffs को संरचित बुलेट पॉइंट्स में संक्षेपित करें\n...\nयह स्किल स्टेज किए गए Git diffs को Conventional Commits फ़ॉर्मेट में स्पष्ट, पेशेवर कमिट संदेशों में बदलता है। यह वास्तविक स्टेज किए गए परिवर्तनों की जांच करता है, सही प्रकार और स्कोप चुनता है, और डिफ़ॉल्ट रूप से रूसी में सब्जेक्ट लाइन और वैकल्पिक बॉडी लिखता है।\n...\nअच्छे कमिट संदेश लिखना अक्सर टाला जाता है और अक्सर ठीक से नहीं किया जाता। यह स्किल एक संरचित वर्कफ़्लो का पालन करता है: पहले स्टेज किए गए परिवर्तनों की जांच करता है, बड़े diffs को महत्वपूर्ण फ़ाइलों पर केंद्रित करके संभालता है, और ऐसे breaking changes या मिश्रित चिंताओं को चिह्नित करता है जिन्हें अलग कमिट की आवश्यकता हो सकती है। यह समय बचाता है और ऐसे कमिट संदेश तैयार करता है जो पढ़ने, समीक्षा करने और इतिहास में रखने में आसान हों।\n...\n- स्टेज किए गए परिवर्तनों के साथ Git CLI वर्कफ़्लो\n- Conventional Commits 1.0.0\n- Breaking change और issue-tracking फ़ुटर\n...\n- रूसी भाषी टीम में कमिट इतिहास को मानकीकृत करें\n- स्टेज किए गए कोड में breaking changes को स्वचालित रूप से पहचानें\n- जटिल diffs को संरचित बुलेट पॉइंट्स में संक्षेपित करें\n- मैन्युअल प्रयास के बिना Conventional Commits विनिर्देश लागू करें",
+      "title": "Web search: कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997",
+      "metadata": {},
+      "time": {
+        "start": 1789529568697,
+        "end": 1789529570365
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529570374,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a8463c43001UMlLIhU9RPAsJc",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846344a0011S9jmyeJCdpLdf",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8701,
+      "output": 137,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8838,
+      "headroom": 30018,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.375Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.376Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.378Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.379Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.380Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.380Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.382Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.383Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.394Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8838,
+  "providerTokens": 8838,
+  "estimatedInputTokens": 3937,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8701,
+    "cacheRead": 0,
+    "output": 137
+  },
+  "overflow": false,
+  "headroom": 30018,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.395Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.395Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.402Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.404Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.865Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529570865,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a8463e2c001HvcycgecE5GKQY",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a8463c5b001X5MBlXOzGgISMR",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.868Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529570868,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a8463e34001KN1flFlqWl17Gp",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a8463c5b001X5MBlXOzGgISMR",
+    "type": "tool",
+    "callID": "call_ef786ff47b861285",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529570869,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a8463e31001Zj1aR1X8r9NDUz",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a8463c5b001X5MBlXOzGgISMR",
+    "type": "text",
+    "text": "मैं https://github.com/eeshansrivastava89/skills/commit/9a3ba3419d9e1929d67de2775c6ae09f9725644b खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789529570869,
+      "end": 1789529570869
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:50.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529570869,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a8463e34001KN1flFlqWl17Gp",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a8463c5b001X5MBlXOzGgISMR",
+    "type": "tool",
+    "callID": "call_ef786ff47b861285",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/eeshansrivastava89/skills/commit/9a3ba3419d9e1929d67de2775c6ae09f9725644b"
+      },
+      "time": {
+        "start": 1789529570869
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.045Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529572045,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a8463e34001KN1flFlqWl17Gp",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a8463c5b001X5MBlXOzGgISMR",
+    "type": "tool",
+    "callID": "call_ef786ff47b861285",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/eeshansrivastava89/skills/commit/9a3ba3419d9e1929d67de2775c6ae09f9725644b"
+      },
+      "output": "feat: add commit skill — conventional message format, approval-gated · eeshansrivastava89/skills@9a3ba34 · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        eeshansrivastava89\n    \n    /\n    \n      skills\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    2\n\n  \n\n  \n        \n            \n    \n\n          Star\n          4\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n    Commit 9a3ba34Browse filesBrowse the repository at this point in the historyBrowse fileseeshansrivastava89committedfeat: add commit skill — conventional message format, approval-gated- engineering/commit: model-invoked skill for creating focused git commits\n- anti-force-push and anti-secret guardrails built in\n- original skill, not derived from mattpocock/skills1 parent b9b40dd commit 9a3ba34Copy full SHA for 9a3ba344 files changed+67-1Lines changed: 67 additions &amp; 1 deletionFile treeExpand file treeCollapse file treeOpen diff view settingsFilter options.claude-pluginplugin.jsonREADME.mdskills/engineeringREADME.mdcommitSKILL.mdExpand file treeCollapse file treeOpen diff view settingsCollapse file‎.claude-plugin/plugin.json‎Copy file name to clipboardExpand all lines: .claude-plugin/plugin.json+2-1Lines changed: 2 additions &amp; 1 deletionOriginal file line numberDiff line numberDiff line change@@ -3,6 +3,7 @@33  &quot;skills&quot;: [44    &quot;./skills/context-management/context-save&quot;,55    &quot;./skills/context-management/context-restore&quot;,6-    &quot;./skills/guardrails/claude-code-guardrails&quot;6+    &quot;./skills/guardrails/claude-code-guardrails&quot;,7+    &quot;./skills/engineering/commit&quot;78  ]89}Collapse file‎README.md‎Copy file name to clipboardExpand all lines: README.md+7Lines changed: 7 additions &amp; 0 deletionsDisplay the source diffDisplay the rich diffOriginal file line numberDiff line numberDiff line change@@ -21,6 +21,12 @@ Skills for saving and restoring session context — so you never lose your train2121- **[context-save](./skills/context-management/context-save/SKILL.md)** — Captures a compact snapshot of your session state (task, progress, decisions, next actions) and writes it to `.pi/`, `.claude/`, and `.codex/context.md` so any tool can pick up where you left off.2222- **[context-restore](./skills/context-management/context-restore/SKILL.md)** — Reads the saved context file, validates it against current git state, surfaces any discrepancies, and gets you back to work in seconds.232324+### Engineering25+26+Day-to-day code work skills.27+28+- **[commit](./skills/engineering/commit/SKILL.md)** — Create a focused git commit with a conventional message. Approval-gated, anti-force-push guardrails built in.29+2430### Guardrails25312632Always-on principles that keep the agent honest.@@ -42,6 +48,7 @@ The default agent behavior is to jump straight to code. These guardrails enforce4248## Philosophy43494450- **Tool-agnostic** — Skills write to `.pi/`, `.claude/`, and `.codex/` so you&#39;re never locked in to one agent51+- **Approval-gated** — Destructive operations (commits, force-push) always require explicit sign-off4552- **Codebase is truth** — Context files are memory aids, not authority. Always verify against actual state.4653- **Small and composable** — Each skill does one thing well. Mix and match with skills from other authors.4754- **Explicit invocation** — User-invoked skills only fire when you type the command. No surprise triggers.Collapse file‎skills/engineering/README.md‎Copy file name to clipboard+9Lines changed: 9 additions &amp; 0 deletionsDisplay the source diffDisplay the rich diffOriginal file line numberDiff line numberDiff line change@@ -0,0 +1,9 @@1+# Engineering2+3+Skills for day-to-day code work.4+5+## Model-invoked6+7+The agent can reach for these automatically when the task fits, or you can invoke them directly.8+9+- **[commit](./commit/SKILL.md)** — Create a focused git commit with a conventional message. Approval-gated, anti-force-push guardrails built in.Collapse file‎skills/engineering/commit/SKILL.md‎Copy file name to clipboard+49Lines changed: 49 additions &amp; 0 deletionsDisplay the source diffDisplay the rich diffOriginal file line numberDiff line numberDiff line change@@ -0,0 +1,49 @@1+---2+name: commit3+description: Create a git commit with conventional message format4+disable-model-invocation: false5+---6+7+# Commit Workflow8+9+Create a focused git commit with a conventional message.10+11+## Steps12+13+1. Run `git status` to see all changes14+2. Run `git diff --staged` to see staged changes15+3. Run `git diff` to see unstaged changes16+4. Analyze changes and draft commit message:17+   - Summarize what changed (not how)18+   - Use imperative mood (&quot;Add feature&quot; not &quot;Added feature&quot;)19+   - Keep first line under 50 characters20+   - Add body if needed for context21+5. Show proposed commit message and ask for approval22+6. If approved:23+   - Stage relevant files (`git add`)24+   - Create commit with the message25+   - Show result26+27+## Commit Message Format28+29+```30+&lt;type&gt;: &lt;short description&gt;31+32+&lt;optional body explaining why, not what&gt;33+```34+35+### Types36+37+- `feat`: New feature38+- `fix`: Bug fix39+- `refactor`: Code change that neither fixes nor adds40+- `docs`: Documentation only41+- `test`: Adding or fixing tests42+- `chore`: Maintenance, dependencies, config43+44+## Rules45+46+- Never commit without explicit user approval47+- Never use `--force` or destructive operations48+- Don&#39;t commit secrets, credentials, or .env files49+- Keep commits focused (one logical change)0 commit commentsComments0 (0)  \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/eeshansrivastava89/skills/commit/9a3ba3419d9e1929d67de2775c6ae09f9725644b (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529570869,
+        "end": 1789529572041
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.046Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529572046,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84642cd001sKWSlbRJBCf8n7",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a8463c5b001X5MBlXOzGgISMR",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 22159,
+      "output": 252,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 22411,
+      "headroom": 16445,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.046Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.047Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.048Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.048Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.049Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.050Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.050Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.050Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.056Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 22411,
+  "providerTokens": 22411,
+  "estimatedInputTokens": 6247,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 22159,
+    "cacheRead": 0,
+    "output": 252
+  },
+  "overflow": false,
+  "headroom": 16445,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.058Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.058Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.060Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.061Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.567Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529572568,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84644d7001YOjfT8pz5hHvbO",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a84642d8001sv9ANCE3ldP4ed",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529572568,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84644d8002UjpnSYuie7ZFlN",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a84642d8001sv9ANCE3ldP4ed",
+    "type": "tool",
+    "callID": "call_80955b3401c993bb",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529572568,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84644d8001NHCTedTrqsgwt6",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a84642d8001sv9ANCE3ldP4ed",
+    "type": "text",
+    "text": "मैं https://skills.promptspace.in/hi/git-commit-message-generator खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789529572568,
+      "end": 1789529572568
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.568Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529572568,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84644d8002UjpnSYuie7ZFlN",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a84642d8001sv9ANCE3ldP4ed",
+    "type": "tool",
+    "callID": "call_80955b3401c993bb",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://skills.promptspace.in/hi/git-commit-message-generator"
+      },
+      "time": {
+        "start": 1789529572568
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.676Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529572676,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84644d8002UjpnSYuie7ZFlN",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a84642d8001sv9ANCE3ldP4ed",
+    "type": "tool",
+    "callID": "call_80955b3401c993bb",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://skills.promptspace.in/hi/git-commit-message-generator"
+      },
+      "error": "Error: Unable to connect. Is the computer able to access the url?",
+      "time": {
+        "start": 1789529572568,
+        "end": 1789529572675
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789529572676,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "Error: Unable to connect. Is the computer able to access the url?",
+  "error": "Error: Unable to connect. Is the computer able to access the url?"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.677Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529572677,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a8464545001QvoJrF8Q7B03G4",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a84642d8001sv9ANCE3ldP4ed",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 32811,
+      "output": 190,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33001,
+      "headroom": 5855,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.678Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.678Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.680Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.681Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.681Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.684Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 33001,
+  "providerTokens": 33001,
+  "estimatedInputTokens": 6269,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 32811,
+    "cacheRead": 0,
+    "output": 190
+  },
+  "overflow": false,
+  "headroom": 5855,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.685Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.685Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.686Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.687Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.844Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529572844,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84645ec001fYks7IPlW38poj",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846454c001v2RsX1R0YWDkdN",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529572845,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84645ed001H0c1024JIvIyLm",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846454c001v2RsX1R0YWDkdN",
+    "type": "text",
+    "text": "कमांड विफल रही: Error: Unable to connect. Is the computer able to access the url?\n\nइस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप चाहेंगे कि मैं diagnostic context के साथ issue report तैयार करूँ? जवाब दें: `Report issue`.",
+    "time": {
+      "start": 1789529572845,
+      "end": 1789529572845
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529572845,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "part": {
+    "id": "prt_0a84645ed002q0XwlZ9dPd4ZEB",
+    "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+    "messageID": "msg_0a846454c001v2RsX1R0YWDkdN",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 32971,
+      "output": 229,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33200,
+      "headroom": 5656,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.845Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.845Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.846Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.846Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.847Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.847Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.847Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.847Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529572847,
+  "sessionID": "ses_f57b9cc33ffetzn8LHfnrBv49o"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.848Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.848Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.848Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.848Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.5QyJh33yIh",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:52.848Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+

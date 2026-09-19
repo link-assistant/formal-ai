@@ -159,6 +159,8 @@ fn repeated_prompt_hits_intent_formalization_cache() {
     let second = solver.solve_with_intent_cache("translate apple to Russian", &mut cache);
 
     assert_eq!(first.intent, second.intent);
+    assert_eq!(first.answer, "\"яблоко\"");
+    assert_eq!(second.answer, "\"яблоко\"");
     assert_eq!(first.answer, second.answer);
     assert!(
         !first

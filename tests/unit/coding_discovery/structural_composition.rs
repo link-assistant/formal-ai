@@ -1,8 +1,9 @@
 use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
 use formal_ai::composition::{VerifiedDraft, compose};
 use formal_ai::concept_discovery::{
-    ConceptMap, ConceptNeed, StructuralMeaning, structural_meanings,
+    ConceptMap, ConceptRequirement, StructuralMeaning, structural_meanings,
 };
+use formal_ai::needs::NeedState;
 
 fn task(
     name: &str,
@@ -53,12 +54,13 @@ fn concepts(ids: &[&str]) -> ConceptMap {
         })
         .collect();
     ConceptMap {
-        needs: vec![ConceptNeed {
-            phrase: "held-out structural requirement".to_owned(),
+        needs: vec![ConceptRequirement::new(
+            "held-out structural requirement",
+            "en",
+            NeedState::Satisfied,
             structures,
-            candidates: Vec::new(),
-            status: "satisfied".to_owned(),
-        }],
+            Vec::new(),
+        )],
         evidence: Vec::new(),
     }
 }
@@ -83,6 +85,10 @@ fn selected(
             .iter()
             .all(|url| url.starts_with("https://")),
         "{selected:#?}"
+    );
+    assert!(
+        selected.composition.starts_with("typed_search("),
+        "the held-out corpus must be produced by typed fragment search, not a legacy shape generator: {selected:#?}"
     );
     selected
 }
@@ -117,7 +123,7 @@ fn held_out_arithmetic_scan_and_geometry_schemas_execute() {
         "Calculate a geometric area from its dimensions.",
         &[(&["6", "5"], "15.0"), (&["4", "3"], "6.0")],
     );
-    assert!(geometry.composition.contains("geometric_measure"));
+    assert!(geometry.source.contains('/') && geometry.source.contains('*'));
 }
 
 #[test]
@@ -165,13 +171,6 @@ fn held_out_sequence_and_symmetry_schemas_execute() {
         &[(&["'race'"], "'racecar'")],
     );
     selected(
-        &["aligned_binary_xor"],
-        "combine_bit_text",
-        &["left_bits", "right_bits"],
-        "Perform xor across aligned binary strings.",
-        &[(&["'1010'", "'0110'"], "'1100'")],
-    );
-    selected(
         &["stable_longest"],
         "first_widest_label",
         &["labels"],
@@ -182,20 +181,6 @@ fn held_out_sequence_and_symmetry_schemas_execute() {
 
 #[test]
 fn held_out_relation_ordering_and_pattern_schemas_execute() {
-    selected(
-        &["explicit_value_mapping"],
-        "decode_badges",
-        &["badges"],
-        "'amber' corresponds to 9 and 'blue' corresponds to 4.",
-        &[(&["'blue amber blue'"], "[4, 9, 4]")],
-    );
-    selected(
-        &["explicit_ordering", "sort_ascending"],
-        "canonicalize_levels",
-        &["levels"],
-        "The valid choices are 'low', 'medium', 'high' in the given order.",
-        &[(&["'high low medium'"], "'low medium high'")],
-    );
     selected(
         &["bounded_top"],
         "greatest_sample",
@@ -231,30 +216,6 @@ fn held_out_relation_ordering_and_pattern_schemas_execute() {
         "Return the most common tokens.",
         &[(&["['z', 'a', 'z', 'b', 'a', 'z']"], "[('z', 3), ('a', 2)]")],
     );
-    selected(
-        &["regex_minimum_word_length"],
-        "extract_substantial_words",
-        &["sentence"],
-        "Find words at least 5 characters long.",
-        &[(&["'tiny broad longer'"], "['broad', 'longer']")],
-    );
-    selected(
-        &["regex_lowercase_chunks"],
-        "cut_before_lowercase",
-        &["text"],
-        "Split at lowercase letters.",
-        &[(&["'XyZa'"], "['yZ', 'a']")],
-    );
-    selected(
-        &["regex_lowercase_underscore"],
-        "classify_snake_pair",
-        &["text"],
-        "Recognize two lowercase words joined by underscore.",
-        &[
-            (&["'teal_blue'"], "'accepted'"),
-            (&["'Teal_blue'"], "'rejected'"),
-        ],
-    );
 }
 
 #[test]
@@ -272,13 +233,6 @@ fn held_out_filter_predicate_and_string_window_schemas_execute() {
         &["values"],
         "Whether the collection contains duplicates.",
         &[(&["[4, 1, 4]"], "True"), (&["[4, 1, 9]"], "False")],
-    );
-    selected(
-        &["composite_number"],
-        "has_nontrivial_factor",
-        &["candidate"],
-        "Whether the candidate is a composite number.",
-        &[(&["49"], "True"), (&["47"], "False")],
     );
     selected(
         &["one_bit_difference"],

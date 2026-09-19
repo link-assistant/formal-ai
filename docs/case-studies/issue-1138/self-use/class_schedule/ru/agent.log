@@ -1,0 +1,2186 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.052Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.052Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Запиши меня к команде в пятницу на 14:00 по Берлину. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.052Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.053Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.061Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Запиши меня к команде в пятницу на 14:00 по Берлину.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Запиши меня к команде в пятницу на 14:00 по Берлину.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.061Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.062Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.062Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.063Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.065Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.066Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.068Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4082,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.068Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.081Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.085Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 23,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.086Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:18:33.086Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.089Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.089Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.090Z",
+  "service": "session",
+  "id": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF",
+  "title": "New session - 2026-09-16T03:18:33.090Z",
+  "time": {
+    "created": 1789528713090,
+    "updated": 1789528713090
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.091Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.091Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.091Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c6d87dffeUsC2uAkt2ocJLQ/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.091Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c6d87dffeUsC2uAkt2ocJLQ/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.094Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c6d87dffeUsC2uAkt2ocJLQ/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.098Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.098Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.098Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.099Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.099Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.099Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.099Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.099Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.099Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.099Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.235Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.239Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.239Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.246Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.252Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.256Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.256Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.256Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.256Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.783Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528713783,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8392a34001GN036dT4S4DpAf",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8392816001f7dKWT5aUwXNYI",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.783Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528713784,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8392a37002Fn69UdD5RxMGfA",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8392816001f7dKWT5aUwXNYI",
+    "type": "tool",
+    "callID": "call_97e5a6e60b9e7eb3",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528713784,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8392a37001U47qoIaLLjBPpZ",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8392816001f7dKWT5aUwXNYI",
+    "type": "text",
+    "text": "Поищу в интернете: Запиши меня к команде в пятницу на 14:00 по Берлину.",
+    "time": {
+      "start": 1789528713784,
+      "end": 1789528713784
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:33.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528713784,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8392a37002Fn69UdD5RxMGfA",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8392816001f7dKWT5aUwXNYI",
+    "type": "tool",
+    "callID": "call_97e5a6e60b9e7eb3",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Запиши меня к команде в пятницу на 14:00 по Берлину"
+      },
+      "time": {
+        "start": 1789528713784
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.380Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528715380,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8392a37002Fn69UdD5RxMGfA",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8392816001f7dKWT5aUwXNYI",
+    "type": "tool",
+    "callID": "call_97e5a6e60b9e7eb3",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Запиши меня к команде в пятницу на 14:00 по Берлину"
+      },
+      "output": "Title: ⚡️⚡️ Ребята, важная новость - записывайте в ваши календари завтра 15.07 в 18:00 по Берлину | Валентина Nemusli Васильева | Дзен\nURL: https://dzen.ru/a/alZPizyuwHTvdB0Z\nPublished: 2026-07-14T13:41:51.000Z\nAuthor: Валентина Nemusli Васильева\nHighlights:\nНа прошлой неделе в процессе набора потока в OSNOVA Карьеры я получила много обратной связи о том, что люди не могут пока зайти на полную программу (лето / отпуска / каникулы у детей и тд). Но при этом очень хотели бы получить информацию по ориентации в системе трудоустройства. Я подумала и решила - проведу бесплатный эфир 🚀 Разберу на нем саму пошаговую стратегию трудоустройства на хорошую работу в Германии в 2026-2027. Дам систему из 9 шагов, которую вы сможете применить для уверенного самостоятельного поиска 👩🏻‍💻 Эфир пройдет завтра в 18:00 по Берлину. Ссылка на эфир будет в отдельном закрытом канале. Заходите туда прямо сейчас, чтобы не пропустить: ➡️ Зайти в канал и забрать бонус #работка @nemusli\n...\n⚡️⚡️ Ребята, важная новость - записывайте в ваши календари завтра 15.07 в 18:00 по Берлину.\n...\nй неделе в\n...\nнабора потока в OSNOVA Карьеры я получила много обра\n...\nлюди не могут пока зайти на\n...\nпрограмму (лето / отпуска / ка\n...\nи тд\n...\nНо при этом очень хотели бы получить информацию по ориентации в системе\n...\nЯ подумала и решила - проведу бесплатный эфир 🚀\n...\nРазберу на нем саму пошаговую стратегию трудоустройства на хорошую работу в Германии в 2026-2027.\n...\nДам систему из 9 шагов, которую вы сможете применить для уверенного самостоятельного поиска 👩🏻‍💻\n...\nЭфир пройдет завтра в 18:00 по Берлину.\n...\nСсылка на эфир будет в отдельном закрытом канале. Заходите туда прямо сейчас, чтобы не пропустить:\n...\n➡️Зайти в канал и забрать бонус\n...\nПриглашаю в эту пятницу 19 июня на практический воркшоп \"Как эксперту подружиться с цифрами и планировать свою деятельность, чтобы она стала\n\n---\n\nTitle: Вакансия Менеджер по работе с партнёрами в Берлине от Praca pl, ООО, Flagma.de #335896\nURL: https://flagma.de/ru/vakansiya-menedzher-po-rabote-s-partnyorami-rv335896.html\nPublished: 2026-09-14T00:00:00.000Z\nAuthor: N/A\nHighlights:\nВакансия Менеджер по работе с партнёрами в Берлине от Praca pl, ООО, Flagma.de #335896\n...\n# Менеджер по работе с партнёрами в Берлине\n...\n1 500 - 4 000 € полная занятость\n\n Praca pl, ООО Вараш, UA, кадровое агентство \n\nЕлена Praca, менеджерна Флагма с 14 июля\n...\n2020\n\n \n\nЕлена Praca Менеджер\n\nКонтакты\n\n+380 (93) 018-70-08\n...\nНаписать\n\n+380 (95) 844-75-39\n\n+48 510 134 406\n...\n## Описание\n...\nпо работе с\n...\nManager Формат\n...\n: удалённо\n...\nНачало работы: как можно скорее / кандидат может приступить сразу Количество сотрудников: планируется нанять до 3–4 человек Оплата труда • Стартовая оплата — 1 500 € брутто в месяц. • Сотрудник получает указанную сумму и самостоятельно решает вопросы уплаты налогов и других обязательных платежей в стране своего проживания. • В дальнейшем уровень дохода может составлять 2 000–4 000 € и выше, в зависимости от результатов работы сотрудника. • После начального периода условия оплаты могут пересматриваться индивидуально. • В дальнейшем планируется привязка дохода к KPI и показателям эффективности, поскольку позиция связана с продажами и привлечением партнёров. • Чем выше результативность сотрудника, тем выше потенциальный уровень дохода. График работы • Понедельник–пятница. • По выходным работа не предусмотрена. • Удалённый формат. • Сотрудник самостоятельно организовывает свой рабочий день и рабочее время. • Важно быть доступным и выполнять поставленные задачи в рабочие дни. Основные обязанности Основная задача сотрудника — поиск и привлечение новых партнёров/локаций для платформы. В обязанности входит: • обзвон потенциальных партнёров и локаций; • работа с предоставленной базой потенциальных партнёров; • коммуникация с потенциальными партнёрами на немецком языке; • привлечение и регистрация новых партнёров; • заполнение профилей партнёров; • поиск необходимых локаций; • добавление найденных локаций на сайт; • заполнение информации о локациях; • работа с информацией на немецком языке; • внесение и ведение информации в CRM-системе. Поиск партнёров Сотруднику предоставляется база для поиска потенциальных партнёров и конкретный регион/город для работы. Основная работа предполагает активный обзвон потенциальных партнёров и дальнейшее ведение привлечённых контактов. Инструменты для работы • Предоставляется доступ к CRM-системе. • Необходим уверенный современный уровень владения компьютером и онлайн-инструментами. • Важно уметь самостоятельно работать с цифровыми сервисами и быстро осваивать новые программы. • Приветствуется умение пользоваться современными AI-инструментами, включая ChatGPT и Claude. Требования к кандидату • Немецкий язык — не ниже C1. • Английский язык не требуется. • Профильное образование не требуется. • Опыт в продажах, Business Development или холодных звонках будет преимуществом, но не является обязательным. • Работодатель готов рассматривать кандидатов без опыта и дать возможность обучиться. • Уверенное владение компьютером. • Ответственность. • Самостоятельность. • Хорошие коммуникативные навыки. • Способность работать без постоянного контроля. • Ориентация на результат. Формат сотрудничества • Официальное трудоустройство в Германии не предусмотрено. • Сотрудничество осуществляется удалённо с человеком, проживающим за пределами Германии. • Оплата производится на основании выставленных счетов. • Возможно заключение договора о постоянном долгосрочном сотрудничестве. • Работодатель заинтересован в длительной работе с сотрудником. Карьерный рост Для сильного и результативного сотрудника предусмотрена возможность профессионального и финансового роста. При хороших показателях в дальнейшем есть перспектива возглавить отдел продаж.\n\n---\n\nTitle: Вакансия Водитель В, С, СЕ - 1 в Берлине от Ewka-Bud, Sp. z o.o., Flagma.de #335876\nURL: https://flagma.de/ru/vakansiya-voditel-v-s-se-1-rv335876.html\nPublished: 2026-09-14T00:00:00.000Z\nAuthor: N/A\nHighlights:\nВакансия Водитель В, С, СЕ - 1 в Берлине от Ewka-Bud, Sp. z o.o., Flagma.de #335876\n...\n# Водитель В, С, СЕ - 1 в Берлине\n...\nСрочная Вакансия Германия, Бернхардсвальд Водитель В, С, СЕ - 1 Оплата (чистыми): 14,00 € / час\n...\nГрафик/период работы: Пн.-Пт, с 08:00 до 18:00-19:00, Сб. - по необходимости (5-6 часов), а также если есть разрешение. Перерывы согласовываются с бригадиром на объекте. 8-11 час/день. 170-230 час/месяц. Жилье: Предоставляется бесплатно. Квартира. Жилье согласно стандартам. Количество сожителей: 3 Спецодежда: Не предоставляется. Защитную обувь каждый работник должен иметь свою. Рабочая одежда при необходимости может быть предоставлена работодателем. Инструмент: Предоставляется бесплатно. Бережно относиться к предоставленному инструменту. За инструмент несет ответственность работник. Трансфер на работу: Предоставляется бесплатно.\n...\nПишите WhatsApp, Viber, Facebook, Telegram, tel +48500504691\n\n Ewka-Bud, Sp. z o.o. Василевский Арсений, работник по подбору персонала\n\n---\n\nTitle: Вакансия BD Manager в Берлине, работа в компании Freenow (26.08.2026) | HireHi\nURL: https://hirehi.ru/sales/bd-manager-81719\nPublished: 2026-08-26T00:00:00.000Z\nAuthor: N/A\nHighlights:\nВакансия BD Manager в Берлине, работа в компании Freenow (26.08.2026) | HireHi\n\n Freenow \n\n26 авг\n...\n# BD Manager\n\n ориентир по рынку \n\n вакансия зп не указана в среднем 191 338 ₽ \n\n## подготовьтесь к отклику\n\n ai-инструменты \n\nЧтобы адаптировать резюме под вакансию или составить сопроводительное письмо, загрузите резюме\n...\nFreenow by Lyft operates a multi-mobility app across 9 European markets and more than 180 cities, offering taxis, private hire vehicles, carsharing, car rental, e-scooters, e-bikes, e-mopeds, and public transport. The company is expanding into healthcare by building a platform for hospitals and medical institutions.\n...\n- 3+ Years of experience in consulting, project management, business development, or a related field;\n- Fluency in German and English;\n- Ability to structure ambiguous problems and build an approach from scratch without an established playbook or network;\n- Strong relationship-building and stakeholder-management skills;\n- Ability to operate independently in a fast-paced, evolving environment;\n- Nice to have: experience in the healthcare sector.\n...\n- Flexible working arrangements;\n- LinkedIn Learning;\n- Sabbatical and special leave policies;\n- WeRoad partnership;\n- Birthday, 24th and 31st December off;\n- Short term EU work policy;\n- Mobility Credit;\n- Employee assistance program;\n- More local benefits depending on the work location.\n...\n~ 384 614 ₽\n...\nmiddle гибрид Берлин\n\n---\n\nTitle: Вакансия Работа на фабрике икры в Берлине от Work in teim GmbH, Sp. z o.o., Flagma.de #334653\nURL: https://flagma.de/ru/vakansiya-rabota-na-fabrike-ikry-rv334653.html\nPublished: 2026-09-04T00:00:00.000Z\nAuthor: N/A\nHighlights:\nВакансия: Уборщица на фабрике\n...\nТребования к кандидатам: Только для граждан Украины, Молдовы, Беларуси, Средней Азии и стран Европейского Союза.\n...\nМестоположение: Германия, город Берлин.\n...\nЗаработная\n...\nГрафик работы: Понедельник–Пятница, 10–12 часов в день; Суббота – по договоренности. Минимум 250 часов в месяц.\n...\nТребуемые документы: карта побыта, вид на жительство (ВНЖ), параграф 24, UKR Pesel.\n...\n*Работа на фабрике (1\n...\n.)Страна, город –\n...\n, Берлин.*Только для\n...\nдо 50\n...\nЗаработная плата – от 9,\n...\nчас (от 2400\n...\n) График работы:\n...\nн.-Пт. (10-12 час/день, от 250час/мес), Сб. - по желанию. Жильё на территории фабрики – 200€️ ОБЯЗАННОСТИ: Упаковка икры; Погрузка и разгрузка...\n\n Work in\n...\nim GmbH, Sp. z\n...\nenedzer Elia, HR manager\n\n---\n\nTitle: Вакансия ml engineer for enterprise applications в Берлине, работа в компании adesso SE (29.08.2026) | HireHi\nURL: https://hirehi.ru/development/ml-engineer-for-enterprise-applications-83945\nPublished: 2026-08-29T00:00:00.000Z\nAuthor: N/A\nHighlights:\nВакансия ml engineer for enterprise applications в Берлине, работа в компании adesso SE (29.08.2026) | HireHi\n\n adesso SE \n\n# ml engineer for enterprise applications\n\n ориентир по рынку \n\n вакансия зп не указана в среднем 254 966 ₽ \n\n## подготовьтесь к отклику\n\n ai-инструменты \n\nЧтобы адаптировать резюме под вакансию или составить сопроводительное письмо, загрузите резюме\n...\nadesso SE is an IT services and consulting company that optimizes customers’ core business processes through tailored IT solutions and the smart use of current technologies.\n...\n- At least five years of experience developing and operating productive\n...\nan enterprise environment;\n...\n- Completed degree in computer science, software engineering, data science, or a comparable technical field;\n...\n- Strong knowledge\n...\nand lifecycle management;\n...\n- Confident experience with Python, Docker, Kubernetes, MLflow\n...\nand at least one\n...\ncaler cloud such as AWS, Azure, or GCP;\n...\n- Engineering-oriented, test-driven approach with a clear focus\n...\nscalability and stability;\n...\n- Secure and professional communication in German and English.\n\n---\n\nTitle: Вакансия Founding Engineering Team Lead (Hands-on)\nURL: https://quick-offer.ru/job/founding-engineering-team-lead-hands-on-76469\nPublished: 2026-07-10T08:02:37.000Z\nAuthor: N/A\nHighlights:\nИсключительная возможность для опытного лидера: статус founding-участника, работа с AI и Cybersecurity, релокация в Берлин и прямое влияние на продукт. Высокий балл за перспективность отрасли и уровень ответственности.\n...\nВысокая сложность обусловлена ролью 'Founding', требующей сочетания глубокой технической экспертизы (hands-on Go), навыков найма и управления, а также готовности к релокации в Берлин. Требуется опыт 8+ лет и свободный английский.\n...\nДля позиции Founding Team Lead в Берлине рыночные предложения обычно начинаются от 90,000€ и могут достигать 120,000€+ в зависимости от доли в капитале (equity). Данная вакансия предполагает индивидуальное обсуждение, что характерно для ранних стадий стартапов.\n...\n◾️Позиция: Founding Engineering Team Lead (Hands-on)\n...\n◾️Формат: гибрид (Берлин)\n...\n◾️Локация: рассматриваем кандидатов для релокации из Европы и Израиля\n...\nИщем Founding Engineering Team Lead в международный AI Cybersecurity startup 🚀\n...\nЭто возможность присоединиться к компании на раннем этапе, напрямую влиять на архитектуру продукта, технические решения и формирование инженерной команды.\n...\n— руководить небольшой командой инженеров и участвовать в найме новых специалистов;\n...\nGo (Golang), PostgreSQL, Docker, Kubernetes, AWS/GCP, REST API, Microservices, CI/CD, AI Developer Tools, Cloud Infrastructure.\n...\n— 8+ лет коммерческой разработки;\n...\n— опыт работы в роли Engineering Manager, Tech Lead или Team Lead;\n...\n— сильный hands-on опыт разработки на Go (или готовность быстро перейти на Go при наличии сильного backend-бэкграунда);\n...\n— английский язык — Upper-Intermediate (B2+) и выше.\n...\nЕсли вам интересно создавать продукт мирового уровня, принимать ключевые технические решения и стать частью founding-команды — будем рады познакомиться! 🙌\n\n---\n\nTitle: Куда пойти? Берлин (@berlin_weekend) — TG.ME\nURL: https://tg.me/berlin_weekend\nPublished: 2026-08-20T00:00:00.000Z\nAuthor: N/A\nHighlights:\n🌃 18+ и ночная жизнь · 31 событие 10:00-14:00 Утренняя вечеринка 10AM CLUB (Atelier Rooftop) 13:00-22:00 День у бассейна: FDLA × MS DSF Pool Party 14:00 Вечеринка Orbit Berlin (showcase в Garten @ 14:00 coppi — вечеринка на борту Hoppetosse (на воде) 14:00 Дневной рейв Brace Brace — Secret Oasis 14:00-22:00 Garden of Synths — дневной open‑air рейв от Kalipo\n...\n5:0\n...\n08:00+ Subwax Takeover в Club der Visionaere 1\n...\n00 Днев\n...\nNOC Coffee Rave\n...\n16:0\n...\n2:00\n...\nGallery 16\n...\n(сад — бесплатно\n...\n20:\n...\n) 18:00\n...\nuk 19:0\n...\n) 21\n...\n5:0\n...\n22\n...\n7:0\n...\nke 22\n...\n00+\n...\n& RAVE — Afterparty в DNA. CLUB 22:00\n...\n6:00+\n...\nClub Sounds — субботняя вечеринка 22:00-06:00+ TAFNIT —\n...\ntechno в секретной локации 22:00-06:00+ Прощальная серия arkaoda — Final Chapter pt.2 22:00-05:00+ Вечеринка 24K Kink (эротический рейв) 22:00\n...\nчеринка Bamb\n...\nмузыки 22:00 Юбилей NO\n...\nлет 23\n...\n00 Афтепати Some of Us (секретная локация, Neukölln) 23:00-06:00+ Saturdaze в Bulbul Berlin 23:00-06:00+ Афтепати Out of Touch (Bruisers x 4q4 Error\n...\nLa Hueca) 23:00-10:00+ Вечеринка We Love\n...\n(Der Weiße Hase · RAW) 23:00-09:\n...\n+ Клуб\n...\nночь EUPHORIK (OST) — hardtechno & trance 23:00-12:00+ Tresor Klubnacht — Globus Listening Session и техно‑сеты\n...\n23:\n...\n07:\n...\n0+ VOID: VANTA.NYX VI — Ødium, Gabrielle и др. 23:59 Daisy Records — летний финал (OHM) 23:59 Иммерсивный Ritua — Chlär ft. Ignez\n...\n📅 Куда сходить в Берлине 22 августа 🎉 Для компании · 32 события 10:00-12:00 Автобусный тур «По следам Роланда Кайзера» 11:00-08:00+ Вечеринка Quirk × SlapFunk (Haus der Visionäre) 13:00 Летний фестиваль Lost In Mellowpark (open‑air) 13:00-06:00+ TFELD — фестиваль в Tempelhof (хип‑хоп и электроника) 13:00 TFELD I GL — дневной концертный блок на Темпельхофе 14:00-16:00 Маркет обмена Berlin Swap Market — август 14:00-11:00+ FEIERAMT × LAPSUS × DOLLHAUS — 21‑часовой марафон (ÆDEN) 14:00 Фестиваль ITALOMANIA — Toy Tonics (open air + indoor) 14:00 Фестиваль İÇ İÇE в Else — новая анатолийская сцена 14:00-22:00 Парковый фестиваль Radioeins 14:00-22:00 123‑й фестиваль Schollenfest (народный праздник) 16:00-03:00+ HOCH HINAUS — вечеринка на крыше Klunkerkranich (Welcome back arkadiusz.) 16:00 SOL HOUSE BERLIN — открытие (Beach Neukölln) 16:00-22:00 Дневной рейв Ramped Up в Spit And Sawdust 16:00-22:00 Open Air на Музейном острове (Jetconcept, DJ Trade Trainer, The Nightbus) 17:00 FL\n...\nFestival '2\n...\n— выездная сессия (deep listening) 17:00-04:00+ Импров-сессия Soundscapes Vol.06 (иммерсивная музыка) 18:00-23:59 Вечер «Gather in Sound» Vol.6 (эмбиент + чайная коллаборация) 19\n...\n+ Мульти\n...\nдийный вечер «AIN'T\n...\n» 19:00-04:00+ Hochsommer — Sommerhoch (Malzfabrik): выставка, лайвы и рейв 20:00-23:00 Вечер в migas: Zahra (listening bar) 20:00-06:00+ Hot Waves — ужин и танцы (Blurry Vision / Vreugdevuur) в Coco Boule 21:00-02:00+ Вечер: DJ Oberst Panizza в Madame Claude 22:00-06:00+ Вечеринка Süss am Samstag в Süss War Gestern 22:00-06:00+ Концерт LLOYD PATEK в Georgia Bar 22:00-06:00+ WEDGEY — trashy house‑вечеринка в Ficken 3000 23:00-06:00+ Перформанс-вечер Vida — три акта 23:00-06:00+ Вечеринка United Airlines Seat Selection — Kraftwerk Berlin 23:00-12:00+ Punto de Encuentro — вечер в Golden Gate 23:00-08:00+ Italo Modern\n...\nприглашает Slow Motion DJs — Phantom\n...\n23:59-08:00+ La Mala Noche — weekender в RSO.BERLIN 23:59-06:00+ Klubnacht в Berghain | Panorama Bar | Säule\n...\n☀️ Доброе утро, Берлин! Сегодня — отличный день для неспешной прогулки по паркам и вечернего выхода: пятница располагает к простым планам, а погода обещает мягкий летний ритм без экстремов. 🇩🇪 Цитата дня: «Es irrt der Mensch, solang er strebt.» «Человек ошибается, пока стремится.» — Johann Wolfgang von Goethe 🌤 Погода на сегодня: Утром ~14 °C, днём ~22 °C, вечером ~19 °C. Возможны кратковременные ливни, ветер слабый — умеренный. 👕 Как одеться: Лёгкая куртка или ветровка поверх футболки будут лучшим вариантом — возможно короткий дождь. 🌳 Стоит ли выбирать мероприятия на улице? Скорее да — прогулки в парках подходят, но имейте запасной тёплый слой и зонт на случай дождя. 🚋 Обратите внимание: Совет дня: перед поездкой в общественном транспорте быстро проверьте приложение BVG — мелкие перебои и работы возможны, но массовых ограничений не зафиксировано. 👇 Ниже публикуем события на сегодня. Выбирайте категорию и сохраняйте интересные варианты.\n\n 63 Aug 21",
+      "title": "Web search: Запиши меня к команде в пятницу на 14:00 по Берлину",
+      "metadata": {},
+      "time": {
+        "start": 1789528713784,
+        "end": 1789528715379
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.382Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528715382,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393075001rCYuqDwZZ6UTqF",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8392816001f7dKWT5aUwXNYI",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8548,
+      "output": 143,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8691,
+      "headroom": 30165,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.383Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.383Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.387Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.387Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.387Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.387Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.387Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.387Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.388Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.388Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.397Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8691,
+  "providerTokens": 8691,
+  "estimatedInputTokens": 5378,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8548,
+    "cacheRead": 0,
+    "output": 143
+  },
+  "overflow": false,
+  "headroom": 30165,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.397Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.398Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.402Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:35.403Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:36.113Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528716113,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393350001rdd9IHWChPD9Af",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393085001HxKpYtqksePsVE",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:36.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:36.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528716114,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393352001JwO01rZVTQgkvQ",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393085001HxKpYtqksePsVE",
+    "type": "tool",
+    "callID": "call_4bf964921b524abe",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:36.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528716114,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393351001hvPO3tLJ8E7esC",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393085001HxKpYtqksePsVE",
+    "type": "text",
+    "text": "Открою https://dzen.ru/a/alZPizyuwHTvdB0Z и прочитаю содержимое.",
+    "time": {
+      "start": 1789528716114,
+      "end": 1789528716114
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:36.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528716114,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393352001JwO01rZVTQgkvQ",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393085001HxKpYtqksePsVE",
+    "type": "tool",
+    "callID": "call_4bf964921b524abe",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://dzen.ru/a/alZPizyuwHTvdB0Z"
+      },
+      "time": {
+        "start": 1789528716114
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528718311,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393352001JwO01rZVTQgkvQ",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393085001HxKpYtqksePsVE",
+    "type": "tool",
+    "callID": "call_4bf964921b524abe",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://dzen.ru/a/alZPizyuwHTvdB0Z"
+      },
+      "output": "",
+      "title": "https://dzen.ru/a/alZPizyuwHTvdB0Z (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528716114,
+        "end": 1789528718310
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528718311,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393be700124TqWFFZh2rfLj",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393085001HxKpYtqksePsVE",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 26169,
+      "output": 132,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 26301,
+      "headroom": 12555,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.312Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.313Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.313Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.313Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.314Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 26301,
+  "providerTokens": 26301,
+  "estimatedInputTokens": 5405,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 26169,
+    "cacheRead": 0,
+    "output": 132
+  },
+  "overflow": false,
+  "headroom": 12555,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.315Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.316Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.564Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528718564,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393ce40010cxQ7ItKQ4GmEx",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393bea0016DEqzvRJ2Wb7GM",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.565Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.565Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528718565,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393ce500115tDDp5sKrfV36",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393bea0016DEqzvRJ2Wb7GM",
+    "type": "tool",
+    "callID": "call_e890d74030687437",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.565Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528718565,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393ce400216WWBg6gMusU8U",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393bea0016DEqzvRJ2Wb7GM",
+    "type": "text",
+    "text": "Открою https://flagma.de/ru/vakansiya-menedzher-po-rabote-s-partnyorami-rv335896.html и прочитаю содержимое.",
+    "time": {
+      "start": 1789528718565,
+      "end": 1789528718565
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:38.565Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528718565,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393ce500115tDDp5sKrfV36",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393bea0016DEqzvRJ2Wb7GM",
+    "type": "tool",
+    "callID": "call_e890d74030687437",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://flagma.de/ru/vakansiya-menedzher-po-rabote-s-partnyorami-rv335896.html"
+      },
+      "time": {
+        "start": 1789528718565
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.627Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528719628,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8393ce500115tDDp5sKrfV36",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393bea0016DEqzvRJ2Wb7GM",
+    "type": "tool",
+    "callID": "call_e890d74030687437",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://flagma.de/ru/vakansiya-menedzher-po-rabote-s-partnyorami-rv335896.html"
+      },
+      "output": "reCAPTCHA\n\n\n\n\n\n\n\nДля корректной работы сайтанам необходимо убедиться, что вы не бот.\nДля продолжения работы подтвердите, что вы не робот.Мы запомним ваш выбор и в дальнейшем вы сможете пользоваться сайтом без ограничений.",
+      "title": "https://flagma.de/ru/vakansiya-menedzher-po-rabote-s-partnyorami-rv335896.html (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528718565,
+        "end": 1789528719627
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528719628,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a839410c001DI60NBrbaqxpDh",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8393bea0016DEqzvRJ2Wb7GM",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 26233,
+      "output": 220,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 26453,
+      "headroom": 12403,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.629Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.629Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.629Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.629Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.629Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.629Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.630Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.630Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.631Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 26453,
+  "providerTokens": 26453,
+  "estimatedInputTokens": 5492,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 26233,
+    "cacheRead": 0,
+    "output": 220
+  },
+  "overflow": false,
+  "headroom": 12403,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.631Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.631Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.632Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.633Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528719893,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394215001Qbw961meP87iWa",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a839410f001nVyY2MDOe2a1W7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.893Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528719894,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394216001wEOGEiNXMGFjg8",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a839410f001nVyY2MDOe2a1W7",
+    "type": "tool",
+    "callID": "call_e94fcaa267b82b73",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528719894,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a83942150023BrxuwdlHyp92w",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a839410f001nVyY2MDOe2a1W7",
+    "type": "text",
+    "text": "Открою https://flagma.de/ru/vakansiya-voditel-v-s-se-1-rv335876.html и прочитаю содержимое.",
+    "time": {
+      "start": 1789528719894,
+      "end": 1789528719894
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:39.894Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528719894,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394216001wEOGEiNXMGFjg8",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a839410f001nVyY2MDOe2a1W7",
+    "type": "tool",
+    "callID": "call_e94fcaa267b82b73",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://flagma.de/ru/vakansiya-voditel-v-s-se-1-rv335876.html"
+      },
+      "time": {
+        "start": 1789528719894
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528720160,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394216001wEOGEiNXMGFjg8",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a839410f001nVyY2MDOe2a1W7",
+    "type": "tool",
+    "callID": "call_e94fcaa267b82b73",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://flagma.de/ru/vakansiya-voditel-v-s-se-1-rv335876.html"
+      },
+      "output": "reCAPTCHA\n\n\n\n\n\n\n\nДля корректной работы сайтанам необходимо убедиться, что вы не бот.\nДля продолжения работы подтвердите, что вы не робот.Мы запомним ваш выбор и в дальнейшем вы сможете пользоваться сайтом без ограничений.",
+      "title": "https://flagma.de/ru/vakansiya-voditel-v-s-se-1-rv335876.html (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528719894,
+        "end": 1789528720159
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528720160,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394320001jz1SASZ5ehZN4F",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a839410f001nVyY2MDOe2a1W7",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 26562,
+      "output": 186,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 26748,
+      "headroom": 12108,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.161Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.161Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.162Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.162Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.162Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.162Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.162Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.162Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.164Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 26748,
+  "providerTokens": 26748,
+  "estimatedInputTokens": 5574,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 26562,
+    "cacheRead": 0,
+    "output": 186
+  },
+  "overflow": false,
+  "headroom": 12108,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.164Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.164Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.165Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.165Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528720440,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394437001b4DUgGeJPScDGw",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8394324001PrXF0Ucdtta1bb",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528720440,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394438001InfmFuKj68Jlr5",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8394324001PrXF0Ucdtta1bb",
+    "type": "text",
+    "text": "Для продолжения работы подтвердите, что вы не робот.Мы запомним ваш выбор и в дальнейшем вы сможете пользоваться сайтом без ограничений.\n\nSource: https://flagma.de/ru/vakansiya-menedzher-po-rabote-s-partnyorami-rv335896.html\n\nДля продолжения работы подтвердите, что вы не робот.Мы запомним ваш выбор и в дальнейшем вы сможете пользоваться сайтом без ограничений.\n\nSource: https://flagma.de/ru/vakansiya-voditel-v-s-se-1-rv335876.html",
+    "time": {
+      "start": 1789528720440,
+      "end": 1789528720440
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528720440,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "part": {
+    "id": "prt_0a8394438002vZMymaZF6pLbF4",
+    "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+    "messageID": "msg_0a8394324001PrXF0Ucdtta1bb",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 26874,
+      "output": 433,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 27307,
+      "headroom": 11549,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.440Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.441Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.441Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.442Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.442Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.442Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.443Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528720443,
+  "sessionID": "ses_f57c6d87dffeUsC2uAkt2ocJLQ"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.443Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.443Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.443Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.444Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.p6PajKNwGF",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:18:40.444Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

@@ -130,10 +130,6 @@ pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
     extract_procedural_how_to_task(normalized).map(|task| task.task)
 }
 
-pub fn looks_like_procedural_how_to(normalized: &str) -> bool {
-    extract_procedural_how_to_task(normalized).is_some()
-}
-
 /// Handles follow-up requests for the concrete steps of an active procedure —
 /// "Can you give me specific instructions?", "give me the exact steps", "step
 /// by step", and their multilingual equivalents (issue #444). These prompts
@@ -819,7 +815,7 @@ fn render_procedural_how_to_body(
                      official documentation or official repository install page \
                      before community how-to sources. It starts with the \
                      official-source web search query `{search_query}` and keeps \
-                     the general how-to query `{fallback_query}` as fallback. "
+                     the general how-to query `{fallback_query}` as fallback.\n\n"
                 )
             } else {
                 String::new()

@@ -1,0 +1,40 @@
+total_closure_schema
+  issue 1138
+  purpose "Schema knowledge for distinguishing semantic references from local declaration identities and literal matcher operands in the total-closure audit. The audit retains structural branch-versus-leaf detection; this data supplies the domain vocabulary so new record kinds and matchers are discoverable without Python edits."
+  invariant "Only the first value of a declaration head with children is an identity. The same head on a leaf remains a semantic reference. Every value of a literal operand head is matcher syntax rather than a meaning edge."
+  declaration_identity_head capability
+  declaration_identity_head capability_gap
+  declaration_identity_head category
+  declaration_identity_head coding_meta_algorithm
+  declaration_identity_head context
+  declaration_identity_head entity
+  declaration_identity_head environment
+  declaration_identity_head evidence_group
+  declaration_identity_head family
+  declaration_identity_head field
+  declaration_identity_head flow
+  declaration_identity_head handler
+  declaration_identity_head intent
+  declaration_identity_head lesson
+  declaration_identity_head method
+  declaration_identity_head operation
+  declaration_identity_head option
+  declaration_identity_head pattern
+  declaration_identity_head primitive
+  declaration_identity_head promotion
+  declaration_identity_head response
+  declaration_identity_head rule
+  declaration_identity_head section
+  declaration_identity_head source
+  declaration_identity_head stage
+  declaration_identity_head status
+  declaration_identity_head surface
+  declaration_identity_head task
+  declaration_identity_head template
+  declaration_identity_head timeline
+  declaration_identity_head tool
+  declaration_identity_head topic
+  literal_operand_head cue
+  literal_operand_head prefix
+  literal_operand_head substring
+  literal_operand_head word

@@ -4,7 +4,9 @@ use std::path::Path;
 use formal_ai::{environment_records, supported_languages};
 use walkdir::{DirEntry, WalkDir};
 
-mod benchmarks;
+mod count;
+mod issue_1138;
+mod issues;
 
 #[test]
 fn issue_12_vision_documents_are_present_and_traceable() {
@@ -474,7 +476,9 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
             "| R223 ",
             "| R224 ",
             "| R225 ",
+            "| R195-7 ",
             "konard/box-dind:2.1.1",
+            "FORMAL_AI_START_ISOLATION",
             "FORMAL_AI_START_RUNNER",
         ],
     );
@@ -895,6 +899,16 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
     if relative.starts_with("docs/case-studies/") && relative.ends_with("/raw-data") {
         return true;
     }
+    // Recorded self-use sessions are the same kind of verbatim third-party
+    // evidence as `raw-data`: `agent.log` contains provider responses and
+    // downloaded payloads exactly as observed. Keep authored self-use prose in
+    // scope while leaving the immutable transcript bytes untouched.
+    if relative.starts_with("docs/case-studies/")
+        && relative.contains("/self-use/")
+        && name == "agent.log"
+    {
+        return true;
+    }
 
     // Released changelog text and its provenance map are immutable historical
     // records. They can quote old project terminology without reintroducing it
@@ -920,6 +934,11 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             | "data/wiktionary-cache"
             | "data/http-cache"
             | "data/seed/api-cache"
+            // The content-addressed store of bytes retrieved by `--online`
+            // source discovery (official OEIS JSON and the pages it cites).
+            // Like the caches above it is verbatim third-party text, and it
+            // is git-ignored: the pin governs authored repository prose.
+            | "data/source-cache"
             // Git-ignored generated mirrors of already-scanned source: the
             // VS Code packaging step copies src/web -> vscode/dist-web (with
             // data/seed -> vscode/dist-web/seed) and desktop/lib helpers ->

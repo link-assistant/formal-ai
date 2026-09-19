@@ -35,6 +35,7 @@ fn russian_translate_how_are_you_prompt_returns_english_surface() {
     // source fragment's lowercase casing and trailing question mark. No
     // `meaning: ...` / `surface (...)` template anymore.
     let response = answer("Переведи \"как у тебя дела?\" на английский.");
+    assert_eq!(response.answer, "\"how are you?\"");
     assert_eq!(
         response.intent, "translate_ru_to_en",
         "Russian translation prompt should resolve to translation, got {}: {}",
@@ -104,6 +105,7 @@ fn natural_translation_drops_terminal_when_source_has_none() {
     // R214: terminal punctuation is mirrored — when the source has none, the
     // target has none either.
     let response = answer("Переведи \"как дела\" на английский.");
+    assert_eq!(response.answer, "\"how are you\"");
     assert_eq!(response.intent, "translate_ru_to_en");
     assert!(
         response.answer.contains("how are you") && !response.answer.contains("how are you?"),
@@ -125,6 +127,7 @@ fn issue_210_russian_translation_prompts_keep_translation_intent() {
 
     for (prompt, expected_surface) in cases {
         let response = answer(prompt);
+        assert_eq!(response.answer, format!("\"{expected_surface}\""));
         assert_eq!(
             response.intent, "translate_ru_to_en",
             "translation prompt should not be routed to another handler for {prompt:?}; got {}: {}",
@@ -170,6 +173,10 @@ fn issue_210_russian_translation_prompts_keep_translation_intent() {
 #[test]
 fn issue_230_russian_compositional_translation_handles_search_phrase() {
     let response = answer("Переведи \"Найти синонимы или примеры согласования\" на ангилйский");
+    assert_eq!(
+        response.answer,
+        "\"Find synonyms or examples of agreement\""
+    );
     assert_eq!(
         response.intent, "translate_ru_to_en",
         "reported prompt should remain a Russian to English translation, got {}: {}",
@@ -240,6 +247,18 @@ fn translation_gaps_are_reported_without_language_placeholders() {
 
     for (language, prompt, expected_intent, expected_gap, forbidden_placeholders) in cases {
         let response = answer(prompt);
+        let (source, target) = if *language == "en" {
+            ("неведомослово", "en")
+        } else {
+            ("zzqxqv", *language)
+        };
+        let source_language = if *language == "en" { "ru" } else { "en" };
+        assert_eq!(
+            response.answer,
+            format!(
+                "I could not translate \"{source}\" from {source_language} to {target} with the available formalization data. I recorded this as a translation gap for follow-up."
+            )
+        );
         assert_eq!(
             response.intent, *expected_intent,
             "translation gap should stay on the translation handler for {prompt:?}, got {}: {}",
@@ -324,6 +343,10 @@ fn translation_meaning_registry_covers_extended_phrases() {
     for (prompt, expected_intent, expected_substring) in cases {
         let response = answer(prompt);
         assert_eq!(
+            response.answer.to_lowercase(),
+            format!("\"{}\"", expected_substring.to_lowercase())
+        );
+        assert_eq!(
             response.intent, *expected_intent,
             "intent mismatch for prompt {prompt:?}, answer was: {}",
             response.answer,
@@ -361,6 +384,7 @@ fn issue_216_translate_apple_to_russian_without_quotes() {
     ];
     for prompt in cases {
         let response = answer(prompt);
+        assert!(["\"яблоко\"", "\"Яблоко\""].contains(&response.answer.as_str()));
         assert_eq!(
             response.intent, "translate_en_to_ru",
             "unquoted English→Russian prompt should route to translation for {prompt:?}, got {}: {}",
@@ -418,6 +442,11 @@ fn issue_216_unquoted_apple_covers_every_supported_target_language() {
 
     for (prompt, expected_intent, expected_surfaces, target_evidence) in cases {
         let response = answer(prompt);
+        let documented = expected_surfaces
+            .iter()
+            .map(|surface| format!("\"{surface}\""))
+            .collect::<Vec<_>>();
+        assert!(documented.contains(&response.answer));
         assert_eq!(
             response.intent, *expected_intent,
             "unquoted apple prompt should route to translation for {prompt:?}, got {}: {}",
@@ -468,6 +497,11 @@ fn native_hindi_and_chinese_unquoted_translation_prompts_are_supported() {
 
     for (prompt, expected_intent, expected_surfaces, target_evidence) in cases {
         let response = answer(prompt);
+        let documented = expected_surfaces
+            .iter()
+            .map(|surface| format!("\"{surface}\""))
+            .collect::<Vec<_>>();
+        assert!(documented.contains(&response.answer));
         assert_eq!(
             response.intent, *expected_intent,
             "native unquoted prompt should route to translation for {prompt:?}, got {}: {}",
@@ -513,6 +547,7 @@ fn issue_217_single_russian_noun_quoted() {
     ];
     for prompt in cases {
         let response = answer(prompt);
+        assert_eq!(response.answer.to_lowercase(), "\"apple\"");
         assert_eq!(
             response.intent, "translate_ru_to_en",
             "quoted Russian noun should route to translation for {prompt:?}, got {}: {}",
@@ -536,6 +571,7 @@ fn issue_218_unquoted_russian_translation() {
     // Issue #218 / mirror of #216 in the Russian direction:
     // `переведи яблоко на английский` (no quotes) should also work.
     let response = answer("переведи яблоко на английский");
+    assert_eq!(response.answer.to_lowercase(), "\"apple\"");
     assert_eq!(
         response.intent, "translate_ru_to_en",
         "unquoted Russian→English should route to translation, got {}: {}",
@@ -571,6 +607,10 @@ fn issue_221_common_russian_nouns_translate_to_english() {
     for (prompt, expected) in cases {
         let response = answer(prompt);
         assert_eq!(
+            response.answer.to_lowercase(),
+            format!("\"{}\"", expected.to_lowercase())
+        );
+        assert_eq!(
             response.intent, "translate_ru_to_en",
             "common Russian noun should route to translation for {prompt:?}, got {}: {}",
             response.intent, response.answer,
@@ -603,6 +643,11 @@ fn issue_221_common_english_nouns_translate_to_russian() {
     ];
     for (prompt, expected_any) in cases {
         let response = answer(prompt);
+        let documented = expected_any
+            .iter()
+            .map(|surface| format!("\"{}\"", surface.to_lowercase()))
+            .collect::<Vec<_>>();
+        assert!(documented.contains(&response.answer.to_lowercase()));
         assert_eq!(
             response.intent, "translate_en_to_ru",
             "common English noun should route to translation for {prompt:?}, got {}: {}",
@@ -655,6 +700,10 @@ fn issue_221_unquoted_common_noun_works_in_all_languages() {
     ];
     for (prompt, expected_intent, expected_surface, placeholder) in cases {
         let response = answer(prompt);
+        assert_eq!(
+            response.answer.to_lowercase(),
+            format!("\"{}\"", expected_surface.to_lowercase())
+        );
         assert_eq!(
             response.intent, *expected_intent,
             "unquoted common-noun prompt should route to translation for {prompt:?}, got {}: {}",
@@ -753,199 +802,13 @@ fn translation_trace_includes_intermediate_meaning() {
 #[test]
 fn cross_language_code_translation_preserves_semantics() {
     let response = answer("Translate `def add(a, b): return a + b` from Python to Rust");
+    assert_eq!(
+        response.answer,
+        "Translated `def add(a, b): return a + b` from python to rust:\n\n```rust\nfn add(a: i32, b: i32) -> i32 {\n    a + b\n}\n```"
+    );
     assert!(response.intent.starts_with("translate_"));
     assert!(response.answer.contains("fn add"));
     assert!(response.answer.contains("a + b"));
 }
 
-#[test]
-fn code_translation_routes_through_the_code_meta_language_not_direct_pairs() {
-    // #526: code translation must go source -> code meaning -> target, so
-    // language pairs that were never wired as a direct `(source, target)` arm
-    // still translate. Python -> JavaScript, Rust -> Go, and JavaScript ->
-    // TypeScript never had a hardcoded pair; they work because both legs share
-    // the same `function:add:binary_sum` code meaning. This is the property
-    // that keeps the translator at O(N) formalizers + O(N) renderers instead of
-    // the O(N * N) direct table the issue forbids.
-    let add_sources: &[(&str, &str)] = &[
-        ("python", "def add(a, b): return a + b"),
-        ("rust", "fn add(a: i32, b: i32) -> i32 { a + b }"),
-        ("javascript", "function add(a, b) { return a + b; }"),
-    ];
-    // (target language slug, substring that proves the target rendering).
-    let targets: &[(&str, &str)] = &[
-        ("python", "def add"),
-        ("rust", "fn add"),
-        ("javascript", "function add"),
-        ("typescript", "b: number"),
-        ("go", "func add"),
-    ];
-
-    let mut shared_meaning: Option<String> = None;
-    for (source_lang, source_code) in add_sources {
-        for (target_lang, target_marker) in targets {
-            if source_lang == target_lang {
-                continue;
-            }
-            let response = answer(&format!(
-                "Translate `{source_code}` from {source_lang} to {target_lang}"
-            ));
-            assert_eq!(
-                response.intent,
-                format!("translate_{source_lang}_to_{target_lang}"),
-                "code translation should route through the translation handler for \
-                 {source_lang}->{target_lang}, got {}: {}",
-                response.intent,
-                response.answer,
-            );
-            assert!(
-                response.answer.contains(target_marker),
-                "{source_lang}->{target_lang} should render the target-language add \
-                 function (looking for {target_marker:?}), got: {}",
-                response.answer,
-            );
-            assert!(
-                response.answer.contains("a + b"),
-                "{source_lang}->{target_lang} must preserve the add semantics, got: {}",
-                response.answer,
-            );
-            // Every add function, in every source language, collapses to the
-            // same meta-language meaning link.
-            let meaning = meaning_link(&response).to_owned();
-            match &shared_meaning {
-                None => shared_meaning = Some(meaning),
-                Some(expected) => assert_eq!(
-                    &meaning, expected,
-                    "every add-function translation must share one code meaning link, \
-                     got {meaning} for {source_lang}->{target_lang} vs {expected}",
-                ),
-            }
-        }
-    }
-}
-
-#[test]
-fn rust_javascript_code_translation_round_trips_through_code_meaning() {
-    let rust_source = "fn add(a: i32, b: i32) -> i32 { a + b }";
-    let rust_to_js = answer(&format!(
-        "Translate `{rust_source}` from Rust to JavaScript"
-    ));
-    assert_eq!(
-        rust_to_js.intent, "translate_rust_to_javascript",
-        "Rust->JavaScript code translation should route through the translation handler, got {}: {}",
-        rust_to_js.intent, rust_to_js.answer,
-    );
-    assert!(
-        rust_to_js.answer.contains("function add"),
-        "Rust->JavaScript should render an add function, got: {}",
-        rust_to_js.answer,
-    );
-    assert!(
-        rust_to_js.answer.contains("return a + b"),
-        "Rust->JavaScript should preserve add semantics, got: {}",
-        rust_to_js.answer,
-    );
-    assert!(
-        rust_to_js
-            .evidence_links
-            .iter()
-            .any(|link| link == "language_from:rust"),
-        "Rust->JavaScript should record source language, got {:?}",
-        rust_to_js.evidence_links,
-    );
-    assert!(
-        rust_to_js
-            .evidence_links
-            .iter()
-            .any(|link| link == "language_to:javascript"),
-        "Rust->JavaScript should record target language, got {:?}",
-        rust_to_js.evidence_links,
-    );
-
-    let javascript_source = "function add(a, b) { return a + b; }";
-    let js_to_rust = answer(&format!(
-        "Translate `{javascript_source}` from JavaScript to Rust"
-    ));
-    assert_eq!(
-        js_to_rust.intent, "translate_javascript_to_rust",
-        "JavaScript->Rust code translation should route through the translation handler, got {}: {}",
-        js_to_rust.intent, js_to_rust.answer,
-    );
-    assert!(
-        js_to_rust.answer.contains("fn add"),
-        "JavaScript->Rust should render an add function, got: {}",
-        js_to_rust.answer,
-    );
-    assert!(
-        js_to_rust.answer.contains("a + b"),
-        "JavaScript->Rust should preserve add semantics, got: {}",
-        js_to_rust.answer,
-    );
-    assert!(
-        js_to_rust
-            .evidence_links
-            .iter()
-            .any(|link| link == "language_from:javascript"),
-        "JavaScript->Rust should record source language, got {:?}",
-        js_to_rust.evidence_links,
-    );
-    assert!(
-        js_to_rust
-            .evidence_links
-            .iter()
-            .any(|link| link == "language_to:rust"),
-        "JavaScript->Rust should record target language, got {:?}",
-        js_to_rust.evidence_links,
-    );
-    assert_eq!(
-        meaning_link(&rust_to_js),
-        meaning_link(&js_to_rust),
-        "#526: Rust->JavaScript->Rust must preserve the same code meaning link",
-    );
-}
-
-#[test]
-fn untranslatable_concepts_are_flagged() {
-    let response = answer("Translate 'тоска' to English in one word");
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link.starts_with("translation_gap:")),
-        "translation gaps must be marked explicitly, not papered over"
-    );
-}
-
-#[test]
-fn issue_386_define_in_links_notation_resolves_to_the_links_notation_concept() {
-    // Issue #386: the `try_translation` request-gate recognises a
-    // "define <phrase> in links notation" command from *meaning* — the
-    // `definition_command` verb and the `links_notation_format` markers seeded in
-    // data/seed/meanings-translation.lino — rather than the hardcoded literals it
-    // used before. The refactor is behaviour-preserving: across the full dispatch
-    // pipeline the `concept_lookup` handler answers these prompts first (the phrase
-    // "links notation" names a known concept), so the define-gate's routing never
-    // changes the observable answer. This test locks that public contract so a
-    // future dispatch-order change can't silently alter it; the seed→code wiring of
-    // the gate itself is locked by the lib test
-    // `define_in_links_roles_expose_the_scanned_surfaces` in src/seed/meanings.rs.
-    let cases: &[&str] = &[
-        "define `apple` in links notation",
-        "define \"apple\" in links notation",
-        "define `apple` в links notation",
-        "define apple in links notation",
-    ];
-    for prompt in cases {
-        let response = answer(prompt);
-        assert_eq!(
-            response.intent, "concept_lookup",
-            "define-in-links prompt should resolve to the Links Notation concept for {prompt:?}, got {}: {}",
-            response.intent, response.answer,
-        );
-        assert!(
-            response.answer.starts_with("Links Notation (data-format):"),
-            "expected the Links Notation concept definition for {prompt:?}, got: {}",
-            response.answer,
-        );
-    }
-}
+mod extended;

@@ -4,9 +4,12 @@ use std::fmt::Write as _;
 use std::time::Duration;
 
 use crate::agent::{AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
-use crate::coding::concept_discovery::{CandidatePart, ConceptMap, structural_meanings};
-use crate::coding::python_render::{render_function, runtime_template};
+use crate::coding::concept_discovery::{CandidatePart, ConceptMap};
+use crate::coding::fragment_catalog::FragmentCatalog;
+use crate::coding::program_ir::{IrNode, IrType, ProgramIr};
+use crate::coding::python_render::render_function;
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
+use crate::needs::{Need, NeedKind, NeedState};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DraftAttempt {
@@ -25,11 +28,63 @@ pub struct VerifiedDraft {
     pub composition: String,
 }
 
+/// A typed, lowered candidate for which no executable semantic oracle was
+/// available. This must never be rendered as "tests passed".
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct UnverifiedDraft {
+    pub id: String,
+    pub source: String,
+    pub source_urls: Vec<String>,
+    pub source_licenses: Vec<String>,
+    pub composition: String,
+    pub detail: String,
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct CompositionOutcome {
     pub selected: Option<VerifiedDraft>,
+    pub unverified: Vec<UnverifiedDraft>,
     pub attempts: Vec<DraftAttempt>,
+    /// Source-backed pieces which were requested but unavailable. A blocked
+    /// part is data for rediscovery, never an empty-string program fragment.
+    pub blocked_needs: Vec<Need>,
     pub research_trail: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(super) struct MissingFragment {
+    id: String,
+}
+
+impl MissingFragment {
+    fn new(id: &str) -> Self {
+        Self { id: id.to_owned() }
+    }
+}
+
+/// Catalog-bound rendering without a closure-captured argument lifetime.
+///
+/// Each method call borrows its replacement slice independently. This matters
+/// for composition, where most calls pass temporary arrays containing local
+/// strings; a local closure would infer one shared lifetime for all calls and
+/// incorrectly keep the first temporary borrowed until the closure's last use.
+#[derive(Clone, Copy)]
+pub(super) struct FragmentRenderer<'a> {
+    catalog: &'a FragmentCatalog,
+}
+
+impl<'a> FragmentRenderer<'a> {
+    pub(super) const fn new(catalog: &'a FragmentCatalog) -> Self {
+        Self { catalog }
+    }
+
+    pub(super) fn template(
+        self,
+        id: &str,
+        values: &[(&str, &str)],
+    ) -> Result<String, MissingFragment> {
+        template(self.catalog, id, values)
+    }
 }
 
 pub(super) struct Draft {
@@ -40,16 +95,32 @@ pub(super) struct Draft {
     pub(super) source_licenses: Vec<String>,
     pub(super) composition: String,
     pub(super) action_cost: usize,
+    pub(super) typed_ir: bool,
 }
 
 #[must_use]
 pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutcome {
-    if spec.language != "python" {
-        return CompositionOutcome {
-            research_trail: format!("renderer_unavailable:language={}", spec.language),
-            ..CompositionOutcome::default()
-        };
-    }
+    let catalog = FragmentCatalog::bootstrap();
+    let programs = crate::coding::composition_search::search_with_structures(
+        spec,
+        &catalog,
+        crate::coding::composition_search::SearchBounds::default(),
+        &concepts.structure_ids(),
+    );
+    compose_with_ir(spec, concepts, &catalog, programs)
+}
+
+/// Compose ordinary retrieved parts together with already-elaborated IR.
+///
+/// Procedure retrieval calls this entry point so its ordered steps enter the
+/// same verification and least-action selection path as every other source.
+#[must_use]
+pub fn compose_with_ir(
+    spec: &CodingTaskSpec,
+    concepts: &ConceptMap,
+    catalog: &FragmentCatalog,
+    programs: impl IntoIterator<Item = ProgramIr>,
+) -> CompositionOutcome {
     let examples = if spec.examples.is_empty() {
         let derived = derived_examples(spec, concepts);
         if derived.is_empty() {
@@ -60,27 +131,76 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
     } else {
         spec.examples.clone()
     };
-    let mut drafts = if spec.artifact_shape == ArtifactShape::Function {
-        candidate_drafts(spec, concepts)
-    } else {
-        Vec::new()
-    };
-    drafts.extend(structural_drafts(spec, concepts));
-    drafts.extend(super::structural_composition::additional_drafts(
-        spec, concepts,
-    ));
+    let mut drafts = Vec::new();
+    let mut blocked_needs = Vec::new();
+    for structure_id in concepts.structure_ids() {
+        let available = catalog.get(&structure_id).is_some()
+            || catalog.fragments().iter().any(|fragment| {
+                fragment
+                    .supports
+                    .iter()
+                    .any(|supported| supported == &structure_id)
+            });
+        if !available {
+            blocked_needs.push(blocked_fragment_need(
+                spec,
+                &MissingFragment::new(&structure_id),
+            ));
+        }
+    }
+    for program in programs {
+        match ir_draft(spec, catalog, program) {
+            Ok(Some(draft)) => {
+                drafts.push(draft);
+            }
+            Ok(None) => {}
+            Err(missing) => blocked_needs.push(blocked_fragment_need(spec, &missing)),
+        }
+    }
+    if spec.language == "python" && spec.artifact_shape == ArtifactShape::Function {
+        match candidate_drafts(spec, concepts, catalog) {
+            Ok(found) => drafts.extend(found),
+            Err(missing) => blocked_needs.push(blocked_fragment_need(spec, &missing)),
+        }
+    }
+    if spec.language == "python"
+        && spec.artifact_shape == ArtifactShape::Function
+        && !examples.is_empty()
+        && !drafts.is_empty()
+        && let Err(missing) = template(catalog, "python_test_entrypoint", &[])
+    {
+        blocked_needs.push(blocked_fragment_need(spec, &missing));
+        drafts.clear();
+    }
+    blocked_needs.sort_by(|left, right| left.need_id.cmp(&right.need_id));
+    blocked_needs.dedup_by(|left, right| left.need_id == right.need_id);
     let mut attempts = Vec::new();
     let mut passing = Vec::new();
+    let mut unverified = Vec::new();
     for draft in drafts {
-        if crate::coding::validated_program_cst("python", &draft.source).is_none() {
+        if !syntax_is_valid(&spec.language, &draft.source) {
             attempts.push(DraftAttempt {
                 id: draft.id,
                 passed: false,
-                detail: "candidate did not form a valid Python CST".to_owned(),
+                detail: crate::coding::python_render::runtime_template(
+                    "coding_invalid_cst",
+                    &[("language", &spec.language)],
+                )
+                .unwrap_or_else(|| String::from("coding_invalid_cst")),
             });
             continue;
         }
-        let (passed, detail) = verify(spec, &draft, &examples, concepts);
+        if draft.typed_ir && spec.artifact_shape == ArtifactShape::Function && examples.is_empty() {
+            let detail = "unverified:no_executable_oracle;typed_and_lowered".to_owned();
+            attempts.push(DraftAttempt {
+                id: draft.id.clone(),
+                passed: false,
+                detail: detail.clone(),
+            });
+            unverified.push((draft, detail));
+            continue;
+        }
+        let (passed, detail) = verify(spec, &draft, &examples, concepts, catalog);
         attempts.push(DraftAttempt {
             id: draft.id.clone(),
             passed,
@@ -91,6 +211,12 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
         }
     }
     passing.sort_by(|left, right| {
+        left.action_cost
+            .cmp(&right.action_cost)
+            .then_with(|| left.source.len().cmp(&right.source.len()))
+            .then_with(|| left.id.cmp(&right.id))
+    });
+    unverified.sort_by(|(left, _), (right, _)| {
         left.action_cost
             .cmp(&right.action_cost)
             .then_with(|| left.source.len().cmp(&right.source.len()))
@@ -111,26 +237,155 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
     let research_trail = if selected.is_some() {
         render_comparison(&attempts)
     } else {
-        render_failure_trail(spec, concepts, &examples, &attempts)
+        render_failure_trail(spec, concepts, &examples, &attempts, &blocked_needs)
     };
     CompositionOutcome {
         selected,
+        unverified: unverified
+            .into_iter()
+            .map(|(draft, detail)| UnverifiedDraft {
+                id: draft.id,
+                source: draft.source,
+                source_urls: draft.source_urls,
+                source_licenses: draft.source_licenses,
+                composition: draft.composition,
+                detail,
+            })
+            .collect(),
         attempts,
+        blocked_needs,
         research_trail,
     }
 }
 
-fn candidate_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Draft> {
+/// Whether the top-level fragment's driving iteration is bounded by a
+/// constant: its sequence-typed slot is filled without reading any of the
+/// program's parameters. Returns 1 in that case, 0 otherwise.
+fn constant_bounded_domain(program: &ProgramIr, catalog: &FragmentCatalog) -> usize {
+    let mut current = &program.body;
+    while let IrNode::Return { value } | IrNode::Emit { value } = current {
+        current = value;
+    }
+    let IrNode::Apply {
+        fragment,
+        arguments,
+    } = current
+    else {
+        return 0;
+    };
+    let Some(definition) = catalog.get(fragment) else {
+        return 0;
+    };
+    let Some(slot) = definition
+        .signature
+        .iter()
+        .position(|ty| matches!(ty, IrType::Sequence(_)))
+    else {
+        return 0;
+    };
+    let Some(domain) = arguments.get(slot) else {
+        return 0;
+    };
+    let input_names = program
+        .parameters
+        .iter()
+        .map(|(name, _)| name.as_str())
+        .collect::<Vec<_>>();
+    let reads_input = |node: &IrNode| -> bool {
+        let mut stack = vec![node];
+        while let Some(current) = stack.pop() {
+            match current {
+                IrNode::Parameter { name, .. } => {
+                    if input_names.contains(&name.as_str()) {
+                        return true;
+                    }
+                }
+                IrNode::Apply { arguments, .. } => stack.extend(arguments),
+                IrNode::Literal { .. } => {}
+                _ => return false,
+            }
+        }
+        false
+    };
+    usize::from(!reads_input(domain))
+}
+
+fn ir_draft(
+    spec: &CodingTaskSpec,
+    catalog: &FragmentCatalog,
+    program: ProgramIr,
+) -> Result<Option<Draft>, MissingFragment> {
+    if let Some(id) = program
+        .fragments
+        .iter()
+        .find(|fragment| catalog.get(fragment).is_none())
+    {
+        return Err(MissingFragment::new(id));
+    }
+    if program.type_check(catalog).is_err() {
+        return Ok(None);
+    }
+    let Some(lowering) = crate::coding::ir_lowering::lowering_for(&spec.language) else {
+        return Ok(None);
+    };
+    let Ok(source) = lowering.lower(&program, catalog) else {
+        return Ok(None);
+    };
+    let content_id = program.content_id();
+    let mut action_cost = program.action_cost();
+    // A draft whose driving iteration runs over a constant performs
+    // input-independent action: its work is bounded by the constant, not by
+    // the task's input, so agreement with the examples is coincidence. Such
+    // a draft owes the unexamined input as extra action.
+    action_cost += 4 * constant_bounded_domain(&program, catalog);
+    // A literal the search introduced is an assumption no oracle justified:
+    // each one owes extra action, so among verifying drafts the composition
+    // that reads the task's inputs outranks an equally cheap one that
+    // guesses a constant.
+    action_cost += crate::coding::composition_search::literal_leaves(&program.body);
+    Ok(Some(Draft {
+        id: content_id.clone(),
+        source,
+        callable_name: program.name,
+        source_urls: program.source_urls,
+        source_licenses: program.source_licenses,
+        composition: format!("typed_search({content_id})"),
+        action_cost,
+        typed_ir: true,
+    }))
+}
+
+#[cfg(feature = "meta-language")]
+fn syntax_is_valid(language: &str, source: &str) -> bool {
+    crate::coding::validated_program_cst(language, source).is_some()
+}
+
+#[cfg(not(feature = "meta-language"))]
+fn syntax_is_valid(_language: &str, _source: &str) -> bool {
+    true
+}
+
+fn candidate_drafts(
+    spec: &CodingTaskSpec,
+    concepts: &ConceptMap,
+    catalog: &FragmentCatalog,
+) -> Result<Vec<Draft>, MissingFragment> {
     concepts
         .needs
         .iter()
         .flat_map(|need| need.candidates.iter())
-        .filter_map(|candidate| candidate_draft(spec, candidate))
+        .map(|candidate| candidate_draft(spec, candidate, catalog))
+        .filter_map(Result::transpose)
         .collect()
 }
 
-fn candidate_draft(spec: &CodingTaskSpec, candidate: &CandidatePart) -> Option<Draft> {
-    match candidate.kind.as_str() {
+fn candidate_draft(
+    spec: &CodingTaskSpec,
+    candidate: &CandidatePart,
+    catalog: &FragmentCatalog,
+) -> Result<Option<Draft>, MissingFragment> {
+    let renderer = FragmentRenderer::new(catalog);
+    Ok(match candidate.kind.as_str() {
         "stdlib" => {
             let arguments = spec
                 .parameters
@@ -141,9 +396,10 @@ fn candidate_draft(spec: &CodingTaskSpec, candidate: &CandidatePart) -> Option<D
             let imports = candidate
                 .id
                 .split_once('.')
-                .map(|(module, _)| template("python_import", &[("module", module)]));
+                .map(|(module, _)| renderer.template("python_import", &[("module", module)]))
+                .transpose()?;
             let call = format!("{}({arguments})", candidate.id);
-            let body = template("python_return", &[("expression", &call)]);
+            let body = renderer.template("python_return", &[("expression", &call)])?;
             Some(Draft {
                 id: format!("stdlib:{}", candidate.id),
                 source: render_function(spec, &body, imports),
@@ -152,10 +408,16 @@ fn candidate_draft(spec: &CodingTaskSpec, candidate: &CandidatePart) -> Option<D
                 source_licenses: vec![candidate.license.clone()],
                 composition: format!("direct_stdlib({})", candidate.id),
                 action_cost: 1,
+                typed_ir: false,
             })
         }
         "wikifunctions_implementation" => {
-            let body = adapt_implementation(candidate.code.as_deref()?, spec)?;
+            let Some(code) = candidate.code.as_deref() else {
+                return Ok(None);
+            };
+            let Some(body) = adapt_implementation(code, spec) else {
+                return Ok(None);
+            };
             Some(Draft {
                 id: format!("part:{}", candidate.id),
                 source: render_function(spec, &body, Vec::new()),
@@ -164,28 +426,37 @@ fn candidate_draft(spec: &CodingTaskSpec, candidate: &CandidatePart) -> Option<D
                 source_licenses: vec![candidate.license.clone()],
                 composition: format!("direct_wrap({})", candidate.id),
                 action_cost: 2,
+                typed_ir: false,
             })
         }
-        "wikifunctions_recurrence" => Some(Draft {
-            id: format!("recurrence:{}", candidate.id),
-            source: candidate.code.clone()?,
-            callable_name: candidate.callable_name.clone()?,
-            source_urls: vec![candidate.source_url.clone()],
-            source_licenses: vec![candidate.license.clone()],
-            composition: format!("source_recurrence({})", candidate.id),
-            action_cost: 3,
-        }),
-        "source_program" => Some(Draft {
-            id: format!("source:{}", candidate.id),
-            source: candidate.code.clone()?,
-            callable_name: candidate.callable_name.clone()?,
-            source_urls: vec![candidate.source_url.clone()],
-            source_licenses: vec![candidate.license.clone()],
-            composition: candidate.label.clone(),
-            action_cost: 4,
-        }),
+        "wikifunctions_recurrence" => match (&candidate.code, &candidate.callable_name) {
+            (Some(source), Some(callable_name)) => Some(Draft {
+                id: format!("recurrence:{}", candidate.id),
+                source: source.clone(),
+                callable_name: callable_name.clone(),
+                source_urls: vec![candidate.source_url.clone()],
+                source_licenses: vec![candidate.license.clone()],
+                composition: format!("source_recurrence({})", candidate.id),
+                action_cost: 3,
+                typed_ir: false,
+            }),
+            _ => None,
+        },
+        "source_program" => match (&candidate.code, &candidate.callable_name) {
+            (Some(source), Some(callable_name)) => Some(Draft {
+                id: format!("source:{}", candidate.id),
+                source: source.clone(),
+                callable_name: callable_name.clone(),
+                source_urls: vec![candidate.source_url.clone()],
+                source_licenses: vec![candidate.license.clone()],
+                composition: candidate.label.clone(),
+                action_cost: 4,
+                typed_ir: false,
+            }),
+            _ => None,
+        },
         _ => None,
-    }
+    })
 }
 
 fn source_examples(concepts: &ConceptMap) -> Vec<Example> {
@@ -202,266 +473,6 @@ fn source_examples(concepts: &ConceptMap) -> Vec<Example> {
     });
     examples.dedup();
     examples
-}
-
-fn structural_drafts(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Draft> {
-    let structures = concepts.structure_ids();
-    let has = |id: &str| structures.iter().any(|structure| structure == id);
-    let names = spec
-        .parameters
-        .iter()
-        .map(|parameter| parameter.name.as_str())
-        .collect::<Vec<_>>();
-    let mut drafts = Vec::new();
-    if spec.artifact_shape == ArtifactShape::Program {
-        if has("print_stdout")
-            && let Some(expected) = &spec.expected_stdout
-            && let Ok(literal) = serde_json::to_string(expected)
-        {
-            let source = idiom("print_stdout", &[("value", &literal)]);
-            drafts.push(structural_program_draft("print_stdout(literal)", source));
-        }
-        if has("range_inclusive") {
-            let bound = first_positive_integer(&spec.requirement_sentences);
-            if let Some(bound) = bound {
-                let range = idiom("range_inclusive", &[("bound", &bound)]);
-                let output = idiom("print_stdout", &[("value", "number")]);
-                let source = template(
-                    "python_for_each",
-                    &[("item", "number"), ("items", &range), ("body", &output)],
-                );
-                drafts.push(structural_program_draft(
-                    "for_each(range_inclusive,print_stdout)",
-                    source,
-                ));
-            }
-        }
-        return drafts;
-    }
-    if has("tuple_of") && has("reduce_sum") && has("reduce_product") && names.len() == 1 {
-        let sum = idiom("reduce_sum", &[("items", names[0])]);
-        let product = idiom("reduce_product", &[("items", names[0])]);
-        let expression = idiom("tuple_of", &[("left", &sum), ("right", &product)]);
-        let body = template("python_return", &[("expression", &expression)]);
-        let import = template("python_import", &[("module", "math")]);
-        drafts.push(structural_draft(
-            spec,
-            "tuple_of(reduce_sum,reduce_product)",
-            &body,
-            [import],
-            concepts,
-        ));
-    }
-    if has("quantifier_any")
-        && has("pairwise_distinct")
-        && has("predicate_abs_diff_lt")
-        && names.len() >= 2
-    {
-        let pairs = idiom("pairwise_distinct", &[("items", names[0])]);
-        let predicate = idiom(
-            "predicate_abs_diff_lt",
-            &[
-                ("left", "left"),
-                ("right", "right"),
-                ("threshold", names[1]),
-            ],
-        );
-        let expression = idiom(
-            "quantifier_any",
-            &[
-                ("predicate", &predicate),
-                ("item", "left, right"),
-                ("items", &pairs),
-            ],
-        );
-        let body = template("python_return", &[("expression", &expression)]);
-        let import = template("python_import", &[("module", "itertools")]);
-        drafts.push(structural_draft(
-            spec,
-            "quantifier_any(pairwise_distinct(predicate_abs_diff_lt))",
-            &body,
-            [import],
-            concepts,
-        ));
-    }
-    if has("reduce_count") && has("vowel_character_class") && names.len() == 1 {
-        let vowels = idiom("vowel_character_class", &[]);
-        let predicate = idiom(
-            "membership",
-            &[("item", "character"), ("collection", &vowels)],
-        );
-        let expression = idiom(
-            "reduce_count",
-            &[
-                ("item", "character"),
-                ("items", names[0]),
-                ("predicate", &predicate),
-            ],
-        );
-        let body = template("python_return", &[("expression", &expression)]);
-        drafts.push(structural_draft(
-            spec,
-            "reduce_count(vowel_character_class)",
-            &body,
-            Vec::<String>::new(),
-            concepts,
-        ));
-    }
-    if has("set_intersection") && names.len() >= 2 {
-        let intersection = idiom(
-            "set_intersection",
-            &[("left", names[0]), ("right", names[1])],
-        );
-        let sorted = idiom("sort_ascending", &[("items", &intersection)]);
-        let tuple = template("python_materialize_tuple", &[("items", &sorted)]);
-        let body = template("python_return", &[("expression", &tuple)]);
-        drafts.push(structural_draft(
-            spec,
-            "tuple_of(sort_ascending(set_intersection))",
-            &body,
-            Vec::<String>::new(),
-            concepts,
-        ));
-    }
-    if has("distinct_elements") && (has("reduce_count") || has("reduce_len")) && names.len() == 1 {
-        let items = if has("case_insensitive") {
-            idiom("case_insensitive", &[("text", names[0])])
-        } else {
-            names[0].to_owned()
-        };
-        let distinct = idiom("distinct_elements", &[("items", &items)]);
-        let expression = idiom("reduce_len", &[("items", &distinct)]);
-        let body = template("python_return", &[("expression", &expression)]);
-        drafts.push(structural_draft(
-            spec,
-            if has("case_insensitive") {
-                "reduce_len(distinct_elements(case_insensitive))"
-            } else {
-                "reduce_len(distinct_elements)"
-            },
-            &body,
-            Vec::<String>::new(),
-            concepts,
-        ));
-    }
-    if has("filter_only") && has("membership") && names.len() >= 2 {
-        let predicate = idiom("membership", &[("item", names[1]), ("collection", "item")]);
-        let expression = idiom(
-            "filter_only",
-            &[
-                ("item", "item"),
-                ("items", names[0]),
-                ("predicate", &predicate),
-            ],
-        );
-        let body = template("python_return", &[("expression", &expression)]);
-        drafts.push(structural_draft(
-            spec,
-            "filter_only(membership)",
-            &body,
-            Vec::<String>::new(),
-            concepts,
-        ));
-    }
-    if has("running_prefix") && has("reduce_max") && names.len() == 1 {
-        let expression = idiom(
-            "running_prefix",
-            &[("items", names[0]), ("operation", "max")],
-        );
-        let materialized = template("python_materialize_list", &[("items", &expression)]);
-        let body = template("python_return", &[("expression", &materialized)]);
-        let import = template("python_import", &[("module", "itertools")]);
-        drafts.push(structural_draft(
-            spec,
-            "running_prefix(reduce_max)",
-            &body,
-            [import],
-            concepts,
-        ));
-    }
-    if has("count_overlapping") && names.len() >= 2 {
-        let expression = idiom(
-            "count_overlapping",
-            &[("text", names[0]), ("substring", names[1])],
-        );
-        let body = template("python_return", &[("expression", &expression)]);
-        drafts.push(structural_draft(
-            spec,
-            "count_overlapping",
-            &body,
-            Vec::<String>::new(),
-            concepts,
-        ));
-    }
-    if has("range_inclusive") && names.len() <= 1 {
-        let bound = names
-            .first()
-            .copied()
-            .map(str::to_owned)
-            .or_else(|| first_positive_integer(&spec.requirement_sentences));
-        let Some(bound) = bound else {
-            return drafts;
-        };
-        let range = idiom("range_inclusive", &[("bound", &bound)]);
-        let list = template("python_materialize_list", &[("items", &range)]);
-        let body = template("python_return", &[("expression", &list)]);
-        drafts.push(structural_draft(
-            spec,
-            "range_inclusive",
-            &body,
-            Vec::<String>::new(),
-            concepts,
-        ));
-    }
-    drafts
-}
-
-fn structural_program_draft(composition: &str, source: String) -> Draft {
-    Draft {
-        id: format!("structure:{composition}"),
-        source,
-        callable_name: String::new(),
-        source_urls: structural_source_urls(composition),
-        source_licenses: structural_source_urls(composition)
-            .iter()
-            .map(|_| "PSF-2.0".to_owned())
-            .collect(),
-        composition: composition.to_owned(),
-        action_cost: composition.matches(['(', ',']).count() + 2,
-    }
-}
-
-fn structural_draft(
-    spec: &CodingTaskSpec,
-    composition: &str,
-    body: &str,
-    imports: impl IntoIterator<Item = String>,
-    _concepts: &ConceptMap,
-) -> Draft {
-    let source_urls = structural_source_urls(composition);
-    let source_licenses = source_urls.iter().map(|_| "PSF-2.0".to_owned()).collect();
-    Draft {
-        id: format!("structure:{composition}"),
-        source: render_function(spec, body, imports),
-        callable_name: spec.name.clone(),
-        source_urls,
-        source_licenses,
-        composition: composition.to_owned(),
-        action_cost: composition.matches(['(', ',']).count() + 2,
-    }
-}
-
-fn structural_source_urls(composition: &str) -> Vec<String> {
-    let composition_ids = composition
-        .split(|character: char| !character.is_ascii_alphanumeric() && character != '_')
-        .collect::<std::collections::BTreeSet<_>>();
-    structural_meanings()
-        .into_iter()
-        .filter(|structure| {
-            !structure.grounding.is_empty() && composition_ids.contains(structure.id.as_str())
-        })
-        .map(|structure| structure.grounding)
-        .collect()
 }
 
 fn adapt_implementation(code: &str, spec: &CodingTaskSpec) -> Option<String> {
@@ -502,13 +513,20 @@ fn verify(
     draft: &Draft,
     examples: &[Example],
     concepts: &ConceptMap,
+    catalog: &FragmentCatalog,
 ) -> (bool, String) {
-    if spec.artifact_shape == ArtifactShape::Function && examples.is_empty() {
+    if spec.language == "python"
+        && spec.artifact_shape == ArtifactShape::Function
+        && examples.is_empty()
+    {
         return (false, "no executable examples or derived tests".to_owned());
     }
     let mut script = draft.source.clone();
-    if spec.artifact_shape == ArtifactShape::Function {
-        script.push_str(&template("python_test_entrypoint", &[]));
+    if spec.language == "python" && spec.artifact_shape == ArtifactShape::Function {
+        let Ok(entrypoint) = template(catalog, "python_test_entrypoint", &[]) else {
+            return (false, "missing fragment:python_test_entrypoint".to_owned());
+        };
+        script.push_str(&entrypoint);
         for example in examples {
             let _ = writeln!(
                 script,
@@ -529,8 +547,24 @@ fn verify(
     ) else {
         return (false, "could not create bounded workspace".to_owned());
     };
-    workspace.create_file("solution.py", &script);
-    workspace.run_command("python3 solution.py");
+    let (file, command) = match spec.language.as_str() {
+        "python" => ("solution.py", "python3 solution.py"),
+        "rust" if examples.is_empty() => ("solution.rs", "rustc --crate-type lib solution.rs"),
+        "rust" => {
+            return (
+                false,
+                "verification_unavailable:rust_example_adapter".to_owned(),
+            );
+        }
+        language => {
+            return (
+                false,
+                format!("verification_unavailable:language={language}"),
+            );
+        }
+    };
+    workspace.create_file(file, &script);
+    workspace.run_command(command);
     let run = workspace.finish();
     let command_succeeded = run.status == AgentRunStatus::Completed
         && run
@@ -679,11 +713,12 @@ fn render_failure_trail(
     concepts: &ConceptMap,
     examples: &[Example],
     attempts: &[DraftAttempt],
+    blocked_needs: &[Need],
 ) -> String {
     let phrases = concepts
         .needs
         .iter()
-        .map(|need| need.phrase.as_str())
+        .map(super::concept_discovery::ConceptRequirement::phrase)
         .collect::<Vec<_>>()
         .join(" | ");
     let parts = concepts.candidate_ids().join(", ");
@@ -699,24 +734,38 @@ fn render_failure_trail(
         })
         .collect::<Vec<_>>()
         .join(", ");
+    let blocked = blocked_needs
+        .iter()
+        .map(|need| need.subject.as_str())
+        .collect::<Vec<_>>()
+        .join(", ");
     format!(
-        "phrases={phrases};parts={parts};failed_examples={failed_examples};attempts={}",
+        "phrases={phrases};parts={parts};failed_examples={failed_examples};blocked_needs={blocked};attempts={}",
         render_comparison(attempts)
     )
 }
 
-pub(super) fn template(id: &str, values: &[(&str, &str)]) -> String {
-    runtime_template(id, values).unwrap_or_else(|| panic!("missing runtime template {id}"))
+fn blocked_fragment_need(spec: &CodingTaskSpec, missing: &MissingFragment) -> Need {
+    let subject = format!("fragment:{}", missing.id);
+    let raised_by = format!("composition:{}", spec.name);
+    let mut need = Need::raised(NeedKind::Part, &subject, &spec.prose_language, &raised_by);
+    need.state = NeedState::Unsatisfiable;
+    need
 }
 
-pub(super) fn idiom(id: &str, values: &[(&str, &str)]) -> String {
-    let mut rendered = structural_meanings()
-        .into_iter()
-        .find(|meaning| meaning.id == id)
-        .unwrap_or_else(|| panic!("missing structural meaning {id}"))
-        .idiom;
-    for (name, value) in values {
-        rendered = rendered.replace(&format!("{{{name}}}"), value);
-    }
-    rendered
+pub(super) fn template(
+    catalog: &FragmentCatalog,
+    id: &str,
+    values: &[(&str, &str)],
+) -> Result<String, MissingFragment> {
+    let from_catalog = catalog
+        .render_named(id, "python", values)
+        .filter(|rendered| !rendered.is_empty());
+    // Renderer scaffolds (`python_import`, `python_test_entrypoint`, …) are
+    // deliberately not catalogued as operations; they render from the runtime
+    // seed, so a catalog miss falls back there before a need is raised.
+    let rendered = from_catalog
+        .or_else(|| crate::coding::python_render::runtime_template(id, values))
+        .filter(|rendered| !rendered.is_empty());
+    rendered.ok_or_else(|| MissingFragment::new(id))
 }

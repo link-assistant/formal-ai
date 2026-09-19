@@ -67,10 +67,54 @@ roles
     kind meaning
   calendar_weekday
     kind predicate
+  capability_act_compose
+    kind predicate
+  capability_act_demonstrate
+    kind predicate
+  capability_act_enumerate
+    kind predicate
+  capability_act_explain
+    kind predicate
+  capability_act_record
+    kind predicate
+  capability_act_retrieve
+    kind predicate
+  capability_act_schedule
+    kind predicate
+  capability_act_transform
+    kind predicate
+  capability_clock_reference
+    kind predicate
+  capability_container_scope
+    kind predicate
+  capability_content_assignment
+    kind predicate
+  capability_content_introducer
+    kind predicate
+  capability_delegation_marker
+    kind predicate
+  capability_freshness_live
+    kind predicate
+  capability_language_reference
+    kind predicate
+  capability_prior_turn_reference
+    kind predicate
+  capability_quantity_interrogative
+    kind predicate
   capability_query
     kind meaning
   capability_query_more
     kind meaning
+  capability_self_surface_noun
+    kind predicate
+  capability_task_list_noun
+    kind predicate
+  capability_web_host_suffix
+    kind predicate
+  capability_web_scope
+    kind predicate
+  capability_workspace_scope
+    kind predicate
   cardinal_number_word
     kind predicate
   causal_interrogative
@@ -107,6 +151,8 @@ roles
     kind predicate
   coding_name_slot
     kind predicate
+  coding_recurrence_operator
+    kind predicate
   coding_relationship_subject_kind
     kind predicate
   coding_request_object
@@ -114,8 +160,6 @@ roles
   coding_request_verb
     kind predicate
   coding_return_action
-    kind predicate
-  coding_recurrence_operator
     kind predicate
   coding_search_fact_query
     kind predicate
@@ -257,6 +301,8 @@ roles
     kind predicate
   feature_capability_question
     kind meaning
+  file_analysis_gap_marker
+    kind predicate
   file_edit_action_cue
     kind predicate
   file_edit_new_lead_cue
@@ -545,6 +591,10 @@ roles
     kind predicate
   script_or_code_artifact
     kind predicate
+  selection_criterion_brevity_cue
+    kind predicate
+  selection_criterion_completeness_cue
+    kind predicate
   self_fact_query
     kind meaning
   self_introduction_request
@@ -685,6 +735,28 @@ roles
     kind meaning
   url_navigate
     kind meaning
+  verifiable_entity_separator
+    kind predicate
+  verifiable_expectation
+    kind predicate
+  verifiable_expectation_count
+    kind predicate
+  verifiable_expectation_edited_text
+    kind predicate
+  verifiable_expectation_numeric
+    kind predicate
+  verifiable_expectation_pattern
+    kind predicate
+  verifiable_expectation_unknown
+    kind predicate
+  verifiable_quantity_determiner
+    kind predicate
+  verifiable_quantity_flow_decrease
+    kind predicate
+  verifiable_quantity_flow_increase
+    kind predicate
+  verifiable_unit_conversion
+    kind predicate
   vulgar_content_marker
     kind predicate
   web_medium

@@ -275,6 +275,36 @@ fn issue_1069_every_leaf_contract_is_grounded_in_the_committed_tree() {
     }
 }
 
+/// L04 used to name a Rust array that disappeared when the generic verifiable
+/// task route took ownership of pattern recognition. Keep the ladder attached
+/// to the live ownership boundary: its guard declares the role in seed and the
+/// pattern handler queries that same role instead of a private marker table.
+#[test]
+fn issue_1069_l04_changes_the_data_owned_pattern_surface() {
+    let leaf = leaves()
+        .into_iter()
+        .find(|leaf| leaf.id == "L04")
+        .expect("the 32-leaf ladder includes L04");
+    assert!(
+        leaf.path.starts_with("data/seed/"),
+        "L04 pattern vocabulary belongs to seed: {}",
+        leaf.path
+    );
+    let role = leaf
+        .guard
+        .strip_prefix("role ")
+        .expect("L04 keeps the role declaration as its change guard");
+    let handler = read("src/solver_handlers/pattern_inference.rs");
+    assert!(
+        handler.contains(&format!("meanings_with_role(\"{role}\")")),
+        "the live handler must query L04's guarded seed role"
+    );
+    assert!(
+        !handler.contains("INTENT_MARKERS"),
+        "L04 must not regress to the retired Rust marker table"
+    );
+}
+
 /// Three change families, none of them a single repeated shape.
 #[test]
 fn issue_1069_the_ladder_covers_every_change_family() {

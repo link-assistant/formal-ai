@@ -110,6 +110,11 @@ impl SeedLinkNetwork {
         self.documents.len()
     }
 
+    /// Paths of every projected document, in projection order.
+    pub fn document_paths(&self) -> impl Iterator<Item = &str> {
+        self.documents.iter().map(|(path, _)| path.as_str())
+    }
+
     /// The document node index for `path`.
     #[must_use]
     pub fn document(&self, path: &str) -> Option<&str> {

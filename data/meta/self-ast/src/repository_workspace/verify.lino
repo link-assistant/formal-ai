@@ -1,0 +1,12 @@
+self_ast_census
+  target src/repository_workspace/verify.rs
+  language rust
+  fidelity signature
+  byte_len 5821
+  line_count 161
+  content_id source_module_b1570edfb9a9af25
+  symbol_count 3
+  symbols
+    struct RunCommand 26 31
+    function argv 37 66
+    function run_named_tests 75 161

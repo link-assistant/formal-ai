@@ -1,0 +1,16 @@
+self_ast_census
+  target src/repository_workspace/clone.rs
+  language rust
+  fidelity signature
+  byte_len 6135
+  line_count 164
+  content_id source_module_a9fde452d89e0aa1
+  symbol_count 7
+  symbols
+    const COMMIT_LENGTH 19 19
+    struct WorkspaceSpec 23 30
+    function names_a_commit 35 38
+    function clone_source 42 48
+    function run_git 57 88
+    function observed_head 92 97
+    function clone_at_base 106 164

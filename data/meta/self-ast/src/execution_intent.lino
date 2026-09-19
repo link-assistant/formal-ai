@@ -1,0 +1,10 @@
+self_ast_census
+  target src/execution_intent.rs
+  language rust
+  fidelity signature
+  byte_len 1586
+  line_count 38
+  content_id source_module_e3493db5d745cd20
+  symbol_count 1
+  symbols
+    function explicit_named_execution_target 13 38

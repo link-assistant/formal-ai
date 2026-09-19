@@ -19,45 +19,10 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;
 use crate::sequences::{
-    infer_grid_patterns, infer_sequence_patterns, Grid, GridPatternReport, LinkAddress,
-    SequencePattern, SequencePatternReport, SequenceStore, SymbolTable,
+    Grid, GridPatternReport, LinkAddress, SequencePattern, SequencePatternReport, SequenceStore,
+    SymbolTable, infer_grid_patterns, infer_sequence_patterns,
 };
 use crate::solver_handlers::finalize_simple;
-
-/// Words that signal the user wants structural pattern inference, not a
-/// definition. At least one must appear for the handler to consider the prompt.
-const INTENT_MARKERS: &[&str] = &[
-    "pattern",
-    "sequence",
-    "palindrome",
-    "symmetr",
-    "periodic",
-    "repeat",
-    "what comes next",
-    "comes next",
-    "next number",
-    "next term",
-    "next in",
-    "continue the",
-    "continue this",
-];
-
-/// Whether the prompt both signals pattern-inference intent *and* carries a
-/// parseable sequence or grid.
-///
-/// This mirrors the gate in [`try_pattern_inference`] so the intent formalizer
-/// can rank this handler ahead of the concept lookup when a concrete sequence or
-/// grid is present. A bare "what is the pattern?" carries no data, so this
-/// returns `false` and the prompt still routes to the concept lookup. Keeping the
-/// predicate next to the parser means routing and execution share one gate.
-#[must_use]
-pub fn looks_like_pattern_inference(prompt: &str) -> bool {
-    let lowered = prompt.to_lowercase();
-    if !INTENT_MARKERS.iter().any(|marker| lowered.contains(marker)) {
-        return false;
-    }
-    parse_grid(prompt).is_some() || parse_sequence(prompt).is_some()
-}
 
 /// Try to answer a concrete pattern-inference request over a sequence or grid.
 ///
@@ -88,7 +53,10 @@ pub fn try_pattern_inference_with_response_language(
 ) -> Option<SymbolicAnswer> {
     let _ = normalized;
     let lowered = prompt.to_lowercase();
-    if !INTENT_MARKERS.iter().any(|marker| lowered.contains(marker)) {
+    if !seed::lexicon()
+        .meanings_with_role("verifiable_expectation_pattern")
+        .any(|meaning| meaning.evidenced_in(&lowered))
+    {
         return None;
     }
 
@@ -172,11 +140,7 @@ fn longest_atom_run(line: &str) -> Vec<String> {
     if current.len() > best.len() {
         best = current;
     }
-    if best.len() >= 3 {
-        best
-    } else {
-        Vec::new()
-    }
+    if best.len() >= 3 { best } else { Vec::new() }
 }
 
 /// Parse a 1D sequence from the prompt, if one is present.

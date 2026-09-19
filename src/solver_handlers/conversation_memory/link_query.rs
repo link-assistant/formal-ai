@@ -19,9 +19,9 @@ use super::super::finalize_simple;
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::link_store::{memory_events_to_link_records, DoubletLink};
+use crate::link_store::{DoubletLink, memory_events_to_link_records};
 use crate::links_substitution_query::{
-    link_substitution_effect, parse_link_substitution_query, render_link, LinkRewriteProgram,
+    LinkRewriteProgram, link_substitution_effect, parse_link_substitution_query, render_link,
 };
 use crate::memory::MemoryStore;
 use crate::substitution::CrudEvent;

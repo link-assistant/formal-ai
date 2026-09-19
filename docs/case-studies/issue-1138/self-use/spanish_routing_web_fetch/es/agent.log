@@ -1,0 +1,2494 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.294Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.294Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Lee https://example.com y dime qué dice. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.294Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.295Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.304Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Lee https://example.com y dime qué dice.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Lee https://example.com y dime qué dice.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.304Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.305Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.306Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.306Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.308Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.309Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.311Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 6533,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.311Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.325Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 25,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:14:16.330Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.334Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.334Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.335Z",
+  "service": "session",
+  "id": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK",
+  "title": "New session - 2026-09-16T03:14:16.335Z",
+  "time": {
+    "created": 1789528456335,
+    "updated": 1789528456335
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.336Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.336Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.336Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.336Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.336Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57cac370ffetpzlIrWuHwJ7jD/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.336Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57cac370ffetpzlIrWuHwJ7jD/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.339Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57cac370ffetpzlIrWuHwJ7jD/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.341Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.343Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.346Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.346Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.347Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.347Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.347Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.347Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.347Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.347Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.347Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.499Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.503Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.503Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.511Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.515Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.520Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.520Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.520Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:16.520Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:17.484Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528457485,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8354108001tRmDLd4feIkyDn",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8353d360015mtoMjO62qvQAr",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:17.485Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:17.486Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528457486,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a835410d002g4UPSmQ1d9Za5b",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8353d360015mtoMjO62qvQAr",
+    "type": "tool",
+    "callID": "call_97a6c97150bf527b",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:17.486Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528457486,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a835410d001gn34E0tMKhNIUR",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8353d360015mtoMjO62qvQAr",
+    "type": "text",
+    "text": "Let me search the web for Lee https://example.com y dime qué dice.",
+    "time": {
+      "start": 1789528457486,
+      "end": 1789528457486
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:17.487Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528457487,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a835410d002g4UPSmQ1d9Za5b",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8353d360015mtoMjO62qvQAr",
+    "type": "tool",
+    "callID": "call_97a6c97150bf527b",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Lee https://example.com y dime qué dice"
+      },
+      "time": {
+        "start": 1789528457486
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528460427,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a835410d002g4UPSmQ1d9Za5b",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8353d360015mtoMjO62qvQAr",
+    "type": "tool",
+    "callID": "call_97a6c97150bf527b",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Lee https://example.com y dime qué dice"
+      },
+      "output": "Title: Lee esto y dime si pasa en tu empresa... 👀🧠 ¿Cuánto tiempo pasa tu equipo ajustando tests cada vez que cambia un botón en la UI? | Javier Marchese\nURL: https://es.linkedin.com/posts/javier-marchese_lee-esto-y-dime-si-pasa-en-tu-empresa-activity-7341446475437998081-owrW\nPublished: 2025-06-19T00:00:00.000Z\nAuthor: Javier Marchese\nHighlights:\n# Lee esto y dime si pasa en tu empresa... 👀🧠 ¿Cuánto tiempo pasa tu equipo ajustando tests cada vez que cambia un botón en la UI? | Javier Marchese · LinkedIn · 2025-06-19\n...\nLee esto y dime si pasa en tu empresa... 👀🧠 ¿Cuánto tiempo pasa tu equipo ajustando tests cada vez que cambia un botón en la UI?\n...\nEn QActions, venimos acompañando a varios equipos que están migrando a herramientas más ágiles y automatizadas, como Testim de Tricentis, para salir de ese loop eterno de “cambiar todo por un pixel”.\n...\n👉 Los tests se mantienen solos: si algo cambia en la interfaz, Testim lo detecta y propone una solución\n...\nTodo esto, con reportes visuales que te mantienen al tanto 24/7 sobre tus pruebas.\n...\nos falsos negativos.\n...\n🔹 Menos\n\n---\n\nTitle: Hagamos un experimento rápido: lee los dos useEffect de la imagen y dime cuál de los dos es más rápido de entender. | Daniel Castillo\nURL: https://es.linkedin.com/posts/dlcastillop_hagamos-un-experimento-r%C3%A1pido-lee-los-dos-activity-7478794898461261824-u30H\nPublished: 2026-07-03T00:00:00.000Z\nAuthor: Daniel Castillo\nHighlights:\n# Hagamos un experimento rápido: lee los dos useEffect de la imagen y dime cuál de los dos es más rápido de entender. | Daniel Castillo · LinkedIn · 2026-07-03\n...\nHagamos un experimento rápido: lee los dos useEffect de la imagen y dime cuál de los dos es más rápido de entender.\n...\nProbablemente pienses que el segundo, ¿verdad?\n...\nEsto es porque en lugar de usar una función anónima, se usa una función con nombre.\n...\nParece un cambio trivial, pero tiene un impacto enorme ya que mejora el debugging e incluso puede revelar algunos effects que tengan demasiada responsabilidad o que directamente no deberían existir.\n...\nAdemás, también agiliza la legibilidad cuando se realizan revisiones de código en los PRs y si usas IA en tu flujo de trabajo también se beneficia de este contexto extra.\n...\nEl coste de adoptarlo es casi cero ya que solo añades un nombre a una función.\n...\n| Daniel Castillo\n\n---\n\nTitle: Lee la | Spanish to English Translation\nURL: https://www.spanishdict.com/translate/lee%20la\nPublished: N/A\nAuthor: N/A\nHighlights:\nLee la | Spanish to English Translation - SpanishDictionary.com\n...\nShowing results for**lee**. Search instead for[**lee la**](https://www.spanishdict.com/translate/lee%20la?t=1).\n...\n[read](https://www.spanishdict.com/translate/read?langFrom=en)\n...\nA phrase is a group of words commonly used together (e.g., once upon a time).\n...\nA word or phrase used to refer to the second person informal “tú” by their conjugation or implied context (e.g., How are you?).\n...\na.[read](https://www.spanishdict.com/translate/read?langFrom=en)\n...\nLee este libro; te encantará.Read this book; you'll love it.\n...\n.[he reads](https://\n...\n.spanishdict\n...\n.spanishdict\n...\nRoberto es muy lector. Lee novelas y cuentos.Roberto reads a lot. He reads novels and short stories.\n...\nreads](https://www.\n...\n.spanishdict.\n...\nMartina aprovecha bien su tiempo; lee en el viaje diario al trabajo.Martina takes good advantage of her time; she reads during her daily commute.\n\n---\n\nTitle: Lee\nURL: https://edpanfleto.com/lee/\nPublished: N/A\nAuthor: N/A\nHighlights:\nlee es una herramienta de kdg/dkd para generar páginas web a partir de ficheros MarkDown guardados en este dominio. Permite visualizar páginas de ayuda o referencia (como esta) de forma sencilla.\n...\nSe usa referenciando el documento desde la raíz del dominio, así: \n\nhttps://www.edpanfleto.com/lee/?dir=kdgdkd%2Fmensajitos%2F&filename=mensajitos.md\n...\nTambién se puede añadir un argumento para elegir la fuente:\n...\n&font=Chakra+Petch\n...\nlee se basa en remder, y utiliza Parsedown para generar las páginas html a partir de los ficheros md.\n\n---\n\nTitle: Federico García Lorca -  Dime qué lees y te diré quién eres\nURL: https://lasletrasdelquilmero.blogspot.com/2021/05/federico-garcia-lorca-dime-que-lees-y.html\nPublished: 2021-05-08T23:54:00.000Z\nAuthor: Visitar perfil\nHighlights:\nFederico García Lorca - Dime qué lees y te diré quién eres\n...\n### Federico García Lorca - Dime qué lees y te diré quién eres \n\n mayo 08, 2021 \n\n agnellichalo@gmail.com\n\n---\n\nTitle: Holdings: Dime qué lees y te dire quién eres / :: Library Catalog\nURL: https://iris.sena.edu.co/Record/1468\nPublished: N/A\nAuthor: N/A\nHighlights:\nHoldings: Dime qué lees y te dire quién eres / :: Library Catalog\n\n \n\n# Dime qué lees y te dire quién eres / \n\nDiscurso de inauguración de la Biblioteca Pública de Fuente Vaqueros en España y patria chica del ilustre escritor Federico García Lorca\n\nBibliographic Details\n...\n| Main Author: | García Lorca, Federíco (autor) |\n| --- | --- |\n| Other Authors: | Herrera, Clara Inés (ilustrador) |\n| Format: | Book |\n| Language: | Spanish |\n| Published: | Bogotá : 2007. |\n| Subjects: | Libros y lectura Discursos, alocuciones, etc., españolas |\n\n---\n\nTitle: Dime cuánto costará y te digo cómo lo pago - Incremento del IVA - Profe Po explica como hacerlo | Po Chun Lee\nURL: https://es.linkedin.com/posts/pochunlee_dime-cu%C3%A1nto-costar%C3%A1-y-te-digo-c%C3%B3mo-lo-pago-activity-7158454261104717825-9yB4\nPublished: 2024-01-31T00:00:00.000Z\nAuthor: Po Chun Lee\nHighlights:\n# Dime cuánto costará y te digo cómo lo pago - Incremento del IVA - Profe Po explica como hacerlo | Po Chun Lee · LinkedIn · 2024-01-31\n...\nDime cuánto costará y te digo cómo lo pago - Incremento del IVA - Profe Po explica como hacerlo\n...\nEntrevista por Radio de la La Radio de la Asamblea Nacional. El Profe Po, en una entrevista candida, explica sus sospechas detrás de la motivación del incremento del IVA.\n...\nY recomienda transparentar el costo del conflicto interno, focalización de los subsidios de los combustibles y tres principios de reforma tributaria: aumentar ingresos, afectación al crecimiento económico y progresividad.\n\n---\n\nTitle: Lee Lee - Método Rápido para Enseñar a Leer en Español\nURL: https://claseleelee.com/es/\nPublished: N/A\nAuthor: N/A\nHighlights:\nLee Lee - Método Rápido para Enseñar a Leer en Español --\n...\n# Enseñanza rápida y auténtica de la lectura en español\n...\nLee Lee impulsa el aprendizaje efectivo de la lectura en español a través de métodos fonéticos, brindando a los educadores bilingües una herramienta dinámica para acelerar el desarrollo de habilidades lectoras desde las primeras etapas.\n...\nLeeLee les ha dado a mis alumnos la oportunidad de decodificar los sonidos y las diferentes combinaciones silabicas al mismo tiempo que practican. LeeLee es una maravilla en tu salón de clase y en tu casa. No hay herramienta digital más clara para aprender a leer.\n...\nLee Lee dio un giro de 360 grados a mi instrucción de enseñanza de la lectura temprana. No solo me dio una guía clara de los pasos más eficientes y efectivos a seguir para enseñar a mis estudiantes a leer, si no que le dio a mis alumnos la oportunidad de practicar su aprendizaje en una aplicación muy entretenida que les permitió crecer académicamente.\n...\nLee Lee es una herramienta que me brindó un manual de enseñanza para intervenciones con estudiantes de segundo grado que no sabían leer o que necesitaban mejorar sus destrezas de decodificación de la lectura en español. Esto les creó el camino a los estudiantes para alcanzar el nivel de lectura alineando a su grado escolar.\n...\nEl programa Lee Lee es una herramienta invaluable para estudiantes que están aprendiendo a leer. La manera en que se presentan los sonidos, las sílabas y las oraciones es fácil de entender, y la práctica en forma de juego lo hace divertido para los alumnos. Al final de año escolar se pueden ver los resultados, incluso en aquellos estudiantes que necesitan más apoyo con dificultades de aprendizaje.\n...\n## Conozca Lee Lee en acción\n...\n# Aprende jugando y conoce nuestras soluciones de lectura.",
+      "title": "Web search: Lee https://example.com y dime qué dice",
+      "metadata": {},
+      "time": {
+        "start": 1789528457486,
+        "end": 1789528460424
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528460429,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8354c8c001ZyprmJErkMCXUc",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8353d360015mtoMjO62qvQAr",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8536,
+      "output": 126,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8662,
+      "headroom": 30194,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.430Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.430Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.431Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.431Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.432Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.432Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.441Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8662,
+  "providerTokens": 8662,
+  "estimatedInputTokens": 2088,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8536,
+    "cacheRead": 0,
+    "output": 126
+  },
+  "overflow": false,
+  "headroom": 30194,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.442Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.444Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:20.445Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:21.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528461909,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355254001FFmcz32r8lcdf9",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8354c990012XYwjFgRqHwciV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:21.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:21.909Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528461909,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355255002rbYBaGXq6KePOL",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8354c990012XYwjFgRqHwciV",
+    "type": "tool",
+    "callID": "call_e9c24b6adb1bbe7b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:21.910Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528461910,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355255001n2iu0SbiSJZbU9",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8354c990012XYwjFgRqHwciV",
+    "type": "text",
+    "text": "Let me open https://es.linkedin.com/posts/javier-marchese_lee-esto-y-dime-si-pasa-en-tu-empresa-activity-7341446475437998081-owrW and read what it says.",
+    "time": {
+      "start": 1789528461909,
+      "end": 1789528461909
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:21.910Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528461910,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355255002rbYBaGXq6KePOL",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8354c990012XYwjFgRqHwciV",
+    "type": "tool",
+    "callID": "call_e9c24b6adb1bbe7b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://es.linkedin.com/posts/javier-marchese_lee-esto-y-dime-si-pasa-en-tu-empresa-activity-7341446475437998081-owrW"
+      },
+      "time": {
+        "start": 1789528461910
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528462548,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355255002rbYBaGXq6KePOL",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8354c990012XYwjFgRqHwciV",
+    "type": "tool",
+    "callID": "call_e9c24b6adb1bbe7b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://es.linkedin.com/posts/javier-marchese_lee-esto-y-dime-si-pasa-en-tu-empresa-activity-7341446475437998081-owrW"
+      },
+      "output": "Lee esto y dime si pasa en tu empresa... 👀 | Javier Marchese\n\n      \n\n    \n    \n    \n    \n      \n    \n    \n    \n    \n      \n  \n\n        \n\n        \n    \n      \n          \n      \n    \n    \n      \n          \n    \n      \n        \n          \n          \n          \n    \n        \n            \n        \n      \n        \n        \n            LinkedIn respeta tu privacidad\n          \n            \n              LinkedIn y terceros utilizan cookies imprescindibles y opcionales para ofrecer, proteger, analizar y mejorar nuestros servicios, y para mostrarte publicidad relevante (incluidos anuncios profesionales y de empleo) dentro y fuera de LinkedIn. Consulta más información en nuestra Política de cookies.Selecciona Aceptar para consentir o Rechazar para denegar las cookies no imprescindibles para este uso. Puedes actualizar tus preferencias en cualquier momento en tus ajustes.\n            \n          \n          \n                \n                Aceptar\n                \n                \n                Rechazar\n                \n          \n        \n      \n      \n      \n  \n  \n\n        \n        \n    \n    \n    \n    \n      \n        \n      \n        \n          \n            \n              Aceptar y unirse a LinkedIn\n            \n            \n    \n    \n    \n    \n      Al hacer clic en «Continuar» para unirte o iniciar sesión, aceptas las Condiciones de uso, la Política de privacidad y la Política de cookies de LinkedIn.\n    \n  \n          \n          \n        \n      \n    \n      \n        \n      \n    \n  \n    \n      \n    \n    \n    \n    \n      \n      \n  \n        \n\n    \n      \n    \n\n    \n      Pasar al contenido principal\n    \n  \n    \n      \n        \n\n    \n    \n    \n    \n\n    \n\n    \n\n      \n          \n              \n    \n    LinkedIn\n      \n      \n  \n          \n      \n\n\n        \n    \n    \n    \n    \n    \n    \n    \n    \n    \n        \n          \n    \n      \n      \n      \n        Contenido destacado\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Personas\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Learning\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Empleos\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Juegos\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Descargar la aplicación\n      \n    \n  \n        \n    \n  \n\n      \n          \n  \n  \n\n      \n      \n          Iniciar sesión\n      \n\n\n          \n    \n    \n      Unirse ahora\n    \n\n\n\n\n          \n            \n      \n  \n          \n      \n\n\n    \n  \n      \n    \n\n    \n      \n\n\n    \n      \n        \n        \n      \n\n        \n          \n        \n            \n                \nPublicación de Javier Marchese\n\n\n                \n    \n\n    \n      \n\n    \n\n      \n        \n\n      \n        \n          \n            \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n          \n            \n      \n      \n          \n      \n        \n            \n              Javier Marchese\n            \n        \n\n\n              \n                  \n                    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      1 año\n  \n                  \n              \n                \n\n    \n  \n        \n        \n          \n              \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      \n        \n\n    \n\n    \n          \n            \n              \n            \n          \n\n        \n          \n              \n\n                \n                  \n\n    \n    \n\n    \n\n    \n\n    \n        \n                      \n                      \n                      Denunciar esta publicación\n                    \n    \n\n  \n                \n          \n        \n\n    \n  \n\n      \n  \n        \n      \n\n      \n            \n            \n  \n    Lee esto y dime si pasa en tu empresa... 👀\n  \n\n\n\n        \n\n        \n            \n      \n    \n      \n        \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n          \n            \n      \n  \n          \n      \n        \n            \n              QActions\n            \n        \n\n            \n                4215 seguidores\n            \n\n              \n                  \n                    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      1 año\n  \n                  \n              \n                \n\n    \n  \n\n        \n            \n  \n    🧠 ¿Cuánto tiempo pasa tu equipo ajustando tests cada vez que cambia un botón en la UI?\n\nEn QActions, venimos acompañando a varios equipos que están migrando a herramientas más ágiles y automatizadas, como Testim de Tricentis, para salir de ese loop eterno de “cambiar todo por un pixel”.\n\n¿Lo mejor? No necesitás ser developer para automatizar.\n\n👉 Grabás flujos sin escribir código, pero podés extenderlos con JavaScript cuando necesitás algo más fino.\n👉 Los tests se mantienen solos: si algo cambia en la interfaz, Testim lo detecta y propone una solución.\n👉 Modularizás todo y lo usás como piezas de LEGO: más orden, menos frustración.\n👉 Y, por supuesto, se integra con CI/CD y con tus herramientas de siempre.\n\nTodo esto, con reportes visuales que te mantienen al tanto 24/7 sobre tus pruebas.\n\n¿Qué cambia en el día a día?\n🔹 Más estabilidad.\n🔹 Menos falsos negativos.\n🔹 Menos tiempo de mantenimiento.\n🔹 Feedback más rápido para el equipo.\n\nY lo más importante: una experiencia de testing que no frena al desarrollo, sino que lo acompaña.\n\nEn QActions ya ayudamos a implementar soluciones como esta en equipos ágiles de sectores diversos: desde banca hasta e-commerce. No se trata solo de la herramienta: se trata de integrarla bien, según los objetivos y el ritmo del negocio.\n\n💬 ¿Probaste Testim? ¿Cómo fue tu experiencia con otras herramientas de Tricentis como Tosca? Contanos en los comentarios. \n\nNos encanta escuchar cómo cada equipo vive su propio camino hacia la automatización. Porque si algo sabemos en QActions es que no hay una única fórmula, pero sí un montón de buenas decisiones que pueden empezar con una charla. 😉\n\n#QA #TestAutomation #DevOps #Tricentis #Testim #CalidadDeSoftware #QActions\n  \n\n\n\n        \n      \n    \n    \n    \n\n      \n              \n                  \n              \n      \n  \n  \n      \n  \n  \n                  \n\n      \n          \n        \n\n      \n          \n        \n\n      \n            \n      \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n\n      \n            \n      \n        \n                    \n                    \n\n              \n                    7\n              \n            \n      \n  \n                  \n                  \n                  \n                  \n                  \n                  \n                  \n      \n  \n  \n        \n\n      \n                \n    \n    \n    \n\n    \n      \n  \n    \n    \n    \n      Recomendar\n    \n  \n\n        \n  \n    \n    \n    \n      Comentar\n    \n  \n\n        \n      \n\n    \n    \n    \n    \n    \n\n    \n    \n\n    \n\n    \n\n    \n          \n        \n          \n            \n              Compartir\n            \n        \n      \n\n        \n          \n        \n  \n    \n      \n      Copiar\n    \n  \n\n\n        \n  \n    \n      \n      LinkedIn\n    \n  \n\n          \n  \n    \n      \n      Facebook\n    \n  \n\n          \n  \n    \n      \n      X\n    \n  \n\n      \n        \n\n    \n  \n  \n  \n        \n                  \n    \n  \n                      \n\n      \n              \n      \n        \n\n      \n              \n\n    \n    \n    \n    \n    \n    \n\n    \n        Inicia sesión para ver o añadir un comentario.\n    \n  \n        \n    \n  \n      \n  \n  \n            \n\n            \n    \n    \n\n  \n          \n      \n        \n      \n      \n        \n        \n\n              \n    \n    \n    \n    \n    \n\n    \n      \n      \n    \n      \n    \n      \n        \n            \n        \n      \n    \n  \n      \n      \n  \n      \n        \n          \n            13.221 seguidores\n          \n          \n            \n                \n                  \n                    212 publicaciones\n                  \n                \n            \n          \n        \n          \n            Ver perfil\n          \n          \n            \n            Seguir\n          \n        \n      \n      \n    \n  \n  \n    \n  \n\n\n            \n    \n\n  \n\n\n          \n      \n      \n    \n\n\n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n\n    \n      \n        \n          LinkedIn\n          \n          © 2026\n        \n        \n  \n        \n          \n          Acerca de\n        \n        \n  \n\n        \n  \n        \n          \n          Accesibilidad\n        \n        \n  \n\n        \n  \n        \n          \n          Condiciones de uso\n        \n        \n  \n\n        \n  \n        \n          \n          Política de privacidad\n        \n        \n  \n\n        \n  \n        \n          \n          Política de cookies\n        \n        \n  \n\n        \n  \n        \n          \n          Política de copyright\n        \n        \n  \n\n        \n  \n        \n          \n          Política de marca\n        \n        \n  \n\n          \n  \n        \n          \n            Controles de invitados\n          \n        \n  \n\n        \n  \n        \n          \n          Pautas comunitarias\n        \n        \n  \n\n        \n\n          \n          \n  \n        \n              \n\n    \n    \n\n    \n\n    \n\n    \n\n        \n          \n          \n            \n            \n                العربية (árabe)\n            \n          \n          \n            \n            \n                বাংলা (bengalí)\n            \n          \n          \n            \n            \n                Čeština (checo)\n            \n          \n          \n            \n            \n                Dansk (danés)\n            \n          \n          \n            \n            \n                Deutsch (alemán)\n            \n          \n          \n            \n            \n                Ελληνικά (griego)\n            \n          \n          \n            \n            \n                English (inglés)\n            \n          \n          \n            \n            \n                Español\n            \n          \n          \n            \n            \n                لاررل (persa)\n            \n          \n          \n            \n            \n                Suomi (finlandés)\n            \n          \n          \n            \n            \n                Français (francés)\n            \n          \n          \n            \n            \n                हिंदी (hindi)\n            \n          \n          \n            \n            \n                Magyar (húngaro)\n            \n          \n          \n            \n            \n                Bahasa Indonesia (indonesio)\n            \n          \n          \n            \n            \n                Italiano (italiano)\n            \n          \n          \n            \n            \n                עברית (hebreo)\n            \n          \n          \n            \n            \n                日本語 (japonés)\n            \n          \n          \n            \n            \n                한국어 (coreano)\n            \n          \n          \n            \n            \n                मराठी (marati)\n            \n          \n          \n            \n            \n                Bahasa Malaysia (malayo)\n            \n          \n          \n            \n            \n                Nederlands (neerlandés)\n            \n          \n          \n            \n            \n                Norsk (noruego)\n            \n          \n          \n            \n            \n                ਪੰਜਾਬੀ (punyabí)\n            \n          \n          \n            \n            \n                Polski (polaco)\n            \n          \n          \n            \n            \n                Português (portugués)\n            \n          \n          \n            \n            \n                Română (rumano)\n            \n          \n          \n            \n            \n                Русский (ruso)\n            \n          \n          \n            \n            \n                Svenska (sueco)\n            \n          \n          \n            \n            \n                తెలుగు (telugu)\n            \n          \n          \n            \n            \n                ภาษาไทย (tailandés)\n            \n          \n          \n            \n            \n                Tagalog (tagalo)\n            \n          \n          \n            \n            \n                Türkçe (turco)\n            \n          \n          \n            \n            \n                Українська (ucraniano)\n            \n          \n          \n            \n            \n                Tiếng Việt (vietnamita)\n            \n          \n          \n            \n            \n                简体中文 (chino simplificado)\n            \n          \n          \n            \n            \n                正體中文 (chino tradicional)\n            \n          \n      \n        \n\n          \n        \n          \n            Idioma\n          \n          \n        \n      \n    \n  \n  \n          \n  \n\n      \n\n    \n  \n  \n  \n\n          \n    \n    \n    \n    \n    \n\n    \n\n        \n\n    \n    \n\n      \n        \n          \n              \n              \n                \n              \n          \n            \n              \n              \n                \n                    \n                    \n      \n  \n                  \n                    Inicia sesión para ver más contenido\n                  \n                    \n                    \n                      Crea tu cuenta gratuita o inicia sesión para continuar tu búsqueda\n                    \n                \n                \n                    \n                      \n    \n\n    \n      \n    \n  \n                    \n\n                  \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n\n    \n      \n\n      \n        \n    \n      \n        \n          Email o teléfono\n        \n        \n          \n          \n        \n      \n\n      \n    \n  \n\n        \n    \n      \n        \n          Contraseña\n        \n        \n          \n          \n            Mostrar\n          \n        \n      \n\n      \n    \n  \n\n        \n\n      \n\n      \n        ¿Has olvidado tu contraseña?\n\n\n        \n        \n          Iniciar sesión\n        \n      \n    \n  \n\n                  \n                    \n                    Iniciar sesión con el email\n                  \n\n                  \n                    \n                      o\n                    \n                  \n\n                    \n                      \n    \n\n    \n      \n    \n  \n                    \n\n                  \n                    ¿Estás empezando a usar LinkedIn? Únete ahora\n                  \n\n                  \n    \n    \n    \n    \n      Al hacer clic en «Continuar» para unirte o iniciar sesión, aceptas las Condiciones de uso, la Política de privacidad y la Política de cookies de LinkedIn.",
+      "title": "https://es.linkedin.com/posts/javier-marchese_lee-esto-y-dime-si-pasa-en-tu-empresa-activity-7341446475437998081-owrW (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528461910,
+        "end": 1789528462547
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528462548,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83554d4001RFbGDAZrnW272p",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8354c990012XYwjFgRqHwciV",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 16702,
+      "output": 303,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 17005,
+      "headroom": 21851,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.548Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.549Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.550Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.550Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.550Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.550Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.550Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.550Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.556Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 17005,
+  "providerTokens": 17005,
+  "estimatedInputTokens": 4167,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 16702,
+    "cacheRead": 0,
+    "output": 303
+  },
+  "overflow": false,
+  "headroom": 21851,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.556Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.556Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.557Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.558Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.775Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528462775,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83555b6001bmy7cnjPTtQuAG",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a83554dc001KuOWISEw90qqyA",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.775Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.775Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528462775,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83555b7002RdMF3CoGVnGkHB",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a83554dc001KuOWISEw90qqyA",
+    "type": "tool",
+    "callID": "call_71f691cc856da45e",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.775Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528462775,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83555b700129xfnrVBor3sGX",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a83554dc001KuOWISEw90qqyA",
+    "type": "text",
+    "text": "Let me open https://es.linkedin.com/posts/dlcastillop_hagamos-un-experimento-r%C3%A1pido-lee-los-dos-activity-7478794898461261824-u30H and read what it says.",
+    "time": {
+      "start": 1789528462775,
+      "end": 1789528462775
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:22.776Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528462776,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83555b7002RdMF3CoGVnGkHB",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a83554dc001KuOWISEw90qqyA",
+    "type": "tool",
+    "callID": "call_71f691cc856da45e",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://es.linkedin.com/posts/dlcastillop_hagamos-un-experimento-r%C3%A1pido-lee-los-dos-activity-7478794898461261824-u30H"
+      },
+      "time": {
+        "start": 1789528462776
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.466Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528463466,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83555b7002RdMF3CoGVnGkHB",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a83554dc001KuOWISEw90qqyA",
+    "type": "tool",
+    "callID": "call_71f691cc856da45e",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://es.linkedin.com/posts/dlcastillop_hagamos-un-experimento-r%C3%A1pido-lee-los-dos-activity-7478794898461261824-u30H"
+      },
+      "output": "Hagamos un experimento rápido: lee los dos useEffect de la imagen y dime cuál de los dos es más rápido de entender.\n\nProbablemente pienses que el segundo, ¿verdad?\n\nEsto es porque en lugar de usar… | Daniel Castillo\n\n      \n\n    \n    \n    \n    \n      \n    \n    \n    \n    \n      \n  \n\n        \n\n        \n    \n      \n          \n      \n    \n    \n      \n          \n    \n      \n        \n          \n          \n          \n    \n        \n            \n        \n      \n        \n        \n            LinkedIn respeta tu privacidad\n          \n            \n              LinkedIn y terceros utilizan cookies imprescindibles y opcionales para ofrecer, proteger, analizar y mejorar nuestros servicios, y para mostrarte publicidad relevante (incluidos anuncios profesionales y de empleo) dentro y fuera de LinkedIn. Consulta más información en nuestra Política de cookies.Selecciona Aceptar para consentir o Rechazar para denegar las cookies no imprescindibles para este uso. Puedes actualizar tus preferencias en cualquier momento en tus ajustes.\n            \n          \n          \n                \n                Aceptar\n                \n                \n                Rechazar\n                \n          \n        \n      \n      \n      \n  \n  \n\n        \n        \n    \n    \n    \n    \n      \n        \n      \n        \n          \n            \n              Aceptar y unirse a LinkedIn\n            \n            \n    \n    \n    \n    \n      Al hacer clic en «Continuar» para unirte o iniciar sesión, aceptas las Condiciones de uso, la Política de privacidad y la Política de cookies de LinkedIn.\n    \n  \n          \n          \n        \n      \n    \n      \n        \n      \n    \n  \n    \n      \n    \n    \n    \n    \n      \n      \n  \n        \n\n    \n      \n    \n\n    \n      Pasar al contenido principal\n    \n  \n    \n      \n        \n\n    \n    \n    \n    \n\n    \n\n    \n\n      \n          \n              \n    \n    LinkedIn\n      \n      \n  \n          \n      \n\n\n        \n    \n    \n    \n    \n    \n    \n    \n    \n    \n        \n          \n    \n      \n      \n      \n        Contenido destacado\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Personas\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Learning\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Empleos\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Juegos\n      \n    \n  \n        \n        \n          \n    \n      \n      \n      \n        Descargar la aplicación\n      \n    \n  \n        \n    \n  \n\n      \n          \n  \n  \n\n      \n      \n          Iniciar sesión\n      \n\n\n          \n    \n    \n      Unirse ahora\n    \n\n\n\n\n          \n            \n      \n  \n          \n      \n\n\n    \n  \n      \n    \n\n    \n      \n\n\n    \n      \n        \n        \n      \n\n        \n          \n        \n            \n                \nPublicación de Daniel Castillo\n\n\n                \n    \n\n    \n      \n\n    \n\n      \n        \n\n      \n        \n          \n            \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n          \n            \n      \n      \n          \n      \n        \n            \n              Daniel Castillo\n            \n        \n\n\n              \n                  \n                    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      2 meses\n  \n                  \n              \n                \n\n    \n  \n        \n        \n          \n              \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      \n        \n\n    \n\n    \n          \n            \n              \n            \n          \n\n        \n          \n              \n\n                \n                  \n\n    \n    \n\n    \n\n    \n\n    \n        \n                      \n                      \n                      Denunciar esta publicación\n                    \n    \n\n  \n                \n          \n        \n\n    \n  \n\n      \n  \n        \n      \n\n      \n            \n            \n  \n    Hagamos un experimento rápido: lee los dos useEffect de la imagen y dime cuál de los dos es más rápido de entender.\n\nProbablemente pienses que el segundo, ¿verdad?\n\nEsto es porque en lugar de usar una función anónima, se usa una función con nombre.\n\nParece un cambio trivial, pero tiene un impacto enorme ya que mejora el debugging e incluso puede revelar algunos effects que tengan demasiada responsabilidad o que directamente no deberían existir.\n\nAdemás, también agiliza la legibilidad cuando se realizan revisiones de código en los PRs y si usas IA en tu flujo de trabajo también se beneficia de este contexto extra.\n\nEl coste de adoptarlo es casi cero ya que solo añades un nombre a una función.\n\n-\nSi te gusta este tipo de contenido, considera suscribirte a mi newsletter.\n\nEn ella encontrarás historias reales, buenas prácticas, herramientas, descuentos y ofertas exclusivas.\n\nÚnete a 100+ desarrolladores con el enlace en mi perfil.\n  \n\n\n\n        \n\n        \n            \n      \n    \n    \n    \n\n      \n              \n                  \n              \n      \n  \n  \n                  \n\n      \n          \n        \n\n      \n          \n        \n\n      \n            \n      \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n\n      \n            \n      \n        \n                    \n\n              \n                    8\n              \n            \n      \n  \n                  \n                  \n                  \n                  \n                  \n                  \n                  \n            \n      \n        \n                2 comentarios\n            \n      \n  \n      \n  \n  \n        \n\n      \n                \n    \n    \n    \n\n    \n      \n  \n    \n    \n    \n      Recomendar\n    \n  \n\n        \n  \n    \n    \n    \n      Comentar\n    \n  \n\n        \n      \n\n    \n    \n    \n    \n    \n\n    \n    \n\n    \n\n    \n\n    \n          \n        \n          \n            \n              Compartir\n            \n        \n      \n\n        \n          \n        \n  \n    \n      \n      Copiar\n    \n  \n\n\n        \n  \n    \n      \n      LinkedIn\n    \n  \n\n          \n  \n    \n      \n      Facebook\n    \n  \n\n          \n  \n    \n      \n      X\n    \n  \n\n      \n        \n\n    \n  \n  \n  \n        \n                  \n    \n  \n                      \n\n      \n              \n            \n\n    \n    \n    \n    \n    \n    \n\n\n    \n\n    \n    \n    \n    \n    \n    \n\n      \n        \n          \n            \n      \n  \n          \n        \n        \n          \n            \n                  \n                    Jose Leandro Gullo\n                  \n              \n        \n          \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      2 meses\n  \n        \n\n          \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      \n        \n\n    \n\n    \n          \n            \n              \n            \n          \n\n        \n          \n              \n\n                \n                  \n\n    \n    \n\n    \n\n    \n\n    \n        \n                      \n                      \n                      Denunciar este comentario\n                    \n    \n\n  \n                \n          \n        \n\n    \n  \n\n      \n  \n      \n            \n            \n  \n    A mí siempre se me hizo visualmente más bonito crear la función fuera con un useCallback y luego llamarla en el useEffect, siento que queda más \"ordenado\"\n  \n\n            \n      \n          \n          \n        \n\n              \n                \n  \n    \n    \n    \n      Recomendar\n    \n  \n\n              \n\n                \n                \n                  \n  \n    \n    \n    \n      Responder\n    \n  \n\n                \n                \n                  1 reacción\n                \n              \n                2 reacciones\n              \n        \n      \n        \n      \n  \n  \n            \n\n    \n    \n    \n    \n    \n    \n\n\n    \n\n    \n    \n    \n    \n    \n    \n\n      \n        \n          \n            \n      \n  \n          \n        \n        \n          \n            \n                  \n                    Alejandro Dueñas Real\n                  \n              \n        \n          \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      2 meses\n  \n        \n\n          \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      \n        \n\n    \n\n    \n          \n            \n              \n            \n          \n\n        \n          \n              \n\n                \n                  \n\n    \n    \n\n    \n\n    \n\n    \n        \n                      \n                      \n                      Denunciar este comentario\n                    \n    \n\n  \n                \n          \n        \n\n    \n  \n\n      \n  \n      \n            \n            \n  \n    Mi estilo es el primero,menos código , pero post  IA siempre tengo reglas claras para aplicar los segundo\n  \n\n            \n      \n          \n          \n        \n\n              \n                \n  \n    \n    \n    \n      Recomendar\n    \n  \n\n              \n\n                \n                \n                  \n  \n    \n    \n    \n      Responder\n    \n  \n\n                \n              \n                1 reacción\n              \n        \n      \n        \n      \n  \n  \n              \n                Ver más comentarios\n              \n      \n        \n\n      \n              \n\n    \n    \n    \n    \n    \n    \n\n    \n        Inicia sesión para ver o añadir un comentario.\n    \n  \n        \n    \n  \n      \n  \n  \n            \n\n            \n    \n    \n\n  \n          \n      \n        \n      \n      \n        \n        \n\n              \n    \n    \n    \n    \n    \n\n    \n      \n      \n    \n      \n    \n      \n        \n            \n        \n      \n    \n  \n      \n      \n  \n      \n        \n          \n            8865 seguidores\n          \n          \n            \n                \n                  \n                    1901 publicaciones\n                  \n                \n                \n                  \n                    2 artículos\n                  \n                \n            \n          \n        \n          \n            Ver perfil\n          \n          \n            \n            Seguir\n          \n        \n      \n      \n    \n  \n  \n    \n  \n\n\n            \n    \n\n      \n      \n\n            \n              Más de esta persona\n            \n\n\n        \n          \n          \n              \n                \n    \n    \n    \n      \n        \n\n\n      \n            \n  \n    \n                \n        \n      \n              \n  \n\n\n        \n          \n            \n        ¿Es una pérdida de tiempo la certificación de JavaScript en freeCodeCamp?\n      \n          \n\n\n\n\n\n            \n              \n          \n            Daniel Castillo\n          \n          \n            \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      4 años\n  \n          \n      \n            \n\n        \n      \n    \n      \n  \n  \n  \n  \n              \n              \n                \n    \n    \n    \n      \n        \n\n\n      \n            \n  \n    \n                \n        \n      \n              \n  \n\n\n        \n          \n            \n        Mi primera certificación con freeCodeCamp\n      \n          \n\n\n\n\n\n            \n              \n          \n            Daniel Castillo\n          \n          \n            \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n      4 años\n  \n          \n      \n            \n\n        \n      \n    \n      \n  \n  \n  \n  \n              \n          \n        \n        \n      \n  \n  \n\n\n          \n      \n      \n    \n\n\n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n\n    \n      \n        \n          LinkedIn\n          \n          © 2026\n        \n        \n  \n        \n          \n          Acerca de\n        \n        \n  \n\n        \n  \n        \n          \n          Accesibilidad\n        \n        \n  \n\n        \n  \n        \n          \n          Condiciones de uso\n        \n        \n  \n\n        \n  \n        \n          \n          Política de privacidad\n        \n        \n  \n\n        \n  \n        \n          \n          Política de cookies\n        \n        \n  \n\n        \n  \n        \n          \n          Política de copyright\n        \n        \n  \n\n        \n  \n        \n          \n          Política de marca\n        \n        \n  \n\n          \n  \n        \n          \n            Controles de invitados\n          \n        \n  \n\n        \n  \n        \n          \n          Pautas comunitarias\n        \n        \n  \n\n        \n\n          \n          \n  \n        \n              \n\n    \n    \n\n    \n\n    \n\n    \n\n        \n          \n          \n            \n            \n                العربية (árabe)\n            \n          \n          \n            \n            \n                বাংলা (bengalí)\n            \n          \n          \n            \n            \n                Čeština (checo)\n            \n          \n          \n            \n            \n                Dansk (danés)\n            \n          \n          \n            \n            \n                Deutsch (alemán)\n            \n          \n          \n            \n            \n                Ελληνικά (griego)\n            \n          \n          \n            \n            \n                English (inglés)\n            \n          \n          \n            \n            \n                Español\n            \n          \n          \n            \n            \n                لاررل (persa)\n            \n          \n          \n            \n            \n                Suomi (finlandés)\n            \n          \n          \n            \n            \n                Français (francés)\n            \n          \n          \n            \n            \n                हिंदी (hindi)\n            \n          \n          \n            \n            \n                Magyar (húngaro)\n            \n          \n          \n            \n            \n                Bahasa Indonesia (indonesio)\n            \n          \n          \n            \n            \n                Italiano (italiano)\n            \n          \n          \n            \n            \n                עברית (hebreo)\n            \n          \n          \n            \n            \n                日本語 (japonés)\n            \n          \n          \n            \n            \n                한국어 (coreano)\n            \n          \n          \n            \n            \n                मराठी (marati)\n            \n          \n          \n            \n            \n                Bahasa Malaysia (malayo)\n            \n          \n          \n            \n            \n                Nederlands (neerlandés)\n            \n          \n          \n            \n            \n                Norsk (noruego)\n            \n          \n          \n            \n            \n                ਪੰਜਾਬੀ (punyabí)\n            \n          \n          \n            \n            \n                Polski (polaco)\n            \n          \n          \n            \n            \n                Português (portugués)\n            \n          \n          \n            \n            \n                Română (rumano)\n            \n          \n          \n            \n            \n                Русский (ruso)\n            \n          \n          \n            \n            \n                Svenska (sueco)\n            \n          \n          \n            \n            \n                తెలుగు (telugu)\n            \n          \n          \n            \n            \n                ภาษาไทย (tailandés)\n            \n          \n          \n            \n            \n                Tagalog (tagalo)\n            \n          \n          \n            \n            \n                Türkçe (turco)\n            \n          \n          \n            \n            \n                Українська (ucraniano)\n            \n          \n          \n            \n            \n                Tiếng Việt (vietnamita)\n            \n          \n          \n            \n            \n                简体中文 (chino simplificado)\n            \n          \n          \n            \n            \n                正體中文 (chino tradicional)\n            \n          \n      \n        \n\n          \n        \n          \n            Idioma\n          \n          \n        \n      \n    \n  \n  \n          \n  \n\n      \n\n    \n  \n  \n  \n\n          \n    \n    \n    \n    \n    \n\n    \n\n        \n\n    \n    \n\n      \n        \n          \n              \n              \n                \n              \n          \n            \n              \n              \n                \n                    \n                    \n      \n  \n                  \n                    Inicia sesión para ver más contenido\n                  \n                    \n                    \n                      Crea tu cuenta gratuita o inicia sesión para continuar tu búsqueda\n                    \n                \n                \n                    \n                      \n    \n\n    \n      \n    \n  \n                    \n\n                  \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n    \n\n    \n      \n\n      \n        \n    \n      \n        \n          Email o teléfono\n        \n        \n          \n          \n        \n      \n\n      \n    \n  \n\n        \n    \n      \n        \n          Contraseña\n        \n        \n          \n          \n            Mostrar\n          \n        \n      \n\n      \n    \n  \n\n        \n\n      \n\n      \n        ¿Has olvidado tu contraseña?\n\n\n        \n        \n          Iniciar sesión\n        \n      \n    \n  \n\n                  \n                    \n                    Iniciar sesión con el email\n                  \n\n                  \n                    \n                      o\n                    \n                  \n\n                    \n                      \n    \n\n    \n      \n    \n  \n                    \n\n                  \n                    ¿Estás empezando a usar LinkedIn? Únete ahora\n                  \n\n                  \n    \n    \n    \n    \n      Al hacer clic en «Continuar» para unirte o iniciar sesión, aceptas las Condiciones de uso, la Política de privacidad y la Política de cookies de LinkedIn.",
+      "title": "https://es.linkedin.com/posts/dlcastillop_hagamos-un-experimento-r%C3%A1pido-lee-los-dos-activity-7478794898461261824-u30H (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528462776,
+        "end": 1789528463465
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.466Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528463466,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a835586a001c4FBWAvbBqEd96",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a83554dc001KuOWISEw90qqyA",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 31741,
+      "output": 313,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 32054,
+      "headroom": 6802,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.467Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.467Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.467Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.467Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.469Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.469Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.470Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.470Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.470Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.470Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.473Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 32054,
+  "providerTokens": 32054,
+  "estimatedInputTokens": 6525,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 31741,
+    "cacheRead": 0,
+    "output": 313
+  },
+  "overflow": false,
+  "headroom": 6802,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.474Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.474Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.475Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.476Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.798Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528463799,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83559b60019GqhjUURN9ad2f",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355871001Ng1IlBPHBB64HF",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528463799,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83559b70026jBPI2mGKsFuVi",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355871001Ng1IlBPHBB64HF",
+    "type": "tool",
+    "callID": "call_68fa207d5f61bca0",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528463799,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83559b7001x6URF3mBHjOumq",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355871001Ng1IlBPHBB64HF",
+    "type": "text",
+    "text": "Let me open https://www.spanishdict.com/translate/lee%20la and read what it says.",
+    "time": {
+      "start": 1789528463799,
+      "end": 1789528463799
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:23.799Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528463799,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83559b70026jBPI2mGKsFuVi",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355871001Ng1IlBPHBB64HF",
+    "type": "tool",
+    "callID": "call_68fa207d5f61bca0",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.spanishdict.com/translate/lee%20la"
+      },
+      "time": {
+        "start": 1789528463799
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.006Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528464006,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a83559b70026jBPI2mGKsFuVi",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355871001Ng1IlBPHBB64HF",
+    "type": "tool",
+    "callID": "call_68fa207d5f61bca0",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.spanishdict.com/translate/lee%20la"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789528463799,
+        "end": 1789528464005
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528464006,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.007Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528464007,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355a8600164eMBVLmhQDhMd",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355871001Ng1IlBPHBB64HF",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 50121,
+      "output": 161,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 50282,
+      "headroom": -11426,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.007Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.007Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.007Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.007Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.008Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.008Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.008Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.009Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.009Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.009Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.010Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 50282,
+  "providerTokens": 50282,
+  "estimatedInputTokens": 6548,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 50121,
+    "cacheRead": 0,
+    "output": 161
+  },
+  "overflow": true,
+  "headroom": -11426,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.011Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.012Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.012Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.014Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.014Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.014Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.014Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.014Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.015Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.417Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528464417,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355c21001UsrqkSOFewTS5v",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355a8e001NbRP3YH1dIKTdf",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528464419,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355c22001Dan1YkSotA5FuX",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355a8e001NbRP3YH1dIKTdf",
+    "type": "text",
+    "text": "Conversation summary: Lee https://example.com y dime qué dice.  Let me search the web for Lee https://example.com y dime qué dice.\n\nTitle: What did we do so\n\nUser turns:\n  1. Lee https://example.com y dime qué dice.\n  2.",
+    "time": {
+      "start": 1789528464418,
+      "end": 1789528464418
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528464419,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355c23001klt1LCdqgzT2Yx",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355a8e001NbRP3YH1dIKTdf",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 42483,
+      "output": 220,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 42703,
+      "headroom": -3847,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.419Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.420Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528464420,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355c23003xc3zHb8eCJGO5i",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355c23002ih7MltmUdmvw0K",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528464419,
+      "end": 1789528464419
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.420Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.420Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.420Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.421Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.421Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.421Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.421Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.421Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.421Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.422Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.422Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528464480,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355c600019RNd8UB6BbvkHh",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355c250013IkyYewc2q537c",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.480Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528464481,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355c61001wL2z2KTIfI9A0U",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355c250013IkyYewc2q537c",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528464481,
+      "end": 1789528464481
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528464481,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "part": {
+    "id": "prt_0a8355c61002kCUDOyGZdqDijr",
+    "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+    "messageID": "msg_0a8355c250013IkyYewc2q537c",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8769,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8842,
+      "headroom": 30014,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.481Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.482Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.482Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.483Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.483Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.483Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528464483,
+  "sessionID": "ses_f57cac370ffetpzlIrWuHwJ7jD"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.483Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.483Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.483Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.484Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.CBpUrlucsK",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:14:24.484Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

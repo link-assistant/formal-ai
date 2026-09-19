@@ -317,7 +317,7 @@ pub fn extract_steps(html: &str, limit: usize) -> Vec<String> {
 }
 
 /// The inner HTML of every `<li>` element, in document order.
-fn list_items(html: &str) -> Vec<String> {
+pub(crate) fn list_items(html: &str) -> Vec<String> {
     let mut items = Vec::new();
     let mut rest = html;
     while let Some(start) = rest.find("<li") {

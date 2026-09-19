@@ -5,7 +5,7 @@
 //! for 5 years" need domain-specific slot extraction before there is an
 //! arithmetic expression to delegate.
 
-use crate::calculation::{evaluate_calculation, CalculationEvaluation};
+use crate::calculation::{CalculationEvaluation, evaluate_calculation};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;
@@ -309,9 +309,10 @@ fn parse_currency_amount(prompt: &str) -> Option<f64> {
     {
         let marker = format!(" {word}");
         if let Some(index) = lower.find(&marker)
-            && let Some(amount) = parse_number_left(&lower, index) {
-                return Some(amount);
-            }
+            && let Some(amount) = parse_number_left(&lower, index)
+        {
+            return Some(amount);
+        }
     }
     None
 }

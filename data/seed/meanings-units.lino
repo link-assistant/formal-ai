@@ -73,6 +73,9 @@ meanings
     lexeme zh
       surface
         text 零
+    lexeme es
+      surface
+        text cero
   one
     grounded-in Q199
     defined-by cardinal_number
@@ -96,6 +99,13 @@ meanings
     lexeme zh
       surface
         text 一
+    lexeme es
+      surface
+        text un
+      surface
+        text una
+      surface
+        text uno
   two
     grounded-in Q200
     defined-by cardinal_number
@@ -116,6 +126,11 @@ meanings
     lexeme zh
       surface
         text 二
+      surface
+        text 两
+    lexeme es
+      surface
+        text dos
   three
     grounded-in Q201
     defined-by cardinal_number
@@ -134,6 +149,9 @@ meanings
     lexeme zh
       surface
         text 三
+    lexeme es
+      surface
+        text tres
   four
     grounded-in Q202
     defined-by cardinal_number
@@ -152,6 +170,9 @@ meanings
     lexeme zh
       surface
         text 四
+    lexeme es
+      surface
+        text cuatro
   five
     grounded-in Q203
     defined-by cardinal_number
@@ -170,6 +191,9 @@ meanings
     lexeme zh
       surface
         text 五
+    lexeme es
+      surface
+        text cinco
   six
     grounded-in Q23488
     defined-by cardinal_number
@@ -188,6 +212,9 @@ meanings
     lexeme zh
       surface
         text 六
+    lexeme es
+      surface
+        text seis
   seven
     grounded-in Q23350
     defined-by cardinal_number
@@ -206,6 +233,9 @@ meanings
     lexeme zh
       surface
         text 七
+    lexeme es
+      surface
+        text siete
   eight
     grounded-in Q23355
     defined-by cardinal_number
@@ -224,6 +254,9 @@ meanings
     lexeme zh
       surface
         text 八
+    lexeme es
+      surface
+        text ocho
   nine
     grounded-in Q19108
     defined-by cardinal_number
@@ -242,6 +275,9 @@ meanings
     lexeme zh
       surface
         text 九
+    lexeme es
+      surface
+        text nueve
   ten
     grounded-in Q23806
     defined-by cardinal_number
@@ -260,6 +296,9 @@ meanings
     lexeme zh
       surface
         text 十
+    lexeme es
+      surface
+        text diez
   length
     grounded-in Q36253
     defined-by quantity
@@ -890,3 +929,95 @@ meanings
     lexeme zh
       surface
         text 开尔文
+  volume
+    defined-by quantity
+    role physical_dimension
+    precondition "a quantity describes occupied three-dimensional space"
+    effect "classifies the quantity as volume"
+    unit "not applicable"
+    example "container capacity is a volume quantity"
+    lexeme en
+      surface
+        text volume
+    lexeme ru
+      surface
+        text объём
+    lexeme hi
+      surface
+        text आयतन
+    lexeme zh
+      surface
+        text 体积
+    lexeme es
+      surface
+        text volumen
+  litre
+    defined-by volume
+    defined-by unit
+    role measurement_unit
+    precondition "a volume quantity is expressed in litres"
+    effect "binds the quantity to the litre unit"
+    unit litre
+    example "two litres of water"
+    lexeme en
+      surface
+        text litre
+      surface
+        text litres
+      surface
+        text liter
+      surface
+        text liters
+    lexeme ru
+      surface
+        text литр
+      surface
+        text литра
+      surface
+        text литров
+    lexeme hi
+      surface
+        text लीटर
+    lexeme zh
+      surface
+        text 升
+    lexeme es
+      surface
+        text litro
+      surface
+        text litros
+  millilitre
+    defined-by volume
+    defined-by unit
+    role measurement_unit
+    precondition "a volume quantity is expressed in millilitres"
+    effect "binds the quantity to the millilitre unit"
+    unit millilitre
+    example "five hundred millilitres of water"
+    lexeme en
+      surface
+        text millilitre
+      surface
+        text millilitres
+      surface
+        text milliliter
+      surface
+        text milliliters
+    lexeme ru
+      surface
+        text миллилитр
+      surface
+        text миллилитра
+      surface
+        text миллилитров
+    lexeme hi
+      surface
+        text मिलीलीटर
+    lexeme zh
+      surface
+        text 毫升
+    lexeme es
+      surface
+        text mililitro
+      surface
+        text mililitros

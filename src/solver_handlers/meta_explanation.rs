@@ -1,12 +1,12 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, localized_response, Slot};
-use crate::skill_procedure::{extract_compiled_procedure_artifact, CompiledProcedure};
+use crate::seed::{self, Slot, localized_response};
+use crate::skill_procedure::{CompiledProcedure, extract_compiled_procedure_artifact};
 
 use super::finalize_simple;
 use super::self_awareness::{
-    surface_label, surface_memory, surface_runtime, surface_web_search, SelfAwarenessRuntime,
+    SelfAwarenessRuntime, surface_label, surface_memory, surface_runtime, surface_web_search,
 };
 
 pub fn try_meta_explanation(

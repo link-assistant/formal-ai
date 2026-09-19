@@ -1,7 +1,8 @@
 handler_migration_ledger
   issue 699
   batch 3
-  ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/kernel-ratchet.lino"
+  ceilings "issue #1085: the raisable specialized_handler_files_max / try_dispatch_entries_max ceilings were raised twice (2026-08-02, 2026-08-11); the measured, lower-only ceilings now live in data/meta/debt-ratchet.lino. Corrected by issue #1138 B9, plan 09 leaf 5: this line named a deleted kernel-ratchet path that never existed in the tree; the measures moved to data/meta/debt-ratchet.lino under issue #1126 and this note was not updated, which is where ROADMAP.md:362 took its stale figures from."
+  census "the live registry: the specialized handler-precedence table (data/seed/handler-precedence.lino) followed by the five prelude methods (src/solver_dispatch.rs PRELUDE_METHOD_NAMES), which run on every turn ahead of the table. Counting only the table left five live methods outside this ledger, so the pending count read 40 when it was 45."
   handler conversation_control
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses.lino"
@@ -14,6 +15,36 @@ handler_migration_ledger
     primitive "src/rule_interpreter.rs"
     justification "issue #1095: a turn that is only a continuation cue is whole-prompt role equality (the interpreter's `whole` mode) rendered through seeded responses; the agentic planner asks the same rule whether to resume the established task, so no handler-specific Rust decides it."
     held_out "tests/unit/issue_1095_continuation_cue.rs"
+  handler exact_memory_query
+    status pending
+    justification "plan 09 leaf 13: the census now names the browser-only rows of the precedence seed; the memory store lives in the worker, so this handler has no native implementation yet."
+  handler memory_program
+    status pending
+    justification "plan 09 leaf 13: browser-only memory-program interpreter, recorded by the same census correction."
+  handler memory_program_gap
+    status pending
+    justification "plan 09 leaf 13: browser-only gap surfacing over stored memory programs, recorded by the same census correction."
+  handler current_dialogue_fact_checking
+    status pending
+    justification "plan 09 leaf 13: browser-only dialogue fact checking against the worker's memory, recorded by the same census correction."
+  handler link_native_synthesis
+    status pending
+    justification "plan 09 leaf 13: browser-only synthesis over the worker-held link store, recorded by the same census correction."
+  handler historical
+    status pending
+    justification "plan 09 leaf 13: browser-only replay of stored conversation history, recorded by the same census correction."
+  handler write_program_coreference
+    status pending
+    justification "plan 09 leaf 13: browser-only context-bound write-program rewrite, recorded by the same census correction."
+  handler program_blueprint_from_prompt
+    status pending
+    justification "plan 09 leaf 13: browser-only blueprint composition from a bare prompt, recorded by the same census correction."
+  handler write_program_concrete
+    status pending
+    justification "plan 09 leaf 13: browser-only context-bound concrete write-program binding, recorded by the same census correction."
+  handler software_project_request
+    status pending
+    justification "plan 09 leaf 13: browser-only interactive software-project dialogue, recorded by the same census correction."
   handler http_fetch
     status pending
   handler url_navigate
@@ -49,6 +80,8 @@ handler_migration_ledger
   handler software_project_followup
     status pending
   handler summarization
+    status pending
+  handler verifiable_task
     status pending
   handler text_manipulation
     status pending
@@ -88,8 +121,6 @@ handler_migration_ledger
     primitive "src/number_constraints.rs"
     justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved."
     held_out "tests/unit/issue_699_handler_migration.rs"
-  handler pattern_inference
-    status pending
   handler program_synthesis
     status migrated
     data "data/seed/coding-idioms.lino|data/seed/multilingual-responses-synthesis.lino"
@@ -186,3 +217,23 @@ handler_migration_ledger
     held_out "tests/unit/issue_1085_rule_interpreter.rs"
   handler incompatible_units
     status pending
+  handler diagnostic
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Its recognition is the literal marker [diagnostic] in the normalized prompt, which is a cue that belongs in data/seed/cue-lexicon.lino like every other cue."
+  handler nl_tool
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Natural-language tool requests are recognized in Rust; the tool vocabulary is data the agent surface already declares."
+  handler behavior_rules
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Rule listing, counting and rendering are domain policy beside the stored rules, not a compiled arm."
+  handler feature_capability
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. What the system can do is the capability registry's own data; asking it should be a query, not a handler."
+  handler playwright_script
+    status pending
+    surface prelude
+    reason "Runs on every turn ahead of the precedence table. Script recognition and the guess probability that gates it are declared policy."

@@ -2,10 +2,10 @@ self_ast_census
   target src/web/wasm-worker/src/lib.rs
   language rust
   fidelity signature
-  byte_len 29281
-  line_count 916
-  content_id source_module_1a1f6162ee1dc45b
-  symbol_count 77
+  byte_len 30277
+  line_count 946
+  content_id source_module_6f1a1e0ead53db12
+  symbol_count 78
   symbols
     module language 15 15
     module arithmetic 19 19
@@ -65,22 +65,23 @@ self_ast_census
     function engine_memory_query 500 513
     function engine_translate_formal_proof 519 531
     function engine_translate_formal_statement 536 548
-    struct FactCheckTemplates 550 556
-    struct DialogueStatement 558 565
-    function build_dialogue_fact_check 567 606
-    function looks_declarative 608 619
-    function assess_dialogue_statement 621 656
-    function render_dialogue_statement 658 676
-    function fill_template 678 684
-    function serialize_dialogue_answer 686 744
-    function decode_uri_component 746 764
-    function hex_value 766 773
-    function serialize_arithmetic_assessment 775 797
-    function push_json_string 799 819
-    const HEX 800 800
-    function engine_stable_id 824 840
-    function engine_select_unknown_opener 845 860
-    function engine_match_intent_route 864 876
-    function web_search_registry_dump 880 898
-    function write_output 900 911
-    function panic 914 916
+    function engine_handler_precedence 555 578
+    struct FactCheckTemplates 580 586
+    struct DialogueStatement 588 595
+    function build_dialogue_fact_check 597 636
+    function looks_declarative 638 649
+    function assess_dialogue_statement 651 686
+    function render_dialogue_statement 688 706
+    function fill_template 708 714
+    function serialize_dialogue_answer 716 774
+    function decode_uri_component 776 794
+    function hex_value 796 803
+    function serialize_arithmetic_assessment 805 827
+    function push_json_string 829 849
+    const HEX 830 830
+    function engine_stable_id 854 870
+    function engine_select_unknown_opener 875 890
+    function engine_match_intent_route 894 906
+    function web_search_registry_dump 910 928
+    function write_output 930 941
+    function panic 944 946

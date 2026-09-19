@@ -54,8 +54,15 @@ fn coding_discovery_recipe_is_grounded_in_the_live_pipeline() {
         }
     }
 
+    // Issue #1138, plan 01 L16: `understand` is a step of its own, between
+    // recognising the request and discovering parts for it. Before the live
+    // concept lookup there was nothing for it to name: a word the seed did not
+    // contain was skipped, so the recipe would have claimed a step the code
+    // never ran. It is added here, with the leaf that made the coding path run
+    // it (plan 01 L10), and not before.
     let expected = [
         ("recognise", "src/coding/task_spec.rs"),
+        ("lookup_surface", "src/concept_lookup.rs"),
         ("discover", "src/coding/concept_discovery.rs"),
         ("compose", "src/coding/composition.rs"),
         ("run_command", "src/agent.rs"),

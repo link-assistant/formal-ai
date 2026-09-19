@@ -118,27 +118,23 @@ fn formalization_is_deterministic() {
 #[test]
 fn arbitrary_text_still_produces_a_valid_knowledge_base() {
     // Open-domain text the lexicon does not recognise: every sentence still
-    // becomes an annotation plus a natural-language assertion. No work matched,
-    // so there are no lexicon-sourced concepts/procedures/contexts — and we do
-    // not pretend otherwise.
+    // becomes an annotation plus a preserved span. No work matched, so there
+    // are no assertions or lexicon-sourced concepts/procedures/contexts — and
+    // we do not pretend otherwise.
     let formalized = formalize_text_to_links("A cat sat on a mat. Then it slept.", "doc:demo");
     let summary = &formalized.summary;
 
     assert_eq!(summary.doc_id, "doc:demo");
     assert_eq!(summary.annotations, 2);
-    assert_eq!(summary.assertions, 2);
+    assert_eq!(summary.assertions, 0);
     assert_eq!(summary.procedures, 0);
     assert_eq!(summary.contexts, 0);
     assert!(!summary.covers_all_nine());
+    assert!(!formalized.links_notation.contains("pred:states"));
     assert!(
         formalized
             .links_notation
-            .contains("predicate \"pred:states\"")
-    );
-    assert!(
-        formalized
-            .links_notation
-            .contains("natural_language \"A cat sat on a mat.\"")
+            .contains("preserved_span\n  id \"preserved:0\"")
     );
     // Language detection falls back to English for non-Cyrillic input.
     assert!(formalized.links_notation.contains("language \"en\""));
@@ -523,7 +519,18 @@ fn planner_formalizes_the_fetched_text_when_fetch_succeeds() {
     assert_eq!(call.tool, "write_file");
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
     let expected = formalize_text_to_links("Старик поймал золотую рыбку.", "").links_notation;
-    assert_eq!(written["content"], expected);
+    let content = written["content"].as_str().expect("string content");
+    // The shallow knowledge base leads; since issue #1138 B4 the written
+    // document also carries the deep pass's need rows, so the fetched text's
+    // unresolved surfaces are recorded rather than silently dropped.
+    assert!(
+        content.starts_with(&expected),
+        "the shallow knowledge base leads the written document: {content}"
+    );
+    assert!(
+        content.contains("\nneed "),
+        "every need the document raised is written, satisfied or not: {content}"
+    );
 }
 
 #[test]
@@ -754,4 +761,61 @@ fn driver_is_deterministic() {
     assert_eq!(first.steps, second.steps);
     assert_eq!(first.final_answer, second.final_answer);
     assert_eq!(first.turns, second.turns);
+}
+
+// Issue #1138, plan 04 L11–L12: the recipe pins one query and one URL as
+// constants, so a custom task is answered by formalizing the seeded fairy tale
+// (the R314 audit finding). After the rewire the tale becomes a regression
+// corpus: a custom requirement is formalized on its own terms, and the tale
+// still reaches all nine primitives.
+
+/// A held-out requirement whose key word is in no seed file.
+const HELD_OUT_REQUIREMENT: &str =
+    "Formalize this requirement: an isogram check must reject any word that repeats a letter.";
+
+#[test]
+fn a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale() {
+    let formalized = formalize_text_to_links(HELD_OUT_REQUIREMENT, "");
+
+    assert_ne!(
+        formalized.summary.doc_id, FISHERMAN_DOC_ID,
+        "a custom requirement is not the canonical tale"
+    );
+    assert!(
+        !formalized
+            .links_notation
+            .contains("tale:fisherman-and-fish"),
+        "the seeded tale may not leak into an unrelated formalization: {}",
+        formalized.links_notation
+    );
+    assert!(
+        !formalized.links_notation.contains(CANONICAL_SOURCE_URL),
+        "the pinned source URL is a last-resort fallback, never the plan"
+    );
+    assert!(
+        formalized.summary.needs_raised > 0,
+        "an unfamiliar requirement raises needs instead of reporting silent coverage"
+    );
+
+    let outcome = run_agentic_task(HELD_OUT_REQUIREMENT).expect("workspace");
+    assert!(
+        !outcome.steps.iter().any(|step| {
+            step.arguments.contains(SEARCH_QUERY) || step.arguments.contains(CANONICAL_SOURCE_URL)
+        }),
+        "the agentic recipe derives its query from the requirement, not from a constant: {:?}",
+        outcome.steps
+    );
+}
+
+#[test]
+fn the_canonical_tale_still_formalizes_to_nine_primitives() {
+    let formalized = formalize_text_to_links(CANONICAL_FISHERMAN_SYNOPSIS, "");
+
+    assert_eq!(formalized.summary.doc_id, FISHERMAN_DOC_ID);
+    assert!(
+        formalized.summary.covers_all_nine(),
+        "the fairy tale stays a regression corpus: {:?}",
+        formalized.summary.covered
+    );
+    assert_eq!(formalized.summary.covered.len(), PRIMITIVE_KINDS.len());
 }

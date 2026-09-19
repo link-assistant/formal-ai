@@ -1,0 +1,18 @@
+self_ast_census
+  target src/formalization/concept_links.rs
+  language rust
+  fidelity signature
+  byte_len 11303
+  line_count 291
+  content_id source_module_def3b7ff9b25f93b
+  symbol_count 9
+  symbols
+    struct ConceptGraph 22 30
+    function identity 43 77
+    function to_links_notation 80 146
+    function structure_ids 150 159
+    function grounds 164 172
+    function unresolved 176 181
+    function grounded_ratio 186 193
+    function max_depth_reached 197 199
+    function formalize_deeply 206 291

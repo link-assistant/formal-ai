@@ -1,0 +1,41 @@
+concept_lookup_meta_recipe
+  record_type meta_recipe
+  topic live_concept_lookup
+  issue 1138
+  selector src/seed/sources.rs
+  walker src/source_walk.rs
+  extractor src/concept_lookup.rs
+  memory src/concept_sense_ledger.rs
+  consumer src/coding/concept_discovery.rs
+  consumer src/solver.rs
+  note "Five steps, in the order the kernel runs them: name the surfaces nobody has accounted for, let the registry say which sources may answer that kind of need, walk each one inside declared bounds, read whatever the bytes actually say, and remember the identity rather than the payload. Every function named here is checked to exist in the file named here by tests/unit/specification/concept_lookup_meta_algorithm.rs, so the recipe is a claim about the live source and not a description of it."
+concept_lookup_step_enumerate
+  record_type meta_step
+  order 1
+  function unknown_surfaces
+  source src/concept_lookup.rs
+  effect "Name every surface in the prompt that no seeded meaning, and no quoted example, accounts for."
+concept_lookup_step_select
+  record_type meta_step
+  order 2
+  function select_sources
+  source src/source_walk.rs
+  effect "Ask the registry which sources declare they answer a concept need, in declared order, minus the ones the settings opted out and the ones this subject cannot bind."
+concept_lookup_step_walk
+  record_type meta_step
+  order 3
+  function walk_sources
+  source src/source_walk.rs
+  effect "Capture each selected source inside the declared depth, page, service and staleness bounds, leaving an outcome row for every source that could have contributed."
+concept_lookup_step_extract
+  record_type meta_step
+  order 4
+  function lookup_surface
+  source src/concept_lookup.rs
+  effect "Read the captured bytes with the extractor the registry binds to that source, and attach the exact provenance of those bytes to every sense."
+concept_lookup_step_remember
+  record_type meta_step
+  order 5
+  function remember
+  source src/concept_sense_ledger.rs
+  effect "File the sense under a content id derived from the bytes, the headword and the gloss, so forgetting it costs nothing that the captures cannot re-derive."

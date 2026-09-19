@@ -1,0 +1,1547 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.007Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.007Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Find hive-mind-control center folder on my desktop --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.008Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.008Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.046Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Find hive-mind-control center folder on my desktop",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Find hive-mind-control center folder on my desktop",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.046Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.048Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.050Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.050Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.060Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.061Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.080Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4355,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.081Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.103Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:19:53.141Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.141Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.141Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.141Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.142Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.142Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.142Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.142Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 94,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.143Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:19:53.143Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.158Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.158Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.159Z",
+  "service": "session",
+  "id": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI",
+  "title": "New session - 2026-09-16T03:19:53.159Z",
+  "time": {
+    "created": 1789528793159,
+    "updated": 1789528793159
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.160Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.160Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.160Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.161Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c59fb8ffePdiArEOlk51Bfk/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.161Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c59fb8ffePdiArEOlk51Bfk/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.168Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 7,
+  "method": "POST",
+  "path": "/session/ses_f57c59fb8ffePdiArEOlk51Bfk/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.172Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.174Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.177Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.191Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.191Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.192Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.193Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.193Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.193Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.193Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.194Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.194Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.375Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.378Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.379Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.401Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.406Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.424Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.425Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528793805,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a62c6001pVLtB2hLsaG1X9",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a612100105Wkt1jHCcsKBR",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.806Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528793807,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a62ce002GPhFV7QqNoJqjR",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a612100105Wkt1jHCcsKBR",
+    "type": "tool",
+    "callID": "call_8f8a5b59ec3b71f8",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528793807,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a62ce001dF6Wtaj00U6CoL",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a612100105Wkt1jHCcsKBR",
+    "type": "text",
+    "text": "Let me look on your Desktop for hive-mind-control-center.",
+    "time": {
+      "start": 1789528793807,
+      "end": 1789528793807
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:53.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528793807,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a62ce002GPhFV7QqNoJqjR",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a612100105Wkt1jHCcsKBR",
+    "type": "tool",
+    "callID": "call_8f8a5b59ec3b71f8",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print"
+      },
+      "time": {
+        "start": 1789528793807
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.228Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528794229,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a62ce002GPhFV7QqNoJqjR",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a612100105Wkt1jHCcsKBR",
+    "type": "tool",
+    "callID": "call_8f8a5b59ec3b71f8",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print"
+      },
+      "output": "",
+      "title": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+      "metadata": {
+        "output": "",
+        "exit": 0
+      },
+      "time": {
+        "start": 1789528793807,
+        "end": 1789528794227
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.233Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528794233,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a6478001Q7U7DiMPXMpW0A",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a612100105Wkt1jHCcsKBR",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8546,
+      "output": 172,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8718,
+      "headroom": 30138,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.234Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.234Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.235Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.235Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.237Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.237Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.237Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.237Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.238Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.238Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.238Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8718,
+  "providerTokens": 8718,
+  "estimatedInputTokens": 23,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8546,
+    "cacheRead": 0,
+    "output": 172
+  },
+  "overflow": false,
+  "headroom": 30138,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.239Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.239Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.244Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.248Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.499Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528794499,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a6581001expF667r9oArvL",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a647e001ZTrBWi86zTpEtD",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.500Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.500Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528794500,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a658400112twqsaJb9JrtH",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a647e001ZTrBWi86zTpEtD",
+    "type": "tool",
+    "callID": "call_8a08a66dc48955a7",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.500Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528794500,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a6583001Zxw6ko6ooubjos",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a647e001ZTrBWi86zTpEtD",
+    "type": "text",
+    "text": "Let me look on your Desktop for hive-mind-control-center.",
+    "time": {
+      "start": 1789528794500,
+      "end": 1789528794500
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.500Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528794500,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a658400112twqsaJb9JrtH",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a647e001ZTrBWi86zTpEtD",
+    "type": "tool",
+    "callID": "call_8a08a66dc48955a7",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      },
+      "time": {
+        "start": 1789528794500
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.576Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528794576,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a658400112twqsaJb9JrtH",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a647e001ZTrBWi86zTpEtD",
+    "type": "tool",
+    "callID": "call_8a08a66dc48955a7",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      },
+      "metadata": {
+        "output": "/Users/konard/Desktop/travel-documents/Archive\n/Users/konard/Desktop/Archive\n/Users/konard/Desktop/Archive/web-capture-test/web-capture-src/docs/case-studies/issue-90/reference/archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/js-api-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/js-browser-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/rust-api-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/rust-browser-archive\n"
+      },
+      "time": {
+        "start": 1789528794575
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.579Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528794579,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a658400112twqsaJb9JrtH",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a647e001ZTrBWi86zTpEtD",
+    "type": "tool",
+    "callID": "call_8a08a66dc48955a7",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      },
+      "output": "/Users/konard/Desktop/travel-documents/Archive\n/Users/konard/Desktop/Archive\n/Users/konard/Desktop/Archive/web-capture-test/web-capture-src/docs/case-studies/issue-90/reference/archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/js-api-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/js-browser-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/rust-api-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/rust-browser-archive\n",
+      "title": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print",
+      "metadata": {
+        "output": "/Users/konard/Desktop/travel-documents/Archive\n/Users/konard/Desktop/Archive\n/Users/konard/Desktop/Archive/web-capture-test/web-capture-src/docs/case-studies/issue-90/reference/archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/js-api-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/js-browser-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/rust-api-archive\n/Users/konard/Desktop/Archive/web-capture-test/matrix/rust-browser-archive\n",
+        "exit": 0
+      },
+      "time": {
+        "start": 1789528794500,
+        "end": 1789528794578
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.580Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528794580,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a65d40014V3tP7qQeSJafT",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a647e001ZTrBWi86zTpEtD",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8603,
+      "output": 154,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8757,
+      "headroom": 30099,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.581Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.581Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.595Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.595Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.629Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.629Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.630Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.645Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.645Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.648Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8757,
+  "providerTokens": 8757,
+  "estimatedInputTokens": 163,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8603,
+    "cacheRead": 0,
+    "output": 154
+  },
+  "overflow": false,
+  "headroom": 30099,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.648Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.648Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.678Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.689Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.966Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528794967,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a6756001Bd0xkxFGwMzg6Q",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a6618001ds33fDRxz6Nbqd",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.967Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.968Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528794968,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a6757001XUDxUTxnGXUJSs",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a6618001ds33fDRxz6Nbqd",
+    "type": "text",
+    "text": "hive-mind-control-center was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
+    "time": {
+      "start": 1789528794968,
+      "end": 1789528794968
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.970Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528794970,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "part": {
+    "id": "prt_0a83a6759001BrQ3dw1SbeGBXT",
+    "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+    "messageID": "msg_0a83a6618001ds33fDRxz6Nbqd",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 9133,
+      "output": 165,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9298,
+      "headroom": 29558,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.970Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.971Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.972Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.972Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.975Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.975Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.975Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.975Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.976Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.976Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.977Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.978Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.978Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528794978,
+  "sessionID": "ses_f57c59fb8ffePdiArEOlk51Bfk"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.979Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.979Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.979Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.980Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.UFjNcpXyUI",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:54.980Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 2,
+  "message": "Agent exiting"
+}
+

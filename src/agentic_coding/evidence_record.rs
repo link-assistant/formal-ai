@@ -52,10 +52,11 @@ use super::shell_command_policy::sentences;
 use super::write_request::{
     bare_surfaces, delivered_write_target, first_action_cue_start, pinned_first_line, tokens,
 };
+use crate::obligation_ledger::ObligationOutcome;
 use crate::protocol::{ChatMessage, MessageContent, ToolCall};
 
 /// The delivery half of a request, separated from the work it asks for.
-struct Obligation {
+struct DeliveryBinding {
     /// The path the answer has to be written to.
     target: String,
     /// The exact opening line the caller pinned, when it pinned one.
@@ -88,7 +89,7 @@ struct Obligation {
 ///
 /// Declines when the residual is empty: a request whose every sentence is about
 /// delivery states no work to do, so there is nothing to record.
-fn parse_obligation(request: &str) -> Option<Obligation> {
+fn parse_obligation(request: &str) -> Option<DeliveryBinding> {
     let mut target = None;
     let mut first_line = None;
     let mut field_lines = Vec::new();
@@ -137,7 +138,7 @@ fn parse_obligation(request: &str) -> Option<Obligation> {
     (!residual.is_empty())
         .then_some(())
         .and(target)
-        .map(|target| Obligation {
+        .map(|target| DeliveryBinding {
             target,
             first_line,
             field_lines,
@@ -268,22 +269,27 @@ pub(super) fn plan_evidence_record_step(
     }
     let write_tool = tool_for(tool_names, Capability::Write)?;
     let progress = Progress::scan(messages);
-    if progress.attempted_write_for(&obligation.target) {
-        trace_route("evidence_record", "already_written");
-        return Some(AgenticPlan::Final(
-            if progress.successful_write_for(&obligation.target) {
+    match super::task_obligations::observed_file_outcome(task, &obligation.target, messages) {
+        ObligationOutcome::Satisfied { .. } => {
+            trace_route("evidence_record", "already_written");
+            return Some(AgenticPlan::Final(
                 progress
                     .successful_write_content_for(&obligation.target)
                     .map(|content| written_observation(&obligation, &content))
                     .filter(|answer| !answer.is_empty())
-                    .unwrap_or_else(|| format!("Recorded the findings in `{}`.", obligation.target))
-            } else {
-                format!(
-                    "The findings could not be recorded in `{}`: the write step failed.",
-                    obligation.target
-                )
-            },
-        ));
+                    .unwrap_or_else(|| {
+                        format!("Recorded the findings in `{}`.", obligation.target)
+                    }),
+            ));
+        }
+        ObligationOutcome::Refuted { .. } | ObligationOutcome::Unsatisfiable { .. } => {
+            trace_route("evidence_record", "write_not_observed");
+            return Some(AgenticPlan::Final(format!(
+                "The findings could not be recorded in `{}`: the write step failed.",
+                obligation.target
+            )));
+        }
+        ObligationOutcome::Unattempted => {}
     }
     // A successful checkout inspection is already the grounded answer this
     // delivery exists to persist. Optional research prose elsewhere in a
@@ -364,7 +370,7 @@ const DELIVERY_PROBE_TURNS: usize = 4;
 /// owning it.
 fn later_route_delivering(
     task: &str,
-    obligation: &Obligation,
+    obligation: &DeliveryBinding,
     tool_names: &[&str],
 ) -> Option<&'static str> {
     // A schema or opening-line declaration constrains bytes that still have to
@@ -382,14 +388,17 @@ fn later_route_delivering(
     {
         return Some("declined_composed_target");
     }
-    settled_route_delivers(task, &obligation.target, tool_names)
-        .then_some("declined_settled_route")
+    settled_route_delivers(task, &obligation.target, tool_names).then_some("declined_settled_route")
 }
 
 /// Whether planning the whole request through the routes below this one walks
 /// into a call that writes `target`.
 fn settled_route_delivers(task: &str, target: &str, tool_names: &[&str]) -> bool {
-    let key = (task.to_owned(), target.to_owned(), tool_names.join("\u{1f}"));
+    let key = (
+        task.to_owned(),
+        target.to_owned(),
+        tool_names.join("\u{1f}"),
+    );
     if let Some(known) = DELIVERY_PROBE_ANSWERS.with_borrow(|answers| answers.get(&key).copied()) {
         return known;
     }
@@ -484,7 +493,7 @@ fn planned_write_path(arguments: &str) -> Option<String> {
 }
 
 /// Render an answer under the constraints attached to its destination.
-fn render_obligation(obligation: &Obligation, answer: &str) -> String {
+fn render_obligation(obligation: &DeliveryBinding, answer: &str) -> String {
     if !obligation.field_lines.is_empty() {
         let result = substantive_result_line(answer, &obligation.residual);
         let observed_results = exact_field_values(answer, "result");
@@ -570,13 +579,14 @@ fn non_hollow_result(result: &str, task: &str) -> String {
 ///
 /// Remove only the destination's machine header. The remaining bytes are the
 /// grounded answer the nested delivery wrote and can feed another artifact.
-fn written_observation(obligation: &Obligation, content: &str) -> String {
+fn written_observation(obligation: &DeliveryBinding, content: &str) -> String {
     let mut lines = content.lines();
-    if obligation
-        .first_line
-        .as_deref()
-        .is_some_and(|first_line| lines.clone().next().is_some_and(|line| line.trim() == first_line))
-    {
+    if obligation.first_line.as_deref().is_some_and(|first_line| {
+        lines
+            .clone()
+            .next()
+            .is_some_and(|line| line.trim() == first_line)
+    }) {
         lines.next();
     }
     lines.collect::<Vec<_>>().join("\n").trim().to_owned()
@@ -616,8 +626,7 @@ fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
         crate::seed::ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND,
         task,
     );
-    let serialized_relationship =
-        super::workspace_inspection::serialized_relationship_term(task);
+    let serialized_relationship = super::workspace_inspection::serialized_relationship_term(task);
     trace_route(
         "evidence_record_relationship",
         serialized_relationship.as_deref().unwrap_or("none"),
@@ -659,7 +668,18 @@ fn relevance_score(
     implementation_requested: bool,
     serialized_relationship: Option<&str>,
     source_authority: usize,
-) -> (usize, usize, usize, usize, usize, usize, usize, usize, usize, usize) {
+) -> (
+    usize,
+    usize,
+    usize,
+    usize,
+    usize,
+    usize,
+    usize,
+    usize,
+    usize,
+    usize,
+) {
     let words = line
         .split(|character: char| !character.is_ascii_alphanumeric())
         .filter(|word| !word.is_empty())
@@ -671,10 +691,7 @@ fn relevance_score(
                 .split('_')
                 .all(|part| words.iter().any(|word| word == part))
     };
-    let overlap = terms
-        .iter()
-        .filter(|term| matches(term))
-        .count();
+    let overlap = terms.iter().filter(|term| matches(term)).count();
     let requested_property = usize::from(terms.last().is_some_and(|term| matches(term)));
     let declaration_shape = if looks_like_declaration(line) {
         1 + usize::from(!looks_like_local_binding(line))
@@ -682,28 +699,24 @@ fn relevance_score(
     } else {
         0
     };
-    let bound_requested = terms.iter().any(|term| {
-        crate::seed::lexicon().mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, term)
-    });
+    let bound_requested = terms
+        .iter()
+        .any(|term| crate::seed::lexicon().mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, term));
     let semantic_overlap = usize::from(
         bound_requested
             && words.iter().any(|word| {
-                crate::seed::lexicon()
-                    .mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, word)
+                crate::seed::lexicon().mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, word)
             }),
     );
     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
-    let direct_serialized_identity = usize::from(serialized_relationship.is_some_and(
-        |relationship| {
+    let direct_serialized_identity =
+        usize::from(serialized_relationship.is_some_and(|relationship| {
             words
                 .windows(2)
                 .any(|pair| pair[0] == relationship && pair[1] == "id")
-        },
-    ));
+        }));
     (
-        usize::from(
-            implementation_requested && !is_quoted_or_commented_source(source_text(line)),
-        ),
+        usize::from(implementation_requested && !is_quoted_or_commented_source(source_text(line))),
         direct_serialized_identity,
         requested_property,
         usize::from(condition_requested && looks_like_condition(line)),
@@ -763,8 +776,7 @@ fn looks_like_local_binding(line: &str) -> bool {
 fn looks_like_exposed_declaration(line: &str) -> bool {
     let source = source_text(line);
     source.split_whitespace().next().is_some_and(|keyword| {
-        matches!(keyword, "pub" | "public" | "export" | "exported")
-            || keyword.starts_with("pub(")
+        matches!(keyword, "pub" | "public" | "export" | "exported") || keyword.starts_with("pub(")
     })
 }
 
@@ -784,20 +796,16 @@ fn looks_like_declaration(line: &str) -> bool {
     };
     !right.starts_with(':')
         && !left.contains(['(', ')', '=', '+'])
-        && left
-            .split_whitespace()
-            .next_back()
-            .is_some_and(|name| {
-                !name.is_empty()
-                    && name
-                        .chars()
-                        .all(|character| character.is_ascii_alphanumeric() || character == '_')
-            })
+        && left.split_whitespace().next_back().is_some_and(|name| {
+            !name.is_empty()
+                && name
+                    .chars()
+                    .all(|character| character.is_ascii_alphanumeric() || character == '_')
+        })
 }
 
 fn source_text(line: &str) -> &str {
-    line
-        .split_once(": ")
+    line.split_once(": ")
         .map_or(line, |(_, source)| source)
         .trim()
 }
@@ -878,7 +886,9 @@ fn symbolic_answer(residual: &str) -> Option<String> {
 /// already collected stays in place, so the residual is re-planned with the
 /// progress it has actually made rather than from scratch.
 fn with_residual_request(messages: &[ChatMessage], residual: &str) -> Option<Vec<ChatMessage>> {
-    let index = messages.iter().rposition(|message| message.role == "user")?;
+    let index = messages
+        .iter()
+        .rposition(|message| message.role == "user")?;
     let mut residual_messages = messages.to_vec();
     residual_messages[index].content = MessageContent::Text(residual.to_owned());
     Some(residual_messages)

@@ -144,7 +144,10 @@ test("the committed captures synthesise a provenance-carrying guide", async () =
   for (const [host, count] of perService) {
     assert.ok(count <= guide.bounds.maxPagesPerService, `${host} fetched ${count} page(s)`);
   }
-  assert.ok(guide.steps.length <= guide.bounds.maxSteps);
+  // `maxSteps` became `maxItems` when issue #1138 plan 01 L2 made one bounds
+  // vocabulary for every need kind; the worker moved and this line did not, so
+  // the comparison was against `undefined` and passed nothing.
+  assert.ok(guide.steps.length <= guide.bounds.maxItems);
 
   const markdown = evaluate(context, "howToGuideMarkdown")(guide);
   assert.match(markdown, /## How to make pancakes/u);

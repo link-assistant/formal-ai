@@ -1,0 +1,14 @@
+self_ast_census
+  target src/coding/program_ir/parse.rs
+  language rust
+  fidelity signature
+  byte_len 8154
+  line_count 224
+  content_id source_module_388851822369c069
+  symbol_count 5
+  symbols
+    function parse_type 6 31
+    function parse_nested_type 33 41
+    function parse_node 43 168
+    function parse_type_slug 170 211
+    function split_type_pair 213 224

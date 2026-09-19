@@ -6,6 +6,7 @@ use std::time::Instant;
 
 const SEARCH_PROMPT: &str =
     "Using the numbers 3, 5, and 7 with the operations + and *, find an expression that equals 26.";
+const SEARCH_ANSWER: &str = "Found by budget-driven search: 3 * 7 + 5 = 26.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 256 candidate evaluations; a satisfying composition was found after 6 evaluations.\nSearch path: search_03a957b01beed257";
 
 fn portfolio_solver(draft_count: u8) -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
@@ -26,6 +27,7 @@ fn three_drafts_are_tested_compared_and_deterministic() {
     let first = solver.solve(SEARCH_PROMPT);
     let second = solver.solve(SEARCH_PROMPT);
 
+    assert_eq!(first.answer, SEARCH_ANSWER);
     assert_eq!(first.answer, second.answer);
     assert_eq!(first.links_notation, second.links_notation);
     assert_eq!(
@@ -73,6 +75,7 @@ fn default_one_draft_preserves_the_existing_search_path() {
     })
     .solve(SEARCH_PROMPT);
 
+    assert_eq!(answer.answer, SEARCH_ANSWER);
     assert_eq!(SolverConfig::default().draft_count, 1);
     assert_eq!(answer.answer, default_answer.answer);
     assert_eq!(answer.links_notation, default_answer.links_notation);

@@ -13,4 +13,4 @@ box_image_published
 box_image_missing
   record_type "box_image_availability"
   published "false"
-  repositories ("box-c" "box-cpp" "box-csharp" "box-dotnet")
+  repositories ("box-c" "box-cpp" "box-csharp" "box-dotnet" "box-kotlin" "box-scala")

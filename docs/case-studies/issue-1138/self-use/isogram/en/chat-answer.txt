@@ -1,0 +1,7 @@
+I cannot write this program: no synthesis route reaches task "is_isogram" in language "python".
+
+I decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.
+
+Nothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `python`, or restate the task in steps I can already compile.
+
+Research trail: phrases=Write a Python function is_isogram(word) that returns True when the word is an isogram.;parts=;failed_examples=;attempts=

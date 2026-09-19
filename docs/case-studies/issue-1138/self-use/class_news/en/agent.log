@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.043Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.044Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt What's happening in the world right now? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.044Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.045Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.055Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "What's happening in the world right now?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "What's happening in the world right now?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.055Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.056Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.057Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.057Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.061Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.061Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.063Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 56623,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.063Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.080Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 29,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:15:42.085Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.094Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.094Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.096Z",
+  "service": "session",
+  "id": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU",
+  "title": "New session - 2026-09-16T03:15:42.096Z",
+  "time": {
+    "created": 1789528542096,
+    "updated": 1789528542096
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.097Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.098Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.098Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c9746fffePY4niMlivZ42Nl/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.098Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c9746fffePY4niMlivZ42Nl/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.101Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c9746fffePY4niMlivZ42Nl/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.104Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.105Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.105Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.106Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.107Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.107Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.108Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.108Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.108Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.108Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.108Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.108Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.108Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.295Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.318Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.318Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.326Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.331Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.335Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:42.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:43.092Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528543092,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8368f71001PfjNG6G5BfsTw8",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8368c6d001dOhbboP6jeeQm7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:43.092Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:43.093Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528543093,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8368f74002sltcd5STVfU90g",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8368c6d001dOhbboP6jeeQm7",
+    "type": "tool",
+    "callID": "call_21ede4fa471e25e8",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:43.093Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528543093,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8368f74001A3Vu6HpELVW1GE",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8368c6d001dOhbboP6jeeQm7",
+    "type": "text",
+    "text": "Let me search the web for happening in the world right now.",
+    "time": {
+      "start": 1789528543093,
+      "end": 1789528543093
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:43.093Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528543093,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8368f74002sltcd5STVfU90g",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8368c6d001dOhbboP6jeeQm7",
+    "type": "tool",
+    "callID": "call_21ede4fa471e25e8",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "happening in the world right now"
+      },
+      "time": {
+        "start": 1789528543093
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.336Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528545337,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8368f74002sltcd5STVfU90g",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8368c6d001dOhbboP6jeeQm7",
+    "type": "tool",
+    "callID": "call_21ede4fa471e25e8",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "happening in the world right now"
+      },
+      "output": "Title: World | Latest News & Updates\nURL: https://www.bbc.com/news/world\nPublished: N/A\nAuthor: N/A\nHighlights:\n## Fifa criticises campaign to oust president Infantino\n\nFifa strongly criticises what it calls a \"concerted and ongoing effort\" to \"undermine\" the organisation and its president Gianni Infantino. \n\n14 hrs ago\n...\n## Israel accused of weaponising archaeology at ancient West Bank sites\n\nIsrael is planning large-scale land expropriations in historic, Palestinian areas of the West Bank.\n\n12 hrs ago\n...\n## Perez Hilton faces long recovery after reports he self-harmed during livestream\n...\n## Trump's ex-lawyer Todd Blanche narrowly confirmed as US attorney general\n...\n## Suspected crime boss Daniel Kinahan returning to Ireland in high-security operation\n...\n## What we know so far about the deadly Thailand shooting\n\nAt least seven people have died after a teenage boy shot his grandparents before opening fire on a school in Bangkok.\n...\n## Moment earthquake shakes hospital operating room in Japan\n\nSecurity camera footage shows doctors shielding a patient on the operating table as last month's magnitude 6.8 quake shook Kumamoto General Hospital.\n...\n## Suspected crime boss Daniel Kinahan returning to Ireland in high-security operation \n\nThe Irish Prison Service bought a bulletproof and bombproof van to transport the 49-year-old to court after his extradition from Dubai.\n...\n## State of emergency declared as fast-moving Canada wildfire doubles in size\n...\n## Nigeria's mass wedding - and how telling lovers from fraudsters is proving tricky\n...\n## Tonnes of rotting food from vast LA warehouse fire creates unbearable stench\n...\nA fire destroyed a warehouse, leaving heaps of rotting chicken, poultry and fish to attract flies and rats.\n...\n## Hundreds arrested over French wildfires, but who is to blame?\n\nThe government is trying to attribute blame for the unprecedented fires which tore through the country last month.\n...\n## Israel accused of weaponising archaeology at ancient West Bank sites\n...\n## Paris tells e-scooter riders to wear safety gear or face fines\n...\n## Child among three killed in Russian missile attacks near Kyiv\n\n---\n\nTitle: World News | Latest Top Stories\nURL: https://www.reuters.com/world/\nPublished: N/A\nAuthor: N/A\nHighlights:\n[Marking record tenure, Meloni hails Italy's turn to stability](http://reuters.com/world/marking-record-tenure-meloni-hails-italys-turn-stability-2026-09-04/)\n...\nA record period of government stability has strengthened Italy, which is no longer ​viewed within the European Union as \"a case to monitor\", Prime Minister Giorgia Meloni said on ‌Friday as her administration became the longest-serving of the postwar era.\n...\n[US probes Iran wedding strike](http://reuters.com/world/middle-east/us-probes-iran-wedding-strike-that-analysis-shows-was-likely-direct-hit-by-us-2026-09-03/)\n...\n[US military turns off ad trackers on devices amid Middle East targeting reports](http://reuters.com/business/media-telecom/us-military-turns-off-ad-trackers-devices-amid-middle-east-targeting-reports-2026-09-04/)\n...\n[Trump says US may hit Iran's Pickaxe Mountain soon](http://reuters.com/world/trump-says-us-may-hit-irans-pickaxe-mountain-soon-2026-09-04/)\n...\n[Russian drone strikes Ukraine's security service\n\n---\n\nTitle: World News: International Headlines, Breaking Reports ...\nURL: https://www.nbcnews.com/world\nPublished: N/A\nAuthor: N/A\nHighlights:\n## ‘Once-in-a-millennium moment’: Medieval masterpiece Bayeux Tapestry finally goes on show in London\n...\n### Iran war\n...\n## Trump says the war in Iran will end after Election Day\n...\n## Oil surges past $101 to highest closing level since May as Iran conflict intensifies\n...\n## Graphic: Tracking ship traffic through the Strait of Hormuz\n...\n## South Korea trying to learn if Kim Jong Un has a son but daughter’s status as heir appears solid\n...\n## At least 20 reported dead after cargo ship catches fire in China port\n\nThe ship was docked for repairs at the port of Qingdao, a major shipping hub on the northeastern Chinese coast.\n...\n## Iceland to propose whaling ban, leaving Norway and Japan isolated\n...\n## Global heat stuck on high. Scientists say August was Earth’s hottest month they’ve measured.\n...\ntime to stop acting surprised that our warming planet keeps getting warmer,” said Texas A&M University climate scientist Andrew Dessler.\n...\n## Suspected measles cases kill nearly 1,000 as Bangladesh struggles to contain outbreak\n...\n00 children died\n...\n## Fire on passenger ferry in Philippines leaves dozens missing and at least 5 dead\n...\n## Flight carrying Zelenskyy to Norway was delayed in Moldova because of drone incursion\n...\n## Netanyahu faces storm over report he ignored warning ahead of Oct. 7 attacks\n\nGadi Eisenkot, a former military commander who is Netanyahu’s main rival in the Oct. 27 election, accused him of evading responsibility for security lapses.\n...\n## Cubans are pushed to the breaking point as crises take their toll\n\nMany don’t see relief in sight amid increased U.S. sanctions and longtime economic and financial troubles.\n\n---\n\nTitle: World news - breaking news, video, headlines and opinion\nURL: https://www.cnn.com/world\nPublished: N/A\nAuthor: N/A\nHighlights:\nUkraine attacks Russia with hundreds of drones - one of Kyiv’s largest assaults of the conflict \n- Benediction Murhabazi/AFP/Getty Images\n...\nEbola outbreak in Democratic Republic of Congo becomes deadliest in country’s history \n- Kent Nishimura/AFP/Getty Images\n...\nTrump says US will reduce military exercises with South Korea, citing lack of help with Iran \n- • Live Updates\n...\nUS NAVY/Handout/Reuters\n\n Live Updates a min ago Jared Kushner meets with regional leaders as multiple conflicts roil the Middle East \n- Courtesy Camila Martínez Sierra\n...\nColombia’s earthquake tore apart this family with triplets. Only one survived \n- Courtesy Darwin Pico Flores\n\n Mysterious bomb-dropping drones sank their fishing boats, survivors say. Who was behind the attacks?\n\n---\n\nTitle: Iran war live: Iran’s top diplomat heads to China as war drags on | US-Israel war on Iran News | Al Jazeera\nURL: https://www.aljazeera.com/news/liveblog/2026/9/16/iran-war-live-irans-top-diplomat-heads-to-china-as-war-drags-on\nPublished: 2026-09-16T00:00:00.000Z\nAuthor: Enes Abuomer,Kristina Harazim,Leila Minkara\nHighlights:\nIran war live: Iran’s top diplomat heads to China as war drags on | US-Israel war on Iran News | Al Jazeera\n...\n# Iran war live: Iran’s top diplomat heads to China as war drags on\n...\nSaudi Arabia has stopped oil loadings at the port of Yanbu days after the country paused operations at its East-West pipeline due to drone attacks.\n...\n- Iranian Foreign Minister Abbas Araghchi heads to China to meet his counterpart Wang Yi as Beijing seeks to mediate an end to the war.\n- Saudi Arabia has halted oil loadings at the port of Yanbu following recent Houthi drone attacks, while US Energy Secretary Chris Wright has suggested that he expects the East-West pipeline to resume operations within days.\n\n---\n\nTitle: World News\nURL: https://www.nytimes.com/section/world\nPublished: N/A\nAuthor: N/A\nHighlights:\n### A Spiral of Escalation for Russia and Ukraine, With No End in Sight\n...\nEach side is using missiles and drones to try to pound the other into giving up, breeding ceaseless human suffering. But there is no sign that either country’s determination will weaken.\n...\n### Norway Seizes Russian Ship, Testing Moscow in the High Arctic\n...\n### How Do You Run for Office in a Gang War?\n...\n### Spain’s Leader Questions Morocco Border Control During Ceuta Migrant Surge\n...\nSyrians Demand Justice for Assad-Era Abuses. Some Are Growing Impatient.\n...\nIsraeli Military Kills Two Palestinian Youths in Village Raid, Residents Say\n...\nRival Ukrainian Intelligence Units Open Fire Against Each Other in Kyiv\n...\nIsrael Says It Will Release Lebanese Prisoners, in Rare Sign of Progress\n...\nChina Boycotts a Top Art Festival Over Taiwan Exhibition\n...\nMany Italians Long Resisted Air-Conditioning. Then Europe Got Hotter.\n...\nThe New Jet-Powered Drones That Are Breeding Anxiety in Ukraine\n...\nLake Ontario Is\n\n---\n\nTitle: Saudi-led coalition intercepts drone headed for Mecca | Houthis News | Al Jazeera\nURL: https://www.aljazeera.com/news/2026/9/16/saudi-led-coalition-intercepts-drone-headed-for-mecca\nPublished: 2026-09-16T00:00:00.000Z\nAuthor: Noor Kareem,Al Jazeera Staff\nHighlights:\nA security alert has been issued in Islam's holiest city.\n...\nSaudi Arabia has said that a drone launched by the Houthis towards Mecca has been intercepted and destroyed, in an escalation that could threaten the holy city.\n...\nThe Saudi-led coalition spokesperson, Turki al-Maliki, said Royal Saudi Air Defence Forces intercepted the hostile drone before it entered the restricted airspace on Tuesday evening.\n...\nAl-Maliki condemned the incident as an attempt to frighten worshippers and harm civilians, warning that the security of the two holy mosques and pilgrims is a “red line”.\n...\nSaudi Arabia issued a security alert on Tuesday in the holy city of Mecca for the first time since the Houthis last attempted to target the sacred area in 2017.\n...\nThe alert of potential danger in Mecca was swiftly lifted after a few minutes. The same alert was activated for Taif and Jeddah, Saudi Arabia’s second-largest city.\n...\nThe latest attacks mark a sharp resurgence in a conflict dating to 2015, when Saudi Arabia intervened in Yemen after the Houthis seized Sanaa and ousted the internationally recognised government.\n...\nA UN-brokered truce in\n...\n2022 largely halted Houthi attacks on\n...\nterritory, but hostilities have escalated again since the group declared a blockade on Saudi shipping in July and gained control of critical nodes on the country’s Bab al-Mandeb coastline.\n...\nIn early September, the Iran-aligned group launched missiles and drones at sites across Saudi Arabia, marking a drastic escalation in the fighting. Riyadh has accused the Houthi rebels of launching attacks on civilian and economic sites in the kingdom.\n...\nThe Saudi-led coalition said it will respond “firmly” to Houthi strikes on urban areas that injured 13 people in the Saudi cities of Khamis Mushait, Abha and Taif on Tuesday.\n...\nThis was the first time in nearly a decade that a security alert had been activated in Mecca.\n...\nMecca is home to the Kaaba, Islam’s holiest site. Two billion Muslims around the world face the Kaaba during their daily prayers.\n...\nThis year, Saudi Arabia welcomed around 1.7 million Muslims for the Hajj season in late May, while the country was vulnerable to direct strikes.\n...\nIt remains to be seen if the attacks on Saudi Arabia will affect pilgrimage to Mecca.\n\n---\n\nTitle: Latest news from around the world\nURL: https://www.theguardian.com/world\nPublished: N/A\nAuthor: N/A\nHighlights:\n### Global brands ‘likely’ using mineral that funds rebels accused of atrocities in DRC, investigation finds\n...\n### Man shot dead during protest against proposed US Ebola quarantine facility in Kenya\n...\n### Bandits in north-west Nigeria abduct villagers they invited to discuss peace talks\n...\n### ‘Extreme fear’ among immigrants as backlash sweeps South Africa\n...\n### Ebola spread in central Africa could match 2014 record outbreak, US health officials say\n...\n### Former Air Canada pilot charged after allegedly flying without proper license for 16 years\n...\n### Florida shaken by 6.1-magnitude earthquake off coast of Cuba\n...\n### Two US pilots killed after plane bound to pick up former MLB star crashes\n...\n### Peru’s discontented voters face straight left-right choice in election runoff\n...\n### Powerful earthquake in southern Philippines leaves at least 37 dead\n...\n### Xi Jinping arrives in Pyongyang on trip to revitalise China-North Korea ties\n...\n### Weather tracker: Monsoon season",
+      "title": "Web search: happening in the world right now",
+      "metadata": {},
+      "time": {
+        "start": 1789528543093,
+        "end": 1789528545331
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528545344,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a836983d001XEGn6s0r3VDhvc",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8368c6d001dOhbboP6jeeQm7",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8536,
+      "output": 112,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8648,
+      "headroom": 30208,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.346Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.347Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.349Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.350Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.352Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.352Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.352Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.352Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.353Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.353Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.366Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8648,
+  "providerTokens": 8648,
+  "estimatedInputTokens": 2645,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8536,
+    "cacheRead": 0,
+    "output": 112
+  },
+  "overflow": false,
+  "headroom": 30208,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.366Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.367Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.369Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.371Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.966Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528545966,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369aab001ecNYP4GgMJjDPs",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369856001f0TpVIS1Q0iEmp",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.967Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.967Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528545967,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369aaf001uX1lvBctlK7uzz",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369856001f0TpVIS1Q0iEmp",
+    "type": "tool",
+    "callID": "call_d2452789706b2d32",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.967Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528545967,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369aae0018W1PlHsNAjjzM8",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369856001f0TpVIS1Q0iEmp",
+    "type": "text",
+    "text": "Let me open https://www.bbc.com/news/world and read what it says.",
+    "time": {
+      "start": 1789528545967,
+      "end": 1789528545967
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.967Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528545967,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369aaf001uX1lvBctlK7uzz",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369856001f0TpVIS1Q0iEmp",
+    "type": "tool",
+    "callID": "call_d2452789706b2d32",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.bbc.com/news/world"
+      },
+      "time": {
+        "start": 1789528545967
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.982Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528545982,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369aaf001uX1lvBctlK7uzz",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369856001f0TpVIS1Q0iEmp",
+    "type": "tool",
+    "callID": "call_d2452789706b2d32",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.bbc.com/news/world"
+      },
+      "error": "Error: Unable to connect. Is the computer able to access the url?",
+      "time": {
+        "start": 1789528545967,
+        "end": 1789528545981
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528545982,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "message": "Error: Unable to connect. Is the computer able to access the url?",
+  "error": "Error: Unable to connect. Is the computer able to access the url?"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528545983,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369abf001xdViUzQwwVif0q",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369856001f0TpVIS1Q0iEmp",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 20427,
+      "output": 129,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 20556,
+      "headroom": 18300,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.983Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.984Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.984Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.984Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.985Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.985Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.986Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.986Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.988Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.989Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.990Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 20556,
+  "providerTokens": 20556,
+  "estimatedInputTokens": 2662,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 20427,
+    "cacheRead": 0,
+    "output": 129
+  },
+  "overflow": false,
+  "headroom": 18300,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.991Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.991Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.993Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:45.994Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528546123,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369b4a001GRt8x2onx7Ww7x",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369ac6001B9dtliTcOTGpcY",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528546123,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369b4b001agcBLQ1WM6HqBk",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369ac6001B9dtliTcOTGpcY",
+    "type": "text",
+    "text": "The command failed: Error: Unable to connect. Is the computer able to access the url?\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+    "time": {
+      "start": 1789528546123,
+      "end": 1789528546123
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528546123,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "part": {
+    "id": "prt_0a8369b4b002hMXP7mpl2WbxQg",
+    "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+    "messageID": "msg_0a8369ac6001B9dtliTcOTGpcY",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 20557,
+      "output": 234,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 20791,
+      "headroom": 18065,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.124Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.124Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.125Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.125Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.125Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.125Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.125Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.126Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528546126,
+  "sessionID": "ses_f57c9746fffePY4niMlivZ42Nl"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.126Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.126Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.126Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.126Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.37KMxGXzHU",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:15:46.127Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+

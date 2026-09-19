@@ -18,7 +18,7 @@
 use serde_json::json;
 
 use super::general_planner::compose_edit_request;
-use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, Progress};
+use super::planner::{AgenticPlan, Capability, Progress, fetch_arguments, plan_one, tool_for};
 use super::tool_result;
 use crate::protocol::ChatMessage;
 
@@ -37,13 +37,14 @@ pub(super) fn plan_web_fetch_step(
     let tool = tool_for(tool_names, Capability::Fetch)?;
     let progress = Progress::scan(messages);
     if let Some(failure) = progress.latest_failure()
-        && failure.capability == Capability::Fetch {
-            return Some(AgenticPlan::Final(tool_result::render_failure(
-                "web_fetch",
-                &failure.detail,
-                task,
-            )));
-        }
+        && failure.capability == Capability::Fetch
+    {
+        return Some(AgenticPlan::Final(tool_result::render_failure(
+            "web_fetch",
+            &failure.detail,
+            task,
+        )));
+    }
     if progress.done(Capability::Fetch) {
         return Some(AgenticPlan::Final(tool_result::render(
             "web_fetch",
@@ -75,7 +76,7 @@ pub(super) fn plan_web_search_step(
 ) -> Option<AgenticPlan> {
     let query = super::stated_request::request_blocks(task)
         .into_iter()
-        .find_map(crate::solver_handlers::web_search_query_for)?;
+        .find_map(super::web_research::stated_web_search_query_for_block)?;
     let Some(tool) = tool_for(tool_names, Capability::Search) else {
         let discovery = tool_names
             .iter()
@@ -91,13 +92,14 @@ pub(super) fn plan_web_search_step(
     };
     let progress = Progress::scan(messages);
     if let Some(failure) = progress.latest_failure()
-        && failure.capability == Capability::Search {
-            return Some(AgenticPlan::Final(tool_result::render_failure(
-                "web_search",
-                &failure.detail,
-                task,
-            )));
-        }
+        && failure.capability == Capability::Search
+    {
+        return Some(AgenticPlan::Final(tool_result::render_failure(
+            "web_search",
+            &failure.detail,
+            task,
+        )));
+    }
     if progress.done(Capability::Search) {
         return Some(AgenticPlan::Final(tool_result::render(
             "web_search",

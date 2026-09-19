@@ -1,0 +1,15 @@
+self_ast_census
+  target src/promotion/draft_pull_request.rs
+  language rust
+  fidelity signature
+  byte_len 6263
+  line_count 155
+  content_id source_module_0df93d9b86471203
+  symbol_count 6
+  symbols
+    const REVIEW_BASE_BRANCH 34 34
+    struct DraftPullRequest 38 53
+    function memory_events 64 76
+    function links_notation 81 91
+    function identity_fingerprint 95 97
+    function open_draft_pull_request 107 155

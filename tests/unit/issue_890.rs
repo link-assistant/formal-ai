@@ -11,6 +11,24 @@ use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
 static NEXT_ARTIFACT: AtomicUsize = AtomicUsize::new(0);
 
+const RUST_PROOF_ANSWER: &str = r#"Translated `x > 1 and x < 3 is satisfiable` from proof to rust:
+
+```rust
+fn main() {
+    let x: i64 = 2;
+    assert!(x > 1 && x < 3, "proof obligation failed");
+    println!("{}", x);
+}
+```"#;
+
+const PYTHON_RUST_VARIABLE_PROOF_ANSWER: &str = r#"Translated `rust > 1 and rust < 3 is satisfiable` from proof to python:
+
+```python
+rust = 2
+assert rust > 1 and rust < 3, "proof obligation failed"
+print(rust)
+```"#;
+
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
 }
@@ -114,6 +132,17 @@ fn proof_meaning_is_independent_from_its_programming_language_presentations() {
 #[test]
 fn same_solved_proof_uses_general_translation_path_for_two_targets() {
     let (rust, python) = translate_solved_interval();
+    assert_eq!(rust.answer, RUST_PROOF_ANSWER);
+    assert_eq!(
+        python.answer,
+        r#"Translated `x > 1 and x < 3 is satisfiable` from proof to python:
+
+```python
+x = 2
+assert x > 1 and x < 3, "proof obligation failed"
+print(x)
+```"#
+    );
     assert_eq!(rust.intent, "translate_proof_to_rust", "{}", rust.answer);
     assert_eq!(
         python.intent, "translate_proof_to_python",
@@ -132,6 +161,7 @@ fn same_solved_proof_uses_general_translation_path_for_two_targets() {
 #[test]
 fn proof_variable_language_alias_does_not_override_requested_target() {
     let response = answer("Translate `rust > 1 and rust < 3 is satisfiable` to Python");
+    assert_eq!(response.answer, PYTHON_RUST_VARIABLE_PROOF_ANSWER);
     assert_eq!(
         response.intent, "translate_proof_to_python",
         "the proof variable must not be mistaken for the target language: {}",
@@ -229,6 +259,7 @@ fn every_registered_natural_language_can_request_proof_translation() {
     let mut shared_meaning = None;
     for (language, prompt) in prompts {
         let response = answer(&prompt);
+        assert_eq!(response.answer, RUST_PROOF_ANSWER, "{language}");
         assert_eq!(
             response.intent, "translate_proof_to_rust",
             "{language} request did not use proof translation: {}",

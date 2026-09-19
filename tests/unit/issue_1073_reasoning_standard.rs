@@ -612,6 +612,13 @@ fn conclusions_need_varied_refutations_before_they_may_be_leaned_toward() {
         "the blockers must say what stopped the check: {:?}",
         blockers_of(&result.verdict)
     );
+    assert!(
+        blockers_of(&result.verdict)
+            .iter()
+            .any(|blocker| blocker.contains("hypothesis_search:no_refutation_attempted")),
+        "the gate must reach the finite HypothesisSpace verdict, not only count probes: {:?}",
+        blockers_of(&result.verdict)
+    );
 
     let mut single_axis = reference_episode();
     for probe in &mut single_axis.probes {

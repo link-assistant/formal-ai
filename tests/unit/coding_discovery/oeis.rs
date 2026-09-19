@@ -73,6 +73,10 @@ fn temp_cache(label: &str) -> std::path::PathBuf {
 
 #[test]
 fn named_formula_membership_is_discovered_without_knowing_the_callable() {
+    let source = formal_ai::seed::source_record("oeis").expect("OEIS registry record");
+    assert_eq!(source.license_name, "CC-BY-SA-4.0");
+    assert!(source.api.contains("{query}"));
+    assert!(source.cache_path.ends_with("oeis/"));
     let cache = temp_cache("formula");
     let _ = std::fs::remove_dir_all(&cache);
     let client = CachedSourceClient::new(&cache, FixtureTransport::default())
@@ -93,6 +97,7 @@ fn named_formula_membership_is_discovered_without_knowing_the_callable() {
     assert!(program.source.contains("source_index*2**source_index+1"));
     assert!(program.source.contains("candidate_value"));
     assert_eq!(program.license, "CC-BY-SA-4.0");
+    assert_eq!(program.license, source.license_name);
     assert!(program.source_url.contains("A002064?fmt=json"));
     std::fs::remove_dir_all(cache).expect("remove formula cache");
 }
@@ -119,8 +124,16 @@ fn referenced_recurrence_is_formalized_and_replays_after_forgetting_transport() 
         .iter()
         .find(|program| program.composition.contains("floor(n/2)+1"))
         .expect("source terms should establish the index transform");
-    assert!(recurrence.source.contains("values.append((3 * values[-1])"));
-    assert!(recurrence.source.contains("width // 2 + (1)"));
+    let ir = recurrence
+        .program_ir
+        .as_ref()
+        .expect("an OEIS recurrence is represented as typed IR before lowering");
+    assert!(
+        ir.to_links_notation().contains("recurrence"),
+        "the source definition becomes an IrNode::Recurrence: {ir:#?}"
+    );
+    assert!(recurrence.source.contains("values + [3 * values[-1]"));
+    assert!(recurrence.source.contains("width // 2 + 1"));
 
     let live_requests = requests.load(Ordering::SeqCst);
     let offline = CachedSourceClient::new(&cache, transport);
@@ -152,7 +165,36 @@ fn plural_tile_noun_and_prose_bridge_produce_a_source_index_query() {
         .iter()
         .find(|program| program.composition.contains("floor(n/2)+1"))
         .expect("the generalized dimension query should find the fixed-width row");
-    assert!(recurrence.source.contains("values.append((4 * values[-1])"));
-    assert!(recurrence.source.contains("n // 2 + (1)"));
+    assert!(recurrence.program_ir.is_some());
+    assert!(recurrence.source.contains("values + [4 * values[-1]"));
+    assert!(recurrence.source.contains("n // 2 + 1"));
     std::fs::remove_dir_all(cache).expect("remove plural-object cache");
+}
+
+#[test]
+fn a_dimension_window_with_no_object_span_is_an_honest_gap_not_a_panic() {
+    // The full MBPP slice contains prompts with a single "4 x 6" window (and
+    // cuboid prompts whose "3 x 4 x 5" windows sit closer than three tokens
+    // apart). There are no tokens between the first window's end and the last
+    // window's start, so no object noun exists; the discovery must skip the
+    // source query instead of slicing a reversed range.
+    let cache = temp_cache("single-window");
+    let _ = std::fs::remove_dir_all(&cache);
+    let client = CachedSourceClient::new(&cache, FixtureTransport::default())
+        .with_online(true)
+        .with_clock(|| 1_789_344_000);
+    let discovery = discover_programs(
+        &client,
+        &spec(
+            "minimum_tiles",
+            "n",
+            "Find the minimum number of tiles needed to cover a 4 x 6 board.",
+            &[("2", "4"), ("3", "9")],
+        ),
+    );
+    assert!(
+        discovery.diagnostics.is_empty() && discovery.programs.is_empty(),
+        "an unusable dimension span is an honest gap, not a crash: {discovery:?}"
+    );
+    let _ = std::fs::remove_dir_all(cache);
 }

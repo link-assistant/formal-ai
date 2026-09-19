@@ -1,6 +1,11 @@
 //! File-reading agentic recipe for local workspace prompts (issue #627).
 
+mod audit;
 mod exact;
+mod supplied;
+
+use audit::*;
+pub use supplied::supplied_file_answer;
 
 use serde_json::json;
 
@@ -11,6 +16,9 @@ use super::shell_command_policy::sentences;
 use super::write_request;
 use crate::protocol::{ChatMessage, ToolCall};
 use crate::seed;
+
+const AUDIT_READ_LINE_LIMIT: usize = 160;
+const AUDIT_READ_COLUMN_LIMIT: usize = 320;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum FileReadTask {
@@ -30,12 +38,24 @@ pub(super) enum FileReadTask {
     },
 }
 
+impl FileReadTask {
+    pub(super) fn is_analysis(&self) -> bool {
+        match self {
+            Self::Direct { mode, .. }
+            | Self::DirectMany { mode, .. }
+            | Self::ListThenRead { mode, .. } => mode == &FileReadMode::Audit,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum FileReadMode {
     Full,
     FirstLine,
     ExtractValue(String),
     Summary,
+    /// Collect explicit incompleteness evidence without loading whole files.
+    Audit,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -61,6 +81,7 @@ pub(super) fn plan_file_read_step(
 ) -> AgenticPlan {
     let read_tool = tool_for(tool_names, Capability::Read);
     let run_tool = tool_for(tool_names, Capability::Run);
+    let grep_tool = tool_for(tool_names, Capability::Grep);
     let records = tool_result_records(messages);
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
 
@@ -75,11 +96,20 @@ pub(super) fn plan_file_read_step(
             *prefer_run,
             read_tool,
             run_tool,
+            grep_tool,
             &records,
             &request,
         ),
         FileReadTask::DirectMany { paths, mode } => {
-            exact::plan_direct_file_reads(paths, mode, read_tool, run_tool, &records, &request)
+            exact::plan_direct_file_reads(
+                paths,
+                mode,
+                read_tool,
+                run_tool,
+                grep_tool,
+                &records,
+                &request,
+            )
         }
         FileReadTask::ListThenRead {
             directory,
@@ -110,9 +140,21 @@ fn plan_direct_file_read(
     prefer_run: bool,
     read_tool: Option<&str>,
     run_tool: Option<&str>,
+    grep_tool: Option<&str>,
     records: &[ToolResultRecord],
     request: &str,
 ) -> AgenticPlan {
+    if mode == &FileReadMode::Audit {
+        return exact::plan_direct_file_reads(
+            &[path.to_owned()],
+            mode,
+            read_tool,
+            run_tool,
+            grep_tool,
+            records,
+            request,
+        );
+    }
     let read_command = read_command_for(path, mode);
     let exact_run = exact::exact_line_key(request).is_some() && run_tool.is_some();
     let recorded = if exact_run {
@@ -145,7 +187,11 @@ fn plan_direct_file_read(
         } else {
             content
         };
-        return AgenticPlan::Final(file_read_final_answer(mode, &[(path.to_owned(), content)]));
+        return AgenticPlan::Final(file_read_final_answer(
+            mode,
+            &[(path.to_owned(), content)],
+            request,
+        ));
     }
 
     if (prefer_run || exact_run)
@@ -157,7 +203,7 @@ fn plan_direct_file_read(
         }
 
     if let Some(tool) = read_tool {
-        return plan_one(tool, read_arguments(path));
+        return plan_one(tool, read_arguments(path, mode));
     }
     if let Some(tool) = run_tool {
         return plan_one(
@@ -207,7 +253,7 @@ fn plan_list_then_read(
         {
             return AgenticPlan::Final(failure);
         }
-        return AgenticPlan::Final(file_read_final_answer(mode, &contents));
+        return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
     }
 
     if selection == FileSelection::All {
@@ -217,14 +263,14 @@ fn plan_list_then_read(
                 .filter(|path| read_result_for_path(records, path).is_none())
                 .map(|path| PlannedToolCall {
                     tool: tool.to_owned(),
-                    arguments: read_arguments(path),
+                    arguments: read_arguments(path, mode),
                 })
                 .collect();
             return AgenticPlan::ToolCalls(calls);
         }
     } else if let Some(path) = paths.first()
         && let Some(tool) = read_tool {
-            return plan_one(tool, read_arguments(path));
+            return plan_one(tool, read_arguments(path, mode));
         }
 
     if let Some(tool) = run_tool {
@@ -243,6 +289,7 @@ fn plan_list_then_read(
                     paths.join(", "),
                     super::tool_result::strip_transport_envelope(raw),
                 )],
+                request,
             ));
         }
         return plan_one(tool, json!({ "command": command }).to_string());
@@ -396,7 +443,10 @@ fn selection_for_prompt(lower: &str) -> FileSelection {
 }
 
 fn mode_for_prompt(prompt: &str) -> FileReadMode {
-    let lower = prompt.to_ascii_lowercase();
+    // Inspection verbs are multilingual seed data, so normalization must fold
+    // every script that has case rather than only ASCII. Otherwise a capitalized
+    // Russian imperative misses the same semantic role its lowercase form hits.
+    let lower = prompt.to_lowercase();
     if lower.contains("first line") {
         return FileReadMode::FirstLine;
     }
@@ -405,6 +455,9 @@ fn mode_for_prompt(prompt: &str) -> FileReadMode {
     }
     if let Some(key) = exact::exact_line_key(prompt) {
         return FileReadMode::ExtractValue(key);
+    }
+    if seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &lower) {
+        return FileReadMode::Audit;
     }
     if lower.contains("summarize") || lower.contains("summary") {
         return FileReadMode::Summary;
@@ -585,6 +638,26 @@ fn read_result_for_path<'a>(records: &'a [ToolResultRecord], path: &str) -> Opti
         .map(|record| record.content.as_str())
 }
 
+fn grep_result_for_path<'a>(
+    records: &'a [ToolResultRecord],
+    path: &str,
+    pattern: &str,
+) -> Option<&'a str> {
+    records
+        .iter()
+        .find(|record| {
+            record.capability == Some(Capability::Grep)
+                && path_argument(&record.arguments)
+                    .is_some_and(|recorded| same_path(&recorded, path))
+                && record
+                    .arguments
+                    .get("pattern")
+                    .and_then(serde_json::Value::as_str)
+                    == Some(pattern)
+        })
+        .map(|record| record.content.as_str())
+}
+
 /// Whether a recorded path argument denotes the path the planner asked for.
 ///
 /// The transcript holds the argument the *client's* schema accepted, not the one
@@ -651,13 +724,56 @@ fn path_argument(arguments: &serde_json::Value) -> Option<String> {
         .map(ToOwned::to_owned)
 }
 
-fn read_arguments(path: &str) -> String {
-    json!({
+fn read_arguments(path: &str, mode: &FileReadMode) -> String {
+    let mut arguments = json!({
         "filePath": path,
         "path": path,
         "file_path": path,
-    })
-    .to_string()
+    });
+    if mode == &FileReadMode::Audit {
+        arguments["offset"] = json!(0);
+        arguments["limit"] = json!(AUDIT_READ_LINE_LIMIT);
+        arguments["columnOffset"] = json!(0);
+        arguments["columnLimit"] = json!(AUDIT_READ_COLUMN_LIMIT);
+    }
+    arguments.to_string()
+}
+
+fn grep_arguments(path: &str, pattern: &str) -> String {
+    json!({ "path": path, "pattern": pattern }).to_string()
+}
+
+/// Build the audit query from semantic seed data. The one structural member is
+/// an unchecked Markdown box: syntax rather than natural-language domain data.
+fn file_analysis_pattern() -> String {
+    let mut alternatives = vec![String::from(r"\[\s*\]")];
+    alternatives.extend(
+        seed::lexicon()
+            .words_for_role(seed::ROLE_FILE_ANALYSIS_GAP_MARKER)
+            .into_iter()
+            .filter(|surface| !surface.trim().is_empty())
+            .map(|surface| regex_escape(&surface)),
+    );
+    alternatives.sort();
+    alternatives.dedup();
+    format!("(?i)(?:{})", alternatives.join("|"))
+}
+
+fn regex_escape(surface: &str) -> String {
+    surface
+        .chars()
+        .flat_map(|character| {
+            if matches!(
+                character,
+                '.' | '+' | '*' | '?' | '(' | ')' | '|' | '[' | ']' | '{' | '}' | '^' | '$'
+                    | '\\'
+            ) {
+                vec!['\\', character]
+            } else {
+                vec![character]
+            }
+        })
+        .collect()
 }
 
 fn read_command_for(path: &str, mode: &FileReadMode) -> String {
@@ -666,6 +782,21 @@ fn read_command_for(path: &str, mode: &FileReadMode) -> String {
         FileReadMode::ExtractValue(key) => {
             let expression = shell_string(&format!("s/^{key}=//p"));
             ["sed", "-n", &expression, &shell_path(path)].join(" ")
+        }
+        FileReadMode::Audit => {
+            let line_range = format!("'1,{}p'", AUDIT_READ_LINE_LIMIT);
+            let column_range = format!("1-{}", AUDIT_READ_COLUMN_LIMIT);
+            [
+                "sed",
+                "-n",
+                &line_range,
+                &shell_path(path),
+                "|",
+                "cut",
+                "-c",
+                &column_range,
+            ]
+            .join(" ")
         }
         FileReadMode::Full | FileReadMode::Summary => {
             format!("cat {}", shell_path(path))
@@ -742,219 +873,6 @@ fn selected_paths_from_listing(
             }
         })
         .collect()
-}
-
-fn file_read_final_answer(mode: &FileReadMode, files: &[(String, String)]) -> String {
-    match mode {
-        FileReadMode::FirstLine => {
-            let (path, content) = &files[0];
-            let first = content.lines().next().unwrap_or_default();
-            format!("First line of `{path}`:\n\n```text\n{first}\n```")
-        }
-        FileReadMode::ExtractValue(key) => {
-            if files.len() == 1 {
-                let (path, content) = &files[0];
-                let value = extract_jsonish_value(content, key)
-                    .unwrap_or_else(|| content.trim().to_owned());
-                return format!("Value of `{key}` in `{path}`: {value}");
-            }
-            let mut lines = Vec::with_capacity(files.len() * 2);
-            for (path, content) in files {
-                let value = extract_jsonish_value(content, key)
-                    .unwrap_or_else(|| content.trim().to_owned());
-                lines.push(format!("{path}:"));
-                lines.push(format!("{key}={value}"));
-            }
-            lines.join("\n")
-        }
-        FileReadMode::Summary => {
-            let mut lines = vec![format!("Read {} file(s):", files.len())];
-            for (path, content) in files {
-                let summary = content.lines().next().unwrap_or_default().trim();
-                lines.push(format!("- `{path}`: {summary}"));
-            }
-            lines.join("\n")
-        }
-        FileReadMode::Full => {
-            if files.len() > 1 {
-                return files
-                    .iter()
-                    .map(|(path, content)| {
-                        format!("Contents of `{path}`:\n\n```text\n{}\n```", content.trim_end())
-                    })
-                    .collect::<Vec<_>>()
-                    .join("\n\n");
-            }
-            let (path, content) = &files[0];
-            format!(
-                "Contents of `{path}`:\n\n```text\n{}\n```",
-                content.trim_end()
-            )
-        }
-    }
-}
-
-fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
-    let line_prefix = format!("{key}=");
-    if let Some(value) = content
-        .lines()
-        .map(str::trim)
-        .find_map(|line| line.strip_prefix(&line_prefix))
-    {
-        return Some(value.to_owned());
-    }
-    if let Ok(value) = serde_json::from_str::<serde_json::Value>(content)
-        && let Some(found) = value.get(key) {
-            return Some(match found {
-                serde_json::Value::String(text) => text.clone(),
-                other => other.to_string(),
-            });
-        }
-    let quoted_key = format!("\"{key}\"");
-    let start = content.find(&quoted_key)?;
-    let after_key = &content[start + quoted_key.len()..];
-    let colon = after_key.find(':')?;
-    let after_colon = after_key[colon + 1..].trim_start();
-    if let Some(rest) = after_colon.strip_prefix('"') {
-        let end = rest.find('"')?;
-        return Some(rest[..end].to_owned());
-    }
-    Some(
-        after_colon
-            .split(|character: char| {
-                character == ',' || character == '}' || character.is_whitespace()
-            })
-            .next()
-            .unwrap_or_default()
-            .to_owned(),
-    )
-}
-
-/// Answer a file-read request from file contents the client already supplied
-/// in the conversation, without any tool at all (issue #671).
-///
-/// Not every agentic CLI speaks function calling. `aider` never advertises a
-/// tool: it asks the user to add files to the chat and then hands their bytes
-/// to the model in-band, as a path line followed by a fenced block holding the
-/// file's contents.
-///
-/// Before this route, `read the file alpha.txt and print its contents` from
-/// such a client never reached the agentic planner at all — the tool gate in
-/// [`crate::protocol`] fell straight through to the general solver, which
-/// answered "I could not determine …" about a file whose contents were sitting
-/// three messages up. The bytes are already here; refusing to read them is the
-/// defect.
-pub fn supplied_file_answer(messages: &[ChatMessage]) -> Option<String> {
-    let task = crate::protocol::latest_user_request(messages)?;
-    let FileReadTask::Direct { path, mode, .. } = file_read_task_for(&task)? else {
-        return None;
-    };
-    let content = supplied_file_content(messages, &path)?;
-    Some(supplied_file_final_answer(&mode, &path, &content, &task))
-}
-
-/// Render supplied bytes back **without a fenced block**.
-///
-/// The ordinary reader answers with ```` ```text ```` fences, and that is
-/// exactly what a prompt-format client's edit parser is looking for: aider read
-/// the fenced answer to `read the file alpha.txt` as a *file listing*, printed
-/// "Applied edit to alpha.txt", and swallowed the contents out of its own
-/// transcript — so the user saw a heading and nothing under it. Quoting the
-/// lines with numbers says the same thing in a shape no edit parser claims.
-///
-/// The two headings are grounded meanings (R379): they live in
-/// `data/seed/multilingual-responses.lino` under the `supplied_file_contents`
-/// and `supplied_file_first_line` intents, localized to the request's own
-/// language with an English fallback. The `{...}` tokens named here are those
-/// templates' placeholders, not Rust format arguments.
-#[allow(clippy::literal_string_with_formatting_args)]
-fn supplied_file_final_answer(
-    mode: &FileReadMode,
-    path: &str,
-    content: &str,
-    request: &str,
-) -> String {
-    match mode {
-        FileReadMode::Full => {
-            let body = content
-                .lines()
-                .enumerate()
-                .map(|(index, line)| format!("{:>4} | {line}", index + 1))
-                .collect::<Vec<_>>()
-                .join("\n");
-            supplied_file_template("supplied_file_contents", request, &[("{body}", body)], path)
-        }
-        FileReadMode::FirstLine => supplied_file_template(
-            "supplied_file_first_line",
-            request,
-            &[(
-                "{line}",
-                content.lines().next().unwrap_or_default().to_owned(),
-            )],
-            path,
-        ),
-        FileReadMode::ExtractValue(_) | FileReadMode::Summary => {
-            file_read_final_answer(mode, &[(path.to_owned(), content.to_owned())])
-        }
-    }
-}
-
-/// Fill a seeded answer template for `intent` with this run's values.
-///
-/// The `{...}` tokens are seed placeholders, not Rust format arguments, so they
-/// are substituted rather than interpolated — which is what the `allow` below
-/// says to clippy's nursery lint.
-#[allow(clippy::literal_string_with_formatting_args)]
-fn supplied_file_template(
-    intent: &str,
-    request: &str,
-    substitutions: &[(&str, String)],
-    path: &str,
-) -> String {
-    let language = crate::language::detect(request);
-    let mut rendered = seed::localized_response(intent, language.slug()).unwrap_or_default();
-    rendered = rendered.replace("{path}", path);
-    for (placeholder, value) in substitutions {
-        rendered = rendered.replace(placeholder, value);
-    }
-    rendered
-}
-
-/// The most recently supplied contents of `path`, from a fenced block labelled
-/// with that path on the line above it.
-///
-/// Deliberately conservative: the label line must *be* the path (modulo the
-/// same directory-suffix rule tool results use), so ordinary prose that merely
-/// mentions a filename before an unrelated code block cannot be mistaken for
-/// the file. Later messages win, because a client re-sends the whole file after
-/// every edit and the last copy is the current one.
-fn supplied_file_content(messages: &[ChatMessage], path: &str) -> Option<String> {
-    let mut found = None;
-    for message in messages {
-        let text = message.content.plain_text();
-        let lines: Vec<&str> = text.lines().collect();
-        for (index, line) in lines.iter().enumerate() {
-            let label = line.trim();
-            if label.is_empty() || !same_path(label, path) {
-                continue;
-            }
-            let Some(fence) = lines.get(index + 1).map(|line| line.trim_end()) else {
-                continue;
-            };
-            if !fence.trim_start().starts_with("```") {
-                continue;
-            }
-            let body: Vec<&str> = lines[index + 2..]
-                .iter()
-                .take_while(|line| !line.trim_end().trim_start().starts_with("```"))
-                .copied()
-                .collect();
-            if !body.is_empty() {
-                found = Some(body.join("\n"));
-            }
-        }
-    }
-    found
 }
 
 fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {

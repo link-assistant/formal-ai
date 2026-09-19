@@ -44,6 +44,17 @@ fn formalize_span(span: &str, language: &str) -> IntentFormalization {
 /// trace-only projection that does not yet resolve needs. The planning ledger
 /// (root requirement R333) records method selection as `Planned`, not as a
 /// validated result. Satisfaction requires subsequent execution evidence.
+///
+/// This is the loop's projection of [`crate::needs::NeedState`], the one need
+/// vocabulary in the tree (issue #1138, plan 00 leaf C1, plan 04 L3):
+/// `Pending` is `Open`, `Planned` is `Planned`, `Satisfied` is `Satisfied` and
+/// `Blocked` is `Unsatisfiable`. [`NeedStatus::state`] is that mapping, so a
+/// row recorded here and a need raised by the formalizer can be compared
+/// without a second status table. The two variants this enum used to carry
+/// beyond the contract -- an intentional postponement and a deliberate refusal
+/// -- had no producer anywhere in the tree, and a status nothing can reach is
+/// a claim the ledger cannot make; they were removed with the merge rather
+/// than given a contract slug they never earned.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NeedStatus {
     /// Detected but not yet resolved (the only status produced in Phase 1A).
@@ -52,12 +63,8 @@ pub enum NeedStatus {
     Planned,
     /// A work unit produced a validated result for this need.
     Satisfied,
-    /// Intentionally postponed (e.g. out of scope this turn).
-    Deferred,
     /// No method or evidence is available; recorded rather than hidden.
     Blocked,
-    /// Deliberately not done, with a reason.
-    Rejected,
 }
 
 impl NeedStatus {
@@ -68,9 +75,18 @@ impl NeedStatus {
             Self::Pending => "pending",
             Self::Planned => "planned",
             Self::Satisfied => "satisfied",
-            Self::Deferred => "deferred",
             Self::Blocked => "blocked",
-            Self::Rejected => "rejected",
+        }
+    }
+
+    /// The contract state this status projects.
+    #[must_use]
+    pub const fn state(self) -> crate::needs::NeedState {
+        match self {
+            Self::Pending => crate::needs::NeedState::Open,
+            Self::Planned => crate::needs::NeedState::Planned,
+            Self::Satisfied => crate::needs::NeedState::Satisfied,
+            Self::Blocked => crate::needs::NeedState::Unsatisfiable,
         }
     }
 }
@@ -290,12 +306,28 @@ impl WorkUnit {
     /// already-computed [`IntentFormalization`].
     #[must_use]
     pub fn from_formalization(formalization: &IntentFormalization, max_depth: u8) -> Self {
+        // Issue #1138 B12, plan 12 leaf 9: the recursion descends to the deepest
+        // *complete* layer of the binary tree over the prompt's obligation
+        // segments, because `data/meta/task-decomposition-invariant.lino` calls
+        // 1, 2, 4, 8, 16 and 32 leaves the valid complete layers. Seven segments
+        // therefore yield four leaves rather than seven in an unfinished layer;
+        // the configured bound still wins when it is the smaller of the two.
+        let complete = crate::selection_heuristics::complete_layers(&formalization.source_text);
+        let bound = if complete == 0 {
+            // One obligation or none: the split heuristic refuses on its own and
+            // the root is a leaf with its real reason. Clamping to zero here
+            // would relabel every single-intent prompt as depth-bounded, which
+            // is a different claim about why it is atomic.
+            max_depth
+        } else {
+            max_depth.min(complete)
+        };
         Self::build(
             &formalization.source_text,
             None,
             &formalization.language,
             0,
-            max_depth,
+            bound,
         )
     }
 
@@ -317,8 +349,13 @@ impl WorkUnit {
             );
         }
 
-        let segments = decompose_once(span);
-        if segments.len() <= 1 {
+        // Issue #1138 B12, plan 12 leaf 9: the split is the registry's `Split`
+        // heuristic, so a non-leaf unit has exactly two children -- which is what
+        // `data/meta/task-decomposition-invariant.lino` has declared since #847
+        // and nothing read. A three-clause span becomes a two-child node whose
+        // left child holds two clauses; every segment survives on exactly one
+        // side, so this is a regrouping and never a discard (R710-R9).
+        let Some(split) = split_heuristic(span) else {
             // Cannot split further: a direct method match is the leaf reason when
             // a route is recognized, otherwise it is an irreducible single need.
             let reason = if route.is_some() {
@@ -327,9 +364,9 @@ impl WorkUnit {
                 AtomicityReason::SingleNeed
             };
             return Self::leaf(unit_id, parent, span, depth, reason, route);
-        }
+        };
 
-        let children = segments
+        let children = [split.left.as_str(), split.right.as_str()]
             .iter()
             .map(|child_span| {
                 Self::build(
@@ -453,6 +490,21 @@ impl WorkUnit {
 /// Returns the single span unchanged when it cannot be split further, which is
 /// the recursion base case in [`WorkUnit::build`].
 #[must_use]
+/// The registry's `Split` heuristic, applied to one span.
+///
+/// The catalog is consulted rather than `balanced_split` being called directly,
+/// so an unseeded heuristic is a reportable state: an empty `Split` role means no
+/// split is attempted and the unit is a leaf carrying its reason, never a silent
+/// fall-back to the n-ary segmentation this replaced.
+fn split_heuristic(span: &str) -> Option<crate::selection_heuristics::BinarySplit> {
+    use crate::selection_heuristics::{BalancedSplitter, HeuristicRole, TaskSplitter};
+    let registry = crate::method_registry::MethodRegistry::from_dispatch();
+    let mut heuristics = registry.heuristics_for(HeuristicRole::Split, "");
+    let heuristic = heuristics.pop()?;
+    BalancedSplitter.split(span, &heuristic.parameters)
+}
+
+#[allow(dead_code)]
 fn decompose_once(span: &str) -> Vec<String> {
     let sentences = split_sentences(span);
     if sentences.len() > 1 {
@@ -679,6 +731,46 @@ impl NeedLedger {
         Self {
             frame_id: frame.frame_id.clone(),
             rows,
+        }
+    }
+
+    /// Merge needs discovered while recursively formalizing source material
+    /// into the universal loop's existing ledger.
+    ///
+    /// Need ids are content addressed, so a second pass updates the existing
+    /// row instead of duplicating it. Formalization carries evidence state but
+    /// no work-unit route; consequently a new row has no invented unit or
+    /// method links. Later planning/execution may add those through the normal
+    /// ledger path.
+    pub fn extend_from_formalization(
+        &mut self,
+        graph: &crate::formalization::concept_links::ConceptGraph,
+    ) {
+        for need in &graph.needs {
+            let status = match need.state {
+                crate::needs::NeedState::Open => NeedStatus::Pending,
+                crate::needs::NeedState::Planned => NeedStatus::Planned,
+                crate::needs::NeedState::Satisfied => {
+                    crate::obligation_ledger::need_status_with_observation(
+                        need.state == crate::needs::NeedState::Satisfied,
+                        NeedStatus::Planned,
+                    )
+                }
+                crate::needs::NeedState::Unsatisfiable => NeedStatus::Blocked,
+            };
+            if let Some(row) = self.rows.iter_mut().find(|row| row.need_id == need.need_id) {
+                row.source_span.clone_from(&need.source_span);
+                row.status = status;
+                continue;
+            }
+            self.rows.push(LedgerRow {
+                need_id: need.need_id.clone(),
+                source_span: need.source_span.clone(),
+                status,
+                leaf_reason: None,
+                unit_id: None,
+                route: None,
+            });
         }
     }
 

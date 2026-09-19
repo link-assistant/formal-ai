@@ -199,17 +199,18 @@ pub fn run_agentic_task_in(
         let assistant = choice.message;
         let mut results = Vec::with_capacity(assistant.tool_calls.len());
         for call in &assistant.tool_calls {
-            let result = execute_tool_call(call, &mut workspace);
+            let (result, failed) = execute_tool_call(call, &mut workspace);
             steps.push(DriverToolStep {
                 tool: call.function.name.clone(),
                 arguments: call.function.arguments.clone(),
                 result: result.clone(),
             });
-            results.push(ChatMessage::tool_result(
-                call.id.clone(),
-                call.function.name.clone(),
-                result,
-            ));
+            let message = if failed {
+                ChatMessage::tool_result_error(call.id.clone(), call.function.name.clone(), result)
+            } else {
+                ChatMessage::tool_result(call.id.clone(), call.function.name.clone(), result)
+            };
+            results.push(message);
         }
         messages.push(assistant);
         messages.extend(results);
@@ -217,33 +218,40 @@ pub fn run_agentic_task_in(
 }
 
 /// Execute one tool call against the offline corpus or the sandbox workspace and
-/// return the textual result to feed back to the server.
-fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> String {
+/// return the textual result to feed back to the server, plus whether the call
+/// failed to produce its output at all (refused, unsupported, or lost) — the
+/// transport fact a real Agent CLI flags with `is_error`.
+fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String, bool) {
     let arguments: Value = serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
     match call.function.name.as_str() {
-        "web_search" => corpus::web_search(arg_str(&arguments, "query")),
-        "web_fetch" => corpus::web_fetch(arg_str(&arguments, "url")),
+        "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
+        "web_fetch" => (corpus::web_fetch(arg_str(&arguments, "url")), false),
         "write_file" => {
             let path = arg_str(&arguments, "path");
             let content = arg_str(&arguments, "content");
             workspace.create_file(path, content);
-            format!("wrote {} byte(s) to {path}", content.len())
+            (format!("wrote {} byte(s) to {path}", content.len()), false)
         }
         "run_command" => {
             let command = arg_str(&arguments, "command");
             if let Some(result) = execute_algorithm_command(command, workspace) {
-                return result;
+                return (result, false);
             }
             if let Some(result) = execute_procedure_conformance(command, workspace) {
-                return result;
+                return (result, false);
             }
             workspace.run_command(command);
             workspace.last_command_result().map_or_else(
-                || format!("run_command produced no result for {command:?}"),
-                format_command_result,
+                || {
+                    (
+                        format!("run_command produced no result for {command:?}"),
+                        true,
+                    )
+                },
+                |executed| (format_command_result(executed), false),
             )
         }
-        other => format!("error: unsupported tool {other}"),
+        other => (format!("error: unsupported tool {other}"), true),
     }
 }
 

@@ -105,6 +105,14 @@ step_audit_reasoning_standard
   detail "reasoning_standard::audit evaluates every gate declared in data/meta/reasoning-standard.lino over the request's reasoning episode and reports each one as satisfied, violated, or not triggered together with the trigger that was false — no gate is ever omitted. record_reasoning_standard emits it as the trace-only reasoning_standard, reasoning_standard:gates and reasoning_standard:verdict events. Unlike the reasoning, selection and skill stages, this one takes no mode: a depth floor that can be switched off is not a floor, so the checklist is enumerated on the trivial request exactly as on the hard one (R1073). At this seam the episode carries only the request's task class, so the honest report is that the instruction gate is violated with the sources it is missing named and every other gate is not triggered with the trigger that was false named; a handler that observes, consults sources, refutes and acts fills the same episode in and the same gates then fire. The verdict defaults to not_confirmed_not_refuted with its blockers named rather than to a lean."
   source_file "src/reasoning_standard/mod.rs"
   records "record_reasoning_standard"
+step_verify_obligations
+  record_type "meta_step"
+  order "14"
+  id "verify_obligations"
+  title "Discharge every obligation against an execution record"
+  detail "ObligationLedger::observe binds each observation to the node that expected it, so an unrelated result can never clear a step. need_ledger_with_execution then projects a second need ledger whose rows reach Satisfied only where an obligation discharged while carrying an Evidence: the command, its exit code or an explicit none, and a SHA-256 of the observed bytes. A node whose expectation is Underivable is split through split_once_checkable and re-entered; when nothing is left to split the node becomes Unsatisfiable with a named reason and the answer reports that gap instead of completion prose. At this pre-dispatch seam nothing has been observed yet, so every obligation is honestly recorded unattempted and the executed ledger reports satisfied zero."
+  source_file "src/obligation_ledger.rs"
+  records "record_obligation_ledger"
 fn_formalize_intent
   record_type "meta_function"
   function "formalize_intent"
@@ -217,6 +225,10 @@ fn_record_reasoning_standard
   record_type "meta_function"
   function "record_reasoning_standard"
   source_file "src/reasoning_standard/mod.rs"
+fn_record_obligation_ledger
+  record_type "meta_function"
+  function "record_obligation_ledger"
+  source_file "src/obligation_ledger.rs"
 fn_open_episode
   record_type "meta_function"
   function "open_episode"

@@ -263,6 +263,42 @@
     return value || findChildValue(node, fallback);
   }
 
+  // Project the ordered, uniform browser-handler bindings from seed data.
+  // Executable symbols are stored as node names (`argument_prompt`,
+  // `context_binding_writeProgram`, …) so the meaning-closure audit does not
+  // mistake JavaScript identifiers for natural-language references.
+  function extractBrowserHandlerPrecedence(root) {
+    if (!root) return [];
+    var section = root.name === "browser_handler_precedence"
+      ? root
+      : findChildren(root, "browser_handler_precedence")[0];
+    if (!section) return [];
+    return findChildren(section, "handler").map(function (handler) {
+      var record = {
+        name: handler.id,
+        arguments: [],
+        contextBinding: "",
+        resultIntent: "",
+        evidenceKind: "",
+      };
+      for (var i = 0; i < handler.children.length; i += 1) {
+        var field = handler.children[i].name;
+        if (field.indexOf("argument_") === 0) {
+          record.arguments.push(field.slice("argument_".length));
+        } else if (field.indexOf("context_binding_") === 0) {
+          record.contextBinding = field.slice("context_binding_".length);
+        } else if (field.indexOf("result_intent_") === 0) {
+          record.resultIntent = field.slice("result_intent_".length);
+        } else if (field.indexOf("evidence_kind_") === 0) {
+          record.evidenceKind = field.slice("evidence_kind_".length);
+        }
+      }
+      return record;
+    }).filter(function (handler) {
+      return handler.name;
+    });
+  }
+
   function extractInterfaceCapabilities(root) {
     if (!root) return [];
     var section = root.name === "interface_capabilities"
@@ -1000,6 +1036,7 @@
       interfaceCapabilities: [],
       languageRules: [],
       promptPatterns: [],
+      browserHandlerPrecedence: [],
       intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
       environments: { environments: [], migrationDescription: "", flows: [] },
       raw: {},
@@ -1009,7 +1046,9 @@
       seed.raw[item.file] = item.text;
       if (!item.text) continue;
       var root = parseLino(item.text);
-      if (item.file.indexOf("multilingual") !== -1) {
+      if (item.file.indexOf("browser-handler-precedence") !== -1) {
+        seed.browserHandlerPrecedence = extractBrowserHandlerPrecedence(root);
+      } else if (item.file.indexOf("multilingual") !== -1) {
         seed.responses = mergeResponses(
           seed.responses,
           extractMultilingualResponses(root),
@@ -1129,6 +1168,7 @@
     extractMultilingualResponses: extractMultilingualResponses,
     extractAgentInfo: extractAgentInfo,
     extractInterfaceCapabilities: extractInterfaceCapabilities,
+    extractBrowserHandlerPrecedence: extractBrowserHandlerPrecedence,
     extractLanguageRules: extractLanguageRules,
     extractPromptPatterns: extractPromptPatterns,
     extractConcepts: extractConcepts,
@@ -1141,6 +1181,10 @@
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
     extractEnvironmentDirectory: extractEnvironmentDirectory,
+    // Shared native-reference-list parser. Worker features that consume a
+    // multi-valued seed field must use the same parser as the loader instead
+    // of assuming the legacy `a|b|c` packing.
+    splitRefList: splitRefList,
     stableResponseVariant: stableResponseVariant,
     assistantNameAfterCue: assistantNameAfterCue,
     independentQuestionSegments: independentQuestionSegments,

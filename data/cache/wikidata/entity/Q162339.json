@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q162339": {
+      "type": "item",
+      "id": "Q162339",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "stethoscope"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "стетоскоп"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्टेथोस्कोप"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "聽診器"
+        },
+        "es": {
+          "language": "es",
+          "value": "estetoscopio"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "acoustic medical device for auscultation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Прибор, который всегда с врачом"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "用於聽診的聲學醫療設備"
+        },
+        "es": {
+          "language": "es",
+          "value": "aparato médico para la auscultación"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "phonendoscope"
+          },
+          {
+            "language": "en",
+            "value": "stethoscopes"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "фонендоскоп"
+          },
+          {
+            "language": "ru",
+            "value": "стетофонендоскоп"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "听筒"
+          },
+          {
+            "language": "zh",
+            "value": "医用听筒"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "fonendo"
+          },
+          {
+            "language": "es",
+            "value": "fonendoscopio"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

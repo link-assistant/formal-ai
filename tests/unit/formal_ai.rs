@@ -7,6 +7,177 @@ use lino_objects_codec::format::parse_indented;
 
 mod seed_and_memory;
 
+const PYTHON_SCRIPT_ANSWER: &str = r#"Here is a minimal Python script:
+
+```python
+print("Hello, world!")
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `python3 -m py_compile main.py`
+Run command: `python3 main.py`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
+
+const RUST_SCRIPT_ANSWER: &str = r#"Here is a minimal Rust script:
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `rustc main.rs -o main`
+Run command: `./main`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
+
+const JAVASCRIPT_SCRIPT_ANSWER: &str = r#"Here is a minimal JavaScript script:
+
+```javascript
+console.log("Hello, world!");
+```
+
+Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Check command: `node --check main.js`
+Run command: `node main.js`
+Output:
+```text
+Hello, world!
+```
+1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
+
+const OWLBEAR_PROJECT_PLAN: &str = r#"Implementation plan pending approval for a extension targeting Owlbear.
+
+Formalized meaning:
+```lino
+software_project_request
+  action "write"
+  artifact "extension"
+  artifact_surface "extension"
+  target "Owlbear"
+  domain "tabletop_game_unit_tracker"
+  delivery_mode code_generation
+  implementation_language "typescript"
+  approval_state proposed
+  approval_required true
+  approval_gate "generated_code"
+  approval_gate "implementation_plan"
+  approval_gate "task_formalization"
+  requirement "I need extensions that can track hp for different units"
+  requirement_category "state_tracking"
+  requirement "That can track Protection and Resistance stacks on unit an will reduce damage count on those stats"
+  requirement_category "state_tracking"
+  requirement "Also this extension should track cooldown of some abilities"
+  requirement_category "state_tracking"
+  subtask "R1 [state_tracking] Model state fields and pure transitions for I need extensions that can track hp for different units"
+  subtask "R2 [state_tracking] Model state fields and pure transitions for That can track Protection and Resistance stacks on unit an will reduce damage count on those stats"
+  subtask "R3 [state_tracking] Model state fields and pure transitions for Also this extension should track cooldown of some abilities"
+  state_model "unit_state"
+  command "apply_damage"
+  command "set_stacks"
+  command "tick_cooldowns"
+  validation "damage_mitigation_floor_at_zero"
+  validation "cooldowns_decrement_without_negative_rounds"
+```
+
+Reasoning steps:
+1. Classify the impulse as a request to write a extension instead of a fact lookup.
+2. Bind the target environment to Owlbear and keep the first response reviewable.
+3. Extract 3 requirement(s) into the meaning record before planning.
+4. Decompose the requirement graph into 3 implementation subtask(s) with category labels.
+5. Select delivery mode code_generation and approval gates: generated_code, implementation_plan, task_formalization.
+6. Map HP, Protection, Resistance, damage, and cooldown phrases to a unit-state domain model.
+7. Ask for approval before producing code, scripts, manual instructions, or execution steps.
+
+Requirement model:
+1. [state_tracking] I need extensions that can track hp for different units
+2. [state_tracking] That can track Protection and Resistance stacks on unit an will reduce damage count on those stats
+3. [state_tracking] Also this extension should track cooldown of some abilities
+
+Subtasks:
+1. R1 -> Model state fields and pure transitions for I need extensions that can track hp for different units
+2. R2 -> Model state fields and pure transitions for That can track Protection and Resistance stacks on unit an will reduce damage count on those stats
+3. R3 -> Model state fields and pure transitions for Also this extension should track cooldown of some abilities
+
+Approval gates:
+- generated_code
+- implementation_plan
+- task_formalization
+
+Proposed plan:
+1. Review the formalized task, requirement graph, approval gates, and delivery mode with the user.
+2. Confirm the Owlbear storage and selected-token API boundaries.
+3. Define `UnitState` with HP, max HP, Protection, Resistance, and cooldowns.
+4. Write pure transition functions for damage mitigation, stack edits, and round ticks.
+5. Add tests for zero damage, overkill damage, stack changes, and cooldown expiry.
+6. Wire the tested core into the extension panel and host persistence.
+
+Reply `approve plan` to generate the starter implementation, or describe what to change."#;
+
+pub(super) const BROWSER_EXTENSION_PROJECT_PLAN: &str = r#"Implementation plan pending approval for a browser extension targeting the requested environment.
+
+Formalized meaning:
+```lino
+software_project_request
+  action "build"
+  artifact "browser extension"
+  artifact_surface "browser extension"
+  target "the requested environment"
+  domain "software_project"
+  delivery_mode code_generation
+  implementation_language "typescript"
+  approval_state proposed
+  approval_required true
+  approval_gate "generated_code"
+  approval_gate "implementation_plan"
+  approval_gate "task_formalization"
+  requirement "Build a browser extension that tracks reading progress and exports CSV"
+  requirement_category "state_tracking"
+  subtask "R1 [state_tracking] Model state fields and pure transitions for Build a browser extension that tracks reading progress and exports CSV"
+  state_model "project_records"
+  command "create_record"
+  command "update_record"
+  command "export_state"
+  validation "pure_state_transitions_before_host_api"
+```
+
+Reasoning steps:
+1. Classify the impulse as a request to build a browser extension instead of a fact lookup.
+2. Bind the target environment to the requested environment and keep the first response reviewable.
+3. Extract 1 requirement(s) into the meaning record before planning.
+4. Decompose the requirement graph into 1 implementation subtask(s) with category labels.
+5. Select delivery mode code_generation and approval gates: generated_code, implementation_plan, task_formalization.
+6. Ask for approval before producing code, scripts, manual instructions, or execution steps.
+
+Requirement model:
+1. [state_tracking] Build a browser extension that tracks reading progress and exports CSV
+
+Subtasks:
+1. R1 -> Model state fields and pure transitions for Build a browser extension that tracks reading progress and exports CSV
+
+Approval gates:
+- generated_code
+- implementation_plan
+- task_formalization
+
+Proposed plan:
+1. Review the formalized task, requirement graph, approval gates, and delivery mode with the user.
+2. Confirm the host API and data boundaries for the requested environment.
+3. Define the smallest serializable state records for the requirements.
+4. Implement state_tracking: Model state fields and pure transitions for Build a browser extension that tracks reading progress and exports CSV.
+5. Generate a typescript starter core plus language-appropriate repository initialization and checks.
+6. Keep shell, Docker, or WebVM commands behind the configured approval gates.
+
+Reply `approve plan` to generate the starter implementation, or describe what to change."#;
+
 #[test]
 fn greeting_prompt_returns_symbolic_greeting() {
     let response = FormalAiEngine.answer("Hi");
@@ -278,28 +449,38 @@ fn write_script_prompt_returns_code_block() {
             "Напиши скрипт на питоне",
             "write_script_python",
             "```python",
+            PYTHON_SCRIPT_ANSWER,
         ),
         (
             "Write a script in Python",
             "write_script_python",
             "```python",
+            PYTHON_SCRIPT_ANSWER,
         ),
-        ("Write a script in Rust", "write_script_rust", "```rust"),
+        (
+            "Write a script in Rust",
+            "write_script_rust",
+            "```rust",
+            RUST_SCRIPT_ANSWER,
+        ),
         (
             "Write me some code in JavaScript",
             "write_script_javascript",
             "```javascript",
+            JAVASCRIPT_SCRIPT_ANSWER,
         ),
         (
             "написать скрипт на javascript",
             "write_script_javascript",
             "```javascript",
+            JAVASCRIPT_SCRIPT_ANSWER,
         ),
     ];
 
-    for (prompt, intent, code_fence) in cases {
+    for (prompt, intent, code_fence, expected_answer) in cases {
         let response = FormalAiEngine.answer(prompt);
 
+        assert_eq!(response.answer, expected_answer, "prompt: {prompt:?}");
         assert_eq!(
             response.intent, intent,
             "prompt: {prompt:?} — answer was: {}",
@@ -331,6 +512,7 @@ fn software_project_request_returns_reviewable_plan() {
 
     let response = FormalAiEngine.answer(prompt);
 
+    assert_eq!(response.answer, OWLBEAR_PROJECT_PLAN);
     assert_eq!(
         response.intent, "software_project_plan",
         "answer was: {}",
@@ -362,6 +544,9 @@ fn software_project_variations_do_not_return_unknown() {
 
     for prompt in prompts {
         let response = FormalAiEngine.answer(prompt);
+        if prompt == prompts[0] {
+            assert_eq!(response.answer, BROWSER_EXTENSION_PROJECT_PLAN);
+        }
         assert_eq!(
             response.intent, "software_project_plan",
             "prompt: {prompt:?} answer: {}",

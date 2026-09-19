@@ -9,8 +9,9 @@
 //!      equation types, every category and every supported language represented,
 //!      and a pass-count floor that cannot exceed the number of cases;
 //!   2. every case, replayed through `FormalAiEngine::answer` (the production
-//!      entry point), still routes to `calculation`, still names the expected
-//!      engine in its evidence links, and still produces the recorded answer;
+//!      entry point), still routes to its recorded solver, still names the
+//!      expected engine in its evidence links, and still produces the recorded
+//!      answer;
 //!   3. the observed pass count never drops below `minimum_pass_count` and the
 //!      distinct verified-type count never drops below `minimum_verified_types`
 //!      — the CI ratchet the issue asks for.
@@ -276,10 +277,14 @@ fn issue_891_equation_corpus_is_well_formed() {
             "case {} must record both a prompt and the answer observed for it",
             case.id,
         );
-        assert_eq!(
-            case.expected_intent, "calculation",
-            "case {} must expect a solved calculation",
+        assert!(
+            matches!(
+                case.expected_intent.as_str(),
+                "calculation" | "verifiable_task"
+            ),
+            "case {} must expect a solver that executes a checkable derivation, got {}",
             case.id,
+            case.expected_intent,
         );
         assert!(
             !case.expected_engine.is_empty(),
@@ -395,6 +400,13 @@ fn evaluate_case(case: &Case) -> Result<(), String> {
         .evidence_links
         .iter()
         .find_map(|link| link.strip_prefix("calculation:engine:"))
+        .or_else(|| {
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("verifiable_task:executed:"))
+                .then_some("verifiable-task-interpreter")
+        })
         .unwrap_or_default();
     if engine != case.expected_engine {
         return Err(format!(
@@ -411,4 +423,63 @@ fn evaluate_case(case: &Case) -> Result<(), String> {
         ));
     }
     Ok(())
+}
+
+/// Issue #1138 B8 (plan 08, L1 and L12): a limitation that is fixed is promoted
+/// in the same commit, never quietly left as a limitation record.
+///
+/// Plan 08 L1 fixes the `Find x:` misroute — `Find` is a shell command name, so
+/// the agent router claims the prompt before the calculator sees it — and raises
+/// `minimum_pass_count` from 72 to 73 in the same commit. Other limitations stay
+/// limitations until their own derivation and verification are implemented.
+/// This test makes "promoted in the same commit" checkable rather than
+/// aspirational.
+#[test]
+fn every_limitation_is_still_honest_or_promoted() {
+    const PROMOTED_BY_PLAN_08: &[&str] = &["named_unknown_colon_clause"];
+
+    let suite = load_suite();
+    let case_ids: BTreeSet<&str> = suite.cases.iter().map(|case| case.id.as_str()).collect();
+    let limitation_ids: BTreeSet<&str> = suite
+        .limitations
+        .iter()
+        .map(|limitation| limitation.id.as_str())
+        .collect();
+
+    for id in PROMOTED_BY_PLAN_08 {
+        assert!(
+            !limitation_ids.contains(id),
+            "`{id}` is fixed by plan 08; it must be promoted into a benchmark_case in the \
+             same commit rather than left as a limitation"
+        );
+        assert!(
+            case_ids.contains(id),
+            "`{id}` must appear as a verified benchmark_case carrying the answer the solver \
+             actually produced"
+        );
+    }
+
+    assert!(
+        suite.minimum_pass_count >= 73,
+        "promoting a limitation raises the pass-count floor; it stands at {}",
+        suite.minimum_pass_count
+    );
+    assert!(
+        suite.minimum_pass_count <= suite.cases.len(),
+        "the floor may never exceed the number of cases"
+    );
+    assert!(
+        suite.minimum_verified_types >= 50,
+        "the verified-type floor may only rise, it stands at {}",
+        suite.minimum_verified_types
+    );
+
+    // Whatever is still recorded as a limitation must still fail loudly.
+    for limitation in &suite.limitations {
+        assert_ne!(
+            limitation.observed_intent, "calculation",
+            "limitation {} records a solved case; promote it instead",
+            limitation.id
+        );
+    }
 }

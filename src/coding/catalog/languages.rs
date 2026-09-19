@@ -3,8 +3,16 @@
 //! execution metadata, then declaring its `program_language_<slug>` meaning
 //! (with the alias surfaces, role `program_language_alias`) in the seed lexicon
 //! — the engine does not change.
+//!
+//! Issue #1138 plan 06 leaf L3: **no row states its own availability.** The
+//! fourteen `setup_hint` strings, the five `environment` strings and the
+//! per-row `status` left Rust for `data/seed/toolchains.lino`, beside the probe
+//! argv that says whether the toolchain is actually on this machine. A row that
+//! asserted `ExecutionStatus::Verified` could not be wrong about its
+//! environment because it never looked, and could not become right, because
+//! becoming right would have been a source edit.
 
-use super::types::{ExecutionStatus, ProgramExecution, ProgramLanguage};
+use super::types::{ProgramExecution, ProgramLanguage};
 
 pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
     ProgramLanguage {
@@ -12,15 +20,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Rust",
         code_fence: "rust",
         execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
             check_command: Some("rustc main.rs -o main"),
             run_command: "./main",
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.rs",
-        setup_hint: "the Rust toolchain from https://rustup.rs",
         framework_of: None,
     },
     ProgramLanguage {
@@ -28,15 +33,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Python",
         code_fence: "python",
         execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
             check_command: Some("python3 -m py_compile main.py"),
             run_command: "python3 main.py",
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.py",
-        setup_hint: "Python 3 from https://www.python.org/downloads/",
         framework_of: None,
     },
     ProgramLanguage {
@@ -44,15 +46,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "JavaScript",
         code_fence: "javascript",
         execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
             check_command: Some("node --check main.js"),
             run_command: "node main.js",
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.js",
-        setup_hint: "Node.js from https://nodejs.org/",
         framework_of: None,
     },
     ProgramLanguage {
@@ -60,15 +59,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "TypeScript",
         code_fence: "typescript",
         execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "TypeScript compiler is not configured in this repository runtime",
             check_command: Some("tsc hello.ts"),
             run_command: "node hello.js",
             notes: "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: "hello.ts",
-        setup_hint: "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`",
         framework_of: None,
     },
     ProgramLanguage {
@@ -76,15 +72,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Go",
         code_fence: "go",
         execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
             check_command: None,
             run_command: "go run main.go",
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.go",
-        setup_hint: "Go from https://go.dev/dl/",
         framework_of: None,
     },
     ProgramLanguage {
@@ -92,15 +85,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "C",
         code_fence: "c",
         execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
             check_command: Some("gcc main.c -o main"),
             run_command: "./main",
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.c",
-        setup_hint: "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager",
         framework_of: None,
     },
     ProgramLanguage {
@@ -108,15 +98,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "C++",
         code_fence: "cpp",
         execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "C++ toolchain is not configured in this repository runtime",
             check_command: Some("g++ main.cpp -o main"),
             run_command: "./main",
             notes: "The C++ seed is returned with this warning until a g++-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.cpp",
-        setup_hint: "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager",
         framework_of: None,
     },
     ProgramLanguage {
@@ -124,15 +111,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Java",
         code_fence: "java",
         execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "Java toolchain is not configured in this repository runtime",
             check_command: Some("javac Main.java"),
             run_command: "java Main",
             notes: "The Java seed is returned with this warning until a javac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: "Main.java",
-        setup_hint: "a JDK from https://adoptium.net/",
         framework_of: None,
     },
     ProgramLanguage {
@@ -140,15 +124,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "C#",
         code_fence: "csharp",
         execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "C# / dotnet toolchain is not configured in this repository runtime",
             check_command: Some("dotnet build"),
             run_command: "dotnet run",
             notes: "The C# seed is returned with this warning until a dotnet-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: "Program.cs",
-        setup_hint: "the .NET SDK from https://dotnet.microsoft.com/download",
         framework_of: None,
     },
     ProgramLanguage {
@@ -156,15 +137,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Ruby",
         code_fence: "ruby",
         execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "Ruby interpreter is not configured in this repository runtime",
             check_command: Some("ruby -c main.rb"),
             run_command: "ruby main.rb",
             notes: "The Ruby seed is returned with this warning until a ruby-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.rb",
-        setup_hint: "Ruby from https://www.ruby-lang.org/en/downloads/",
         framework_of: None,
     },
     ProgramLanguage {
@@ -172,15 +150,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Scala",
         code_fence: "scala",
         execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "Scala toolchain is not configured in this repository runtime",
             check_command: Some("scalac Main.scala"),
             run_command: "scala Main",
             notes: "The Scala seed is returned with this warning until a scalac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: "Main.scala",
-        setup_hint: "Scala from https://www.scala-lang.org/download/ (a JDK is required as well)",
         framework_of: None,
     },
     ProgramLanguage {
@@ -188,15 +163,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Kotlin",
         code_fence: "kotlin",
         execution: ProgramExecution {
-            status: ExecutionStatus::Unavailable,
-            environment: "Kotlin toolchain is not configured in this repository runtime",
             check_command: Some("kotlinc Main.kt -include-runtime -d Main.jar"),
             run_command: "java -jar Main.jar",
             notes: "The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: "Main.kt",
-        setup_hint: "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)",
         framework_of: None,
     },
     ProgramLanguage {
@@ -204,15 +176,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "PHP",
         code_fence: "php",
         execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-8 local verification harness (isolated sandbox)",
             check_command: Some("php -l main.php"),
             run_command: "php main.php",
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: "main.php",
-        setup_hint: "PHP from https://www.php.net/downloads",
         framework_of: None,
     },
     // Issue #723 reported `напиши мне код на PHP Laravel` and got an answer that
@@ -229,15 +198,12 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Laravel",
         code_fence: "php",
         execution: ProgramExecution {
-            status: ExecutionStatus::Verified,
-            environment: "issue-1021 local Laravel verification harness (experiments/issue-1021-laravel/run.sh)",
             check_command: Some("php -l app/Console/Commands/HelloWorld.php"),
             run_command: "php artisan hello:world",
             notes: "Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.",
         },
         source: "local Links Notation write-program seed",
         save_as: "app/Console/Commands/HelloWorld.php",
-        setup_hint: "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)",
         framework_of: Some("php"),
     },
 ];

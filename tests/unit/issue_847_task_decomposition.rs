@@ -152,6 +152,10 @@ fn every_sub_task_is_an_inspectable_sub_impulse_event() {
 fn decomposition_is_deterministic() {
     let first = solve(SPLIT_PROMPT);
     let second = solve(SPLIT_PROMPT);
+    assert_eq!(
+        first.answer,
+        "Sub-tasks, each with a completion criterion you can observe:\n1. Add a paths-ignore filter for experiments to release.yml [observable_result:paths-ignore]\n2. make docs-changed respect excluded_folders [observable_result:docs-changed]"
+    );
     assert_eq!(first.answer, second.answer);
     assert_eq!(first.links_notation, second.links_notation);
 }

@@ -1,0 +1,22 @@
+self_ast_census
+  target src/coding/ir_lowering/python.rs
+  language rust
+  fidelity signature
+  byte_len 13041
+  line_count 423
+  content_id source_module_8d1446d18f21f72c
+  symbol_count 13
+  symbols
+    struct PythonLowering 12 12
+    function language 15 17
+    function lower 19 50
+    function hoist_inline_imports 57 84
+    const NEEDLE 58 58
+    function lower_node 86 237
+    function lower_recursive_reduce 240 327
+    function lower_recurrence 329 364
+    function replace_identifier 366 387
+    function python_identifier 389 407
+    function gap 409 415
+    function render 417 419
+    function render_or_id 421 423

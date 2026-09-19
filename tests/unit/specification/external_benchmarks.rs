@@ -26,6 +26,8 @@ use formal_ai::external_benchmarks::{
     SuiteSource, ledger::Ledger, ledger::ResultEntry, manifest, ratchet,
 };
 
+mod swebench;
+
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
@@ -178,6 +180,20 @@ fn recorded_scores_are_honest_passed_over_total() {
             suite.minimum_pass_count, best,
             "{id}: minimum_pass_count must equal the best measured pass count, not an invented floor"
         );
+        if let (Some(full_slice), Some(full_floor)) =
+            (suite.full_slice, suite.full_minimum_pass_count)
+        {
+            let full_best = results
+                .iter()
+                .filter(|result| result.suite == id && result.slice == full_slice)
+                .map(|result| result.passed)
+                .max()
+                .unwrap_or(0);
+            assert_eq!(
+                full_floor, full_best,
+                "{id}: the whole-suite floor is an independent measured series"
+            );
+        }
     }
 
     // The summary line is exactly the shape the acceptance criterion asks for.
@@ -331,6 +347,7 @@ fn recorded_upstream_pass_count_may_never_regress() {
             suite: "gsm8k".to_string(),
             date: "2026-08-01".to_string(),
             slice: 20,
+            mode: "online".to_string(),
             passed: 1,
             failed: 19,
             total: 20,
@@ -346,20 +363,104 @@ fn recorded_upstream_pass_count_may_never_regress() {
         "a run below the floor must fail the ratchet"
     );
 
-    // The floor only ever rises.
+    // The floor only ever rises. The baselines come from the committed
+    // ledger, so the assertions track the honest floor whatever it is now.
     let mut raised = previous;
+    let gsm8k_floor = raised.suites()["gsm8k"].minimum_pass_count;
     raised.raise_floor("gsm8k", 1, 20);
     assert_eq!(
         raised.suites()["gsm8k"].minimum_pass_count,
-        2,
+        gsm8k_floor.max(1),
         "a weaker run must not lower the floor"
     );
-    raised.raise_floor("gsm8k", 7, 20);
+    raised.raise_floor("gsm8k", gsm8k_floor + 5, 20);
     assert_eq!(
         raised.suites()["gsm8k"].minimum_pass_count,
-        7,
+        gsm8k_floor + 5,
         "a stronger run must raise the floor"
     );
+
+    let humaneval_full_floor = raised.suites()["humaneval"]
+        .full_minimum_pass_count
+        .unwrap_or(0);
+    let humaneval_slice_floor = raised.suites()["humaneval"].minimum_pass_count;
+    raised.raise_floor("humaneval", 3, 164);
+    assert_eq!(
+        raised.suites()["humaneval"].full_minimum_pass_count,
+        Some(humaneval_full_floor.max(3)),
+        "the whole-suite floor rises independently of the slice-20 floor"
+    );
+    assert_eq!(
+        raised.suites()["humaneval"].minimum_pass_count,
+        humaneval_slice_floor,
+        "raising the whole-suite series must not rewrite the slice-20 series"
+    );
+}
+
+/// The full-slice protocol runs every suite cold-offline and then online;
+/// the two discovery modes are independent measurement series, so an offline
+/// rerun on the same day must not fold away the online row (or vice versa),
+/// while a rerun of the same mode stays idempotent.
+#[test]
+fn offline_and_online_reruns_of_one_day_are_recorded_as_two_rows() {
+    let mut ledger = Ledger::default();
+    let entry = |mode: &str, passed: usize| ResultEntry {
+        suite: "mbpp".to_string(),
+        date: "2026-09-18".to_string(),
+        slice: 500,
+        passed,
+        failed: 500 - passed,
+        total: 500,
+        solver_version: "0.0.0".to_string(),
+        mode: mode.to_string(),
+    };
+
+    ledger.upsert_result(&entry("online", 20), "online run", "note");
+    ledger.upsert_result(&entry("offline", 9), "offline run", "note");
+    assert_eq!(
+        ledger.results().len(),
+        2,
+        "the two modes are two independent rows"
+    );
+
+    let mut rerun = entry("online", 30);
+    rerun.mode = "online".to_string();
+    ledger.upsert_result(&rerun, "online rerun", "note");
+    assert_eq!(
+        ledger.results().len(),
+        2,
+        "a same-mode rerun stays idempotent"
+    );
+    assert_eq!(
+        ledger
+            .results()
+            .iter()
+            .find(|result| result.mode == "online")
+            .expect("online row survives")
+            .passed,
+        30
+    );
+    assert_eq!(
+        ledger
+            .results()
+            .iter()
+            .find(|result| result.mode == "offline")
+            .expect("offline row survives the online rerun")
+            .passed,
+        9
+    );
+
+    let text = ledger.render();
+    assert!(
+        text.contains("external_benchmark_result_mbpp_2026_09_18_500_online"),
+        "the row name carries the mode: {text}"
+    );
+    assert!(
+        text.contains("  mode \"offline\"\n"),
+        "the row carries its mode as a field"
+    );
+    let reparsed = Ledger::parse(&text).expect("rendered ledger parses");
+    assert_eq!(reparsed.results(), ledger.results(), "round-trips");
 }
 
 /// A floor raised by a later run must not retroactively invalidate the
@@ -572,38 +673,42 @@ fn a_runtime_payload_failure_is_reported_as_benchmark_unavailable() {
     );
 }
 
-/// SWE-bench is passed only when the official harness applies the candidate
-/// patch and runs the instance's tests. Comparing with the gold patch is a
-/// different and much stricter task, and must never be reported as SWE-bench.
+/// A measurement width is part of the series identity. Widening SWE-bench from
+/// one case to 23 cannot retroactively turn the honest 0/1 row into a floor for
+/// the different-width series.
 #[test]
-fn swebench_uses_the_pinned_official_test_harness() {
-    let swebench = manifest::suite("swebench_lite").expect("SWE-bench Lite manifest");
-    assert_eq!(swebench.grading.as_str(), "swebench_tests");
-
-    let workflow = read(".github/workflows/external-benchmarks.yml");
+fn historical_ratchets_are_independent_at_each_measurement_width() {
+    let ledger = Ledger::parse(
+        r#"external_benchmark_suite_swebench_lite
+  record_type "external_benchmark_suite"
+  id "swebench_lite"
+  ratchet_slice "1"
+  minimum_pass_count "1"
+external_benchmark_result_swebench_lite_first
+  record_type "external_benchmark_result"
+  suite "swebench_lite"
+  date "2026-09-16"
+  slice "1"
+  passed "1"
+  failed "0"
+  total "1"
+  solver_version "fixture"
+external_benchmark_result_swebench_lite_wide
+  record_type "external_benchmark_result"
+  suite "swebench_lite"
+  date "2026-09-17"
+  slice "23"
+  passed "0"
+  failed "23"
+  total "23"
+  solver_version "fixture"
+"#,
+    )
+    .expect("the synthetic width fixture parses");
     assert!(
-        workflow.contains(manifest::SWEBENCH_HARNESS_REF),
-        "the workflow must install an immutable revision of the official SWE-bench harness"
-    );
-    assert!(
-        workflow.contains("SWE_BENCH_SLICE"),
-        "the container-heavy SWE-bench slice needs its own bounded setting"
-    );
-    let grader = read("src/external_benchmarks/grade.rs");
-    assert!(
-        grader.contains("workspace.join(\"dataset.json\")")
-            && grader.contains(".arg(&dataset_path)"),
-        "the official evaluator must consume the locally cached pinned slice, not reload a mutable dataset name"
-    );
-    assert!(
-        !grader.contains("\"princeton-nlp/SWE-bench_Lite\""),
-        "the official evaluator must not reload SWE-bench by mutable dataset name"
-    );
-    assert!(
-        grader.contains("fnv1a64")
-            && grader.contains("external_benchmark_swe_clear_logs_error")
-            && grader.contains("fs::remove_dir_all(&prior_logs)"),
-        "each solver/dataset combination must execute without reusing a stale evaluator report"
+        ratchet::violations(&ledger).is_empty(),
+        "a 0/23 first result is not below the independent 1/1 historical floor: {:?}",
+        ratchet::violations(&ledger)
     );
 }
 
@@ -806,8 +911,11 @@ fn upstream_records_are_parsed_into_gradable_cases() {
     let records = vec![
         serde_json::json!({
             "instance_id": "astropy__astropy-12907",
+            "base_commit": "0e2e5a0ebf7b3dbce2b9b2d2b8a8f2af8b72b9ec",
             "problem_statement": "Fix the upstream regression.",
             "repo": "astropy/astropy",
+            "FAIL_TO_PASS": ["tests.test_fix"],
+            "PASS_TO_PASS": ["tests.test_existing"],
             "patch": "diff --git a/gold.py b/gold.py\n+gold-only solution",
         })
         .to_string(),

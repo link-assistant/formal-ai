@@ -329,6 +329,21 @@ meanings
         text 檢查…
       surface
         text 查重…
+    lexeme es
+      surface
+        text "revisa"
+      surface
+        text "revisar"
+      surface
+        text "comprueba"
+      surface
+        text "verifica"
+      surface
+        text "analiza"
+      surface
+        text "valida"
+      surface
+        text "chequea"
   document_originality_subject
     grounded-in Q2914681
     grounded-in Q2360032
@@ -458,6 +473,21 @@ meanings
         text 谣言
       surface
         text 謠言
+    lexeme es
+      surface
+        text "copiado"
+      surface
+        text "copiada"
+      surface
+        text "plagio"
+      surface
+        text "plagiado"
+      surface
+        text "originalidad"
+      surface
+        text "unicidad"
+      surface
+        text "auténtic"
   document_originality_document
     grounded-in Q49848
     defined-by inquiry

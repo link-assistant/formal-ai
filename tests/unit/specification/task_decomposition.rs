@@ -285,6 +285,10 @@ fn decomposition_is_deterministic_for_a_given_config() {
     let prompt = "Split this task into subtasks: 'Fix the failing test, update the changelog and open a pull request.'";
     let first = decomposition_solver().solve(prompt);
     let second = decomposition_solver().solve(prompt);
+    assert_eq!(
+        first.answer,
+        "Sub-tasks, each with a completion criterion you can observe:\n1. Fix the failing test [observable_result:task_result_0fea32a5941ce50d]\n2. update the changelog [observable_result:task_result_e23250ba5f7ac101]\n3. open a pull request [observable_result:task_result_e85b748f1f5ddfbc]"
+    );
     assert_eq!(first.answer, second.answer);
     assert_eq!(first.links_notation, second.links_notation);
 
@@ -568,5 +572,186 @@ fn failed_execution_can_propose_a_strategy_but_only_reviewed_green_learning_acti
     assert_eq!(
         recalled.approved_strategy_ids(),
         shipped.approved_strategy_ids()
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Issue #1138 B12, plan 12 leaves 7-11: the declared `binary` invariant gains
+// an enforcer.
+//
+// `data/meta/task-decomposition-invariant.lino` has declared since #847 that
+// "every non-leaf task is recursively split into exactly two children; 1, 2, 4,
+// 8, 16, 32 and so on leaves are valid complete layers", and nothing read the
+// field: `WorkUnit::build` maps over every segment of `decompose_once`, so a
+// three-clause span becomes a three-child node and `leaf_count()` never lands on
+// a power of two. The tests below are written before the leaves that make them
+// pass (plan 14 wave T).
+
+use formal_ai::intent_formalization::formalize_intent;
+use formal_ai::meta_frame::WorkUnit;
+use formal_ai::selection_heuristics::{BinarySplit, SplitRefusal, balanced_split, split_refusal};
+use formal_ai::translation::formalize_prompt;
+
+/// The same helper `tests/unit/specification/meta_frame.rs` uses.
+fn work_unit_for(prompt: &str, max_depth: u8) -> WorkUnit {
+    let candidate = formalize_prompt(prompt, "en");
+    let formalization = formalize_intent(prompt, "en", Some(&candidate));
+    WorkUnit::from_formalization(&formalization, max_depth)
+}
+
+/// A task with three independent, checkable clauses. A binary split must
+/// regroup them 2/1 and report the imbalance rather than dropping one.
+const THREE_CLAUSE_TASK: &str = "Add the flag to release.yml, update the changelog, \
+and write the test that covers the flag.";
+
+/// Seven checkable clauses: the split is 4/3 and says so.
+const SEVEN_CLAUSE_TASK: &str = "Add the flag to release.yml, update the changelog, \
+write the test that covers the flag, regenerate the census, bump the ceiling, \
+add the changelog fragment, and record the traceability row.";
+
+fn split_or_panic(task: &str) -> BinarySplit {
+    balanced_split(task)
+        .unwrap_or_else(|| panic!("a multi-clause task must split into two children: {task:?}"))
+}
+
+#[test]
+fn every_non_leaf_unit_has_exactly_two_children() {
+    let root = work_unit_for(THREE_CLAUSE_TASK, 4);
+    let mut offenders: Vec<String> = Vec::new();
+    fn walk(unit: &WorkUnit, offenders: &mut Vec<String>) {
+        if !unit.children.is_empty() && unit.children.len() != 2 {
+            offenders.push(format!(
+                "{} has {} children",
+                unit.unit_id,
+                unit.children.len()
+            ));
+        }
+        for child in &unit.children {
+            walk(child, offenders);
+        }
+    }
+    walk(&root, &mut offenders);
+    assert!(
+        offenders.is_empty(),
+        "the `binary` field of data/meta/task-decomposition-invariant.lino is declared \
+         and must now be enforced: {offenders:?}"
+    );
+}
+
+#[test]
+fn a_binary_split_preserves_every_segment_and_its_byte_spans() {
+    let split = split_or_panic(THREE_CLAUSE_TASK);
+    assert_eq!(
+        split.left_span.1, split.right_span.0,
+        "the two spans must be contiguous"
+    );
+    assert_eq!(split.left_span.0, 0, "the left span starts at the task");
+    assert_eq!(
+        split.right_span.1,
+        THREE_CLAUSE_TASK.len(),
+        "the right span ends at the task; a split is a regrouping, never a discard \
+         (R710-R9)"
+    );
+    let rejoined = format!(
+        "{}{}",
+        &THREE_CLAUSE_TASK[split.left_span.0..split.left_span.1],
+        &THREE_CLAUSE_TASK[split.right_span.0..split.right_span.1]
+    );
+    assert_eq!(
+        rejoined, THREE_CLAUSE_TASK,
+        "every byte of the original survives on exactly one side"
+    );
+    assert_eq!(
+        split.left_weight + split.right_weight,
+        3,
+        "three checkable segments, regrouped rather than dropped"
+    );
+}
+
+#[test]
+fn the_imbalance_of_an_odd_split_is_reported_not_hidden() {
+    let split = split_or_panic(SEVEN_CLAUSE_TASK);
+    assert_eq!(
+        split.left_weight + split.right_weight,
+        7,
+        "seven checkable segments"
+    );
+    assert_eq!(
+        split.imbalance(),
+        1,
+        "a seven-clause task splits 4/3 and says so; the imbalance is reported, never \
+         optimized away by dropping a segment"
+    );
+}
+
+#[test]
+fn a_leaf_count_of_a_balanced_task_is_a_power_of_two() {
+    let root = work_unit_for(SEVEN_CLAUSE_TASK, 6);
+    let leaves = root.leaf_count();
+    assert!(
+        leaves.is_power_of_two(),
+        "#491 asks for 1, 2, 4, 8 leaves on a balanced input; got {leaves}"
+    );
+    assert!(
+        root.unit_count() > leaves,
+        "the interior nodes the binary tree introduces are reported, not hidden: \
+         {} units for {leaves} leaves",
+        root.unit_count()
+    );
+}
+
+#[test]
+fn an_unsplittable_task_returns_none_with_a_reason() {
+    // #453's moonshot: one clause, so there is nothing to cut at the text level.
+    // `None` is an atomicity judgement and carries its reason; it is never "the
+    // task is easy" and never the input returned unchanged.
+    let moonshot = "Напиши сильный искусственный интеллект";
+    assert!(
+        balanced_split(moonshot).is_none(),
+        "a single-clause task has no boundary to cut at"
+    );
+    match split_refusal(moonshot) {
+        Some(SplitRefusal::Underivable { blocker }) => assert!(
+            !blocker.trim().is_empty(),
+            "the refusal must name the blocker, which until plan 01 lands is the absent \
+             lookup of published decomposition approaches"
+        ),
+        Some(SplitRefusal::SingleClause { reason }) => assert!(
+            !reason.trim().is_empty(),
+            "the refusal must carry its reason"
+        ),
+        None => panic!("a refused split must report why, never silently return nothing"),
+    }
+}
+
+#[test]
+fn every_declared_invariant_field_has_a_reader_that_enforces_it() {
+    // Plan 12 leaf 11: `binary` currently names
+    // `src/intent_formalization/requirements.rs`, which reads `source_integrity`.
+    // A declared invariant whose named reader reads a different field is a
+    // declaration with no enforcement.
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("data/meta/task-decomposition-invariant.lino");
+    let text = std::fs::read_to_string(&path).expect("task-decomposition-invariant.lino readable");
+    let fields: Vec<&str> = text
+        .lines()
+        .filter_map(|line| line.trim().split_once(' '))
+        .map(|(name, _)| name)
+        .filter(|name| !matches!(*name, "record_type" | "source_reader"))
+        .collect();
+    assert!(
+        fields.contains(&"binary"),
+        "the contract still declares the binary invariant"
+    );
+    let readers: Vec<&str> = text
+        .lines()
+        .filter_map(|line| line.trim().strip_prefix("source_reader "))
+        .map(|value| value.trim().trim_matches('"'))
+        .collect();
+    assert_eq!(
+        readers.len(),
+        fields.len(),
+        "each declared field names the reader that enforces it, so a field with no \
+         reader cannot hide behind a sibling's. Fields: {fields:?}, readers: {readers:?}"
     );
 }

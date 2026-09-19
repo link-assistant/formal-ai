@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_source_walk.js"
+  ceiling 317
+  rationale "Issue #1138 shared browser source registry, bounded recursive walk, accessibility memory, capture provenance, and opt-outs for every need kind."

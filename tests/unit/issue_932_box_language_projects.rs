@@ -14,6 +14,8 @@ use formal_ai::box_language_projects::{
     BoxLanguageProject, box_image_survey, box_language_contract,
 };
 
+use super::installation_conversion::{DocumentedFormat, documented_conversion_answer};
+
 /// The command a developer of each language would actually type to start a
 /// project. PR #119 asked for exactly these, not a Formal-AI-specific build.
 const TRADITIONAL_INIT_COMMANDS: &[(&str, &str)] = &[
@@ -250,6 +252,29 @@ fn install_guides_convert_into_scripts_that_keep_every_traditional_command() {
     let contract = box_language_contract();
     for project in &contract.projects {
         let response = FormalAiEngine.answer(&install_guide_prompt(project));
+        if project.language == "rust" {
+            assert_eq!(
+                response.answer,
+                documented_conversion_answer(
+                    DocumentedFormat::Markdown,
+                    &[DocumentedFormat::Shell],
+                    "the project",
+                    &[
+                        (
+                            "Run the cargo new step",
+                            "cargo new --vcs none hello-formal-ai"
+                        ),
+                        (
+                            "Run the cp main.rs step",
+                            "cp main.rs hello-formal-ai/src/main.rs",
+                        ),
+                        ("Enter the project directory", "cd hello-formal-ai"),
+                        ("Build the project", "cargo build --offline"),
+                        ("Start the application", "cargo run --offline --quiet"),
+                    ],
+                )
+            );
+        }
         assert_eq!(
             response.intent, "installation_conversion",
             "{} guide routed to {}: {}",

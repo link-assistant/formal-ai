@@ -6,11 +6,11 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::relative_meta_logic::{SourceTier, ASSUMED_TRUE_PRIOR};
+use crate::relative_meta_logic::{ASSUMED_TRUE_PRIOR, SourceTier};
 use crate::seed::{self, response_for};
 use crate::statement_verification::{
-    assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
-    StatementVerificationPlan, TRUSTED_SOURCE_POLICY,
+    MarketPriceAssessment, StatementVerificationPlan, TRUSTED_SOURCE_POLICY,
+    assess_market_price_claims, extract_market_price_claims,
 };
 
 use super::finalize_simple;

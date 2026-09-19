@@ -10,23 +10,28 @@ coding_discovery_meta_recipe
   source src/coding/function_catalog/python_docs.rs
   source src/coding/function_catalog/wikifunctions.rs
   source src/coding/function_catalog/rosetta_code.rs
+  source src/concept_lookup.rs
 coding_discovery_step_recognize
   record_type meta_step
   order 1
   function recognise
-coding_discovery_step_discover
+coding_discovery_step_understand
   record_type meta_step
   order 2
+  function lookup_surface
+coding_discovery_step_discover
+  record_type meta_step
+  order 3
   function discover
 coding_discovery_step_compose
   record_type meta_step
-  order 3
+  order 4
   function compose
 coding_discovery_step_verify
   record_type meta_step
-  order 4
+  order 5
   function run_command
 coding_discovery_step_remember
   record_type meta_step
-  order 5
+  order 6
   function remember

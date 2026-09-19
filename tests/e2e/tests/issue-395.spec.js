@@ -58,7 +58,7 @@ test.describe('Issue #395 - sort numbers, give code and result', () => {
     const body = answer.locator('.markdown-body');
 
     // Never the "I didn't understand you" fallback.
-    await expect(body).not.toContainText('Я тебя не понял');
+    await expect(body).not.toContainText('Мне не удалось тебя понять');
     // Runnable JavaScript with the ascending comparator.
     await expect(body).toContainText('const numbers = [3, 5, 6, 7, 8];');
     await expect(body).toContainText('sort((a, b) => a - b)');

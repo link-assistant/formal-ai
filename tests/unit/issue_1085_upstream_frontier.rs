@@ -9,7 +9,8 @@ use formal_ai::external_benchmarks::learning::{one_line, render_frontier_record}
 use formal_ai::external_benchmarks::ledger::{Ledger, LedgerRecord};
 use formal_ai::external_benchmarks::{SuiteRun, ratchet};
 use formal_ai::learning_cycle::{
-    UPSTREAM_BENCHMARKS_FRONTIER, parse_frontier_record, recorded_frontier,
+    UPSTREAM_BENCHMARKS_FRONTIER, UPSTREAM_BENCHMARKS_FRONTIER_PARTS, parse_frontier_record,
+    recorded_frontier,
 };
 
 const LEDGER_PATH: &str = "data/benchmarks/external-results.lino";
@@ -191,10 +192,20 @@ fn the_committed_upstream_frontier_is_registered_and_replayable() {
     let frontier = recorded_frontier(UPSTREAM_BENCHMARKS_FRONTIER)
         .expect("the upstream frontier must be registered for `formal-ai learn cycle`");
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let committed = fs::read_to_string(root.join(FRONTIER_PATH)).expect("record must exist");
+    // The recorded frontier is the base page plus every `-partN` continuation,
+    // concatenated in order; empty placeholder parts carry only the header.
+    let mut committed = fs::read_to_string(root.join(FRONTIER_PATH)).expect("record must exist");
+    for part in 1..=UPSTREAM_BENCHMARKS_FRONTIER_PARTS {
+        committed.push_str(
+            &fs::read_to_string(root.join(format!(
+                "data/meta/learning-frontier-upstream-benchmarks-part{part}.lino"
+            )))
+            .expect("the provisioned part must exist"),
+        );
+    }
     assert_eq!(
         frontier.document, committed,
-        "the embedded record is the committed file"
+        "the embedded record is the committed pages"
     );
     let items = parse_frontier_record(frontier.document);
     assert!(
@@ -232,7 +243,135 @@ fn the_scheduled_workflow_rewrites_and_commits_the_frontier() {
     assert!(
         workflow.contains("--frontier-record data/meta/learning-frontier-upstream-benchmarks.lino")
     );
-    assert!(workflow.contains(
-        "git add data/benchmarks/external-results.lino data/meta/learning-frontier-upstream-benchmarks.lino"
-    ));
+    assert!(
+        workflow.contains(
+            "git add data/benchmarks/external-results.lino 'data/meta/learning-frontier-upstream-benchmarks*.lino'"
+        ),
+        "the scheduled commit covers the base page and every `-partN` continuation"
+    );
+}
+
+// The 1500-line data cap (issue #960) covers every committed LiNo file, and
+// one honest frontier prompt per failed case grows without bound — the mbpp-500
+// slice alone contributes hundreds of items on top of the recorded HumanEval
+// failures. The ledger therefore splits at `frontier_prompt` boundaries into a
+// base page plus `-partN` continuations, each a self-describing document, and
+// the learn cycle replays the concatenation.
+#[test]
+fn a_frontier_wider_than_the_data_cap_is_written_in_bounded_self_describing_parts() {
+    let outcomes = (0..300)
+        .map(|index| {
+            outcome(
+                &format!("MBPP/{index}"),
+                false,
+                &format!("Write a function for case {index}.\nassert f({index}) == {index}"),
+            )
+        })
+        .collect();
+    let run = SuiteRun {
+        suite: String::from("mbpp"),
+        slice: 500,
+        passed: 200,
+        failed: 300,
+        total: 500,
+        outcomes,
+        unavailable: None,
+        solver_version: String::from("0.0.0-test"),
+    };
+    let document = render_frontier_record("", &[run], "2026-09-18");
+    assert!(
+        document.lines().count() > 1500,
+        "the fixture must actually breach the data cap"
+    );
+
+    let pages = formal_ai::external_benchmarks::learning::split_frontier_document(&document, 1400);
+    assert!(pages.len() >= 2, "one document over the budget must split");
+    for page in &pages {
+        assert!(
+            page.lines().count() <= 1400,
+            "each page honours the line budget"
+        );
+        assert!(
+            page.starts_with("learning_frontier\n"),
+            "each page is a self-describing document: {}",
+            page.get(..40).unwrap_or(page)
+        );
+    }
+    let replayed: Vec<String> = pages
+        .iter()
+        .flat_map(|page| {
+            parse_frontier_record(page)
+                .into_iter()
+                .map(|item| item.query)
+        })
+        .collect();
+    let expected: Vec<String> = parse_frontier_record(&document)
+        .into_iter()
+        .map(|item| item.query)
+        .collect();
+    assert_eq!(
+        replayed, expected,
+        "the pages replay to exactly the frontier they split"
+    );
+}
+
+// The writer provisions exactly `UPSTREAM_BENCHMARKS_FRONTIER_PARTS` part
+// files, because the embedded record compiles in exactly that many
+// `include_str!` siblings: a shrinking frontier must reset a part to a
+// header-only placeholder — never delete it — so no stale frontier item
+// survives and the embed stays compilable whatever the frontier's size.
+#[test]
+fn a_shrinking_frontier_resets_unfilled_parts_to_placeholders_instead_of_deleting_them() {
+    let dir = std::env::temp_dir().join(format!("formal-ai-frontier-parts-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&dir);
+    fs::create_dir_all(&dir).expect("temp dir must be creatable");
+    let base = dir.join("frontier.lino");
+
+    let wide = format!(
+        "learning_frontier\n  record_type \"learning_frontier_record\"\n  frontier_prompt\n    rank \"1\"\n    query \"mbpp/MBPP/1\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"one\"\n    engine_intent \"benchmark_failure\"\n  frontier_prompt\n    rank \"2\"\n    query \"mbpp/MBPP/2\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"two\"\n    engine_intent \"benchmark_failure\"\n"
+    );
+    let pages = formal_ai::external_benchmarks::learning::split_frontier_document(&wide, 10);
+    assert!(pages.len() >= 2, "fixture must split");
+    let written = formal_ai::external_benchmarks::learning::write_frontier_pages(
+        &base,
+        &pages,
+        UPSTREAM_BENCHMARKS_FRONTIER_PARTS,
+    )
+    .expect("wide frontier must write");
+    assert_eq!(
+        written.len(),
+        1 + UPSTREAM_BENCHMARKS_FRONTIER_PARTS,
+        "base page plus every provisioned part"
+    );
+    for part in 1..=UPSTREAM_BENCHMARKS_FRONTIER_PARTS {
+        let path = dir.join(format!("frontier-part{part}.lino"));
+        assert!(path.exists(), "part {part} must exist after the wide write");
+    }
+    assert!(
+        fs::read_to_string(dir.join("frontier-part1.lino"))
+            .expect("part 1 must be readable")
+            .contains("frontier_prompt")
+    );
+
+    let narrow = String::from(
+        "learning_frontier\n  record_type \"learning_frontier_record\"\n  frontier_prompt\n    rank \"1\"\n    query \"mbpp/MBPP/1\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"one\"\n    engine_intent \"benchmark_failure\"\n",
+    );
+    let pages = formal_ai::external_benchmarks::learning::split_frontier_document(&narrow, 1400);
+    assert_eq!(pages.len(), 1, "fixture must fit one page");
+    formal_ai::external_benchmarks::learning::write_frontier_pages(
+        &base,
+        &pages,
+        UPSTREAM_BENCHMARKS_FRONTIER_PARTS,
+    )
+    .expect("narrow frontier must write");
+    for part in 1..=UPSTREAM_BENCHMARKS_FRONTIER_PARTS {
+        let text = fs::read_to_string(dir.join(format!("frontier-part{part}.lino")))
+            .unwrap_or_else(|error| panic!("part {part} must survive the rewrite: {error}"));
+        assert!(
+            !text.contains("frontier_prompt"),
+            "part {part} must carry no stale item after the shrinking rewrite"
+        );
+    }
+
+    let _ = fs::remove_dir_all(&dir);
 }

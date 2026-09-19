@@ -1,0 +1,2489 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.139Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.140Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt 在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。 --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.140Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.140Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.149Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.149Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.150Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.151Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.151Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.154Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.154Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.156Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4642,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.156Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.170Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 24,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:32:53.174Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.178Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.178Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.178Z",
+  "service": "session",
+  "id": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ",
+  "title": "New session - 2026-09-16T03:32:53.178Z",
+  "time": {
+    "created": 1789529573178,
+    "updated": 1789529573178
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.179Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.179Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.179Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.179Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57b9b8c5ffeOueHKPG0ZjNWJV/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.179Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57b9b8c5ffeOueHKPG0ZjNWJV/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.182Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57b9b8c5ffeOueHKPG0ZjNWJV/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.183Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.184Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.186Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.186Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.186Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.187Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.187Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.187Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.187Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.187Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.187Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.187Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.305Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.309Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.316Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.322Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.326Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.326Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.327Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.810Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529573810,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a84649ae001FrVIoEDe4LjTsm",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a84647bc0013Xqf1coPmiPK62",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.811Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.812Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529573812,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a84649b300174zwmBIHhcP4I9",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a84647bc0013Xqf1coPmiPK62",
+    "type": "tool",
+    "callID": "call_ba5a2b74a4c1effa",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.812Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529573812,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a84649b2001kcoQTKJBpPkHUa",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a84647bc0013Xqf1coPmiPK62",
+    "type": "text",
+    "text": "我来上网搜索 在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。",
+    "time": {
+      "start": 1789529573812,
+      "end": 1789529573812
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:53.812Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529573812,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a84649b300174zwmBIHhcP4I9",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a84647bc0013Xqf1coPmiPK62",
+    "type": "tool",
+    "callID": "call_ba5a2b74a4c1effa",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试"
+      },
+      "time": {
+        "start": 1789529573812
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.724Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529575737,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a84649b300174zwmBIHhcP4I9",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a84647bc0013Xqf1coPmiPK62",
+    "type": "tool",
+    "callID": "call_ba5a2b74a4c1effa",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试"
+      },
+      "output": "Title: dylanzhangzx/dknowc-trusted-search\nURL: https://github.com/dylanzhangzx/dknowc-trusted-search\nPublished: N/A\nAuthor: N/A\nHighlights:\n- 可信搜索：查找原文、依据、权威材料或来源时，调用 `scripts/trusted_search.py` 返回重点材料和知识专库链接。\n- 深度搜索：仅在用户明确要求或确认升级后，调用 `scripts/deep_query.py` 做多轮检索和分析。\n- 最终交付：直接回复答案、可点击溯源 HTML、无来源角标的干净 Markdown。\n- 默认溯源 HTML：最终解决问题时，用 `scripts/render_trace_html.py` 生成可点击溯源 HTML，并同步生成同名 `.clean.md`。\n- 政策可视化：用户明确要求图表时，用 `scripts/render_policy_visualization.py` 基于结构化 JSON 生成自包含 HTML 报告（可选 `--svg` 静态快照），以\"清楚展示搜索数据\"为原则——首屏数据表 + 每指标简单柱状图，覆盖城市对比/补贴金额/办理流程/时间线四类场景，来源收敛到行级与页脚。\n...\n## 常用测试\n...\n```bash\npython3 -m py_compile scripts/initialize.py scripts/trusted_search.py scripts/deep_query.py scripts/render_trace_html.py scripts/render_policy_visualization.py scripts/check_release.py\nnode --check scripts/register_key.mjs\npython3 scripts/check_release.py\n```\n...\n请求参数检查：\n...\n```bash\npython3 scripts/trusted_search.py \"公积金租房提取政策原文\" --show-payload --dry-run\npython3 scripts/deep_query.py \"重庆智能化改造补贴和税惠综合判断\" --area 重庆 --show-payload --dry-run\n```\n...\n不得包含 `_meta.json`、\n...\n`、`config.ini\n\n---\n\nTitle: taxueseek/argo\nURL: https://github.com/taxueseek/argo\nPublished: N/A\nAuthor: N/A\nHighlights:\nAgent 技能说明\n...\n欢迎提 Issue 与 Pull Request。改路由或证据逻辑时，请尽量补对应测试（`tests/`）或跑一遍：\n...\n```bash\npython3 -m pytest tests/test_unit.py tests/test_evidence_v22.py -q\npython3 scripts/ab_eval_p0p1.py   # 可选，含在线实测\n```\n\n---\n\nTitle: feat: search citations — 信源透传 + 结构化字段 + url_citation annotations · Pull Request #468 · chenyme/grok2api\nURL: https://github.com/chenyme/grok2api/pull/468\nPublished: 2026-04-13T05:06:22.000Z\nAuthor: Huan-zhaojun\nHighlights:\nGrok 搜索时 SSE 流返回 44~400 条信源（web + X 帖子），但此前 grok2api 全部丢弃，\n下游消费者（如 [**GrokSearch MCP**](https://github.com/GuDaStudio/GrokSearch)）的 `sources_count` 为 0；\n模型正文内联引用 `[[N]](url)` 也仅有裸 Markdown，缺少标准化的引用元数据。\n...\n本 PR 建立完整的搜索引用链路：**信源透传 → 结构化字段 → 引用标注**，三层覆盖全部 3 个 API 端点。\n...\n| 层级 | 功能 | 输出位置 | 开关 |\n|:--|:--|:--|:--|\n| 正文透传 | `## Sources` 段落（web + X 帖子 URL 列表） | 响应正文末尾 | `show_search_sources`（默认关） |\n| 结构化字段 | `search_sources: [{url, title, type}]` | 响应根对象 / message item | **始终输出**（无开关） |\n| 引用标注 | `url_citation` annotations（URL、title、文本偏移） | OpenAI 标准 annotations 字段 | **始终输出**（有引用即产出） |\n...\n- `webSearchResults`: 原始 url + title，多帧累积去重\n- `xSearchResults`: `postId` + `username` 拼接 URL，`text` 前 50 字构造 title，空白归一化\n- 共享 `_web_search_urls_seen` set 跨类型去重\n- `references_suffix()` 统一转义 Markdown 特殊字符\n- `search_sources_list()` 返回 `[{url, title, type}]`（type: `\"web\"` / `\"x_post\"`）\n...\nsources` 置\n...\n> **设计说明**: Anthropic 标准 citations 需 `encrypted_index`（专有加密索引）+ `cited_text`（源网页原文），\n> 二者 Grok 均无法提供，故改用 OpenAI `url_citation` 扁平格式作自定义扩展。\n...\n- 标记行 `[grok2api-sources]: #`（CommonMark link reference definition，渲染器不显示）\n- 正则覆盖 string content + block list content，CRLF 兼容\n- 仅匹配含标记行的段落，用户自写 `## Sources` 不受影响\n...\n- `config.defaults.toml` 新增 `show_search_sources = false`（仅控制正文透传）\n-\n...\n新增开关 + 6 语言 i18n（zh/en/de/es/fr/ja）\n...\n## Test plan\n...\n- [x] 开启 `show_search_sources`，发送搜索类问题 → 响应末尾出现 `## Sources` 段落\n- [x] 关闭该配置 → 无 `## Sources` 正文，但 `search_sources` 字段仍存在\n- [x] 多轮对话：第二轮请求中确认前轮 Sources 被剥离（不出现在 Grok 请求中）\n- [x] 验证 `search_sources` 字段结构: `[{url, title, type}]`，type 为 `\"web\"` 或 `\"x_post\"`\n- [x] 验证 `url_citation` annotations: 包含 url、title、start_index、end_index\n- [x] 非搜索查询（纯聊天）→ 无 Sources、无 search_sources、无 annotations\n- [x] X 帖子 URL 格式: `https://x.com/{username}/status/{postId}`\n- [x] CherryStudio Responses API 模式下底部渲染引用卡片\n- [x] 三端点均覆盖：Chat Completions / Responses API / Anthropic Messages\n- [x] 流式 & 非流式 & tool_calls 路径均正常输出\n\n---\n\nTitle: GPT Researcher 检索器（Retriever）系统详解：21 个可插拔搜索源、选择机制与自定义扩展全实践 - AtomGit | GitCode博客\nURL: https://blog.gitcode.com/ba8e2004c38c8cc8df0726789d044326.html\nPublished: 2026-09-09T00:00:00.000Z\nAuthor: N/A\nHighlights:\n参考文档给出的权威清单如下（目录：`gpt_researcher/retrievers/`）。文档明确指出：权威列表以 gpt_researcher/actions/retriever.py 中 `get_retriever` 的 `match` 语句为准——经核对，`match` 语句当前共覆盖 21 个分支，与下表一一对应：\n...\n| 检索器 | 类名 | 需要的 API Key 环境变量 |\n| --- | --- | --- |\n| Tavily | `TavilySearch` | `TAVILY_API_KEY` |\n| Google | `GoogleSearch` | `GOOGLE_API_KEY`, `GOOGLE_CX_KEY` |\n| Bing | `BingSearch` | `BING_API_KEY` |\n| Brave | `BraveSearch` | `BRAVE_API_KEY` |\n| DuckDuckGo | `Duckduckgo` | 无 |\n| SearX | `SearxSearch` | `SEARX_URL`（自托管/公共实例地址） |\n| Serper | `SerperSearch` | `SERPER_API_KEY` |\n| SerpAPI | `SerpApiSearch` | `SERPAPI_API_KEY` |\n| SearchAPI | `SearchApiSearch` | `SEARCHAPI_API_KEY` |\n| Exa | `ExaSearch` | `EXA_API_KEY` |\n| GroundRoute | `GroundRouteSearch` | `GROUNDROUTE_API_KEY` |\n| fastCRW | `CRWRetriever` | `CRW_API_KEY` |\n| BoCha | `BoChaSearch` | `BOCHA_API_KEY` |\n| Xquik | `XquikSearch` | `XQUIK_API_KEY` |\n| GetXAPI（X/Twitter） | `GetXAPISearch` | `GETXAPI_API_KEY` |\n| arXiv | `ArxivSearch` | 无 |\n| Semantic Scholar | `SemanticScholarSearch` | 无 |\n| PubMed Central | `PubMedCentralSearch` | 无（可选 `NCBI_API_KEY` 提升限流） |\n| OpenAlex | `OpenAlexSearch` | 可选 `OPENALEX_API_KEY`, `OPENALEX_EMAIL` |\n| MCP | `MCPRetriever` | 按 MCP server 各自配置 |\n| Custom | `CustomRetriever` | 用户自定义 |\n...\n- 通用网页搜索：Tavily（默认）、Google、Bing、Brave、DuckDuckGo、SearX、Serper、SerpAPI、SearchAPI、Exa、GroundRoute、fastCRW、BoCha；\n- 学术/文献检索：arXiv、Semantic Scholar、PubMed Central、OpenAlex，适合文献综述类任务；\n- 特殊数据源：GetXAPI / Xquik（X/Twitter 社媒数据）、MCP（Model Context Protocol，对接自有工具服务器）、Custom（用户自建搜索端点）。\n...\n默认检索器是 Tavily： gpt_researcher/config/variables/default.py 中 `\"\n...\n\": \"tavily\"`，且 gpt_researcher/config/config.py 读取 `RET\n...\nEVER` 环境变量时也以 `\"tavily\"` 为缺省值；工厂函数 `get_default_retriever()` 同样直接返回 `TavilySearch`。\n...\nrievers(headers, cfg)` 决定实际使用\n...\n器，优先级从\n...\n（见 retriever.py\n...\n1. `headers[\"retrievers\"]`——逗号分隔的多个检索器名称；\n2. `headers[\"retriever\"]`——单个检索器；\n3. `cfg.retrievers`——配置中的多个（兼容\n...\n与逗号分隔字符串两种格式）；\n4. `cfg.retriever`——配置中的单个；\n5. 都没有时，使用默认检索器（TavilySearch\n...\nRIEVER` 写成 `RETRIEVER=t\n...\n,exa`（注意空格）是安全的；\n...\n拼错名称（\n...\nRETRIEVER=tavliy`\n...\n不会报错，\n...\n静默回退到 Tavily\n...\n此外， gpt_researcher/retrievers/utils.py 还维护了一份 `VALID_RETRIEVERS` 常量列表与 `get_all_retriever_names()`（动态枚举 `retrievers/` 下的子目录），用于回退校验与前端/服务端的检索器发现。\n...\n摘要（snippet），真正的正文由后续网页\n...\n器（`gpt_\n...\n/scraper/`）获取；\n...\n“已抓取的全文”（少数）：如 PubMed Central 直接回传\n...\n全文，Custom 检索器的约定格式是\n...\nurl, raw_content}]`，无需再抓\n...\n- gpt_researcher/retrievers/tavily/tavily_search.py：`requires_scraping = True`；\n- gpt_researcher/retrievers/pubmed_central/pubmed_central.py：`requires_scraping = False`（内联返回全文）；\n- gpt_researcher/retrievers/custom/custom.py：`requires_scraping = False`（端点自带内容）；\n- gpt_researcher/retrievers/searx/searx.py：`requires_scraping = True`，并把摘要截断到 100 字符（`_MAX_PREFETCHED_LEN`）以兼容旧启发式。\n...\n消费侧在 gpt_researcher/skills/researcher.py：通过 `getattr(retriever, \"requires_scraping\", None)` 读取声明，`True` 走抓取路径、`False` 直接使用 `raw_content`、未声明则回退到旧长度启发式。对应的行为测试见 tests/test_retriever_requires_scraping.py。\n...\nCustom 检索器的端点必须返回如下 JSON 格式（`url` + `raw_content`），源码会在 custom.py 中校验：非列表响应、非 dict 条目或缺少 URL 的行会被过滤并打印提示，而不是让整条研究管线崩溃；`RETRIEVER_ARG_` 前缀的所有环境变量会被自动收集为查询参数。\n...\n补充源码级建议：参考现有实现的构造函数签名（如 `SearxSearch(query, query_domains=None)`、`TavilySearch(query, headers=None, ...)`），保持与工厂调用约定一致；若你的检索器直接返回全文，应像 custom.py 与 pubmed_central.py 那样显式声明 `requires_scraping = False`，避免命中 100 字符启发式导致的“URL 不抓取”问题。\n...\n同时建议把新名称加入 `get_retriever`\n...\n列表以及 gpt_researcher/retrievers/utils.py 中的 `VALID_RETRIEVERS` 常量，保持回退校验一致。\n...\n- 唯一权威清单是 actions/retriever.py 中 `get_retriever` 的 `match` 语句，新增或核对检索器名称以此为准；\n- 无效名称静默回退到 Tavily，配置不生效时先检查拼写与优先级（headers 优先于 config）；\n- 结果是否二次抓取由 `requires_scraping` 声明决定：直接返回全文的检索器务必声明为 `False`，只有链接+摘要的声明为 `True`（默认）；\n- 每个检索器的 API Key / 端点环境变量各不相同（见上文清单），SearX 必须设置 `SEARX_URL`，Custom 必须设置 `RETRIEVER_ENDPOINT`；\n- 行为可回归验证的测试文件可参考 tests/test_retriever_requires_scraping.py、 tests/test_get_retrievers_whitespace.py，以及各检索器的 malformed 响应防护测试（如 tests/test_tavily_malformed.py、 tests/test_searx_malformed_results.py），它们印证了“单条脏数据不崩溃整条管线”的防御式设计。\n\n---\n\nTitle: Luxuzhou/source-verifier-skill\nURL: https://github.com/Luxuzhou/source-verifier-skill\nPublished: N/A\nAuthor: N/A\nHighlights:\n-Skill-\n...\nverifier-skill\n...\n| 能力 | 说明 |\n|------|------|\n| **声明提取** | 从输入中拆解出可验证的原子声明 |\n| **正反搜索** | 并行搜索支持和反对的证据 |\n| **信源独立性检查** | 5 个来源引用同 1 个原始来源 = 实际只有 1 个 |\n| **矛盾检测** | 自动发现不同来源间的关键分歧 |\n| **沉默信号分析** | \"该报道却没报道\"本身就是信号 |\n| **Admiralty 评级** | 双维度评分：来源可靠性 A-F × 信息可信度 1-6 |\n...\n### 来源可靠性（A-F）\n...\n| 等级 | 含义 | 示例 |\n|:---:|------|------|\n| **A** | 完全可靠 | 当事方官方公告、原始研究论文 |\n| **B** | 通常可靠 | Reuters、AP、顶级学术期刊 |\n| **C** | 较为可靠 | 有编辑审核的行业媒体 |\n| **D** | 通常不可靠 | 无审核的自媒体、匿名爆料 |\n| **E-F** | 不可靠 | 已知虚假传播历史 / 无法判断 |\n...\n### 信息可信度（1-6）\n...\n| 等级 | 含义 | 判定条件 |\n|:---:|------|---------|\n| **1** | 已确认 | 2+ 独立 A/B 级来源确认 |\n| **2** | 很可能真实 | 1 个 A/B 来源，无矛盾 |\n| **3** | 可能真实 | C 级来源，符合背景 |\n| **4** | 存疑 | 仅 D 级来源，或有矛盾 |\n| **5-6** | 不太可能 / 无法判断 | 与已知事实矛盾 / 信息不足 |\n...\n- DuckDuckGo MCP — 多引擎交叉验证\n- Hacker News MCP — 技术社区信号\n- Jina MCP — 备用内容提取\n- `scrapling` — 智能网页提取（`pip install scrapling`）\n\n---\n\nTitle: GitHub - chouenchieh/source-search · GitHub\nURL: https://github.laiyagushi.com/chouenchieh/source-search\nPublished: 2026-05-19T00:00:00.000Z\nAuthor: chouenchieh\nHighlights:\n# source-search — 来源搜索与核实技能\n...\nClaude Code 技能：搜索官方一手来源的政策/法规/文件链接，并通过 CDP 浏览器逐条打开确认 后方可输出。\n...\n/source-search 韩国机器人产业政策 .go.kr\n...\n/source-search EU AI Act 实施进展 .europa.eu\n...\n/source-search 中国具身\n...\n产业政策 .gov.cn\n...\n- `[调研主题]` — 要搜索的政策/法规/文件主题，支持中英双语\n- `[目标域名限制]` — 可选，限定只收集特定域名的来源（如 `.gov.cn`、`.europa.eu`、`.go.kr`）\n...\n```\n明确搜索目标 → 搜索定位 → CDP 逐条核实 → 只输出核实通过的\n\n```\n...\n1. 明确搜索目标 — 提取主题关键词、目标域名、时间范围\n2. 搜索定位 — WebSearch + 当地语言关键词搜索候选链接\n3. CDP 逐条核实 — 每个链接必须在浏览器中打开，确认： \n\n- 页面能打开（非 404/空白）\n- 内容确实匹配声称的主题\n- 确实为官方一手发布\n4. 输出 — 只输出核实通过的链接，附核实摘要\n...\n超过 8 个链接\n...\n，自动分治给子 Agent\n...\n实，主 Agent\n...\n做搜索和汇总。\n...\n```\n## 来源核实报告\n\n核实时间：2026-05-19\n核实方式：CDP 浏览器逐条打开确认\n\n| # | 政策/文件名称 | 官方链接（已打开确认） | 核实摘要 |\n|---|-------------|---------------------|---------|\n\n以下链接经核实存在问题，已替换为正确链接：\n| 原链接 | 问题 | 替换为 |\n\n以下政策未找到有效的官方在线原文：\n| 名称 | 搜索范围 | 替代来源（如有） |\n...\n- 跨国政策调研\n- 法规汇编链接核实\n- 学术引用来源确认\n- 任何需要\"确认链接在当下有效\"的来源收集\n\n---\n\nTitle: BlueSkyXN/SouWen\nURL: https://github.com/BlueSkyXN/SouWen\nPublished: 2026-04-04T00:00:00.000Z\nAuthor: N/A\nHighlights:\n- [docs/README.md](docs/README.md) — 技术文档入口与阅读导航\n- [docs/getting-started.md](docs/getting\n...\nstarted.md) — 快速开始\n- [docs/concepts.md](docs/concepts.md) — 核心概念\n- [docs/python-api.md](docs/python-api.md) — Python API\n- [docs/source-catalog.md](docs/source-catalog.md) — Provider Catalog 契约\n- [docs/architecture.md](docs/architecture.md) — 架构概览\n- [docs/data-sources.md](docs/data-sources.md) — 完整 Provider 指南与清单（由 manifest catalog 自动生成）\n...\n- [docs/configuration.md](docs/configuration.md) — 配置层级 / WARP / HTTP backend\n...\n/api-\n...\n.md](docs/api-reference.md) — REST API 参考\n...\n- [docs/hf-space-cd.md](docs/hf\n...\nspace-cd.md) —\n...\nging Face Space CD / 本地预检 / 部署后验收\n...\n/live-preview.md](docs/live-preview.md) — HFS 在线 Panel/Swagger、角色矩阵与功能验收\n...\n- [docs/deployment.md](docs/deployment.md) —\n...\n- [docs/anti-scraping.md](docs/anti-scraping.md) — TLS 指纹 / WARP / 限流\n- [docs/appearance.md](docs/appearance.md) — Calm Precision 管理面板\n- [docs/adding-a-source.md](docs/adding-a-source.md) — 新增数据源指南\n- [docs/contributing.md](docs/contributing.md) — 开发者指南\n- [docs/internal/rc-readiness-gates.md](docs/internal/rc-readiness-gates.md) — v2.0\n...\n0rc5 固定门禁与 evidence manifest 契约\n- [docs/internal/](docs/internal/) — 维护者 ADR、分支策略和发布前基线\n- [CHANGELOG.md](CHANGELOG.md) — 版本变更\n...\n- 新增 Provider：参考 [docs/adding-a-source.md](docs/adding-a-source.md)（新增 manifest/spec/adapter 与 conformance tests）\n- 代码风格：`ruff format && ruff check`\n- 测试：`pytest tests/`\n\n---\n\nTitle: skills/citation-faithfulness/SKILL.zh.md\nURL: https://github.com/canxiangcc/aminer-open-skill/blob/main/skills/citation-faithfulness/SKILL.zh.md\nPublished: N/A\nAuthor: N/A\nHighlights:\n- `SKILL.md` / `SKILL\n...\nzh.md\n...\n/ 中文\n...\n定义（本文件）。\n- `commands/citation-faithfulness.md` — slash\n...\n入口。\n- `references/rubric.md` — 五档判定 rubric（改编自 `\n...\n-trace` 的证据协议）。\n- `references/output-schema.md` — 返回值契约：报告的精确 JSON 结构（顶层对象 + 单条声称记录 + 不变式）。\n- 无脚本、无 `requirements.txt`：本 skill 只用 Read、WebSearch、WebFetch 三个工具。\n...\n1. **PDF 输入** — 用户给了存在的本地 `.pdf` 路径。若只报了论文名没给文件，主动追问。**绝不自行编造或下载论文来核查。**\n2. **工具可用** — 本 skill 需要 `Read`、`WebSearch`、`WebFetch`。若环境无联网，停下并告知：忠实性核查必须取到被引原文，无联网时只能给 `UNVERIFIABLE`。\n3. **范围预期** — 全覆盖一篇 40 篇参考的论文≈40+ 次联网检索。大批量前先提醒用户并提供缩小范围选项（见参数）。\n...\n用 `Read` 工具读 PDF（每次渲染至多 20 页；长论文按页范围多次读，如 `pages: \"1-20\"` 再 `\"21-40\"`）。务必同时拿到**正文**和**参考文献表**（通常在末几页）。若抽取有噪声（双栏、表格、连字），记录之——噪声抽取按 rubric 降低置信度。\n...\n把每个正文标记（`[12]`、`(Smith et al., 2021)`、上标等）映射到其完整参考文献条目 → 标题、作者、年份、venue、DOI、arXiv id。**按被引工作去重**：`[12]` 被引五次，只检索一次、五处声称复用同一原文。若某标记无法匹配到文献条目，标 `unmatched_reference: true` 并把该声称判 `UNVERIFIABLE`。\n...\n对每一篇**去重后**的被引工作，按下列优先级取原文，并记录你达到的 `retrieval_level`：\n...\n1. **arXiv** — 若条目有 arXiv id 或 arXiv 搜得到：`WebFetch https://arxiv.org/abs/ ` 取摘要；当 `specific` 声称需要正文细节时，再试 `WebFetch https://arxiv.org/html/ `（或 `ar5iv.org/abs/ ` 的 HTML 镜像）取全文 → `full_text`。\n2. **开放落地页** — 否则 `WebSearch \"<标题>\" <一作> <年份>`，再 `WebFetch` 命中最好的一条（出版商摘要页、ACL Anthology、OpenReview、PMC、Semantic Scholar 页）。出版商页通常只给 `abstract_only`；开放获取 HTML/PDF 给 `full_text`。\n3. **可选 AMiner 增强** — 若设了 `AMINER_API_KEY` 且网搜结果单薄，用上面的 AMiner `paper/search` 接口解析标题匹配 + 摘要。\n4. 合理尝试后仍无可用内容 → `retrieval_level: not_found`。\n...\n每篇最多跟进少数几个链接，控制成本、及时收手。**绝不编造你没有 fetch 到的页面内容。**\n...\n用 `references/rubric.md`\n...\n对每条声\n...\n，将 `claim\n...\n五档里给\n...\n`evidence`（\n...\nfull_text\n...\n才能支撑 `NOT\n...\n**且你能\n...\n先给汇总，然后**完整输出每一个非 `SUPPORTED` 项的全部内容**，按严重度排序：`NOT_SUPPORTED` 与 `NOT_IN_SOURCE` 在前，然后 `PARTIALLY_SUPPORTED`，再 `UNVERIFIABLE`。完整 JSON 报告**必须**写到 `output` 路径（用户没给路径时默认写到当前工作目录，见参数）。见结果展示。\n...\n| 字段 | 取值 | 默认 | 含义 |\n| --- | --- | --- | --- |\n| `pdf` | PDF 绝对路径 | 必填 | 要核查的论文 |\n| `scope` | `all` / `specific-only` / `refs:1,12,23` | `all` | `all` = 每处正文引用；`specific-only` = 只查事实/数字/结果类声称；`refs:...` = 只查这些参考文献编号 |\n| `max-refs` | 整数 | 无 | 检索的去重原文数上限（成本护栏） |\n| `output` | 路径 | `./citation-faithfulness-<pdf文件名>.json` | 完整 JSON 报告的写出路径。**必写**——用户没给路径时，默认写到当前工作目录、按 PDF 文件名命名。 |\n...\n用户默认选**全覆盖**。论文参考很多、在意成本时，主动提供 `specific-only` 或 `max-refs`。\n...\n- **绝不编造判定或证据引句。** 读不到的原文就是 `UNVERIFIABLE`，没有例外。\n- `UNVERIFIABLE` 不是论文的过错——对用户说明时，务必把\"我们没能核对\"和\"引用错了\"区分开。\n- 把 `NOT_SUPPORTED` / `NOT_IN_SOURCE` 当作**待人工复核的标记**，不是最终指控。作者可能引的是另一版本、后面的章节，或你匹配错了原文——都要说明。\n- 尊重联网工具上限：每篇限跟进链接数、按被引工作去重、报告有多少篇 `not_found`。跳过的引用绝不静默丢弃——列出来。\n- 禁止回显 `AMINER_API_KEY` 的值。\n...\n- 论文标题 + 找到的正文引用总数 + 核查的去重原文数。\n- 各档计数：`SUPPORTED` / `PARTIALLY_SUPPORTED` / `NOT_SUPPORTED` / `NOT_IN_SOURCE` / `UNVERIFIABLE`。\n- 检索覆盖：多少篇达到 `full_text`、多少 `abstract_only`、多少 `not_found`——让用户知道核查到多深。\n- 若覆盖较浅，加一句诚实说明（如\"40 篇里 18 篇仅摘要；其正文级声称为 UNVERIFIABLE，并非已核实通过\"）。\n...\n**每个非 `SUPPORTED` 项完整输出**——不是只给一行表格。对每条 `NOT_SUPPORTED` / `NOT_IN_SOURCE` / `PARTIALLY_SUPPORTED` / `UNVERIFIABLE`，按严重度顺序（`NOT_SUPPORTED` 与 `NOT_IN_SOURCE` 在前，它们是可行动的发现）打出完整块：\n...\n`claim_id` · 章节 · 判定 · `retrieval_level` · `confidence`，随后是完整的 `citation_sentence`（论文原语言）、被引工作、`evidence` 证据引句（原文语言；未取到要明说）、`reason` 理由、以及 `notes`。不许截断、不许一笔带过——用户必须不打开 JSON 就能独立评判每条被标记的引用。\n...\n**`SUPPORTED` 项**只报计数\n...\n必要时附几\n...\n完整记录保留在 JSON 里。\n...\n**然后**：**必须**把完整 JSON 报告写到 `output` 路径——用户没给路径时，写到当前工作目录、命名为 `citation-faithfulness-<pdf文件名>.json`——并告知用户路径。这是强制步骤，不以用户是否索要为条件。\n...\n报告汇总为单个 JSON 对象，定义见 `references/output-schema.md`——顶层含 `paper` / `run` / `summary` / `claims[]` / `\n...\nged` / `\n...\n`，每处被核查引用对应一条\n...\n称记录。该对象**必写**入 `output`（默认：当前工作目录下的 `citation-faithfulness-<pdf文件名>.json`），屏幕展示也由它渲染。严格遵循该 schema 的字段名、枚举值与不变式，使返回值跨运行稳定。",
+      "title": "Web search: 在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试",
+      "metadata": {},
+      "time": {
+        "start": 1789529573812,
+        "end": 1789529575709
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.743Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529575743,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a846513b001rwIqUyBJZr4379",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a84647bc0013Xqf1coPmiPK62",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8588,
+      "output": 211,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8799,
+      "headroom": 30057,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.747Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.757Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8799,
+  "providerTokens": 8799,
+  "estimatedInputTokens": 7093,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8588,
+    "cacheRead": 0,
+    "output": 211
+  },
+  "overflow": false,
+  "headroom": 30057,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.759Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.759Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.761Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:55.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:56.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529576519,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465445001amTOFrnZIgh31z",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846514d001VvwsbZloBVs4PV",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:56.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:56.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529576519,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465447002g0Ytvc6uekQzWi",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846514d001VvwsbZloBVs4PV",
+    "type": "tool",
+    "callID": "call_f0131dae3f21370a",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:56.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529576519,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465447001YfCwzdB8vPnWGY",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846514d001VvwsbZloBVs4PV",
+    "type": "text",
+    "text": "我来打开 https://github.com/dylanzhangzx/dknowc-trusted-search，读取其中的内容。",
+    "time": {
+      "start": 1789529576519,
+      "end": 1789529576519
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:56.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529576519,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465447002g0Ytvc6uekQzWi",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846514d001VvwsbZloBVs4PV",
+    "type": "tool",
+    "callID": "call_f0131dae3f21370a",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/dylanzhangzx/dknowc-trusted-search"
+      },
+      "time": {
+        "start": 1789529576519
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.579Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529577581,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465447002g0Ytvc6uekQzWi",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846514d001VvwsbZloBVs4PV",
+    "type": "tool",
+    "callID": "call_f0131dae3f21370a",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/dylanzhangzx/dknowc-trusted-search"
+      },
+      "output": "GitHub - dylanzhangzx/dknowc-trusted-search: 深知可信搜索：基于深知可信智能的权威材料可信搜索 Agent Skill（法律、政策、标准） · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n      \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        dylanzhangzx\n    \n    /\n    \n      dknowc-trusted-search\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    0\n\n  \n\n  \n        \n            \n    \n\n          Star\n          0\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n     mainBranchesTagsGo to fileCodeOpen more actions menuLatest commit History9 Commits9 CommitsFolders and filesNameNameLast commit messageLast commit dateofficial-docsofficial-docs  referencereference  scriptsscripts  .gitignore.gitignore  LICENSELICENSE  PROMOTION.mdPROMOTION.md  README.mdREADME.md  SKILL.mdSKILL.md  View all filesRepository files navigationREADMEMIT licenseMore items深知可信搜索（法律、政策、标准）（skills.sh Public 版）\n这是深知可信搜索（法律、政策、标准）的 skills.sh Public 分发版本。功能逻辑与 full 版 1.1.0 对齐，不再调用统一咨询接口，默认只调用可信搜索接口；深度搜索仅在用户明确要求或确认升级后调用。本版本不内置 API Key；优先从环境变量 DKNOWC_API_KEY 读取，宿主进程读不到 shell 环境变量时自动从 ~/.zshrc 兜底解析（避免 WorkBuddy 等宿主误报缺 Key）。未配置时，Agent 可先通过 MaaS 手机号验证码流程获取 Key，让当前任务临时继续执行；持久化环境变量是独立步骤，必须在用户明确同意后再处理。\n能力范围\n\n可信搜索：查找原文、依据、权威材料或来源时，调用 scripts/trusted_search.py 返回重点材料和知识专库链接。\n深度搜索：仅在用户明确要求或确认升级后，调用 scripts/deep_query.py（deep-query/v3，非流式）做多轮检索和分析。\n最终交付：直接回复答案、溯源核验报告 HTML、无来源角标的干净 Markdown。\n默认核验报告：最终解决问题时，用 scripts/render_trace_html.py 生成《标题_溯源核验报告_时间戳.html》（首屏核验报告单五项指标：依据溯源/引用对应/材料新旧/材料构成/交付前检查，全部真实计算；生成前硬校验答案必须有 [n] 角标），并同步生成同名 .clean.md；--self-check-file 传入答案自检结果。\n宿主环境交付：交付前运行 scripts/deliver_outputs.py，自动探测宿主工作区（WorkBuddy 等）复制产出物并返回用户可见路径。\n政策可视化：用户明确要求图表时，用 scripts/render_policy_visualization.py 基于结构化 JSON 生成自包含 HTML 报告（可选 --svg 静态快照），以\"清楚展示搜索数据\"为原则——首屏数据表 + 每指标简单柱状图，覆盖城市对比/补贴金额/办理流程/时间线四类场景，来源收敛到行级与页脚。\n\n首次启动初始化\n只要调用本 Skill，Agent 必须先运行：\npython3 scripts/initialize.py\n只有返回 ready=true、api_key_configured=true、api_key_source 为 environment 或 zshrc，且未返回 search_ready=false 后，才继续处理原任务。初始化未通过时，只允许引导用户完成 MaaS Key 获取或环境变量配置，不得先输出答案、草稿、大纲、材料清单或分析结论。\nMaaS 注册与环境变量配置\n当前版本统一通过环境变量 DKNOWC_API_KEY 注入 Key，不再扫描或复用其他深知系列 Skill 的本地 config.ini，业务调用脚本也不再读取本地配置文件或传入 szUserId。如当前环境变量未配置：\n\n可运行 scripts/register_key.mjs 发送验证码并注册/查回 Key（send/register 各分支输出 user_message 固定话术，Agent 必须原样转述）。\n注册成功后，脚本自动把 Key 以标记块形式写入 ~/.zshrc（幂等替换，权限 0600；--no-zshrc 跳过）；业务脚本与 initialize.py 直读该文件，无需重启宿主。\n返回的 apiKey 同时供当前任务临时注入 DKNOWC_API_KEY 继续执行。\nMaaS 平台登录页：https://platform.dknowc.cn/auth/#/login\n\n开通引导（1.2.1 起固定话术）\n初始化检测到 Key 未配置时输出 guide_message（S1 三段式：价值 / 权益+开通方式 / 退路+样例钩子），Agent 优先原样转述；注册漏斗与报错场景的完整固定话术见 reference/onboarding_scripts.md（S1-S6 场景话术、注册与搜索链路报错对照表、FAQ、通用禁则）。核心纪律：引导前禁示（确认前不得输出\"已核实/已查到\"类内容）、权益前置（300 次免费额度 + 实名认证赠金在引导时告知）、退路唯一（\"依据待核验\"标注，禁止承诺联网检索替代）、手机号全程脱敏。用户犹豫或询问效果时，用 reference/sample_search_result.md 与 reference/sample_trace_report.html 展示检索结果和溯源报告效果（两文件均为示例数据，仅供展示，不得作为交付物）。\n接口地址\n\n可信搜索接口：https://open.dknowc.cn/dependable/search\n深度搜索接口：https://open.dknowc.cn/api/services/deep-query/v3（非流式，请求体字段 query，areas 支持多地域）\nMaaS 平台登录页：https://platform.dknowc.cn/auth/#/login\n\n工作区与产物约定\n本 Skill 的所有中间产物与交付物统一落在 Skill 目录下的 official-docs/ 工作区，不再向 /tmp 或顶层 outputs/ 写文件：\n\nofficial-docs/search-results/：查询/搜索/深度搜索结果 JSON 与答案文件。\nofficial-docs/output/：可点击溯源 HTML、干净 Markdown、可交互政策可视化 HTML 报告（及可选 SVG 快照）等最终交付物。\n\n查询脚本配合 --json-only --output &lt;文件名&gt; 原生落盘到 search-results/；渲染脚本自动从 search-results/ 读取、向 output/ 写入。\n常用测试\npython3 -m py_compile scripts/api_key.py scripts/initialize.py scripts/trusted_search.py scripts/deep_query.py scripts/render_trace_html.py scripts/render_policy_visualization.py scripts/deliver_outputs.py scripts/check_release.py\nnode --check scripts/register_key.mjs\npython3 scripts/check_release.py\n请求参数检查：\npython3 scripts/trusted_search.py \"公积金租房提取政策原文\" --show-payload --dry-run\npython3 scripts/deep_query.py \"重庆智能化改造补贴和税惠综合判断\" --area 重庆 --show-payload --dry-run\n公开包不得包含 _meta.json、CHANGE_log.md、config.ini、config.ini.example、register.mjs、真实 API Key、本地生成的 HTML/SVG 输出或缓存文件；official-docs/ 工作区内只允许保留 .gitkeep 占位。\nAbout深知可信搜索：基于深知可信智能的权威材料可信搜索 Agent Skill（法律、政策、标准）Topicsagent-skillsai-searchdknowcdocument-retrievallegal-searchofficial-documentspolicy-researchskills-shtrusted-searchResourcesReadmeMIT licenseActivityStars0 starsWatchers0 watchingForks0 forksReport repositoryReleasesPackagesContributorsLanguages   \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/dylanzhangzx/dknowc-trusted-search (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529576519,
+        "end": 1789529577578
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.582Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529577582,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a846586e0016BUxl8VuSy95LD",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846514d001VvwsbZloBVs4PV",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 24032,
+      "output": 154,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 24186,
+      "headroom": 14670,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.583Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.583Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.584Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.584Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.586Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.586Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.587Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.587Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.597Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 24186,
+  "providerTokens": 24186,
+  "estimatedInputTokens": 9658,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 24032,
+    "cacheRead": 0,
+    "output": 154
+  },
+  "overflow": false,
+  "headroom": 14670,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.597Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.597Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.601Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.990Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529577990,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465a05001yAeMeI0xUGiKkx",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846587d001fn9fUKx0kJq9yq",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.991Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.991Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529577991,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465a07001P0oPWxP3HFhS9C",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846587d001fn9fUKx0kJq9yq",
+    "type": "tool",
+    "callID": "call_c77d25dd6b0b148b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.991Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529577991,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465a06001cnXYaBMYbOeTdQ",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846587d001fn9fUKx0kJq9yq",
+    "type": "text",
+    "text": "我来打开 https://github.com/taxueseek/argo，读取其中的内容。",
+    "time": {
+      "start": 1789529577991,
+      "end": 1789529577991
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:57.991Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529577991,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465a07001P0oPWxP3HFhS9C",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846587d001fn9fUKx0kJq9yq",
+    "type": "tool",
+    "callID": "call_c77d25dd6b0b148b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/taxueseek/argo"
+      },
+      "time": {
+        "start": 1789529577991
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.775Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529578776,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465a07001P0oPWxP3HFhS9C",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846587d001fn9fUKx0kJq9yq",
+    "type": "tool",
+    "callID": "call_c77d25dd6b0b148b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/taxueseek/argo"
+      },
+      "output": "GitHub - taxueseek/argo: 专门为 agent 打造的开源 agent 搜索工具，具备 200+的搜索源及多语言搜索能力，覆盖中文/英文/学术/代码/购物/金融/新闻/百科。 · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n      \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        taxueseek\n    \n    /\n    \n      argo\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    9\n\n  \n\n  \n        \n            \n    \n\n          Star\n          129\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          1\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          1\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n    \n\n\n\n\n\n\n\n\n\n  \n     mainBranchesTagsGo to fileCodeOpen more actions menuLatest commit History203 Commits203 CommitsFolders and filesNameNameLast commit messageLast commit dateassets/readmeassets/readme  backendsbackends  binbin  datadata  docsdocs  enginesengines  mcpmcp  packages/dsh-pluginpackages/dsh-plugin  referencesreferences  scriptsscripts  sub-skillssub-skills  teststests  .gitignore.gitignore  .npmignore.npmignore  LICENSELICENSE  README.en.mdREADME.en.md  README.es.mdREADME.es.md  README.ja.mdREADME.ja.md  README.ko.mdREADME.ko.md  README.mdREADME.md  SKILL.mdSKILL.md  config.yamlconfig.yaml  cordis.patch.ymlcordis.patch.yml  installs.local.yaml.exampleinstalls.local.yaml.example  package.jsonpackage.json  View all filesRepository files navigationREADMEMIT licenseMore items\n  \n\n\n  中文 ·\n  English ·\n  日本語 ·\n  한국어 ·\n  Español\n\n\n  介绍 ·\n  对比 ·\n  证明 ·\n  机制 ·\n  快速开始 ·\n  能力 ·\n  配置 ·\n  更新\n\n\n  \n  \n  \n  \n  \n\n\n这是踏雪寻仙 DeepSeek Harness 插件系列的一员，作者还有其他的优秀插件：dsh-files（传文件读文档） · dsh-snippets（片段收藏夹） · dsh-healthcheck（只读体检） · dsh-plugin-guard（插件安全审计） · taxue-dsh-artisan（提示词反推与多供应商生图）—— 完整插件栏目见个人主页\n\n它和「模型自带搜索 / AI 搜索 / 聚合搜索」比，强在哪\n\n简单来说：前三种方案解决「人找信息」，Argo 解决「Agent 及搜索核查于一身，具备一条龙的搜索服务」。差别不在界面，在交付物，给人看的叫总结页或链接清单，给 Agent 的应是能排序、能复核、不撑爆上下文的优质内容，更可靠的搜索信息。\n\n\n  \n\n\n\n\n维度\n模型自带搜索\nAI 搜索（总结型）\n聚合搜索 / 搜索引擎\nArgo\n\n\n\n\n结果形态\n拼好的长文本\n给人看的总结页\nSERP 链接清单\n精简 JSON：证据候选 + 可信度分解\n\n\n垂直问题（行情 / 化学式）\n泛搜网页\n泛搜再总结\n泛搜网页\n直连垂直源，直接给答案\n\n\n证据可信度\n无评分\n无结构化评分\n无评分\nselection · absorption · freshness · 共识\n\n\n重复查询\n每次都打网\n每次都打网\n靠页面缓存\n双层缓存（内存 + SQLite），热查询约 10ms\n\n\n成本控制\n不可控\n单次贵\n免费但费事\n预算模式，免费优先，Key 全可选\n\n\n多语言\n随模型走\n随模型走\n随引擎走\n语言检测 + 引擎语言参数 + 多国语言支持\n\n\n\n\n机制上，Argo 把搜索当成一条证据管线：语言检测 → 领域路由 → 多引擎召回 → RRF 融合 → 证据快评，交付的是 Agent 可直接排序、可 fetch 复核、不撑爆上下文的材料。工具链不用换，需要换的是「搜索结果应该长什么样」——再往下一层，还有和「再包一层搜索 API 的差别」，那是实现细节的对比。\n\n\n2026，检索正在发生什么变化\nAgent 干活的量级变了，检索的玩法跟着变了四件事，每一件 Argo 都已经落在代码里：\n\n检索从「给链接」变成「给证据」。 Agent 不看网页排版，它要能排序、能复核、不撑爆上下文的结构化材料——所以 Argo 交付的是带可信度分解的 JSON，而不是 SERP 清单。\n上下文成为第一成本。 一次网页抓取动辄上万 token，Agent 的窗口烧不起。Argo 的 Agent 档单次约 3.7KB，字段集合与字节预算被门禁锁死，升级不会悄悄变胖。\n网站开始为 AI 备料。 llms.txt 标准与 .md 直出在头部文档站快速铺开——Argo 抓取链第零级自动探测这些 AI 友好变体，命中即跳过整条反爬链；HTTP/TLS 都失败还有 r.jina.ai 阅读器级兜底。\n免费开放生态够用了。 政府、学术、标准、安全机构的开放 API + 免 key 引擎，已经能覆盖大多数领域（185 个免配置源）；稀缺免费额度（firecrawl 1000 credits/月、stackexchange 300 次/天）做了「日常补位、关键顶上」的分层，订阅墙不是唯一解。\n检索质量从「感觉」到「度量」。 排序有金标（MRR/nDCG 地板）、融合有增益消融门禁、路由有负向控制矩阵——「这版比上版好吗」从此是数字问题，不是玄学。\n\n\nv2.8.7 把以上全部落地：218 个源、89 个领域、184 个免配置开箱。逐项细节见 docs/为什么选择argo.md 与 发布说明。\n\n\n这是什么\nArgo 是给 AI Agent 用的多语言搜索基础设施。\n真实检索从来不是「一种语言 + 一个搜索框」：有人问 A 股行情，有人问 World Cup，有人用日文找动画，有人要 IMDb 上的导演信息。Argo 的出发点很朴素——按领域、按语言、按需求选路，把问题送到合适的源，而不是一律扫网页标题。联网搜索与本机文件搜索一体可用。\n\n产出不是「链接清单」，而是「证据候选 + 可信度分解」。路选对了，证据才站得住。\n\n和「再包一层搜索 API」的差别\n\n\n\n常见做法\nArgo\n\n\n\n\n绑死一个引擎、一个 Key\n多引擎自动选路，免费优先、可配预算\n\n\n啥问题都泛搜网页\n垂直源优先：行情、影视、体育、宏观、化学等先给答案型结果\n\n\n默认只按中英优化\n多语言识别 + 引擎语言参数 + 跨语言回退\n\n\n搜完直接拼摘要\n选择门槛 × 证据密度 × 时效 × 多源共识\n\n\n引擎挂了整条链路挂\n熔断、负缓存、分阶恢复（防垂直源串味）\n\n\n每次查询都重新打网\n双层缓存（内存 + SQLite），热查询约 10ms 级\n\n\n日常和研究一个慢\n日常少开引擎、研究再放宽\n\n\nAgent 上下文被长 JSON 撑爆\nMCP 响应可紧凑裁剪，snippet 可控\n\n\n\n\n问啥像啥\n\n  \n\n\n\n\n你这样问\n大致会怎样\n\n\n\n\npython asyncio error handling\n编程问答域 → StackOverflow/StackExchange 官方 API，带得分与采纳标记\n\n\nAAPL / 美股盘前\n美股域，与 A 股分流\n\n\n肖申克的救赎 主演 / Inception director\n影视域 → IMDb 等\n\n\n梅西 俱乐部 / 库里 球队\n体育域 → TheSportsDB 等\n\n\n埃菲尔铁塔在哪 / where is Eiffel Tower\n地理实体 → OpenStreetMap 等\n\n\nNASA founding year / 国务院职能\n组织实体 → Wikidata 等\n\n\n周杰伦 专辑 / Taylor Swift album\n媒体域 → iTunes 等\n\n\nアニメ おすすめ / 한국 영화 추천\n识别日/韩语 → 语言友好源，少塞中文专用站\n\n\n美国 CPI、日本 通胀率\n宏观数据域；国别分流（本国权威源优先）\n\n\nlog4j 漏洞 CVSS / nodejs 22 end of life\n安全域 → NVD 官方；生命周期域 → endoflife.date\n\n\nattention is all you need\n学术域 → arXiv/OpenAlex/CrossRef，元数据与 DOI 直连\n\n\n阿司匹林 分子式\n化学域 → PubChem 类答案\n\n\n台积电估值分歧（深度研究）\n拆子问题 + 多源并行，垂直源被 boost\n\n\n\n\n它怎么工作\n\n  \n\n查询\n  ├─ 意图消歧（可选）\n  ├─ 查询改写（可选；路由仍看原始意图）\n  ├─ 语言检测 + 语言偏好\n  ├─ 路由（域规则 + TF-IDF + 预算 + 语言补充源 + 热路径缓存）\n  ├─ 多引擎召回（熔断 / 负缓存 / 并行）\n  ├─ 空结果分阶恢复（放宽 → 换同族/通用 → 跨语言；防污染）\n  ├─ RRF 融合 + 可选精排\n  ├─ 证据快评（权威 · 证据密度 · 时效 · 共识）\n  └─ 统一 JSON（含 engine_outcomes / recovery / route_reason）\n\n证据评分（简版）\nselection  ≈ 域名权威，SERP/跳转链压到很低\nabsorption ≈ 数字 / 定义 / 对比 / 披露等证据密度\nfreshness  ≈ 发布时间（会忽略「2015 年以来」这类历史对比年）\n综合       ≈ 0.40·selection + 0.35·absorption + 0.15·freshness + 0.10·引擎分\n\n结果字段含 selection、absorption、credibility_fast、evidence_flags 等，方便 Agent 直接排序。\nAgent 使用纪律（建议）\n\n高后果问题（持仓、安全、是否属实）：search → 看快评分 → 对 top 结果 fetch → 再下结论\n数字：写清口径，冲突时并列，不要硬合并\n搜索结果页 / 跳转链：不要当正文信源\n社交帖：当舆情与叙事，不当事实真值\n事实核查：宁可多一两条分层查询（来源 / 对比 / 主体）\n\n\n快速开始\n任选一种即可。以 GitHub 为唯一安装真源（npx github:taxueseek/argo 或 install.sh / install.ps1），当前推荐 v2.8.7。请勿用 npm install argo-search——npm registry 上那份是非官方陈旧版 v1.0.1（非本仓库维护，功能残缺、不随本项目更新）。本包 package.json 已设 private: true 防止误发布到 npm registry。\n零配置就能跑：不配 API Key 时走免费引擎 + 本地 local_* 引擎；配了 Key 的源质量通常更好，没配则自动跳过。\n方式一：一键脚本（推荐本机长期用）\nmacOS / Linux：\ncurl -fsSL https://raw.githubusercontent.com/taxueseek/argo/main/scripts/install.sh | bash\nWindows（PowerShell）：\npowershell -ExecutionPolicy Bypass -Command \"irm https://raw.githubusercontent.com/taxueseek/argo/main/scripts/install.ps1 | iex\"\n# 或下载后执行：\n# powershell -ExecutionPolicy Bypass -File scripts/install.ps1\n装到指定目录、并挂 Skill 入口：\ncurl -fsSL https://raw.githubusercontent.com/taxueseek/argo/main/scripts/install.sh \\\n  | bash -s -- --home \"$HOME/.local/share/argo\" --link \"$HOME/.claude/skills/argo\"\n验证：\npython3 ~/.local/share/argo/scripts/search.py \"python asyncio error handling\" --json\npython3 ~/.local/share/argo/scripts/search.py --list-engines\n方式二：MCP 不装包，直接用 GitHub（推荐 Agent 快速挂载）\n需要 Node.js 18+ 和 Python 3.10+，首次执行一次：\npip3 install pyyaml\nnpx -y github:taxueseek/argo\n客户端配置示例（Claude Code / Cursor / Kimi 等）：\n{\n  \"mcpServers\": {\n    \"argo\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"github:taxueseek/argo\"]\n    }\n  }\n}\nDeepSeek Harness 一键插件（.dsh-plugin bundle）\n在 DeepSeek Harness 里一行安装（两种装法）：\n# 装法 A：14 个 mcp__argo__* 工具（主包自带 bundle，与 MCP 全量相同）\ndsh plugin --profile web add \"github:taxueseek/argo\"\n\n# 装法 B：搜索工具 + wide_research 并行研究编排（子包）\ndsh plugin --profile web add \"github:taxueseek/argo#main&amp;path:packages/dsh-plugin\"\n重启 dsh web 后生效。包结构见 packages/dsh-plugin/；同 id mcp-argo / wide-research 可在用户层 cordis.patch.yml 覆盖。装法 B 的 wide_research 模块只存在于子包依赖树，主包 patch 不引用它，避免只装主包时 Cordis 解析失败。\n依赖清单（通俗版）\n\n\n\n依赖\n必需？\n干什么用\n不装会怎样\n\n\n\n\nPyYAML\n✅ 必需\n读配置文件\n完全跑不起来，安装脚本会自动装\n\n\ncurl_cffi\n❌ 可选（v2.7.3 新增）\n模拟浏览器 TLS 指纹，过反爬站（Cloudflare 等）\n反爬站抓取成功率低一些，日常搜索无影响\n\n\nddgs CLI\n❌ 可选\n本地免 key 搜索的 10 个后端引擎\n少一批零成本本地搜索源，其余不受影响\n\n\nrealtime-index CLI\n❌ 可选\n实时索引引擎（搜刚发布的内容）\n该引擎自动禁用，显式指定会回退通用引擎\n\n\nChrome\n❌ 可选\n页面截图、JS 渲染页、登录态抓取\n截图工具不可用，其余正常\n\n\npdfplumber / PyMuPDF\n❌ 可选\nPDF 提取\nargo_pdf 不可用，其余正常\n\n\nPlaywright\n❌ 可选\n截图增强\n截图工具回退 Chrome CDP，其余正常\n\n\n\n安装脚本（install.sh）只自动装前两个；其余可选依赖按需 pip install 或 brew install 即可。\n更稳、完全不依赖 Node 的写法：先装脚本（方式一），再指向本机 Python：\n{\n  \"mcpServers\": {\n    \"argo\": {\n      \"command\": \"python3\",\n      \"args\": [\"/path/to/argo/scripts/mcp_server.py\"]\n    }\n  }\n}\nPython 路径特殊时：export ARGO_PYTHON=/path/to/python3（仅 npx 入口会读）。\n方式三：git clone（开发 / 改源码）\ngit clone https://github.com/taxueseek/argo.git\ncd argo\npip3 install pyyaml\nbash scripts/install.sh --link ~/.claude/skills/argo   # 可选\npython3 scripts/search.py --list-engines\n\n适用平台\n\n\n\n平台\n接入方式\n说明\n\n\n\n\nClaude Code\nMCP / Skill 链接\nnpx 或 mcp_server.py；也可用 link_source.py\n\n\nKimi / Grok Build\nMCP Server\n同上\n\n\nCursor / Cline / Continue\nMCP\n支持 MCP 的 IDE 插件均可\n\n\n命令行\nsearch.py / bin/argo\n脚本、定时任务、人工排查\n\n\nPython 项目\nfrom search import super_search\n库调用\n\n\n\n安装后自检\npython3 --version          # 需要 3.10+\npython3 -c \"import yaml; print('PyYAML OK')\"\npython3 -m pytest tests/test_unit.py -q   # 可选\npython3 scripts/search.py --list-engines\n\n能做什么\n五种能力，通俗说\n1. 通用搜索 + 垂直搜索，双管齐下\n日常问题走通用网页搜索；一问到行情、影视、体育、宏观这类「有标准答案」的问题，自动切到垂直源直接给答案，而不是扔给你一堆链接。目前 220 个源（185 个免密钥开箱可用）、88 个业务域，金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等都有专门的路。\n2. 缓存：不重复花冤枉钱\n时效性没那么强的内容（百科类、历史数据这类），第一次查完会进缓存，之后同样的查询直接命中，不再每次都走一遍 API。双层缓存（内存 + SQLite），热查询约 10ms 级返回，既省钱也省时间。\n3. 专为 Agent 设计，更省 Token\n产出是「证据候选 + 可信度分解」的精简 JSON，不是长篇网页；MCP 响应可以按需裁剪，snippet 可控，不会撑爆 Agent 的上下文。比常规模型自带的搜索能力更专业、更省 Token。\n4. 深度研究\n把一个笼统的问题拆成多个子问题，多源并行采集，最后给出「还差什么证据」的缺口提示。适合综述、调研这类要全面、要扎实的场景。\n5. 登录态专业搜索（专业模式，默认关闭）\n知乎、小红书、公众号这类要登录才能看的内容，以及 JS 渲染页、反爬页，用真实浏览器配合登录态去搜。默认关闭，需要时开启，依赖 ego lite 和 WebBridge 两个东西，详见下节「登录态专业搜索」。\n6. 时间能力（时间窗 + 方向排序）\n要搜「最近几天刚发布的内容」，用 --since 7d 这类时间窗框住发布时间范围，判断新旧不再靠猜。支持引擎（如 realtime_index，免 Key 实时索引源，结果自带发布时间）把窗口下推给数据源；其余引擎的融合结果会按 published_at 兜底剔除明确超窗的条目（宽松策略，无时间字段的保留），返回包带 time_filtered 统计，CLI 与 MCP 均支持。--since 7d 与「7 天前的绝对日期」等价、共享缓存；--until 2026-08-01 含当天。配合 --sort newest|oldest 按发布时间重排——找最新动态用 newest，找最早出处用 oldest。\n能力入口速查\n\n\n\n能力\n说明\n入口\n\n\n\n\n统一搜索\n路由 → 召回 → 融合 → 快评\nsearch.py / argo_search\n\n\n本地文件搜索\n本机代码/笔记/记忆（非联网）\nargo_local_search\n\n\n本地文本预览\n白名单目录内预览（fail-closed）\nargo_local_read\n\n\n可复算\n受限子进程重算数字（默认拒绝）\nargo_recompute\n\n\n深度研究\n拆子问题、多源采集、缺口提示\nresearch.py / argo_research\n\n\n可信度评估\n权威 / 证据密度 / 时效 / 交叉验证\nevidence.py / argo_evidence\n\n\n证据核验（闭环）\n高后果问题标记 fetch_required + 每条 fetch_suggested；--verify 一键抓正文核验、回填「核实后证据分」、核实过的链接自动记住\nsearch.py --verify 3 / research.py --verify 3\n\n\n意图消歧\n多义词、品牌碰撞、策略建议\nclarify.py / argo_clarify\n\n\n页面抓取\nHTTP 优先，必要时浏览器降级\nargo_fetch（mode=extract 可结构化）\n\n\n截图 / PDF\n页面截图、PDF 结构化提取\nargo_screenshot / argo_pdf\n\n\n站点爬取\n列表页批量抓取\nargo_crawl\n\n\n社交与舆情\n微博 / 小红书 / B 站 / Reddit / X 等\nargo_social_search\n\n\n实时索引搜索\n免 Key 实时索引源，结果带发布时间，适合「最近几天有什么新东西」\n--engine realtime_index\n\n\n时间窗过滤\n--since / --until（7d 或 2026-08-01）限定发布时间范围；支持引擎下推 + 融合后兜底过滤（time_filtered），CLI 与 MCP 均支持\n--since 7d\n\n\n时间方向排序\n--sort newest|oldest 按发布时间重排（最新动态 / 最早出处）\n--sort oldest\n\n\n登录态专业搜索\n知乎 / 小红书等登录墙正文、JS 渲染页、登录站点接口直取\nsub-skills/ego-search/scripts/ego_search.py（默认关闭，见下）\n\n\n\n预算模式\n\n\n\n模式\n适合\n行为\n\n\n\n\nfast\n简单问题、要速度\n免费引擎优先，跳过付费精排\n\n\nauto\n默认日常\n成本感知，质量与花费折中\n\n\ndeep\n调研、综述\n质量优先，可多用引擎\n\n\nbudget\n额度紧\n配额控制，用完降级\n\n\n\n当前大致能力（v2.8.7）\n\n\nDSH 插件工具原生化（v2.8.5 新增）：argo_search / argo_fetch 原生一等工具默认可用（CLI 单发，不依赖 MCP 连接）；schema 由 gen_native_tools.py 从 mcp_tools.py 单一真源生成（漂移门禁测试把关）；nativeTools 配置可按需启用全部 13 个工具（argo_research 除外）\n\n\nMCP 默认关闭（v2.8.5 变更）：三形态接入——MCP 按需挂载（profile patch）/ 原生工具（默认入口）/ 原生 web_search seam；平时零常驻 token 开销\n\n\nWindows 全平台兼容（v2.8.5 增强，社区贡献）：临时路径走 tempfile.gettempdir()；解析映射显式 UTF-8（根治 GBK 静默失效）；解释器运行时解析（python3 → python → sys.executable）；symlink 无权限退化 junction；PowerShell 一键安装 install.ps1；--spotlight 无 mdfind 自动退化 rg\n\n\n配额自愈闭环（v2.8.5 新增）：HTTP 200 业务错误封套识别（火山/知乎风格）；远端配额耗尽自动标记 → 路由全模式排除 → 备用源接管 → 周期边界自愈回归；配额/鉴权错误不毒化自适应分数与熔断\n\n\n抓取全局 deadline（v2.8.5 新增）：ARGO_FETCH_DEADLINE_S（默认 60s）封顶降级链总耗时；429/503 停止信号；tinyfish 渲染层（TINYFISH_API_KEY）+ {url}.md 变体探测；移动 UA 首发身份记忆\n\n\n本地数据融合（v2.8.4 新增，深度研究 L1）：工作包可带 file_inputs（本地一手数据白名单入账，登记 sha256/血缘）与 recompute（可复算执行器，受限子进程安全重算，重算值与检索数字冲突触发 recompute_conflict）；dossier 输出 local_sources，本地一手计入一手命中（防 no_sources 假阴性）\n\n\n多客户端 MCP 一键接入（v2.8.4 新增）：argo mcp inject 一键给 Claude Code / Cursor / Windsurf / Codex / OpenCode / Cline 注入 argo MCP（原子写 + 备份 + 可逆，客户端真源 mcp/clients.yaml）\n\n\n结构化搜索增强（v2.8.4 新增）：查询归一化（全角→半角、点号版本拆斜杠）+ 检索变体 + 复杂度门控（低复杂度查询不放行高价多轮）；social 域语法优先（from:/subreddit:/lang: 命中提前）+ TF-IDF 检索修复（丢弃中文引擎后继续看 top-2/3）；--include-local 本机命中并入（默认关）\n\n\nKeenable（v2.8.4 新增）：接入通用网页搜索引擎（L1 声明式 HTTP，免费体验期，ARGO_KEENABLE_API_KEY）\n\n\n多语言路由修复（v2.8.3 新增）：ja/ko 查询返回目标语言（不再被中文引擎污染）；德法西意等多语言走 anysearch 返回对应语言；weighted RRF 弱源降权（weakest-link，论文 2508.01405）；anysearch 进程内 builder（更快更稳）\n\n\nWindows 全平台可用（v2.8.2 新增）：移除 npm os 限制；全链路 UTF-8 防线（PYTHONUTF8 + -X utf8 + 6 处 JSON read_bytes）根治 GBK 崩溃；工具探测改 shutil.which；Chrome/Edge 自动发现；Ctrl+C 干净退出\n\n\nDSH 插件两种装法（v2.8.2 新增）：主包自带 dsh.bundle，dsh plugin add github:taxueseek/argo 即得 14 个 MCP 工具；子包再加 wide_research 并行研究编排\n\n\nwide_research 证据门禁（v2.8.2 新增）：输出自带 quality_gate_results（conclusion_cap low/medium/high），与 dossier 同一套语义；depends_on 依赖分阶段；仅 http(s) 入证据账本；worker 不可调 argo_research（防研究套研究）\n\n\n取证协议化（v2.8.2）：深度研究只产 dossier（来源/覆盖/缺口/门禁），判断稿归 Agent；--work-packages 按 depends_on 分阶段\n\n\n证据闭环（v2.8.0 新增）：搜索输出自带证据门控——高后果问题（金融/医疗/法律）标 fetch_required，每条结果标 fetch_suggested；--verify 一键核验正文并回填「核实后证据分」，核实过的链接自动记住，下次搜索直接显示已核实\n\n\n求职搜索 v3（v2.8.0 升级）：argo job 结构化字段 + 增量监控 + 指纹去重，新增 Ashby ATS 免 Key 后端与北京高校就业源\n\n\n天气双源并行（v2.8.0 升级）：wttr.in + Open-Meteo 双源，地理编码 + 空气质量，问天气不落空\n\n\n通用搜索增强（v2.8.0 新增）：Parallel 搜索（长文摘录、多路召回）与 You.com（网页+新闻合并、时效动态化），无 Key 优雅降级\n\n\n220 个搜索源（185 个免密钥开箱可用）、88 个业务域：通用网页 + 金融 / 宏观 / 影视 / 体育 / 地理 / 组织 / 媒体 / 化学 / 学术 / 代码等（真源：config.yaml 与 engines/specs/*.yaml）。逐源清单（费用 / 密钥 / 状态 / 域组合 / 特别能力）见 搜索源使用文档，该文档由脚本从声明生成、有门禁防漂移；选源判断与语义分工见 references/engines.md\n\n\n垂直结构化模态卡：火车票 / 油价 / 贵金属 / 万年历 / 星座 / 手机参数 / 汽车 / 医疗挂号等查询返回实时结构化卡片（modal_card 域 → bocha_ai 原生引擎，失败自动回落 web 搜索）\n\n\n双层缓存：内存 LRU + SQLite 持久化，时效性弱的内容不重复打 API；登录态结果单独隔离，不污染公共缓存\n\n\n为 Agent 节省 Token：MCP 响应可紧凑裁剪、snippet 可控，输出为精简 JSON 而非整页文本\n\n\n14 个 MCP 工具：搜索、研究、证据、消歧、抓取、截图、PDF、社交舆情、本地文件搜索、站点爬取、本地预览、可复算、公众号文章全文、招聘聚合\n\n\n多语言搜索：中、英、日、韩、西里尔、泰、阿、希伯来、希腊、天城体等；路由与引擎参数跟着语言走；非中文查询避免误入知乎 / 搜狗微信 / A 股快照等中文专用源\n\n\n登录态专业搜索：ego-search 子技能，登录墙正文 / JS 渲染页 / 登录站点接口直取（默认关闭，见上节）\n\n\n垂直域门禁：空结果恢复时不把 pypi / npm / 快讯等无关源「串」进影视、体育查询\n\n\n日常更快、研究更全：engine_policy 分层——日常 combo 收紧，deep / research 再放开长尾源\n\n\n引擎层 HttpClient 接入（v2.7.3 追加）：HTTP/HTML 引擎 GET 统一走 UA 轮换 + 重试 + 重定向跟随层，arxiv 类 UA 敏感引擎从 5s 超时空返回变为 2s 内 10 条有效结果；ARGO_ENGINE_HTTP_CLIENT=0 回退 urllib\n\n\nTF-IDF 强语义注入（v2.7.3 追加）：marginalia / open_meteo / usda / gov_policy / cnii 等 25 个垂直引擎不再被正则域压制——「独立博客 长尾」路由到 marginalia、「营养成分 热量」路由到 usda、「国务院 政策」路由到 gov_policy\n\n\n70 域 TTL 全覆盖（v2.7.3 追加）：实时卡片/快讯/行情缓存 5-15 分钟（此前 1 小时），学术稳定型放宽到 2 小时\n\n\n垂直源中英双语（v2.7.3 追加）：worldbank / eurostat 英文国家与指标名（China GDP / US inflation / Japan population 实测命中）；快讯类引擎触发词放行全量榜单；百科条目页直接命中兜底\n\n\n\n引擎与路由\n当前配置 218 个源（184 个免密钥开箱可用）、89 个业务域（以 config.yaml 与 --list-engines 为准）。\n直连与垂类（节选）\n\n\n\n引擎\n场景\n成本倾向\n\n\n\n\nanysearch / duckduckgo\n通用 / 技术\n免费\n\n\nsina_quote / tencent_quote / eastmoney\nA 股行情 / 资金\n免费\n\n\nfinviz / seeking_alpha\n美股与海外金融\n视配置\n\n\nimdb / itunes / thesportsdb\n影视 / 音乐 / 体育\n免费为主\n\n\nlocal_openstreetmap / wikidata / wikipedia\n地理 / 组织 / 百科\n免费\n\n\narxiv / semantic_scholar / openalex\n学术\n免费为主\n\n\npubchem / gbif / rfc_editor\n化学 / 物种 / 标准\n免费\n\n\ngithub / stackoverflow / pypi / npm\n代码与包\n视配置\n\n\nbyted / bocha / octen\n中文网页 / AI 搜索\nAPI / 低成本\n\n\nzhihu / wechat_sogou\n中文观点 / 公众号\nAPI / 免费\n\n\ntavily / exa\n国际 / 语义\n付费或额度\n\n\nstackexchange / doi / endoflife / nvd / flk_law\n问答官方 API / 论文元数据 / 生命周期 / 漏洞 / 法规原文\n免费\n\n\ntwitter / reddit / xiaohongshu / bilibili / weibo\n社交 UGC\n免费（部分需登录）\n\n\n\n本地零成本层（local_*）\n不依赖独立的 SearXNG 服务。主路径用进程内 HTML / RSS / JSON 解析（如 local_bing、local_sogou、local_google、local_arxiv 等）。多语言查询时，路由会按语种动态改写引擎语言参数（例如 Bing setlang），并参与 RRF 融合。\n登录态专业搜索（ego-search，默认关闭）\n普通搜索拿不到知乎、小红书、微博、公众号等需要登录的内容，也常抓不回来 JS 渲染页 / 反爬页。ego-search 用真实浏览器去做这类搜索：继承登录态、抓登录墙后的正文、在已登录站点直接调接口取数据（如知乎搜索接口）。\n默认关闭，需要时开启（在 argo 目录下运行）：\npython3 sub-skills/ego-search/scripts/ego_search.py enable\n常用命令：python3 sub-skills/ego-search/scripts/ego_search.py status（查看状态）、... disable（关闭）、search / fetch / api（分别对应浏览器搜索、抓正文、调站点接口）。\n依赖（装好其中一个就能用，两个都装更好）：\n\n\n\n依赖\n官方项目\n是什么\n什么时候用\n\n\n\n\nego lite\nlite.ego.app\n专门给 Agent 用的浏览器应用（仅 macOS），初始化后提供 ego-browser 命令\n默认首选：独立空间，不抢你正在用的浏览器标签\n\n\nWebBridge\nKimi WebBridge 官方帮助中心\n浏览器扩展桥，复用 Chrome / Edge 里已登录的会话\nego lite 没装，或想直接沿用日常登录态时\n\n\n\n登录态搜到的结果不写公共搜索缓存（避免污染共享缓存），需要融合时用 merge 命令把常规结果和登录态结果放一起分析。\n\n使用示例\n金融\npython3 scripts/search.py \"贵州茅台股价\" --explain\n# 典型：命中 stock_query → 行情快照源\n学术\npython3 scripts/search.py \"transformer attention mechanism paper\" --json\n# domain 常为 academic，引擎组合含 arxiv 等\n研究与核验\npython3 scripts/research.py \"2026 公募基金二季报 持仓结构\" --depth deep --json\n\npython3 scripts/search.py \"同一查询\" --json | \\\n  python3 scripts/evidence.py \"同一查询\" --stdin --json\nMCP 工具一览（12）\n\n\n\n工具\n用途\n\n\n\n\nargo_search\n统一搜索\n\n\nargo_local_search\n本地文件搜索（非联网）\n\n\nargo_local_read\n白名单本地文本预览（fail-closed）\n\n\nargo_recompute\n受限子进程可复算（默认拒绝，需授权）\n\n\nargo_research\n深度研究（含 social-sentiment 模式）\n\n\nargo_evidence\n可信度评估\n\n\nargo_clarify\n意图消歧\n\n\nargo_fetch\n智能抓取（mode=extract 结构化提取）\n\n\nargo_crawl\n站点爬取\n\n\nargo_screenshot\n页面截图\n\n\nargo_pdf\nPDF 提取\n\n\nargo_social_search\n多平台社交搜索（mode=sentiment 舆情聚合）\n\n\n\n\n安装与配置\n环境要求\n\n\n\n项目\n要求\n\n\n\n\nPython\n3.10+（命令行与 MCP 核心）\n\n\n依赖\npip install pyyaml（仅此一个硬依赖）\n\n\n可选增强\npip install curl_cffi（TLS 指纹伪造，MIT 许可）。装上后对指纹检测型反爬站（Cloudflare 等）免起浏览器即可抓取；缺失时自动降级，核心功能不受影响\n\n\nNode.js\n仅在使用 npx 入口时需要 18+\n\n\nSearXNG\n不需要（内置本地引擎替代）\n\n\n\nAPI Key（全部可选）\n不配置则跳过对应引擎，免费引擎自动兜底。请用环境变量，不要把真实 Key 写进仓库或贴到 Issue。\n# 推荐（提升搜索质量）\nexport TAVILY_API_KEY=\"你的密钥\"\nexport BOCHA_API_KEY=\"你的密钥\"\nexport METASO_API_KEY=\"你的密钥\"\nexport ZHIHU_ACCESS_SECRET=\"你的密钥\"\n\n# 可选\nexport BRAVE_API_KEY=\"你的密钥\"\nexport FELO_API_KEY=\"你的密钥\"\nexport GITHUB_TOKEN=\"你的密钥\"\nexport WEB_SEARCH_API_KEY=\"你的密钥\"\nexport ANYSEARCH_API_KEY=\"你的密钥\"\nexport OCTEN_API_KEY=\"你的密钥\"\nexport ARGO_KEENABLE_API_KEY=\"你的密钥\"   # 可选；Keenable 免费体验期\nconfig.yaml 里只写 {ENV_NAME} 占位，不会提交明文密钥。\n缓存\n默认 SQLite 路径见 config.yaml 的 cache.db_path（一般为 ~/.cache/unified-search/cache.db）。\n\n\n\n类型\n大致 TTL\n\n\n\n\n金融\n约 5 分钟\n\n\n新闻 / 实时\n约 10–15 分钟\n\n\n通用\n约 1 小时\n\n\n研究 / 常青\n约 2–24 小时\n\n\n空结果\n很短（避免把失败固化）\n\n\n\n常见问题\n不配 API Key 能用吗？\n能。内置大量本地零成本引擎和免费 API 源，不配 Key 时自动走免费路径。\n安装脚本和 npx 有什么区别？\n安装脚本适合固定装在本机、改配置、挂 Skill；npx 适合快速把 MCP 挂进 Agent。两者底层同一套 Python 代码。\n如何确认引擎是否正常？\npython3 scripts/search.py --list-engines，或加 --explain。\n会不会在仓库里复制多份代码？\n不会。推荐「一份真源 + 符号链接」。用 link_source.py，不要 rsync 多副本。\n\nCLI 常用参数\npython3 scripts/search.py [选项] 查询词\n\n  --engine, -e       引擎，默认 auto\n  --max-results, -n  条数，默认 5\n  --depth, -d        fast | balanced | deep\n  --mode             fast | auto | deep | budget\n  --no-cache         跳过缓存\n  --explain          打印路由说明\n  --json             JSON 输出\n  --timeout, -t      超时秒数\n  --list-engines     列出引擎\n\n\n设计取舍\n\n先服务 Agent 吸收，再谈链接数量。\n免费与本地优先，付费可选增强。\n失败要可观测：空结果、超时、熔断分开标，不静默吞掉。\n配置驱动扩引擎，config.yaml 为单一真源。\n单一真源安装：链接入口、不 rsync 多副本。\n不把社交当真理库；社交内容适合扩维与舆情，不适合单独当真值。\n\n\n适用场景\n\nClaude Code / Grok Build / Codex / Kimi 等 Agent 的搜索后端\n多语言、多领域日常问答：中英日韩等 + 金融 / 影视 / 体育 / 学术 / 代码\n脚本与流水线里需要 可复现、可缓存 的检索\n事实核查、金融公开信息、实体与公开资料的 多源对照\n\n不太适合单独承担：平台内高级互动定榜、需要长期养服务的最大召回聚合器（已用内嵌本地引擎替代外挂 SearXNG 主路径）。\n\n目录结构（简）\nargo/\n├── README.md                # 中文介绍（默认）\n├── README.en.md             # English\n├── README.ja.md             # 日本語\n├── README.ko.md             # 한국어\n├── README.es.md             # Español\n├── SKILL.md\n├── package.json             # npx 入口\n├── bin/argo.js              # Node 启动 MCP\n├── bin/argo                 # Python CLI\n├── config.yaml              # 引擎与域配置（真源）\n├── assets/readme/           # README 视觉资源\n├── backends/\n├── mcp/                     # 多客户端 MCP 注入真源（clients.yaml）\n├── scripts/                 # search / research / mcp / install …\n├── sub-skills/local-search/\n├── sub-skills/ego-search/      # 登录态专业搜索（默认关闭，开启命令见正文）\n├── tests/\n└── docs/                    # 含 ENGINE_CATALOG.md（搜索源使用文档，生成）\n\n\n最近更新\nv2.8.8：两个真实用户问题修复 + 直答/观察子命令\n\n修复：按推荐名配密钥后引擎静默失效（#12）；抓取链不走代理，GitHub 等站点必然失败（#13）——现在 ARGO_PROXY、config 按域规则、标准代理环境变量都生效，NO_PROXY 尊重\n新增：parallel_free（免密钥）/ seltz 引擎（220 源）、argo answer 直答、argo watch 网页观察、抓取链免费云渲染级；详见 发布说明\n\nv2.8.7：数据源扩充到 218 个 + 一批修复\n\n数据源扩充：168 → 218 个源、72 → 89 个领域（新增 StackExchange 问答、DOI 论文元数据、漏洞情报、产品生命周期等官方源），抓取链新增三条拿正文直出通道\n一批修复：多引擎路由、零结果自动换源、中文重定向、本地搜索降级等；详见 发布说明\n\nv2.8.6：检索提速 + 多源分工\n\n引擎竞速、知乎三源分工、多语言与学术分发放宽、死源显形门禁\n\nv2.8.5：DSH 插件工具原生化 + MCP 默认关闭 + Windows 兼容\n\nDSH 插件工具原生化：argo_search / argo_fetch 以原生一等工具注册，默认可用，不依赖 MCP 连接；schema 从 mcp_tools.py 单一真源自动生成，两侧零漂移；除 argo_research 外 13 个工具都可经 nativeTools 按需启用\nMCP 默认关闭：DSH 三形态接入（MCP 按需挂载 / 原生工具默认入口 / web_search seam），平时零常驻 token 开销，要完整 14 工具面时一条 profile patch 打开\nWindows 全平台兼容（社区贡献 PR #11）：临时路径走系统 temp、GBK 编码修复、python3/python 运行时解析、symlink 无权限自动退化 junction、新增 PowerShell 一键安装 install.ps1\n配额自愈闭环：远端配额耗尽（HTTP 200 藏错误）自动识别、路由排除该引擎切备用源，周期结束自动回归，无需人工改配置\n抓取全局 deadline：ARGO_FETCH_DEADLINE_S（默认 60s）封顶降级链总耗时；429/503 停止信号尊重服务器指示；tinyfish 免费渲染层 + .md 变体探测命中即跳过反爬链\n\nv2.8.4：本地数据融合 + 多客户端 MCP 一键接入\n\n深度研究能吃你本地的数据了：以前 argo research 只吃网页，现在工作包能带 file_inputs（你的一手 CSV / XLSX / 文献，登记哈希、内容不入账）+ recompute（可复算执行器，安全地重算数字并和检索对账，对不上就提示）\n挂 MCP 不再手改配置：argo mcp inject 一条命令把 argo 注入 Claude Code / Cursor / Windsurf / Codex / OpenCode / Cline（原子写 + 自动备份 + 可还原）\n简单问题不被拖成多轮：查询归一化（全角→半角、版本号拆斜杠）+ 复杂度门控（低复杂度查询不放行高价多源）+ 社交/平台检索语法优先 + 丢了一个中文引擎会继续看备选\n多接一个免费搜索源 Keenable（免费体验期、量较大，到期出问题直接停用即可）\n安全加固：recompute 封死外部进程出网、主机路径全部改为安装感知（不再写死 ~/.agents 这类）、修了一处会把用户引向陈旧 npm 包的安装提示\n\n\n完整变更见下表与各版发布说明。\n\n\n版本记录\n\n\n\n版本\n说明\n\n\n\n\nv2.8.5\nDSH 插件工具原生化 + MCP 默认关闭 + Windows 兼容 + 配额自愈 + 抓取 deadline：argo_search/argo_fetch 原生一等工具默认可用（CLI 单发与 MCP 同引擎同守卫，schema 单一真源生成 + 漂移门禁）；DSH 三形态接入、MCP 按需挂载默认关；Windows 全平台兼容（临时路径 / GBK / 解释器解析 / junction / install.ps1，PR #11）；配额自愈闭环（200 业务错误封套识别 + 路由排除 + 周期自愈）；抓取降级链全局 deadline（ARGO_FETCH_DEADLINE_S）+ tinyfish 渲染层 + .md 变体探测；密钥热读与状态目录单一真源。详见 发布说明\n\n\nv2.8.7\n218 源 / 89 域 + 取信技巧三通道 + 路由触发纪律 + macro 零结果修复：批次七/八/九累计 50 个新源（法条/标准/安全情报/学术/新闻/文娱/能源交通/法律政务），stackexchange 与 doi 引擎；抓取链第零级 llms.txt 与 .md 直出探测、新增 r.jina.ai 阅读器级；--engine 逗号多引擎修复、tfidf 口径与 route_reason、负向路由控制矩阵、排序金标与融合增益消融门禁；中国宏观查询国家统计局前置、全域零结果恢复链放行 L3、救援引擎如实记账。详见 发布说明\n\n\nv2.8.6\nhedged 竞速 + 知乎三源分工 + 声明式语言分发 + 可达性门 + 学术检索协议：首引擎宽限窗竞速（快引擎只付 1 次调用）、zhihu 全网搜/个人数据接入与防饿死、子查询语言/学术分发（英文源与 17 学术源接入研究采集）、引擎语言元数据与可达性门禁（死源显形）、geo 尾链 −56%、学术检索查询构造协议。详见 发布说明\n\n\nv2.8.4\n本地数据融合 + 多客户端 MCP 接入 + 结构化搜索增强 + Keenable：深度研究 L1 本地一手数据入账（file_inputs 白名单 + recompute 可复算执行器 + local_sources，no_primary_sources 计入本地一手）；argo mcp inject 多客户端 MCP 一键注入/诊断/还原（mcp/clients.yaml 声明式真源）；结构化搜索增强（查询归一化 + 检索变体 + 复杂度门控 + social 域优先 + TF-IDF 检索修复 + --include-local）；接入 Keenable 通用网页搜索（L1 声明式 HTTP，免费体验期）；安全加固（recompute 封死 subprocess/os.system 出网通道 + 主机路径单真源化）。详见 发布说明\n\n\nv2.8.3\n多语言路由修复 + anysearch 进程化 + weighted RRF：anysearch 从 subprocess 改为进程内 builder（省 python 启动开销 + HttpClient.post UA 轮换/重试/退避）；weighted RRF 新增动态可靠性因子（weakest-link 弱源降权，论文 2508.01405）；多语言路由修复——ja/ko 查询返回目标语言（韩语/日语），欧语言（德法西意）走 anysearch 返回目标语言，中文内容/金融/技术引擎双层过滤（域命中 + TF-IDF），Bing mkt 市场码 + 语言偏好软排序。详见 发布说明\n\n\nv2.8.2\nWindows 全平台 + 证据语义统一：移除 npm os 限制；全链路 UTF-8 防线（PYTHONUTF8 + -X utf8 + JSON read_bytes）根治 GBK 崩溃；工具探测改 shutil.which；Chrome/Edge 自动发现；Ctrl+C 干净退出。主包新增 dsh.bundle 声明（dsh plugin add github:taxueseek/argo 即得 MCP 工具）；npm 包补 engines/、data/。wide_research 输出新增 quality_gate_results 门禁 + depends_on 分阶段 + SSRF 防线 + 研究递归硬保护；深度研究协议化（机器产 dossier、Agent 写判断稿，--work-packages 分阶段取证）。详见 发布说明\n\n\nv2.8.0\n证据闭环 + 求职 v3 + 天气双源：搜索输出自带证据门控（高后果问题标 fetch_required、每条结果标 fetch_suggested、--verify 一键核验回填「核实后证据分」、核实过的链接自动记住下次搜索直接显示已核实）；argo job 求职搜索 v3（结构化字段 + 增量监控 + 指纹去重 + Ashby ATS / 北京高校源）；天气双源并行（wttr.in + Open-Meteo，地理编码 + 空气质量）；新增 Parallel / You.com 通用引擎；health_check 崩溃修复 + 日韩股票查询错配修复。详见 发布说明\n\n\nv2.7.3\n本轮修复 + 引擎激活：引擎层 HttpClient 接入（UA 轮换 / 重试 / 重定向跟随，arxiv 从 5s 超时空返回变为 2s 内 10 条有效结果）；TF-IDF 强语义注入激活 25 个垂直引擎（marginalia / open_meteo / usda / gov_policy / cnii 等，此前有 profile 但永远选不中）；env 占位缺失过滤（github 无 token 从 401 恢复匿名 API）；70 域 TTL 全覆盖（金价/快讯/行情缓存从 1 小时缩短到 5-15 分钟）；垂直源中英双语覆盖（worldbank / eurostat 英文国家与指标名，实测 China GDP / US inflation / Japan population 全部命中）；快讯类引擎触发词放行（「快讯」不再被当关键词滤空）；百科条目页直接命中兜底（moegirl 等搜索跳转条目页不再空结果）；熔断 empty 语义修复（查询无结果不误判引擎故障）；国际引擎中文查询 URL 编码修复（18 处）；单一真源文档修正（engines/specs/ 外置目录）。详见 发布说明\n\n\nv2.7.2\n登录态专业搜索：新增 ego-search 子技能（默认关闭，开启方法与依赖见上「登录态专业搜索」节）；搜索兜底 / 多意图路由 / 统一健康视图；日韩文查询不再混入中文引擎、显式语言指定生效；MCP 服务拆三模块；具备安全防护（登录态结果与公共缓存隔离、URL 安全检查）。详见 发布说明\n\n\nv2.7.1\n安全加固 + 路由修复：SSRF 防护（URL 白名单 + IP 段检查）；路由健康状态语义漂移根因修复（只对 local_* 做健康判定）；深度研究 local_first 浪费修复；配置清理（单一真源）。详见 发布说明\n\n\nv2.7.0\n垂直结构化模态卡：内建 bocha / bocha_ai 原生引擎，modal_card 域统一识别火车票 / 油价 / 贵金属 / 万年历 / 星座 / 手机 / 汽车 / 挂号等实时卡片；bocha web 解析缺陷修复。详见 发布说明\n\n\nv2.6.2\n合并独立改进线：网络环境感知 / 加权 RRF + 语义缓存 / 自适应引擎禁用 / 内容安全 + 查询变体 / 三大垂直引擎 / 日韩域路由补全；含 v2.6.1 路由修复。详见 发布说明\n\n\nv2.6.1\nv2.6.0 修复版：路由误伤修复（capital of 不再抢 fact_check）；版本同步。详见 发布说明\n\n\nv2.6.0\n多语言搜索（检测 / 引擎参数 / 跨语言回退）；影视·体育·地理·组织·媒体等垂直补全；recovery 防污染；能力族与矩阵回归；约 120+ 源。详见 发布说明\n\n\nv2.5.1\n金融/宏观/化学等垂直答案源加厚；引擎分层 + combo 预算；v2.5.1 说明\n\n\nv2.5.0\n安装脚本 + npx；查询改写与路由解耦；路由热路径缓存；MCP 紧凑响应\n\n\nv2.4.0\n路由低分回退与社交误吸过滤；缓存 depth / 柔性命中；熔断与负缓存；engine_outcomes\n\n\nv2.2–v2.3\n证据两阶段、中文信源表、content_signals、fetch 栈、引擎扩充\n\n\nv2.1\n社交引擎层（多平台 UGC）\n\n\nv1.x\n统一命名为 Argo，多引擎路由与双层缓存成型\n\n\n\n更细说明见 docs/RELEASE_NOTES_v2.7.0.md 与 docs/OPTIMIZATION_ROADMAP_v2.4.md。\n\n贡献\n欢迎提 Issue 与 Pull Request。改路由或证据逻辑时，请尽量补对应测试：\npython3 -m pytest tests/test_unit.py tests/test_multilingual.py -q\npython3 scripts/regression_p0p1.py --offline\npython3 scripts/matrix_search_eval.py --offline\npython3 scripts/ab_eval_p0p1.py   # 可选，含在线实测\n提交前请确认：不含真实 API Key、本机绝对路径、账号 cookie 等敏感信息。本机 Skill 路径请写在 installs.local.yaml（已忽略）。\nLicense\nMIT License © 2026 taxueseek\n\n  \n\n\n\n好的搜索不是让你看得更多，是让你更敢下结论——以及知道什么时候还不该下结论。\n\n\n生态联动：与 Invest 系列投资技能集成\n本引擎的财经垂直源（eastmoney、nbs_stats、jin10、nbs、fred、eurostat、finviz 等）已接入 invest 系列投资技能。\ninvest-cli 通过 info（invest-cli info &lt;词&gt; --engine eastmoney）与 intent macro 直接复用 argo 的财经 / 宏观 / 资讯取数，用于环节配额、低成本、多源数据，与 invest-cli 的结构化数据层（Wind / 盈米 / 东财 / yfinance / 天天基金）协同。\n\n最新版已完成 argo 数据与 invest 系列技能（v2.0.5）的集成。\n\nAbout专门为 agent 打造的开源 agent 搜索工具，具备 200+的搜索源及多语言搜索能力，覆盖中文/英文/学术/代码/购物/金融/新闻/百科。Topicsacademic-searchagent-toolsai-agentdeep-researchdsh-ecosystemdsh-pluginevidence-verificationmcp-servermetasearchpythonsearch-engineweb-searchResourcesReadmeMIT licenseActivityStars129 starsWatchers0 watchingForks9 forksReport repositoryReleasesPackagesContributorsLanguages   \n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/taxueseek/argo (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529577991,
+        "end": 1789529578774
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.777Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529578777,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465d18001N9GkMl64YxUbAC",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846587d001fn9fUKx0kJq9yq",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 33144,
+      "output": 114,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33258,
+      "headroom": 5598,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.778Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.778Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.780Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.780Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.783Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.783Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.783Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.783Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.784Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.784Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.820Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 33258,
+  "providerTokens": 33258,
+  "estimatedInputTokens": 23316,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 33144,
+    "cacheRead": 0,
+    "output": 114
+  },
+  "overflow": false,
+  "headroom": 5598,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.821Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.821Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.825Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:58.826Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529579073,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465e400016211eSfakO5kWM",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8465d44001uOnxMufc0vSAlA",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529579073,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465e41002iCo62qk00W28yT",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8465d44001uOnxMufc0vSAlA",
+    "type": "tool",
+    "callID": "call_4b240c80a86bdb4a",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529579073,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465e41001Fea9AJEqNJsbHU",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8465d44001uOnxMufc0vSAlA",
+    "type": "text",
+    "text": "我来打开 https://github.com/chenyme/grok2api/pull/468，读取其中的内容。",
+    "time": {
+      "start": 1789529579073,
+      "end": 1789529579073
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529579073,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465e41002iCo62qk00W28yT",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8465d44001uOnxMufc0vSAlA",
+    "type": "tool",
+    "callID": "call_4b240c80a86bdb4a",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/chenyme/grok2api/pull/468"
+      },
+      "time": {
+        "start": 1789529579073
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.851Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529579851,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8465e41002iCo62qk00W28yT",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8465d44001uOnxMufc0vSAlA",
+    "type": "tool",
+    "callID": "call_4b240c80a86bdb4a",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://github.com/chenyme/grok2api/pull/468"
+      },
+      "output": "feat: search citations — 信源透传 + 结构化字段 + url_citation annotations by Huan-zhaojun · Pull Request #468 · chenyme/grok2api · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    \n\n      \n\n      \n\n    \n    \n    \n\n      \n  \n  \n\n\n\n\n      \n\n\n\n        \n\n\n  \n  \n  \n  \n\n  \n\n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  \n\n    \n\n  \n\n  \n  \n\n\n\n    \n\n    \n  \n\n\n  \n\n\n  \n\n  \n  \n\n  \n  \n  \n\n\n\n\n\n  \n\n  \n\n  \n    \n      \n      \n\n    \n      Skip to content\n\n      \n    \n      \n      \n\n\n\n\n  \n  \n\n\n\n\n\n\n      \n\n          \n          \n\n                \n\n\n\n\n\n\n\n\n\n\n\n\n  \n  Navigation MenuSign inAppearance settingsPlatformAI CODE CREATIONGitHub CopilotWrite better code with AIGitHub Copilot appDirect agents from issue to mergeMCP RegistryIntegrate external toolsDEVELOPER WORKFLOWSActionsAutomate any workflowCodespacesInstant dev environmentsIssuesPlan and track workCode ReviewManage code changesCode QualityEnforce quality at mergeAPPLICATION SECURITYGitHub Advanced SecurityFind and fix vulnerabilitiesCode securitySecure your code as you buildSecret protectionStop leaks before they startEXPLOREWhy GitHubDocumentationBlogChangelogMarketplaceView all featuresSolutionsBY COMPANY SIZEEnterprisesSmall and medium teamsStartupsNonprofitsBY USE CASEApp ModernizationDevSecOpsDevOpsCI/CDView all use casesBY INDUSTRYHealthcareFinancial servicesManufacturingGovernmentView all industriesView all solutionsResourcesEXPLORE BY TOPICAISoftware DevelopmentDevOpsSecurityView all topicsEXPLORE BY TYPECustomer storiesEvents &amp; webinarsEbooks &amp; reportsBusiness insightsGitHub SkillsSUPPORT &amp; SERVICESDocumentationCustomer supportCommunity forumTrust centerPartnersView all resourcesOpen SourceCOMMUNITYGitHub SponsorsFund open source developersPROGRAMSSecurity LabMaintainer CommunityGitHub StarsArchive ProgramREPOSITORIESTopicsTrendingCollectionsEnterpriseENTERPRISE SOLUTIONSEnterprise platformAI-powered developer platformAVAILABLE ADD-ONSGitHub Advanced SecurityEnterprise-grade security featuresCopilot for BusinessEnterprise-grade AI featuresPremium SupportEnterprise-grade 24/7 supportPricingSearch/Sign inSign upAppearance settings\n\n\n\n\n      \n  \n        \n    \n\n        You signed in with another tab or window. Reload to refresh your session.\n        You signed out in another tab or window. Reload to refresh your session.\n        You switched accounts on another tab or window. Reload to refresh your session.\n\n      \n    \n\nDismiss alert\n\n\n  \n\n    \n\n  \n\n\n\n\n\n\n\n\n    \n\n\n\n\n\n  \n    \n\n  \n    \n      \n    \n\n    \n    \n      \n      {{ message }}\n\n    \n  \n\n  \n\n\n\n    \n\n\n\n\n\n\n  \n        \n    \n      \n      \n\n\n\n\n\n\n\n\n  \n\n    \n\n        \n\n          \n              \n  \n      \n    \n\n    \n    \n      \n        chenyme\n    \n    /\n    \n      grok2api\n    \n\n    Public\n  \n\n\n          \n\n          \n              \n    \n      \n\n  \n                \n    \nNotifications\n    You must be signed in to change notification settings\n\n  \n\n  \n              \n    \nFork\n    2.3k\n\n  \n\n  \n        \n            \n    \n\n          Star\n          7.7k\n\n  \n\n\n\n          \n        \n\n          \n\n\n\n            \n\n  \n      \n  \n    \n              \n    \n\n        Code\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Issues\n          6\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Pull requests\n          3\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Actions\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Projects\n          \n\n\n    \n\n      \n  \n    \n              \n    \n\n        Security and quality\n          0\n\n\n    \n\n      \n  \n    \n              \n    \n\n        Insights\n          \n\n\n    \n\n\n          \n  \n      \n    \n\nAdditional navigation options\n\n\n\n  \n    \n                \n  \n    \n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Code\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Issues\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Pull requests\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Actions\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Projects\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Security and quality\n      \n\n  \n\n        \n    \n    \n    \n        \n          \n    \n\n        \n      \n        \n          Insights\n      \n\n  \n\n    \n\n\n\n\n      \n  \n\n\n\n    \n  \n\n\n\n\n    \n    \n\n\n\n    \n      \n\n\n    \n\n\n\n\n\n\n\n\n\n  \n  feat: search citations — 信源透传 + 结构化字段 + url_citation annotations - #468#468Mergedchenyme merged 3 commits intochenyme:mainchenyme/grok2api:mainfrom Huan-zhaojun:pr/feat/search-sourcesHuan-zhaojun/grok2api:pr/feat/search-sourcesCopy head branch name to clipboardApr 19, 2026ConversationCommits3 (3)ChecksFiles changedMergedfeat: search citations — 信源透传 + 结构化字段 + url_citation annotations#468chenyme merged 3 commits intochenyme:mainchenyme/grok2api:mainfrom Huan-zhaojun:pr/feat/search-sourcesHuan-zhaojun/grok2api:pr/feat/search-sourcesCopy head branch name to clipboardConversation\n\n\n  \n\n  \n          \n  \n    \n      \n          \n      \n\n      \n            Huan-zhaojun\n    \n\n      \n\n      \n\n      commented\n\n\n        Apr 13, 2026\n\n\n\n      \n  &#8226;\n\n  \n    \n      \n        \n          edited\n          \n        \n        \n    \n\n      \n    \n    \n      \n  \n        \n  \n    \n    \n    Loading\n\n\n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n    \n  \n\n\n    \n\n  \n\n  \n    \n      \n          \n    \n    \n\n  \n\n\n        \n            \n  \n      \n              Copy link\n\n  \n            \n  \n      \n              Copy Markdown\n\n  \n        \n      \n    \n\n    \n        \n\n  \n    Collaborator\n\n\n        \n\n    \n  \n\n\n          \n        \n  \n  \n    \n      Why\nGrok 搜索时 SSE 流返回 44~400 条信源（web + X 帖子），但此前 grok2api 全部丢弃，\n下游消费者（如 GrokSearch MCP）的 sources_count 为 0；\n模型正文内联引用 [[N]](url) 也仅有裸 Markdown，缺少标准化的引用元数据。\n本 PR 建立完整的搜索引用链路：信源透传 → 结构化字段 → 引用标注，三层覆盖全部 3 个 API 端点。\nSummary\n\n\n\n层级\n功能\n输出位置\n开关\n\n\n\n\n正文透传\n## Sources 段落（web + X 帖子 URL 列表）\n响应正文末尾\nshow_search_sources（默认关）\n\n\n结构化字段\nsearch_sources: [{url, title, type}]\n响应根对象 / message item\n始终输出（无开关）\n\n\n引用标注\nurl_citation annotations（URL、title、文本偏移）\nOpenAI 标准 annotations 字段\n始终输出（有引用即产出）\n\n\n\nChanges\n采集层 — xai_chat.py StreamAdapter\n信源采集：\n\nwebSearchResults: 原始 url + title，多帧累积去重\nxSearchResults: postId + username 拼接 URL，text 前 50 字构造 title，空白归一化\n共享 _web_search_urls_seen set 跨类型去重\nreferences_suffix() 统一转义 Markdown 特殊字符\nsearch_sources_list() 返回 [{url, title, type}]（type: \"web\" / \"x_post\"）\n\n引用标注：\n\n_clean_token() 改为返回 (cleaned_text, local_annotations)\n新增 _pending_citations / _annotations / _text_offset 三态追踪\n_render_replace 生成引用时同步记录元数据，per-token 精确定位\ntitle 三级 fallback: card → webSearchResults → URL 本身\nFrameEvent 新增 annotation_data 字段，annotations_list() 扁平输出\n\n注入层 — 三端点 × 流式/非流式\nChat Completions (chat.py + _format.py):\n\n非流式: message.annotations（url_citation 格式）\n流式: final chunk delta.annotations\nsearch_sources 置于响应根对象\n\nResponses API (responses.py):\n\n流式: annotation.added 实时事件 + content_part.done / output_item.done 的 annotations 数组\n非流式: output_text 的 annotations 数组\nsearch_sources 置于 message item 级别\n\nAnthropic Messages (messages.py):\n\n非流式: TextBlock.annotations\n流式: message_delta.delta.annotations（自定义扩展，OpenAI 扁平格式）\nsearch_sources 置于响应根对象 / message_delta.delta\n\n\n设计说明: Anthropic 标准 citations 需 encrypted_index（专有加密索引）+ cited_text（源网页原文），\n二者 Grok 均无法提供，故改用 OpenAI url_citation 扁平格式作自定义扩展。\n\n多轮剥离 — chat.py _extract_message\n\n标记行 [grok2api-sources]: #（CommonMark link reference definition，渲染器不显示）\n正则覆盖 string content + block list content，CRLF 兼容\n仅匹配含标记行的段落，用户自写 ## Sources 不受影响\n\n配置 &amp; UI\n\nconfig.defaults.toml 新增 show_search_sources = false（仅控制正文透传）\n管理面板新增开关 + 6 语言 i18n（zh/en/de/es/fr/ja）\n\nTest plan\n\n 开启 show_search_sources，发送搜索类问题 → 响应末尾出现 ## Sources 段落\n 关闭该配置 → 无 ## Sources 正文，但 search_sources 字段仍存在\n 多轮对话：第二轮请求中确认前轮 Sources 被剥离（不出现在 Grok 请求中）\n 验证 search_sources 字段结构: [{url, title, type}]，type 为 \"web\" 或 \"x_post\"\n 验证 url_citation annotations: 包含 url、title、start_index、end_index\n 非搜索查询（纯聊天）→ 无 Sources、无 search_sources、无 annotations\n X 帖子 URL 格式: https://x.com/{username}/status/{postId}\n CherryStudio Responses API 模式下底部渲染引用卡片\n 三端点均覆盖：Chat Completions / Responses API / Anthropic Messages\n 流式 &amp; 非流式 &amp; tool_calls 路径均正常输出\n\n    \n  \n  \n\n\n      \n\n          \n          \n  \n  \n    \n  \n    \n    \n\n  \n  \n    \n    \n\n    Sorry, something went wrong.\n  \n\n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n\n\n                    \n          \n  \n    \n    \n      \n        \n            \n    All reactions\n  \n\n\n          \n          \n        \n      \n    \n\n        \n\n\n\n  \n\n\n\n    \n\n\n      \n  \n        \n    \n  \n  \n    \n\n            Huan-zhaojun\n  \n\n        added 3 commits\n        April 13, 2026 12:52\n  \n      \n  \n  \n    \n\n            \n  \n    \n      \n\n  \n        \n          \n  \n\n\n      \n        \n          feat: search source passthrough — web + X post sources appended as ##…\n        \n\n          \n                  &hellip;\n          \n      \n\n      \n        \n\n    \n    \n    \n\n  \n\n      \n\n      \n        \n          \n\n    \n    \n    \n\n  \n\n  \n    \n  \n\n\n        \n      \n\n      \n        \n          9848767\n        \n      \n    \n  \n    \n      … Sources\n\nGrok SSE 流中的 webSearchResults 和 xSearchResults 透传给下游消费者。\n\n采集层（StreamAdapter）:\n  - webSearchResults: 直接使用原始 url + title\n  - xSearchResults: postId+username 拼接 URL，text 前 50 字构造 title，\n    空白归一化，共享 set 跨类型去重\n  - references_suffix() 统一转义 Markdown 特殊字符后输出\n\n多轮剥离（_extract_message）:\n  - 标记行 [grok2api-sources]: # (CommonMark link ref def，渲染器不显示)\n  - 正则覆盖 string content + block list content，CRLF 兼容\n  - 仅匹配含标记行的段落，用户自写 ## Sources 不受影响\n\n配置:\n  - features.show_search_sources（默认 false），管理面板可开关\n  - 管理面板 + 6 语言 i18n (zh/en/de/es/fr/ja)\n    \n\n\n\n      \n  \n  \n    \n\n            \n  \n    \n      \n\n  \n        \n          \n  \n\n\n      \n        \n          feat: search_sources structured field — always output [{url, title, t…\n        \n\n          \n                  &hellip;\n          \n      \n\n      \n        \n\n    \n    \n    \n\n  \n\n      \n\n      \n        \n          \n\n    \n    \n    \n\n  \n\n  \n    \n  \n\n\n        \n      \n\n      \n        \n          6a7b3b3\n        \n      \n    \n  \n    \n      …ype}]\n\n  搜索信源以 search_sources 结构化字段始终输出。\n  show_search_sources 布尔开关仅控制是否同时追加 ## Sources 正文。\n\n  采集层（StreamAdapter）:\n    - feed() 采集时标记 type: \"web\" / \"x_post\"\n    - 新增 search_sources_list() 返回 [{url, title, type}] 或 None\n\n  注入层（3 API × 流式/非流式 + tool_calls 路径）:\n    - Chat Completions: 响应根对象（避免 Vercel AI SDK strict schema）\n    - Responses API: message item 级别\n    - Anthropic Messages: 响应根对象 / message_delta.delta\n    - tool_calls/tool_use 路径同步覆盖\n\n  配置/前端:\n    - config.defaults.toml 注释更新\n    - config.html + 6 语言 i18n 描述更新\n\n(cherry picked from commit ced0fe1)\n    \n\n\n\n      \n  \n  \n    \n\n            \n  \n    \n      \n\n  \n        \n          \n  \n\n\n      \n        \n          feat: url_citation annotations for all 3 API endpoints\n        \n\n          \n                  &hellip;\n          \n      \n\n      \n        \n\n    \n    \n    \n\n  \n\n      \n\n      \n        \n          \n\n    \n    \n    \n\n  \n\n  \n    \n  \n\n\n        \n      \n\n      \n        \n          3a8811c\n        \n      \n    \n  \n    \n      搜索内联引用 [[N]](url) 同步输出 OpenAI 标准 url_citation annotations（URL、title、文本位置）。CherryStudio 走 Responses API 可渲染底部引用卡片。\n\n采集层（StreamAdapter）:\n  - _clean_token() 改为返回 (cleaned_text, local_annotations)\n  - 新增 _pending_citations / _annotations / _text_offset 三态\n  - _render_replace 生成引用时同步记录元数据，per-token 定位\n  - title 三级 fallback: card → webSearchResults → URL 本身\n  - FrameEvent 新增 annotation_data 字段，annotations_list() 扁平输出\n\n注入层（三端点 × 流式/非流式）:\n  - Responses API: 流式 annotation.added 实时事件 + content_part.done / output_item.done 的 annotations 数组\n  - Chat Completions: 非流式 message.annotations；流式 final chunk 的 delta.annotations（嵌套 url_citation 格式）\n  - Anthropic Messages: 非流式 TextBlock.annotations；流式 message_delta.delta.annotations（自定义扩展）\n\n设计说明:\n  - Anthropic 标准 citations 需 encrypted_index（专有加密索引，无法生成）+ cited_text（源网页原文，Grok 不提供），改用 OpenAI 扁平格式作自定义扩展\n  - Chat Completions 流式放 delta.annotations 而非 choice.annotations：Vercel AI SDK schema 对 delta.annotations 有精确定义，必须放标准位置\n  - per-token 定位（vs 流末全文扫）：精确字符串匹配避免 URL 含 ) 截断、UTF-16 偏差影响可控、title 从 card 直取、annotation.added 事件自然可发\n\n(cherry picked from commit 0fbb89c)\n    \n\n\n\n  \n\n\n\n\n\n      \n  \n            \n    \n      \n    \n\n    \n    \n\n      \n\n\n          \nHuan-zhaojun\n\n\n\n\n        changed the title\nfeat: 信源透传 (webSearchResults + xSearchResults)\n\nfeat: search citations — 信源透传 + 结构化字段 + url_citation annotations\n\n\n      Apr 18, 2026\n\n    \n  \n\n\n   \n  \n    \n    \n\n  \n  \n\n            Hide details\n          View details\n\n    \n        \n              \n\n\n        \n      \n              chenyme\n\n\n\n            merged commit 9ae5d19\n          into\n\n          \n  \n    chenyme:main\n  \n\n\n        Apr 19, 2026\n\n          \n            5 of 6 checks passed\n          \n      \n    \n\n      \n        \n  \n          \n  \n    \n    \n\n\n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n      \n  \n\n\n\n\n  \n  \n  \n    \n\n      \n        \n              \n\n\n        \n      \n            Huan-zhaojun\n\n\n        \n    deleted the\n    \n      \n        pr/feat/search-sources\n    \n    branch\n\n        April 19, 2026 08:40        \n        \n      \n    \n\n\n  \n\n\n  \n    \n    \n\n  \n  \n    \n\n  gnayhz \n\n      pushed a commit\n        to gnayhz/grok2api\n      that referenced\n      this pull request\n\n    \n      Aug 27, 2026\n    \n    \n      \n\n  \n    \n      \n\n  \n        \n          \n  \n\n\n\n      \n        \n          Merge pull request chenyme#468 from Huan-zhaojun/pr/feat/search-sources\n        \n\n          \n            &hellip;\n          \n\n      \n\n      \n          \n\n    \n    \n    \n\n  \n\n      \n\n      \n      \n\n      \n      \n        \n          6b1e3bd\n        \n      \n    \n  \n    \n      feat: search citations — 信源透传 + 结构化字段 + url_citation annotations\n    \n\n\n    \n  \n\n\n\n\n\n\n\n\n\n\n  \n  \n    \n      \n  \n\n\n\n\n\n\n\n  \n\n\n\n  \n  \n    \n\n    \n      This file contains hidden or bidirectional Unicode text that may be interpreted or compiled differently than what appears below. To review, open the file in an editor that reveals hidden Unicode characters.\n      Learn more about bidirectional Unicode characters\n    \n\n\n              Show hidden characters\n\n\n\n\n  \n    \n    \n\n\n\n\n  \n      \n  \n    Sign up for free\n    to join this conversation on GitHub.\n    Already have an account?\n    Sign in to comment\n\n\n  \n\n\n\n\n\n\n    \n        \n  \n    \n    \n    \n\n  \n    Reviewers\n  \n\n    \n\n    No reviews\n\n\n\n\n\n\n  \n      \n  \n\n      \n  \n    Assignees\n  \n\n\n        \n\n\n    No one assigned\n\n\n\n\n\n\n  \n        \n\n  \n\n\n  \n    Labels\n  \n\n\n    \n    None yet\n\n\n\n\n\n  \n        \n\n  \n    \n        \n    Projects\n  \n\n        \n\n\n    None yet\n\n\n\n  \n\n\n  \n        \n\n  \n    \n  \n    Milestone\n  \n\n      No milestone\n\n\n\n\n    \n      \n          \n\n  \n    \n      \n        \n          \n  \n    Development\n  \n\n\n            \n\nSuccessfully merging this pull request may close these issues.\n\n\n\n\n  \n  \n    \n  \n    \n      \n\n              Uh oh!\n\n              There was an error while loading. Please reload this page.\n\n\n  \n  \n\n\n      \n    \n  \n\n\n      \n\n  \n  \n        \n  \n    \n      2 participants\n    \n    \n        \n           \n        \n           \n    \n  \n\n\n\n  \n  \n  \n  \n  \n  \n\nAdd this suggestion to a batch that can be applied as a single commit.This suggestion is invalid because no changes were made to the code.Suggestions cannot be applied while the pull request is closed.Suggestions cannot be applied while viewing a subset of changes.Only one suggestion per line can be applied in a batch.Add this suggestion to a batch that can be applied as a single commit.Applying suggestions on deleted lines is not supported.You must change the existing code in this line in order to create a valid suggestion.Outdated suggestions cannot be applied.This suggestion has been applied or marked resolved.Suggestions cannot be applied from pending reviews.Suggestions cannot be applied on multi-line comments.Suggestions cannot be applied while the pull request is queued to merge.Suggestion cannot be applied right now. Please check back later.\n\n\n\n\n\n  \n\n\n\n    \n  \n\n  \n\n          \n  Footer\n\n  \n\n\n  \n    \n      \n        \n    \n\n\n      \n        &copy; 2026 GitHub,&nbsp;Inc.\n      \n    \n\n    \n      Footer navigation\n\n      \n\n\n          \n            Terms\n          \n\n          \n            Privacy\n          \n\n\n            \n              Security\n            \n\n            \n              Status\n            \n\n          \n            Community\n          \n\n          \n            Docs\n          \n\n          \n            Contact\n          \n\n          \n\n  \n    \n      Manage cookies\n    \n  \n\n\n  \n    \n      \n        Do not share my personal information\n      \n    \n  \n\n      \n    \n  \n\n\n\n\n    \n\n\n\n\n  \n    \n    \n\n    \n      \n    \n\n    \n    You can’t perform that action at this time.",
+      "title": "https://github.com/chenyme/grok2api/pull/468 (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789529579073,
+        "end": 1789529579850
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.851Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529579851,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a846614b0012aznxfso6f7JXL",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8465d44001uOnxMufc0vSAlA",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 62884,
+      "output": 136,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 63020,
+      "headroom": -24164,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.851Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.853Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.854Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.854Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.854Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.854Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.855Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.855Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.866Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 63020,
+  "providerTokens": 63020,
+  "estimatedInputTokens": 27438,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 62884,
+    "cacheRead": 0,
+    "output": 136
+  },
+  "overflow": true,
+  "headroom": -24164,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.867Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.869Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.869Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.874Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.874Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.874Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 6,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.875Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.875Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:32:59.877Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529580311,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8466317001uB9TBcKBx97Ehd",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8466162001PSpUS7xoYh3Kth",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529580312,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8466318001h2LXIAmBJu8BoA",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8466162001PSpUS7xoYh3Kth",
+    "type": "text",
+    "text": "Conversation summary: 在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。 请把它加进去，保持文件有效，并运行覆盖该列表的测试。  我来上网搜索 在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。\n\nTitle: What did we do so\n\nUser turns:\n  1. 在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。\n  2.",
+    "time": {
+      "start": 1789529580312,
+      "end": 1789529580312
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529580313,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a8466319001kRlICwwQhSIKNy",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8466162001PSpUS7xoYh3Kth",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 72253,
+      "output": 332,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 72585,
+      "headroom": -33729,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529580314,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a846631a001eyF4Wi87gmT4J6",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a8466319002w5acjGfU0ZcH7O",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789529580314,
+      "end": 1789529580314
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.314Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.315Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "step": 7,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.315Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.315Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.316Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.317Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.317Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.651Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529580651,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a846646b001S39Y2b1inKojWH",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846631b001RxoDuAQZVMzmOD",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529580652,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a846646c002DChmDwP6hWevjb",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846631b001RxoDuAQZVMzmOD",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789529580652,
+      "end": 1789529580652
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529580652,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "part": {
+    "id": "prt_0a846646c003piz93xZqrTSuHE",
+    "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+    "messageID": "msg_0a846631b001RxoDuAQZVMzmOD",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8881,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8954,
+      "headroom": 29902,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.653Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.653Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.653Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.653Z",
+  "service": "session.prompt",
+  "step": 7,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.655Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.655Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.656Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529580657,
+  "sessionID": "ses_f57b9b8c5ffeOueHKPG0ZjNWJV"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.657Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.658Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.658Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.658Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.VuOkR0dFTZ",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:33:00.658Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 8,
+  "message": "Agent exiting"
+}
+

@@ -1,0 +1,1818 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.149Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.152Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ। --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.153Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.153Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.161Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ।",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.161Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.163Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.165Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.165Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.171Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.172Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.184Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 10054,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.184Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.205Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:31:22.238Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.238Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.238Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.239Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.239Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.239Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.239Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.239Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 76,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.240Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:31:22.240Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.256Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.256Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.257Z",
+  "service": "session",
+  "id": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16",
+  "title": "New session - 2026-09-16T03:31:22.257Z",
+  "time": {
+    "created": 1789529482257,
+    "updated": 1789529482257
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.258Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.258Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.258Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.259Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.259Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57bb1beeffeO5lUXjtzj6CfL8/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.259Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57bb1beeffeO5lUXjtzj6CfL8/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.266Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 7,
+  "method": "POST",
+  "path": "/session/ses_f57bb1beeffeO5lUXjtzj6CfL8/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.270Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.273Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.276Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.289Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.289Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.290Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.291Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.291Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.291Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.291Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.292Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.292Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.535Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.542Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.543Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.569Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.576Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.606Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:22.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:23.148Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529483148,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844e785001Gp5WjJ4epupSlO",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844e52d001Hlo2wksb7MRO3m",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:23.149Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:23.151Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529483151,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844e78d001IHVYQHoGQp7xZr",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844e52d001Hlo2wksb7MRO3m",
+    "type": "tool",
+    "callID": "call_ddd175e7b080edc5",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:23.152Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529483152,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844e78c0010fEjfG5JulRrxC",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844e52d001Hlo2wksb7MRO3m",
+    "type": "text",
+    "text": "मैं इंटरनेट पर इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ। खोजता हूँ।",
+    "time": {
+      "start": 1789529483151,
+      "end": 1789529483151
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:23.152Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529483152,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844e78d001IHVYQHoGQp7xZr",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844e52d001Hlo2wksb7MRO3m",
+    "type": "tool",
+    "callID": "call_ddd175e7b080edc5",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ।"
+      },
+      "time": {
+        "start": 1789529483152
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.001Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529487001,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844e78d001IHVYQHoGQp7xZr",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844e52d001Hlo2wksb7MRO3m",
+    "type": "tool",
+    "callID": "call_ddd175e7b080edc5",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ।"
+      },
+      "output": "Title: GCC Cross-Compiler - OSDev Wiki\nURL: https://wiki.osdev.org/GCC_Cross-Compiler\nPublished: N/A\nAuthor: N/A\nHighlights:\nThis tutorial focuses on creating a GCC cross-compiler for your own operating system. This compiler that we build here will have a generic target (i686-elf) that allows you to leave the current operating system behind, meaning that no headers or libraries of the host operating system will be used. Without using a cross-compiler for operating system development, a lot of unexpected things can happen because the compiler assumes that the code is running on the host operating system.\n...\nGenerally speaking, a cross-compiler is a compiler that runs on platform A (the host), but generates executables for platform B (the target). These two platforms may (but do not need to) differ in CPU, operating system, and/or executable format. In our case, the host platform is your current operating system and the target platform is the operating system you are about to make. It is important to realize that these two platforms are not the same; the operating system you are developing is always going to be different from the operating system you currently use.\n...\nThe compiler must know the correct target platform (CPU, operating system). The compiler that comes with the host system does not know by default that it is compiling something else entirely, unless a lot of problematic options are passed to it, which will create a lot of problems in the future. The solution is to build a cross-compiler.\n...\nThe newest GCC is recommended as it is the latest and greatest release. In principle, you could have problems if the distance is too great between your system compiler and your new cross-compiler. A new major GCC release series is released yearly (e.g. 15.x) with occasional patch releases (e.g. 15.2), and modern releases shouldn't have any big problems building other modern releases. If you have trouble, you can try the same version as your system GCC, or try to build the newest GCC as your system compiler. \n\nThis command prints the current compiler version: \n\n```\ngcc --version\n...\nThe GNU Compiler Collection is an advanced piece of software with dependencies. You need the following in order to build GCC: \n\n- A Unix-like environment (Windows users can use the Windows Subsystem for Linux or Cygwin)\n- Enough memory and hard disk space (it depends, 256 MiB will not be enough).\n- GCC (existing release you wish to replace), or another system C compiler\n- G++ (if building a version of GCC >= 4.8.0), or another system C++ compiler\n- Make\n- Bison\n- Flex\n- GMP\n- MPFR\n- MPC\n- Texinfo\n- ISL (optional)\n...\nYou need to have Texinfo installed to build Binutils. You need to have GMP, MPC, and MPFR installed to build GCC. GCC optionally can make use of the ISL library. \n\nFor instance, you can install \n\nlibgmp3-dev\n\n on Debian by running the shell command: \n\nsudo apt install libgmp3-dev\n...\nmacOS users need a replacement libiconv because the system libiconv is seriously out of date. macOS users can download the latest libiconv release by visiting the libiconv website or directly accessing the GNU main FTP mirror. Otherwise you may get unresolved symbol errors related to libiconv when compiling GCC 4.3 or higher on OS X 10.4 and 10.5. \n\nInstall a new version (compile it yourself or use MacPorts) and add \n\n--with-libiconv-prefix=/opt/local\n\n (or \n\n/usr/local\n\n if you compiled it yourself) to GCC's \n\n./configure\n\n line. Alternatively you may place the libiconv source as gcc-x.y.z/libiconv and it will be compiled as part of the GCC compilation process. (This trick also works for MPFR, GMP, and MPC).\n...\nThe makefiles of Binutils and GCC use the `$(CC)` variable to invoke the compiler. On OS X, this resolves to `gcc` by default, which is actually `clang`. Prior to OS X 10.8, the Clang that came with Xcode's Command Line Tools package was not able to build a working GCC. Users running OS X 10.7 or below may need to find and install GCC, either from Homebrew, or from somewhere on Apple's website. You can try with the old GCC that comes preinstalled on some macOS versions. \n\n```\n# This is only necessary for OS X users running 10.7 or below.\nexport CC=/usr/bin/gcc-4.2\nexport CXX=/usr/bin/g++-4.2\nexport CPP=/usr/bin/cpp-4.2\nexport LD=/usr/bin/gcc-4.2\n...\nWindows users need to set up a Unix-like enviroment such as MinGW or Cygwin. It may well be worth looking into systems such as Linux and see if they fit your needs, as you commonly use a lot of Unix-like tools in operating systems development and this is much easier from a Unix-like operating system. If you have just installed the basic Cygwin package, you have to run the setup.exe again and install the following packages: GCC, G++, Make, Flex, Bison, Diffutils, libintl-devel, libgmp-devel, libmpfr-devel, libmpc-devel, Texinfo \n\nMinGW + MSYS is an option, and as it addresses the native Windows API instead of a POSIX emulation layer, results in a slightly faster toolchain. Some software packages will not build properly under MSYS as they were not designed for use with Windows. As far as this tutorial is concerned, everything that applies to Cygwin also applies to MSYS unless otherwise specified. Make sure you install the C and C++ compilers, and the MSYS Basic System.\n...\nWe build a toolset running on your host that can turn source code into object files for your target system. \n\nYou need to decide where to install your new compiler. It is dangerous and a very bad idea to install it into system directories. You also need to decide whether the new compiler should be installed globally or just for you. If you want to install it just for you (recommended), installing into \n\n$HOME/opt/cross\n\n is normally a good idea. If you want to install it globally, installing it into \n\n/usr/local/cross\n\n is normally a good idea. \n\nPlease note that we build everything out of the source directory tree, as is considered good practice. Some packages only support building outside, some only inside and some both (but may not offer extensive checking with make). Building GCC inside the source directory tree fails miserably, at least for older versions. \n\n### Preparation\n...\n```\nexport PREFIX=\"$HOME/opt/cross\"\nexport TARGET=i686-elf\nexport PATH=\"$PREFIX/bin:$PATH\"\n\n```\n...\n```\ncd $HOME/src\n\nmkdir build-binutils\ncd build-binutils\n../binutils-x.y.z/configure --target=$TARGET --prefix=\"$PREFIX\" --with-sysroot --disable-nls --disable-werror --enable-default-execstack=no\nmake\nmake install\n\n```\n...\nNow, you can build GCC. \n\nIt will take a while to build your cross-compiler. On a multi-core machine, speed up the build by parallelizing it, e.g. \n\nmake -j 8 all-gcc\n\n, if 8 is the number of jobs to run simultaneously. \n\nIf you are building a cross compiler for x86-64, you may want to consider building libgcc without the \"red zone\": Libgcc_without_red_zone \n\n```\ncd $HOME/src\n\n# The $PREFIX/bin dir _must_ be in the PATH. We did that above.\nwhich -- $TARGET-as || echo $TARGET-as is not in the PATH\n\nmkdir build-gcc\ncd build-gcc\n../gcc-x.y.z/configure --target=$TARGET --prefix=\"$PREFIX\" --disable-nls --enable-languages=c,c++ --without-headers --enable-initfini-array --disable-hosted-libstdcxx\nmake all-gcc\nmake all-target-libgcc\nmake all-target-libstdc++-v3\nmake install-gcc\nmake install-target-libgcc\nmake install-target-libstdc++-v3\n\n```\n...\nNow you have a \"naked\" cross-compiler. It does not have access to a C library or C runtime yet, so you cannot use most of the standard includes or create runnable binaries. But it is quite sufficient to compile the kernel you will be making shortly. Your toolset resides in $HOME/opt/cross (or what you set \n\n$PREFIX\n\n to). For example, you have a GCC executable installed as \n\n$HOME/opt/cross/bin/$TARGET-gcc\n\n, which creates programs for your TARGET. \n\nYou can now run your new compiler by invoking something like: \n\n```\n$HOME/opt/cross/bin/$TARGET-gcc --version\n\n```\n...\n: \n\nfloat.h\n\n, \n\niso646.h\n\n, \n\nlimits.h\n\nstdalign.h\n\nstdarg.h\n\nstdbool.h\n\nstddef.h\n\nstdint.h\n\nstdnoreturn.h\n\n (as of C11). All of these consist of typedef s and #define s \"only\", so\n\n---\n\nTitle: AmanoTeam/mingw-gcc-cross: Precompiled MinGW-w64 GCC toolchain for Linux, macOS, BSD, and Android (Termux). - Codeberg.org\nURL: https://codeberg.org/AmanoTeam/mingw-gcc-cross\nPublished: N/A\nAuthor: AmanoTeam\nHighlights:\nAmanoTeam/mingw-gcc-cross: Precompiled MinGW-w64 GCC toolchain for Linux, macOS, BSD, and Android (Termux). - Codeberg.org\n...\nPrecompiled MinGW-w64 GCC toolchain for Linux, macOS, BSD, and Android (Termux).\n...\n# mingw-gcc-cross\n...\nA Clang and GCC cross-compiler targeting MinGW on Windows.\n...\nFirst, start by downloading the precompiled binaries for your platform. For reference, you can download the prebuilt binaries of the toolchain for Linux x86_64 with:\n...\nAfter unpacking the tarball, you will find the cross-compiler as well as wrapper scripts for targeting a specific C runtime inside the`mingw-gcc-cross/bin` directory:\n...\n```\n$ ls mingw-gcc-cross/bin\n...\nx86_64-w64-mingw32-ucrt-clang\nx86_64-w64-mingw32-ucrt-clang++\nx86_64-w64-mingw32-ucrt-g++\nx86_64-w64-mingw32-ucrt-gcc\n...\n...\nYou can use them as follows:\n...\n```\n# Compile C programs\nx86_64-w64-mingw32-ucrt-gcc main.c -o main\n...\n# Compile C++ programs\nx86_64-w64-mingw32-ucrt-g++ main.cpp -o main\n...\nIf you prefer, you can use Clang instead of GCC. Just make sure to replace the`gcc`/`g++` suffixes with`clang`/`clang++`.\n...\nYou can also switch between the MSVCRT and UCRT runtimes by using compilers with the corresponding`*-msvcrt-*` or`*-ucrt-*` suffixes.\n...\n## Cross-compilation\n...\nInside the`mingw-gcc-cross/build/cmake` directory, there is a custom CMake toolchain file for each supported cross-compilation target:\n...\n$ ls mingw-gcc\n...\n/build/\n...\nTo use one of them, pass the`CMAKE_TOOLCHAIN_FILE` definition to your CMake command invocation:\n...\n```\n# Setup the environment for cross-compilation\ncmake \\\n  -DCMAKE_TOOLCHAIN_FILE=~/mingw-gcc-cross/build/cmake/x86_64-w64-mingw32-ucrt.cmake \\\n  -B build \\\n  -S  ./\n...\n# Build the project\ncmake --build ./build\n...\n### GNU Autotools (aka GNU Build System)\n...\nInside the`mingw-gcc-cross/build/autotools` directory, there is a custom bash script for each supported cross-compilation target:\n...\nThey are meant to be`source` d by you whenever you want to cross-compile something:\n...\n```\n# Setup the environment for cross-compilation\nsource ~/mingw-gcc-cross/build/autotools/x86_64-w64-mingw32-ucrt.sh\n...\n# Configure & build the project\n./configure --host=\"${CROSS_COMPILE_TRIPLET}\"\nmake\n...\nEssentially, these scripts handle the setup of`CC`,`CXX`,`LD`, and other environment variables so you don’t need to configure them manually.\n...\nTo restore your environment to its original state, run the`deactivate.sh` script from the same directory:\n...\nFor convenience, the toolchain includes an APT-like utility that installs packages from remote repositories into a local directory and makes them available for use during cross-compilation. It is powered by the package collection of the MSYS2 project.\n...\nInstall the required dependencies:\n...\nBuild curl as\n...\n-B build\n...\n--build build\n...\nThe current release is based on GCC 16 and supports cross-compiling for the`x86` and`x86_64` targets. The toolchain includes support for the C and C++ frontends.\n\n---\n\nTitle: मेरे लिनक्स होस्ट मशीन पर रास्पबेरी पाई क्रॉस कंपाइलर कैसे स्थापित करें?\nURL: https://qastack.co.in/programming/19162072/how-to-install-the-raspberry-pi-cross-compiler-on-my-linux-host-machine\nPublished: N/A\nAuthor: N/A\nHighlights:\nनोट: यह ट्यूटोरियल केवल पुराने रास्पियन छवियों के लिए काम करता है। डेबियन बस्टर पर आधारित नए रास्पबियन के लिए निम्नलिखित देखें कि इस धागे में कैसे: https://stackoverflow.com/a/58559140/869402\n...\n```cpp\napt-get install git rsync cmake ia32-libs\n```\n...\nअब, सत्यापित करें कि आप कंपाइलर का उपयोग कर सकते हैं `arm-linux-gnueabihf-gcc -v`। आपको कुछ इस तरह से मिलना चाहिए:\n...\nअब आपको इस नए बनाए गए फ़ोल्डर में संपूर्ण `/lib`और `/usr`निर्देशिका को कॉपी करने की आवश्यकता है । मैं आमतौर पर आरपीआई छवि लाता हूं और इसे rsync के माध्यम से कॉपी करता हूं:\n...\nअब, हमें एक `cmake`विन्यास फाइल लिखने की जरूरत है । `~/home/raspberrypi/pi.cmake`अपने पसंदीदा संपादक में खोलें और निम्नलिखित डालें:\n...\n```cpp\nSET(CMAKE_SYSTEM_NAME Linux)\nSET(CMAKE_SYSTEM_VERSION 1)\nSET(CMAKE_C_COMPILER $ENV{HOME}/raspberrypi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc)\nSET(CMAKE_CXX_COMPILER $ENV{HOME}/raspberrypi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-g++)\nSET(CMAKE_FIND_ROOT_PATH $ENV{HOME}/raspberrypi/rootfs)\nSET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)\nSET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)\nSET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)\n```\n...\nअब आपको `cmake`इस अतिरिक्त ध्वज को जोड़कर अपने कार्यक्रमों को संकलित करने में सक्षम होना चाहिए `-D CMAKE_TOOLCHAIN_FILE=$HOME/raspberrypi/pi.cmake`:।\n...\n@ सेंटेनग का उत्तर केवल पुराने रास्पियन छवियों के लिए काम करता है। डेबियन बस्टर पर आधारित हाल ही में रिलीज़ हुई रास्पियन को एक अपडेटेड टूलचिन की आवश्यकता है:\n...\nडेबियन बस्टर में gcc कंपाइलर और glibc को 8.3 संस्करण में अपडेट किया गया था। टूलकिन `git://github.com/raspberrypi/tools.git`अभी भी पुराने gcc 6 संस्करण पर आधारित है। इसका मतलब है कि उपयोग `git://github.com/raspberrypi/tools.git`करने से कई संकलन त्रुटियां हो जाएंगी।\n...\nयह ट्यूटोरियल @Stenyg उत्तर पर आधारित है। इंटरनेट में कई अन्य समाधानों के अलावा, यह ट्यूटोरियल ARMv6 सीपीयू पर आधारित पुराने रैस्पररी पाई (ए, बी, बी +, जीरो ) का भी समर्थन करता है । इसे भी देखें: ARMv6 की जगह GCC 8 क्रॉस कंपाइलर ARMv7 एक्ज़ीक्यूटेबल\n...\nमैंने एक नया github रिपॉजिटरी बनाया, जिसमें GCC8 और नए के आधार पर ARMv6 के लिए भवन निर्माण और पूर्वनिर्मित टूलचिन शामिल हैं:\n...\n2. इसे निकालें। नोट: टूलचैन का होना आवश्यक है `/opt/cross-pi-gcc`क्योंकि यह स्वतंत्र नहीं है।\n...\n```sh\nsudo tar xfz raspi-toolchain.tar.gz --strip-components=1 -C /opt\n```\n...\n4. वैकल्पिक, टूलचिन को अपने पथ में जोड़ें, जोड़कर:\n...\n```sh\nexport PATH=$PATH:/opt/cross-pi-gcc/bin\n```\n...\nअपने स्वयं के रास्पबेरी पाई के लिए क्रॉस-संकलन करने के लिए, जिसमें कुछ कस्टम लाइब्रेरी स्थापित हो सकती हैं, आपको इन पुस्तकालयों को अपने होस्ट पर प्राप्त करने की आवश्यकता है।\n...\nअपने खुद के टूलकिन लेने के लिए सीएमके को बताने के लिए, आपके पास एक टूलचैन फ़ाइल होनी चाहिए जो कंपाइलर सेटिंग्स को इनिशियलाइज़ करती है।\n...\nअब आपको `cmake`इस अतिरिक्त ध्वज को जोड़कर अपने कार्यक्रमों को संकलित करने में सक्षम होना चाहिए : `-D CMAKE_TOOLCHAIN_FILE=$HOME/raspberrypi/pi.cmake`और सही पर्यावरण चर सेट करना:\n...\n```sh\nexport RASPBIAN_ROOTFS=$HOME/raspberry/rootfs\nexport PATH=/opt/cross-pi-gcc/bin:$PATH\nexport RASPBERRY_VERSION=1\n...\ncmake -DCMAKE_TOOLCHAIN_FILE=$HOME/raspberry/Toolchain-rpi.cmake ..\n```\n...\nतब `sysroot`तक नहीं कर सका जब तक मैंने इसमें जोड़ा `SET(CMAKE_SYSROOT $ENV{HOME}/raspberrypi/rootfs)`नहीं `pi.cmake`।\n\n मैं CMAKE_SYSROOT सेट के\n...\n1. क्लैंग बायनेरीज़ प्राप्त करें (sudo apt-get install clang) .. या डाउनलोड करें और निर्माण करें ( यहाँ निर्देश पढ़ें )\n2. अपने रास्पबेरी रूटफुट को माउंट करें (यह sshfs, या एक छवि के माध्यम से माउंट किए गए वास्तविक रूटफ़्स हो सकते हैं)।\n3. अपना कोड संकलित करें:\n...\n```cpp\npath/to/clang --target=arm-linux-gnueabihf --sysroot=/some/path/arm-linux-gnueabihf/sysroot my-happy-program.c -fuse-ld=lld\n```\n...\n# Specify sysroot (almost same as rootfs)\nset(CMAKE_SYSROOT ${TARGET_ROOTFS})\nset(CMAKE_FIND_ROOT_PATH ${TARGET_ROOTFS})\n...\n- अपने उबंटू मेजबान पर एक चेरोट या एलएक्ससी कंटेनर के भीतर डेबियन जेसी एमड64 स्थापित करें।\n- विदेशी वास्तुकला armhf सक्षम करें।\n- Emdebian उपकरण रिपॉजिटरी से क्रॉस कंपाइलर स्थापित करें।\n- क्रॉस कंपाइलर (यह डिफ़ॉल्ट रूप से ARMv7-A के लिए कोड जनरेट करेगा) एक कस्टम gcc स्पेक्स फाइल लिखकर।\n- रास्पियन रिपॉजिटरी से आर्मफ लाइब्रेरी (libstdc ++ आदि) स्थापित करें।\n- अपना सोर्स कोड बनाएं।\n\n---\n\nTitle: Bit Syntax - Hindi Programming Tutorials for Beginners\nURL: https://www.bitsyntax.me/2025/07/how-to-install-c-compiler.html\nPublished: 2025-07-12T17:40:00.000Z\nAuthor: Bit Syntax\nHighlights:\nमें help करते हैं\n...\n2. Compiler\n...\n- Compiler, Code को Machine Language में Convert करता है ताकि Computer उसे समझ सके और Run कर सके।\n- C के लिए Popular Compiler हैं : GCC (GNU Compiler Collection)\n...\n#### 1. GCC Compiler\n...\nGCC (GNU Compiler Collection) एक Powerful और Widely-used open-source compiler है, जिसका उपयोग C, C++ Programming languages के code को Machine language में Convert करने के लिए किया जाता है। नीचे GCC Compiler का Installation Process को step by step बताया गया है :\n...\nMinGW install होने के बाद Installation Manager की Window open होगी जिसमें से Mingw32-base और Mingw32-gcc-objc को right click करके Marks for Installation पर click करें।\n...\n👉 अगर आपको C++ Compiler को भी install करना हो तो Mingw32-gcc-g++ को भी Select कर सकते है।\n...\n#### Environment Variable Path\n...\nCompiler Install होने के बाद System में Environment Variable के Path को Set करना होता हैं क्योंकि इसके बिना Compiler का use नहीं किया जा सकता हैं।\n...\nStep 4 : New पर Click करके C:\\MinGW\\bin Path को Save करें और OK पर click करें।\n...\nStep 5 : OK पर click करें उसका बाद C Compiler का Path Set जो जाएगा।\n...\nStep 6 : अगर ये Check करना है कि System में Compiler Succesfully Install हो गया हैं तो CMD में \"gcc --version\" command लिखकर Enter press करें।\n...\nProgram होता है\n...\nlanguage) में convert करता है, ताकि computer उसे समझकर execute कर सके।\n...\nAns : नहीं, GCC को Windows में सीधा install नहीं किया जा सकता। इसके लिए आपको MinGW, TDM-GCC, या MSYS2 जैसे tools का use करना पड़ता है।\n...\nAns : अगर आप अपने Computer में C language सीखना और Practice करना चाहते हैं, तो हाँ, environment setup करना जरूरी होता है, जिससे आप अपना Code लिख और Run कर सकें। लेकिन अगर आप setup नहीं करना चाहते, तो आप Online Compiler tools का use कर सकते हैं। ये tools किसी भी Browser में चल सकते हैं और आपको कोई installation करने की ज़रूरत नहीं होती।\n\n---\n\nTitle: C Programming Setup in Hindi – Complete Beginner Guide -\nURL: https://anwarcodes.com/c-programming-setup-hindi/\nPublished: 2025-07-14T06:42:46.000Z\nAuthor: Anwar Husain\nHighlights:\n### 1. Compiler\n...\nयह सबसे ज़रूरी हिस्सा है क्योंकि यही source code को machine code में बदलता है। C के लिए सबसे popular compiler है:\n...\n- GCC (GNU Compiler Collection) – Windows पर इसे MinGW के through install किया जाता है, Linux में अक्सर पहले से होता है, Mac पर Xcode command line tools के साथ आता है\n...\n- सिर्फ Editor (जैसे VS Code, Notepad++) – इसके साथ compiler अलग से run करना पड़ता है terminal/command prompt से\n- कोई IDE (जैसे Code::Blocks, Dev C++, Turbo C) – इसमें editor और compiler दोनों साथ होते हैं, एक click में run हो जाता है\n...\nWindows में C Programming के लिए setup करने के मुख्य रूप से दो तरीके होते हैं – पहला IDE के साथ (आसान तरीका) और दूसरा GCC Compiler + Code Editor अलग से (Professional तरीका)। नीचे दोनों तरीके detail में दिए गए हैं।\n...\nCode::Blocks एक free IDE है जिसमें GCC Compiler पहले से ही built-in (bundled) आता है, इसलिए अलग से compiler install करने की ज़रूरत नहीं पड़ती।\n...\n### तरीका 2: GCC Compiler (MinGW) + VS Code (Professional तरीका)\n...\n#### Step 1: MinGW (GCC Compiler) Install करना\n...\n1. MinGW की official website से installer download करें (या MSYS2 का उपयोग करें, जो आज ज्यादा recommended है)\n2. Installer चलाएं और “mingw32-gcc-g++” package को select करें\n3. Installation complete होने के बाद, MinGW को apply/install करें\n4. Default installation location होती है:`C:\\MinGW\\bin`\n...\n#### Step 2: Environment Variable (PATH) में Compiler Add करना\n...\nयह step बहुत ज़रूरी है, ताकि आप कहीं से भी (किसी भी folder से)`gcc` command चला सकें।\n...\n1. This PC पर right-click करें → Properties\n2. Advanced system settings पर click करें\n3. Environment Variables button पर click करें\n4. “System variables” में Path को select करें और Edit पर click करें\n5. New पर click करें और MinGW का bin folder path डालें:`C:\\MinGW\\bin`\n6. OK करके सभी windows close कर दें\n...\n#### Step 3: Setup Verify करना\n...\n1. Command Prompt (CMD) खोलें (Win + R टाइप करें, फिर`cmd`)\n2. Type करें:\n...\ngcc –version\n...\n#### Step 4: Code Editor Install करना (VS Code)\n...\n1. Extensions (left sidebar में icon) में जाएं और “C/C++” extension (Microsoft द्वारा) install करें\n2. Visual Studio Code की official website से download करें और install करें\n3. VS Code खोलें\n...\nEnvironment Variable Set करना (सबसे जरूरी Step): सिर्फ install करने से काम नहीं चलेगा, कंप्यूटर को बताना होगा कि Compiler कहाँ रखा है।\n...\n1. Start Menu में “Environment Variables” सर्च करें।\n2. “Edit the system environment variables” पर क्लिक करें।\n3. Path नाम के variable को ढूंढें और Edit पर क्लिक करें।\n4. New पर क्लिक करें और अपने MinGW के bin फोल्डर का एड्रेस पेस्ट करें (जैसे: C:\\MinGW\\bin).\n5. OK करके बाहर आ जाएं\n...\n1. Download: VS Code की official Website से इसे Download और Install करें।\n2. Extension: VS Code खोलें, बाईं तरफ “Extensions” आइकन (box जैसा) पर क्लिक करें।\n3. Search करें “C/C++” (Microsoft वाला) और Install बटन दबाएं।\n4. Test: अब आपका VS Code, C programs को समझने के लिए तैयार है।\n...\n1. अपना Terminal खोलें (Cmd + Space, type Terminal).\n2. नीचे दी गई Command type करें और Enter दबाएं: xcode-select –install\n3. एक pop-up आएगा, “Install” पर क्लिक करें। बस हो गया! आपका GCC compiler install हो जाएगा।\n...\n1. Terminal खोलें (Ctrl+Alt+T).\n2. यह कमांड चलाएं: sudo apt update sudo apt install build-essential\n3. चेक करने के लिए टाइप करें: gcc –version.\n...\nVS Code में Terminal > New Terminal खोलें और लिखें:\n...\ngcc hello.c -o hello\n...\nC Compilers for Beginners\n...\n1. GCC (MinGW): सबसे बेस्ट और Standard।\n2. Clang: तेज़ और आधुनिक, लेकिन Windows पर setup थोड़ा मुश्किल हो सकता है।\n3. TCC (Tiny C Compiler): बहुत हल्का, लेकिन features कम हैं।\n4. Online Compilers: (जैसे Programiz या OnlineGDB) – ये सिर्फ प्रैक्टिस के लिए ठीक हैं, लेकिन सॉफ्टवेयर बनाने के लिए आपको अपने PC पर ही setup करना चाहिए।\n...\nAns: GCC (GNU Compiler Collection) सबसे बेस्ट है क्योंकि यह Open-Source है और दुनिया भर में Standard माना जाता है।\n...\nलेकिन file handling, header files, projects या debugging सीखनी है तो आपको local setup (VS Code + GCC) इस्तेमाल करना ही पड़ेगा।\n...\nमेरी सलाह (Recommendation): अगर आप Beginner हैं, तो Windows 10/11 + VS Code + MinGW (GCC) का कॉम्बिनेशन सबसे बेस्ट है। यह फ्री है, हल्का है और इंडस्ट्री में यही इस्तेमाल होता है।\n\n---\n\nTitle: jwt27/build-gcc\nURL: https://github.com/jwt27/build-gcc\nPublished: N/A\nAuthor: N/A\nHighlights:\nShell scripts to build various gcc cross-compilers (primarily djgpp)\n...\n## Build gcc cross compiler on Windows, Mac OSX, Linux and FreeBSD.\n...\nBefore running this script, you need to install these programs first:\n...\n* g++\n* gcc\n* unzip\n* tar\n* bzip2\n* gzip\n* xz\n* bison\n* flex\n* make (or gmake for FreeBSD)\n* makeinfo\n* patch\n* zlib header/library\n* curl or wget\n* bash (for FreeBSD)\n* python2 headers (for gdb)\n* python3 headers (for gdb >= 9.0)\n* m4\n* dos2unix\n* nasm\n...\nOn Debian/Ubuntu, you can install these programs by :\n...\n```console\n$ sudo apt-get update\n$ sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev tar bzip2 gzip xz-utils unzip python3-dev m4 dos2unix nasm\n...\n2) :\n...\nunix nasm\n...\n```sh\n  --prefix=...              # Install location (default: /usr/local/cross)\n  --target=...              # Target name\n  --enable-languages=...    # Comma-separated list of languages to build compilers for (default: c,c++)\n  --no-download             # Do not download any files\n  --only-download           # Download source files, then exit\n  --ignore-dependencies     # Do not check package dependencies\n  --batch                   # Run in batch mode (will not prompt or delay to confirm settings)\n...\n```sh\nGCC_CONFIGURE_OPTIONS=      # Extra options to pass to gcc's ./configure\nBINUTILS_CONFIGURE_OPTIONS= # Same, for binutils\nGDB_CONFIGURE_OPTIONS=      # Same, for gdb\nNEWLIB_CONFIGURE_OPTIONS=   # Same, for newlib\nAVRLIBC_CONFIGURE_OPTIONS=  # Same, for avr-libc\nGLOBAL_CONFIGURE_OPTIONS=   # Extra options added to all variables listed above\nMAKE_JOBS=                  # Number of parallel build threads (auto-detected)\nCFLAGS_FOR_TARGET=          # CFLAGS used to build target libraries\nHOST=                       # The platform you are building for, when building a cross-cross compiler\nBUILD=                      # The platform you are building on (auto-detected)\nMAKE_CHECK=                 # Run test suites on built programs.\nMAKE_CHECK_GCC=             # Run gcc test suites.\n...\nPick the script you want to use:\n...\n```sh\nbuild-djgpp.sh      # builds a toolchain targeting djgpp (default TARGET: i386-pc-msdosdjgpp)\nbuild-newlib.sh     # builds a toolchain with the newlib C library\nbuild-ia16.sh       # builds a toolchain targeting 8086 processors, with the newlib C library (fixed TARGET: ia16-elf)\nbuild-avr.sh        # builds a toolchain targeting AVR microcontrollers (fixed TARGET: avr)\n```\n...\nTo build DJGPP, just run:\n...\n```console\n$ ./build-djgpp.sh [options...] [packages...]\n...\nFor example, to build gcc 9.2.0 with the latest djgpp C library from CVS and latest binutils:\n...\n```console\n$ ./build-djgpp.sh --prefix=/usr/local djgpp-cvs binutils gcc-9.2.0\n...\nbinutils,\n...\ngdb, and install it.\n...\nTo use your new compiler, you must add its `bin` directory to your `PATH`.\nYou can then access the toolchain through its target-prefixed name:\n...\n```console\n$ PATH=\"/home/me/.local/bin:$PATH\"\n$ i386-pc-msdosdjgpp-g++ hello.cpp\n...\nA `setenv` script will also be installed. This sets up environment variables\nso that you can use the toolchain as if you were working on the target machine.\nThe toolchain utilities are then accessible through their short names (`gcc`,\n`ld`, etc), and you can access target-specific documentation and locate target\nlibraries (via `man`/`info` and `pkg-config`, respectively).\n...\n```console\n$ i386-pc-msdosdjgpp-setenv\nEntering new shell for target environment: i386-pc-msdosdjgpp\n$ which gcc\n/home/me/.local/i386-pc-msdosdjgpp/bin//gcc\n$ gcc -v 2>&1 | grep 'Target'\nTarget: i386-pc-msdosdjgpp\n...\nWith a single\n...\n```console\n$ i386-pc-msdosdjgpp-setenv info libc\n  # (shows\n...\ndjgpp'\n...\nC library)\n\n---\n\nTitle: ऑनलाइन C कंपाइलर और डीबगर | CodeUtility\nURL: https://c.codeutility.io/hi/\nPublished: N/A\nAuthor: Hien Tran\nHighlights:\n## 🧩 इस C ऑनलाइन एग्जीक्यूटर के बारे में\n\n CodeUtility C Executor आपको अपने ब्राउज़र में सीधे C प्रोग्राम लिखने और चलाने देता है - किसी इंस्टॉलेशन या कंपाइलर सेटअप की ज़रूरत नहीं। यह एक सुरक्षित सैंडबॉक्स पर चलता है जो असली C मानकों को सपोर्ट करता है, जिनमें C89, C99, C11, और नवीनतम संस्करण शामिल हैं। \n\n यह टूल क्लाउड में चल रहे एक वास्तविक C कंपाइलर का उपयोग करता है, जो आपके कोड को बिल्कुल नेटिव वातावरण की तरह कंपाइल और रन करता है। आप आसानी से स्निपेट टेस्ट कर सकते हैं, सिंटैक्स सीख सकते हैं, या इनपुट और आउटपुट के साथ पूर्ण प्रोग्राम लिखने का अभ्यास कर सकते हैं। \n\n इसे इस तरह डिज़ाइन किया गया है कि सीखने वालों और डेवलपर्स को C की मूल बातें - जैसे डेटा टाइप्स, पॉइंटर्स, लूप्स, फंक्शंस, ऐरेज़ और स्ट्रक्चर्स - जल्दी से एक्सपेरिमेंट करने में मदद मिले, बिना कोई कंपाइलर या IDE इंस्टॉल किए। \n\n एक ही एक्ज़ीक्यूटर में मल्टी-फ़ाइल एडिटर, अलग-थलग निष्पादन टर्मिनल, रनटाइम-विशिष्ट लाइब्रेरी, स्थायी वर्कस्पेस, साझाकरण और रीयल-टाइम सहयोग का उपयोग करें।\n...\nरनटाइम चुनें, फ़ाइल खोलें या बनाएँ, अपना कोड लिखें और चलाएँ चुनें। आउटपुट टर्मिनल में दिखाई देता है। साइन-इन उपयोगकर्ता वर्कस्पेस में फ़ाइलें रख सकते हैं, लाइब्रेरी इंस्टॉल कर सकते हैं और शेयर के माध्यम से सहयोग कर सकते हैं।\n...\n1. एक संस्करण चुनें और वर्तमान फ़ाइल संपादित करें या वर्कस्पेस की दूसरी फ़ाइल खोलें।\n2. कोड चलाएँ, माँगे जाने पर टर्मिनल में इनपुट दें और सहेजा गया रन इतिहास देखें।\n3. जब कार्य के लिए एक से अधिक कोड अंश चाहिए, तो लाइब्रेरी, वर्कस्पेस टूल, शेयरिंग और चैट का उपयोग करें।\n...\nऑनलाइन %{language} डीबगर से कंपाइलर या IDE इंस्टॉल किए बिना रनटाइम और लॉजिक त्रुटियाँ खोजें। सर्वर मोड debug symbols के साथ कंपाइल करता है और प्रोग्राम को GDB में चलाता है।\n...\n1. लाइन नंबर के पास ब्रेकपॉइंट लगाएँ।\n2. कंपाइल करके पहले ब्रेकपॉइंट पर रुकने के लिए Debug चुनें।\n3. वर्तमान लाइन, call stack और वेरिएबल देखें।\n4. Continue, Step Over, Step Into या Step Out उपयोग करें।\n5. सत्र समाप्त करने के लिए Stop चुनें।\n\n---\n\nTitle: मैं लिनक्स से विंडोज लक्ष्य तक क्रॉस-संकलन के लिए क्यूटी को कैसे कॉन्फ़िगर करूं?\nURL: https://qastack.co.in/programming/10934683/how-do-i-configure-qt-for-cross-compilation-from-linux-to-windows-target\nPublished: N/A\nAuthor: N/A\nHighlights:\nबसएम क्रॉस एनवायरनमेंट (एमएक्सई) का उपयोग करें। यह दर्द को पूरी प्रक्रिया से बाहर ले जाता है:\n...\n`make qt`क्यूटी बनाने के लिए उपयोग करने के बजाय , आप`MXE_TARGETS`अपनी लक्ष्य मशीन और टूलचिन (32- या 64-बिट) को नियंत्रित करने के लिए उपयोग कर सकते हैं । MXE ने लक्ष्य नाम के एक भाग के रूप में उपयोग करना शुरू कर दिया`.static`और`.shared`यह दिखाने के लिए कि आप किस प्रकार के परिवाद का निर्माण करना चाहते हैं।\n...\n```\n# The following is the same as `make qt`, see explanation on default settings after the code block.\nmake qt MXE_TARGETS=i686-w64-mingw32.static   # MinGW-w64, 32-bit, static libs\n...\n# Other targets you can use:\nmake qt MXE_TARGETS=x86_64-w64-mingw32.static # MinGW-w64, 64-bit, static libs\nmake qt MXE_TARGETS=i686-w64-mingw32.shared   # MinGW-w64, 32-bit, shared libs\n...\n@ त्सेपंग के मूल उत्तर में, उन्होंने कोई निर्दिष्ट नहीं किया`MXE_TARGETS`, और डिफ़ॉल्ट का उपयोग किया जाता है। जिस समय उन्होंने अपना उत्तर लिखा, उस समय डिफ़ॉल्ट था`i686-pc-mingw32`, अब यह है`i686-w64-mingw32.static`। यदि आप स्पष्ट रूप से सेट`MXE_TARGETS`करते हैं`i686-w64-mingw32`, तो छोड़ देना`.static`, एक चेतावनी मुद्रित की जाती है क्योंकि यह वाक्यविन्यास अब पदावनत हो गया है। यदि आप लक्ष्य निर्धारित करने की कोशिश करते हैं`i686-pc-mingw32`, तो यह एक त्रुटि दिखाएगा क्योंकि MXE ने MinGW.org (यानी i686-pc-mingw32) के लिए समर्थन हटा दिया है।\n...\nजैसा कि हमने बदला`MXE_TARGETS`,` /usr/i686-pc-mingw32/qt/bin/qmake`कमांड अब काम नहीं करेगा। अब, आपको क्या करना है:\n...\nलिनक्स पर मिनगॉ-डब्ल्यू 64 टूलचैन है। इसका\n...\nसबसे पहले, आपको एक कट्टर-आधारित मशीन (वर्चुअल मशीन या डॉकटर कंटेनर पर्याप्त होगा) की आवश्यकता होगी। यह आर्क लिनक्स होना जरूरी नहीं है, डेरिवेटिव भी करेगा। मैंने मंज़रो लिनक्स का इस्तेमाल किया। अधिकांश मिनगवॉ-डब्ल्यू 64 पैकेज आधिकारिक आर्क रिपॉजिटरी में उपलब्ध नहीं हैं, लेकिन AUR में बहुतकुछ है । आर्क (Pacman) के लिए डिफ़ॉल्ट पैकेज मैनेजर AUR से सीधे इंस्टॉलेशन का समर्थन नहीं करता है, इसलिए आपको AUR आवरण जैसे या याकोर्ट का उपयोग करना होगा। फिर QG5 और बूस्ट पुस्तकालयों के MinGW-w64 संस्करण को स्थापित करना उतना ही आसान है:\n...\nयह MinGW-w64 टूलचिन (`mingw-w64-gcc`) और अन्य निर्भरताएं भी स्थापित करेगा । Windows (x64) के लिए Qt प्रोजेक्ट को क्रॉस-कंपाइल करना तब उतना ही सरल है:\n...\n```\nx86_64-w64-mingw32-qmake-qt5\nmake\n\n```\n...\nएक 32 बिट संस्करण प्राप्त करने के लिए आपको`i686-w64-mingw32-qmake-qt5`इसके बजाय बस उपयोग करने की आवश्यकता है । Cmake- आधारित परियोजनाएं उतनी ही आसानी से काम करती हैं`x86_64-w64-mingw32-cmake`। यह दृष्टिकोण मेरे लिए बहुत अच्छा काम करता था, सेट-अप करना, बनाए रखना और विस्तार करना सबसे आसान था। यह निरंतर एकीकरण सेवाओं के साथ अच्छी तरह से चला जाता है। इसमेंडॉकटर चित्रभी उपलब्ध हैं।\n...\nऐसा प्रतीत होता है कि \"शुरू में\" जब आप कॉन्फ़िगर (-xtarget, आदि) चलाते हैं, तो यह स्थानीय बाइनरी फ़ाइल बनाने के लिए आपके \"होस्ट\" gcc को चलाता है ।/bin/qmake।\n...\n```\n ./configure -xplatform win32-g++ -device-option CROSS_COMPILE=$cross_prefix_here -nomake examples ...\n\n```\n...\nQt को संकलित करने के लिए, किसी को इसकी`configure`स्क्रिप्ट को चलाना होगा , होस्ट प्लेटफ़ॉर्म को निर्दिष्ट करना`-platform`(जैसे`-platform linux-g++-64`कि यदि आप जी ++ कंपाइलर के साथ 64-बिट लिनेक्स पर निर्माण कर रहे हैं) और लक्ष्य प्लेटफ़ॉर्म के साथ`-xplatform`(जैसे`-xplatform win32-g++`कि यदि आप विंडोज़ पर संकलन कर रहे हैं तो ) है।\n...\nमैंने इस ध्वज को भी जोड़ा है:`-device-option CROSS_COMPILE=/usr/bin/x86_64-w64-mingw32-`जो कि मैं उपयोग कर रहे टूलकिन के उपसर्ग को निर्दिष्ट करता हूं, जो विंडोज़ के लिए बायनेरिज़ बनाने वाले सभी मेकफाइल्स में 'जीसीसी' या 'जी ++' से पहले से तैयार हो जाएगा।\n...\n```\n    cd qt_source_directory\n    mkdir my_build\n    cd my_build\n    ../configure \\\n      -release \\\n      -opensource \\\n      -no-compile-examples \\\n      -platform linux-g++-64 \\\n      -xplatform win32-g++ \\\n      -device-option CROSS_COMPILE=/usr/bin/x86_64-w64-mingw32- \\\n      -skip qtactiveqt \\\n      -v\n\n```\n...\n3 - आप ऊपर उल्लेखित के रूप में, qmake.conf फ़ाइल में करने के बजाय कॉन्फ़िगर कमांड लाइन में क्रॉस कंपाइलर उपसर्ग निर्दिष्ट कर सकते हैं। और वहाँ भी है कि समस्या के साथ idc, जिसका समाधान मैं भी उल्लेख किया है।",
+      "title": "Web search: इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ।",
+      "metadata": {},
+      "time": {
+        "start": 1789529483152,
+        "end": 1789529487000
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.003Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529487003,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844f69a0012vtN3OzxLrV2eJ",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844e52d001Hlo2wksb7MRO3m",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8643,
+      "output": 341,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8984,
+      "headroom": 29872,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.004Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.004Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.005Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.005Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.005Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.005Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.006Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.006Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.006Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.006Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.014Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8984,
+  "providerTokens": 8984,
+  "estimatedInputTokens": 9188,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8643,
+    "cacheRead": 0,
+    "output": 341
+  },
+  "overflow": false,
+  "headroom": 29872,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.014Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.014Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.016Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.018Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529487695,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844f94e001Qj2jG0weZPjypQ",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844f6a60014isxD2Jj42Lmn3",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.696Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.696Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529487696,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844f950001XS1T2Nkn7nQFJj",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844f6a60014isxD2Jj42Lmn3",
+    "type": "tool",
+    "callID": "call_a8b351da1006115a",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.696Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529487696,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844f94f0010PKzaG6w3wAEIt",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844f6a60014isxD2Jj42Lmn3",
+    "type": "text",
+    "text": "मैं https://wiki.osdev.org/GCC_Cross-Compiler खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789529487696,
+      "end": 1789529487696
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.696Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529487696,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844f950001XS1T2Nkn7nQFJj",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844f6a60014isxD2Jj42Lmn3",
+    "type": "tool",
+    "callID": "call_a8b351da1006115a",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://wiki.osdev.org/GCC_Cross-Compiler"
+      },
+      "time": {
+        "start": 1789529487696
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.911Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789529487911,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844f950001XS1T2Nkn7nQFJj",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844f6a60014isxD2Jj42Lmn3",
+    "type": "tool",
+    "callID": "call_a8b351da1006115a",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://wiki.osdev.org/GCC_Cross-Compiler"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789529487696,
+        "end": 1789529487910
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789529487911,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529487912,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fa27001MMpXHylI3PJm2k",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844f6a60014isxD2Jj42Lmn3",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 41053,
+      "output": 150,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 41203,
+      "headroom": -2347,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.912Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.913Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.913Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.913Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.916Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 41203,
+  "providerTokens": 41203,
+  "estimatedInputTokens": 9209,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 41053,
+    "cacheRead": 0,
+    "output": 150
+  },
+  "overflow": true,
+  "headroom": -2347,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.916Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.917Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.917Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.917Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.917Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.917Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 4,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.918Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.918Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:27.918Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.295Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529488295,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fba7001oaQP49O5fJi22e",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844fa2e001ackMRe5bLmcivB",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.296Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529488297,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fba8001srauVEp8KB1rUK",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844fa2e001ackMRe5bLmcivB",
+    "type": "text",
+    "text": "Conversation summary: इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ।  मैं इंटरनेट पर इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है।\n\nTitle: What did we do so\n\nUser turns:\n  1. इस प्रोजेक्ट को बनाने के लिए एक ऐसे कंपाइलर की ज़रूरत है जो इस मशीन पर नहीं है। पता करो कौन-सा, उसे लाओ, और फिर प्रोजेक्ट की अपनी टेस्ट कमांड चलाओ।\n  2.",
+    "time": {
+      "start": 1789529488296,
+      "end": 1789529488296
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529488297,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fba9001mK2GH5CyPu0FUg",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844fa2e001ackMRe5bLmcivB",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 33409,
+      "output": 462,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33871,
+      "headroom": 4985,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.297Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.298Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529488298,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fba9003w9JTPtsDTgTxeh",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844fba9002FSKSHk1s6bqHr2",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789529488297,
+      "end": 1789529488297
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.298Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.298Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.298Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.299Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.299Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.299Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.300Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.300Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.352Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789529488353,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fbe0001r2hPD8FU546UIS",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844fbaa001WrxlRv67NOtpbj",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789529488353,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fbe1002UYcyZasIK2aIqc",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844fbaa001WrxlRv67NOtpbj",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789529488353,
+      "end": 1789529488353
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789529488353,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "part": {
+    "id": "prt_0a844fbe1003UWCauWYoOzQKEL",
+    "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+    "messageID": "msg_0a844fbaa001WrxlRv67NOtpbj",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 9011,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 9084,
+      "headroom": 29772,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.354Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.354Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.354Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.355Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.355Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.355Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789529488355,
+  "sessionID": "ses_f57bb1beeffeO5lUXjtzj6CfL8"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.355Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.356Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.356Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.356Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.l3YAxftm16",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:31:28.356Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

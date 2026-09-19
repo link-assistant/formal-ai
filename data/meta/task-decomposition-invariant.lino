@@ -1,8 +1,12 @@
 task_decomposition_contract
   record_type meta_invariant
   atomic "require an observable completion contract and no pending children"
+  source_reader "src/task_decomposition.rs"
   execution "run the exact inspected content-addressed tree"
+  source_reader "src/recursive_execution.rs"
   binary "every non-leaf task is recursively split into exactly two children; 1, 2, 4, 8, 16, 32 and so on leaves are valid complete layers"
+  source_reader "src/selection_heuristics.rs"
   learning "activate a strategy only after green regression evidence and human review"
+  source_reader "src/task_decomposition/strategy.rs"
   source_integrity "Preserve delimited literal and URI operands before sentence/clause cuts; list markers delimit requirements, and every reported byte span refers to the original source characters. Preserving unknown text does not establish its meaning or execution."
   source_reader "src/intent_formalization/requirements.rs"

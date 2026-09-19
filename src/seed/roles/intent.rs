@@ -546,3 +546,136 @@ pub const ROLE_ENUMERATION_REQUEST_OPENER: &str = "enumeration_request_opener";
 /// that an enumeration request carries a filter (so it is a real research
 /// request, not a bare noun phrase).
 pub const ROLE_ENUMERATION_CONSTRAINT: &str = "enumeration_constraint";
+/// Semantic role: the *retrieve* act of capability routing (issue #1138 B10,
+/// plan 10 leaf 6).
+///
+/// "find", "search", "найди", "खोज", "查找", "busca" — recorded as stems and
+/// matched as raw substrings. Verbs select the act; they never select the
+/// capability, so this one role serves web search, code search and file search
+/// alike and the #745/#758 asymmetry cannot recur in either direction. Carried
+/// by `act_retrieve` in `data/seed/meanings-acts.lino`.
+pub const ROLE_CAPABILITY_ACT_RETRIEVE: &str = "capability_act_retrieve";
+/// Semantic role: the *enumerate* act — list what is there rather than fetch one
+/// thing. Carried by `act_enumerate`.
+pub const ROLE_CAPABILITY_ACT_ENUMERATE: &str = "capability_act_enumerate";
+/// Semantic role: the *transform* act — rewrite, convert, replace. Carried by
+/// `act_transform`.
+pub const ROLE_CAPABILITY_ACT_TRANSFORM: &str = "capability_act_transform";
+/// Semantic role: the *compose* act — produce an extended written piece from
+/// retrieved structure. Carried by `act_compose`.
+pub const ROLE_CAPABILITY_ACT_COMPOSE: &str = "capability_act_compose";
+/// Semantic role: the *schedule* act — place an event in time. Carried by
+/// `act_schedule`; it subsumes the calendar verbs that used to live in
+/// `data/meta/cue-lexicon.lino` as their own cue sets.
+pub const ROLE_CAPABILITY_ACT_SCHEDULE: &str = "capability_act_schedule";
+/// Semantic role: the *explain* act — re-render at a lower formalization depth.
+/// Carried by `act_explain`.
+pub const ROLE_CAPABILITY_ACT_EXPLAIN: &str = "capability_act_explain";
+/// Semantic role: the *demonstrate* act — answer in a named language. Carried by
+/// `act_demonstrate`.
+pub const ROLE_CAPABILITY_ACT_DEMONSTRATE: &str = "capability_act_demonstrate";
+/// Semantic role: the *record* act — file what happened. Carried by
+/// `act_record`.
+pub const ROLE_CAPABILITY_ACT_RECORD: &str = "capability_act_record";
+/// Semantic role: the noun for a piece of the assistant's own surface.
+///
+/// "panel", "панель", "पैनल", "面板", "panel" — read beside
+/// [`crate::seed::ROLE_ASSISTANT_SELF_REFERENCE`] so "the panel you drew" is a
+/// self surface while "the panel of judges" is not. Carried by
+/// `self_surface_noun` in `data/seed/meanings-object-shapes.lino`.
+pub const ROLE_CAPABILITY_SELF_SURFACE_NOUN: &str = "capability_self_surface_noun";
+/// Semantic role: an interrogative whose expected answer is a magnitude.
+///
+/// "how deep", "насколько глубоко", "कितनी गहरी", "多深", "qué profundidad" —
+/// the closed class that separates a measurement question from a mechanism
+/// question. Carried by `quantity_interrogative`.
+pub const ROLE_CAPABILITY_QUANTITY_INTERROGATIVE: &str = "capability_quantity_interrogative";
+/// Semantic role: a noun that scopes the effect to the *open web*.
+///
+/// "online", "в интернете", "इंटरनेट", "网络", "en la web" — the counterpart of
+/// the filesystem scope nouns, so a locus is derived from what the request
+/// names rather than from which verb it happens to use. Carried by
+/// `web_scope` in `data/seed/meanings-object-shapes.lino`.
+pub const ROLE_CAPABILITY_WEB_SCOPE: &str = "capability_web_scope";
+/// Semantic role: a noun that scopes the effect to the machine the task is
+/// being done on, without naming a directory.
+///
+/// "the code", "репозитор", "कोड", "代码", "el código" — wider than
+/// [`ROLE_CAPABILITY_CONTAINER_SCOPE`]: it is what keeps code navigation out of
+/// a web search (issue #758) without claiming the request names a folder.
+pub const ROLE_CAPABILITY_WORKSPACE_SCOPE: &str = "capability_workspace_scope";
+/// Semantic role: the noun for a filesystem container the request names.
+///
+/// "folder", "папк", "फ़ोल्डर", "文件夹", "carpeta" — read beside the three
+/// `local_path_scope_*` roles so `on my desktop` and `on desktop` are one
+/// request and a listing is asked of the thing that holds files.
+pub const ROLE_CAPABILITY_CONTAINER_SCOPE: &str = "capability_container_scope";
+/// Semantic role: the `freshness: live` qualifier (plan 10 leaf 12, issue #720).
+///
+/// "right now", "сегодня", "अभी", "现在", "ahora mismo" — the request is about
+/// what is true at the moment it is asked, so no stored answer satisfies it and
+/// the locus is the live web whatever the verb was.
+pub const ROLE_CAPABILITY_FRESHNESS_LIVE: &str = "capability_freshness_live";
+/// Semantic role: a point in the clock day that carries no colon.
+///
+/// "noon", "полдень", "बजे", "今晚", "mediodía" — the half of a time expression
+/// that digits cannot supply, so `at eight tonight` is a time expression for the
+/// same reason `at 20:00` is.
+pub const ROLE_CAPABILITY_CLOCK_REFERENCE: &str = "capability_clock_reference";
+/// Semantic role: a reference to the assistant's own previous turn through a
+/// failure to understand it (plan 10 leaf 13, issue #721).
+///
+/// "over my head", "не уловил", "पल्ले नहीं", "没听明白", "no te sigo" — the one
+/// class with no structural signal, so it is grounded here in five languages.
+/// None of the three reported strings is among its surfaces: the class is
+/// closed when its paraphrases route, not when the reported string does.
+pub const ROLE_CAPABILITY_PRIOR_TURN_REFERENCE: &str = "capability_prior_turn_reference";
+/// Semantic role: a name for a human language used to ask for a reply *in* it.
+///
+/// "по-русски", "में", "用中文", "en español" — the surfaces
+/// `ROLE_TRANSLATION_LANGUAGE` does not carry because they are adverbial
+/// rather than nominal, kept beside it so a demonstration request names a
+/// language object in every one of the five locales.
+pub const ROLE_CAPABILITY_LANGUAGE_REFERENCE: &str = "capability_language_reference";
+/// Semantic role: the phrase that introduces literal content the request hands
+/// over unquoted.
+///
+/// "containing", "с текстом", "सामग्री के साथ", "内容为", "con el texto" —
+/// quotation marks are one way to hand over a literal and this is the other, so
+/// both derive the same object.
+pub const ROLE_CAPABILITY_CONTENT_INTRODUCER: &str = "capability_content_introducer";
+/// Semantic role: the connector that assigns literal content to a destination
+/// the request has already named.
+///
+/// "to", "в", "में", "为", "en" — read only *after* the destination path, so
+/// "set the contents of note.txt to hello" hands over `hello` while nothing
+/// else in the sentence is mistaken for content. Deliberately not consulted by
+/// the object derivation: these words are too common to be evidence on their
+/// own, and they are evidence only in the position this names.
+pub const ROLE_CAPABILITY_CONTENT_ASSIGNMENT: &str = "capability_content_assignment";
+/// Semantic role: a registrable domain suffix, so `amazon.in` is read as a host
+/// and not as a file with an `in` extension.
+///
+/// A dotted token splits into a stem and a short alphabetic tail whether it
+/// names a file or a site, so the tail is the whole of the difference and it
+/// has to be written down. Only suffixes that are *not* also workspace file
+/// extensions are listed -- `rs`, `py`, `js`, `md` stay paths.
+pub const ROLE_CAPABILITY_WEB_HOST_SUFFIX: &str = "capability_web_host_suffix";
+/// Semantic role: the subject of a request is a *list of tasks to track*
+/// (plan 10 leaf 11, issue #758's `todo` capability).
+///
+/// "todo list", "список задач", "कार्य सूची", "待办列表", "lista de tareas" --
+/// the object noun that lets a plan-of-work request route by what it is about
+/// rather than by which ten phrases the seed memorized. The recorded strings
+/// are nouns only; the verb that acts on them is the act axis's business.
+pub const ROLE_CAPABILITY_TASK_LIST_NOUN: &str = "capability_task_list_noun";
+/// Semantic role: the closed class that marks a request as a *delegation* --
+/// the work is handed to another agent, not performed here
+/// (plan 10 leaf 11, issue #758's `subagent` capability).
+///
+/// "delegate", "subagent", "поручи", "подагент", "सौंपें", "उपएजेंट", "委派",
+/// "子代理", "delega", "subagente" -- verb stems and recipient nouns of one
+/// class, so "delegate this investigation" and "hand this to an agent" are the
+/// same object. Like [`ROLE_CAPABILITY_PRIOR_TURN_REFERENCE`] it is a class
+/// with no character-level signal, so its members are seed data.
+pub const ROLE_CAPABILITY_DELEGATION_MARKER: &str = "capability_delegation_marker";

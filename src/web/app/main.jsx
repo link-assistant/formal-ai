@@ -1065,6 +1065,13 @@ const EXTERNAL_TRUSTED_SERVICES = [
   { key: "externalServiceStackExchange", label: "settings.externalServiceStackExchange" },
   { key: "externalServiceMediawikiFamily", label: "settings.externalServiceMediawikiFamily" },
   { key: "externalServiceGithub", label: "settings.externalServiceGithub" },
+  // Issue #1138 plan 01 L4: the lexical tier joined the live, opt-out-able
+  // group when it gained a `need_kinds`, so the two settings keys that silence
+  // a dictionary belong here too. Without them a user could opt out of every
+  // procedural source and still have no way to opt out of the ones that answer
+  // "what does this word mean".
+  { key: "externalServiceWiktionary", label: "settings.externalServiceWiktionary" },
+  { key: "externalServiceWordnet", label: "settings.externalServiceWordnet" },
 ];
 
 const LEGACY_EXPANDED_SIDEBAR_KEYS = [
@@ -3201,6 +3208,13 @@ function createMessage(role, content, extra = {}) {
     sentAt: timeLabel(),
     ...extra,
   };
+}
+
+function browserRuntimeStatusKey(state) {
+  const status = state && state.status;
+  return status === "loading" || status === "ready" || status === "failed"
+    ? status
+    : "available";
 }
 
 // Issue #153: dedicated renderer for the formalize / formalize_resolved
@@ -6396,6 +6410,10 @@ function App() {
   const [pending, setPending] = useState(false);
   const [workerState, setWorkerState] = useState("loading worker");
   const [workerReady, setWorkerReady] = useState(false);
+  const [browserRuntimeState, setBrowserRuntimeState] = useState({
+    status: "available_to_download",
+    error: "",
+  });
   const [memoryStatus, setMemoryStatus] = useState("");
   const [composerMenuOpen, setComposerMenuOpen] = useState(false);
   const [attachments, setAttachments] = useState([]);
@@ -7702,6 +7720,21 @@ function App() {
 
     return () => worker.terminate();
   }, []);
+
+  // #670/#1138: Pyodide is never fetched during page or worker startup. This
+  // handler is bound only to the size-labelled button in Settings, making the
+  // network and storage cost an explicit user choice.
+  const loadBrowserRuntime = useCallback(() => {
+    const worker = workerRef.current;
+    if (!worker || browserRuntimeState.status === "loading") return;
+    setBrowserRuntimeState({ status: "loading", error: "" });
+    const requestId = `browser-runtime-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    pendingResponses.current.set(requestId, (result) => {
+      const status = result?.probe?.status === "ready" ? "ready" : "failed";
+      setBrowserRuntimeState({ status, error: String(result?.error || "") });
+    });
+    worker.postMessage({ kind: "browser_runtime_load", requestId });
+  }, [browserRuntimeState.status]);
 
   useEffect(() => {
     transcriptEndRef.current?.scrollIntoView({ block: "end" });
@@ -9234,7 +9267,9 @@ function App() {
                     })}</span></button><button type="button" className={`conversation-copy${copiedConversationId === entry.id ? " is-copied" : ""}`} data-testid="conversation-copy" data-conversation-id={entry.id} data-copied={copiedConversationId === entry.id ? "true" : null} aria-label={t("conversation.copyMarkdownTitle")} title={t("conversation.copyMarkdownTitle")} onClick={() => handleCopyConversation(entry)}>{copiedConversationId === entry.id ? t("conversation.copyMarkdownDone") : t("conversation.copyMarkdown")}</button>{entry.deleted ? <button type="button" className="conversation-delete conversation-permanent-delete" data-testid="conversation-purge-one" aria-label={t("conversation.deletePermanent")} title={t("conversation.deletePermanent")} onClick={() => handlePurgeConversation(entry)}>{"!"}</button> : <button type="button" className="conversation-delete" data-testid="conversation-delete" aria-label={t("conversation.delete")} title={t("conversation.delete")} onClick={() => handleDeleteConversation(entry)}>{"×"}</button>}</div></li>;
           })}</ul>}</div>} /><SidebarSection title={t("sidebar.settings")} testId="sidebar-settings" collapsed={sidebarSettingsCollapsed} onToggle={() => setSidebarSettingsCollapsed(value => !value)} children={<div className="settings-panel"><div className="settings-reset" data-testid="settings-reset"><div className="settings-reset-header"><span className="settings-reset-title">{t("settings.resetHeading")}</span><button type="button" className="settings-reset-all" data-testid="settings-reset-all" disabled={modifiedSettings.length === 0} onClick={resetAllSettings} title={t("settings.resetAll")}>{t("settings.resetAll")}</button></div>{modifiedSettings.length === 0 ? <p className="settings-reset-empty" data-testid="settings-reset-empty">{t("settings.resetNone")}</p> : <ul className="settings-reset-list">{modifiedSettings.map(descriptor => <li key={descriptor.key} className="settings-reset-item"><span className="settings-reset-label">{t(descriptor.label)}</span><button type="button" className="settings-reset-one" data-testid={`settings-reset-${descriptor.key}`} onClick={() => resetSetting(descriptor)} title={t("settings.resetOne")}>{t("settings.resetOne")}</button></li>)}</ul>}</div><div className="setting-row setting-row-slider"><label htmlFor="setting-guess-probability">{t("settings.ambiguity")}</label><div className="setting-poles"><span>{t("settings.moreQuestions")}</span><span>{t("settings.moreGuessing")}</span></div><input id="setting-guess-probability" data-testid="setting-guess-probability" type="range" min="0" max="1" step="0.05" value={guessProbability} onChange={event => setGuessProbability(normalizeSliderPreference(event.target.value, 0.8))} /><output htmlFor="setting-guess-probability">{`${formatSliderValue(guessProbability)}%`}</output></div><div className="setting-row setting-row-slider"><label htmlFor="setting-follow-up-probability">{t("settings.followUpInitiative")}</label><div className="setting-poles"><span>{t("settings.userInitiative")}</span><span>{t("settings.assistantInitiative")}</span></div><input id="setting-follow-up-probability" data-testid="setting-follow-up-probability" type="range" min="0" max="1" step="0.05" value={followUpProbability} onChange={event => setFollowUpProbability(normalizeSliderPreference(event.target.value, PREFERENCE_DEFAULTS.followUpProbability))} /><output htmlFor="setting-follow-up-probability">{`${formatSliderValue(followUpProbability)}%`}</output></div><div className="setting-row setting-row-slider"><label htmlFor="setting-temperature">{t("settings.temperature")}</label><div className="setting-poles"><span>{t("settings.deterministic")}</span><span>{t("settings.varied")}</span></div><input id="setting-temperature" data-testid="setting-temperature" type="range" min="0" max="1" step="0.05" value={temperature} onChange={event => setTemperature(normalizeSliderPreference(event.target.value, 0))} /><output htmlFor="setting-temperature">{normalizeSliderPreference(temperature, 0).toFixed(2)}</output></div><label className="setting-check"><input type="checkbox" checked={greetingVariations} onChange={event => setGreetingVariations(event.target.checked)} /><span>{t("settings.variations")}</span></label><label className="setting-row"><span>{t("settings.definitionFusion")}</span><select data-testid="setting-definition-fusion" value={definitionFusion} onChange={event => setDefinitionFusion(normalizeDefinitionFusion(event.target.value))}><option value="explicit">{t("settings.definitionFusion.explicit")}</option><option value="auto">{t("settings.definitionFusion.auto")}</option></select></label><label className="setting-row"><span>{t("settings.blueprintComposition")}</span><select data-testid="setting-blueprint-composition" value={blueprintComposition} onChange={event => setBlueprintComposition(normalizeBlueprintComposition(event.target.value))}><option value="composed">{t("settings.blueprintComposition.composed")}</option><option value="documented">{t("settings.blueprintComposition.documented")}</option></select></label><label className="setting-row"><span>{t("settings.thinkingDetail")}</span><select data-testid="setting-thinking-detail" value={thinkingDetailLevel} onChange={event => setThinkingDetailLevel(normalizeThinkingDetailLevel(event.target.value))}><option value="brief">{t("settings.thinkingDetail.brief")}</option><option value="standard">{t("settings.thinkingDetail.standard")}</option><option value="detailed">{t("settings.thinkingDetail.detailed")}</option></select></label><div className="setting-row setting-row-slider"><label htmlFor="setting-min-message-animation">{t("settings.minMessageAnimation")}</label><div className="setting-poles"><span>{t("settings.animationImmediate")}</span><span>{t("settings.animationRelaxed")}</span></div><input id="setting-min-message-animation" data-testid="setting-min-message-animation" type="range" min="0" max="6000" step="250" value={minMessageAnimationMs} onChange={event => setMinMessageAnimationMs(normalizeAnimationBudgetMs(event.target.value))} /><output htmlFor="setting-min-message-animation">{minMessageAnimationMs === 0 ? t("settings.animationImmediate") : t("settings.animationSeconds", {
               seconds: (minMessageAnimationMs / 1000).toFixed(1)
-            })}</output></div><div className="setting-row setting-row-ocr"><label className="setting-check"><input type="checkbox" checked={experimentalOcr} data-testid="setting-experimental-ocr" onChange={event => setExperimentalOcr(event.target.checked)} /><span>{t("settings.experimentalOcr")}</span></label><p className="setting-warning" data-testid="setting-experimental-ocr-warning" title={OCR_DOWNLOAD_WARNING}>{t("settings.experimentalOcr.warning")}</p></div>{
+            })}</output></div><div className="setting-row setting-row-ocr"><label className="setting-check"><input type="checkbox" checked={experimentalOcr} data-testid="setting-experimental-ocr" onChange={event => setExperimentalOcr(event.target.checked)} /><span>{t("settings.experimentalOcr")}</span></label><p className="setting-warning" data-testid="setting-experimental-ocr-warning" title={OCR_DOWNLOAD_WARNING}>{t("settings.experimentalOcr.warning")}</p></div><div className="setting-row setting-row-browser-runtime" data-testid="setting-browser-runtime"><p className="setting-section-title">{t("message.browserRuntime.title")}</p><p className="setting-section-note" role="status">{t(`message.browserRuntime.${browserRuntimeStatusKey(browserRuntimeState)}`, {
+              error: browserRuntimeState.error
+            })}</p><button type="button" className="permission-button" data-testid="setting-browser-runtime-load" disabled={browserRuntimeState.status === "loading" || browserRuntimeState.status === "ready"} onClick={loadBrowserRuntime}>{t("message.browserRuntime.load")}</button></div>{
         // Issue #444: external trusted-services opt-in/opt-out section. The
         // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
         // catalog stays the single source of truth; each service is enabled

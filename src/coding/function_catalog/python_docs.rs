@@ -6,9 +6,9 @@ use std::process::Command;
 
 use crate::how_to_guide::extract::{decode_entities, strip_html};
 use crate::links_format::push_lino_node;
+use crate::seed::SourceRecord;
 use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
 
-const DOCS_ROOT: &str = "https://docs.python.org/3.12/library";
 const PAGES: &[&str] = &[
     "functions.html",
     "stdtypes.html",
@@ -111,22 +111,28 @@ impl StdlibIndex {
 pub fn fetch_index<T: SourceTransport>(
     client: &CachedSourceClient<T>,
 ) -> Result<StdlibIndex, FetchError> {
+    let source = crate::seed::source_record("python_docs")
+        .ok_or_else(|| FetchError::Cache("python_docs:source_registry_missing".to_owned()))?;
     let mut parts = Vec::new();
     for page in PAGES {
-        let url = format!("{DOCS_ROOT}/{page}");
+        let url = source.api_url(&[("title", page)]);
         let capture = match client.fetch(&url) {
             Ok(capture) => capture,
-            Err(FetchError::OfflineCacheMiss(_)) => return runtime_fallback_index(),
+            Err(FetchError::OfflineCacheMiss(_)) => return runtime_fallback_index(&source),
             Err(error) => return Err(error),
         };
-        parts.extend(extract_page(page, &capture)?);
+        parts.extend(extract_page(page, &capture, &source)?);
     }
     parts.sort_by(|left, right| left.symbol.cmp(&right.symbol));
     parts.dedup_by(|left, right| left.symbol == right.symbol);
     Ok(StdlibIndex { parts })
 }
 
-fn extract_page(page: &str, capture: &SourceCapture) -> Result<Vec<StdlibPart>, FetchError> {
+fn extract_page(
+    page: &str,
+    capture: &SourceCapture,
+    source: &SourceRecord,
+) -> Result<Vec<StdlibPart>, FetchError> {
     let html = std::str::from_utf8(capture.bytes())
         .map_err(|error| FetchError::Cache(format!("python_docs_utf8:{page}:{error}")))?;
     let mut out = Vec::new();
@@ -170,8 +176,8 @@ fn extract_page(page: &str, capture: &SourceCapture) -> Result<Vec<StdlibPart>, 
             module,
             signature,
             description,
-            source_url: format!("{DOCS_ROOT}/{page}#{symbol}"),
-            license: "PSF-2.0".to_owned(),
+            source_url: format!("{}#{symbol}", source.api_url(&[("title", page)])),
+            license: source.license_name.clone(),
             sha256: capture.sha256().to_owned(),
             fetched_at: capture.fetched_at().to_owned(),
         });
@@ -228,7 +234,7 @@ fn stem(token: &str) -> &str {
     }
 }
 
-fn runtime_fallback_index() -> Result<StdlibIndex, FetchError> {
+fn runtime_fallback_index(source: &SourceRecord) -> Result<StdlibIndex, FetchError> {
     const SYMBOLS: &[(&str, &str)] = &[
         ("sum", "sum"),
         ("max", "max"),
@@ -265,11 +271,14 @@ fn runtime_fallback_index() -> Result<StdlibIndex, FetchError> {
     let version = String::from_utf8_lossy(&version.stdout).trim().to_owned();
     let mut parts = Vec::new();
     for (symbol, expression) in SYMBOLS {
-        let script = crate::coding::python_render::runtime_template(
+        let Some(script) = crate::coding::python_render::runtime_template(
             "python_doc_probe",
             &[("expression", expression)],
-        )
-        .expect("python documentation probe template");
+        ) else {
+            return Err(FetchError::Cache(
+                "python_docs_runtime:missing python_doc_probe fragment".to_owned(),
+            ));
+        };
         let output = Command::new("python3")
             .args(["-c", &script])
             .output()
@@ -289,7 +298,7 @@ fn runtime_fallback_index() -> Result<StdlibIndex, FetchError> {
             signature: String::new(),
             description,
             source_url: format!("python{version}:{symbol}.__doc__"),
-            license: "PSF-2.0".to_owned(),
+            license: source.license_name.clone(),
             sha256: crate::source_fetch::sha256_hex(output.stdout.as_slice()),
             fetched_at: "runtime".to_owned(),
         });

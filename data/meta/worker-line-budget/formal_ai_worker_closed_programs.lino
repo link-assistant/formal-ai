@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_closed_programs.js"
+  ceiling 40
+  rationale "Issue #1138 L21: browser parity for the native candidate-selection gates. lower_candidate_is_closed rejects a derived candidate when a catalog placeholder atom would survive as a free name (mirror of src/coding/composition_search/binders.rs), and the input-domain coherence bonus grounds membership-style applications in a concrete collection argument the way native grounds binder applies. Split out of formal_ai_worker_program_ir.js so the search module keeps to enumeration and the selection gates stay reviewable."

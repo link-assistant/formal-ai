@@ -19,13 +19,17 @@
 pub mod extract;
 mod render;
 
-use std::collections::{BTreeMap, VecDeque};
+use std::collections::BTreeMap;
 
 use crate::event_log::EventLog;
+use crate::needs::NeedKind;
 use crate::relative_meta_logic::SourceTier;
-use crate::seed::{SourceRecord, external_trusted_sources, percent_encode};
-use crate::service_accessibility::{ServiceAccessibilityCache, ServiceStatus};
-use crate::source_fetch::{CachedSourceClient, FetchError, SourceTransport};
+use crate::seed::{SourceRecord, percent_encode};
+use crate::service_accessibility::ServiceAccessibilityCache;
+use crate::source_fetch::{CachedSourceClient, SourceCapture, SourceTransport};
+use crate::source_walk::{
+    CaptureExtractor, Extracted, LookupBounds, Walk, WalkSourceOutcome, walk_source,
+};
 use crate::trace_record;
 
 use extract::{Payload, classify, extract_steps, wiki_link_titles};
@@ -34,55 +38,15 @@ use extract::{Payload, classify, extract_steps, wiki_link_titles};
 /// must report insufficient evidence instead of pretending to answer.
 pub const MIN_ACCEPTED_STEPS: usize = 2;
 
-/// Declared retrieval bounds. Every capture the synthesis performs is charged
-/// against these, so a run's cost is knowable before it starts.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct GuideBounds {
-    /// How many link hops past a service's entry request may be followed.
-    pub max_depth: usize,
-    /// How many pages a single service may cost, across all depths.
-    pub max_pages_per_service: usize,
-    /// How many services may be consulted for one task.
-    pub max_services: usize,
-    /// How many steps the finished guide may contain.
-    pub max_steps: usize,
-    /// The time bound: a capture older than this is reported as stale, because
-    /// a procedure that has not been re-verified in that long is not evidence
-    /// the caller should silently trust.
-    pub max_capture_age_seconds: u64,
-}
-
-impl Default for GuideBounds {
-    fn default() -> Self {
-        Self {
-            max_depth: 2,
-            max_pages_per_service: 4,
-            max_services: 4,
-            max_steps: 12,
-            max_capture_age_seconds: 60 * 60 * 24 * 60,
-        }
-    }
-}
-
-impl GuideBounds {
-    /// Stable one-line description used in traces and rendered guides.
-    #[must_use]
-    pub fn trace_payload(&self) -> String {
-        trace_record::payload(&[
-            ("max_depth", self.max_depth.to_string()),
-            (
-                "max_pages_per_service",
-                self.max_pages_per_service.to_string(),
-            ),
-            ("max_services", self.max_services.to_string()),
-            ("max_steps", self.max_steps.to_string()),
-            (
-                "max_capture_age_seconds",
-                self.max_capture_age_seconds.to_string(),
-            ),
-        ])
-    }
-}
+/// Declared retrieval bounds.
+///
+/// Issue #1138 B1, plan 01 L2: this was a second bounds vocabulary, identical
+/// in meaning to the one a concept lookup needs and impossible for the compiler
+/// to keep consistent with it. It is now an alias of
+/// [`crate::source_walk::LookupBounds`], so there is one set of declared bounds
+/// in the tree and `max_steps` is spelled `max_items` — the same number, named
+/// for what it bounds rather than for the one need kind that first bounded it.
+pub use crate::source_walk::LookupBounds as GuideBounds;
 
 /// The user's service opt-outs, read from settings.
 ///
@@ -152,6 +116,26 @@ pub struct GuideStep {
 }
 
 impl GuideStep {
+    /// Project a synthesised guide step into the shared ordered-step record.
+    ///
+    /// This is the same shape capture extraction emits, so procedure
+    /// formalization has one constructor regardless of where the ordered text
+    /// came from.
+    #[must_use]
+    pub fn to_step_record(&self) -> crate::procedure_text::ProcedureStepRecord {
+        crate::procedure_text::ProcedureStepRecord {
+            ordinal: self.position,
+            text: self.text.clone(),
+            source_id: self.source_id.clone(),
+            source_url: self.source_url.clone(),
+            sha256: self.sha256.clone(),
+            fetched_at: self.fetched_at.clone(),
+            license_name: self.license_name.clone(),
+            license_url: self.license_url.clone(),
+            depth: self.depth,
+        }
+    }
+
     /// Exact provenance for one step, in the order a reviewer checks it.
     #[must_use]
     pub fn provenance(&self) -> String {
@@ -185,6 +169,18 @@ pub struct GuideSourceOutcome {
 }
 
 impl GuideSourceOutcome {
+    /// The kernel's outcome row, read as a guide's. One walk, one vocabulary:
+    /// `items` is `steps` for a procedure need (issue #1138, plan 01 L2).
+    fn from_walk(outcome: WalkSourceOutcome) -> Self {
+        Self {
+            source_id: outcome.source_id,
+            status: outcome.status,
+            detail: outcome.detail,
+            pages: outcome.pages,
+            steps: outcome.items,
+        }
+    }
+
     fn new(source_id: &str, status: &str, detail: impl Into<String>) -> Self {
         Self {
             source_id: source_id.to_owned(),
@@ -286,35 +282,17 @@ impl HowToGuide {
 
 /// The registry sources that may contribute to `task`, in consultation order.
 ///
-/// Primary procedural sources come first, then higher tiers, then registry
-/// order, so the ordering is total and reproducible. Sources the settings opt
-/// out of, sources whose role is `none`, and sources whose API template a task
-/// alone cannot bind (GitHub needs an `{owner}`/`{repo}` a question does not
-/// carry) never appear — an unbindable service must not consume one of the
-/// `max_services` slots a bindable one could have used.
+/// One line, because the selection is the kernel's (issue #1138 plan 01 L2-L3).
+/// A procedure need and a concept need are selected by the same function over
+/// the same registry field, so the two can no longer drift; what survives here
+/// is the name the how-to callers already use.
 #[must_use]
 pub fn select_sources(
     task: &str,
     preferences: &ServicePreferences,
     bounds: &GuideBounds,
 ) -> Vec<SourceRecord> {
-    let mut selected: Vec<SourceRecord> = external_trusted_sources()
-        .into_iter()
-        .filter(|record| {
-            record.how_to_role.contributes()
-                && preferences.allows(record)
-                && entry_url(record, task).is_some()
-        })
-        .collect();
-    selected.sort_by_key(|record| {
-        (
-            record.how_to_role,
-            u8::MAX - record.tier.weight_percent(),
-            record.id.clone(),
-        )
-    });
-    selected.truncate(bounds.max_services);
-    selected
+    crate::source_walk::select_sources(NeedKind::Procedure, task, preferences, bounds)
 }
 
 /// Synthesise a guide for `task` from the enabled registry services.
@@ -342,6 +320,7 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
         guide.outcomes.push(record);
     }
     let mut collected: Vec<GuideStep> = Vec::new();
+    let extractor = StepExtractor { task: &guide.task };
     for record in select_sources(&guide.task, preferences, bounds) {
         if availability.known_unreachable(&record.id, now) {
             guide.outcomes.push(GuideSourceOutcome::new(
@@ -355,14 +334,14 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
         }
         // `select_sources` already dropped every template this task cannot
         // bind, and reported it; the fallback keeps the walk total.
-        let Some(entry_url) = entry_url(&record, &guide.task) else {
+        let Some(url) = entry_url(&record, &guide.task) else {
             continue;
         };
-        let mut outcome = GuideSourceOutcome::new(&record.id, "no_steps", entry_url.clone());
-        let steps = capture_service(
+        let mut outcome = WalkSourceOutcome::new(&record.id, "no_steps", url.clone());
+        let steps = walk_source(
             &record,
-            &guide.task,
-            &entry_url,
+            &url,
+            &extractor,
             &Walk {
                 client,
                 bounds,
@@ -374,75 +353,39 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
         if !steps.is_empty() {
             outcome.status = String::from("contributed");
         }
-        outcome.steps = steps.len();
-        guide.outcomes.push(outcome);
+        outcome.items = steps.len();
+        guide.outcomes.push(GuideSourceOutcome::from_walk(outcome));
         collected.extend(steps);
     }
     let collected = apply_copied_source_policy(collected, &mut guide);
     let collected = apply_conflict_policy(collected, &mut guide);
-    guide.steps = order_steps(collected, bounds.max_steps);
+    guide.steps = order_steps(collected, bounds.max_items);
     guide
 }
 
 /// Services the settings opted out of, reported so the trace shows the user's
 /// choice rather than an unexplained absence.
 fn skipped_sources(task: &str, preferences: &ServicePreferences) -> Vec<GuideSourceOutcome> {
-    external_trusted_sources()
+    crate::source_walk::skipped_sources(NeedKind::Procedure, task, preferences)
         .into_iter()
-        .filter(|record| record.how_to_role.contributes())
-        .filter_map(|record| {
-            if !preferences.allows(&record) {
-                Some(GuideSourceOutcome::new(
-                    &record.id,
-                    "disabled",
-                    record.settings_key.clone(),
-                ))
-            } else if entry_url(&record, task).is_none() {
-                // Still reported rather than silently dropped: a reader has to be
-                // able to see that the service exists, is enabled, and was not
-                // consulted only because this question cannot address it.
-                Some(GuideSourceOutcome::new(
-                    &record.id,
-                    "unbound_template",
-                    record.api.clone(),
-                ))
-            } else {
-                None
-            }
-        })
+        .map(GuideSourceOutcome::from_walk)
         .collect()
 }
 
 /// Bind the registry's API template for this task, or `None` when a required
-/// placeholder cannot be filled from the task alone (GitHub needs an owner and
-/// a repository, for instance).
+/// placeholder cannot be filled from the task alone.
+///
+/// The binder is the kernel's: a template with a `{title}` slot binds the same
+/// way whatever need kind is asking.
 fn entry_url(record: &SourceRecord, task: &str) -> Option<String> {
-    let hyphenated = record.host().contains("wikihow");
-    let url = record.api_url(&[
-        ("title", &page_title(task, hyphenated)),
-        ("query", task),
-        ("lemma", task),
-    ]);
-    (!url.contains('{')).then_some(url)
+    crate::source_walk::entry_url(record, task)
 }
 
 /// The task as a wiki page title: `install docker` becomes `Install-Docker` for
 /// wikiHow's hyphenated titles and `Install Docker` elsewhere.
 #[must_use]
 pub fn page_title(task: &str, hyphenated: bool) -> String {
-    let words: Vec<String> = task
-        .split(|character: char| !character.is_alphanumeric())
-        .filter(|word| !word.is_empty())
-        .map(capitalize)
-        .collect();
-    words.join(if hyphenated { "-" } else { " " })
-}
-
-fn capitalize(word: &str) -> String {
-    let mut characters = word.chars();
-    characters.next().map_or_else(String::new, |first| {
-        first.to_uppercase().collect::<String>() + characters.as_str()
-    })
+    crate::source_walk::page_title(task, hyphenated)
 }
 
 /// A `MediaWiki` full-text search URL on the same wiki as `record`'s endpoint.
@@ -523,81 +466,48 @@ fn singular(word: &str) -> String {
     }
 }
 
-/// Everything a service walk needs besides the service itself.
-struct Walk<'a, T: SourceTransport> {
-    client: &'a CachedSourceClient<T>,
-    bounds: &'a GuideBounds,
-    now: u64,
+/// The `Procedure` kind's reading of a capture (issue #1138, plan 01 L2).
+///
+/// Everything that used to be `capture_service` and is *not* specific to a
+/// procedure — the queue, the visited set, the page accounting, the
+/// accessibility observation, the staleness bound, the failure classification —
+/// now lives once in [`crate::source_walk::walk_source`]. What is left here is
+/// the part that only a procedure has: which payload shapes carry steps, and
+/// which link on a page is worth one more page.
+struct StepExtractor<'a> {
+    task: &'a str,
 }
 
-/// Walk one service inside the declared bounds, returning its candidate steps.
-fn capture_service<T: SourceTransport>(
-    record: &SourceRecord,
-    task: &str,
-    entry_url: &str,
-    walk: &Walk<'_, T>,
-    availability: &mut ServiceAccessibilityCache,
-    outcome: &mut GuideSourceOutcome,
-) -> Vec<GuideStep> {
-    let Walk {
-        client,
-        bounds,
-        now,
-    } = *walk;
-    let mut queue: VecDeque<(String, usize)> = VecDeque::from([(entry_url.to_owned(), 0)]);
-    let is_wiki = record.api.contains("api.php");
-    let mut visited: Vec<String> = Vec::new();
-    let mut steps: Vec<GuideStep> = Vec::new();
-    while let Some((url, depth)) = queue.pop_front() {
-        if outcome.pages >= bounds.max_pages_per_service || visited.contains(&url) {
-            continue;
-        }
-        visited.push(url.clone());
-        let capture = match client.fetch(&url) {
-            Ok(capture) => capture,
-            Err(error) => {
-                // Only the service's *declared* entry endpoint speaks for the
-                // service. wikiHow answers `action=parse` and 500s on
-                // `list=search`; letting the fallback's failure mark the whole
-                // service unreachable would blank its working endpoint for the
-                // seven-day accessibility TTL.
-                observe_failure(
-                    record,
-                    &url,
-                    &error,
-                    availability,
-                    now,
-                    outcome,
-                    url == entry_url,
-                );
-                break;
-            }
-        };
-        outcome.pages += 1;
-        availability.observe(
-            &record.id,
-            ServiceStatus::Reachable,
-            trace_record::line("captured", &[("url", url.clone())]),
-            now,
-        );
-        let age = now.saturating_sub(capture.fetched_at().parse::<u64>().unwrap_or(now));
-        if age > bounds.max_capture_age_seconds {
-            outcome.detail = trace_record::line(
-                "stale_capture",
-                &[("age_seconds", age.to_string()), ("url", url.clone())],
-            );
-        }
+impl CaptureExtractor for StepExtractor<'_> {
+    type Item = GuideStep;
+
+    fn entry_url(&self, record: &SourceRecord, subject: &str) -> Option<String> {
+        entry_url(record, subject)
+    }
+
+    fn read(
+        &self,
+        record: &SourceRecord,
+        capture: &SourceCapture,
+        depth: usize,
+        produced: usize,
+        bounds: &LookupBounds,
+    ) -> Extracted<Self::Item> {
+        let task = self.task;
+        let url = capture.source_url().to_owned();
+        let is_wiki = record.api.contains("api.php");
+        let mut read = Extracted::default();
         match classify(capture.bytes()) {
             Payload::Parse { html, .. } => {
-                let found = extract_steps(&html, bounds.max_steps);
-                if found.is_empty() && depth < bounds.max_depth {
+                let found = extract_steps(&html, bounds.max_items);
+                if found.is_empty() {
                     for title in wiki_link_titles(&html, bounds.max_pages_per_service) {
                         if matches_task(task, &title) {
-                            queue.push_back((parse_url(record, &title), depth + 1));
+                            read.follow.push(parse_url(record, &title));
                         }
                     }
                 }
-                push_steps(record, &capture, depth, &found, &mut steps);
+                push_steps(record, capture, depth, &found, &mut read.items);
             }
             Payload::Items { entries } => {
                 // Depth 0 is the question search, where relevance still has to be
@@ -614,24 +524,22 @@ fn capture_service<T: SourceTransport>(
                     entries.iter().collect()
                 };
                 if relevant.is_empty() {
-                    outcome.detail =
-                        trace_record::line("no_relevant_result", &[("url", url.clone())]);
+                    read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                 }
-                let before = steps.len();
                 for entry in &relevant {
-                    let found = extract_steps(&entry.body, bounds.max_steps);
-                    push_steps(record, &capture, depth, &found, &mut steps);
+                    let found = extract_steps(&entry.body, bounds.max_items);
+                    push_steps(record, capture, depth, &found, &mut read.items);
                 }
-                if steps.len() == before && depth < bounds.max_depth {
+                if read.items.is_empty() && produced == 0 {
                     // A question body states the problem; the procedure is in the
                     // answers. Following them is the recursion this shape needs.
                     for question in relevant.iter().filter_map(|entry| entry.question_id) {
-                        queue.push_back((answers_url(record, question), depth + 1));
+                        read.follow.push(answers_url(record, question));
                     }
                 }
             }
             Payload::Compressed => {
-                outcome.detail = trace_record::line("compressed_payload", &[("url", url.clone())]);
+                read.detail = Some(trace_record::line("compressed_payload", &[("url", url)]));
             }
             Payload::OpenSearch { titles, .. } | Payload::Search { titles } => {
                 let relevant: Vec<&String> = titles
@@ -640,62 +548,32 @@ fn capture_service<T: SourceTransport>(
                     .take(bounds.max_pages_per_service)
                     .collect();
                 if relevant.is_empty() {
-                    outcome.detail =
-                        trace_record::line("no_relevant_result", &[("url", url.clone())]);
+                    read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                 }
-                if depth < bounds.max_depth {
-                    for title in relevant {
-                        queue.push_back((parse_url(record, title), depth + 1));
-                    }
+                for title in relevant {
+                    read.follow.push(parse_url(record, title));
                 }
             }
             Payload::Unrecognized { reason } => {
-                outcome.detail = trace_record::line(
+                let should_search = is_wiki && reason.starts_with("api_error");
+                read.detail = Some(trace_record::line(
                     "unreadable_payload",
-                    &[("reason", reason.clone()), ("url", url.clone())],
-                );
+                    &[("reason", reason), ("url", url)],
+                ));
                 // A title guess that misses is not a dead end: the same wiki can
                 // be searched for the task, and the hits parsed one hop deeper.
-                if is_wiki && reason.starts_with("api_error") && depth < bounds.max_depth {
-                    queue.push_back((search_url(record, task), depth + 1));
+                if should_search {
+                    read.follow.push(search_url(record, task));
                 }
             }
         }
+        read
     }
-    steps
-}
-
-fn observe_failure(
-    record: &SourceRecord,
-    url: &str,
-    error: &FetchError,
-    availability: &mut ServiceAccessibilityCache,
-    now: u64,
-    outcome: &mut GuideSourceOutcome,
-    is_entry_endpoint: bool,
-) {
-    let status = if !is_entry_endpoint {
-        "fallback_failed"
-    } else if matches!(error, FetchError::OfflineCacheMiss(_)) {
-        // An offline replay without this capture says nothing about whether the
-        // service is up, so it must not poison the accessibility record.
-        "offline_cache_miss"
-    } else {
-        availability.observe(
-            &record.id,
-            ServiceStatus::Unreachable,
-            error.to_string(),
-            now,
-        );
-        "unreachable"
-    };
-    outcome.status = String::from(status);
-    outcome.detail = trace_record::line(&error.to_string(), &[("url", url.to_owned())]);
 }
 
 fn push_steps(
     record: &SourceRecord,
-    capture: &crate::source_fetch::SourceCapture,
+    capture: &SourceCapture,
     depth: usize,
     found: &[String],
     steps: &mut Vec<GuideStep>,

@@ -1,0 +1,143 @@
+self_use_intent_routing
+  record_type "benchmark_suite"
+  id "issue_1138_self_use_intent_routing"
+  title "Wave F self-use observations: intent routing (plan 10)"
+  purpose "Issue #1138 plan 14 wave F. The seven reported frontier prompts of #1087, one held-out paraphrase per intent per language from plan 10's capability-routing sets, and six Spanish routing variations of the #745 matrix (Spanish is absent from that matrix and from every capability cue list), given to Formal AI through the real `@link-assistant/agent` CLI and through `formal-ai chat`. Raw transcripts: docs/case-studies/issue-1138/self-use/."
+  runner "cargo test --test unit issue_1138_self_use_intent_routing"
+  report_mode "Per-case observed route with the binary version and commit. A reported prompt that works while its held-out paraphrases do not is recorded as `memorized_literal`, not as a solved class."
+  held_out_policy "Every paraphrase and every Spanish routing prompt was checked absent from data/seed/** and src/** before this file was committed. The seven reported prompts are *not* held out: two of them are in data/seed/ today, which is the defect plan 10 §`reported_frontier_prompts_are_not_in_the_seed` exists to delete."
+  mode_note "`chat` is the non-agent-mode path (solver::solve). The Agent CLI runs are agent mode. Where the two differ the difference is recorded, because a route that only exists in one mode is not a route the surfaces share."
+  topic "intent routing / capability routing / language parity"
+  observed_with "formal-ai 0.350.0"
+  observed_at_commit "74875c1b9b6e36bee9b942343ba295541fdb6997"
+  case_count "4"
+  language_count "5"
+self_use_case_non_understanding_paraphrase
+  record_type "benchmark_case_family"
+  id "non_understanding_paraphrase"
+  plan "10"
+  frontier_issue "721"
+  requirement "A statement of non-understanding routes to `explain` over the previous turn, in every registered language and for every phrasing — not for the exact strings someone pasted into the seed (plan 10, `a_verb_synonym_never_changes_the_capability`)."
+  observed "The reported literal `我不明白` is answered correctly, from `data/seed/intent-routing.lino:400-402` where the bug report's own string now lives. Every held-out paraphrase of the same act fails: English, Hindi, Chinese and Spanish are all sent to `websearch`, which fetches dictionary pages *about the idiom* — `dictionary.cambridge.org/us/dictionary/english/over-head`, `ldoceonline.com/es-LA/dictionary/spanish-english/se-me-le-escapo`. Russian works because its phrasing is also seeded. This is the exact shape plan 10 names: the fix for a missing phrasing was another phrasing."
+  outcome "memorized_literal"
+  reported_prompt "我不明白"
+  paraphrase non_understanding_en
+    language en
+    prompt "That went over my head."
+  paraphrase non_understanding_ru
+    language ru
+    prompt "Это мне непонятно."
+  paraphrase non_understanding_hi
+    language hi
+    prompt "यह मेरे सिर के ऊपर से चला गया।"
+  paraphrase non_understanding_zh
+    language zh
+    prompt "这个我没跟上。"
+  paraphrase non_understanding_es
+    language es
+    prompt "Eso se me escapó."
+self_use_case_speak_in_language
+  record_type "benchmark_case_family"
+  id "speak_in_language"
+  plan "10"
+  frontier_issue "724"
+  requirement "A speak-in-language directive is the triple `(language_name, demonstrate, dialogue)` and must set the forced response language (plan 10 §Speak-in-language)."
+  observed "Unchanged from the 2026-07 report, and worse than it looks. All five paraphrases are sent to `websearch`, and the language the prompt names is **dropped from the request entirely**: `Скажи что то на Китайском` is searched as `Скажи что то`, `Give me a line in Hindi.` as `Give me a line`. The named language occurs nowhere in the reply. The machinery exists — SolverConfig::forced_response_language — and only a follow-up turn can set it."
+  outcome "wrong_route_and_object_dropped"
+  reported_prompt "Скажи что то на Китайском"
+  paraphrase speak_in_language_en
+    language en
+    prompt "Give me a line in Hindi."
+    names_language "Hindi"
+  paraphrase speak_in_language_ru
+    language ru
+    prompt "Дай фразу на хинди."
+    names_language "хинди"
+  paraphrase speak_in_language_hi
+    language hi
+    prompt "मुझे चीनी में एक पंक्ति दीजिए।"
+    names_language "चीनी"
+  paraphrase speak_in_language_zh
+    language zh
+    prompt "用印地语说一句吧。"
+    names_language "印地语"
+  paraphrase speak_in_language_es
+    language es
+    prompt "Dime una frase en hindi."
+    names_language "hindi"
+self_use_case_schedule_paraphrase
+  record_type "benchmark_case_family"
+  id "schedule_paraphrase"
+  plan "10"
+  frontier_issue "869"
+  requirement "A scheduling request reaches `calendar_create_event` whatever verb it uses, in every registered language (plan 10 §Scheduling)."
+  observed "The reported prompt now works: `Назначь мне встречу с Александром на 20:00 по Грузии` produces a complete VCALENDAR event at 20:00 Asia/Tbilisi. The verb `назначь`, which plan 10 recorded as missing from `calendar_schedule_action`, has since been added. Not one of the five held-out paraphrases reaches the route — every one is sent to `websearch`, which helpfully fetches `time.is/Tbilisi` and `timeanddate.com/worldclock/georgia/tbilisi` and then produces no event. The act is reachable through a verb list, not through the act."
+  outcome "memorized_verb"
+  reported_prompt "Назначь мне встречу с Александром на 20:00 по Грузии"
+  expected_marker "BEGIN:VCALENDAR"
+  paraphrase schedule_en
+    language en
+    prompt "Put me down with Alexander at eight tonight, Tbilisi time."
+  paraphrase schedule_ru
+    language ru
+    prompt "Запиши меня к команде в пятницу на 14:00 по Берлину."
+  paraphrase schedule_hi
+    language hi
+    prompt "आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।"
+  paraphrase schedule_zh
+    language zh
+    prompt "今晚八点第比利斯时间，帮我和亚历山大约一下。"
+  paraphrase schedule_es
+    language es
+    prompt "Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis."
+self_use_case_spanish_routing_matrix
+  record_type "benchmark_case_family"
+  id "spanish_routing_matrix"
+  plan "10"
+  frontier_issue "745"
+  requirement "#745's variation matrix asserts that a URL object routes to `web_fetch`, a local path to `read_file`, content-plus-file to `write_file`, a listing phrasing to `ls`, and a code search to `grep_search`. The matrix covers en/ru/hi/zh; `grep '\"es\"' tests/unit/issue_745.rs` returns nothing, and the seven capability cue lists in data/seed/agentic-tool-capabilities.lino carry 280 phrases in four languages and zero Spanish."
+  observed "Four of six Spanish variations misroute to `websearch` under the Agent CLI in agent mode. The URL case is the starkest: `Lee https://example.com y dime qué dice.` carries the URL in the prompt and the system searched the web for the Spanish sentence instead, opening two LinkedIn posts and a SpanishDict entry. The write case wrote no file. Only the directory listing routed correctly, to `ls`."
+  outcome "wrong_route"
+  paraphrase spanish_web_fetch
+    language es
+    prompt "Lee https://example.com y dime qué dice."
+    required_capability "web_fetch"
+  paraphrase spanish_read_file
+    language es
+    prompt "Muéstrame el contenido de 1.txt"
+    required_capability "read_file"
+  paraphrase spanish_write_file
+    language es
+    prompt "Escribe hola en 1.txt"
+    required_capability "write_file"
+  paraphrase spanish_list_dir
+    language es
+    prompt "Lista los archivos de este directorio"
+    required_capability "exec_command"
+  paraphrase spanish_grep
+    language es
+    prompt "Busca en el código RouteIntent"
+    required_capability "grep_search"
+self_use_case_local_path_is_not_the_web
+  record_type "benchmark_case_family"
+  id "local_path_is_not_the_web"
+  plan "10"
+  frontier_issue "1133"
+  requirement "A request naming a local location routes to the filesystem and never to `websearch`, in every registered language (plan 10 §Local filesystem search, the maintainer's three pinned prompts)."
+  observed "Agent mode: English and Russian route correctly and honestly — `hive-mind-control-center was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.` That is the right answer and it states its own scope. Hindi, Chinese and Spanish are sent to `websearch` instead, opening a Windows-desktop tutorial, a GitHub repository called hivemind-os and a SpiderOak help page. Chat mode: only English classifies it as a command at all; Russian, Chinese and Spanish become web searches there too. A local path must not become a web search in any mode or any language."
+  outcome "correct_in_two_languages_of_five"
+  paraphrase local_search_en
+    language en
+    prompt "Find hive-mind-control center folder on my desktop"
+  paraphrase local_search_ru
+    language ru
+    prompt "Найди папку hive-mind-control center на моём рабочем столе"
+  paraphrase local_search_hi
+    language hi
+    prompt "मेरे डेस्कटॉप पर hive-mind-control-center फ़ोल्डर ढूँढिए।"
+  paraphrase local_search_zh
+    language zh
+    prompt "在我的桌面上找 hive-mind-control-center 文件夹。"
+  paraphrase local_search_es
+    language es
+    prompt "Busca la carpeta hive-mind-control-center en mi escritorio."

@@ -1,0 +1,64 @@
+self_use_repository_workspace
+  record_type "benchmark_suite"
+  id "issue_1138_self_use_repository_workspace"
+  title "Wave F self-use observations: the repository workspace protocol (plan 03, leaf F-1)"
+  purpose "Issue #1138 plan 14 leaf F-1. The five held-out repository prompts of plan 03 and its second held-out family — a foreign, non-Rust tree — were given to Formal AI through the real `@link-assistant/agent` CLI and through `formal-ai chat`. Neither family names a file or a constant, so reaching the target requires locating it, not following a pre-authored rule. Raw transcripts: docs/case-studies/issue-1138/self-use/."
+  runner "cargo test --test unit issue_1138_self_use_repository_workspace"
+  report_mode "Per-family observed outcome. A run that edits nothing records that it edited nothing; the diff, whatever it is, is the deliverable."
+  topic "repository workspace / locate_targets"
+  observed_with "formal-ai 0.350.0"
+  observed_at_commit "74875c1b9b6e36bee9b942343ba295541fdb6997"
+  family_count "2"
+  language_count "5"
+self_use_case_commit_spec_ignored
+  record_type "benchmark_case_family"
+  id "commit_spec_ignored"
+  plan "03"
+  requirement "A prompt naming a base commit is a clone spec: the workspace is opened at that exact commit, the target is located by census rather than by a rule, the edit is made, the covering tests are run, and the diff is recorded."
+  observed "The commit is ignored in every language. English and Russian go straight to a shell command in the throwaway workspace and fail with ``could not find Cargo.toml in /private/var/folders/.../tmp.2Ys29VdPuE or any parent directory`` — the system assumed the repository was the current directory, never asked for it, and never mentioned the forty-character commit it had been handed. Spanish web-searched the sentence and opened an unrelated repository's search-engine documentation. No clone was attempted, no file was located, no edit was made. In chat mode English does extract a plausible test command, `cargo test`, and names no file to run it against."
+  outcome "clone_spec_ignored"
+  base_commit "74875c1b9b6e36bee9b942343ba295541fdb6997"
+  target_declaration "WEB_SEARCH_PROVIDERS"
+  target_file "src/web_search_core.rs"
+  transcript "docs/case-studies/issue-1138/self-use/repo_providers/"
+  paraphrase repo_providers_en
+    language en
+    prompt "In the repository at commit 74875c1b9b6e36bee9b942343ba295541fdb6997, the list of trusted search providers is missing the encyclopaedia of quotations. Add it, keep the file valid, and run the tests that cover that list."
+  paraphrase repo_providers_ru
+    language ru
+    prompt "В репозитории на коммите 74875c1b9b6e36bee9b942343ba295541fdb6997 в списке доверенных поисковых провайдеров нет энциклопедии цитат. Добавь её, не сломай файл и запусти тесты, которые покрывают этот список."
+  paraphrase repo_providers_hi
+    language hi
+    prompt "कमिट 74875c1b9b6e36bee9b942343ba295541fdb6997 पर मौजूद रिपॉज़िटरी में भरोसेमंद खोज प्रदाताओं की सूची में उद्धरणों का विश्वकोश नहीं है। उसे जोड़ो, फ़ाइल को वैध रखो, और उस सूची को कवर करने वाले परीक्षण चलाओ।"
+  paraphrase repo_providers_zh
+    language zh
+    prompt "在提交 74875c1b9b6e36bee9b942343ba295541fdb6997 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。"
+  paraphrase repo_providers_es
+    language es
+    prompt "En el repositorio en el commit 74875c1b9b6e36bee9b942343ba295541fdb6997, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista."
+self_use_case_single_occurrence_not_located
+  record_type "benchmark_case_family"
+  id "single_occurrence_not_located"
+  plan "03"
+  requirement "`LocationEvidence::LiteralOccurrence`: a tree with exactly one occurrence of the declaration resolves; two occurrences do not. The workspace handed to the CLI was a three-file Python tree — client.py, api.py, test_client.py — with exactly one definition, `DEFAULT_TIMEOUT = 30`, and a test that asserts it."
+  observed "Not located in any language, and the search itself was malformed. English ran `find` with no arguments at all and got the usage message back; that was the whole run. Russian ran `grep` with the prompt sentence as the pattern — `Склонируй проект на указанном коммите где задан таймаут по умолчанию подними его до шестидесяти секунд ...` — and got `No files found`. The request text was used as the search pattern instead of the thing the request is about. `DEFAULT_TIMEOUT` is still 30 in every captured workspace; nothing was edited and no test was run."
+  outcome "not_located_and_nothing_edited"
+  target_declaration "DEFAULT_TIMEOUT"
+  target_file "client.py"
+  fixture "docs/case-studies/issue-1138/self-use/fixtures/python-timeout"
+  transcript "docs/case-studies/issue-1138/self-use/repo_timeout/"
+  paraphrase repo_timeout_en
+    language en
+    prompt "Clone this project at the given commit, find where the default timeout is defined, raise it to sixty seconds, and run only the test that asserts the default."
+  paraphrase repo_timeout_ru
+    language ru
+    prompt "Склонируй проект на указанном коммите, найди, где задан таймаут по умолчанию, подними его до шестидесяти секунд и запусти только тот тест, который проверяет значение по умолчанию."
+  paraphrase repo_timeout_hi
+    language hi
+    prompt "दिए गए कमिट पर इस प्रोजेक्ट को क्लोन करो, पता करो कि डिफ़ॉल्ट टाइमआउट कहाँ परिभाषित है, उसे साठ सेकंड करो, और केवल वही परीक्षण चलाओ जो डिफ़ॉल्ट की जाँच करता है।"
+  paraphrase repo_timeout_zh
+    language zh
+    prompt "在给定提交处克隆这个项目，找到默认超时在哪里定义，把它改成六十秒，只运行断言默认值的那个测试。"
+  paraphrase repo_timeout_es
+    language es
+    prompt "Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto."

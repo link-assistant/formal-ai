@@ -2,6 +2,9 @@
 //! a conversation and its advertised capabilities, without hidden neural state.
 
 use serde_json::json;
+mod continuation;
+pub use continuation::trace_route;
+use continuation::*;
 
 pub(super) use super::capability_router::tool_for;
 use super::code_task;
@@ -23,8 +26,8 @@ use super::general_execution::plan_general_change_step;
 use super::general_planner::{
     compose_general_change_plan, has_authoritative_literal_write, objective_text,
 };
-use super::google_trends_catalog;
 use super::git_commit;
+use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::harness_envelope;
 use super::intent_router;
@@ -46,8 +49,8 @@ use super::shell_command;
 use super::shell_file_fallback;
 use super::source_links;
 use super::statement_audit;
-use super::structured_edit;
 use super::structured_document;
+use super::structured_edit;
 use super::task_obligations;
 use super::task_structure;
 use super::tool_result;
@@ -203,11 +206,120 @@ fn stop_repeated_failure(plan: AgenticPlan, messages: &[ChatMessage]) -> Agentic
     ))
 }
 
+/// The route arms of the cascade below, named and in run order.
+///
+/// Plan 10 leaf 18 (issue #1138): precedence is behaviour, so it is named in
+/// `data/seed/planner-precedence.lino` where an edit is reviewable, and the
+/// cascade here joins that order exactly as
+/// `solver_dispatch::specialized_handlers` joins `handler-precedence.lino`
+/// (issue #663). Each entry is `(function, arm)`; the arms stay heterogeneous
+/// code — only their names and order are data.
+pub(crate) const PLANNER_ROUTE_ARMS: &[(&str, &str)] = &[
+    ("plan_chat_step_routes", "conversation_control_decline"),
+    ("plan_chat_step_routes", "computer_use"),
+    ("plan_chat_step_routes", "authoritative_literal_write"),
+    ("plan_chat_step_routes", "program_contract"),
+    ("plan_chat_step_routes", "evidence_record"),
+    ("plan_settled_routes", "git_commit"),
+    ("plan_settled_routes", "workspace_change"),
+    ("plan_settled_routes", "generated_source"),
+    ("plan_settled_routes", "structured_edit"),
+    ("plan_settled_routes", "structured_document"),
+    ("plan_settled_routes", "statement_audit"),
+    ("plan_settled_routes", "task_obligations"),
+    ("plan_settled_routes", "literal_write"),
+    ("plan_settled_routes", "algorithm_learning"),
+    ("plan_settled_routes", "procedure"),
+    ("plan_settled_routes", "learning_report"),
+    ("plan_settled_routes", "code_artifact"),
+    ("plan_settled_routes", "self_heal"),
+    ("plan_settled_routes", "dreaming_audit"),
+    ("plan_settled_routes", "self_ast"),
+    ("plan_settled_routes", "source_links"),
+    ("plan_settled_routes", "learning_ledger"),
+    ("plan_settled_routes", "explain"),
+    ("plan_settled_routes", "change_request"),
+    ("plan_settled_routes", "repair_strategy"),
+    ("plan_settled_routes", "rebuild_plan"),
+    ("plan_settled_routes", "google_trends_learning"),
+    ("plan_settled_routes", "google_trends_catalog"),
+    ("plan_settled_routes", "question_catalog"),
+    ("plan_settled_routes", "file_analysis"),
+    ("plan_settled_routes", "report_flow"),
+    ("plan_settled_routes", "conversation_recall"),
+    ("plan_settled_routes", "follow_up_answer"),
+    ("plan_settled_routes", "contextual_reference_clarification"),
+    ("plan_settled_routes", "definition_followup"),
+    ("plan_settled_routes", "intent_edit"),
+    ("plan_settled_routes", "typed_file_read"),
+    ("plan_settled_routes", "local_search"),
+    ("plan_settled_routes", "comparison"),
+    ("plan_settled_routes", "named_capability_table"),
+    ("plan_settled_routes", "shell_command"),
+    ("plan_settled_routes", "file_read"),
+    ("plan_settled_routes", "formalization_recipe"),
+    ("plan_settled_routes", "meaning_detail"),
+    ("plan_settled_routes", "diagram"),
+    ("plan_settled_routes", "web_fetch"),
+    ("plan_settled_routes", "workspace_inspection"),
+    ("plan_settled_routes", "task_structure"),
+    ("plan_settled_routes", "capability_table_named_or_local"),
+    ("plan_settled_routes", "positional_edit_decline"),
+    ("plan_settled_routes", "web_research_query"),
+    ("plan_settled_routes", "intent_web_search"),
+    ("plan_settled_routes", "code_search_fallback"),
+    ("plan_settled_routes", "research_continuation"),
+    ("plan_settled_routes", "latest_turn_answer"),
+    ("plan_settled_routes", "note_composition"),
+    ("plan_settled_routes", "general_change_fallback"),
+    ("plan_settled_routes", "web_research_final"),
+    ("plan_settled_routes", "capability_table_open_web"),
+];
+
+/// The coded arms with the seed's declared precedence joined against them.
+///
+/// Panics unless `planner-precedence.lino` names exactly these arms in exactly
+/// this order — every arm present once, where the cascade runs it — so a seed
+/// edit can never silently drop, duplicate, or reorder a route. Public so the
+/// specification tests can pin the same join.
+pub fn checked_route_precedence() -> &'static [&'static str] {
+    static CELL: std::sync::OnceLock<Vec<&'static str>> = std::sync::OnceLock::new();
+    CELL.get_or_init(|| {
+        let declared = crate::seed::planner_precedence();
+        assert_eq!(
+            declared.len(),
+            PLANNER_ROUTE_ARMS.len(),
+            "planner-precedence.lino lists {} arms but the cascade runs {}; \
+             the seed must name every route arm exactly once",
+            declared.len(),
+            PLANNER_ROUTE_ARMS.len(),
+        );
+        let mut seen = std::collections::BTreeSet::new();
+        for (index, (function, name)) in PLANNER_ROUTE_ARMS.iter().enumerate() {
+            assert!(
+                seen.insert(*name),
+                "planner-precedence.lino names arm `{name}` more than once"
+            );
+            let declared_name = declared[index].as_str();
+            assert_eq!(
+                *name, declared_name,
+                "planner-precedence.lino declares arm `{declared_name}` where the cascade \
+                 runs `{function}`'s `{name}`; the seed must be an exact ordered permutation \
+                 of the coded arms"
+            );
+        }
+        declared.iter().map(String::as_str).collect()
+    })
+}
+
 fn plan_chat_step_routes(
     messages: &[ChatMessage],
     tool_names: &[&str],
     received: String,
 ) -> Option<AgenticPlan> {
+    // Load-time precedence join (plan 10 leaf 18): first plan step of a run
+    // proves the seed still names the cascade this function is about to walk.
+    checked_route_precedence();
     trace_route("agentic_received", &received);
     // Agent compacts a long tool loop by asking the model to summarize it, then
     // starts the next request with the protocol turn "Continue if you have next
@@ -263,17 +375,17 @@ fn plan_chat_step_routes(
     }
     // Bind a program's semantic operands before treating its source path as a
     // destination for a report about the rest of the request.
-    if let Some(mut answer) = crate::coding::program_contract::answer(
-        &task, &mut crate::event_log::EventLog::default(),
-    ) {
+    if let Some(mut answer) =
+        crate::coding::program_contract::answer(&task, &mut crate::event_log::EventLog::default())
+    {
         if let Some(recipe) = answer.execution_recipe.as_mut()
             && super::ci_workflow::requested_in(&task)
         {
             super::ci_workflow::attach(recipe);
         }
-        if let Some(plan) = super::command_reroute::plan_symbolic_command_reroute(
-            messages, tool_names, &answer,
-        ) {
+        if let Some(plan) =
+            super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+        {
             return Some(plan);
         }
     }
@@ -366,16 +478,58 @@ pub(super) fn plan_settled_routes(
     // Unambiguous is the operative word: a request that also pins the target
     // file's opening line has not spelled its bytes out, and content recovered
     // from its prose would be written without that line (issue #1066).
-    // A request that names several artifacts is planned one artifact at a time,
-    // and is not finished until none is outstanding (issue #1099). With a
-    // single artifact named -- the overwhelmingly common case -- this yields
-    // nothing and the composer below plans the request whole, unchanged.
-    if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
-        .and_then(|_| task_obligations::outstanding(task, messages))
-        .and_then(|obligation| compose_general_change_plan(&obligation.request))
-        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    // An enumerated request is planned one obligation at a time, and is not
+    // successfully finished until the runtime ledger has discharged every
+    // node with at least one execution record (issues #1099 and #1138 B5).
+    // Single-clause requests deliberately bypass this path and keep the
+    // established whole-request composer below. So does a request the shell
+    // executes as one command and no composer reads as an artifact write:
+    // "show me the working directory: then list its files" splits into clauses
+    // whose first half names no artifact, and the ledger reported a gap where
+    // the shell cascade answers the whole request (issue #907). The semantic
+    // resolver, not the general one: "copy" inside "a fresh repository copy"
+    // matches a shell verb surface without the request being a command.
+    let shell_owned = super::shell_command::semantic_shell_command_for_task(task).is_some()
+        && compose_general_change_plan(task).is_none();
+    if capability_router::workspace_creation_tool(tool_names).is_some()
+        && !shell_owned
+        && let Some(obligations) = task_obligations::obligations(task)
     {
-        return Some(plan);
+        match task_obligations::next_step(task, messages) {
+            Some(
+                task_obligations::ObligationStep::Observe(node)
+                | task_obligations::ObligationStep::Decompose(node),
+            ) => {
+                // Observable artifact nodes re-enter the ordinary composer;
+                // underivable nodes have already been recursively split by
+                // `ObligationNode::build`. If no executable plan can be
+                // derived, decline instead of turning an unobserved node into
+                // completion prose.
+                return compose_general_change_plan(&node.clause)
+                    .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+            }
+            Some(task_obligations::ObligationStep::ReportGap {
+                node_id,
+                clause,
+                span,
+                reason,
+            }) => {
+                return Some(AgenticPlan::Final(task_obligations::gap_answer(
+                    &node_id, &clause, span, &reason,
+                )));
+            }
+            None if task_obligations::successfully_discharged(task, messages) => {
+                // Re-enter the final executable obligation's ordinary state
+                // machine so the completion wording and verification report
+                // stay identical to a single-target request.
+                return obligations
+                    .iter()
+                    .rev()
+                    .find_map(|obligation| compose_general_change_plan(&obligation.clause))
+                    .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+            }
+            None => return None,
+        }
     }
     if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
         .and_then(|_| compose_general_change_plan(task))
@@ -484,6 +638,16 @@ pub(super) fn plan_settled_routes(
     if question_catalog::is_question_catalog_task(task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
+    // A request to inspect named files and report what it finds is a file
+    // analysis, not a request to open a repository issue. In particular, a
+    // `.github/...` path supplies the report router's otherwise-valid subject
+    // word. Let the typed read + audit object govern the output verb before the
+    // conversation-level report wizard sees it (issue #1138 self-use).
+    if let Some(file_task) = file_read_task_for(task)
+        && file_task.is_analysis()
+    {
+        return Some(plan_file_read_step(&file_task, messages, tool_names));
+    }
     // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
     // This is a conversation state machine: after the initial report intent it
     // continues across structured tool results or plain-text user choices.
@@ -529,7 +693,16 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = comparison::plan_comparison_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = capability_router::plan_shared_capability_step(task, messages, tool_names) {
+    // Plan 10 leaf 11: the shared cue-phrase arm that stood here is retired,
+    // and its *position* is kept -- because position is what the seven named
+    // capabilities still need. The decision table decides them now by
+    // `(object, act, locus)` with no phrase scan, and it decides them here,
+    // ahead of the shell cascade, so a request whose row names an advertised
+    // `grep`, `glob`, `list_dir`, `read_many`, `multi_edit`, `todo` or
+    // `subagent` is not answered by the shell lowering that same row declares
+    // as its fallback. A row the table cannot decide here (no row, or a
+    // capability outside the seven) leaves the cascade exactly as it was.
+    if let Some(plan) = capability_router::plan_named_capability_step(task, messages, tool_names) {
         return Some(plan);
     }
     if let Some(command) = shell_command::shell_command_for_task(task) {
@@ -594,6 +767,42 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = task_structure::plan_task_structure_step(messages, task) {
         return Some(plan);
     }
+    // The decision table of `data/seed/capability-routing.lino` (issue #1138 B10,
+    // plan 10 leaves 9-11). Capability is a function of the object in the
+    // request, the act asked for, and where the effect lands, and a triple with
+    // no row declines here rather than guessing -- so the research routers below
+    // answer only what the table did not claim.
+    //
+    // It sits *here*, and not ahead of the semantic routes above, because that
+    // is the position the #745 and #758 misroutes were actually made from:
+    // every one of them was a request the routes above declined and a research
+    // router then claimed on the strength of its sentence shape alone. Ahead of
+    // those routes the table preempts the ones that read the conversation and
+    // the workspace, which was measured at 239 failing tests -- the recipe
+    // driver, the ladder capability suite and the agentic surfaces among them.
+    // Since leaf 11 removed the 280 memorized cues there is no second capability
+    // decision behind this one; what the table declines is visible as an honest
+    // gap in the event log rather than as a phrase match that never fired.
+    // One more thing the table may not claim: a turn that is *mid-recipe*.
+    // Once a search has produced usable output the conversation is inside the
+    // multi-step research route -- search, then fetch each result, then compose
+    // -- and the request text on that turn is still the original request. The
+    // table reads that text, sees the object it named ("… на amazon.in" names a
+    // registrable host), and answers the whole conversation with one step,
+    // ending the recipe after its first (issue #781). Routing by object, act and
+    // locus decides *which capability a request needs*; it does not decide that
+    // a recipe already under way is finished. The `has_successful_search_result`
+    // boundary is the one the research routes below already draw for themselves.
+    if !web_research::has_successful_search_result(messages)
+        && let Some(plan) = capability_router::plan_routed_capability_step(
+            task,
+            messages,
+            tool_names,
+            capability_router::RoutingStage::NamedOrLocal,
+        )
+    {
+        return Some(plan);
+    }
     // An instruction that edits a named file is never a web question -- when
     // no edit route above could compose it, the honest answer is that nothing
     // was planned, not a search for the sentence (issues #1115, #1133).
@@ -649,6 +858,18 @@ pub(super) fn plan_settled_routes(
     if let Some(query) = web_research::unresolved_web_research_query_for(messages)
         && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
     {
+        return Some(plan);
+    }
+    // The open-web half of the decision table, last: the research routers above
+    // own a bare term the web has to answer, and the table speaks only for the
+    // requests they declined -- which is where #745's "trawl the web for rust
+    // ownership" ended in nothing at all.
+    if let Some(plan) = capability_router::plan_routed_capability_step(
+        task,
+        messages,
+        tool_names,
+        capability_router::RoutingStage::OpenWeb,
+    ) {
         return Some(plan);
     }
     None
@@ -712,133 +933,4 @@ pub(super) fn fetch_arguments(url: &str) -> String {
         "format": "text",
     })
     .to_string()
-}
-
-
-/// Whether a turn is nothing but a continuation cue (issue #1095).
-///
-/// The rule `agentic_continuation` in `data/seed/handler-rules.lino` compares
-/// the whole cleaned prompt with the role's surfaces -- "continue the migration
-/// in src/queue.rs" contains the word and keeps its own route.
-fn is_continuation_cue(text: &str) -> bool {
-    crate::rule_interpreter::handler_matches("agentic_continuation", text)
-}
-
-/// The task a continuation cue continues.
-///
-/// Two places can hold it. After Agent's compaction the objective survives only
-/// inside the assistant's `Conversation summary:` envelope, and that is read
-/// first because it is the more specific record. After an ordinary tool result
-/// there is no envelope: the task is simply the last user turn that was not
-/// itself a cue. The ladder's eight #1095 leaves were this second case -- the
-/// envelope path found nothing, the bare cue became the request, and the words
-/// "continue" and "next step" went to web search.
-fn continued_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
-    if !is_continuation_cue(latest) {
-        return None;
-    }
-    let latest_user = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    let earlier = &messages[..latest_user];
-    compacted_agent_task(earlier).or_else(|| {
-        earlier
-            .iter()
-            .rev()
-            .filter(|message| message.role.eq_ignore_ascii_case("user"))
-            .map(|message| message.content.plain_text())
-            .find(|text| !text.trim().is_empty() && !is_continuation_cue(text))
-    })
-}
-
-/// Restore the objective carried through Agent's compaction protocol from the
-/// turns before the continuation.
-fn compacted_agent_task(earlier: &[ChatMessage]) -> Option<String> {
-    earlier.iter().rev().find_map(|message| {
-        if !message.role.eq_ignore_ascii_case("assistant") {
-            return None;
-        }
-        let envelope = message.content.plain_text();
-        // Agent may compact an already compacted conversation. In that
-        // case its new summary repeats the protocol continuation before
-        // embedding the prior `Conversation summary:` envelope. The
-        // continuation remains trusted only as a protocol trigger; recover
-        // the objective from the last summary marker in the assistant's
-        // compaction response rather than requiring that marker at byte 0.
-        let summary = envelope
-            .rsplit_once("Conversation summary:")?
-            .1
-            .trim_start();
-        preserved_first_user_turn(summary)
-            .or_else(|| {
-                summary
-                    .split_once("\n\nTitle:")
-                    .map(|(task, _)| task.trim())
-                    .filter(|task| !task.is_empty())
-                    .map(str::to_owned)
-            })
-            .map(repair_compacted_dot_paths)
-    })
-}
-
-/// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.
-///
-/// A live compaction changed `.agent-ladder/node.md` into
-/// `. agent-ladder/node.md`. Only a standalone dot followed by a safe
-/// slash-bearing relative path has this whitespace removed; ordinary prose and
-/// mathematical uses of a period remain untouched.
-fn repair_compacted_dot_paths(mut task: String) -> String {
-    let mut search_from = 0;
-    while let Some(relative_dot) = task[search_from..].find(". ") {
-        let dot = search_from + relative_dot;
-        let standalone = task[..dot]
-            .chars()
-            .next_back()
-            .is_none_or(char::is_whitespace);
-        let after_dot = dot + 1;
-        let Some(non_space) = task[after_dot..].find(|character: char| !character.is_whitespace())
-        else {
-            break;
-        };
-        let path_start = after_dot + non_space;
-        let path_end = task[path_start..]
-            .find(char::is_whitespace)
-            .map_or(task.len(), |offset| path_start + offset);
-        let token = task[path_start..path_end]
-            .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ',' | ';'))
-            .trim_end_matches(['.', '!', '?']);
-        let candidate = format!(".{token}");
-        if standalone && token.contains('/') && super::write_request::safe_relative_path(&candidate)
-        {
-            task.replace_range(after_dot..path_start, "");
-            search_from = dot + 1;
-        } else {
-            search_from = path_start;
-        }
-    }
-    task
-}
-
-/// The summarizer keeps exact user bytes after its prose summary.
-///
-/// Its prose is allowed to normalize Markdown and, in a live Agent run, changed
-/// `.agent-ladder` into `. agent-ladder`. The numbered `User turns` appendix is
-/// the lossless copy, so prefer its first task turn and fall back to the prose
-/// only for older summaries that did not include the appendix.
-fn preserved_first_user_turn(summary: &str) -> Option<String> {
-    let turns = summary.split_once("\n\nUser turns:\n")?.1;
-    let first = turns.strip_prefix("  1. ")?;
-    let end = first.find("\n  2.").unwrap_or(first.len());
-    let task = first[..end].trim();
-    (!task.is_empty()).then(|| task.to_owned())
-}
-
-/// Emit a `route=value` planner-routing trace line to stderr when
-/// `FORMAL_AI_TRACE_REQUESTS=1`, mirroring the request tracing in
-/// `crate::protocol`. Off by default; issue #956 asked for visibility into how
-/// a received task was routed.
-pub(super) fn trace_route(route: &str, value: &str) {
-    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
-        eprintln!("[trace] {route}={value}");
-    }
 }

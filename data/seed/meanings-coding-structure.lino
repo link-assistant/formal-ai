@@ -55,6 +55,8 @@ meanings
     role coding_structure
     role output_display_request
     idiom "print({value})"
+    fragment_signature "unknown:0"
+    fragment_result "unknown:0"
     grounding "https://docs.python.org/3.12/library/functions.html#print"
     lexeme en
       surface
@@ -85,11 +87,18 @@ meanings
         text imprime
       surface
         text "imprime …"
+    bootstrap true
+    rediscovery_query "print a value to standard output"
   quantifier_any
     defined-by quantifier
     role coding_structure
     idiom "any({predicate} for {item} in {items})"
+    fragment_signature (boolean "unknown:0" "sequence<unknown:0>")
+    fragment_result boolean
+    supports prefix_negative
+    supports composite_number
     grounding "https://docs.python.org/3.12/library/functions.html#any"
+    license "PSF-2.0"
     lexeme en
       surface
         text any
@@ -117,6 +126,8 @@ meanings
         text cualquiera
       surface
         text "al menos uno"
+    bootstrap true
+    rediscovery_query "whether any element satisfies the predicate"
   quantifier_all
     defined-by quantifier
     role coding_structure
@@ -136,6 +147,8 @@ meanings
         text всех
       surface
         text каждый
+      surface
+        text каждой
     lexeme hi
       surface
         text सभी
@@ -146,15 +159,27 @@ meanings
         text 所有
       surface
         text 每个
+      surface
+        text 每一
+      surface
+        text 逐个
     lexeme es
       surface
         text todos
       surface
         text cada
+    bootstrap true
+    rediscovery_query "whether every element satisfies the predicate"
   map_each
     defined-by mapping
     role coding_structure
     idiom "[{expression} for {item} in {items}]"
+    fragment_signature ("unknown:1" "unknown:0" "sequence<unknown:0>")
+    fragment_result "sequence<unknown:1>"
+    supports reduce_mean
+    supports balanced_delimiter_groups
+    supports group_max_nesting
+    supports rotation_period
     grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
     lexeme en
       surface
@@ -167,26 +192,38 @@ meanings
       surface
         text "для каждого"
       surface
+        text "для каждой"
+      surface
         text преобразовать
     lexeme hi
       surface
         text "प्रत्येक के लिए"
+      surface
+        text "हर … के लिए"
       surface
         text बदलें
     lexeme zh
       surface
         text 对每个
       surface
+        text 每一
+      surface
         text 转换
     lexeme es
       surface
         text "para cada"
       surface
+        text "por cada"
+      surface
         text transformar
+    bootstrap true
+    rediscovery_query "build one transformed value for every element"
   filter_only
     defined-by filter
     role coding_structure
     idiom "[{item} for {item} in {items} if {predicate}]"
+    fragment_signature ("unknown:0" "sequence<unknown:0>" boolean)
+    fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
     lexeme en
       surface
@@ -219,10 +256,14 @@ meanings
         text filtrar
       surface
         text solo
+    bootstrap true
+    rediscovery_query "keep only the elements that satisfy the predicate"
   reduce_sum
     defined-by reduction
     role coding_structure
     idiom "sum({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
     grounding "https://docs.python.org/3.12/library/functions.html#sum"
     lexeme en
       surface
@@ -247,10 +288,14 @@ meanings
     lexeme es
       surface
         text suma
+    bootstrap true
+    rediscovery_query "add up every element of the sequence"
   reduce_product
     defined-by reduction
     role coding_structure
-    idiom "math.prod({items})"
+    idiom "__import__('math').prod({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
     grounding "https://docs.python.org/3.12/library/math.html#math.prod"
     lexeme en
       surface
@@ -269,10 +314,15 @@ meanings
     lexeme es
       surface
         text producto
+    bootstrap true
+    rediscovery_query "multiply every element of the sequence together"
   reduce_max
     defined-by reduction
     role coding_structure
     idiom "max({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
+    supports group_max_nesting
     grounding "https://docs.python.org/3.12/library/functions.html#max"
     lexeme en
       surface
@@ -299,11 +349,19 @@ meanings
         text mayor
       surface
         text máximo
+    bootstrap true
+    rediscovery_query "the largest element of the sequence"
   reduce_min
     defined-by reduction
     role coding_structure
     idiom "min({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
     grounding "https://docs.python.org/3.12/library/functions.html#min"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "minimum value from a sequence"
+    supports grid_minimum_cost_path
     lexeme en
       surface
         text smallest
@@ -313,6 +371,8 @@ meanings
       surface
         text наименьший
       surface
+        text наименьшее
+      surface
         text минимум
     lexeme hi
       surface
@@ -320,6 +380,8 @@ meanings
     lexeme zh
       surface
         text 最小
+      surface
+        text 最少
     lexeme es
       surface
         text menor
@@ -328,8 +390,11 @@ meanings
   reduce_count
     defined-by reduction
     role coding_structure
-    idiom "sum(1 for {item} in {items} if {predicate})"
+    idiom "sum(1 for {character} in {items} if {predicate})"
+    fragment_signature ("unknown:0" "sequence<unknown:0>" boolean)
+    fragment_result integer
     grounding "https://docs.python.org/3.12/library/functions.html#sum"
+    license "PSF-2.0"
     lexeme en
       surface
         text count
@@ -341,6 +406,8 @@ meanings
       surface
         text количество
       surface
+        text число
+      surface
         text подсчитать
     lexeme hi
       surface
@@ -351,16 +418,26 @@ meanings
       surface
         text 数量
       surface
+        text 次数
+      surface
         text 计数
     lexeme es
       surface
         text cantidad
       surface
+        text número
+      surface
         text contar
+    bootstrap true
+    rediscovery_query "how many elements satisfy the predicate"
   reduce_len
     defined-by reduction
     role coding_structure
     idiom "len({items})"
+    fragment_signature "unknown:0"
+    fragment_result integer
+    supports reduce_count
+    supports regex_minimum_word_length
     grounding "https://docs.python.org/3.12/library/functions.html#len"
     lexeme en
       surface
@@ -387,11 +464,16 @@ meanings
         text longitud
       surface
         text tamaño
+    bootstrap true
+    rediscovery_query "how many elements the sequence holds"
   pairwise_distinct
     defined-by pairwise
     role coding_structure
-    idiom "itertools.combinations({items}, 2)"
+    idiom "__import__('itertools').combinations({items}, 2)"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "sequence<pair<unknown:0,unknown:0>>"
     grounding "https://docs.python.org/3.12/library/itertools.html#itertools.combinations"
+    license "PSF-2.0"
     lexeme en
       surface
         text "any two"
@@ -437,11 +519,16 @@ meanings
         text "cada par"
       surface
         text "dos números"
+    bootstrap true
+    rediscovery_query "every distinct pair of elements"
   predicate_abs_diff_lt
     defined-by predicate
     role coding_structure
     idiom "abs({left} - {right}) < {threshold}"
+    fragment_signature (float float float)
+    fragment_result boolean
     grounding "https://docs.python.org/3.12/library/functions.html#abs"
+    license "PSF-2.0"
     lexeme en
       surface
         text "closer to each other than"
@@ -475,10 +562,14 @@ meanings
         text "más cerca entre sí que"
       surface
         text "difieren menos que"
+    bootstrap true
+    rediscovery_query "whether two values differ by less than the threshold"
   tuple_of
     defined-by tuple
     role coding_structure
     idiom "({left}, {right})"
+    fragment_signature ("unknown:0" "unknown:1")
+    fragment_result "pair<unknown:0,unknown:1>"
     grounding "https://docs.python.org/3.12/library/stdtypes.html#tuple"
     lexeme en
       surface
@@ -505,10 +596,17 @@ meanings
         text "tupla compuesta por"
       surface
         text tupla
+    bootstrap true
+    rediscovery_query "hold two values together as one pair"
   running_prefix
     defined-by sequence
     role coding_structure
-    idiom "itertools.accumulate({items}, {operation})"
+    idiom "__import__('itertools').accumulate({items}, {operation})"
+    fragment_signature ("sequence<unknown:0>" callable)
+    fragment_result "sequence<unknown:0>"
+    supports prefix_negative
+    supports balanced_delimiter_groups
+    supports group_max_nesting
     grounding "https://docs.python.org/3.12/library/itertools.html#itertools.accumulate"
     lexeme en
       surface
@@ -537,10 +635,14 @@ meanings
         text acumulativo
       surface
         text "hasta ahora"
+    bootstrap true
+    rediscovery_query "the running accumulation across the sequence"
   distinct_elements
     defined-by set
     role coding_structure
     idiom "set({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/library/stdtypes.html#set"
     lexeme en
       surface
@@ -569,10 +671,15 @@ meanings
         text distintos
       surface
         text únicos
+    bootstrap true
+    rediscovery_query "the elements without duplicates"
   case_insensitive
     defined-by normalization
     role coding_structure
     idiom "{text}.lower()"
+    fragment_signature text
+    fragment_result text
+    supports regex_lowercase_underscore
     grounding "https://docs.python.org/3.12/library/stdtypes.html#str.lower"
     lexeme en
       surface
@@ -593,11 +700,17 @@ meanings
     lexeme es
       surface
         text "sin distinguir mayúsculas"
+    bootstrap true
+    rediscovery_query "lowercase the text to ignore letter case"
   sort_ascending
     defined-by ordering
     role coding_structure
     idiom "sorted({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "ordered<unknown:0>"
+    supports set_intersection
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
+    license "PSF-2.0"
     lexeme en
       surface
         text ascending
@@ -610,6 +723,8 @@ meanings
         text возрастанию
       surface
         text отсортированный
+      surface
+        text отсортированном
     lexeme hi
       surface
         text आरोही
@@ -625,10 +740,16 @@ meanings
         text ascendente
       surface
         text ordenado
+      surface
+        text ordenada
+    bootstrap true
+    rediscovery_query "arrange the elements from smallest to largest"
   sort_descending
     defined-by ordering
     role coding_structure
     idiom "sorted({items}, reverse=True)"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
     lexeme en
       surface
@@ -649,10 +770,14 @@ meanings
     lexeme es
       surface
         text descendente
+    bootstrap true
+    rediscovery_query "arrange the elements from largest to smallest"
   count_overlapping
     defined-by counting
     role coding_structure
     idiom "sum(1 for i in range(len({text})) if {text}.startswith({substring}, i))"
+    fragment_signature (text text)
+    fragment_result integer
     grounding "https://docs.python.org/3.12/library/stdtypes.html#str.startswith"
     lexeme en
       surface
@@ -673,10 +798,16 @@ meanings
     lexeme es
       surface
         text "apariciones superpuestas"
+    bootstrap true
+    rediscovery_query "count every occurrence of a substring, overlaps included"
   split_on_space
     defined-by splitting
     role coding_structure
     idiom "{text}.split()"
+    fragment_signature text
+    fragment_result "sequence<text>"
+    supports group_max_nesting
+    supports regex_minimum_word_length
     grounding "https://docs.python.org/3.12/library/stdtypes.html#str.split"
     lexeme en
       surface
@@ -695,10 +826,15 @@ meanings
     lexeme es
       surface
         text "separado por espacios"
+    bootstrap true
+    rediscovery_query "break the text into words at whitespace"
   join_with_space
     defined-by joining
     role coding_structure
     idiom "' '.join({items})"
+    fragment_signature "sequence<text>"
+    fragment_result text
+    supports split_on_space
     grounding "https://docs.python.org/3.12/library/stdtypes.html#str.join"
     lexeme en
       surface
@@ -717,10 +853,14 @@ meanings
     lexeme es
       surface
         text "unido con espacios"
+    bootstrap true
+    rediscovery_query "join the words with single spaces"
   range_inclusive
     defined-by range
     role coding_structure
     idiom "range(1, {bound} + 1)"
+    fragment_signature integer
+    fragment_result "sequence<integer>"
     grounding "https://docs.python.org/3.12/library/stdtypes.html#range"
     lexeme en
       surface
@@ -751,11 +891,17 @@ meanings
         text "cuenta hasta"
       surface
         text inclusive
+    bootstrap true
+    rediscovery_query "every integer from one through the bound"
   membership
     defined-by predicate
     role coding_structure
     idiom "{item} in {collection}"
+    fragment_signature ("unknown:0" "sequence<unknown:0>")
+    fragment_result boolean
+    supports vowel_character_class
     grounding "https://docs.python.org/3.12/reference/expressions.html#membership-test-operations"
+    cites false
     lexeme en
       surface
         text contain
@@ -773,11 +919,16 @@ meanings
     lexeme es
       surface
         text contiene
+    bootstrap true
+    rediscovery_query "whether the collection contains the value"
   set_intersection
     defined-by set
     role coding_structure
     idiom "set({left}) & set({right})"
+    fragment_signature ("sequence<unknown:0>" "sequence<unknown:0>")
+    fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset"
+    license "PSF-2.0"
     lexeme en
       surface
         text shared
@@ -798,14 +949,10 @@ meanings
         text "похожие элементы"
     lexeme hi
       surface
-        text समान
-      surface
         text प्रतिच्छेदन
       surface
         text "समान तत्व"
     lexeme zh
-      surface
-        text 相同
       surface
         text 交集
       surface
@@ -817,11 +964,15 @@ meanings
         text intersección
       surface
         text "elementos similares"
+    bootstrap true
+    rediscovery_query "the values present in both collections"
   vowel_character_class
     defined-by character_class
     role coding_structure
     idiom "'aeiouAEIOU'"
+    fragment_result text
     grounding "https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf"
+    license "PSF-2.0"
     lexeme en
       surface
         text vowels
@@ -845,10 +996,14 @@ meanings
         text vocales
       surface
         text vocal
+    bootstrap true
+    rediscovery_query "the vowel letters of the alphabet"
   arithmetic_fractional_part
     defined-by reduction
     role coding_structure
     idiom "{value} % 1.0"
+    fragment_signature float
+    fragment_result float
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
     lexeme en
       surface
@@ -857,6 +1012,8 @@ meanings
         text "fractional part"
       surface
         text "leftover part"
+    bootstrap true
+    rediscovery_query "the part of the number after its decimal point"
   geometric_measure
     defined-by reduction
     role coding_structure
@@ -868,342 +1025,3 @@ meanings
         text volume
       surface
         text area
-  reduce_mean
-    defined-by reduction
-    role coding_structure
-    idiom "sum({items}) / len({items})"
-    grounding "https://docs.python.org/3.12/library/statistics.html#statistics.mean"
-    lexeme en
-      surface
-        text mean
-      surface
-        text average
-  absolute_deviation
-    defined-by reduction
-    role coding_structure
-    idiom "abs({item} - {center})"
-    grounding "https://docs.python.org/3.12/library/functions.html#abs"
-    lexeme en
-      surface
-        text "absolute deviation"
-      surface
-        text "absolute difference"
-  prefix_negative
-    defined-by predicate
-    role coding_structure
-    idiom "{value} < 0"
-    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text "below zero"
-      surface
-        text "falls below zero"
-  interpose_each
-    defined-by sequence
-    role coding_structure
-    idiom "[value for index, item in enumerate({items}) for value in (({separator}, item) if index else (item,))]"
-    grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
-    lexeme en
-      surface
-        text "between every two consecutive elements"
-      surface
-        text "between consecutive elements"
-  balanced_delimiter_groups
-    defined-by sequence
-    role coding_structure
-    grounding "https://docs.python.org/3.12/tutorial/controlflow.html#for-statements"
-    lexeme en
-      surface
-        text "balanced groups"
-      surface
-        text "separate groups"
-  group_max_nesting
-    defined-by sequence
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/functions.html#max"
-    lexeme en
-      surface
-        text "deepest level of nesting"
-      surface
-        text "maximum nesting"
-  prefix_enumeration
-    defined-by sequence
-    role coding_structure
-    idiom "[{text}[:index] for index in range(1, len({text}) + 1)]"
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
-    lexeme en
-      surface
-        text "all prefixes"
-      surface
-        text "prefixes from shortest to longest"
-  zero_based_range
-    defined-by range
-    role coding_structure
-    idiom "range(0, {bound} + 1)"
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#range"
-    lexeme en
-      surface
-        text "starting from 0"
-      surface
-        text "starting at zero"
-  stringify_each
-    defined-by mapping
-    role coding_structure
-    idiom "(str({item}) for {item} in {items})"
-    grounding "https://docs.python.org/3.12/library/functions.html#func-str"
-    lexeme en
-      surface
-        text "string containing"
-      surface
-        text "as a string"
-  palindrome_extension
-    defined-by sequence
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
-    lexeme en
-      surface
-        text "shortest palindrome"
-      surface
-        text "palindromic suffix"
-  aligned_binary_xor
-    defined-by mapping
-    role coding_structure
-    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text "binary xor"
-      surface
-        text "perform xor"
-  stable_longest
-    defined-by reduction
-    role coding_structure
-    idiom "max({items}, key=len, default=None)"
-    grounding "https://docs.python.org/3.12/library/functions.html#max"
-    lexeme en
-      surface
-        text "longest one"
-      surface
-        text "return the longest"
-  explicit_value_mapping
-    defined-by mapping
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict"
-    lexeme en
-      surface
-        text legend
-      surface
-        text "corresponding to"
-  explicit_ordering
-    defined-by ordering
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "valid choices are"
-      surface
-        text "given order"
-  bounded_top
-    defined-by ordering
-    role coding_structure
-    idiom "sorted({items}, reverse=True)[:{count}]"
-    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "largest items"
-      surface
-        text "largest integers"
-      surface
-        text "n largest"
-  bounded_bottom
-    defined-by ordering
-    role coding_structure
-    idiom "sorted({items})[:{count}]"
-    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "smallest items"
-      surface
-        text "n smallest"
-  power_square_each
-    defined-by mapping
-    role coding_structure
-    idiom "[{item} ** 2 for {item} in {items}]"
-    grounding "https://docs.python.org/3.12/reference/expressions.html#the-power-operator"
-    lexeme en
-      surface
-        text "squares of individual elements"
-      surface
-        text "square each"
-  keyed_sum_order
-    defined-by ordering
-    role coding_structure
-    idiom "sorted({items}, key=sum)"
-    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "according to the sum"
-      surface
-        text "by row sum"
-  frequency_rank
-    defined-by counting
-    role coding_structure
-    idiom "collections.Counter({items}).most_common({count})"
-    grounding "https://docs.python.org/3.12/library/collections.html#collections.Counter.most_common"
-    lexeme en
-      surface
-        text "most common"
-      surface
-        text "frequency rank"
-  regex_minimum_word_length
-    defined-by character_class
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
-    lexeme en
-      surface
-        text "characters long"
-      surface
-        text "minimum word length"
-  regex_lowercase_chunks
-    defined-by character_class
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
-    lexeme en
-      surface
-        text "split a string at lowercase letters"
-      surface
-        text "split at lowercase"
-  regex_lowercase_underscore
-    defined-by character_class
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
-    lexeme en
-      surface
-        text "lowercase letters joined with an underscore"
-      surface
-        text "lowercase joined by underscore"
-  exclude_membership
-    defined-by filter
-    role coding_structure
-    idiom "''.join(item for item in {items} if item not in set({excluded}))"
-    grounding "https://docs.python.org/3.12/reference/expressions.html#membership-test-operations"
-    lexeme en
-      surface
-        text "remove characters"
-      surface
-        text "exclude characters"
-  remove_boundary_occurrences
-    defined-by sequence
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.find"
-    lexeme en
-      surface
-        text "remove first and last occurrence"
-      surface
-        text "remove the first and last occurrence"
-  rotation_period
-    defined-by sequence
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
-    lexeme en
-      surface
-        text "minimum number of rotations"
-      surface
-        text "smallest rotation period"
-  duplicate_exists
-    defined-by predicate
-    role coding_structure
-    idiom "len({items}) != len(set({items}))"
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#set"
-    lexeme en
-      surface
-        text "any duplicate"
-      surface
-        text "contains duplicates"
-  composite_number
-    defined-by predicate
-    role coding_structure
-    grounding "https://docs.python.org/3.12/library/math.html#math.isqrt"
-    lexeme en
-      surface
-        text "non-prime numbers"
-      surface
-        text "composite number"
-  one_bit_difference
-    defined-by predicate
-    role coding_structure
-    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-bitwise-operations"
-    lexeme en
-      surface
-        text "differ at one bit position"
-      surface
-        text "one bit difference"
-  grid_minimum_cost_path
-    defined-by optimization
-    role coding_structure
-    grounding "https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf"
-    lexeme en
-      surface
-        text "minimum cost path"
-      surface
-        text "lowest cost path"
-      surface
-        text "minimum weight path"
-  recurrence_operator
-    defined-by concept
-    grounding "https://docs.python.org/3.12/reference/expressions.html"
-  recurrence_conditional
-    defined-by recurrence_operator
-    role coding_recurrence_operator
-    grounding "https://docs.python.org/3.12/reference/expressions.html#conditional-expressions"
-    lexeme en
-      surface
-        text if
-        action conditional
-  recurrence_less_equal
-    defined-by recurrence_operator
-    role coding_recurrence_operator
-    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text "less than or equal"
-        action less_equal
-  recurrence_equal
-    defined-by recurrence_operator
-    role coding_recurrence_operator
-    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text equality
-        action equal
-  recurrence_add
-    defined-by recurrence_operator
-    role coding_recurrence_operator
-    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text add
-        action add
-  recurrence_multiply
-    defined-by recurrence_operator
-    role coding_recurrence_operator
-    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text multiply
-        action multiply
-  recurrence_subtract
-    defined-by recurrence_operator
-    role coding_recurrence_operator
-    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text subtract
-        action subtract
-  recurrence_subtract_one
-    defined-by recurrence_operator
-    role coding_recurrence_operator
-    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text decrement
-        action subtract_one

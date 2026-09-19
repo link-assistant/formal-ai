@@ -2,24 +2,58 @@
 
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
+use std::path::Path;
 
 use crate::coding::task_spec::CodingTaskSpec;
-
-const RUNTIME: &str = include_str!("../../data/seed/coding-discovery-runtime.lino");
 
 /// Render a named Python/runtime template from the coding-discovery seed.
 #[must_use]
 pub fn runtime_template(id: &str, values: &[(&str, &str)]) -> Option<String> {
-    let root = crate::seed::parser::parse_lino(RUNTIME);
-    let mut rendered = root
+    let text =
+        crate::coding::fragment_catalog::bootstrap_seed_text("coding-discovery-runtime.lino")?;
+    render_runtime_template(&text, id, values)
+}
+
+/// Explicit-root variant used by the bootstrap-deletability proof.
+#[must_use]
+pub fn runtime_template_from(
+    seed_directory: &Path,
+    id: &str,
+    values: &[(&str, &str)],
+) -> Option<String> {
+    let seed_directory = if seed_directory.join("data/seed").is_dir() {
+        seed_directory.join("data/seed")
+    } else {
+        seed_directory.to_path_buf()
+    };
+    let text =
+        std::fs::read_to_string(seed_directory.join("coding-discovery-runtime.lino")).ok()?;
+    render_runtime_template(&text, id, values)
+}
+
+fn render_runtime_template(text: &str, id: &str, values: &[(&str, &str)]) -> Option<String> {
+    let root = crate::seed::parser::parse_lino(text);
+    let template = root
         .children
         .iter()
-        .find(|node| node.name == "coding_discovery_runtime")?
-        .children
-        .iter()
-        .find(|node| node.name == "template" && node.id == id)?
-        .find_child_value("text")
-        .to_owned();
+        .filter(|node| {
+            matches!(
+                node.name.as_str(),
+                "coding_discovery_runtime" | "coding_runtime_templates"
+            )
+        })
+        .flat_map(|node| node.children.iter())
+        .find(|node| node.name == "template" && node.id == id)?;
+    // Templates whose verbatim syntax contains the seed's reserved multi-value
+    // separator (`|` in a Rust closure) are declared under `code`, the one
+    // field the seed guard exempts for verbatim listings.
+    let shape = template.find_child_value("text");
+    let shape = if shape.is_empty() {
+        template.find_child_value("code")
+    } else {
+        shape
+    };
+    let mut rendered = shape.to_owned();
     for (name, value) in values {
         rendered = rendered.replace(&format!("{{{name}}}"), value);
     }

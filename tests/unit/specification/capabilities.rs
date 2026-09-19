@@ -87,6 +87,10 @@ fn web_search_capability_respects_offline_config() {
         "offline web-search capability question should still resolve as capabilities, got {}",
         response.intent,
     );
+    assert_eq!(
+        response.answer,
+        "No. Web search is disabled by this configuration's offline mode or there are no configured search providers. I can still answer from local rules and cache, but I will not call search engines."
+    );
     assert!(
         response.answer.to_lowercase().contains("disabled")
             || response.answer.to_lowercase().contains("offline"),
@@ -492,6 +496,11 @@ const FEATURE_CAPABILITY_LANGUAGE_CASES: &[FeatureCapabilityLanguageCase] = &[
 
 #[test]
 fn supported_feature_capability_questions_cover_every_supported_language() {
+    let documented_example = FormalAiEngine.answer("Can you search the internet?");
+    assert_eq!(
+        documented_example.answer,
+        "Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (`duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews`) for explicit prompts such as `Search the web for Nikola Tesla`. The top-10 results from each provider are merged with reciprocal rank fusion (k = 60). If the browser session disables or blocks every provider, I will say that instead of claiming search is available."
+    );
     for case in FEATURE_CAPABILITY_LANGUAGE_CASES {
         let response = FormalAiEngine.answer(case.prompt);
         assert_eq!(
@@ -529,6 +538,7 @@ fn supported_feature_capability_questions_cover_every_supported_language() {
 #[test]
 fn action_requests_keep_routing_to_primary_handlers() {
     let calculation = FormalAiEngine.answer("Can you calculate 2 + 2?");
+    assert_eq!(calculation.answer, "2 + 2 = 4");
     assert_eq!(
         calculation.intent, "calculation",
         "calculation request should not be swallowed by feature capability handling: {}",
@@ -541,6 +551,10 @@ fn action_requests_keep_routing_to_primary_handlers() {
     );
 
     let summary = FormalAiEngine.answer("Can you summarize Rust?");
+    assert_eq!(
+        summary.answer,
+        "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector."
+    );
     assert!(
         summary.intent.starts_with("summarize"),
         "summarization request should not be swallowed by feature capability handling: {}",
@@ -553,6 +567,10 @@ fn runtime_gated_capabilities_report_current_configuration() {
     let default_solver = UniversalSolver::new(SolverConfig::default());
     let diagnostics = default_solver.solve("Can you show diagnostics?");
     assert_eq!(diagnostics.intent, "capabilities");
+    assert_eq!(
+        diagnostics.answer,
+        "No. diagnostic trace is not available in this configuration: diagnostics are off; enable them to show traces. Example message after enabling it: `Turn on diagnostics`."
+    );
     assert!(
         diagnostics.answer.to_lowercase().contains("no")
             && diagnostics.answer.to_lowercase().contains("off"),
@@ -567,10 +585,19 @@ fn runtime_gated_capabilities_report_current_configuration() {
         ..SolverConfig::default()
     });
 
-    for prompt in [
-        "Can you show diagnostics?",
-        "Can you use agent mode?",
-        "Can you merge definitions automatically?",
+    for (prompt, expected_answer) in [
+        (
+            "Can you show diagnostics?",
+            "Yes. diagnostic trace is available in this configuration. Example message: `Turn on diagnostics`.",
+        ),
+        (
+            "Can you use agent mode?",
+            "Yes. agent mode is available in this configuration. Example message: `Turn on agent mode`.",
+        ),
+        (
+            "Can you merge definitions automatically?",
+            "Yes. automatic definition fusion is available in this configuration. Example message: `Turn on definition fusion`.",
+        ),
     ] {
         let response = enabled.solve(prompt);
         assert_eq!(
@@ -578,6 +605,7 @@ fn runtime_gated_capabilities_report_current_configuration() {
             "prompt {prompt:?} should resolve to capabilities, got {}",
             response.intent,
         );
+        assert_eq!(response.answer, expected_answer);
         assert!(
             response.answer.to_lowercase().contains("yes"),
             "enabled capability should answer yes for {prompt:?}, got {}",

@@ -29,6 +29,11 @@ fn fixture_root() -> std::path::PathBuf {
 
 #[test]
 fn official_documentation_becomes_a_ranked_provenance_index() {
+    let source = formal_ai::seed::source_record("python_docs")
+        .expect("Python documentation registry record");
+    assert_eq!(source.license_name, "PSF-2.0");
+    assert!(source.api.contains("{title}"));
+    assert!(source.cache_path.ends_with("python-docs/"));
     let cache = std::env::temp_dir().join(format!(
         "formal-ai-python-docs-index-{}",
         std::process::id()
@@ -65,7 +70,7 @@ fn official_documentation_becomes_a_ranked_provenance_index() {
     );
 
     for part in [sum[0], product[0], largest[0]] {
-        assert_eq!(part.license, "PSF-2.0");
+        assert_eq!(part.license, source.license_name);
         assert_eq!(part.sha256.len(), 64);
         assert!(
             part.source_url

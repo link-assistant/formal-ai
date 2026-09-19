@@ -13,14 +13,14 @@
 use std::collections::BTreeMap;
 
 use crate::engine::{
-    assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer,
-    supported_program_languages, supported_program_tasks, unknown_answer, SymbolicAnswer,
+    SymbolicAnswer, assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer,
+    supported_program_languages, supported_program_tasks, unknown_answer,
 };
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::links_format::format_lino_value;
 use crate::seed;
-use crate::skill_compiler::{compile_natural_language_skill, CompiledSkillPackage};
+use crate::skill_compiler::{CompiledSkillPackage, compile_natural_language_skill};
 
 use super::behavior_rule_followups::{
     behavior_rule_response_language, render_behavior_rule_count, render_behavior_rules_brief,
@@ -30,7 +30,7 @@ use super::behavior_rule_matching::{
 };
 use super::finalize_simple;
 use super::procedure_rules::try_compiled_procedure;
-use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
+use super::self_awareness::{SelfAwarenessRuntime, try_self_awareness};
 
 #[derive(Debug, Clone)]
 struct BehaviorRuleRecord {
@@ -122,18 +122,19 @@ pub fn try_behavior_rules_with_runtime(
     }
 
     if let Some(query) = detail_query(prompt)
-        && let Some(rule) = find_behavior_rule(&query) {
-            log.append("behavior_rule:read", rule.id.clone());
-            let body = render_behavior_rule_detail(&rule, &language);
-            return Some(finalize_simple(
-                prompt,
-                log,
-                "behavior_rule_detail",
-                "response:behavior_rule_detail",
-                &body,
-                1.0,
-            ));
-        }
+        && let Some(rule) = find_behavior_rule(&query)
+    {
+        log.append("behavior_rule:read", rule.id.clone());
+        let body = render_behavior_rule_detail(&rule, &language);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "behavior_rule_detail",
+            "response:behavior_rule_detail",
+            &body,
+            1.0,
+        ));
+    }
 
     if let Some(answer) = try_self_awareness(prompt, normalized, log, runtime) {
         return Some(answer);
@@ -780,9 +781,10 @@ fn collect_runtime_rules(log: &EventLog) -> Vec<CompiledSkillPackage> {
     let mut rules = Vec::new();
     for event in log.events().iter().filter(|e| e.kind == "prior_turn:user") {
         if let Ok(rule) = compile_natural_language_skill(&event.payload)
-            && seen.insert(rule.id.clone()) {
-                rules.push(rule);
-            }
+            && seen.insert(rule.id.clone())
+        {
+            rules.push(rule);
+        }
     }
     rules
 }
@@ -793,10 +795,18 @@ fn render_behavior_rule_detail(rule: &BehaviorRuleRecord, language: &str) -> Str
     let matches = rule_matches(rule, language);
     let response = rule_response(rule, language);
     let change_hint = match language {
-        "ru" => "Чтобы изменить это поведение в текущем диалоге, отправьте: ``Когда `ваш запрос` тогда `ваш ответ` ``. Также можно: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``.",
-        "hi" => "इस व्यवहार को वर्तमान संवाद में बदलने के लिए भेजें: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. दूसरा रूप: ``When I say `your prompt`, answer `your answer` ``.",
-        "zh" => "要在当前对话中改变此行为，请发送：``当 `你的提示` 时 `你的回答` ``。也可以发送：``When I say `your prompt`, answer `your answer` ``。",
-        _ => "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``.",
+        "ru" => {
+            "Чтобы изменить это поведение в текущем диалоге, отправьте: ``Когда `ваш запрос` тогда `ваш ответ` ``. Также можно: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``."
+        }
+        "hi" => {
+            "इस व्यवहार को वर्तमान संवाद में बदलने के लिए भेजें: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. दूसरा रूप: ``When I say `your prompt`, answer `your answer` ``."
+        }
+        "zh" => {
+            "要在当前对话中改变此行为，请发送：``当 `你的提示` 时 `你的回答` ``。也可以发送：``When I say `your prompt`, answer `your answer` ``。"
+        }
+        _ => {
+            "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``."
+        }
     };
     format!(
         concat!(

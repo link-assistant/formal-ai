@@ -22,14 +22,14 @@
 //!   `data/seed/multilingual-responses-agentic.lino` in the prompt's language
 //!   with an English fallback.
 
-use crate::engine::{stable_id, SymbolicAnswer};
+use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed;
 use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handlers::finalize_simple;
-use crate::world_model_atoms::{classify, UtteranceKind};
-use crate::world_model_dialog::{record_world_model, DialogueWorldModel};
+use crate::world_model_atoms::{UtteranceKind, classify};
+use crate::world_model_dialog::{DialogueWorldModel, record_world_model};
 
 // The seed templates carry `{count}` / `{remaining}` / `{diff_id}` placeholders
 // substituted at runtime; they are data, not format strings.

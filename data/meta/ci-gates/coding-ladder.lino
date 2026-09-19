@@ -1,0 +1,4 @@
+ci_gate coding_ladder
+  stage rust
+  description "Fast consistency gate for the standalone 130-task issue #848 coding ladder: validate the committed full result, strict ratchet floor and workflow contract without executing any authoring task."
+  run "rust-script --test scripts/check-coding-ladder.rs && rust-script scripts/check-coding-ladder.rs --base origin/main"

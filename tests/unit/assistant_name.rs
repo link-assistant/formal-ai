@@ -38,6 +38,16 @@ const NAME_PROMPTS: &[NamePrompt] = &[
     },
 ];
 
+/// Every complete public answer exercised by [`NAME_PROMPTS`]. Keeping the
+/// finite surface here makes the multilingual test readable as an answer
+/// catalogue, not merely as a comparison between two runtime values.
+const DOCUMENTED_NAME_ANSWERS: &[&str] = &[
+    "I'm formal AI, and currently I don't have a name. But you can name me as you like.",
+    "Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите.",
+    "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।",
+    "我是 formal AI,目前还没有名字。不过您可以按自己的喜好给我起名。",
+];
+
 #[test]
 fn reported_russian_name_question_is_answered() {
     let response = FormalAiEngine.answer("Как твое имя?");
@@ -68,6 +78,13 @@ fn assistant_name_questions_are_supported_across_languages() {
             response.answer, case.answer,
             "{} prompt {:?} should answer verbatim",
             case.language, case.prompt,
+        );
+        assert!(
+            DOCUMENTED_NAME_ANSWERS.contains(&response.answer.as_str()),
+            "{} prompt {:?} returned an undocumented complete answer: {}",
+            case.language,
+            case.prompt,
+            response.answer,
         );
         assert_eq!(
             response.intent, "assistant_name",

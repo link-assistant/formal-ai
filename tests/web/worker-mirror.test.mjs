@@ -103,7 +103,23 @@ test("every coding handler executes the shared meta-algorithm", async () => {
   assert.match(synthesis.content, /Coding task formalized.*count_vowels/);
   assert.match(synthesis.content, /Discovered structural parts:.*reduce_count/);
   assert.match(synthesis.content, /unverified in the browser boundary/);
-  assert.ok(!synthesis.content.includes("```python"));
+  assert.match(synthesis.content, /```python\ndef count_vowels\(text\):/);
+  // The binder name is the seed's own `reduce_count` placeholder, the same
+  // name the native pinned answer in
+  // tests/unit/specification/benchmarks.rs (COUNT_VOWELS_ANSWER) lowers to.
+  assert.match(synthesis.content, /sum\(1 for character in text if character in 'aeiouAEIOU'\)/);
+  assert.ok(
+    synthesis.evidence.includes("synthesis:ir:type_checked"),
+    "the browser type-checks the same language-neutral IR before lowering",
+  );
+  assert.ok(
+    synthesis.evidence.some((entry) => entry.startsWith("synthesis:ir:content_id=")),
+    "the browser exposes the deterministic IR identity",
+  );
+  assert.ok(
+    synthesis.evidence.some((entry) => entry.startsWith("synthesis:source:https://")),
+    "an unverified program still attributes the fragments it used",
+  );
   assert.ok(!synthesis.evidence.some((entry) => entry.startsWith("action_log:run_command")));
 
   const catalog = await solve("Write hello world in Rust");

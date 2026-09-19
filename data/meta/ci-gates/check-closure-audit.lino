@@ -1,0 +1,9 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_closure_audit
+  stage rust
+  description "The honest total-closure gap equals the number reviewed in data/meta/closure-audit.lino, compared strictly in both directions. The old metric counted the glosses scripts/close-total.py generated as definitions, so the gap it reported was zero by construction; this one excludes the generator's own output (issue #1138 B9, plan 09 leaves 6-7)."
+  run "python3 scripts/check-closure-audit.py"

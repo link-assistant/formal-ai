@@ -9,11 +9,11 @@ Issue [#8](https://github.com/link-assistant/formal-ai/issues/8) adds a Telegram
 | R33 | Support private Telegram chats. | Implemented and tested with a private `chat.id`. |
 | R34 | Support public Telegram chats. | Implemented and tested with a supergroup-style negative `chat.id`. |
 | R35 | Preserve code formatting in Telegram replies. | Implemented by converting markdown code fences to escaped Telegram HTML `<pre><code>` blocks. |
-| R36 | Compile or run generated code blocks where the environment supports it. | Implemented for Rust, Python, JavaScript, Go, and C hello-world seeds through the issue-8 verification harness. |
-| R37 | Report output and execution status to users. | Implemented by appending execution status, check/run commands, and output to hello-world answers. |
-| R38 | Report environment limitations instead of silently claiming execution. | Implemented for TypeScript, which is marked unavailable because `tsc` is not configured in this runtime. |
-| R39 | Keep timeout behavior bounded and visible. | Implemented for seed verification with a 60-second command budget; all verified seeds completed in one iteration without timeout reduction. |
-| R40 | Keep the web interface aware of execution limitations. | Implemented by updating the GitHub Pages worker fallback answers to include the same execution metadata. |
+| R36 | Compile or run generated code blocks where the environment supports it. | Implemented through `src/execution_box/`: Telegram selects only an explicitly configured host sandbox or the paired `start-command` Docker runner; browser execution is limited to a runtime the user loaded. |
+| R37 | Report output and execution status to users. | Implemented with `execution_evidence::Evidence` carrying exact argv, exit status and observed-output hash; the localized answer cites its evidence id. |
+| R38 | Report environment limitations instead of silently claiming execution. | Implemented from observed probes: absent configuration refuses in all five supported languages, and `NotProbed` is distinct from unavailable. |
+| R39 | Keep timeout behavior bounded and visible. | Implemented by `ExecutionBox`: elapsed time, deadline and partial output are retained; the descending-N policy records every attempted rung and has a ten-minute hard failure. |
+| R40 | Keep the web interface aware of execution limitations. | Implemented by the browser runtime probe: it shows runtime/download size, requires an explicit load action, and labels output observed only after execution. |
 | R41 | Preserve issue research and raw evidence under `docs/case-studies/issue-8`. | Implemented with raw GitHub data, online research, local tool records, solution options, and verification notes. |
 | R42 | Run the Telegram bot from the CLI using long polling by default. | Implemented as `formal-ai telegram` defaulting to `--mode=polling` and calling Telegram's `getUpdates` with offset, timeout, limit, and `allowed_updates` controls. |
 | R43 | Keep the webhook server available as an opt-in CLI mode. | Implemented as `formal-ai telegram --mode=webhook`, which delegates to the existing `serve` HTTP route on the same host/port flags. |

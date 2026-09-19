@@ -743,11 +743,11 @@ fn a_wired_up_mcp_search_outranks_the_clients_own_search_alias() {
     }
 }
 
-/// The same ordering must not let browser automation win a fetch: it carries no
-/// research capability at all, so the client's own alias stays the choice when
-/// no MCP *research* tool is advertised (issue #1133).
+/// The same ordering must not let browser automation win a work-item read. A
+/// shell can ask GitHub for the issue's source fields directly, avoiding both
+/// browser interaction and a model-backed fetch interpretation (issue #1133).
 #[test]
-fn browser_automation_does_not_outrank_the_clients_fetch_alias() {
+fn browser_automation_and_model_fetch_do_not_outrank_structured_gh_read() {
     let tools = [
         "Bash",
         "Write",
@@ -759,8 +759,110 @@ fn browser_automation_does_not_outrank_the_clients_fetch_alias() {
     )];
     match plan_chat_step(&messages, &tools).expect("a work item has a plan") {
         AgenticPlan::ToolCalls(calls) => {
-            assert_eq!(calls[0].tool, "WebFetch", "{calls:?}");
+            assert_eq!(calls[0].tool, "Bash", "{calls:?}");
+            assert!(calls[0].arguments.contains("gh issue view"), "{calls:?}");
         }
         AgenticPlan::Final(answer) => panic!("expected the work item to be read, got {answer:?}"),
     }
+}
+
+/// The reported #781 prompt names a registrable host (`amazon.in`) inside a
+/// research request, and the four-client E2E replays exactly it. The decision
+/// table reads the request text on *every* turn, so once the search result was
+/// in the conversation the table saw a named host and answered the whole
+/// conversation with one step -- the recipe ended after its first, and the E2E
+/// reported "planned only 0 web fetches".
+///
+/// Routing by object, act and locus decides which capability a request needs.
+/// It does not decide that a recipe already under way is finished.
+#[test]
+fn a_named_host_inside_a_research_prompt_still_plans_its_follow_up_fetches() {
+    // The three tool sets the four-client E2E actually advertises for this
+    // prompt: the bare pair, OpenCode's MCP naming beside its own toolbox (the
+    // leg that regressed), and Claude's namespaced naming.
+    let opencode: [&str; 12] = [
+        "bash",
+        "edit",
+        "glob",
+        "grep",
+        "list",
+        "patch",
+        "read",
+        "task",
+        "todoread",
+        "todowrite",
+        "issue781_websearch",
+        "issue781_webfetch",
+    ];
+    let namespaced: [&str; 2] = ["mcp__issue781__websearch", "mcp__issue781__webfetch"];
+    replays_the_research_recipe(&TOOLS, "websearch", "webfetch");
+    replays_the_research_recipe(&opencode, "issue781_websearch", "issue781_webfetch");
+    replays_the_research_recipe(
+        &namespaced,
+        "mcp__issue781__websearch",
+        "mcp__issue781__webfetch",
+    );
+}
+
+fn replays_the_research_recipe(tools: &[&str], search_tool: &str, fetch_tool: &str) {
+    let plan_step = |messages: &[ChatMessage]| -> Vec<PlannedToolCall> {
+        match plan_chat_step(messages, tools).expect("the research task is recognized") {
+            AgenticPlan::ToolCalls(calls) => calls,
+            AgenticPlan::Final(answer) => {
+                panic!("expected tool calls with {tools:?}, got final answer: {answer}")
+            }
+        }
+    };
+    let mut messages = vec![ChatMessage::user(
+        "Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in",
+    )];
+    let search = plan_step(&messages);
+    assert_eq!(
+        search[0].tool, search_tool,
+        "the first step is still the search the E2E observes: {search:?}"
+    );
+    answer_tool_calls(
+        &mut messages,
+        &search,
+        &[concat!(
+            "Acer specifications https://acer.example.test/a325-45/specifications ",
+            "Connector reference https://parts.example.test/acer-a325-45/connector ",
+            "Candidate listing https://shop.example.test/compatible-a325-45-adapter"
+        )],
+    );
+
+    let mut fetched: Vec<String> = Vec::new();
+    for turn in 0..3 {
+        let calls = plan_step(&messages);
+        assert_eq!(
+            calls.len(),
+            1,
+            "turn {turn} of {tools:?} must expose exactly one action: {calls:?}"
+        );
+        assert_eq!(
+            calls[0].tool, fetch_tool,
+            "turn {turn} of {tools:?} must fetch a search result rather than \
+             re-answering the request from the host it named: {calls:?}"
+        );
+        fetched.push(
+            arguments(&calls[0])["url"]
+                .as_str()
+                .unwrap_or_default()
+                .to_owned(),
+        );
+        answer_tool_calls(
+            &mut messages,
+            &calls,
+            &["45 W, center-positive barrel plug."],
+        );
+    }
+    assert_eq!(
+        fetched,
+        vec![
+            "https://acer.example.test/a325-45/specifications".to_owned(),
+            "https://parts.example.test/acer-a325-45/connector".to_owned(),
+            "https://shop.example.test/compatible-a325-45-adapter".to_owned(),
+        ],
+        "every independent source the search found is fetched, in order, with {tools:?}"
+    );
 }

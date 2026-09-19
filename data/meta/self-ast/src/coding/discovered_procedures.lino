@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/discovered_procedures.rs
   language rust
   fidelity signature
-  byte_len 10360
+  byte_len 10365
   line_count 308
-  content_id source_module_2d4b039ff5ae6e68
+  content_id source_module_680e6f1d45208675
   symbol_count 20
   symbols
     const LEDGER_FILE 15 15

@@ -1,0 +1,2156 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.700Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.701Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt That went over my head. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.701Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.701Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.711Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "That went over my head.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "That went over my head.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.711Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.712Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.713Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.713Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.716Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.716Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.719Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 4298,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.719Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.734Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:16:10.738Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.738Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.738Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.738Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.738Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.739Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.739Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.739Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 27,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.739Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:16:10.739Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.743Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.743Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.744Z",
+  "service": "session",
+  "id": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D",
+  "title": "New session - 2026-09-16T03:16:10.744Z",
+  "time": {
+    "created": 1789528570744,
+    "updated": 1789528570744
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.745Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.745Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.745Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.745Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.745Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c90487ffeItGbesIaBHBCA6/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.745Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c90487ffeItGbesIaBHBCA6/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.748Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 3,
+  "method": "POST",
+  "path": "/session/ses_f57c90487ffeItGbesIaBHBCA6/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.750Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.760Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.760Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.762Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.763Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.763Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.763Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.764Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.764Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.764Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.764Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.764Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.764Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.939Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.942Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.951Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.956Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.962Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:10.962Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:11.389Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528571389,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a836fdfb001TLwhVV2Y5nwACy",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a836fc3c00135AuOkqQAhqdlI",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:11.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:11.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528571390,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a836fdfe001QNnEFzM7uX8yOi",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a836fc3c00135AuOkqQAhqdlI",
+    "type": "tool",
+    "callID": "call_3b113e758fb1e0c3",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:11.390Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528571390,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a836fdfd0019fsz518zxJOiG3",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a836fc3c00135AuOkqQAhqdlI",
+    "type": "text",
+    "text": "Let me search the web for That went over my head.",
+    "time": {
+      "start": 1789528571390,
+      "end": 1789528571390
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:11.391Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528571391,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a836fdfe001QNnEFzM7uX8yOi",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a836fc3c00135AuOkqQAhqdlI",
+    "type": "tool",
+    "callID": "call_3b113e758fb1e0c3",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "That went over my head"
+      },
+      "time": {
+        "start": 1789528571390
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.079Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528573079,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a836fdfe001QNnEFzM7uX8yOi",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a836fc3c00135AuOkqQAhqdlI",
+    "type": "tool",
+    "callID": "call_3b113e758fb1e0c3",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "That went over my head"
+      },
+      "output": "Title: OVER YOUR HEAD definition | Cambridge English Dictionary\nURL: https://dictionary.cambridge.org/us/dictionary/english/over-head\nPublished: N/A\nAuthor: N/A\nHighlights:\ntoo difficult or strange for you to understand:\n...\ngo over your head I tried to take in what he was saying about nuclear fusion, but most of it went over my head.\n...\ntoo difficult for someone to understand:\n...\nMost of that lecture was over my head.\n\n---\n\nTitle: Definition of 'be over sb's head'\nURL: https://www.collinsdictionary.com/us/dictionary/english/be-over-someones-head\nPublished: N/A\nAuthor: N/A\nHighlights:\nIf something such as an idea, joke, or comment goes over someone's head, it is too difficult for them to understand.\n...\nI admit that a lot of the ideas went way over my head.\n\n---\n\nTitle: GO OVER SOMEONE'S HEAD definition | Cambridge English Dictionary\nURL: https://dictionary.cambridge.org/us/dictionary/english/go-over-head\nPublished: N/A\nAuthor: N/A\nHighlights:\nto speak to or ask permission from someone who has more authority than the person who you would normally go to in that situation:\n...\nAmanda was refusing to give me the week off so I went over her head and spoke to the boss.\n...\nto be too difficult or strange for someone to understand:\n...\nSome of what the teacher said went over the children's heads.\n\n---\n\nTitle: GO OVER SB'S HEAD definition | Cambridge Learner’s Dictionary\nURL: https://dictionary.cambridge.org/us/dictionary/learner-english/go-over-sb-s-head\nPublished: N/A\nAuthor: N/A\nHighlights:\nto be too difficult for someone to understand:\n...\nAll this talk about philosophy went right over my head.\n\n---\n\nTitle: over your head | Learn English\nURL: https://www.englishclub.com/ref/esl/Idioms/O/over_your_head_173.php\nPublished: N/A\nAuthor: N/A\nHighlights:\nIf something you hear or read is over your head, or goes over your head, you don't understand it because the language or the ideas are too advanced for you.\n...\n- I tried listening to a show on the radio about modern physics, but most of it was over my head and I gave up after about ten minutes.\n- Jerry told a really funny joke about the economics of the cheese industry, and it went right over Tom's head. He didn't even smile.\n...\nI could tell the lecture had gone over my student's head because he\n...\na. couldn't answer a simple question b. made intelligent comments c. asked interesting questions\n...\na) couldn't answer a simple question b) made intelligent comments c) asked interesting questions\n\n---\n\nTitle: Go over someone's head - Idioms by The Free Dictionary\nURL: https://idioms.thefreedictionary.com/go+over+someone%27s+head\nPublished: N/A\nAuthor: N/A\nHighlights:\n1. To speak to one's superior rather than talking to one directly. She just wouldn't listen to me, so I had to go over her head to her boss and complain about it. This caller wants to go over my head, and I can't say I blame her—based on the notes here, she's already called seven times to try and get this issue resolved. Talking to customer service reps isn't getting you anywhere. You really need to go over their head to their manager.\n...\n2. To not be understood by one because it is too complex or subtle for their comprehension. My jokes always seem to go over Stephanie's head, so I'm glad you think I'm funny at least. A: \"My uncle is reading a book about anti-gravity technology. He says he can't put it down!\" B: \"Oh, wow, that does sound really interesting.\" A: \"Well, that went over your head, now didn't it?\" All of this legalese will go over people's heads, so please put the report into language anyone could understand.\n...\n1. If you go over the head of someone in authority, you communicate directly with someone in a higher position to try to get what you want. Don't break office protocol by going over your boss's head. He was reprimanded for trying to go over the heads of senior officers.\n...\n2. If something that someone says or writes goes over your head, you do not understand it because it is too difficult for you. A lot of what he writes goes over my head. Note: You can also say that something is over your head. Most of the article was over my head. Compare with talk over someone's head.\n\n---\n\nTitle: go over someone's head - Wiktionary, the free dictionary\nURL: https://en.wiktionary.org/wiki/go_over_someone's_head\nPublished: N/A\nAuthor: N/A\nHighlights:\ngo over someone's head(third-person singular simple present goes over someone's head, present participle going over someone's head, simple past went over someone's head, past participle gone over someone's head)\n...\n(idiomatic) To take up an issue with another person's boss or other superior rather than beginning or continuing to deal with the original person.\n...\nShe went over his head and took her complaint directly to the president of the company.\n...\n(idiomatic) To escape someone's comprehension.\n...\nI listened carefully, but the technical jargon went over my head.\n\n---\n\nTitle: It went right over your head - Idioms by The Free Dictionary\nURL: https://idioms.thefreedictionary.com/it+went+right+over+your+head\nPublished: N/A\nAuthor: N/A\nHighlights:\n# go over (one's) head\n...\n## go over (one's) head\n...\n1. To speak to one's superior rather than talking to one directly. She just wouldn't listen to me, so I had to go over her head to her boss and complain about it. This caller wants to go over my head, and I can't say I blame her—based on the notes here, she's already called seven times to try and get this issue resolved. Talking to customer service reps isn't getting you anywhere. You really need to go over their head to their manager.\n...\n2. To not be understood by one because it is too complex or subtle for their comprehension. My jokes always seem to go over Stephanie's head, so I'm glad you think I'm funny at least. A: \"My uncle is reading a book about anti-gravity technology. He says he can't put it down!\" B: \"Oh, wow, that does sound really interesting.\" A: \"Well, that went over your head, now didn't it?\" All of this legalese will go over people's heads, so please put the report into language anyone could understand.\n...\n## go over someone's head\n...\n1. If you go over the head of someone in authority, you communicate directly with someone in a higher position to try to get what you want. Don't break office protocol by going over your boss's head. He was reprimanded for trying to go over the heads of senior officers.\n...\n2. If something that someone says or writes goes over your head, you do not understand it because it is too difficult for you. A lot of what he writes goes over my head. Note: You can also say that something is over your head. Most of the article was over my head. Compare with talk over someone's head.\n...\n- it went right over your head\n...\n- it went on the swag\n- it went out in\n...\nblaze of glory\n- it went out of favor\n...\n- it went out of\n...\n- it went out on top\n- it went over a cliff\n- it went over her head\n- it went over his head\n- it went over like a lead balloon\n- it went over like a lead zeppelin\n- it went over my head\n- it went over one's head\n- it went over our heads\n- it went over somebody's head\n- it went over someone's head\n- it went over the cliff\n- it went over their heads\n- it went over to the dark side\n- it went over your head\n- it went overboard\n- it went past the point of no return\n- it went quietly into the night\n- it went right over her head\n- it went right over his head\n- it went right over my head\n- it went right over one's head\n- it went right over our heads\n- it went right over somebody's head\n- it went right over someone's head\n- it went right over their heads\n- it went right over your head",
+      "title": "Web search: That went over my head",
+      "metadata": {},
+      "time": {
+        "start": 1789528571390,
+        "end": 1789528573077
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.081Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528573081,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370498001aDTnX9sSiq57yG",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a836fc3c00135AuOkqQAhqdlI",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8519,
+      "output": 92,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8611,
+      "headroom": 30245,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.082Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.083Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.083Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.083Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.088Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8611,
+  "providerTokens": 8611,
+  "estimatedInputTokens": 1786,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8519,
+    "cacheRead": 0,
+    "output": 92
+  },
+  "overflow": false,
+  "headroom": 30245,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.088Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.090Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.091Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.766Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528573766,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a83707450013DAM6kg0BCDK0l",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a83704a0001tEraJvct51mVy6",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528573767,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370747001u32IbtksTBotSU",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a83704a0001tEraJvct51mVy6",
+    "type": "tool",
+    "callID": "call_bfc95274e2dc064b",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528573767,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370746001Eszhd8jES89Qx8",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a83704a0001tEraJvct51mVy6",
+    "type": "text",
+    "text": "Let me open https://dictionary.cambridge.org/us/dictionary/english/over-head and read what it says.",
+    "time": {
+      "start": 1789528573767,
+      "end": 1789528573767
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:13.767Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528573767,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370747001u32IbtksTBotSU",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a83704a0001tEraJvct51mVy6",
+    "type": "tool",
+    "callID": "call_bfc95274e2dc064b",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://dictionary.cambridge.org/us/dictionary/english/over-head"
+      },
+      "time": {
+        "start": 1789528573767
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.197Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528574197,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370747001u32IbtksTBotSU",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a83704a0001tEraJvct51mVy6",
+    "type": "tool",
+    "callID": "call_bfc95274e2dc064b",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://dictionary.cambridge.org/us/dictionary/english/over-head"
+      },
+      "output": "OVER YOUR HEAD definition | Cambridge English Dictionary\r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n            \n        \n            \n\n                                    \n                                                                                                    \n                                                                                                          \n                                                                    \n                                                                    \n                                                                    \n                                                                    \n                                                                                                        \n                                                                    \n                                                                                                        \n                                                                    \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                                                        \n                                                                        \n                                    \r\n    \r\n            \r\n        \r\n        \r\n        \r\n        \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n    \r\n                  \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n\r\n        \r\n      \r\n                    \n        \n                            \n    \n    \n    \n    \r\n\r\n                    \r\n    \r\n\r\n    \r\n\r\n        \r\n            \r\n                \r\n                    \r\n                \r\n\r\n\r\n                                                \r\n                    \r\n                        \r\n                            \r\n                            \r\n                \r\n                                        \r\n                        \r\n                            \r\n                            AI Assistant\r\n                        \r\n                    \r\n                                        Dictionary\r\n                    Translate\r\n                                        Grammar\r\n                                        Thesaurus\r\n                    \r\n                        \r\n                            +Plus\r\n                            Cambridge Dictionary +Plus\r\n                        \r\n                    \r\n                    \r\n                        Games\r\n                    \r\n                \r\n            \r\n        \r\n\r\n        \r\n\r\n            \r\n            \r\n                \r\n                    \r\n                        \r\n                    \r\n                        \n        \n            \n                Cambridge Dictionary +Plus\n                My profile\n                +Plus help\n                Log out\n            \n        \n    \n                \r\n                \r\n                    \r\n                        \r\n                    \r\n                \r\n\r\n                \r\n                    \r\n                        \r\n                    \r\n                \r\n            \r\n\r\n            \r\n            \r\n                \r\n                \r\n                \r\n            \r\n\r\n            \r\n                \r\n                    \r\n                        \r\n                        \r\n                            {{userName}}\r\n                        \r\n                        \r\n                    \r\n                        \n        \n            \n                Cambridge Dictionary +Plus\n                My profile\n                +Plus help\n                Log out\n            \n        \n    \n                \r\n                \r\n                    \r\n                        \r\n                        Log in\r\n                     / \r\n                        Sign up\r\n                    \r\n                \r\n\r\n                \r\n                    \r\n                        \r\n                        English (US)\r\n                    \r\n                \r\n\r\n            \r\n        \r\n\r\n    \r\n\r\n                    \r\n            \r\n                \r\n        \r\n\r\n\r\n    \r\n        \r\n            \r\n\r\n    \r\n\r\n                    \r\n        \r\n                    \r\n                \r\n            \r\n        \r\n        \r\n            \r\n                \r\n            \r\n\r\n            \r\n                \r\n                \r\n\r\n                \r\n                                                \r\n                \r\n                                \r\n                    \r\n                                                            English\r\n                                                \r\n                    \r\n                \r\n\r\n                \r\n                \r\n                    \r\n                \r\n            \r\n        \r\n                        \r\n            \r\n            \r\n                \r\n                    \r\n                        \r\n                            \r\n                                \r\n                                    {{word}}\r\n                                    {{#beta}}\r\n                                    Beta{{/beta}}\r\n                                \r\n                            \r\n                        \r\n                    \r\n                \r\n            \r\n        \r\n    \r\n\r\n    \r\n    \r\n        \r\n            \r\n                \r\n                {{#preferredDictionaries}}\r\n                    {{^selected}}\r\n                                            \r\n                            {{name}}\r\n                            \r\n                        \r\n                                        {{/selected}}\r\n                {{/preferredDictionaries}}\r\n                \r\n            \r\n        \r\n    \r\n\r\n\r\n              \r\n        \r\n        \n        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n \n \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n                \n                                                \n                    \n                    \n                    \n    \n                    \n                    \n    \n\n\n\n    \n                                                                                                                            \n\n\n\n    \n\n        \n                \n            \n\n                \r\n                    \n            \n                        \n            \n        \n                \n                \n                \n                \n                                                                            \n                                    \n                    \n\n                                    Meaning of over your head in English\n\n                    \n                \n                                                    \n\n    \n                    \n            \n        \n        \n            \n        \n        \n\n            over your head idiom \n\n                                 \n                        \n                            \n         \n        \n            Add to word list\n            \n        \n        \n            Add to word list\n            \n        \n        \n                  too difficult or strange for you to understand:  go over your head I tried to take in what he was saying about nuclear fusion, but most of it went over my head.          \n        \n            \n                    \n                    \n                        \n                        SMART Vocabulary: related words and phrases                    \n                    \n                        \n                            Difficult to understand\n                        \n\n                        \n                            \n                            \n                                                                    \n                                        \n                                            abstruse\n                                        \n                                    \n                                                                    \n                                        \n                                            abstrusely\n                                        \n                                    \n                                                                    \n                                        \n                                            ambiguity\n                                        \n                                    \n                                                                    \n                                        \n                                            ambiguous\n                                        \n                                    \n                                                                    \n                                        \n                                            ambiguously\n                                        \n                                    \n                                                                    \n                                        \n                                            fathomless\n                                        \n                                    \n                                                                    \n                                        \n                                            fathomlessly\n                                        \n                                    \n                                                                    \n                                        \n                                            garble\n                                        \n                                    \n                                                                    \n                                        \n                                            get it through your thick head idiom \n                                        \n                                    \n                                                                    \n                                        \n                                            get lost\n                                        \n                                    \n                                                                    \n                                        \n                                            it beats me idiom \n                                        \n                                    \n                                                                    \n                                        \n                                            it's (all) Greek to me idiom \n                                        \n                                    \n                                                                    \n                                        \n                                            labyrinthine\n                                        \n                                    \n                                                                    \n                                        \n                                            lost\n                                        \n                                    \n                                                                    \n                                        \n                                            muddle\n                                        \n                                    \n                                                                    \n                                        \n                                            unintelligibility\n                                        \n                                    \n                                                                    \n                                        \n                                            unintelligible\n                                        \n                                    \n                                                                    \n                                        \n                                            unintelligibly\n                                        \n                                    \n                                                                    \n                                        \n                                            unintuitive\n                                        \n                                    \n                                                                    \n                                        \n                                            unintuitively\n                                        \n                                    \n                                                            \n\n                                                            See more results »\n                                                    \n\n                                            \n                    \n            \n        \n          \n                                                  \n    \n                                     (Definition of over your head from the Cambridge Advanced Learner&apos;s Dictionary & Thesaurus © Cambridge University Press)\n                                          over your head | Intermediate English\n                            over your head idiom \n\n                         \n                        \n                            \n         \n        \n            Add to word list\n            \n        \n        \n            Add to word list\n            \n        \n        \n                  too difficult for someone to understand:  Most of that lecture was over my head.            \n             \n            \n                                     (Definition of over your head from the Cambridge Academic Content Dictionary © Cambridge University Press)\n                          \n\n                \n                                    \n                                \n        \n        \n        \n          Translations of over your head\n          \n          \n                                         \n                \n                    in Chinese (Traditional)\n                \n                \n                    無法理解&hellip;\n                \n                \n                    \n                        See more                    \n                \n              \n                                         \n                \n                    in Chinese (Simplified)\n                \n                \n                    无法理解&hellip;\n                \n                \n                    \n                        See more                    \n                \n              \n                                         \n                \n                    in Spanish\n                \n                \n                    incomprensible&hellip;\n                \n                \n                    \n                        See more                    \n                \n              \n                      \n\n                  \n\n        \n        \n            \n                Need a translator?\n\n                Get a quick, free translation!\n\n                \n                    \n                        \n                            \n                            Translator tool\n                        \n                    \n                \n            \n        \n\n    \n                    \n                \n                &nbsp;\r\n\r\n\n                    \n        \n            Browse\n        \n\n        \n                            \n                                    \n                        over the top idiom \n                    \n                                                \n                            \n                                    \n                        over there\n                    \n                                                \n                            \n                                    \n                        over time\n                    \n                                                \n                            \n                                    \n                        over to someone\n                    \n                                                \n                            \n                                    over your head idiom \n                                                \n                            \n                                    \n                        over-abstract\n                    \n                                                \n                            \n                                    \n                        over-allotment\n                    \n                                                \n                            \n                                    \n                        over-amplified\n                    \n                                                \n                            \n                                    \n                        over-and-back violation\n                    \n                                                \n                    \n    \n\n                \n                                \n            \n            \n                \r\n    \r\n\r\n  \r\n  {{#randomImageQuizHook.filename}}\r\n    {{#randomImageQuizHook.isQuiz}}\r\n    \r\n        Test your vocabulary with our fun image quizzes\r\n\r\n        \r\n            \r\n            \r\n                \r\n                    \r\n                        Try a quiz now\r\n\r\n        \r\n            \r\n            \r\n        \r\n    \r\n    {{/randomImageQuizHook.isQuiz}}\r\n    {{^randomImageQuizHook.isQuiz}}\r\n    \r\n        \r\n            \r\n                \n            \n        \n                        \n                                    More meanings of over your head\n        \n\n        \n            \n                \n                    \n                        \n                        All\n                    \n                    \n                        \n                                                                                                    \n                                \n                                    go over someone's head idiom\n                                \n                            \n                                                    \n                                \n                                    be in over your head idiom\n                                \n                            \n                                                    \n                                \n                                    go over sb's head\n                                \n                            \n                                                    \n                                \n                                    something hangs over your head idiom\n                                \n                            \n                                                    \n                                \n                                    a roof over your head idiom\n                                \n                            \n                                                    \n                                \n                                    be/get in over your head\n                                \n                            \n                                                    \n                                \n                                    put your head over/above the parapet idiom\n                                \n                            \n                                                \n\n                        \n                            See all meanings                        \n                    \n                \n\n                \n                                    \n                        \n                            \n                            Idioms and phrases\n                        \n                        \n                            \n                                                                                                                            go over someone's head idiom\n                                                                                                                                be in over your head idiom\n                                                                                                                                something hangs over your head idiom\n                                                                                                                                a roof over your head idiom\n                                                                                                                                put your head over/above the parapet idiom\n                                                                                        \n                                                            \n                                    See all idioms and phrases                                \n                                                    \n                    \n                            \n\n        \n    \n\r\n                \n            \n    \n    \n                    \n            \n        \n        \n            \n        \n    \n        \n            Word of the Day\n            \n                be at odds\n            \n                                \n    \n\n    \n        to disagree\n\n        About this\n    \n\n\r\n\n        \n        \n            \n            \n                \n        Blog\n        \n            The Word Watcher: Reverse\n        \n        \n                        September 14, 2026\n        \n        \n            \n                Read More            \n        \n    \n\n\r\n    \n            \n\n        \n\n    \n\n            \n\n\n\n            \n    \n    \n    \n        \n            \n                \n            \n            \n                               has been added to list\n            \n        \n    \n    \n\n    \n        \n\n            \n                \n                    To top\n                    \n                \n            \n                        \n                \n                    \n                    AI Assistant\n                \n            \n            \n    \n        \n            \n                \n                Contents\n            \n        \n\n        \n                        \n                \n        \n            EnglishIntermediateTranslations        \n    \n\n\n        \n    \n\n    \n\n\n\n                                                                                                                            \r\n\n    \n    \n        \n            \n            AI Assistant\n        \n    \n\n\n\n    \n\n        \n        \n            \r\n    \r\n        \r\n            \r\n                \r\n                    \r\n                    Facebook\r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                    Instagram\r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                    X\r\n                \r\n            \r\n        \r\n        \r\n        \r\n        © Cambridge University Press & Assessment 2026\r\n    \r\n        \n\n        \n            \r\n    \r\n        \r\n            Learn\r\n            \r\n        \r\n    \r\n    \r\n        Learn\r\n        Learn\r\n        New Words\r\n        Help\r\n        In Print\r\n                                    Word of the Year 2021\r\n                            Word of the Year 2022\r\n                            Word of the Year 2023\r\n                            Word of the Year 2024\r\n                            Word of the Year 2025\r\n                        \r\n\r\n\r\n    \r\n        \r\n            Develop\r\n            \r\n        \r\n    \r\n    \r\n        Develop\r\n        Develop\r\n        Dictionary API\r\n        Double-Click Lookup\r\n        Search Widgets\r\n        License Data\r\n                                \r\n\r\n\r\n    \r\n        \r\n            About\r\n            \r\n        \r\n    \r\n    \r\n        About\r\n        About\r\n        Accessibility\r\n        Cambridge English\r\n        Cambridge University Press & Assessment\r\n                                Consent Management\r\n                            Cookies and Privacy\r\n        Corpus\r\n        Terms of Use\r\n\r\n                    AI Terms of Use\r\n        \r\n                                        \r\n        \n\n        \n            \r\n    \r\n        \r\n            \r\n                \r\n                    \r\n                    Facebook\r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                    Instagram\r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                    X\r\n                \r\n            \r\n        \r\n        \r\n        \r\n        © Cambridge University Press & Assessment 2026\r\n    \r\n        \n    \n\n\n\n\n\n    \n        {{#displayLoginPopup}}\n            \n                \n                    \r\n\r\n     \r\n\r\n    \r\n        \r\n        \r\n            \r\n                Cambridge\r\n                \r\n                    Dictionary +Plus\r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                \r\n            \r\n        \r\n        \r\n        \r\n            \r\n                \r\n                    Learn more with\r\n                    +Plus\r\n                \r\n            \r\n            \r\n                \r\n                    Sign up\r\n                    for free and get access to exclusive content:                \r\n                \r\n                    \r\n                        Free\r\n                        word lists and quizzes from Cambridge                    \r\n                    \r\n                        Tools\r\n                        to create your own word lists and quizzes                    \r\n                    \r\n                        Word lists\r\n                        shared by our community of dictionary fans                    \r\n                    \r\n                        Sign up now or Log in\r\n                    \r\n                \r\n            \r\n        \r\n    \r\n\r\n\r\n\r\n\r\n     \r\n\r\n    \r\n        \r\n        \r\n            \r\n                Cambridge\r\n                \r\n                    Dictionary +Plus\r\n                \r\n            \r\n            \r\n                \r\n                    \r\n                \r\n            \r\n        \r\n        \r\n        \r\n            \r\n                \r\n                    Learn more with\r\n                    +Plus\r\n                \r\n            \r\n            Create word lists and quizzes for free\r\n            \r\n                Sign up now or Log in\r\n            \r\n        \r\n    \r\n\r\n\r\n                \n            \n        {{/displayLoginPopup}}\n\n        {{#displayClassicSurvey}}\n                        {{/displayClassicSurvey}}\n    \n\n\n\n  \n    \n    \n\n        \n            \n                \n                    \n                        \n                    \n                \n\n                \n                    \n                        \n                            \n                            \n                    \n                        \n                            \n                                \n                            \n                                \n        \n            \n                Cambridge Dictionary +Plus\n                My profile\n                +Plus help\n                Log out\n            \n        \n    \n                        \n                        \n                            \n                                \n                            \n                        \n\n                        \n                            \n                                \n                            \n                        \n                        \n                            \n                                \n                            \n                        \n                    \n                \n            \n        \n\n    \n\n\n    \n\n        \n            \n        \n\n        \n\n            \n                \n                    \n                    \n                \n                    AI Assistant                    \n                \n            \n                        \n                \n                    \n                        Dictionary                        \n                    \n                \n\n                \n                                                            \n                        \n                            \n                                Definitions\n                                \n                            \n                        \n                        \n                            \n                                Clear explanations of natural written and spoken English\n                                                                English\n                                                                Learner’s Dictionary\n                                                                Essential British English\n                                                                Essential American English\n                                                            \n                        \n                    \n                    \n                    \n                        \n                            \n                                Translations\n                                \n                            \n                        \n                        \n                                                                                    \n                                \n                                    Click on the arrows to change the translation direction.                                \n                                \n                                    \n                                        \n                                        \n                                        English–Chinese (Simplified)\n                                                                                Chinese (Simplified)–English\n                                    \n                                                                    \n                                        \n                                        English–Chinese (Traditional)\n                                                                                Chinese (Traditional)–English\n                                    \n                                                                    \n                                        \n                                        English–Danish\n                                                                                Danish–English\n                                    \n                                                                    \n                                        \n                                        English–Dutch\n                                                                                Dutch–English\n                                    \n                                                                    \n                                        \n                                        English–French\n                                                                                French–English\n                                    \n                                                                    \n                                        \n                                        English–German\n                                                                                German–English\n                                    \n                                                                    \n                                        \n                                        English–Indonesian\n                                                                                Indonesian–English\n                                    \n                                                                    \n                                        \n                                        English–Italian\n                                                                                Italian–English\n                                    \n                                                                    \n                                        \n                                        English–Japanese\n                                                                                Japanese–English\n                                    \n                                                                    \n                                        \n                                        English–Norwegian\n                                                                                Norwegian–English\n                                    \n                                                                    \n                                        \n                                        English–Polish\n                                                                                Polish–English\n                                    \n                                                                    \n                                        \n                                        English–Portuguese\n                                                                                Portuguese–English\n                                    \n                                                                    \n                                        \n                                        English–Spanish\n                                                                                Spanish–English\n                                    \n                                                                    \n                                        \n                                        English–Swedish\n                                                                                Swedish–English\n                                    \n                                                                                        \n\n                                                                                    \n                                Semi-bilingual Dictionaries\n                                                                \n                                    English–Arabic                                    \n                                \n                                                                \n                                    English–Bengali                                    \n                                \n                                                                \n                                    English–Catalan                                    \n                                \n                                                                \n                                    English–Czech                                    \n                                \n                                                                \n                                    English–Gujarati                                    \n                                \n                                                                \n                                    English–Hindi                                    \n                                \n                                                                \n                                    English–Korean                                    \n                                \n                                                                \n                                    English–Malay                                    \n                                \n                                                                \n                                    English–Marathi                                    \n                                \n                                                                \n                                    English–Russian                                    \n                                \n                                                                \n                                    English–Tamil                                    \n                                \n                                                                \n                                    English–Telugu                                    \n                                \n                                                                \n                                    English–Thai                                    \n                                \n                                                                \n                                    English–Turkish                                    \n                                \n                                                                \n                                    English–Ukrainian                                    \n                                \n                                                                \n                                    English–Urdu                                    \n                                \n                                                                \n                                    English–Vietnamese                                    \n                                \n                                                                                        \n                        \n                    \n                \n            \n            Translate\n                        Grammar\n                        Thesaurus\n            Pronunciation\n            Cambridge Dictionary +Plus\n                        Games\n            \n                \n                    \n                        \n                            \n                                 {{userName}}\n                            \n                            \n                        \n                    \n                    \n                        \n                            \n                                Cambridge Dictionary +Plus\n                                My profile\n                                +Plus help\n                                Log out\n                            \n                        \n                    \n                \n                \n                    \n                         Log in                     /\n                     Sign up\n                \n            \n        \n\n        \n            \n                \n                    \n                    English (US) &nbsp;\n\n                    Change\n                    \n                \n\n                \n                    \n                                            English (UK)\n                                            English (US)\n                                            Español\n                                            Português\n                                            中文 (简体)\n                                            正體中文 (繁體)\n                                            Dansk\n                                            Deutsch\n                                            Français\n                                            Italiano\n                                            Nederlands\n                                            Norsk\n                                            Polski\n                                            Русский\n                                            Türkçe\n                                            Tiếng Việt\n                                            Svenska\n                                            Українська\n                                            日本語\n                                            한국어\n                                            ગુજરાતી\n                                            தமிழ்\n                                            తెలుగు\n                                            বাঙ্গালি\n                                            मराठी\n                                            हिंदी\n                                        \n                \n            \n        \n\n        \n            \n                Follow us\n                \n                    \n                    \n                    \n                \n            \n        \n\n        \n            \n        \n            \n\n\n\n    \n\n    \n        \n            \n        \n\n        \n\n            \n                Choose a dictionary            \n\n            \n                \n                    \n                        \n                            Recent and Recommended\n                            \n                         \n                    \n                    \n                        \n                            \n                                \n                                    {{#preferredDictionaries}}\n                                        \n                                            {{name}}\n                                        \n                                    {{/preferredDictionaries}}\n                                \n                            \n                            \n                                \n                            \n                        \n                    \n                \n\n                                                \n                    \n                        \n                            Definitions\n                            \n                            \n                         \n                    \n                    \n                        \n                            Clear explanations of natural written and spoken English                        \n                        \n                                                        English\n                                                        Learner&rsquo;s Dictionary\n                                                        Essential British English\n                                                        Essential American English\n                                                \n                    \n                \n                \n                                                \n                    \n                        \n                            Grammar and thesaurus\n                            \n                            \n                         \n                    \n                    \n                        \n                            Usage explanations of natural written and spoken English                        \n                        \n                                                    Grammar\n                                                    \n                                                        Thesaurus\n                        \n                    \n                \n                \n                \n                    \n                        \n                            Pronunciation\n                            \n                            \n                         \n                    \n                    \n                        \n                            British and American pronunciations with audio                        \n                        \n                                                        English Pronunciation\n                        \n                    \n                \n\n                \n                    \n                        \n                            Translation\n                            \n                            \n                        \n                    \n                    \n\n                                                                            \n                                \n                                Click on the arrows to change the translation direction.                            \n\n                            Bilingual Dictionaries\n                            \n                                                            \n                                    \n                                    \n                                    English&ndash;Chinese (Simplified)\n                                    Chinese (Simplified)&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Chinese (Traditional)\n                                    Chinese (Traditional)&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Danish\n                                    Danish&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Dutch\n                                    Dutch&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;French\n                                    French&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;German\n                                    German&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Indonesian\n                                    Indonesian&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Italian\n                                    Italian&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Japanese\n                                    Japanese&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Norwegian\n                                    Norwegian&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Polish\n                                    Polish&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Portuguese\n                                    Portuguese&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Spanish\n                                    Spanish&ndash;English\n                                \n                                                            \n                                    \n                                    \n                                    English&ndash;Swedish\n                                    Swedish&ndash;English\n                                \n                                                        \n                        \n                                                                            Semi-bilingual Dictionaries\n                            \n                                                            English&ndash;Arabic\n                                                            English&ndash;Bengali\n                                                            English&ndash;Catalan\n                                                            English&ndash;Czech\n                                                            English&ndash;Gujarati\n                                                            English&ndash;Hindi\n                                                            English&ndash;Korean\n                                                            English&ndash;Malay\n                                                            English&ndash;Marathi\n                                                            English&ndash;Russian\n                                                            English&ndash;Tamil\n                                                            English&ndash;Telugu\n                                                            English&ndash;Thai\n                                                            English&ndash;Turkish\n                                                            English&ndash;Ukrainian\n                                                            English&ndash;Urdu\n                                                            English&ndash;Vietnamese\n                                                        \n                       \t                    \n                \n\n                \n                    \n                        \n                            Dictionary +Plus\n                            \n                            \n                         \n                    \n                    \n                        \n                                                        Word Lists\n                            \n                                \n                            \n                        \n                    \n                \n            \n        \n    \n\n\n\n\n\n    \n\n        \n            \n        \n\n        \n            \n                Choose your language\n            \n            \n                \n                    \n                    English (US) &nbsp;\n                \n\n                \n                                                        English (UK)\n                                                                                                                Español\n                                                                            Português\n                                                                            中文 (简体)\n                                                                            正體中文 (繁體)\n                                                                            Dansk\n                                                                            Deutsch\n                                                                            Français\n                                                                            Italiano\n                                                                            Nederlands\n                                                                            Norsk\n                                                                            Polski\n                                                                            Русский\n                                                                            Türkçe\n                                                                            Tiếng Việt\n                                                                            Svenska\n                                                                            Українська\n                                                                            日本語\n                                                                            한국어\n                                                                            ગુજરાતી\n                                                                            தமிழ்\n                                                                            తెలుగు\n                                                                            বাঙ্গালি\n                                                                            मराठी\n                                                                            हिंदी\n                                                    \n            \n\n        \n\n    \n\n\n\n            \n\n\n    \n        \n            \n        \n\n        \n\n            \n                Contents            \n\n                            \n\n              \n\n                            English \n                             Idiom\n\n\n                            Intermediate \n                             Idiom\n\n\n            \n            \n\n                \n                                \n                                \n                    \n                        Translations\n                    \n                \n                \n                                \n                    \n                        Grammar                        \n                    \n                \n                                \n                    \n                        All translations                        \n                    \n                \n            \n\n        \n    \n\n\n    \n    \n    \n    \n    \n        \n            \n                \n            \n\n            \n                My word lists\n                To add over your head to a word list please sign up or log in.\n\n                \r\n    Sign up\r\n    or\r\n    Log in\r\n\r\n            \n\n            \n                My word lists\n                Add over your head to one of your lists below, or create a new one.\n\n                \n                    \n                        \n                            \n                                \n                                    \n                                \n                            \n\n                            \n                                \n                            \n                        \n                        \n                            \n                                \n                                    \n                                    \n                                \n                            \n                        \n                        \n                            \n                                \n                                    {{#verifyErrors}}\n                                        {{message}}\n                                    {{/verifyErrors}}\n                                    {{^verifyErrors}}\n                                        {{#message}}\n                                            {{message}}\n                                        {{/message}}\n                                        {{^message}}\n                                            Something went wrong.\n                                        {{/message}}\n                                    {{/verifyErrors}}\n                                \n                            \n                        \n                    \n                \n                \n                        \n                            \n                                \n                                    {{name}}\n                                \n                            \n                        \n                \n                \n                    \n                        \n                        More\n                    \n                \n\n                                Go to your word lists\n\n                \n                    \n                        \n                        \n                        \n                    \n                    \n                        \n                            \n                                \n                                \n                            \n                        \n                    \n                    \n                        \n                            \n                                {{#verifyErrors}}\n                                    {{message}}\n                                {{/verifyErrors}}\n                                {{^verifyErrors}}\n                                    {{#message}}\n                                        {{message}}\n                                    {{/message}}\n                                    {{^message}}\n                                        Something went wrong.\n                                    {{/message}}\n                                {{/verifyErrors}}\n                            \n                        \n                    \n                \n\n            \n        \n    \n\n    \n\n    \n\n    \n        \n            \n                \n            \n\n            \n                \n                    Tell us about this example sentence:                \n\n                \n                    \n                        \n                        \n\n                        \n                            \n                                \n                                \n                                    The word in the example sentence does not match the entry word.                                \n                            \n                        \n\n                        \n                            \n                                \n                                \n                                    The sentence contains offensive content.                                \n                            \n                        \n\n                        \n                            \n                                \n                                    Cancel                                \n\n                                \n                                    Submit                                \n                            \n                        \n                    \n                    \n                        \n                            \n                            \n                            \n                            \n                        \n                    \n                    \n                        \n                            \n                                Thanks! Your feedback will be reviewed.\n                            \n                        \n                    \n                    \n                        \n                            \n                                {{#verifyErrors}}\n                                    {{message}}\n                                {{/verifyErrors}}\n                                {{^verifyErrors}}\n                                    {{#message}}\n                                        {{message}}\n                                    {{/message}}\n                                    {{^message}}\n                                        There was a problem sending your report.\n                                    {{/message}}\n                                {{/verifyErrors}}\n                            \n                        \n                    \n                \n\n                \n                    \n                        \n                        \n\n                        \n                            \n                                \n                                \n                                    The word in the example sentence does not match the entry word.                                \n                            \n                        \n\n                        \n                            \n                                \n                                \n                                    The sentence contains offensive content.                                \n                            \n                        \n\n                        \n                            \n                                \n                                    Cancel                                \n\n                                \n                                    Submit                                \n                            \n                        \n                    \n                    \n                        \n                            \n                            \n                            \n                            \n                        \n                    \n                    \n                        \n                            \n                                Thanks! Your feedback will be reviewed.\n                            \n                        \n                    \n                    \n                        \n                            \n                                {{#verifyErrors}}\n                                    {{message}}\n                                {{/verifyErrors}}\n                                {{^verifyErrors}}\n                                    {{#message}}\n                                        {{message}}\n                                    {{/message}}\n                                    {{^message}}\n                                        There was a problem sending your report.\n                                    {{/message}}\n                                {{/verifyErrors}}",
+      "title": "https://dictionary.cambridge.org/us/dictionary/english/over-head (text/html;charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789528573767,
+        "end": 1789528574196
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.197Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528574197,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a83708f5001KZd23O4CegpqbD",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a83704a0001tEraJvct51mVy6",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 16207,
+      "output": 197,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 16404,
+      "headroom": 22452,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.197Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.198Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.198Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.198Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.200Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.200Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.200Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.200Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.201Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.201Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.231Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 16404,
+  "providerTokens": 16404,
+  "estimatedInputTokens": 6013,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 16207,
+    "cacheRead": 0,
+    "output": 197
+  },
+  "overflow": false,
+  "headroom": 22452,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.232Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.232Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.235Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528574437,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a83709e500178rEhKCQP6lKyj",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370917001DebksKCE6zPW4H",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.438Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.438Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528574438,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a83709e6001KP5u9LD38Zjdve",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370917001DebksKCE6zPW4H",
+    "type": "tool",
+    "callID": "call_166e3f671355b7cb",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.438Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528574438,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a83709e5002fld43SHY955sWQ",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370917001DebksKCE6zPW4H",
+    "type": "text",
+    "text": "Let me open https://www.collinsdictionary.com/us/dictionary/english/be-over-someones-head and read what it says.",
+    "time": {
+      "start": 1789528574438,
+      "end": 1789528574438
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.438Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528574438,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a83709e6001KP5u9LD38Zjdve",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370917001DebksKCE6zPW4H",
+    "type": "tool",
+    "callID": "call_166e3f671355b7cb",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.collinsdictionary.com/us/dictionary/english/be-over-someones-head"
+      },
+      "time": {
+        "start": 1789528574438
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.649Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528574649,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a83709e6001KP5u9LD38Zjdve",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370917001DebksKCE6zPW4H",
+    "type": "tool",
+    "callID": "call_166e3f671355b7cb",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.collinsdictionary.com/us/dictionary/english/be-over-someones-head"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789528574438,
+        "end": 1789528574649
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528574649,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.650Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528574650,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370aba001Eukl4iXtC47QRN",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370917001DebksKCE6zPW4H",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 79330,
+      "output": 223,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 79553,
+      "headroom": -40697,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.650Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.650Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.651Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.651Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.652Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.652Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.652Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.652Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.654Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 79553,
+  "providerTokens": 79553,
+  "estimatedInputTokens": 6040,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 79330,
+    "cacheRead": 0,
+    "output": 223
+  },
+  "overflow": true,
+  "headroom": -40697,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.655Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.656Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.656Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.656Z",
+  "service": "session.compaction",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "messageCount": 5,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "compaction process starting"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.657Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.657Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:14.658Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528575023,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370c2e001TVwB3f2XNvL6p8",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370ac0001SM1WZeEFti8363",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.023Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.023Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.023Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528575024,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370c2f002oKgqr3frb0bn35",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370ac0001SM1WZeEFti8363",
+    "type": "text",
+    "text": "Conversation summary: That went over my head.  Let me search the web for That went over my head.\n\nTitle: What did we do so\n\nUser turns:\n  1. That went over my head.\n  2.",
+    "time": {
+      "start": 1789528575024,
+      "end": 1789528575024
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528575024,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370c3000140EOQIsQD6Gxu6",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370ac0001SM1WZeEFti8363",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 71723,
+      "output": 169,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 71892,
+      "headroom": -33036,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.024Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.025Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528575025,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370c30003KjkqN0eOalbylo",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370c300024H7iE3LVo2WTf7",
+    "type": "text",
+    "text": "Continue if you have next steps",
+    "synthetic": true,
+    "time": {
+      "start": 1789528575024,
+      "end": 1789528575024
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.025Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.025Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "step": 6,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.025Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.026Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.026Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.026Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.026Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.026Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.026Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.027Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.027Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.087Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528575088,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370c6f001eWox713Yf6ZOVt",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370c31001wOyYKlQGtss5XZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528575088,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370c70002yI7ns9JTOj20sQ",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370c31001wOyYKlQGtss5XZ",
+    "type": "text",
+    "text": "Nothing is in progress to continue. Tell me the task and I will start it.",
+    "time": {
+      "start": 1789528575088,
+      "end": 1789528575088
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528575088,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "part": {
+    "id": "prt_0a8370c70003hHzuN1x35g6Bgi",
+    "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+    "messageID": "msg_0a8370c31001wOyYKlQGtss5XZ",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 8718,
+      "output": 73,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8791,
+      "headroom": 30065,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.088Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.089Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.089Z",
+  "service": "session.prompt",
+  "step": 6,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.089Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.090Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.090Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.090Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528575090,
+  "sessionID": "ses_f57c90487ffeItGbesIaBHBCA6"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.091Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.091Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.091Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.091Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.mGYapUD81D",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:16:15.091Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+

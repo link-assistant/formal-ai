@@ -191,7 +191,7 @@ fn promotion_materialization_requires_a_clean_git_review_workspace() {
 }
 
 #[test]
-fn promotion_coalesces_same_file_edits_with_separators_and_fails_on_read_errors() {
+fn promotion_coalesces_same_file_edits_under_one_root_and_fails_on_read_errors() {
     let first = passing_proposal();
     let second_lino =
         "substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"second_rule\"";
@@ -208,7 +208,12 @@ fn promotion_coalesces_same_file_edits_with_separators_and_fails_on_read_errors(
     assert_eq!(outcome.applied.len(), 1);
     let materialized = std::fs::read_to_string(workspace.join(LEARNED_PROGRAM_RULES_SEED_FILE))
         .expect("coalesced seed");
-    assert_eq!(materialized, format!("{}\n{second_lino}", first.edit.lino));
+    assert_eq!(
+        materialized,
+        format!("{}\n  rule \"second_rule\"", first.edit.lino),
+        "independently parseable proposals must become one valid destination document"
+    );
+    assert_eq!(materialized.matches("substitution_rules").count(), 1);
     assert_eq!(outcome.applied[0].bytes_written, materialized.len());
 
     let unreadable = tmpdir("seed-read-error");

@@ -2,11 +2,12 @@
 
 use serde_json::json;
 
+use super::capability_router::shell_command_tool;
 use super::general_planner::{
     compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
 };
 use super::planner::{
-    fetch_arguments, plan_one, tool_for, write_arguments, AgenticPlan, Capability,
+    plan_one, tool_for, write_arguments, AgenticPlan, Capability,
 };
 use super::progress::Progress;
 use super::tool_result;
@@ -57,8 +58,8 @@ pub(super) fn plan_general_change_step(
             // message alone (issue #916, rung R916-01).
             if plan.mode != GeneralPlanMode::RepositoryWorkItem
                 && !plan.verification_command.trim().is_empty()
-                && progress.count(Capability::Run) == 0
-                && let Some(run_tool) = tool_for(tool_names, Capability::Run) {
+                && progress.run_count_for(&plan.verification_command) == 0
+                && let Some(run_tool) = shell_command_tool(tool_names) {
                     return plan_one(
                         run_tool,
                         json!({ "command": plan.verification_command }).to_string(),
@@ -73,8 +74,9 @@ pub(super) fn plan_general_change_step(
         // A failed run is reported as the command that failed and the status it
         // exited with, not as an anonymous "run" step (issues #905 and #908).
         if failure.capability == Capability::Run
+            && let Some(output) = progress.latest_run_output_for(&plan.verification_command)
             && let Some(report) = tool_result::failed_verification(
-                &progress.run_outputs,
+                std::slice::from_ref(output),
                 &plan.verification_command,
                 &plan.goal,
             ) {
@@ -118,8 +120,7 @@ pub(super) fn plan_general_change_step(
             if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
                 return step;
             }
-        } else if !progress.attempted_fetch_of(&plan.target)
-            && let Some(step) = plan_work_item_read(tool_names, &plan.target)
+        } else if let Some(step) = plan_work_item_read(tool_names, &plan.target, &progress)
         {
             return step;
         }
@@ -137,16 +138,15 @@ pub(super) fn plan_general_change_step(
             return plan_one(tool, write_arguments(&plan.target, &plan.content));
         }
     }
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        let runs = progress.successful_count(Capability::Run);
+    if let Some(tool) = shell_command_tool(tool_names) {
         match plan.mode {
             GeneralPlanMode::CommandOutput => {
                 if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref())
                 {
-                    if runs == 0 {
+                    if progress.successful_run_count_for(generation) == 0 {
                         return plan_one(tool, json!({ "command": generation }).to_string());
                     }
-                    if runs == 1 {
+                    if progress.successful_run_count_for(&plan.verification_command) == 0 {
                         return plan_one(
                             tool,
                             json!({ "command": plan.verification_command }).to_string(),
@@ -154,7 +154,9 @@ pub(super) fn plan_general_change_step(
                     }
                 }
             }
-            GeneralPlanMode::LiteralFile if runs == 0 => {
+            GeneralPlanMode::LiteralFile
+                if progress.successful_run_count_for(&plan.verification_command) == 0 =>
+            {
                 return plan_one(
                     tool,
                     json!({ "command": plan.verification_command }).to_string(),
@@ -214,23 +216,40 @@ fn plan_work_item_execution(
 
 /// The step that reads the work item, through whichever client tool reaches it.
 ///
-/// The client's own fetch tool comes first. When the only fetch tool on offer
-/// acts in a remote service -- Codex advertising the operator's `ChatGPT` GitHub
-/// connector beside a plain `shell` -- the issue is read through `gh` in the
-/// checkout instead: that answers with the issue's title and body rather than
-/// a connector's `Action completed.` placeholder, and it keeps the read inside
-/// the credential the task was given (issue #1133).
-fn plan_work_item_read(tool_names: &[&str], target: &str) -> Option<AgenticPlan> {
-    let fetch = tool_for(tool_names, Capability::Fetch);
-    if let Some(tool) = fetch
-        && crate::tool_scope::scope_of_tool_name(tool).is_client_workspace()
+/// GitHub's structured CLI read comes first when the client can run it. Unlike
+/// model-backed `WebFetch` tools, it returns source bytes rather than asking a
+/// nested model to interpret the whole solve request. This keeps the read in
+/// the checkout's credential and prevents a fetched issue from being solved
+/// once inside the fetch tool and then misread as issue text by the outer plan.
+///
+/// A client with no run capability falls back to its fetch tool. That call
+/// carries a data-declared extraction instruction rather than the user's solve
+/// request, so required `prompt` fields cannot recursively execute the task.
+fn plan_work_item_read(
+    tool_names: &[&str],
+    target: &str,
+    progress: &Progress,
+) -> Option<AgenticPlan> {
+    if !progress.attempted_work_item_read_of(target)
+        && let Some(run) = shell_command_tool(tool_names)
     {
-        return Some(plan_one(tool, fetch_arguments(target)));
-    }
-    if let Some(run) = tool_for(tool_names, Capability::Run) {
         return Some(plan_one(run, json!({ "command": issue_view_command(target) }).to_string()));
     }
-    fetch.map(|tool| plan_one(tool, fetch_arguments(target)))
+    if !progress.attempted_fetch_of(target)
+        && let Some(tool) = tool_for(tool_names, Capability::Fetch)
+    {
+        return Some(plan_one(tool, work_item_fetch_arguments(target)));
+    }
+    None
+}
+
+fn work_item_fetch_arguments(target: &str) -> String {
+    json!({
+        "url": target,
+        "format": "text",
+        "prompt": super::work_item_steps::fill("issue_fetch_prompt", &[]),
+    })
+    .to_string()
 }
 
 /// The `gh` command that prints a work item as its title followed by its body.
@@ -242,9 +261,10 @@ pub(super) fn issue_view_command(target: &str) -> String {
         Some("pull") => "pr",
         _ => "issue",
     };
+    let quoted_target = super::general_planner::shell_quote(target);
     super::work_item_steps::fill(
         "issue_view_command",
-        &[("{kind}", kind), ("{target}", target)],
+        &[("{kind}", kind), ("{target}", &quoted_target)],
     )
 }
 
@@ -268,19 +288,24 @@ fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> Agent
     }
     // The workspace gets the last word over a completion claim: a verification
     // command that exited non-zero replaces the claim with its own report.
-    if let Some(report) = tool_result::failed_verification(
-        &progress.run_outputs,
-        &plan.verification_command,
-        &plan.goal,
-    ) {
+    if let Some(report) = progress
+        .latest_run_output_for(&plan.verification_command)
+        .and_then(|output| {
+            tool_result::failed_verification(
+                std::slice::from_ref(output),
+                &plan.verification_command,
+                &plan.goal,
+            )
+        })
+    {
         return AgenticPlan::Final(report);
     }
-    if progress.successful_count(Capability::Run) == 0 {
+    if progress.successful_run_count_for(&plan.verification_command) == 0 {
         return AgenticPlan::Final(general_plan_unverified(plan));
     }
     if plan.mode == GeneralPlanMode::LiteralFile {
         let observed = progress
-            .latest_successful_output(Capability::Run)
+            .latest_successful_run_output_for(&plan.verification_command)
             .and_then(tool_result::observed_payload);
         if observed.as_deref().map(str::trim) != Some(plan.content.trim()) {
             return AgenticPlan::Final(general_plan_mismatch(

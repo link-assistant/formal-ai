@@ -114,6 +114,43 @@ pub fn record_meta_core(
         log,
         &crate::reasoning_standard::open_episode(formalization),
     );
+    let obligations = crate::obligation_ledger::ObligationLedger::for_frame(
+        &problem_frame,
+        &formalization.source_text,
+        crate::recursive_execution::DEFAULT_SPLIT_DEPTH_BOUND,
+    );
+    let _executed = crate::obligation_ledger::record_obligation_ledger(
+        log,
+        &problem_frame,
+        &need_ledger,
+        &obligations,
+    );
+}
+
+/// The runtime feedback pass: project a second need ledger from what was
+/// actually observed this turn (#1138 B5, plan 05 leaf 10).
+///
+/// [`record_meta_core`] runs before dispatch, where nothing has been observed
+/// yet, so the ledger it records is honestly all-unattempted. This is the same
+/// recorder called again with the turn's observations already applied — the only
+/// path by which a need row may reach `Satisfied`, and only where an obligation
+/// discharged while carrying an execution record.
+///
+/// Not yet called from `src/solver.rs`: plan 05 leaf 10 asks for the call
+/// "after `meta_method_dispatch`", and `try_dispatch` *returns the answer*
+/// (`src/solver.rs:551-560`), so there is no seam after it that every path
+/// reaches. Wiring one would change the answer path, which this plan is
+/// explicitly forbidden to touch. The surface an observation actually arrives on
+/// is the agentic transcript, which reaches this through
+/// `obligation_ledger::next_step`.
+#[allow(dead_code)]
+pub fn record_meta_core_execution(
+    log: &mut EventLog,
+    frame: &crate::meta_frame::ProblemFrame,
+    planned: &crate::meta_frame::NeedLedger,
+    obligations: &crate::obligation_ledger::ObligationLedger,
+) -> crate::meta_frame::NeedLedger {
+    crate::obligation_ledger::record_obligation_ledger(log, frame, planned, obligations)
 }
 
 /// Apply the meta-core mode environment overrides in place.

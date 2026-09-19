@@ -33,6 +33,27 @@ pub trait SourceTransport: Send + Sync {
     fn get(&self, url: &str) -> Result<Vec<u8>, FetchError>;
 }
 
+/// Marker curl writes the observed HTTP status behind, on stderr.
+///
+/// `%{stderr}` redirects the rest of the `--write-out` template away from the
+/// body, so a status can be read without touching the captured bytes. A curl
+/// too old to understand it simply writes the template literally, the marker
+/// does not parse, and the failure stays a plain transport error — the reader
+/// below never guesses a status it did not see.
+const STATUS_TEMPLATE: &str = "%{stderr}formal_ai_http_status=%{http_code}\n";
+
+/// The status curl reported, when it reported one.
+fn http_status(stderr: &str) -> Option<u16> {
+    stderr
+        .split("formal_ai_http_status=")
+        .nth(1)?
+        .split(|character: char| !character.is_ascii_digit())
+        .find(|field| !field.is_empty())?
+        .parse()
+        .ok()
+        .filter(|status| (100..=599).contains(status))
+}
+
 /// curl-backed transport used by opt-in live retrieval.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CurlSourceTransport;
@@ -53,6 +74,11 @@ impl SourceTransport for CurlSourceTransport {
                 "30",
                 "--user-agent",
                 USER_AGENT,
+                // The status is written to *stderr* so it never mixes with the
+                // captured bytes, and it is what separates "no such page" from
+                // "this service is down".
+                "--write-out",
+                STATUS_TEMPLATE,
                 url,
             ])
             .output()
@@ -63,12 +89,19 @@ impl SourceTransport for CurlSourceTransport {
                     FetchError::Transport(error.to_string())
                 }
             })?;
+        let stderr = String::from_utf8_lossy(&output.stderr);
         if !output.status.success() {
+            if let Some(status) = http_status(&stderr) {
+                return Err(FetchError::HttpStatus {
+                    url: url.to_owned(),
+                    status,
+                });
+            }
             return Err(FetchError::Transport(
                 [
                     "source_transport_curl_exit",
                     &output.status.to_string(),
-                    String::from_utf8_lossy(&output.stderr).trim(),
+                    stderr.trim(),
                 ]
                 .join(":"),
             ));
@@ -84,6 +117,38 @@ pub enum FetchError {
     OfflineCacheMiss(String),
     Transport(String),
     Cache(String),
+    /// The service answered, and what it answered was a refusal for this URL.
+    ///
+    /// Issue #1138 plan 01 L6: `Transport` conflated "this page does not
+    /// exist" with "this service is down", and the accessibility cache treats
+    /// the second as a seven-day fact about the whole service. One Russian
+    /// Wikipedia article that does not exist therefore blanked Wikipedia for
+    /// every language and every subject. A refusal about one URL is now a
+    /// separate kind of failure from a service that could not be reached.
+    HttpStatus {
+        /// The URL the status was observed for.
+        url: String,
+        /// The HTTP status the service answered with.
+        status: u16,
+    },
+}
+
+impl FetchError {
+    /// Whether this failure says something about the *service* rather than
+    /// about the one URL that was requested.
+    ///
+    /// A 404 or a 410 is the service working correctly and saying it has no
+    /// such page; it must never be recorded as the service being unreachable.
+    #[must_use]
+    pub const fn speaks_for_the_service(&self) -> bool {
+        !matches!(
+            self,
+            Self::HttpStatus {
+                status: 404 | 410,
+                ..
+            } | Self::OfflineCacheMiss(_)
+        )
+    }
 }
 
 impl Display for FetchError {
@@ -93,6 +158,9 @@ impl Display for FetchError {
             Self::OfflineCacheMiss(url) => write!(formatter, "no cached capture for {url}"),
             Self::Transport(message) => write!(formatter, "source transport error: {message}"),
             Self::Cache(message) => write!(formatter, "source cache error: {message}"),
+            Self::HttpStatus { url, status } => {
+                write!(formatter, "source answered HTTP {status} for {url}")
+            }
         }
     }
 }
@@ -227,6 +295,75 @@ impl<T: SourceTransport> CachedSourceClient<T> {
         };
         write_capture(&capture, &cache_root, &metadata_path)?;
         Ok(capture)
+    }
+
+    /// `fetch`, plus the one question the plain read path could not ask: was
+    /// this payload *forgotten* under a `rediscover:` edge, and can it be
+    /// brought back (issue #1138 B7, plan 07 leaf 15, R710-R7)?
+    ///
+    /// A cache miss is exactly where a forgotten payload is next needed, so
+    /// recovery belongs in the read path rather than in a maintenance command
+    /// somebody has to remember to run. The reconstruction names the content
+    /// address the edge was authorized to reacquire; this method then looks for
+    /// that object in the content-addressed store, because a forgotten *event*
+    /// does not mean a forgotten *object*. When the object is not there the
+    /// original miss is returned unchanged — the reconstruction never invents a
+    /// payload out of a fingerprint.
+    ///
+    /// # Errors
+    /// Returns the underlying fetch failure when the miss could not be
+    /// recovered, or the reconstruction's own refusal when the edge declined.
+    pub fn fetch_with_reconstruction(
+        &self,
+        url: &str,
+        tool: &str,
+        events: &[crate::memory::MemoryEvent],
+    ) -> Result<SourceCapture, FetchError> {
+        let miss = match self.fetch(url) {
+            Ok(capture) => return Ok(capture),
+            Err(error) => error,
+        };
+        let Some(outcome) =
+            crate::source_reconstruction::reconstruct_on_miss(events, tool, !self.online)
+        else {
+            return Err(miss);
+        };
+        match outcome {
+            crate::source_reconstruction::ReconstructionOutcome::Recovered { record } => {
+                let (cache_root, _) = self.paths(url);
+                let path = content_path(&cache_root, &record.observed_output_sha256);
+                let Ok(bytes) = fs::read(&path) else {
+                    return Err(miss);
+                };
+                // The object is only a recovery if it still hashes to the
+                // address the edge named; anything else is a different payload
+                // wearing its name.
+                let observed = sha256_hex(&bytes);
+                if observed != record.observed_output_sha256 {
+                    return Err(FetchError::Cache(format!(
+                        "reconstruction_object_diverged:{observed}"
+                    )));
+                }
+                Ok(SourceCapture {
+                    source_url: url.to_owned(),
+                    fetched_at: format_timestamp((self.now)()),
+                    sha256: observed,
+                    cached: true,
+                    bytes,
+                })
+            }
+            // R710-R7: today's bytes never replace historical evidence. The
+            // divergence is reported and the stub is left exactly as it was.
+            crate::source_reconstruction::ReconstructionOutcome::Diverged {
+                retained_sha256,
+                observed_sha256,
+            } => Err(FetchError::Cache(format!(
+                "reconstruction_diverged:{retained_sha256}:{observed_sha256}"
+            ))),
+            crate::source_reconstruction::ReconstructionOutcome::Unavailable { reason } => {
+                Err(FetchError::Cache(reason))
+            }
+        }
     }
 
     fn paths(&self, url: &str) -> (PathBuf, PathBuf) {

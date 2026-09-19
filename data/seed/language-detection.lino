@@ -33,7 +33,7 @@ language_detection
     script Latin
     start 0x00C0
     end 0x00FF
-    markers ("¿" "¡" "ñ" "qué" "cómo" "quién" "dónde" "cuándo" "cuál" "hola" "gracias" "por favor" "dame un ejemplo" "ejecuta" "escribe" "responde" "pruebas" "función")
+    markers ("¿" "¡" "ñ" "qué" "cómo" "quién" "dónde" "cuándo" "cuál" "hola" "gracias" "por favor" "dame un ejemplo" "ejecuta" "escribe" "responde" "formaliza" "requisito" "debe" "pruebas" "función")
     note "Spanish shares the Latin script with the fallback language, so its range cannot decide a prompt on its own — the markers below carry the vote and the range only widens the Latin count to the accented letters. Registered as seed data only (issue #706): no Rust edit was needed to add the fifth language."
   rule rule_english
     language en

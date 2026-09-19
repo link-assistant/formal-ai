@@ -187,31 +187,6 @@ const SYNTHESIS_NUMBER_WORDS = new Map([
   ["twenty", 20],
 ]);
 
-const SYNTHESIS_OBJECT_CATEGORIES = new Map([
-  [
-    "musical instrument",
-    new Set([
-      "clarinet",
-      "flute",
-      "guitar",
-      "harmonica",
-      "piano",
-      "saxophone",
-      "trumpet",
-      "violin",
-      "drum",
-    ]),
-  ],
-  ["fruit", new Set(["apple", "banana", "orange", "pear", "grape"])],
-  ["vegetable", new Set(["carrot", "onion", "potato", "tomato", "pepper"])],
-  ["animal", new Set(["cat", "dog", "horse", "cow", "bird"])],
-  ["vehicle", new Set(["car", "truck", "bus", "bicycle", "train"])],
-  ["tool", new Set(["hammer", "saw", "wrench", "screwdriver", "drill"])],
-  ["utensil", new Set(["spoon", "fork", "knife", "ladle"])],
-  ["furniture", new Set(["chair", "table", "sofa", "desk", "bed"])],
-  ["clothing", new Set(["shirt", "coat", "hat", "shoe", "dress"])],
-]);
-
 function synthesisStableId(prefix, value) {
   const wasmId = wasmStableId(prefix, value);
   if (wasmId) return wasmId;
@@ -425,84 +400,12 @@ function composeRemainderSale(prompt, subResults) {
   }
 }
 
-function singularizeSynthesisToken(token) {
-  if (token.length > 4 && token.endsWith("ies")) return `${token.slice(0, -3)}y`;
-  if (token.length > 3 && token.endsWith("s") && !token.endsWith("ss")) {
-    return token.slice(0, -1);
-  }
-  return token;
-}
-
-function normalizeCountPhrase(value) {
-  return String(value || "")
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter(Boolean)
-    .filter((token) => !["a", "an", "the", "of"].includes(token))
-    .map(singularizeSynthesisToken)
-    .join(" ");
-}
-
-function cleanCountedItem(raw) {
-  return String(raw || "")
-    .trim()
-    .replace(/^[\s.,:;!?]+|[\s.,:;!?]+$/g, "")
-    .replace(/^(?:a|an|the|one)\s+/i, "")
-    .trim();
-}
-
-function extractCountedItems(prompt) {
-  const match = String(prompt || "").match(/\bi\s+have\s+(.+?)\.\s*how\s+many\b/i);
-  const segment = match ? match[1] : "";
-  if (!segment) return [];
-  return segment
-    .replace(/\s+and\s+/gi, ", ")
-    .split(",")
-    .map(cleanCountedItem)
-    .filter(Boolean);
-}
-
-function extractRequestedCountCategory(prompt) {
-  const match = String(prompt || "").match(
-    /\bhow\s+many\s+(.+?)(?:\s+do\s+i\s+have|\s+are\s+there|[?.!]|$)/i,
-  );
-  return match ? normalizeCountPhrase(match[1]) : "";
-}
-
-function composeObjectCount(prompt, subResults) {
-  const items = extractCountedItems(prompt);
-  if (items.length === 0) return null;
-  const category = extractRequestedCountCategory(prompt);
-  const accepted = SYNTHESIS_OBJECT_CATEGORIES.get(category);
-  if (!accepted) return null;
-  const matched = items.filter((item) => accepted.has(normalizeCountPhrase(item)));
-  if (matched.length === 0) return null;
-  const categoryLabel = category.endsWith("s") ? category : `${category}s`;
-  return {
-    intent: "object_counting",
-    content:
-      `Matching ${categoryLabel} in the list gives ${matched.join(", ")}. ` +
-      `Count: ${matched.length}.`,
-    confidence: 1.0,
-    evidence: [
-      ...subResultEvidence(subResults),
-      `composition:category:category=${categoryLabel} items=${items.join("|")}`,
-      `composition:count:matched=${matched.join("|")} count=${matched.length}`,
-    ],
-    trace: [
-      `composition:category:category=${categoryLabel}`,
-      `composition:count:matched=${matched.join("|")} count=${matched.length}`,
-    ],
-  };
-}
-
 function tryLinkNativeSynthesis(prompt) {
   const subResults = synthesisSubResults(prompt);
   if (subResults.length === 0) return null;
   return (
     composeAlgebraSubstitution(prompt, subResults) ||
-    composeRemainderSale(prompt, subResults) ||
-    composeObjectCount(prompt, subResults)
+    composeRemainderSale(prompt, subResults)
   );
 }
 

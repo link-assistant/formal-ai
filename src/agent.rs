@@ -647,6 +647,18 @@ fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
         "env" => &["/usr/bin/env", "/bin/env"],
         "python3" => &["/usr/bin/python3", "/bin/python3", "/usr/local/bin/python3"],
         "rustc" => &[],
+        // Issue #1138 plan 03 leaf L3: the default-deny arm survives verbatim,
+        // and the only way past it is a row in
+        // `data/seed/repository-command-allowlist.lino`. Widening the set is a
+        // reviewable data edit rather than an edit to this list, and a program
+        // with no row is refused exactly as it is today.
+        other
+            if crate::repository_workspace::command_allowlist()
+                .iter()
+                .any(|row| row.program == other) =>
+        {
+            &[]
+        }
         other => return Err(AgentError::UnsupportedCommand(other.to_owned())),
     };
     candidates

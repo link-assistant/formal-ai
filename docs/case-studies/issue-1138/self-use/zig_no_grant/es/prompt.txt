@@ -1,0 +1,1 @@
+Escribe un programa en Zig que imprima la suma de los números del uno al diez, luego compílalo y ejecútalo realmente aquí y muéstrame la salida real.

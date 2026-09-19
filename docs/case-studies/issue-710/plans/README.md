@@ -44,19 +44,19 @@ The Meta Algorithm").
 
 ## How to resume
 
-Current work is [Plan 06: repository task generalization and durable memory](06-repository-task-generalization.md).
-The baseline CI is green, but the three real repository tasks contradict a
-claim of complete vision coverage. Resume Plan 06's unchecked leaves, with
-tests before implementation and regular Formal AI / Agent CLI experiments.
+PR #888 merged on 2026-09-16 as `be8fd3174`. Issue #710 remains open; plans 06
+and 07 carry its unfinished leaves and are now worked on `main` (restated as
+issue #1138 B3 and B6). Resume Plan 06's unchecked leaves, with tests before
+implementation and regular Formal AI / Agent CLI experiments.
 
 ```bash
-# The PR branch is checked out in a worktree of the main clone.
-cd /tmp/wt888                      # branch merge-888-into-main → origin/issue-710-14da90b08a12
-git status --short                 # inspect and preserve unfinished/unrelated work
-df -h /private/tmp                # check space before building
-export RUSTUP_TOOLCHAIN=1.98.1     # the crate needs 1.98; the local default is older
+# Work happens on main now; the plan 06 baseline commit is history.
+cd /path/to/formal-ai               # your clone, on a branch off main
+git status --short                  # inspect and preserve unfinished/unrelated work
+df -h /private/tmp                  # check space before building
+export RUSTUP_TOOLCHAIN=1.98.1      # the crate needs 1.98; the local default is older
 export LINDERA_DICTIONARIES_PATH=/tmp/formal-ai-lindera-cache
-export CARGO_TARGET_DIR=/Users/konard/Code/Archive/link-assistant/formal-ai/target
+export CARGO_TARGET_DIR=/tmp/formal-ai-target
 
 # Cheap gates first (no crate build), then the rust stage.
 rust-script scripts/check-hardcoded-language.rs
@@ -80,11 +80,11 @@ wrote it.
 
 | # | Plan | Closes / delivers | Status |
 | --- | --- | --- | --- |
-| 00 | [PR #888 CI recovery](00-pr-888-ci-recovery.md) | the three red checks on `cde14085d`: web bundle drift, the E2E slowdown, the two commits without `Formal-AI-Model` | append-only retraction and local evidence check complete; CI confirmation pending |
+| 00 | [PR #888 CI recovery](00-pr-888-ci-recovery.md) | the three red checks on `cde14085d`: web bundle drift, the E2E slowdown, the two commits without `Formal-AI-Model` | merged in PR #888 (2026-09-16) |
 | 01 | [Requirements audit: coding and benchmarks](01-requirements-audit-coding-and-benchmarks.md) | every coding/benchmark requirement from #1–#1137 classified done / partial / not done with evidence, and what this PR does about each | implemented and re-verified |
 | 02 | [Dynamic discovery design](02-dynamic-discovery-design.md) | the meta algorithm applied to a coding task: understand each word, search trusted sources for ready parts, reconstruct the algorithm, verify, remember, forget and rediscover | implemented |
-| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L15 complete; local gates green; CI confirmation pending |
-| 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | local implementation and release proof complete; final-head CI observation pending |
+| 03 | [Implementation leaves](03-implementation-leaves.md) | the ordered, individually verifiable leaves that deliver plan 02 and the audit's not-done rows inside PR #888 | L1-L15 complete; merged in PR #888 (2026-09-16) |
+| 04 | [Final requirements, release proof, and Formal AI self-improvement](04-final-requirements-release-and-self-improvement.md) | reopens every claim contradicted by final CI, grows generalized coding capability from benchmark failure classes, runs additional branch-Formal-AI tasks, refreshes requirements, and proves the merge-to-release path | merged in PR #888 (2026-09-16) |
 | 05 | [Benchmark capability generalization](05-benchmark-capability-generalization.md) | reusable composition across the first-20 Python benchmark slices | implemented; finite slice evidence only |
 | 06 | [Repository task generalization and durable memory](06-repository-task-generalization.md) | actual issue requirements, complete projects, recursive prerequisite discovery, preserved personal memory, and stronger Formal AI self-use | active; plan first, tests second, implementation third |
 | 07 | [Prerequisite discovery bridge](07-prerequisite-discovery-bridge.md) | failure-driven setup discovery, dependency checks and honest completion shared across toolchains | active subplan of 06; operand preservation, retry evidence and authorship floor verified; automatic setup discovery open |
@@ -279,3 +279,31 @@ wrote it.
   ShellCheck, Actionlint, formatting, and diff hygiene are also clean. The
   shared Cargo target stayed bounded at 9.8 GiB and host free space remained 25
   GiB; no Docker state or local release package was created.
+
+
+## Closing log -- 2026-09-18
+
+Written when these plans were reconciled with the merged tree, after PR #888
+merged on 2026-09-16 as `be8fd3174`. The dated entries above record their own
+moment and are left untouched; where a count has moved since, the ledger that
+owns it is the authority, not the entry:
+
+- Hardcoded-language rows: owned by `data/meta/debt-ratchet.lino`
+  (`hardcoded_language_rows`, shrink-only, checked by
+  `scripts/check-debt-ratchet.rs`). The 1,278-to-1,274 line above spoke for
+  2026-09-15 only.
+- Outside-core sources and lines: owned by `data/meta/core-boundary-ledger.lino`
+  (checked by `scripts/check-minimal-core-boundary.rs`). The 18,854-to-18,469
+  line above spoke for its own date; the ledger has moved several times since
+  under issue #1138 B9 and plan 09.
+- Requirement-shard count: 123 shards under `docs/requirements/` at the time of
+  this log (124 markdown files including the folder README), up from the 106
+  the 2026-09-14 audit assembled and the 110 that plan 07 recorded -- every
+  new issue shard lands as a file, so the assembled count is read, never
+  quoted from memory.
+- The all-features unit-test count moves with every merged commit; the dated
+  entries above (3,501 on 2026-09-15, 3,542 in plan 07) each speak for their
+  own day.
+
+Plans 06 and 07 stay active on `main` under issue #710, restated as issue
+#1138 B3 and B6; their headers name those trackers.

@@ -1,0 +1,1 @@
+Ejecuta esto y dime exactamente qué imprime: print(sum(range(1, 11)))

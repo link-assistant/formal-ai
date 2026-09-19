@@ -2,32 +2,36 @@ self_ast_census
   target src/external_benchmarks/grade.rs
   language rust
   fidelity signature
-  byte_len 19785
-  line_count 600
-  content_id source_module_aab65c2a4415b64f
-  symbol_count 24
+  byte_len 23856
+  line_count 696
+  content_id source_module_0dd314c02385d41f
+  symbol_count 28
   symbols
-    const PYTHON_TIMEOUT_SECONDS 20 20
-    struct CaseOutcome 24 32
-    function grade_case 36 43
-    function grade_case_with_trace 47 96
-    function grade_proof_status 98 114
-    function structured_trace_has_event 116 136
-    function grade_value 138 163
-    function grade_swebench 172 322
-    function fnv1a64 324 331
-    function ensure_swebench_runtime 333 362
-    function outcomes_from_swebench_report 364 416
-    function extract_diff 421 426
-    function failure 428 435
-    function python_available 439 444
-    function run_python 446 479
-    function extract_python 484 489
-    function fenced_block 491 499
-    function final_number 504 522
-    function normalize_number 524 541
-    function final_answer 546 557
-    function last_boxed 559 577
-    function normalize 581 590
-    function truncate 592 600
-    const LIMIT 593 593
+    const PYTHON_TIMEOUT_SECONDS 27 27
+    struct CaseOutcome 31 39
+    function grade_case 43 50
+    function grade_case_with_trace 54 103
+    function grade_proof_status 105 121
+    function structured_trace_has_event 123 143
+    function grade_value 145 170
+    function grade_swebench 179 185
+    function grade_swebench_with_install 190 345
+    function fnv1a64 347 354
+    function inspect_swebench_runtime 356 368
+    function recover_swebench_harness 370 407
+    function swebench_harness_install_grant 412 426
+    function ensure_swebench_runtime 428 458
+    function outcomes_from_swebench_report 460 512
+    function extract_diff 517 522
+    function failure 524 531
+    function python_available 535 540
+    function run_python 542 575
+    function extract_python 580 585
+    function fenced_block 587 595
+    function final_number 600 618
+    function normalize_number 620 637
+    function final_answer 642 653
+    function last_boxed 655 673
+    function normalize 677 686
+    function truncate 688 696
+    const LIMIT 689 689

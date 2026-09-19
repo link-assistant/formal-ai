@@ -153,7 +153,7 @@ fn every_accepted_step_carries_exact_provenance_within_declared_bounds() {
         assert!(step.depth <= guide.bounds.max_depth, "depth bound holds");
     }
     assert!(
-        guide.steps.len() <= guide.bounds.max_steps,
+        guide.steps.len() <= guide.bounds.max_items,
         "step bound holds"
     );
     for outcome in &guide.outcomes {

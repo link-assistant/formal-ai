@@ -1,0 +1,31 @@
+self_ast_census
+  target src/verifiable_task.rs
+  language rust
+  fidelity signature
+  byte_len 17688
+  line_count 494
+  content_id source_module_58c18fbcbeaa8159
+  symbol_count 22
+  symbols
+    module ledger 14 14
+    module quantities 15 15
+    enum TaskExpectation 32 65
+    function to_obligation_expectation 72 79
+    function slug 83 93
+    enum AnswerShape 98 107
+    struct VerifiableTask 111 126
+    function identity_payload 135 162
+    function identity 167 169
+    function to_links_notation 173 205
+    function render 209 241
+    function recognise_verifiable 250 348
+    function answer_shape_slug 350 357
+    function slot_capture_for_role 359 368
+    function capture_slot 370 389
+    function clean_capture 391 401
+    function split_requirements 403 410
+    function seeded_membership_sources 415 432
+    function normalized_category 434 442
+    function seeded_meaning_for_surface 444 465
+    function seeded_is_a 467 480
+    function grounding_url 482 494

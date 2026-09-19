@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Q6554101": {
+      "type": "item",
+      "id": "Q6554101",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "medical device"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "медицинский прибор"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "medical safety of eqiptment"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "醫療器材"
+        },
+        "es": {
+          "language": "es",
+          "value": "producto sanitario"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "any device intended to be used for medical purposes"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "專業工具類型"
+        },
+        "es": {
+          "language": "es",
+          "value": "producto utilizado en el entorno médico-sanitario"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "medical equipment"
+          },
+          {
+            "language": "en",
+            "value": "medical instrument"
+          },
+          {
+            "language": "en",
+            "value": "medical instrumentation"
+          },
+          {
+            "language": "en",
+            "value": "biomedical instrument"
+          },
+          {
+            "language": "en",
+            "value": "biomedical equipment"
+          },
+          {
+            "language": "en",
+            "value": "biomedical device"
+          },
+          {
+            "language": "en",
+            "value": "Medical Instruments"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "медицинские приборы"
+          },
+          {
+            "language": "ru",
+            "value": "медицинский инструмент"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "医疗器械"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "productos sanitarios"
+          },
+          {
+            "language": "es",
+            "value": "tecnologías sanitarias"
+          },
+          {
+            "language": "es",
+            "value": "dispositivo médico"
+          },
+          {
+            "language": "es",
+            "value": "instrumento médico"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,1853 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.284Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.285Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.285Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.285Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.298Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.298Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.299Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.300Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.300Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.303Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.304Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.306Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 7991,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.306Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.322Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 28,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.327Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T02:59:26.328Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.332Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.332Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.333Z",
+  "service": "session",
+  "id": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD",
+  "title": "New session - 2026-09-16T02:59:26.333Z",
+  "time": {
+    "created": 1789527566333,
+    "updated": 1789527566333
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.333Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.333Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.333Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.334Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57d85802ffeOQcZ774KFqVZ00/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.334Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57d85802ffeOQcZ774KFqVZ00/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.336Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57d85802ffeOQcZ774KFqVZ00/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.340Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.341Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.342Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.342Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.343Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.343Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.343Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.343Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.343Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.343Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.343Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.508Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.512Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.512Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.521Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.526Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.534Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.534Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:26.535Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:27.057Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527567057,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827aacd001gDpYCqbqSWdF6O",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827a8af00172lt860K5t2NGu",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:27.058Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:27.059Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527567059,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827aad2001tC5E34BQB8CC1N",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827a8af00172lt860K5t2NGu",
+    "type": "tool",
+    "callID": "call_b37e8f4b271bd632",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:27.059Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527567059,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827aad1001jh5mT7QOBm7zHS",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827a8af00172lt860K5t2NGu",
+    "type": "text",
+    "text": "मैं इंटरनेट पर एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं खोजता हूँ।",
+    "time": {
+      "start": 1789527567059,
+      "end": 1789527567059
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:27.059Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527567059,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827aad2001tC5E34BQB8CC1N",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827a8af00172lt860K5t2NGu",
+    "type": "tool",
+    "callID": "call_b37e8f4b271bd632",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं"
+      },
+      "time": {
+        "start": 1789527567059
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.800Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527569801,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827aad2001tC5E34BQB8CC1N",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827a8af00172lt860K5t2NGu",
+    "type": "tool",
+    "callID": "call_b37e8f4b271bd632",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं"
+      },
+      "output": "Title: Question ID - 56594 | SaraNextGen Verified Answers\nURL: https://www.saranextgen.com/homeworkhelp/doubts.php?id=56594\nPublished: 2024-05-15T00:00:00.000Z\nAuthor: SaraNextGen\nHighlights:\n# Question ID - 56594 | SaraNextGen Top Answer A bakery opened with its daily supply of 40 dozen rolls. Half of the rolls were sold by noon and 60% of the remaining rolls were sold between noon and closing time. How many dozen rolls were left unsold? (a)6(b)8(c)10(d)12\n...\nAnswer Key / Explanation : (d) -\n...\nNumber of rolls sold by noon = of 40 dozen = 20 dozen.\n...\nNumber of rolls sold between noon and losing time = 60% of 20 dozen\n...\n= dozen = 12 dozen.\n\n---\n\nTitle: A bakery opened with its daily supply of 40 dozen rolls.Half of the rolls were sold by noon,and 60% of the remaining rolls were sold between noon and closing time.How many dozen rolls were left unsold?\nURL: https://questions.collegedunia.com/exams/questions/a-bakery-opened-with-its-daily-supply-of-40-dozen-66a0a016f6d8f34e834cca82\nPublished: 2024-07-24T06:33:03.000Z\nAuthor: N/A\nHighlights:\nA bakery opened with its daily supply of 40 dozen rolls.Half of the rolls were sold by noon,and 60% of the remaining rolls were sold between noon and closing time.How many dozen rolls were left unsold?\n...\n# A bakery opened with its daily supply of 40 dozen rolls. Half of the rolls were sold by noon, and 60% of the remaining rolls were sold between noon and closing time. How many dozen rolls were left unsold?\n...\n## The Correct Option is\n...\nThe problem involves calculating the number of unsold rolls after a series of sales. Initially, the bakery starts with 40 dozen rolls. First, half of these rolls are sold by noon.\n...\n1. Calculate half of the initial supply: \\( \\frac{40}{2} = 20 \\) dozen rolls are sold by noon.\n...\n2. Determine the remaining rolls after the noon sale: The initial 40 dozen minus the 20 dozen sold equals 20 dozen remaining.\n...\n3. Between noon and closing, 60% of the remaining 20 dozen rolls are sold:\n...\n\\( 60\\% \\times 20= \\frac{60}{100} \\times 20 = 12 \\) dozen rolls.\n...\n4. Calculate the rolls left unsold by subtracting those sold in the afternoon from the remaining rolls after noon:\n...\n\\( 20 - 12 = 8 \\) dozen rolls unsold.\n...\nThe correct answer is 8 dozen rolls left unsold.\n\n---\n\nTitle: A bakery opened yesterday with its daily supply of 40 dozen rolls. Half of the… - Tcs Live Preparation - Knowledge Gate AI\nURL: https://www.knowledgegate.ai/learn/TCS-LIVE-PREPARATION/numerical-ability-foundation-section/percentage/successive-percentage-change/pyq-questions?q=6960888d59af169a7037bf9a\nPublished: N/A\nAuthor: N/A\nHighlights:\nA bakery opened yesterday with its daily supply of 40 dozen rolls. Half of the rolls were sold by noon and 80 % of the remaining rolls were sold between noon and closing time. How many dozen rolls had not been sold when the bakery closed yesterday?\n...\nCorrect answer: C\n...\nStep 1: Start with 40 dozen rolls. Half were sold by noon, so the remaining amount is 40 ÷ 2 = 20 dozen.\n...\nStep 2: After noon, 80% of the remaining 20 dozen were sold: 0.8 × 20 = 16 dozen sold after noon.\n...\nStep 3: Unsold when the bakery closed = remaining after noon − sold after noon = 20 − 16 = 4 dozen.\n...\nAnswer: 4 dozen rolls were not sold when the bakery closed.\n\n---\n\nTitle: A bakery opened yesterday with its daily supply of 40 dozen rolls. Half of the rolls were sold by noon, and 80% of the remaining rolls were sold between noon and closing time. How many dozen rolls had been sold when the bakery closed yesterday? - Bissoy\nURL: https://www.bissoy.com/mcq/31766\nPublished: 2023-05-26T21:21:13.000Z\nAuthor: Bissoy\nHighlights:\nA bakery opened yesterday with its daily supply of 40 dozen rolls. Half of the rolls were sold by noon, and 80% of the remaining rolls were sold between noon and closing time. How many dozen rolls had been sold when the bakery closed yesterday? - Bissoy\n...\n# A bakery opened yesterday with its daily supply of 40 dozen rolls. Half of the rolls were sold by noon, and 80% of the remaining rolls were sold between noon and closing time. How many dozen rolls had been sold when the bakery closed yesterday?\n...\nCorrect Answer: 4 dozen\n\n Sold by noon = 40 2 = 20   d o z e n   r o l l s 80% of remaining = 20 × 80 % = 16   d o z e n   r o l l s sold between noon & closing time &#x2234; After closing 20 - 16   d o z e n = 4   d o z e n   r o l l s   a r e   u n s o l d. \n\nBissoy MCQ\n...\n27\n...\n2023\n\n---\n\nTitle: [Solved] यदि बेकरी D में बिना बिके केकों का 50% एक चैरिटी क\nURL: https://testbook.com/question-answer/hn/if-50-of-the-unsold-cakes-in-bakery-d-were-donate--686f5efd5eaf326607c68a95\nPublished: 2026-08-19T00:00:00.000Z\nAuthor: N/A\nHighlights:\nचार अलग-\n...\nबेकरियों,\n...\nA, B,\n...\nऔर D में बेक किए गए केक (बिका + नहीं बिका) की संख्या दर्शाते हैं, और बेक किए गए कुल केक में से बेचे गए केक की\n...\nते हैं।\n...\n# यदि बेकरी D में बिना बिके केकों का 50% एक चैरिटी को दान कर दिया गया और बेकरी B में बिके केकों का 25% गुणवत्ता संबंधी समस्याओं के कारण वापस कर दिया गया, तो बेकरी D से दान किए गए केकों की संख्या और बेकरी B से वापस किए गए केकों की संख्या में कितना अंतर है?\n...\nसूत्र का प्रयोग करते हैं: बेचे गए केक = कुल बेक्ड केक × (बेचे गए केक का प्रतिशत / 100) न बिके केक = कुल बेक्ड केक − बेचे गए केक\n...\n| बेकरी | कुल बेक्ड केक | बिका हुआ केक का % | बेचे गए केक | नहीं बिके केक |\n| --- | --- | --- | --- | --- |\n| A | 320 | 65% | 320 × 65 ÷ 100 = 208 | 320 − 208 = 112 |\n| B | 520 | 40% | 520 × 40 ÷ 100 = 208 | 520 − 208 = 312 |\n| C | 240 | 45% | 240 × 45 ÷ 100 = 108 | 240 − 108 = 132 |\n| D | 480 | 60% | 480 × 60 ÷ 100 = 288 | 480 − 288 = 192 |\n...\nबेकरी D: बिना बिके केक = 192 दान किए गए केक = 192 का 50% = 192 × 0.5 = 96\n...\nबेकरी B: बिके केक = 208 वापस किए गए केक = 208 का 25% = 208 × 0.25 = 52\n...\nअभीष्ट अंतर = 96 − 52 = 44\n...\nइस प्रकार,\n...\nउत्तर 44है।\n\n---\n\nTitle: एक बेकरी को एक ही अवधि के दौरान 810 केक और एक अन्य को 900 केक बनाने हैं। ..\nURL: https://askfilo.com/user-question-answers-smart-solutions/ek-bekrii-ko-ek-hii-avdhi-ke-dauraan-810-kek-aur-ek-any-ko-3430383032373932\nPublished: 2025-10-17T03:30:45.000Z\nAuthor: N/A\nHighlights:\n# एक बेकरी को एक ही अवधि के दौरान 810 केक और एक अन्य को 900 केक बनाने हैं। पहली बेकरी में, ऑर्डर 3 दिन पहले तैयार था, जबकि दूसरी बेकरी में 6 दिन पहले तैयार था। प्रत्येक बेकरी ने एक दिन में कितने केक बनाए यदि दूसरी बेकरी ने पहली की तुलना में एक दिन में 21 केक अधिक बनाये? A. 54 and 75 B. 27 and 48 C. 45 and 66 D. 04 and 25\n...\nदोनों बेकरी को एक ही अवधि में केक बनाने हैं। पहली बेकरी ने 3 दिन पहले और दूसरी ने 6 दिन पहले ऑर्डर पूरा किया। इसका मतलब दूसरी बेकरी ने पहली बेकरी से 3 दिन कम में काम पूरा किया। दूसरी बेकरी एक दिन में 21 केक अधिक बनाती है।\n...\nपहली बेकरी ने कुल 810 केक बनाए। तो, पहली बेकरी को लगे दिन =\n...\nदूसरी बेकरी ने कुल 900 केक बनाए। तो, दूसरी बेकरी को लगे दिन =\n...\nपहली बेकरी एक दिन में 54 केक बनाती है और दूसरी बेकरी एक दिन में 75 केक बनाती है।\n...\nOne Bakery has to make 810 cakes and another one 900 cakes during the same\n...\nof time. In\n...\nfirst bakery, the order was ready 3 days in advance, whereas in the second bakery\n...\nbakery make a day if the second bakery made\n...\n1 cakes more a day than the first\n...\nकरी को एक ही अवधि के दौरान 810\n...\nऔर एक अन्य को 90\n...\nबनाने हैं। पहली बेकरी में,\n...\n3 दिन पहले तैयार था, जबकि दूसरी बेकरी में 6 दिन पहले तैयार था। प्रत्येक बेकरी ने\n...\nदिन में कितने केक बनाए यदि दूसरी बेकरी ने पहली की तुलना में\n...\nदिन में\n...\nकेक अधिक बनाये? A. 54 and 75 B.\n...\n7 and 48 C. 45 and 66 D. 04 and 25\n\n---\n\nTitle: एक बेकरी चार ग्राहकों \\mathrm { A } , \\mathrm { B } , \\mathrm { C } और D ..\nURL: https://askfilo.com/user-question-answers-smart-solutions/ek-bekrii-caar-graahkon-aur-d-ko-ke-anupaat-men-90-kilo-3333343536343930\nPublished: 2026-02-08T09:03:49.000Z\nAuthor: N/A\nHighlights:\n# एक बेकरी चार ग्राहकों और D को के अनुपात में 90 किलो मिठाई वितरित करती है। अगर C का हिस्सा D के हिस्से से 15 किलो अधिक है तो B और D के हिस्सों में क्या अनुपात है? (a) (b) (c) (d)\n...\nयह प्रश्न अनुपात और भागों के वितरण से संबंधित है। हमें A, B, C और D के हिस्सों का अनुपात दिया गया है और हमें B और D के हिस्सों का अनुपात निकालना है।\n...\nहम जानते हैं कि C का हिस्सा D के हिस्से से 15 किलो अधिक है। पहले हम A, B, C और D के हिस्सों को एक समान मान में व्यक्त करेंगे।\n...\nमान लेते हैं कि B का हिस्सा x है। तो, A, B, C और D के हिस्से इस प्रकार होंगे:\n...\n- A = 4k\n- B = x\n- C = 6k\n- D = 3k\n...\nकुल मिठाई का वजन 90 किलो है:\n...\nहमें यह भी दिया गया है कि C का हिस्सा D के हिस्से से 15 किलो अधिक है:\n...\nअब k का मान ज्ञात होने पर, हम A, B, C और D के हिस्से निकाल सकते हैं:\n...\n- A = 4k = 4 * 5 = 20 किलो\n- B = x (हमें अभी ज्ञात करना है)\n- C = 6k = 6 * 5 = 30 किलो\n- D = 3k = 3 * 5 = 15 किलो\n...\nअब हम कुल हिस्से का उपयोग करके B का हिस्सा निकालते हैं:\n...\nअब हमें B और D के हिस्सों का अनुपात निकालना है:\n...\nB और D के हिस्सों का अनुपात है 5 : 3।\n...\nएक बेकरी चार ग्राहकों A,B,C\\mathrm { A } , \\mathrm { B } , \\mathrm { C } और D को 4:b:6:34 : \\mathrm { b } : 6 : 3 के अनुपात में 90 किलो मिठाई वितरित करती है। अगर C का हिस्सा D के हिस्से से 15 किलो अधिक है तो B और D के हिस्सों में क्या अनुपात है? (a) 5:65 : 6 (b) 5:35 : 3 (c) 3:53 : 5 (d) 5:45 : 4\n\n---\n\nTitle: एक दुकानदार के पास निश्चित संख्या में अंडे हैं, जिनमें से 5 \\% टटे हुए पा..\nURL: https://askfilo.com/user-question-answers-smart-solutions/ek-dukaandaar-ke-paas-nishcit-snkhyaa-men-andde-hain-jinmen-3233373535373933\nPublished: 2025-02-12T00:00:00.000Z\nAuthor: N/A\nHighlights:\n# एक दुकानदार के पास निश्चित संख्या में अंडे हैं, जिनमें से 5% टटे हुए पाए जाते हैं। वह शेष 93% बेच देता है और उसके पास अभी भी 266 अंडे बचे रहते हैं। उसके पास मूल रूप से कितने अंडे थे? (a) 3,800 (b) 4,000 (c) 4,200 (d) 4,800\n...\nमान लें कि दुकानदार के पास मूल रूप से x अंडे हैं। टटे हुए अंडों की संख्या 5% है, इसलिए टटे हुए अंडों की संख्या 0.05 x होगी। शेष अंडे x− 0.05 x= 0.95 x हैं। दुकानदार ने शेष अंडों का 93% बेचा, इसलिए बेचे गए अंडों की संख्या 0.93× 0.95 x= 0.8835 x होगी। अब उसके पास बचे अंडों की संख्या 0.95 x− 0.8835 x= 0.0665 x होगी। हमें पता है कि उसके पास अभी भी 266 अंडे बचे हैं। इसलिए, हम निम्नलिखित समीकरण बना सकते हैं: 0.0665 x= 266। इसे हल करने पर हमें x का मान मिलेगा।\n...\nबचे अंडों की संख्या 0.95 x− 0.8835 x= 0.0665 x है। इसे 0.0665 x= 266 के रूप में लिखें और x का मान निकालें।\n...\n4000\n...\nएक दुकानदार के पास निश्चित संख्या में अंडे हैं, जिनमें से 5% टटे हुए पाए जाते हैं। वह शेष 93% बेच देता है और उसके पास अभी भी 266 अंडे बचे रहते हैं। उसके पास मूल रूप से कितने अंडे थे? (a) 3,800 (b) 4,000 (c) 4,200\n...\nd) 4,800\n...\nदुकानदार के पास निश्चित संख्या में अंडे हैं, जिनमें से $5%5 \\%$\n...\n5% टटे हुए पाए जाते\n...\n\\%$ 93\n...\nपास अभी भी\n...\nबचे रहते हैं।\n...\nपास मूल रूप से कितने\n...\n? (a) 3\n...\n800 (b)\n...\n,000 (c) 4,200 (d)\n...\n,800",
+      "title": "Web search: एक बेकर हर सुबह 24 और हर दोपहर 18 रोल बनाती है। वह दिन भर में 35 रोल बेचती है और 4 अपनी पड़ोसन को देती है। बंद होने के समय उसके पास कितने रोल बचते हैं",
+      "metadata": {},
+      "time": {
+        "start": 1789527567059,
+        "end": 1789527569796
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.806Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527569807,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827b58c001BKaW32erAPgS1C",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827a8af00172lt860K5t2NGu",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8647,
+      "output": 347,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8994,
+      "headroom": 29862,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.808Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.809Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.811Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.811Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.812Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.812Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.813Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.813Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.813Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.814Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.819Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8994,
+  "providerTokens": 8994,
+  "estimatedInputTokens": 3696,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8647,
+    "cacheRead": 0,
+    "output": 347
+  },
+  "overflow": false,
+  "headroom": 29862,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.820Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.820Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.823Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:29.824Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:30.537Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527570537,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827b866001xRdzfC3pXwVn2l",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827b59b001MszFD6YEZDE1yX",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:30.538Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:30.538Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527570538,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827b86a001nenl8k5kW0UijI",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827b59b001MszFD6YEZDE1yX",
+    "type": "tool",
+    "callID": "call_3d29104f369706cc",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:30.539Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527570539,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827b869001DpLx66soUI1UPI",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827b59b001MszFD6YEZDE1yX",
+    "type": "text",
+    "text": "मैं https://www.saranextgen.com/homeworkhelp/doubts.php?id=56594 खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527570538,
+      "end": 1789527570538
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:30.539Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527570539,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827b86a001nenl8k5kW0UijI",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827b59b001MszFD6YEZDE1yX",
+    "type": "tool",
+    "callID": "call_3d29104f369706cc",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.saranextgen.com/homeworkhelp/doubts.php?id=56594"
+      },
+      "time": {
+        "start": 1789527570539
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.003Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527571004,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827b86a001nenl8k5kW0UijI",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827b59b001MszFD6YEZDE1yX",
+    "type": "tool",
+    "callID": "call_3d29104f369706cc",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.saranextgen.com/homeworkhelp/doubts.php?id=56594"
+      },
+      "output": "Question ID - 56594 | SaraNextGen Verified Answers\n        \n        \n            \n            \n            \n            \n            \n            \n            \n            \n            \n\n    \n    \n    \n    \n    \n     \t            \n            \n\n    \n    \n    \n    \n     \n    \n  \t\t\t\n  \t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n   \t\t\t\n\t\t\t\n    \n    \n\n  \n    SaraNextGen.Com\n  \n\n\n\n\n\n  \n      \n    \n\n\n\n\n  \n\n    \n    \n\n    \n    \n      \n        \n          Question ID - 56594 | SaraNextGen Top Answer\n        \n        \r\n\t\r\n\t\t\r\n\t\t\t\r\n\t\t\tA bakery opened with its daily supply of 40 dozen rolls. Half of the rolls were sold by noon and 60% of the remaining rolls were sold between noon and closing time. How many dozen rolls were left unsold?&nbsp;&nbsp;\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t&nbsp;\r\n\t\t\t\r\n\t\t\r\n\t\t\r\n\t\t\t\r\n\t\t\t(a)\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t6\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t(b)\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t8\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t(c)\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t10\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t(d)\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t12\r\n\t\t\t\r\n\t\t\r\n\t\r\n\r\n      \n    \n    \n    \n  \n    Verified Solutions by SaraNextGen\n  \n\n    \n    \n      Updated On 05-07-2025\n      \n      \n      \n        \n        By Lithanya Sara\n      \n    \n\n    \n\n    \n    1 Answer\n    127 votes\n\n    \n    \n\n      \n      \n        \n          \n            Answer Key / Explanation : (d)\n          \n        \n        - Number of rolls sold by noon = &nbsp;of 40 dozen = 20 dozen.\r\n\r\nNumber of rolls sold between noon and losing time = 60% of 20 dozen\r\n\r\n= &nbsp;dozen = 12 dozen.\r\n      \n\n      \n\n      \n      \n        127 votes\n        Updated On 05-07-2025\n\n        \n        \n          \n          By Lithanya Sara\n        \n      \n\n      \n      \n        \n          Answer Link\n        \n      \n\n    \n\n  \n\n\n\n      \n      \n&laquo; Previous\n\n\n\nNext Question / Solution &raquo;\n      \n      \n \n     \n      \n  DOWNLOAD STUDY MATERIALS FOR CBSE JEE NEET SAMACHEER\n\n\n    1. Are the solutions and answers provided on SaraNextGen.com verified?\n    Most answers are prepared or reviewed by subject experts and experienced educators, ensuring they are accurate and reliable for your studies and exam preparation.\n  \n\n  \n    2. Do I need to register or log in to download books and study guides?\n    No, registration is not required to access or download most resources. However, signing up for a free account can help you keep track of your downloads and access additional features.\n  \n\n  \n    3. How frequently is new content added to the website?\n    The website is updated regularly with new questions, answers, and study materials to ensure students have access to the latest information and practice resources.\n  \n\n  \n     4. What should I do if I notice an error in a question or answer?\n    If you find any mistakes, you can report them using the contact form or the “Report an Error” link provided on the page. The team reviews all feedback and makes corrections promptly.\n  \n\n \n  Click here to report an Error\n\n\n\n  5. Can I request specific study materials or question papers on SaraNextGen.com?\n  Yes, you can request specific content by contacting the support team through WhatsApp or the contact form. The team reviews all requests and prioritizes the most needed resources.\n\n\n\n  6. Is the content on SaraNextGen.com aligned with CBSE and other exam boards?\n  Yes, most of the content is tailored for CBSE, JEE, and NEET exams. Materials are regularly reviewed to stay updated with syllabus changes and exam patterns.\n\n\n\n  7. How can I stay updated when new content is uploaded?\n  You can follow SaraNextGen on social media platforms or subscribe to their newsletter to receive notifications about the latest uploads and updates.\n\n\n\n  8. Are there any premium features or paid materials?\n  While most of the resources are free, there are premium features like advanced test generators (details mentioned below) and downloadable guides available for registered users or through a subscription plan.\n\n\n               \n CBSE JEE NEET Test Generator | Online Question Paper Creator & Exam Generator\n                  Looking for an efficient and user-friendly CBSE test generator? SaraNextGen offers an advanced online test and question paper generator for CBSE, JEE, NEET, and other major exams. Easily generate and download customized test papers, exam papers, and question papers in PDF format. Our platform is ideal for teachers, schools, and students, providing instant access to hundreds of exam-ready questions. Whether you need a test paper generator, online exam generator, or a question paper creator, SaraNextGen makes exam preparation simple, quick, and effective.\n1. What is the CBSE Test Generator at SaraNextGen?\nThe CBSE Test Generator by SaraNextGen is an online platform that allows teachers and students to create customized question papers and test papers for CBSE JEET NEET&nbsp;classes. It supports instant generation and PDF downloads for efficient exam preparation.\n\n2. How do I generate a test paper or question paper online?\nSimply select your subject and topics on the SaraNextGen Test Generator, choose the number of questions, and instantly download your question paper in PDF format. The test paper generator supports CBSE and other competitive exams.\n\n3. Is SaraNextGen&#39;s test generator suitable for teachers and schools?\nYes, SaraNextGen&#39;s test generator for teachers is designed for classroom, school, and coaching institute use. It enables educators to create exam papers, assignments, and practice tests quickly and efficiently.\n\n4. Can I use the test generator for exams other than CBSE?\nAbsolutely! SaraNextGen supports exam paper generation for JEE, NEET, CUET, UPSC, and more, making it a versatile online exam generator for students across India.\n\n5. Is there a limit to the number of question papers I can generate?\nYou can generate up to 100 questions for free and create unlimited test papers after registering on the platform, making it an ideal online test generator for regular exam preparation.\n\n6. Does the question paper generator offer solutions and answer keys?\nYes, SaraNextGen&rsquo;s question paper creator provides answer keys along with your generated test papers, ensuring comprehensive exam readiness for both teachers and students.\n&nbsp;",
+      "title": "https://www.saranextgen.com/homeworkhelp/doubts.php?id=56594 (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789527570539,
+        "end": 1789527571001
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.006Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527571006,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827ba3d0012QfwAU64YWuhVY",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827b59b001MszFD6YEZDE1yX",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 19445,
+      "output": 188,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 19633,
+      "headroom": 19223,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.007Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.008Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.010Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.011Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.014Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.014Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.015Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.016Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.016Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.017Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.022Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 19633,
+  "providerTokens": 19633,
+  "estimatedInputTokens": 4954,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 19445,
+    "cacheRead": 0,
+    "output": 188
+  },
+  "overflow": false,
+  "headroom": 19223,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.022Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.023Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.025Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.027Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527571240,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bb27001wybIJJDDpksLux",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827ba4e0018UF4ZvDo0xHGXg",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.240Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527571240,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bb28002pd5GcnOgHdqmRn",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827ba4e0018UF4ZvDo0xHGXg",
+    "type": "tool",
+    "callID": "call_76a96b69f8a4ee96",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527571241,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bb28001OeCy071FqB8XYh",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827ba4e0018UF4ZvDo0xHGXg",
+    "type": "text",
+    "text": "मैं https://questions.collegedunia.com/exams/questions/a-bakery-opened-with-its-daily-supply-of-40-dozen-66a0a016f6d8f34e834cca82 खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789527571240,
+      "end": 1789527571240
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527571241,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bb28002pd5GcnOgHdqmRn",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827ba4e0018UF4ZvDo0xHGXg",
+    "type": "tool",
+    "callID": "call_76a96b69f8a4ee96",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://questions.collegedunia.com/exams/questions/a-bakery-opened-with-its-daily-supply-of-40-dozen-66a0a016f6d8f34e834cca82"
+      },
+      "time": {
+        "start": 1789527571241
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.384Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789527571384,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bb28002pd5GcnOgHdqmRn",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827ba4e0018UF4ZvDo0xHGXg",
+    "type": "tool",
+    "callID": "call_76a96b69f8a4ee96",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://questions.collegedunia.com/exams/questions/a-bakery-opened-with-its-daily-supply-of-40-dozen-66a0a016f6d8f34e834cca82"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789527571241,
+        "end": 1789527571383
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789527571384,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.385Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527571385,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bbb800112lbL6hW9cxqcp",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827ba4e0018UF4ZvDo0xHGXg",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 25656,
+      "output": 318,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 25974,
+      "headroom": 12882,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.385Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.385Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.386Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.386Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.388Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.388Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.388Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.388Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.388Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.388Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.391Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 25974,
+  "providerTokens": 25974,
+  "estimatedInputTokens": 5008,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 25656,
+    "cacheRead": 0,
+    "output": 318
+  },
+  "overflow": false,
+  "headroom": 12882,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.391Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.391Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.393Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.394Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.602Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789527571602,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bc91001h4LYPbcSqAreeV",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827bbbf001QOkDQ7qeNGVJpd",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.602Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.602Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789527571602,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bc92001SgJnZiWPLss8uJ",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827bbbf001QOkDQ7qeNGVJpd",
+    "type": "text",
+    "text": "कमांड विफल रही: Error: Request failed with status code: 403\n\nइस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप चाहेंगे कि मैं diagnostic context के साथ issue report तैयार करूँ? जवाब दें: `Report issue`.",
+    "time": {
+      "start": 1789527571602,
+      "end": 1789527571602
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789527571603,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "part": {
+    "id": "prt_0a827bc92002YlXFsp97Jc8BIS",
+    "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+    "messageID": "msg_0a827bbbf001QOkDQ7qeNGVJpd",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 25858,
+      "output": 207,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 26065,
+      "headroom": 12791,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.603Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.604Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.604Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.604Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.605Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.605Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.605Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789527571605,
+  "sessionID": "ses_f57d85802ffeOQcZ774KFqVZ00"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.605Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.605Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.605Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.606Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.dx1HgfYRBD",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:59:31.606Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}
+

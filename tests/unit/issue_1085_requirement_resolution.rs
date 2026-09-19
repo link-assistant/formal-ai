@@ -5,9 +5,9 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::agentic_coding::{
-    LinkEditRule, apply_link_edit, parse_rule_document, resolve_requirement_target,
-};
+use formal_ai::agentic_coding::resolve_requirement_target;
+#[cfg(feature = "meta-language")]
+use formal_ai::agentic_coding::{LinkEditRule, apply_link_edit, parse_rule_document};
 
 const LADDER: &str = "experiments/issue_1028_agent_cli_ladder";
 
@@ -51,7 +51,31 @@ fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
         let (leaf, path, requirement) = (&row[0], &row[2], &row[5]);
         let target = resolve_requirement_target(requirement)
             .unwrap_or_else(|| panic!("{leaf}: {requirement:?} must resolve"));
-        assert_eq!(&target.module_path, path, "{leaf}: {requirement:?}");
+        if path.starts_with("data/seed/") {
+            assert_eq!(
+                &target.module_path, "src/seed/embedded_registry.rs",
+                "{leaf}: a data-owned requirement resolves through its generated seed declaration"
+            );
+            let registry = fs::read_to_string(root().join(&target.module_path))
+                .unwrap_or_else(|error| panic!("{leaf}: {}: {error}", target.module_path));
+            let declaration = format!("pub const {}", target.symbol);
+            let offset = registry.find(&declaration).unwrap_or_else(|| {
+                panic!(
+                    "{leaf}: generated registry does not declare {}",
+                    target.symbol
+                )
+            });
+            assert!(
+                registry[offset..]
+                    .lines()
+                    .take(3)
+                    .any(|line| line.contains(&format!("../../{path}"))),
+                "{leaf}: {} does not embed {path}",
+                target.symbol
+            );
+        } else {
+            assert_eq!(&target.module_path, path, "{leaf}: {requirement:?}");
+        }
     }
 }
 
@@ -81,13 +105,17 @@ fn each_committed_leaf_rule_applies_to_the_current_source() {
                 "{leaf}: edited source must contain {expected:?}"
             );
         }
-        match (&document.rule, leaf.trim_start_matches('L').parse::<u32>()) {
-            (LinkEditRule::InsertMember { .. }, Ok(n)) => assert!(n <= 11, "{leaf}"),
-            (LinkEditRule::ReplaceLiteral { .. }, Ok(n)) => {
-                assert!((12..=22).contains(&n), "{leaf}");
+        let task = &row[1];
+        match &document.rule {
+            LinkEditRule::InsertMember { .. } => {
+                assert!(task.contains(" list."), "{leaf}: {task:?}");
             }
-            (LinkEditRule::RenameIdentifier { .. }, Ok(n)) => assert!(n >= 23, "{leaf}"),
-            (_, Err(error)) => panic!("{leaf}: {error}"),
+            LinkEditRule::ReplaceLiteral { .. } => {
+                assert!(task.contains(", replace "), "{leaf}: {task:?}");
+            }
+            LinkEditRule::RenameIdentifier { .. } => {
+                assert!(task.contains(", rename the constant "), "{leaf}: {task:?}");
+            }
         }
     }
 }
@@ -146,4 +174,25 @@ fn the_ladder_compiles_tests_merges_and_verifies_requirement_levels() {
         (15..=32).contains(&passing),
         "leaf_nodes_passing is {passing}, outside the 15 the first measured run passed and the 32 leaves there are"
     );
+}
+
+#[test]
+fn the_ladder_can_measure_without_per_leaf_authored_answers() {
+    let runner = fs::read_to_string(root().join(LADDER).join("run.sh")).expect("runner");
+    for needle in [
+        "--no-authored-rules",
+        "!/experiments/issue_1028_agent_cli_ladder/rules/",
+        "!/experiments/issue_1028_agent_cli_ladder/leaves.tsv",
+        "authored_rules_enabled",
+        "leaf_nodes_passing_without_authored_rules",
+    ] {
+        assert!(runner.contains(needle), "run.sh must contain {needle:?}");
+    }
+
+    let ratchet =
+        fs::read_to_string(root().join("data/meta/ladder-ratchet.lino")).expect("ratchet");
+    assert!(ratchet.contains("leaf_nodes_passing_without_authored_rules"));
+
+    let debt = fs::read_to_string(root().join("data/meta/debt-ratchet.lino")).expect("debt");
+    assert!(debt.contains("measure authored_ladder_rules\n    value 32"));
 }

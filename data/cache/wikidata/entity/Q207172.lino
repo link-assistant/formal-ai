@@ -1,0 +1,17 @@
+Q207172
+  aliases
+    en (lancet lance "hobby knife" "X-Acto knife" "surgical lance" "surgical knife" bistoury)
+    es ("bisturí de diamante" bisturi "bisturi de diamante" "bisturí")
+    ru ("ланцет")
+  descriptions
+    en "sharp bladed instrument used for surgery"
+    es "instrumento quirúrgico"
+    ru "хирургический инструмент"
+  id Q207172
+  labels
+    en scalpel
+    es escalpelo
+    ru "скальпель"
+    zh "手术刀"
+  type item
+success 1

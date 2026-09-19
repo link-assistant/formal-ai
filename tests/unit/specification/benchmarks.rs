@@ -18,6 +18,10 @@ const RESEARCH_NOTE: &str = "docs/case-studies/issue-244/raw-data/online-researc
 const REQUIRED_DOMAINS: [&str; 3] = ["general_problem_solving", "math", "programming"];
 const PERMISSIVE_LICENSES: [&str; 3] = ["Apache-2.0", "CC-BY-4.0", "MIT"];
 const HELD_OUT_VARIANT: &str = "held_out";
+const HAS_CLOSE_ELEMENTS_ANSWER: &str = "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\nimport itertools\n\ndef has_close_elements(numbers: list[float], threshold: float):\n    return any(abs(left - right) < threshold for left, right in itertools.combinations(numbers, 2))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#any (PSF-2.0)\n- https://docs.python.org/3.12/library/itertools.html#itertools.combinations (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#abs (PSF-2.0)";
+const SIMILAR_ELEMENTS_ARG_ANSWER: &str = "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef similar_elements(arg1, arg2):\n    return tuple(sorted(set(arg1) & set(arg2)))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/stdtypes.html#tuple (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#sorted (PSF-2.0)\n- https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset (PSF-2.0)";
+const SIMILAR_ELEMENTS_TUPLE_ANSWER: &str = "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef similar_elements(test_tup1, test_tup2):\n    return tuple(sorted(set(test_tup1) & set(test_tup2)))\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/stdtypes.html#tuple (PSF-2.0)\n- https://docs.python.org/3.12/library/functions.html#sorted (PSF-2.0)\n- https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset (PSF-2.0)";
+const COUNT_VOWELS_ANSWER: &str = "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef count_vowels(text: str):\n    return sum(1 for character in text if character in 'aeiouAEIOU')\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#sum (PSF-2.0)\n- https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf (PSF-2.0)";
 
 #[derive(Debug)]
 struct LinoRecord {
@@ -112,6 +116,18 @@ fn issue_317_held_out_benchmark_variants_pass_by_derivation() {
 
     for case in held_out_cases {
         let response = solver.solve(&case.prompt);
+        let expected_answer = match case.id.as_str() {
+            "humaneval_0_has_close_elements_paraphrase" => HAS_CLOSE_ELEMENTS_ANSWER,
+            "mbpp_2_similar_elements_paraphrase" => SIMILAR_ELEMENTS_TUPLE_ANSWER,
+            "gsm8k_held_out_hen_eggs" => "36",
+            "math_held_out_algebra_substitution" => "17",
+            "bigbench_held_out_object_counting_instruments" => "3",
+            "arithmetic_reachability_search_held_out_reach_22" => {
+                "Found by budget-driven search: 9 * 2 + 4 = 22.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 512 candidate evaluations; a satisfying composition was found after 4 evaluations.\nSearch path: search_40cdff12f4e9f5db"
+            }
+            id => panic!("missing documented held-out answer for {id}"),
+        };
+        assert_eq!(response.answer, expected_answer);
         let missing = case
             .expected_contains
             .iter()
@@ -149,6 +165,10 @@ fn issue_704_portfolio_rescues_the_industry_search_case() {
 
     let response = solver.solve(&case.prompt);
 
+    assert_eq!(
+        response.answer,
+        "Found by budget-driven search: 3 * 7 + 5 = 26.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 256 candidate evaluations; a satisfying composition was found after 15 evaluations.\nSearch path: search_03a957b01beed257\n\n```links\ndraft_comparison_artifact\n  draft_count \"3\"\n  winner_index \"2\"\n  winner_strategy \"search\"\n  passed_tests \"3\"\n  total_tests \"3\"\n  rejected_drafts \"2\"\n  backtracked_drafts \"0\"\n  smaller_percent \"0\"\n  tie_break \"least_action\"\n  merge_order \"draft_index\"```"
+    );
     assert!(response.answer.contains("= 26"), "{}", response.answer);
     assert_eq!(response.links_notation.matches(" draft:result ").count(), 3);
     assert_eq!(
@@ -208,6 +228,7 @@ fn issue_314_numeric_benchmark_cases_compute_with_trace() {
             .find(|case| case.id == case_id)
             .unwrap_or_else(|| panic!("missing benchmark case {case_id}"));
         let response = solver.solve(&case.prompt);
+        assert_eq!(response.answer, expected);
         assert!(
             response.answer.contains(expected),
             "{} should contain {expected:?}, got {}",
@@ -268,6 +289,12 @@ fn issue_315_programming_benchmark_cases_synthesize_and_verify() {
             .unwrap_or_else(|| panic!("missing benchmark case {case_id}"));
         let response = solver.solve(&case.prompt);
         assert_eq!(response.intent, "write_program");
+        let expected_answer = match case_id {
+            "humaneval_0_has_close_elements" => HAS_CLOSE_ELEMENTS_ANSWER,
+            "mbpp_2_similar_elements" => SIMILAR_ELEMENTS_ARG_ANSWER,
+            id => panic!("missing documented programming benchmark answer for {id}"),
+        };
+        assert_eq!(response.answer, expected_answer);
         for expected in expected_fragments {
             assert!(
                 response.answer.contains(expected),
@@ -307,6 +334,7 @@ fn issue_315_unseen_python_function_synthesizes_without_seed_hit() {
     );
 
     assert_eq!(response.intent, "write_program");
+    assert_eq!(response.answer, COUNT_VOWELS_ANSWER);
     assert!(response.answer.contains("```python"));
     assert!(response.answer.contains("def count_vowels"));
     assert!(response.answer.contains("sum("));
@@ -358,6 +386,7 @@ fn issue_315_program_synthesis_accepts_supported_language_wrappers() {
             "{} wrapper should still route to synthesis",
             case.language
         );
+        assert_eq!(response.answer, COUNT_VOWELS_ANSWER);
         assert!(
             response.answer.contains("def count_vowels"),
             "{} wrapper should synthesize the expected function, got {}",
@@ -459,6 +488,12 @@ fn issue_326_program_synthesis_accepts_native_operation_verbs() {
             "{} prompt should route to program synthesis, got {} with answer {}",
             case.language, response.intent, response.answer
         );
+        let expected_answer = match case.expected_function {
+            "def count_vowels" => COUNT_VOWELS_ANSWER,
+            "def similar_elements" => SIMILAR_ELEMENTS_TUPLE_ANSWER,
+            function => panic!("missing documented native-verb answer for {function}"),
+        };
+        assert_eq!(response.answer, expected_answer);
         assert!(
             response.answer.contains(case.expected_function),
             "{} prompt should synthesize {}, got {}",

@@ -42,6 +42,17 @@ fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
 
     for case in cases {
         let response = solver.solve(&case.prompt);
+        let documented = match case.id.as_str() {
+            "e34_algebra_substitution" => "17",
+            "e34_numeric_word_problem_renumbered" => "36",
+            "e34_object_counting_filtered_category" => "3",
+            "e34_program_synthesis_unseen_count_vowels" => {
+                "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\ndef count_vowels(text: str):\n    return sum(1 for character in text if character in 'aeiouAEIOU')\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: 2/2 executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget.\nSources:\n- https://docs.python.org/3.12/library/functions.html#sum (PSF-2.0)\n- https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf (PSF-2.0)"
+            }
+            "e34_text_manipulation_chain" => "RULES NOTATION LINKS",
+            other => panic!("fixture lacks a complete documented answer for {other}"),
+        };
+        assert_eq!(response.answer, documented);
         assert_eq!(
             response.intent, case.expected_intent,
             "{} should preserve the expected Rust intent; answer: {}",
@@ -280,6 +291,13 @@ fn compound_courtesy_and_question_are_answered_in_source_order() {
 
     for case in cases {
         let response = synthesis_solver().solve(case.prompt);
+
+        if case.language == "en" {
+            assert_eq!(
+                response.answer,
+                "Hi, how may I help you?\n\nNo consulted source defined \"Redis\". Consulted: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss."
+            );
+        }
 
         assert_eq!(
             response.intent, "compound_response",

@@ -138,17 +138,17 @@ fn_try_budget_search
 fn_parse_search_problem
   record_type "meta_function"
   function "parse_search_problem"
-  source_file "src/solver_search.rs"
+  source_file "src/solver_search/problem.rs"
   kind "recognise_by_role"
 fn_target_marker_positions
   record_type "meta_function"
   function "target_marker_positions"
-  source_file "src/solver_search.rs"
+  source_file "src/solver_search/problem.rs"
   kind "anchor_target"
 fn_parse_ops
   record_type "meta_function"
   function "parse_ops"
-  source_file "src/solver_search.rs"
+  source_file "src/solver_search/problem.rs"
   kind "derive_operators"
 fn_arithmetic_operators
   record_type "meta_function"

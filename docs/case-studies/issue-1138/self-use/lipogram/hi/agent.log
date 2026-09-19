@@ -1,0 +1,2191 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.192Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.193Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt क्या वाक्य \"quick brown fox\" e का लिपोग्राम है? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.193Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.193Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.201Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "क्या वाक्य \"quick brown fox\" e का लिपोग्राम है?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "क्या वाक्य \"quick brown fox\" e का लिपोग्राम है?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.201Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.202Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.203Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.203Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.205Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.206Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.208Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 8741,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.208Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.221Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 24,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T02:47:32.226Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.230Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.230Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.230Z",
+  "service": "session",
+  "id": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b",
+  "title": "New session - 2026-09-16T02:47:32.230Z",
+  "time": {
+    "created": 1789526852230,
+    "updated": 1789526852230
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.231Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.231Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.231Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 1,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.231Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.231Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57e33d79ffeWxV0SKt2DyAXvR/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.231Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57e33d79ffeWxV0SKt2DyAXvR/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.233Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session/ses_f57e33d79ffeWxV0SKt2DyAXvR/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.235Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.236Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.237Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.238Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.238Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.238Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.238Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.238Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.238Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.239Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.239Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.239Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.353Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.356Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.356Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.363Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.368Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.372Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.372Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.761Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526852761,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cc497001NOxKP8ahTBGHGl",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cc3030012wxqXwe5rfzCyy",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526852762,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cc49a001Rj3FVnJ6yr1PuT",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cc3030012wxqXwe5rfzCyy",
+    "type": "tool",
+    "callID": "call_4afe531756bbcab0",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526852762,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cc499001fyoKpcSts6WI9c",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cc3030012wxqXwe5rfzCyy",
+    "type": "text",
+    "text": "मैं इंटरनेट पर वाक्य quick brown fox e का लिपोग्राम है खोजता हूँ।",
+    "time": {
+      "start": 1789526852762,
+      "end": 1789526852762
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:32.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526852762,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cc49a001Rj3FVnJ6yr1PuT",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cc3030012wxqXwe5rfzCyy",
+    "type": "tool",
+    "callID": "call_4afe531756bbcab0",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "वाक्य quick brown fox e का लिपोग्राम है"
+      },
+      "time": {
+        "start": 1789526852762
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.339Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526855340,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cc49a001Rj3FVnJ6yr1PuT",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cc3030012wxqXwe5rfzCyy",
+    "type": "tool",
+    "callID": "call_4afe531756bbcab0",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "वाक्य quick brown fox e का लिपोग्राम है"
+      },
+      "output": "Title: The quick brown fox jumps over the lazy dog\nURL: https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog\nPublished: N/A\nAuthor: N/A\nHighlights:\nThe quick brown fox jumps over the lazy dog\n...\n\" The quick brown fox jumps over the lazy dog\" is an English-language pangram; it contains all 26 letters of the English alphabet; because of this, the phrase is commonly used for touch-typing practice, testing typewriters and computer keyboards, displaying examples of fonts, and other applications involving text where the use of all letters in the alphabet is desired.\n...\nage of computers, this pangram is commonly used to display font samples and for testing computer keyboards. In cryptography, it is commonly used as a test vector for hash and encryption algorithms to verify their implementation, as well as to ensure alphabetic character set compatibility. [citation needed]\n\n---\n\nTitle: The Quick Brown Fox In Hindi: A Fun Translation, in Detail\nURL: https://dyn.urbit.org/urbit-news/the-quick-brown-fox-in-hindi-a-fun-translation-1764802323\nPublished: 2025-12-03T22:52:03.000Z\nAuthor: Taylor Brooks\nHighlights:\nHey guys! Ever wondered what that classic pangram, “The quick brown fox jumps over the lazy\n...\n,” sounds like in Hindi? It’s a super popular sentence because it uses every letter of the English alphabet. Pretty neat,\n...\nwe can translate\n...\nof the nuances involved\n...\njust about swapping words;\n...\ncapturing the essence and making\n...\n“The quick\n...\njumps over the\n...\nit contains all\n...\nAlright, let’s get down to the nitty-gritty of translating “The quick brown fox jumps over the lazy dog” into Hindi. A direct, literal translation would aim to convey the meaning of each word as accurately as possible. So,\n...\n- The: Hindi doesn’t always use a direct equivalent for ‘the’ in the same way English does. Often, the context makes it clear. However, if we need to be explicit, we might use words like ‘वह’ (vah - that) or ‘यह’ (yah - this), but for a general statement like this, it’s often omitted.\n- quick: ‘तेज़’ (tez) or ‘फुर्तीला’ (phurtila).\n- brown: ‘भूरा’ (bhura).\n- fox: ‘लोमड़ी’ (lomdi).\n- jumps: ‘कूदती है’ (kudti hai) for a female fox, or ‘कूदता है’ (kudta hai) for a male fox. Since ‘लोमड़ी’ (lomdi) is feminine in Hindi, we’d use ‘कूदती है’.\n- over: ‘ऊपर से’ (upar se).\n- the: Again, often omitted or implied.\n- lazy: ‘आलसी’ (aalsi).\n- dog: ‘कुत्ता’ (kutta).\n...\nPutting it all together, a fairly literal translation would be:\n...\n“तेज़ भूरी लोमड़ी आलसी कुत्ते के ऊपर से कूदती है।”\n\nPronunciation: “Tez bhuri lomdi aalsi kutte ke upar se kudti hai.”\n...\nThis translation captures the visual image perfectly. You’ve got your\n...\n, brown fox leaping over a sleepy dog. It’s straightforward and gets the message across. However, it’s important to remember that this Hindi sentence doesn’t contain all the letters of the Hindi alphabet, unlike the original English sentence. The power of the English sentence lies in its pangrammatic nature, which is hard to replicate directly in another language while maintaining the same meaning and natural flow. This literal translation is great for understanding the meaning, but it doesn’t serve the purpose of the original English pangram.\n...\nFor instance, instead of ‘तेज़’ (tez) for quick, we could use ‘फुर्तीली’ (phurtili), which specifically means agile or nimble. It gives a slightly different, perhaps more graceful, feel to the fox’s movement. So, “फुर्तीली भूरी लोमड़ी आलसी कुत्ते के ऊपर से कूदती है।” (Phurtili bhuri lomdi aalsi kutte ke upar se kudti hai.) This sounds quite nice, doesn’t it?\n...\nWhat about ‘आलसी’ (aalsi) for lazy? We could use ‘सुस्त’ (sust), which also means lazy or sluggish. “तेज़ भूरी लोमड़ी सुस्त कुत्ते के ऊपर से कूदती है।” (Tez bhuri lomdi sust kutte ke upar se kudti hai.) Both ‘आलसी’ and ‘सुस्त’ work well here and convey the intended meaning. The choice might depend on the specific flavor you want.\n...\nSo, when someone asks for the Hindi translation of “The quick brown fox jumps over the lazy dog,” they usually mean the literal translation of the meaning, not necessarily a Hindi pangram. It’s a subtle but important distinction.\n...\nतेज़ भूरी\n...\nड़ी आलसी\n...\nके ऊपर से कूदती है\n...\nwords like ‘तेज़’ (quick), ‘भूरी’\n...\nलोमड़ी\n...\nआलसी’ (lazy), ‘कुत्ता’\n...\n‘कूदती है\n...\n’, ‘भूरी’, ‘आलसी\n...\nलोमड़ी’, ‘कुत्ता\n...\n(‘कूदती है\n...\nalthough here it’\n...\nlike Subject-\n...\nSo, there you have it, folks! The classic “The quick brown fox jumps over the lazy dog” translates quite literally into Hindi as “तेज़ भूरी लोमड़ी आलसी कुत्ते के ऊपर से कूदती है।” While this translation captures the charming imagery of the original, it doesn’t replicate its pangrammatic quality. Finding a Hindi sentence that serves the same purpose – using all letters of the alphabet – is a different ballgame altogether, often resulting in sentences that are less common or natural-sounding.\n\n---\n\nTitle: The Quick Brown Fox Typing Test | Pangram WPM Test\nURL: https://www.typequicker.com/typing-speed-test/quick-brown-fox\nPublished: N/A\nAuthor: N/A\nHighlights:\n\"The quick brown fox jumps over the lazy dog\" is more than just a quirky sentence—it's the gold standard for typing practice and keyboard testing. This famous pangram contains every letter of the English alphabet at least once, making it the perfect tool for comprehensive typing speed measurement. Whether you're a beginner learning proper finger placement or an advanced typist aiming to break personal WPM records, this typing test provides complete keyboard coverage that regular text simply cannot match.\n...\nThe beauty of the quick brown fox typing test lies in its simplicity and effectiveness. Unlike conventional typing practice that may favor common letters like E, T, A, and O, this pangram forces you to use every key on your keyboard. This comprehensive coverage helps identify weaknesses in your typing technique—perhaps you struggle with Q and Z, or your pinky fingers lag behind on P and A. The balanced letter distribution reveals these gaps instantly, allowing you to focus your practice where it matters most.\n...\n\"The quick brown fox jumps over the lazy dog\" is a pangram - a sentence that contains every letter of the English alphabet at least once. This 35-character sentence uses all 26 letters, making it perfect for testing keyboards, fonts, and typing skills. It's been the gold standard for typing practice since typewriter days.\n\n---\n\nTitle: अंग्रेजी में ‘ THE QUICK BROWN FOX JUMPS OVER A LAZY DOG ‘संस्कृत भाषा का अद्भुत चमत्कार _मनीष चन्द्र पाण्डे अयोध्या उत्तरप्रदेश - Darshan Samikhya\nURL: https://darshansamikhya.in/17801-2/\nPublished: 2026-06-09T00:00:00.000Z\nAuthor: darshansamikhya\nHighlights:\nअंग्रेजी में ‘ THE QUICK BROWN FOX JUMPS OVER A LAZY DOG ‘संस्कृत भाषा का अद्भुत चमत्कार _मनीष चन्द्र पाण्डे अयोध्या उत्तरप्रदेश - Darshan Samikhya\n...\nअंग्रेजी में ‘ THE QUICK BROWN FOX JUMPS OVER A LAZY DOG ‘ एक प्रसिद्ध वाक्य है। जिसमें अंग्रेजी वर्णमाला के सभी अक्षर समाहित कर लिए गए, मज़ेदार बात यह है कि अंग्रेज़ी वर्णमाला में कुल 26 अक्षर ही उप्लब्ध हैं जबकि इस वाक्य में 33 अक्षरों का प्रयोग किया गया जिसमे चार बार O और A, E, U तथा R अक्षर का प्रयोग क्रमशः 2 बार किया गया है। इसके अलावा इस वाक्य में अक्षरों का क्रम भी सही नहीं है। जहां वाक्य T से शुरु होता है वहीं G से खत्म हो रहा है। अब ज़रा संस्कृत के इस श्लोक को पढिये।-\n...\nक:खगीघाङ्चिच्छौजाझाञ्ज्ञोSटौठीडढण:। तथोदधीन पफर्बाभीर्मयोSरिल्वाशिषां सह।।\n...\nअर्थात : पक्षियों का प्रेम, शुद्ध बुद्धि का, दूसरे का बल अपहरण करने में पारंगत, शत्रु-संहारकों में अग्रणी, मन से निश्चल तथा निडर और महासागर का सर्जन करनार कौन? राजा मय! जिसको शत्रुओं के भी आशीर्वाद मिले हैं।\n\n---\n\nTitle: the quick brown fox jumps over the lazy dog typing test -  The quick brown fox jumps over The lazy dog typing test -21114\nURL: https://www.gkexams.com/ask/21114-The-quick-brown-fox-jumps-over-The-lazy-dog-typing-test\nPublished: N/A\nAuthor: N/A\nHighlights:\nthe quick brown fox jumps over the lazy dog typing test - The quick brown fox jumps over The lazy dog typing test -21114 Join Telegram\n...\n# The quick brown fox jumps over The lazy dog typing test the quick brown fox jumps over the lazy dog typing test\n...\n## the quick brown fox jumps over the lazy dog typing test\n...\nthe quick brown fox jumps over the lazy dog typing test : यह एक प्रकार का टाइपिंग टेस्ट होता है जिसमे आपको एक समय सीमा में कितने अक्षर आप लिख सकते है इसका टेस्ट किया जाता है।आपको बता दे की the quick brown fox jumps over the lazy dog इस लाइन में अंग्रेजी वरमाला के सभी अक्षरों को शामिल किया गया है ताकि आपकी ऊँगली कीबोर्ड के हर बटन पर पड़े और आप कीबोर्ड पर कुछ बेहतर कर सकें।इसलिए आप जब भी अपना टाइपिंग टेस्ट करें तो कंप्यूटर में कहीं पर भी यानी notepad में भी इस लाइन - \"the quick brown fox jumps over the lazy dog\" को बारी-बारी लिखने की कोशिश करें।\n...\nfox jumps over\n...\nthe quick brown fox jumps over the lazy dog meaning in hindi\n...\nA quick brown fox jumps (over) the lazy dog.Explain Word In Bracket.\n...\nA quick brown fox jumps (over) the lazy dog.Explain Word In Bracket.\n\n---\n\nTitle: The quick brown fox jumps over the lazy dog - Wikipedia, the free encyclopedia   Wikipedia  (December 2006) - wikipedia2006.classicistranieri.com\nURL: https://wikipedia2006.classicistranieri.com/en/t/h/e/The_quick_brown_fox_jumps_over_the_lazy_dog.html\nPublished: N/A\nAuthor: N/A\nHighlights:\n\"The quick brown fox jumps over the lazy dog\" is a pangram that has been used to test typewriters and computer keyboards because it is coherent, short, and contains all the letters of the English alphabet. The pangram was developed by Western Union to test Telex/ TWX data communication equipment for accuracy and reliability. it was often used for testing the teletype services (a procedure known as \"foxing\") when these machines were still used.\n...\nIn Windows 3.1 and later versions, the built-in font viewer added \"1234567890\" to the end, so that numbers could also be tested. Windows XP uses \" Jackdaws love my big sphinx of quartz. 123456890\" for some fonts.\n...\n| Portuguese | A rápida raposa castanha salta acima do cão preguiçoso. | The quick brown fox jumps above the lazy dog. | no |\n...\nquick brown fox\n\n---\n\nTitle: The Curious Tale Behind “The Quick Brown Fox Jumps ...\nURL: https://medium.com/@WebdesignerDepot/the-curious-tale-behind-the-quick-brown-fox-jumps-over-the-lazy-dog-308adf7ed514\nPublished: 2025-11-16T02:47:35.011Z\nAuthor: Web Designer Depot\nHighlights:\nYou’ve seen the sentence — “The quick brown fox jumps over the lazy dog” — but did you know it’s been secretly running the alphabet game since 1885? From typewriters to font previews, this odd little pangram is the unsung hero of design and tech. Turns out, the fox didn’t just jump… it owned the keyboard.\n...\nBut “The quick brown fox jumps over the lazy dog” is more than just a weird sentence with oddly energetic wildlife. It’s one of the most iconic pangrams in the English language — and it’s been quietly typing its way through history for well over a century.\n...\nThe earliest known version of our now-famous sentence appeared in The Boston Journal in 1885, in a piece about writing practice. Yes, 1885. That means this leaping fox is old enough to have attended the first screening of a silent movie or ordered a sarsaparilla from a Wild West saloon.\n...\nBack then, the sentence\n...\nIt was short\n...\nwas narrating a peculiar\n...\nThe real explosion of fox fame came in the 20th century, when typewriters became household staples. Manufacturers and typing teachers needed a quick, elegant way to test every key — and boom, the fox was their guy.\n...\nFrom there, it jumped (pun intended) into graphic design, typography, and font testing. Open any new font in design software and you’ll likely see the sentence auto-filled. That fox is the unsung hero of kerning.\n...\nIt also became the go-to for testing computer keyboards, especially in the early days of computing. If you typed it cleanly, your QWERTY skills were solid.\n...\n“The quick brown fox…” has\n...\n- Word processors (remember when Microsoft Word opened with it in sample fonts?)\n- Keyboard drivers and language tests\n- Early operating systems and demo screens\n- Font foundries and websites\n- Even password-checking tools (though using it as a password is definitely not recommended — sorry, fox)\n...\n1. It’s short — only 35 letters.\n2. It flows — the rhythm and structure are easy to say and remember.\n3. It’s quirky — there’s a tiny bit of narrative and whimsy. You picture a mischievous fox and a truly indifferent dog. It’s oddly memorable.\n4. It’s neutral — no weird or obscure words like “zephyr” or “xylophone” (okay, maybe “lazy” is a little judgy).\n...\nflashy. It’s\n...\nloud. But it\n...\nToday, we have AI, touchscreen keyboards, and predictive text — but the fox still jumps, and the dog remains\n...\nAnd now you know: that quick brown fox didn’t just jump over the lazy dog. It jumped straight into history.\n\n---\n\nTitle: Quick Brown Fox Triangle Highlights\nURL: https://www.nycgovparks.org/parks/quick-brown-fox-triangle/history\nPublished: N/A\nAuthor: N/A\nHighlights:\n“The quick brown fox jumps over the lazy dog.” This famous sentence contains every letter of the alphabet, and is used by companies worldwide to demonstrate font types. It is an example of a pangram, a sentence that uses the whole alphabet. Quick Brown Fox Triangle is home, appropriately, to a statue of a brown fox. The sitting area, tucked behind the wall of the Long Island Expressway, offers visitors shaded benches and a touch of green.",
+      "title": "Web search: वाक्य quick brown fox e का लिपोग्राम है",
+      "metadata": {},
+      "time": {
+        "start": 1789526852762,
+        "end": 1789526855338
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.342Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526855342,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81ccead001JgvNtLyDipQ06Y",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cc3030012wxqXwe5rfzCyy",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8543,
+      "output": 125,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8668,
+      "headroom": 30188,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.343Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.343Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.344Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.345Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.345Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.345Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.345Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.345Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.345Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.349Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8668,
+  "providerTokens": 8668,
+  "estimatedInputTokens": 3480,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8543,
+    "cacheRead": 0,
+    "output": 125
+  },
+  "overflow": false,
+  "headroom": 30188,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.350Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.350Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.352Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.957Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526855957,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd114001ZWiDqPRuT9rW4I",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cceb6001cMf3K6OfKyk1vc",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526855958,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd116001J9LLhKdZP2zsqM",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cceb6001cMf3K6OfKyk1vc",
+    "type": "tool",
+    "callID": "call_c66ffc67862ce69c",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526855958,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd115001r41wgMyaNLvwMI",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cceb6001cMf3K6OfKyk1vc",
+    "type": "text",
+    "text": "मैं https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789526855958,
+      "end": 1789526855958
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:35.958Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526855958,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd116001J9LLhKdZP2zsqM",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cceb6001cMf3K6OfKyk1vc",
+    "type": "tool",
+    "callID": "call_c66ffc67862ce69c",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog"
+      },
+      "time": {
+        "start": 1789526855958
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526856204,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd116001J9LLhKdZP2zsqM",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cceb6001cMf3K6OfKyk1vc",
+    "type": "tool",
+    "callID": "call_c66ffc67862ce69c",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog"
+      },
+      "output": "The quick brown fox jumps over the lazy dog - Wikipedia\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nJump to content\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\t\n\t\n\nMain menu\n\t\n\t\n\n\n\t\t\t\t\n\t\t\n\n\t\n\tMain menu\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tNavigation\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tMain pageContentsCurrent eventsRandom articleAbout WikipediaContact us\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\tContribute\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tHelpLearn to editCommunity portalRecent changesUpload fileSpecial pages\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\n\n\t\n\n\n\t\t\n\t\t\t\n\n\t\n\t\n\t\t\n\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\n\n\t\n\nSearch\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tSearch\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\t\n\n\t\n\t\n\nAppearance\n\t\n\t\n\n\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\n\t\n\t\t\n\t\t\n\t\t\tDonate\n\nCreate account\n\nLog in\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\t\n\t\n\nPersonal tools\n\t\n\t\n\n\n\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\nDonate\n\n\n\nCreate account\n\n\n\nLog in\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\n\t\n\n\n\n\n\t\t\n\t\n\n\n\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\n\tContents\n\tmove to sidebar\n\thide\n\n\n\n\t\n\t\t\n\t\t\t\n\t\t\t\t(Top)\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t1\n\t\t\t\tHistory\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t2\n\t\t\t\tComputer usage\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t3\n\t\t\t\tCultural references\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t4\n\t\t\t\tOther pangrams\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t5\n\t\t\t\tSee also\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t6\n\t\t\t\tReferences\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t\n\t\t\n\t\t\t\n\t\t\t\t7\n\t\t\t\tExternal links\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\t\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\t\n\nToggle the table of contents\n\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\tThe quick brown fox jumps over the lazy dog\n\t\t\t\n\n\t\n\t\n\n21 languages\n\t\n\t\n\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\tالعربيةAzərbaycancaDeutschEspañolفارسیFrançaisՀայերենBahasa IndonesiaItaliano日本語한국어नेपालीPortuguêsРусскийSimple EnglishУкраїнськаTiếng Việt吴语閩南語 / Bân-lâm-gí粵語中文\n\t\t\t\n\t\t\tEdit links\n\t\t\n\n\t\n\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\tArticle\n\nTalk\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\t\t\t\t\n\n\t\n\tEnglish\n\t\n\t\n\n\n\t\t\t\t\t\n\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t    \n\n\t\n\t\t\n\t\t\n\t\t\tRead\n\nView source\n\nView history\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\n\t\n\t\n\nTools\n\t\n\t\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\n\tTools\n\tmove to sidebar\n\thide\n\n\n\t\n\n\t\n\t\tActions\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\nRead\n\n\n\nView source\n\n\n\nView history\n\n\n\t\t\t\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tGeneral\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWhat links hereRelated changesUpload filePermanent linkPage informationCite this pageGet shortened URLSwitch to legacy parser\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tPrint/export\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tDownload as PDFPrintable version\n\t\t\n\t\t\n\t\n\n\n\n\t\n\t\tIn other projects\n\t\n\t\n\t\t\n\t\t\n\t\t\t\n\t\t\tWikimedia CommonsWikidata item\n\t\t\n\t\t\n\t\n\n\n\n\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\n\tAppearance\n\tmove to sidebar\n\thide\n\n\n\n\n\n\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\t\n\n\t\t\t\t\t\tFrom Wikipedia, the free encyclopedia\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tSentence containing all letters of the English alphabet\n\nThe phrase shown in metal moveable type, used in printing presses (image reversed for readability)\n\n\n\"The quick brown fox jumps over the lazy dog\" is an English-language pangram; it contains all 26 letters of the English alphabet. Because of this, the phrase is commonly used for touch-typing practice, testing typewriters and computer keyboards, displaying examples of fonts, and other applications involving text where the use of all letters in the alphabet is desired.\n\nHistory\n\nItem from the February 9, 1885, edition of The Boston Journal mentioning the phrase \"A quick brown fox jumps over the lazy dog.\"\nThe earliest known appearance of the phrase was in The Boston Journal. In an article titled \"Current Notes\" in the February 9, 1885, edition, the phrase is mentioned as a good practice sentence for writing students: \"A favorite copy set by writing teachers for their pupils is the following, because it contains every letter of the alphabet: 'A quick brown fox jumps over the lazy dog.'\"[1] Dozens of other newspapers published the phrase over the next few months, all using the version of the sentence starting with \"A\" rather than \"The\", which still contains all 26 letters as \"the\" is used later in the sentence.[2] The earliest known use of the phrase starting with \"The\" is from the 1888 book Illustrative Shorthand by Linda Bronson.[3] The modern form (starting with \"The\") became more common even though it is two letters longer than the original (starting with \"A\").\n\nA 1908 edition of the Los Angeles Herald Sunday Magazine records that when the New York Herald was equipping an office with typewriters \"a few years ago\", staff found that the common practice sentence of \"now is the time for all good men to come to the aid of the party\" did not familiarize typists with the entire alphabet, and ran onto two lines in a newspaper column. They write that a staff member named Arthur F. Curtis invented the \"quick brown fox\" pangram to address this.[4]\n\nPictorial depiction of the pangram from Scouting for Boys (1908)[5]\nAs the use of typewriters grew in the late 19th century, the phrase began appearing in typing lesson books as a practice sentence. Early examples include  How to Become Expert in Typewriting: A Complete Instructor Designed Especially for the Remington Typewriter (1890),[6] and Typewriting Instructor and Stenographer's Hand-book (1892). By the turn of the 20th century, the phrase had become widely known. In the January 10, 1903, issue of Pitman's Phonetic Journal, it is referred to as \"the well known memorized typing line embracing all the letters of the alphabet\".[7] Robert Baden-Powell's book Scouting for Boys (1908) uses the phrase as a practice sentence for signaling.[5]\n\nThe first message sent on the Moscow–Washington hotline on August 30, 1963, was the test phrase \"THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG'S BACK 1234567890\".[8] Later, Soviet diplomat Andrei Gromyko asked American Secretary of State Dean Rusk what the phrase meant.[9]\n\nDuring the 20th century, technicians tested typewriters and teleprinters by typing the sentence.[10]\n\nIt is the sentence used in the annual Zaner-Bloser National Handwriting Competition, a cursive writing competition which has been held in the U.S. since 1991.[11][12]\n\nComputer usage\nThe phrase being used in a BBC Ceefax test from 1972\nThe phrase used to preview a computer typeface\nIn the age of computers, this pangram is commonly used to display font samples and for testing computer keyboards. In cryptography, it is commonly used as a test vector for hash and encryption algorithms to verify their implementation, as well as to ensure alphabetic character set compatibility.[citation needed]\n\nMicrosoft Word has a command to auto-type the sentence, in versions up to Word 2003, using the command =rand(), and in Microsoft Office Word 2007 and later using the command =rand.old().[13]\n\nCultural references\n\nNumerous references to the phrase have occurred in movies, television, books, video games, advertising, websites, and graphic arts. \n\t \nThe lipogrammatic novel Ella Minnow Pea by Mark Dunn is built entirely around the \"quick brown fox\" pangram and its inventor. It depicts a fictional island off the South Carolina coast that idealizes the pangram, chronicling the effects on literature and social structure as various letters are banned from daily use by government dictum.[14]\n\nThe NASA Space Shuttle flew a teleprinter that used the phrase \"THE LAZY YELLOW DOG WAS CAUGHT BY THE SLOW RED FOX AS HE LAY SLEEPING IN THE SUN\", a reference to the eponymous phrase, as part of its self-test program. While the phrase is not a pangram, as it lacks J, K, M, Q, and V, it was selected to be exactly 80 characters wide to match the length of the teleprinter's drum.[15]\n\nOther pangrams\nMain article: Pangram\nWith 35 letters, this is not the shortest pangram. Shorter examples include:\n\n\"Quick nymph bugs vex fjord waltz.\" (27 letters; U repeated)\n\"Waltz, bad nymph, for quick jigs vex.\" (28 letters)\n\"Sphinx of black quartz, judge my vow.\" (29 letters)\n\"How vexingly quick daft zebras jump!\" (30 letters)\n\"The five boxing wizards jump quickly.\" (31 letters)\n\"Pack my box with five dozen liquor jugs.\" (32 letters)\n\nIf abbreviations and non-dictionary words are allowed, it is possible to create a perfect pangram that uses each letter only once, such as \"Mr. Jock, TV quiz PhD, bags few lynx\".\n\nSee also\nFiller text\nEtaoin shrdlu – Common metal-type printing error\nLorem ipsum – Placeholder text used in publishing and graphic design\nThousand Character Classic – Chinese educational poem\nIroha – Japanese pangram poem\n\nReferences\n\n↑ \"Current Notes\" (PDF). Boston Journal (morning ed.). Boston, Massachusetts. February 10, 1885. p. 1. Archived (PDF) from the original on 2024-05-21. Retrieved 2020-10-30.\n↑ \"Search for 'quick brown fox'\". Newspapers.com. Archived from the original on 21 June 2013. Retrieved 8 November 2016.\n↑ Bronson, Linda Pennington (1888). Illustrative Shorthand. San Francisco: Cal. Label &amp; Maccabe Litho. Co. p. 76.\n↑ \"Los Angeles herald. [microfilm reel] (Los Angeles [Calif.]) 1900-1911, November 08, 1908, Image 51\". Los Angeles Herald Sunday Magazine. 1908-11-08. p. 5. Archived from the original on 2021-11-16. Retrieved 2021-11-16.\n1 2 Baden-Powell, Robert (1908). Scouting for Boys (PDF). London: Pearson. p. 76. ISBN 0-665-98794-3. Archived (PDF) from the original on 2014-06-11. Retrieved 2015-02-21. {{cite book}}: ISBN / Date incompatibility (help)\n↑ Barnes, Lovisa Ellen (1890). How to Become Expert in Typewriting. A.J. Barnes. p. 12.\n↑ \"The Fox Typewriter\". Pitman's Phonetic Journal. January 10, 1903.\n↑ \"Washington Moscow Hotline\". Cryptomuseum.com. Archived from the original on 2016-03-06. Retrieved 2013-09-21.\n↑ Rusk, Dean (1991). As I Saw It: A Secretary of State's Memoirs. London: I.B. Tauris &amp; Co. Ltd. p. 225.\n↑ Vegter, Wobbe (June 2007). \"Jean-Maurice-Émile Baudot\". ThemNews. 8 (2). Archived from the original on 2016-04-09. Retrieved 2013-09-21.\n↑ \"Students Compete To See Who Has The Best Cursive Writing\". NPR.org. 2021-05-28. Archived from the original on 2021-06-07. Retrieved 2021-06-08.\n↑ \"About the Zaner-Bloser National Handwriting Contest\". www.zaner-bloser.com. Archived from the original on 8 June 2021. Retrieved 8 June 2021.\n↑ \"kb212251 Microsoft support\". Support.microsoft.com. 2011-09-18. Retrieved 2013-09-21.{{cite web}}:  CS1 maint: deprecated archival service (link)\n↑ Ella Minnow Pea: A Novel in Letters, by Mark Dunn, Anchor, 2001 Archived 2023-04-06 at the Wayback Machine, ISBN 0385722435\n↑ \"Reverse engineering the 59-pound printer onboard the Space Shuttle\". Ken Shirriff's Blog. 2024-08-03. Archived from the original on 2025-01-24. Retrieved 2025-02-05.\n\n\nExternal links\n\n Media related to The quick brown fox jumps over the lazy dog at Wikimedia Commons\n The dictionary definition of the quick brown fox jumps over the lazy dog at Wiktionary\nvteStandard test items\nPangram\nReference implementation\nSanity check\nStandard test image\nArtificial intelligence(Machine learning)\nChinese room\nImageNet\nMNIST database\nTuring test\nList\nTelevision (test card)\nSMPTE color bars\nEBU colour bars\nIndian-head test pattern\nEIA 1956 resolution chart\nBBC Test Card A, B, C, D, E, F, G, H, J, W, X\nETP-1\nPhilips circle pattern (PM 5538, PM 5540, PM 5544, PM 5644)\nSnell &amp; Wilcox SW2/SW4\nTelefunken FuBK\nTVE test card\nUEIT\nComputer languages\nHello, world\nQuine\nTrabb Pardo–Knuth algorithm\nMan or boy test\nJust another Perl hacker\nData compression\nCalgary corpus\nCanterbury corpus\nSilesia corpus\nenwik8, enwik9\n3D computer graphics\n3DBenchy\nCornell box\nStanford bunny\nStanford dragon\nUtah teapot\nList\n2D computer graphics\nGhostscript tiger\nLenna\nTypography (filler text)\nEtaoin shrdlu\nHamburgevons\nLorem ipsum\nThe quick brown fox jumps over the lazy dog\nOther\nAcid\n1\n2\n3\n\"Bad Apple!!\"\nBig Buck Bunny\nDoom\nEICAR test file\nFunctions for optimization\nGTUBE\nHarvard sentences\n\"The North Wind and the Sun\"\n\"Tom's Diner\"\nSMPTE universal leader\nEURion constellation\nWebdriver Torso\n1951 USAF resolution test chart\n\nvteTypewritersManufacturers\nBrother\nCommodore\nRemington\nIBM\nImperial\nOliver\nOlivetti\nOlympia\nRoyal\nSharp\nSilver Reed\nSmith Corona\nTriumph-Adler\nUnderwood\nXerox\nModels\nBlickensderfer typewriter\nData Recall Diamond\nHammond Typewriter\nHansen Writing Ball\nIBM Electric\nIBM Selectric\nIBM Wheelwriter\nSholes and Glidden typewriter\nOlivetti Lettera 22\nOlivetti Valentine\nHermes 3000\nYatran\nProminent figures\nLucien Stephen Crandall\nFrank Haven Hall\nJames Densmore\nCarlos Glidden\nRasmus Malling-Hansen\nHenry Mill\nJohn Pratt\nClarence Seamans\nChristopher Sholes\nJames Fields Smathers\nLyman Cornelius Smith\nSamuel W. Soulé\nKyota Sugimoto\nEttore Sottsass\nComponents\nKeyboard layout\nAZERTY\nDvorak\nTurkish F\nHCESAR\nQWERTY\nQWERTZ\nQZERTY\nPlaten\nRelated equipment\nCarbon paper\nCorrection fluid\nErasing shield\nInk ribbon\nStenotype\nTypewriter desk\nTypewriter eraser\nOther scripts\nChinese\nJapanese\nThai\nCultural aspects\nBoston Typewriter Orchestra\nCopy typist\nSamizdat\nSpeed typing contest\nThe quick brown fox jumps over the lazy dog\nTouch typing\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRetrieved from \"https://en.wikipedia.org/w/index.php?title=The_quick_brown_fox_jumps_over_the_lazy_dog&amp;oldid=1371830068\"\n\t\t\t\t\tCategories: 1880s neologisms1880s quotationsEnglish phrasesFiller textPangramsTest itemsTypographyHidden categories: Articles with short descriptionShort description is different from WikidataWikipedia indefinitely semi-protected pagesCS1 errors: ISBN dateAll articles with unsourced statementsArticles with unsourced statements from March 2019CS1 maint: deprecated archival serviceWebarchive template wayback linksCommons category link from Wikidata\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t This page was last edited on 28 August 2026, at 18:58&#160;(UTC).\n\tPage was rendered with Parsoid.\n\tText is available under the Creative Commons Attribution-ShareAlike 4.0 License;\nadditional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.\n\n\n\t\t\t\t\n\tPrivacy policy\n\tAbout Wikipedia\n\tDisclaimers\n\tContact Wikipedia\n\tLegal &amp; safety contacts\n\tCode of Conduct\n\tDevelopers\n\tStatistics\n\tCookie statement\n\tMobile view\n\n\n\t\t\t\t\n\t\n\t\n\n\n\t\t\t\n\t\t\n\t \n \n\n\t\n\t\t\n\t\t\t\n\t\t\t\t\n\nSearch\n\t\t\t\n\t\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\tSearch\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\nToggle the table of contents\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\tThe quick brown fox jumps over the lazy dog\n\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\t\n\n\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\t\n\n21 languages\n\t\t\t\n\t\t\t\n\nAdd topic",
+      "title": "https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789526855958,
+        "end": 1789526856204
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.205Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526856205,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd20d001t7KnSfZ94xeIbF",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cceb6001cMf3K6OfKyk1vc",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 22082,
+      "output": 214,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 22296,
+      "headroom": 16560,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.205Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.205Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.206Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.206Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.207Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.207Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.211Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 22296,
+  "providerTokens": 22296,
+  "estimatedInputTokens": 7210,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 22082,
+    "cacheRead": 0,
+    "output": 214
+  },
+  "overflow": false,
+  "headroom": 16560,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.211Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.211Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.212Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.213Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.364Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526856364,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd2ab001LmkcsiVULEQUys",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cd213001OXZWodXH74pKZy",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.364Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.364Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526856364,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd2ac002ujHza7UCUodqYg",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cd213001OXZWodXH74pKZy",
+    "type": "tool",
+    "callID": "call_68facd6587f466d4",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.364Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526856364,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd2ac001klUPeXc1yxJNx2",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cd213001OXZWodXH74pKZy",
+    "type": "text",
+    "text": "मैं https://dyn.urbit.org/urbit-news/the-quick-brown-fox-in-hindi-a-fun-translation-1764802323 खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789526856364,
+      "end": 1789526856364
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:47:36.364Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526856364,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd2ac002ujHza7UCUodqYg",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cd213001OXZWodXH74pKZy",
+    "type": "tool",
+    "callID": "call_68facd6587f466d4",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://dyn.urbit.org/urbit-news/the-quick-brown-fox-in-hindi-a-fun-translation-1764802323"
+      },
+      "time": {
+        "start": 1789526856364
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.479Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526931479,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81cd2ac002ujHza7UCUodqYg",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cd213001OXZWodXH74pKZy",
+    "type": "tool",
+    "callID": "call_68facd6587f466d4",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://dyn.urbit.org/urbit-news/the-quick-brown-fox-in-hindi-a-fun-translation-1764802323"
+      },
+      "error": "AbortError: The operation was aborted.",
+      "time": {
+        "start": 1789526856364,
+        "end": 1789526931477
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789526931479,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "AbortError: The operation was aborted.",
+  "error": "AbortError: The operation was aborted."
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.481Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526931481,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81df818001R4cbClycZlAsad",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81cd213001OXZWodXH74pKZy",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 36760,
+      "output": 248,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 37008,
+      "headroom": 1848,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.482Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.486Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.488Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.489Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.493Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.494Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.501Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 37008,
+  "providerTokens": 37008,
+  "estimatedInputTokens": 7250,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 36760,
+    "cacheRead": 0,
+    "output": 248
+  },
+  "overflow": false,
+  "headroom": 1848,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.502Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.502Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.502Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.502Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.503Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.503Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.504Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.506Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526931707,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81df8f9001uG8izCBOP2rkWw",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81df82d001WxfBOWf2qTIb7f",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526931707,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81df8fb002Oda6rgR5mkCArS",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81df82d001WxfBOWf2qTIb7f",
+    "type": "tool",
+    "callID": "call_4d7e791674828fcb",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526931707,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81df8fb001F5nBu9p6k2JQ9a",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81df82d001WxfBOWf2qTIb7f",
+    "type": "text",
+    "text": "मैं https://www.typequicker.com/typing-speed-test/quick-brown-fox खोलकर उसकी सामग्री पढ़ता हूँ।",
+    "time": {
+      "start": 1789526931707,
+      "end": 1789526931707
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:51.707Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526931707,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81df8fb002Oda6rgR5mkCArS",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81df82d001WxfBOWf2qTIb7f",
+    "type": "tool",
+    "callID": "call_4d7e791674828fcb",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.typequicker.com/typing-speed-test/quick-brown-fox"
+      },
+      "time": {
+        "start": 1789526931707
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789526932306,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81df8fb002Oda6rgR5mkCArS",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81df82d001WxfBOWf2qTIb7f",
+    "type": "tool",
+    "callID": "call_4d7e791674828fcb",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.typequicker.com/typing-speed-test/quick-brown-fox"
+      },
+      "output": "The Quick Brown Fox Typing Test | Pangram WPM TestTyping Speed TestQuick Brown Fox Typing TestQuick Brown Fox Typing TestType the famous pangram that contains every letter. Perfect for improving typing speed and accuracy across all keys.00%Related Typing Speed TestsExplore other non-timed typing speed tests based on skill, format, or job focus.Typing Speed TestsTyping Speed Test HubBrowse all typing speed tests and choose the challenge that fits your goal.OpenTyping TestNumbers Only Typing TestType numbers using the number rowOpenTyping TestAlphanumeric Typing TestType mixed letters and numbersOpenTyping TestTyping Test with SymbolsType special characters and symbolsOpenTyping TestNo Punctuation Typing TestMeasure pure letter speed without punctuationOpenTyping TestSong Lyrics Typing TestType along to your favorite songsOpenTyping TestTyping Speed Test ScreenshotTake a typing speed test and save or share a screenshot of your results.OpenTyping TestType the Alphabet Typing TestHow fast can you type the alphabet? Take the alphabet typing test to find out your abcdefghijklmnopqrstuvwxyz speed and see where you rank.OpenTyping TestLiterature Typing TestTest your typing speed by typing literatureOpenJob-Specific TestTyping Test ExamPractice for job, school, and certificate typing assessmentsOpenJob-Specific TestTyping Test for Data EntryNumbers, dates, and form fieldsOpenJob-Specific TestTyping Test for DispatcherEmergency dispatch protocolsOpenJob-Specific TestTyping Test for 911 OperatorCritical emergency responseOpenJob-Specific TestMedical Typing TestMedical terminology typing for transcriptionists and scribesOpenTyping TestAesop Fables Typing TestType classic Aesop&#x27;s fables and moral storiesOpenTyping TestKeystrokes per Hour Typing TestTake a typing speed test which measures your typing speed in keystrokes per hour (KPH)OpenTyping TestWords Per Minute TestMeasure your WPM typing speed with a simple WPM typing testOpenCoding Typing TestJavaScript Typing TestTest your typing speed with real JavaScript codeOpenCoding Typing TestPython Typing TestTest your typing speed with real Python codeOpenCoding Typing TestJava Typing TestTest your typing speed with real Java codeOpenCoding Typing TestC Typing TestTest your typing speed with real C codeOpenCoding Typing TestC++ Typing TestTest your typing speed with real C++ codeOpenCoding Typing TestSQL Typing TestTest your typing speed with real SQL queriesOpenCoding Typing TestC# Typing TestTest your typing speed with real C# codeOpenCoding Typing TestPHP Typing TestTest your typing speed with real PHP codeOpenCoding Typing TestRust Typing TestTest your typing speed with real Rust codeOpenMaster All 26 Letters with the Quick Brown Fox Typing Test&quot;The quick brown fox jumps over the lazy dog&quot; is more than just a quirky sentence—it&#x27;s the gold standard for typing practice and keyboard testing. This famous pangram contains every letter of the English alphabet at least once, making it the perfect tool for comprehensive typing speed measurement. Whether you&#x27;re a beginner learning proper finger placement or an advanced typist aiming to break personal WPM records, this typing test provides complete keyboard coverage that regular text simply cannot match.The beauty of the quick brown fox typing test lies in its simplicity and effectiveness. Unlike conventional typing practice that may favor common letters like E, T, A, and O, this pangram forces you to use every key on your keyboard. This comprehensive coverage helps identify weaknesses in your typing technique—perhaps you struggle with Q and Z, or your pinky fingers lag behind on P and A. The balanced letter distribution reveals these gaps instantly, allowing you to focus your practice where it matters most.Since the typewriter era of the late 1800s, &quot;the quick brown fox jumps over the lazy dog&quot; has been the standard test for ensuring mechanical keyboards could produce clear, legible text for all letters. Today, it remains equally valuable for digital typing practice, font testing, and keyboard diagnostics. Professional typists, data entry specialists, and programmers all benefit from regular practice with this sentence because it builds muscle memory across the entire keyboard, not just the most frequently used keys.How to Improve Your Words Per Minute with This Typing Speed TestImproving your typing speed with the quick brown fox test requires a systematic approach focused on accuracy before speed. Start by typing the sentence slowly with perfect accuracy, ensuring each keystroke is deliberate and correct. Position your hands properly on the home row—left hand on A, S, D, F and right hand on J, K, L, semicolon—and maintain this position throughout. The small bumps on the F and J keys help you find the correct position without looking down at the keyboard.As you practice, pay close attention to letters that slow you down or cause frequent errors. Common trouble spots include the less frequently used letters like Q, X, and Z, as well as letters that require your weaker fingers. Your pinky fingers, for instance, must reach for Q, P, A, and the semicolon—all critical letters in this pangram. Dedicated practice on these weak areas, perhaps by typing the sentence multiple times in succession, will gradually build the muscle memory needed for fluid, automatic typing.Track your progress over time by taking the quick brown fox typing test regularly—ideally daily or several times per week. Record both your WPM (words per minute) and accuracy percentage. A good typing speed for this test starts at 40-60 WPM for intermediate typists, with advanced typists reaching 70+ WPM and professionals exceeding 90 WPM. Remember that accuracy is paramount; typing at 50 WPM with 98% accuracy is far more valuable than rushing to 70 WPM with only 85% accuracy, because corrections disrupt your flow and waste time.Beyond raw practice, consider your ergonomic setup and typing environment. Sit with good posture, keep your wrists straight and hovering above the keyboard rather than resting on the desk, and position your screen at eye level to prevent neck strain. These physical considerations become increasingly important as you practice longer sessions. Many professional typists also recommend the 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds to reduce eye strain and maintain focus during extended typing practice.Frequently Asked QuestionsWhat is &quot;the quick brown fox jumps over the lazy dog&quot;?&quot;The quick brown fox jumps over the lazy dog&quot; is a pangram - a sentence that contains every letter of the English alphabet at least once. This 35-character sentence uses all 26 letters, making it perfect for testing keyboards, fonts, and typing skills. It&#x27;s been the gold standard for typing practice since typewriter days.Why is the quick brown fox used for typing tests?The quick brown fox sentence is ideal for typing tests because it exercises all letters equally, helping you identify weak spots in your typing technique. Unlike regular text, this pangram ensures you practice every key on your keyboard, making it more effective for measuring true typing speed and accuracy across all letter combinations.How can I improve my WPM using the quick brown fox typing test?To improve your words per minute (WPM) with the quick brown fox test, practice typing the sentence repeatedly while focusing on accuracy first, then gradually increase speed. Pay attention to letters you frequently mistype, practice proper finger positioning, and take regular tests to track your progress over time.What&#x27;s a good typing speed for the quick brown fox test?For the quick brown fox typing test, beginners typically achieve 20-30 WPM, intermediate typists reach 40-60 WPM, and advanced typists exceed 70 WPM. Professional typists can type this pangram at 90+ WPM with high accuracy. Remember that accuracy is more important than speed - aim for 95%+ accuracy before focusing on increasing your WPM.Are there alternatives to the quick brown fox for typing practice?Yes, there are several pangram alternatives including &quot;Pack my box with five dozen liquor jugs&quot; (32 letters) and &quot;The five boxing wizards jump quickly&quot; (31 letters). However, &quot;the quick brown fox jumps over the lazy dog&quot; remains the most popular due to its natural flow and widespread recognition, making it the standard for typing tests worldwide.Ready to Start  Typing Faster?Get StartedProductFeaturesWhy TypeQuickerAboutBlogLearnGlossaryUpdatesPricingSchool PricingFAQAbout UsSitemapStart TypingTyping PracticeTyping Speed TestCode Typing PracticeTyping GamesTouch TypingKeyboardingTyping GamesTyping DinoResourcesAverage Typing SpeedTyping CertificateTyping TestKeystrokes Per HourQuick Brown FoxNo PunctuationAlphabet Typing TestTyping PracticeCode Typing PracticeParagraphs Typing PracticeLeft Hand Typing PracticeRight Hand Typing PracticeTyping Warm UpSentencesTyping LessonsHome RowTop RowCompareTypingClubKeybrMonkeytypeTypeRacerTyping AgentView allToolsKeyboard TesterKeyboard Polling Rate TestBrowser ExtensionResourcesCareersCareersContributorsSupportContact UsOpen CollectivePrivacy PolicyTerms of ServiceRefund PolicyAccessibility© 2026 TypeQuicker. All rights reserved.",
+      "title": "https://www.typequicker.com/typing-speed-test/quick-brown-fox (text/html; charset=utf-8)",
+      "metadata": {},
+      "time": {
+        "start": 1789526931707,
+        "end": 1789526932305
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.306Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526932306,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81dfb52001t5SzG5302fMLxm",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81df82d001WxfBOWf2qTIb7f",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 36922,
+      "output": 190,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 37112,
+      "headroom": 1744,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.307Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.307Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.309Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.310Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.310Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.313Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 37112,
+  "providerTokens": 37112,
+  "estimatedInputTokens": 9164,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 36922,
+    "cacheRead": 0,
+    "output": 190
+  },
+  "overflow": false,
+  "headroom": 1744,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.314Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.314Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.315Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.455Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789526932455,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81dfbe6001xdfDscaNmd4jh9",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81dfb59001il0B0Hg9JC2K66",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789526932456,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81dfbe7001orAQZH6T1ZAd9s",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81dfb59001il0B0Hg9JC2K66",
+    "type": "text",
+    "text": "↑ \"Search for 'quick brown fox'\". ↑ \"The Fox Typewriter\". title=The_quick_brown_fox_jumps_over_the_lazy_dog&amp;oldid=1371830068\"\n\nSource: https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog\n\nAbortError: The operation was aborted.\n\nSource: https://dyn.urbit.org/urbit-news/the-quick-brown-fox-in-hindi-a-fun-translation-1764802323\n\nThe Quick Brown Fox Typing Test | Pangram WPM TestTyping Speed TestQuick Brown Fox Typing TestQuick Brown Fox Typing TestType the famous pangram that contains every letter. It&#x27;s been the gold standard for typing practice since typewriter days.Why is the quick brown fox used for typing tests? The quick brown fox sentence is ideal for typing tests because it exercises all letters equally, helping you identify weak spots in your typing technique.\n\nSource: https://www.typequicker.com/typing-speed-test/quick-brown-fox",
+    "time": {
+      "start": 1789526932456,
+      "end": 1789526932456
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789526932456,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "part": {
+    "id": "prt_0a81dfbe8001RM1kg0heGYnTRq",
+    "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+    "messageID": "msg_0a81dfb59001il0B0Hg9JC2K66",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 46345,
+      "output": 877,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 47222,
+      "headroom": -8366,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.457Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.457Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.459Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.459Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.459Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.459Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.459Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.459Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.460Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.460Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.460Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789526932460,
+  "sessionID": "ses_f57e33d79ffeWxV0SKt2DyAXvR"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.461Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.461Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.461Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.461Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.rxIr6kcx4b",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T02:48:52.461Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 80,
+  "message": "Agent exiting"
+}
+

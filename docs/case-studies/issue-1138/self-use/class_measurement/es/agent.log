@@ -1,0 +1,1515 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.273Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.274Z",
+  "service": "default",
+  "version": "0.26.0",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt ¿Hasta qué profundidad llegan las raíces del roble? --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.274Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.274Z",
+  "service": "project",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.318Z",
+  "service": "default",
+  "processArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "¿Hasta qué profundidad llegan las raíces del roble?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "¿Hasta qué profundidad llegan las raíces del roble?",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-models",
+    "(same)",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.318Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.320Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.321Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.322Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.333Z",
+  "service": "config",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.341Z",
+  "service": "config",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.352Z",
+  "service": "models.dev",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 6603,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.352Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.376Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "error",
+  "timestamp": "2026-09-16T03:19:48.399Z",
+  "service": "claude-oauth",
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.400Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.400Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.400Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.400Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.400Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.400Z",
+  "service": "provider",
+  "providerID": "link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.400Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 80,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.401Z",
+  "service": "default",
+  "models": [
+    "same"
+  ],
+  "source": "cli",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "model_resolved",
+  "timestamp": "2026-09-16T03:19:48.401Z",
+  "requested": "formal-ai/formal-ai",
+  "selector": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "source": "cli",
+  "matchesRequest": true
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.428Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.428Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.429Z",
+  "service": "session",
+  "id": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "version": "0.26.0",
+  "projectID": "global",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A",
+  "title": "New session - 2026-09-16T03:19:48.429Z",
+  "time": {
+    "created": 1789528788429,
+    "updated": 1789528788429
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.430Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.430Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.430Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 2,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.431Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.431Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_f57c5b232ffe7WwmsQFa1LC5DA/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.431Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_f57c5b232ffe7WwmsQFa1LC5DA/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.438Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 7,
+  "method": "POST",
+  "path": "/session/ses_f57c5b232ffe7WwmsQFa1LC5DA/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.443Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.445Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.446Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.449Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.452Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.452Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.453Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.454Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.454Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.454Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.455Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.455Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.455Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.716Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.720Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.720Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.749Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.754Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.773Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.773Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.774Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:48.774Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:49.270Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528789270,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5110001hk0Z8fxXIGkumT",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a4eef001GLr5g6rqKZCROF",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:49.271Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:49.271Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528789271,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5117001DBtvcMrElny2F4",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a4eef001GLr5g6rqKZCROF",
+    "type": "tool",
+    "callID": "call_395692cc7cc5819e",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:49.271Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528789271,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5116001jJAXibBZp0QHOS",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a4eef001GLr5g6rqKZCROF",
+    "type": "text",
+    "text": "Let me search the web for ¿Hasta qué profundidad llegan las raíces del roble.",
+    "time": {
+      "start": 1789528789271,
+      "end": 1789528789271
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:49.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528789272,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5117001DBtvcMrElny2F4",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a4eef001GLr5g6rqKZCROF",
+    "type": "tool",
+    "callID": "call_395692cc7cc5819e",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "¿Hasta qué profundidad llegan las raíces del roble"
+      },
+      "time": {
+        "start": 1789528789271
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.745Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528790745,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5117001DBtvcMrElny2F4",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a4eef001GLr5g6rqKZCROF",
+    "type": "tool",
+    "callID": "call_395692cc7cc5819e",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "¿Hasta qué profundidad llegan las raíces del roble"
+      },
+      "output": "Title: Quercus robur L.\nURL: https://www.asturnatura.com/especie/quercus-robur\nPublished: 2006-10-18T00:00:00.000Z\nAuthor: Juan Luis Menéndez Valderrey\nHighlights:\nÁrbol caducifolio que alcanza hasta 30 m de altura, con la copa globosa, amplia y bastante regular. Las raíces están bien desarrolladas, son profundas y tienen un eje central grueso de hasta 1.5 m de profundidad. El tronco esderecho, con corteza grisácea y lisa hasta los 20 años, para hacerse luego parda, gruesa, y agrietada longitudinalmente. Las ramas son glabras y tienen yemas aovadas, glabrescentes, de entre 2 y 5 mm. Las hojas, de 5 - 18 x 2.2 - 10 cm, son caducas, membranosas, glabras, obovadas u oblongo - obovadas, pinnatilobadas o pinnatífidas, más claras por el envés, que además es glaucescente; la base es auriculada; tienen 4 - 8 pares de nervios secundarios que alcanzan el borde de los lóbulos y además otros nervios sinusales a los senos; el peciolo es corto, de 2 a 7 mm. Las flores son unisexuales. Las masculinas aparecen en amentos colgantes de 5 - 13 cm, tienen un perianto pateniforme, con 6 lóbulos, 6 - 12 estambres de anteras exertas y glabras. Las flores femeninas se disponen en grupos de 2 o 3 sobre un largo pedúnculo axilar; están rodeadas por un involucro formado por varias escamas; tienen un perianto subcampanulado y un ovario tricarpelar del que surgen dos cortos estilos divergentes que finalizan en estigmas suborbiculares, pardos con tonos rojizos y ligeramente patentes. El fruto, la bellota, de maduración anual, es un aquenio de 20 - 40 x 8 - 18 mm, lustroso y pardo, con un pedúnculo de hasta 12 cm y colgante; la cúpula, de 8 - 15 x 15 - 20 mm, tiene escamas ovado - triangulares, imbricadas y más o menos soldadas entre ellas; el endocarpo es glabrescente. Florece de abril a mayo y las bellotas maduran de octubre a noviembre.\n\n---\n\nTitle: Quercus robur\nURL: https://creatuseto.fundacionfire.org/especie/quercus-robur/\nPublished: N/A\nAuthor: N/A\nHighlights:\nRaíces bien desarrolladas, son profundas y tienen un eje central grueso de hasta 1.5 m de profundidad.\n...\n- Árbol grande\n- Altura: De 20 a 40 metros\n- Tipo de copa: Amplia y regular\n- Tipo de hoja: Caducifolio\n- Con flores. De abril a junio.\n- Con frutos. De septiembre a octubre.\n- No tiene espinas\n- Profundidad de la raiz: 1.5 cm.\n\n---\n\nTitle: C_Qrobur – Especies Forestales de España\nURL: https://especiesforestales.com/C_Qrobur/\nPublished: N/A\nAuthor: N/A\nHighlights:\nen profundos\n...\nEje central que puede llegar hasta 1,5 m.\n...\nFacilidad para adaptarse a cualquier tipo de suelo, aunque veget\n...\nmal en escasa profundidad.\n\n---\n\nTitle: Raíces de roble\nURL: https://www.mundojardineria.com/preguntas/raices-de-roble\nPublished: 2016-03-26T23:27:00.000Z\nAuthor: N/A\nHighlights:\nHola! El Roble tiene una raíz central y a los 8-9 años empieza a desarrollar raíces ramificadas que llegan a una profundidad de 1-1,50 m. Por cierto llega a vivir hasta 1500 años. Un saludo.\n...\nPor norma general las raíces de un roble suelen ser profundas sobre todo la principal, pero eso no quiere decir que algunas puedan ser superficiales, y si pueden dañar los cimientos, la solución es levantar el terreno por donde vallan las raíces y cortar sin problema por que es el sistema periferíco y así se acaba el problema\n\n---\n\nTitle: Raíces de roble: ¿a qué profundidad crecen y por qué? | Jardinería\nURL: https://es.hobbygardeners.com/33183170-oak-roots-how-deep-do-they-grow-and-why\nPublished: 2023-12-16T16:46:37.000Z\nAuthor: N/A\nHighlights:\nLos robles se encuentran entre los árboles de hoja caduca de raíces profundas. Desarrollan raíces pivotantes muy fuertes que penetran tan profundamente en la tierra que pueden llegar al agua subterránea. Si la raíz está dañada, el árbol morirá rápidamente.\n...\nLos robles tienen raíces pivotantes profundas que penetran muchos metros en el suelo y llegan al agua subterránea, así como corredores laterales. Estas raíces dan al roble un alto grado de estabilidad y resistencia a las tormentas y le permiten absorber nutrientes y agua de las capas profundas de la tierra.\n...\nInmediatamente después de que una bellota haya germinado, el propietario del jardín puede notar que en la parte inferior de la fruta se desarrollan raíces pequeñas y fuertes que descienden hacia abajo. Estas son las llamadas raíces pivotantes. A los lados de estas raíces pivotantes se forman pequeñas extensiones de raíces que parecen pequeños pelos.\n...\nLa raíz principal proporciona al roble todos los nutrientes y agua necesarios. El sistema de raíces del roble es tan fuerte que puede penetrar incluso las capas de suelo compactadas.\n...\nLas pequeñas raíces superiores alcanzan las mismas dimensiones que la copa del árbol sobre el suelo, justo debajo de la superficie de la tierra.\n...\nDebido a su sistema de raíces, los robles se consideran especialmente resistentes a las tormentas, ya que sus largas raíces pivotantes se hunden a muchos metros de profundidad en el suelo. Esto le da al árbol una gran estabilidad.\n...\nGracias a su larga raíz pivotante, los robles pueden obtener nutrientes y agua incluso de capas de tierra muy profundas. Por lo tanto, no es necesario fertilizar ni regar los robles más viejos del jardín.\n\n---\n\nTitle: ¿Cómo es la raíz de un roble?\nURL: https://todosloshechos.es/como-es-la-raiz-de-un-roble\nPublished: N/A\nAuthor: N/A\nHighlights:\nPreguntado\n...\n| Última\n...\nEl Roble tiene una raíz central y a los 8-9 años empieza a desarrollar raíces ramificadas que llegan a una profundidad de 1-1,50 m. Por cierto llega a vivir hasta 1500 años.\n\n---\n\nTitle: Roble de raíces profundas: ¿Qué lo hace tan estable y fácil de cuidar? | Jardinería\nURL: https://es.hobbygardeners.com/33221201-deep-rooted-oak-what-makes-it-so-stable-and-easy-to-care-for\nPublished: 2023-12-16T16:46:37.000Z\nAuthor: N/A\nHighlights:\nLos robles son árboles de raíces profundas con una raíz pivotante larga que puede alcanzar hasta 40 m de profundidad en la tierra. La profundidad es importante para llegar a capas profundas de agua subterránea, asegurar el suministro de agua y proteger el roble de los daños causados por tormentas.\n...\nEs la llamada raíz pivotante del roble que penetra profundamente en la tierra. Inevitablemente tiene que ser especialmente fuerte para poder penetrar incluso las capas más duras del suelo o evitar obstáculos como piedras.\n...\n- crece a partir de la radícula larga\n- suele ser exactamente tan largo como el árbol es alto\n- puede alcanzar una longitud de hasta 40 m con el paso de los años\n- llega tan profundamente en la tierra como crece verticalmente\n...\nLas numerosas especies de robles están equipadas con una raíz pivotante, porque su penetración en las profundidades es importante para la supervivencia del árbol.\n...\n- se alcanzan capas profundas de agua subterránea\n- De este modo se garantiza el suministro de agua\n- La raíz que crece profundamente en el suelo actúa como un ancla\n- esto le da estabilidad al roble\n- ni siquiera las tormentas fuertes pueden arrancarlos\n\n---\n\nTitle: Roble\nURL: https://plantas-y-animales.fandom.com/es/wiki/Roble\nPublished: N/A\nAuthor: N/A\nHighlights:\nSus raíces tienden a profundizar; al año suele tener una raíz central relativamente desarrollada y puede llegar a penetrar a una profundidad de metro y medio en el suelo; de 6 a 8 años, emite las raíces laterales y en conjunto emite un sistema radical penetrante y profundo. Su corteza es grisácea y bastante lisa para su primera edad pero más tarde se resquebraja con grietas profundas.",
+      "title": "Web search: ¿Hasta qué profundidad llegan las raíces del roble",
+      "metadata": {},
+      "time": {
+        "start": 1789528789271,
+        "end": 1789528790744
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.748Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528790748,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a56db0015Wu6CY2vACWH7u",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a4eef001GLr5g6rqKZCROF",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 8547,
+      "output": 148,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 8695,
+      "headroom": 30161,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.748Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.748Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.749Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.749Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.750Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.750Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.750Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.750Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.750Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.750Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.753Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8695,
+  "providerTokens": 8695,
+  "estimatedInputTokens": 1991,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 8547,
+    "cacheRead": 0,
+    "output": 148
+  },
+  "overflow": false,
+  "headroom": 30161,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.754Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.754Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.756Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:50.757Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.476Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528791476,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a59b20014u03xs2hznaZ7Q",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a56e1001ohYLtKgV07efsb",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.476Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.476Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528791477,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a59b4002m9ZwstsJ2A5I8l",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a56e1001ohYLtKgV07efsb",
+    "type": "tool",
+    "callID": "call_2d75f93b19da77d5",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528791477,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a59b4001EWTvitV9rl7K7L",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a56e1001ohYLtKgV07efsb",
+    "type": "text",
+    "text": "Let me open https://www.asturnatura.com/especie/quercus-robur and read what it says.",
+    "time": {
+      "start": 1789528791477,
+      "end": 1789528791477
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528791477,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a59b4002m9ZwstsJ2A5I8l",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a56e1001ohYLtKgV07efsb",
+    "type": "tool",
+    "callID": "call_2d75f93b19da77d5",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.asturnatura.com/especie/quercus-robur"
+      },
+      "time": {
+        "start": 1789528791477
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.729Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1789528791729,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a59b4002m9ZwstsJ2A5I8l",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a56e1001ohYLtKgV07efsb",
+    "type": "tool",
+    "callID": "call_2d75f93b19da77d5",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://www.asturnatura.com/especie/quercus-robur"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1789528791477,
+        "end": 1789528791725
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1789528791729,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "message": "Error: Request failed with status code: 403",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.731Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528791731,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5ab2001WyCC00N4zC2cEg",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a56e1001ohYLtKgV07efsb",
+    "type": "step-finish",
+    "reason": "tool-calls",
+    "cost": 0,
+    "tokens": {
+      "input": 16122,
+      "output": 167,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 16289,
+      "headroom": 22567,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.731Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.732Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.738Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.738Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.777Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.778Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.778Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.778Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.805Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.805Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.806Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 16289,
+  "providerTokens": 16289,
+  "estimatedInputTokens": 2015,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 16122,
+    "cacheRead": 0,
+    "output": 167
+  },
+  "overflow": false,
+  "headroom": 22567,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.807Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.807Z",
+  "service": "system-prompt",
+  "prompt": "anthropic",
+  "model": "formal-ai",
+  "message": "system prompt: anthropic (default for unknown model formal-ai)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.831Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:51.833Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.219Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1789528792219,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5c9a001eVasXgap8NoUaZ",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a5afe001tUSqKKanpSZ2O7",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.219Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1789528792220,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5c9b001Mu7ojjHUGX73al",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a5afe001tUSqKKanpSZ2O7",
+    "type": "text",
+    "text": "The command failed: Error: Request failed with status code: 403\n\nDetecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe del problema con el contexto de diagnóstico? Responde `Report issue`.",
+    "time": {
+      "start": 1789528792219,
+      "end": 1789528792219
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.220Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1789528792220,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "part": {
+    "id": "prt_0a83a5c9c001sM7Q34Un1vtyoL",
+    "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+    "messageID": "msg_0a83a5afe001tUSqKKanpSZ2O7",
+    "type": "step-finish",
+    "reason": "stop",
+    "cost": 0,
+    "tokens": {
+      "input": 16249,
+      "output": 221,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 16470,
+      "headroom": 22386,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.221Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.221Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.222Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.222Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.224Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.224Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.224Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.224Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.225Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.225Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.226Z",
+  "service": "session.prompt",
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.227Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.227Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1789528792227,
+  "sessionID": "ses_f57c5b232ffe7WwmsQFa1LC5DA"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.228Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.228Z",
+  "service": "default",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.228Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.228Z",
+  "service": "state",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.QlU6MbyH4A",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-09-16T03:19:52.228Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}
+

@@ -22,7 +22,7 @@ fn dreaming_audit_is_derived_from_the_live_recipe_not_hardcoded() {
     let document = dreaming_audit::render_document();
     // The analysis is computed by cross-referencing the recipe's own records.
     assert!(document.contains("method \"derived at runtime"));
-    assert!(document.contains("grounded_recipe_steps \"13\""));
+    assert!(document.contains("grounded_recipe_steps \"17\""));
     assert!(document.contains("multilingual_cues \"22\""));
     assert!(document.contains("stage \"apply_future_tasks\""));
     assert!(document.contains("stage \"replay_candidates\""));
@@ -73,7 +73,7 @@ fn formal_ai_drives_the_dreaming_audit_through_agent_cli() {
     assert_eq!(arguments["path"], DREAMING_AUDIT_PATH);
     assert_eq!(arguments["content"], dreaming_audit::render_document());
     assert_eq!(outcome.steps[1].tool, "run_command");
-    assert!(outcome.final_answer.contains("13 stages analyzed"));
+    assert!(outcome.final_answer.contains("17 stages analyzed"));
     assert!(outcome.final_answer.contains("0 open gap(s)"));
 }
 

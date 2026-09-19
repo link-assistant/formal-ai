@@ -2,33 +2,56 @@ sources_registry
   source wikidata
     name "Wikidata"
     kind structured_knowledge
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    need_kinds (concept)
+    extractor wikidata_entity_v1
+    how_to_role none
     primacy editorial_synthesis
       upstream "the external references cited on each statement"
       basis "Wikidata:Verifiability, the project's own policy, requires each statement to cite a source outside Wikidata, so an item is a synthesis one hop from the references it names."
     api "https://www.wikidata.org/wiki/Special:EntityData/{id}.json"
+    lexeme_api "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&type=lexeme&search={lemma}&language={language}&uselang={language}&limit=5"
+    api_language en ru hi zh es
     license_name "CC0 1.0"
     license_url "https://creativecommons.org/publicdomain/zero/1.0/"
     cache_path data/cache/wikidata/
     id_pattern ("Q" "P" "L")
-    note "Entities (Q), properties (P), and lexemes (L). Public-domain dump and EntityData API; one raw .json plus a compact .lino projection per id under entity/property/lexeme folders."
+    note "Entities (Q), properties (P), and lexemes (L). Public-domain dump and EntityData API; one raw .json plus a compact .lino projection per id under entity/property/lexeme folders. `api` binds {id}, which a bare surface cannot supply, so this source never enters a concept walk; `lexeme_api` is the surface-addressable endpoint plan 01 L10 measured against and is declared here so the attempt is rediscoverable. Measured 2026-09-16 against the held-out corpus: it returns an empty `search` array for both held-out surfaces in en, hi and ru, and one Spanish lexeme for one of them."
   source wiktionary
     name "Wiktionary"
     kind dictionary
+    service_group external_trusted
+    settings_key externalServiceWiktionary
+    default_enabled true
+    need_kinds (concept)
+    extractor wiktionary_entry_v1
+    how_to_role none
     primacy editorial_synthesis
       upstream "the durably archived usages each entry attests"
       basis "Wiktionary's criteria for inclusion require an entry to be attested from durably archived sources, so an entry stands one hop from the usage record it summarises."
-    api "https://api.dictionaryapi.dev/api/v2/entries/en/{lemma}"
+    api "https://api.dictionaryapi.dev/api/v2/entries/{language}/{lemma}"
+    language_api "https://{language}.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles={lemma}"
+    api_language en ru hi zh es
     license_name "CC BY-SA 3.0"
     license_url "https://creativecommons.org/licenses/by-sa/3.0/"
     cache_path data/cache/wiktionary/
-    note "Free Dictionary API serving Wiktionary content; one verified entry per English lemma as .json plus a lossless .lino projection."
+    note "Free Dictionary API serving Wiktionary content; one verified entry per English lemma as .json plus a lossless .lino projection. `language_api` is the same project's own per-language endpoint, added by plan 01 L10 after the coverage measurement: the Free Dictionary surface serves only the language `api_language` leads with, so every other language is asked through its own Wiktionary's MediaWiki extracts API. It binds {lemma} and not {title} because Wiktionary alone among the wikis is first-letter case-sensitive, so a capitalised title misses every lowercase entry. Measured 2026-09-16 against the held-out corpus: it answers zh for one of the two held-out surfaces, and it is the endpoint on which hi was measured unserved for both."
   source wordnet
     name "Open English WordNet 2024"
     kind lexical_database
+    service_group external_trusted
+    settings_key externalServiceWordnet
+    default_enabled true
+    need_kinds (concept)
+    extractor wordnet_sense_v1
+    how_to_role none
     primacy editorial_synthesis
       upstream "the corpus evidence the lexicographers compiled the synsets from"
       basis "The Open English WordNet lexicon is compiled by lexicographers from recorded English usage, so on the meaning of a word it is a synthesis over that usage rather than the usage itself."
-    api "https://en-word.net/"
+    api "https://en-word.net/api/lemma/{lemma}"
+    api_language en
     license_name "CC BY 4.0"
     license_url "https://creativecommons.org/licenses/by/4.0/"
     cache_path data/cache/wordnet/
@@ -36,10 +59,17 @@ sources_registry
   source wikipedia
     name "Wikipedia"
     kind encyclopedia
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    need_kinds (concept)
+    extractor mediawiki_summary_v1
+    how_to_role none
     primacy editorial_synthesis
       upstream "the published sources each article cites"
       basis "Wikipedia:No original research, the project's own policy, requires article content to come from published sources, so an article stands one hop from the sources it cites."
-    api "https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
+    api "https://{language}.wikipedia.org/api/rest_v1/page/summary/{title}"
+    api_language en ru hi zh es
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
     cache_path data/cache/wikipedia/
@@ -51,6 +81,7 @@ sources_registry
     settings_key externalServiceWikihow
     default_enabled true
     how_to_role primary
+    need_kinds (procedure)
     source_tier independent_corroboration
     primacy editorial_synthesis
       upstream "the procedures its contributors and credited expert reviewers describe"
@@ -67,6 +98,7 @@ sources_registry
     settings_key externalServiceStackExchange
     default_enabled true
     how_to_role secondary
+    need_kinds (concept procedure)
     source_tier independent_corroboration
     primacy citation
       upstream "the documentation and command output the answers quote"
@@ -84,6 +116,7 @@ sources_registry
     settings_key externalServiceMediawikiFamily
     default_enabled true
     how_to_role secondary
+    need_kinds (part procedure)
     source_tier independent_corroboration
     primacy editorial_synthesis
       upstream "the function definitions its contributors publish"
@@ -103,6 +136,7 @@ sources_registry
     settings_key externalServiceMediawikiFamily
     default_enabled true
     how_to_role secondary
+    need_kinds (part procedure)
     source_tier independent_corroboration
     primacy editorial_synthesis
       upstream "the language implementations its contributors exercised"
@@ -120,6 +154,7 @@ sources_registry
     settings_key externalServiceMediawikiFamily
     default_enabled true
     how_to_role secondary
+    need_kinds (procedure)
     source_tier independent_corroboration
     primacy editorial_synthesis
       upstream "the published sources its textbooks build on"
@@ -136,6 +171,7 @@ sources_registry
     settings_key externalServiceMediawikiFamily
     default_enabled true
     how_to_role secondary
+    need_kinds (procedure)
     source_tier independent_corroboration
     primacy editorial_synthesis
       upstream "the published material its courses and lab procedures build on"
@@ -152,6 +188,7 @@ sources_registry
     settings_key externalServiceMediawikiFamily
     default_enabled true
     how_to_role secondary
+    need_kinds (procedure)
     source_tier independent_corroboration
     primacy editorial_synthesis
       upstream "the travellers' reports and official information its guides summarise"
@@ -168,6 +205,7 @@ sources_registry
     settings_key externalServiceGithub
     default_enabled true
     how_to_role secondary
+    need_kinds (concept procedure prerequisite)
     source_tier original_first_party
     primacy self_published
       basis "A repository's README and docs tree are published by the project they document, so on the question of how that project works the source is the subject speaking about itself."
@@ -176,6 +214,35 @@ sources_registry
     license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
     cache_path data/cache/github/
     note "Project READMEs and docs/ trees for software 'how to' questions, fetched per repository; each repo carries its own license. Consulted live and opt-out-able from settings."
+  source oeis
+    name "The On-Line Encyclopedia of Integer Sequences"
+    kind sequence_catalog
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part)
+    extractor oeis_sequence_v1
+    primacy editorial_synthesis
+      upstream "the formulas, references, and programs attached to each sequence record"
+      basis "OEIS records are curated descriptions of integer sequences assembled from their cited mathematical sources and contributor submissions."
+    api "https://oeis.org/search?q={query}&fmt=json"
+    license_name "CC-BY-SA-4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/oeis/
+    note "Official sequence search and record JSON used to retrieve definitions and recurrence parts; candidate programs remain hypotheses until the ordinary verifier accepts them."
+  source python_docs
+    name "Python 3.12 standard-library documentation"
+    kind language_documentation
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part procedure)
+    extractor python_docs_v1
+    primacy self_published
+      basis "The Python Software Foundation publishes the language and standard-library documentation for the implementation it stewards."
+    api "https://docs.python.org/3.12/library/{title}"
+    license_name "PSF-2.0"
+    license_url "https://docs.python.org/3/license.html"
+    cache_path data/cache/python-docs/
+    note "Official Python standard-library reference used to discover callable parts and their semantics from documentation rather than a compiled symbol list."
   source wikinews
     name "Wikinews"
     kind original_journalism
@@ -183,6 +250,7 @@ sources_registry
     settings_key externalServiceMediawikiFamily
     default_enabled true
     how_to_role none
+    need_kinds (evidence)
     source_tier original_journalism
     primacy first_hand_record
       basis "Wikinews:Original reporting, the project's own policy, covers material its reporters gathered themselves, so a story under that policy is a first-hand record of the event rather than a report of someone else's report."

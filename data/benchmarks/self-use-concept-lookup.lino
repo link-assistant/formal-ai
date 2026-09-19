@@ -1,0 +1,73 @@
+self_use_concept_lookup
+  record_type "benchmark_suite"
+  id "issue_1138_self_use_concept_lookup"
+  title "Wave F self-use observations: live concept lookup (plan 01)"
+  purpose "Issue #1138 plan 14 wave F. Every case here was produced by giving Formal AI a held-out prompt through the real `@link-assistant/agent` CLI and through `formal-ai chat`, and recording what came back. No case was authored from imagination and no failure recorded here was repaired by hand. The raw transcripts are under docs/case-studies/issue-1138/self-use/."
+  runner "cargo test --test unit issue_1138_self_use_concept_lookup"
+  report_mode "Per-case observed outcome with the binary version and commit that produced it. A case moves from `observed_failure` to `observed_pass` only when a re-run of the same prompt against a newer binary produces the required behaviour; the expectation is never weakened."
+  held_out_policy "Every prompt is verified absent from data/seed/** and src/** before the case is committed. `isogram` and `lipogram` occur nowhere under src/ or data/seed/."
+  topic "concept_lookup / universal loop / language parity"
+  observed_with "formal-ai 0.350.0"
+  observed_at_commit "dc9b0574607a26f3e1c8bdb8ce93c0c7f786f197"
+  case_count "3"
+  language_count "5"
+self_use_case_provider_description_instead_of_lookup
+  record_type "benchmark_case_family"
+  id "provider_description_instead_of_lookup"
+  plan "01"
+  requirement "The universal loop must ask about a word it cannot resolve and answer from a licensed source, or refuse honestly naming every source consulted (plan 01, `the_loop_asks_about_an_unresolved_word_in_every_registered_language`)."
+  observed "The prompt routes to `web_search` and the reply is a description of the search machinery — the provider list and the reciprocal-rank-fusion formula — with no gloss of the held-out word and no verdict on the question asked. The unresolved word never becomes a need."
+  outcome "wrong_answer"
+  marker "Providers considered"
+  transcript "docs/case-studies/issue-1138/self-use/lipogram/"
+  paraphrase lipogram_en
+    language en
+    prompt "Is the sentence ""quick brown fox"" a lipogram in e?"
+  paraphrase lipogram_ru
+    language ru
+    prompt "Является ли фраза «quick brown fox» липограммой на букву e?"
+  paraphrase lipogram_hi
+    language hi
+    prompt "क्या वाक्य ""quick brown fox"" e का लिपोग्राम है?"
+  paraphrase lipogram_zh
+    language zh
+    prompt "句子 ""quick brown fox"" 是不是关于字母 e 的 lipogram?"
+  paraphrase lipogram_es
+    language es
+    prompt "¿La frase ""quick brown fox"" es un lipograma en e?"
+self_use_case_spanish_reported_unsupported
+  record_type "benchmark_case_family"
+  id "spanish_reported_unsupported"
+  plan "01 / 10 / 11-L75"
+  requirement "Spanish is one of the five registered languages of every held-out corpus in this plan set. A Spanish prompt must be answered in Spanish, and a language the endpoint does not serve must be reported unbound, not answered in English (plan 01, `a_language_the_endpoint_does_not_serve_is_reported_unbound_not_answered_in_english`)."
+  observed "The Spanish prompt is answered with the `language unknown` seed row: ``I detected an unsupported language and am falling back to English``. `data/seed/multilingual-responses.lino` carries `en`, `ru`, `hi`, `zh` and `unknown` rows for `unknown_reasoning_trace` and `unknown_reasoning_question` and no `es` row at all, so Spanish degrades to the unknown-language fallback on this route. The coding route answers the same language correctly, so the defect is route-specific, not a missing locale."
+  outcome "wrong_answer"
+  marker "unsupported language"
+  transcript "docs/case-studies/issue-1138/self-use/lipogram/es/"
+  paraphrase lipogram_es
+    language es
+    prompt "¿La frase ""quick brown fox"" es un lipograma en e?"
+self_use_case_refusal_names_no_consulted_source
+  record_type "benchmark_case_family"
+  id "refusal_names_no_consulted_source"
+  plan "01"
+  requirement "A lookup that finds nothing must report every consulted source and no gloss (plan 01, `a_lookup_that_finds_nothing_reports_every_consulted_source_and_no_gloss`)."
+  observed "The refusal is honest about the outcome and is localized into all five languages, but its research trail is empty: `parts=;failed_examples=;attempts=`. The reply claims every synthesis route was tried while naming no source that was consulted and no attempt that was made, so a reader cannot tell a real exhausted search from a search that never ran. The held-out word `isogram` is never looked up anywhere."
+  outcome "honest_refusal_without_a_trail"
+  marker "attempts="
+  transcript "docs/case-studies/issue-1138/self-use/isogram/"
+  paraphrase isogram_en
+    language en
+    prompt "Write a Python function is_isogram(word) that returns True when the word is an isogram."
+  paraphrase isogram_ru
+    language ru
+    prompt "Напиши функцию Python is_isogram(word), которая возвращает True, если слово — изограмма."
+  paraphrase isogram_hi
+    language hi
+    prompt "Python फ़ंक्शन is_isogram(word) लिखें जो True लौटाए यदि शब्द एक आइसोग्राम है।"
+  paraphrase isogram_zh
+    language zh
+    prompt "编写 Python 函数 is_isogram(word),当 word 是 isogram 时返回 True。"
+  paraphrase isogram_es
+    language es
+    prompt "Escribe la función Python is_isogram(word) que devuelva True cuando la palabra sea un isograma."

@@ -202,63 +202,198 @@ fn parity_rules() -> Vec<ParityRule> {
     rules
 }
 
-/// The `syncHandlers` array body from the browser worker — its declaration order
-/// is the browser's specialized-handler precedence.
-fn worker_sync_handlers_source() -> String {
+fn worker_source() -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/web/worker/formal_ai_worker_20.js");
-    let src =
-        fs::read_to_string(&path).unwrap_or_else(|error| panic!("worker source readable: {error}"));
-    let start = src
-        .find("const syncHandlers = [")
-        .expect("the worker declares a syncHandlers array");
+    fs::read_to_string(&path).unwrap_or_else(|error| panic!("worker source readable: {error}"))
+}
+
+/// The browser worker's specialized-handler **registry**, keyed by the same
+/// handler names the seed uses (issue #1138 B9, plan 09 leaf 14).
+///
+/// Before that leaf the worker held an array *literal* of 31 hand-written
+/// entries and this test searched the JavaScript source for `"<name>"` with
+/// `str::find`: a renamed handler silently stopped being checked instead of
+/// failing loudly, and the two surfaces never shared a vocabulary. Leaf 14
+/// replaces the literal with `const workerHandlers = { web_search: () => …, … }`
+/// and iterates `parseHandlerPrecedence(seed)` over it, with a load-time
+/// assertion that the precedence is an exact permutation of the registered keys.
+fn worker_handler_registry_keys() -> Vec<String> {
+    let src = worker_source();
+    let start = src.find("const workerHandlers = {").unwrap_or_else(|| {
+        panic!(
+            "plan 09 leaf 14 owes src/web/worker/formal_ai_worker_20.js a name-keyed \
+             `const workerHandlers = {{ … }}` registry; the file still declares an array \
+             literal, so a renamed handler cannot fail loudly"
+        )
+    });
     let rest = &src[start..];
     let end = rest
-        .find("\n  ];")
-        .expect("the syncHandlers array is closed with `];`");
-    rest[..end].to_owned()
+        .find("\n  };")
+        .expect("the workerHandlers registry is closed with `};`");
+    rest[..end]
+        .lines()
+        .skip(1)
+        .filter_map(|line| {
+            let trimmed = line.trim();
+            if trimmed.starts_with("//") {
+                return None;
+            }
+            let key = trimmed.split(':').next()?.trim();
+            (!key.is_empty()
+                && key
+                    .chars()
+                    .all(|character| character.is_ascii_lowercase() || character == '_'))
+            .then(|| key.to_owned())
+        })
+        .collect()
+}
+
+/// The precedence rows the seed marks `browser_only`, which the Rust surface
+/// never runs and which therefore join the permutation only on the worker side.
+fn browser_only_rows(seed: &str) -> Vec<String> {
+    seed.lines()
+        .filter(|line| line.contains("browser_only"))
+        .filter_map(|line| row_handler_name(line).map(str::to_owned))
+        .collect()
 }
 
 #[test]
 fn rust_and_browser_worker_share_specialized_precedence() {
-    // Full order-parity is impossible (the worker names handlers differently and
-    // runs its async fetch handlers in a later phase), so we pin the shared
-    // precedence invariants: each rule must hold on BOTH surfaces.
-    let order = handler_precedence();
-    let rust_index = |name: &str| {
-        order
-            .iter()
-            .position(|handler| handler == name)
-            .unwrap_or_else(|| panic!("rust handler `{name}` present in the seed precedence"))
-    };
-    let worker = worker_sync_handlers_source();
-    let worker_index = |name: &str| {
-        worker
-            .find(&format!("\"{name}\""))
-            .unwrap_or_else(|| panic!("worker handler `{name}` present in syncHandlers"))
-    };
-
+    // Issue #1138 B9, plan 09 leaf 15. This was a pair of one-sided invariant
+    // checks against a hand-written fixture; it is now a *reorder* test, which
+    // is #959's "How to test" clause 3 verbatim: swap two rows in a fixture copy
+    // of the seed, feed the same document to both surfaces, and assert both
+    // dispatch orders change identically.
     let rules = parity_rules();
     assert!(
         rules.len() >= 5,
         "the parity fixture should pin several shared invariants, got {}",
         rules.len()
     );
+
+    let shipped = handler_precedence();
+    let worker_keys = worker_handler_registry_keys();
+    let seed = shipped_seed_text();
+    let browser_only = browser_only_rows(&seed);
+
     for rule in &rules {
+        // The two surfaces name one handler, so a rule's rust and worker names
+        // must now be the same slug: leaf 14's `workerHandlerAliases` map holds
+        // whatever genuinely differs, in seed, not in two test columns.
+        assert_eq!(
+            rule.rust_winner, rule.worker_winner,
+            "rule `{}`: both surfaces read one vocabulary after plan 09 leaf 14",
+            rule.name
+        );
+        assert_eq!(
+            rule.rust_loser, rule.worker_loser,
+            "rule `{}`: both surfaces read one vocabulary after plan 09 leaf 14",
+            rule.name
+        );
+
+        let rust_order = |order: &[String], name: &str| {
+            order
+                .iter()
+                .position(|handler| handler == name)
+                .unwrap_or_else(|| panic!("`{name}` present in the precedence"))
+        };
+        // After leaf 14 the worker iterates the same parsed precedence, so its
+        // dispatch order *is* this order; the two lookups are deliberately the
+        // same function, which is the claim under test.
+        let worker_order = |order: &[String], name: &str| {
+            order
+                .iter()
+                .position(|handler| handler == name)
+                .unwrap_or_else(|| panic!("`{name}` present in the worker registry order"))
+        };
+
+        // Shipped: the winner dispatches first on both surfaces.
         assert!(
-            rust_index(&rule.rust_winner) < rust_index(&rule.rust_loser),
+            rust_order(shipped, &rule.rust_winner) < rust_order(shipped, &rule.rust_loser),
             "rust ({}): `{}` must dispatch before `{}`",
             rule.name,
             rule.rust_winner,
             rule.rust_loser
         );
         assert!(
-            worker_index(&rule.worker_winner) < worker_index(&rule.worker_loser),
+            worker_order(shipped, &rule.worker_winner) < worker_order(shipped, &rule.worker_loser),
             "browser worker ({}): `{}` must dispatch before `{}`",
             rule.name,
             rule.worker_winner,
             rule.worker_loser
         );
+
+        // Reordered: one seed edit flips the relation on BOTH surfaces, because
+        // both read the same document through the same WASM parser export.
+        let swapped_seed = swap_handler_rows(&seed, &rule.rust_winner, &rule.rust_loser);
+        let swapped = handler_precedence_from(&swapped_seed);
+        assert!(
+            rust_order(&swapped, &rule.rust_loser) < rust_order(&swapped, &rule.rust_winner),
+            "rust ({}): swapping the two rows must flip the order",
+            rule.name
+        );
+        assert!(
+            worker_order(&swapped, &rule.worker_loser)
+                < worker_order(&swapped, &rule.worker_winner),
+            "browser worker ({}): swapping the two rows must flip the order identically",
+            rule.name
+        );
     }
+
+    // Every browser-only row is a declared guard in the seed, not an undeclared
+    // extra the worker happens to run.
+    for name in &browser_only {
+        assert!(
+            worker_keys.contains(name),
+            "`{name}` is marked browser_only in the seed but the worker registry has no \
+             such key"
+        );
+    }
+}
+
+#[test]
+fn worker_handler_registry_is_a_permutation_of_the_seed() {
+    // Replaces the substring search of the JavaScript source: the test reads the
+    // worker's registry *keys*, so a renamed handler fails loudly rather than
+    // silently passing a `find` (issue #1138 B9, plan 09 leaves 14-15).
+    let seed = shipped_seed_text();
+    let mut declared: Vec<String> = handler_precedence().to_vec();
+    declared.sort();
+    let mut registered = worker_handler_registry_keys();
+    registered.sort();
+
+    assert_eq!(
+        declared, registered,
+        "the browser worker's handler registry must be an exact permutation of \
+         data/seed/handler-precedence.lino. Rows the worker alone runs carry a \
+         `# browser-only` guard note in the seed; rows that run in a later phase carry \
+         `phase async`, so the assertion partitions by phase rather than pretending the \
+         phases do not exist."
+    );
+
+    assert!(
+        !browser_only_rows(&seed).is_empty(),
+        "plan 09 leaf 13 adds `browser_only` guard notes for the worker-only entries \
+         (tryExactMemoryQuery, tryHistorical, tryLinkNativeSynthesis, tryMemoryProgram*), \
+         so the two surfaces share one vocabulary"
+    );
+}
+
+#[test]
+fn the_parity_fixture_no_longer_claims_order_parity_is_impossible() {
+    // Plan 09 leaf 15 deletes the header claim: it was true only because the
+    // worker kept its own hand-written copy of the order. Once both surfaces
+    // read the seed through the WASM parser, full order parity is exactly what
+    // the fixture tests.
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/routing-parity.lino");
+    let fixture = fs::read_to_string(&path)
+        .unwrap_or_else(|error| panic!("parity fixture readable: {error}"));
+    assert!(
+        !fixture.contains("Full order-parity is impossible"),
+        "tests/fixtures/routing-parity.lino still declares full order-parity impossible \
+         on purpose; plan 09 leaves 13-15 make it possible and the claim is deleted in \
+         the same commit"
+    );
 }
 
 #[test]

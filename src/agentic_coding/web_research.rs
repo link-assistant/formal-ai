@@ -7,7 +7,7 @@
 
 use serde_json::json;
 
-use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, Progress};
+use super::planner::{AgenticPlan, Capability, Progress, fetch_arguments, plan_one, tool_for};
 use crate::engine::FormalAiEngine;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, Slot};
@@ -40,9 +40,9 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
                 .or_else(|| seed_unresolved_question_subject(block))
         })?;
     if is_context_reference(&query) {
-        topic_from_history(messages)
+        topic_from_history(messages).map(|topic| trim_question_punctuation(&topic))
     } else {
-        Some(query)
+        Some(trim_question_punctuation(&query))
     }
 }
 
@@ -267,13 +267,14 @@ pub(super) fn plan_web_research_step(
 ) -> Option<AgenticPlan> {
     let progress = Progress::scan(messages);
     if let Some(failure) = progress.latest_failure()
-        && matches!(failure.capability, Capability::Search | Capability::Fetch) {
-            return Some(AgenticPlan::Final(super::tool_result::render_failure(
-                failure.capability.registry_id(),
-                &failure.detail,
-                query,
-            )));
-        }
+        && matches!(failure.capability, Capability::Search | Capability::Fetch)
+    {
+        return Some(AgenticPlan::Final(super::tool_result::render_failure(
+            failure.capability.registry_id(),
+            &failure.detail,
+            query,
+        )));
+    }
     // `completed` is in arrival order, so the most recent result says which
     // phase this round is in. `done` cannot: it stays true from round one
     // onward, which is exactly why the old single-round shape could not deepen.
@@ -738,3 +739,42 @@ fn trim_question_punctuation(text: &str) -> String {
         .to_owned()
 }
 
+/// The open-web query one stated request block yields.
+///
+/// A "what is" question searches for the term it names, not for the question's
+/// own words, and no query carries the block's trailing punctuation -- the
+/// #1066 ladder logged a node searching a whole prompt, period and worker
+/// block included, which no source on earth answers.
+pub(super) fn open_web_query_for_block(block: &str) -> Option<String> {
+    crate::concepts::extract_concept_query(block)
+        .map(|query| query.term.to_lowercase().replace('-', " "))
+        .or_else(|| stated_web_search_query_for_block(block))
+}
+
+/// The block's own search phrasing, punctuation cleaned. A "what is" question
+/// is *not* a stated search and yields `None` here -- the engine may answer it,
+/// so only the last-resort open-web route may reduce it to its term
+/// ([`open_web_query_for_block`]).
+pub(super) fn stated_web_search_query_for_block(block: &str) -> Option<String> {
+    crate::solver_handlers::web_search_query_for(block)
+        .map(|query| crate::solver_handlers::web_search_intent::clean_search_query(&query))
+}
+
+/// Whether the request asks what a term means and the seed's concept lookup
+/// cannot resolve it.
+///
+/// The planner's open-web gate reads this: a definition the symbolic engine
+/// cannot give is the honest unknown that only a trusted external source
+/// answers (plan 01 doctrine, the #840 ladder's dictionary nodes), while one
+/// it *can* give stays with the symbolic engine (issue #989).
+pub(super) fn concept_lookup_leaves_unknown(prompt: &str) -> bool {
+    crate::concepts::extract_concept_query(prompt)
+        .as_ref()
+        .is_some_and(|query| {
+            crate::concepts::lookup_concept_query(query).is_none()
+                // A question whose answer is a computation ("What is 480 divided
+                // by 15?") is not an unknown concept: the symbolic engine reaches
+                // it, so it must not be released to the open web.
+                && crate::calculation::calculation_expression_candidates(prompt).is_empty()
+        })
+}

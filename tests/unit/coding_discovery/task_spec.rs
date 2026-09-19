@@ -145,6 +145,16 @@ fn conversational_requests_in_five_languages_share_the_same_signature_shape() {
 }
 
 #[test]
+fn conversational_target_language_is_discovered_from_the_language_catalog() {
+    let rust =
+        recognise("Write a Rust function run_length(text) that returns equal-character runs.")
+            .expect("the conversational recognizer accepts catalogued target languages");
+    assert_eq!(rust.language, "rust");
+    assert_eq!(rust.name, "run_length");
+    assert_eq!(rust.parameters, vec![parameter("text", None)]);
+}
+
+#[test]
 fn conversational_signature_is_found_after_a_native_language_function_word() {
     let prompt = "Реализуй Python функцию count_letters(text: str) -> int. Верни количество букв.";
     let spec = recognise(prompt).expect("native-language request with inline signature");
@@ -159,6 +169,16 @@ fn conversational_program_without_a_named_callable_uses_the_main_entry_point() {
         .expect("program request without a signature");
     assert_eq!(spec.artifact_shape, ArtifactShape::Program);
     assert_eq!(spec.name, "main");
+    assert!(spec.parameters.is_empty());
+}
+
+#[test]
+fn conversational_program_uses_a_resolved_task_as_its_gap_identity() {
+    let spec = recognise("Write a Ruby program that counts to three")
+        .expect("registered language and task are recognized structurally");
+
+    assert_eq!(spec.artifact_shape, ArtifactShape::Program);
+    assert_eq!(spec.name, "count_to_three");
     assert!(spec.parameters.is_empty());
 }
 
@@ -206,7 +226,13 @@ fn an_unnamed_conversational_function_defers_identity_to_source_discovery() {
     .expect("unnamed source-discovery function");
     assert_eq!(spec.artifact_shape, ArtifactShape::Function);
     assert_eq!(spec.name, "discovered_function");
-    assert!(spec.parameters.is_empty());
+    // The callable identity stays deferred to source discovery, but the
+    // artifact still reads one anonymous input: the search grounds that
+    // variable against the fragments it applies instead of degenerating to
+    // constant programs.
+    assert_eq!(spec.parameters.len(), 1);
+    assert_eq!(spec.parameters[0].name, "input");
+    assert_eq!(spec.parameters[0].annotation, None);
 }
 
 #[test]

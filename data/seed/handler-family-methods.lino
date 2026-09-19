@@ -1,0 +1,278 @@
+handler_family_methods
+  issue 1138
+  purpose "Generic method families selected from reusable evidence groups. Every family uses the same matcher; adding a paraphrase adds lexical knowledge here, not a Rust branch or a memorized answer."
+  family dialogue_state_query
+    priority 10
+    preempts capability_gap
+    preempts compose_from_sources
+    preempts concept_measurement_lookup
+    evidence_group dialogue_reference
+      cue earlier
+      cue "this conversation"
+      cue "so far"
+      cue "first wrote"
+      cue "before the last"
+      cue "already ask"
+      cue repeating
+      cue "last file name"
+      cue "questions i have asked"
+      cue "changed the subject"
+      cue раньше
+      cue "в этом разговоре"
+      cue прежн
+      cue "из всего, что было"
+      word уже
+      cue "в первый раз"
+      cue "перед последним"
+      cue повторяюсь
+      cue последним
+      cue "по порядку"
+      cue "сменил тему"
+      cue "पहले मैंने"
+      cue "सबसे पहले"
+      cue बातचीत
+      cue पुराने
+      cue "अब तक"
+      cue "पहली बार"
+      cue पिछली
+      cue "पहले भी पूछ"
+      cue "दोहरा रहा"
+      cue "ठीक पहले"
+      cue "आखिरी बार"
+      cue "क्रम से"
+      cue "विषय बदलने"
+      cue 我之前问
+      cue 我之前哪个
+      cue 你之前哪个
+      cue 对话
+      cue 目前为止
+      cue 我们到现在
+      cue 第一次
+      cue 上一件事
+      cue 已经问过
+      cue 最后
+      cue 按顺序
+      cue 换话题之前
+      cue "pregunté antes"
+      cue "esta conversación"
+      cue anterior
+      cue "hasta ahora"
+      cue "primera vez"
+      cue "antes de lo último"
+      cue repitiendo
+      cue "último nombre"
+      cue "en el orden"
+      cue "cambiar de tema"
+      cue "justo antes"
+    evidence_group dialogue_object
+      cue asked
+      cue "ask you"
+      cue question
+      cue answer
+      cue topics
+      cue language
+      cue mentioned
+      cue repeating
+      cue "file name"
+      cue subject
+      cue спраш
+      cue спрос
+      cue вопрос
+      cue ответ
+      prefix тем
+      cue языке
+      cue говорил
+      cue повтор
+      cue "имя файла"
+      cue पूछा
+      cue सवाल
+      cue जवाब
+      cue विषय
+      cue भाषा
+      cue बात
+      cue पूछ
+      cue "फ़ाइल नाम"
+      cue उत्तर
+      cue 问
+      cue 问题
+      cue 回答
+      cue 话题
+      cue 语言
+      cue 那件
+      cue 重复
+      cue 文件名
+      cue 异议
+      cue pregunt
+      cue respuesta
+      cue temas
+      cue idioma
+      cue mencioné
+      cue repitiendo
+      cue "nombre de archivo"
+      cue tema
+    response en "This is a dialogue-state query. No earlier turn is available in this isolated request, so there is no conversation evidence to report."
+    response ru "Это запрос к состоянию диалога. В этом изолированном запросе нет предыдущего хода, поэтому сообщить данные беседы невозможно."
+    response hi "यह संवाद-अवस्था का प्रश्न है। इस अलग अनुरोध में कोई पिछला संवाद उपलब्ध नहीं है, इसलिए बताने के लिए संवाद-साक्ष्य नहीं है।"
+    response zh "这是对话状态查询。这个独立请求没有更早的对话轮次，因此没有可报告的对话证据。"
+    response es "Esta es una consulta sobre el estado del diálogo. En esta solicitud aislada no hay turnos anteriores, así que no hay evidencia de conversación que informar."
+  family procedure_interpreter
+    priority 20
+    preempts capability_gap
+    preempts task_decomposition
+    evidence_group source_document
+      cue readme
+    evidence_group target_procedure_surface
+      cue powershell
+      cue makefile
+      cue fish
+      cue dockerfile
+      cue ansible
+    response en "I identified a source-to-procedure conversion, but this turn does not contain the referenced document. Provide its text or URL so the ordered steps can be extracted, rendered, and verified."
+    response ru "Обнаружено преобразование источника в процедуру, но в ходе нет указанного документа. Передайте текст или URL, чтобы извлечь, отобразить и проверить упорядоченные шаги."
+    response hi "स्रोत को प्रक्रिया में बदलने का अनुरोध मिला, लेकिन इस संदेश में संदर्भित दस्तावेज़ नहीं है। क्रमबद्ध चरण निकालने, प्रस्तुत करने और जाँचने के लिए उसका पाठ या URL दें।"
+    response zh "已识别出从来源到过程的转换，但本轮没有所引用的文档。请提供文本或 URL，以便提取、呈现并验证有序步骤。"
+    response es "Identifiqué una conversión de una fuente a un procedimiento, pero este turno no contiene el documento referido. Proporciona su texto o URL para extraer, representar y verificar los pasos ordenados."
+  family structural_operator
+    priority 30
+    preempts capability_gap
+    preempts pattern_inference
+    preempts verifiable_task
+    preempts write_script
+    minimum_numbers 2
+    evidence_group code_target
+      word go
+      cue kotlin
+      cue swift
+      cue elixir
+      cue ruby
+    response en "I identified a typed operation over {operand_count} numeric operands. The operation and target-language renderer must be selected from grounded operation metadata before executable code can be claimed."
+    response ru "Обнаружена типизированная операция над {operand_count} числовыми операндами. Перед выдачей исполняемого кода операция и средство вывода целевого языка должны быть выбраны из формализованных метаданных."
+    response hi "{operand_count} संख्यात्मक ऑपरैंड पर टाइप की गई क्रिया पहचानी गई। निष्पादन योग्य कोड का दावा करने से पहले क्रिया और लक्ष्य-भाषा रेंडरर को औपचारिक मेटाडेटा से चुना जाना चाहिए।"
+    response zh "已识别出对 {operand_count} 个数值操作数的类型化操作。在声称代码可执行之前，必须从已形式化的操作元数据中选择操作和目标语言呈现器。"
+    response es "Identifiqué una operación tipada sobre {operand_count} operandos numéricos. Antes de afirmar que el código es ejecutable, la operación y el generador del lenguaje de destino deben seleccionarse de metadatos formalizados."
+  family retrieval_method
+    priority 40
+    preempts summarization
+    preempts web_search
+    preempts compose_from_sources
+    preempts capability_gap
+    evidence_group source_request
+      cue source
+      cue "where you found"
+      cue "read about"
+      cue источник
+      cue откуда
+      cue "где про"
+      cue स्रोत
+      cue "कहाँ पढ़"
+      cue 来源
+      cue 出处
+      cue 哪里读
+      cue fuente
+      cue "dónde lo encontraste"
+      cue "dónde puedo leer"
+    evidence_group retrieval_act
+      cue "what is"
+      cue "look up"
+      cue explain
+      cue "where would i read"
+      cue summarise
+      cue summarize
+      cue "что такое"
+      cue "найди определение"
+      cue объясни
+      cue "где про"
+      cue "अर्थ खोज"
+      cue समझाइ
+      cue "कहाँ पढ़"
+      cue "क्या है"
+      cue सारांश
+      cue 查一下
+      cue 解释
+      cue 哪里读
+      cue 是什么
+      cue 摘要
+      cue "qué es"
+      cue "busca el término"
+      cue explícame
+      cue "dónde puedo leer"
+      cue resúmelo
+    response en "I identified a source-backed retrieval request, but this isolated turn contains no verified capture for the subject. A trusted-source walk is required before a summary can be asserted."
+    response ru "Обнаружен запрос на поиск с источником, но в этом изолированном ходе нет проверенного снимка по теме. До утверждения резюме нужен обход доверенных источников."
+    response hi "स्रोत-समर्थित खोज अनुरोध पहचाना गया, लेकिन इस अलग संदेश में विषय की सत्यापित प्रति नहीं है। सारांश बताने से पहले विश्वसनीय स्रोतों की खोज आवश्यक है।"
+    response zh "已识别出需要来源支持的检索请求，但这个独立轮次没有该主题的已验证采集。必须先遍历可信来源，才能断言摘要。"
+    response es "Identifiqué una solicitud de recuperación respaldada por fuentes, pero este turno aislado no contiene una captura verificada del tema. Hace falta recorrer fuentes confiables antes de afirmar un resumen."
+    response_with_capture en "{gloss} -- source {source_name}, {source_url}, {license_name}."
+    response_with_capture ru "{gloss} -- источник {source_name}, {source_url}, {license_name}."
+    response_with_capture hi "{gloss} -- स्रोत {source_name}, {source_url}, {license_name}."
+    response_with_capture zh "{gloss} -- 来源 {source_name}，{source_url}，{license_name}。"
+    response_with_capture es "{gloss} -- fuente {source_name}, {source_url}, {license_name}."
+  family rule_interpreter
+    priority 50
+    preempts capability_gap
+    evidence_group physical_action
+      cue "go to"
+      cue "walk over"
+      cue "drive to"
+      cue "water the"
+      cue "take the rubbish"
+      cue "hand me"
+      cue "go outside"
+      cue "post this letter"
+      cue "feed the"
+      cue "knock on"
+      cue "carry these"
+      cue "turn off the light"
+      cue сходить
+      cue дойди
+      cue съезди
+      cue полей
+      cue "вынеси мусор"
+      cue "подай мне"
+      cue "выйди на улицу"
+      cue "опусти это письмо"
+      cue "покорми кошку"
+      cue "постучи к"
+      cue "отнеси эти"
+      cue "выключи свет"
+      cue "दुकान जाकर"
+      cue "रसोई तक जाकर"
+      cue "हवाई अड्डे जाकर"
+      cue "पौधों में पानी"
+      cue "कचरा बाहर"
+      cue "फ़ाइल मुझे पकड़ा"
+      cue "बाहर जाकर"
+      cue "चिट्ठी डाकपेटी"
+      cue "बिल्ली को खाना"
+      cue "दरवाज़ा खटखटाकर"
+      cue "डिब्बे नीचे"
+      cue "बत्ती बुझा"
+      cue 去商店
+      cue 走到厨房
+      cue 开车去机场
+      cue 植物浇
+      cue 垃圾拿出去
+      cue 文件夹递给
+      cue 到外面看看
+      cue 这封信寄
+      cue 喂一下猫
+      cue 敲邻居的门
+      cue 箱子搬到
+      cue 灯关掉
+      cue "ir a la tienda"
+      cue "acércate a la cocina"
+      cue "ve al aeropuerto"
+      cue "riega esta"
+      cue "saca la basura"
+      cue "alcánzame la carpeta"
+      cue "sal fuera"
+      cue "echa esta carta"
+      cue "comer al gato"
+      cue "llama a la puerta"
+      cue "baja estas cajas"
+      cue "apaga la luz"
+    response en "This request requires a physical-world action. The current interface can reason about it, but it cannot claim that the action was performed without an appropriate embodied tool and execution evidence."
+    response ru "Этот запрос требует действия в физическом мире. Текущий интерфейс может рассуждать о нём, но не может утверждать выполнение без подходящего физического инструмента и свидетельства исполнения."
+    response hi "इस अनुरोध के लिए भौतिक दुनिया में कार्रवाई चाहिए। वर्तमान इंटरफ़ेस उस पर विचार कर सकता है, लेकिन उपयुक्त भौतिक उपकरण और निष्पादन-साक्ष्य के बिना कार्रवाई पूरी होने का दावा नहीं कर सकता।"
+    response zh "此请求需要现实世界中的物理操作。当前界面可以对此进行推理，但没有适当的实体工具和执行证据时，不能声称操作已经完成。"
+    response es "Esta solicitud requiere una acción en el mundo físico. La interfaz actual puede razonar sobre ella, pero no puede afirmar que se realizó sin una herramienta física adecuada y evidencia de ejecución."

@@ -313,12 +313,65 @@ is data-driven and configurable through the seed.
 - **Why it matters:** *Computation Model* describes five rule shapes ranked from
   most reviewable to most flexible, with natural-language skills at the flexible
   end.
-- **Status:** Supported today for freely phrased procedures through
-  [#674](https://github.com/link-assistant/formal-ai/issues/674)
+- **Status:** Supported today, delivered by
+  [#674](https://github.com/link-assistant/formal-ai/issues/674) (PR #815)
   (`cargo test arbitrary_skill_compilation`). Stored `.lino` procedures are
   walked by the generic interpreter; generating a bespoke Rust/JS handler is
   intentionally unnecessary for these typed operations. See
   *Computation Model* in [`VISION.md`](../VISION.md#computation-model).
+
+### F4 — Priya tackles a problem that needs search
+
+- **Persona & pain:** Priya's problem is not in any seed catalogue, and a flat
+  "I don't know" is not an answer.
+- **Journey today:** when the direct paths are exhausted, the solver combines
+  reasoning, random search, and evolutionary search within the configured
+  compute budget, seeded deterministically from the impulse hash, instead of
+  giving up; `--draft-count` runs parallel candidate portfolios and promotes
+  the verified best draft.
+- **Why it matters:** *Solution synthesis* and the *Universal Solver Goals*
+  describe budget-driven search while preserving reproducibility.
+- **Status:** Supported today: budget-driven search was delivered by
+  [#662](https://github.com/link-assistant/formal-ai/issues/662) (PR #695) and
+  the parallel draft portfolios by
+  [#704](https://github.com/link-assistant/formal-ai/issues/704) (PR #878)
+  (`src/draft_portfolio.rs`, `src/solver_search.rs`). Deeper evolutionary
+  search over broader spaces is incremental work, not a missing mechanism. See
+  *Reasoning Model* and [`ROADMAP.md`](../ROADMAP.md).
+
+### J12 — Lin asks for a program whose method the machine does not know yet
+
+- **Persona & pain:** Lin needs a working Python function for a task no seed
+  entry encodes; earlier coding surfaces could only answer what was already
+  seeded or memorized.
+- **Journey today:** dynamic coding discovery (issue #710, PR #888) turns the
+  request into formalized requirements, asks the trusted sources about every
+  surface the requirements leave unresolved (`data/seed/sources-registry.lino`,
+  live lookup via issue #1138 B1), composes the program from retrieved parts
+  under a strict grammar, and verifies it against examples before answering —
+  no benchmark identifiers or canonical answers in production data.
+- **Why it matters:** *Dynamic coding discovery* in
+  [`VISION.md`](../VISION.md) is the claim; this is where a user meets it.
+- **Status:** Supported today (`benchmark run` and the `coding_discovery`
+  tests); the measured upstream rows it earns are published per slice in
+  [`docs/benchmarks.md`](benchmarks.md) — full-slice HumanEval 14/164
+  (`--online`) and MBPP 49/500 cold-offline — with most of each suite still
+  honestly unsolved.
+
+### J13 — Formal AI authors a change in its own repository
+
+- **Persona & pain:** a maintainer wants the system to do real repository
+  work — a reviewed pull request — rather than describe what it would do.
+- **Journey today:** the self-development loop (issue #924) requires one real
+  Agent-CLI-authored repository change per release cycle; the compile-and-test
+  ladder and `data/meta/self-hosting-ledger.lino` measure what actually landed,
+  and promotion stays human-gated (`--apply --confirm`).
+- **Why it matters:** the *Self-Development* goal makes the tool the first
+  beneficiary of its own coding skill.
+- **Status:** Partially supported today: Agent-CLI-authored changes land every
+  release cycle and the self-authored share of the ledger is non-zero, but no
+  qualifying change is yet a pull request opened by a real `solve` run
+  (R1021-14) — the honest boundary the ledger records.
 
 ---
 
@@ -355,22 +408,6 @@ vision text that motivates it; build status stays in
 - **Status:** Potential future; tracked by
   [#669](https://github.com/link-assistant/formal-ai/issues/669). See *Growable
   Memory And Public Knowledge As Cache*.
-
-### F4 — Priya tackles a problem that needs search
-
-- **Persona & pain:** Priya hits a problem with no reusable prior part and no
-  single rule that solves it.
-- **Future journey:** the solver combines reasoning, random search, and
-  evolutionary search according to the available compute budget, seeded
-  deterministically from the impulse hash, instead of giving up.
-- **Why it matters:** *Solution synthesis* and the *Universal Solver Goals*
-  describe budget-driven search while preserving reproducibility.
-- **Status:** Potential future / partially built (deterministic synthesis path
-  exists; broader search is staged); budget-driven search is tracked by
-  [#662](https://github.com/link-assistant/formal-ai/issues/662) and parallel
-  candidate portfolios by
-  [#704](https://github.com/link-assistant/formal-ai/issues/704). See
-  *Reasoning Model* and [`ROADMAP.md`](../ROADMAP.md).
 
 ### F5 — Lin runs heavier code in the browser
 
@@ -421,8 +458,10 @@ today, ○ = potential future on that surface.
 | J11 Edit the previous answer | ● | ● | ● | ● | ● | ● |
 | F1 Visual graph | ○ | — | — | ○ | — | ○ |
 | F2 Compiled skills | ● | ● | ● | ● | ● | ● |
+| F4 Search-based solving | ● | ● | ● | ● | ● | ● |
+| J12 Coding by discovery | ● | ● | ● | ● | ● | ● |
+| J13 Self-authored repo change | — | ● | — | — | — | — |
 | F3 Cloud memory sync | ○ | ○ | ○ | ○ | ○ | ○ |
-| F4 Search-based solving | ○ | ○ | ○ | ○ | ○ | ○ |
 | F5 WebVM execution | — | — | — | ○ | — | ○ |
 | F6 Shared packages | ○ | ○ | ○ | ○ | ○ | ○ |
 

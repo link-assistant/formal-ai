@@ -1,0 +1,6 @@
+total 16
+drwx------@     5 konard  staff     160 Sep 16 10:30 .
+drwx------@ 28169 konard  staff  901408 Sep 16 10:30 ..
+-rw-r--r--@     1 konard  staff     147 Sep 16 10:30 gleam.toml
+-rw-r--r--@     1 konard  staff     358 Sep 16 10:30 opencode.json
+drwxr-xr-x@     3 konard  staff      96 Sep 16 10:30 src

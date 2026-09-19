@@ -498,3 +498,23 @@ pub const ROLE_REACHABILITY_SEARCH_CUE: &str = "reachability_search_cue";
 /// target-then-marker orders both resolve without a language branch. Carried by
 /// `reachability_target_marker`; read by the Rust solver's budget-search stage.
 pub const ROLE_REACHABILITY_TARGET_MARKER: &str = "reachability_target_marker";
+/// Semantic role: a clause demanding the *brevity* side of a selection
+/// trade-off (issue #1138 B12, plan 12 leaf 15; #901).
+///
+/// "shortest" / "concise", the Cyrillic stems "корот" / "кратк", Devanagari
+/// "छोट" / "संक्षिप्त", CJK "最短" / "简洁", and Spanish "corta" / "breve" —
+/// recorded as stems and matched as raw substrings, because a demand is
+/// inflected in every language the corpus covers. Carried by
+/// `selection_criterion_brevity` in `data/seed/meanings-selection-criteria.lino`;
+/// read by `crate::selection_heuristics` when it counts the clauses that place a
+/// technical contradiction on its 0-1 range.
+pub const ROLE_SELECTION_CRITERION_BREVITY_CUE: &str = "selection_criterion_brevity_cue";
+/// Semantic role: a clause demanding the *completeness* side of a selection
+/// trade-off (issue #1138 B12, plan 12 leaf 15; #901).
+///
+/// "completeness" / "covers every case", "полнот" / "покрыва", "पूर्ण" / "कवर",
+/// "完整" / "覆盖", "exhaustiv" / "cubra" — the opposing half of
+/// [`ROLE_SELECTION_CRITERION_BREVITY_CUE`], read the same way. A requirement
+/// that evidences neither role leaves the contradiction named and unresolved:
+/// there is no default 50 %.
+pub const ROLE_SELECTION_CRITERION_COMPLETENESS_CUE: &str = "selection_criterion_completeness_cue";

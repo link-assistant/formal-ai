@@ -446,27 +446,21 @@ const PROGRAM_DEAD_ENDS = {
 
 // Classify a (task, language) pair — mirrors `program_skill_gap::shape`.
 function programDeadEnd(task, language) {
-  if (task && language) return PROGRAM_DEAD_ENDS.skill_gap;
-  if (!task && language) return PROGRAM_DEAD_ENDS.task_unspecified;
-  if (task && !language) return PROGRAM_DEAD_ENDS.language_unspecified;
-  return PROGRAM_DEAD_ENDS.request_unspecified;
+  if (task) return language ? PROGRAM_DEAD_ENDS.skill_gap : PROGRAM_DEAD_ENDS.language_unspecified;
+  return language ? PROGRAM_DEAD_ENDS.task_unspecified : PROGRAM_DEAD_ENDS.request_unspecified;
 }
 
 // The English name is the gap's identity (it travels in the evidence trail);
 // the localized name is what the reader sees inside the reply.
 function programSkillGapName(task, language, responseLanguage) {
   const shape = programDeadEnd(task, language);
-  const template =
-    answerFor(shape.name, responseLanguage) || answerFor(shape.name, "en") || "";
-  return template
-    .replace("{task}", task || MISSING_PROGRAM_PARAMETER)
+  const template = answerFor(shape.name, responseLanguage) || answerFor(shape.name, "en") || "";
+  return template.replace("{task}", task || MISSING_PROGRAM_PARAMETER)
     .replace("{language}", language || MISSING_PROGRAM_PARAMETER);
 }
-
 function programSkillGapAnswer(task, language, responseLanguage) {
   const shape = programDeadEnd(task, language);
-  const template =
-    answerFor(shape.answer, responseLanguage) || answerFor(shape.answer, "en") || "";
+  const template = answerFor(shape.answer, responseLanguage) || answerFor(shape.answer, "en") || "";
   return template
     .replace("{gap}", programSkillGapName(task, language, responseLanguage))
     .replace("{routes}", PROGRAM_SYNTHESIS_ROUTES.join(", "))
@@ -509,7 +503,7 @@ function writeProgramExpectedOutput(task, languageInfo, taskInfo) {
   return files.join("\n");
 }
 
-function writeProgramExecutionLines(language, task, code, output, strings) {
+function writeProgramExecutionLines(language, task, code, output, strings, responseLanguage) {
   const i18n = strings || WRITE_PROGRAM_I18N.en;
   // Issue #312: the list-files snippet reads the real filesystem through Node's
   // `fs`/`require`, which the browser Web Worker sandbox does not provide, and
@@ -533,8 +527,14 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
       return [i18n.sandboxFailed(error.message || String(error))];
     }
   }
-  const reason =
-    language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
+  const runtimeProbe = typeof browserExecutionProbe === "function"
+    ? browserExecutionProbe(language)
+    : { status: "unavailable" };
+  const reason = language === "javascript"
+    ? i18n.noFilesystem(language)
+    : runtimeProbe.status === "available_to_download" || runtimeProbe.status === "ready"
+      ? browserRuntimeMessage(responseLanguage || "en")
+      : i18n.noToolchain(language);
   const lines = [i18n.notRun(language, reason), "", i18n.copyInstruction(language), ""];
   if (listFilesTaskDirection(task)) {
     lines.push(i18n.sampleDirectory(listFilesSampleFiles(WRITE_PROGRAM_LANGUAGES[language])));

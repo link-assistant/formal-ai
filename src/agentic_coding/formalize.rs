@@ -18,10 +18,9 @@
 //! * **Annotations** are produced for *every* sentence of *any* input, with real
 //!   character offsets — fully general, never guessed.
 //! * **Assertions** use a closed-class lexicon stored as data (see
-//!   `super::lexicon`) — recognised subject/predicate/object triples become
-//!   structured assertion links; unrecognised sentences become natural-language
-//!   assertion links that still carry the raw span. The recogniser does not
-//!   hallucinate relations it cannot ground.
+//!   `super::lexicon`) — only recognised subject/predicate/object triples become
+//!   assertion links. Unrecognised sentences remain `preserved_span` records:
+//!   useful source evidence, but never a relation the recogniser did not ground.
 //! * Concept / procedure / context catalogue records for a *recognised work* are
 //!   declared from the lexicon and marked `source "lexicon:<work>"`, kept
 //!   distinct from the text-derived assertions.
@@ -76,12 +75,26 @@ pub struct FormalizationSummary {
     pub annotations: usize,
     /// The distinct primitive kinds present, in [`PRIMITIVE_KINDS`] order.
     pub covered: Vec<String>,
+    /// Needs the formalizer raised, and how many it grounded (issue #1138, plan
+    /// 04 L4). A document with unresolved needs can never be reported as fully
+    /// covered.
+    pub needs_raised: usize,
+    pub needs_grounded: usize,
+    pub max_depth_reached: usize,
 }
 
 impl FormalizationSummary {
+    /// Whether every one of the nine primitives is realised **and** every need
+    /// this document raised was grounded.
+    ///
+    /// The second clause is the coverage-honesty rule of issue #1138 plan 04:
+    /// a document whose key concept nobody could define is not a document the
+    /// formalizer understood, however many record kinds happen to be non-empty.
+    /// Reporting it as covered is the defect the two hand-run probes of the
+    /// issue #710 case study recorded.
     #[must_use]
     pub const fn covers_all_nine(&self) -> bool {
-        self.covered.len() == PRIMITIVE_KINDS.len()
+        self.covered.len() == PRIMITIVE_KINDS.len() && self.needs_raised == self.needs_grounded
     }
 
     #[must_use]
@@ -117,7 +130,14 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
     let resolved_doc_id = resolve_doc_id(doc_id, work);
 
     let sentences = segment_sentences(text);
-    let language = if has_cyrillic(text) { "ru" } else { "en" };
+    // Which language a document is written in is a question the tree already
+    // answers from seeded script ranges and markers, in every registered
+    // language. What stood here was `has_cyrillic(text) { "ru" } else { "en" }`
+    // — a two-language test that labelled a Hindi, Chinese or Spanish document
+    // English and wrote that claim into every annotation row (issue #1138,
+    // plan 04).
+    let detected = crate::language::detect(text);
+    let language = detected.slug();
 
     let mut annotations: Vec<Annotation> = Vec::new();
     let mut assertions: Vec<Assertion> = Vec::new();
@@ -127,6 +147,7 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
     let mut temporals: BTreeMap<String, Temporal> = BTreeMap::new();
     let mut modals: BTreeMap<String, Modal> = BTreeMap::new();
 
+    let mut preserved: Vec<usize> = Vec::new();
     for (index, sentence) in sentences.iter().enumerate() {
         let annotation_id = format!("ann:{index}");
         annotations.push(Annotation {
@@ -189,21 +210,12 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
                     natural_language: None,
                 });
             }
-            None => assertions.push(Assertion {
-                id: format!("a:{index}"),
-                subject: Term::literal("—"),
-                predicate: PredicateUse {
-                    id: "pred:states".to_owned(),
-                    label: "states".to_owned(),
-                },
-                object: Term::literal(&sentence.text),
-                time: None,
-                modal: None,
-                context: None,
-                annotation: annotation_id,
-                provenance,
-                natural_language: Some(sentence.text.clone()),
-            }),
+            None => {
+                preserved.push(index);
+                // Preservation is evidence, not an assertion. In particular,
+                // do not manufacture `pred:states` merely because a sentence
+                // was copied losslessly into the knowledge base.
+            }
         }
     }
 
@@ -238,6 +250,27 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
     }
     concept_records.sort_by(|left, right| left.id.cmp(&right.id));
 
+    // Every surface the document leaves unresolved becomes a need, and a
+    // document with an unresolved need is never reported as covered (issue
+    // #1138, plan 04 L4). The work catalogue is what grounds the canonical
+    // tale: its lexicon terms are concepts this formalization already has, so
+    // a recognised work raises nothing and an unfamiliar requirement raises
+    // one need per word nobody has seeded.
+    // Only the sentences this pass *preserved* raise needs. A sentence the
+    // work catalogue reduced to a grounded subject/predicate/object triple was
+    // understood; a sentence that fell back to a preserved span was not, and
+    // that is exactly the distinction plan 04 exists to make visible. The
+    // canonical tale therefore raises nothing and stays the regression corpus,
+    // while an unfamiliar requirement raises one need per word nobody has
+    // seeded.
+    let grounded = grounded_graph(&concept_records, &used_entities);
+    let byte_segments = crate::formalization::segment::sentences(text);
+    let unread: Vec<crate::formalization::segment::Segment> = preserved
+        .iter()
+        .filter_map(|index| byte_segments.get(*index).cloned())
+        .collect();
+    let raised = crate::formalization::needs::emit_needs(&resolved_doc_id, &unread, &grounded, 0);
+
     let summary = FormalizationSummary {
         doc_id: resolved_doc_id.clone(),
         concepts: concept_records.len(),
@@ -250,6 +283,9 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
         modals: modals.len(),
         annotations: annotations.len(),
         covered: Vec::new(),
+        needs_raised: raised.len(),
+        needs_grounded: 0,
+        max_depth_reached: 0,
     };
 
     let mut document = String::new();
@@ -275,6 +311,7 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
             ("temporals", summary.temporals.to_string()),
             ("modals", summary.modals.to_string()),
             ("annotations", summary.annotations.to_string()),
+            ("preserved_spans", preserved.len().to_string()),
         ],
     );
     push_record(&mut document, &header);
@@ -388,6 +425,23 @@ pub fn formalize_text_to_links(text: &str, doc_id: &str) -> FormalizedKnowledgeB
             ),
         );
     }
+    for index in &preserved {
+        let annotation = &annotations[*index];
+        push_record(
+            &mut document,
+            &format_lino_record(
+                "preserved_span",
+                &[
+                    ("id", format!("preserved:{index}")),
+                    ("doc", annotation.doc.clone()),
+                    ("span", format!("{}:{}", annotation.start, annotation.end)),
+                    ("text", annotation.text.clone()),
+                    ("language", annotation.language.clone()),
+                    ("annotation", annotation.id.clone()),
+                ],
+            ),
+        );
+    }
     for assertion in &assertions {
         let mut pairs: Vec<(&str, String)> = vec![
             ("id", assertion.id.clone()),
@@ -468,40 +522,79 @@ struct Sentence {
     end: usize,
 }
 
+/// Segment `text` through the one script-aware segmenter (issue #1138, plan 04
+/// L2), and report the spans in *characters* because that is what this module's
+/// `pred:states` provenance has always counted.
+///
+/// What was here before recognised `.`, `!` and `?` and nothing else, so a
+/// Chinese requirement was one undivided blob, a Hindi one ended only if it
+/// happened to carry a Latin full stop, and the Spanish inverted marks were
+/// read as ordinary text. It also cut a sentence at `start = char_index + 1`
+/// and trimmed afterwards, so a span named the separator whitespace as part of
+/// the sentence that followed it — the defect recorded at
+/// `docs/case-studies/issue-710/plans/07:371-377`.
+/// `formalization::segment::sentences` answers both, in the five scripts the
+/// seed declares, and this function only converts its byte spans to the
+/// character spans the provenance rows already use.
 fn segment_sentences(text: &str) -> Vec<Sentence> {
-    let mut sentences = Vec::new();
-    let mut start = 0usize;
-    let mut buffer = String::new();
-    for (char_index, character) in text.chars().enumerate() {
-        buffer.push(character);
-        if matches!(character, '.' | '!' | '?') {
-            let trimmed = buffer.trim().to_owned();
-            if !trimmed.is_empty() {
-                sentences.push(Sentence {
-                    text: trimmed,
-                    start,
-                    end: char_index + 1,
-                });
-            }
-            start = char_index + 1;
-            buffer.clear();
-        }
-    }
-    let trimmed = buffer.trim().to_owned();
-    if !trimmed.is_empty() {
-        let end = text.chars().count();
-        sentences.push(Sentence {
-            text: trimmed,
-            start,
-            end,
-        });
-    }
-    sentences
+    let mut boundaries: Vec<usize> = text.char_indices().map(|(offset, _)| offset).collect();
+    boundaries.push(text.len());
+    let characters = |byte_offset: usize| -> usize {
+        boundaries
+            .iter()
+            .position(|offset| *offset >= byte_offset)
+            .unwrap_or_else(|| boundaries.len().saturating_sub(1))
+    };
+    crate::formalization::segment::sentences(text)
+        .into_iter()
+        .map(|segment| Sentence {
+            start: characters(segment.start),
+            end: characters(segment.end),
+            text: segment.text,
+        })
+        .collect()
 }
 
-fn has_cyrillic(text: &str) -> bool {
-    text.chars()
-        .any(|character| ('\u{0400}'..='\u{04FF}').contains(&character))
+/// The concepts and entities this formalization has already grounded, as the
+/// graph [`crate::formalization::needs::emit_needs`] consults.
+///
+/// A recognised work's lexicon terms are grounded by definition — that is what
+/// a catalogue *is* — so the canonical tale raises no needs and stays the
+/// regression corpus plan 04 keeps it as.
+fn grounded_graph(
+    concepts: &[ConceptDecl],
+    entities: &BTreeMap<String, String>,
+) -> crate::formalization::concept_links::ConceptGraph {
+    use crate::formalization::concepts::{ExtractedConcept, ExtractedEntity};
+    crate::formalization::concept_links::ConceptGraph {
+        concepts: concepts
+            .iter()
+            .map(|concept| ExtractedConcept {
+                id: concept.id.clone(),
+                label: concept.label.clone(),
+                language: String::new(),
+                gloss: String::new(),
+                genus: None,
+                differentiae: Vec::new(),
+                structures: Vec::new(),
+                source_id: concept.source.clone(),
+                source_url: String::new(),
+                sha256: String::new(),
+                license_name: String::new(),
+                depth: 0,
+            })
+            .collect(),
+        entities: entities
+            .iter()
+            .map(|(id, label)| ExtractedEntity {
+                id: id.clone(),
+                label: label.clone(),
+                language: String::new(),
+                source_span: String::new(),
+            })
+            .collect(),
+        ..crate::formalization::concept_links::ConceptGraph::default()
+    }
 }
 
 fn slugify(text: &str) -> String {

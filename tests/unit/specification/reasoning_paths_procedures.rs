@@ -19,6 +19,50 @@ fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
         .any(|link| link.starts_with(expected))
 }
 
+fn documented_english_procedure(
+    task: &str,
+    action: &str,
+    object: &str,
+    candidate: &str,
+    primary_query: &str,
+    official_install_query: Option<&str>,
+) -> String {
+    let source_gate = official_install_query.map_or_else(String::new, |official| {
+        format!(
+            "\n\nFor install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{official}` and keeps the general how-to query `how to {task}` as fallback."
+        )
+    });
+    format!(
+        "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`).{source_gate}\n\nI do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{candidate}` via `https://www.wikihow.com/api.php?action=parse&page={candidate}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. If those sources do not expose usable steps, the fallback path runs web search for `{primary_query}` across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews and merges the top results with reciprocal rank fusion (k = 60). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{task}`."
+    )
+}
+
+fn documented_connect_procedure(
+    language: &str,
+    task: &str,
+    object: &str,
+    candidate: &str,
+) -> String {
+    let api = format!(
+        "https://www.wikihow.com/api.php?action=parse&page={candidate}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    );
+    let query = format!("how to {task}");
+    let providers = "duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews";
+    match language {
+        "en" => documented_english_procedure(task, "connect", object, candidate, &query, None),
+        "ru" => format!(
+            "План поиска процедуры для `{task}` (действие `connect`, объект `{object}`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `{candidate}` через `{api}`. Если эти источники не дают пригодные шаги, fallback запускает web search по `{query}` через {providers} и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `{task}`."
+        ),
+        "hi" => format!(
+            "`{task}` के लिए procedural discovery plan (action `connect`, object `{object}`).\n\nमैं इसे memorized recipe से answer नहीं करता. Solver पहले topic context के लिए Wikipedia और entity/action/object hints के लिए Wikidata जांचता है. फिर वह candidate `{candidate}` के लिए wikiHow का CORS-readable MediaWiki parse API `{api}` से आजमाता है. अगर ये sources usable steps नहीं देते, fallback `{query}` के लिए {providers} पर web search चलाता है और top results को reciprocal rank fusion (k = 60) से merge करता है. अंतिम recursive fetch check केवल उन pages को स्वीकार करता है जिनमें `{task}` के explicit ordered या instructional steps हों."
+        ),
+        "zh" => format!(
+            "`{task}` 的过程发现计划（action `connect`, object `{object}`）。\n\n我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 wikiHow 的 CORS-readable MediaWiki parse API candidate `{candidate}`，URL 为 `{api}`。如果这些来源没有可用步骤，fallback 会对 `{query}` 通过 {providers} 运行 web search，并用 reciprocal rank fusion (k = 60) 合并顶部结果。最后的 recursive fetch check 只接受真正包含 `{task}` 的明确有序步骤或 instructional steps 的页面。"
+        ),
+        other => panic!("missing documented connect-procedure language {other}"),
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Issue #223: project-method documentation prompts should answer from the
 // project's own docs, scoped to the named method.
@@ -27,6 +71,10 @@ fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
 #[test]
 fn pandas_join_method_question_uses_official_docs_summary() {
     let response = answer("how the join method works in pandas");
+    assert_eq!(
+        response.answer,
+        "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html) (official pandas docs)."
+    );
     assert_eq!(
         response.intent, "docs_method_explanation",
         "pandas join method question must route to official-docs summary; answer={}",
@@ -84,6 +132,12 @@ fn pandas_join_method_docs_prompt_covers_supported_languages() {
 
     for case in cases {
         let response = answer(case.prompt);
+        if case.language == "en" {
+            assert_eq!(
+                response.answer,
+                "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html) (official pandas docs)."
+            );
+        }
         assert_eq!(
             response.intent, "docs_method_explanation",
             "{} pandas join docs prompt must resolve; answer={}",
@@ -118,6 +172,17 @@ fn pandas_join_method_docs_prompt_covers_supported_languages() {
 #[test]
 fn how_to_make_tea_uses_source_backed_procedure_plan() {
     let response = answer("How to make tea?");
+    assert_eq!(
+        response.answer,
+        documented_english_procedure(
+            "make tea",
+            "make",
+            "tea",
+            "Make-Tea",
+            "how to make tea",
+            None,
+        )
+    );
     assert_eq!(
         response.intent, "procedural_how_to",
         "\"How to make tea?\" must use the procedural handler; answer={}",
@@ -165,6 +230,17 @@ fn how_to_make_tea_uses_source_backed_procedure_plan() {
 fn how_to_prepare_fried_potatoes_falls_back_to_web_search() {
     let response = answer("How to prepare fried potatoes?");
     assert_eq!(
+        response.answer,
+        documented_english_procedure(
+            "prepare fried potatoes",
+            "prepare",
+            "fried potatoes",
+            "Prepare-Fried-Potatoes",
+            "how to prepare fried potatoes",
+            None,
+        )
+    );
+    assert_eq!(
         response.intent, "procedural_how_to",
         "\"How to prepare fried potatoes?\" must use the procedural handler; answer={}",
         response.answer,
@@ -203,6 +279,17 @@ fn how_to_prepare_fried_potatoes_falls_back_to_web_search() {
 #[test]
 fn telegraphic_how_order_prompt_routes_to_procedural_plan() {
     let response = answer("how order 3d print in nan chang vietnam?");
+    assert_eq!(
+        response.answer,
+        documented_english_procedure(
+            "order 3d print in nan chang vietnam",
+            "order",
+            "3d print in nan chang vietnam",
+            "Order-3d-Print-In-Nan-Chang-Vietnam",
+            "how to order 3d print in nan chang vietnam",
+            None,
+        )
+    );
     assert_eq!(
         response.intent, "procedural_how_to",
         "telegraphic \"how order ...\" prompt must use the procedural handler; answer={}",
@@ -273,6 +360,19 @@ fn telegraphic_install_prompts_use_official_docs_procedure_plan() {
         },
     ] {
         let response = answer(case.prompt);
+        if case.language == "en" {
+            assert_eq!(
+                response.answer,
+                documented_english_procedure(
+                    "install cursor",
+                    "install",
+                    "cursor",
+                    "Install-Cursor",
+                    "cursor install official documentation",
+                    Some("cursor install official documentation"),
+                )
+            );
+        }
         assert_eq!(
             response.intent, "procedural_how_to",
             "{} install prompt must use the procedural handler; answer={}",
@@ -347,6 +447,19 @@ fn procedural_request_surfaces_stay_multilingual_after_elided_gate() {
         },
     ] {
         let response = answer(case.prompt);
+        if case.language == "en" {
+            assert_eq!(
+                response.answer,
+                documented_english_procedure(
+                    "do 3d print ordering",
+                    "do",
+                    "3d print ordering",
+                    "Do-3d-Print-Ordering",
+                    "how to do 3d print ordering",
+                    None,
+                )
+            );
+        }
         assert_eq!(
             response.intent, "procedural_how_to",
             "{} procedural surface should still route after the elided gate; answer={}",
@@ -375,6 +488,7 @@ fn elided_how_connect_requests_cover_supported_languages() {
         prompt: &'static str,
         task_fragment: &'static str,
         object_fragment: &'static str,
+        candidate: &'static str,
     }
 
     for case in [
@@ -383,27 +497,40 @@ fn elided_how_connect_requests_cover_supported_languages() {
             prompt: "how connect mysql to node js",
             task_fragment: "connect mysql to node js",
             object_fragment: "mysql to node js",
+            candidate: "Connect-Mysql-To-Node-Js",
         },
         Case {
             language: "ru",
             prompt: "как подключить mysql к node js",
             task_fragment: "подключить mysql к node js",
             object_fragment: "mysql к node js",
+            candidate: "Подключить-Mysql-К-Node-Js",
         },
         Case {
             language: "hi",
             prompt: "कैसे कनेक्ट करें mysql को node js से",
             task_fragment: "कनेक्ट करें mysql को node js से",
             object_fragment: "mysql को node js से",
+            candidate: "कनेक्ट-करें-Mysql-को-Node-Js-से",
         },
         Case {
             language: "zh",
             prompt: "如何连接 mysql 到 node js",
             task_fragment: "连接 mysql 到 node js",
             object_fragment: "mysql 到 node js",
+            candidate: "连接-Mysql-到-Node-Js",
         },
     ] {
         let response = answer(case.prompt);
+        assert_eq!(
+            response.answer,
+            documented_connect_procedure(
+                case.language,
+                case.task_fragment,
+                case.object_fragment,
+                case.candidate,
+            )
+        );
         assert_eq!(
             response.intent, "procedural_how_to",
             "{} elided connect prompt must route procedurally; answer={}",
@@ -436,6 +563,11 @@ fn elided_how_connect_requests_cover_supported_languages() {
 #[test]
 fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
     let response = UniversalSolver::default().solve("Привет, как подключить mysql к node js");
+
+    assert_eq!(
+        response.answer,
+        "Здравствуйте! Чем могу помочь?\n\nПлан поиска процедуры для `подключить mysql к node js` (действие `connect`, объект `mysql к node js`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `Подключить-Mysql-К-Node-Js` через `https://www.wikihow.com/api.php?action=parse&page=Подключить-Mysql-К-Node-Js&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to подключить mysql к node js` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `подключить mysql к node js`."
+    );
 
     assert_eq!(
         response.intent, "compound_response",
@@ -484,6 +616,17 @@ fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
 #[test]
 fn how_to_procedure_is_general_not_memoized_to_examples() {
     let response = answer("How can I calibrate a torque wrench?");
+    assert_eq!(
+        response.answer,
+        documented_english_procedure(
+            "calibrate a torque wrench",
+            "calibrate",
+            "a torque wrench",
+            "Calibrate-A-Torque-Wrench",
+            "how to calibrate a torque wrench",
+            None,
+        )
+    );
     assert_eq!(
         response.intent, "procedural_how_to",
         "arbitrary procedural prompts must not fall back to unknown; answer={}",
@@ -538,6 +681,19 @@ fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
         },
     ] {
         let response = answer(case.prompt);
+        if case.language == "en" {
+            assert_eq!(
+                response.answer,
+                documented_english_procedure(
+                    "spec driven development",
+                    "do",
+                    "spec driven development",
+                    "Spec-Driven-Development",
+                    "how to spec driven development",
+                    None,
+                )
+            );
+        }
         assert_eq!(
             response.intent, "procedural_how_to",
             "{} how-to prompt must not fall back to unknown; answer={}",

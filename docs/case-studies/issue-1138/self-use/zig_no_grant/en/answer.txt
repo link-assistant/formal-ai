@@ -1,0 +1,7 @@
+--- cli error (claude-oauth) ---
+{"name": "ZodError", "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"}
+--- assistant text ---
+I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.
+
+Say what the program should do and which language it should be written in, and I will derive it.
+--- step finish: stop ---

@@ -110,7 +110,6 @@ fn replacement_requests_ignore_word_punctuation_across_supported_languages() {
             prompt: "替换 \"Hello World\" 为 \"Bye world\": \"Hello, world!\"",
         },
     ];
-
     for case in cases {
         let response = solver.solve(case.prompt);
         assert_eq!(
@@ -187,9 +186,11 @@ fn replacement_request_matrix_covers_prompt_order_quotes_punctuation_and_unicode
             answer: "gamma gamma",
         },
     ];
+    let documented_answers: Vec<&str> = cases.iter().map(|Case { answer, .. }| *answer).collect();
 
     for case in cases {
         let response = solver.solve(case.prompt);
+        assert!(documented_answers.contains(&response.answer.as_str()));
         assert_eq!(
             response.intent, "text_manipulation",
             "{} should route to text manipulation, got {} with answer {}",
@@ -779,6 +780,7 @@ fn native_text_operation_verbs_trigger_in_every_supported_language() {
             rule: "rule_normalize_whitespace",
         },
     ];
+    let documented_answers: Vec<&str> = cases.iter().map(|Case { answer, .. }| *answer).collect();
 
     let supported = supported_languages();
     for operation in [
@@ -810,6 +812,7 @@ fn native_text_operation_verbs_trigger_in_every_supported_language() {
 
     for case in cases {
         let response = solver.solve(case.prompt);
+        assert!(documented_answers.contains(&response.answer.as_str()));
         assert_eq!(
             response.intent, "text_manipulation",
             "{} {} should route to text manipulation, got {} with answer {}",

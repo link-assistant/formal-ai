@@ -19,6 +19,10 @@ this file says which slice carried what.
    `self-development-status.yml` runs the floor and the kernel shrink rule.
 4. **D1.4.** `kernel-ratchet.lino` and `check-kernel-ratchet.rs`, registered as
    a rust-stage gate; raisable handler-ledger ceilings retired.
+   *(Withdrawn with R1085-1: the kernel/non-kernel split is superseded and the
+   kernel-line measure deleted with it; the shrink-only ceilings survive as the
+   ordinary `debt-ratchet` gate -- `data/meta/debt-ratchet.lino`,
+   `scripts/check-debt-ratchet.rs`.)*
 5. **D4 (first half).** `cargo check --lib` per `.rs` leaf, shared target dir.
 6. **D5.4, documents.** Upstream numbers beside 13/13; VISION, GOALS,
    NON-GOALS, ROADMAP, REQUIREMENTS, traceability, README, troubleshooting.

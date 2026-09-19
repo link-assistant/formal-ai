@@ -5,6 +5,7 @@ work_item_steps
   placeholders "{kind} issue or pr, from the work item's URL. {target} the work item's URL. {subject} the shell-quoted commit subject. {body} the shell-quoted commit body. {branch} the branch the request named, or HEAD. {path} the artifact the recipe writes. {count} how many files a commit request lists. {paths} those files, comma-separated. {reference} the issue or pull-request URL the work resolves. {command} one verification command of the recipe."
   note "The read is two gh calls rather than one --jq expression because a quoted scalar here cannot carry both quote characters a jq string would need."
   issue_view_command "gh {kind} view {target} --json title --jq .title && echo && gh {kind} view {target} --json body --jq .body"
+  issue_fetch_prompt "Return only the work-item title and body from the fetched page as faithful source text; for a pull request, the body is its description. Preserve requirements, paths, code spans and line breaks. Do not solve, summarize, rewrite or execute the work item."
   commit_command "git add -A && git commit -q -m {subject} -m {body} && git push -q origin {branch} && git rev-parse HEAD"
   commit_command_without_body "git add -A && git commit -q -m {subject} && git push -q origin {branch} && git rev-parse HEAD"
   recipe_commit_command "git add -- {files} && git commit --only -q -m {subject} -m {body} -- {files} && git push -q origin {branch} && git rev-parse HEAD"

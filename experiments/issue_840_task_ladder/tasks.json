@@ -560,6 +560,396 @@
         "bash",
         "websearch"
       ]
+    },
+    {
+      "id": "1138.frontier.news",
+      "level": 1,
+      "parent": null,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Catch me up on what has happened since this morning.",
+      "expect": [],
+      "forbid": [
+        "Here is what I can do",
+        "I can help you with",
+        "не смог определить"
+      ],
+      "note": "Freshness-qualified catch-up must route to a live search, never to the fixture-less definition path.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "1138.frontier.non_understanding",
+      "level": 1,
+      "parent": null,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "I did not follow that at all.",
+      "expect": [],
+      "forbid": [
+        "Here is what I can do",
+        "I can help you with",
+        "не смог определить"
+      ],
+      "note": "Non-understanding must re-render the previous turn, not search for the sentence.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "websearch",
+        "bash"
+      ]
+    },
+    {
+      "id": "1138.frontier.compose",
+      "level": 1,
+      "parent": null,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Write me an extended piece on how the uncertainty principle came about.",
+      "expect": [],
+      "forbid": [
+        "Here is what I can do",
+        "I can help you with",
+        "не смог определить"
+      ],
+      "note": "A compose request must reach the composition procedure, not collapse into one web search.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "websearch",
+        "bash"
+      ]
+    },
+    {
+      "id": "1138.frontier.demonstrate",
+      "level": 1,
+      "parent": null,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Say something to me in Russian.",
+      "expect": [],
+      "forbid": [
+        "Here is what I can do",
+        "I can help you with",
+        "не смог определить"
+      ],
+      "note": "A demonstrated response language must be answered in that language, not looked up.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "websearch",
+        "bash"
+      ]
+    },
+    {
+      "id": "1138.frontier.schedule",
+      "level": 1,
+      "parent": null,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Pencil in a review with Dmitri on Tuesday at 09:30, Berlin time.",
+      "expect": [],
+      "forbid": [
+        "Here is what I can do",
+        "I can help you with",
+        "не смог определить"
+      ],
+      "note": "A scheduling request must reach the calendar capability, not a shell or web stand-in.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "websearch",
+        "bash"
+      ]
+    },
+    {
+      "id": "1138.frontier.measurement",
+      "level": 1,
+      "parent": null,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "How tall does a mature birch normally grow?",
+      "expect": [],
+      "forbid": [
+        "Here is what I can do",
+        "I can help you with",
+        "не смог определить"
+      ],
+      "note": "A property-with-unit question must reach the measurement lookup, not a definition search.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "websearch",
+        "bash"
+      ]
+    },
+    {
+      "id": "1138.frontier.ui_complaint",
+      "level": 1,
+      "parent": null,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "The panel divider you drew is impossible to drag with a mouse.",
+      "expect": [],
+      "forbid": [
+        "Here is what I can do",
+        "I can help you with",
+        "не смог определить"
+      ],
+      "note": "A complaint about the product must open the structured report flow, not a web search.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "websearch",
+        "bash"
+      ]
+    },
+    {
+      "id": "838.L4.e",
+      "level": 4,
+      "parent": "838.L3.a",
+      "seed": "838",
+      "lang": "hi",
+      "prompt": "मेरे डेस्कटॉप पर hive-mind-control center फ़ोल्डर खोजिए",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "The L1 phrasing in Hindi must route exactly like the English and Russian nodes.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.f",
+      "level": 4,
+      "parent": "838.L3.a",
+      "seed": "838",
+      "lang": "zh",
+      "prompt": "在我的桌面上查找 hive-mind-control center 文件夹",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "The L1 phrasing in Chinese must route exactly like the English and Russian nodes.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.g",
+      "level": 4,
+      "parent": "838.L3.a",
+      "seed": "838",
+      "lang": "es",
+      "prompt": "Busca la carpeta hive-mind-control center en mi escritorio",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "The L1 phrasing in Spanish must route exactly like the English and Russian nodes.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.h",
+      "level": 4,
+      "parent": "838.L3.a",
+      "seed": "838",
+      "lang": "hi",
+      "prompt": "मेरे डेस्कटॉप पर hive-mind-control-center खोजिए",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "The 'Search' phrasing in Hindi must route local exactly like 'Find'.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.i",
+      "level": 4,
+      "parent": "838.L3.a",
+      "seed": "838",
+      "lang": "zh",
+      "prompt": "在我的桌面上搜索 hive-mind-control-center",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "The 'Search' phrasing in Chinese must route local exactly like 'Find'.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.j",
+      "level": 4,
+      "parent": "838.L3.a",
+      "seed": "838",
+      "lang": "es",
+      "prompt": "Busca hive-mind-control-center en mi escritorio",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "The 'Search' phrasing in Spanish must route local exactly like 'Find'.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.k",
+      "level": 4,
+      "parent": "838.L3.b",
+      "seed": "838",
+      "lang": "hi",
+      "prompt": "डेस्कटॉप पर hive-mind-control center फ़ोल्डर खोजिए",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "Dropping the possessive must not change the route in Hindi either.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.l",
+      "level": 4,
+      "parent": "838.L3.b",
+      "seed": "838",
+      "lang": "zh",
+      "prompt": "在桌面上查找 hive-mind-control center 文件夹",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "Dropping the possessive must not change the route in Chinese either.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
+    },
+    {
+      "id": "838.L4.m",
+      "level": 4,
+      "parent": "838.L3.b",
+      "seed": "838",
+      "lang": "es",
+      "prompt": "Busca la carpeta hive-mind-control center en el escritorio",
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "Dropping the possessive must not change the route in Spanish either.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     }
   ]
 }

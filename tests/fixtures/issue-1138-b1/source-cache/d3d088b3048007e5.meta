@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://es.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=isograma
+fetched_at=1789540441
+sha256=5e5fb2dc2d89f41200451d119bbd10f7d1a34ce8529595740662ce1eaa705446

@@ -329,7 +329,11 @@ meanings
       surface
         text "build"
       surface
+        text "check"
+      surface
         text "close"
+      surface
+        text "confirm"
       surface
         text "commit"
       surface
@@ -401,6 +405,8 @@ meanings
       surface
         text "update"
       surface
+        text "verify"
+      surface
         text "wire"
       surface
         text "write"
@@ -465,6 +471,16 @@ meanings
         text реши
       surface
         text решить
+      surface
+        text проверь
+      surface
+        text проверить
+      surface
+        text подтверди
+      surface
+        text подтвердить
+      surface
+        text убедись
     lexeme hi
       surface
         text जोड़ें
@@ -496,6 +512,14 @@ meanings
         text स्थापित
       surface
         text हल
+      surface
+        text जाँचो
+      surface
+        text जाँच
+      surface
+        text पुष्टि
+      surface
+        text सत्यापित
     lexeme zh
       surface
         text 添加
@@ -539,6 +563,63 @@ meanings
         text 设置
       surface
         text 解决
+      surface
+        text 检查
+      surface
+        text 确认
+      surface
+        text 验证
+    lexeme es
+      surface
+        text añade
+      surface
+        text agrega
+      surface
+        text crea
+      surface
+        text escribe
+      surface
+        text actualiza
+      surface
+        text elimina
+      surface
+        text borra
+      surface
+        text corrige
+      surface
+        text renombra
+      surface
+        text reemplaza
+      surface
+        text mueve
+      surface
+        text ejecuta
+      surface
+        text instala
+      surface
+        text abre
+      surface
+        text cierra
+      surface
+        text combina
+      surface
+        text configura
+      surface
+        text resuelve
+      surface
+        text implementa
+      surface
+        text genera
+      surface
+        text registra
+      surface
+        text confirma
+      surface
+        text comprueba
+      surface
+        text revisa
+      surface
+        text verifica
   unobservable_task_action
     defined-by action
     role unobservable_task_action

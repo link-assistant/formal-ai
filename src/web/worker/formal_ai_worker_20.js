@@ -574,123 +574,11 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }
     return writeProgramResult;
   };
-  const syncHandlers = [
-    { name: "tryExactMemoryQuery", run: () => tryExactMemoryQuery(prompt, memoryEvents) },
-    // Issue #708: compile the complete seeded memory-program family before the
-    // legacy single-write recognizer. Mirrors `compile_memory_program` plus
-    // `execute_memory_program`; an incomplete compilation gap is delayed until
-    // after that legacy recognizer, matching the native query precedence.
-    {
-      name: "tryMemoryProgram",
-      run: () => tryMemoryProgram(prompt, memoryEvents, language),
-    },
-    // Issue #529: a natural-language memory write (append/substitution) is a
-    // specific, scope-gated request, so it runs ahead of the historical recall
-    // and generic handlers. It needs the persistent-memory snapshot the app
-    // passes in to count substitution occurrences. Mirrors try_memory_write
-    // running inside the conversation-memory path in the Rust runtime.
-    { name: "tryMemoryWrite", run: () => tryMemoryWrite(prompt, normalized, memory) },
-    {
-      name: "tryMemoryProgramGap",
-      run: () => tryMemoryProgramGap(prompt, language),
-    },
-    { name: "tryCurrentDialogueFactChecking", run: () => tryCurrentDialogueFactChecking(prompt, normalized, language, history) },
-    { name: "tryLinkNativeSynthesis", run: () => tryLinkNativeSynthesis(prompt, normalized) },
-    { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
-    {
-      name: "tryResearchComparisonTable",
-      run: () => tryResearchComparisonTable(prompt, normalized, history),
-    },
-    {
-      name: "tryResearchResultFollowup",
-      run: () => tryResearchResultFollowup(prompt, normalized, history),
-    },
-    { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
-    { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
-    { name: "tryKupiSlona", run: () => tryKupiSlona(prompt, normalized) },
-    {
-      name: "tryCalendarReasoning",
-      run: () => tryCalendarReasoning(prompt, normalized, userContext),
-    },
-    {
-      name: "tryProofRequest",
-      run: () => tryProofRequest(prompt, normalized, language),
-    },
-    { name: "tryIncompatibleUnits", run: () => tryIncompatibleUnits(prompt, normalized) },
-    // Issue #135/#386: a Playwright-script request is more specific than the
-    // generalized write_program recognizer. Since #386 taught
-    // writeProgramParameters to recognize a program_kind ("скрипт"/"script")
-    // requested by a program_request verb ("написать"/"write"), a bare
-    // "напиши … playwright скрипт" now also looks like a write_program with no
-    // task — so the Playwright handler must win first. This mirrors the Rust
-    // dispatch, where try_playwright_script runs ahead of the specialized-handler
-    // group that owns write_program (precedence in data/seed/handler-precedence.lino).
-    {
-      name: "tryPlaywrightScript",
-      run: () => tryPlaywrightScript(prompt, preferences, language),
-    },
-    {
-      name: "tryWriteProgramCoreference",
-      run: () => {
-        const hit = writeProgram();
-        return hit &&
-          hit.intent === "write_program" &&
-          hit.evidence?.some((link) => link.startsWith("write_program_coreference_rewrite:"))
-          ? hit
-          : null;
-      },
-    },
-    {
-      name: "tryProgramBlueprintFromPrompt",
-      run: () =>
-        tryProgramBlueprintFromPrompt(
-          prompt,
-          responseLanguage,
-          preferences.blueprintComposition,
-        ),
-    },
-    { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized, history) },
-    // Issue #395: a concrete "<operation> these numbers in <language>, give me
-    // the code and the result" must produce generated code plus the
-    // deterministically-computed result. It runs before program synthesis and
-    // arithmetic (either of which would otherwise claim the numeric prompt),
-    // mirroring the Rust dispatch where numeric_list precedes arithmetic and
-    // program_synthesis.
-    { name: "tryNumericList", run: () => tryNumericList(prompt, history) },
-    { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
-    {
-      name: "tryCompoundInterest",
-      run: () => tryCompoundInterest(prompt, normalized, history),
-    },
-    { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
-    { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
-    // Issue #423: README/install-guide to shell/PowerShell conversion is a
-    // narrower script request than generic program synthesis. Keep it ahead of
-    // writeProgram so "convert this README to a script" preserves the source
-    // instructions instead of producing an unrelated starter script.
-    { name: "tryInstallationConversion", run: () => tryInstallationConversion(prompt, normalized) },
-    {
-      name: "tryWriteProgramConcrete",
-      run: () => {
-        const hit = writeProgram();
-        return hit && hit.intent === "write_program" ? hit : null;
-      },
-    },
-    {
-      name: "tryDefinitionMerge",
-      run: () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion }),
-    },
-    // Issue #341: keep a "test it / run it / show me" step inside the active
-    // software-project dialogue instead of letting it resolve as a concept
-    // lookup. Must run before tryConceptLookup and trySoftwareProjectRequest.
-    {
-      name: "trySoftwareProjectFollowup",
-      run: () => trySoftwareProjectFollowup(prompt, history),
-    },
-    { name: "tryConceptLookup", run: () => tryConceptLookup(prompt) },
-    { name: "tryWriteProgram", run: () => writeProgram() },
-    { name: "trySoftwareProjectRequest", run: () => trySoftwareProjectRequest(prompt, history) },
-  ];
+  const definitionMerge = () => tryDefinitionMerge(prompt, { allowPlainConcept: autoDefinitionFusion });
+  const syncHandlers = synchronousHandlerCandidates({
+    prompt, normalized, history, memory, memoryEvents, language,
+    responseLanguage, preferences, userContext, writeProgram, definitionMerge,
+  });
   for (const handler of syncHandlers) {
     const hit = handler.run();
     if (hit) {
@@ -1168,6 +1056,147 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   }
   return result;
 }
+// Issue #1138 B9, plan 09 leaves 13-15: the browser worker resolves its
+// specialized handlers under the same name-keyed vocabulary the seed owns.
+// `workerHandlerAliases` holds the slugs whose worker-side implementation keeps
+// a genuinely different historical name; every other implemented slug follows
+// the mechanical `try` + CamelCase convention. A slug resolving to `null` is a
+// row the worker does not run in the synchronous handler phase — the native
+// surface runs it, or the browser answers it in the async phase the seed's
+// `phase async` note declares. A `@name` value is a per-turn context binding
+// the dispatcher supplies, not a global symbol.
+function workerHandlerRegistryDefinition() {
+  const workerHandlerAliases = {
+    conversation_memory: "tryMemoryWrite",
+    summarization: "trySummarizeConversation",
+    brainstorming: "tryBrainstormingRequest",
+    roleplay: "tryRoleplayRequest",
+    coreference: "tryCoreferenceFactLookup",
+    shell_command_transform: "tryTerminalCommand",
+    write_script: "tryWriteProgram",
+    software_project: "trySoftwareProjectRequest",
+    who_is: "tryWhoIsQuestion",
+  };
+  const workerHandlers = {
+    conversation_control: null, // local recall and behavior rules run above the table
+    agentic_continuation: null, // the agentic runtime resumes above the table
+    exact_memory_query: "tryExactMemoryQuery",
+    memory_program: "tryMemoryProgram",
+    memory_program_gap: "tryMemoryProgramGap",
+    current_dialogue_fact_checking: "tryCurrentDialogueFactChecking",
+    link_native_synthesis: "tryLinkNativeSynthesis",
+    historical: "tryHistorical",
+    write_program_coreference: "@writeProgram",
+    program_blueprint_from_prompt: "tryProgramBlueprintFromPrompt",
+    write_program_concrete: "@writeProgram",
+    http_fetch: null, // phase async
+    url_navigate: null, // phase async
+    github_repository_traffic: "tryGithubRepositoryTraffic",
+    document_originality_check: "tryDocumentOriginalityCheck",
+    web_search: null, // phase async
+    learn_from_source: null, // phase async
+    research_comparison_table: "tryResearchComparisonTable",
+    research_result_followup: "tryResearchResultFollowup",
+    docs_method_explanation: "tryDocsMethodExplanation",
+    procedural_how_to: null, // phase async: the how-to guide fetches its source registry
+    procedural_how_to_followup: null, // phase async
+    conversation_memory: workerHandlerAliases.conversation_memory,
+    software_project_followup: "trySoftwareProjectFollowup",
+    summarization: workerHandlerAliases.summarization,
+    verifiable_task: "tryVerifiableTask",
+    text_manipulation: "tryTextManipulation",
+    brainstorming: workerHandlerAliases.brainstorming,
+    conversation_topic: null, // inline opener machinery in the conversation module
+    fact_lookup: "tryFactLookup",
+    coreference: workerHandlerAliases.coreference,
+    roleplay: workerHandlerAliases.roleplay,
+    translation: null, // native surface only
+    response_language_followup: null, // native rule surface only
+    capabilities: "tryCapabilities",
+    calendar_reasoning: "tryCalendarReasoning",
+    calendar_create_event: "tryCalendarCreateEvent",
+    compound_interest: "tryCompoundInterest",
+    numeric_list: "tryNumericList",
+    shell_command_transform: workerHandlerAliases.shell_command_transform,
+    number_constraint_reasoning: null, // native surface only
+    program_synthesis: "tryProgramSynthesis",
+    arithmetic: "tryArithmetic",
+    javascript_execution: "tryJavaScriptExecution",
+    definition_merge: "@definitionMerge",
+    concept_lookup: "tryConceptLookup",
+    who_is: workerHandlerAliases.who_is,
+    how_it_works: null, // inline architecture-question machinery
+    meta_explanation: null, // inline architecture-question machinery
+    network_query: null, // phase async
+    execution_failure: null, // native surface only
+    installation_conversion: "tryInstallationConversion",
+    write_script: workerHandlerAliases.write_script,
+    document_generation_plan: null, // native surface only
+    software_project: workerHandlerAliases.software_project,
+    software_project_request: "trySoftwareProjectRequest",
+    algorithm: null, // native surface only
+    source_refresh: null, // phase async
+    source_conflict: null, // native surface only
+    clarification: null, // native surface only
+    punctuation_only_prompt: null, // native surface only
+    ill_formed: null, // native surface only
+    physical_action_question: null, // native surface only
+    kupi_slona: "tryKupiSlona",
+    shell_refusal: null, // native surface only
+    proof_request: "tryProofRequest",
+    opinion_question: null, // native surface only
+    incompatible_units: "tryIncompatibleUnits",
+  };
+  return { workerHandlers, workerHandlerAliases };
+}
+
+const WORKER_HANDLER_REGISTRY = workerHandlerRegistryDefinition();
+
+// The registry must stay an exact permutation of the seed's precedence rows:
+// the same load-time assertion the native dispatcher runs, on the browser side
+// (plan 09 leaves 13-15).
+function assertWorkerRegistryPermutation(declared) {
+  const registered = Object.keys(WORKER_HANDLER_REGISTRY.workerHandlers);
+  const compare = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
+  const sortedDeclared = declared.slice().sort(compare);
+  const sortedRegistered = registered.slice().sort(compare);
+  for (let i = 0; i < sortedDeclared.length; i += 1) {
+    if (sortedDeclared[i] !== sortedRegistered[i]) {
+      throw new Error(
+        `worker handler registry must be an exact permutation of the seed: seed has \
+"${sortedDeclared[i]}", registry has "${sortedRegistered[i]}" at position ${i}`,
+      );
+    }
+  }
+}
+
+function installWorkerHandlerRegistry(seedText) {
+  if (typeof seedText !== "string" || seedText.length === 0) return;
+  if (typeof self.FormalAiSeed !== "object" || self.FormalAiSeed === null) return;
+  const root = self.FormalAiSeed.parse(seedText);
+  const section = root && root.name === "handler_precedence"
+    ? root
+    : ((root && root.children) || []).find((child) => child.name === "handler_precedence");
+  if (!section || !Array.isArray(section.children)) return;
+  assertWorkerRegistryPermutation(
+    section.children.map((child) => child.name).filter(Boolean),
+  );
+  for (const [slug, implementation] of Object.entries(WORKER_HANDLER_REGISTRY.workerHandlers)) {
+    if (typeof implementation === "string" && implementation.startsWith("@")) {
+      if (implementation.length < 2) {
+        throw new Error(`worker handler ${slug} declares an empty context binding`);
+      }
+    } else if (implementation !== null && typeof self[implementation] !== "function") {
+      throw new Error(`worker handler ${slug} resolves to missing implementation ${implementation}`);
+    }
+  }
+  for (const [slug, implementation] of Object.entries(WORKER_HANDLER_REGISTRY.workerHandlerAliases)) {
+    if (WORKER_HANDLER_REGISTRY.workerHandlers[slug] !== implementation) {
+      throw new Error(`worker handler alias ${slug} disagrees with the registry entry`);
+    }
+  }
+}
+
 let seedLoaded = false;
 let seedLoadPromise = null;
 async function loadSeed() {
@@ -1181,6 +1210,8 @@ async function loadSeed() {
     try {
       const seed = await self.FormalAiSeed.loadAll();
       SEED_RAW = (seed && seed.raw) || {};
+      installBrowserHandlerPrecedence(seed && seed.browserHandlerPrecedence);
+      installWorkerHandlerRegistry(SEED_RAW["seed/handler-precedence.lino"]);
       await hydrateLinoSeedAndSourceCaches(SEED_RAW);
       if (seed && seed.responses) {
         const merged = {};
@@ -1315,6 +1346,15 @@ async function init() {
       const bytes = await source.arrayBuffer();
       const module = await WebAssembly.instantiate(bytes, {});
       wasm = module.instance.exports;
+      // Plan 09 leaf 13: re-check the registry through the same parser the
+      // native solver reads the seed with, so the two surfaces cannot drift.
+      const seedText = SEED_RAW["seed/handler-precedence.lino"];
+      if (typeof seedText === "string" && seedText.length > 0) {
+        const declared = String(
+          wasmTextCall("engine_handler_precedence", seedText) || "",
+        ).split("\n").filter(Boolean);
+        assertWorkerRegistryPermutation(declared);
+      }
     } catch (_error) {
       wasm = null;
       mode = "js fallback";
@@ -1340,6 +1380,32 @@ async function init() {
 self.onmessage = async (event) => {
   await init();
   const data = event.data || {};
+  if (data.kind === "browser_runtime_probe") {
+    postMessage({
+      kind: "browser_runtime_probe",
+      requestId: data.requestId,
+      probe: browserExecutionProbe("python"),
+    });
+    return;
+  }
+  if (data.kind === "browser_runtime_load") {
+    try {
+      await loadBrowserPythonRuntime();
+      postMessage({
+        kind: "browser_runtime_load",
+        requestId: data.requestId,
+        probe: browserExecutionProbe("python"),
+      });
+    } catch (error) {
+      postMessage({
+        kind: "browser_runtime_load",
+        requestId: data.requestId,
+        probe: browserExecutionProbe("python"),
+        error: String(error && error.message || error),
+      });
+    }
+    return;
+  }
   if (data.kind === "seed_dump") {
     postMessage({
       kind: "seed_dump",
@@ -1371,9 +1437,9 @@ self.onmessage = async (event) => {
   // rewrites; the worker stays pure and the app applies the write.
   const memory = Array.isArray(data.memory) ? data.memory : [];
   const memoryEvents = Array.isArray(data.memoryEvents) ? data.memoryEvents : [];
-  const answer = attachUserContext(
-    await solve(prompt, history, prefs, userContext, memory, { memoryEvents }),
-    userContext,
+  const executionAnswer = await executeBrowserCodeRequest(prompt);
+  const answer = executionAnswer || attachUserContext(
+    await solve(prompt, history, prefs, userContext, memory, { memoryEvents }), userContext,
   );
   postMessage({
     kind: "message",
@@ -1387,6 +1453,7 @@ self.onmessage = async (event) => {
     iframeUrl: answer.iframeUrl || null,
     diagnostics: answer.diagnostics || null,
     memoryOperation: answer.memoryOperation || null,
+    runtimeOffer: answer.runtimeOffer || null,
   });
 };
 init();

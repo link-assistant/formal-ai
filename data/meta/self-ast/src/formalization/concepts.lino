@@ -1,0 +1,28 @@
+self_ast_census
+  target src/formalization/concepts.rs
+  language rust
+  fidelity signature
+  byte_len 14014
+  line_count 389
+  content_id source_module_54b079b34ed03785
+  symbol_count 19
+  symbols
+    struct ExtractedConcept 36 52
+    struct ExtractedRelation 56 67
+    struct ExtractedEntity 71 77
+    struct RelationDefinition 82 90
+    function relations 94 126
+    static RELATIONS 95 95
+    function determiners 129 147
+    static DETERMINERS 130 130
+    function surfaces_of 150 169
+    function concept_from_sense 176 202
+    function concept_id 206 221
+    function read_gloss 224 245
+    function head_term 248 261
+    function differentiae_of 264 290
+    function find_cue 294 317
+    function relations_in 323 361
+    function grounded_last 364 366
+    function grounded_first 369 371
+    function grounded_terms 374 389

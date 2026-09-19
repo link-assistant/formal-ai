@@ -46,7 +46,7 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
 use crate::engine::normalize_prompt;
-use crate::promotion::{PromotionProposal, PromotionRatchet, SeedEdit};
+use crate::promotion::{PromotionProposal, PromotionRatchet, SeedEdit, render_promotion_proposals};
 use crate::seed::Slot;
 use crate::seed::parser::parse_lino;
 
@@ -70,9 +70,30 @@ pub const UPSTREAM_BENCHMARKS_FRONTIER: &str = "upstream-benchmarks";
 
 /// The committed record of the upstream benchmark frontier, rewritten by the
 /// scheduled external-benchmarks run through
-/// `formal-ai benchmark run --frontier-record`.
-pub const UPSTREAM_BENCHMARKS_FRONTIER_RECORD: &str =
-    include_str!("../data/meta/learning-frontier-upstream-benchmarks.lino");
+/// `formal-ai benchmark run --frontier-record`. When one honest prompt per
+/// failed case outgrows the 1500-line data cap (issue #960), the writer spills
+/// continuation pages into `-partN.lino` siblings; the replay reads the
+/// concatenation, and `parse_frontier_record` collects items across the
+/// repeated document roots. Parts the pages no longer fill are committed as
+/// header-only placeholders, so exactly this many part files exist and the
+/// embed compiles whatever the frontier's size.
+pub const UPSTREAM_BENCHMARKS_FRONTIER_RECORD: &str = concat!(
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks.lino"),
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks-part1.lino"),
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks-part2.lino"),
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks-part3.lino"),
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks-part4.lino"),
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks-part5.lino"),
+    include_str!("../data/meta/learning-frontier-upstream-benchmarks-part6.lino"),
+);
+
+/// How many `-partN.lino` continuation files the record above embeds. The
+/// writer provisions exactly this many (resetting unfilled ones to
+/// placeholders), so a frontier that grows or shrinks never leaves the embed
+/// and the committed file set out of sync. Six parts at the 1400-line write
+/// budget hold about 1190 frontier prompts — several times the largest slice
+/// the scheduled suites can fail at once.
+pub const UPSTREAM_BENCHMARKS_FRONTIER_PARTS: usize = 6;
 
 /// One recorded frontier the CLI can replay.
 ///
@@ -290,6 +311,16 @@ impl LearningCycleRun {
             let _ = writeln!(out, "    reason \"{}\"", blocked.reason);
             let _ = writeln!(out, "    sample_prompt \"{}\"", blocked.sample_prompt);
             let _ = writeln!(out, "    routed_to \"human_triage\"");
+        }
+        // The idle runtime persists this exact document. Embed the proposal
+        // blocks in the issue-#656 reader's shape so the next `improve` run can
+        // consume the artifact directly instead of leaving an audit file with
+        // no reader. The learning-cycle fields above remain the human-readable
+        // derivation and the proposal blocks below are the executable handoff.
+        let promotion_document = render_promotion_proposals(&self.proposals);
+        for line in promotion_document.lines().skip(1) {
+            out.push_str(line);
+            out.push('\n');
         }
         out.trim_end().to_owned()
     }

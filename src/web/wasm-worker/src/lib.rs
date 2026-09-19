@@ -547,6 +547,36 @@ pub extern "C" fn engine_translate_formal_statement(input_length: usize) -> usiz
     write_output(formal_statement_worker::answer(payload).as_bytes())
 }
 
+/// Project a handler-precedence seed document into its ordered handler names,
+/// one per line (issue #1138 B9, plan 09 leaf 13). The browser worker and the
+/// native solver read the same document through this same parser, so a reorder
+/// flips both surfaces identically.
+#[unsafe(no_mangle)]
+pub extern "C" fn engine_handler_precedence(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(payload) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let tree = seed_parser::parse_lino(payload);
+    let Some(root) = tree.children.first() else {
+        return 0;
+    };
+    let mut names = String::new();
+    for child in &root.children {
+        if !names.is_empty() {
+            names.push('\n');
+        }
+        names.push_str(&child.name);
+    }
+    write_output(names.as_bytes())
+}
+
 struct FactCheckTemplates<'a> {
     audit: &'a str,
     statement: &'a str,

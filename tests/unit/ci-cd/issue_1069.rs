@@ -73,63 +73,35 @@ fn detached_memory_upgrade_container_is_automatically_removed() {
 }
 
 /// The authorship route is what lets Formal AI's work ride inside an ordinary
-/// pull request instead of needing one of its own, so its contract is pinned
-/// where a rewrite has to notice it: the three trailers the self-hosting metric
-/// reads, an evidence directory carrying both markers that metric looks for, and
-/// a workspace the Agent CLI cannot see its own logs through.
+/// pull request instead of needing one of its own. Plan 03 L13 moved the loop
+/// itself into `src/authoring_loop.rs` (behaviorally tested by
+/// `authoring_effects` and `self_hosting_metric::solve_attribution`, which
+/// prove the four trailers, the producer-naming evidence, the log isolation,
+/// and the bounded readiness probe against fake executables). What stays
+/// pinned here is the wrapper shape: the script keeps the workflow's CLI,
+/// hands the whole loop to `formal-ai solve` instead of a second bash
+/// implementation, and never opens a pull request or pushes.
 #[test]
-fn the_authorship_route_commits_the_trailers_the_release_gate_reads() {
-    let script = repository_file("scripts/author-change-with-formal-ai.sh");
-    assert!(script.contains("Formal-AI-Session: %s"));
-    assert!(script.contains("Formal-AI-Evidence: %s"));
-    assert!(script.contains("Formal-AI-Pull-Request: %s"));
-    assert!(
-        script.contains("printf 'formal-ai session %s\\n' \"$session_id\""),
-        "one evidence file must carry the producer marker and the session id together"
-    );
-    assert!(
-        script.contains(
-            r#"[[ "$pull_request" =~ ^https://github\.com/[^/]+/[^/]+/pull/[1-9][0-9]*$ ]]"#
-        ),
-        "a trailer the metric cannot parse must be rejected here, not at release time"
-    );
-}
-
-#[test]
-fn the_authorship_route_keeps_the_agent_cli_out_of_its_own_logs() {
-    let script = repository_file("scripts/author-change-with-formal-ai.sh");
-    assert!(script.contains("work=\"$(mktemp -d)\""));
-    assert!(script.contains("state=\"$(mktemp -d)\""));
-    assert!(
-        script.contains(">\"$state/agent-stream.raw.log\""),
-        "the live stream must land outside both the workspace and the evidence directory"
-    );
-    assert!(script.contains("FORMAL_AI_MEMORY_PATH=\"$state/memory.lino\""));
-    assert!(script.contains("FORMAL_AI_DREAMING=0"));
-}
-
-#[test]
-fn the_authorship_route_waits_explicitly_for_the_server_to_bind() {
+fn the_authorship_route_is_a_wrapper_over_solve_and_never_publishes() {
     let script = repository_file("scripts/author-change-with-formal-ai.sh");
     assert!(
-        script.contains("for attempt in $(seq 1 30)"),
-        "curl's retry behavior differs between platforms; startup needs an explicit loop"
+        script.contains("\"$BIN\" solve"),
+        "the loop must run through formal-ai solve, not a second implementation"
     );
     assert!(
-        script.contains("kill -0 \"$server_pid\""),
-        "a server that exits while starting must fail immediately instead of burning the deadline"
+        script.contains("FORMAL_AI_REPO_ROOT"),
+        "the script must accept the repository root from its caller"
     );
-}
-
-/// Producing a change must not imply producing a pull request (issue #1069).
-#[test]
-fn the_authorship_route_neither_opens_a_pull_request_nor_pushes() {
-    let script = repository_file("scripts/author-change-with-formal-ai.sh");
     assert!(!script.contains("gh pr create"));
-    assert!(!script.contains("git -C \"$ROOT\" push"));
+    assert!(!script.contains("git push"));
     assert!(
-        script.contains("git -C \"$ROOT\" diff --cached --quiet && die"),
-        "a run that reproduced the committed bytes has authored nothing"
+        !script.contains("mktemp"),
+        "workspace isolation moved into the loop; the wrapper must not re-implement it"
+    );
+    let workflow = repository_file(".github/workflows/self-authored-pull-request.yml");
+    assert!(
+        workflow.contains("scripts/author-change-with-formal-ai.sh"),
+        "the weekly authoring workflow must keep invoking the wrapper by path"
     );
 }
 

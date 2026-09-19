@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 4401
   line_count 128
-  content_id source_module_60aa34e36fc834be
+  content_id source_module_e995278939cc8cf6
   symbol_count 3
   symbols
     function try_agent_workspace_task 11 76

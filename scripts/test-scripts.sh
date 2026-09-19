@@ -57,6 +57,19 @@ already_gated=$(
     sort -u
 )
 
+# Scripts `#[path]`-included by a consumer a registered gate already --test-runs.
+# A lib-style script carries no `fn main`, so rust-script cannot execute it
+# directly -- it wraps the file in `fn main`, which strands the included
+# `#[cfg(test)]` module inside main's scope where `use super::*` reaches nothing.
+# Its suite still runs exactly once: `#[path]` compilation pulls the included
+# module, tests included, into the consumer's `--test` binary.
+already_included=$(
+  for consumer in $already_gated; do
+    grep -hoE '#\[path = "[^"]+\.rs"\]' "scripts/$consumer" 2>/dev/null |
+      sed -e 's|^#\[path = "||' -e 's|.*scripts/||' -e 's|"\]$||'
+  done | sort -u
+)
+
 selected=()
 for script in scripts/*.rs; do
   grep -q 'cfg(test)' "$script" || continue
@@ -65,6 +78,9 @@ for script in scripts/*.rs; do
     continue
   fi
   if printf '%s\n' "$already_gated" | grep -qxF "$name"; then
+    continue
+  fi
+  if printf '%s\n' "$already_included" | grep -qxF "$name"; then
     continue
   fi
   selected+=("$script")
