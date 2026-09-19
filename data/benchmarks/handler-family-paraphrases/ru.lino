@@ -196,7 +196,7 @@ handler_family_case_ru_structural_operator_01
   source "self_authored_multilingual_variation"
   language "ru"
   expected_family "structural_operator"
-  prompt "Расположи эти числа в обратном порядке и покажи код на Go: 4 9 1 7"
+  prompt "Циклически сдвинь эти числа на две позиции влево и покажи код на Go: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_02
   record_type "handler_family_case"
@@ -260,7 +260,7 @@ handler_family_case_ru_structural_operator_09
   source "self_authored_multilingual_variation"
   language "ru"
   expected_family "structural_operator"
-  prompt "Расположи эти числа в обратном порядке и покажи код на Ruby: 2 11 11 3 20"
+  prompt "Циклически сдвинь эти числа на одну позицию вправо и покажи код на Ruby: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_10
   record_type "handler_family_case"

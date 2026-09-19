@@ -16,7 +16,7 @@ use super::shell_command_policy::{
 };
 use super::directory_listing::asks_for_directory_listing;
 use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
-use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
+use crate::seed::{self, ShellIntent, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
@@ -590,38 +590,7 @@ fn is_fact_statement(
 
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_lowercase();
-    let sentences = sentences_with_mood(&lower);
-    let caller_context = seed::caller_context_vocabulary();
-    let cues: Vec<&str> = vocab
-        .intents
-        .iter()
-        .flat_map(|intent| intent.cues.iter().map(String::as_str))
-        .collect();
-    let requesting = requesting_sentences(&sentences, &cues, &caller_context);
-    // A task the turn carries outranks any built-in intent riding alongside it
-    // (issue #907): answering the intent would silently drop the work.
-    if carries_authoring_task(&lower) {
-        return None;
-    }
-    // Prefer the most specific matching cue across every intent. This prevents
-    // a shorter generic cue (for example "current directory" → `pwd`) from
-    // stealing a longer request ("list current directory" → `ls`).
-    let (intent, cue) = vocab
-        .intents
-        .iter()
-        .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
-        .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
-        .filter(|(intent, cue)| {
-            requesting
-                .iter()
-                .any(|sentence| sentence.contains(cue.as_str()))
-                && (intent.argument != ShellIntentArgument::SearchQuery
-                    || vocab
-                        .local_search_scopes
-                        .iter()
-                        .any(|scope| lower.contains(scope)))
-        })
-        .max_by_key(|(_, cue)| cue.chars().count())?;
+    let (intent, cue) = matched_intent_cue(&lower, vocab)?;
     match intent.argument {
         ShellIntentArgument::None => resolve_shell_command(&intent.command, vocab),
         ShellIntentArgument::Path => {
@@ -640,6 +609,65 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         ShellIntentArgument::SearchQuery => local_search_query(prompt, cue, vocab)
             .map(|arg| format!("{} --fixed-strings -- '{arg}' .", intent.command)),
     }
+}
+
+/// The intent and cue a requesting sentence of `prompt` names, if any.
+///
+/// Recognition only: the operands are the caller's to resolve, so a request
+/// whose cue matched but whose operands the safety rule refuses is still
+/// recognized here.
+fn matched_intent_cue<'a>(
+    lower: &str,
+    vocab: &'a ShellIntentVocabulary,
+) -> Option<(&'a ShellIntent, &'a String)> {
+    let sentences = sentences_with_mood(lower);
+    let caller_context = seed::caller_context_vocabulary();
+    let cues: Vec<&str> = vocab
+        .intents
+        .iter()
+        .flat_map(|intent| intent.cues.iter().map(String::as_str))
+        .collect();
+    let requesting = requesting_sentences(&sentences, &cues, &caller_context);
+    // A task the turn carries outranks any built-in intent riding alongside it
+    // (issue #907): answering the intent would silently drop the work.
+    if carries_authoring_task(lower) {
+        return None;
+    }
+    // Prefer the most specific matching cue across every intent. This prevents
+    // a shorter generic cue (for example "current directory" → `pwd`) from
+    // stealing a longer request ("list current directory" → `ls`).
+    vocab
+        .intents
+        .iter()
+        .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
+        .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
+        .filter(|(intent, cue)| {
+            requesting
+                .iter()
+                .any(|sentence| sentence.contains(cue.as_str()))
+                && (intent.argument != ShellIntentArgument::SearchQuery
+                    || vocab
+                        .local_search_scopes
+                        .iter()
+                        .any(|scope| lower.contains(scope)))
+        })
+        .max_by_key(|(_, cue)| cue.chars().count())
+}
+
+/// Whether a requesting sentence names the cue of an intent that declares an
+/// effect — the vocabulary recognizes a *mutating* request, whether or not its
+/// operands resolve safely enough to build the command.
+///
+/// Recognition is the part before the safety rule, on purpose. "move
+/// ../secrets/key.pem to ~/key.pem" is a mutating request whose traversal the
+/// rule refuses; answering it as a batch read of the one operand that happened
+/// to survive (issue #1021: `cat '~/key.pem'`) is not a refusal, it is the
+/// wrong action. The read-many route defers on this recognition so the shell
+/// cascade — including its refusals — sees the request.
+pub fn names_mutating_shell_intent(prompt: &str) -> bool {
+    let vocab = seed::shell_intent_vocabulary();
+    matched_intent_cue(&prompt.to_lowercase(), &vocab)
+        .is_some_and(|(intent, _)| intent.effect.is_declared())
 }
 
 fn path_arguments(

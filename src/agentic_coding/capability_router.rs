@@ -492,6 +492,26 @@ fn plan_routed_capability_step_in(
     if names_a_container_without_an_act(routed_task) {
         return None;
     }
+    // A batch read is a request to *read*. A request the shell-intent
+    // vocabulary recognizes as mutating — a requesting sentence names the
+    // cue of an intent that declares an effect, whether or not the operands
+    // resolve safely enough to build the command — is not a batch read, and
+    // this arm must not answer it, not even from the latest turn's result:
+    // a mutating request is carried out as the verified recipe its seed
+    // intent declares (issues #824 and #944), and the table may not end a
+    // recipe already under way (issue #781). The boundary is the seed's own
+    // cue and effect declarations, so every mutating intent in every
+    // language the vocabulary covers defers here without being named in
+    // Rust, while a genuine batch read ("read all of these files: a.txt and
+    // b.md") names no mutating cue and keeps its route (issue #1021:
+    // "copy a.txt to b.txt" planned `cat`, and a traversal the safety rule
+    // refused answered as a one-file cat of the operand that survived).
+    if (capability == Capability::ReadMany
+        || (capability == Capability::Run && lowered_from.as_deref() == Some("read_many")))
+        && super::shell_command::names_mutating_shell_intent(routed_task)
+    {
+        return None;
+    }
     if super::tool_result::has_latest_turn_result(messages) {
         return super::tool_result::latest_turn_answer(messages, tool_names, task)
             .map(AgenticPlan::Final);

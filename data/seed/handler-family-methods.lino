@@ -139,6 +139,7 @@ handler_family_methods
     preempts verifiable_task
     preempts write_script
     minimum_numbers 2
+    declines_when_served_by numeric_list
     evidence_group code_target
       word go
       cue kotlin

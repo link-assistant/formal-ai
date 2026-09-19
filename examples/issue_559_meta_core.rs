@@ -59,11 +59,11 @@ fn dump(prompt: &str) {
     let frame = ProblemFrame::from_formalization(&formalization);
     let root = WorkUnit::from_formalization(&formalization, 4);
     let ledger = NeedLedger::resolve(&frame, &root);
-    let registry = MethodRegistry::from_dispatch();
-    let reasoning = WorkUnitReasoning::for_unit(&root, &registry);
-    let construction = UpwardConstruction::for_unit(&root, &registry);
-    let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
-    let selection = MethodSelection::for_unit(&root, &registry);
+    let registry = MethodRegistry::shared();
+    let reasoning = WorkUnitReasoning::for_unit(&root, registry);
+    let construction = UpwardConstruction::for_unit(&root, registry);
+    let evidence = SolutionEvidence::assemble(&frame, &ledger, registry);
+    let selection = MethodSelection::for_unit(&root, registry);
     let skills = SkillLedger::from_evidence(&evidence);
 
     println!("================================================================");
@@ -140,7 +140,7 @@ fn main() {
     }
 
     // (R331) the method catalogue is the same for every request; print it once.
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     println!("================================================================");
     println!(
         "# (R331) method registry — {} methods derived from live dispatch",

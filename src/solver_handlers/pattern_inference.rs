@@ -60,6 +60,20 @@ pub fn try_pattern_inference_with_response_language(
         return None;
     }
 
+    // A prompt the numeric-list pipeline serves completely — an operation in
+    // the seed vocabulary, a grounded target language, and the numbers to act
+    // on — asks for a *transformation of the given list*, not an observation
+    // about its structure. The two vocabularies overlap on the common word for
+    // order: Hindi "उलटे क्रम में रखें" ("arrange in reverse order") carries the
+    // `क्रम` surface this handler reads as sequence curiosity, and English
+    // "sort this sequence in Python" carries "sequence" the same way. The
+    // boundary is the operation vocabulary itself, not a phrase list: when the
+    // grounded pipeline demonstrably serves the prompt the vaguer reading steps
+    // aside (issue #1021, the family gate's rule restated for this handler).
+    if crate::solver_handlers::numeric_list::solve_numeric_list(prompt).is_some() {
+        return None;
+    }
+
     if language != "en" {
         log.append("language_to", language.to_owned());
     }

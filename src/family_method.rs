@@ -4,7 +4,10 @@
 //! prompt handlers. Each family declares ordered evidence groups in
 //! `data/seed/handler-family-methods.lino`; the one matcher below evaluates all
 //! of them. Language surfaces and honest fallback rendering are data, while
-//! Rust retains only structural primitives such as counting numeric operands.
+//! Rust retains only structural primitives such as counting numeric operands
+//! and probing whether the specialist a family names in
+//! `declines_when_served_by` already serves the request — an honest-gap family
+//! must step aside when the grounded pipeline closes its gap.
 
 use std::sync::OnceLock;
 
@@ -37,8 +40,22 @@ struct FamilyMethod {
     preempts: Vec<String>,
     evidence_groups: Vec<EvidenceGroup>,
     minimum_numbers: usize,
+    declines_when_served_by: Option<String>,
     responses: Vec<(String, String)>,
     capture_responses: Vec<(String, String)>,
+}
+
+/// The specialists a family may name in `declines_when_served_by`, mapped to
+/// their pure serve-probes. A family whose honest-gap response asserts that no
+/// grounded renderer exists for the request must step aside when the named
+/// specialist demonstrably serves the prompt.
+fn specialist_serves(method: &str, prompt: &str) -> bool {
+    match method {
+        "numeric_list" => {
+            crate::solver_handlers::numeric_list::solve_numeric_list(prompt).is_some()
+        }
+        _ => false,
+    }
 }
 
 /// The one family whose matched requests run the retrieval procedure
@@ -141,13 +158,24 @@ fn try_family_method_selected(
         .iter()
         .filter(|family| eligible(family))
         .filter(|family| family.matches(normalized))
+        .filter(|family| {
+            // A family that names a specialist in `declines_when_served_by`
+            // asserts a grounding gap that specialist would close — an honest
+            // gap statement is false when the grounded pipeline actually
+            // serves the prompt, so the family steps aside and the walk
+            // reaches the specialist (issue #1021).
+            family
+                .declines_when_served_by
+                .as_deref()
+                .is_none_or(|method| !specialist_serves(method, prompt))
+        })
         .min_by_key(|family| family.priority)?;
     let language = detect_language(prompt).slug();
     let body = family_body(
         family,
         prompt,
         normalized,
-        &language,
+        language,
         operands.len(),
         config,
         log,
@@ -284,6 +312,20 @@ fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
             .filter(|child| child.name == "response_with_capture")
             .filter_map(|child| split_response(&child.id))
             .collect::<Vec<_>>();
+        let declines_when_served_by = node
+            .children
+            .iter()
+            .find(|child| child.name == "declines_when_served_by")
+            .map(|child| child.id.clone())
+            .filter(|name| !name.is_empty());
+        if let Some(method) = &declines_when_served_by
+            && !matches!(method.as_str(), "numeric_list")
+        {
+            return Err(format!(
+                "handler_family_methods:{}:unknown_declines_when_served_by:{method}",
+                node.id
+            ));
+        }
         if node.id.is_empty() || evidence_groups.is_empty() || responses.is_empty() {
             return Err(format!(
                 "handler_family_methods:{}:incomplete_family",
@@ -302,6 +344,7 @@ fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
                 .collect(),
             evidence_groups,
             minimum_numbers,
+            declines_when_served_by,
             responses,
             capture_responses,
         });

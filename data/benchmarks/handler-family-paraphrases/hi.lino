@@ -196,7 +196,7 @@ handler_family_case_hi_structural_operator_01
   source "self_authored_multilingual_variation"
   language "hi"
   expected_family "structural_operator"
-  prompt "इन संख्याओं को उलटे क्रम में रखें और Go कोड दिखाएँ: 4 9 1 7"
+  prompt "इन संख्याओं को दो स्थान बाएँ घुमाएँ और Go कोड दिखाएँ: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_hi_structural_operator_02
   record_type "handler_family_case"
@@ -260,7 +260,7 @@ handler_family_case_hi_structural_operator_09
   source "self_authored_multilingual_variation"
   language "hi"
   expected_family "structural_operator"
-  prompt "इन संख्याओं को उलटे क्रम में रखें और Ruby कोड दिखाएँ: 2 11 11 3 20"
+  prompt "इन संख्याओं को एक स्थान दाएँ घुमाएँ और Ruby कोड दिखाएँ: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_hi_structural_operator_10
   record_type "handler_family_case"

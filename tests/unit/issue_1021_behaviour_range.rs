@@ -757,6 +757,16 @@ fn a_named_task_is_not_answered_with_a_minimal_script() {
         "Reverse the numbers 1, 2, 3 in Ruby, give me the code",
         "Sum the numbers 3, 5, 6 in JavaScript, write me the code",
         "отсортируй числа 3, 1, 2 на python, дай мне код",
+        // The four paraphrase-corpus originals retired in the M4 re-homing:
+        // reverse-order prompts whose operation *is* in the seed vocabulary, so
+        // the structural_operator family declines them via its
+        // `declines_when_served_by numeric_list` seed field. Pinned here so the
+        // re-homing is recorded as a change of family fixtures, not as a change
+        // of honest behaviour: each still lands in write_program.
+        "Расположи эти числа в обратном порядке и покажи код на Go: 4 9 1 7",
+        "Расположи эти числа в обратном порядке и покажи код на Ruby: 2 11 11 3 20",
+        "इन संख्याओं को उलटे क्रम में रखें और Go कोड दिखाएँ: 4 9 1 7",
+        "इन संख्याओं को उलटे क्रम में रखें और Ruby कोड दिखाएँ: 2 11 11 3 20",
     ] {
         let response = UniversalSolver::default().solve(prompt);
         assert_eq!(
