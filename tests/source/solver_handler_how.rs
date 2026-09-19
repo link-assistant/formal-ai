@@ -51,7 +51,15 @@ pub fn try_how_to_procedure(
          &prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     );
 
-    log.append("procedural_how_to:request", task.task.clone());
+    // Same request rule as the native handler: a specific verb stays in the
+    // request; the generic light verb "do" names no operation, so the object
+    // alone is the request.
+    let request = if task.action == "do" && !task.object.is_empty() {
+        task.object.clone()
+    } else {
+        task.task.clone()
+    };
+    log.append("procedural_how_to:request", request);
     log.append("procedural_how_to:action", task.action.clone());
     if !task.object.is_empty() {
         log.append("procedural_how_to:object", task.object.clone());
@@ -424,17 +432,25 @@ fn render_mechanism_discovery_answer(subject: &str, language: Language) -> Strin
 ///
 /// The prefixes are the slot-marked surface forms of the `procedural_request`
 /// meaning (issue #386): every form is a [`seed::Slot::Prefix`] whose literal
-/// (the text before the `…` marker) is the matchable prefix, in declaration
-/// order so "how to do " still precedes "how to ". A form may name the
-/// canonical operation in its `action` field (do, perform, implement, create,
-/// write); an empty action means the operation is taken from the task's first
-/// word. No per-language prefix list lives here — only the concept.
+/// (the text before the `…` marker) is the matchable prefix. A form may name
+/// the canonical operation in its `action` field (do, perform, implement,
+/// create, write); an empty action means the operation is taken from the task's
+/// first word. No per-language prefix list lives here — only the concept.
 fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
     let clean_prompt = clean_procedural_fragment(normalized);
-    for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST) {
-        if let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) {
-            let action_override = (!form.action.is_empty()).then_some(form.action.as_str());
-            return build_procedural_task(rest, action_override);
+    // Action-less forms first, action-carrying forms as fallback — the same
+    // rule as the native handler: the user's own verb stays in the task text,
+    // and a form that names the canonical action only serves prompts whose
+    // remaining words carry no verb.
+    for actionless_pass in [true, false] {
+        for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST) {
+            if form.action.is_empty() != actionless_pass {
+                continue;
+            }
+            if let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) {
+                let action_override = (!form.action.is_empty()).then_some(form.action.as_str());
+                return build_procedural_task(rest, action_override);
+            }
         }
     }
     None
@@ -525,11 +541,25 @@ fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrectio
 }
 
 fn wikihow_page_title(task: &str) -> String {
-    task.split(|character: char| !character.is_alphanumeric())
+    task.split(|character: char| !is_word_character(character))
         .filter(|word| !word.is_empty())
         .map(capitalize_word)
         .collect::<Vec<_>>()
         .join("-")
+}
+
+/// Whether `character` may stand inside a word for the wikiHow candidate
+/// slug — letters, digits, and the combining marks that hold abugida
+/// conjuncts together (same rule as the native handler).
+fn is_word_character(character: char) -> bool {
+    use unicode_general_category::GeneralCategory;
+    character.is_alphanumeric()
+        || matches!(
+            unicode_general_category::get_general_category(character),
+            GeneralCategory::NonspacingMark
+                | GeneralCategory::SpacingMark
+                | GeneralCategory::EnclosingMark
+        )
 }
 
 fn render_procedural_how_to_body(

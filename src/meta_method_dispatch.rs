@@ -41,7 +41,7 @@ pub fn try_dispatch(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let normalized = prompt.to_lowercase();
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let promoted_method = intent_formalization.relevants.iter().find_map(|relevant| {
         let route = relevant
             .strip_prefix("route:")
@@ -258,6 +258,18 @@ fn try_capability_route(
     if crate::solver_helpers::is_agent_request(&normalized) {
         return None;
     }
+    // A conversion between units the lexicon places in distinct physical
+    // dimensions (meters of length, kilobytes of data storage) is the unit
+    // specialist's to answer, whatever object/act/locus triple the table reads
+    // off it. The quantity rows exist so a magnitude question reaches its
+    // measured property; a pair of units that cannot convert has none, and
+    // routing it to a web capability reports a capability gap where the honest
+    // answer is the recorded incompatibility. Same shape as the autonomy
+    // policy above: the table declines on its own instead of a specialist
+    // having to win a race it no longer runs (issue #1138).
+    if crate::solver_handler_units::names_incompatible_unit_pair(&normalized) {
+        return None;
+    }
     if !crate::capability_routing::table_routing_enabled() {
         return None;
     }
@@ -379,9 +391,32 @@ fn try_capability_route(
             }
             Some(explain_previous_turn(prompt, log))
         }
-        "compose_from_sources" | "concept_measurement_lookup" => Some(
-            crate::source_capability::execute(capability, prompt, solver.config, log),
-        ),
+        "compose_from_sources" | "concept_measurement_lookup" => {
+            // An elaboration of a procedure this conversation already answered
+            // ("give me the exact steps") is that procedure's continuation
+            // (issue #444). The rebind is recovered from the prior turns, not
+            // from this prompt's own words, so neither a promoted method nor a
+            // cue-matched family can claim the turn before the table routes
+            // the bare words to a fresh compose — the same blind spot the
+            // fetch arms solve for the response-language retarget below. Offer
+            // the follow-up its turn before composing from scratch.
+            if let Some(answer) =
+                crate::solver_handler_how::try_procedural_how_to_followup(prompt, &normalized, log)
+            {
+                return Some(record_contextual_method_answer(
+                    prompt,
+                    log,
+                    answer,
+                    "procedural_how_to_followup",
+                ));
+            }
+            Some(crate::source_capability::execute(
+                capability,
+                prompt,
+                solver.config,
+                log,
+            ))
+        }
         // The fresh-period digest reading (issue #1138 news_07:
         // `relative_period` + `retrieve` routed here) summarises web events a
         // plain chat surface cannot fetch, so the honest answer names the

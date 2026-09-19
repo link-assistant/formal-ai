@@ -105,6 +105,18 @@ fn contains_unit_word(normalized: &str, unit: &str) -> bool {
     false
 }
 
+/// Whether `normalized` names measurement units the lexicon places in two
+/// distinct physical dimensions — a conversion no source can perform.
+///
+/// The dispatcher's capability gate reads this before the routing table can
+/// hand a magnitude question to the measurement lookup: a prompt whose units
+/// cannot convert ("how many meters in a kilobyte") has no measured property
+/// to look up, and the honest answer is this handler's incompatibility
+/// record, not a web capability's gap.
+pub(crate) fn names_incompatible_unit_pair(normalized: &str) -> bool {
+    detect_incompatible_unit_pair(normalized).is_some()
+}
+
 /// Return the first matched unit token for each of two distinct physical
 /// dimensions, together with their dimension labels, or `None` if `normalized`
 /// does not mention units from at least two different dimensions.

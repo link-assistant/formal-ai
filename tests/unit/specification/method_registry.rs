@@ -24,7 +24,7 @@ fn dispatch_source() -> String {
 
 #[test]
 fn registry_covers_all_dispatch_surfaces() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     assert_eq!(
         registry.count_on(MethodSurface::Prelude),
         5,
@@ -51,7 +51,7 @@ fn registry_covers_all_dispatch_surfaces() {
 
 #[test]
 fn task_decomposition_has_one_configured_contextual_dispatch_path() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let entries = registry
         .methods
         .iter()
@@ -67,7 +67,7 @@ fn task_decomposition_has_one_configured_contextual_dispatch_path() {
 
 #[test]
 fn every_prelude_and_specialized_method_is_named_in_the_dispatch_table() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let source = dispatch_source();
     let rule_backed = formal_ai::rule_interpreter::handler_names();
     for method in registry
@@ -104,7 +104,7 @@ fn every_prelude_and_specialized_method_is_named_in_the_dispatch_table() {
 
 #[test]
 fn every_contextual_method_is_a_real_override_arm() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let source = dispatch_source();
     for method in registry
         .methods
@@ -124,7 +124,7 @@ fn every_contextual_method_is_a_real_override_arm() {
 
 #[test]
 fn specialized_order_follows_table_precedence() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let specialized: Vec<&str> = registry
         .methods
         .iter()
@@ -151,7 +151,7 @@ fn specialized_order_follows_table_precedence() {
 
 #[test]
 fn registry_order_starts_with_prelude_and_promotes_relevant_methods() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let ordered = registry.ordered_method_names_for_relevants(&[
         "handler:write_program".to_owned(),
         "route:translation".to_owned(),
@@ -187,7 +187,7 @@ fn registry_order_starts_with_prelude_and_promotes_relevant_methods() {
 
 #[test]
 fn registry_serializes_to_grounded_links_notation() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let lino = registry.to_links_notation();
     assert!(
         lino.contains("record_type \"method_registry\""),
@@ -249,7 +249,7 @@ fn the_registry_is_the_sole_authority_that_closes_over_the_route_corpus() {
     use formal_ai::route_method_alias::aliases;
     use formal_ai::seed::intent_routing;
 
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
 
     // Routes that must resolve: every method name and every alias route.
     let mut must_resolve: Vec<String> = Vec::new();
@@ -311,7 +311,7 @@ use formal_ai::method_registry::{LearnedMethod, LearnedMethodStatus};
 use formal_ai::selection_heuristics::HeuristicRole;
 
 /// The one adopted learned record the shipped seed carries.
-const ADOPTED: &str = "learned_recursive_core_e17957243eaaf6db";
+const ADOPTED: &str = "learned_recursive_core_d21ca03aaabaf13d";
 
 fn shipped_method(registry: &MethodRegistry) -> &LearnedMethod {
     registry
@@ -325,7 +325,7 @@ fn shipped_method(registry: &MethodRegistry) -> &LearnedMethod {
 fn an_adopted_learned_method_is_dispatchable() {
     let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
         .expect("learned-methods seed readable");
-    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+    let registry = MethodRegistry::from_store_with_learned_seed(&seed)
         .expect("an effect-qualified learned method loads");
     let adopted = shipped_method(&registry);
     assert_eq!(adopted.status, LearnedMethodStatus::Adopted);
@@ -353,7 +353,7 @@ fn an_adopted_learned_method_is_dispatchable() {
 fn learned_methods_rank_after_every_compiled_method() {
     let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
         .expect("learned-methods seed readable");
-    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+    let registry = MethodRegistry::from_store_with_learned_seed(&seed)
         .expect("an effect-qualified learned method loads");
     let relevants = vec!["method:arithmetic".to_owned(), format!("method:{ADOPTED}")];
     let ordered = registry.ordered_method_names_for_relevants(&relevants);
@@ -382,7 +382,7 @@ fn an_ineffective_adoption_is_preserved_but_cannot_dispatch() {
     let seed = fs::read_to_string(repo_root().join("data/seed/learned-methods.lino"))
         .expect("learned-methods seed readable")
         .replace("status \"adopted\"", "status \"adopted_not_effective\"");
-    let registry = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+    let registry = MethodRegistry::from_store_with_learned_seed(&seed)
         .expect("the measured negative counterexample remains representable");
     let method = shipped_method(&registry);
     assert_eq!(method.status, LearnedMethodStatus::AdoptedNotEffective);
@@ -411,7 +411,7 @@ fn a_learned_method_with_an_unbound_operation_is_not_dispatched_and_is_named() {
         "  support_trace_id \"trace_support_wave_t\"\n",
         "  held_out_trace_id \"trace_held_out_wave_t\"\n",
     );
-    let registry = MethodRegistry::from_dispatch_with_learned_seed(seed)
+    let registry = MethodRegistry::from_store_with_learned_seed(seed)
         .expect("a syntactically valid learned record parses");
     let unbound = registry
         .learned_methods
@@ -453,7 +453,7 @@ fn an_answer_that_used_a_learned_method_says_so_in_the_trace() {
          that used a learned method says so"
     );
 
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let rendered = registry.to_links_notation();
     assert!(
         rendered.contains(ADOPTED),
@@ -463,7 +463,7 @@ fn an_answer_that_used_a_learned_method_says_so_in_the_trace() {
 
 #[test]
 fn a_heuristic_is_never_returned_by_method_for_route() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     assert!(
         !registry.heuristics.is_empty(),
         "plan 12 leaf 2 loads data/meta/selection-heuristics.lino into the registry"
@@ -485,7 +485,7 @@ fn a_heuristic_is_never_returned_by_method_for_route() {
 
 #[test]
 fn the_registry_event_lists_every_heuristic_with_its_role_and_order() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let rendered = registry.to_links_notation();
     for heuristic in &registry.heuristics {
         assert!(

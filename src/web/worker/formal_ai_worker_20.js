@@ -1178,8 +1178,14 @@ function installWorkerHandlerRegistry(seedText) {
     ? root
     : ((root && root.children) || []).find((child) => child.name === "handler_precedence");
   if (!section || !Array.isArray(section.children)) return;
+  // Plan 09 leaf 41: rows are `handler <name>` blocks whose `rank` link carries
+  // the precedence; the handler name is the row's value (`id`), and the rank
+  // order itself comes from the engine parser export below. A permutation is
+  // order-independent, so the raw row order here is fine to assert against.
   assertWorkerRegistryPermutation(
-    section.children.map((child) => child.name).filter(Boolean),
+    section.children
+      .filter((child) => child.name === "handler" && child.id)
+      .map((child) => child.id),
   );
   for (const [slug, implementation] of Object.entries(WORKER_HANDLER_REGISTRY.workerHandlers)) {
     if (typeof implementation === "string" && implementation.startsWith("@")) {

@@ -62,6 +62,9 @@ fs2 = "0.4"
 thread-priority = "3.1.1"
 toml_edit = "0.25.13"
 tokio = { version = "1", features = ["rt", "time"] }
+# General categories for the lib's word segmentation: abugida conjuncts are
+# held together by combining marks, which `char::is_alphanumeric` excludes.
+unicode-general-category = "1.1"
 walkdir = "2"
 which = "8"
 
@@ -86,7 +89,6 @@ meta-language = ["dep:meta-language"]
 lino-objects-codec = "0.7.0"
 regex = "1"
 temp-env = "0.3.6"
-unicode-general-category = "1.1"
 unicode-normalization = "0.1"
 
 [lints.rust]

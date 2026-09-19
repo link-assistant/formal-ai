@@ -156,7 +156,7 @@ fn issue_559_method_registry_is_traceable() {
             "| R331 ",
             "method registry",
             "src/method_registry.rs",
-            "from_dispatch",
+            "from_store",
             "record_method_registry",
             "src/meta_method_dispatch.rs",
             "try_dispatch",
@@ -172,7 +172,7 @@ fn issue_559_method_registry_is_traceable() {
             "pub struct MethodRegistry",
             "pub struct Method",
             "pub enum MethodSurface",
-            "fn from_dispatch",
+            "fn from_store",
             "fn ordered_method_names_for_relevants",
             "fn to_links_notation",
             "fn record_method_registry",
@@ -198,7 +198,7 @@ fn issue_559_method_registry_is_traceable() {
     assert_contains_all(
         "src/meta_method_dispatch.rs",
         &executor,
-        &["fn try_dispatch", "MethodRegistry::from_dispatch"],
+        &["fn try_dispatch", "MethodRegistry::shared"],
     );
     let solver = read(root.join("src/solver.rs"));
     assert!(

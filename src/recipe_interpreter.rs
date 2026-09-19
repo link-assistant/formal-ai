@@ -261,7 +261,7 @@ struct ExecutionContext<'a> {
     problem_frame: Option<ProblemFrame>,
     work_unit_root: Option<WorkUnit>,
     need_ledger: Option<NeedLedger>,
-    method_registry: Option<MethodRegistry>,
+    method_registry: Option<&'static MethodRegistry>,
     solution_evidence: Option<SolutionEvidence>,
     /// The obligation tree the execution pass records (plan 05 leaf 11).
     obligation_ledger: Option<ObligationLedger>,
@@ -403,6 +403,7 @@ impl ExecutionContext<'_> {
     fn require_method_registry(&self, recorder: &str) -> Result<&MethodRegistry, String> {
         self.method_registry
             .as_ref()
+            .copied()
             .ok_or_else(|| dependency_error(recorder, "method registry"))
     }
 

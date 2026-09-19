@@ -42,7 +42,7 @@ fn alias_catalogue_is_non_empty_and_closes_the_write_program_gap() {
 
 #[test]
 fn every_alias_target_is_a_registered_method() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     for alias in aliases() {
         assert!(
             registry.method_for_route(&alias.method).is_some(),
@@ -55,7 +55,7 @@ fn every_alias_target_is_a_registered_method() {
 
 #[test]
 fn every_alias_is_necessary_and_unique() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let mut seen = std::collections::BTreeSet::new();
     for alias in aliases() {
         assert!(
@@ -81,7 +81,7 @@ fn every_alias_is_necessary_and_unique() {
 
 #[test]
 fn method_for_route_resolves_directly_and_via_alias() {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     // Direct: a route slug that names a method resolves to itself.
     assert_eq!(
         registry
@@ -117,7 +117,7 @@ fn write_program_need_resolves_to_a_method_in_solution_evidence() {
     let frame = ProblemFrame::from_formalization(&formalization);
     let root = WorkUnit::from_formalization(&formalization, 4);
     let ledger = NeedLedger::resolve(&frame, &root);
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
 
     assert_eq!(

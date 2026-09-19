@@ -14,6 +14,7 @@ use std::path::Path;
 use formal_ai::FormalAiEngine;
 use formal_ai::method_registry::{MethodRegistry, MethodSurface};
 use formal_ai::seed;
+use formal_ai::seed::handler_precedence;
 
 /// Every ceiling this test enforces is read from the one ledger that holds them
 /// (issue #1138 B9, plan 09 leaves 3-4).
@@ -202,9 +203,35 @@ fn unsupported_write_program_fails_with_a_named_skill_gap() {
     ] {
         let response = FormalAiEngine.answer(prompt);
         if language == "en" {
+            // The named-gap message is pinned byte-for-byte: it is the
+            // requirement. The research trail after it legitimately varies
+            // with synthesis coverage — the composition fixes of this batch
+            // made the idiom composer find the concept parts of "reverses"
+            // and "linked" and attempt every ranked candidate instead of one
+            // — so the trail is pinned structurally: it names the request's
+            // phrases and every synthesis attempt it records failed.
+            let message = "I cannot write this program: no synthesis route reaches task \"main\" in language \"rust\".\n\nI decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `rust`, or restate the task in steps I can already compile.\n\nResearch trail: ";
+            assert!(
+                response.answer.starts_with(message),
+                "the underivable request must fail with the named skill gap, not a \
+                 catalogue recital: {}",
+                response.answer
+            );
+            let trail = &response.answer[message.len()..];
+            assert!(
+                trail.starts_with(
+                    "phrases=write a rust program that reverses a linked list | reverses@en"
+                ),
+                "the trail names the request's phrases: {trail}"
+            );
             assert_eq!(
-                response.answer,
-                "I cannot write this program: no synthesis route reaches task \"main\" in language \"rust\".\n\nI decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `rust`, or restate the task in steps I can already compile.\n\nResearch trail: phrases=write a rust program that reverses a linked list | reverses@en | linked@en;parts=;failed_examples=;blocked_needs=;attempts=program_ir_7f936754ab1cf239ac803f4371dc028ef16b1aa8344bdf4cc959d410b0182681:failed"
+                trail.matches("program_ir_").count(),
+                trail.matches(":failed").count(),
+                "every synthesis attempt recorded in the trail must be a failure: {trail}"
+            );
+            assert!(
+                !trail.contains(":succeeded") && !trail.contains(":derived"),
+                "a successful derivation would contradict the named gap: {trail}"
             );
         }
         assert_eq!(
@@ -298,25 +325,18 @@ fn handler_migration_ratchet() {
 #[test]
 fn migration_ledger_is_a_complete_live_registry_census() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let precedence = fs::read_to_string(root.join("data/seed/handler-precedence.lino"))
-        .expect("handler precedence");
-    // Issue #1138 B9, plan 09 leaf 5: the census is the live registry, which is
-    // the specialized precedence table **plus** the five prelude methods that
-    // run on every turn. Counting only the precedence table left five live
-    // methods outside the ledger, so the pending count read 40 when it was 45.
-    let registry = MethodRegistry::from_dispatch();
+    // The census is the live registry in its live order: the rank-linked
+    // precedence the loader returns (plan 09 leaf 41), not a second bespoke
+    // re-parse of the seed text, followed by the five prelude methods that run
+    // on every turn.
+    let registry = MethodRegistry::shared();
     let prelude: Vec<String> = registry
         .methods
         .iter()
         .filter(|method| method.surface == MethodSurface::Prelude)
         .map(|method| method.name.clone())
         .collect();
-    let mut expected = precedence
-        .lines()
-        .skip(1)
-        .filter_map(|line| line.split_whitespace().next())
-        .map(str::to_owned)
-        .collect::<Vec<_>>();
+    let mut expected = handler_precedence().to_vec();
     expected.extend(prelude.iter().cloned());
     let ledger = fs::read_to_string(root.join("data/meta/handler-migration-ledger.lino"))
         .expect("handler migration ledger");

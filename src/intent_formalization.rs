@@ -241,7 +241,7 @@ pub fn formalize_intent(
         push_unique(&mut knowns, format!("parameter:{name}:{value}"));
     }
     append_prompt_relevants(prompt, &normalized, &mut relevants);
-    for relevant in MethodRegistry::from_dispatch().explicit_learned_method_relevants(prompt) {
+    for relevant in MethodRegistry::shared().explicit_learned_method_relevants(prompt) {
         push_unique(&mut relevants, relevant);
     }
 
@@ -251,7 +251,7 @@ pub fn formalize_intent(
         .or_else(|| route_from_relevants(&relevants));
     if let Some(route_slug) = &route_slug {
         push_unique(&mut relevants, format!("route:{route_slug}"));
-        if MethodRegistry::from_dispatch()
+        if MethodRegistry::shared()
             .method_for_route(route_slug)
             .is_some()
         {
@@ -632,7 +632,7 @@ fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
 }
 
 fn route_from_relevants(relevants: &[String]) -> Option<String> {
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     relevants.iter().find_map(|relevant| {
         let slug = relevant
             .strip_prefix("route:")

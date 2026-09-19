@@ -685,11 +685,11 @@ fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
             assert_eq!(
                 response.answer,
                 documented_english_procedure(
-                    "spec driven development",
+                    "do spec driven development",
                     "do",
                     "spec driven development",
-                    "Spec-Driven-Development",
-                    "how to spec driven development",
+                    "Do-Spec-Driven-Development",
+                    "how to do spec driven development",
                     None,
                 )
             );
@@ -710,12 +710,21 @@ fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
             );
         }
 
+        // The web-search query keeps the verb the prompt's own words carried:
+        // the English action-less surface splits "do" out of the task text,
+        // while the ru/hi/zh action forms consume their verb into the form,
+        // so their task text — and query — starts at the object.
+        let expected_query = if case.language == "en" {
+            "web_search:request:how to do spec driven development"
+        } else {
+            "web_search:request:how to spec driven development"
+        };
         for expected in [
             "procedural_how_to:request:spec driven development",
             "procedural_how_to:action:do",
             "procedural_how_to:object:spec driven development",
             "spelling_correction:dirven->driven",
-            "web_search:request:how to spec driven development",
+            expected_query,
         ] {
             assert!(
                 has_evidence(&response, expected),

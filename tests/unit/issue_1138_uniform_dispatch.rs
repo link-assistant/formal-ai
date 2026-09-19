@@ -37,7 +37,7 @@ fn prelude_methods_are_ledgered() {
     // falls. The census is precedence **plus** prelude from that leaf onward.
     let ledger = fs::read_to_string(repo_root().join("data/meta/handler-migration-ledger.lino"))
         .expect("handler migration ledger readable");
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let prelude: Vec<&str> = registry
         .methods
         .iter()

@@ -244,7 +244,7 @@ fn committed_documents_exclude_the_redundant_workspace_aggregate() {
 fn the_index_resolves_every_path_symbol_the_method_registry_knows() {
     let census = workspace();
     let source = dispatch_sources();
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     assert!(
         registry.methods.len() > 50,
         "method registry looks empty: {}",

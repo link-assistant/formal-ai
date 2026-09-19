@@ -1,20 +1,20 @@
 planner_precedence
-  # Plan 10 leaf 18 (issue #1138): the agentic planner's route arms in cascade
+  # Plan 10 leaf 18 (issue #1138) — the route arms of the agentic planner
   # order, first match wins, exactly as they run in
   # src/agentic_coding/planner.rs. Precedence is behaviour, so it is named here
   # where an edit is reviewable; the planner joins this order to its coded arms
   # and asserts an exact permutation at every plan step, so a seed edit can
-  # never silently drop, duplicate or reorder a route (issue #663's
+  # never silently drop, duplicate or reorder a route (the issue #663
   # handler-precedence join, applied to the agentic cascade).
   #
-  # plan_chat_step_routes -- the delivery-peeling head of the cascade:
+  # plan_chat_step_routes -- the delivery-peeling head of the cascade
   conversation_control_decline # a bare continuation cue with nothing to resume is answered by the conversation handler, never routed (issue 1095)
   computer_use # seed-defined computer-use plans own their exact multilingual prompts before broad write and search routing (issue 707)
   authoritative_literal_write # an explicit exact-content marker makes the following bytes authoritative, ahead of edit and source semantics (issue 708)
-  program_contract # binds a program's semantic operands before its source path is read as a destination; may reroute the composed command
+  program_contract # binds the semantic operands of a program before its source path is read as a destination; may reroute the composed command
   evidence_record # peels a named delivery off the request and re-plans the residual, so proof files are written before a change route answers (issue 1066)
   #
-  # plan_settled_routes -- the settled tail of the cascade:
+  # plan_settled_routes -- the settled tail of the cascade
   git_commit # a commit-only request is one shell step, claimed before search reads its file listing as a lookup (issue 1133)
   workspace_change # a learned workspace-change procedure owns grounded repository rewrites before source creation or shell routing
   generated_source # a source-code description is executable bytes, not literal file content; lower bounded seed-backed source tasks first
@@ -40,12 +40,12 @@ planner_precedence
   google_trends_catalog # the trends catalog recipe, behind its learning sibling
   question_catalog # enumerate every possible question smallest-first; its keywords are disjoint from the sibling recipes (issue 527)
   file_analysis # a request to inspect named files and report findings is a typed read plus audit, not an issue report (issue 1138 self-use)
-  report_flow # the agent-mode counterpart of the web UI's report action; a conversation state machine (issues 687, 822)
-  conversation_recall # recall answers from the conversation's own turns before any route re-reads them
+  report_flow # the agent-mode counterpart of the report action of the web UI; a conversation state machine (issues 687, 822)
+  conversation_recall # recall answers from earlier turns of the conversation before any route re-reads them
   follow_up_answer # a follow-up on a tool result is answered from that result, not re-planned
   contextual_reference_clarification # an ambiguous reference in context asks its clarification before any search
   definition_followup # a definition follow-up reuses the prior subject instead of searching for the sentence
-  intent_edit # the intent router's edit step, ahead of the typed read route that would misread an edit target
+  intent_edit # the edit step of the intent router, ahead of the typed read route that would misread an edit target
   typed_file_read # the established list/read recipe whenever the client exposes its typed read capability
   local_search # a meanings-driven explicit local scope dominates generic search verbs; widens only after emptiness
   comparison # a comparison request builds its table before the shell cascade can collapse it into one command
@@ -58,14 +58,14 @@ planner_precedence
   web_fetch # a typed URL object is more specific than broad research prose; fetch it before the research recipe (issue 1066)
   workspace_inspection # a request to look at the handed repository is answered by reading it, before research routers claim the question shape (issue 1066)
   task_structure # a question about how a task decomposes is answered by decomposing it, before research claims the question shape (issue 1066)
-  capability_table_named_or_local # the decision table's named-or-local stage, declined for requests already under way in a recipe (issue 781)
+  capability_table_named_or_local # the named-or-local stage of the decision table, declined for requests already under way in a recipe (issue 781)
   positional_edit_decline # an instruction that edits a named file is never a web question; decline rather than search the sentence (issues 1115, 1133)
-  web_research_query # the research recipe for an explicit query, ahead of the intent router's narrower search step
-  intent_web_search # the intent router's web search step for a request the research query reader declined
+  web_research_query # the research recipe for an explicit query, ahead of the narrower search step of the intent router
+  intent_web_search # the web search step of the intent router for a request the research query reader declined
   code_search_fallback # keeps grep available to grep-only clients without letting an earlier local tool steal a web request (issue 758)
   research_continuation # continues a recipe with results already in hand; unresolved queries resume before anything else claims the turn
   latest_turn_answer # a turn the latest tool result already answers is answered from that result
   note_composition # a document a request says a note must cover is composed only after nothing else claims its parts (issue 1066)
   general_change_fallback # the whole-request composer, after every route that could answer a named part outright
   web_research_final # the last research pass for an unresolved query the earlier readers declined
-  capability_table_open_web # the decision table's open-web stage, last: research routers own a bare term first (issue 745)
+  capability_table_open_web # the open-web stage of the decision table, last — research routers own a bare term first (issue 745)

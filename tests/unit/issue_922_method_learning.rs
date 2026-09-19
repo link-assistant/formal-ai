@@ -135,7 +135,7 @@ fn real_event_logs_propose_an_inert_method_that_is_adopted_only_after_promotion(
     // Discovery itself cannot alter the active catalogue. Even parsing the
     // proposal document is side-effect-free; only the promotion's seed edit is
     // an adopted registry record.
-    let empty_registry = MethodRegistry::from_dispatch_with_learned_seed("")
+    let empty_registry = MethodRegistry::from_store_with_learned_seed("")
         .expect("an empty learned-method seed is valid");
     assert!(empty_registry.learned_method(&proposal.name).is_none());
     assert!(empty_registry.method_for_route(&proposal.name).is_none());
@@ -163,10 +163,9 @@ fn real_event_logs_propose_an_inert_method_that_is_adopted_only_after_promotion(
     assert_eq!(promotion.promoted().len(), promotion_count);
     assert_eq!(promotion.records[0].outcome, PromotionOutcome::Promoted);
 
-    let adopted = MethodRegistry::from_dispatch_with_learned_seed(
-        &promotion.promoted()[0].proposal.edit.lino,
-    )
-    .expect("a promoted method seed should parse");
+    let adopted =
+        MethodRegistry::from_store_with_learned_seed(&promotion.promoted()[0].proposal.edit.lino)
+            .expect("a promoted method seed should parse");
     let learned = adopted
         .learned_method(&proposal.name)
         .expect("materializing the promoted seed should adopt the method");
@@ -179,7 +178,7 @@ fn real_event_logs_propose_an_inert_method_that_is_adopted_only_after_promotion(
 
     // The checked-in seed is the byte-equivalent adoption of this real-trace
     // proposal, proving the production registry consumes the promoted result.
-    let production = MethodRegistry::from_dispatch();
+    let production = MethodRegistry::shared();
     assert_eq!(
         production.learned_method(&proposal.name),
         Some(learned),

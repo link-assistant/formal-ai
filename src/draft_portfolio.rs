@@ -365,7 +365,7 @@ fn rank_passing_drafts<A>(drafts: &[DraftEvaluation<A>]) -> Vec<usize> {
 /// no ranking heuristic -- in which case the ranker falls back to the
 /// deterministic identity ordering rather than inventing a key.
 fn ranking_parameters() -> Vec<(String, String)> {
-    MethodRegistry::from_dispatch()
+    MethodRegistry::shared()
         .heuristics_for(HeuristicRole::Rank, "")
         .first()
         .map(|heuristic| heuristic.parameters.clone())

@@ -547,10 +547,10 @@ pub extern "C" fn engine_translate_formal_statement(input_length: usize) -> usiz
     write_output(formal_statement_worker::answer(payload).as_bytes())
 }
 
-/// Project a handler-precedence seed document into its ordered handler names,
-/// one per line (issue #1138 B9, plan 09 leaf 13). The browser worker and the
-/// native solver read the same document through this same parser, so a reorder
-/// flips both surfaces identically.
+/// Project a handler-precedence seed document into its rank-ordered handler
+/// names, one per line (issue #1138 B9, plan 09 leaf 13; rank links are leaf
+/// 41). The browser worker and the native solver read the same document through
+/// this same parser, so a rank swap flips both surfaces identically.
 #[unsafe(no_mangle)]
 pub extern "C" fn engine_handler_precedence(input_length: usize) -> usize {
     reset_bump();
@@ -567,12 +567,39 @@ pub extern "C" fn engine_handler_precedence(input_length: usize) -> usize {
     let Some(root) = tree.children.first() else {
         return 0;
     };
+    // Rows are `handler <name>` blocks whose `rank` link carries the dispatch
+    // precedence (plan 09 leaf 41): ascending rank order, document position
+    // meaningless. The native loader panics on a rank-less or duplicate-rank
+    // row before this synced copy ever ships, so a malformed row here only
+    // needs a deterministic place: last, tie-broken by name, the same secondary
+    // order the native loader uses.
+    let mut ranked: Vec<(u32, &str)> = root
+        .children
+        .iter()
+        .filter(|child| child.name == "handler")
+        .map(|child| {
+            let rank = child.find_child_value("rank");
+            (
+                rank.parse().unwrap_or(u32::MAX),
+                if child.id.is_empty() {
+                    child.name.as_str()
+                } else {
+                    child.id.as_str()
+                },
+            )
+        })
+        .collect();
+    ranked.sort_by(|left, right| {
+        left.0
+            .cmp(&right.0)
+            .then_with(|| left.1.cmp(right.1))
+    });
     let mut names = String::new();
-    for child in &root.children {
+    for (_, name) in ranked {
         if !names.is_empty() {
             names.push('\n');
         }
-        names.push_str(&child.name);
+        names.push_str(name);
     }
     write_output(names.as_bytes())
 }

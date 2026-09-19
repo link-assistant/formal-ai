@@ -42,7 +42,7 @@ pub(super) fn rank_survivors(candidates: Vec<AlgorithmCandidate>) -> Vec<Algorit
             },
         })
         .collect();
-    let parameters = crate::method_registry::MethodRegistry::from_dispatch()
+    let parameters = crate::method_registry::MethodRegistry::shared()
         .heuristics_for(HeuristicRole::Rank, "")
         .first()
         .map(|heuristic| heuristic.parameters.clone())

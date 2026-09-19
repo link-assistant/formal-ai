@@ -43,12 +43,21 @@ fn handler_precedence_read_through_link_queries_equals_the_document() {
         .next()
         .expect("the precedence document has a root");
     let matched = loaded.query(&SeedLinkNetwork::children_pattern(&root.index));
-    let names: Vec<&str> = matched
+    // Each child row is a `handler <name>` node, so the row's identity is its
+    // value link, not the shared `handler` name (plan 09 leaf 41). Order comes
+    // from rank links, not from the query, so both sides are compared as sets.
+    let mut names: Vec<&str> = matched
         .iter()
         .filter(|link| !link.index.ends_with('='))
-        .map(|link| link.to.as_str())
+        .filter_map(|link| loaded.value_of(&link.index))
         .collect();
-    assert_eq!(names, from_links);
+    names.sort_unstable();
+    let mut expected: Vec<&str> = from_links.iter().map(String::as_str).collect();
+    expected.sort_unstable();
+    assert_eq!(
+        names, expected,
+        "the generic `(root $child)` pattern must recover the same handler rows the rank-order reader returns"
+    );
 }
 
 #[test]

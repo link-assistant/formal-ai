@@ -4,7 +4,7 @@ Source: the architect's 2026-09-14 instruction for the work continued in
 [issue #1138](https://github.com/link-assistant/formal-ai/issues/1138), describing
 the intended generalization of pull request #888. The complete verbatim
 instruction is quoted in
-[`docs/case-studies/issue-710/plans/README.md`](../../case-studies/issue-710/plans/README.md);
+[`docs/case-studies/issue-710/plans/README.md`](../case-studies/issue-710/plans/README.md);
 the continuation work it spawned on 2026-09-15 is recorded as requirements
 (the R710-R rows), not as further architect words.
 

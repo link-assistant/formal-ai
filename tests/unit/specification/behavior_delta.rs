@@ -24,7 +24,7 @@ fn evidence(command: &str, digest: &str, length: usize) -> Evidence {
     Evidence {
         evidence_id: format!("evidence_{digest}"),
         for_need: "need_counted_scan".to_owned(),
-        produced_by: "learned_recursive_core_e17957243eaaf6db".to_owned(),
+        produced_by: "learned_recursive_core_d21ca03aaabaf13d".to_owned(),
         command: command.to_owned(),
         argv: vec![command.to_owned()],
         exit_code: Some(0),
@@ -45,7 +45,7 @@ fn delta(language: &str, verdict: DeltaVerdict) -> BehaviorDelta {
     };
     BehaviorDelta {
         delta_id: format!("behavior_delta_{language}"),
-        item_id: "learned_recursive_core_e17957243eaaf6db".to_owned(),
+        item_id: "learned_recursive_core_d21ca03aaabaf13d".to_owned(),
         item_kind: "method".to_owned(),
         language: language.to_owned(),
         prompt: format!("held out prompt in {language}"),
@@ -57,7 +57,7 @@ fn delta(language: &str, verdict: DeltaVerdict) -> BehaviorDelta {
 
 fn effect(deltas: Vec<BehaviorDelta>) -> AdoptionEffect {
     AdoptionEffect {
-        item_id: "learned_recursive_core_e17957243eaaf6db".to_owned(),
+        item_id: "learned_recursive_core_d21ca03aaabaf13d".to_owned(),
         item_kind: "method".to_owned(),
         deltas,
     }
@@ -191,13 +191,13 @@ fn both_sides_of_a_delta_are_execution_records() {
 
     // The producer must fill both sides from observations, not from a claim:
     // `prove_effect` answers each held-out prompt twice and hashes the bytes.
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let held_out: Vec<(&str, &str)> = LANGUAGES
         .iter()
         .map(|language| (*language, "a held out prompt"))
         .collect();
     let produced = prove_effect(
-        "learned_recursive_core_e17957243eaaf6db",
+        "learned_recursive_core_d21ca03aaabaf13d",
         "method",
         &held_out,
         &registry,

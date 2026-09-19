@@ -1311,8 +1311,39 @@ only inside the generator's own output.
       local fixture backend through the public `ConditionSource` trait. The
       VISION.md statement moved to its "Current Direction" section and now
       says the solver reads the projected store on every turn.**
-- [ ] 41. Stage 3 (closing leaf): `MethodRegistry::from_store`; precedence
+- [x] 41. Stage 3 (closing leaf): `MethodRegistry::from_store`; precedence
       becomes `rank` links; replay the five pinned invariants.
+      **delivered 2026-09-20: `data/seed/handler-precedence.lino` rows are now
+      `handler <name>` blocks whose `rank` link carries the dispatch
+      precedence — ascending rank order, document position meaningless, a
+      missing/duplicate/non-integer rank a loud seed error in the loader — and
+      `browser_only`/guard notes became real fields instead of comment
+      conventions the `browser_only_handlers()` reader had to text-scrape.
+      The three precedence walks read the same row shape: the native network
+      loader (`src/seed/handler_precedence.rs::order_by_rank_links`), the
+      fixture parser `handler_precedence_from`, and the wasm export
+      `engine_handler_precedence` the browser worker calls, so a rank swap
+      flips both surfaces identically. The registry itself enters through the
+      store: `MethodRegistry::shared()` builds once via `from_store()`,
+      reading the rank order plus the execution and learned-method documents
+      from the boot projection instead of re-parsing `include_str!` seed on
+      every dispatch (`store_read_share` raised 2 → 4 with the ledger note);
+      `from_dispatch()` is deleted, its callers and the R331 traceability pins
+      renamed. The five routing-parity invariants replay as rank-value swaps
+      (`swap_handler_rows` swaps two `rank` links, not two rows), and a new
+      pin holds every shipped row to exactly one unique rank link while a
+      reverse-ordered fixture proves rank order wins over document order.
+      Verification also surfaced two stale pins that the closing leaf fixes in
+      the same commit: `data/seed/learned-methods.lino` was one re-derivation
+      behind `examples/issue-922-method-learning/open-proposals.lino` (the
+      recursive-core tail grew obligation-ledger and need-ledger event kinds,
+      so the checked-in adoption is re-derived to
+      `learned_recursive_core_d21ca03aaabaf13d` with twenty `operation` rows,
+      and the test pins that name follow it), and the #699 skill-gap test now
+      pins the named-gap message byte-for-byte while checking the research
+      trail structurally, because the composition fixes of this batch made the
+      idiom composer genuinely attempt every ranked candidate instead of
+      one.**
 
 ### Capability/family arbitration checkpoint — 2026-09-17
 

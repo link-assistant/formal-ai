@@ -604,6 +604,27 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
   scripts/cargo-test.sh --test unit issue_907    # one module
   ```
 
+  **Fast local iteration on one test binary.** The test profile ships with
+  `incremental = false` (`Cargo.toml`) — a deliberate CI choice — so every
+  one-line source edit recompiles the whole crate: measured 2m43s for
+  `cargo test --test unit --no-run` after `touch src/lib.rs` on the
+  reference notebook (2 jobs, opt-level 2, `debug = 0` already set). Turning
+  incremental compilation back on locally, in its own target directory so
+  the checked-in profile and the shared cache stay untouched:
+
+  ```bash
+  CARGO_TARGET_DIR=/tmp/formal-ai-target-incr \
+  CARGO_PROFILE_TEST_INCREMENTAL=true CARGO_PROFILE_DEV_INCREMENTAL=true \
+  CARGO_BUILD_JOBS=2 cargo test --offline --test unit -- <filters>
+  ```
+
+  measured **1m11s** for the same touch — a 2.3x faster edit-compile loop —
+  after one 7m05s cold build, with the directory holding ~4.8 GB against
+  ~9.7 GB for the non-incremental one. Keep one directory, not both, when
+  disk is tight, and remember the filters follow `--`
+  (`cargo test --test unit -- filter_a filter_b`): placed before it, cargo
+  reads them as bin arguments and errors out.
+
   **macOS runs platform tests, not the whole suite.** No code in `src/` branches
   on macOS versus Linux — all eight conditionals are `cfg(unix)`, true on both —
   so pure Rust logic cannot behave differently there. Every macOS-only failure

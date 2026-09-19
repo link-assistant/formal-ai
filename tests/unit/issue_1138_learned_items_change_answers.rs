@@ -3,7 +3,7 @@
 //! the old answer.
 //!
 //! Exactly two learned artifacts reach a live answer today, and one of them —
-//! `learned_recursive_core_e17957243eaaf6db` in
+//! `learned_recursive_core_d21ca03aaabaf13d` in
 //! `data/seed/learned-methods.lino` — has zero production read path. This suite
 //! is what turns that from a claim into an observation.
 //!
@@ -24,7 +24,7 @@ fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
 }
 
-const ADOPTED_ITEM: &str = "learned_recursive_core_e17957243eaaf6db";
+const ADOPTED_ITEM: &str = "learned_recursive_core_d21ca03aaabaf13d";
 
 /// Held-out explicit invocations of the learned method. The content-addressed
 /// method reference is language-neutral; the surrounding requests prove that
@@ -32,23 +32,23 @@ const ADOPTED_ITEM: &str = "learned_recursive_core_e17957243eaaf6db";
 const HELD_OUT: [(&str, &str); 5] = [
     (
         "en",
-        "Execute method:learned_recursive_core_e17957243eaaf6db.",
+        "Execute method:learned_recursive_core_d21ca03aaabaf13d.",
     ),
     (
         "ru",
-        "Выполни method:learned_recursive_core_e17957243eaaf6db.",
+        "Выполни method:learned_recursive_core_d21ca03aaabaf13d.",
     ),
     (
         "hi",
-        "method:learned_recursive_core_e17957243eaaf6db को निष्पादित करें।",
+        "method:learned_recursive_core_d21ca03aaabaf13d को निष्पादित करें।",
     ),
     (
         "zh",
-        "执行 method:learned_recursive_core_e17957243eaaf6db。",
+        "执行 method:learned_recursive_core_d21ca03aaabaf13d。",
     ),
     (
         "es",
-        "Ejecuta method:learned_recursive_core_e17957243eaaf6db.",
+        "Ejecuta method:learned_recursive_core_d21ca03aaabaf13d.",
     ),
 ];
 
@@ -56,23 +56,23 @@ const HELD_OUT: [(&str, &str); 5] = [
 const HELD_OUT_PARAPHRASE: [(&str, &str); 5] = [
     (
         "en",
-        "Run method:learned_recursive_core_e17957243eaaf6db now.",
+        "Run method:learned_recursive_core_d21ca03aaabaf13d now.",
     ),
     (
         "ru",
-        "Запусти method:learned_recursive_core_e17957243eaaf6db сейчас.",
+        "Запусти method:learned_recursive_core_d21ca03aaabaf13d сейчас.",
     ),
     (
         "hi",
-        "अभी method:learned_recursive_core_e17957243eaaf6db चलाएँ।",
+        "अभी method:learned_recursive_core_d21ca03aaabaf13d चलाएँ।",
     ),
     (
         "zh",
-        "现在运行 method:learned_recursive_core_e17957243eaaf6db。",
+        "现在运行 method:learned_recursive_core_d21ca03aaabaf13d。",
     ),
     (
         "es",
-        "Ejecuta ahora method:learned_recursive_core_e17957243eaaf6db.",
+        "Ejecuta ahora method:learned_recursive_core_d21ca03aaabaf13d.",
     ),
 ];
 
@@ -86,14 +86,14 @@ fn learned_seed() -> String {
 /// record removed. The delta must be caused by the seed edit and nothing else.
 fn registries() -> (MethodRegistry, MethodRegistry) {
     let seed = learned_seed();
-    let with_item = MethodRegistry::from_dispatch_with_learned_seed(&seed)
+    let with_item = MethodRegistry::from_store_with_learned_seed(&seed)
         .expect("the adopted learned method loads for its counterfactual measurement");
     let stripped: String = seed
         .split("\n\n")
         .filter(|block| !block.contains(ADOPTED_ITEM))
         .collect::<Vec<_>>()
         .join("\n\n");
-    let without_item = MethodRegistry::from_dispatch_with_learned_seed(&stripped)
+    let without_item = MethodRegistry::from_store_with_learned_seed(&stripped)
         .expect("the stripped learned-method seed loads");
     (with_item, without_item)
 }
@@ -183,8 +183,8 @@ fn expected_answer_lines() -> Vec<&'static str> {
     vec![
         "recipe_program",
         "  record_type \"recipe_program\"",
-        "  step_count \"10\"",
-        "  recorder_count \"10\"",
+        "  step_count \"11\"",
+        "  recorder_count \"11\"",
         "plan_build_problem_frame",
         "  record_type \"recipe_plan_step\"",
         "  order \"2\"",
@@ -235,6 +235,11 @@ fn expected_answer_lines() -> Vec<&'static str> {
         "  order \"13\"",
         "  id \"audit_reasoning_standard\"",
         "  executes \"record_reasoning_standard\"",
+        "plan_verify_obligations",
+        "  record_type \"recipe_plan_step\"",
+        "  order \"14\"",
+        "  id \"verify_obligations\"",
+        "  executes \"record_obligation_ledger\"",
         "  executed build_problem_frame",
         "  executed decompose_recursively",
         "  executed account_for_needs",
@@ -245,6 +250,7 @@ fn expected_answer_lines() -> Vec<&'static str> {
         "  executed select_methods",
         "  executed accumulate_skills",
         "  executed audit_reasoning_standard",
+        "  executed verify_obligations",
     ]
 }
 

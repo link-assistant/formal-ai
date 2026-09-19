@@ -7,12 +7,12 @@ use std::path::Path;
 use formal_ai::method_registry::{LearnedMethodStatus, MethodRegistry};
 use lino_objects_codec::format::parse_indented;
 
-const MEASURED_METHOD: &str = "learned_recursive_core_e17957243eaaf6db";
+const MEASURED_METHOD: &str = "learned_recursive_core_d21ca03aaabaf13d";
 
 #[test]
 fn adopted_methods_equal_methods_with_a_qualifying_effect() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let adopted = registry
         .learned_methods
         .iter()
@@ -42,7 +42,7 @@ fn adopted_methods_equal_methods_with_a_qualifying_effect() {
 #[test]
 fn effective_adoption_is_executable_and_the_unread_adoption_count_is_zero() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let measured = registry
         .learned_method(MEASURED_METHOD)
         .expect("the measured adopted item remains discoverable");

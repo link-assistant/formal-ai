@@ -27,12 +27,21 @@ pub fn meta_documents() -> Vec<(&'static str, &'static str)> {
     )]
 }
 
+/// One projected document: its path, its document node index, and the text
+/// the links were projected from.
+#[derive(Debug)]
+struct DocumentEntry {
+    path: String,
+    index: String,
+    text: String,
+}
+
 /// The projected network.
 #[derive(Debug)]
 pub struct SeedLinkNetwork {
     links: Vec<DoubletLink>,
     by_source: BTreeMap<String, Vec<usize>>,
-    documents: Vec<(String, String)>,
+    documents: Vec<DocumentEntry>,
 }
 
 /// The network over every bundled seed document and the meta documents,
@@ -63,9 +72,11 @@ impl SeedLinkNetwork {
                 String::from("seed"),
                 (*path).to_owned(),
             );
-            network
-                .documents
-                .push(((*path).to_owned(), document_index.clone()));
+            network.documents.push(DocumentEntry {
+                path: (*path).to_owned(),
+                index: document_index.clone(),
+                text: (*text).to_owned(),
+            });
             let tree = parse_lino(text);
             let mut counter = 0;
             network.project(
@@ -112,7 +123,7 @@ impl SeedLinkNetwork {
 
     /// Paths of every projected document, in projection order.
     pub fn document_paths(&self) -> impl Iterator<Item = &str> {
-        self.documents.iter().map(|(path, _)| path.as_str())
+        self.documents.iter().map(|entry| entry.path.as_str())
     }
 
     /// The document node index for `path`.
@@ -120,8 +131,21 @@ impl SeedLinkNetwork {
     pub fn document(&self, path: &str) -> Option<&str> {
         self.documents
             .iter()
-            .find(|(candidate, _)| candidate == path)
-            .map(|(_, index)| index.as_str())
+            .find(|entry| entry.path == path)
+            .map(|entry| entry.index.as_str())
+    }
+
+    /// The source text of the document at `path`, as projected.
+    ///
+    /// The links are the structure; the text is kept for readers that parse a
+    /// whole document with their own grammar, so they still enter through the
+    /// one boot projection instead of a second file walk.
+    #[must_use]
+    pub fn document_text(&self, path: &str) -> Option<&str> {
+        self.documents
+            .iter()
+            .find(|entry| entry.path == path)
+            .map(|entry| entry.text.as_str())
     }
 
     /// Every link whose source is `parent`, in projection order.

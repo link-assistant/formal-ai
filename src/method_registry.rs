@@ -7,8 +7,11 @@
 //! handler table, and contextual overrides are all represented as method records
 //! serialized to Links Notation.
 //!
-//! This module derives that registry *from the live code* — it reads the two
-//! source-of-truth constants directly, so the data can never drift from the
+//! This module derives that registry *from the live code through the link
+//! store* — the specialized table's precedence is the rank-link order the
+//! store declares, joined with the function pointers that actually run, and
+//! the execution and learned-method documents are read as the store's
+//! documents (plan 09 leaf 41, stage 3) — so the data can never drift from the
 //! handlers that actually run. A grounding test
 //! (`tests/unit/specification/method_registry.rs`) pins the derived names against
 //! the source, the same discipline the meta-recipe files use.
@@ -27,6 +30,8 @@ use crate::solver_dispatch::{
 };
 
 const METHOD_EXECUTION_LINO: &str = include_str!("../data/seed/method-execution.lino");
+const METHOD_EXECUTION_PATH: &str = "data/seed/method-execution.lino";
+const LEARNED_METHODS_PATH: &str = "data/seed/learned-methods.lino";
 
 /// A pre-handler runtime selected by a method-record attribute.
 ///
@@ -388,7 +393,7 @@ fn step_emits(step: &crate::recipe_interpreter::RecipeStep, base: &str) -> bool 
 
 /// The full catalogue of methods the solver can route an atomic leaf to.
 ///
-/// Built from the live dispatch constants via [`MethodRegistry::from_dispatch`],
+/// Built from the live dispatch constants via [`MethodRegistry::shared`],
 /// so the data is grounded in the code by construction.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MethodRegistry {
@@ -410,30 +415,55 @@ pub struct MethodRegistry {
 }
 
 impl MethodRegistry {
-    /// Derive the registry from the live dispatch constants.
+    /// The registry every production call site shares, built once.
     ///
-    /// The specialized surface is built from `specialized_handlers`, whose
-    /// precedence comes from `data/seed/handler-precedence.lino` joined with the
-    /// registered function pointers — so the registry reflects the seed-declared
-    /// order while staying grounded in the code that actually runs.
+    /// Construction enters through the projected link store
+    /// ([`crate::seed_links::network`]), the same boot projection the rule
+    /// interpreter reads since plan 09 leaf 40, so one store serves every
+    /// routing decision (plan 09 leaf 41, stage 3 — the closing leaf of the
+    /// read-path migration).
     #[must_use]
-    pub fn from_dispatch() -> Self {
-        Self::from_dispatch_with_learned_seed(crate::seed::LEARNED_METHODS_LINO)
-            .expect("the embedded learned-method seed must be valid")
+    pub fn shared() -> &'static Self {
+        static CELL: std::sync::OnceLock<MethodRegistry> = std::sync::OnceLock::new();
+        CELL.get_or_init(|| Self::from_store())
     }
 
-    /// Derive compiled methods and parse an explicit promoted-method seed.
+    /// Derive the registry from the link store.
     ///
-    /// This injected form keeps parsing independently testable; production uses
-    /// only the checked-in seed via [`Self::from_dispatch`].
+    /// The specialized surface's precedence is the rank-link order
+    /// [`crate::seed::handler_precedence`] reads from the store; the execution
+    /// attributes and the shipped learned-method seed are read as the store's
+    /// documents. The function pointers stay code — they cannot be data — and
+    /// [`crate::solver_dispatch::specialized_handlers`] still asserts the
+    /// store-declared order is an exact permutation of them.
+    fn from_store() -> Self {
+        let network = crate::seed_links::network();
+        let learned_seed = network
+            .document_text(LEARNED_METHODS_PATH)
+            .unwrap_or(crate::seed::LEARNED_METHODS_LINO);
+        Self::from_store_with_learned_seed(learned_seed)
+            .expect("the store's method documents must be valid")
+    }
+
+    /// Derive compiled methods from the live dispatch constants and parse an
+    /// explicit promoted-method seed.
+    ///
+    /// The execution attributes always read the store's method-execution
+    /// document, the same text production reads; only the promoted-method seed
+    /// is injected, which keeps parsing independently testable while production
+    /// uses only the store via [`Self::shared`].
     ///
     /// # Errors
     ///
     /// Returns an error when an adopted record is incomplete, duplicated, or
     /// contains fewer than two ordered operations.
-    pub fn from_dispatch_with_learned_seed(learned_seed: &str) -> Result<Self, String> {
+    pub fn from_store_with_learned_seed(learned_seed: &str) -> Result<Self, String> {
+        let network = crate::seed_links::network();
+        let execution_seed = network
+            .document_text(METHOD_EXECUTION_PATH)
+            .unwrap_or(METHOD_EXECUTION_LINO);
         let specialized = specialized_handlers();
-        let execution = parse_method_execution(METHOD_EXECUTION_LINO)?;
+        let execution = parse_method_execution(execution_seed)?;
         let mut methods = Vec::with_capacity(
             PRELUDE_METHOD_NAMES.len() + specialized.len() + CONTEXTUAL_HANDLER_NAMES.len(),
         );
@@ -807,8 +837,8 @@ fn event_kind_matches_base(kind: &str, base: &str) -> bool {
 /// `method_registry:count`, so the catalogue is observable in the event log
 /// without emitting one event per method on every solve. The same registry
 /// ordering drives `meta_method_dispatch`.
-pub(crate) fn record_method_registry(log: &mut EventLog) -> MethodRegistry {
-    let registry = MethodRegistry::from_dispatch();
+pub(crate) fn record_method_registry(log: &mut EventLog) -> &'static MethodRegistry {
+    let registry = MethodRegistry::shared();
     log.append("method_registry", registry.to_links_notation());
     log.append("method_registry:count", registry.method_count().to_string());
     registry

@@ -498,7 +498,7 @@ impl WorkUnit {
 /// fall-back to the n-ary segmentation this replaced.
 fn split_heuristic(span: &str) -> Option<crate::selection_heuristics::BinarySplit> {
     use crate::selection_heuristics::{BalancedSplitter, HeuristicRole, TaskSplitter};
-    let registry = crate::method_registry::MethodRegistry::from_dispatch();
+    let registry = crate::method_registry::MethodRegistry::shared();
     let mut heuristics = registry.heuristics_for(HeuristicRole::Split, "");
     let heuristic = heuristics.pop()?;
     BalancedSplitter.split(span, &heuristic.parameters)

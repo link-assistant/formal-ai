@@ -21,7 +21,7 @@ fn selection_for(prompt: &str, max_depth: u8) -> (WorkUnit, MethodSelection) {
     let candidate = formalize_prompt(prompt, "en");
     let formalization = formalize_intent(prompt, "en", Some(&candidate));
     let root = WorkUnit::from_formalization(&formalization, max_depth);
-    let registry = MethodRegistry::from_dispatch();
+    let registry = MethodRegistry::shared();
     let selection = MethodSelection::for_unit(&root, &registry);
     (root, selection)
 }
@@ -128,7 +128,7 @@ fn resolved_and_unresolved_counts_partition_the_leaves() {
             selection.leaf_count(),
             "resolved and unresolved leaves must partition the tree — prompt: {prompt}"
         );
-        let registry = MethodRegistry::from_dispatch();
+        let registry = MethodRegistry::shared();
         for leaf in &selection.leaves {
             if let Some(method) = &leaf.method {
                 assert!(
