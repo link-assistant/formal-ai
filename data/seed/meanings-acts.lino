@@ -93,6 +93,8 @@ meanings
         text "lee"
       surface
         text "dónde"
+      surface
+        text "escribe el contenido de"
   act_enumerate
     defined-by action
     role capability_act_enumerate
@@ -672,17 +674,9 @@ meanings
       surface
         text "sound like in"
       surface
-        text "in hindi"
-      surface
-        text "in chinese"
-      surface
-        text "in spanish"
-      surface
-        text "in russian"
-      surface
         text "switch to"
       surface
-        text "a line in"
+        text "line in"
       surface
         text "a sentence in"
       surface
@@ -691,6 +685,16 @@ meanings
         text "sound like"
       surface
         text "say something"
+      surface
+        text "answering"
+      surface
+        text "answer the next"
+      surface
+        text "speak to me"
+      surface
+        text "show me a"
+      surface
+        text "hear a sentence"
     lexeme ru
       surface
         text "ответь на"
@@ -699,19 +703,29 @@ meanings
       surface
         text "говори на"
       surface
-        text "по русски"
-      surface
-        text "по китайски"
-      surface
-        text "по испански"
-      surface
-        text "на хинди"
-      surface
         text "перейди"
       surface
         text "как ты звучишь"
       surface
         text "приветствие"
+      surface
+        text "дай фразу"
+      surface
+        text "ответь мне"
+      surface
+        text "скажи мне"
+      surface
+        text "ответить"
+      surface
+        text "дай услышать"
+      surface
+        text "следующий ответ"
+      surface
+        text "напиши мне"
+      surface
+        text "поговори"
+      surface
+        text "покажи своё"
     lexeme hi
       surface
         text "में उत्तर"
@@ -737,9 +751,11 @@ meanings
         text "में जवाब"
       surface
         text "में उत्तर"
-    lexeme zh
       surface
-        text "用"
+        text "में दीजिए"
+      surface
+        text "में लिखकर"
+    lexeme zh
       surface
         text "说一句"
       surface
@@ -770,14 +786,6 @@ meanings
       surface
         text "dime algo en"
       surface
-        text "en hindi"
-      surface
-        text "en chino"
-      surface
-        text "en ruso"
-      surface
-        text "en español"
-      surface
         text "cambia al"
       surface
         text "cómo suenas"
@@ -785,6 +793,20 @@ meanings
         text "saludo"
       surface
         text "háblame"
+      surface
+        text "contesta"
+      surface
+        text "dime una"
+      surface
+        text "oír"
+      surface
+        text "muéstrame"
+      surface
+        text "contéstame"
+      surface
+        text "línea en"
+      surface
+        text "responde"
   act_record
     defined-by action
     role capability_act_record

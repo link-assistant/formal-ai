@@ -46,6 +46,13 @@ source provenance for download-on-test integration. Only permissive licenses
 | Question necessity | #920 | [`question-necessity-suite.lino`](../data/benchmarks/question-necessity-suite.lino) | `issue_920_question_necessity_benchmark_ratchets_down` | ≤60 questions per 100 tasks |
 | Conversational wording variations | #933 (from #123) | [`conversational-variations-suite.lino`](../data/benchmarks/conversational-variations-suite.lino) | `conversational_variation_benchmark_routes_every_case` | 228 (and ≥5 wordings per case per language) |
 
+The `minimum_pass_count` column is the **curated** floor: it counts cases the
+repository's own suite must pass before a run counts, and it never measures the
+upstream score. The upstream scores are published in
+[Honest current numbers](#honest-current-numbers), kept byte-honest against
+`data/benchmarks/external-results.lino`; a curated number is never cited
+without the upstream number beside it (`NON-GOALS.md`).
+
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
 (greetings, farewells, identity, clarification, concept lookups, capabilities,
@@ -133,6 +140,44 @@ outcomes from real Formal AI sessions, including failures, without turning
 those observations into accepted answers or a pass floor. No third-party
 payload is imported by these suites; source licenses and retrieval evidence are
 recorded by the runtime artifacts each case produces.
+
+### Deep formalization of unfamiliar requirements — issue #1138 B4
+
+Ten held-out requirements — two families (`isogram_requirement`,
+`lipogram_procedure`) in en, ru, hi, zh and es — live in
+[`data/benchmarks/formalization-depth-requirements.lino`](../data/benchmarks/formalization-depth-requirements.lino).
+Neither family says what its key term means, so coverage can only come from the
+trusted sources. Every run is offline, replaying the committed plan 01 captures
+(`tests/fixtures/issue-1138-b1`) through the registry lookup; the per-language
+grounded ratio and the observed-primitive count below are measured, never
+asserted as targets (`tests/unit/issue_1138_formalization_depth.rs`,
+`tests/integration/issue_1138_formalization_agent.rs`).
+
+| Source | License | Domain | Upstream |
+| --- | --- | --- | --- |
+| Wiktionary (per-language extracts API) | CC BY-SA 3.0 | dictionary | <https://www.wiktionary.org> |
+| Open English WordNet 2024 | CC BY 4.0 | lexical database | <https://en-word.net> |
+| Wikipedia article summaries | CC BY-SA 4.0 | encyclopedia | <https://www.wikipedia.org> |
+
+Measured 2026-09-18, cold-offline over the committed captures — needs raised /
+grounded / unresolved per requirement, and the observed-primitive count of the
+nine-primitive knowledge base:
+
+| Family | en | ru | hi | zh | es |
+| --- | --- | --- | --- | --- | --- |
+| `isogram_requirement` needs grounded | 1 of 15 | 0 of 5 | 0 of 5 | 1 of 5 | 1 of 27 |
+| `lipogram_procedure` needs grounded | 1 of 19 | 0 of 7 | 0 of 6 | 0 of 6 | 0 of 8 |
+| observed primitives (all ten) | 1 of 9 | 1 of 9 | 1 of 9 | 1 of 9 | 1 of 9 |
+
+The table is the honest reading, not a shortfall to paper over. Only the
+English and Spanish surfaces have captured definitions, so only those runs
+ground their key concept (the zh isogram run matches the Latin-script
+`isogram`); ru and hi are measured unserved, and those runs report every need
+unsatisfiable with its exact span rather than a stored sentence. Grounding adds
+no nine-primitive coverage: a grounded concept is a concept-graph record with
+its source URL, sha256 and license, so the observed-primitive count stays 1 of 9
+(the annotation carrying the preserved span) in every language, and depth is
+reported as `needs_raised` / `needs_grounded`, never as primitive inflation.
 
 ### bAbI-style world-state tracking — issue #702
 
@@ -304,20 +349,31 @@ byte length, and content id match the adjacent provenance record.
 
 ### Honest current numbers
 
-The latest committed rows are dated `2026-09-17` for the coding suites'
-full-slice measurements (HumanEval 164, MBPP 500, each run cold-offline and
-with `--online`; the ledger keeps the `--online` row per suite and date so its
-result is exactly reproducible), use solver version `0.350.0`, and keep the
-deterministic solver at `temperature = 0.0`. The `2026-09-15` first-20 rows
-remain as regression controls. Other suite rows remain at their latest
-`2026-09-07` measurements:
+Pinned by `docs_benchmarks::latest_external_rows_are_published_from_the_ledger`
+(`tests/unit/docs_benchmarks.rs`): every table row below must equal the latest
+committed row for its suite in
+[`data/benchmarks/external-results.lino`](../data/benchmarks/external-results.lino),
+so editing this table without a matching ledger row — or the reverse — fails
+CI. The same test holds `VISION.md` to every suite's latest passed/total and
+`ROADMAP.md`, `ARCHITECTURE.md`, and `README.md` to the latest committed
+HumanEval and MBPP rows, and
+`docs_benchmarks::curated_pass_ratios_publish_an_upstream_comparison_beside_them`
+refuses a curated ratio published without an upstream one beside it.
+
+The latest committed rows are dated `2026-09-18`: HumanEval's coding row is the
+`2026-09-17` full-slice run and MBPP's is the `2026-09-18` full-slice run
+(HumanEval 164 with `--online`; MBPP 500 cold-offline, recorded with its
+`mode offline` field so the runner command in the ledger reproduces it exactly),
+all on solver version `0.350.0` with the deterministic solver at
+`temperature = 0.0`. The `2026-09-15` first-20 rows remain as regression
+controls. Other suite rows remain at their latest `2026-09-07` measurements:
 
 | Suite | License | Slice | Grading | Passed | Total |
 | --- | --- | ---: | --- | ---: | ---: |
 | HumanEval | MIT | 164 | upstream unit test executed | 14 | 164 |
 | HumanEval | MIT | 20 | upstream unit test executed | 20 | 20 |
+| MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery | 49 | 500 |
 | MBPP | Apache-2.0 | 20 | upstream `test_list` asserts executed with live source discovery | 20 | 20 |
-| MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery | MBPP500PASSED-PENDING | 500 |
 | GSM8K | MIT | 20 | final number vs. `####` gold | 2 | 20 |
 | MATH (`prm800k` 500-problem split) | MIT | 20 | final `\boxed{...}` vs. gold | 0 | 20 |
 | BIG-bench object counting | Apache-2.0 | 20 | final number vs. target | 0 | 20 |
@@ -343,12 +399,17 @@ offline run therefore reports those two gaps instead of relying on
 benchmark-specific built-ins. The ledger's MBPP runner includes `--online` so
 its result is exactly reproducible.
 
-The 2026-09-17 full-slice runs repeat the same honesty at suite width:
-cold-offline, HumanEval honestly scores **9/164**; with `--online`, live source
-discovery raises it to **14/164**. The delta is the measured live-source
-contribution, not a solver change — both runs used solver `0.350.0` and the
-same seed corpus, and the full-slice floor follows the higher measured row.
-The full-slice MBPP runs are recorded the same way below.
+The 2026-09-17 HumanEval full-slice run repeats the same honesty at suite
+width: the same session's cold-offline run honestly scored **9/164**; with
+`--online`, live source discovery raised it to **14/164**, which is the
+committed row and the suite's full-slice floor. The delta is the measured
+live-source contribution, not a solver change — both runs used solver
+`0.350.0` and the same seed corpus. The first committed MBPP full-slice row is
+the cold-offline `2026-09-18` run at **49/500**: at suite width most cases need
+retrieved context the offline run does not have, and that low number is
+published as measured. The same day's `--online` full-slice run reached
+**60/500** and set the suite's full-slice floor — the eleven-case delta is
+live-source evidence at suite width, mirroring HumanEval.
 
 `20 / 20` on egg and `5 / 5` on Ascent are the real measurements of the new
 symbolic kernel against mechanically adapted declarations and assertions from
@@ -373,6 +434,12 @@ is independently measured by the Apache-2.0 CoEdIT suite; that score is never
 recorded as an EditEval result. Runtime download, decode, or upstream-schema
 failures likewise produce a concrete `benchmark_unavailable` row so scheduled
 runs do not silently lose the reason that no score exists.
+
+The observed-primitive count for an unfamiliar document is recorded separately from
+the nine declared kinds. Before issue #1138 B4 it was 2 of 9 in every language,
+because an unrecognised sentence became a preserved span and nothing else; the
+deep-formalization corpus records what it is now, per language, including the
+languages where no source served a definition.
 
 ### Ratchet
 
@@ -491,7 +558,7 @@ Generated from `data/benchmarks/external-results.lino`.
 | `gsm8k` | 2026-09-07 | 20 | 2 | 20 | 0.347.0 |
 | `humaneval` | 2026-09-17 | 164 | 14 | 164 | 0.350.0 |
 | `math` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
-| `mbpp` | 2026-09-15 | 20 | 20 | 20 | 0.349.2 |
+| `mbpp` | 2026-09-18 | 500 | 49 | 500 | 0.350.0 |
 | `object_counting` | 2026-09-07 | 20 | 0 | 20 | 0.347.0 |
 | `swebench_lite` | 2026-09-07 | 1 | 0 | 1 | 0.347.0 |
 <!-- status:end benchmarks -->

@@ -1460,16 +1460,45 @@ making it reachable for a concept need.
       remaining half of L11.
 - [x] **L12 — Sense ledger.** `src/concept_sense_ledger.rs`; forget/rediscover and
       tamper-rejection tests.
-- [ ] **L13 — Browser parity.** `formal_ai_worker_source_walk.js`,
+- [x] **L13 — Browser parity.** `formal_ai_worker_source_walk.js`,
       `formal_ai_worker_concept_lookup.js`, two `data/meta/worker-line-budget/` files,
       `examples/issue_1138_concept_lookup_parity.rs`,
       `tests/fixtures/issue-1138-b1/expected-senses.json`,
       `tests/web/issue-1138-concept-lookup.test.mjs`.
-- [ ] **L14 — Five-language outcome prose.** `data/seed/meanings-concept-lookup.lino`
+
+      Complete. `tests/web/issue-1138-concept-lookup.test.mjs` passes 4/4; the
+      native/browser parity case
+      `the_native_and_browser_runtimes_resolve_the_same_senses` is green against
+      `expected-senses.json`; the parity example builds; both budget shards hold
+      (source_walk 317/360, concept_lookup 194/390). The repository-wide
+      `check-worker-line-budget` failure on `formal_ai_worker_20.js` is plan 02
+      L21's open item, not this leaf's.
+- [x] **L14 — Five-language outcome prose.** `data/seed/meanings-concept-lookup.lino`
       (6 meanings + 30 responses); the language-coverage gate must report
       `OK … en, ru, hi, zh, es`.
-- [ ] **L15 — HTTP surface.** `tests/integration/issue_1138_concept_lookup_http.rs`,
+
+      Complete. The gate is
+      `every_concept_lookup_outcome_is_seeded_in_all_five_languages`
+      (`tests/unit/issue_1138_concept_lookup.rs`), and it resolves every
+      intent/language pair through the live seed registry
+      (`seed::response_for`), so the 30 responses in
+      `data/seed/multilingual-responses-concept-lookup.lino` are proven
+      wired, not merely declared.
+- [x] **L15 — HTTP surface.** `tests/integration/issue_1138_concept_lookup_http.rs`,
       three tests through a real server process.
+
+      All three pass against a real `formal-ai serve`. Two wave-T expectations
+      needed repair, recorded rather than silent: the resolve case asserted a
+      wiktionary citation, but registry order decides who answers and the
+      first declared source that answers the held-out word is wordnet (the
+      L6 measurement), so the test now pins wordnet's exact page, digest and
+      gloss fragment, with the reason written at the case. The opt-out case
+      exposed a real gap — a resolved answer never reported the disabled
+      source beside it — closed by logging `concept_lookup:disabled` rows for
+      hits as well as misses (`src/solver_search.rs`) and appending the
+      localized `concept_lookup_disabled` note beside the resolved sense
+      (`src/solver_unknown_reasoning.rs`), both fed by the seed's own
+      response records.
 - [x] **L16 — Grounded recipe.** `data/meta/concept-lookup-recipe.lino`,
       `tests/unit/specification/concept_lookup_meta_algorithm.rs`, and the
       `coding_discovery_step_understand` record in
@@ -1483,12 +1512,22 @@ making it reachable for a concept need.
       `lookup_surface`, `src/concept_lookup.rs` joins the recipe's cited
       sources, and `specification::coding_discovery_meta_algorithm` checks all
       six steps against the live pipeline.
-- [ ] **L17 — Ledgers and docs.** Requirement shard
+- [x] **L17 — Ledgers and docs.** Requirement shard
       `docs/requirements/issue-1138-live-concept-lookup.md`,
       `rust-script scripts/assemble-requirements.rs --write`, traceability rows,
       `docs/benchmarks.md` corpus section, `docs/meta-algorithm.md` section, VISION
       and ROADMAP edits from the next section, and the honest measured numbers.
-- [ ] **L18 — Retire the adapter.** Once plan 02 and plan 04 call `SourceLookup`
+
+      Complete as scoped. The shard (R1138-B1-1…9) is in
+      `REQUIREMENTS.md` (assembled, `check-requirement-status` parity holds
+      for 1146 requirements, ledger regenerated); the nine `R1138-B1-*`
+      traceability rows are in `docs/requirements-traceability.md`; the
+      `docs/benchmarks.md` corpus rows record the 10-case corpus and the
+      self-use observation corpus. The `docs/meta-algorithm.md`, VISION and
+      ROADMAP replacement texts moved to plan 11's rows D156, D157, D158 and
+      D273 by the 2026-09-16 reconciliation (one docs authority), so they land
+      with plan 11's leaves once the ledger rows they cite exist — they do now.
+- [x] **L18 — Retire the adapter.** Once plan 02 and plan 04 call `SourceLookup`
       directly, delete `UnknownConceptLookup`, `NoLookup` and
       `RegistryConceptLookup`; `discover_with_lookup` takes `&mut dyn SourceLookup`.
       **reconciled (plan 00 §9 X2): this is the last leaf of the whole plan set.
@@ -1499,6 +1538,13 @@ making it reachable for a concept need.
       deferred to last on purpose, because it changes a signature
       `tests/unit/coding_discovery/concepts.rs` pins and must not share a commit
       with a behaviour change.
+
+      Complete. `discover_with_lookup` takes `&mut dyn SourceLookup`
+      (`src/coding/concept_discovery.rs`); plan 02's composer and plan 04's
+      formalizer call `SourceLookup` directly; a repo-wide grep for the three
+      retired names hits only the retirement guard
+      `coding_discovery_uses_only_the_shared_source_lookup_contract`, which is
+      green.
 
 ## Docs to update
 

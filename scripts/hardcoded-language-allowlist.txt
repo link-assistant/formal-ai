@@ -1001,22 +1001,22 @@ src/solver_handlers/meta_explanation.rs	Я ответил так, потому �
 src/solver_handlers/meta_explanation.rs	मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: {} (`{}`). Runtime: {}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory ({}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: {}. पूरा internet local rules में preload नहीं है.
 src/solver_handlers/meta_explanation.rs	मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt deterministic Links Notation rule से मेल खाता था. evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें.
 src/solver_handlers/meta_explanation.rs	我不是 LLM runtime, 也不执行神经网络推理。当前环境: {} (`{}`)。Runtime: {}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 ({}); 然后只在当前环境允许时使用 web search: {}。整个互联网不会预加载到本地规则中。
-src/solver_handlers/mod.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
+src/retrieval_procedures.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
 src/solver_handlers/mod.rs	Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link.
-src/solver_handlers/mod.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
+src/retrieval_procedures.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
 src/solver_handlers/mod.rs	I could not identify a source phrase to translate from {source_slug} to {target_slug}.
 src/solver_handlers/mod.rs	I could not translate \"{surface}\" from {source_slug} to {target_slug} with the available formalization data. I recorded this as a translation gap for follow-up.
 src/solver_handlers/mod.rs	I do not embed a JavaScript runtime in this build, so I cannot execute the program for you. The deterministic solver only runs code that has been verified offline; running arbitrary JavaScript would violate that contract. Here is the program you asked me to run, copy-paste reviewable:\n\n```js\n{program}\n```\n\nTo execute it yourself, save the snippet as `program.js` and run `node program.js` (or `deno run program.js`).
 src/solver_handlers/mod.rs	I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}.
-src/solver_handlers/mod.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
-src/solver_handlers/mod.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
-src/solver_handlers/mod.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
-src/solver_handlers/mod.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
+src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
+src/concepts.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
+src/retrieval_procedures.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
+src/retrieval_procedures.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
 src/solver_handlers/mod.rs	Step {}: {step}
 src/solver_handlers/mod.rs	Therefore, there are {formatted} {label} in total.
 src/solver_handlers/mod.rs	{expression} = {formatted}
-src/solver_handlers/mod.rs	{intro}\n\n{summary}
-src/solver_handlers/mod.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
+src/retrieval_procedures.rs	{intro}\n\n{summary}
+src/concepts.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
 src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
 src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
 src/solver_handlers/natural_language_tools.rs	Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).

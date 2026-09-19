@@ -155,6 +155,7 @@ handler_family_methods
     preempts summarization
     preempts web_search
     preempts compose_from_sources
+    preempts capability_gap
     evidence_group source_request
       cue source
       cue "where you found"
@@ -201,6 +202,11 @@ handler_family_methods
     response hi "स्रोत-समर्थित खोज अनुरोध पहचाना गया, लेकिन इस अलग संदेश में विषय की सत्यापित प्रति नहीं है। सारांश बताने से पहले विश्वसनीय स्रोतों की खोज आवश्यक है।"
     response zh "已识别出需要来源支持的检索请求，但这个独立轮次没有该主题的已验证采集。必须先遍历可信来源，才能断言摘要。"
     response es "Identifiqué una solicitud de recuperación respaldada por fuentes, pero este turno aislado no contiene una captura verificada del tema. Hace falta recorrer fuentes confiables antes de afirmar un resumen."
+    response_with_capture en "{gloss} -- source {source_name}, {source_url}, {license_name}."
+    response_with_capture ru "{gloss} -- источник {source_name}, {source_url}, {license_name}."
+    response_with_capture hi "{gloss} -- स्रोत {source_name}, {source_url}, {license_name}."
+    response_with_capture zh "{gloss} -- 来源 {source_name}，{source_url}，{license_name}。"
+    response_with_capture es "{gloss} -- fuente {source_name}, {source_url}, {license_name}."
   family rule_interpreter
     priority 50
     preempts capability_gap

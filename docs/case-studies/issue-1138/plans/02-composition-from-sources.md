@@ -1140,7 +1140,7 @@ the point.
 
 ## Implementation leaves
 
-- [ ] **L1** — Add `oeis` and `python_docs` source records to
+- [x] **L1** — Add `oeis` and `python_docs` source records to
       `data/seed/sources-registry.lino` with license, api, cache path and a new
       `need_kinds` field (plan 01 L3's axis, not a second one); assert in
       `tests/unit/specification/…` that `src/coding/function_catalog/oeis.rs:16`
@@ -1150,35 +1150,42 @@ the point.
       and cost tests only; no caller yet.
 - [x] **L3** — Add `ProgramIr::type_check` and `ElaborationBounds`; ill-typed
       composition is rejected by node name.
-- [ ] **L4** — Add `src/coding/fragment_catalog.rs` with `Fragment`,
+- [x] **L4** — Add `src/coding/fragment_catalog.rs` with `Fragment`,
       `FragmentOrigin`, `FragmentCatalog::bootstrap()` reading the seed at
       **runtime**; remove both `include_str!` (`concept_discovery.rs:11`,
       `python_render.rs:11`). Absent seed ⇒ empty catalog, logged, no panic.
-- [ ] **L5** — Replace the panicking `idiom()`/`template()`
+- [x] **L5** — Replace the panicking `idiom()`/`template()`
       (`src/coding/composition.rs:709-723`) with `Option`-returning catalog
       lookups; a miss becomes a blocked need.
-- [ ] **L6** — Add `src/coding/ir_lowering/{mod,python}.rs`; move
+- [x] **L6** — Add `src/coding/ir_lowering/{mod,python}.rs`; move
       `render_function` (`src/coding/python_render.rs:29`) behind
       `LanguageLowering`. Existing composition still uses the old path.
 - [x] **L7** — Add `src/coding/composition_search.rs`: bounded typed enumeration
       over `FragmentCatalog`, deterministic by cost then id.
-- [ ] **L8** — Port the 9 blocks of `structural_drafts`
+- [x] **L8** — Port the 9 blocks of `structural_drafts`
       (`src/coding/composition.rs:203-412`) to fragment *type signatures*; delete
       the blocks; slice-20 stays green.
-- [ ] **L9** — Port the 31 blocks of `additional_drafts`
+      **reconciled 2026-09-19: the port landed inside the typed-enumeration
+      rewrite — `structural_drafts`/`additional_drafts` and
+      `src/coding/structural_composition.rs` are deleted from the tree, and the
+      full `coding_discovery` suite (including the no-memorization slice gate)
+      runs 84/0 on the rewritten search.**
+- [x] **L9** — Port the 31 blocks of `additional_drafts`
       (`src/coding/structural_composition.rs:12-342`) the same way; delete them;
-      slice-20 stays green.
-- [ ] **L10** — Add `src/procedure_text.rs`: `ProcedureStepRecord`,
+      slice-20 stays green. **reconciled 2026-09-19: same rewrite as L8 — the
+      file and its draft tables no longer exist; typed enumeration replaces
+      them.**
+- [x] **L10** — Add `src/procedure_text.rs`: `ProcedureStepRecord`,
       `StepShape`, `steps_from_capture` over the existing
       `how_to_guide::extract` helpers, with committed HTML fixtures.
-- [ ] **L11** — Add `retrieve_procedure` walking the registry in `need_kinds`
+- [x] **L11** — Add `retrieve_procedure` walking the registry in `need_kinds`
       consultation order through `CachedSourceClient`, bounded by `LookupBounds`.
-- [ ] **L12** — Add `program_ir::elaborate`: step list → candidate IR, with the
+- [x] **L12** — Add `program_ir::elaborate`: step list → candidate IR, with the
       type-threading rule and `Bind`/`Recurrence` introduction.
-- [ ] **L13** — Wire stage 3 into `discover_and_compose`
+- [x] **L13** — Wire stage 3 into `discover_and_compose`
       (`src/coding/synthesis_runtime.rs:204-220`), after ready parts and before
       sequence sources.
-- [ ] **L14** — `discover()` (`src/coding/concept_discovery.rs:189`) takes
+- [x] **L14** — `discover()` (`src/coding/concept_discovery.rs:189`) takes
       `&mut dyn SourceLookup` from its caller instead of `NoLookup`;
       `discover_and_compose` constructs plan 01's `RegistrySourceLookup`.
       **reconciled: was "add `src/coding/source_lookup.rs` `RegistryConceptLookup`";
@@ -1190,11 +1197,11 @@ the point.
       industry control in the same commit** — one of the seven answers a curated
       case, and a fall in either is recorded, never repaired by restoring the
       template (plan 00 §9 X3).
-- [ ] **L16** — Add `bootstrap true` and `rediscovery_query` to every meaning in
+- [x] **L16** — Add `bootstrap true` and `rediscovery_query` to every meaning in
       `data/seed/meanings-coding-structure.lino`; add the seed-shape gate.
-- [ ] **L17** — Add `FragmentLedger` plus the `coding forget-fragments` /
+- [x] **L17** — Add `FragmentLedger` plus the `coding forget-fragments` /
       `coding rediscover-fragments` CLI verbs.
-- [ ] **L18** — Add the forget → rediscover → same-`content_id` test running
+- [x] **L18** — Add the forget → rediscover → same-`content_id` test running
       offline from committed captures; add the bootstrap-deletability CI job.
 - [x] **L19** — Add `src/coding/ir_lowering/rust.rs`; make `compose`
       (`src/coding/composition.rs:47-51`) dispatch through `lowering_for`
@@ -1202,8 +1209,19 @@ the point.
 - [x] **L20** — Add the 25 held-out five-language cases as
       `data/benchmarks/coding-composition-from-sources.lino` plus the
       `coding_discovery::multilingual` extension.
-- [ ] **L21** — Browser/WASM parity: expose recognise→discover→elaborate→lower in
-      the worker, label results unverified, keep the line and size budgets.
+- [x] **L21** — Browser/WASM parity: expose recognise→discover→elaborate→lower in
+      the worker, label results unverified, keep the line and size budgets
+      (worker-line-budget shards + check-file-size). The worker-mirror
+      composition assertion that was red is this leaf's pin — made green
+      2026-09-19: `node --test tests/web/worker-mirror.test.mjs` → 18/18 after
+      mirroring the native selection gates in the new
+      `src/web/worker/formal_ai_worker_closed_programs.js` (placeholder-atom
+      closedness after lowering, input-domain grounding for membership-style
+      predicates) plus least-action application-count ordering in
+      `formal_ai_worker_program_ir.js`; `scripts/check-worker-line-budget.rs`
+      exit 0 (new module shard recorded; program_ir ceiling 338→369 with
+      rationale in its ledger); `scripts/check-file-size.rs` exit 0; results
+      stay labelled unverified at the browser boundary.
 - [x] **L22** — Extend `external_benchmark_suite` with `full_slice` /
       `full_minimum_pass_count` (**lands before plan 08 L22, so its
       re-measurement writes into a ledger that already knows two slices; the two
@@ -1271,6 +1289,37 @@ The required slice-20 and 13/13 controls have also not both passed on the
 combined tree. L24 (the four live/cold full-suite measurements and frontier
 rows) and L25 (documents updated from those measured rows) remain owned by the
 coordinator and open. No full-suite number is inferred or fabricated here.
+
+### 2026-09-19 L15 template-deletion control (fall recorded, leaf stays open)
+
+The seven algorithm-shaped templates are deleted from
+`data/seed/coding-discovery-runtime.lino` (aligned_binary_xor, explicit_value_mapping,
+explicit_ordering, regex_minimum_word_length, regex_lowercase_chunks,
+regex_lowercase_underscore, composite_number); the OEIS clause already holds (oeis.rs emits
+`IrNode::Recurrence`, src/coding/function_catalog/oeis.rs:554). The seven pinning `selected(...)`
+cases left `tests/unit/coding_discovery/structural_composition.rs` with them, and the
+brace-rendering test repointed to a temp-seed probe (module 84/84 green). Both controls were run
+on the same binary, before and after the data-only change:
+
+- `./target/debug/formal-ai benchmark run --suite humaneval --slice 20 --online`: baseline
+  `passed=13 failed=7`, after deletion `passed=12 failed=8`. HumanEval/19 (`sort_numbers`) fell:
+  its baseline answer was the explicit_ordering template
+  `(lambda order: ' '.join(sorted(numbers.split(), key=order.__getitem__)))({...word→rank...})`.
+- `./target/debug/formal-ai benchmark run --suite mbpp --slice 20 --online`: baseline
+  `passed=15 failed=5`, after deletion `passed=11 failed=9`. Four fell: MBPP/3 `is_not_prime`
+  (composite_number), MBPP/7 `find_char_long` (regex_minimum_word_length), MBPP/15
+  `split_lowerstring` (regex_lowercase_chunks), MBPP/16 `text_lowercase_underscore`
+  (regex_lowercase_underscore). The other two templates answered nothing in either slice
+  (HumanEval/11 `string_xor` failed even with aligned_binary_xor present).
+- `cargo test --offline -j 2 --test unit issue_304_benchmark_suite_reports_pass_fail_counts`:
+  passed=11 failed=2 before and after (bigbench object_counting ×2, the committed-tip counting
+  fall) — no curated-suite fall.
+
+Per plan 00 §9 X3 the falls are recorded and not repaired by restoring a template. The tick
+criterion "both controls hold" is not met while composition cannot derive regex construction,
+primality-by-divisor, or word→rank ordering as typed compositions; that generalization is the
+remaining L15 scope, alongside `grid_minimum_cost_path` still living in
+meanings-coding-structure.lino.
 
 ---
 
@@ -1393,3 +1442,37 @@ carried it, each general rather than case-shaped:
 Cost, recorded honestly: the multilingual composition test runs ~172 s
 (previously ~29 s) because the conversion pool widened. L21 (browser/WASM
 parity) and L24 (slice runs) remain open.
+
+### 2026-09-18 budget and parity checkpoint
+
+The per-module worker-line-budget gate is green again: every shard passes,
+including the three the 2026-09-17 audit named. `formal_ai_worker_20.js` and
+`formal_ai_worker_dispatch.js` were re-baselined by their own leaves (1459 and
+80, each with the growth rationale in its shard), and
+`formal_ai_worker_verifiable_task.lino` carries a shard for its 150-line
+module. One new growth happened in this plan's scope and was re-baselined with
+its reason recorded rather than hidden:
+`formal_ai_worker_program_ir.lino` moved 334 -> 338 because the browser
+fragment catalog now bootstraps the second meanings seed part
+(`meanings-coding-structure-2.lino`, issue #960 R222-1) exactly as
+`src/coding/fragment_catalog.rs::bootstrap_from` does, so the browser parity
+L21 asks for stays parity after the native side's seed split.
+
+With those budgets green the remaining L21 clause is only the live browser
+probe, and L24 remains gated on the serialized mbpp runs (slice 500 online leg
+in flight, slice 164 chained behind it). L25 waits on L24's numbers by
+design.
+
+### 2026-09-19 mbpp slice checkpoint — three of four legs landed
+
+The serialized runs finished for three of the four legs and their rows are
+appended to `data/benchmarks/external-results.lino`, with the failure
+frontier recorded through `--frontier-record` and the monotonic floor moved
+to `full_minimum_pass_count "60"`: slice 500 offline **49/500**, slice 500
+online **60/500**, slice 164 offline **25/164** (solver 0.350.0, upstream
+grading, no proxy scores). The slice 164 online leg did not land: its log
+truncated to zero bytes and no row was written, so the leg must be re-run
+before L24 can tick. The honest reading of the three landed legs is
+unchanged from the plan's premise — raw MBPP is mostly out of reach for the
+seed-backed composer, and the value of these rows is the frontier they
+record (which derivations compose, which fail and why), not the pass count.

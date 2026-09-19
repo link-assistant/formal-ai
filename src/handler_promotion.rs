@@ -14,7 +14,7 @@ use alloc::string::String;
 use alloc::vec::Vec;
 use core::fmt::Write as _;
 
-use crate::rule_interpreter::{ConditionSource, HandlerRules, SeedTables};
+use crate::rule_interpreter::{ConditionSource, HandlerRules, LinkStoreSource};
 use crate::seed::parser::{LinoNode, parse_lino};
 
 const PROMOTIONS_LINO: &str = include_str!("../data/seed/handler-promotions.lino");
@@ -107,11 +107,12 @@ pub fn promotions_from(text: &str) -> Result<Vec<HandlerPromotion>, String> {
 }
 
 /// The `handler:<name>` relevants a prompt promotes, in `rank` order, evaluated
-/// through the one rule interpreter. Keeps no handler names.
+/// through the one rule interpreter reading the projected link store (plan 09
+/// leaf 40: the store, not the parsed seed tables, is the read path). Keeps no
+/// handler names.
 #[must_use]
 pub fn promoted_relevants(promotions: &[HandlerPromotion], prompt: &str) -> Vec<String> {
-    let source = SeedTables::new(crate::seed::lexicon());
-    promoted_relevants_with_source(promotions, prompt, &source)
+    promoted_relevants_with_source(promotions, prompt, LinkStoreSource::shared())
 }
 
 /// Evaluate promotions through an explicit condition source.

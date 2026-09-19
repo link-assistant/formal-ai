@@ -54,6 +54,14 @@ fn args(tag: &str) -> SolveArgs {
             "https://github.com/link-assistant/formal-ai/pull/1138",
         )),
         commit: false,
+        produces: Vec::new(),
+        into: Vec::new(),
+        seed: None,
+        contains: Vec::new(),
+        port: 8899,
+        message: None,
+        server_executable: None,
+        agent_executable: None,
     }
 }
 

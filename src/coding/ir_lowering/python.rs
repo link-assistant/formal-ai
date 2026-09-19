@@ -5,7 +5,7 @@
 
 use crate::coding::fragment_catalog::FragmentCatalog;
 use crate::coding::ir_lowering::{LanguageLowering, LoweringGap};
-use crate::coding::program_ir::{IrNode, ProgramIr};
+use crate::coding::program_ir::{IrNode, IrType, ProgramIr};
 use crate::coding::python_render::runtime_template;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -36,17 +36,58 @@ impl LanguageLowering for PythonLowering {
         let parameters = ir
             .parameters
             .iter()
-            .map(|(name, _)| python_identifier(name))
+            .map(|(name, ty)| match python_annotation(ty) {
+                Some(annotation) => format!("{}: {}", python_identifier(name), annotation),
+                None => python_identifier(name),
+            })
             .collect::<Vec<_>>()
             .join(", ");
-        Ok(prepend(render(
+        let function = render(
             "python_ir_function",
             &[
                 ("name", &python_identifier(&ir.name)),
                 ("parameters", &parameters),
                 ("expression", &expression),
             ],
-        )?))
+        )?;
+        // A hoisted import block and a top-level definition are separate
+        // paragraphs (PEP 8); a bare expression stays glued to its imports.
+        Ok(if imports.is_empty() {
+            function
+        } else {
+            format!("{imports}\n\n{function}")
+        })
+    }
+}
+
+/// The target-language spelling of a parameter's type, re-derived from the
+/// typed signature the search unified — never from the prompt's prose. An
+/// untyped parameter lowers without an annotation.
+fn python_annotation(ty: &IrType) -> Option<String> {
+    match ty {
+        IrType::Integer => Some(String::from("int")),
+        IrType::Float => Some(String::from("float")),
+        IrType::Boolean => Some(String::from("bool")),
+        IrType::Text => Some(String::from("str")),
+        IrType::Sequence(element) | IrType::OrderedSequence(element) => {
+            Some(match python_annotation(element) {
+                Some(inner) => format!("list[{inner}]"),
+                None => String::from("list"),
+            })
+        }
+        IrType::Pair(left, right) => {
+            Some(match (python_annotation(left), python_annotation(right)) {
+                (Some(left), Some(right)) => format!("tuple[{left}, {right}]"),
+                _ => String::from("tuple"),
+            })
+        }
+        IrType::Mapping(key, value) => {
+            Some(match (python_annotation(key), python_annotation(value)) {
+                (Some(key), Some(value)) => format!("dict[{key}, {value}]"),
+                _ => String::from("dict"),
+            })
+        }
+        IrType::Callable | IrType::Unknown(_) => None,
     }
 }
 

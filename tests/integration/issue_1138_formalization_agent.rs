@@ -6,7 +6,14 @@
 //! coverage: a real `formal-ai agent` process over a held-out requirement must
 //! report the concepts it grounded, and must report the needs it could not
 //! ground rather than claiming coverage.
+//!
+//! Both runs are offline. Grounding comes from replaying the committed plan 01
+//! capture tree (`tests/fixtures/issue-1138-b1`) through the process source
+//! cache the agent consults — the same bytes the unit-level offline replay
+//! uses — copied to a scratch directory first, because a cache is allowed to
+//! record access outcomes and the committed fixture must stay pristine.
 
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 /// A held-out requirement: `isogram` appears in no seed file, so the concept
@@ -18,8 +25,34 @@ const HELD_OUT_REQUIREMENT: &str =
 /// outcome is an ungrounded need rather than a confident formalization.
 const UNGROUNDABLE_REQUIREMENT: &str = "Formalize this requirement: a blorptide check must reject any sequence that is not a blorptide.";
 
-fn agent(task: &str) -> String {
+/// A scratch replay of the committed capture tree, named per probe so the two
+/// tests never share one cache directory.
+fn replay_cache(tag: &str) -> PathBuf {
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/issue-1138-b1");
+    let cache = std::env::temp_dir().join(format!("formal-ai-issue-1138-agent-{tag}"));
+    let _ = std::fs::remove_dir_all(&cache);
+    copy_tree(&fixture, &cache).expect("copy the committed captures to the replay cache");
+    cache
+}
+
+fn copy_tree(source: &Path, target: &Path) -> std::io::Result<()> {
+    std::fs::create_dir_all(target)?;
+    for entry in std::fs::read_dir(source)? {
+        let entry = entry?;
+        let kind = entry.file_type()?;
+        let destination = target.join(entry.file_name());
+        if kind.is_dir() {
+            copy_tree(&entry.path(), &destination)?;
+        } else {
+            std::fs::copy(entry.path(), &destination)?;
+        }
+    }
+    Ok(())
+}
+
+fn agent(task: &str, tag: &str) -> String {
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .env("FORMAL_AI_SOURCE_CACHE_DIR", replay_cache(tag))
         .args(["--silent", "agent", "--task", task])
         .output()
         .expect("failed to execute the formal-ai binary");
@@ -33,7 +66,7 @@ fn agent(task: &str) -> String {
 
 #[test]
 fn an_agent_run_over_an_unfamiliar_requirement_reports_grounded_concepts_not_only_spans() {
-    let transcript = agent(HELD_OUT_REQUIREMENT);
+    let transcript = agent(HELD_OUT_REQUIREMENT, "held-out");
 
     assert!(
         transcript.contains("concept:isogram"),
@@ -51,7 +84,7 @@ fn an_agent_run_over_an_unfamiliar_requirement_reports_grounded_concepts_not_onl
 
 #[test]
 fn an_agent_run_reports_its_ungrounded_needs_rather_than_claiming_coverage() {
-    let transcript = agent(UNGROUNDABLE_REQUIREMENT);
+    let transcript = agent(UNGROUNDABLE_REQUIREMENT, "ungroundable");
 
     assert!(
         transcript.contains("needs_raised"),

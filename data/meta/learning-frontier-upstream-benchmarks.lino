@@ -3,10 +3,10 @@ learning_frontier
   frontier "upstream-benchmarks"
   issue "1085"
   recorded_from "formal-ai benchmark run --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino in .github/workflows/external-benchmarks.yml"
-  recorded_on "2026-09-17"
+  recorded_on "2026-09-18"
   summary "Every upstream benchmark case the last scheduled run failed, one frontier prompt per case, so the learning cycle proposes seed surfaces from the same evidence the ledger scores (issue #1085 D5.1). Rewritten by formal-ai benchmark run --frontier-record; a suite that passes fully drops out. Replayed by formal-ai learn cycle --frontier upstream-benchmarks."
-  total_prompts "223"
-  learning_frontier "223"
+  total_prompts "362"
+  learning_frontier "362"
   frontier_prompt
     rank "1"
     query "coedit/CoEdIT/1"

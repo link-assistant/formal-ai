@@ -104,7 +104,10 @@ test("every coding handler executes the shared meta-algorithm", async () => {
   assert.match(synthesis.content, /Discovered structural parts:.*reduce_count/);
   assert.match(synthesis.content, /unverified in the browser boundary/);
   assert.match(synthesis.content, /```python\ndef count_vowels\(text\):/);
-  assert.match(synthesis.content, /sum\(1 for item in text if item in 'aeiouAEIOU'\)/);
+  // The binder name is the seed's own `reduce_count` placeholder, the same
+  // name the native pinned answer in
+  // tests/unit/specification/benchmarks.rs (COUNT_VOWELS_ANSWER) lowers to.
+  assert.match(synthesis.content, /sum\(1 for character in text if character in 'aeiouAEIOU'\)/);
   assert.ok(
     synthesis.evidence.includes("synthesis:ir:type_checked"),
     "the browser type-checks the same language-neutral IR before lowering",

@@ -53,9 +53,11 @@ evidence absorbed the effort. Each remedy in the issue maps to a requirement in
   the token, and reports `unknown`; budget shares hold.
 - `cargo test --test unit issue_1014` — the floor is red-until-true from its own
   workflow and absent from both release jobs.
-- `rust-script --test scripts/check-kernel-ratchet.rs && rust-script
-  scripts/check-kernel-ratchet.rs` — the five ceilings hold at the values the
-  branch measured.
+- `rust-script scripts/check-debt-ratchet.rs` — the shrink-only ceilings hold
+  at the values `data/meta/debt-ratchet.lino` records (renamed from
+  `kernel-ratchet.lino` on 2026-09-12, when it carried four ceilings; the
+  ledger's measures are read, not quoted — twelve named ceilings as of
+  2026-09-19).
 - The `Self-development status` workflow on `main` — floor and kernel shrink,
   red until true.
 

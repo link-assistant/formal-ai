@@ -2,48 +2,48 @@ self_ast_census
   target src/solver_search.rs
   language rust
   fidelity signature
-  byte_len 29400
-  line_count 833
-  content_id source_module_4a26514211e768f0
+  byte_len 30069
+  line_count 850
+  content_id source_module_5fe853451c4a9991
   symbol_count 40
   symbols
     module portfolio 31 31
     module problem 32 32
-    function record_external_search 42 109
-    struct Op 121 123
-    function new 126 128
-    function symbol 130 132
-    function apply 137 147
-    struct SearchProblem 153 157
-    struct Candidate 162 165
-    function evaluate 170 176
-    function render 178 187
-    struct Prng 192 194
-    function seeded 197 202
-    function next_u64 204 210
-    function below 212 221
-    function seed_from_prompt 226 233
-    function try_budget_search 240 292
-    const MAX_REFUTATION_HYPOTHESES 298 298
-    enum RefutationOutcome 300 304
-    function run_refutation_search 306 443
-    function candidate_space_size 445 451
-    function enumerate_candidates 453 474
-    function enumerate_orders 476 496
-    function enumerate_operator_rows 498 513
-    struct SearchSolution 518 522
-    function run_search 524 608
-    const POPULATION 611 611
-    const GENERATION_LOG_STRIDE 614 614
-    function finish_solution 616 634
-    function score 640 644
-    function remember_best 646 650
-    function insert_population 652 667
-    function random_candidate 669 675
-    function random_permutation 677 685
-    function breed 689 716
-    function record_generated_tests 718 727
-    function build_answer 730 772
-    function record_skill_proposal 784 818
-    function join_numbers 820 826
-    function join_ops 828 833
+    function record_external_search 42 126
+    struct Op 138 140
+    function new 143 145
+    function symbol 147 149
+    function apply 154 164
+    struct SearchProblem 170 174
+    struct Candidate 179 182
+    function evaluate 187 193
+    function render 195 204
+    struct Prng 209 211
+    function seeded 214 219
+    function next_u64 221 227
+    function below 229 238
+    function seed_from_prompt 243 250
+    function try_budget_search 257 309
+    const MAX_REFUTATION_HYPOTHESES 315 315
+    enum RefutationOutcome 317 321
+    function run_refutation_search 323 460
+    function candidate_space_size 462 468
+    function enumerate_candidates 470 491
+    function enumerate_orders 493 513
+    function enumerate_operator_rows 515 530
+    struct SearchSolution 535 539
+    function run_search 541 625
+    const POPULATION 628 628
+    const GENERATION_LOG_STRIDE 631 631
+    function finish_solution 633 651
+    function score 657 661
+    function remember_best 663 667
+    function insert_population 669 684
+    function random_candidate 686 692
+    function random_permutation 694 702
+    function breed 706 733
+    function record_generated_tests 735 744
+    function build_answer 747 789
+    function record_skill_proposal 801 835
+    function join_numbers 837 843
+    function join_ops 845 850

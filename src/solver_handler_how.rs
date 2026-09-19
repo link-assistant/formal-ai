@@ -815,7 +815,7 @@ fn render_procedural_how_to_body(
                      official documentation or official repository install page \
                      before community how-to sources. It starts with the \
                      official-source web search query `{search_query}` and keeps \
-                     the general how-to query `{fallback_query}` as fallback. "
+                     the general how-to query `{fallback_query}` as fallback.\n\n"
                 )
             } else {
                 String::new()

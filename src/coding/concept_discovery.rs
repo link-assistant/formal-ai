@@ -383,31 +383,40 @@ fn unserved_phrase(surface: &str, language: &str) -> String {
 
 #[must_use]
 pub fn structural_meanings() -> Vec<StructuralMeaning> {
-    let Some(text) =
-        crate::coding::fragment_catalog::bootstrap_seed_text("meanings-coding-structure.lino")
-    else {
-        return Vec::new();
-    };
-    let root = crate::seed::parser::parse_lino(&text);
-    root.children
-        .iter()
-        .find(|node| node.name == "meanings")
-        .map(|container| {
-            container
-                .children
-                .iter()
-                .map(|node| StructuralMeaning {
-                    id: if node.name == "meaning" {
-                        node.id.clone()
-                    } else {
-                        node.name.clone()
-                    },
-                    idiom: node.find_child_value("idiom").to_owned(),
-                    grounding: node.find_child_value("grounding").to_owned(),
-                })
-                .collect()
-        })
-        .unwrap_or_default()
+    let mut meanings = Vec::new();
+    // The coding-structure lexicon outgrew the reviewability line cap of one
+    // document (issue #960 R222-1) and continues in `-2`.
+    for name in [
+        "meanings-coding-structure.lino",
+        "meanings-coding-structure-2.lino",
+    ] {
+        let Some(text) = crate::coding::fragment_catalog::bootstrap_seed_text(name) else {
+            continue;
+        };
+        let root = crate::seed::parser::parse_lino(&text);
+        let part = root
+            .children
+            .iter()
+            .find(|node| node.name == "meanings")
+            .map(|container| {
+                container
+                    .children
+                    .iter()
+                    .map(|node| StructuralMeaning {
+                        id: if node.name == "meaning" {
+                            node.id.clone()
+                        } else {
+                            node.name.clone()
+                        },
+                        idiom: node.find_child_value("idiom").to_owned(),
+                        grounding: node.find_child_value("grounding").to_owned(),
+                    })
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+        meanings.extend(part);
+    }
+    meanings
 }
 
 #[must_use]

@@ -205,6 +205,10 @@ fn telegram_long_replies_are_chunked() {
         text.len() <= 4096,
         "Telegram messages must not exceed Telegram's 4096-character limit"
     );
+    assert!(
+        text.contains("[part 1/"),
+        "a reply that had to be chunked announces its part count, got {text}"
+    );
 }
 
 #[test]

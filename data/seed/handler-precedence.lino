@@ -1,21 +1,21 @@
 handler_precedence
   conversation_control # explicit preferences and corrections stay local instead of becoming web searches
   agentic_continuation # a turn that is only a continuation cue resumes the agentic task; with nothing to resume it is answered here, never searched for (issue 1095)
-  exact_memory_query # browser_only: the memory store lives in the worker, so the exact-memory query runs there alone (plan 09 leaf 13)
-  memory_program # browser_only: the worker interprets stored memory programs there alone (plan 09 leaf 13)
-  memory_program_gap # browser_only: surfaces what the stored memory program cannot yet answer (plan 09 leaf 13)
-  current_dialogue_fact_checking # browser_only: checks the running dialogue against the worker's memory (plan 09 leaf 13)
-  link_native_synthesis # browser_only: synthesizes over the link store the worker itself holds (plan 09 leaf 13)
-  historical # browser_only: replays the worker's stored conversation history (plan 09 leaf 13)
-  write_program_coreference # browser_only: context-bound write-program rewrite over resolved coreference (plan 09 leaf 13)
-  program_blueprint_from_prompt # browser_only: composes the program blueprint from a bare prompt (plan 09 leaf 13)
-  write_program_concrete # browser_only: context-bound concrete write-program binding (plan 09 leaf 13)
-  software_project_request # browser_only: the browser's interactive software-project dialogue (plan 09 leaf 13)
-  http_fetch # phase async: the worker answers fetches in its async network phase
-  url_navigate # phase async: the worker answers navigations in its async network phase
+  exact_memory_query # browser_only --the memory store lives in the worker, so the exact-memory query runs there alone (plan 09 leaf 13)
+  memory_program # browser_only --the worker interprets stored memory programs there alone (plan 09 leaf 13)
+  memory_program_gap # browser_only --surfaces what the stored memory program cannot yet answer (plan 09 leaf 13)
+  current_dialogue_fact_checking # browser_only --checks the running dialogue against the worker's memory (plan 09 leaf 13)
+  link_native_synthesis # browser_only --synthesizes over the link store the worker itself holds (plan 09 leaf 13)
+  historical # browser_only --replays the worker's stored conversation history (plan 09 leaf 13)
+  write_program_coreference # browser_only --context-bound write-program rewrite over resolved coreference (plan 09 leaf 13)
+  program_blueprint_from_prompt # browser_only --composes the program blueprint from a bare prompt (plan 09 leaf 13)
+  write_program_concrete # browser_only --context-bound concrete write-program binding (plan 09 leaf 13)
+  software_project_request # browser_only --the browser's interactive software-project dialogue (plan 09 leaf 13)
+  http_fetch # phase async --the worker answers fetches in its async network phase
+  url_navigate # phase async --the worker answers navigations in its async network phase
   github_repository_traffic
   document_originality_check
-  web_search # phase async: the worker answers searches in its async network phase
+  web_search # phase async --the worker answers searches in its async network phase
   learn_from_source # issue 499 learn-from-source directive sits after url and search handlers and above general lookups; phase async
   research_comparison_table
   research_result_followup
@@ -29,7 +29,7 @@ handler_precedence
   text_manipulation
   brainstorming
   conversation_topic
-  fact_lookup # phase async: the worker's fact query runs after the synchronous table
+  fact_lookup # phase async --the worker's fact query runs after the synchronous table
   coreference
   roleplay
   translation

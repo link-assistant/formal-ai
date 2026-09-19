@@ -4,7 +4,7 @@ These boundaries keep the project aligned with the symbolic, link-native directi
 
 ## Runtime Non-Goals
 
-- GPU-required neural inference is not a project target. The only sanctioned exception is the experimental, strictly opt-in small-model formalization fallback of issue [#483](https://github.com/link-assistant/formal-ai/issues/483): off by default, never loaded unless requested, downloaded on demand, limited to choosing among symbolically generated options that unit tests confirm — LLMs are never in control, never at the steering wheel.
+- GPU-required neural inference is not a project target. The only sanctioned exception is the experimental, strictly opt-in small-model formalization fallback of issue [#483](https://github.com/link-assistant/formal-ai/issues/483): off by default, never loaded unless requested, downloaded on demand, limited to choosing among symbolically generated options that unit tests confirm — LLMs are never in control, never at the steering wheel. PR #644 carries the implementation and has been stale since 2026-07-09; the exception is declared, not delivered.
 - A memoized answer cache is not a substitute for reasoning from source data and traceable steps.
 - Hidden autonomous actions are not acceptable in chat mode.
 - Unbounded reasoning loops are not acceptable; long-running agent work must expose actions and logs.
@@ -15,7 +15,7 @@ These boundaries keep the project aligned with the symbolic, link-native directi
 ## Universal Solver Non-Goals
 
 - The universal solver should not skip steps for "easy" prompts to look fast; every prompt walks the same loop so the trace is comparable across requests.
-- Faking the evidence trail is not acceptable. Each `impulse:`, `search:local`, `search:external`, `sub_impulse:`, `candidate:`, `validation:`, `trace:`, `cache_hit:`, `source:`, `policy:`, `agent_mode:`, and `error:` link must correspond to a real recorded event.
+- Faking the evidence trail is not acceptable. Each `impulse:`, `search:local`, `search:external`, `sub_impulse:`, `candidate:`, `validation:`, `trace:`, `cache_hit:`, `source:`, `policy:`, `agent_mode:`, and `error:` link must correspond to a real recorded event; an offline run records its boundary explicitly instead of emitting a retrieval link for work it did not do.
 - Memoizing answers from a static table is not a substitute for re-running formalization, decomposition, and validation; cache hits must be recorded explicitly and link to the prior trace.
 - Hiding decomposition behind an opaque rule is not acceptable; every sub-impulse must be a first-class event the user can inspect.
 - The append-only log must not be rewritten or pruned silently. Retractions append new events that supersede earlier ones.

@@ -310,6 +310,10 @@ fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
 struct TelegramReplyBundle {
     reply: TelegramWebhookReply,
     thinking_steps: Vec<ThinkingStep>,
+    /// Reply parts 2..N for an answer over Telegram's per-message limit.
+    /// The webhook response body is a single Telegram action and carries part
+    /// 1 only; the polling runtime delivers these as follow-up messages.
+    continuation_parts: Vec<String>,
 }
 
 fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
@@ -362,7 +366,25 @@ fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
         text.push_str(&footer);
     }
 
+    // A reply over Telegram's per-message limit is split rather than sent as
+    // one `sendMessage` Telegram rejects outright (the prompt matrix asks for
+    // a 10kb program, and a working synthesis honestly produces one). Part 1
+    // carries the part count so the reader knows the reply continues.
+    let mut parts = split_telegram_reply_parts(&text);
+    let continuation_parts = if parts.len() > 1 {
+        let total = parts.len();
+        let first = parts.remove(0);
+        for (index, part) in parts.iter_mut().enumerate() {
+            *part = format!("[part {}/{}] {}", index + 2, total, part);
+        }
+        text = format!("{first}\n\n[part 1/{total}]");
+        parts
+    } else {
+        Vec::new()
+    };
+
     TelegramReplyBundle {
+        continuation_parts,
         reply: TelegramWebhookReply {
             method: "sendMessage",
             chat_id: message.chat.id,
@@ -374,6 +396,40 @@ fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
         },
         thinking_steps: steps,
     }
+}
+
+/// Split a composed reply into parts that each fit within
+/// `TELEGRAM_MAX_MESSAGE_LEN`, breaking at line boundaries when one exists
+/// and never mid-character. A reply at or under the limit comes back as one
+/// unchanged part.
+pub(crate) fn split_telegram_reply_parts(text: &str) -> Vec<String> {
+    if text.len() <= TELEGRAM_MAX_MESSAGE_LEN {
+        return vec![text.to_owned()];
+    }
+    let mut parts: Vec<String> = Vec::new();
+    let mut current = String::new();
+    for line in text.split_inclusive('\n') {
+        let mut rest = line;
+        while !rest.is_empty() {
+            if rest.len() <= TELEGRAM_MAX_MESSAGE_LEN - current.len() {
+                current.push_str(rest);
+                break;
+            }
+            if current.is_empty() {
+                let mut end = TELEGRAM_MAX_MESSAGE_LEN.min(rest.len());
+                while !rest.is_char_boundary(end) {
+                    end -= 1;
+                }
+                current.push_str(&rest[..end]);
+                rest = &rest[end..];
+            }
+            parts.push(std::mem::take(&mut current));
+        }
+    }
+    if !current.is_empty() {
+        parts.push(current);
+    }
+    parts
 }
 
 /// Render the solver's concrete thinking steps as a Telegram expandable
@@ -661,6 +717,10 @@ pub struct TelegramPollingReply {
     /// serialization because it is runtime metadata, not a Telegram API field.
     #[serde(skip)]
     pub progressive_edits: Vec<TelegramThinkingEdit>,
+    /// Reply parts 2..N of a chunked over-long answer, delivered by the
+    /// polling runtime as follow-up `sendMessage` calls after the final edit.
+    #[serde(skip)]
+    pub continuation_parts: Vec<String>,
 }
 
 impl TelegramPollingReply {
@@ -758,6 +818,7 @@ fn reply_for_polling_message(message: &TelegramMessage) -> TelegramPollingReply 
         parse_mode: bundle.reply.parse_mode,
         reply_parameters: bundle.reply.reply_parameters,
         progressive_edits,
+        continuation_parts: bundle.continuation_parts,
     }
 }
 

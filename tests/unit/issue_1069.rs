@@ -16,16 +16,34 @@ fn solve_issue_request_reads_the_work_item_before_project_lookup() {
     );
     let tools = ["web_fetch", "write_file", "run_command"];
 
-    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&[ChatMessage::user(task)], &tools)
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        plan_chat_step(&[ChatMessage::user(task.clone())], &tools)
     else {
         panic!("a software-authoring request naming an issue must produce a tool call");
     };
 
-    assert_eq!(calls[0].tool, "web_fetch");
+    // The structured `gh` read comes first when the client can run it (issue
+    // #1133); what matters for #1069 is that the work item is read before
+    // anything looks the project up.
+    assert_eq!(calls[0].tool, "run_command");
     assert!(
-        calls[0].arguments.contains(ISSUE_URL),
+        calls[0].arguments.contains("gh issue view") && calls[0].arguments.contains(ISSUE_URL),
         "{}",
         calls[0].arguments
+    );
+
+    // A client with no shell still reads the work item, through its fetch tool.
+    let fetch_only = ["web_fetch", "write_file"];
+    let Some(AgenticPlan::ToolCalls(fetched)) =
+        plan_chat_step(&[ChatMessage::user(task.clone())], &fetch_only)
+    else {
+        panic!("a fetch-only client must still read the work item");
+    };
+    assert_eq!(fetched[0].tool, "web_fetch");
+    assert!(
+        fetched[0].arguments.contains(ISSUE_URL),
+        "{}",
+        fetched[0].arguments
     );
 }
 

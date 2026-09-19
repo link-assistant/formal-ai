@@ -2,9 +2,40 @@
 //! interpreter, and the handlers that migrated into `data/seed/handler-rules.lino`.
 
 use formal_ai::event_log::EventLog;
-use formal_ai::rule_interpreter::{HandlerRules, handler_matches, rules};
-use formal_ai::seed::{HANDLER_RULES_LINO, parse_lexicon_text};
+use formal_ai::rule_interpreter::{
+    ConditionSource, ConditionSurface, HandlerRules, handler_matches, rules,
+};
+use formal_ai::seed::{HANDLER_RULES_LINO, Lexicon, parse_lexicon_text};
 use formal_ai::{FormalAiEngine, SymbolicAnswer};
+
+/// A condition backend over an injected lexicon: the test-side stand-in for the
+/// `SeedTables` struct plan 09 leaf 40 deleted from `src/`. Rules are probed
+/// against fixture meanings without touching the boot projection.
+struct FixtureTables<'a> {
+    lexicon: &'a Lexicon,
+}
+
+impl ConditionSource for FixtureTables<'_> {
+    fn role_surfaces(&self, role: &str) -> Vec<ConditionSurface> {
+        self.lexicon
+            .meanings
+            .iter()
+            .filter(|meaning| meaning.has_role(role))
+            .flat_map(|meaning| meaning.lexemes.iter())
+            .flat_map(|lexeme| {
+                lexeme.words.iter().map(|form| ConditionSurface {
+                    text: form.text.clone(),
+                    language: lexeme.language.clone(),
+                    slot: form.slot(),
+                })
+            })
+            .collect()
+    }
+
+    fn exact_route_surfaces(&self, _slug: &str) -> Vec<String> {
+        Vec::new()
+    }
+}
 
 /// The precedence names that are now data rather than Rust functions.
 const MIGRATED_HANDLERS: [&str; 12] = [
@@ -106,8 +137,9 @@ fn an_injected_seed_rule_routes_an_unseen_intent_in_four_languages_without_rust(
     ];
     for (language, prompt, expected) in cases {
         let mut log = EventLog::default();
+        let tables = FixtureTables { lexicon: &lexicon };
         let response = handler
-            .run_with(&lexicon, prompt, &prompt.to_lowercase(), &mut log)
+            .run_with_source(&tables, prompt, &prompt.to_lowercase(), &mut log)
             .unwrap_or_else(|| panic!("{language}: the injected rule must answer"));
         assert_eq!(response.intent, "moon_phase", "{language}");
         assert_eq!(response.answer, expected, "{language}");
@@ -119,10 +151,11 @@ fn an_injected_seed_rule_routes_an_unseen_intent_in_four_languages_without_rust(
         );
     }
     let mut log = EventLog::default();
+    let tables = FixtureTables { lexicon: &lexicon };
     assert!(
         handler
-            .run_with(
-                &lexicon,
+            .run_with_source(
+                &tables,
                 "What is the capital of France?",
                 "what is the capital of france?",
                 &mut log
@@ -306,10 +339,11 @@ const SHAPE_RULES: &str = "handler_rules
 
 fn probe(parsed: &HandlerRules, handler: &str, prompt: &str) -> bool {
     let lexicon = parse_lexicon_text("meanings\n");
+    let tables = FixtureTables { lexicon: &lexicon };
     parsed
         .handler(handler)
         .unwrap_or_else(|| panic!("{handler} must exist"))
-        .matches_with(&lexicon, prompt, &prompt.to_lowercase())
+        .matches_with_source(&tables, prompt, &prompt.to_lowercase())
 }
 
 #[test]

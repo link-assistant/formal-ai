@@ -161,6 +161,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-coding-structure-2
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-coding-tasks
     bundle true
     lexicon meaning
@@ -479,6 +483,8 @@ seed_registry
   seed personas
     bundle true
     web true
+  seed planner-precedence
+    bundle true
   seed program-cst-grammars
     bundle true
   seed program-plan-rules

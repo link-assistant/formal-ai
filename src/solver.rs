@@ -324,9 +324,16 @@ impl UniversalSolver {
         // detection so every localizable handler renders in the requested
         // language. The guard restores the previous value when this function
         // returns, keeping nested replays balanced.
+        //
+        // Plan 10 leaf 15 (issue #724): a language the conversation has
+        // already established binds the same way — the demonstration or
+        // retarget that named it speaks for the turns that follow, until the
+        // user names another language. An explicit per-run forcing in the
+        // config is the stronger statement and wins.
         let _forced_language_guard = crate::language::set_forced_language(
             self.config
                 .forced_response_language
+                .or_else(|| crate::meta_method_dispatch::established_response_language(history))
                 .and_then(crate::language::from_slug),
         );
 

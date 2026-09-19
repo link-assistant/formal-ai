@@ -91,8 +91,14 @@ fn chat_completions_resolves_an_unknown_word_from_the_committed_captures() {
 
     let answer = ask(port, "What does isogram mean?");
 
+    // Which source answers is decided by registry order, not by this test: the
+    // Free Dictionary API endpoint the wiktionary row leads with has no entry
+    // for the held-out word (plan 01 L6 records the measurement), so the first
+    // declared source that actually answers is wordnet, and the answer carries
+    // wordnet's exact page, digest and license. Changing the registry order
+    // changes this expectation with it.
     assert!(
-        answer.contains("https://en.wiktionary.org/"),
+        answer.contains("https://en-word.net/api/lemma/isogram"),
         "the answer cites the exact page the meaning was read from: {answer}"
     );
     assert!(
@@ -100,7 +106,7 @@ fn chat_completions_resolves_an_unknown_word_from_the_committed_captures() {
         "the retrieved bytes are fingerprinted in the answer: {answer}"
     );
     assert!(
-        answer.to_lowercase().contains("letter"),
+        answer.contains("numerical value"),
         "the reported meaning is the retrieved gloss: {answer}"
     );
 }

@@ -130,7 +130,7 @@ fn answer_from_retrieved_senses(
         .max_by_key(|(index, sense)| (sense.tier.weight_percent(), usize::MAX - index))?
         .1;
     let digest = sense.sha256.get(..16).unwrap_or(&sense.sha256);
-    let body = seed::render_response(
+    let mut body = seed::render_response(
         "concept_lookup_resolved",
         language.slug(),
         &[
@@ -142,6 +142,14 @@ fn answer_from_retrieved_senses(
             ("license", &sense.license_name),
         ],
     )?;
+    // The answer names what was *not* consulted too: a source the settings
+    // opted out is reported beside the sense that was found without it, so the
+    // absence is attributable to the user's own choice (plan 01 failure
+    // behaviour, outcome 3).
+    for note in disabled_notes(log, language.slug()) {
+        body.push('\n');
+        body.push_str(&note);
+    }
     log.append(
         "reasoning:gather_result",
         format!("external_source:hit:{}", sense.content_id()),
@@ -154,6 +162,46 @@ fn answer_from_retrieved_senses(
         &body,
         f32::from(sense.tier.weight_percent()) / 100.0,
     ))
+}
+
+/// The localized "this source was opted out" note for every disabled row the
+/// lookup recorded, deduplicated, so a resolved answer stays complete about
+/// what was skipped beside it.
+fn disabled_notes(log: &EventLog, language: &str) -> Vec<String> {
+    let mut notes: Vec<String> = Vec::new();
+    for event in log
+        .events()
+        .iter()
+        .filter(|event| event.kind == "concept_lookup:disabled")
+    {
+        let Some(source) = payload_field(&event.payload, "source") else {
+            continue;
+        };
+        let Some(settings_key) = payload_field(&event.payload, "settings_key") else {
+            continue;
+        };
+        let Some(note) = seed::render_response(
+            "concept_lookup_disabled",
+            language,
+            &[("source", &source), ("settings_key", &settings_key)],
+        ) else {
+            continue;
+        };
+        if !notes.contains(&note) {
+            notes.push(note);
+        }
+    }
+    notes
+}
+
+/// Read one `key=value` field out of a structured trace payload.
+fn payload_field(payload: &str, name: &str) -> Option<String> {
+    payload.split(' ').find_map(|field| {
+        field
+            .split_once('=')
+            .filter(|(key, _)| *key == name)
+            .map(|(_, value)| value.to_owned())
+    })
 }
 
 /// Project an attributable concept miss instead of replacing it with generic

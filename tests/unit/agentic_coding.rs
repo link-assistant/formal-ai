@@ -519,7 +519,18 @@ fn planner_formalizes_the_fetched_text_when_fetch_succeeds() {
     assert_eq!(call.tool, "write_file");
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
     let expected = formalize_text_to_links("Старик поймал золотую рыбку.", "").links_notation;
-    assert_eq!(written["content"], expected);
+    let content = written["content"].as_str().expect("string content");
+    // The shallow knowledge base leads; since issue #1138 B4 the written
+    // document also carries the deep pass's need rows, so the fetched text's
+    // unresolved surfaces are recorded rather than silently dropped.
+    assert!(
+        content.starts_with(&expected),
+        "the shallow knowledge base leads the written document: {content}"
+    );
+    assert!(
+        content.contains("\nneed "),
+        "every need the document raised is written, satisfied or not: {content}"
+    );
 }
 
 #[test]

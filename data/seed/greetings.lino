@@ -2,84 +2,67 @@ greeting_1
   text Hi
   intent greeting
   response_link "response:greeting"
-  answer "Hi, how may I help you?"
 greeting_2
   text Hello
   intent greeting
   response_link "response:greeting"
-  answer "Hi, how may I help you?"
 greeting_3
   text Hey
   intent greeting
   response_link "response:greeting"
-  answer "Hi, how may I help you?"
 greeting_4
   text шалом
   intent greeting
   response_link "response:greeting"
-  answer "Здравствуйте! Чем могу помочь?"
 greeting_5
   text "шабат шалом"
   intent greeting
   response_link "response:greeting"
-  answer "Здравствуйте! Чем могу помочь?"
 wellbeing_1
   text "как твои дела"
   intent wellbeing
   response_link "response:wellbeing"
-  answer "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
 wellbeing_2
   text "как дела"
   intent wellbeing
   response_link "response:wellbeing"
-  answer "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
 wellbeing_3
   text "how are you"
   intent wellbeing
   response_link "response:wellbeing"
-  answer "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
 wellbeing_4
   text "आप कैसे हैं"
   intent wellbeing
   response_link "response:wellbeing"
-  answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
 wellbeing_5
   text 你好吗
   intent wellbeing
   response_link "response:wellbeing"
-  answer 我很好,谢谢关心!我随时可以帮忙,您想做点什么?
 farewell_1
   text Bye
   intent farewell
   response_link "response:farewell"
-  answer "Goodbye! Feel free to return any time."
 farewell_2
   text Goodbye
   intent farewell
   response_link "response:farewell"
-  answer "Goodbye! Feel free to return any time."
 farewell_3
   text пока
   intent farewell
   response_link "response:farewell"
-  answer "До свидания! Возвращайтесь в любое время."
 farewell_4
   text "до свидания"
   intent farewell
   response_link "response:farewell"
-  answer "До свидания! Возвращайтесь в любое время."
 courtesy_response_1
   text "I am fine, thank you"
   intent courtesy_response
   response_link "response:courtesy_response"
-  answer "Glad to hear it. What would you like to do next?"
 courtesy_response_2
   text thanks
   intent courtesy_response
   response_link "response:courtesy_response"
-  answer "Glad to hear it. What would you like to do next?"
 courtesy_response_3
   text спасибо
   intent courtesy_response
   response_link "response:courtesy_response"
-  answer "Рад это слышать. Что вы хотите сделать дальше?"

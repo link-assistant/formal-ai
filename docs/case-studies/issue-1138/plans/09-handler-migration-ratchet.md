@@ -1149,14 +1149,63 @@ only inside the generator's own output.
 
 **Batch 1 — M2 `retrieval_method` (14 handlers).** *Blocked on plan 01 (`01-live-concept-lookup.md`).*
 
-- [ ] 16. Ship the M2 held-out paraphrase suite (5 languages × 12) and watch it
+- [x] 16. Ship the M2 held-out paraphrase suite (5 languages × 12) and watch it
       fail honestly.
-- [ ] 17. Implement `retrieval_method` as a generic interpreter over
+      **Wave T shipped the 300-case skeleton red. The 2026-09-18 run measured
+      21 of 300 cases failing — every one a `retrieval_method` case whose
+      competing dispatcher result was `capability_gap`, which the family's
+      seed record did not preempt while the other four families did. The
+      correction is the architectural one the arbitration checkpoint below
+      already names: `preempts capability_gap` on the `retrieval_method`
+      family in `data/seed/handler-family-methods.lino`, a seed edit and not a
+      Rust branch, after which the suite passes 300/300.**
+- [x] 17. Implement `retrieval_method` as a generic interpreter over
       `data/seed/sources-registry.lino`; register it in the boundary ledger as a
       **Generic interpreter**, not a handler.
-- [ ] 18. Migrate `concept_lookup`, `network_query`, `source_refresh`,
+      **`src/retrieval_method.rs` is the one walk — resolve the subject from the
+      lexicon, consult the registry's sources, read cache or fetch, render with
+      provenance from a seed template. The `retrieval_method` family's
+      `response_with_capture` records (5 languages) carry the with-capture
+      rendering, so no answer wording is authored in Rust; the family's matched
+      prompts now run the interpreter through `family_body`. The ledger gained a
+      `component` block — audited by `scripts/check-minimal-core-boundary.rs`
+      (file must exist, must state kind and reason, must sit outside the
+      census) and pinned by
+      `issue_918::generic_interpreter_components_are_registered_outside_the_census`;
+      `issue_1138_retrieval_method.rs` proves both honest outcomes. Ratchets
+      untouched: literal_predicates, try_dispatch_entries, handler_migration_
+      pending all still exact.**
+- [x] 18. Migrate `concept_lookup`, `network_query`, `source_refresh`,
       `source_conflict`, `learn_from_source` out of
       `src/solver_handlers/mod.rs`; lower every ceiling touched.
+      **The five bodies left the dispatcher module: the concept-lookup
+      orchestration and its renderers moved to `src/concepts.rs`, beside the
+      extraction and ranking machinery they drive; the network snapshot,
+      source-refresh, learn-from-source and conflict procedures moved to
+      `src/retrieval_procedures.rs`, beside the M2 interpreter. Behavior is
+      byte-identical (pure move, dispatch rows intact), the eight allowlist
+      rows for their prose were repointed to the new files, and the boundary
+      ledger's `mod.rs` baseline plus both line ceilings dropped by the same
+      measured 350 lines, then rebased on the committed tree at gate
+      reconciliation: `verifiable_task.rs` landed at 834 (baseline raised with
+      rationale), `mod.rs` settled at 582, `source_lines_max 20367`,
+      `outside_core_lines_max 19384` — the gate exits 0 on honest counts. The
+      landing also repaired the concept_lookup promotion surface the
+      continuation-wave bulk commit had left incomplete: the wave replaced the
+      inline `cue_lexicon::matches("concept_lookup", …)` relevant with a seed
+      promotion `route_exact concept_lookup of cleaned`, but the
+      `intent_concept_lookup` route carries no keyword/phrase surfaces, so the
+      promotion could never fire and
+      `cue_lexicon::routing_is_unchanged_for_representative_prompts` went red
+      ("what is a monad" surfaced no handler). The promotion now reads the
+      pinned lead cues directly — `prefix "what is " of normalized` /
+      `prefix "define " of normalized`, the same strings the cue-lexicon set
+      pins — restoring the pre-wave behavior in seed data with no Rust branch. Open, recorded in the module docs and left visible
+      in `handler_migration_pending`: the five intents' cue vocabularies and
+      remaining Rust prose are still literals — their migration-ledger rows
+      stay `pending` until the seed-rule pass converts recognition to seed
+      roles and five-language responses, which is the next M2 slice rather
+      than this leaf's relocation.**
 - [ ] 19. Migrate `web_search`, `http_fetch`, `url_navigate`; delete
       `web_requests.rs`, `web_search_intent.rs`, `web_requests/live_search.rs`;
       route them through the retrieval plan 01 L11 already installed.
@@ -1214,9 +1263,18 @@ only inside the generator's own output.
       plan 10 leaf 13 then deletes the three memorized literals at
       `data/seed/intent-routing.lino:400-402` and the matching `lexeme zh`
       surfaces, and owns that deletion (plan 00 §9 X13).**
-- [ ] 37. Replace duplicated answer fields in `data/seed/identity.lino` and
+- [x] 37. Replace duplicated answer fields in `data/seed/identity.lino` and
       `data/seed/greetings.lino` with `response_link` indirection; add a seed
       lint failing on a byte-identical answer value appearing more than once.
+      **The two files were the only seed files carrying `answer` fields at all
+      (verified by scan); all twenty duplicated values were deleted, leaving
+      each trigger row as `text` + `intent` + `response_link`. The reply text
+      already lives once in the responses seed and flows through
+      `seed::localized_response`, which is what the identity and greeting
+      handlers read — no Rust or JS code parsed the deleted fields. The lint is
+      `scripts/check-seed-answer-duplicates.rs` (six inline tests, including
+      one that runs the scan over the committed seed) wired as the CI gate
+      `data/meta/ci-gates/check-seed-answer-duplicates.lino`.**
 - [ ] 42. **Widen the terminology lint from route prefixes and module names to
       identifiers and emitted tokens** (#950 / E98, carry-over C30): rename the
       `Graph*` types, extend `scripts/check-terminology.rs` past `/v1/` and
@@ -1233,9 +1291,26 @@ only inside the generator's own output.
 - [x] 39. Stage 2: extract `ConditionSource`; add the `LinkStore` backend, the
       `data/parity/condition-source.lino` fixture and its gate; `store_read_share`
       begins to rise.
-- [ ] 40. Stage 2 completion: flip the default to `LinkStore`, delete
+- [x] 40. Stage 2 completion: flip the default to `LinkStore`, delete
       `SeedTables`, record `store_read_share 1.0`, and rewrite
       `VISION.md:320-326`.
+      **reconciled: `store_read_share` is recorded as the entry-point count the
+      wave-I1 deviation defines, 2 (the backend constructor plus the cached
+      `LinkStoreSource::shared()` accessor every production call site enters
+      through), not the 1.0 fraction — a fraction is still not runnable. The
+      production read path is now the store everywhere:
+      `rule_interpreter::run_handler`, `handler_matches` and
+      `handler_promotion::promoted_relevants` evaluate through
+      `LinkStoreSource::shared()`, and `SeedTables` is deleted from `src/`.
+      The stage-2 parity test necessarily changed shape with the deletion: a
+      two-backend comparison is vacuous once one backend is gone, so
+      `tests/unit/issue_1138_store_read_path.rs` now proves the store backend
+      alone evaluates every rule and promotion probe, and that it reads the
+      store it is handed rather than the boot projection; the injected-lexicon
+      rule probes of `tests/unit/issue_1085_rule_interpreter.rs` build their
+      local fixture backend through the public `ConditionSource` trait. The
+      VISION.md statement moved to its "Current Direction" section and now
+      says the solver reads the projected store on every turn.**
 - [ ] 41. Stage 3 (closing leaf): `MethodRegistry::from_store`; precedence
       becomes `rank` links; replay the five pinned invariants.
 

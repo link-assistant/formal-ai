@@ -42,6 +42,11 @@ pub struct Fragment {
     pub reuse: ReuseMode,
     pub grounding: String,
     pub license: String,
+    /// Whether this fragment's grounding belongs in a derived artifact's
+    /// source list. Idioms that are pure language syntax (a spelling the
+    /// language reference defines, not knowledge the artifact relies on)
+    /// declare `cites false`: they appear in derivations but not citations.
+    pub cites: bool,
     pub sha256: String,
     pub fetched_at: String,
     /// The natural-language query that rediscovers this fragment when it is
@@ -92,9 +97,16 @@ impl FragmentCatalog {
             seed_directory.to_path_buf()
         };
         let mut fragments = Vec::new();
-        let meanings = seed_directory.join("meanings-coding-structure.lino");
-        if let Ok(text) = fs::read_to_string(meanings) {
-            fragments.extend(fragments_from_meanings(&text));
+        // The coding-structure meanings exceed the reviewability line cap of a
+        // single document (issue #960 R222-1), so the family is split across
+        // two files that contribute to one catalog.
+        for name in [
+            "meanings-coding-structure.lino",
+            "meanings-coding-structure-2.lino",
+        ] {
+            if let Ok(text) = fs::read_to_string(seed_directory.join(name)) {
+                fragments.extend(fragments_from_meanings(&text));
+            }
         }
         let composition_fragments = seed_directory.join("coding-composition-fragments.lino");
         if let Ok(text) = fs::read_to_string(composition_fragments) {
@@ -105,6 +117,29 @@ impl FragmentCatalog {
             fragments.extend(fragments_from_runtime(&text));
         }
         normalize_catalog(fragments)
+    }
+
+    /// The bootstrap seed files missing from `seed_directory`. The runtime logs
+    /// these when it boots, so a deleted bootstrap shows up as an explicit
+    /// event instead of silently accepted absence.
+    #[must_use]
+    pub fn absent_seed_files(seed_directory: impl AsRef<Path>) -> Vec<String> {
+        let seed_directory = seed_directory.as_ref();
+        let seed_directory = if seed_directory.join("data/seed").is_dir() {
+            seed_directory.join("data/seed")
+        } else {
+            seed_directory.to_path_buf()
+        };
+        [
+            "meanings-coding-structure.lino",
+            "meanings-coding-structure-2.lino",
+            "coding-composition-fragments.lino",
+            "coding-discovery-runtime.lino",
+        ]
+        .into_iter()
+        .filter(|name| !seed_directory.join(name).is_file())
+        .map(str::to_owned)
+        .collect()
     }
 
     /// Merge rediscovered fragments from the ignored cache ledger.
@@ -400,6 +435,10 @@ fn fragment_from_seed_node(
         "" => default_license.to_owned(),
         license => license.to_owned(),
     };
+    // Citations default on; a seed row opts out only for pure language
+    // syntax (`cites false`), whose grounding documents a spelling rather
+    // than knowledge the derived artifact relies on.
+    let cites = node.find_child_value("cites") != "false";
     let rediscovery_query = match node.find_child_value("rediscovery_query") {
         "" => crate::coding::python_render::runtime_template(
             "fragment_definition_query",
@@ -444,6 +483,7 @@ fn fragment_from_seed_node(
         reuse,
         grounding,
         license,
+        cites,
         sha256: crate::source_fetch::sha256_hex(surface.as_bytes()),
         fetched_at: "bootstrap".to_owned(),
         rediscovery_query,
@@ -515,6 +555,16 @@ fn types_may_unify(left: &IrType, right: &IrType) -> bool {
     match (left, right) {
         (IrType::Unknown(_), _) | (_, IrType::Unknown(_)) => true,
         (IrType::Sequence(left), IrType::Sequence(right)) => types_may_unify(left, right),
+        (IrType::OrderedSequence(left), IrType::OrderedSequence(right)) => {
+            types_may_unify(left, right)
+        }
+        // An ordered sequence is a sequence, so order-indifferent consumers
+        // accept it. The reverse never unifies: a producer that fixes no
+        // element order cannot feed a consumer that depends on one.
+        (IrType::OrderedSequence(ordered), IrType::Sequence(unordered)) => {
+            types_may_unify(ordered, unordered)
+        }
+        (IrType::Sequence(_), IrType::OrderedSequence(_)) => false,
         (IrType::Sequence(element), IrType::Text) | (IrType::Text, IrType::Sequence(element)) => {
             types_may_unify(element, &IrType::Text)
         }
@@ -633,6 +683,7 @@ fn parse_fragment(text: &str) -> Option<Fragment> {
         },
         grounding: node.find_child_value("grounding").to_owned(),
         license: node.find_child_value("license").to_owned(),
+        cites: node.find_child_value("cites") != "false",
         sha256: node.find_child_value("sha256").to_owned(),
         fetched_at: node.find_child_value("fetched_at").to_owned(),
         rediscovery_query: node.find_child_value("rediscovery_query").to_owned(),

@@ -16,7 +16,14 @@ Two rules for this folder:
   the record of how it was stated over time; `VISION.md` is the standing
   statement of it and is updated from the latest note. Where a document, gate,
   requirement or plan contradicts the latest note, the document is wrong and
-  must be fixed.
+  must be fixed. The mechanically checkable part of that rule is enforced by
+  the `docs_issue_citations` gate (`scripts/check-issue-citations.rs`) and the
+  benchmark ledger parity test (`tests/unit/docs_benchmarks.rs`); the rest is
+  this folder's standing instruction to every contributor.
+- **Note bodies are frozen at their date.** Numbers and states inside a note
+  describe the moment the note was written and are deliberately not updated;
+  a note that records current state does so under a "State when this was
+  written" heading, and the standing statement stays in `VISION.md`.
 
 ## Notes, oldest first
 

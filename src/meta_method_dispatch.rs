@@ -16,7 +16,7 @@ use crate::method_registry::{
     MethodExecution, MethodRegistry, MethodRuntimeKind, ProjectLookupPhase, ResponseLanguageVariant,
 };
 use crate::proof_engine::ProofRenderConfig;
-use crate::solver::{ConversationTurn, SolverConfig, UniversalSolver};
+use crate::solver::{ConversationRole, ConversationTurn, SolverConfig, UniversalSolver};
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_dispatch::{
     ContextualOutcome, ContextualRuntime, PRELUDE_METHOD_NAMES, handler_for_method,
@@ -57,7 +57,16 @@ pub fn try_dispatch(
     // Issue #556: a response-language follow-up replays the previous request
     // through the whole solver with this language forced onto every localizable
     // answer family, so the retarget generalizes beyond a single handler.
-    let forced_response_language = solver.config.forced_response_language;
+    //
+    // Plan 10 leaf 15 (issue #724): a language the conversation has already
+    // established binds the same way. The user names it once -- a routed
+    // demonstration, a retarget, a plain request -- and the conversation keeps
+    // speaking it until they name another; an explicit per-run forcing in the
+    // config is the stronger statement and wins.
+    let forced_response_language = solver
+        .config
+        .forced_response_language
+        .or_else(|| established_response_language(history));
     for name in method_names {
         let execution = registry.execution_for(&name);
         // Prelude methods keep first refusal: they include explicit natural-
@@ -79,6 +88,7 @@ pub fn try_dispatch(
             history,
             log,
             &name,
+            solver.config,
         ) {
             return Some(answer);
         }
@@ -116,8 +126,13 @@ pub fn try_dispatch(
         // semantics while still letting a family claim requests none of those
         // methods could solve.
         if execution.project_lookup == Some(ProjectLookupPhase::Fallback)
-            && let Some(answer) =
-                crate::family_method::try_family_method(prompt, &normalized, history, log)
+            && let Some(answer) = crate::family_method::try_family_method(
+                prompt,
+                &normalized,
+                history,
+                log,
+                solver.config,
+            )
         {
             return Some(answer);
         }
@@ -224,6 +239,25 @@ fn try_capability_route(
     promoted_method: Option<&str>,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // A request for unbounded autonomy is the bounded-autonomy policy's to
+    // answer, whatever object/act/locus triple the table reads off it.
+    // Before the word-boundary fix (issue #1138 plan 03 wave F) such a
+    // prompt reached that policy only through a substring false positive
+    // ("improve" embedding "prove") promoting a proof handler; with the
+    // false positive gone, the table must decline on its own instead of
+    // answering a grep capability gap to "improve my codebase forever".
+    // An explicit agent opt-in is likewise the agent flow's to serve: the
+    // table routes chat-surface requests, and an opted-in agent request
+    // never becomes a chat capability gap (#1138).
+    let normalized = prompt.to_lowercase();
+    if crate::solver_helpers::is_unbounded_autonomy(&normalized)
+        && !crate::solver_helpers::is_agent_opt_in(&normalized)
+    {
+        return None;
+    }
+    if crate::solver_helpers::is_agent_request(&normalized) {
+        return None;
+    }
     if !crate::capability_routing::table_routing_enabled() {
         return None;
     }
@@ -231,7 +265,6 @@ fn try_capability_route(
     if !solver_route_is_authoritative(prompt, &decision) {
         return None;
     }
-    let normalized = prompt.to_lowercase();
 
     // A specifically promoted interpreter keeps the request it already
     // grounded.  The table replaces generic fetch/search/clarification
@@ -252,12 +285,20 @@ fn try_capability_route(
             capability,
         } => (capability.as_str(), Some(preferred.as_str())),
         RoutingOutcome::HonestGap { needed, missing } => {
+            // An agent client advertises the workspace tools itself (issue #671:
+            // `read the file alpha.txt` must reach the planner, never dead-end in
+            // a refusal). The gap refusal is the plain chat surface's honest
+            // answer, and only its.
+            if solver.config.agent_mode {
+                return None;
+            }
             if let Some(answer) = crate::family_method::try_family_method_preempting(
                 prompt,
                 &normalized,
                 history,
                 log,
                 "capability_gap",
+                solver.config,
             ) {
                 return Some(answer);
             }
@@ -278,6 +319,7 @@ fn try_capability_route(
         history,
         log,
         capability,
+        solver.config,
     ) {
         return Some(answer);
     }
@@ -319,15 +361,52 @@ fn try_capability_route(
             }
             response_language_demonstration(prompt, &normalized, log)
         }
-        "explain_previous_turn" => Some(explain_previous_turn(prompt, log)),
+        "explain_previous_turn" => {
+            // Issue #556 first: re-rendering the previous turn must not steal
+            // an explicit response-language retarget OF that same previous
+            // turn ("I don't understand English, write in Hindi" is both a
+            // comprehension failure and a retarget; the retarget is the
+            // request). Without a marker the act re-renders as usual.
+            if let Some(answer) =
+                try_response_language_followup(prompt, &normalized, log, history, solver.config)
+            {
+                return Some(record_contextual_method_answer(
+                    prompt,
+                    log,
+                    answer,
+                    "response_language_followup",
+                ));
+            }
+            Some(explain_previous_turn(prompt, log))
+        }
         "compose_from_sources" | "concept_measurement_lookup" => Some(
             crate::source_capability::execute(capability, prompt, solver.config, log),
         ),
+        // The fresh-period digest reading (issue #1138 news_07:
+        // `relative_period` + `retrieve` routed here) summarises web events a
+        // plain chat surface cannot fetch, so the honest answer names the
+        // capability the surface lacks instead of falling through to the
+        // unknown opener. An agent client that advertises `web_search`
+        // executes the digest itself and keeps the fall-through. Weekday and
+        // date questions stay `time_expression`, which has no such row, so
+        // calendar reasoning keeps answering them.
+        "web_search" if decision.object == ObjectType::RelativePeriod => {
+            if solver.config.agent_mode {
+                None
+            } else {
+                Some(capability_gap(prompt, log, capability, capability))
+            }
+        }
         // These capabilities already have general registry methods. Recording
         // the table decision here changes their precedence without duplicating
         // their execution or interrupting a multi-step research recipe.
         "web_search" | "report_issue" | "ask_user" => None,
-        _ => Some(capability_gap(prompt, log, capability, capability)),
+        // An advertised capability the dispatcher has no dedicated executor
+        // for still reaches the planner (issue #671: `read the file alpha.txt`
+        // must be answered, not dead-ended). A surface that genuinely lacks
+        // the tool never gets here -- that refusal is the `HonestGap` arm
+        // above, which names the missing tool instead of the routed one.
+        _ => None,
     }
 }
 
@@ -459,6 +538,21 @@ fn request_anchors(prompt: &str) -> Vec<&str> {
         }
     }
     anchors
+}
+
+/// The response language the conversation has already established, read from
+/// the user's own turns (plan 10 leaf 15, issue #724).
+///
+/// The marker is the seed-grounded response-language role
+/// ([`detect_response_language`]), so this holds no phrase table of its own and
+/// reads the request the same way the demonstration route does. Only user turns
+/// speak: an assistant turn merely obeyed.
+pub(crate) fn established_response_language(history: &[ConversationTurn]) -> Option<&'static str> {
+    history
+        .iter()
+        .rev()
+        .filter(|turn| turn.role == ConversationRole::User)
+        .find_map(|turn| detect_response_language(&turn.content.to_lowercase()))
 }
 
 fn response_language_demonstration(

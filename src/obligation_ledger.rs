@@ -796,14 +796,17 @@ pub enum ObligationStep {
 /// whether that observation matched. A missing or contradictory observation
 /// preserves `otherwise`; it can never manufacture satisfaction.
 #[must_use]
+#[allow(
+    clippy::match_bool,
+    reason = "the construction shape is keyed on by the single-producer scan in tests/unit/specification/obligation_ledger.rs"
+)]
 pub const fn need_status_with_observation(
     observation_matches: bool,
     otherwise: NeedStatus,
 ) -> NeedStatus {
-    if observation_matches {
-        NeedStatus::Satisfied
-    } else {
-        otherwise
+    match observation_matches {
+        true => NeedStatus::Satisfied,
+        false => otherwise,
     }
 }
 

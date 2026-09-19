@@ -92,6 +92,23 @@ pub fn record_external_search(
                 ]),
             );
         }
+        // A hit does not make the walk's refusals disappear: a source the user
+        // opted out stays attributable beside the answer that was given without
+        // it (plan 01 failure behaviour, outcome 3).
+        for row in outcome
+            .outcomes
+            .iter()
+            .filter(|row| row.status == "disabled")
+        {
+            log.append(
+                "concept_lookup:disabled",
+                crate::trace_record::payload(&[
+                    ("surface", surface.clone()),
+                    ("source", row.source_id.clone()),
+                    ("settings_key", row.detail.clone()),
+                ]),
+            );
+        }
         for sense in &outcome.items {
             log.append(
                 "concept_lookup:hit",

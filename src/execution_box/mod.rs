@@ -11,6 +11,14 @@
 //! never downgraded to "ran successfully with no output".
 
 pub mod container;
+mod conversation;
+mod invocation;
+
+use conversation::*;
+pub use conversation::{
+    conversation_container_name, conversation_create_invocation, conversation_exec_invocation,
+};
+use invocation::*;
 
 use std::fmt::Write as _;
 use std::io::Write as _;
@@ -524,7 +532,8 @@ impl ExecutionBox {
         &self.workspace
     }
 
-    /// Exact primary invocation used to execute [`SCRIPT_FILE`]. Container
+    /// Exact primary invocation used to execute the private `SCRIPT_FILE`
+    /// script (`__formal_ai_run.py`) written into the workspace. Container
     /// archive transfer is a preceding observation; this is the process whose
     /// exit/output decides the program result.
     pub fn script_invocation(&self) -> Result<ProcessInvocation, BoxError> {
@@ -925,196 +934,6 @@ impl ExecutionBox {
         {
             let _ = writeln!(log, "{}", script.replace('\n', "\\n"));
         }
-    }
-}
-
-fn prefixed_invocation(
-    runner: &str,
-    prefix: &[String],
-    program: &str,
-    arguments: &[&str],
-) -> ProcessInvocation {
-    let mut argv = prefix.to_vec();
-    argv.push(program.to_owned());
-    argv.extend(arguments.iter().map(|argument| (*argument).to_owned()));
-    ProcessInvocation {
-        program: runner.to_owned(),
-        arguments: argv,
-    }
-}
-
-fn validate_image(image: &str) -> Result<(), BoxError> {
-    let valid = !image.is_empty()
-        && !image.starts_with('-')
-        && image.bytes().all(|byte| {
-            byte.is_ascii_alphanumeric() || matches!(byte, b'/' | b'.' | b'_' | b'-' | b':' | b'@')
-        });
-    if valid {
-        Ok(())
-    } else {
-        Err(BoxError::InvalidConfiguration {
-            detail: String::from("container image is not a safe Docker reference"),
-        })
-    }
-}
-
-fn checked_workspace_path(root: &Path, relative: &Path) -> Result<PathBuf, BoxError> {
-    let mut path = root.to_path_buf();
-    for component in relative.components() {
-        let std::path::Component::Normal(part) = component else {
-            return Err(BoxError::Observed {
-                detail: String::from("input path is not workspace-relative"),
-            });
-        };
-        path.push(part);
-        if std::fs::symlink_metadata(&path).is_ok_and(|metadata| metadata.file_type().is_symlink())
-        {
-            return Err(BoxError::Observed {
-                detail: String::from("input path crosses a symbolic link"),
-            });
-        }
-    }
-    Ok(path)
-}
-
-fn archive_workspace(workspace: &Path) -> Result<Vec<u8>, BoxError> {
-    let output = Command::new("tar")
-        .args(["-czf", "-", "-C"])
-        .arg(workspace)
-        .arg(".")
-        .output()
-        .map_err(|error| BoxError::Observed {
-            detail: error.to_string(),
-        })?;
-    if !output.status.success() {
-        return Err(BoxError::Observed {
-            detail: String::from_utf8_lossy(&output.stderr).into_owned(),
-        });
-    }
-    Ok(output.stdout)
-}
-
-fn swebench_image(instance_id: &str) -> String {
-    let safe: String = instance_id
-        .chars()
-        .map(|character| {
-            if character.is_ascii_alphanumeric() || matches!(character, '.' | '_' | '-') {
-                character
-            } else {
-                '_'
-            }
-        })
-        .collect();
-    format!("swebench/sweb.eval.x86_64.{safe}:latest")
-}
-
-/// Stable Docker name for a conversation. The readable prefix aids operators;
-/// the digest prevents punctuation, length and collision problems.
-#[must_use]
-pub fn conversation_container_name(conversation_id: &str) -> String {
-    let digest = crate::source_fetch::sha256_hex(conversation_id.as_bytes());
-    format!("formal-ai-conversation-{}", &digest[..24])
-}
-
-/// Construct the detached-container creation call without executing it.
-#[must_use]
-pub fn conversation_create_invocation(
-    conversation_id: &str,
-    image: &str,
-    network: NetworkPolicy,
-) -> ProcessInvocation {
-    let mut arguments = vec![
-        String::from("run"),
-        String::from("--detach"),
-        String::from("--name"),
-        conversation_container_name(conversation_id),
-    ];
-    arguments.extend(network.container_flags());
-    arguments.extend([
-        image.to_owned(),
-        String::from("sh"),
-        String::from("-lc"),
-        String::from(CONVERSATION_IDLE),
-    ]);
-    ProcessInvocation {
-        program: String::from("docker"),
-        arguments,
-    }
-}
-
-/// Construct the exact execution call for an already-running conversation.
-/// User program and arguments remain positional data after the fixed shell
-/// program.
-#[must_use]
-pub fn conversation_exec_invocation(
-    conversation_id: &str,
-    program: &str,
-    argv: &[&str],
-) -> ProcessInvocation {
-    let mut arguments = vec![
-        String::from("exec"),
-        conversation_container_name(conversation_id),
-        String::from("sh"),
-        String::from("-lc"),
-        String::from("cd /tmp/formal-ai && exec \"$@\""),
-        String::from("formal-ai"),
-        program.to_owned(),
-    ];
-    arguments.extend(argv.iter().map(|argument| (*argument).to_owned()));
-    ProcessInvocation {
-        program: String::from("docker"),
-        arguments,
-    }
-}
-
-fn ensure_conversation_container(
-    conversation_id: &str,
-    image: &str,
-    network: NetworkPolicy,
-) -> Result<(), BoxError> {
-    if image.trim().is_empty() {
-        return Err(BoxError::InvalidConfiguration {
-            detail: String::from("a conversation container requires an image"),
-        });
-    }
-    let name = conversation_container_name(conversation_id);
-    let inspected = Command::new("docker")
-        .args(["inspect", "--format", "{{.State.Running}}", &name])
-        .output()
-        .map_err(|error| BoxError::NoDaemon {
-            detail: error.to_string(),
-        })?;
-    if inspected.status.success() {
-        if String::from_utf8_lossy(&inspected.stdout).trim() == "true" {
-            return Ok(());
-        }
-        let started = Command::new("docker")
-            .args(["start", &name])
-            .output()
-            .map_err(|error| BoxError::Observed {
-                detail: error.to_string(),
-            })?;
-        if started.status.success() {
-            return Ok(());
-        }
-        return Err(BoxError::Observed {
-            detail: String::from_utf8_lossy(&started.stderr).into_owned(),
-        });
-    }
-
-    let invocation = conversation_create_invocation(conversation_id, image, network);
-    let created = Command::new(&invocation.program)
-        .args(&invocation.arguments)
-        .output()
-        .map_err(|error| BoxError::Observed {
-            detail: error.to_string(),
-        })?;
-    if created.status.success() {
-        Ok(())
-    } else {
-        Err(BoxError::Observed {
-            detail: String::from_utf8_lossy(&created.stderr).into_owned(),
-        })
     }
 }
 

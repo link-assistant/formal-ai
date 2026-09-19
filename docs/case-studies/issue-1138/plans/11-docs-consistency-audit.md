@@ -2215,163 +2215,163 @@ commit alone.
 
 ### Mechanism first (unblocks the rest)
 
-- [ ] L1 Add `data/meta/requirement-status-ledger.lino` with the schema above,
+- [x] L1 Add `data/meta/requirement-status-ledger.lino` with the schema above,
       seeded from the 1,030 IDs in `REQUIREMENTS.md` and the 805 existing
       traceability rows (225 new entries).
-- [ ] L2 Add `scripts/render-status.rs` with `--write` / `--check`, the region
+- [x] L2 Add `scripts/render-status.rs` with `--write` / `--check`, the region
       markers, and the seven ledger inputs; register it in
-      `data/meta/ci-gates/check-status-render.lino`.
-- [ ] L3 Add `scripts/check-requirement-status.rs` (gate 1) and register it.
-- [ ] L4 Commit `data/meta/issue-state.lino` and add
+      `data/meta/ci-gates/check-status-render.lino`. (already delivered before this audit: the script carries both modes, the `replace_region` markers, and the seven inputs named in its header, the `check_status_render` gate runs `--check`, and this session both modes ran green — "rendered 3 status surfaces" and "status surfaces are current")
+- [x] L3 Add `scripts/check-requirement-status.rs` (gate 1) and register it.
+- [x] L4 Commit `data/meta/issue-state.lino` and add
       `scripts/check-issue-citations.rs` (gate 2) plus the scheduled refresh job.
-- [ ] L5 Widen `tests/unit/docs_requirements/benchmarks.rs` to `ROADMAP.md`,
+- [x] L5 Widen `tests/unit/docs_requirements/benchmarks.rs` to `ROADMAP.md`,
       `ARCHITECTURE.md` and `README.md`, and add the curated-beside-upstream
       assertion.
-- [ ] L6 Add the traceability-row rule to `CONTRIBUTING.md:966` and the
+- [x] L6 Add the traceability-row rule to `CONTRIBUTING.md:966` and the
       "Documents pinned by tests" table (D68, D71).
-- [ ] L7 Add `docs/requirements-traceability.md` to the ROADMAP Verification
+- [x] L7 Add `docs/requirements-traceability.md` to the ROADMAP Verification
       Contract (D48).
 
 ### VISION.md
 
 - [x] L8 D14 — add `docs/architect-notes/2026-09-14-know-how-to-get-to-know-anything.md`,
       index it, and quote it in "The Goal Is The Meta Algorithm".
-- [ ] L9 D10, D11, D12 — add the one-line current-state clause to the retrieval
-      and formalization sentences.
-- [ ] L10 D9 — add the PR #888 paragraph to "Current Direction".
-- [ ] L11 D1, D2, D3, D4, D7, D8 — retire six closed-tracker citations.
-- [ ] L12 D5, D6 — co-cite upstream numbers on the curated sentences.
-- [ ] L13 D13 — add `data/seed/sources-registry.lino` to the seed inventory.
+- [x] L9 D10, D11, D12 — add the one-line current-state clause to the retrieval
+      and formalization sentences. (done 2026-09-18: B1 landed, so all three clauses state the delivered live lookup through `src/concept_lookup.rs` instead of the planned `NoLookup`/`policy:no_fetch_capability` wording)
+- [x] L10 D9 — add the PR #888 paragraph to "Current Direction". (done 2026-09-18: dated paragraph added after the B4 paragraph, with the B1 closure stated)
+- [x] L11 D1, D2, D3, D4, D7, D8 — retire six closed-tracker citations. (done 2026-09-18: #280/#702/#656/#657/#704/#706/#707/#558 restated as deliveries with PRs; #705 named as the open frontier item)
+- [x] L12 D5, D6 — co-cite upstream numbers on the curated sentences. (done 2026-09-18: benchmark paragraph rewritten with the 2026-09-18 full-slice rows beside every curated number)
+- [x] L13 D13 — add `data/seed/sources-registry.lino` to the seed inventory. (done 2026-09-18: added to the inventory sentence; no count pinned, the registry holds 15 kinds and grows)
 
 ### GOALS.md / NON-GOALS.md
 
-- [ ] L14 D22 — add the live-concept-lookup Reasoning Goal.
-- [ ] L15 D15, D16 — remove the quoted share figure; point at the rendered one.
-- [ ] L16 D17 — qualify the `.lino` reconstruction claim with the `#[ignore]`d
-      round-trip.
-- [ ] L17 D18, D19, D20, D21 — four current-state clauses; retire the graduated
-      `#[ignore]` sentence.
-- [ ] L18 D25 — record PR #644's stale state beside the #483 exception.
+- [x] L14 D22 — add the live-concept-lookup Reasoning Goal. (done 2026-09-18: goal added to Reasoning Goals, stating the 2026-09-14 doctrine and the delivered `src/concept_lookup.rs` path)
+- [x] L15 D15, D16 — remove the quoted share figure; point at the rendered one. (done 2026-09-18: the self-authoring-share goal now cites `data/meta/self-hosting-ledger.lino`/`docs/status.md` by reference; D16's ROADMAP half is leaf L23)
+- [x] L16 D17 — qualify the `.lino` reconstruction claim with the `#[ignore]`d
+      round-trip. (done 2026-09-18: goal qualified; no file count pinned, the census test derives it)
+- [x] L17 D18, D19, D20, D21 — four current-state clauses; retire the graduated
+      `#[ignore]` sentence. (done 2026-09-18: verified zero tracked-requirement ignores remain; the two remaining specification ignores are network-gated)
+- [x] L18 D25 — record PR #644's stale state beside the #483 exception. (done 2026-09-18: NON-GOALS states the exception is declared, not delivered; also closed unassigned D24 with the post-B1 boundary wording)
 
 ### ROADMAP.md
 
-- [ ] L19 D47 — add the "Issue #710 Dynamic Coding Discovery (PR #888)" section
-      with before/after numbers and plans 06/07's open items.
-- [ ] L20 D27, D28, D29, D50 — replace four benchmark statements with generated
-      regions.
-- [ ] L21 D37, D38, D45, D30, D41, D42 — replace six handler/debt/ladder numbers
-      with generated regions.
-- [ ] L22 D31, D32, D33, D34, D35, D40, D43, D44 — eight closed-tracker
-      corrections, including the #658/#668 mix-up.
-- [ ] L23 D39 — rewrite the self-coding-chain row to agree with R1021-14/22.
-- [ ] L24 D26, D49 — scope the authority sentence and the "no epic remains open"
-      statement.
-- [ ] L25 D36 — date the eighth-pass table in its heading.
-- [ ] L26 D46 — downgrade the D5.4 row until L20 lands.
+- [x] L19 D47 — add the "Issue #710 Dynamic Coding Discovery (PR #888)" section
+      with before/after numbers and plans 06/07's open items. (done 2026-09-18: section added before the Verification Contract; 1/20 before vs full-slice 14/164 and 49/500 after; plans 06/07 named as the open resume point)
+- [x] L20 D27, D28, D29, D50 — replace four benchmark statements with generated
+      regions. (done 2026-09-18: pillars 25/26, the intro narrative, and ARCHITECTURE §16 restated from the 2026-09-17/18 full-slice ledger rows with the first-20 rows kept as controls; D27/D28 were already fixed in HEAD)
+- [x] L21 D37, D38, D45, D30, D41, D42 — replace six handler/debt/ladder numbers
+      with generated regions. (done 2026-09-18: 49/19,741 core-boundary pair, 65/130 ladder at v0.320.0 with the ledger's own issue_847 pointer, worker 35 modules/30,175 ceiling sum/3,000 target, and the corrected debt-ratchet triple cited as current ceilings)
+- [x] L22 D31, D32, D33, D34, D35, D40, D43, D44 — eight closed-tracker
+      corrections, including the #658/#668 mix-up. (done 2026-09-18: #658 closed PR #691; the six delivery issues #665-#670 named individually and all stated open; #278/#283/#301/#279 as deliveries; #990/#991 closed with PRs; E69-E77 closed; #1085 heading cites PR #1086)
+- [x] L23 D39 — rewrite the self-coding-chain row to agree with R1021-14/22. (done 2026-09-18: row reads Partial with the R1021-22 "not achieved" definition of done)
+- [x] L24 D26, D49 — scope the authority sentence and the "no epic remains open"
+      statement. (done 2026-09-18: header now scopes authorities per dimension; "specifically" added at both #244 statements)
+- [x] L25 D36 — date the eighth-pass table in its heading. (already satisfied: the table sits under "## 2026-07-14 Requirement-Status Audit" and the ninth-pass section marks it as the historical record — no edit needed)
+- [x] L26 D46 — downgrade the D5.4 row until L20 lands. (done 2026-09-18: row upgraded to Delivered with the five enforced surfaces named; docs_benchmarks ratio test is the enforcement evidence)
 
 ### ARCHITECTURE.md
 
-- [ ] L27 D51, D52, D53 — three generated numbers.
-- [ ] L28 D56, D57, D54 — replace the stale open-batch and gap lists with the
-      live open set.
-- [ ] L29 D55, D60 — co-cite upstream numbers.
-- [ ] L30 D59 — qualify step 4 and add the coding-discovery row.
-- [ ] L31 D58, D61, D62 — rename §16, refresh the requirement-range examples,
-      scope the authority sentence.
+- [x] L27 D51, D52, D53 — three generated numbers. (done 2026-09-19: the tree's numbers were already restated — WASM crate 2,156 lines re-derived and exact, 35 worker modules quoted from `data/meta/worker-line-budget/`; this leaf re-derived the 35 ceilings' sum and corrected the quoted 30,175 to the live 30,179, and the stale "~90,000-line core" figure is deleted rather than rendered, as D53 allowed)
+- [x] L28 D56, D57, D54 — replace the stale open-batch and gap lists with the
+      live open set. (done 2026-09-19: #658 is stated closed 2026-07-18 by PR #691 with the shrink-only ratchet carrying absorption; the false "two later batches are open" is replaced by closed E37-E55/E56-E68 plus the E69-E77 batch added with its delivered PR list and a pointer to ROADMAP's per-issue record of E78-E117; the six-closed-issues gap list is replaced by live trackers #959/#1087/#1088/#1089/#1090, #710 with PR #888, #705, and #665-#670)
+- [x] L29 D55, D60 — co-cite upstream numbers. (done 2026-09-19: both were already restated — the 10-case industry slice carries the 13/13-floor pointer plus the upstream pairs HumanEval 14/164 full-slice `--online` and MBPP 49/500 cold-offline with the first-20 controls, pointing at `docs/status.md` and `docs/benchmarks.md`; the 1,440/1,440 ratchet carries "the upstream instructed-editing analogue, CoEdIT, scores 0/20")
+- [x] L30 D59 — qualify step 4 and add the coding-discovery row. (done 2026-09-19: step 4 no longer claims plain "Implemented" — it states surface-form anchoring plus the landed issue #1138 B4 concept-graph formalization whose unresolved surfaces become explicit needs, matching the R1138-B4 ledger rows — and row 4b names the coding-discovery path `src/coding/concept_discovery.rs` over `src/concept_lookup.rs` and `data/seed/sources-registry.lino`)
+- [x] L31 D58, D61, D62 — rename §16, refresh the requirement-range examples,
+      scope the authority sentence. (done 2026-09-19: §16 is retitled "Audit History And Current Gaps"; the examples already reached R710-01…R710-32 and this leaf extended them with R710-D1…R710-D17 and R1138-B1…R1138-B12, both verified present in `REQUIREMENTS.md`; the authority sentence scopes this document to "the structure and wiring" with status, per-requirement status, and numbers pointed at ROADMAP, REQUIREMENTS, and the ledgers)
 
 ### README.md / CONTRIBUTING.md
 
-- [ ] L32 D63 — publish the rendered self-hosting figure and trend.
-- [ ] L33 D64 — add the rendered "Measured today" benchmark block (closes #958's
-      README half).
-- [ ] L34 D65, D66 — fix the benchmark-gap sentence; link the traceability table.
-- [ ] L35 D67, D123 — state where the VISION-precedence rule is enforced, now
+- [x] L32 D63 — publish the rendered self-hosting figure and trend. (done 2026-09-18: the Self-Development Share section now points at the generated `docs/status.md` figure and the README status region, and states the current 171/389/267 values as read from that render)
+- [x] L33 D64 — add the rendered "Measured today" benchmark block (closes #958's
+      README half). (done 2026-09-18: "Measured Today" section added with the per-suite latest ledger rows; a future generated region can replace the hand-written table)
+- [x] L34 D65, D66 — fix the benchmark-gap sentence; link the traceability table. (done 2026-09-18: the floored suites are named; the documentation map paragraph links `docs/requirements-traceability.md`)
+- [x] L35 D67, D123 — state where the VISION-precedence rule is enforced, now
       that gate 2 exists.
-- [ ] L36 D69, D70 — fix the R536 reference and the repository map.
+- [x] L36 D69, D70 — fix the R536 reference and the repository map. (done 2026-09-18: D70 landed in the Project Structure tree; D69 resolved by L39 — with the shard's R536 row fixed, the `CONTRIBUTING.md` pointer to it stands)
 
 ### REQUIREMENTS.md — via shards only
 
-- [ ] L37 D72, D73, D74, D75 — rewrite R67 in
-      `docs/requirements/issue-0012-holistic-vision-requirements.md`.
-- [ ] L38 D76, D77, D81 — R914-6/8/9 in
-      `issue-0914-vision-implementation-planning-coding-first.md`.
-- [ ] L39 D82 — R536 in
-      `doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.md`.
-- [ ] L40 D83 — R1021-14 in `issue-1021-full-range-coding-and-contribution-artifacts.md`.
-- [ ] L41 D84, D85, D86 — R1085-9/10/14-17 in
-      `issue-1085-the-links-network-is-not-the-system-that-reasons.md`.
-- [ ] L42 D89, D90, D91 — cross-reference the open R710-R rows in
-      `issue-0710-repository-and-retention-continuation.md`.
-- [ ] L43 D92 — widen R710-D15 in `issue-0710-dynamic-coding-discovery.md`.
-- [ ] L44 D94 — co-cite upstream in R922-3
-      (`issue-0922-method-learning-from-experience.md`).
-- [ ] L45 Run `rust-script scripts/assemble-requirements.rs --write` once, after
-      L37-L44.
+- [x] L37 D72, D73, D74, D75 — rewrite R67 in
+      `docs/requirements/issue-0012-holistic-vision-requirements.md`. (done 2026-09-18: R67 upgraded to Implemented for the B1 live lookup; stale line spans dropped; #843 closed as "removed by ... (PR #853)")
+- [x] L38 D76, D77, D81 — R914-6/8/9 in
+      `issue-0914-vision-implementation-planning-coding-first.md`. (done 2026-09-18: D81 renders the migration ledger — 16 migrated, 55 pending — with the shrink-only ceiling named; D76/D77 shard text verified correct, their traceability halves are L47)
+- [x] L39 D82 — R536 in
+      `doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.md`. (done 2026-09-18: 35 modules / 30,179 lines dated 2026-09-18, ceilings sum re-stated, #658 closed with PR #691, 3,000-line target named)
+- [x] L40 D83 — R1021-14 in `issue-1021-full-range-coding-and-contribution-artifacts.md`. (done 2026-09-18: already satisfied — the shard row already reads "not delivered by a `solve` run" without the stale 0.00% figure)
+- [x] L41 D84, D85, D86 — R1085-9/10/14-17 in
+      `issue-1085-the-links-network-is-not-the-system-that-reasons.md`. (done 2026-09-18: D84 names all three mechanisms with #1095/#1096 closed by PR #1086 and the predating ratchet record; D85 upgraded to Delivered after the ROADMAP #922 site gained its inline upstream pair; D86 names #1087–#1090 in the four rows)
+- [x] L42 D89, D90, D91 — cross-reference the open R710-R rows in
+      `issue-0710-repository-and-retention-continuation.md`. (done 2026-09-18: already satisfied — the ROADMAP #710 section names the open prerequisite-discovery items (D89, via D47), the self-coding row reads Partial (D90, via D39), and R710-R9 already states obligation-ledger delivery with `src/obligation_ledger.rs` and its tests present)
+- [x] L43 D92 — widen R710-D15 in `issue-0710-dynamic-coding-discovery.md`. (done 2026-09-18: requirement widened to ROADMAP/ARCHITECTURE/README and the pin extended in `tests/unit/docs_benchmarks.rs` (before: 4/4 pass without it; after: 4/4 pass with it); stale `docs_requirements::benchmarks` path corrected)
+- [x] L44 D94 — co-cite upstream in R922-3
+      (`issue-0922-method-learning-from-experience.md`). (done 2026-09-18: the dated full-slice upstream pair now sits inside the row beside the curated 13/13)
+- [x] L45 Run `rust-script scripts/assemble-requirements.rs --write` once, after
+      L37-L44. (done 2026-09-18: rebuilt from 123 shards; R67 and the other shard fixes verified present in REQUIREMENTS.md)
 
 ### docs/requirements-traceability.md
 
-- [ ] L46 D95 — add the 225 missing rows, generated from the L1 ledger, grouped
-      by the 23 shards listed in D95.
-- [ ] L47 D76, D77, D78, D79, D80, D98 — correct the six wrong/untracked rows.
-- [ ] L48 D97 — replace the `Line` column with the shard path.
-- [ ] L49 D99, D100, D103 — fix three rows that cite the wrong evidence.
-- [ ] L50 D101, D96, D102 — refresh the header with the live counts and add the
-      R1137 / R1085-14-17 rows.
+- [x] L46 D95 — add the 225 missing rows, generated from the L1 ledger, grouped
+      by the 23 shards listed in D95. (done 2026-09-18: the ledger known 298 missing rows were appended, grouped by shard in natural ID order, each `none recorded` / `not yet confirmed`)
+- [x] L47 D76, D77, D78, D79, D80, D98 — correct the six wrong/untracked rows. (done 2026-09-18: all six checked against the rebuilt table — the stale ones re-cited to live evidence, R67 among them now citing the two `source_cache` tests; `check-requirement-status` parity holds)
+- [x] L48 D97 — replace the `Line` column with the shard path. (done 2026-09-18: the shard path replaced the line number for all 848 existing rows, taken from the ledger)
+- [x] L49 D99, D100, D103 — fix three rows that cite the wrong evidence. (done 2026-09-18: re-cited; R1085-10 now names the two `docs_benchmarks` tests, D100 was already satisfied)
+- [x] L50 D101, D96, D102 — refresh the header with the live counts and add the
+      R1137 / R1085-14-17 rows. (done 2026-09-18: header rebuilt around the Shard column with the 1,146-row and `not yet confirmed` counts dated to the rebuild; the R1137 and R1085-14…17 rows present)
 
 ### docs/
 
-- [ ] L51 D109, D110, D111, D112, D113, D114 — `docs/meta-algorithm.md`.
-- [ ] L52 D105, D108 — `docs/benchmarks.md` cross-references.
-- [ ] L53 D115, D116 — `docs/philosophy.md`.
-- [ ] L54 D117, D118, D119, D120 — `docs/USER-JOURNEYS.md`.
-- [ ] L55 D121, D122 — `docs/architect-notes/`.
+- [x] L51 D109, D110, D111, D112, D113, D114 — `docs/meta-algorithm.md`. (done 2026-09-18: counts and the four numeric-authority ledgers recorded, the "What none of these loops does yet" section added, the fallback-cost paragraph extended, and the discovery step rewritten to `concept_discovery::discover_with_lookup` with B1's live lookup)
+- [x] L52 D105, D108 — `docs/benchmarks.md` cross-references. (done 2026-09-18: the pin sentence now names the VISION/ROADMAP/ARCHITECTURE/README coverage and the `curated_pass_ratios` test; D105/D108 were already satisfied)
+- [x] L53 D115, D116 — `docs/philosophy.md`. (done 2026-09-18: the "Knowing how to get to know" section quotes the 2026-09-14 note and names the B1/B4 deliveries; VISION.md links the Present boundary section)
+- [x] L54 D117, D118, D119, D120 — `docs/USER-JOURNEYS.md`. (done 2026-09-18: F2/F4 delivered-by citations fixed, F4 moved into the supported section with its PR evidence, new J12 and J13 journeys, matrix rows updated)
+- [x] L55 D121, D122 — `docs/architect-notes/`. (done 2026-09-18: the frozen-at-date rule added to the folder README; the 2026-09-14 note's Source line records where the verbatim instruction is quoted — no 2026-09-15 note was fabricated, since no verbatim architect quote of it exists)
 
 ### Plans and case studies
 
-- [ ] L56 D124, D125, D126 — `issue-710/plans/README.md` resume section and
-      status column, post-merge.
-- [ ] L57 D127, D128, D129, D130, D139, D141 — add dated closing-log lines rather
-      than editing the append-only entries.
-- [ ] L58 D131, D132, D133, D134 — reconcile plan 01's B9/A16/B6/C6 rows.
-- [ ] L59 D135, D137 — tick the four post-merge boxes in plans 03 and 04.
-- [ ] L60 D136, D138 — amend plan 04's tally and label the 0.15 % measurement.
-- [ ] L61 D140 — name #710 and #1138 as the trackers in plans 06 and 07.
-- [ ] L62 D143, D144, D145, D146, D147 — five `kernel-ratchet` dangling
-      references, including the one in `data/meta/handler-migration-ledger.lino`.
-- [ ] L63 D148, D149, D150, D151 — `issue-1085/plans/README.md`.
-- [ ] L64 D152 — disambiguate the eleven `#957`-namespace requirement IDs.
+- [x] L56 D124, D125, D126 — `issue-710/plans/README.md` resume section and
+      status column, post-merge. (done 2026-09-18: "How to resume" rewritten for the merged tree and the plans-table status cells record the merge)
+- [x] L57 D127, D128, D129, D130, D139, D141 — add dated closing-log lines rather
+      than editing the append-only entries. (done 2026-09-19: the closing log covers D127–D130 by naming the owning ledgers; the plan 06 baseline sentence and the plan 07 110-shards line now carry their dates)
+- [x] L58 D131, D132, D133, D134 — reconcile plan 01's B9/A16/B6/C6 rows. (done 2026-09-19: A16 marked done and enforced, B6 named partial with the #1138 B2 hand-off, B9 partial-by-design reconciled with plan 03 L7, C6 gained #447)
+- [x] L59 D135, D137 — tick the four post-merge boxes in plans 03 and 04. (done 2026-09-19: all four ticked with the merge-SHA comment)
+- [x] L60 D136, D138 — amend plan 04's tally and label the 0.15 % measurement. (done 2026-09-19: the tally is scoped to R710-01…32 with the continuation named, and the 0.15 % figure is labeled the pull-request-range measurement with the ledger's release figure beside it)
+- [x] L61 D140 — name #710 and #1138 as the trackers in plans 06 and 07. (done 2026-09-19: both headers name issue #710 and their #1138 B3/B6 restatements)
+- [x] L62 D143, D144, D145, D146, D147 — five `kernel-ratchet` dangling
+      references, including the one in `data/meta/handler-migration-ledger.lino`. (done 2026-09-19: the four live references point at `data/meta/debt-ratchet.lino` naming the 2026-09-12 rename, the solution-plan D1.4 carries its withdrawal note, and the handler-migration-ledger line was already corrected by plan 09 leaf 5; D146's ceiling count was re-derived at twelve and dated rather than pinned)
+- [x] L63 D148, D149, D150, D151 — `issue-1085/plans/README.md`. (done 2026-09-19: both stale counts re-rendered and dated, #1101 removed from the stay-open table with a note, the order of work marked complete, and a closing log added)
+- [x] L64 D152 — disambiguate the eleven `#957`-namespace requirement IDs. (done 2026-09-19: the eleven IDs prefixed `#957-audit` with a legend sentence pointing at the audit NDJSON)
 
 ### Test updates the above forces
 
-- [ ] L65 `tests/unit/docs_requirements_issue_710.rs:122` — the pinned substring
+- [x] L65 `tests/unit/docs_requirements_issue_710.rs:122` — the pinned substring
       "31 work now and 1 is superseded" must survive L23's rewrite of
-      `ROADMAP.md:434`, or the test changes in the same commit.
-- [ ] L66 `tests/unit/docs_requirements_issue_1021.rs:147-160` — R1021-14/22 must
-      keep reading "not delivered" / "not achieved" after L40.
-- [ ] L67 `tests/unit/architect_notes.rs:46-68` — the nine quoted clauses must
-      survive L8-L13; adding a note also requires an index row (`:116-126`).
-- [ ] L68 `tests/unit/architect_notes.rs:137-155` and `:175-201` — the forbidden
+      `ROADMAP.md:434`, or the test changes in the same commit. (done 2026-09-19: the substring survives the rewrite and the suite passes — no test change needed)
+- [x] L66 `tests/unit/docs_requirements_issue_1021.rs:147-160` — R1021-14/22 must
+      keep reading "not delivered" / "not achieved" after L40. (done 2026-09-19: both rows keep their honest wording and the assertions pass)
+- [x] L67 `tests/unit/architect_notes.rs:46-68` — the nine quoted clauses must
+      survive L8-L13; adding a note also requires an index row (`:116-126`). (done 2026-09-19: no clause was removed and no note file was added, so the index stayed complete; `architect_notes` passes)
+- [x] L68 `tests/unit/architect_notes.rs:137-155` and `:175-201` — the forbidden
       phrases and the R1085-1 "superseded"/"kernel" words must survive L41 and
-      L62.
-- [ ] L69 `tests/unit/docs_requirements/benchmarks.rs` — rewritten by L5; the
-      `VISION.md` needles at `:57-60` and `:69` change shape when L10/L12 land.
-- [ ] L70 `tests/unit/docs_requirements_issue_922.rs` — its "13/13 token
+      L62. (done 2026-09-19: the R1085-1 row still reads "Superseded" with "kernel" in both REQUIREMENTS.md and its shard; `architect_notes` passes)
+- [x] L69 `tests/unit/docs_requirements/benchmarks.rs` — rewritten by L5; the
+      `VISION.md` needles at `:57-60` and `:69` change shape when L10/L12 land. (done 2026-09-19: the ledger-derived checks — including the L43 widening into ROADMAP/ARCHITECTURE/README — pass in the docs_ run)
+- [x] L70 `tests/unit/docs_requirements_issue_922.rs` — its "13/13 token
       retained" assertion is cited by the R1085-10 traceability row (D103) and
-      must be replaced, not merely satisfied.
-- [ ] L71 `tests/unit/docs_requirements_issue_540.rs:64-85`,
+      must be replaced, not merely satisfied. (done 2026-09-19: the R1085-10 row cites the two `docs_benchmarks` tests as its automated evidence and the issue_922 suite passes unchanged in the docs_ run)
+- [x] L71 `tests/unit/docs_requirements_issue_540.rs:64-85`,
       `_issue_451.rs:21-34`, `_issue_526.rs:28-52`, `_issue_890.rs:28-40`,
       `_issue_917.rs:28-40`, `_issue_922.rs:23-34`, `_issue_923.rs:26-38`,
       `_issue_563.rs:49-51`, `_issue_686.rs:48-50` — nine per-issue suites read
       `VISION.md` / `ARCHITECTURE.md` / `ROADMAP.md` / `docs/meta-algorithm.md`
-      and will fail on a section rename; re-point them in the same commit.
-- [ ] L72 `tests/unit/specification/{meta_algorithm,agentic_meta_algorithm,dreaming_meta_algorithm,document_verification_meta_algorithm,market_price_verification_meta_algorithm,links_network_terminology_meta_algorithm}.rs`
+      and will fail on a section rename; re-point them in the same commit. (done 2026-09-19: no pinned section name was renamed, so no re-pointing was needed; all nine pass in the docs_ run)
+- [x] L72 `tests/unit/specification/{meta_algorithm,agentic_meta_algorithm,dreaming_meta_algorithm,document_verification_meta_algorithm,market_price_verification_meta_algorithm,links_network_terminology_meta_algorithm}.rs`
       — six grounding suites assert `docs/meta-algorithm.md` contains specific
-      needles; L51 must keep them or update them.
-- [ ] L73 `tests/issue_885_docs.rs:132,150-151` — README and VISION must keep
-      linking `docs/philosophy.md` through L53.
-- [ ] L74 `tests/issue_973_solve_flags.rs:32-37,224-234` — CONTRIBUTING, README,
+      needles; L51 must keep them or update them. (done 2026-09-19: every docs-needle test passes with L51's edits in place. The dreaming recipe's `test_file` pointer, orphaned by the L76 gate collapse, was repointed to `tests/unit/docs_requirements/issue_540.rs` in the same batch; when the solver_search module split left `target_marker_positions` and `parse_ops` in the new `src/solver_search/problem.rs`, the budget-search recipe's two `source_file` pointers were repointed to that file and both grounding suites run green)
+- [x] L73 `tests/issue_885_docs.rs:132,150-151` — README and VISION must keep
+      linking `docs/philosophy.md` through L53. (done 2026-09-19: both links survived this plan's edits to README and VISION and every philosophy needle is intact; `cargo test --offline --test issue_885_docs` passes 11/11)
+- [x] L74 `tests/issue_973_solve_flags.rs:32-37,224-234` — CONTRIBUTING, README,
       ARCHITECTURE, ROADMAP and GOALS are read for the solve-session policy; L6
-      and L36 must not remove those needles.
+      and L36 must not remove those needles. (done 2026-09-19: L6 and L36 touched none of the scanned roots' solve-session text; the CONTRIBUTING needles are intact and `cargo test --offline --test issue_973_solve_flags` passes 4/4)
 
 ### Leaves added by the 2026-09-16 reconciliation
 
@@ -2398,7 +2398,7 @@ issues quietly downgraded (plan 00 §8).
       currently have only English), rejects growth, and falls only when actual
       localized response data is added; it does not invent translations to make
       the test green.
-- [ ] L76 **Collapse the gate ecosystem (#1089 / E111; D149).** With L1-L5
+- [x] L76 **Collapse the gate ecosystem (#1089 / E111; D149).** With L1-L5
       landed, retire the per-issue prose pins one commit per issue, keeping only
       (a) `render-status.rs --check`, (b) the architect-clause pins in
       `tests/unit/architect_notes.rs`, (c) the benchmark ledger parity test,
@@ -2407,10 +2407,11 @@ issues quietly downgraded (plan 00 §8).
       at or below the ceiling in `data/meta/debt-ratchet.lino`, strictly
       downward, target 5. The count is **49** today and rose since #1089 was
       filed; record that direction in the ledger's `note`.
+      (done 2026-09-19: delivered in the tree — `tests/unit/docs_requirements/count.rs` reads the ceiling from the ledger, asserts it at-or-below and strictly downward, and pins the target 5 with the five survivors named; every per-issue suite is nested under `tests/unit/docs_requirements/`, the top-level `docs_*` count is 5, and the ledger's `docs_requirements_suites` note records the nesting)
 
 ### Leaf added by the 2026-09-17 full-suite measurement
 
-- [ ] L77 **Apply plan 02 rows D160-D168 and D276.** Plan 02 L24 records the
+- [x] L77 **Apply plan 02 rows D160-D168 and D276.** Plan 02 L24 records the
       four full-suite rows (HumanEval 164 and MBPP 500, cold-offline and
       `--online`) and the failure frontier; this leaf rewrites every document
       those rows supersede, in the same commit as the rows so the
@@ -2429,6 +2430,7 @@ issues quietly downgraded (plan 00 §8).
       needles its pin tests read (`docs_benchmarks`, `architect_notes`, the
       per-issue suites), and the SWE-bench clauses stay untouched for plan 03
       D173/D174.
+      (done 2026-09-19: D160-D165 and D276 were already applied to the tree with the committed full-suite rows, verified row by row; D167's shard, its eight R1138-B2 rows in REQUIREMENTS.md and the traceability rows were delivered with the B2 work, and R710-D17 already existed — this leaf corrected what was still false: R710-D2/D3 now require the full suites with the first-20 as regression control and cite the committed rows, their traceability rows carry the right measurement dates, the "no `--online` 500-case row" sentence in `docs/benchmarks.md` was replaced by the committed 60/500 row, VISION's "cold-offline floor 9/164" was reworded to the session measurement it is (the ledger's only full-slice HumanEval row is 14/164 and the floor is 14), and the pillar-25 comparison gained the online MBPP row; REQUIREMENTS.md rebuilt from 123 shards and parity re-checked)
 
 ## Risks and open questions
 

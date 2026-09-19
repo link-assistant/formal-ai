@@ -14,10 +14,10 @@ coding_discovery_runtime
     supports range_inclusive
   template python_materialize_tuple
     text "tuple({items})"
-    grounding "https://docs.python.org/3.12/library/functions.html#func-tuple"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#tuple"
     license "PSF-2.0"
     rediscovery_query "materialize iterable as tuple"
-    fragment_signature "sequence<unknown:0>"
+    fragment_signature "ordered<unknown:0>"
     fragment_result "sequence<unknown:0>"
     supports set_intersection
   template python_test_entrypoint
@@ -26,56 +26,6 @@ coding_discovery_runtime
     text "for {item} in {items}:\n    {body}"
   template python_doc_probe
     text "print(({expression}).__doc__ or '')"
-  template aligned_binary_xor
-    text "''.join('0' if left == right else '1' for left, right in zip({left}, {right}))"
-    grounding "https://docs.python.org/3.12/library/functions.html#zip"
-    license "PSF-2.0"
-    rediscovery_query "exclusive or aligned binary text"
-    fragment_signature (text text)
-    fragment_result text
-  template explicit_value_mapping
-    text "(lambda mapping: [mapping[item] for item in {items}.split()])({mapping})"
-    grounding "https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict"
-    license "PSF-2.0"
-    rediscovery_query "map space separated values through a dictionary"
-    fragment_signature (text "mapping<text,integer>")
-    fragment_result "sequence<integer>"
-  template explicit_ordering
-    text "(lambda order: ' '.join(sorted({items}.split(), key=order.__getitem__)))({order})"
-    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    license "PSF-2.0"
-    rediscovery_query "sort space separated values by explicit order mapping"
-    fragment_signature (text "mapping<text,integer>")
-    fragment_result text
-    supports sort_ascending
-  template regex_minimum_word_length
-    text "__import__('re').findall(r'\\b\\w{{minimum},}\\b', {text})"
-    grounding "https://docs.python.org/3.12/library/re.html#re.findall"
-    license "PSF-2.0"
-    rediscovery_query "find words at least a minimum length"
-    fragment_signature (integer text)
-    fragment_result "sequence<text>"
-  template regex_lowercase_chunks
-    text "__import__('re').findall(r'[a-z][^a-z]*', {text})"
-    grounding "https://docs.python.org/3.12/library/re.html#re.findall"
-    license "PSF-2.0"
-    rediscovery_query "split text into lowercase led chunks"
-    fragment_signature text
-    fragment_result "sequence<text>"
-  template regex_lowercase_underscore
-    text "{matched} if __import__('re').fullmatch(r'[a-z]+_[a-z]+', {text}) else {unmatched}"
-    grounding "https://docs.python.org/3.12/library/re.html#re.fullmatch"
-    license "PSF-2.0"
-    rediscovery_query "classify lowercase words joined by underscore"
-    fragment_signature (text text text)
-    fragment_result text
-  template composite_number
-    text "{value} > 1 and any({value} % divisor == 0 for divisor in range(2, __import__('math').isqrt({value}) + 1))"
-    grounding "https://docs.python.org/3.12/library/math.html#math.isqrt"
-    license "PSF-2.0"
-    rediscovery_query "test integer for a nontrivial factor"
-    fragment_signature integer
-    fragment_result boolean
   template mapping_entry
     text "{key}: {value}"
   template ordering_entry

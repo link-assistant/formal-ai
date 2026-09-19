@@ -196,6 +196,12 @@ capability_routing
     capability calendar_create_event
     because "issue 869: composing an entry at a named time is a calendar entry"
   route
+    object relative_period
+    act retrieve
+    locus dialogue
+    capability web_search
+    because "issue 1138 news_07: a summary of a recent period, with links, is a digest of fresh web events, not a silent unknown"
+  route
     object language_name
     act retrieve
     locus dialogue
@@ -279,4 +285,74 @@ capability_routing
     locus self
     capability report_issue
     because "issue 447: naming a defect in the assistant own surface is a report"
+  route
+    object pattern
+    act enumerate
+    locus workspace
+    capability glob
+    fallback shell
+    because "issue 758: a wildcard names a pattern to match, never one file to read"
+  route
+    object pattern
+    act retrieve
+    locus workspace
+    capability glob
+    fallback shell
+    because "issue 758: locating what a pattern names is still a glob, whatever the verb"
+  route
+    object path_set
+    act retrieve
+    locus workspace
+    capability read_many
+    fallback shell
+    because "issue 758: a batch of named files is one read-many step, not a web search"
+  route
+    object path_set
+    act transform
+    locus workspace
+    capability multi_edit
+    fallback shell
+    because "issue 758: the same edit across named files is a multi-edit, not a rewrite of one"
+  route
+    object task_list
+    act retrieve
+    locus dialogue
+    capability todo
+    because "issue 758: a named task list is tracked as a plan whatever the verb"
+  route
+    object task_list
+    act record
+    locus dialogue
+    capability todo
+    because "issue 758: recording tasks is the todo capability's own subject"
+  route
+    object task_list
+    act compose
+    locus dialogue
+    capability todo
+    because "issue 758: drafting a plan of work is a todo entry, not an essay"
+  route
+    object task_list
+    act enumerate
+    locus dialogue
+    capability todo
+    because "issue 758: listing the tracked tasks is a todo read"
+  route
+    object delegation
+    act retrieve
+    locus dialogue
+    capability subagent
+    because "issue 758: handing work to another agent is delegation, not a search for it"
+  route
+    object delegation
+    act transform
+    locus dialogue
+    capability subagent
+    because "issue 758: passing a task to an agent transforms its executor, not its subject"
+  route
+    object delegation
+    act record
+    locus dialogue
+    capability subagent
+    because "issue 758: assigning a task to an agent is recorded as delegation"
   default ask

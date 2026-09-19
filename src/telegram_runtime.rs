@@ -541,6 +541,7 @@ fn send_reply<T: TelegramTransport>(
     // a message_id we can target. Missing/unknown ids drop the stream silently
     // and leave the initial bubble as the user's last view of the reply.
     if reply.progressive_edits.is_empty() {
+        send_continuation_parts(config, transport, reply);
         return;
     }
     let Some(sent_message_id) = extract_sent_message_id(&send_response) else {
@@ -577,6 +578,51 @@ fn send_reply<T: TelegramTransport>(
                 );
                 // Stop streaming if Telegram rejected an edit; the live bubble
                 // already shows the last successful snapshot.
+                return;
+            }
+        }
+    }
+    send_continuation_parts(config, transport, reply);
+}
+
+/// Deliver the parts of a chunked over-long reply that did not fit in the
+/// first message (`compose_telegram_reply` splits at Telegram's per-message
+/// limit and marks part 1 with the part count). Each part is its own
+/// `sendMessage`; a failed part stops the rest because Telegram is throttling
+/// or unreachable and a later cycle is the better retry point.
+fn send_continuation_parts<T: TelegramTransport>(
+    config: &TelegramPollingConfig,
+    transport: &mut T,
+    reply: &TelegramPollingReply,
+) {
+    if reply.continuation_parts.is_empty() {
+        return;
+    }
+    let send_url = config.send_message_url();
+    let total = reply.continuation_parts.len() + 1;
+    for (index, part) in reply.continuation_parts.iter().enumerate() {
+        let continuation = TelegramPollingReply {
+            chat_id: reply.chat_id,
+            text: part.clone(),
+            parse_mode: reply.parse_mode,
+            reply_parameters: reply.reply_parameters.clone(),
+            progressive_edits: Vec::new(),
+            continuation_parts: Vec::new(),
+        };
+        match transport.send_message(&send_url, &continuation.to_send_message_body()) {
+            Ok(_) => eprintln!(
+                "telegram-poll: continuation part {n}/{total} sent to chat_id={chat}",
+                n = index + 2,
+                total = total,
+                chat = reply.chat_id,
+            ),
+            Err(error) => {
+                eprintln!(
+                    "telegram-poll: continuation part {n}/{total} to chat_id={chat} failed: {error}",
+                    n = index + 2,
+                    total = total,
+                    chat = reply.chat_id,
+                );
                 return;
             }
         }

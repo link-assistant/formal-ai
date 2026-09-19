@@ -8,7 +8,9 @@ contributors who want to understand the full pipeline without having to
 triangulate between five other files.
 
 Issue [#103](https://github.com/link-assistant/formal-ai/issues/103) names
-this document as the single source of truth for the design and asks for the
+this document as the single source of truth for the design — the structure and
+wiring recorded here; status lives in `ROADMAP.md`, per-requirement status in
+`REQUIREMENTS.md`, and numbers in the ledgers — and asks for the
 following ideas to be explicit:
 
 - last input + previous messages + memory + user data form the system context;
@@ -150,7 +152,8 @@ following Rust modules:
 | 1. Input | `src/engine.rs::FormalAiEngine::answer` and `solve_with_history` in `src/solver.rs` | Implemented |
 | 2. Translate to Links Notation | `EventLog::append("impulse", …)` in `src/event_log.rs` | Implemented |
 | 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
-| 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented |
+| 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented for surface-form anchoring and, since issue #1138 B4, concept-graph formalization whose unresolved surfaces become explicit needs |
+| 4b. Coding-discovery grounding | `src/coding/concept_discovery.rs::discover_with_lookup` over `src/concept_lookup.rs` and the trusted sources in `data/seed/sources-registry.lino` | Implemented (issue #1138 B1/B4): needs are grounded by live lookup when the run is online, reported unresolved with their source span otherwise |
 | 5. Temperature interpretation selection | `src/translation/selection.rs`, `src/probability.rs`, plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
@@ -1259,16 +1262,19 @@ state, seed-file fetch/parsing, network/CORS orchestration, DOM integration,
 and compatibility fallbacks when WASM cannot be instantiated.
 
 **The browser boundary is not yet narrow, and this is the honest current
-state.** The WASM worker crate (`src/web/wasm-worker/src/`) is roughly 1,700 lines,
-while `src/web/worker/*.js` still carries roughly 27,700 lines of solver logic
-mirroring the ~90,000-line Rust core — the cross-runtime parity (E34) and
+state.** The WASM worker crate (`src/web/wasm-worker/src/`) is 2,156 lines,
+while `src/web/worker/` still carries the mirrored solver logic in 35
+JavaScript modules, every one under a shrink-only ceiling recorded in
+`data/meta/worker-line-budget/` (the 35 ceilings sum to 30,179 lines as of
+this writing) and enforced by `scripts/check-worker-line-budget.rs` toward a
+3,000-line end-state target — the cross-runtime parity (E34) and
 issue #349/#408 handlers were mirrored into JavaScript rather than absorbed
 into WASM. Pillar 18 ("Rust-to-WebAssembly parity with JavaScript reserved for
-UI/glue") therefore describes the target, not today's split. Absorbing the
-remaining worker logic into Rust→WASM — after which the JavaScript surface is
-capped and lint-enforced as UI/glue — is tracked by issue
-[#658](https://github.com/link-assistant/formal-ai/issues/658) (R380), and is
-the blocker for the npm-published engine in issue
+UI/glue") therefore describes the target, not today's split. The
+WASM-absorption epic [#658](https://github.com/link-assistant/formal-ai/issues/658)
+closed on 2026-07-18 (PR #691); what carries the absorption now is the
+shrink-only ratchet toward that end-state target, which in turn unblocks the
+npm-published engine in issue
 [#665](https://github.com/link-assistant/formal-ai/issues/665).
 
 **Standing principle (2026-08-04, R536).** JavaScript is interfacing glue
@@ -1277,8 +1283,9 @@ server, and desktop-managed processes; Rust→WASM in the web app. The same
 WASM web engine is reused — not reimplemented — by the desktop shell and
 the VS Code hosts. The remaining `src/web/worker/*.js` solver logic is a
 transitional mirror under the shrink-only ratchet
-`scripts/check-worker-line-budget.rs`; it may only move into Rust→WASM
-(issue #658, R380), never grow.
+`scripts/check-worker-line-budget.rs`; it may only move into Rust→WASM,
+never grow, and the checker's 3,000-line `TARGET_TOTAL_LINES` is the end
+state.
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
@@ -1332,7 +1339,7 @@ adds one file (or extends one matrix) without touching the rest.
 
 ---
 
-## 16. Open Questions
+## 16. Audit History And Current Gaps
 
 The original issue #244 architecture questions, the E1-E20 follow-up batches,
 and the reasoning batch E21-E27 are merged (PRs #305-#311). Every message is now
@@ -1357,9 +1364,12 @@ functions are synthesized from spec + tests and verified in the bounded agent
 workspace (`src/solver_handlers/program_synthesis.rs`), text manipulation is
 generalized over arbitrary input, and the imported benchmark suite grew to a
 10-case slice that passed **10/10** with a `minimum_pass_count` ratchet (13 cases / 13-floor today — see `data/benchmarks/industry-suite.lino`)
-(`tests/unit/specification/benchmarks.rs`). The latest committed upstream
-comparison is HumanEval 20/20 and MBPP 20/20; `docs/status.md` renders every
-upstream suite row from the external-results ledger.
+(`tests/unit/specification/benchmarks.rs`). The upstream rows of the same
+suites are HumanEval 14/164 on the full slice (`--online`, 2026-09-17) and
+MBPP 49/500 cold-offline (2026-09-18), with the 2026-09-15 first-20 rows
+(HumanEval 20/20, MBPP 20/20) kept as regression controls; `docs/status.md`
+renders every upstream suite row from the external-results ledger, and
+`docs/benchmarks.md` publishes the honest current numbers per slice.
 
 The 2026-05-29 audit (issue #244, fifth pass) found the next gap is **parity**,
 per the PR #245 feedback ("all Rust and JavaScript logic are in sync", "all
@@ -1387,26 +1397,38 @@ that the parity batch is **now closed and merged**:
    primitives and JavaScript stays UI/glue per pillar 18.
 
 With E1-E34 all merged, no vision-planning epic remains open **for issue #244
-specifically**. That statement does not mean planning is finished: two later
-batches are open, and `ROADMAP.md` tracks their requirement-level status
-(done / partial / not done):
+specifically**. That statement does not mean planning is finished: the later
+batches **E37-E55** ([#656](https://github.com/link-assistant/formal-ai/issues/656)-[#674](https://github.com/link-assistant/formal-ai/issues/674),
+from the issue [#651](https://github.com/link-assistant/formal-ai/issues/651)
+gap analysis) and **E56-E68** ([#698](https://github.com/link-assistant/formal-ai/issues/698)-[#710](https://github.com/link-assistant/formal-ai/issues/710),
+from the 2026-07-14 audit) are closed, as is the E69-E77 planning batch
+([#916](https://github.com/link-assistant/formal-ai/issues/916)-[#924](https://github.com/link-assistant/formal-ai/issues/924),
+delivered by PRs #966, #984, #986, #992, and
+[#1003](https://github.com/link-assistant/formal-ai/pull/1003)-[#1007](https://github.com/link-assistant/formal-ai/pull/1007)); `ROADMAP.md` records their requirement-level
+status and the later E78-E117 items per issue, and planning continues through
+the live open set:
 
-- **E37-E55** ([#656](https://github.com/link-assistant/formal-ai/issues/656)-[#674](https://github.com/link-assistant/formal-ai/issues/674)),
-  created from the issue [#651](https://github.com/link-assistant/formal-ai/issues/651)
-  gap analysis.
-- **E56-E68** ([#698](https://github.com/link-assistant/formal-ai/issues/698)-[#710](https://github.com/link-assistant/formal-ai/issues/710)),
-  created from the 2026-07-14 audit of every closed issue and merged PR.
-
-The largest architectural gaps those batches own are: the #559 mandate to
-retire the specialized handlers in favour of memory + the meta algorithm
-([#663](https://github.com/link-assistant/formal-ai/issues/663),
-[#699](https://github.com/link-assistant/formal-ai/issues/699)), real upstream
-benchmark execution ([#698](https://github.com/link-assistant/formal-ai/issues/698)),
-absorbing the JavaScript worker into WASM
-([#658](https://github.com/link-assistant/formal-ai/issues/658)), symbolic
-world-model behaviors ([#702](https://github.com/link-assistant/formal-ai/issues/702)),
-and driving external agent CLIs as an orchestrator
-([#703](https://github.com/link-assistant/formal-ai/issues/703)).
+- The #559 handler-migration mandate and its ratchet
+  ([#959](https://github.com/link-assistant/formal-ai/issues/959), tracked in
+  `data/meta/core-boundary-ledger.lino`).
+- Benchmark-frontier learning
+  ([#1087](https://github.com/link-assistant/formal-ai/issues/1087)),
+  requirement-derived editing
+  ([#1088](https://github.com/link-assistant/formal-ai/issues/1088)), gate
+  collapse ([#1089](https://github.com/link-assistant/formal-ai/issues/1089)),
+  and traceability
+  ([#1090](https://github.com/link-assistant/formal-ai/issues/1090)) — the
+  follow-ups #1085 left open.
+- Dynamic coding discovery ([#710](https://github.com/link-assistant/formal-ai/issues/710),
+  PR #888 merged, plans 06/07 active) and anticipatory learning
+  ([#705](https://github.com/link-assistant/formal-ai/issues/705)).
+- Delivery breadth: PWA/npm
+  ([#665](https://github.com/link-assistant/formal-ai/issues/665)),
+  Marketplace ([#666](https://github.com/link-assistant/formal-ai/issues/666)),
+  debugger ([#667](https://github.com/link-assistant/formal-ai/issues/667)),
+  shareable packages ([#668](https://github.com/link-assistant/formal-ai/issues/668)),
+  cloud sync ([#669](https://github.com/link-assistant/formal-ai/issues/669)),
+  WebVM ([#670](https://github.com/link-assistant/formal-ai/issues/670)).
 
 Issue #703's controller is rooted at `src/orchestration/`. A deny-by-default
 workspace capability gates every run; the seed client registry supplies six
@@ -1440,7 +1462,8 @@ in `src/web/formal_ai_worker.js`. The issue #408 benchmark matrix uses
 self-authored benchmark-family examples plus
 `data/benchmarks/text-manipulation-suite.lino`, which records 48 researched
 sources and drives 30 deterministic local variations per source through a
-1,440/1,440 pass-count ratchet. The benchmark gate reports per-source totals:
+1,440/1,440 pass-count ratchet — while the upstream instructed-editing
+analogue, CoEdIT, scores 0/20. The benchmark gate reports per-source totals:
 each source has a 3-check repository-local 10% floor and must pass the stronger
 30/30 local ratchet.
 
@@ -1469,7 +1492,7 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R558, plus per-issue blocks such as R499-1…R499-8 and R914-1…R914-15).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R558, plus per-issue blocks such as R499-1…R499-8, R914-1…R914-15, R1021-1…R1021-32, R1085-1…R1085-17, R1137-1…R1137-3, R710-01…R710-32, R710-D1…R710-D17, and R1138-B1…R1138-B12).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`link-foundation/link-cli`](https://github.com/link-foundation/link-cli) — default native transactional storage library.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — physical doublet store embedded by link-cli.

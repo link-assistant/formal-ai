@@ -1092,20 +1092,125 @@ leaf ledger records:
 - L21 is represented by the authored-shape ceiling and routing-order ratchet in
   `tests/unit/verifiable_task/ratchets.rs`.
 
-Those leaves remain unchecked below until their focused tests and static gates
-run against this exact combined tree. L1 is genuinely incomplete: the colon
-named-unknown corpus row is still a limitation and the floor is still 72 even
-though the generic route now wins dispatch. L19 is also incomplete: the current
-gate prohibits the retired category table and grader imports but does not scan
-the pinned upstream non-coding case sentences. L22–L24 remain measurement work,
-not implementation claims; no score or document will be updated without the
-corresponding online/cold run evidence.
+As written on 2026-09-17: L8–L12, L14–L16 and L20–L21 were represented in the
+tree but unchecked pending focused runs; L1 was genuinely incomplete (the
+colon named-unknown corpus row was still a limitation and the floor was still
+72), and L19's gate did not yet scan the pinned upstream non-coding case
+sentences. L22–L24 remain measurement work, not implementation claims; no
+score or document is updated without the corresponding online/cold run
+evidence. The 2026-09-18 section below records the verification that closed
+the implementation leaves.
+
+### Verification and leaf completion — 2026-09-18
+
+Every pin below ran green against this exact combined tree, re-run after plan
+09 leaves 13–15 landed the unified handler vocabulary (`da79a671d`):
+
+- **L1** — `issue_891_equation_corpus_solves_every_type` passes at floor 73,
+  with `issue_891_recorded_limitations_never_fabricate_answers` and
+  `every_limitation_is_still_honest_or_promoted` (which pins the
+  `named_unknown_colon_clause` promotion). `src/solver.rs` gates
+  `try_terminal_command` on `recognise_verifiable(prompt).is_none()`, so `Find
+  x: 5 * x = 45` routes to `verifiable_task` and answers `9`.
+- **L8** — `verifiable_task` is in `HANDLER_FUNCTIONS`
+  (`src/solver_dispatch.rs`), in `data/seed/handler-precedence.lino` in the
+  retired `pattern_inference` slot, and declared `disposition promote` /
+  `core_component verifiable_task_interpreter` in
+  `data/meta/core-boundary-ledger.lino`. The 228-case
+  `conversational_variation_benchmark_routes_every_case` and
+  `verifiable_task::ratchets` are green.
+- **L9–L12** — `src/solver_handlers/verifiable_task.rs` implements
+  `execute_candidates` (checks 1–2), `classify_agreement` (check 3),
+  `append_round_trip_checks` (check 4: equation substitution, entity bound,
+  edit non-identity) and `append_unit_check` (check 5, conversion factors read
+  from the `verifiable_unit_conversion` seed role). Pins:
+  `verifiable_task::execution` (4 tests) plus the in-module agreement tests.
+- **L14** — `verifiable_task::ledger` (4 tests): content addressing, tamper
+  rejection, recall-recomputes on a renumbered paraphrase, and forget →
+  offline rediscover → identical `derivation_id`.
+- **L15–L16** — `compose_object_count` and `OBJECT_CATEGORIES` are gone from
+  `src/`; category membership is `concept_lookup::lookup_surface` retrieval
+  with the seed `defined-by` graph as offline fallback, times stated
+  multiplicity. Pins: `object_categories_are_absent_from_the_runtime` and
+  `a_counted_category_is_answered_in_every_language`.
+- **L19** — `coding_discovery::no_memorization` (6 tests) now sweeps the
+  pinned upstream non-coding fields (`gsm8k/question`, `math/problem`,
+  `object_counting/input`, `coedit/src`, `coedit/tgt`) from the benchmark
+  cache, keeps five pinned canary sentences active when the cache is absent,
+  and stays green over `src/` and `data/seed/`.
+- **L20** — `tests/web/issue-1138-execution-parity.test.mjs` projects all 30
+  held-out paraphrases in the production worker with explicit
+  `verifiable_task:unverified:browser_execution_unavailable` evidence and no
+  `verifiable_task:executed` claim (verified stable across 30 repeated
+  contexts; one earlier run failed on the first solve with intent `unknown`
+  and did not reproduce in 37 subsequent runs — if it resurfaces, suspect a
+  seed-hydration race before the first `solve`, not the recognition itself). The worker-line-budget ratchet passes again after the tool's own
+  `--write` re-baseline;
+  `data/meta/worker-line-budget/formal_ai_worker_20.lino` records why the
+  shard carries the handler-registry mirror. Plan 02 L21 remains the open
+  browser-parity leaf for the *coding* pipeline: `worker-mirror.test.mjs`
+  ("every coding handler executes the shared meta-algorithm") is red there
+  because the browser composition search diverges from the green Rust search
+  (`coding_discovery::composition_search` 5/5) — that is plan 02's pin, not
+  an L20 pin.
+- **L21** —
+  `authored_word_problem_shapes_do_not_grow_and_are_demoted` pins the
+  three-shape ceiling and the precedence order (`verifiable_task` before
+  `arithmetic`), so authored word-problem shapes stay fallback candidates
+  below the derived route.
+
+### Measurement recipe — drafted 2026-09-18, not yet run (L22–L24)
+
+L22's plan-02 dependency is satisfied (plan 02 L22 landed the `full_slice`
+ledger schema), so only the runs remain; they are left to the integrating
+session. Slice-20 online, then cold-offline controls, then the two coding
+regression controls, then the wider slices:
+
+```sh
+cargo run --bin formal-ai -- benchmark run --suite gsm8k           --slice 20 --online --append
+cargo run --bin formal-ai -- benchmark run --suite math            --slice 20 --online --append
+cargo run --bin formal-ai -- benchmark run --suite object_counting --slice 20 --online --append
+cargo run --bin formal-ai -- benchmark run --suite coedit          --slice 20 --online --append
+FORMAL_AI_CACHE_DIR=$(mktemp -d) cargo run --bin formal-ai -- benchmark run --suite gsm8k  --slice 20 --append
+FORMAL_AI_CACHE_DIR=$(mktemp -d) cargo run --bin formal-ai -- benchmark run --suite coedit --slice 20 --append
+cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20 --online --append
+cargo run --bin formal-ai -- benchmark run --suite mbpp      --slice 20 --online --append
+cargo run --bin formal-ai -- benchmark run --suite gsm8k  --slice 200 --online --append
+cargo run --bin formal-ai -- benchmark run --suite coedit --slice 200 --online --append
+```
+
+L23's ledger row shape (mirrors the 2026-09-15 rows; `runner` names the exact
+invocation so the row reproduces; `passed` is whatever the run produces):
+
+```
+external_benchmark_result_<suite>_<date>_<slice>
+  record_type "external_benchmark_result"
+  suite "gsm8k" | "math" | "object_counting" | "coedit"
+  date "<run date>"
+  slice "20" | "200"
+  passed "<measured>"
+  failed "<measured>"
+  total "<measured>"
+  solver_version "<current>"
+  runner "formal-ai benchmark run --suite <suite> --slice <n> --online"
+  note "honest upstream score: every case is graded by the upstream criterion"
+```
+
+L24 draft (docs/benchmarks.md "Honest current numbers", applied by plan 11
+rows D229–D232 only after the rows exist): the sentence "Other suite rows
+remain at their latest `2026-09-07` measurements" is replaced by one naming
+the new measurement date and solver version for GSM8K, MATH, BIG-bench object
+counting and CoEdIT; each of the four table rows keeps its upstream grading
+description and takes its measured `passed / total`; movement attributable to
+`AnswerShape` presentation alone is labelled as presentation, not reasoning,
+in the surrounding prose, per the honesty rule in "Benchmark commands and the
+honest numbers expected" above.
 
 ---
 
 ## Implementation leaves
 
-- [ ] **L1** — Fix the `Find x:` misroute: `src/solver.rs:621-625` yields when the
+- [x] **L1** — Fix the `Find x:` misroute: `src/solver.rs:621-625` yields when the
       prompt carries a named-unknown declaration. Promote
       `named_unknown_colon_clause`
       (`data/benchmarks/equation-type-corpus.lino:972-980`) from limitation to
@@ -1137,31 +1242,31 @@ corresponding online/cold run evidence.
       and `try_dispatch_entries` never rises. Plan 00 §6.2 forbids a rise and
       plan 09 makes the ratchet strict; raising a ceiling for one commit would
       have been a loosened gate (plan 00 §9 R12).**
-- [ ] **L8** — Add `src/solver_handlers/verifiable_task.rs` with
+- [x] **L8** — Add `src/solver_handlers/verifiable_task.rs` with
       `try_verifiable_task_with_online`; register it in the slot L17' vacated, in
       `HANDLER_FUNCTIONS` (`src/solver_dispatch.rs:286`) and
       `data/seed/handler-precedence.lino`, in one commit; declare it a **generic
       interpreter** in `data/meta/core-boundary-ledger.lino`, not a handler;
       assert the 228-case conversational suite is unchanged. This leaf lands
       after plan 09 leaves 1-5 have made the ratchet strict.
-- [ ] **L9** — Add `execute_candidates` and `VerifiedAnswer`: lower, run in
+- [x] **L9** — Add `execute_candidates` and `VerifiedAnswer`: lower, run in
       `AgentWorkspace`, stdout is the answer. Checks 1 and 2 only.
-- [ ] **L10** — Add check 3 (agreement between two disjoint derivations) and the
+- [x] **L10** — Add check 3 (agreement between two disjoint derivations) and the
       disagreement-yields-a-gap test.
-- [ ] **L11** — Add check 4 (round trip) per expectation kind, including the
+- [x] **L11** — Add check 4 (round trip) per expectation kind, including the
       equation substitution for `Unknown` and the entity bound for `Count`.
-- [ ] **L12** — Add check 5 (unit consistency); wire unit conversion as a
+- [x] **L12** — Add check 5 (unit consistency); wire unit conversion as a
       retrieved fact, addressing the `unit_carrying_*` limitation class
       (`data/benchmarks/equation-type-corpus.lino:936-953`).
 - [x] **L13** — Add `src/verifiable_task/ledger.rs` mirroring
       `DiscoveredProcedureLedger`; store the derivation, never the value.
-- [ ] **L14** — Add the recall-recomputes test and the forget → rediscover →
+- [x] **L14** — Add the recall-recomputes test and the forget → rediscover →
       same-`derivation_id` round trip, offline from committed captures.
-- [ ] **L15** — Retrieved category membership for `Count`: query the registry's
+- [x] **L15** — Retrieved category membership for `Count`: query the registry's
       `wikidata` / `wiktionary` / `wordnet` records for subclass/hypernym
       evidence; the composed program counts by retrieved membership × stated
       multiplicity.
-- [ ] **L16** — **Delete** `compose_object_count` and `OBJECT_CATEGORIES`
+- [x] **L16** — **Delete** `compose_object_count` and `OBJECT_CATEGORIES`
       (`src/solver_synthesis.rs:248-301, 339-447`) and the call site at `:115`.
       Add the category-table ratchet. **L15 must be green in the same commit: the
       curated 13/13 industry slice contains an object-counting case the table
@@ -1172,21 +1277,30 @@ corresponding online/cold run evidence.
 - [x] **L18** — Add the 30 held-out five-language cases as
       `data/benchmarks/verifiable-task-paraphrases.lino` plus the routing and
       recognition suites.
-- [ ] **L19** — Extend the no-memorization gate to GSM8K questions, MATH
+- [x] **L19** — Extend the no-memorization gate to GSM8K questions, MATH
       problems, BIG-bench inputs and CoEdIT source/target strings.
-- [ ] **L20** — Browser/WASM parity: recognise, formalize, derive, render,
+- [x] **L20** — Browser/WASM parity: recognise, formalize, derive, render,
       label unverified; worker budgets respected; web honesty test.
-- [ ] **L21** — Add the word-problem-shape ratchet and demote the three authored
+      *(plan-02 note: the browser parity leaf for the coding pipeline is
+      plan 02 L21, still open — `worker-mirror.test.mjs`'s composition-search
+      assertion is its pin, not an L20 pin.)*
+- [x] **L21** — Add the word-problem-shape ratchet and demote the three authored
       shapes below the derived candidate
       (`src/calculation_word_problem.rs:560-565`).
 - [ ] **L22** — *(lands after plan 02 L22, which teaches the ledger its second
       floor, so a re-measurement writes into a schema that already knows two
-      slices — plan 00 §9 X8)* Re-measure all four suites at slice 20, online and cold-offline;
+      slices — plan 00 §9 X8; that dependency is satisfied as of 2026-09-18, so
+      only the runs remain — see "Measurement recipe" above)* Re-measure all four suites at slice 20, online and cold-offline;
       re-run the two coding controls; append every row; record the failure
       frontier through `--frontier-record` (`src/cli_benchmark.rs:57-61`).
 - [ ] **L23** — Run the wider slices (200) for GSM8K and CoEdIT and append, so the
-      first-20 representativeness question is answered with a number.
+      first-20 representativeness question is answered with a number. *(The
+      commands and the ledger row shape are drafted in "Measurement recipe"
+      above; the runs are left to the integrating session.)*
 - [ ] **L24** — Update every document listed below with the measured values.
+      *(The replacement shape for `docs/benchmarks.md`'s "Honest current
+      numbers" is drafted in "Measurement recipe" above; it is applied by plan
+      11's rows D229–D232 only after L22/L23's rows exist.)*
 
 ---
 

@@ -39,6 +39,28 @@ pub struct SolveArgs {
     pub pull_request: Option<String>,
     /// Refuse to commit; print the diff instead. Default-deny for mutation.
     pub commit: bool,
+    /// Live authoring mode: workspace-relative files the Agent CLI must write.
+    pub produces: Vec<String>,
+    /// Live authoring mode: repository-relative landing spots, pairwise with
+    /// `produces` (missing entries default to their `produces` twin).
+    pub into: Vec<String>,
+    /// Live authoring mode: repository-relative directory copied into the
+    /// workspace before the run; seed files are context, not authored effects.
+    pub seed: Option<String>,
+    /// Live authoring mode: texts at least one produced artifact must contain.
+    pub contains: Vec<String>,
+    /// Live authoring mode: port the authoring server binds.
+    pub port: u16,
+    /// Live authoring mode: the commit subject.
+    pub message: Option<String>,
+    /// Test seam: the `serve` executable the loop spawns, instead of
+    /// `FORMAL_AI_SERVER` / the running binary.
+    #[doc(hidden)]
+    pub server_executable: Option<PathBuf>,
+    /// Test seam: the Agent CLI executable the loop drives, instead of
+    /// `AGENT` / `agent` on `PATH`.
+    #[doc(hidden)]
+    pub agent_executable: Option<PathBuf>,
 }
 
 impl Default for SolveArgs {
@@ -52,6 +74,14 @@ impl Default for SolveArgs {
             evidence: PathBuf::new(),
             pull_request: None,
             commit: false,
+            produces: Vec::new(),
+            into: Vec::new(),
+            seed: None,
+            contains: Vec::new(),
+            port: 8899,
+            message: None,
+            server_executable: None,
+            agent_executable: None,
         }
     }
 }
@@ -97,6 +127,19 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
     }
     if args.evidence.as_os_str().is_empty() {
         return Err("--evidence must name a directory".into());
+    }
+    // The live authoring loop (plan 03 L13): the reduced
+    // `scripts/author-change-with-formal-ai.sh` translates its CLI onto this
+    // surface, so the loop's logic lives here where it is unit-testable.
+    if !args.produces.is_empty() {
+        let outcome = crate::authoring_loop::run_authoring(args)?;
+        return Ok(SolveOutcome {
+            diff: String::new(),
+            committed: outcome.committed,
+            commit_message: outcome.commit_message,
+            evidence_files: vec![args.evidence.clone()],
+            open: Vec::new(),
+        });
     }
 
     let input = requirement(args)?;

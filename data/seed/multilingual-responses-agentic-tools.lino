@@ -319,6 +319,26 @@ multilingual_responses
     intent agentic_formalization_report
     language es
     text "Se formalizó {subject} en una base de conocimiento Links Notation: {records} registros que representan {covered_count} de {primitive_count} primitivas del protocolo ({coverage}).\n\nBase de conocimiento ({path}):\n\n{kb}"
+  response response_agentic_formalization_need_report_en
+    intent agentic_formalization_need_report
+    language en
+    text "needs_raised {total}; needs_grounded {grounded}."
+  response response_agentic_formalization_need_report_ru
+    intent agentic_formalization_need_report
+    language ru
+    text "Потребностей поднято: {total}; обосновано: {grounded}."
+  response response_agentic_formalization_need_report_hi
+    intent agentic_formalization_need_report
+    language hi
+    text "उठाई गई आवश्यकताएँ: {total}; प्रमाणित: {grounded}।"
+  response response_agentic_formalization_need_report_zh
+    intent agentic_formalization_need_report
+    language zh
+    text "提出的需求 {total}；已获依据 {grounded}。"
+  response response_agentic_formalization_need_report_es
+    intent agentic_formalization_need_report
+    language es
+    text "Necesidades planteadas: {total}; fundamentadas: {grounded}."
   response response_file_analysis_heading_en
     intent file_analysis_heading
     language en

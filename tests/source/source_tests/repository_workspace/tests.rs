@@ -12,7 +12,11 @@ use std::path::{Path, PathBuf};
 const MAX_RUST_LINES: usize = 1_000;
 
 /// Every file the module tree is declared to consist of (plan 03 "New module
-/// tree"), so a file added outside the declared set is noticed.
+/// tree"), so a file added outside the declared set is noticed. The three
+/// additions beyond plan 03's original six are declared there too, each with
+/// the leaf that owns it: `outcome.rs` (plan 06 L13/L15 surface honesty),
+/// `world_model.rs` (plan 15's evidence-backed deltas), and
+/// `protocol-header.txt` (plan 03 L8's rediscovery header).
 const DECLARED: &[&str] = &[
     "src/repository_workspace/mod.rs",
     "src/repository_workspace/clone.rs",
@@ -20,6 +24,9 @@ const DECLARED: &[&str] = &[
     "src/repository_workspace/edit.rs",
     "src/repository_workspace/verify.rs",
     "src/repository_workspace/diff.rs",
+    "src/repository_workspace/outcome.rs",
+    "src/repository_workspace/world_model.rs",
+    "src/repository_workspace/protocol-header.txt",
     "src/cli_solve.rs",
 ];
 

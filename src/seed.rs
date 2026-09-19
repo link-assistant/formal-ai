@@ -41,6 +41,7 @@ mod model_aliases;
 mod operation_vocabulary;
 pub(crate) mod parser;
 mod personas;
+mod planner_precedence;
 mod projects;
 mod proof_programs;
 mod release_timelines;
@@ -90,11 +91,11 @@ pub use embedded::{
     MULTILINGUAL_RESPONSES_LINO, MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO, MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
-    PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
-    PROOF_PROGRAM_TEMPLATES_LINO, QUESTION_NECESSITY_LINO, RELEASE_TIMELINES_LINO, RESPONSE_FILES,
-    SELF_IMPROVEMENT_LOOP_LINO, SENTENCE_PUNCTUATION_LINO, SHELL_INTENTS_LINO,
-    SOURCES_REGISTRY_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOL_RESOURCE_SCOPES_LINO,
-    TOOLS_LINO, seed_files,
+    PLANNER_PRECEDENCE_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
+    PROMPT_PATTERNS_LINO, PROOF_PROGRAM_TEMPLATES_LINO, QUESTION_NECESSITY_LINO,
+    RELEASE_TIMELINES_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SENTENCE_PUNCTUATION_LINO,
+    SHELL_INTENTS_LINO, SOURCES_REGISTRY_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
+    TOOL_RESOURCE_SCOPES_LINO, TOOLS_LINO, seed_files,
 };
 pub use entity_names::{EntityName, entity_names};
 pub use facts::{FactRecord, LocalizedFact, facts};
@@ -119,6 +120,9 @@ pub use operation_vocabulary::{
     OperationLanguageForms, OperationTrigger, OperationVocabulary, operation_vocabulary,
 };
 pub use personas::{Persona, PersonaSeeds, PersonaTopic, persona_seeds};
+pub use planner_precedence::{
+    PLANNER_PRECEDENCE_PATH, planner_precedence, planner_precedence_from,
+};
 pub use projects::{
     LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry, projects_registry,
 };

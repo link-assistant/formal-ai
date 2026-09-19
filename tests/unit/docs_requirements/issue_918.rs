@@ -40,8 +40,8 @@ fn issue_918_case_study_and_release_metadata_are_traceable() {
         &read(root.join("ROADMAP.md")),
         &[
             "Issue #918 Minimal-Core Boundary And Seed-Metadata Audit (PR #986)",
-            "46 recursive handler sources",
-            "19,543 outside-core lines",
+            "at delivery it recorded 46 recursive handler sources",
+            "data/meta/core-boundary-ledger.lino",
             "3,447 remaining metadata-gap records",
         ],
     );

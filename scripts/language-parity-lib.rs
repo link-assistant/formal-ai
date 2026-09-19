@@ -1,5 +1,10 @@
 //! Structural five-language parity census shared by the parity gate and the
 //! repository debt ratchet.
+//!
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//! ```
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;

@@ -628,3 +628,34 @@ meanings
         text 格鲁吉亚时间
       surface
         text 第比利斯时间
+  calendar_hour
+    grounded-in Q2746606
+    defined-by calendar_day
+    role calendar_hour_reference
+    lexeme en
+      surface
+        text hour
+      surface
+        text hours
+    lexeme ru
+      surface
+        text часа
+      surface
+        text часов
+      surface
+        text "час назад"
+    lexeme hi
+      surface
+        text घंटे
+      surface
+        text घंटा
+      surface
+        text घंटों
+    lexeme zh
+      surface
+        text 小时
+    lexeme es
+      surface
+        text hora
+      surface
+        text horas

@@ -74,6 +74,8 @@ pub const MEANINGS_CODING_REQUEST_LINO: &str =
     include_str!("../../data/seed/meanings-coding-request.lino");
 pub const MEANINGS_CODING_STRUCTURE_LINO: &str =
     include_str!("../../data/seed/meanings-coding-structure.lino");
+pub const MEANINGS_CODING_STRUCTURE_2_LINO: &str =
+    include_str!("../../data/seed/meanings-coding-structure-2.lino");
 pub const MEANINGS_CODING_TASKS_LINO: &str =
     include_str!("../../data/seed/meanings-coding-tasks.lino");
 pub const MEANINGS_COMPUTER_USE_LINO: &str =
@@ -131,6 +133,8 @@ pub const MEANINGS_REPOSITORY_WORKFLOW_LINO: &str =
     include_str!("../../data/seed/meanings-repository-workflow.lino");
 pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../data/seed/meanings-research-table.lino");
+pub const MEANINGS_ROUTING_VOCABULARY_LINO: &str =
+    include_str!("../../data/seed/meanings-routing-vocabulary.lino");
 pub const MEANINGS_SEARCH_LINO: &str = include_str!("../../data/seed/meanings-search.lino");
 pub const MEANINGS_SELECTION_CRITERIA_LINO: &str =
     include_str!("../../data/seed/meanings-selection-criteria.lino");
@@ -221,6 +225,7 @@ pub const OBLIGATION_MISMATCH_LINO: &str = include_str!("../../data/seed/obligat
 pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../data/seed/operation-vocabulary.lino");
 pub const PERSONAS_LINO: &str = include_str!("../../data/seed/personas.lino");
+pub const PLANNER_PRECEDENCE_LINO: &str = include_str!("../../data/seed/planner-precedence.lino");
 pub const PROGRAM_CST_GRAMMARS_LINO: &str =
     include_str!("../../data/seed/program-cst-grammars.lino");
 pub const PROGRAM_PLAN_RULES_LINO: &str = include_str!("../../data/seed/program-plan-rules.lino");
@@ -301,6 +306,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-coding-catalog.lino", MEANINGS_CODING_CATALOG_LINO),
         ("data/seed/meanings-coding-request.lino", MEANINGS_CODING_REQUEST_LINO),
         ("data/seed/meanings-coding-structure.lino", MEANINGS_CODING_STRUCTURE_LINO),
+        ("data/seed/meanings-coding-structure-2.lino", MEANINGS_CODING_STRUCTURE_2_LINO),
         ("data/seed/meanings-coding-tasks.lino", MEANINGS_CODING_TASKS_LINO),
         ("data/seed/meanings-computer-use.lino", MEANINGS_COMPUTER_USE_LINO),
         ("data/seed/meanings-concept-lookup.lino", MEANINGS_CONCEPT_LOOKUP_LINO),
@@ -336,6 +342,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-proof.lino", MEANINGS_PROOF_LINO),
         ("data/seed/meanings-repository-workflow.lino", MEANINGS_REPOSITORY_WORKFLOW_LINO),
         ("data/seed/meanings-research-table.lino", MEANINGS_RESEARCH_TABLE_LINO),
+        ("data/seed/meanings-routing-vocabulary.lino", MEANINGS_ROUTING_VOCABULARY_LINO),
         ("data/seed/meanings-selection-criteria.lino", MEANINGS_SELECTION_CRITERIA_LINO),
         ("data/seed/meanings-semantic-meta.lino", MEANINGS_SEMANTIC_META_LINO),
         ("data/seed/meanings-skill-compiler.lino", MEANINGS_SKILL_COMPILER_LINO),
@@ -421,6 +428,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/obligation-mismatch.lino", OBLIGATION_MISMATCH_LINO),
         ("data/seed/operation-vocabulary.lino", OPERATION_VOCABULARY_LINO),
         ("data/seed/personas.lino", PERSONAS_LINO),
+        ("data/seed/planner-precedence.lino", PLANNER_PRECEDENCE_LINO),
         ("data/seed/program-cst-grammars.lino", PROGRAM_CST_GRAMMARS_LINO),
         ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
         ("data/seed/projects.lino", PROJECTS_LINO),
@@ -493,6 +501,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_CODING_CATALOG_LINO,
     MEANINGS_CODING_REQUEST_LINO,
     MEANINGS_CODING_STRUCTURE_LINO,
+    MEANINGS_CODING_STRUCTURE_2_LINO,
     MEANINGS_CODING_TASKS_LINO,
     MEANINGS_COMPUTER_USE_LINO,
     MEANINGS_CONCEPT_LOOKUP_LINO,
@@ -528,6 +537,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_PROOF_LINO,
     MEANINGS_REPOSITORY_WORKFLOW_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
+    MEANINGS_ROUTING_VOCABULARY_LINO,
     MEANINGS_SEARCH_LINO,
     MEANINGS_SELECTION_CRITERIA_LINO,
     MEANINGS_SEMANTIC_META_LINO,

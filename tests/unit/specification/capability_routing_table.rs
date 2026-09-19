@@ -10,7 +10,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::capability_routing::{
-    Act, Locus, ObjectType, RoutingOutcome, route_with, routing_table_from,
+    Act, Locus, ObjectType, RoutingOutcome, route, route_with, routing_table_from,
 };
 
 fn repo_root() -> PathBuf {
@@ -23,14 +23,18 @@ fn table_text() -> String {
         .unwrap_or_else(|error| panic!("capability-routing.lino readable: {error}"))
 }
 
-const OBJECTS: [ObjectType; 10] = [
+const OBJECTS: [ObjectType; 14] = [
     ObjectType::Url,
     ObjectType::Path,
+    ObjectType::Pattern,
+    ObjectType::PathSet,
     ObjectType::PathScope,
     ObjectType::QuotedContent,
     ObjectType::TimeExpression,
     ObjectType::LanguageName,
     ObjectType::QuantityQuestion,
+    ObjectType::TaskList,
+    ObjectType::Delegation,
     ObjectType::BareTerm,
     ObjectType::SelfSurface,
     ObjectType::None,
@@ -69,6 +73,11 @@ const ADVERTISED: &[&str] = &[
     "concept_measurement_lookup",
     "report_issue",
     "ask_user",
+    "glob",
+    "read_many",
+    "multi_edit",
+    "todo",
+    "subagent",
 ];
 
 #[test]
@@ -166,5 +175,28 @@ fn a_fallback_is_named_in_data_not_in_a_rust_cascade() {
             assert_eq!(capability, "shell");
         }
         other => panic!("an unadvertised preferred capability must lower, got {other:?}"),
+    }
+}
+
+/// Issue #1138 B10, benchmark `en_news_07` (and its zh variation): "Summarise
+/// the last few hours for me, with links." evidences a relative period (a
+/// `calendar_hour` seed meaning) and no narrower act, so its triple is
+/// (time_expression, retrieve, dialogue). That row must route to the fresh-web
+/// digest capability -- in every language the corpus names -- instead of
+/// letting the request fall through to the unknown opener.
+#[test]
+fn a_recent_period_summary_routes_to_the_fresh_web_digest() {
+    for prompt in [
+        "Summarise the last few hours for me, with links.",
+        "把最近几个小时的情况总结一下，附上链接。",
+    ] {
+        let outcome = route(prompt, &["web_search"]);
+        assert_eq!(
+            outcome,
+            RoutingOutcome::Routed {
+                capability: String::from("web_search"),
+            },
+            "a recent-period digest request must route to web_search, got {prompt:?} -> {outcome:?}"
+        );
     }
 }

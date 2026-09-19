@@ -16,9 +16,9 @@ debt_ratchet
     note "corrected undercount. 40 counted the handler-precedence table only, so the five prelude methods -- diagnostic, nl_tool, behavior_rules, feature_capability, playwright_script -- ran on every turn ahead of that table while sitting outside the ledger entirely. Issue #1138 B9, plan 09 leaf 5. Reviewed upward by ten on plan 09 leaf 13: the census now names the ten browser-only rows of handler-precedence.lino (exact_memory_query through software_project_request), which ran in the worker all along while sitting outside the ledger entirely. No handler was written; the tree is unchanged."
   ceiling
     measure literal_predicates
-    value 543
+    value 544
     how "occurrences of a contains( or starts_with( call with a double-quoted first argument in src/**/*.rs"
-    note "lowered after HTTP provenance checks were generalized from repeated prefix predicates to one parsed scheme predicate (issue #1138, plan 09); reviewed upward by one for the no-memorization ordinary-name exemption's lookup, after the partitive aggregate rule abandoned its three inline reduce_sum/reduce_product literals to read the seed's defined-by reduction edges instead (plan 02 L23/L20)"
+    note "lowered after HTTP provenance checks were generalized from repeated prefix predicates to one parsed scheme predicate (issue #1138, plan 09); reviewed upward by one for the no-memorization ordinary-name exemption's lookup, after the partitive aggregate rule abandoned its three inline reduce_sum/reduce_product literals to read the seed's defined-by reduction edges instead (plan 02 L23/L20); reviewed upward by one more for the live authoring loop's resumable-session protocol check, which must recognize the Agent CLI's ses_ id prefix by shape (plan 03 L13)"
   ceiling
     measure hardcoded_language_rows
     value 1263
@@ -48,8 +48,9 @@ debt_ratchet
     how "name: entries in the unique worker module that defines synchronousHandlerCandidates, discovered by scanning every JavaScript file under src/web/worker. The shipped count is zero because data/seed/browser-handler-precedence.lino owns membership, arguments and order; discovering the owner prevents a moved registry from disappearing outside a fixed-path scan."
   ceiling
     measure store_read_share
-    value 1
-    how "occurrences of from_store( in src/**/*.rs: the routing decisions served by the link store rather than the seed tables. This is the one measure here whose strict direction upward is explicit, so a value above the recorded one fails with -lower the reviewed ceiling- and a value below it is the regression. It is a count of store-reading entry points and not a percentage, because the value field is an integer and a fraction this plan has not yet run may not be stated as one."
+    value 2
+    how "occurrences of from_store( in src/**/*.rs: the store-reading entry points, which since plan 09 leaf 40 are the backend constructor over an explicit store and LinkStoreSource::shared(), the cached boot accessor every production call site -- run_handler, handler_matches, promoted_relevants -- enters through. This is the one measure here whose strict direction upward is explicit, so a value above the recorded one fails with -lower the reviewed ceiling- and a value below it is the regression. It is a count of entry points and not a percentage, because the value field is an integer and a fraction this plan has not yet run may not be stated as one."
+    note "Raised from 1 to 2 by issue #1138 B9 plan 09 leaf 40: the default condition backend flipped from the parsed seed tables to the projected link store, SeedTables was deleted, and every production rule and promotion read now flows through the store accessor. The count names entry points, not reads -- after this leaf every routing decision those entry points serve is store-served."
   ceiling
     measure docs_requirements_suites
     value 5

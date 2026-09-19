@@ -957,7 +957,7 @@ data — never as Rust literals, which `scripts/check-hardcoded-language.rs` wou
 - [x] Add `tests/unit/docs_requirements/issue_1138.rs` grep-pins. The pin follows the
       native, recipe-driven and live agentic call sites and asserts that evidence hashes
       the exact observed byte slice.
-- [ ] Regenerate `data/meta/self-ast/`; run
+- [x] Regenerate `data/meta/self-ast/`; run
       `rust-script scripts/assemble-requirements.rs --write`.
 - [x] Add the `changelog.d/` fragment.
 

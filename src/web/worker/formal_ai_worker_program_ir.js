@@ -36,6 +36,20 @@ function browserTypesUnify(left, right) {
     value.startsWith(`${prefix}<`) && value.endsWith(">")
       ? value.slice(prefix.length + 1, -1)
       : null;
+  // An ordered sequence is a sequence, so order-indifferent consumers accept
+  // it. The reverse never unifies: a producer that fixes no element order
+  // cannot feed a consumer that depends on one (mirrors the native
+  // IrType::OrderedSequence rules).
+  const orderedA = compound(a, "ordered");
+  const orderedB = compound(b, "ordered");
+  if (orderedA !== null && orderedB !== null) {
+    return browserTypesUnify(orderedA, orderedB);
+  }
+  if (orderedA !== null) {
+    const innerB = compound(b, "sequence");
+    return innerB !== null ? browserTypesUnify(orderedA, innerB) : false;
+  }
+  if (orderedB !== null) return false;
   for (const prefix of ["sequence", "pair", "mapping"]) {
     const innerA = compound(a, prefix);
     const innerB = compound(b, prefix);
@@ -105,6 +119,10 @@ function browserFragmentCatalog() {
   const fragments = [];
   fragments.push(...browserFragmentsFrom(
     seedRawText(SEED_RAW, "meanings-coding-structure.lino"),
+    "meanings", "meaning", "idiom",
+  ));
+  fragments.push(...browserFragmentsFrom(
+    seedRawText(SEED_RAW, "meanings-coding-structure-2.lino"),
     "meanings", "meaning", "idiom",
   ));
   fragments.push(...browserFragmentsFrom(
@@ -252,7 +270,7 @@ function browserComposeProgramIr(prompt, normalized, structures) {
   ));
   let pool = parameters.map((parameter) => ({
     source: parameter.name, type: parameter.type, fragments: [], coverage: [],
-    sources: [], licenses: [], depth: 1, coherence: 0,
+    sources: [], licenses: [], depth: 1, coherence: 0, applications: 1,
   }));
   for (const fragment of relevant) {
     for (let index = 0; index < fragment.arguments.length; index += 1) {
@@ -260,7 +278,7 @@ function browserComposeProgramIr(prompt, normalized, structures) {
         source: fragment.arguments[index],
         type: fragment.signature[index] || `unknown:${index}`,
         fragments: [], coverage: [], sources: [], licenses: [], depth: 1,
-        coherence: 0,
+        coherence: 0, applications: 1,
       });
     }
     if (fragment.signature.length === 0) {
@@ -269,6 +287,7 @@ function browserComposeProgramIr(prompt, normalized, structures) {
         fragments: [fragment.id], coverage: browserFragmentCoverage(fragment, structures),
         sources: fragment.grounding ? [fragment.grounding] : [],
         licenses: fragment.license ? [fragment.license] : [], depth: 1, coherence: 0,
+        applications: 1,
       });
     }
   }
@@ -278,12 +297,19 @@ function browserComposeProgramIr(prompt, normalized, structures) {
     const layer = [];
     for (const fragment of relevant) {
       if (fragment.signature.length === 0) continue;
+      // A comprehension's predicate naturally references the binder the same
+      // application introduces, so candidates mentioning it are tried before
+      // computed junk (mirrors the native binder-slot grounding).
+      const binder = fragment.arguments[0];
+      const mentionsBinder = (expression) =>
+        (binder && browserIdentifierCount(expression.source, binder) > 0 ? 0 : 1);
       const choices = fragment.signature.map((type, index) => snapshot
         .filter((expression) => browserTypesUnify(type, expression.type))
         .sort((left, right) => {
           const leftName = left.source === fragment.arguments[index] ? 0 : 1;
           const rightName = right.source === fragment.arguments[index] ? 0 : 1;
-          return leftName - rightName || right.coverage.length - left.coverage.length ||
+          return leftName - rightName || mentionsBinder(left) - mentionsBinder(right) ||
+            right.coverage.length - left.coverage.length ||
             right.coherence - left.coherence || left.depth - right.depth ||
             left.source.localeCompare(right.source);
         }).slice(0, 8));
@@ -302,7 +328,9 @@ function browserComposeProgramIr(prompt, normalized, structures) {
           sources: unique([fragment.grounding, ...arguments_.flatMap((argument) => argument.sources)].filter(Boolean)),
           licenses: unique([fragment.license, ...arguments_.flatMap((argument) => argument.licenses)].filter(Boolean)),
           depth,
+          applications: 1 + arguments_.reduce((total, argument) => total + argument.applications, 0),
           coherence: browserFragmentCoherence(fragment, arguments_, parameters) +
+            browserInputDomainCoherence(arguments_) +
             arguments_.reduce((total, argument) => total + argument.coherence, 0),
         });
       }
@@ -312,11 +340,18 @@ function browserComposeProgramIr(prompt, normalized, structures) {
   const complete = pool.filter((expression) => expression.fragments.length > 0 &&
     (!resultType || browserTypesUnify(resultType, expression.type)) &&
     coverable.every((id) => expression.coverage.includes(id)))
+    .filter((expression) => browserLoweredCandidateIsClosed(expression.source,
+      new Set(relevant.flatMap((fragment) => fragment.arguments)),
+      parameters.map((parameter) => parameter.name)))
     .sort((left, right) =>
       browserUnboundPlaceholderCount(left, relevant, parameters) -
         browserUnboundPlaceholderCount(right, relevant, parameters) ||
       parameters.filter((parameter) => !left.source.includes(parameter.name)).length -
         parameters.filter((parameter) => !right.source.includes(parameter.name)).length ||
+      // Least action first: native sorts by action cost before anything else,
+      // so a derivation reusing an already-bound name outranks one that
+      // recomputes a subprogram to fill the same slot.
+      left.applications - right.applications ||
       left.depth - right.depth ||
       right.coherence - left.coherence ||
       right.fragments.length - left.fragments.length || left.source.localeCompare(right.source));

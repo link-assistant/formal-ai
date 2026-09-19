@@ -661,3 +661,21 @@ pub const ROLE_CAPABILITY_CONTENT_ASSIGNMENT: &str = "capability_content_assignm
 /// has to be written down. Only suffixes that are *not* also workspace file
 /// extensions are listed -- `rs`, `py`, `js`, `md` stay paths.
 pub const ROLE_CAPABILITY_WEB_HOST_SUFFIX: &str = "capability_web_host_suffix";
+/// Semantic role: the subject of a request is a *list of tasks to track*
+/// (plan 10 leaf 11, issue #758's `todo` capability).
+///
+/// "todo list", "список задач", "कार्य सूची", "待办列表", "lista de tareas" --
+/// the object noun that lets a plan-of-work request route by what it is about
+/// rather than by which ten phrases the seed memorized. The recorded strings
+/// are nouns only; the verb that acts on them is the act axis's business.
+pub const ROLE_CAPABILITY_TASK_LIST_NOUN: &str = "capability_task_list_noun";
+/// Semantic role: the closed class that marks a request as a *delegation* --
+/// the work is handed to another agent, not performed here
+/// (plan 10 leaf 11, issue #758's `subagent` capability).
+///
+/// "delegate", "subagent", "поручи", "подагент", "सौंपें", "उपएजेंट", "委派",
+/// "子代理", "delega", "subagente" -- verb stems and recipient nouns of one
+/// class, so "delegate this investigation" and "hand this to an agent" are the
+/// same object. Like [`ROLE_CAPABILITY_PRIOR_TURN_REFERENCE`] it is a class
+/// with no character-level signal, so its members are seed data.
+pub const ROLE_CAPABILITY_DELEGATION_MARKER: &str = "capability_delegation_marker";

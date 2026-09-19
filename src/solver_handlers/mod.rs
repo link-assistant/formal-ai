@@ -58,22 +58,15 @@ use crate::calculation::{
     PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
     interpretation_statements,
 };
-use crate::concepts::{
-    ConceptRecord, extract_concept_query, lookup_concept_query, resolve_context_label,
-};
 use crate::engine::{
-    ExecutionStatus, SymbolicAnswer, answer_links_notation, hello_world_program_by_alias,
-    knowledge_links_notation, stable_id,
+    ExecutionStatus, SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
 };
 use crate::event_log::{EventLog, build_evidence_links};
-use crate::language::detect as detect_language;
-use crate::seed::{localized_response, response_for};
 use crate::solver_helpers::{
     build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
-    extract_backticked, extract_concept_from_query, extract_javascript_program,
-    extract_quoted_phrase, format_write_script_execution, humanize_url,
-    infer_program_languages_from_code, infer_source_from_prompt, is_write_script_request,
-    normalize_code_meaning, normalize_meaning, translate_program,
+    extract_backticked, extract_javascript_program, extract_quoted_phrase,
+    format_write_script_execution, infer_program_languages_from_code, infer_source_from_prompt,
+    is_write_script_request, normalize_code_meaning, normalize_meaning, translate_program,
 };
 use crate::translation::{
     detect_source_language, detect_target_language, extract_unquoted_translation_surface,
@@ -205,190 +198,11 @@ fn render_calculation_reasoning_step(index: usize, step: &str) -> String {
     }
 }
 
-pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    try_concept_lookup_with_response_language(prompt, log, None)
-}
-
-/// Concept lookup that can be forced to render in a specific response language.
-///
-/// Issue #556: a response-language follow-up replays the previous request with
-/// a forced target language so the whole answerable class re-renders in the
-/// requested language. When `forced_response_language` is `Some`, it is used
-/// unless the prompt already carries its own explicit response-language marker
-/// (e.g. "what is X in Russian"), which stays authoritative.
-pub fn try_concept_lookup_with_response_language(
-    prompt: &str,
-    log: &mut EventLog,
-    forced_response_language: Option<&str>,
-) -> Option<SymbolicAnswer> {
-    let mut query = extract_concept_query(prompt)?;
-    if query.response_language.is_none()
-        && let Some(forced) = forced_response_language
-    {
-        query.response_language = Some(forced.to_owned());
-    }
-    log.append("concept_lookup:request", query.term.clone());
-    if let Some(context) = query.context.as_deref() {
-        log.append("concept_lookup:context", context.to_owned());
-    }
-    if let Some(response_language) = query.response_language.as_deref() {
-        log.append(
-            "concept_lookup:response-language",
-            response_language.to_owned(),
-        );
-        log.append("language_to", response_language.to_owned());
-    }
-    let Some(lookup) = lookup_concept_query(&query) else {
-        log.append("concept_lookup:miss", query.term);
-        return None;
-    };
-    let record: &'static ConceptRecord = lookup.record;
-    log.append("concept_lookup:hit", record.slug.clone());
-    let detected_language = detect_language(prompt);
-    let language = query
-        .response_language
-        .as_deref()
-        .unwrap_or_else(|| detected_language.slug());
-    let localized = record.localized_for(language);
-    let source_for_log = localized
-        .map(|loc| loc.source.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.source.as_str());
-    // Issue #21: log the percent-decoded IRI form so diagnostic chips stay
-    // readable. Rendering uses humanize_url too (see render_concept_*).
-    log.append("source", humanize_url(source_for_log));
-    if !record.wikidata.is_empty() {
-        log.append("wikidata", record.wikidata.clone());
-    }
-    if lookup.context_match {
-        if let Some(context) = lookup.context.as_deref() {
-            log.append("concept_lookup:context-match", context.to_owned());
-            let body = render_concept_in_context(language, context, record);
-            return Some(finalize_simple(
-                prompt,
-                log,
-                "concept_lookup_in_context",
-                "response:concept_lookup_in_context",
-                &body,
-                0.9,
-            ));
-        }
-    } else if let Some(context) = lookup.context.as_deref() {
-        log.append("concept_lookup:context-mismatch", context.to_owned());
-    }
-    let body = render_concept_plain(language, record);
-    Some(finalize_simple(
-        prompt,
-        log,
-        "concept_lookup",
-        "response:concept_lookup",
-        &body,
-        0.9,
-    ))
-}
-
-/// Render a plain `concept_lookup` body using the localized variant when
-/// available (so `что такое IIR` in Russian returns the ru.wikipedia.org
-/// summary, not the English one).
-fn render_concept_plain(language: &str, record: &ConceptRecord) -> String {
-    let localized = record.localized_for(language);
-    let term = localized
-        .map(|loc| loc.term.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.term.as_str());
-    let summary = localized
-        .map(|loc| loc.summary.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.summary.as_str());
-    let source = localized
-        .map(|loc| loc.source.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.source.as_str());
-    let source_kind = localized
-        .map(|loc| loc.source_kind.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.source_kind.as_str());
-    let source_markup = render_source_link(source);
-    format!(
-        "{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).",
-        category = record.category,
-    )
-}
-
-/// Issue #21: render a URL as a readable IRI while keeping the canonical
-/// percent-encoded form as the link target. Returns the bare URL when the
-/// humanized and encoded forms match (no link wrapping needed).
-pub fn render_source_link(source: &str) -> String {
-    let human = humanize_url(source);
-    if human == source {
-        source.to_owned()
-    } else {
-        format!("[{human}]({source})")
-    }
-}
-
-/// Render a `concept_lookup_in_context` body, preferring the language-specific
-/// template loaded from `data/seed/multilingual-responses.lino`. Falls back
-/// to the English template (and, if that is missing, a hardcoded one) so the
-/// solver still works when seed loading fails.
-///
-/// Maintainer requirement R8 (issue #20): use the full disambiguated context
-/// name, e.g. `В контексте «ml» (Машинное обучение)`. The raw user-typed
-/// context is shown verbatim and the resolved registry label is appended in
-/// parentheses; when the two collide (user already typed the localized
-/// label) the `no_alias` template is used to avoid `«ml» (ml)`.
-///
-/// Maintainer requirement R9: the term and summary use the localized variant
-/// (e.g. `Фильтр с бесконечной импульсной характеристикой… или IIR-фильтр`)
-/// when the user's prevailing language has a `localized` block.
-#[allow(clippy::literal_string_with_formatting_args)]
-fn render_concept_in_context(language: &str, context: &str, record: &ConceptRecord) -> String {
-    let context_record = resolve_context_label(context);
-    let context_label =
-        context_record.map_or_else(|| context.to_owned(), |c| c.label_for(language).to_owned());
-    let use_no_alias = context_label.trim().to_lowercase() == context.trim().to_lowercase();
-    let intent_variant = if use_no_alias {
-        "concept_lookup_in_context_no_alias"
-    } else {
-        "concept_lookup_in_context"
-    };
-    let template = response_for(intent_variant, language)
-        .or_else(|| response_for(intent_variant, "en"))
-        .or_else(|| response_for("concept_lookup_in_context", language))
-        .or_else(|| response_for("concept_lookup_in_context", "en"))
-        .unwrap_or_else(|| {
-            String::from(
-                "In the context of {context} ({context_label}), {term} ({category}) means: \
-                 {summary}\n\nSource: {source} ({source_kind}).",
-            )
-        });
-    let localized = record.localized_for(language);
-    let term = localized
-        .map(|loc| loc.term.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.term.as_str());
-    let summary = localized
-        .map(|loc| loc.summary.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.summary.as_str());
-    let source = localized
-        .map(|loc| loc.source.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.source.as_str());
-    let source_kind = localized
-        .map(|loc| loc.source_kind.as_str())
-        .filter(|s| !s.is_empty())
-        .unwrap_or(record.source_kind.as_str());
-    let source_markup = render_source_link(source);
-    template
-        .replace("{context_label}", &context_label)
-        .replace("{context}", context)
-        .replace("{term}", term)
-        .replace("{category}", &record.category)
-        .replace("{summary}", summary)
-        .replace("{source}", &source_markup)
-        .replace("{source_kind}", source_kind)
-}
+// Plan 09 leaf 18: the concept-lookup orchestration and its renderers live in
+// `src/concepts.rs`, beside the extraction and ranking machinery they drive.
+pub use crate::concepts::{
+    render_source_link, try_concept_lookup, try_concept_lookup_with_response_language,
+};
 
 pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let program = extract_javascript_program(prompt)?;
@@ -415,63 +229,12 @@ pub fn try_javascript_execution(prompt: &str, log: &mut EventLog) -> Option<Symb
     ))
 }
 
-pub fn try_network_query(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if normalized.contains("show me the current network")
-        || normalized.contains("show me the network")
-        || normalized.contains("export the network")
-        || normalized.contains("export network")
-    {
-        let snapshot = knowledge_links_notation();
-        let body = format!(
-            "Here is the current link network as a links-notation snapshot:\n\n```links\n{snapshot}\n```"
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "network_snapshot",
-            "response:network_snapshot",
-            &body,
-            1.0,
-        ));
-    }
-    if let Some(concept) = extract_concept_from_query(prompt) {
-        let body = format!(
-            "Here is what I know about '{concept}':\n\nintent: {concept}\nrole: \
-             the network records '{concept}' as a concept with rules and example links."
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            &format!("concept_introspection_{concept}"),
-            "response:concept_introspection",
-            &body,
-            1.0,
-        ));
-    }
-    if normalized.contains("list the facts i have contributed")
-        || normalized.contains("list my facts")
-        || normalized.starts_with("list facts")
-    {
-        log.append("filter:user", "self".to_owned());
-        let body = String::from(
-            "No facts have been recorded under your user filter yet. Submit a 'teach this fact' \
-             request to start your personal contribution list.",
-        );
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "filter_user",
-            "response:filter_user",
-            &body,
-            1.0,
-        ));
-    }
-    None
-}
+// Plan 09 leaf 18: the network snapshot, source refresh, learn-from-source
+// and source-conflict procedures live in `src/retrieval_procedures.rs`, beside
+// the M2 retrieval interpreter they extend.
+pub use crate::retrieval_procedures::{
+    try_learn_from_source, try_network_query, try_source_conflict, try_source_refresh,
+};
 
 pub fn try_translation(
     prompt: &str,
@@ -778,126 +541,6 @@ pub fn try_execution_failure(
         "response:execution_failure",
         &body,
         0.4,
-    ))
-}
-
-pub fn try_source_refresh(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !normalized.contains("refresh")
-        || !(normalized.contains("cache") || normalized.contains("page"))
-    {
-        return None;
-    }
-    let target = stable_id("source", prompt);
-    log.append("source_refresh", target.clone());
-    let body = format!(
-        "Cached source {target} has been queued for refresh against its origin URL. The \
-         refresh event is appended to the audit log and a fresh fetched_at timestamp will be \
-         recorded once the new copy is verified."
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "source_refresh",
-        "response:source_refresh",
-        &body,
-        1.0,
-    ))
-}
-
-/// Issue #499: recognize a "learn from this data source" directive and route it
-/// into the matching auto-learning capability instead of falling to `unknown`.
-///
-/// The user is teaching the engine where to find data it can reason and learn
-/// from — e.g. "Обратясь сюда ты узнаешь актуальные темы &lt;Google Trends URL&gt;".
-/// The request is detected from the seed-declared learnable-source registry
-/// ([`crate::seed::learning_sources`]): a match needs both a language-agnostic
-/// learning-directive cue and a reference to a known source (its host or one of
-/// its native-language keywords). Production code branches only on the source's
-/// declared `capability` slug, never on a specific URL or phrase, so a new
-/// learnable source is a seed edit rather than a code change (CONTRIBUTING rule 7).
-pub fn try_learn_from_source(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let registry = crate::seed::learning_sources();
-    let source = registry.match_directive(normalized)?;
-    let summary = learning_source_summary(&source.capability)?;
-    log.append("learning_source", source.id.clone());
-    log.append("learning_capability", source.capability.clone());
-
-    let language = detect_language(prompt);
-    let intro = localized_response("learn_from_source", language.slug()).unwrap_or_default();
-    let body = if intro.is_empty() {
-        summary
-    } else {
-        format!("{intro}\n\n{summary}")
-    };
-    Some(finalize_simple(
-        prompt,
-        log,
-        "learn_from_source",
-        "response:learn_from_source",
-        &body,
-        1.0,
-    ))
-}
-
-/// Render the deterministic learning summary for a source `capability`.
-///
-/// Returns `None` for a capability with no wired learning loop so the handler
-/// declines rather than inventing an answer; a new capability is registered here
-/// alongside the loop that ingests it.
-fn learning_source_summary(capability: &str) -> Option<String> {
-    match capability {
-        "google_trends_learning" => {
-            let report = crate::google_trends_learning::trending_learning_report();
-            Some(format!(
-                "I recognized Google Trends as a data source I can learn from. I collected \
-                 {total} trending prompts across every supported language, already answer \
-                 {handled} of them from local links rules, and routed the remaining {frontier} \
-                 to the human-gated self-improvement loop. That loop proposed {proposals} rules \
-                 and adopted {adopted}: nothing changes without human review.",
-                total = report.total_prompts,
-                handled = report.handled_by_engine,
-                frontier = report.frontier_count(),
-                proposals = report.run.proposals.len(),
-                adopted = report.adopted_count(),
-            ))
-        }
-        _ => None,
-    }
-}
-
-pub fn try_source_conflict(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    if !(normalized.contains("conflict")
-        || (normalized.contains("born in") && normalized.contains(" or ")))
-    {
-        return None;
-    }
-    log.append(
-        "conflict:source_disagreement",
-        "sources disagree on the answer".to_owned(),
-    );
-    let body = String::from(
-        "Sources disagree on this question. The disagreement is recorded as a \
-         conflict:source_disagreement link in the network rather than silently resolved.",
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "source_conflict",
-        "response:source_conflict",
-        &body,
-        0.3,
     ))
 }
 

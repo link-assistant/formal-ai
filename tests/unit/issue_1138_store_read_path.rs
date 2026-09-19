@@ -1,17 +1,19 @@
-//! Issue #1138 B9, plan 09 leaf 39: the doublets store is written but never
-//! read. Stage 2 extracts condition evaluation behind a `ConditionSource` with
-//! two backends — today's `SeedTables` and the `LinkStore` — and a parity
-//! fixture replays every rule and every promotion through both.
+//! Issue #1138 B9, plan 09 leaves 39-40: the doublets store is the read path.
 //!
-//! Written before the leaf that makes it pass (plan 14 wave T).
+//! Leaf 39 extracted condition evaluation behind a `ConditionSource` and proved
+//! the `LinkStore` backend agreed with the parsed seed tables on every rule and
+//! promotion. Leaf 40 flipped the default: the store backend is now the only
+//! condition backend in `src/` — `SeedTables` is deleted — so these probes
+//! pin what remains true: the store backend alone evaluates every rule and
+//! promotion row over the committed fixture, and it reads the store it is
+//! handed rather than the boot projection.
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::event_log::EventLog;
 use formal_ai::handler_promotion::{promotion_condition_verdicts, promotions};
-use formal_ai::rule_interpreter::{HandlerRules, LinkStoreSource, SeedTables};
-use formal_ai::seed::parse_lexicon_text;
+use formal_ai::rule_interpreter::{HandlerRules, LinkStoreSource};
 use formal_ai::seed_links::{SeedLinkNetwork, network};
 
 fn repo_root() -> PathBuf {
@@ -23,7 +25,7 @@ fn parity_fixture() -> String {
     fs::read_to_string(&path).unwrap_or_else(|error| {
         panic!(
             "plan 09 leaf 39 owes {}: the stage-2 parity fixture that replays every rule and \
-             promotion through both condition sources ({error})",
+             promotion through the store backend ({error})",
             path.display()
         )
     })
@@ -37,7 +39,7 @@ fn fixture_prompts(text: &str) -> Vec<String> {
 }
 
 #[test]
-fn condition_sources_agree_on_every_rule_and_promotion() {
+fn the_store_backend_evaluates_every_rule_and_promotion_probe() {
     let fixture = parity_fixture();
     let prompts = fixture_prompts(&fixture);
     assert!(
@@ -47,8 +49,7 @@ fn condition_sources_agree_on_every_rule_and_promotion() {
 
     let rules = formal_ai::rule_interpreter::rules();
     let promotion_rows = promotions();
-    let seed_tables = SeedTables::new(formal_ai::seed::lexicon());
-    let link_store = LinkStoreSource::from_store(network());
+    let store = LinkStoreSource::from_store(network());
     let log = EventLog::default();
     let mut matched = 0usize;
     let mut rejected = 0usize;
@@ -56,31 +57,28 @@ fn condition_sources_agree_on_every_rule_and_promotion() {
     for prompt in &prompts {
         let normalized = formal_ai::web_engine_core::normalize_prompt(prompt);
         let normalized = formal_ai::seed::operation_vocabulary().canonicalized_prompt(&normalized);
-        let from_seed = rules.condition_verdicts(&seed_tables, prompt, &normalized, &log);
-        let from_store = rules.condition_verdicts(&link_store, prompt, &normalized, &log);
+        let from_store = rules.condition_verdicts(&store, prompt, &normalized, &log);
         assert_eq!(
-            from_seed, from_store,
-            "{prompt:?}: the seed-table backend and the link-store backend disagree; \
-             the store may not become the default until every rule and promotion agrees"
+            from_store.len(),
+            rules.rule_count(),
+            "{prompt:?}: every rule row must be evaluated through the store"
         );
-        assert_eq!(from_seed.len(), rules.rule_count());
-        matched += from_seed.iter().filter(|verdict| verdict.matched).count();
-        rejected += from_seed.iter().filter(|verdict| !verdict.matched).count();
+        matched += from_store.iter().filter(|verdict| verdict.matched).count();
+        rejected += from_store.iter().filter(|verdict| !verdict.matched).count();
 
-        let seed_promotions = promotion_condition_verdicts(&promotion_rows, prompt, &seed_tables);
-        let store_promotions = promotion_condition_verdicts(&promotion_rows, prompt, &link_store);
+        let store_promotions = promotion_condition_verdicts(&promotion_rows, prompt, &store);
         assert_eq!(
-            seed_promotions, store_promotions,
-            "promotion parity for {prompt:?}"
+            store_promotions.len(),
+            promotion_rows.len(),
+            "{prompt:?}: every promotion row must be evaluated through the store"
         );
-        assert_eq!(seed_promotions.len(), promotion_rows.len());
-        matched += seed_promotions
+        matched += store_promotions
             .iter()
             .filter(|(_, verdict)| *verdict)
             .count();
-        rejected += seed_promotions
+        rejected += store_promotions
             .iter()
-            .filter(|(_, verdict)| !*verdict)
+            .filter(|(_, verdict)| !verdict)
             .count();
     }
 
@@ -92,8 +90,12 @@ fn condition_sources_agree_on_every_rule_and_promotion() {
 }
 
 #[test]
-fn the_link_backend_reads_an_injected_store_instead_of_seed_tables() {
-    let store = SeedLinkNetwork::from_documents(&[
+fn the_link_backend_reads_an_injected_store_not_the_boot_projection() {
+    // A vocabulary that exists only in the injected store must match, and the
+    // same rule must stay silent when the injected store lacks it — the backend
+    // consults the store it is handed, never the boot projection behind the
+    // engine's answers.
+    let with_probe = SeedLinkNetwork::from_documents(&[
         (
             "meanings-fixture.lino",
             "meanings\n  store_probe\n    role store_probe\n    lexeme en\n      surface\n        text storeword\n",
@@ -103,9 +105,12 @@ fn the_link_backend_reads_an_injected_store_instead_of_seed_tables() {
             "intent_routing\n  intent fixture\n    slug store_route\n    phrase \"storeword storeroute\"\n",
         ),
     ]);
-    let source = LinkStoreSource::from_store(&store);
-    let empty = parse_lexicon_text("meanings\n");
-    let seed_tables = SeedTables::new(&empty);
+    let without_probe = SeedLinkNetwork::from_documents(&[(
+        "data/seed/intent-routing.lino",
+        "intent_routing\n  intent fixture\n    slug store_route\n    phrase \"storeword storeroute\"\n",
+    )]);
+    let with_source = LinkStoreSource::from_store(&with_probe);
+    let without_source = LinkStoreSource::from_store(&without_probe);
     let rules = HandlerRules::parse(
         "handler_rules\n  handler probe\n    rule probe\n      when\n        role store_probe raw\n        route_exact store_route\n      respond_unknown\n",
     )
@@ -113,8 +118,8 @@ fn the_link_backend_reads_an_injected_store_instead_of_seed_tables() {
     let handler = rules.handler("probe").expect("fixture handler");
     let prompt = "storeword storeroute";
 
-    assert!(handler.matches_with_source(&source, prompt, prompt));
-    assert!(!handler.matches_with_source(&seed_tables, prompt, prompt));
+    assert!(handler.matches_with_source(&with_source, prompt, prompt));
+    assert!(!handler.matches_with_source(&without_source, prompt, prompt));
 }
 
 #[test]

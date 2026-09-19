@@ -216,6 +216,29 @@ enum Command {
         /// Commit inside the isolated clone. Mutation is off by default.
         #[arg(long, default_value_t = false)]
         commit: bool,
+        /// Live authoring loop: workspace-relative files the Agent CLI must
+        /// write (repeatable).
+        #[arg(long = "produces")]
+        produces: Vec<String>,
+        /// Live authoring loop: repository-relative landing spots, pairwise
+        /// with `--produces` (repeatable; missing entries default to their
+        /// `--produces` twin).
+        #[arg(long = "into")]
+        into: Vec<String>,
+        /// Live authoring loop: repository-relative directory copied into the
+        /// workspace before the run.
+        #[arg(long)]
+        seed: Option<String>,
+        /// Live authoring loop: text at least one artifact must contain
+        /// (repeatable).
+        #[arg(long = "contains")]
+        contains: Vec<String>,
+        /// Live authoring loop: port the authoring server binds.
+        #[arg(long, default_value_t = 8899)]
+        port: u16,
+        /// Live authoring loop: the commit subject.
+        #[arg(long)]
+        message: Option<String>,
     },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
@@ -667,6 +690,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             evidence,
             pull_request,
             commit,
+            produces,
+            into,
+            seed,
+            contains,
+            port,
+            message,
         } => {
             let outcome = formal_ai::cli_solve::run_solve(&formal_ai::cli_solve::SolveArgs {
                 issue,
@@ -677,6 +706,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                 evidence,
                 pull_request,
                 commit,
+                produces,
+                into,
+                seed,
+                contains,
+                port,
+                message,
+                server_executable: None,
+                agent_executable: None,
             })?;
             print!("{}", outcome.diff);
             for open in outcome.open {

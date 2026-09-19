@@ -87,6 +87,9 @@ fn latest_external_rows_are_published_from_the_ledger() {
     );
     let catalog = read(root.join("docs/benchmarks.md"));
     let vision = read(root.join("VISION.md"));
+    let roadmap = read(root.join("ROADMAP.md"));
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    let readme = read(root.join("README.md"));
     let labels = [
         ("humaneval", "HumanEval"),
         ("mbpp", "MBPP"),
@@ -124,6 +127,33 @@ fn latest_external_rows_are_published_from_the_ledger() {
         .expect("at least one result row");
     assert!(catalog.contains(&format!("latest committed rows are dated `{latest_date}`")));
     assert!(vision.contains(&format!("run of {latest_date}")));
+
+    // Issue #710 D15, widened by the plan 11 docs audit: the other surfaces
+    // that publish current coding numbers must derive them from the same
+    // latest committed rows, so a stale headline number cannot survive beside
+    // the pinned catalog. `VISION.md` carries every suite above; these three
+    // carry the two coding rows that go stale fastest.
+    for (document, text) in [
+        ("ROADMAP.md", &roadmap),
+        ("ARCHITECTURE.md", &architecture),
+        ("README.md", &readme),
+    ] {
+        for (suite, label) in labels
+            .iter()
+            .filter(|(s, _)| *s == "humaneval" || *s == "mbpp")
+        {
+            let row = latest
+                .get(*suite)
+                .unwrap_or_else(|| panic!("latest {suite} row"));
+            assert!(
+                text.contains(&format!("{label} {}/{}", row.passed, row.total)),
+                "{document} must publish the latest committed {suite} result \
+                 ({label} {}/{})",
+                row.passed,
+                row.total
+            );
+        }
+    }
 }
 
 #[test]

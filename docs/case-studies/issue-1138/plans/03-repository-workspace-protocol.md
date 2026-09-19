@@ -275,6 +275,12 @@ src/repository_workspace/locate.rs       (locate_targets, Location, LocationEvid
 src/repository_workspace/edit.rs         (apply_change)
 src/repository_workspace/verify.rs       (RunCommand, run_named_tests -> Evidence; ExecutionBackend from plan 06)
 src/repository_workspace/diff.rs         (UnifiedDiff, unified_diff)
+src/repository_workspace/outcome.rs      (plan 06 L13/L15: the five-language surface honesty sentences
+                                          a surface may say about a command it ran)
+src/repository_workspace/world_model.rs  (plan 15: evidence-backed current-to-goal deltas for
+                                          repository work items)
+src/repository_workspace/protocol-header.txt (plan 03 L8: the header the regenerated protocol
+                                          document carries, so rediscovery hits the same content id)
 src/cli_solve.rs                         (`formal-ai solve`)
 data/meta/repository-workspace-protocol.lino
 data/seed/repository-task-verbs.lino
@@ -790,25 +796,33 @@ Every one of these writes its number to a ledger before anything is tuned. A
 
 ## Implementation leaves — ordered, each individually verifiable and commit-sized
 
-- [ ] **L1.** Add `WorkspaceCensus::of_directory(root)` to `src/self_ast_census.rs` beside the existing `compile(files)` (`:293`). Test: a three-file fixture directory censuses identically to `compile` on the same `(path, source)` pairs.
+- [x] **L1.** Add `WorkspaceCensus::of_directory(root)` to `src/self_ast_census.rs` beside the existing `compile(files)` (`:293`). Test: a three-file fixture directory censuses identically to `compile` on the same `(path, source)` pairs.
 - [x] **L2.** Add `src/repository_workspace/clone.rs` with `WorkspaceSpec` and `clone_at_base`. Test: exact-commit checkout, branch-name refusal, deterministic tree.
 - [x] **L3.** Add `data/seed/repository-command-allowlist.lino` and route `src/agent.rs:642-657`'s `other =>` arm through it, keeping the default-deny arm. Test: `curl` refused, `git push` refused, `git clone` allowed, allowlist set equals the seed table.
 - [x] **L4.** Add `src/repository_workspace/mod.rs` with `RepositoryWorkspace::{open, adopt, root, base_commit, source_files, read, write}`. Test: isolation from the ambient checkout.
 - [x] **L5.** Add `src/repository_workspace/diff.rs` `unified_diff` and `RepositoryWorkspace::diff`. Test: empty diff for an untouched clone; `git apply` round trip.
-- [ ] **L6.** Add `src/repository_workspace/locate.rs` `locate_targets`, delegating Rust trees to `requirement_resolution::resolve_in` unchanged. Test: the five held-out prompts and the ambiguity case.
+- [x] **L6.** Add `src/repository_workspace/locate.rs` `locate_targets`, delegating Rust trees to `requirement_resolution::resolve_in` unchanged. Test: the five held-out prompts and the ambiguity case.
 - [x] **L7.** Add `src/repository_workspace/verify.rs` `Command`, `ExecutionBackend`, `run_named_tests`, `Evidence`, and `WorkspaceError::MissingPrerequisite`. Test: missing interpreter, timeout, pass/fail split.
 - [x] **L8.** Add `data/meta/repository-workspace-protocol.lino` and `WorkspaceProtocol::{load, parse, execute}` plus `tests/unit/specification/repository_workspace_protocol.rs`. Test: source-file grounding, contiguous order, rediscovery content id.
-- [ ] **L9.** Wire the protocol's per-step observations into `NeedLedger` rows so no step is `Satisfied` without an execution record (`src/meta_frame.rs:644-700`). Test: a step that did not run leaves its need `Planned`, never `Satisfied`.
-- [ ] **L10.** Widen `BenchmarkCase` with `repository` / `tests`; convert `cases.rs:152-166`; add the `solve_repository_case` branch at `mod.rs:150-156`. Test: parsed case carries a 40-char base commit; every other suite still has `None`.
+- [x] **L9.** Wire the protocol's per-step observations into `NeedLedger` rows so no step is `Satisfied` without an execution record (`src/meta_frame.rs:644-700`). Test: a step that did not run leaves its need `Planned`, never `Satisfied`.
+- [x] **L10.** Widen `BenchmarkCase` with `repository` / `tests`; convert `cases.rs:152-166`; add the `solve_repository_case` branch at `mod.rs:150-156`. Test: parsed case carries a 40-char base commit; every other suite still has `None`.
 - [ ] **L11.** Run one SWE-bench Lite instance end to end and append the honest row to `data/benchmarks/external-results.lino`. No tuning in this commit.
-- [ ] **L12.** Add `src/cli_solve.rs` + `Command::Solve` in `src/main.rs`, refusing to commit by default. Test: the three `solve_cli` cases.
-- [ ] **L13.** Emit the four trailers and the evidence bundle from `run_solve`; reduce `scripts/author-change-with-formal-ai.sh` to a wrapper. Test: `scripts/self-hosting-attribution.rs::model_attribution` accepts the produced commit; a hosted model is refused.
+- [x] **L12.** Add `src/cli_solve.rs` + `Command::Solve` in `src/main.rs`, refusing to commit by default. Test: the three `solve_cli` cases.
+- [x] **L13.** Emit the four trailers and the evidence bundle from `run_solve`; reduce `scripts/author-change-with-formal-ai.sh` to a wrapper. Test: `scripts/self-hosting-attribution.rs::model_attribution` accepts the produced commit; a hosted model is refused.
 - [ ] **L14.** Convert `experiments/issue_847_coding_ladder/run_coding_ladder.sh` (today `cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]` at `run_coding_ladder.sh:196`) to `formal-ai solve --repository . --base-commit …`; rerun; record the new 130-task number whatever it is. **This commit must also update `tests/unit/issue_848_coding_ladder.rs:532-560`, which pins nine exact substrings of that script** (`"[\"rustc\", \"--edition=2024\""`, `"rust_target_existed[created]"`, `"\"dataset_total\": len(all_tasks)"`, `"\"complete\": not only"`, `"results-partial-$FILTER_SLUG.json"`, `"expect_from_file"`, `"re.MULTILINE"`, and both lines of the `server_started` / `not_measured` predicate at `run_coding_ladder.sh:284-288`). Every pinned semantic must survive; only the invocation line changes.
+  **Partial (2026-09-19). The conversion and pin halves are landed: the script's
+  invocation is `cmd = [binary, "solve", "--repository", ".", "--base-commit",
+  base_commit, "--task", task["prompt"], "--evidence", evidence_dir]`, and
+  `compiler_measurement_and_same_task_authorship_are_preserved` pins the new
+  argv while asserting the old `with agent --non-interactive` form is absent.
+  What remains is the measurement half: a fresh complete 130-task live run and
+  recording its number whatever it is — until then the pre-conversion 65/130
+  row stays the only honest result, and this leaf stays open.**
 - [x] **L14b.** Wire the #848 ladder into CI — it has never run there (`docs/case-studies/issue-957/raw-data/verified-776-928.md:57,62`: "recorded score 65/130 with L1 = 0/16 — the exact 'honest attempt at L1' bar konard set is still failing, and nothing ratchets it"). Add `.github/workflows/coding-ladder.yml` modelled on `.github/workflows/task-ladder.yml` (weekly + `workflow_dispatch` + path-filtered), a `data/meta/ci-gates/coding-ladder.lino` row with its justification, and a floor in `data/meta/ladder-ratchet.lino` for the 130-task score that may only rise. This closes the R848-1 "ladder runs in CI with recorded score" clause that `docs/case-studies/issue-957/raw-data/verified-all.ndjson:880` marks `PARTIAL`.
 - [ ] **L15.** Add `leaf_nodes_passing_without_authored_rules` to `data/meta/ladder-ratchet.lino`, run `issue_1028_agent_cli_ladder` with rules disabled, record the number, and add `authored_ladder_rules: 32` to `data/meta/debt-ratchet.lino` as a shrink-only ceiling.
 - [ ] **L16.** Raise `swebench_slice` to `23` in `.github/workflows/external-benchmarks.yml` and record the full-split row. **A slice is a measurement width, not a ceiling: widening it can only lower the recorded score, and `historical_floor_violations` groups by `(suite, slice)`, so the recorded `0/1` floor is untouched. This is not a loosened gate (plan 00 §9 X7).**
 - [ ] **L17.** Author one real repository change through `formal-ai solve --commit` on a bot branch and attach it to the release cycle, closing R1021-22 or recording precisely why it is still open.
-- [ ] **L18.** Update `REQUIREMENTS.md` shard, traceability, `docs/benchmarks.md`, `docs/meta-algorithm.md`, `VISION.md`, `ROADMAP.md`, `GOALS.md` per the next section.
+- [x] **L18.** Update `REQUIREMENTS.md` shard, traceability, `docs/benchmarks.md`, `docs/meta-algorithm.md`, `VISION.md`, `ROADMAP.md`, `GOALS.md` per the next section.
 
 ### L1-L18 reconciliation checkpoint — 2026-09-17
 
@@ -818,21 +832,36 @@ the leaf must pass in this worktree first.
 
 | leaf | live-tree state before close-out | remaining proof or work |
 | --- | --- | --- |
-| L1 | `WorkspaceCensus::of_directory` exists and `issue_673_self_ast_census::directory_census_matches_the_same_explicit_source_set` supplies the three-file fixture equivalence test (two Rust sources plus one excluded non-source). | Run the focused test. |
+| L1 | `WorkspaceCensus::of_directory` exists and `issue_673_self_ast_census::directory_census_matches_the_same_explicit_source_set` supplies the three-file fixture equivalence test (two Rust sources plus one excluded non-source). | Focused test verified green on 2026-09-18; leaf checked. |
 | L2-L5 | The exact-commit clone, seed command policy, isolated workspace and round-trip diff are implemented with Plan 03 unit coverage. | Re-run the focused workspace and command-policy tests. |
-| L6 | `locate_targets` uses the live workspace census plus seed meanings, reports ambiguity, and has held-out en/ru/hi/zh/es and foreign-tree tests. | Run the focused locator tests and the hard-coded-language gate. |
+| L6 | `locate_targets` uses the live workspace census plus seed meanings, reports ambiguity, and has held-out en/ru/hi/zh/es and foreign-tree tests. | Focused locator tests verified green on 2026-09-18; leaf checked. |
 | L7-L8 | Named-test execution and the data-owned protocol are implemented; the specification tests ground the source files, order and reconstructed content id. | Re-run the focused named-test and protocol-specification tests. |
-| L9 | `WorkspaceProtocol::execute` starts every step `Planned` and only projects `Satisfied` from an attached `Evidence` record; stopped and skipped steps are tested. | Run the focused workspace test. |
-| L10 | `BenchmarkCase` carries optional `WorkspaceSpec` / `RunCommand`; only SWE-bench populates them and the runner selects `solve_repository_case`. | Run the pinned integration parser test and external-benchmark unit tests. |
+| L9 | `WorkspaceProtocol::execute` starts every step `Planned` and only projects `Satisfied` from an attached `Evidence` record; stopped and skipped steps are tested. | Focused workspace test verified green on 2026-09-18; leaf checked. |
+| L10 | `BenchmarkCase` carries optional `WorkspaceSpec` / `RunCommand`; only SWE-bench populates them and the runner selects `solve_repository_case`. | Pinned integration parser test verified green on 2026-09-18; leaf checked. |
 | L11 | The ignored live one-instance test exists. No new network/container execution has been observed in this close-out, so no result may be appended. | Live clone, official evaluator run, and honest external-results row. |
-| L12 | `formal-ai solve` is registered and defaults to an isolated, non-committing run; the three required CLI behaviours have unit coverage. | Run the focused solve tests. |
-| L13 | `run_solve` writes four trailers and commits the same model-bearing evidence bundle as its source edit, but `author-change-with-formal-ai.sh` is still a second implementation rather than a wrapper and the focused test has not yet run the attribution parser against the produced commit. | Make the script a wrapper and prove the produced commit with the canonical attribution parser. |
+| L12 | `formal-ai solve` is registered and defaults to an isolated, non-committing run; the three required CLI behaviours have unit coverage. | Focused solve tests verified green on 2026-09-18; leaf checked. |
+| L13 | `run_solve` writes four trailers and commits the same model-bearing evidence bundle as its source edit, and the produced commit is now proved against the canonical attribution parser (`solve_attribution::solve_commit_payload_is_accepted_by_the_canonical_attribution_parser`, green 2026-09-18). The wrapper reduction landed 2026-09-19: `scripts/author-change-with-formal-ai.sh` is a thin translator onto `formal-ai solve`, the loop itself lives in `src/authoring_loop.rs` (behaviorally proved by `ci_cd::authoring_effects` and `solve_attribution::the_live_authoring_loop_lands_a_commit_the_canonical_parser_accepts`, green 2026-09-19 — four trailers in one commit, producer-naming evidence, framed-events-only capture, bounded readiness probe, seed replays refused as authorship), and the wrapper shape stays pinned by `ci_cd::issue_1069::the_authorship_route_is_a_wrapper_over_solve_and_never_publishes`. | Leaf checked. |
 | L14 | The coding ladder invokes `formal-ai solve`, validates stdout as a patch, then applies it before its existing judges. | A fresh complete 130-task live run; the pre-conversion 65/130 row remains the only honest result. |
 | L14b | The path-filtered scheduled workflow, gate record and 65/130 ratchet exist. | Re-run its hermetic checker. |
-| L15 | No `--no-authored-rules` run mode, disabled-rule result field, ratchet value, or `authored_ladder_rules` debt measurement exists yet. | Implement a hermetic mode and its checkers; only a real 32-leaf Agent CLI run may set the passing value. |
-| L16 | Before close-out the external workflow still defaulted SWE-bench to width 1; historical floors were already keyed by `(suite, slice)`. | Encode width-23 semantics and tests; a full live run is still required before a `0/23` or better result row may be claimed. |
-| L17 | No close-out evidence proves a real `formal-ai solve --commit` bot-branch contribution attached to a release cycle. | External authoring, pull-request and release evidence. |
-| L18 | The issue-1138 requirement shard and broad documentation edits exist in the shared worktree, while Plan 11 owns D170-D180 and their final consistency proof. | Run the Plan 03 requirements test; leave the cross-document close-out to Plan 11 rather than duplicate it here. |
+| L15 | The `--no-authored-rules` run mode, the disabled-rule result field, the `not_measured` ratchet row and the `authored_ladder_rules: 32` shrink-only ceiling all exist. | Only a real 32-leaf Agent CLI run may set the passing value. |
+| L16 | Width-23 semantics and tests are encoded; historical floors remain keyed by `(suite, slice)`. | A full live run is still required before a `0/23` or better result row may be claimed. |
+| L17 | No close-out evidence proves a real `formal-ai solve --commit` bot-branch contribution attached to a release cycle. The draft flow exists with hermetic coverage (`issue_1138_draft_pull_request`, four tests green 2026-09-18). | External authoring, pull-request and release evidence. |
+| L18 | The issue-1138 requirement shard and broad documentation edits exist in the shared worktree; the plan 03 requirements suite passes all five tests (2026-09-18). Plan 11 owns D170-D180 and their final consistency proof. | Leaf checked; leave the cross-document close-out to Plan 11 rather than duplicate it here. |
+
+### Prefix-slot routing fix — 2026-09-18
+
+The held-out Spanish repository prompt derailed before the capability table:
+its word for "providers" (*proveedores*) embeds the English "prove", and
+`spelled_surface_present` read a prefix surface such as the seeded
+`prove …` as a raw substring, so `proof_directive` was evidenced, the
+`proof_request` promotion fired, and the promoted handler preempted the typed
+`shell` handoff every other language received. A prefix surface's lead half is
+a phrase, so it now must occur as complete words — a word boundary is the text
+edge or a non-alphanumeric character, which keeps "¿Cuántos litros …" matching
+while "proveedores" does not (`src/rule_interpreter.rs`).
+`issue_1138_handler_promotions::a_prefix_surface_does_not_match_inside_an_embedding_word`
+pins the promotion side; `issue_1138_self_use_repository_workspace::chat_hands_repository_location_to_a_workspace_capable_client`
+pins the five-language handoff it restores.
 
 ### L14/L14b implementation checkpoint — 2026-09-17
 

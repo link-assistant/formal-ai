@@ -12,7 +12,7 @@ instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
 Fourteen recipes are grounded today. The **recursive core** (issue #559) is the
-general algorithm every prompt walks; the other twelve encode a topic handler, a
+general algorithm every prompt walks; the other thirteen encode a topic handler, a
 self-directed loop, a reasoning obligation, or a codebase-hygiene procedure on
 top of it:
 
@@ -35,7 +35,13 @@ top of it:
 
 The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
 (cue sets, route/method aliases, repair cases, the self-AST census, …) that the
-recipes and handlers read — they are data, not recipes.
+recipes and handlers read — they are data, not recipes. Four of them are the
+numeric authority for the project's live claims, and prose that quotes a
+number must agree with them: `data/meta/debt-ratchet.lino` (shrink-only
+ceilings on named debt), `data/meta/core-boundary-ledger.lino` (the recursive
+handler sources outside the minimal core), `data/meta/ladder-ratchet.lino`
+(the coding-ladder record), and `data/meta/self-hosting-ledger.lino` (the
+release metric).
 
 ## Why a recipe, not just code
 
@@ -165,6 +171,14 @@ Each step is one `meta_step` record in the recipe:
 12. **Accumulate reusable skills and a curriculum from the outcome** —
     proposal-only, nothing auto-promoted (R342).
 
+#### What none of these loops does yet
+
+No learning loop in this document has yet changed a later answer on its own.
+Every promoted skill, recipe, or method goes through a human
+`--apply --confirm`, and the one adoption proven end to end remains the #701
+opener class. Proposal-only is the design until a run earns otherwise
+(issue #1138 B7).
+
 ### What the recipe records
 
 | Recipe record | Count | Grounded against |
@@ -212,19 +226,26 @@ capability **and** the CLI advertised a tool providing it, so the planner adapts
 to whatever subset of tools a given CLI exposes. Tool *errors* are observed: a
 fetch result that looks like an error is not trusted as source text, and the
 formalizer falls back to the canonical synopsis so the loop still completes with
-a stable, all-nine-primitive knowledge base.
+a stable, all-nine-primitive knowledge base. The fallback has a cost the
+completion report now states: the answer then describes the canonical tale
+rather than the requested task, and since issue #1138 B4 the report counts the
+needs the formalizer raised against the needs it grounded, so the fallback
+cannot pass as coverage.
 
 ### The eight steps
 
 Each step is one `meta_step` record in the recipe; instantiate them in order to
 make the Formal AI solve a new task in agentic mode:
 
-1. **Recognise the agentic task** from the latest user turn against a small
-   closed keyword set — a non-match yields `None`, so agentic coding stays
-   strictly opt-in and ordinary chat is untouched.
-2. **Pin the canonical plan as named constants** (`SEARCH_QUERY`,
-   `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered
-   literals.
+1. **Recognise the agentic task** by role from the seeded lexicon
+   (`ROLE_AGENT_ACTION_FORMALIZE_VERB`) — a non-match yields `None`, so agentic
+   coding stays strictly opt-in and ordinary chat is untouched.
+2. **Derive the plan from the task's own unresolved needs.** The source text is the
+   one the task quotes or names; the search query is built from the surfaces
+   `ConceptGraph::unresolved()` reports, not from a pinned literal. `KB_PATH`
+   remains a named constant because it is an output path, not a knowledge claim;
+   `SEARCH_QUERY` and `CANONICAL_SOURCE_URL` remain only as the regression
+   fixture's source for the canonical tale.
 3. **Classify advertised tools into capabilities** (`Search`/`Fetch`/`Write`/
    `Run`) by substring, mirroring agentic-CLI naming so any CLI's tool set maps.
 4. **Plan each step as a pure function of history** — the state machine above,
@@ -247,13 +268,19 @@ make the Formal AI solve a new task in agentic mode:
 | Recipe record | Count | Grounded against |
 | --- | --- | --- |
 | `meta_step` | 8 | ordering 1..8 is contiguous; each `seed_file` exists |
-| `meta_constant` | 3 | `pub const <name>: &str` in `src/agentic_coding/formalization_recipe.rs` |
+| `meta_constant` | 1 | `pub const <name>: &str` in `src/agentic_coding/formalization_recipe.rs` |
 | `meta_tool` | 4 | `"<tool>"` in `DRIVER_TOOLS`, `Capability::<cap>` in the planner, and the `"<permission>"` / package name in `src/associative_package.rs` |
 | `meta_stage` | 5 | `Step <n>:` markers in `src/agentic_coding/formalization_recipe.rs`; ordering 1..5 contiguous |
 | `meta_function` | 14 | `fn <name>` in the named source file |
 | `meta_primitive` | 9 | each appears in `PRIMITIVE_KINDS` in `src/agentic_coding/formalize.rs`; ordering 1..9 contiguous |
 | `meta_bound` | 1 | `const MAX_TURNS: usize = 12;` in `src/agentic_coding/driver.rs` |
 | `meta_surface` | 3 | the CLI subcommand, the example, and the integration test each contain their `needle` |
+
+Nine kinds are *declared*; how many are *observed* depends on the document, and the
+report states the observed number (`data/seed/meanings-formalization-report.lino`).
+Since issue #1138 B4 the report also states how many of the needs the formalizer
+raised were grounded, so a document cannot be reported as covered while a need is
+unresolved.
 
 ### Running it
 
@@ -265,6 +292,54 @@ cargo test --test unit specification::agentic_meta_algorithm -- --nocapture
 Because this recipe is checked against the source too, the agentic loop and its
 recipe can never silently diverge — the loop is itself a reproducible artifact of
 the meta-algorithm.
+
+## The deep-formalization meta-algorithm (issue #1138 B4)
+
+The agentic loop above formalizes a document the nine primitives can reach, but
+issue #1138 B4 asks for depth: every surface, relation and procedure the
+formalizer cannot ground must become an explicit **need** — with its exact source
+span and an origin — and each need must be put to the trusted sources before the
+report may claim coverage. The recipe for that depth pass lives at
+[`data/meta/formalization-depth-recipe.lino`](../data/meta/formalization-depth-recipe.lino)
+and is grounded by
+[`tests/unit/specification/formalization_depth_meta_algorithm.rs`](../tests/unit/specification/formalization_depth_meta_algorithm.rs);
+the agent-process integration probes live in
+[`tests/integration/issue_1138_formalization_agent.rs`](../tests/integration/issue_1138_formalization_agent.rs).
+
+The pass composes six grounded steps
+(`src/formalization/needs.rs`, `src/concept_lookup.rs`,
+`src/formalization/procedures.rs`, `src/formalization/concept_links.rs`):
+
+1. **Segment** the document script-aware, so every segment span selects exactly
+   its own text in every supported script.
+2. **Emit a need** for each surface, relation or procedure the formalizer cannot
+   ground — never silently keep it as a covered primitive.
+3. **Satisfy needs through the issue #1138 B1 registry lookup**, replaying
+   content-addressed captures offline; the retrieved gloss is itself
+   formalized, bounded by a declared concept depth.
+4. **Ground concepts with provenance** — a grounded result is a concept,
+   predicate, entity or procedure link carrying source id, URL, sha256 and
+   license, never a stored sentence.
+5. **Extract procedures** from step-shaped sources into
+   `ExtractedProcedure::to_coding_procedure_source`, which enters the procedure
+   ledger only through the existing bounded execution and named review gate.
+6. **Report honestly** — `formalize_deeply` yields one concept graph whose
+   identity is stable across en, ru, hi, zh and es on the held-out corpus, and
+   the agent answer states `needs_raised` and `needs_grounded` before the
+   knowledge base it shows.
+
+In the agentic loop the pass runs whenever the nine-primitive formalizer raised
+needs; the written knowledge base then carries the concept-graph block, and a
+need no captured source answers is reported unsatisfiable rather than covered.
+The canonical tale raises no needs, so its knowledge base stays byte-identical
+with the shallow pass.
+
+```sh
+# Verify the deep-formalization recipe still matches the live source:
+cargo test --test unit specification::formalization_depth
+# Verify the loop grounds a held-out requirement through a real agent process:
+cargo test --test integration issue_1138_formalization_agent
+```
 
 ## The prerequisite-discovery meta-algorithm (issue #1138 B6)
 
@@ -942,9 +1017,12 @@ the live implementation.
 1. **Recognise** — `task_spec::recognise` converts HumanEval, MBPP, and
    conversational prompt shapes into one language-neutral `CodingTaskSpec`
    before lexical handlers can misroute them.
-2. **Discover** — `concept_discovery::discover` maps each requirement to seeded
-   structural meanings and licensed parts from Python documentation,
-   Wikifunctions, or a previously verified procedure.
+2. **Discover** — `concept_discovery::discover_with_lookup` maps each
+   requirement to seeded structural meanings, licensed parts from Python
+   documentation, Wikifunctions, or a previously verified procedure, and —
+   since issue #1138 B1 — asks the trusted sources what any word outside
+   `data/seed/meanings-coding-structure.lino` means instead of leaving it
+   unresolved; a surface the sources cannot ground becomes an explicit need.
 3. **Compose** — `composition::compose` constructs candidate Python programs
    from those parts without consulting a benchmark case id or entry-point table.
 4. **Verify** — `AgentWorkspace::run_command` executes generated assertions in

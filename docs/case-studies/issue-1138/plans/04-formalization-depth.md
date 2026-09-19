@@ -1,9 +1,13 @@
 # Plan 04 — Formalization depth: concepts and procedures, not stored sentences (bottleneck B4 of #1138)
 
-Status: partially implemented. Depends on plan 01 (B1 live concept lookup) for
+Status: implemented. Depends on plan 01 (B1 live concept lookup) for
 the retrieval it asks from. The checklist remains the authority for unfinished
-leaves; L14 and L15 have the focused implementation and static/browser evidence
-recorded below, but the full Cargo gate has not yet been rerun on the final tree.
+leaves. All leaves are done and the focused Cargo gates were rerun green on the
+final tree (2026-09-18): `issue_1138_formalization_depth` 14/14,
+`issue_1138_formalization_agent` 2/2, `specification::formalization_depth`,
+`specification::meta_frame` 19/19, `specification::obligation_ledger` 9/9,
+`agentic_coding` 36/36; rustfmt applied; the debt ratchet holds against
+origin/main.
 A leaf that turns out wrong is struck through with the reason, never deleted.
 
 ## Issues addressed
@@ -1275,7 +1279,7 @@ Ordered; each individually verifiable and commit-sized.
       `identity()`, `to_links_notation()`, `structure_ids()`, `unresolved()`,
       `grounded_ratio()`, `formalize_deeply`. Test:
       `the_same_requirement_in_five_languages_produces_one_concept_graph_identity`.
-- [ ] **L9 — Procedure extraction.** `src/procedure_text.rs` with
+- [x] **L9 — Procedure extraction.** `src/procedure_text.rs` with
       `ProcedureStepRecord` (the one "ordered step with provenance" record; plan
       02 L10 extends this module with `StepShape`, `steps_from_capture` and
       `retrieve_procedure`); `src/formalization/procedures.rs` with
@@ -1283,18 +1287,18 @@ Ordered; each individually verifiable and commit-sized.
       `src/how_to_guide.rs`. Test:
       `an_imperative_clause_sequence_becomes_an_ordered_extracted_procedure`
       and `a_guide_step_and_a_captured_step_produce_the_same_record_shape`.
-- [ ] **L10 — A typed route into the #919 ledger.**
+- [x] **L10 — A typed route into the #919 ledger.**
       `ExtractedProcedure::to_coding_procedure_source()`;
       `src/coding_research_learning.rs` accepts it under the existing execution +
       review gate. Tests:
       `an_extracted_procedure_enters_the_ledger_only_through_execution_and_review`,
       `a_non_commercial_licensed_procedure_is_shown_but_refused_for_promotion`.
-- [ ] **L11 — Rewire the agentic formalizer.** `src/agentic_coding/formalize.rs`
+- [x] **L11 — Rewire the agentic formalizer.** `src/agentic_coding/formalize.rs`
       delegates to `src/formalization/*`; `pred:states` output relabelled
       `preserved_span`; the tale keeps its nine primitives. Tests:
       `preserved_sentences_no_longer_satisfy_the_assertion_primitive`,
       `the_canonical_tale_still_formalizes_to_nine_primitives`.
-- [ ] **L12 — Unpin the recipe.** `SEARCH_QUERY`/`CANONICAL_SOURCE_URL` demoted to
+- [x] **L12 — Unpin the recipe.** `SEARCH_QUERY`/`CANONICAL_SOURCE_URL` demoted to
       last-resort fallbacks; the query derives from `ConceptGraph::unresolved()`.
       **This leaf solely owns the `docs/meta-algorithm.md:214-218` rewrite that
       plans 02 and 08 also proposed; they now cite plan 11 row D181 instead
@@ -1302,7 +1306,7 @@ Ordered; each individually verifiable and commit-sized.
       Test: `a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale`. Amend
       `tests/unit/specification/agentic_meta_algorithm.rs` and
       `docs/meta-algorithm.md` in the same commit.
-- [ ] **L13 — Loop ledger bridge.** `NeedLedger::extend_from_formalization`.
+- [x] **L13 — Loop ledger bridge.** `NeedLedger::extend_from_formalization`.
 - [x] **L14 — Fixtures and parity.** `tests/fixtures/issue-1138-b4/`,
       `examples/issue_1138_formalization_parity.rs`,
       `src/web/worker/formal_ai_worker_formalization.js`, its worker-line-budget
@@ -1310,12 +1314,12 @@ Ordered; each individually verifiable and commit-sized.
 - [x] **L15 — Five-language reporting prose.**
       `data/seed/meanings-formalization-needs.lino` (5 meanings + 25 responses);
       the language-coverage gate must report `OK … en, ru, hi, zh, es`.
-- [ ] **L16 — Agent-process probes.**
+- [x] **L16 — Agent-process probes.**
       `tests/integration/issue_1138_formalization_agent.rs`, replacing the two
       hand-run probes of plans 06 and 07 with always-run coverage.
-- [ ] **L17 — Grounded recipe.** `data/meta/formalization-depth-recipe.lino` and
+- [x] **L17 — Grounded recipe.** `data/meta/formalization-depth-recipe.lino` and
       `tests/unit/specification/formalization_depth_meta_algorithm.rs`.
-- [ ] **L18 — Ledgers and docs.** Requirement shard
+- [x] **L18 — Ledgers and docs.** Requirement shard
       `docs/requirements/issue-1138-formalization-depth.md`,
       `rust-script scripts/assemble-requirements.rs --write`, traceability rows and
       the R314 correction, `docs/benchmarks.md`, `docs/meta-algorithm.md`,

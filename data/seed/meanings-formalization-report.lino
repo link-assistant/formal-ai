@@ -52,3 +52,56 @@ meanings
     unit "count"
     example "Two observed primitive kinds out of nine declared kinds are reported as 2 of 9."
     grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  agentic_formalization_need_report
+    defined-by output
+    role output_display_request
+    precondition "A formalization grounded a ConceptGraph that raised needs."
+    effect "Report how many needs the formalization raised and how many the consulted sources grounded, in the prompt's language; never present an unresolved need as grounded."
+    unit "count"
+    example "needs_raised 7; needs_grounded 3."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_need_report_en
+    defined-by agentic_formalization_need_report
+    language en
+    role output_display_request
+    precondition "A formalization grounded a ConceptGraph that raised needs."
+    effect "Report the raised and grounded need counts in English."
+    unit "count"
+    example "needs_raised 7; needs_grounded 3."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_need_report_ru
+    defined-by agentic_formalization_need_report
+    language ru
+    role output_display_request
+    precondition "A formalization grounded a ConceptGraph that raised needs."
+    effect "Report the raised and grounded need counts in Russian."
+    unit "count"
+    example "Потребностей поднято: 7; обосновано: 3."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_need_report_hi
+    defined-by agentic_formalization_need_report
+    language hi
+    role output_display_request
+    precondition "A formalization grounded a ConceptGraph that raised needs."
+    effect "Report the raised and grounded need counts in Hindi."
+    unit "count"
+    example "उठाई गई आवश्यकताएँ: 7; प्रमाणित: 3।"
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_need_report_zh
+    defined-by agentic_formalization_need_report
+    language zh
+    role output_display_request
+    precondition "A formalization grounded a ConceptGraph that raised needs."
+    effect "Report the raised and grounded need counts in Chinese."
+    unit "count"
+    example "提出的需求 7；已获依据 3。"
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"
+  response_agentic_formalization_need_report_es
+    defined-by agentic_formalization_need_report
+    language es
+    role output_display_request
+    precondition "A formalization grounded a ConceptGraph that raised needs."
+    effect "Report the raised and grounded need counts in Spanish."
+    unit "count"
+    example "Necesidades planteadas: 7; fundamentadas: 3."
+    grounding "src/agentic_coding/formalization_recipe.rs::final_answer"

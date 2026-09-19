@@ -15,6 +15,9 @@ pub(super) fn parse_type(node: &LinoNode) -> Option<IrType> {
         "sequence" => Some(IrType::Sequence(Box::new(parse_nested_type(
             node, "element",
         )?))),
+        "ordered_sequence" => Some(IrType::OrderedSequence(Box::new(parse_nested_type(
+            node, "element",
+        )?))),
         "pair" => Some(IrType::Pair(
             Box::new(parse_nested_type(node, "left")?),
             Box::new(parse_nested_type(node, "right")?),
@@ -184,6 +187,12 @@ pub fn parse_type_slug(value: &str) -> Option<IrType> {
                 .and_then(|inner| inner.strip_suffix('>'))
             {
                 return Some(IrType::Sequence(Box::new(parse_type_slug(inner)?)));
+            }
+            if let Some(inner) = value
+                .strip_prefix("ordered<")
+                .and_then(|inner| inner.strip_suffix('>'))
+            {
+                return Some(IrType::OrderedSequence(Box::new(parse_type_slug(inner)?)));
             }
             let (kind, inner) = if let Some(inner) = value
                 .strip_prefix("pair<")

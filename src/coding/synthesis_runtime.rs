@@ -229,6 +229,12 @@ pub fn discover_and_compose(
         let ledger = crate::coding::fragment_catalog::FragmentLedger::new(&cache_dir);
         let fragment_catalog = crate::coding::fragment_catalog::FragmentCatalog::bootstrap()
             .with_rediscovered(&ledger);
+        let absent_seeds = crate::coding::fragment_catalog::FragmentCatalog::absent_seed_files(
+            crate::coding::fragment_catalog::bootstrap_seed_directory(),
+        );
+        if !absent_seeds.is_empty() {
+            log.append("bootstrap_absent", &absent_seeds.join(", "));
+        }
         let lookup_bounds = crate::source_walk::LookupBounds::default();
         let elaboration_bounds = crate::coding::program_ir::ElaborationBounds {
             max_candidates: 64,

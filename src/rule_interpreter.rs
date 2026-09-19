@@ -16,7 +16,7 @@ use std::sync::OnceLock;
 use crate::engine::{SymbolicAnswer, normalize_prompt, unknown_answer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::seed::{self, HANDLER_RULES_LINO, Lexicon, Slot};
+use crate::seed::{self, HANDLER_RULES_LINO, Slot};
 use crate::seed_links::SeedLinkNetwork;
 use crate::solver_handlers::finalize_simple;
 
@@ -137,27 +137,19 @@ pub struct ConditionSurface {
 
 /// Source of the lexical and exact-route facts used by conditions.
 ///
-/// Stage 2 keeps evaluation singular while allowing the current parsed seed
-/// tables and the projected link store to be compared record for record.
+/// Evaluation is singular: every condition reads facts through this trait, and
+/// since plan 09 leaf 40 the one implementation in `src/` is the projected
+/// link store ([`LinkStoreSource`]). Tests may inject their own backends.
 pub trait ConditionSource {
     fn role_surfaces(&self, role: &str) -> Vec<ConditionSurface>;
     fn exact_route_surfaces(&self, slug: &str) -> Vec<String>;
 }
 
-/// The current runtime backend: facts read from the parsed seed tables.
-#[derive(Debug, Clone, Copy)]
-pub struct SeedTables<'a> {
-    lexicon: &'a Lexicon,
-}
-
-impl<'a> SeedTables<'a> {
-    #[must_use]
-    pub const fn new(lexicon: &'a Lexicon) -> Self {
-        Self { lexicon }
-    }
-}
-
 /// Stage-2 backend built by querying the boot-time link projection.
+///
+/// Since plan 09 leaf 40 this is the only condition backend in `src/`: the
+/// production read path is the link store, and the parsed seed tables remain
+/// only the projection's *input*, never a competing condition source.
 #[derive(Debug, Clone)]
 pub struct LinkStoreSource {
     roles: BTreeMap<String, Vec<ConditionSurface>>,
@@ -221,41 +213,18 @@ struct Context<'a> {
     language: String,
 }
 
-impl ConditionSource for SeedTables<'_> {
-    fn role_surfaces(&self, role: &str) -> Vec<ConditionSurface> {
-        self.lexicon
-            .meanings
-            .iter()
-            .filter(|meaning| meaning.has_role(role))
-            .flat_map(|meaning| meaning.lexemes.iter())
-            .flat_map(|lexeme| {
-                lexeme.words.iter().map(|form| ConditionSurface {
-                    text: form.text.clone(),
-                    language: lexeme.language.clone(),
-                    slot: form.slot(),
-                })
-            })
-            .collect()
-    }
-
-    fn exact_route_surfaces(&self, slug: &str) -> Vec<String> {
-        seed::intent_routing()
-            .intents
-            .iter()
-            .find(|route| route.slug == slug)
-            .map(|route| {
-                route
-                    .keywords
-                    .iter()
-                    .chain(&route.phrases)
-                    .cloned()
-                    .collect()
-            })
-            .unwrap_or_default()
-    }
-}
-
 impl LinkStoreSource {
+    /// The process-wide store backend over the boot-time projection.
+    ///
+    /// The projection is built once per process, so the condition vocabulary
+    /// read from it is cached once with it. Every production caller shares this
+    /// instance; `from_store` stays public for injected stores in tests.
+    #[must_use]
+    pub fn shared() -> &'static Self {
+        static CELL: OnceLock<LinkStoreSource> = OnceLock::new();
+        CELL.get_or_init(|| Self::from_store(crate::seed_links::network()))
+    }
+
     /// Read the condition vocabulary from a projected store. The resulting
     /// index owns only query results; it never consults `seed::lexicon()`.
     #[must_use]
@@ -415,19 +384,17 @@ pub fn run_handler(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let source = SeedTables::new(seed::lexicon());
     rules()
         .handler(name)?
-        .run_with_source(&source, prompt, normalized, log)
+        .run_with_source(LinkStoreSource::shared(), prompt, normalized, log)
 }
 
 /// Whether any rule behind `name` accepts `prompt`, without producing an answer.
 #[must_use]
 pub fn handler_matches(name: &str, prompt: &str) -> bool {
-    let source = SeedTables::new(seed::lexicon());
-    rules()
-        .handler(name)
-        .is_some_and(|set| set.matches_with_source(&source, prompt, &prompt.to_lowercase()))
+    rules().handler(name).is_some_and(|set| {
+        set.matches_with_source(LinkStoreSource::shared(), prompt, &prompt.to_lowercase())
+    })
 }
 
 /// One rule-condition result, before value capture or response rendering.
@@ -519,19 +486,6 @@ impl HandlerRuleSet {
         self.rules.iter().map(|rule| rule.name.as_str())
     }
 
-    /// Try each rule in order against `lexicon`; the first accepted rule answers.
-    #[must_use]
-    pub fn run_with(
-        &self,
-        lexicon: &Lexicon,
-        prompt: &str,
-        normalized: &str,
-        log: &mut EventLog,
-    ) -> Option<SymbolicAnswer> {
-        let source = SeedTables::new(lexicon);
-        self.run_with_source(&source, prompt, normalized, log)
-    }
-
     /// Try each rule using an explicit condition source.
     #[must_use]
     pub fn run_with_source(
@@ -544,13 +498,6 @@ impl HandlerRuleSet {
         let language = detect_language(prompt);
         let context = Context::new(source, prompt, normalized, language.slug());
         self.rules.iter().find_map(|rule| rule.run(&context, log))
-    }
-
-    /// Whether any rule accepts the prompt; nothing is logged or rendered.
-    #[must_use]
-    pub fn matches_with(&self, lexicon: &Lexicon, prompt: &str, normalized: &str) -> bool {
-        let source = SeedTables::new(lexicon);
-        self.matches_with_source(&source, prompt, normalized)
     }
 
     /// Whether any rule accepts a prompt through an explicit source.
@@ -846,13 +793,19 @@ impl Condition {
 /// the same slot metadata here keeps the lexicon as the single recognition
 /// authority: a newly seeded paraphrase can affect dispatch without a Rust
 /// phrase branch.
+///
+/// A prefix surface's lead half ("prove …") is a phrase the request is expected
+/// to *start some rendering of*, so it must be present as complete words. A raw
+/// substring would let an unrelated word of another language that merely embeds
+/// the phrase — Spanish "proveedores" embeds "prove" — claim the surface and
+/// fire the promotion that reads it (issue #1138, plan 03 wave F).
 fn spelled_surface_present(text: &str, surface: &ConditionSurface) -> bool {
     let expected = surface.text.as_str();
     match surface.slot {
         Slot::Bare => bounded_surface_present(text, expected),
         Slot::Prefix => expected
             .split_once('…')
-            .is_some_and(|(before, _)| text.contains(before.trim())),
+            .is_some_and(|(before, _)| phrase_present_as_words(text, before.trim())),
         Slot::Suffix => expected
             .split_once('…')
             .is_some_and(|(_, after)| text.contains(after.trim())),
@@ -884,11 +837,43 @@ fn bounded_surface_present(text: &str, expected: &str) -> bool {
         || text.contains(&format!(" {expected} "))
 }
 
+/// Whether `phrase` occurs in `text` as complete words: every character border
+/// of the match is a word boundary, where a word boundary is the text edge or a
+/// non-alphanumeric character. Punctuation counts as a boundary, so "¿Cuántos"
+/// still begins the phrase "cuántos …", while the "prove" inside
+/// "proveedores" does not — an embedded word is not the phrase.
+fn phrase_present_as_words(text: &str, phrase: &str) -> bool {
+    if phrase.is_empty() {
+        return false;
+    }
+    if crate::coding::contains_cjk(phrase) {
+        return text.contains(phrase);
+    }
+    let mut search = 0;
+    while let Some(start) = text[search..].find(phrase) {
+        let start = search + start;
+        let end = start + phrase.len();
+        let opens_word = text[..start]
+            .chars()
+            .next_back()
+            .is_none_or(|before| !before.is_alphanumeric());
+        let closes_word = text[end..]
+            .chars()
+            .next()
+            .is_none_or(|after| !after.is_alphanumeric());
+        if opens_word && closes_word {
+            return true;
+        }
+        search = end;
+    }
+    false
+}
+
 /// The furthest a phrasal verb's object may separate its verb and particle.
 ///
 /// This mirrors the semantic lexicon's bound, but operates on
-/// [`ConditionSource`] surfaces so parsed seed tables and the projected link
-/// store evaluate the same data-owned condition.
+/// [`ConditionSource`] surfaces so every condition backend evaluates the same
+/// data-owned condition.
 const SEPARATED_ROLE_OBJECT_LIMIT: usize = 6;
 
 fn separated_surface_present(text: &str, surface: &str) -> bool {

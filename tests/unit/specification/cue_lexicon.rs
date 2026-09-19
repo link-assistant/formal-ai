@@ -9,11 +9,16 @@
 //!
 //! 1. every cue set the Rust code consults exists in the data, with a known mode;
 //! 2. the migrated cue *contents* are exactly the lists they replaced (pinned);
-//! 3. the match modes behave correctly — token matching keeps "book" from matching
-//!    inside "books", substring matching catches embedded operations, prefix
+//! 3. the match modes behave correctly — token matching keeps "search" from matching
+//!    inside "researcher", substring matching catches embedded operations, prefix
 //!    matching anchors at the start;
 //! 4. routing is unchanged: representative prompts still surface the same handler
 //!    relevants they did before the cues moved out of Rust.
+//!
+//! Plan 10 leaf 16 (issue #869) retired the three calendar sets: their verbs now
+//! live on the `schedule` act (`data/seed/meanings-acts.lino`,
+//! `data/seed/meanings-calendar.lino`), so recognition is an act reading, not a
+//! handler cue.
 
 use formal_ai::cue_lexicon::{CueMatch, cue_set, cues, matches};
 use formal_ai::intent_formalization::formalize_intent;
@@ -30,9 +35,6 @@ const CONSULTED_SETS: &[(&str, CueMatch)] = &[
     ("write_script", CueMatch::Token),
     ("software_project", CueMatch::Token),
     ("concept_lookup", CueMatch::Prefix),
-    ("calendar_fallback_verbs", CueMatch::Token),
-    ("calendar_digit_actions", CueMatch::Token),
-    ("calendar_ru_date_marker", CueMatch::Substring),
     ("text_manipulation", CueMatch::Substring),
     // Issue #702: the world-model dialogue's recognition vocabulary.
     ("world_state_target", CueMatch::Substring),
@@ -84,12 +86,6 @@ fn migrated_cue_contents_match_the_lists_they_replaced() {
         ["build", "create", "implement", "develop"]
     );
     assert_eq!(cues("concept_lookup"), ["what is ", "define "]);
-    assert_eq!(
-        cues("calendar_fallback_verbs"),
-        ["забей", "поставь", "schedule", "book"]
-    );
-    assert_eq!(cues("calendar_digit_actions"), ["schedule", "book", "add"]);
-    assert_eq!(cues("calendar_ru_date_marker"), ["число"]);
     assert_eq!(cues("execution_failure_prompt"), ["undefined_function"]);
     assert_eq!(cues("execution_failure_normalized"), ["undefined function"]);
     assert_eq!(
@@ -115,13 +111,12 @@ fn migrated_cue_contents_match_the_lists_they_replaced() {
 
 #[test]
 fn token_mode_respects_word_boundaries() {
-    // The reason calendar verbs use token mode: "book" must not match inside "books"
-    // (e.g. a "free-programming-books" mention), but must match as a standalone word.
-    assert!(matches("calendar_fallback_verbs", "book a meeting"));
-    assert!(!matches(
-        "calendar_fallback_verbs",
-        "free programming books"
-    ));
+    // The reason token mode exists: "search" must not match inside "researcher"
+    // (e.g. a "researcher profile" mention), but must match as a standalone word.
+    // (The calendar verbs that first exercised this moved onto the schedule act
+    // in plan 10 leaf 16; web_search carries the same mode.)
+    assert!(matches("web_search", "search the web for rust"));
+    assert!(!matches("web_search", "a researcher studies rust releases"));
     // Substring mode, by contrast, catches embedded operations as the old code did.
     assert!(matches("text_manipulation", "please uppercase this"));
     // Prefix mode anchors at the start: "what is" only as an opener.

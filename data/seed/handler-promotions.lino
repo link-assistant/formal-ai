@@ -204,5 +204,7 @@ handler_promotions
   promotion concept_lookup
     rank 190
     when
-      route_exact concept_lookup of cleaned
-    because "a single seeded definition question reaches concept lookup"
+      any
+        prefix "what is " of normalized
+        prefix "define " of normalized
+    because "a definition question opens with the pinned concept_lookup lead cues (data/meta/cue-lexicon.lino), so the cue class routes by prefix instead of an exact-route enumeration that cannot cover the open class"

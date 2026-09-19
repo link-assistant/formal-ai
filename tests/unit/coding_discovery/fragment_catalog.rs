@@ -15,9 +15,10 @@ use formal_ai::fragment_catalog::{Fragment, FragmentCatalog, FragmentLedger, Fra
 
 static TEMP_IDS: AtomicUsize = AtomicUsize::new(0);
 
-/// The two seed files the bootstrap catalog reads.
-const BOOTSTRAP_SEED: [&str; 3] = [
+/// The seed files the bootstrap catalog reads.
+const BOOTSTRAP_SEED: [&str; 4] = [
     "data/seed/meanings-coding-structure.lino",
+    "data/seed/meanings-coding-structure-2.lino",
     "data/seed/coding-composition-fragments.lino",
     "data/seed/coding-discovery-runtime.lino",
 ];
@@ -64,6 +65,11 @@ fn bootstrap_catalog_is_absent_without_the_seed_and_never_panics() {
         "the runtime renderer must not retain a compile-time seed copy"
     );
 
+    assert_eq!(
+        FragmentCatalog::absent_seed_files(&empty_seed).len(),
+        BOOTSTRAP_SEED.len(),
+        "an absent seed is visible as the named files the bootstrap could not read"
+    );
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     for relative in BOOTSTRAP_SEED {
         assert!(
@@ -71,6 +77,10 @@ fn bootstrap_catalog_is_absent_without_the_seed_and_never_panics() {
             "{relative} is the bootstrap the catalog reads at runtime"
         );
     }
+    assert!(
+        FragmentCatalog::absent_seed_files(root).is_empty(),
+        "the shipped tree is not in the absent-seed state"
+    );
     assert!(
         !FragmentCatalog::bootstrap().fragments().is_empty(),
         "with the seed present the same code path yields the bootstrap fragments"
@@ -122,18 +132,24 @@ fn structural_algorithms_are_composed_from_primitives_not_catalogued_as_answers(
 
 #[test]
 fn named_rendering_preserves_target_language_braces_around_a_slot() {
-    let rendered = FragmentCatalog::bootstrap()
+    // The brace-preservation rule is generic rendering behavior, so the probe
+    // fragment lives in a temporary seed rather than the shipped one: no
+    // shipped fragment exists to carry a regex-shaped template any more.
+    let seed = temp_dir("brace-rendering");
+    fs::write(
+        seed.join("coding-discovery-runtime.lino"),
+        "coding_discovery_runtime\n  template brace_probe\n    text \"findall(r'\\\\b\\\\w{{least},}\\\\b', {text})\"\n    grounding \"https://docs.python.org/3.12/library/re.html#re.findall\"\n    license \"PSF-2.0\"\n    rediscovery_query \"find words of at least a given length\"\n    fragment_signature (integer text)\n    fragment_result \"sequence<text>\"\n",
+    )
+    .expect("write brace rendering seed");
+    let rendered = FragmentCatalog::bootstrap_from(&seed)
         .render_named(
-            "regex_minimum_word_length",
+            "brace_probe",
             "python",
-            &[("minimum", "5"), ("text", "sentence")],
+            &[("least", "5"), ("text", "sentence")],
         )
-        .expect("the source-backed regex fragment renders");
+        .expect("the brace probe fragment renders");
 
-    assert_eq!(
-        rendered,
-        "__import__('re').findall(r'\\b\\w{5,}\\b', sentence)"
-    );
+    assert_eq!(rendered, "findall(r'\\b\\w{5,}\\b', sentence)");
 }
 
 #[test]

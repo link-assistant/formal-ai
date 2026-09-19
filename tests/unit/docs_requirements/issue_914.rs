@@ -32,7 +32,7 @@ fn issue_914_case_study_and_planning_docs_are_traceable() {
         &read(root.join("ROADMAP.md")),
         &[
             "2026-08-03 Requirement-Status Audit (issue #914)",
-            "Open planning batch E69-E77",
+            "Planning batch E69-E77",
             "docs/case-studies/issue-914/",
             "https://github.com/link-assistant/formal-ai/issues/916",
         ],

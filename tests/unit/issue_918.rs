@@ -272,6 +272,60 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
 }
 
 #[test]
+fn generic_interpreter_components_are_registered_outside_the_census() {
+    // Issue #1138 B9, plan 09 leaf 17: the migration families need compiled
+    // homes that are not themselves handler debt. A `component` block in the
+    // ledger names one such file outside the census, the boundary category it
+    // was promoted under, and the reason it passes the promotion test. The
+    // test reads the ledger through the gate's own parser so the gate and the
+    // suite cannot disagree about what a component is.
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let ledger_text = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
+        .expect("issue #918 must provide the source-file core-boundary ledger");
+    let ledger = check_minimal_core_boundary::parse_ledger(&ledger_text)
+        .expect("the boundary ledger parses, components included");
+    let census = handler_sources();
+    assert!(
+        !ledger.components.is_empty(),
+        "the migration families register their generic interpreters as components"
+    );
+    let mut names = BTreeSet::new();
+    for record in &ledger.components {
+        assert!(
+            names.insert(record.name.as_str()),
+            "component names are unique: {}",
+            record.name
+        );
+        assert_eq!(
+            record.kind, "Generic interpreter",
+            "component {} is registered under the boundary document's interpreter category",
+            record.name
+        );
+        assert!(
+            !record.reason.is_empty(),
+            "component {} explains the promotion decision",
+            record.name
+        );
+        assert!(
+            !census.contains(&record.file),
+            "component {} file {} must sit outside the handler census",
+            record.name,
+            record.file
+        );
+        assert!(
+            root.join(&record.file).is_file(),
+            "component {} file {} must exist",
+            record.name,
+            record.file
+        );
+    }
+    assert!(
+        names.contains("retrieval_method_interpreter"),
+        "the M2 retrieval family's interpreter is registered"
+    );
+}
+
+#[test]
 fn boundary_document_names_the_only_four_compiled_core_categories() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let boundary = fs::read_to_string(root.join("docs/design/minimal-core-boundary.md"))

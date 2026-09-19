@@ -24,18 +24,23 @@ use alloc::vec::Vec;
 use crate::seed::parser::parse_lino;
 use crate::seed::{
     self, ROLE_ASSISTANT_MECHANISM_INQUIRY, ROLE_CALENDAR_DAY_REFERENCE,
-    ROLE_CAPABILITY_ACT_COMPOSE, ROLE_CAPABILITY_ACT_DEMONSTRATE, ROLE_CAPABILITY_ACT_ENUMERATE,
-    ROLE_CAPABILITY_ACT_EXPLAIN, ROLE_CAPABILITY_ACT_RECORD, ROLE_CAPABILITY_ACT_RETRIEVE,
-    ROLE_CAPABILITY_ACT_SCHEDULE, ROLE_CAPABILITY_ACT_TRANSFORM, ROLE_CAPABILITY_CLOCK_REFERENCE,
+    ROLE_CALENDAR_HOUR_REFERENCE, ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CAPABILITY_ACT_COMPOSE,
+    ROLE_CAPABILITY_ACT_DEMONSTRATE, ROLE_CAPABILITY_ACT_ENUMERATE, ROLE_CAPABILITY_ACT_EXPLAIN,
+    ROLE_CAPABILITY_ACT_RECORD, ROLE_CAPABILITY_ACT_RETRIEVE, ROLE_CAPABILITY_ACT_SCHEDULE,
+    ROLE_CAPABILITY_ACT_TRANSFORM, ROLE_CAPABILITY_CLOCK_REFERENCE,
     ROLE_CAPABILITY_CONTAINER_SCOPE, ROLE_CAPABILITY_CONTENT_ASSIGNMENT,
-    ROLE_CAPABILITY_CONTENT_INTRODUCER, ROLE_CAPABILITY_FRESHNESS_LIVE,
-    ROLE_CAPABILITY_LANGUAGE_REFERENCE, ROLE_CAPABILITY_PRIOR_TURN_REFERENCE,
-    ROLE_CAPABILITY_QUANTITY_INTERROGATIVE, ROLE_CAPABILITY_SELF_SURFACE_NOUN,
+    ROLE_CAPABILITY_CONTENT_INTRODUCER, ROLE_CAPABILITY_DELEGATION_MARKER,
+    ROLE_CAPABILITY_FRESHNESS_LIVE, ROLE_CAPABILITY_LANGUAGE_REFERENCE,
+    ROLE_CAPABILITY_PRIOR_TURN_REFERENCE, ROLE_CAPABILITY_QUANTITY_INTERROGATIVE,
+    ROLE_CAPABILITY_SELF_SURFACE_NOUN, ROLE_CAPABILITY_TASK_LIST_NOUN,
     ROLE_CAPABILITY_WEB_HOST_SUFFIX, ROLE_CAPABILITY_WEB_SCOPE, ROLE_CAPABILITY_WORKSPACE_SCOPE,
     ROLE_LOCAL_PATH_SCOPE_CURRENT, ROLE_LOCAL_PATH_SCOPE_DESKTOP, ROLE_LOCAL_PATH_SCOPE_HOME,
     ROLE_TRANSLATION_LANGUAGE,
 };
 use crate::web_engine_core::normalize_prompt;
+
+mod evidence;
+pub use evidence::*;
 
 /// What the request is *about*, derived structurally with no natural-language
 /// vocabulary in the derivation (plan 10 Architecture 1).
@@ -47,14 +52,28 @@ pub enum ObjectType {
     Path,
     /// A filesystem scope noun (`desktop`, `home`, the current directory).
     PathScope,
+    /// A token carrying a wildcard (`*`, `?`, `[`): a pattern, not a file.
+    Pattern,
+    /// Strictly more than one path-shaped token: a set of files, not one file.
+    PathSet,
     /// A balanced quoted span longer than one token.
     QuotedContent,
     /// A clock time, a date, or a weekday/relative-day reference.
     TimeExpression,
+    /// A relative period measured in hours — what a fresh-period digest
+    /// ("summarise the last few hours, with links") asks about. Kept apart
+    /// from `TimeExpression` because weekday questions are engine calendar
+    /// reasoning while a period digest needs fresh web events, and the table
+    /// routes objects, not spellings.
+    RelativePeriod,
     /// A term resolving to a registered language in `data/seed/languages.lino`.
     LanguageName,
     /// An interrogative whose expected answer is a magnitude.
     QuantityQuestion,
+    /// The subject is a list of tasks to track (`todo`).
+    TaskList,
+    /// The work is handed to another agent (`subagent`).
+    Delegation,
     /// One or more content tokens that are none of the above.
     BareTerm,
     /// The subject is the assistant's own UI, answer or behaviour.
@@ -65,14 +84,19 @@ pub enum ObjectType {
 }
 
 /// Every object type, in the order the decision table's axis declares them.
-const OBJECT_TYPES: [ObjectType; 10] = [
+const OBJECT_TYPES: [ObjectType; 15] = [
     ObjectType::Url,
     ObjectType::Path,
+    ObjectType::Pattern,
+    ObjectType::PathSet,
     ObjectType::PathScope,
     ObjectType::QuotedContent,
     ObjectType::TimeExpression,
+    ObjectType::RelativePeriod,
     ObjectType::LanguageName,
     ObjectType::QuantityQuestion,
+    ObjectType::TaskList,
+    ObjectType::Delegation,
     ObjectType::BareTerm,
     ObjectType::SelfSurface,
     ObjectType::None,
@@ -86,10 +110,15 @@ impl ObjectType {
             Self::Url => "url",
             Self::Path => "path",
             Self::PathScope => "path_scope",
+            Self::Pattern => "pattern",
+            Self::PathSet => "path_set",
             Self::QuotedContent => "quoted_content",
             Self::TimeExpression => "time_expression",
+            Self::RelativePeriod => "relative_period",
             Self::LanguageName => "language_name",
             Self::QuantityQuestion => "quantity_question",
+            Self::TaskList => "task_list",
+            Self::Delegation => "delegation",
             Self::BareTerm => "bare_term",
             Self::SelfSurface => "self_surface",
             Self::None => "none",
@@ -106,21 +135,38 @@ impl ObjectType {
 
     /// Where this object sits when a prompt carries several.
     ///
-    /// A parsed URL or a path literal is the least ambiguous thing a request can
-    /// name, so it outranks everything else; a bare term is what is left when
-    /// nothing more specific survived, so it ranks last but one.
+    /// A parsed URL is the least ambiguous thing a request can name, so it
+    /// outranks everything else; a bare term is what is left when nothing more
+    /// specific survived, so it ranks last but one.
+    ///
+    /// A wildcard pattern outranks the path reading of the very same token:
+    /// `**/*.rs` parses as a path (it carries a separator) and is nonetheless
+    /// not one file anybody can open, so the pattern is the reading the token
+    /// supports. A multi-file set outranks any single member for the same
+    /// reason -- two paths are a batch, not a document. A magnitude
+    /// interrogative outranks a temporal cue on the same sentence ("how tall
+    /// does X normally grow" asks for a measurement; "normally" is scenery),
+    /// because the interrogative is a closed class and the temporal cue is
+    /// open to mere mentions of hours or weeks. The task-list and delegation
+    /// subjects are named by their own closed-class nouns, which nothing more
+    /// structural outranks.
     const fn rank(self) -> u8 {
         match self {
             Self::Url => 0,
-            Self::Path => 1,
-            Self::SelfSurface => 2,
-            Self::LanguageName => 3,
-            Self::TimeExpression => 4,
-            Self::QuantityQuestion => 5,
-            Self::QuotedContent => 6,
-            Self::PathScope => 7,
-            Self::BareTerm => 8,
-            Self::None => 9,
+            Self::Pattern => 1,
+            Self::PathSet => 2,
+            Self::Path => 3,
+            Self::SelfSurface => 4,
+            Self::LanguageName => 5,
+            Self::QuantityQuestion => 6,
+            Self::TimeExpression => 7,
+            Self::RelativePeriod => 7,
+            Self::TaskList => 8,
+            Self::Delegation => 9,
+            Self::QuotedContent => 10,
+            Self::PathScope => 11,
+            Self::BareTerm => 12,
+            Self::None => 13,
         }
     }
 }
@@ -291,342 +337,6 @@ pub struct RoutingDecision {
     pub outcome: RoutingOutcome,
 }
 
-/// Whether any surface of `role` occurs in `prompt`.
-///
-/// Both the token-bounded and the raw-substring readings are consulted, because
-/// the roles this module shares with older recognisers record some surfaces as
-/// whole phrases and some as inflectable stems.
-fn evidences(role: &str, normalized: &str) -> bool {
-    let lexicon = seed::lexicon();
-    lexicon.mentions_role(role, normalized) || lexicon.mentions_role_raw(role, normalized)
-}
-
-/// How *specific* the evidence for `role` in `normalized` is: the character
-/// length of the longest surface of the role the prompt carries, or zero.
-///
-/// A longer surface is a more specific observation about the same sentence.
-/// "echo" is evidence of composing; "echo the contents of" is evidence of
-/// retrieving, and it is the same four letters plus fifteen more, so it is the
-/// reading the sentence actually supports. Without this, act resolution would
-/// depend on the order the acts happen to be declared in, which is exactly the
-/// declaration-order dependence plan 10 refuses in the table itself.
-fn evidence_strength(role: &str, normalized: &str) -> usize {
-    seed::lexicon()
-        .words_for_role(role)
-        .into_iter()
-        .filter(|word| normalized.contains(word.as_str()))
-        .map(|word| word.chars().count())
-        .max()
-        .unwrap_or(0)
-}
-
-/// Whether a token parses as an absolute URL.
-fn is_url(token: &str) -> bool {
-    let token = token.trim_matches(|character: char| !character.is_alphanumeric());
-    token
-        .split_once("://")
-        .is_some_and(|(scheme, rest)| matches!(scheme, "http" | "https") && !rest.is_empty())
-}
-
-/// Whether a token reads as a workspace path in this request.
-///
-/// A dotted API member and a filename have the same punctuation. A
-/// lower-to-upper boundary in the left side (`TypeName.member`) is structural
-/// evidence for a qualified symbol, unless the surrounding request explicitly
-/// places that token in a filesystem scope. This prevents a documentation
-/// subject from becoming a read-file request without maintaining an extension
-/// allowlist in Rust.
-fn is_path(token: &str, normalized: &str) -> bool {
-    let token = token.trim_matches(|character: char| matches!(character, ',' | ';' | '"' | '\''));
-    if is_url(token) {
-        return false;
-    }
-    if token.contains('/') || token.contains('\\') {
-        return true;
-    }
-    token.rsplit_once('.').is_some_and(|(stem, extension)| {
-        !stem.is_empty()
-            && (1..=5).contains(&extension.chars().count())
-            && extension.chars().all(char::is_alphanumeric)
-            && extension.chars().any(char::is_alphabetic)
-            && !is_web_host_suffix(extension)
-            && (!looks_like_qualified_member(stem, extension) || has_workspace_scope(normalized))
-    })
-}
-
-/// A dotted identifier whose left side carries a type/module-style word
-/// boundary and whose right side is an identifier, rather than an extension.
-fn looks_like_qualified_member(stem: &str, member: &str) -> bool {
-    if stem.contains('.')
-        || !stem
-            .chars()
-            .all(|character| character.is_alphanumeric() || character == '_')
-        || !member
-            .chars()
-            .all(|character| character.is_alphanumeric() || character == '_')
-    {
-        return false;
-    }
-    stem.chars()
-        .zip(stem.chars().skip(1))
-        .any(|(left, right)| left.is_lowercase() && right.is_uppercase())
-}
-
-/// Whether `extension` is a registrable domain suffix rather than a file
-/// extension, so `amazon.in` is a site and `main.rs` is a file.
-fn is_web_host_suffix(extension: &str) -> bool {
-    let extension = extension.to_lowercase();
-    seed::lexicon()
-        .words_for_role(ROLE_CAPABILITY_WEB_HOST_SUFFIX)
-        .contains(&extension)
-}
-
-/// Whether the prompt carries a clock time: digits, a colon, digits.
-fn has_clock_time(prompt: &str) -> bool {
-    let characters: Vec<char> = prompt.chars().collect();
-    characters.iter().enumerate().any(|(index, character)| {
-        *character == ':'
-            && index > 0
-            && characters[index - 1].is_ascii_digit()
-            && characters.get(index + 1).is_some_and(char::is_ascii_digit)
-    })
-}
-
-/// Whether the prompt carries a balanced quoted span of more than one token.
-fn has_quoted_span(prompt: &str) -> bool {
-    for delimiter in ['"', '\u{201c}', '\u{00ab}'] {
-        let closing = match delimiter {
-            '\u{201c}' => '\u{201d}',
-            '\u{00ab}' => '\u{00bb}',
-            other => other,
-        };
-        if let Some(open) = prompt.find(delimiter) {
-            let rest = &prompt[open + delimiter.len_utf8()..];
-            if let Some(close) = rest.find(closing)
-                && rest[..close].split_whitespace().count() > 1
-            {
-                return true;
-            }
-        }
-    }
-    false
-}
-
-/// Whether the request carries *explicit content*: a quoted span, or a seeded
-/// content introducer (`containing`, `с текстом`, `内容为`, `con el texto`).
-///
-/// Quotation marks are one way a person hands over a literal; naming the
-/// content with the phrase the language uses for it is the other, and a request
-/// that carries one carries the same object as a request that carries the other.
-fn has_explicit_content(prompt: &str, normalized: &str) -> bool {
-    has_quoted_span(prompt) || evidences(ROLE_CAPABILITY_CONTENT_INTRODUCER, normalized)
-}
-
-/// Whether the prompt names a filesystem container: the desktop, the home
-/// directory, the current directory, or the folder/file/path nouns themselves.
-/// A possessive is not consulted, which is the single change that makes
-/// `on my desktop` and `on desktop` one request.
-fn has_container_scope(normalized: &str) -> bool {
-    [
-        ROLE_LOCAL_PATH_SCOPE_DESKTOP,
-        ROLE_LOCAL_PATH_SCOPE_HOME,
-        ROLE_LOCAL_PATH_SCOPE_CURRENT,
-        ROLE_CAPABILITY_CONTAINER_SCOPE,
-    ]
-    .iter()
-    .any(|role| evidences(role, normalized))
-}
-
-/// Whether the prompt scopes its effect to the machine the task is being done
-/// on. Wider than [`has_container_scope`]: the code, the repository and the
-/// project are the workspace without being a directory the request names.
-fn has_workspace_scope(normalized: &str) -> bool {
-    has_container_scope(normalized) || evidences(ROLE_CAPABILITY_WORKSPACE_SCOPE, normalized)
-}
-
-/// Whether the prompt scopes its effect to the open web, either by naming it or
-/// by asking for what is true *now*, which nothing but a live source can answer
-/// (plan 10 leaf 12's `freshness: live` qualifier).
-fn has_web_scope(normalized: &str) -> bool {
-    evidences(ROLE_CAPABILITY_WEB_SCOPE, normalized) || is_freshness_live(normalized)
-}
-
-/// Whether the request names the open web itself -- the web, the internet, a
-/// search engine, or what is true right now.
-///
-/// The planner asks this before letting the table answer a bare term at the end
-/// of its cascade: at that position every route that reads the conversation and
-/// the workspace has already declined, and a request that never mentioned the
-/// open web is one the symbolic engine should still get its turn at.
-#[must_use]
-pub fn names_open_web(prompt: &str) -> bool {
-    has_web_scope(&normalize_prompt(prompt))
-}
-
-/// The `freshness: live` qualifier: the request is about what is true at the
-/// moment it is asked, so a stored answer cannot satisfy it (issue #720).
-#[must_use]
-pub fn is_freshness_live(normalized: &str) -> bool {
-    evidences(ROLE_CAPABILITY_FRESHNESS_LIVE, normalized)
-}
-
-/// Whether the subject is a piece of the assistant's own surface.
-fn is_self_surface(normalized: &str) -> bool {
-    evidences(ROLE_CAPABILITY_SELF_SURFACE_NOUN, normalized)
-        || evidences(ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized)
-        || is_prior_turn_reference(normalized)
-}
-
-/// Whether the prompt is, in full, a seeded clarification utterance (issue #29).
-///
-/// A bare "what do you mean" or "не понял" is a comprehension turn, and the
-/// table reads those same short words as a question about the assistant's
-/// surface (`self` is in "what do *you* mean"). Whole-surface equality -- the
-/// issue #1095 rule that a turn which *is* a surface carries the role while a
-/// request merely *containing* it keeps its own meaning -- is what lets the
-/// seed's clarification class keep its own utterances.
-#[must_use]
-pub fn is_bare_clarification(prompt: &str) -> bool {
-    let cleaned = crate::web_engine_core::normalize_prompt(prompt);
-    !cleaned.is_empty()
-        && seed::lexicon()
-            .words_for_role(crate::seed::ROLE_CLARIFICATION_REQUEST)
-            .iter()
-            .any(|surface| surface == &cleaned)
-}
-
-/// Whether the object of the request is the assistant's *previous turn*: the
-/// closed class of comprehension-failure surfaces (issue #721).
-///
-/// This is the one class with no structural signal at all -- "that went over my
-/// head" names nothing the characters can be read for -- so it is grounded in a
-/// seed role in five languages rather than in a Rust branch, and none of the
-/// three reported strings is among its surfaces.
-#[must_use]
-pub fn is_prior_turn_reference(normalized: &str) -> bool {
-    evidences(ROLE_CAPABILITY_PRIOR_TURN_REFERENCE, normalized)
-}
-
-/// The literal content a request hands over, and the path it hands it to.
-///
-/// Both halves are read from the same two sources the `quoted_content` object
-/// is derived from -- a balanced quoted span, or a seeded content introducer --
-/// so the planner writes what the table said was there rather than guessing
-/// again with a second rule.
-#[must_use]
-pub fn explicit_content(prompt: &str) -> Option<String> {
-    if let Some(span) = quoted_span(prompt) {
-        return Some(span);
-    }
-    let characters: Vec<char> = prompt.chars().collect();
-    let lowered: Vec<char> = prompt.chars().flat_map(char::to_lowercase).collect();
-    if lowered.len() != characters.len() {
-        // A case fold that changes the character count would misplace every
-        // offset below, so the request is left to the planner's own extractor.
-        return None;
-    }
-    let mut best: Option<usize> = None;
-    for surface in seed::lexicon().words_for_role(ROLE_CAPABILITY_CONTENT_INTRODUCER) {
-        let needle: Vec<char> = surface.chars().collect();
-        if needle.is_empty() || needle.len() > lowered.len() {
-            continue;
-        }
-        for start in 0..=lowered.len() - needle.len() {
-            if lowered[start..start + needle.len()] == needle[..] {
-                let end = start + needle.len();
-                if best.is_none_or(|current| end > current) {
-                    best = Some(end);
-                }
-            }
-        }
-    }
-    let Some(end) = best else {
-        return assigned_content(prompt);
-    };
-    let tail: String = characters[end..].iter().collect();
-    let tail = tail.trim().trim_matches(|character: char| {
-        matches!(
-            character,
-            ':' | '"' | '\u{201c}' | '\u{201d}' | '.' | '\u{3002}'
-        )
-    });
-    (!tail.trim().is_empty()).then(|| tail.trim().to_owned())
-}
-
-/// The content of a request that names its destination first: the text after
-/// the assignment connector that follows the destination path.
-///
-/// "set the contents of note.txt to hello" and "pon el contenido de note.txt en
-/// hello" are the same request, and neither quotes its content nor introduces
-/// it. The connector is only read *after* the path, because on its own it is
-/// far too common a word to be evidence of anything.
-fn assigned_content(prompt: &str) -> Option<String> {
-    let path = first_path(prompt)?;
-    let after = prompt.split_once(path.as_str()).map(|(_, tail)| tail)?;
-    let lowered = after.to_lowercase();
-    let mut best: Option<usize> = None;
-    for surface in seed::lexicon().words_for_role(ROLE_CAPABILITY_CONTENT_ASSIGNMENT) {
-        if let Some(position) = lowered.find(surface.as_str()) {
-            let end = position + surface.len();
-            if best.is_none_or(|current| end < current) && after.is_char_boundary(end) {
-                best = Some(end);
-            }
-        }
-    }
-    let content = after[best?..].trim().trim_matches('"');
-    (!content.is_empty()).then(|| content.to_owned())
-}
-
-/// The first balanced quoted span of more than one token, if any.
-fn quoted_span(prompt: &str) -> Option<String> {
-    for delimiter in ['"', '\u{201c}', '\u{00ab}'] {
-        let closing = match delimiter {
-            '\u{201c}' => '\u{201d}',
-            '\u{00ab}' => '\u{00bb}',
-            other => other,
-        };
-        if let Some(open) = prompt.find(delimiter) {
-            let rest = &prompt[open + delimiter.len_utf8()..];
-            if let Some(close) = rest.find(closing) {
-                let inner = &rest[..close];
-                if inner.split_whitespace().count() > 1 {
-                    return Some(inner.to_owned());
-                }
-            }
-        }
-    }
-    None
-}
-
-/// The first token of `prompt` that reads as a workspace path.
-#[must_use]
-pub fn first_path(prompt: &str) -> Option<String> {
-    let normalized = normalize_prompt(prompt);
-    prompt
-        .split_whitespace()
-        .find(|token| is_path(token, &normalized))
-        .map(|token| {
-            token
-                .trim_matches(|character: char| {
-                    matches!(character, ',' | ';' | '"' | '\'' | '(' | ')' | '\u{3002}')
-                })
-                .to_owned()
-        })
-}
-
-/// The first token of `prompt` that parses as an absolute URL.
-#[must_use]
-pub fn first_url(prompt: &str) -> Option<String> {
-    prompt
-        .split_whitespace()
-        .find(|token| is_url(token))
-        .map(|token| {
-            token
-                .trim_matches(|character: char| matches!(character, ',' | ';' | '"' | '\'' | '.'))
-                .to_owned()
-        })
-}
-
 /// Whether the shipped table is the routing authority (plan 10 leaves 9 and 11).
 ///
 /// A data field rather than a Rust constant, so turning the table off to compare
@@ -666,14 +376,39 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
         &mut found,
     );
     note(
+        ObjectType::Pattern,
+        tokens.iter().any(|token| is_pattern_token(token)),
+        &mut found,
+    );
+    note(
+        ObjectType::PathSet,
+        path_token_count(prompt, &normalized) > 1,
+        &mut found,
+    );
+    note(
         ObjectType::SelfSurface,
         is_self_surface(&normalized),
         &mut found,
     );
+    // A language reference is the *object* only when an act makes the language
+    // itself the goal -- a demonstration ("say something in Russian") or a
+    // transform ("translate this to Russian"). Otherwise it is a response-
+    // language marker on some other subject: "tell me about Telegram Ads in
+    // Russian" is about Telegram Ads, in Russian (plan 10 leaf 15, issue
+    // #724); the marker role keeps the binding and the object stays the term.
+    // An obligation on the answer's form hides behind the same act evidence --
+    // "answer" evidences `demonstrate` exactly as "say" does -- but the
+    // concept question is what tells them apart: "What is a фуфломицин?
+    // Answer in English." is a question about a term whose answer happens to
+    // be due in English, and routing the language stole the subject from the
+    // term the #840 ladder replays (plan 10 leaf 21).
     note(
         ObjectType::LanguageName,
-        evidences(ROLE_TRANSLATION_LANGUAGE, &normalized)
-            || evidences(ROLE_CAPABILITY_LANGUAGE_REFERENCE, &normalized),
+        (evidences(ROLE_TRANSLATION_LANGUAGE, &normalized)
+            || evidences(ROLE_CAPABILITY_LANGUAGE_REFERENCE, &normalized))
+            && (evidences(ROLE_CAPABILITY_ACT_DEMONSTRATE, &normalized)
+                || evidences(ROLE_CAPABILITY_ACT_TRANSFORM, &normalized))
+            && !is_response_language_obligation(prompt, &normalized),
         &mut found,
     );
     note(
@@ -683,9 +418,37 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
             || evidences(ROLE_CAPABILITY_CLOCK_REFERENCE, &normalized),
         &mut found,
     );
+    // A relative period is not a calendar question: it never names a weekday
+    // or a date, and it is not anchored by a clock time — it is "the last few
+    // hours" asking for what changed, which the fresh-web digest answers.
+    // Scheduling an event at an hour stays out: the schedule action keeps it
+    // with the calendar create route. The hour evidence is read token-bounded:
+    // the role's surfaces are whole words in every language, and the raw
+    // substring reading turns Spanish "ahora" (now) into "hora" (hour),
+    // making a dialogue question about "temas ... hasta ahora" a web digest
+    // (issue #1138 family suite, es_dialogue_state_query_05).
+    note(
+        ObjectType::RelativePeriod,
+        crate::seed::lexicon().mentions_role(ROLE_CALENDAR_HOUR_REFERENCE, &normalized)
+            && !evidences(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
+            && !has_clock_time(prompt)
+            && !evidences(ROLE_CAPABILITY_CLOCK_REFERENCE, &normalized)
+            && !evidences(ROLE_CALENDAR_SCHEDULE_ACTION, &normalized),
+        &mut found,
+    );
     note(
         ObjectType::QuantityQuestion,
         evidences(ROLE_CAPABILITY_QUANTITY_INTERROGATIVE, &normalized),
+        &mut found,
+    );
+    note(
+        ObjectType::TaskList,
+        evidences(ROLE_CAPABILITY_TASK_LIST_NOUN, &normalized),
+        &mut found,
+    );
+    note(
+        ObjectType::Delegation,
+        evidences(ROLE_CAPABILITY_DELEGATION_MARKER, &normalized),
         &mut found,
     );
     note(
@@ -710,6 +473,35 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     }
     found.sort_by_key(|object| object.rank());
     found
+}
+
+/// Whether the request itself evidences the retrieve act, through a verb
+/// surface of `data/seed/meanings-acts.lino`, rather than receiving `retrieve`
+/// as the default appended to every request.
+///
+/// `acts` cannot make this distinction -- it always ends in `retrieve` -- but
+/// the planner's container rule turns on it: a container the request only
+/// *mentioned* is not a request to act on it (issue #907), while "busca X en
+/// mi escritorio" and "… में खोजिए" ask a search of it in the seed's own
+/// words (the #840 ladder's hi/es folder nodes, plan 10 leaf 21).
+#[must_use]
+pub fn evidences_retrieve_act(prompt: &str) -> bool {
+    evidence_strength(Act::Retrieve.role(), &normalize_prompt(prompt)) > 0
+}
+
+/// Whether a language mention is a response-language obligation on some other
+/// subject, rather than the goal itself.
+///
+/// A concept question in the prompt is the test: the question's term is the
+/// subject and the language names the form of its answer ("What is a
+/// фуфломицин? Answer in English."), where a demonstration with no question
+/// ("say something in Russian") makes the language the whole goal. Both the
+/// question shape and the marker role are read from the seed -- the concept
+/// slot forms the concept lookup handler resolves, and
+/// `ROLE_RESPONSE_LANGUAGE_MARKER` for the obligation.
+fn is_response_language_obligation(prompt: &str, normalized: &str) -> bool {
+    crate::concepts::extract_concept_query(prompt).is_some()
+        && crate::translation::detect_response_language(normalized).is_some()
 }
 
 /// Return every act the prompt evidences, most specific first.
@@ -755,7 +547,10 @@ pub fn locus_of(object: ObjectType, prompt: &str) -> Locus {
     let normalized = normalize_prompt(prompt);
     match object {
         ObjectType::Url => Locus::Web,
-        ObjectType::Path | ObjectType::PathScope => Locus::Workspace,
+        ObjectType::Path | ObjectType::PathScope | ObjectType::Pattern | ObjectType::PathSet => {
+            Locus::Workspace
+        }
+        ObjectType::TaskList | ObjectType::Delegation => Locus::Dialogue,
         ObjectType::SelfSurface => {
             if is_prior_turn_reference(&normalized) {
                 Locus::Dialogue
@@ -764,7 +559,7 @@ pub fn locus_of(object: ObjectType, prompt: &str) -> Locus {
             }
         }
         ObjectType::LanguageName | ObjectType::None => Locus::Dialogue,
-        ObjectType::TimeExpression => {
+        ObjectType::TimeExpression | ObjectType::RelativePeriod => {
             if has_workspace_scope(&normalized) {
                 Locus::Workspace
             } else {
@@ -897,6 +692,30 @@ pub fn route_decision(prompt: &str, advertised: &[&str]) -> RoutingDecision {
     }
 }
 
+/// Whether one of the advertised tool names provides the capability or
+/// fallback `slug` — literally, or through the shared alias registry
+/// (`data/seed/agentic-tool-capabilities.lino`), so a client that advertises
+/// `websearch` still satisfies the table's `web_search` and one that
+/// advertises `bash` still satisfies the `shell` fallback (#758's expected
+/// item 1: the capability resolves to whichever alias the client advertised).
+fn advertised_provides(slug: &str, advertised: &[&str]) -> bool {
+    advertised.iter().any(|name| {
+        name.eq_ignore_ascii_case(slug)
+            || crate::seed::agentic_tool_capabilities()
+                .iter()
+                .any(|entry| {
+                    let names_slug =
+                        entry.id == slug || entry.aliases.iter().any(|alias| alias == slug);
+                    let names_tool = entry.id.eq_ignore_ascii_case(name)
+                        || entry
+                            .aliases
+                            .iter()
+                            .any(|alias| alias.eq_ignore_ascii_case(name));
+                    names_slug && names_tool
+                })
+    })
+}
+
 /// Resolve one triple against a supplied table.
 #[must_use]
 pub fn route_with(
@@ -915,13 +734,13 @@ pub fn route_with(
             readings: readings_for(table, object, act, locus, &matched),
         };
     };
-    if advertised.contains(&row.capability.as_str()) {
+    if advertised_provides(&row.capability, advertised) {
         return RoutingOutcome::Routed {
             capability: row.capability.clone(),
         };
     }
     if let Some(fallback) = &row.fallback
-        && advertised.contains(&fallback.as_str())
+        && advertised_provides(fallback, advertised)
     {
         return RoutingOutcome::Lowered {
             preferred: row.capability.clone(),

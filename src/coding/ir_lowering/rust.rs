@@ -174,6 +174,7 @@ fn rust_type(ty: &IrType) -> String {
         // Rust name for the callable itself.
         IrType::Callable => "String".to_owned(),
         IrType::Sequence(element) => format!("Vec<{}>", rust_type(element)),
+        IrType::OrderedSequence(element) => format!("Vec<{}>", rust_type(element)),
         IrType::Pair(left, right) => format!("({}, {})", rust_type(left), rust_type(right)),
         IrType::Mapping(key, value) => {
             format!(

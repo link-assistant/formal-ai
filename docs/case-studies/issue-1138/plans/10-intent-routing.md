@@ -835,9 +835,13 @@ Ordered; each independently verifiable and commit-sized.
       `data/meta/capability-routing-ratchet.lino` with the measured starting
       numbers, including the honest counts for `cross_tool_misroutes` and
       `silent_unknowns`.
-- [ ] 2. Ship `data/benchmarks/capability-routing/` (420 cases, five languages)
+- [x] 2. Ship `data/benchmarks/capability-routing/` (420 cases, five languages)
       and its suite header; run it; record `capability_routing_cases_passing`
       at whatever it is. The suite is red and that is the honest baseline.
+      **Done (wave I9): the suite landed and its first honest measurement after
+      the routing half was 420/420 with `cross_tool_misroutes 0` and
+      `silent_unknowns 0`; the numbers are recorded in
+      `data/meta/capability-routing-ratchet.lino`.**
 - [x] 3. Add `scripts/check-capability-routing.rs` and its gate file, strict
       two-sided.
 
@@ -864,10 +868,17 @@ Ordered; each independently verifiable and commit-sized.
       `tests/unit/issue_745.rs` assertion green on both paths.
 - [x] 10. Implement the four outcomes (routed / lowered / honest gap / ask) and
       `tests/integration/issue_1138_no_silent_unknown.rs`.
-- [ ] 11. Flip the flag to default; delete the 280 cue phrases from
+- [x] 11. Flip the flag to default; delete the 280 cue phrases from
       `data/seed/agentic-tool-capabilities.lino` and `task_matches`
       (`capability_router.rs:285-295`); record
       `memorized_capability_cues 0`.
+      **Done (2026-09-18). The flag defaults on (`table_routing_enabled`), the
+      seven `cues` blocks and `task_matches` are gone, and the shared
+      cue-phrase arm in the planner kept its *position* through the restricted
+      `plan_named_capability_step` table call (the seven named capabilities
+      must still beat the shell cascade that their own rows lower to).
+      `memorized_capability_cues 0` is recorded; the 420-case suite holds at
+      420/420 with `cross_tool_misroutes 0` and `silent_unknowns 0`.**
 
 **The frontier classes.**
 
@@ -896,22 +907,51 @@ Ordered; each independently verifiable and commit-sized.
 - [ ] 14. Compose: the composition procedure over a retrieved concept graph
       (**after plans 01 and 04**); close #722 once plan 04's clause-splitting
       leaf has landed.
-- [ ] 15. Demonstrate: bind `language_name` to
+- [x] 15. Demonstrate: bind `language_name` to
       `SolverConfig::forced_response_language`; answer from a grounded record;
       close #724.
+      **Done (2026-09-18). The conversation-established language binds at the
+      same seam the #556 replay forces (`solve_with_history`'s forced-language
+      guard, fed by `established_response_language`, seed-grounded through the
+      response-language marker role), so a demonstrated language keeps
+      answering in itself: `tests/unit/issue_724_response_language_binding.rs`.
+      Two collisions fell out of landing: `explain_previous_turn` now yields to
+      the #556 replay before re-rendering (an explicit retarget of the previous
+      turn outranks re-rendering it), and the demonstrate act no longer carries
+      the bare response-language markers ("in russian", "по русски", "en ruso",
+      "用") as act evidence — those belong to the marker role, so a language
+      reference is the *object* only when an act (demonstrate, transform) makes
+      the language the goal; "Tell me about Telegram Ads in Russian" is about
+      Telegram Ads, in Russian. The 420-case suite holds at 420/420,
+      `cross_tool_misroutes 0`, `silent_unknowns 0`, with the act's verb
+      coverage widened where held-out cases needed real verbs.**
 - [ ] 16. Schedule: merge the calendar verbs into the `schedule` act; delete the
       `calendar_fallback_verbs`, `calendar_digit_actions` and
       `calendar_ru_date_marker` cue sets (`data/meta/cue-lexicon.lino:85-110`);
       resolve the timezone reference through concept lookup (**after plan 01**);
       close #869.
+      **Partial (2026-09-18). The three cue sets are deleted
+      (`data/meta/cue-lexicon.lino`) with the schedule act verified as their
+      merge target (`tests/unit/specification/cue_lexicon.rs` pins the
+      retirement); the timezone-through-concept-lookup half is still open.**
 - [ ] 17. Measure: `concept_measurement_lookup` over a retrieved property with a
       unit (**after plans 01 and 04**); close #1063.
 
 **Make the planner's order data (Option D).**
 
-- [ ] 18. Name every arm in `src/agentic_coding/planner.rs:206-650`; create
+- [x] 18. Name every arm in `src/agentic_coding/planner.rs:206-650`; create
       `data/seed/planner-precedence.lino`; add the load-time permutation
       assertion mirroring `src/solver_dispatch.rs:399-407`.
+      **Done (2026-09-18). All 59 route arms (5 chat-step + 54 settled) are
+      named in `PLANNER_ROUTE_ARMS` in run order; the seed
+      `data/seed/planner-precedence.lino` is loaded through the seed network
+      (`src/seed/planner_precedence.rs`) and joined with the coded table by an
+      exact ordered-permutation assertion
+      (`checked_route_precedence`, run first in `plan_chat_step_routes`);
+      `tests/unit/issue_1138_planner_precedence.rs` proves the join and that
+      swapped/dropped rows are rejected. `planner_route_arms` is recorded
+      honestly at 59 (the checker's own counting rule; the 58 noted earlier the
+      same day was a miscount, corrected in the ledger rather than silently).**
 - [ ] 19. Retire each arm the capability table now covers, lowering
       `planner_route_arms` in the same commit.
 
@@ -928,6 +968,89 @@ Ordered; each independently verifiable and commit-sized.
       `experiments/issue_840_task_ladder/tasks.json` with new stable IDs; add
       hi/zh/es nodes for the three maintainer prompts; regenerate
       `results.json`; move the route-only ladder into the `rust` CI stage.
+      **Partial (2026-09-18). Sixteen nodes appended with new stable IDs
+      (`1138.frontier.news`, `1138.frontier.non_understanding`,
+      `1138.frontier.compose`, `1138.frontier.demonstrate`,
+      `1138.frontier.schedule`, `1138.frontier.measurement`,
+      `1138.frontier.ui_complaint`, plus `838.L4.e`–`838.L4.m` for the hi/zh/es
+      maintainer translations), append-only with route-level
+      expect/forbid-tool assertions. A live `formal-ai serve` ladder
+      measurement run (2026-09-19, results redirected to `/tmp`, committed
+      `results.json` untouched) reads **7/7 on the `1138.frontier` nodes** and
+      **7/13 on `838.L4`**: the six reds are hi/es folder-search translations
+      missing the `hive-control-center` capability token at L4 (zh passes) —
+      an honest engine gap below the routing layer, so the ratchet does not
+      advance and `results.json` stays as committed.
+      Continued (2026-09-19): the route-only replay is drafted and green —
+      `tests/unit/issue_840_route_ladder.rs` ports `ladder.py` one-to-one (the
+      same chat-completions seam, tool definitions, client-side execution
+      contract, four-step cap, and the route-level judge fields) over every
+      committed node, which moves the route-only gate into the `rust` CI
+      stage. Its first run caught 7 violations across 6 nodes — 4 dictionary
+      nodes (827.L1, 827.L3.a, 826.L2.a, 826.L3.a) planning no search and the
+      hi/es folder nodes misrouted — and root-causing corrected the note
+      above: the gap was *in* the routing layer, not below it. The decision
+      table classified every red prompt correctly; three planner gates kept
+      the rows from being consulted. Fixed in the derivations and gates, all
+      from seed data: a response-language obligation ("Answer in English")
+      no longer steals the subject from the concept question it modifies
+      (`is_response_language_obligation`, leaf 15's own doctrine); the
+      open-web gate releases a definition the seed's concept lookup cannot
+      resolve, the honest unknown, while "What is Links Notation?" stays with
+      the symbolic engine (#989 pin re-run green); the #907 container rule
+      now declines only the *default* retrieval, so "Busca … en mi
+      escritorio" / "… खोजिए" reach the same `list_dir`→shell lowering as the
+      English node; and the table's generic listing lowering defers to a more
+      specific seed shell intent ("What is current directory?" → `pwd`, not
+      `ls`), which also keeps the obligation ledger off shell-owned
+      single-command requests. The replay, #989, #907, the frontier-class
+      pins, and the obligation suites all read green locally on the throttled
+      runner; `results.json` stays as committed.**
+      
+      Continued again (2026-09-19, later): the broad regression net left 6
+      `issue_1066` failures and a HEAD-baseline rerun adjudicated them — 4
+      pre-existing branch regressions, 2 introduced by the fixes above, every
+      one now green. The pre-existing four: `verify-node.sh` ran
+      `cargo check`/`cargo test` unconditionally and read a fixture that is
+      deliberately not a Rust package as an *uncompilable change* — both
+      gates now record `compile unavailable` when the workspace has no
+      `Cargo.toml`, the same admission they already made for a missing cargo
+      binary; and the #1066 open-web query test ("Three different routes form
+      an open-web query") was red on all three routes at HEAD: the routed
+      Search arm's no-derivation fallback returned the raw first request
+      block *with its sentence-final period*, `intent_router` never cleaned
+      punctuation, and the #989 hold refused the current-fact row
+      (`(bare_term, retrieve, web)` → "Verify the current exchange rate
+      …") that the table itself had decided. The hold is now exactly the
+      doctrine: it keeps only what the symbolic engine can *answer* — a
+      concept the seed lookup resolves, or a computation
+      (`calculation_expression_candidates`) — while an unresolved concept
+      ("What is a hash-consed trie?" → `hash consed trie`), a current-fact
+      routing, and an explicit web request all release, and every route
+      derives its query through one normalization
+      (`open_web_query_for_block` / `stated_web_search_query_for_block`):
+      concept questions search their term, no query carries the block's
+      punctuation, and no query carries the worker-placement block. The two
+      this session introduced: the computation release above initially
+      downgraded "What is 480 divided by 15?" to a web search instead of the
+      engine's `write` (the symbolic-engine-answer pin), and the named
+      grep position claimed `(bare_term, retrieve, workspace)` rows ahead of
+      the workspace-inspection route, falling back to a whole-sentence grep
+      instead of the canonical literal query — the routed grep now consults
+      the inspection subject rule first. The obligations gate uses the
+      *semantic* shell resolver, so "copy" inside "a fresh repository copy"
+      no longer hides the ledger arm. The new helpers first landed inside
+      `src/solver_handlers/web_search_intent.rs`, which grew the two census
+      files past their reviewed baselines and failed the core-boundary gate
+      — and raising a baseline for newly written code is new debt, the one
+      thing the #918 ratchet exists to refuse. The honest home is beside
+      their only callers: the three helpers are generic routing
+      orchestration (concept extraction over seed lookup, punctuation
+      cleaning), not search-domain vocabulary, so they moved to
+      `src/agentic_coding/web_research.rs` under the same promotion logic
+      plan 09 leaf 18 applied to the concept-lookup orchestration, and both
+      census files returned to exactly their reviewed baselines — the gate
+      reads 51 sources, 19384 outside-core lines, ceilings untouched.
 - [x] 22. #447 routing half: the `(self_surface, record, self)` row and the
       report artifact.
 - [ ] 23. #447 defect half: replace the splitter handle with a thin
@@ -1030,3 +1153,74 @@ plan 11 row, never as a second copy here.
    number, which is the lesson #710 recorded: "both issues were closed COMPLETED
    on acceptance evidence that asserted on the *shape of a plan* rather than on
    *measured routing outcomes*".
+
+## 2026-09-19. The two #904-follow-up pins moved with the structured read
+
+The bulk waves landing (`9c31b0530`) made the structured `gh issue view`
+read the first-choice work-item read whenever the client can run commands,
+with the model-backed `web_fetch` kept as the fallback for clients without a
+shell (`src/agentic_coding/general_execution.rs::plan_work_item_read`). Two
+pins still asserted the old fetch-first order —
+`solve_issue_request_reads_the_work_item_before_project_lookup` (issue #1069)
+and `compound_github_work_item_routes_to_agentic_planning_before_project_lookup`
+(#698 replay) — and failed at tip. They are re-pinned to the gh-first order,
+not reverted, because the rationale is documented and better: the CLI read
+stays in the checkout's credentials and cannot recursively solve the issue
+inside a nested model prompt. The #698 replay stays deterministic everywhere
+because the driver's default-deny allowlist
+(`data/seed/repository-command-allowlist.lino`, plan 03 L3) refuses `gh`, so
+the replay exercises read-refused → fetch-fallback → record honestly.
+
+Making that replay honest exposed one real defect, fixed here: the in-repo
+driver reported a never-ran command (`run_command produced no result …`) as a
+*successful* tool result, so `Progress::scan` stored the transport message as
+the issue's fetched page and `plan_work_item_read` never fell back to the
+fetch capability — the documented "empty or failed CLI read falls back"
+contract (`src/agentic_coding/progress.rs`, `attempted_work_item_reads`) was
+silently dead for refused reads. The driver now flags refused/unsupported
+calls with the protocol's error form (`ChatMessage::tool_result_error`), the
+same `is_error` signal an external Agent CLI sends, and the fallback fires.
+
+## 2026-09-20. Three routing regressions the word-boundary fix unmasked
+
+The plan 03 wave-F word-boundary fix stopped substring false positives, and
+the batch verification surfaced three requests that had only ever reached
+their right answer *through* such a false positive. Each fix moves the
+ownership question to the component that owns it, rather than restoring the
+false positive.
+
+**The capability table may not answer a request the policy layer owns.**
+"Improve my codebase forever" used to reach the bounded-autonomy refusal via
+"improve" embedding "prove" promoting a proof handler, which made
+`try_capability_route` decline to a promoted interpreter. With the false
+positive gone, the table read a grep-shaped gap off the prompt and answered
+`capability:grep` before `handle_policy` ever ran. `try_capability_route`
+now declines up front on unbounded-autonomy phrasing without an agent
+opt-in, and on agent requests generally (an opted-in `[agent]` request is
+the agent flow's to serve, never a chat capability gap), so `handle_policy`
+answers both classes (`src/meta_method_dispatch.rs`). The four
+`agent_isolation` pins (opted_in, time budget, destructive confirmation)
+and the autonomy CLI probe verify the ownership, 13/13.
+
+**RelativePeriod's hour evidence is read token-bounded.** Spanish
+"¿Cuántos temas distintos llevamos hasta ahora?" routed to a web digest
+because the raw substring reading of the hour role turned "ahora" (now)
+into "hora" (hour). The note now reads the role through
+`seed::lexicon().mentions_role`, the same word-boundary rule wave F
+established for handler promotion, and the digest route still fires on
+real hour-anchored prompts (es_dialogue_state_query_05 was the last
+held-out failure; the family migration suite is 300/300).
+
+**Structure surfaces that over-claim cross-linguistically are removed at
+the seed.** The new `integer_at_least` meaning initially carried the bare
+"at least"-class stems (en "at least", hi "कम से कम", zh "至少", es
+"al menos"), which discovered the comparison structure inside quantifier
+phrases — "at least one distinct pair" is `quantifier_any`'s to read, and
+`quantifier_any` already owns the full phrase in every language. The
+meaning keeps only the unambiguous comparison forms (en "no less than"/"no
+fewer than", ru "не менее"/"не меньше", zh "不少于", hi "से कम नहीं", es
+"no menos de"), the ru pattern that already behaved correctly; likewise
+`conditional_expression`'s es lexeme keeps "de lo contrario" and drops
+"si no", which fired inside "o -1 si no está" where no other language's
+equivalent is a surface. The five-language paraphrase suite shares one
+concept-map identity per family again, 6/6.

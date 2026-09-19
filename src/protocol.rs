@@ -253,6 +253,22 @@ impl ChatMessage {
             ..Self::default()
         }
     }
+
+    /// The error-flagged form of [`ChatMessage::tool_result`]: the call never
+    /// produced the output it was asked for (it was refused, unsupported, or
+    /// lost), so the harness reports the transport fact as an error rather
+    /// than letting the text read as a successful payload.
+    #[must_use]
+    pub fn tool_result_error(
+        tool_call_id: impl Into<String>,
+        name: impl Into<String>,
+        result: impl Into<String>,
+    ) -> Self {
+        Self {
+            is_error: true,
+            ..Self::tool_result(tool_call_id, name, result)
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

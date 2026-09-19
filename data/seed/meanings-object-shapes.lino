@@ -1059,3 +1059,91 @@ meanings
         text "online"
       surface
         text "site"
+  task_list_noun
+    defined-by concept
+    role capability_task_list_noun
+    lexeme en
+      surface
+        text "todo list"
+      surface
+        text "to-do list"
+      surface
+        text "task list"
+      surface
+        text "list of tasks"
+    lexeme ru
+      surface
+        text "список задач"
+      surface
+        text "список дел"
+      surface
+        text "план работ"
+    lexeme hi
+      surface
+        text "कार्य सूची"
+      surface
+        text "टूडू सूची"
+      surface
+        text "कामों की सूची"
+    lexeme zh
+      surface
+        text "待办列表"
+      surface
+        text "待办事项"
+      surface
+        text "任务列表"
+    lexeme es
+      surface
+        text "lista de tareas"
+      surface
+        text "lista de pendientes"
+  delegation_marker
+    defined-by concept
+    role capability_delegation_marker
+    lexeme en
+      surface
+        text "delegate"
+      surface
+        text "subagent"
+      surface
+        text "hand this to"
+      surface
+        text "hand it to"
+    lexeme ru
+      surface
+        text "поручи"
+      surface
+        text "подагент"
+      surface
+        text "делегир"
+      surface
+        text "запусти агент"
+      surface
+        text "вызови агент"
+    lexeme hi
+      surface
+        text "सौंपें"
+      surface
+        text "उपएजेंट"
+      surface
+        text "एजेंट शुरू"
+      surface
+        text "एजेंट को बुलाएँ"
+    lexeme zh
+      surface
+        text "委派"
+      surface
+        text "子代理"
+      surface
+        text "交给代理"
+      surface
+        text "调用代理"
+    lexeme es
+      surface
+        text "delega"
+      surface
+        text "subagente"
+      surface
+        text "pásaselo"
+      surface
+        text "encárgaselo"

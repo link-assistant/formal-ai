@@ -2,77 +2,86 @@ self_ast_census
   target src/agentic_coding/formalization_recipe.rs
   language rust
   fidelity full_ast
-  byte_len 8144
-  line_count 192
-  content_id source_module_326d707cf470a7fb
-  symbol_count 9
+  byte_len 12548
+  line_count 286
+  content_id source_module_3ce0c9ad3b523b72
+  symbol_count 12
   symbols
-    const SEARCH_QUERY 22 22
-    const CANONICAL_SOURCE_URL 25 26
-    const KB_PATH 29 29
-    function is_formalization_task 32 35
-    function inline_formalization_source 44 56
-    function requested_formalization_source 64 76
-    function discovery_query 81 86
-    function plan_formalization_step 90 162
-    function final_answer 170 192
+    const SEARCH_QUERY 28 28
+    const CANONICAL_SOURCE_URL 31 32
+    const KB_PATH 35 35
+    function is_formalization_task 38 41
+    function inline_formalization_source 50 62
+    function requested_formalization_source 70 82
+    function discovery_query 87 92
+    const SOURCE_CACHE_ENV 97 97
+    function deep_grounding 105 126
+    function formalize_with_grounding 136 146
+    function plan_formalization_step 150 239
+    function final_answer 248 286
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4457
-    named_node_count 911
-    distinct_node_kinds 51
+    total_link_count 6660
+    named_node_count 1359
+    distinct_node_kinds 57
     node_kinds
-      arguments 85
+      arguments 116
       array_type 2
       attribute 1
       attribute_item 1
-      binary_expression 3
-      block 14
-      call_expression 85
-      char_literal 1
-      closure_expression 8
-      closure_parameters 8
-      const_item 3
-      crate 11
-      doc_comment 29
+      binary_expression 4
+      block 19
+      boolean_literal 1
+      call_expression 116
+      char_literal 3
+      closure_expression 11
+      closure_parameters 11
+      const_item 4
+      crate 18
+      doc_comment 47
       else_clause 1
-      expression_statement 12
-      field_expression 67
-      field_identifier 67
-      function_item 6
-      generic_type 3
-      identifier 208
-      if_expression 7
+      escape_sequence 2
+      expression_statement 18
+      field_expression 89
+      field_identifier 89
+      function_item 8
+      generic_type 6
+      identifier 322
+      if_expression 9
       inner_doc_comment_marker 6
+      integer_literal 3
       let_chain 4
-      let_condition 4
-      let_declaration 17
-      line_comment 46
-      macro_invocation 3
-      outer_doc_comment_marker 23
-      parameter 9
-      parameters 6
-      parenthesized_expression 2
-      primitive_type 11
-      reference_expression 11
-      reference_type 13
-      return_expression 5
-      scoped_identifier 39
-      scoped_use_list 2
+      let_condition 5
+      let_declaration 31
+      line_comment 77
+      macro_invocation 5
+      mutable_specifier 5
+      outer_doc_comment_marker 41
+      parameter 15
+      parameters 8
+      parenthesized_expression 3
+      primitive_type 17
+      reference_expression 21
+      reference_type 20
+      return_expression 6
+      scoped_identifier 64
+      scoped_use_list 4
       source_file 1
-      string_content 18
-      string_literal 19
+      string_content 23
+      string_literal 24
       super 5
-      token_tree 7
+      token_tree 10
       try_expression 1
-      tuple_pattern 1
-      tuple_struct_pattern 4
-      type_arguments 3
-      type_identifier 10
-      unary_expression 7
-      use_declaration 5
-      use_list 2
+      tuple_expression 2
+      tuple_pattern 3
+      tuple_struct_pattern 5
+      tuple_type 1
+      type_arguments 6
+      type_identifier 17
+      unary_expression 8
+      use_declaration 11
+      use_list 4
       visibility_modifier 5

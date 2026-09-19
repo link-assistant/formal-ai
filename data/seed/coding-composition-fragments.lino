@@ -217,6 +217,7 @@ meanings
     rediscovery_query "test whether one integer divides another without remainder"
     fragment_signature (integer integer)
     fragment_result boolean
+    supports composite_number
   integer_floor_divide
     defined-by reduction
     role coding_fragment

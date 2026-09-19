@@ -150,7 +150,9 @@ pub fn compose_with_ir(
     }
     for program in programs {
         match ir_draft(spec, catalog, program) {
-            Ok(Some(draft)) => drafts.push(draft),
+            Ok(Some(draft)) => {
+                drafts.push(draft);
+            }
             Ok(None) => {}
             Err(missing) => blocked_needs.push(blocked_fragment_need(spec, &missing)),
         }
@@ -336,6 +338,11 @@ fn ir_draft(
     // the task's input, so agreement with the examples is coincidence. Such
     // a draft owes the unexamined input as extra action.
     action_cost += 4 * constant_bounded_domain(&program, catalog);
+    // A literal the search introduced is an assumption no oracle justified:
+    // each one owes extra action, so among verifying drafts the composition
+    // that reads the task's inputs outranks an equally cheap one that
+    // guesses a constant.
+    action_cost += crate::coding::composition_search::literal_leaves(&program.body);
     Ok(Some(Draft {
         id: content_id.clone(),
         source,

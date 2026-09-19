@@ -64,6 +64,9 @@ module_filter() {
 cargo_check() {
   [[ "${LADDER_CARGO_CHECK:-1}" != 0 ]] || { record compile skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record compile unavailable; return 0; }
+  # A workspace that is not a Rust package has nothing to compile; the missing
+  # package is not an uncompilable change (leaf criteria may name a README).
+  [[ -f "$workspace/Cargo.toml" ]] || { record compile unavailable; return 0; }
   local started=$SECONDS
   if (cd "$workspace" && CARGO_TARGET_DIR="$(target_dir)" \
       cargo check --lib --quiet >"$workspace/.agent-ladder/cargo-check.log" 2>&1); then
@@ -81,6 +84,7 @@ cargo_test() {
   local filter="$1" log passed
   [[ "${LADDER_CARGO_TEST:-1}" != 0 ]] || { record "tests:$filter" skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record "tests:$filter" unavailable; return 0; }
+  [[ -f "$workspace/Cargo.toml" ]] || { record "tests:$filter" unavailable; return 0; }
   log="$workspace/.agent-ladder/cargo-test-$filter.log"
   local started=$SECONDS
   if (cd "$workspace" && CARGO_TARGET_DIR="$(target_dir)" \

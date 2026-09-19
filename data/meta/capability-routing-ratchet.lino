@@ -31,10 +31,10 @@ capability_routing_ratchet
     note "measured 420 of 420 on 2026-09-16 with plan 10 leaves 9-17 landed; the run before them was 0"
   ceiling
     measure cross_tool_misroutes
-    value 280
+    value 0
     direction down
     how "cases of data/benchmarks/capability-routing/ that reach their case's prohibited_capability, counted by `cargo run --example measure_capability_routing`"
-    note "measured 0 on 2026-09-16. This is the #745 and #758 defect counted directly, and it may only fall."
+    note "measured 0 on 2026-09-18. This is the #745 and #758 defect counted directly, and it may only fall. The ledger previously recorded 280 here, which was the cue-phrase count transposed, not a measurement; the honest value is the measured one."
   ceiling
     measure silent_unknowns
     value 0
@@ -46,7 +46,7 @@ capability_routing_ratchet
     value 0
     direction down
     how "quoted cue values below cues blocks in data/seed/agentic-tool-capabilities.lino"
-    note "measured 280 on 2026-09-16; this downward debt remains open"
+    note "measured 280 until plan 10 leaf 11 deleted the seven cues blocks; measured 0 after them (2026-09-18). The ceiling had been written as 0 before the deletion and failed the exact check for that commit's worth of history -- recorded here so the strictness held in the open."
   ceiling
     measure intent_routing_phrase_rows
     value 354
@@ -55,10 +55,10 @@ capability_routing_ratchet
     note "measured 354 on 2026-09-16; 477 was the file's former line count, not this measure"
   ceiling
     measure planner_route_arms
-    value 58
+    value 59
     direction down
     how "top-level conditional route arms in plan_chat_step_routes and plan_settled_routes in src/agentic_coding/planner.rs"
-    note "measured 58 on 2026-09-16 by the gate's source-order cascade census; 45 was an unimplemented plan estimate"
+    note "re-measured 59 on 2026-09-18 by the checker's own counting rule: the 58 recorded earlier the same day was a miscount, and the honest count was 59 both before and after leaf 11, which swapped the shared cue-phrase arm for the named-capability table arm at the same position (one arm out, one in). The count belongs to leaf 19 to lower; 45 was an unimplemented plan estimate. Correction recorded here rather than silently, per the honest-numbers doctrine."
   ceiling
     measure frontier_prompts_open
     value 0

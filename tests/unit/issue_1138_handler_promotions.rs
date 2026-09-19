@@ -116,6 +116,34 @@ fn a_seeded_promotion_reads_a_phrasal_verb_around_its_object() {
     );
 }
 
+/// A prefix surface ("prove …") is a phrase, so its lead half must be present as
+/// complete words. The Spanish word for "providers" embeds the English "prove",
+/// and a raw substring read of the prefix promoted `proof_request` for the
+/// held-out Spanish repository prompt of plan 03, preempting the capability
+/// table's typed workspace handoff (issue #1138, plan 03 wave F).
+#[test]
+fn a_prefix_surface_does_not_match_inside_an_embedding_word() {
+    let spanish = "la lista de proveedores de búsqueda de confianza";
+    let promoted = promoted_relevants(&promotions(), spanish);
+    assert!(
+        !promoted.contains(&"handler:proof_request".to_owned()),
+        "{spanish:?} embeds `prove` inside `proveedores`; that is not a proof request, \
+         so the promotion must not fire: {promoted:?}"
+    );
+
+    // The genuine English prefix readings keep promoting.
+    for prompt in [
+        "prove that 2 + 2 = 4",
+        "show that every even sum has two primes",
+    ] {
+        let promoted = promoted_relevants(&promotions(), prompt);
+        assert!(
+            promoted.contains(&"handler:proof_request".to_owned()),
+            "{prompt:?} leads with a seeded proof surface and must still promote: {promoted:?}"
+        );
+    }
+}
+
 /// A semantic form with an open slot is still a seeded role surface. The
 /// promotion evaluator must interpret that slot instead of looking for a
 /// literal ellipsis, or generic source retrieval can steal a locally

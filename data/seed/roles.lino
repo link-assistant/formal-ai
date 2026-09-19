@@ -91,6 +91,8 @@ roles
     kind predicate
   capability_content_introducer
     kind predicate
+  capability_delegation_marker
+    kind predicate
   capability_freshness_live
     kind predicate
   capability_language_reference
@@ -104,6 +106,8 @@ roles
   capability_query_more
     kind meaning
   capability_self_surface_noun
+    kind predicate
+  capability_task_list_noun
     kind predicate
   capability_web_host_suffix
     kind predicate

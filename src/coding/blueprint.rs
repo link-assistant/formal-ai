@@ -333,7 +333,7 @@ pub fn blueprint_intro(language_name: &str, recipe_label: &str, language: Langua
              ({recipe_label})। मैंने आपके अनुरोध को इन उप-कार्यों में विभाजित किया है:"
         ),
         Language::Chinese => format!(
-            "这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。\
+            "这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。 \
              我已将您的请求分解为以下子任务："
         ),
         _ => format!(

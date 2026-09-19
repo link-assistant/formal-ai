@@ -12,7 +12,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::parser::{LinoNode, parse_lino};
-use crate::solver::ConversationTurn;
+use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handlers::finalize_simple;
 
 const FAMILY_METHODS_LINO: &str = include_str!("../data/seed/handler-family-methods.lino");
@@ -38,7 +38,12 @@ struct FamilyMethod {
     evidence_groups: Vec<EvidenceGroup>,
     minimum_numbers: usize,
     responses: Vec<(String, String)>,
+    capture_responses: Vec<(String, String)>,
 }
+
+/// The one family whose matched requests run the retrieval procedure
+/// (`src/retrieval_method.rs`) instead of the fixed per-language response.
+const RETRIEVAL_FAMILY: &str = "retrieval_method";
 
 impl FamilyMethod {
     fn matches(&self, normalized: &str) -> bool {
@@ -92,8 +97,9 @@ pub fn try_family_method(
     normalized: &str,
     history: &[ConversationTurn],
     log: &mut EventLog,
+    config: SolverConfig,
 ) -> Option<SymbolicAnswer> {
-    try_family_method_selected(prompt, normalized, history, log, |_| true)
+    try_family_method_selected(prompt, normalized, history, log, config, |_| true)
 }
 
 /// Interpret a matching family only when its seed record says it outranks the
@@ -112,8 +118,9 @@ pub fn try_family_method_preempting(
     history: &[ConversationTurn],
     log: &mut EventLog,
     competing_method: &str,
+    config: SolverConfig,
 ) -> Option<SymbolicAnswer> {
-    try_family_method_selected(prompt, normalized, history, log, |family| {
+    try_family_method_selected(prompt, normalized, history, log, config, |family| {
         family
             .preempts
             .iter()
@@ -126,6 +133,7 @@ fn try_family_method_selected(
     normalized: &str,
     history: &[ConversationTurn],
     log: &mut EventLog,
+    config: SolverConfig,
     eligible: impl Fn(&FamilyMethod) -> bool,
 ) -> Option<SymbolicAnswer> {
     let operands = numeric_operands(normalized);
@@ -135,7 +143,15 @@ fn try_family_method_selected(
         .filter(|family| family.matches(normalized))
         .min_by_key(|family| family.priority)?;
     let language = detect_language(prompt).slug();
-    let body = family.response(language, operands.len())?;
+    let body = family_body(
+        family,
+        prompt,
+        normalized,
+        &language,
+        operands.len(),
+        config,
+        log,
+    );
 
     log.append("family_method", family.name.clone());
     log.append(
@@ -169,6 +185,70 @@ fn catalog() -> &'static [FamilyMethod] {
     })
 }
 
+/// The body for one matched family: the retrieval procedure's rendering when
+/// the family runs the interpreter, the seeded response otherwise.
+///
+/// The retrieval family renders its walk — captures with provenance, or the
+/// seeded no-capture response when nothing was verified. Every other family
+/// keeps its fixed per-language response.
+fn family_body(
+    family: &FamilyMethod,
+    prompt: &str,
+    normalized: &str,
+    language: &str,
+    operand_count: usize,
+    config: SolverConfig,
+    log: &mut EventLog,
+) -> String {
+    let fallback = family.response(language, operand_count);
+    if family.name != RETRIEVAL_FAMILY {
+        return fallback.unwrap_or_default();
+    }
+    let senses = crate::retrieval_method::retrieve(config, prompt, normalized, log);
+    let template = family
+        .capture_responses
+        .iter()
+        .find(|(candidate, _)| candidate == language)
+        .or_else(|| {
+            family
+                .capture_responses
+                .iter()
+                .find(|(candidate, _)| candidate == "en")
+        })
+        .map(|(_, text)| text.clone());
+    crate::retrieval_method::render_answer(
+        &senses,
+        template.as_deref(),
+        fallback.as_deref().unwrap_or_default(),
+    )
+}
+
+/// The no-capture response one family declares for one language.
+#[must_use]
+pub fn family_response_for(family_name: &str, language: &str) -> Option<String> {
+    catalog()
+        .iter()
+        .find(|family| family.name == family_name)?
+        .response(language, 0)
+}
+
+/// The with-capture template one family declares for one language.
+#[must_use]
+pub fn capture_template_for(family_name: &str, language: &str) -> Option<String> {
+    let family = catalog().iter().find(|family| family.name == family_name)?;
+    family
+        .capture_responses
+        .iter()
+        .find(|(candidate, _)| candidate == language)
+        .or_else(|| {
+            family
+                .capture_responses
+                .iter()
+                .find(|(candidate, _)| candidate == "en")
+        })
+        .map(|(_, text)| text.clone())
+}
+
 fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
     let tree = parse_lino(text);
     let root = tree
@@ -198,6 +278,12 @@ fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
             .filter(|child| child.name == "response")
             .filter_map(|child| split_response(&child.id))
             .collect::<Vec<_>>();
+        let capture_responses = node
+            .children
+            .iter()
+            .filter(|child| child.name == "response_with_capture")
+            .filter_map(|child| split_response(&child.id))
+            .collect::<Vec<_>>();
         if node.id.is_empty() || evidence_groups.is_empty() || responses.is_empty() {
             return Err(format!(
                 "handler_family_methods:{}:incomplete_family",
@@ -217,6 +303,7 @@ fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
             evidence_groups,
             minimum_numbers,
             responses,
+            capture_responses,
         });
     }
     families.sort_by_key(|family| family.priority);
