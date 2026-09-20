@@ -367,11 +367,27 @@ pub(super) fn plan_web_research_step(
             plan_fetches(tool_names, &progress)
                 .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
         ),
-        Some(Capability::Fetch) => Some(
-            plan_fetches(tool_names, &progress)
-                .or_else(|| plan_deeper_round(tool_names, &progress, query))
-                .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
-        ),
+        Some(Capability::Fetch) => {
+            // A fetched page that covers every aspect of the question has
+            // answered it. The result list usually holds more rows, but they
+            // are more evidence for a question with no open aspect left, and
+            // reading them anyway spends one round per row — the opencode
+            // greeting leg blew its four-round bound exactly there, with the
+            // answer already in hand and a 403 on the next dictionary ending
+            // the recipe a round too late. [`uncovered_aspects`] is empty for
+            // an uncovered-by-nothing query too (no page read yet), so the
+            // non-empty `fetched_pages` guard keeps the first fetch planned.
+            if !progress.fetched_pages.is_empty()
+                && uncovered_aspects(query, &progress).is_empty()
+            {
+                return Some(AgenticPlan::Final(final_answer(query, &progress)));
+            }
+            Some(
+                plan_fetches(tool_names, &progress)
+                    .or_else(|| plan_deeper_round(tool_names, &progress, query))
+                    .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
+            )
+        }
         // The last completed call belongs to some other route -- a workspace
         // grep, a file read, a shell command. A further search can still be
         // worth issuing, but composing the answer here is not: `final_answer`

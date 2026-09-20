@@ -522,6 +522,60 @@ fn unflagged_adapter_403_still_reads_as_a_failed_fetch() {
 }
 
 #[test]
+fn covering_fetch_ends_the_recipe_instead_of_reading_every_result_row() {
+    // The opencode greeting leg, second half. The seed surface reads the
+    // adapters' 403 prose as a failure, but this leg's first dictionary
+    // fetch SUCCEEDED: cambridge answered with the real page, the search
+    // still had merriam-webster unread, and plan_fetches opened it anyway.
+    // The next fetch came back 403 and the recipe ended one round too
+    // late -- title, search, fetch, fetch, final is five model rounds
+    // against the leg's four-round bound, with a perfectly good answer
+    // already in hand. A fetch that covers every aspect of the question
+    // has answered it; the remaining result rows are more evidence for a
+    // question that no longer has an open aspect.
+    let mut messages = vec![ChatMessage::user("hi")];
+    add_result(
+        &mut messages,
+        PlannedToolCall {
+            tool: String::from("websearch"),
+            arguments: String::from("{\"query\":\"hi\"}"),
+        },
+        "search_hi",
+        "Title: HI | English meaning\nURL: https://dictionary.cambridge.org/dictionary/english/hi\nHighlights: used as an informal greeting\nTitle: HI Definition & Meaning\nURL: https://www.merriam-webster.com/dictionary/hi\nHighlights: used especially as a greeting",
+    );
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        String::from("fetch_hi"),
+        "webfetch",
+        String::from(
+            "{\"format\":\"text\",\"url\":\"https://dictionary.cambridge.org/dictionary/english/hi\"}",
+        ),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "fetch_hi",
+        "webfetch",
+        "HI | English meaning - Cambridge Dictionary\n\nhi exclamation\n\n(informal)\n\nused as an informal greeting, usually to people who you know:\n\nHi, there!\n\nHi, how are you doing?",
+    ));
+    let plan = plan_chat_step(
+        &messages,
+        &["bash", "websearch", "webfetch", "request_user_input"],
+    )
+    .expect("the turn after a successful fetch still has a plan");
+    let AgenticPlan::Final(answer) = plan else {
+        panic!(
+            "a fetch that covers the question must answer, not open the next dictionary: {plan:?}"
+        );
+    };
+    assert!(
+        answer.contains("https://dictionary.cambridge.org/dictionary/english/hi"),
+        "the answer carries the page it was extracted from: {answer}"
+    );
+    assert!(
+        !answer.contains("merriam-webster"),
+        "the unread result row is not evidence and must not be cited: {answer}"
+    );
+}
+
+#[test]
 fn later_definition_followup_reuses_the_prior_user_topic() {
     let call = one_call(&[
         ChatMessage::user("Что такое фуфломицин?"),
