@@ -181,7 +181,7 @@ fn a_fallback_is_named_in_data_not_in_a_rust_cascade() {
 /// Issue #1138 B10, benchmark `en_news_07` (and its zh variation): "Summarise
 /// the last few hours for me, with links." evidences a relative period (a
 /// `calendar_hour` seed meaning) and no narrower act, so its triple is
-/// (time_expression, retrieve, dialogue). That row must route to the fresh-web
+/// (`time_expression`, retrieve, dialogue). That row must route to the fresh-web
 /// digest capability -- in every language the corpus names -- instead of
 /// letting the request fall through to the unknown opener.
 #[test]

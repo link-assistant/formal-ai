@@ -21,7 +21,7 @@ fn evidence_for(prompt: &str) -> SolutionEvidence {
     let root = WorkUnit::from_formalization(&formalization, 4);
     let ledger = NeedLedger::resolve(&frame, &root);
     let registry = MethodRegistry::shared();
-    SolutionEvidence::assemble(&frame, &ledger, &registry)
+    SolutionEvidence::assemble(&frame, &ledger, registry)
 }
 
 #[test]

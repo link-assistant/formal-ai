@@ -49,7 +49,7 @@ impl FixtureLookup {
         }
     }
 
-    fn found(senses: Vec<ConceptSense>) -> Self {
+    const fn found(senses: Vec<ConceptSense>) -> Self {
         Self {
             order: Vec::new(),
             hosts: Vec::new(),
@@ -92,7 +92,7 @@ fn setup_sense(source_url: &str, source_id: &str, gloss: &str) -> ConceptSense {
         synonyms: Vec::new(),
         source_id: source_id.to_owned(),
         source_url: source_url.to_owned(),
-        sha256: String::from("7".repeat(64)),
+        sha256: "7".repeat(64),
         fetched_at: String::from("2026-09-16T00:00:00Z"),
         cached: true,
         tier: SourceTier::OriginalFirstParty,
@@ -154,7 +154,7 @@ fn a_lookalike_host_is_refused() {
 /// it does not turn surrounding prose into shell text.
 #[test]
 fn a_trusted_retrieved_recipe_becomes_executable_steps() {
-    let recipe = r#"
+    let recipe = r"
 setup_procedure kotlin_cli
   program kotlinc
   platform any
@@ -176,7 +176,7 @@ setup_procedure kotlin_cli
   postcondition compiler_responds
     program kotlinc
     argument -version
-"#;
+";
     let mut lookup = FixtureLookup::found(vec![setup_sense(
         "https://kotlinlang.org/docs/command-line.html",
         "kotlin_official",
@@ -273,7 +273,7 @@ fn a_procedure_without_a_postcondition_is_refused() {
         program: String::from("zig"),
         source_id: String::from("zig_official"),
         source_url: String::from("https://ziglang.org/learn/getting-started/"),
-        content_id: String::from("0".repeat(64)),
+        content_id: "0".repeat(64),
         platform: Platform::observed(),
         steps: vec![SetupStep {
             command: String::from("tar -xf zig.tar.xz"),
@@ -348,7 +348,7 @@ fn a_cycle_is_detected_and_reported() {
 /// records one setup for it.
 #[test]
 fn two_dependents_share_one_setup() {
-    let recipe = r#"
+    let recipe = r"
 setup_procedure jdk
   program java
   platform any
@@ -360,7 +360,7 @@ setup_procedure jdk
   postcondition java_responds
     program java
     argument -version
-"#;
+";
     let mut lookup = FixtureLookup::found(vec![setup_sense(
         "https://jdk.java.net/archive/",
         "jdk_official",
@@ -376,7 +376,7 @@ setup_procedure jdk
             String::from("kotlinc"),
             String::from("scalac"),
         ],
-        root: root.clone(),
+        root,
     };
     let bounds = LookupBounds::default();
 

@@ -207,7 +207,7 @@ pub fn run_authoring(args: &SolveArgs) -> Result<AuthoringOutcome, Box<dyn Error
             server_ready = true;
             break;
         }
-        if matches!(server.0.try_wait()?, Some(_)) {
+        if server.0.try_wait()?.is_some() {
             return Err(
                 format!("formal-ai serve exited during startup (attempt {attempt})").into(),
             );
@@ -289,13 +289,10 @@ pub fn run_authoring(args: &SolveArgs) -> Result<AuthoringOutcome, Box<dyn Error
     std::fs::write(evidence.join("agent-stream.jsonl"), &framed)?;
 
     let marker = "\"session_id\":\"";
-    let session_id = match framed.find(marker) {
-        Some(start) => {
-            let rest = &framed[start + marker.len()..];
-            rest.split('"').next().unwrap_or_default().to_owned()
-        }
-        None => String::new(),
-    };
+    let session_id = framed.find(marker).map_or_else(String::new, |start| {
+        let rest = &framed[start + marker.len()..];
+        rest.split('"').next().unwrap_or_default().to_owned()
+    });
     if !session_id.starts_with("ses_") || session_id.len() == "ses_".len() {
         return Err("the Agent CLI stream reported no resumable session id".into());
     }

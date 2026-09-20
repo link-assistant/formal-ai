@@ -21,8 +21,9 @@
 
 use super::parser::parse_lino;
 
-/// Ordered specialized-handler names, in dispatch precedence order (first wins),
-/// sorted by the rank links the shipped `data/seed/handler-precedence.lino`
+/// Ordered specialized-handler names, in dispatch precedence order (first wins).
+///
+/// Sorted by the rank links the shipped `data/seed/handler-precedence.lino`
 /// declares. Built once from the seed links network.
 ///
 /// `specialized_handlers()` asks for the precedence on every dispatch, so
@@ -95,7 +96,9 @@ fn order_by_rank_links(rows: Vec<(Option<String>, String)>) -> Vec<String> {
 pub const HANDLER_PRECEDENCE_PATH: &str = "data/seed/handler-precedence.lino";
 
 /// The precedence rows the seed marks `browser_only true`: handlers only the
-/// browser worker runs (issue #1138 B9, plan 09 leaf 13). The native dispatcher
+/// browser worker runs (issue #1138 B9, plan 09 leaf 13).
+///
+/// The native dispatcher
 /// skips them when it joins the order to its function pointers, while the
 /// worker's registry keeps them — one vocabulary, with the phase a row runs in
 /// declared in the seed rather than hidden on either surface.
@@ -129,7 +132,7 @@ pub fn browser_only_handlers() -> &'static [String] {
 /// Exposed so tests can swap rank links in a fixture and observe the routing
 /// change (`routing_precedence_from_seed`). Reads the same `handler <name>` +
 /// `rank <n>` row shape the network loader reads, and orders by the same
-/// [`order_by_rank_links`] rule.
+/// rank-links rule as the network loader.
 #[must_use]
 pub fn handler_precedence_from(seed: &str) -> Vec<String> {
     let tree = parse_lino(seed);

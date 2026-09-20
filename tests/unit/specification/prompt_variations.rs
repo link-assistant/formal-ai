@@ -411,10 +411,10 @@ fn hello_world_matrix_routes_to_parametric_write_program_intent() {
 
 #[test]
 fn hello_world_matrix_emits_a_code_block_per_language() {
-    for (prompt, _expected_language, fence) in HELLO_WORLD_VARIATIONS {
+    for (prompt, expected_language, fence) in HELLO_WORLD_VARIATIONS {
         let response = answer(prompt);
         let expected_answer = match (
-            *_expected_language,
+            *expected_language,
             prompt.chars().any(|ch| ('а'..='я').contains(&ch)),
         ) {
             ("rust", false) => {

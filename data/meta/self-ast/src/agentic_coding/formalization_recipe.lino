@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/formalization_recipe.rs
   language rust
   fidelity full_ast
-  byte_len 12801
+  byte_len 12792
   line_count 290
-  content_id source_module_12c28de6b87fd4b6
+  content_id source_module_499ad45ffec654e0
   symbol_count 12
   symbols
     const SEARCH_QUERY 28 28
@@ -24,11 +24,11 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6910
-    named_node_count 1413
+    total_link_count 6891
+    named_node_count 1408
     distinct_node_kinds 58
     node_kinds
-      arguments 123
+      arguments 122
       array_expression 1
       array_type 2
       attribute 1
@@ -36,7 +36,7 @@ self_ast_census
       binary_expression 4
       block 19
       boolean_literal 1
-      call_expression 123
+      call_expression 122
       char_literal 3
       closure_expression 12
       closure_parameters 12
@@ -46,8 +46,8 @@ self_ast_census
       else_clause 1
       escape_sequence 2
       expression_statement 18
-      field_expression 94
-      field_identifier 94
+      field_expression 93
+      field_identifier 93
       function_item 8
       generic_type 6
       identifier 334
@@ -65,7 +65,7 @@ self_ast_census
       parameters 8
       parenthesized_expression 3
       primitive_type 17
-      reference_expression 22
+      reference_expression 21
       reference_type 20
       return_expression 6
       scoped_identifier 67

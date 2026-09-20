@@ -4,7 +4,7 @@
 //! the continued task forward, and reconstructing it from a compacted
 //! transcript without losing the first user turn.
 
-use super::*;
+use super::ChatMessage;
 
 /// Whether a turn is nothing but a continuation cue (issue #1095).
 ///
@@ -127,7 +127,9 @@ pub(super) fn preserved_first_user_turn(summary: &str) -> Option<String> {
 }
 
 /// Emit a `route=value` planner-routing trace line to stderr when
-/// `FORMAL_AI_TRACE_REQUESTS=1`, mirroring the request tracing in
+/// `FORMAL_AI_TRACE_REQUESTS=1`.
+///
+/// Mirrors the request tracing in
 /// `crate::protocol`. Off by default; issue #956 asked for visibility into how
 /// a received task was routed.
 pub fn trace_route(route: &str, value: &str) {

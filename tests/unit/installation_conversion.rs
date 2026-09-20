@@ -3,7 +3,7 @@ use std::fmt::Write as _;
 use formal_ai::FormalAiEngine;
 
 #[derive(Clone, Copy)]
-pub(super) enum DocumentedFormat {
+pub enum DocumentedFormat {
     Markdown,
     Shell,
     PowerShell,
@@ -25,7 +25,7 @@ impl DocumentedFormat {
 /// the explicitly listed project, formats, descriptions, and commands vary.
 /// This keeps the large cross-language/corpus loops readable while still
 /// pinning a complete public answer rather than a handful of substrings.
-pub(super) fn documented_conversion_answer(
+pub fn documented_conversion_answer(
     source: DocumentedFormat,
     targets: &[DocumentedFormat],
     project: &str,

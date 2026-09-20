@@ -65,7 +65,7 @@ fn the_held_out_program_is_absent_from_the_repository() {
                         entry
                             .path()
                             .strip_prefix(&root)
-                            .unwrap_or(entry.path())
+                            .unwrap_or_else(|_| entry.path())
                             .display()
                     ));
                 }

@@ -264,7 +264,7 @@ impl LearnedMethod {
                 .log
                 .events()
                 .iter()
-                .any(|event| event_kind_matches_base(&event.kind, base))
+                .any(|event| event_kind_matches_base(event.kind, base))
         });
         let mut answer = program.to_links_notation();
         for id in &trace.executed {
@@ -425,7 +425,7 @@ impl MethodRegistry {
     #[must_use]
     pub fn shared() -> &'static Self {
         static CELL: std::sync::OnceLock<MethodRegistry> = std::sync::OnceLock::new();
-        CELL.get_or_init(|| Self::from_store())
+        CELL.get_or_init(Self::from_store)
     }
 
     /// Derive the registry from the link store.

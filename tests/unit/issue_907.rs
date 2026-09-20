@@ -613,7 +613,7 @@ fn full_function_declarations() -> serde_json::Value {
     serde_json::json!([{"functionDeclarations": GEMINI_CLI_TOOL_NAMES
         .iter()
         .map(|name| {
-            let properties = schemas.get(name).cloned().unwrap_or(serde_json::json!({}));
+            let properties = schemas.get(name).cloned().unwrap_or_else(|| serde_json::json!({}));
             let required: Vec<&str> = match *name {
                 "run_shell_command" => vec!["command"],
                 "write_file" => vec!["file_path", "content"],

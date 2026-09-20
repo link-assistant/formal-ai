@@ -14,11 +14,13 @@ pub mod container;
 mod conversation;
 mod invocation;
 
-use conversation::*;
+use conversation::ensure_conversation_container;
 pub use conversation::{
     conversation_container_name, conversation_create_invocation, conversation_exec_invocation,
 };
-use invocation::*;
+use invocation::{
+    archive_workspace, checked_workspace_path, prefixed_invocation, swebench_image, validate_image,
+};
 
 use std::fmt::Write as _;
 use std::io::Write as _;
@@ -720,7 +722,7 @@ impl ExecutionBox {
             arguments: vec![
                 String::from("exec"),
                 String::from("-i"),
-                name.clone(),
+                name,
                 String::from("sh"),
                 String::from("-lc"),
                 String::from("mkdir -p /tmp/formal-ai && tar -xzf - -C /tmp/formal-ai"),
@@ -916,8 +918,9 @@ impl ExecutionBox {
         Ok(BoxHandle {
             container_id: self.backend.slug(),
             image: match &self.backend {
-                ExecutionBackend::Box { image } => image.clone(),
-                ExecutionBackend::Conversation { image, .. } => image.clone(),
+                ExecutionBackend::Box { image } | ExecutionBackend::Conversation { image, .. } => {
+                    image.clone()
+                }
                 other => other.slug(),
             },
         })

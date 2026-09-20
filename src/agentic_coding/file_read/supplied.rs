@@ -1,7 +1,7 @@
 //! Answers that hand back a file the request already supplied in the
 //! conversation, instead of re-reading it from disk.
 
-use super::*;
+use super::{ChatMessage, file_read_task_for, FileReadTask, FileReadMode, file_read_final_answer, seed, same_path};
 
 pub(super) fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
     let line_prefix = format!("{key}=");

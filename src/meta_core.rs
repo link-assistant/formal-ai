@@ -92,23 +92,23 @@ pub fn record_meta_core(
         let _reasoning = crate::meta_reasoning::record_work_unit_reasoning(
             log,
             &work_unit_root,
-            &method_registry,
+            method_registry,
         );
     }
     let _construction = crate::meta_construction::record_upward_construction(
         log,
         &work_unit_root,
-        &method_registry,
+        method_registry,
         recursion_mode,
     );
     let solution_evidence = crate::solution_evidence::record_solution_evidence(
         log,
         &problem_frame,
         &need_ledger,
-        &method_registry,
+        method_registry,
     );
     let _selection =
-        crate::selection::record_selection(log, &work_unit_root, &method_registry, selection_mode);
+        crate::selection::record_selection(log, &work_unit_root, method_registry, selection_mode);
     let _skills = crate::skill_ledger::record_skill_ledger(log, &solution_evidence, skill_mode);
     let _audit = crate::reasoning_standard::record_reasoning_standard(
         log,

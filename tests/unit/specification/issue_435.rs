@@ -66,9 +66,6 @@ fn issue_435_relative_tomorrow_call_is_scheduled() {
         .duration_since(UNIX_EPOCH)
         .expect("system clock after Unix epoch")
         .as_secs();
-    let expected_answers = (before..=after)
-        .map(expected_relative_call_answer)
-        .collect::<Vec<_>>();
     assert_ne!(
         response.intent, "unknown",
         "relative-date scheduling prompt must not return unknown; got intent={}, answer={}",
@@ -80,7 +77,9 @@ fn issue_435_relative_tomorrow_call_is_scheduled() {
         response.intent
     );
     assert!(
-        expected_answers.contains(&response.answer),
+        (before..=after)
+            .map(expected_relative_call_answer)
+            .any(|answer| answer == response.answer),
         "complete calendar answer differed from the independently rendered clock-bounded fixtures: {}",
         response.answer
     );
@@ -151,10 +150,11 @@ fn issue_435_relative_tomorrow_multilingual() {
             .expect("system clock after Unix epoch")
             .as_secs();
         if prompt == "поставь созвон на завтра" {
-            let expected_answers = (before..=after)
-                .map(expected_relative_call_answer)
-                .collect::<Vec<_>>();
-            assert!(expected_answers.contains(&response.answer));
+            assert!(
+                (before..=after)
+                    .map(expected_relative_call_answer)
+                    .any(|answer| answer == response.answer)
+            );
         }
         assert_eq!(
             response.intent, "calendar_create_event",

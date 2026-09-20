@@ -415,7 +415,7 @@ fn whole_source_research_task_executes_and_replays_without_inventing_evidence() 
             .expect("production search handler");
     assert_eq!(
         live_answer.answer,
-        r#"Fused 3 statement(s) from 2 captured source(s) for `20 v power supply`:
+        r"Fused 3 statement(s) from 2 captured source(s) for `20 v power supply`:
 
 1. Official supply: 20 V and 3.25 A.
    `posterior=0.800000 source_count=1 source_tier=independent_corroboration`
@@ -433,7 +433,7 @@ fn whole_source_research_task_executes_and_replays_without_inventing_evidence() 
    `posterior=0.800000 source_count=1 source_tier=independent_corroboration`
    - [B result](https://result.invalid/b)
      > Price: $39.
-     [Read more](https://result.invalid/b)"#
+     [Read more](https://result.invalid/b)"
     );
 
     let mut live_network = OptionNetwork::new("power_supply");

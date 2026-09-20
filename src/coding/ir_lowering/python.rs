@@ -36,9 +36,11 @@ impl LanguageLowering for PythonLowering {
         let parameters = ir
             .parameters
             .iter()
-            .map(|(name, ty)| match python_annotation(ty) {
-                Some(annotation) => format!("{}: {}", python_identifier(name), annotation),
-                None => python_identifier(name),
+            .map(|(name, ty)| {
+                python_annotation(ty).map_or_else(
+                    || python_identifier(name),
+                    |annotation| format!("{}: {}", python_identifier(name), annotation),
+                )
             })
             .collect::<Vec<_>>()
             .join(", ");
@@ -69,12 +71,10 @@ fn python_annotation(ty: &IrType) -> Option<String> {
         IrType::Float => Some(String::from("float")),
         IrType::Boolean => Some(String::from("bool")),
         IrType::Text => Some(String::from("str")),
-        IrType::Sequence(element) | IrType::OrderedSequence(element) => {
-            Some(match python_annotation(element) {
-                Some(inner) => format!("list[{inner}]"),
-                None => String::from("list"),
-            })
-        }
+        IrType::Sequence(element) | IrType::OrderedSequence(element) => Some(
+            python_annotation(element)
+                .map_or_else(|| String::from("list"), |inner| format!("list[{inner}]")),
+        ),
         IrType::Pair(left, right) => {
             Some(match (python_annotation(left), python_annotation(right)) {
                 (Some(left), Some(right)) => format!("tuple[{left}, {right}]"),
@@ -107,17 +107,14 @@ fn hoist_inline_imports(expression: &str) -> (String, Vec<String>) {
             break;
         };
         let module = &after[..end];
-        match after[end + 1..].strip_prefix(").") {
-            Some(attribute) => {
-                modules.insert(module.to_owned());
-                lowered.push_str(module);
-                lowered.push('.');
-                rest = attribute;
-            }
-            None => {
-                lowered.push_str(&rest[start..start + NEEDLE.len() + end + 1]);
-                rest = &after[end + 1..];
-            }
+        if let Some(attribute) = after[end + 1..].strip_prefix(").") {
+            modules.insert(module.to_owned());
+            lowered.push_str(module);
+            lowered.push('.');
+            rest = attribute;
+        } else {
+            lowered.push_str(&rest[start..=(start + NEEDLE.len() + end)]);
+            rest = &after[end + 1..];
         }
     }
     lowered.push_str(rest);
@@ -330,7 +327,7 @@ fn lower_recursive_reduce(
             ("predicate", &predicate),
         ],
     )?;
-    let reduced = catalog
+    let reduced_value = catalog
         .render(reducer, "python", &[recursive_values])
         .ok_or_else(|| {
             gap(
@@ -340,7 +337,7 @@ fn lower_recursive_reduce(
         })?;
     let local = lower_node(local, catalog)?;
     let combined = catalog
-        .render(combine, "python", &[local, reduced])
+        .render(combine, "python", &[local, reduced_value])
         .ok_or_else(|| {
             gap(
                 "RecursiveReduce",

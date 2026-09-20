@@ -200,8 +200,8 @@ fn both_sides_of_a_delta_are_execution_records() {
         "learned_recursive_core_d21ca03aaabaf13d",
         "method",
         &held_out,
-        &registry,
-        &registry,
+        registry,
+        registry,
     );
     for record in &produced.deltas {
         assert!(

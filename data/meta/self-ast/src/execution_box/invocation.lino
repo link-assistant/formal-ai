@@ -2,9 +2,9 @@ self_ast_census
   target src/execution_box/invocation.rs
   language rust
   fidelity signature
-  byte_len 2551
+  byte_len 2603
   line_count 83
-  content_id source_module_8b9d703ab188c95c
+  content_id source_module_73bd03bb4dc73d32
   symbol_count 5
   symbols
     function prefixed_invocation 5 18

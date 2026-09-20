@@ -21,7 +21,7 @@ fn construction_for(prompt: &str, max_depth: u8) -> (WorkUnit, UpwardConstructio
     let formalization = formalize_intent(prompt, "en", Some(&candidate));
     let root = WorkUnit::from_formalization(&formalization, max_depth);
     let registry = MethodRegistry::shared();
-    let construction = UpwardConstruction::for_unit(&root, &registry);
+    let construction = UpwardConstruction::for_unit(&root, registry);
     (root, construction)
 }
 

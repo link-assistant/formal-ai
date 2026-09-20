@@ -258,7 +258,7 @@ fn reported_frontier_prompts_are_not_in_the_seed() {
                     entry
                         .path()
                         .strip_prefix(repo_root())
-                        .unwrap_or(entry.path())
+                        .unwrap_or_else(|_| entry.path())
                         .display()
                 ));
             }

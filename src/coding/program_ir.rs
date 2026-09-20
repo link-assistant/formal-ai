@@ -17,7 +17,7 @@ use crate::procedure_text::ProcedureStepRecord;
 use crate::seed::parser::parse_lino;
 
 mod infer;
-use infer::*;
+use infer::{FRAGMENT_TYPE_VARIABLE_OFFSET, infer_node};
 
 mod parse;
 
@@ -392,11 +392,10 @@ const fn neutral_literal(ty: &IrType) -> &'static str {
         IrType::Boolean => "false",
         IrType::Text => "\"\"",
         // No literal denotes a function; the seed's lambda fragments do.
-        IrType::Callable => "None",
+        IrType::Callable | IrType::Unknown(_) => "None",
         IrType::Sequence(_) | IrType::OrderedSequence(_) => "[]",
         IrType::Pair(_, _) => "(0, 0)",
         IrType::Mapping(_, _) => "{}",
-        IrType::Unknown(_) => "None",
     }
 }
 

@@ -51,7 +51,7 @@ fn src_files() -> Vec<(String, String)> {
         let relative = entry
             .path()
             .strip_prefix(repo_root())
-            .unwrap_or(entry.path())
+            .unwrap_or_else(|_| entry.path())
             .display()
             .to_string()
             .replace('\\', "/");
@@ -121,10 +121,10 @@ fn need_ledger_with_execution_is_the_only_producer_of_satisfied() {
             }
             // A comparison or a slug match reads the variant; only an
             // assignment or a construction produces it.
-            let produces = code.contains("status: NeedStatus::Satisfied")
+            let line_produces = code.contains("status: NeedStatus::Satisfied")
                 || code.contains("status = NeedStatus::Satisfied")
                 || code.contains("=> NeedStatus::Satisfied");
-            if produces {
+            if line_produces {
                 producers.push(path.clone());
             }
         }
@@ -322,13 +322,12 @@ fn every_obligation_discharged_is_false_while_any_node_is_unattempted() {
         !ledger.every_obligation_discharged(),
         "an unattempted obligation means the session is not done"
     );
-    assert_eq!(
-        ObligationExpectation::Underivable {
+    assert!(
+        !ObligationExpectation::Underivable {
             reason: String::from("no_artifact_in_clause"),
         }
         .to_links_notation()
         .is_empty(),
-        false,
         "an underivable expectation still serializes, so the gap is reportable"
     );
 }

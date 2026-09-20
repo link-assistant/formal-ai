@@ -15,7 +15,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::{Mutex, OnceLock};
 
-use sha2::{Digest, Sha256};
+use formal_ai::source_fetch::sha256_hex;
 
 // Both render-cycle tests below drive the *live* `docs/status.md`: one deletes
 // and regenerates it, the other runs the `--check` gate against it. Run in
@@ -31,8 +31,7 @@ fn repo_root() -> PathBuf {
 }
 
 fn content_id(bytes: &[u8]) -> String {
-    let digest = Sha256::digest(bytes);
-    digest.iter().map(|byte| format!("{byte:02x}")).collect()
+    sha256_hex(bytes)
 }
 
 fn render(mode: &str) -> (String, String, bool) {
@@ -80,7 +79,7 @@ fn every_declared_ledger_input_exists() {
 fn deleting_the_status_document_and_regenerating_reproduces_its_content_id() {
     let _cycle = render_cycle_lock()
         .lock()
-        .unwrap_or_else(|error| error.into_inner());
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
     let path = repo_root().join("docs/status.md");
     let before = fs::read(&path).unwrap_or_else(|error| {
         panic!(
@@ -112,7 +111,7 @@ fn deleting_the_status_document_and_regenerating_reproduces_its_content_id() {
 fn check_mode_is_green_against_the_committed_ledgers() {
     let _cycle = render_cycle_lock()
         .lock()
-        .unwrap_or_else(|error| error.into_inner());
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
     let (stdout, stderr, ok) = render("--check");
     assert!(
         ok,
@@ -144,7 +143,7 @@ fn only_two_in_place_regions_remain_and_both_are_fed_by_the_renderer() {
                 entry
                     .path()
                     .strip_prefix(repo_root())
-                    .unwrap_or(entry.path())
+                    .unwrap_or_else(|_| entry.path())
                     .display()
                     .to_string(),
             );

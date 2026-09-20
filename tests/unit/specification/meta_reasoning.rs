@@ -19,7 +19,7 @@ fn reasoning_for(prompt: &str, max_depth: u8) -> (WorkUnit, WorkUnitReasoning) {
     let formalization = formalize_intent(prompt, "en", Some(&candidate));
     let root = WorkUnit::from_formalization(&formalization, max_depth);
     let registry = MethodRegistry::shared();
-    let reasoning = WorkUnitReasoning::for_unit(&root, &registry);
+    let reasoning = WorkUnitReasoning::for_unit(&root, registry);
     (root, reasoning)
 }
 
@@ -172,7 +172,7 @@ fn reasoning_is_trace_only_and_does_not_alter_resolution() {
     let registry = MethodRegistry::shared();
 
     let before = root.unit_count();
-    let reasoning = WorkUnitReasoning::for_unit(&root, &registry);
+    let reasoning = WorkUnitReasoning::for_unit(&root, registry);
     let after = WorkUnit::from_formalization(&formalization, 4).unit_count();
 
     assert_eq!(

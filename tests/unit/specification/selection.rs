@@ -22,7 +22,7 @@ fn selection_for(prompt: &str, max_depth: u8) -> (WorkUnit, MethodSelection) {
     let formalization = formalize_intent(prompt, "en", Some(&candidate));
     let root = WorkUnit::from_formalization(&formalization, max_depth);
     let registry = MethodRegistry::shared();
-    let selection = MethodSelection::for_unit(&root, &registry);
+    let selection = MethodSelection::for_unit(&root, registry);
     (root, selection)
 }
 

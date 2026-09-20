@@ -54,7 +54,7 @@ fn temp_cache(name: &str) -> PathBuf {
 fn offline_senses(cache: &Path, surfaces: &[String], log: &mut EventLog) -> Vec<ConceptSense> {
     let client = CachedSourceClient::new(cache, CurlSourceTransport).with_online(false);
     let preferences = ServicePreferences::default();
-    let mut availability = ServiceAccessibilityCache::load(&cache);
+    let mut availability = ServiceAccessibilityCache::load(cache);
     retrieval_method::walk_senses(
         &client,
         &preferences,

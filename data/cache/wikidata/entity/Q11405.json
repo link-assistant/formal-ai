@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q11405": {
+      "type": "item",
+      "id": "Q11405",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "flute"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बांसुरी"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "флейта"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "笛"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "musical instrument of the woodwind family"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "деревянный духовой музыкальный инструмент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सुषिर वाद्य"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "edge-blown aerophones"
+          },
+          {
+            "language": "en",
+            "value": "transverse flute"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

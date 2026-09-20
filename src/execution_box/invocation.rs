@@ -1,6 +1,6 @@
 //! Shell-invocation and path helpers shared by the execution backends.
 
-use super::*;
+use super::{BoxError, Command, Path, PathBuf, ProcessInvocation};
 
 pub(super) fn prefixed_invocation(
     runner: &str,

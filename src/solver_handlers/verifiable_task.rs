@@ -758,6 +758,34 @@ fn classify_agreement(answers: &[VerifiedAnswer]) -> AnswerAgreement {
     }
 }
 
+fn evidence_check_slug(evidence: &Evidence) -> &str {
+    if evidence.kind == ObservationKind::SymbolicCheck {
+        return evidence
+            .command
+            .rsplit(':')
+            .next()
+            .unwrap_or("symbolic_check");
+    }
+    evidence
+        .produced_by
+        .strip_prefix("verifiable_task:")
+        .unwrap_or(&evidence.produced_by)
+}
+
+fn symbolic_check(derivation_id: &str, slug: &str, observed: &[u8]) -> Evidence {
+    let mut evidence = Evidence::observed(
+        format!("{derivation_id}:{slug}"),
+        Vec::new(),
+        None,
+        observed,
+        ObservationKind::SymbolicCheck,
+        EvidenceSource::Engine,
+    );
+    derivation_id.clone_into(&mut evidence.for_need);
+    evidence.produced_by = format!("verifiable_task:{slug}");
+    evidence
+}
+
 #[cfg(test)]
 mod agreement_tests {
     use super::{AnswerAgreement, VerifiedAnswer, classify_agreement};
@@ -803,32 +831,4 @@ mod agreement_tests {
             AnswerAgreement::Independent
         );
     }
-}
-
-fn evidence_check_slug(evidence: &Evidence) -> &str {
-    if evidence.kind == ObservationKind::SymbolicCheck {
-        return evidence
-            .command
-            .rsplit(':')
-            .next()
-            .unwrap_or("symbolic_check");
-    }
-    evidence
-        .produced_by
-        .strip_prefix("verifiable_task:")
-        .unwrap_or(&evidence.produced_by)
-}
-
-fn symbolic_check(derivation_id: &str, slug: &str, observed: &[u8]) -> Evidence {
-    let mut evidence = Evidence::observed(
-        format!("{derivation_id}:{slug}"),
-        Vec::new(),
-        None,
-        observed,
-        ObservationKind::SymbolicCheck,
-        EvidenceSource::Engine,
-    );
-    derivation_id.clone_into(&mut evidence.for_need);
-    evidence.produced_by = format!("verifiable_task:{slug}");
-    evidence
 }

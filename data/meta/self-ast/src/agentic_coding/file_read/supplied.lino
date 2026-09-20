@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read/supplied.rs
   language rust
   fidelity full_ast
-  byte_len 6831
+  byte_len 6932
   line_count 171
-  content_id source_module_90686cac2b642e49
+  content_id source_module_78f0884b741750b3
   symbol_count 5
   symbols
     function extract_jsonish_value 6 40
@@ -17,9 +17,9 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4379
-    named_node_count 908
-    distinct_node_kinds 69
+    total_link_count 4429
+    named_node_count 916
+    distinct_node_kinds 70
     node_kinds
       arguments 73
       array_expression 3
@@ -45,7 +45,7 @@ self_ast_census
       function_item 5
       generic_function 2
       generic_type 6
-      identifier 185
+      identifier 192
       if_expression 6
       index_expression 4
       inner_doc_comment_marker 2
@@ -72,6 +72,7 @@ self_ast_census
       return_expression 4
       scoped_identifier 14
       scoped_type_identifier 2
+      scoped_use_list 1
       shorthand_field_identifier 2
       source_file 1
       string_content 10
@@ -88,5 +89,5 @@ self_ast_census
       type_identifier 18
       unary_expression 4
       use_declaration 1
-      use_wildcard 1
+      use_list 1
       visibility_modifier 2

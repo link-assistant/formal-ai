@@ -2,59 +2,59 @@ self_ast_census
   target src/execution_box/mod.rs
   language rust
   fidelity signature
-  byte_len 34963
-  line_count 957
-  content_id source_module_6a4f581d513b14cb
+  byte_len 35092
+  line_count 960
+  content_id source_module_e7894bde175064b5
   symbol_count 51
   symbols
     module container 13 13
     module conversation 14 14
     module invocation 15 15
-    const BACKEND_ENV 33 33
-    const START_ISOLATION_ENV 36 36
-    const START_RUNNER_ENV 39 39
-    const HOST_INTERPRETER 42 42
-    const SCRIPT_FILE 45 45
-    const CONTAINER_RUNNER 49 50
-    const CONVERSATION_IDLE 53 53
-    const COMMAND_LOG 57 57
-    const POLL 60 60
-    const STARTUP_FLOOR 68 68
-    function interpreter_startup 79 95
-    static MEASURED 80 80
-    enum ExecutionBackend 99 135
-    function slug 140 153
-    function needs_container_runtime 157 162
-    struct ProcessInvocation 168 173
-    function disposable_container_invocation 181 206
-    function backend_from_configuration 214 300
-    function backend_from_environment 303 308
-    enum NetworkPolicy 312 318
-    function container_flags 324 329
-    struct BoxPolicy 334 339
-    function default 342 347
-    struct BoxObservation 352 363
-    struct LadderRung 367 374
-    struct LadderReport 378 385
-    enum BoxError 389 412
-    struct BoxHandle 416 421
-    struct ExecutionBox 429 434
-    function open 444 458
-    static NEXT 451 451
-    function open_in 465 509
-    function backend 513 515
-    function network 519 521
-    function deadline 525 527
-    function workspace 531 533
-    function script_invocation 539 581
-    function run 587 661
-    function run_command 668 697
-    function observe_disposable_container 699 708
-    function observe_conversation 710 737
-    function observe_process 740 753
-    function observe_invocation 755 843
-    function halving_ladder 854 857
-    function halving_ladder_with_hard_limit 868 909
-    function detach 915 924
-    function record_command 928 937
-    function stream 942 957
+    const BACKEND_ENV 35 35
+    const START_ISOLATION_ENV 38 38
+    const START_RUNNER_ENV 41 41
+    const HOST_INTERPRETER 44 44
+    const SCRIPT_FILE 47 47
+    const CONTAINER_RUNNER 51 52
+    const CONVERSATION_IDLE 55 55
+    const COMMAND_LOG 59 59
+    const POLL 62 62
+    const STARTUP_FLOOR 70 70
+    function interpreter_startup 81 97
+    static MEASURED 82 82
+    enum ExecutionBackend 101 137
+    function slug 142 155
+    function needs_container_runtime 159 164
+    struct ProcessInvocation 170 175
+    function disposable_container_invocation 183 208
+    function backend_from_configuration 216 302
+    function backend_from_environment 305 310
+    enum NetworkPolicy 314 320
+    function container_flags 326 331
+    struct BoxPolicy 336 341
+    function default 344 349
+    struct BoxObservation 354 365
+    struct LadderRung 369 376
+    struct LadderReport 380 387
+    enum BoxError 391 414
+    struct BoxHandle 418 423
+    struct ExecutionBox 431 436
+    function open 446 460
+    static NEXT 453 453
+    function open_in 467 511
+    function backend 515 517
+    function network 521 523
+    function deadline 527 529
+    function workspace 533 535
+    function script_invocation 541 583
+    function run 589 663
+    function run_command 670 699
+    function observe_disposable_container 701 710
+    function observe_conversation 712 739
+    function observe_process 742 755
+    function observe_invocation 757 845
+    function halving_ladder 856 859
+    function halving_ladder_with_hard_limit 870 911
+    function detach 917 927
+    function record_command 931 940
+    function stream 945 960

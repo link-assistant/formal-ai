@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 27831
   line_count 834
-  content_id source_module_58b21336ba937b65
+  content_id source_module_bc12b437811c9457
   symbol_count 37
   symbols
     const FLOW_INCREASE 23 23
@@ -38,9 +38,9 @@ self_ast_census
     function same_answer 719 727
     function derivations_are_disjoint 729 735
     function classify_agreement 737 759
-    module agreement_tests 762 806
-    function answer 765 778
-    function two_independent_derivations_that_disagree_are_rejected 781 787
-    function agreement_requires_disjoint_derivations 790 805
-    function evidence_check_slug 808 820
-    function symbolic_check 822 834
+    function evidence_check_slug 761 773
+    function symbolic_check 775 787
+    module agreement_tests 790 834
+    function answer 793 806
+    function two_independent_derivations_that_disagree_are_rejected 809 815
+    function agreement_requires_disjoint_derivations 818 833

@@ -1,7 +1,7 @@
 //! Answer rendering for completed file reads: per-file listings and the
 //! bounded audit summary that keeps an answer inside its line/column limits.
 
-use super::*;
+use super::{FileReadMode, seed};
 
 use super::supplied::extract_jsonish_value;
 
@@ -80,7 +80,7 @@ fn bounded_audit_answer(files: &[(String, String)], request: &str) -> String {
         lines.push(format!("- `{}`", capped_text(path, PATH_CHARS)));
         let no_matches = content.trim() == "No files found";
         let grep_result = content.trim_start().starts_with("Found ");
-        let mut findings = content
+        let findings = content
             .lines()
             .map(str::trim)
             .filter(|line| !line.is_empty())
@@ -97,7 +97,7 @@ fn bounded_audit_answer(files: &[(String, String)], request: &str) -> String {
         if findings.is_empty() {
             lines.push(format!("  {}", response("file_analysis_no_marker")));
         } else {
-            lines.extend(findings.drain(..).map(|finding| format!("  - {finding}")));
+            lines.extend(findings.into_iter().map(|finding| format!("  - {finding}")));
         }
     }
     lines.push(response("file_analysis_absence_boundary"));

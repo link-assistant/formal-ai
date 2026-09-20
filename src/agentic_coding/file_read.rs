@@ -4,7 +4,7 @@ mod audit;
 mod exact;
 mod supplied;
 
-use audit::*;
+use audit::file_read_final_answer;
 pub use supplied::supplied_file_answer;
 
 use serde_json::json;
@@ -134,6 +134,10 @@ fn failed_step_answer(label: &str, raw: &str, request: &str) -> Option<String> {
         .then(|| super::tool_result::render(label, raw, request))
 }
 
+// The eight parameters are the read plan's own slots (path, mode, tool
+// availability, prior records, request); bundling them would invent a struct
+// only this planner reads.
+#[allow(clippy::too_many_arguments)]
 fn plan_direct_file_read(
     path: &str,
     mode: &FileReadMode,
@@ -784,8 +788,8 @@ fn read_command_for(path: &str, mode: &FileReadMode) -> String {
             ["sed", "-n", &expression, &shell_path(path)].join(" ")
         }
         FileReadMode::Audit => {
-            let line_range = format!("'1,{}p'", AUDIT_READ_LINE_LIMIT);
-            let column_range = format!("1-{}", AUDIT_READ_COLUMN_LIMIT);
+            let line_range = format!("'1,{AUDIT_READ_LINE_LIMIT}p'");
+            let column_range = format!("1-{AUDIT_READ_COLUMN_LIMIT}");
             [
                 "sed",
                 "-n",

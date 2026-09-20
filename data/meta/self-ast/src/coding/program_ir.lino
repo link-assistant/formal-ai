@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/program_ir.rs
   language rust
   fidelity signature
-  byte_len 25629
-  line_count 750
-  content_id source_module_d8306e522e55a865
+  byte_len 25654
+  line_count 749
+  content_id source_module_2331fd483a2c5dc3
   symbol_count 27
   symbols
     module infer 19 19
@@ -23,14 +23,14 @@ self_ast_census
     function inferred_parameters 347 362
     function type_from_annotation 364 374
     function argument_for 376 387
-    function neutral_literal 389 401
-    function fragment_overlap 403 408
-    function normalized_words 410 415
-    function reuse_slug 417 422
-    function node_cost 424 473
-    function node_depth 475 541
-    function push_type 543 580
-    function push_node 582 709
-    function push_child_node 711 714
-    function node_variant 716 731
-    function type_slug 735 750
+    function neutral_literal 389 400
+    function fragment_overlap 402 407
+    function normalized_words 409 414
+    function reuse_slug 416 421
+    function node_cost 423 472
+    function node_depth 474 540
+    function push_type 542 579
+    function push_node 581 708
+    function push_child_node 710 713
+    function node_variant 715 730
+    function type_slug 734 749

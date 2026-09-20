@@ -442,11 +442,11 @@ fn issue_216_unquoted_apple_covers_every_supported_target_language() {
 
     for (prompt, expected_intent, expected_surfaces, target_evidence) in cases {
         let response = answer(prompt);
-        let documented = expected_surfaces
-            .iter()
-            .map(|surface| format!("\"{surface}\""))
-            .collect::<Vec<_>>();
-        assert!(documented.contains(&response.answer));
+        assert!(
+            expected_surfaces
+                .iter()
+                .any(|surface| format!("\"{surface}\"") == response.answer)
+        );
         assert_eq!(
             response.intent, *expected_intent,
             "unquoted apple prompt should route to translation for {prompt:?}, got {}: {}",
@@ -497,11 +497,11 @@ fn native_hindi_and_chinese_unquoted_translation_prompts_are_supported() {
 
     for (prompt, expected_intent, expected_surfaces, target_evidence) in cases {
         let response = answer(prompt);
-        let documented = expected_surfaces
-            .iter()
-            .map(|surface| format!("\"{surface}\""))
-            .collect::<Vec<_>>();
-        assert!(documented.contains(&response.answer));
+        assert!(
+            expected_surfaces
+                .iter()
+                .any(|surface| format!("\"{surface}\"") == response.answer)
+        );
         assert_eq!(
             response.intent, *expected_intent,
             "native unquoted prompt should route to translation for {prompt:?}, got {}: {}",
@@ -643,11 +643,12 @@ fn issue_221_common_english_nouns_translate_to_russian() {
     ];
     for (prompt, expected_any) in cases {
         let response = answer(prompt);
-        let documented = expected_any
-            .iter()
-            .map(|surface| format!("\"{}\"", surface.to_lowercase()))
-            .collect::<Vec<_>>();
-        assert!(documented.contains(&response.answer.to_lowercase()));
+        assert!(
+            expected_any
+                .iter()
+                .any(|surface| format!("\"{}\"", surface.to_lowercase())
+                    == response.answer.to_lowercase())
+        );
         assert_eq!(
             response.intent, "translate_en_to_ru",
             "common English noun should route to translation for {prompt:?}, got {}: {}",

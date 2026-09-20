@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Q192096": {
+      "type": "item",
+      "id": "Q192096",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "смычковый струнный музыкальный инструмент"
+        },
+        "en": {
+          "language": "en",
+          "value": "bowed string instrument"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "弓弦乐器"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "семейство струнных музыкальных инструментов"
+        },
+        "en": {
+          "language": "en",
+          "value": "string instrument played by a bow rubbing the strings"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "拉弦乐器"
+          },
+          {
+            "language": "zh",
+            "value": "擦弦乐器"
+          },
+          {
+            "language": "zh",
+            "value": "拉弦樂器"
+          },
+          {
+            "language": "zh",
+            "value": "擦弦樂器"
+          },
+          {
+            "language": "zh",
+            "value": "弓弦樂器"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "смычковые музыкальные инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "струнные смычковые инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "струнные смычковые музыкальные инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "струнно-смычковые музыкальные инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "смычковые"
+          },
+          {
+            "language": "ru",
+            "value": "струнно-смычковые инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "смычковые инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "смычковые струнные музыкальные инструменты"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "bowed stringed instrument"
+          },
+          {
+            "language": "en",
+            "value": "bowed strings"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

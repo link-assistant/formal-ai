@@ -2,17 +2,17 @@ self_ast_census
   target src/coding/composition_search/lowering.rs
   language rust
   fidelity signature
-  byte_len 8833
-  line_count 249
-  content_id source_module_6cae450b6fe353b5
+  byte_len 8872
+  line_count 248
+  content_id source_module_a4a06af0120933fb
   symbol_count 9
   symbols
     function program_from_expression 5 25
     function fold_candidate 27 62
-    function neutral_literal 64 75
-    function annotation_type 77 87
-    function example_parameter_type 96 143
-    function types_may_unify 145 158
-    function types_fit_strictly 164 174
-    function words 176 181
-    function node_depth 183 249
+    function neutral_literal 64 74
+    function annotation_type 76 86
+    function example_parameter_type 95 142
+    function types_may_unify 144 157
+    function types_fit_strictly 163 173
+    function words 175 180
+    function node_depth 182 248

@@ -1,6 +1,6 @@
 //! Lowering a searched expression into a `ProgramIr` candidate, plus the strict type-fit helpers the enumeration gates on.
 
-use super::*;
+use super::{CodingTaskSpec, Expression, IrNode, IrType, ProgramIr, parse_type_slug};
 
 pub(super) fn program_from_expression(
     spec: &CodingTaskSpec,
@@ -66,11 +66,10 @@ pub(super) const fn neutral_literal(ty: &IrType) -> &'static str {
         IrType::Integer | IrType::Float => "0",
         IrType::Boolean => "false",
         IrType::Text => "\"\"",
-        IrType::Callable => "None",
+        IrType::Callable | IrType::Unknown(_) => "None",
         IrType::Sequence(_) | IrType::OrderedSequence(_) => "[]",
         IrType::Pair(_, _) => "(0, 0)",
         IrType::Mapping(_, _) => "{}",
-        IrType::Unknown(_) => "None",
     }
 }
 
@@ -113,7 +112,7 @@ pub(super) fn example_parameter_type(spec: &CodingTaskSpec, index: usize) -> Opt
             let inner = trimmed.trim_start_matches('[').trim_end_matches(']').trim();
             let elements = inner
                 .split(',')
-                .map(|element| element.trim())
+                .map(str::trim)
                 .filter(|element| !element.is_empty())
                 .collect::<Vec<_>>();
             let element = if !elements.is_empty()

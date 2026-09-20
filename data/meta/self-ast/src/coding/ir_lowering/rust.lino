@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/ir_lowering/rust.rs
   language rust
   fidelity signature
-  byte_len 7903
+  byte_len 7847
   line_count 234
-  content_id source_module_173fcad32b8b405d
+  content_id source_module_5c90005cfe2aab0d
   symbol_count 10
   symbols
     struct RustLowering 10 10

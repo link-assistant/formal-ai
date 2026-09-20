@@ -1,0 +1,15 @@
+Q1051772
+  aliases
+    en ("chordophone Instrument")
+  descriptions
+    en "class of musical instruments that makes sound by way of a vibrating string or strings stretched between two points"
+    hi "संगीत वाघयंत्र जो ध्वनि बनाता है"
+    ru "музыкальные инструменты, у которых звучащим элементов является струна"
+  id Q1051772
+  labels
+    en chordophone
+    hi "कर्ड़ फोन"
+    ru "хордофон"
+    zh "絃鳴樂器"
+  type item
+success 1

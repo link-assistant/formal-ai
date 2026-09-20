@@ -183,7 +183,7 @@ fn every_elimination_is_backed_by_an_evidence_record() {
         .filter(|hypothesis| !hypothesis.alive)
         .count();
     assert!(
-        dead > 0 && space.observations.len() >= 1,
+        dead > 0 && !space.observations.is_empty(),
         "a refuted hypothesis with no observation behind it is an assertion"
     );
 }

@@ -2,12 +2,12 @@ self_ast_census
   target src/retrieval_method.rs
   language rust
   fidelity signature
-  byte_len 6611
-  line_count 171
-  content_id source_module_350a2ad603466a1f
+  byte_len 6905
+  line_count 175
+  content_id source_module_b360d4e8badc4af9
   symbol_count 4
   symbols
-    function walk_senses 29 99
-    function retrieve 106 134
-    function render_answer 143 159
-    function render_one 161 171
+    function walk_senses 32 102
+    function retrieve 109 137
+    function render_answer 146 162
+    function render_one 166 175

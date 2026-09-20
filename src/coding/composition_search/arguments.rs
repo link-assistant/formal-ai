@@ -1,6 +1,9 @@
 //! Typed argument selection: slot choices, coherence, diversity, and pool normalization.
 
-use super::*;
+use super::{
+    BTreeSet, Expression, Fragment, FragmentCatalog, IrNode, IrType, Reverse,
+    fragment_binder_slots, literal_leaves, parameter_reads, types_fit_strictly, types_may_unify,
+};
 
 #[allow(clippy::too_many_arguments)]
 pub(super) fn argument_choices(
@@ -78,7 +81,8 @@ pub(super) fn argument_choices(
             .iter()
             .filter(|id| needed.contains(*id) && !owned.contains(*id))
             .count();
-        let key = (
+
+        (
             (
                 (
                     if extras_first { is_extra } else { 0 },
@@ -131,8 +135,7 @@ pub(super) fn argument_choices(
                 ),
             ),
             format!("{:?}", expression.node),
-        );
-        key
+        )
     });
     choices.dedup_by(|left, right| left.node == right.node);
     // The window has to stay small enough that the argument product of a
@@ -467,17 +470,15 @@ pub(super) fn pathological_repeat(node: &IrNode) -> bool {
 /// Whether any fragment id is applied more than once in the tree.
 pub(super) fn repeats_a_fragment(node: &IrNode) -> bool {
     fn count(node: &IrNode, counts: &mut std::collections::BTreeMap<String, usize>) {
-        match node {
-            IrNode::Apply {
-                fragment,
-                arguments,
-            } => {
-                *counts.entry(fragment.clone()).or_insert(0) += 1;
-                for argument in arguments {
-                    count(argument, counts);
-                }
+        if let IrNode::Apply {
+            fragment,
+            arguments,
+        } = node
+        {
+            *counts.entry(fragment.clone()).or_insert(0) += 1;
+            for argument in arguments {
+                count(argument, counts);
             }
-            _ => {}
         }
     }
     let mut counts = std::collections::BTreeMap::new();

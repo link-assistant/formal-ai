@@ -42,7 +42,7 @@ fn unquote(raw: &str) -> String {
     raw.trim()
         .strip_prefix('"')
         .and_then(|value| value.strip_suffix('"'))
-        .unwrap_or(raw.trim())
+        .unwrap_or_else(|| raw.trim())
         .to_owned()
 }
 
@@ -63,7 +63,7 @@ pub fn corpus() -> Vec<Paraphrase> {
             continue;
         }
         if !line.starts_with(char::is_whitespace) {
-            family = trimmed.to_owned();
+            trimmed.clone_into(&mut family);
             continue;
         }
         if let Some(value) = trimmed.strip_prefix("expectation ") {

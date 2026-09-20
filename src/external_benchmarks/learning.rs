@@ -165,7 +165,7 @@ pub fn render_frontier_record(existing: &str, runs: &[SuiteRun], date: &str) -> 
 /// Split a rendered frontier document into pages that each honour
 /// `line_budget` lines, at `frontier_prompt` boundaries.
 ///
-/// The 1500-line data cap (issue #960) applies to every committed LiNo file,
+/// The 1500-line data cap (issue #960) applies to every committed `LiNo` file,
 /// and one honest prompt per failed case grows without bound, so the writer
 /// spills continuation pages to `<stem>-partN.lino` files. Every page repeats
 /// the document header, so each one is a self-describing record the ordinary
@@ -209,7 +209,7 @@ pub fn split_frontier_document(document: &str, line_budget: usize) -> Vec<String
 /// The header-only page a provisioned part file carries while the frontier is
 /// too small to fill it: a parseable document with no frontier prompts.
 #[must_use]
-pub fn placeholder_frontier_page() -> &'static str {
+pub const fn placeholder_frontier_page() -> &'static str {
     "learning_frontier\n  record_type \"learning_frontier_record\"\n"
 }
 

@@ -97,20 +97,21 @@ fn issue_595_russian_spoken_hour_calendar_prompts_are_scheduled() {
             .expect("system clock after Unix epoch")
             .as_secs();
         if prompt == "А можешь на 10 часов по Грузии с Марией?" {
-            let documented_answers = (before..=after)
-                .map(|timestamp| {
-                    documented_calendar_answer(
-                        timestamp,
-                        "ru",
-                        "С марией",
-                        "%D0%A1%20%D0%BC%D0%B0%D1%80%D0%B8%D0%B5%D0%B9",
-                        10,
-                        "Asia/Tbilisi",
-                        "Asia%2FTbilisi",
-                    )
-                })
-                .collect::<Vec<_>>();
-            assert!(documented_answers.contains(&response.answer));
+            assert!(
+                (before..=after)
+                    .map(|timestamp| {
+                        documented_calendar_answer(
+                            timestamp,
+                            "ru",
+                            "С марией",
+                            "%D0%A1%20%D0%BC%D0%B0%D1%80%D0%B8%D0%B5%D0%B9",
+                            10,
+                            "Asia/Tbilisi",
+                            "Asia%2FTbilisi",
+                        )
+                    })
+                    .any(|answer| answer == response.answer)
+            );
         }
         assert_eq!(
             response.intent, "calendar_create_event",
@@ -177,12 +178,15 @@ fn issue_595_calendar_create_path_keeps_supported_language_coverage() {
             .expect("system clock after Unix epoch")
             .as_secs();
         if label == "English clock create" {
-            let documented_answers = (before..=after)
-                .map(|timestamp| {
-                    documented_calendar_answer(timestamp, "en", "Maria", "Maria", 10, "UTC", "UTC")
-                })
-                .collect::<Vec<_>>();
-            assert!(documented_answers.contains(&response.answer));
+            assert!(
+                (before..=after)
+                    .map(|timestamp| {
+                        documented_calendar_answer(
+                            timestamp, "en", "Maria", "Maria", 10, "UTC", "UTC",
+                        )
+                    })
+                    .any(|answer| answer == response.answer)
+            );
         }
         assert_eq!(
             response.intent, "calendar_create_event",

@@ -132,7 +132,7 @@ fn capabilities_follow_up_returns_to_english_on_request() {
 
     assert_eq!(
         response.answer,
-        r#"I am formal-ai, a deterministic symbolic AI. Here is what I can do:
+        r"I am formal-ai, a deterministic symbolic AI. Here is what I can do:
 
 - **Greetings**: respond to «Hi», «Hello», and similar.
 - **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.
@@ -147,7 +147,7 @@ fn capabilities_follow_up_returns_to_english_on_request() {
 - **Report a missing rule**: use the top-bar **Report issue** button; unknown-prompt message links include the diagnostic trace for maintainers.
 - **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.
 
-I run on local symbolic rules, without any neural network inference."#
+I run on local symbolic rules, without any neural network inference."
     );
 
     assert_eq!(

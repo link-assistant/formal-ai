@@ -19,12 +19,22 @@ mod pool;
 mod recursive;
 
 pub(crate) use analysis::literal_leaves;
-use analysis::*;
-use arguments::*;
-use binders::*;
-use lowering::*;
-use pool::*;
-use recursive::*;
+use analysis::{collect_parameter_names, iteration_element_types, parameter_reads, python_tokens};
+use arguments::{
+    argument_choices, argument_coherence, argument_grounded_structures, binder_circularity,
+    constant_map_count, diversify, enumerate_arguments, fragment_coverage,
+    inferred_expression_type, loose_feeds, node_contains_parameter, normalize_pool,
+};
+use binders::{
+    checked_recursive_programs, conditional_payload_slots, fragment_binder_slots,
+    loop_variable_applies, lowered_candidate_is_closed, pair_loop_variable_applies,
+};
+use lowering::{
+    annotation_type, example_parameter_type, fold_candidate, node_depth, program_from_expression,
+    types_fit_strictly, types_may_unify, words,
+};
+use pool::{Expression, atom_expressions, discovered_literals};
+use recursive::recursive_reduce_programs;
 
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec};
 
@@ -88,7 +98,7 @@ pub fn search_with_structures(
     let stated_numbers: BTreeSet<String> = requirement
         .split(|character: char| !character.is_ascii_digit())
         .filter(|token| !token.is_empty() && token.parse::<u64>().is_ok())
-        .map(|token| token.to_owned())
+        .map(std::borrow::ToOwned::to_owned)
         .collect();
     let mut ranked = catalog
         .fragments()
@@ -224,7 +234,7 @@ pub fn search_with_structures(
                         .iter()
                         .flat_map(|expression| iteration_element_types(&expression.ty))
                         .collect();
-                    if !element_types.contains(&element) {
+                    if !element_types.contains(element) {
                         element_types.push(element.clone());
                     }
                     let (pair_applies, unpacked) = pair_loop_variable_applies(
@@ -288,7 +298,7 @@ pub fn search_with_structures(
                     argument_choices(
                         &snapshot,
                         expected,
-                        names.get(index).map(String::as_str).unwrap_or(""),
+                        names.get(index).map_or("", String::as_str),
                         index,
                         &parameters,
                         &loop_variable_choices,
@@ -450,7 +460,7 @@ pub fn search_with_structures(
     let budget = bounds.max_candidates.saturating_sub(reserved);
     let mut buckets: std::collections::BTreeMap<String, Vec<ProgramIr>> =
         std::collections::BTreeMap::new();
-    for candidate in candidates.drain(..) {
+    for candidate in std::mem::take(&mut candidates) {
         let root = match &candidate.body {
             IrNode::Apply { fragment, .. } => fragment.clone(),
             _ => String::new(),

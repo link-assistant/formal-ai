@@ -2,9 +2,9 @@ self_ast_census
   target src/learning_cycle.rs
   language rust
   fidelity signature
-  byte_len 26536
-  line_count 633
-  content_id source_module_a4bfa1ab0dfa4e59
+  byte_len 26548
+  line_count 636
+  content_id source_module_192ed8535fdbd9f8
   symbol_count 38
   symbols
     const GOOGLE_TRENDS_FRONTIER 54 54
@@ -12,36 +12,36 @@ self_ast_census
     const LANGUAGE_GAP_FRONTIER 61 61
     const LANGUAGE_GAP_FRONTIER_RECORD 65 66
     const UPSTREAM_BENCHMARKS_FRONTIER 69 69
-    const UPSTREAM_BENCHMARKS_FRONTIER_RECORD 80 88
-    const UPSTREAM_BENCHMARKS_FRONTIER_PARTS 96 96
-    struct RecordedFrontier 104 111
-    function recorded_frontiers 115 134
-    function recorded_frontier 138 142
-    const LEARNED_REQUEST_OPENERS_SEED_FILE 145 145
-    const TERM_INFORMATION_ROLE 150 150
-    const MINIMUM_SUPPORT 154 154
-    struct FrontierItem 159 172
-    struct HeldOutTest 177 185
-    struct CandidateSurface 190 203
-    function validated 208 210
-    function passed_count 214 216
-    function failed_count 220 222
-    struct BlockedClass 228 237
-    struct LearningCycleRun 241 252
-    function validated_candidates 257 262
-    function held_out_count 266 271
-    function links_notation 276 326
-    function parse_frontier_record 331 350
-    function recorded_google_trends_frontier 354 356
-    function run_learning_cycle 360 410
-    function language_gap_learning_cycle 414 419
-    function google_trends_learning_cycle 423 425
-    function derive_candidate 432 484
-    function frame_of 489 500
-    function classify_slot 504 511
-    function recovers_query 518 530
-    function build_proposals 542 579
-    function held_out_gate 583 598
-    function meaning_block 602 614
-    function language_order 618 623
-    function slot_slug 626 633
+    const UPSTREAM_BENCHMARKS_FRONTIER_RECORD 82 90
+    const UPSTREAM_BENCHMARKS_FRONTIER_PARTS 99 99
+    struct RecordedFrontier 107 114
+    function recorded_frontiers 118 137
+    function recorded_frontier 141 145
+    const LEARNED_REQUEST_OPENERS_SEED_FILE 148 148
+    const TERM_INFORMATION_ROLE 153 153
+    const MINIMUM_SUPPORT 157 157
+    struct FrontierItem 162 175
+    struct HeldOutTest 180 188
+    struct CandidateSurface 193 206
+    function validated 211 213
+    function passed_count 217 219
+    function failed_count 223 225
+    struct BlockedClass 231 240
+    struct LearningCycleRun 244 255
+    function validated_candidates 260 265
+    function held_out_count 269 274
+    function links_notation 279 329
+    function parse_frontier_record 334 353
+    function recorded_google_trends_frontier 357 359
+    function run_learning_cycle 363 413
+    function language_gap_learning_cycle 417 422
+    function google_trends_learning_cycle 426 428
+    function derive_candidate 435 487
+    function frame_of 492 503
+    function classify_slot 507 514
+    function recovers_query 521 533
+    function build_proposals 545 582
+    function held_out_gate 586 601
+    function meaning_block 605 617
+    function language_order 621 626
+    function slot_slug 629 636

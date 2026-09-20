@@ -1,6 +1,6 @@
 //! Type inference and unification for elaboration: node typing, fragment checks, and type-variable resolution.
 
-use super::*;
+use super::{BTreeMap, FragmentCatalog, IrNode, IrType, runtime_template};
 
 pub(super) fn infer_node(
     node: &IrNode,
@@ -435,8 +435,9 @@ pub(super) fn fragment_type_variable(ty: &IrType, base: usize) -> IrType {
 pub(super) fn contains_unknown(ty: &IrType, sought: usize) -> bool {
     match ty {
         IrType::Unknown(id) => *id == sought,
-        IrType::Sequence(element) => contains_unknown(element, sought),
-        IrType::OrderedSequence(element) => contains_unknown(element, sought),
+        IrType::Sequence(element) | IrType::OrderedSequence(element) => {
+            contains_unknown(element, sought)
+        }
         IrType::Pair(left, right) | IrType::Mapping(left, right) => {
             contains_unknown(left, sought) || contains_unknown(right, sought)
         }

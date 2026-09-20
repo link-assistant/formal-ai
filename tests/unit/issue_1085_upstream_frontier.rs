@@ -327,9 +327,7 @@ fn a_shrinking_frontier_resets_unfilled_parts_to_placeholders_instead_of_deletin
     fs::create_dir_all(&dir).expect("temp dir must be creatable");
     let base = dir.join("frontier.lino");
 
-    let wide = format!(
-        "learning_frontier\n  record_type \"learning_frontier_record\"\n  frontier_prompt\n    rank \"1\"\n    query \"mbpp/MBPP/1\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"one\"\n    engine_intent \"benchmark_failure\"\n  frontier_prompt\n    rank \"2\"\n    query \"mbpp/MBPP/2\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"two\"\n    engine_intent \"benchmark_failure\"\n"
-    );
+    let wide = "learning_frontier\n  record_type \"learning_frontier_record\"\n  frontier_prompt\n    rank \"1\"\n    query \"mbpp/MBPP/1\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"one\"\n    engine_intent \"benchmark_failure\"\n  frontier_prompt\n    rank \"2\"\n    query \"mbpp/MBPP/2\"\n    language \"en\"\n    variation \"mbpp\"\n    prompt \"two\"\n    engine_intent \"benchmark_failure\"\n".to_string();
     let pages = formal_ai::external_benchmarks::learning::split_frontier_document(&wide, 10);
     assert!(pages.len() >= 2, "fixture must split");
     let written = formal_ai::external_benchmarks::learning::write_frontier_pages(

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read/audit.rs
   language rust
   fidelity full_ast
-  byte_len 4910
+  byte_len 4927
   line_count 128
-  content_id source_module_33ec58cd443d41f3
+  content_id source_module_c81945f99cd4c2f4
   symbol_count 9
   symbols
     function file_read_final_answer 8 61
@@ -21,9 +21,9 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4307
-    named_node_count 892
-    distinct_node_kinds 57
+    total_link_count 4314
+    named_node_count 893
+    distinct_node_kinds 58
     node_kinds
       arguments 84
       array_type 3
@@ -46,7 +46,7 @@ self_ast_census
       function_item 5
       generic_function 4
       generic_type 3
-      identifier 194
+      identifier 196
       if_expression 4
       index_expression 5
       inner_doc_comment_marker 2
@@ -58,16 +58,17 @@ self_ast_census
       match_block 1
       match_expression 1
       match_pattern 5
-      mutable_specifier 7
+      mutable_specifier 6
       parameter 11
       parameters 5
       parenthesized_expression 2
       primitive_type 13
-      range_expression 3
+      range_expression 2
       reference_expression 4
       reference_type 10
       return_expression 2
       scoped_identifier 15
+      scoped_use_list 1
       source_file 1
       string_content 27
       string_literal 22
@@ -80,5 +81,5 @@ self_ast_census
       type_identifier 16
       unary_expression 5
       use_declaration 2
-      use_wildcard 1
+      use_list 1
       visibility_modifier 1

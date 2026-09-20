@@ -16,7 +16,7 @@ const ISSUE_PROMPT: &str = "Simulate a crypto portfolio tracker:\n\
       - Logs results to a formatted string\n\
    5. Output: dashboard-style markdown + executable code";
 
-const PYTHON_PROGRAM: &str = r###"from dataclasses import dataclass
+const PYTHON_PROGRAM: &str = r#"from dataclasses import dataclass
 from typing import Mapping
 
 @dataclass(frozen=True)
@@ -108,7 +108,7 @@ def main() -> None:
     print(formatted_log)
 
 if __name__ == '__main__':
-    main()"###;
+    main()"#;
 
 fn expected_answer(
     intro: &str,

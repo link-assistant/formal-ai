@@ -1,6 +1,12 @@
 //! Binder-slot discovery and the loop-variable argument sets that let comprehension fragments read their own iteration variable.
 
-use super::*;
+use super::{
+    BTreeSet, CodingTaskSpec, Expression, Fragment, FragmentCatalog, IrNode, IrType, ProgramIr,
+    Reverse, argument_choices, argument_coherence, argument_grounded_structures,
+    binder_circularity, constant_map_count, dedup_preserving_first, diversify, enumerate_arguments,
+    fragment_citation, fragment_coverage, inferred_expression_type, literal_leaves, loose_feeds,
+    node_contains_parameter, node_depth, parameter_reads, python_tokens, types_may_unify,
+};
 
 pub(super) fn checked_recursive_programs(
     mut programs: Vec<ProgramIr>,
@@ -318,7 +324,7 @@ pub(super) fn loop_variable_applies<'a>(
                         argument_choices(
                             pool,
                             ty,
-                            names.get(index).map(String::as_str).unwrap_or(""),
+                            names.get(index).map_or("", String::as_str),
                             index,
                             parameters,
                             &[],
@@ -346,18 +352,18 @@ pub(super) fn loop_variable_applies<'a>(
                 )
             });
             for arguments in combinations {
-                // The comprehension body must compute from the loop variable:
-                // an ingredient that never reads it maps a constant over the
-                // iteration, and the plain pool already offers constants —
-                // at this depth or the next. Letting the constant forms wear
-                // a binder apply's slot in the diversity window evicts the
-                // per-element reading the enclosing composition needs.
-                let reads_binder = arguments
+                // The comprehension body should compute from the loop
+                // variable: an ingredient that never reads it maps a constant
+                // over the iteration, and the plain pool already offers
+                // constants — at this depth or the next. The eviction is
+                // measured and deliberately disabled: enabling it starves
+                // compositions that legitimately bind constant ingredients
+                // (specification::synthesis compound_courtesy and
+                // mixed_script_definition both fail with it on), so
+                // re-enabling requires widening the diversity window first.
+                let _reads_binder = arguments
                     .iter()
                     .any(|argument| node_contains_parameter(&argument.node, loop_variable));
-                if false && !reads_binder {
-                    continue;
-                }
                 let result_ty =
                     inferred_expression_type(&fragment.result, &fragment.signature, &arguments);
                 let mut fragments = vec![fragment.id.clone()];
@@ -487,7 +493,7 @@ pub(super) fn loop_variable_applies<'a>(
                         argument_choices(
                             pool,
                             expected,
-                            names.get(index).map(String::as_str).unwrap_or(""),
+                            names.get(index).map_or("", String::as_str),
                             index,
                             parameters,
                             &[],
@@ -606,7 +612,7 @@ pub(super) fn pair_loop_variable_applies<'a>(
                     && types_may_unify(&fragment.signature[slot + 1], right)
             }) {
                 continue;
-            };
+            }
             let Some(first) = names.get(slot) else {
                 continue;
             };
@@ -643,7 +649,7 @@ pub(super) fn pair_loop_variable_applies<'a>(
                         argument_choices(
                             pool,
                             ty,
-                            names.get(index).map(String::as_str).unwrap_or(""),
+                            names.get(index).map_or("", String::as_str),
                             index,
                             parameters,
                             &[],

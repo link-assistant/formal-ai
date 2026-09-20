@@ -111,7 +111,9 @@ pub fn run_suite_with_online(
 }
 
 /// Run an upstream suite with explicit discovery-network and prerequisite
-/// installation permissions. `allow_install` grants only the pinned,
+/// installation permissions.
+///
+/// `allow_install` grants only the pinned,
 /// workspace-scoped harness procedure; it is false in every compatibility
 /// entry point.
 pub fn run_suite_with_options(

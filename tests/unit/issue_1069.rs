@@ -35,7 +35,7 @@ fn solve_issue_request_reads_the_work_item_before_project_lookup() {
     // A client with no shell still reads the work item, through its fetch tool.
     let fetch_only = ["web_fetch", "write_file"];
     let Some(AgenticPlan::ToolCalls(fetched)) =
-        plan_chat_step(&[ChatMessage::user(task.clone())], &fetch_only)
+        plan_chat_step(&[ChatMessage::user(task)], &fetch_only)
     else {
         panic!("a fetch-only client must still read the work item");
     };

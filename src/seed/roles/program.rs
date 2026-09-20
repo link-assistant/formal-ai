@@ -85,7 +85,9 @@ pub const ROLE_CALENDAR_TODAY: &str = "calendar_today";
 /// question is about (day, weekday, date, week, день, неделя, 星期, …).
 pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
 /// Semantic role: a relative period measured in hours (the last few hours,
-/// часа, घंटे, 小时) — the noun a fresh-period digest asks about. Kept apart
+/// часа, घंटे, 小时) — the noun a fresh-period digest asks about.
+///
+/// Kept apart
 /// from `calendar_day_reference` because the routing table treats a weekday
 /// question (engine calendar reasoning) and a period digest (fresh web
 /// events) as different objects, not different spellings of one.

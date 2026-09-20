@@ -191,7 +191,7 @@ fn the_registry_selects_dictionaries_before_encyclopedias_and_technical_sources(
 /// source is derived from the same registry order the walk consults in, and
 /// changing that order changes this expectation with it.
 fn first_source_that_answered(senses: &[ConceptSense]) -> String {
-    let order: Vec<String> = select_sources(
+    select_sources(
         NeedKind::Concept,
         HELD_OUT_WORD,
         &ServicePreferences::default(),
@@ -199,11 +199,8 @@ fn first_source_that_answered(senses: &[ConceptSense]) -> String {
     )
     .into_iter()
     .map(|record| record.id)
-    .collect();
-    order
-        .into_iter()
-        .find(|id| senses.iter().any(|sense| &sense.source_id == id))
-        .expect("some declared source answered")
+    .find(|id| senses.iter().any(|sense| &sense.source_id == id))
+    .expect("some declared source answered")
 }
 
 #[test]

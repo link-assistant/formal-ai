@@ -42,9 +42,9 @@ fn corpus() -> Vec<Paraphrase> {
             });
         } else if let Some(record) = &mut current {
             if let Some(value) = trimmed.strip_prefix("family ") {
-                record.family = value.trim().to_owned();
+                value.trim().clone_into(&mut record.family);
             } else if let Some(value) = trimmed.strip_prefix("language ") {
-                record.language = value.trim().to_owned();
+                value.trim().clone_into(&mut record.language);
             } else if let Some(value) = trimmed.strip_prefix("prompt ") {
                 record.prompt = value.trim().trim_matches('"').replace("\"\"", "\"");
             }
@@ -98,10 +98,10 @@ fn the_loop_no_longer_claims_a_missing_fetch_capability() {
                     .filter_map(Result::ok)
                     .map(|entry| entry.path()),
             );
-        } else if path.extension().is_some_and(|extension| extension == "rs") {
-            if fs::read_to_string(&path).is_ok_and(|text| text.contains(FORBIDDEN_POLICY)) {
-                offenders.push(path.display().to_string());
-            }
+        } else if path.extension().is_some_and(|extension| extension == "rs")
+            && fs::read_to_string(&path).is_ok_and(|text| text.contains(FORBIDDEN_POLICY))
+        {
+            offenders.push(path.display().to_string());
         }
     }
     assert!(

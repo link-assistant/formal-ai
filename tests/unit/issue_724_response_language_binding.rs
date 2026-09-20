@@ -31,7 +31,7 @@ fn a_demonstrated_language_binds_for_the_rest_of_the_conversation() {
     // next request names no language at all.
     let history = vec![
         ConversationTurn::user("Say something to me in Russian."),
-        ConversationTurn::assistant(demonstration.answer.clone()),
+        ConversationTurn::assistant(demonstration.answer),
     ];
     let bound = offline_solver();
     let follow_up = bound.solve_with_history("What is an isogram?", &history);

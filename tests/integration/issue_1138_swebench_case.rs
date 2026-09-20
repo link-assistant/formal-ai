@@ -114,7 +114,7 @@ fn one_lite_instance_runs_the_whole_protocol() {
         &RepositoryTask {
             requirement: case.prompt.clone(),
             clone: spec,
-            tests: case.tests.clone(),
+            tests: case.tests,
         },
     );
 

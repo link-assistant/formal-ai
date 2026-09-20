@@ -8,7 +8,9 @@
 use formal_ai::concept_lookup::ConceptSense;
 use formal_ai::relative_meta_logic::SourceTier;
 use formal_ai::solver::{SolverConfig, UniversalSolver};
-use formal_ai::source_capability::{compose_document, compose_source_evidence, measurement_source_evidence};
+use formal_ai::source_capability::{
+    compose_document, compose_source_evidence, measurement_source_evidence,
+};
 
 fn sense(gloss: &str, source: &str, url: &str) -> ConceptSense {
     ConceptSense {

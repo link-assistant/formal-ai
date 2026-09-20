@@ -45,7 +45,7 @@ fn a_verified_derivation_is_content_addressed_and_tamper_detecting() {
         "the record is content-addressed over its identity payload"
     );
 
-    let mut tampered = procedure.clone();
+    let mut tampered = procedure;
     tampered.derivation_id = String::from("someone-elses-derivation");
     assert!(
         !tampered.valid(),

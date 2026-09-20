@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/concept_discovery.rs
   language rust
   fidelity signature
-  byte_len 31585
+  byte_len 31580
   line_count 820
-  content_id source_module_1cf5f3a47e80a3c5
+  content_id source_module_1f828b49f2afb0e8
   symbol_count 40
   symbols
     struct StructuralMeaning 15 19

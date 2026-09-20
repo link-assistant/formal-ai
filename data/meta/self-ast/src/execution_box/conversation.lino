@@ -2,9 +2,9 @@ self_ast_census
   target src/execution_box/conversation.rs
   language rust
   fidelity signature
-  byte_len 3661
+  byte_len 3732
   line_count 114
-  content_id source_module_8b1ec604e85ffeec
+  content_id source_module_cfd71bba2d0d38b7
   symbol_count 4
   symbols
     function conversation_container_name 9 12

@@ -26,6 +26,9 @@ use crate::source_walk::LookupBounds;
 /// and licence of the exact bytes it came from; a miss names every source
 /// consulted, so an absence is attributable rather than bare; a source the
 /// operator opted out of stays visible beside whatever the others answered.
+// The walk consults each source with its own client, preference, and
+// availability; the parameters are the sources-registry slots themselves.
+#[allow(clippy::too_many_arguments)]
 pub fn walk_senses<T: SourceTransport>(
     client: &CachedSourceClient<T>,
     preferences: &ServicePreferences,
@@ -158,14 +161,15 @@ pub fn render_answer(senses: &[ConceptSense], template: Option<&str>, fallback: 
         .join("\n\n")
 }
 
+// The brace tokens are seed-template placeholders, not format arguments.
+#[allow(clippy::literal_string_with_formatting_args)]
 fn render_one(sense: &ConceptSense, template: &str) -> String {
     let source_name = crate::seed::source_record(&sense.source_id)
-        .map(|record| record.name)
-        .unwrap_or_else(|| sense.source_id.clone());
+        .map_or_else(|| sense.source_id.clone(), |record| record.name);
     template
         .replace("{lemma}", &sense.lemma)
         .replace("{gloss}", &sense.gloss)
-        .replace("{source_name}", &source_name)
         .replace("{source_url}", &sense.source_url)
         .replace("{license_name}", &sense.license_name)
+        .replace("{source_name}", &source_name)
 }

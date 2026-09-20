@@ -1,6 +1,6 @@
 //! Ranking signals computed over a lowered candidate tree.
 
-use super::*;
+use super::{BTreeSet, IrNode, IrType};
 
 /// How many DISTINCT task inputs the expression reads anywhere in its tree.
 /// A nested re-read of the same input adds no grounding beyond the first, so
@@ -9,13 +9,10 @@ use super::*;
 /// fill that reads the task's input beats the fill that invents a constant:
 /// a literal is an assumption the examples never justified, and preferring
 /// it is how a search drifts toward memorizing its examples.
-pub(crate) fn literal_leaves(node: &IrNode) -> usize {
+pub fn literal_leaves(node: &IrNode) -> usize {
     match node {
         IrNode::Literal { .. } => 1,
-        IrNode::Apply { arguments, .. } => arguments
-            .iter()
-            .map(|argument| literal_leaves(argument))
-            .sum(),
+        IrNode::Apply { arguments, .. } => arguments.iter().map(literal_leaves).sum(),
         _ => 0,
     }
 }

@@ -118,7 +118,7 @@ fn write_program_need_resolves_to_a_method_in_solution_evidence() {
     let root = WorkUnit::from_formalization(&formalization, 4);
     let ledger = NeedLedger::resolve(&frame, &root);
     let registry = MethodRegistry::shared();
-    let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
+    let evidence = SolutionEvidence::assemble(&frame, &ledger, registry);
 
     assert_eq!(
         evidence.resolved_to_method(),

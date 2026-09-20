@@ -2,9 +2,9 @@ self_ast_census
   target src/capability_routing.rs
   language rust
   fidelity signature
-  byte_len 30157
-  line_count 795
-  content_id source_module_9f5b725268268fb6
+  byte_len 30139
+  line_count 796
+  content_id source_module_cdd635943d8a3441
   symbol_count 34
   symbols
     module evidence 42 42
@@ -12,32 +12,32 @@ self_ast_census
     const OBJECT_TYPES 87 87
     function slug 108 126
     function from_slug 130 134
-    function rank 153 171
-    enum Act 178 189
-    const ACTS_IN_PRECEDENCE 196 196
-    function slug 210 222
-    function from_slug 226 231
-    function role 234 246
-    enum Locus 251 259
-    function slug 264 272
-    function from_slug 276 286
-    struct RouteRow 291 302
-    enum RoutingOutcome 307 320
-    struct RoutingDecision 329 338
-    function table_routing_enabled 346 354
-    function object_type 359 476
-    function evidences_retrieve_act 488 490
-    function is_response_language_obligation 502 505
-    function acts 513 532
-    function act 536 538
-    function locus_of 546 586
-    function locus 591 595
-    function routing_table 599 601
-    const CAPABILITY_ROUTING_LINO 604 604
-    function routing_table_from 612 644
-    function route 655 657
-    function route_decision 666 693
-    function advertised_provides 701 717
-    function route_with 721 757
-    function readings_for 765 792
-    const DEFAULT_OUTCOME 795 795
+    function rank 153 170
+    enum Act 177 188
+    const ACTS_IN_PRECEDENCE 195 195
+    function slug 209 221
+    function from_slug 225 230
+    function role 233 245
+    enum Locus 250 258
+    function slug 263 271
+    function from_slug 275 285
+    struct RouteRow 290 301
+    enum RoutingOutcome 306 319
+    struct RoutingDecision 328 337
+    function table_routing_enabled 345 353
+    function object_type 358 475
+    function evidences_retrieve_act 487 489
+    function is_response_language_obligation 501 504
+    function acts 512 531
+    function act 535 537
+    function locus_of 545 587
+    function locus 592 596
+    function routing_table 600 602
+    const CAPABILITY_ROUTING_LINO 605 605
+    function routing_table_from 613 645
+    function route 656 658
+    function route_decision 667 694
+    function advertised_provides 702 718
+    function route_with 722 758
+    function readings_for 766 793
+    const DEFAULT_OUTCOME 796 796

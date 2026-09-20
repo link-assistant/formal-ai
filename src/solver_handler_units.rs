@@ -113,7 +113,7 @@ fn contains_unit_word(normalized: &str, unit: &str) -> bool {
 /// cannot convert ("how many meters in a kilobyte") has no measured property
 /// to look up, and the honest answer is this handler's incompatibility
 /// record, not a web capability's gap.
-pub(crate) fn names_incompatible_unit_pair(normalized: &str) -> bool {
+pub fn names_incompatible_unit_pair(normalized: &str) -> bool {
     detect_incompatible_unit_pair(normalized).is_some()
 }
 

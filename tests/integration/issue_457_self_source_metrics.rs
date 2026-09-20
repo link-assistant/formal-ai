@@ -11,7 +11,7 @@ const ISSUE_PROMPT: &str = "Write a Rust program that:\n\
    5. Then: analyze YOUR OWN response to this prompt using the same metrics\n\
    6. Compare: which is more complex — your generated code or your reasoning text?";
 
-const EXPECTED_ANSWER: &str = r###"Here is a Rust program for the requested composite task (inspect its own Rust source, emit JSON metrics, and compare code with response prose). I decomposed your request into these sub-tasks:
+const EXPECTED_ANSWER: &str = r#"Here is a Rust program for the requested composite task (inspect its own Rust source, emit JSON metrics, and compare code with response prose). I decomposed your request into these sub-tasks:
 
 1. Parse the JSON response
 2. Output the results
@@ -200,7 +200,7 @@ Execution status: not run — this source-metrics blueprint uses only the Rust s
 
 Response self-analysis:
 - Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, complexity_score=1.
-- Comparison: the generated Rust code is more complex than the reasoning text because it contains executable parsing, loops, conditionals, helper functions, and JSON rendering logic."###;
+- Comparison: the generated Rust code is more complex than the reasoning text because it contains executable parsing, loops, conditionals, helper functions, and JSON rendering logic."#;
 
 #[test]
 fn issue_457_rust_self_source_metrics_request_returns_blueprint_program() {

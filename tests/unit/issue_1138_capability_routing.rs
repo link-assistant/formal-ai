@@ -112,7 +112,7 @@ fn routing_cases() -> Vec<RoutingCase> {
     cases
 }
 
-fn resolved_capability(outcome: &RoutingOutcome) -> Option<&str> {
+const fn resolved_capability(outcome: &RoutingOutcome) -> Option<&str> {
     match outcome {
         RoutingOutcome::Routed { capability } | RoutingOutcome::Lowered { capability, .. } => {
             Some(capability.as_str())

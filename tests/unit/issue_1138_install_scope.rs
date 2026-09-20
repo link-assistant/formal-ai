@@ -36,7 +36,7 @@ fn procedure(root: &Path, steps: Vec<SetupStep>) -> SetupProcedure {
         program: String::from("zig"),
         source_id: String::from("zig_official"),
         source_url: String::from("https://ziglang.org/learn/getting-started/"),
-        content_id: String::from("1".repeat(64)),
+        content_id: "1".repeat(64),
         platform: Platform::observed(),
         steps,
         postcondition: Some(postcondition()),
@@ -177,7 +177,7 @@ fn a_digest_mismatch_is_refused_without_data_loss() {
     let before = digest_tree(&root);
 
     let mut step = unpack_step();
-    step.digest = Some(String::from("2".repeat(64)));
+    step.digest = Some("2".repeat(64));
     let outcome = install_scoped(
         &procedure(&root, vec![step]),
         &InstallGrant::Allowed {
@@ -202,7 +202,7 @@ fn a_digest_mismatch_is_refused_without_data_loss() {
 fn insufficient_disk_is_refused_before_download() {
     let root = temp_root("disk");
     let mut procedure = procedure(&root, vec![unpack_step()]);
-    procedure.content_id = String::from("3".repeat(64));
+    procedure.content_id = "3".repeat(64);
     // A stated requirement larger than any machine has free.
     procedure.steps[0].command =
         String::from("tar -xf zig.tar.xz requires_bytes=18446744073709551615");
@@ -211,7 +211,7 @@ fn insufficient_disk_is_refused_before_download() {
         &procedure,
         &InstallGrant::Allowed {
             programs: vec![String::from("zig")],
-            root: root.clone(),
+            root,
         },
     );
     match outcome {
@@ -249,7 +249,7 @@ fn a_successful_command_with_a_failing_postcondition_is_still_missing() {
         &procedure,
         &InstallGrant::Allowed {
             programs: vec![String::from("zig")],
-            root: root.clone(),
+            root,
         },
     );
     assert!(

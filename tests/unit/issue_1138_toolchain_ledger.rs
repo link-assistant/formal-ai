@@ -6,7 +6,7 @@
 //! survives a restart is the ability to reattach without asking the publisher
 //! again.
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use formal_ai::prerequisite::Platform;
 use formal_ai::prerequisite::ledger::{ToolchainLedger, ToolchainRecord};
@@ -16,12 +16,12 @@ fn temp_root(tag: &str) -> PathBuf {
     std::env::temp_dir().join(format!("formal-ai-issue-1138-ledger-{tag}"))
 }
 
-fn record(root: &PathBuf) -> ToolchainRecord {
+fn record(root: &Path) -> ToolchainRecord {
     ToolchainRecord {
         program: String::from("zig"),
         source_id: String::from("zig_official"),
         source_url: String::from("https://ziglang.org/learn/getting-started/"),
-        content_id: String::from("4".repeat(64)),
+        content_id: "4".repeat(64),
         platform: Platform::observed(),
         postcondition: ToolchainProbe {
             program: String::from("zig"),

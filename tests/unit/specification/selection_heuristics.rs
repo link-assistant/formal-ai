@@ -212,12 +212,10 @@ fn an_empty_heuristic_table_falls_back_deterministically_and_says_so() {
     // uses the deterministic identity ordering and emits `heuristic:none`
     // naming the role and the situation. It never silently falls back.
     let catalog = catalog_from(&catalog_text()).expect("the heuristic catalog parses");
-    let experiment: Vec<_> = catalog
-        .iter()
-        .filter(|heuristic| heuristic.role == HeuristicRole::Experiment)
-        .collect();
     assert!(
-        !experiment.is_empty(),
+        catalog
+            .iter()
+            .any(|heuristic| heuristic.role == HeuristicRole::Experiment),
         "the catalog must declare the experiment role, so an empty result is a fact \
          about the situation rather than about the file"
     );

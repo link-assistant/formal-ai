@@ -50,10 +50,10 @@ fn family(id: &str) -> Vec<(String, String)> {
             current = unquote(value);
         } else if let Some(value) = trimmed.strip_prefix("language ") {
             language = unquote(value);
-        } else if let Some(value) = trimmed.strip_prefix("prompt ") {
-            if current == id {
-                out.push((language.clone(), unquote(value)));
-            }
+        } else if let Some(value) = trimmed.strip_prefix("prompt ")
+            && current == id
+        {
+            out.push((language.clone(), unquote(value)));
         }
     }
     assert_eq!(
@@ -71,10 +71,10 @@ fn field(id: &str, name: &str) -> String {
         let trimmed = line.trim();
         if let Some(value) = trimmed.strip_prefix("id ") {
             current = unquote(value);
-        } else if let Some(value) = trimmed.strip_prefix(&format!("{name} ")) {
-            if current == id {
-                return unquote(value);
-            }
+        } else if let Some(value) = trimmed.strip_prefix(&format!("{name} "))
+            && current == id
+        {
+            return unquote(value);
         }
     }
     panic!("{CORPUS} should carry `{name}` for family `{id}`");

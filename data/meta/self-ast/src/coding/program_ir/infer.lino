@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/program_ir/infer.rs
   language rust
   fidelity signature
-  byte_len 19847
-  line_count 468
-  content_id source_module_6ce13cc1de028137
+  byte_len 19886
+  line_count 469
+  content_id source_module_1279b016171fcbff
   symbol_count 13
   symbols
     function infer_node 5 255
@@ -18,5 +18,5 @@ self_ast_census
     const FRAGMENT_TYPE_VARIABLE_OFFSET 403 403
     const FRAGMENT_TYPE_VARIABLE_STRIDE 407 407
     function fragment_type_variable 414 433
-    function contains_unknown 435 445
-    function resolve_type 447 468
+    function contains_unknown 435 446
+    function resolve_type 448 469

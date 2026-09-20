@@ -40,7 +40,7 @@ fn shards() -> BTreeMap<String, String> {
     };
     for entry in entries.filter_map(Result::ok) {
         let name = entry.file_name().to_string_lossy().into_owned();
-        if name.starts_with("issue-1138-") && name.ends_with(".md") {
+        if name.starts_with("issue-1138-") && name.to_ascii_lowercase().ends_with(".md") {
             found.insert(name, fs::read_to_string(entry.path()).unwrap_or_default());
         }
     }

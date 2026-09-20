@@ -459,7 +459,7 @@ pub fn structures_for(normalized: &str) -> Vec<StructuralMeaning> {
             .meaning(slug)
             .is_some_and(|meaning| meaning.defined_by.iter().any(|kind| kind == "reduction"))
     });
-    if matched.get("quantifier_all").is_some() && reduction_present {
+    if matched.contains("quantifier_all") && reduction_present {
         matched.remove("quantifier_all");
     }
     // In an inclusive range request, "count to N" denotes enumeration. It

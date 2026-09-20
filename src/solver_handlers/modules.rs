@@ -43,5 +43,5 @@ mod text_manipulation;
 mod user_intent;
 mod verifiable_task;
 mod web_requests;
-pub(crate) mod web_search_intent;
+pub mod web_search_intent;
 mod world_state;

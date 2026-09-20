@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q34379": {
+      "type": "item",
+      "id": "Q34379",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "乐器"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "музыкальный инструмент"
+        },
+        "en": {
+          "language": "en",
+          "value": "musical instrument"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वाद्य यन्त्र"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "device created or adapted to make musical sounds"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предметы, с помощью которых извлекаются различные музыкальные, а также немузыкальные неорганизованные звуки"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संगीतमय ध्वनियाँ बनाने के लिए बनाया या अनुकूलित किया गया उपकरण"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "音樂器材"
+          },
+          {
+            "language": "zh",
+            "value": "樂器"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "वाद्य यंत्र"
+          },
+          {
+            "language": "hi",
+            "value": "संगीत वाद्य यंत्र"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "music instrument"
+          },
+          {
+            "language": "en",
+            "value": "instrument"
+          },
+          {
+            "language": "en",
+            "value": "instrument in music"
+          },
+          {
+            "language": "en",
+            "value": "instrument (music)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

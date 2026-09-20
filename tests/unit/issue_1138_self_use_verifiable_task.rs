@@ -63,10 +63,10 @@ fn prompts(family_id: &str) -> Vec<(String, String)> {
             id = unquote(value);
         } else if let Some(value) = trimmed.strip_prefix("language ") {
             language = unquote(value);
-        } else if let Some(value) = trimmed.strip_prefix("prompt ") {
-            if id == family_id {
-                out.push((language.clone(), unquote(value)));
-            }
+        } else if let Some(value) = trimmed.strip_prefix("prompt ")
+            && id == family_id
+        {
+            out.push((language.clone(), unquote(value)));
         }
     }
     assert_eq!(
@@ -85,10 +85,10 @@ fn expectation(family_id: &str, field: &str) -> String {
         let trimmed = line.trim();
         if let Some(value) = trimmed.strip_prefix("id ") {
             id = unquote(value);
-        } else if let Some(value) = trimmed.strip_prefix(&format!("{field} ")) {
-            if id == family_id {
-                return unquote(value);
-            }
+        } else if let Some(value) = trimmed.strip_prefix(&format!("{field} "))
+            && id == family_id
+        {
+            return unquote(value);
         }
     }
     panic!("{EXPECTATIONS} should carry `{field}` for family `{family_id}`");

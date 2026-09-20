@@ -70,7 +70,9 @@ pub const UPSTREAM_BENCHMARKS_FRONTIER: &str = "upstream-benchmarks";
 
 /// The committed record of the upstream benchmark frontier, rewritten by the
 /// scheduled external-benchmarks run through
-/// `formal-ai benchmark run --frontier-record`. When one honest prompt per
+/// `formal-ai benchmark run --frontier-record`.
+///
+/// When one honest prompt per
 /// failed case outgrows the 1500-line data cap (issue #960), the writer spills
 /// continuation pages into `-partN.lino` siblings; the replay reads the
 /// concatenation, and `parse_frontier_record` collects items across the
@@ -87,8 +89,9 @@ pub const UPSTREAM_BENCHMARKS_FRONTIER_RECORD: &str = concat!(
     include_str!("../data/meta/learning-frontier-upstream-benchmarks-part6.lino"),
 );
 
-/// How many `-partN.lino` continuation files the record above embeds. The
-/// writer provisions exactly this many (resetting unfilled ones to
+/// How many `-partN.lino` continuation files the record above embeds.
+///
+/// The writer provisions exactly this many (resetting unfilled ones to
 /// placeholders), so a frontier that grows or shrinks never leaves the embed
 /// and the committed file set out of sync. Six parts at the 1400-line write
 /// budget hold about 1190 frontier prompts — several times the largest slice

@@ -122,7 +122,7 @@ Proposed plan:
 
 Reply `approve plan` to generate the starter implementation, or describe what to change."#;
 
-pub(super) const BROWSER_EXTENSION_PROJECT_PLAN: &str = r#"Implementation plan pending approval for a browser extension targeting the requested environment.
+pub const BROWSER_EXTENSION_PROJECT_PLAN: &str = r#"Implementation plan pending approval for a browser extension targeting the requested environment.
 
 Formalized meaning:
 ```lino

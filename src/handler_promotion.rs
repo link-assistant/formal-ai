@@ -106,10 +106,11 @@ pub fn promotions_from(text: &str) -> Result<Vec<HandlerPromotion>, String> {
     Ok(rows)
 }
 
-/// The `handler:<name>` relevants a prompt promotes, in `rank` order, evaluated
-/// through the one rule interpreter reading the projected link store (plan 09
-/// leaf 40: the store, not the parsed seed tables, is the read path). Keeps no
-/// handler names.
+/// The `handler:<name>` relevants a prompt promotes, in `rank` order.
+///
+/// Evaluated through the one rule interpreter reading the projected link store
+/// (plan 09 leaf 40: the store, not the parsed seed tables, is the read path).
+/// Keeps no handler names.
 #[must_use]
 pub fn promoted_relevants(promotions: &[HandlerPromotion], prompt: &str) -> Vec<String> {
     promoted_relevants_with_source(promotions, prompt, LinkStoreSource::shared())

@@ -174,7 +174,7 @@ pub fn try_dispatch(
         // `handler_for_method` -- there is no compiled handler behind it. This
         // is `MethodRegistry::learned_method`'s first production caller.
         if let Some(answer) =
-            try_learned_method(solver, &registry, &name, prompt, intent_formalization, log)
+            try_learned_method(solver, registry, &name, prompt, intent_formalization, log)
         {
             return Some(answer);
         }
@@ -434,8 +434,8 @@ fn try_capability_route(
         }
         // These capabilities already have general registry methods. Recording
         // the table decision here changes their precedence without duplicating
-        // their execution or interrupting a multi-step research recipe.
-        "web_search" | "report_issue" | "ask_user" => None,
+        // their execution or interrupting a multi-step research recipe; they
+        // fall through with everything else.
         // An advertised capability the dispatcher has no dedicated executor
         // for still reaches the planner (issue #671: `read the file alpha.txt`
         // must be answered, not dead-ended). A surface that genuinely lacks
@@ -582,7 +582,7 @@ fn request_anchors(prompt: &str) -> Vec<&str> {
 /// ([`detect_response_language`]), so this holds no phrase table of its own and
 /// reads the request the same way the demonstration route does. Only user turns
 /// speak: an assistant turn merely obeyed.
-pub(crate) fn established_response_language(history: &[ConversationTurn]) -> Option<&'static str> {
+pub fn established_response_language(history: &[ConversationTurn]) -> Option<&'static str> {
     history
         .iter()
         .rev()

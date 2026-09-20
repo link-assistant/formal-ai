@@ -98,9 +98,9 @@ fn requirements() -> Vec<Requirement> {
             });
         } else if let Some(record) = &mut current {
             if let Some(value) = trimmed.strip_prefix("family ") {
-                record.family = value.trim().to_owned();
+                value.trim().clone_into(&mut record.family);
             } else if let Some(value) = trimmed.strip_prefix("language ") {
-                record.language = value.trim().to_owned();
+                value.trim().clone_into(&mut record.language);
             } else if let Some(value) = trimmed.strip_prefix("prompt ") {
                 record.prompt = value.trim().trim_matches('"').replace("\"\"", "\"");
             }
@@ -126,14 +126,14 @@ struct FixtureLookup {
 }
 
 impl FixtureLookup {
-    fn empty() -> Self {
+    const fn empty() -> Self {
         Self {
             senses: Vec::new(),
             consulted: Vec::new(),
         }
     }
 
-    fn with(senses: Vec<ConceptSense>) -> Self {
+    const fn with(senses: Vec<ConceptSense>) -> Self {
         Self {
             senses,
             consulted: Vec::new(),

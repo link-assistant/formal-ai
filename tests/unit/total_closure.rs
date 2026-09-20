@@ -58,14 +58,14 @@ fn reviewed_closure_ceiling() -> u64 {
             measure = Some(rest.trim().trim_matches('"'));
             continue;
         }
-        if let Some(rest) = trimmed.strip_prefix("value ") {
-            if measure.take() == Some("unresolved_distinct_honest") {
-                return rest
-                    .trim()
-                    .trim_matches('"')
-                    .parse()
-                    .unwrap_or_else(|err| panic!("closure-audit.lino value: {err}"));
-            }
+        if let Some(rest) = trimmed.strip_prefix("value ")
+            && measure.take() == Some("unresolved_distinct_honest")
+        {
+            return rest
+                .trim()
+                .trim_matches('"')
+                .parse()
+                .unwrap_or_else(|err| panic!("closure-audit.lino value: {err}"));
         }
     }
     panic!("data/meta/closure-audit.lino names no `unresolved_distinct_honest` ceiling");
@@ -129,7 +129,7 @@ fn seed_closure_gap_only_shrinks() {
     );
 }
 
-/// The audit follows the LiNo schema instead of mistaking every bare scalar
+/// The audit follows the `LiNo` schema instead of mistaking every bare scalar
 /// for a meaning-graph edge. Record identities and matcher literals are local
 /// data; leaf values remain genuine references even when they share a head
 /// (for example a branch declares an `intent`, while a leaf selects one).
@@ -152,7 +152,7 @@ fn closure_audit_distinguishes_schema_data_from_semantic_references() {
     std::fs::write(seed_dir.join("roles.lino"), "roles\n")
         .expect("fixture roles should be writable");
     let schema_path = meta_dir.join("total-closure-schema.lino");
-    let base_schema = r#"total_closure_schema
+    let base_schema = r"total_closure_schema
   declaration_identity_head response
   declaration_identity_head family
   declaration_identity_head evidence_group
@@ -162,7 +162,7 @@ fn closure_audit_distinguishes_schema_data_from_semantic_references() {
   literal_operand_head word
   literal_operand_head prefix
   literal_operand_head substring
-"#;
+";
     std::fs::write(
         &schema_path,
         format!(
@@ -172,7 +172,7 @@ fn closure_audit_distinguishes_schema_data_from_semantic_references() {
     .expect("fixture closure schema should be writable");
     std::fs::write(
         seed_dir.join("schema-fixture.lino"),
-        r#"schema_fixture
+        r"schema_fixture
   # ignored_comment_token must never become a reference
   response response_identity
     intent genuine_intent_reference
@@ -191,7 +191,7 @@ fn closure_audit_distinguishes_schema_data_from_semantic_references() {
   custom_record custom_identity
     source genuine_custom_reference
   custom_literal literal_custom
-"#,
+",
     )
     .expect("fixture seed should be writable");
 

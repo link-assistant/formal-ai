@@ -2,15 +2,15 @@ self_ast_census
   target src/coding/composition_search/binders.rs
   language rust
   fidelity signature
-  byte_len 28985
-  line_count 704
-  content_id source_module_1debc62af5dc1c1e
+  byte_len 29540
+  line_count 710
+  content_id source_module_cdb41c06a45c91ff
   symbol_count 7
   symbols
-    function checked_recursive_programs 5 15
-    function lowered_candidate_is_closed 22 55
-    function collect_bindings_until 57 75
-    function fragment_binder_slots 85 185
-    function conditional_payload_slots 198 258
-    function loop_variable_applies 270 562
-    function pair_loop_variable_applies 572 704
+    function checked_recursive_programs 11 21
+    function lowered_candidate_is_closed 28 61
+    function collect_bindings_until 63 81
+    function fragment_binder_slots 91 191
+    function conditional_payload_slots 204 264
+    function loop_variable_applies 276 568
+    function pair_loop_variable_applies 578 710

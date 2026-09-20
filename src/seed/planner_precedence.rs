@@ -18,6 +18,7 @@ use super::parser::parse_lino;
 
 /// Ordered planner route-arm names, in cascade precedence order (first wins),
 /// as declared by the shipped `data/seed/planner-precedence.lino`.
+///
 /// Built once from the seed links network, like [`super::handler_precedence`].
 #[must_use]
 pub fn planner_precedence() -> &'static [String] {

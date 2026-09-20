@@ -57,7 +57,7 @@ fn benchmark_prompts() -> Vec<(String, String)> {
         let origin = entry
             .path()
             .strip_prefix(repo_root())
-            .unwrap_or(entry.path())
+            .unwrap_or_else(|_| entry.path())
             .display()
             .to_string();
         let text = fs::read_to_string(entry.path()).unwrap_or_default();

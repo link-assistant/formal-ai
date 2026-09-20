@@ -74,7 +74,7 @@ fn corpus() -> Vec<Case> {
             continue;
         }
         if !line.starts_with(char::is_whitespace) {
-            family = trimmed.to_owned();
+            trimmed.clone_into(&mut family);
             continue;
         }
         if let Some(value) = trimmed.strip_prefix("id ") {
@@ -113,12 +113,12 @@ fn seeded_response_languages() -> BTreeMap<String, BTreeSet<String>> {
         let trimmed = line.trim();
         if let Some(value) = trimmed.strip_prefix("intent ") {
             intent = unquote(value);
-        } else if let Some(value) = trimmed.strip_prefix("language ") {
-            if !intent.is_empty() {
-                out.entry(intent.clone())
-                    .or_default()
-                    .insert(unquote(value));
-            }
+        } else if let Some(value) = trimmed.strip_prefix("language ")
+            && !intent.is_empty()
+        {
+            out.entry(intent.clone())
+                .or_default()
+                .insert(unquote(value));
         }
     }
     out

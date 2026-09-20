@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner/continuation.rs
   language rust
   fidelity full_ast
-  byte_len 5981
-  line_count 137
-  content_id source_module_7ca75daaf0704243
+  byte_len 5997
+  line_count 139
+  content_id source_module_6a1e9c9661c3ab59
   symbol_count 6
   symbols
     function is_continuation_cue 14 16
@@ -12,15 +12,15 @@ self_ast_census
     function compacted_agent_task 47 73
     function repair_compacted_dot_paths 81 113
     function preserved_first_user_turn 121 127
-    function trace_route 133 137
+    function trace_route 135 139
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3498
-    named_node_count 742
-    distinct_node_kinds 55
+    total_link_count 3520
+    named_node_count 749
+    distinct_node_kinds 54
     node_kinds
       arguments 59
       array_expression 1
@@ -34,7 +34,7 @@ self_ast_census
       closure_expression 13
       closure_parameters 13
       crate 2
-      doc_comment 37
+      doc_comment 39
       else_clause 1
       escape_sequence 6
       expression_statement 12
@@ -42,17 +42,17 @@ self_ast_census
       field_identifier 56
       function_item 6
       generic_type 3
-      identifier 129
+      identifier 130
       if_expression 4
       index_expression 7
       inner_doc_comment_marker 5
       integer_literal 5
       let_condition 1
       let_declaration 17
-      line_comment 43
+      line_comment 45
       macro_invocation 3
       mutable_specifier 2
-      outer_doc_comment_marker 32
+      outer_doc_comment_marker 34
       parameter 10
       parameters 6
       parenthesized_expression 1
@@ -61,7 +61,7 @@ self_ast_census
       reference_expression 2
       reference_type 7
       return_expression 2
-      scoped_identifier 10
+      scoped_identifier 11
       source_file 1
       string_content 14
       string_literal 15
@@ -74,6 +74,5 @@ self_ast_census
       type_identifier 10
       unary_expression 7
       use_declaration 1
-      use_wildcard 1
       visibility_modifier 6
       while_expression 1

@@ -5,7 +5,14 @@
 //! one layer beside the derivation that consumes them. The router owns what a
 //! capability is; this module owns what counts as evidence.
 
-use super::*;
+use super::{
+    ROLE_ASSISTANT_MECHANISM_INQUIRY, ROLE_CAPABILITY_CONTAINER_SCOPE,
+    ROLE_CAPABILITY_CONTENT_ASSIGNMENT, ROLE_CAPABILITY_CONTENT_INTRODUCER,
+    ROLE_CAPABILITY_FRESHNESS_LIVE, ROLE_CAPABILITY_PRIOR_TURN_REFERENCE,
+    ROLE_CAPABILITY_SELF_SURFACE_NOUN, ROLE_CAPABILITY_WEB_HOST_SUFFIX, ROLE_CAPABILITY_WEB_SCOPE,
+    ROLE_CAPABILITY_WORKSPACE_SCOPE, ROLE_LOCAL_PATH_SCOPE_CURRENT, ROLE_LOCAL_PATH_SCOPE_DESKTOP,
+    ROLE_LOCAL_PATH_SCOPE_HOME, String, Vec, normalize_prompt, seed,
+};
 
 /// Whether any surface of `role` occurs in `prompt`.
 ///

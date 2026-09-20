@@ -1,6 +1,9 @@
 //! Recursive reduction candidates: self-referential folds over seeded transition fragments.
 
-use super::*;
+use super::{
+    CodingTaskSpec, Fragment, FragmentCatalog, IrNode, IrType, ProgramIr,
+    checked_recursive_programs, types_may_unify, words,
+};
 
 pub(super) fn recursive_reduce_programs(
     spec: &CodingTaskSpec,

@@ -1,7 +1,7 @@
 //! Conversation-container invocations: create, exec, and the name scheme
 //! that makes a conversation reattachable across restarts (#937).
 
-use super::*;
+use super::{BoxError, CONVERSATION_IDLE, Command, NetworkPolicy, ProcessInvocation};
 
 /// Stable Docker name for a conversation. The readable prefix aids operators;
 /// the digest prevents punctuation, length and collision problems.

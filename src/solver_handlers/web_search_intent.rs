@@ -204,7 +204,7 @@ fn is_personal_fact_filter_request(normalized: &str) -> bool {
         || normalized.contains("my facts")
 }
 
-pub(crate) fn clean_search_query(value: &str) -> String {
+pub fn clean_search_query(value: &str) -> String {
     value
         .trim()
         .trim_matches(is_url_wrapper_punctuation)

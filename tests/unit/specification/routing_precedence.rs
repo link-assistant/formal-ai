@@ -61,7 +61,6 @@ fn swap_handler_rows(seed: &str, a: &str, b: &str) -> String {
     let (ia, ib) = (rank_line_of(a), rank_line_of(b));
     let rank_value = |index: usize| {
         lines[index]
-            .trim()
             .split_whitespace()
             .nth(1)
             .unwrap_or_else(|| panic!("rank line carries a value"))
@@ -492,7 +491,8 @@ fn reordering_is_the_only_thing_a_seed_edit_can_change() {
         let mut out = String::from("handler_precedence\n");
         for (position, name) in names.iter().enumerate() {
             let rank = (names.len() - position) * 10;
-            out.push_str(&format!("  handler {name}\n    rank {rank}\n"));
+            let row = format!("  handler {name}\n    rank {rank}\n");
+            out.push_str(&row);
         }
         out
     };

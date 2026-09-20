@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q173453": {
+      "type": "item",
+      "id": "Q173453",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "духовой музыкальный инструмент"
+        },
+        "en": {
+          "language": "en",
+          "value": "wind instrument"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "管樂器"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हवा उपकरण"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "class of musical instruments"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "инструменты, у которых звучит некоторый воздушный резонатор"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संगीत यंत्र जिसमे एक गुजयमान यंत्र हौता है जिसमे वायु के एक स्तंभ को कंपन मे उडाने के द्वार कंपन मे सेट किया जाता है"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "吹管乐器"
+          },
+          {
+            "language": "zh",
+            "value": "管樂"
+          },
+          {
+            "language": "zh",
+            "value": "吹奏乐器"
+          },
+          {
+            "language": "zh",
+            "value": "吹管樂器"
+          },
+          {
+            "language": "zh",
+            "value": "氣鳴樂器"
+          },
+          {
+            "language": "zh",
+            "value": "吹奏樂器"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "духовые инструменты"
+          },
+          {
+            "language": "ru",
+            "value": "духовые"
+          },
+          {
+            "language": "ru",
+            "value": "духовой инструмент"
+          },
+          {
+            "language": "ru",
+            "value": "духовые музыкальные инструменты"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "wind musical instrument"
+          },
+          {
+            "language": "en",
+            "value": "wind instruments"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

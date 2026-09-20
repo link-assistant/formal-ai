@@ -109,15 +109,15 @@ fn family(id: &str) -> Vec<Case> {
             } else {
                 names_language = value;
             }
-        } else if let Some(value) = trimmed.strip_prefix("prompt ") {
-            if current == id {
-                out.push(Case {
-                    family: current.clone(),
-                    language: language.clone(),
-                    prompt: unquote(value),
-                    names_language: std::mem::take(&mut names_language),
-                });
-            }
+        } else if let Some(value) = trimmed.strip_prefix("prompt ")
+            && current == id
+        {
+            out.push(Case {
+                family: current.clone(),
+                language: language.clone(),
+                prompt: unquote(value),
+                names_language: std::mem::take(&mut names_language),
+            });
         }
     }
     assert!(
@@ -135,10 +135,10 @@ fn field(id: &str, name: &str) -> String {
         let trimmed = line.trim();
         if let Some(value) = trimmed.strip_prefix("id ") {
             current = unquote(value);
-        } else if let Some(value) = trimmed.strip_prefix(&format!("{name} ")) {
-            if current == id {
-                return unquote(value);
-            }
+        } else if let Some(value) = trimmed.strip_prefix(&format!("{name} "))
+            && current == id
+        {
+            return unquote(value);
         }
     }
     panic!("{CORPUS} should carry `{name}` for family `{id}`");
@@ -303,7 +303,7 @@ fn a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses() {
 /// misroute to `websearch`. The starkest is the URL case — `Lee
 /// https://example.com y dime qué dice.` carries the URL in the prompt, and the
 /// system searched the web for the Spanish sentence instead, opening two
-/// LinkedIn posts and a SpanishDict entry. The write case wrote no file.
+/// `LinkedIn` posts and a `SpanishDict` entry. The write case wrote no file.
 #[test]
 fn spanish_routing_variations_reach_their_capability() {
     let offenders = misrouted("spanish_routing_matrix");
@@ -373,7 +373,7 @@ fn a_real_translation_recipe_is_not_preempted_by_language_demonstration() {
 /// the directory they searched and stating that no wider location was searched.
 /// Hindi, Chinese and Spanish are sent to `websearch`, which opens a
 /// Windows-desktop tutorial, a GitHub repository called `hivemind-os` and a
-/// SpiderOak help page. Chat mode, which this test drives, misroutes Russian,
+/// `SpiderOak` help page. Chat mode, which this test drives, misroutes Russian,
 /// Chinese and Spanish to the web as well.
 #[test]
 fn a_local_location_never_becomes_a_web_search() {

@@ -1,6 +1,9 @@
 //! The expression pool: atom expressions and lifted literals the enumeration grows from.
 
-use super::*;
+use super::{
+    ArtifactShape, BTreeSet, CodingTaskSpec, Fragment, IrNode, IrType, fragment_coverage,
+    normalize_pool,
+};
 
 #[derive(Debug, Clone)]
 pub(super) struct Expression {

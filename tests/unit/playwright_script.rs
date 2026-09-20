@@ -1,6 +1,6 @@
 use formal_ai::{FormalAiEngine, SolverConfig, UniversalSolver};
 
-const PLAYWRIGHT_EN_ANSWER: &str = r#"I will use a starter TypeScript example based on the Playwright docs.
+const PLAYWRIGHT_EN_ANSWER: &str = r"I will use a starter TypeScript example based on the Playwright docs.
 
 Source: https://playwright.dev/docs/writing-tests
 
@@ -20,9 +20,9 @@ Check it with:
 1. `npm init playwright@latest`
 2. `npx playwright test`
 
-Provide the URL, actions, and expected result if you want a site-specific script."#;
+Provide the URL, actions, and expected result if you want a site-specific script.";
 
-const PLAYWRIGHT_RU_TYPO_ANSWER: &str = r#"Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.
+const PLAYWRIGHT_RU_TYPO_ANSWER: &str = r"Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.
 
 Source: https://playwright.dev/docs/writing-tests
 
@@ -42,7 +42,7 @@ test('opens the Playwright docs', async ({ page }) => {
 1. `npm init playwright@latest`
 2. `npx playwright test`
 
-Уточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт."#;
+Уточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт.";
 
 #[test]
 fn russian_playwright_script_prompt_returns_starter_example() {

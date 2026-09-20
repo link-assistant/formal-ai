@@ -159,8 +159,7 @@ impl ObjectType {
             Self::SelfSurface => 4,
             Self::LanguageName => 5,
             Self::QuantityQuestion => 6,
-            Self::TimeExpression => 7,
-            Self::RelativePeriod => 7,
+            Self::TimeExpression | Self::RelativePeriod => 7,
             Self::TaskList => 8,
             Self::Delegation => 9,
             Self::QuotedContent => 10,
@@ -550,7 +549,10 @@ pub fn locus_of(object: ObjectType, prompt: &str) -> Locus {
         ObjectType::Path | ObjectType::PathScope | ObjectType::Pattern | ObjectType::PathSet => {
             Locus::Workspace
         }
-        ObjectType::TaskList | ObjectType::Delegation => Locus::Dialogue,
+        ObjectType::TaskList
+        | ObjectType::Delegation
+        | ObjectType::LanguageName
+        | ObjectType::None => Locus::Dialogue,
         ObjectType::SelfSurface => {
             if is_prior_turn_reference(&normalized) {
                 Locus::Dialogue
@@ -558,7 +560,6 @@ pub fn locus_of(object: ObjectType, prompt: &str) -> Locus {
                 Locus::SelfSurface
             }
         }
-        ObjectType::LanguageName | ObjectType::None => Locus::Dialogue,
         ObjectType::TimeExpression | ObjectType::RelativePeriod => {
             if has_workspace_scope(&normalized) {
                 Locus::Workspace

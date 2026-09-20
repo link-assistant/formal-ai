@@ -82,7 +82,7 @@ fn family_prompts(family: &str) -> Vec<(String, String)> {
     prompts
 }
 
-fn outcome_slug(outcome: &RecoveryOutcome) -> &'static str {
+const fn outcome_slug(outcome: &RecoveryOutcome) -> &'static str {
     match outcome {
         RecoveryOutcome::Recovered { .. } => "recovered",
         RecoveryOutcome::NotPermitted { .. } => "not_permitted",

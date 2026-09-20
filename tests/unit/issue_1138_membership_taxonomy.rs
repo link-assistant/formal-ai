@@ -1,6 +1,6 @@
 //! Wikidata-grounded membership taxonomy for verifiable counting (#1138).
 //!
-//! Plan 08 deleted the memorized OBJECT_CATEGORIES table on purpose: category
+//! Plan 08 deleted the memorized `OBJECT_CATEGORIES` table on purpose: category
 //! membership must come from trusted sources, never from a runtime table
 //! shaped like the benchmark. These tests pin the seed-side replacement —
 //! meanings grounded in Wikidata items whose `defined-by` edges mirror the
@@ -9,10 +9,9 @@
 use formal_ai::seed::{Meaning, lexicon};
 
 fn seeded(slug: &str) -> &'static Meaning {
-    let meaning = lexicon().meaning(slug).unwrap_or_else(|| {
+    (lexicon().meaning(slug).unwrap_or_else(|| {
         panic!("seed lexicon should carry meaning `{slug}` for the membership taxonomy")
-    });
-    meaning
+    })) as _
 }
 
 /// Walk the public `defined_by` graph the way the solver's `seeded_is_a` does,
@@ -41,10 +40,17 @@ fn seed_reaches(entity: &str, category: &str) -> bool {
 fn violin_keeps_its_lexemes_and_gains_its_subclass_edge() {
     let meaning = seeded("violin");
     assert_eq!(meaning.wikidata, "Q8355");
-    assert!(meaning.defined_by.contains(&String::from("bowed-string-instrument")));
+    assert!(
+        meaning
+            .defined_by
+            .contains(&String::from("bowed-string-instrument"))
+    );
     for language in ["en", "ru", "hi", "zh"] {
         assert!(
-            meaning.lexemes.iter().any(|lexeme| lexeme.language == language),
+            meaning
+                .lexemes
+                .iter()
+                .any(|lexeme| lexeme.language == language),
             "violin must keep the four lexemes the import batch established ({language} lost)"
         );
     }
@@ -70,10 +76,12 @@ fn membership_chains_reach_musical_instrument_from_wikidata_groundings() {
     }
     let category = seeded("musical-instrument");
     assert_eq!(category.wikidata, "Q34379");
-    assert!(category.lexemes.iter().any(|lexeme| lexeme
-        .words
-        .iter()
-        .any(|word| word.text == "musical instrument")));
+    assert!(category.lexemes.iter().any(|lexeme| {
+        lexeme
+            .words
+            .iter()
+            .any(|word| word.text == "musical instrument")
+    }));
 }
 
 #[test]

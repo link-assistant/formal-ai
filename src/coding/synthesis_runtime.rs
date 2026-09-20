@@ -233,7 +233,7 @@ pub fn discover_and_compose(
             crate::coding::fragment_catalog::bootstrap_seed_directory(),
         );
         if !absent_seeds.is_empty() {
-            log.append("bootstrap_absent", &absent_seeds.join(", "));
+            log.append("bootstrap_absent", absent_seeds.join(", "));
         }
         let lookup_bounds = crate::source_walk::LookupBounds::default();
         let elaboration_bounds = crate::coding::program_ir::ElaborationBounds {

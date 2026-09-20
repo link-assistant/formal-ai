@@ -616,8 +616,6 @@ fn split_or_panic(task: &str) -> BinarySplit {
 
 #[test]
 fn every_non_leaf_unit_has_exactly_two_children() {
-    let root = work_unit_for(THREE_CLAUSE_TASK, 4);
-    let mut offenders: Vec<String> = Vec::new();
     fn walk(unit: &WorkUnit, offenders: &mut Vec<String>) {
         if !unit.children.is_empty() && unit.children.len() != 2 {
             offenders.push(format!(
@@ -630,6 +628,8 @@ fn every_non_leaf_unit_has_exactly_two_children() {
             walk(child, offenders);
         }
     }
+    let root = work_unit_for(THREE_CLAUSE_TASK, 4);
+    let mut offenders: Vec<String> = Vec::new();
     walk(&root, &mut offenders);
     assert!(
         offenders.is_empty(),

@@ -116,7 +116,7 @@ fn deep_grounding(source: &str, doc_id: &str, language: &str) -> Option<ConceptG
         &client,
         &preferences,
         &mut availability,
-        bounds.clone(),
+        bounds,
         language,
         now,
     );
@@ -138,7 +138,7 @@ fn formalize_with_grounding(source: &str) -> (FormalizedKnowledgeBase, Option<Co
         return (base, None);
     }
     let language = crate::language::detect(source).slug();
-    let grounding = deep_grounding(source, &base.summary.doc_id, &language);
+    let grounding = deep_grounding(source, &base.summary.doc_id, language);
     (base, grounding)
 }
 

@@ -13,7 +13,7 @@ use formal_ai::execution_box::{
     disposable_container_invocation,
 };
 
-fn host_policy(deadline: Duration) -> BoxPolicy {
+const fn host_policy(deadline: Duration) -> BoxPolicy {
     BoxPolicy {
         network: NetworkPolicy::Denied,
         deadline,

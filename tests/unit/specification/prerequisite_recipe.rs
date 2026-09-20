@@ -7,6 +7,7 @@
 //! an arm in the live source, and deleting the document and regenerating it
 //! reproduces the committed content id.
 
+use std::fmt::Write as _;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -164,15 +165,14 @@ fn recipe_is_rediscoverable() {
         "the live recovery sequence has as many steps as the document declares"
     );
 
-    let regenerated: String = live
-        .iter()
-        .map(|step| {
-            format!(
-                "prerequisite_step_{}\n  record_type \"meta_step\"\n  order \"{}\"\n  id \"{}\"\n",
-                step.id, step.order, step.id
-            )
-        })
-        .collect();
+    let mut regenerated = String::new();
+    for step in live {
+        let _ = write!(
+            regenerated,
+            "prerequisite_step_{}\n  record_type \"meta_step\"\n  order \"{}\"\n  id \"{}\"\n",
+            step.id, step.order, step.id
+        );
+    }
     assert_eq!(
         sha256_hex(regenerated.as_bytes()),
         sha256_hex(
@@ -184,8 +184,11 @@ fn recipe_is_rediscoverable() {
                         || line.trim_start().starts_with("order ")
                         || line.trim_start().starts_with("id ")
                 })
-                .map(|line| format!("{line}\n"))
-                .collect::<String>()
+                .fold(String::new(), |mut filtered, line| {
+                    filtered.push_str(line);
+                    filtered.push('\n');
+                    filtered
+                })
                 .as_bytes()
         ),
         "regenerating the recipe from the live source must reproduce the committed skeleton, \
