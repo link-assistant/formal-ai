@@ -476,6 +476,52 @@ fn failed_fetch_retires_the_search_record_instead_of_re_fetching() {
 }
 
 #[test]
+fn unflagged_adapter_403_still_reads_as_a_failed_fetch() {
+    // The OpenAI protocol's `tool` role has no error flag, so the CLI
+    // adapters report a refused fetch as prose: "StatusCode: non 2xx status
+    // code (403 GET …)". The matrix legs burned their whole round budget
+    // rotating merriam-webster -> cambridge -> oxford because that prose
+    // matched no failure surface and the fetch scored as a success — with a
+    // second result row still unfetched, so the recipe always had a next
+    // dictionary to open. The surface lives in the seed lexicon, and this
+    // transcript carries neither an `is_error` flag nor an exhausted result
+    // list: only recognizing the adapter's words ends the recipe here.
+    let mut messages = vec![ChatMessage::user("hi")];
+    add_result(
+        &mut messages,
+        PlannedToolCall {
+            tool: String::from("websearch"),
+            arguments: String::from("{\"query\":\"hi\"}"),
+        },
+        "search_hi",
+        "Title: HI Definition & Meaning\nURL: https://www.merriam-webster.com/dictionary/hi\nHighlights: used especially as a greeting\nTitle: HI | English meaning\nURL: https://dictionary.cambridge.org/dictionary/english/hi\nHighlights: used as a greeting",
+    );
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        String::from("fetch_hi"),
+        "webfetch",
+        String::from(
+            "{\"url\":\"https://www.merriam-webster.com/dictionary/hi\",\"format\":\"text\"}",
+        ),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "fetch_hi",
+        "webfetch",
+        "StatusCode: non 2xx status code (403 GET https://www.merriam-webster.com/dictionary/hi)",
+    ));
+    let plan = plan_chat_step(
+        &messages,
+        &["bash", "websearch", "webfetch", "request_user_input"],
+    )
+    .expect("the turn after an adapter-reported failure still has a plan");
+    let AgenticPlan::Final(answer) = plan else {
+        panic!(
+            "an adapter's 403 prose must end the recipe, not open the next dictionary: {plan:?}"
+        );
+    };
+    assert!(!answer.is_empty(), "{answer}");
+}
+
+#[test]
 fn later_definition_followup_reuses_the_prior_user_topic() {
     let call = one_call(&[
         ChatMessage::user("Что такое фуфломицин?"),
