@@ -135,3 +135,56 @@ fn the_web_search_family_stays_row_free() {
          meanings-web-search-query.lino decide these prompts (plan 10 leaf 20)"
     );
 }
+
+/// Plan 10 leaf 20, family three: the `url_navigate` rows are bare lead forms
+/// (`open`, `show`, `открой ссылку`) duplicating the `url_navigate` role's
+/// prefix surfaces. A navigation prompt carries a host, so whole-prompt
+/// equality never fired for one — the role prefix derivation decided, which
+/// the issue #125 suite pins across thirty host-bearing prompts. The
+/// paraphrases here keep the seeded surface in prefix position (the
+/// derivation is `starts_with`) and vary the tail, which no row named.
+#[test]
+fn held_out_url_navigate_paraphrases_reach_the_navigation_answer() {
+    const HOST: &str = "github.com";
+    for (canonical, paraphrase) in [
+        ("navigate to", "navigate to github.com right now please"),
+        ("open the page", "open the page github.com and wait"),
+        ("show me", "show me github.com one more time"),
+        ("открой ссылку", "открой ссылку github.com если не сложно"),
+        ("перейди на", "перейди на github.com как можно быстрее"),
+    ] {
+        let expected = answer(&format!("{canonical} {HOST}"));
+        assert_eq!(
+            expected.intent, "url_navigate",
+            "the canonical lead `{canonical} …` must itself reach the navigation answer"
+        );
+        let held_out = answer(paraphrase);
+        assert_eq!(
+            held_out.intent, "url_navigate",
+            "the held-out paraphrase `{paraphrase}` must reach url_navigate with no \
+             phrase row naming it"
+        );
+        assert_eq!(
+            held_out.answer, expected.answer,
+            "the held-out paraphrase `{paraphrase}` must reach the navigation answer"
+        );
+    }
+}
+
+/// The `url_navigate` family may not grow its exact-match rows back.
+#[test]
+fn the_url_navigate_family_stays_row_free() {
+    let family_rows = intent_routing()
+        .intents
+        .iter()
+        .find(|route| route.slug == "url_navigate")
+        .map(|route| route.keywords.len() + route.phrases.len() + route.tokens.len())
+        .unwrap_or(0);
+    assert!(
+        family_rows <= 37,
+        "the url_navigate family had thirty-seven bare-lead phrase rows at the draft \
+         and zero after the retirement; the url_navigate role prefix surfaces of \
+         meanings-web-navigation.lino decide host-bearing prompts, which the issue \
+         #125 suite pins (plan 10 leaf 20)"
+    );
+}

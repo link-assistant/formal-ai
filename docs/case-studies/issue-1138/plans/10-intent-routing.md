@@ -1017,9 +1017,25 @@ Ordered; each independently verifiable and commit-sized.
       nowhere in the intent derivation and answers as an unresolved
       concept lookup — the es surfaces are future leaf work, and the
       family never had es rows, so the retirement changes nothing for es.
-      `url_navigate` is deliberately next-but-not-yet: its family carries
-      bare verbs (`open`, `show`) whose whole-prompt forms need the object
-      derivation proven for them before their rows can leave.**
+      Family three, `url_navigate`, retired the same day after its bare
+      verbs were re-examined: the family's thirty-seven rows were all
+      bare lead forms duplicating `url_navigate` role prefix surfaces, a
+      navigation prompt carries a host so whole-prompt equality never
+      fired for one, the issue #125 suite's twenty-nine host-bearing
+      prompts still route to `url_navigate` with the rows gone, and the
+      measure reads 300. The held-out paraphrases vary the tail after a
+      seeded lead (`open the page github.com and wait`,
+      `открой ссылку github.com если не сложно`) and are pinned before
+      and after. The recon for the remaining families found their
+      boundary: `greeting`, `wellbeing`, `farewell`, `courtesy_response`,
+      `test_status`, `assistant_name`, `identity` and
+      `assistant_free_time` are load-bearing — their rows are bare
+      whole prompts (`hi`, `как дела`) with no object to derive from,
+      and the table is their only derivation, so retiring them requires
+      seeding the conversational act/role derivation first (future
+      family work, not a row deletion). `assistant_free_time` is
+      additionally coupled to `data/seed/handler-rules.lino`'s
+      `route_exact` condition and must migrate with its rule together.**
 
 **The ladder and the UI defect.**
 
