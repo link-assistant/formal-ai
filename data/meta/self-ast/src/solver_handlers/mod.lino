@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/mod.rs
   language rust
   fidelity signature
-  byte_len 24211
+  byte_len 24174
   line_count 582
-  content_id source_module_a7fa15944be4fbba
+  content_id source_module_ae17e43b5c0621f5
   symbol_count 9
   symbols
     function try_arithmetic 75 191

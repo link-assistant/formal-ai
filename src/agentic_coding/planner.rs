@@ -260,7 +260,6 @@ pub(crate) const PLANNER_ROUTE_ARMS: &[(&str, &str)] = &[
     ("plan_settled_routes", "formalization_recipe"),
     ("plan_settled_routes", "meaning_detail"),
     ("plan_settled_routes", "diagram"),
-    ("plan_settled_routes", "web_fetch"),
     ("plan_settled_routes", "workspace_inspection"),
     ("plan_settled_routes", "task_structure"),
     ("plan_settled_routes", "capability_table_named_or_local"),
@@ -731,12 +730,13 @@ pub(super) fn plan_settled_routes(
     if diagram::is_diagram_task(task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    // A typed URL object is more specific than broad research prose. Resolve it
-    // before the research recipe so requests such as "tell me about URL" fetch
-    // that page instead of turning the URL itself into a search query.
-    if let Some(plan) = intent_router::plan_web_fetch_step(task, messages, tool_names) {
-        return Some(plan);
-    }
+    // Plan 10 leaf 19 (issue #1138): the URL route that stood here is retired.
+    // The decision table's five `url` rows — one per act — decide that request
+    // class at the named-or-local stage below, with the same `fetch_arguments`
+    // lowering this arm produced, so the arm was a second URL decision ahead of
+    // its own table backstop. The table also guards what this arm never did: a
+    // URL named while a research recipe is already under way is the recipe's
+    // to continue, not a one-step fetch that ends it (issue #781).
     // A request to look at the repository the agent was handed is answered by
     // reading that repository. It has to be resolved before the research
     // routers, which would otherwise claim it on the strength of its question

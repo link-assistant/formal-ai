@@ -55,8 +55,7 @@ planner_precedence
   formalization_recipe # a formalization request renders its formalization before the remaining doc and research routes
   meaning_detail # a meaning-detail request answers from the lexicon before research
   diagram # a diagram request renders its diagram before research
-  web_fetch # a typed URL object is more specific than broad research prose; fetch it before the research recipe (issue 1066)
-  workspace_inspection # a request to look at the handed repository is answered by reading it, before research routers claim the question shape (issue 1066)
+  workspace_inspection # a request to look at the handed repository is answered by reading it, before research routers claim the question shape (issue 1066); the URL route that stood ahead of it is retired to the decision table url rows (plan 10 leaf 19)
   task_structure # a question about how a task decomposes is answered by decomposing it, before research claims the question shape (issue 1066)
   capability_table_named_or_local # the named-or-local stage of the decision table, declined for requests already under way in a recipe (issue 781)
   positional_edit_decline # an instruction that edits a named file is never a web question; decline rather than search the sentence (issues 1115, 1133)

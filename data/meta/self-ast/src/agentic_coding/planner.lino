@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 46188
+  byte_len 46342
   line_count 936
-  content_id source_module_9cd95bc889a0cf68
+  content_id source_module_a5e80e3b10636355
   symbol_count 19
   symbols
     module continuation 5 5
@@ -17,11 +17,11 @@ self_ast_census
     function plan_chat_step 167 176
     function stop_repeated_failure 186 207
     const REPEATED_FAILURES_THAT_STOP 187 187
-    const PLANNER_ROUTE_ARMS 217 277
-    function checked_route_precedence 285 313
-    static CELL 286 286
-    function plan_chat_step_routes 315 412
-    function plan_settled_routes 428 876
+    const PLANNER_ROUTE_ARMS 217 276
+    function checked_route_precedence 284 312
+    static CELL 285 285
+    function plan_chat_step_routes 314 411
+    function plan_settled_routes 427 876
     function plan_shell_step 879 898
     function plan_one 900 905
     function write_arguments 913 921
@@ -31,19 +31,19 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19875
-    named_node_count 3859
+    total_link_count 19776
+    named_node_count 3837
     distinct_node_kinds 83
     node_kinds
-      arguments 258
+      arguments 256
       array_expression 1
       array_type 11
       assignment_expression 1
       attribute 6
       attribute_item 6
       binary_expression 5
-      block 90
-      call_expression 258
+      block 89
+      call_expression 256
       closure_expression 10
       closure_parameters 10
       const_item 2
@@ -55,7 +55,7 @@ self_ast_census
       enum_variant 16
       enum_variant_list 2
       escape_sequence 3
-      expression_statement 151
+      expression_statement 149
       field_declaration 2
       field_declaration_list 1
       field_expression 51
@@ -65,17 +65,17 @@ self_ast_census
       function_item 12
       function_modifiers 2
       generic_type 7
-      identifier 1064
-      if_expression 69
+      identifier 1055
+      if_expression 68
       impl_item 1
       index_expression 2
       inner_doc_comment_marker 2
       integer_literal 1
       let_chain 11
-      let_condition 54
+      let_condition 53
       let_declaration 15
       lifetime 5
-      line_comment 314
+      line_comment 318
       macro_invocation 10
       match_arm 32
       match_block 3
@@ -92,8 +92,8 @@ self_ast_census
       primitive_type 18
       reference_expression 45
       reference_type 28
-      return_expression 71
-      scoped_identifier 222
+      return_expression 70
+      scoped_identifier 221
       scoped_type_identifier 2
       scoped_use_list 7
       self 4
@@ -101,16 +101,16 @@ self_ast_census
       shorthand_field_identifier 4
       source_file 1
       static_item 1
-      string_content 169
-      string_literal 167
+      string_content 167
+      string_literal 165
       struct_item 1
       struct_pattern 1
       super 59
       token_tree 25
       try_expression 2
-      tuple_expression 59
+      tuple_expression 58
       tuple_pattern 2
-      tuple_struct_pattern 61
+      tuple_struct_pattern 60
       tuple_type 1
       type_arguments 7
       type_identifier 33

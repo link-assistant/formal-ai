@@ -21,7 +21,6 @@ use super::web_search_intent::{WebSearchQueryKind, extract_web_search_request};
 
 pub use live_search::{try_web_search_with_client, try_web_search_with_offline};
 pub(super) use url_parse::normalize_url_candidate;
-pub use url_parse::agentic_fetch_url_for;
 use url_parse::{
     extract_http_fetch_url, extract_url_navigate_url, first_url_candidate,
     is_url_trailing_punctuation, is_url_wrapper_punctuation, looks_like_hostname,

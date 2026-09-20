@@ -55,10 +55,10 @@ capability_routing_ratchet
     note "measured 354 on 2026-09-16; 477 was the file's former line count, not this measure"
   ceiling
     measure planner_route_arms
-    value 59
+    value 58
     direction down
     how "top-level conditional route arms in plan_chat_step_routes and plan_settled_routes in src/agentic_coding/planner.rs"
-    note "re-measured 59 on 2026-09-18 by the checker's own counting rule: the 58 recorded earlier the same day was a miscount, and the honest count was 59 both before and after leaf 11, which swapped the shared cue-phrase arm for the named-capability table arm at the same position (one arm out, one in). The count belongs to leaf 19 to lower; 45 was an unimplemented plan estimate. Correction recorded here rather than silently, per the honest-numbers doctrine."
+    note "re-measured 59 on 2026-09-18 by the checker's own counting rule: the 58 recorded earlier the same day was a miscount, and the honest count was 59 both before and after leaf 11, which swapped the shared cue-phrase arm for the named-capability table arm at the same position (one arm out, one in). The count belongs to leaf 19 to lower; 45 was an unimplemented plan estimate. Lowered 59 to 58 on 2026-09-20 by plan 10 leaf 19 retiring the web_fetch arm: the decision table's five url rows decide that request class at the named-or-local stage with the same fetch_arguments lowering, so the arm was a second URL decision ahead of its own table backstop, and the 420-case suite measures 420 passing, 0 misroutes, 0 silent unknowns with it gone. Leaf 19 also proved four arms NOT covered before leaving them: workspace_inspection disabled fails the issue 1066 inspection pin because a scope-noun-less question derives locus web, file_read is a recipe whose read row has no table lowering for a client without the typed read tool, code_search_fallback serves grep-only clients the table honest-gaps, and intent_web_search carries the tool_search discovery call the table cannot express."
   ceiling
     measure frontier_prompts_open
     value 0

@@ -2,8 +2,8 @@
 //!
 //! Tool-call emission in `formal-ai serve` is a function of **intent** — the
 //! advertised tool set plus the request's semantics — not of a literal phrasing
-//! or a pinned recipe. This module holds the three general capability probes
-//! ([`plan_web_fetch_step`], [`plan_web_search_step`], [`plan_edit_step`]) that
+//! or a pinned recipe. This module holds the general capability probes
+//! ([`plan_web_search_step`], [`plan_edit_step`]) that
 //! [`super::planner::plan_chat_step`] runs for an arbitrary request: each fires
 //! only when the request carries that capability's intent (recovered entirely
 //! from the seed lexicon, never from hardcoded natural language — CONTRIBUTING
@@ -12,48 +12,15 @@
 //! prose answer rather than fabricating a call the client cannot honour.
 //!
 //! The probes share the planner's own step primitives ([`super::planner`]'s
-//! `Progress`, `tool_for`, `plan_one`, `fetch_arguments`) so routing here never
+//! `Progress`, `tool_for`, `plan_one`) so routing here never
 //! drifts from the recipe routing there.
 
 use serde_json::json;
 
 use super::general_planner::compose_edit_request;
-use super::planner::{AgenticPlan, Capability, Progress, fetch_arguments, plan_one, tool_for};
+use super::planner::{AgenticPlan, Capability, Progress, plan_one, tool_for};
 use super::tool_result;
 use crate::protocol::ChatMessage;
-
-/// General web-fetch routing (issue #680): when the request carries HTTP-fetch
-/// intent (any phrasing, any supported language) *and* the CLI advertised a fetch
-/// tool, emit a real fetch `tool_call` for the named URL. Returns [`None`] when
-/// there is no fetch intent or no fetch tool was advertised, so the planner keeps
-/// looking (and ultimately falls through to the prose answer) rather than
-/// fabricating a call the client cannot honour.
-pub(super) fn plan_web_fetch_step(
-    task: &str,
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-) -> Option<AgenticPlan> {
-    let url = crate::solver_handlers::agentic_fetch_url_for(task)?;
-    let tool = tool_for(tool_names, Capability::Fetch)?;
-    let progress = Progress::scan(messages);
-    if let Some(failure) = progress.latest_failure()
-        && failure.capability == Capability::Fetch
-    {
-        return Some(AgenticPlan::Final(tool_result::render_failure(
-            "web_fetch",
-            &failure.detail,
-            task,
-        )));
-    }
-    if progress.done(Capability::Fetch) {
-        return Some(AgenticPlan::Final(tool_result::render(
-            "web_fetch",
-            progress.fetch_result().unwrap_or_default(),
-            task,
-        )));
-    }
-    Some(plan_one(tool, fetch_arguments(&url)))
-}
 
 /// General web-search routing (issue #680): when the request carries web-search
 /// intent (any phrasing, any supported language) *and* the CLI advertised a

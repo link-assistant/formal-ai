@@ -970,6 +970,20 @@ Ordered; each independently verifiable and commit-sized.
       same day was a miscount, corrected in the ledger rather than silently).**
 - [ ] 19. Retire each arm the capability table now covers, lowering
       `planner_route_arms` in the same commit.
+      **Partial (2026-09-20). The `web_fetch` arm is retired: the decision
+      table's five `url` rows decide that class at the named-or-local stage
+      with the same `fetch_arguments` lowering, `PLANNER_ROUTE_ARMS` and
+      `data/seed/planner-precedence.lino` are edited together, and the ratchet
+      records 58 with the 420-case suite still at 420/0/0. Four further arms
+      were drafted-and-restored with the failing evidence named in the ledger:
+      `workspace_inspection` (a scope-noun-less question derives locus web, so
+      the table routes it to `web_search` — the #1066 defect), `file_read` (a
+      recipe arm; the `read_file` row's shell fallback has no lowering for a
+      client without the typed read tool), `code_search_fallback` (grep-only
+      clients the table honest-gaps), and `intent_web_search` (the
+      `tool_search` discovery call no row can express). Retiring those four
+      needs table rows or lowerings that do not exist yet, which is future
+      leaf work rather than this leaf's `now covers`.**
 
 **Retire the phrase book.**
 

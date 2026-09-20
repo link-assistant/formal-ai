@@ -8,19 +8,6 @@ pub(super) fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<S
     is_http_fetch_prompt(prompt, normalized, &raw_candidate).then_some(url)
 }
 
-/// The absolute URL named by an HTTP-fetch intent.
-#[must_use]
-pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
-    extract_http_fetch_url(prompt, &prompt.to_lowercase())
-}
-
-/// URL that an advertised agent fetch tool can satisfy.
-#[must_use]
-pub fn agentic_fetch_url_for(prompt: &str) -> Option<String> {
-    let normalized = prompt.to_lowercase();
-    http_fetch_url_for(prompt).or_else(|| extract_url_navigate_url(prompt, &normalized))
-}
-
 pub(super) fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option<String> {
     let (raw_candidate, url) = first_url_candidate(prompt)?;
     is_url_navigate_prompt(prompt, normalized, &raw_candidate).then_some(url)

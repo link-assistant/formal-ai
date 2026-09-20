@@ -60,7 +60,6 @@ pub struct Progress {
     /// General plans use this to keep an auxiliary `gh` read from being
     /// mistaken for their verification command.
     run_observations: Vec<(String, String)>,
-    pub(super) fetch_result: Option<String>,
     pub(super) search_result: Option<String>,
 }
 
@@ -75,7 +74,6 @@ impl Progress {
         let mut search_output = None;
         let mut run_outputs = Vec::new();
         let mut run_observations = Vec::new();
-        let mut fetch_result = None;
         let mut search_result = None;
         // Ignore results from earlier user turns.
         let current_turn = messages
@@ -110,7 +108,6 @@ impl Progress {
             });
             if capability == Capability::Fetch {
                 let payload = super::tool_result::normalized_payload(&raw);
-                fetch_result = Some(payload.clone().unwrap_or_default());
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
                 if let Some(url) = fetch_url.as_ref()
                     && !attempted_fetches.contains(url) {
@@ -167,7 +164,6 @@ impl Progress {
             search_output,
             run_outputs,
             run_observations,
-            fetch_result,
             search_result,
         }
     }
@@ -394,10 +390,6 @@ impl Progress {
                         .is_some_and(|arguments| argument_targets(arguments, path))
             })
             .count()
-    }
-
-    pub(super) fn fetch_result(&self) -> Option<&str> {
-        self.fetch_result.as_deref()
     }
 
     pub(super) fn search_result(&self) -> Option<&str> {
