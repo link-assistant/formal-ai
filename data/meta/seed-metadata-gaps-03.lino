@@ -19,22 +19,18 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_event"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_f3a53df0c1b369e3
-    source "data/seed/meanings-coding-structure.lino"
-    record "bounded_top"
+  gap seed_metadata_gap_5a4e5d8da9dde063
+    source "data/seed/meanings-calendar.lino"
+    record "calendar_hour"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_b3d0b45cb2135dc3
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "duplicate_exists"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_328e1f8a17620ad3
     source "data/seed/meanings-coding-structure.lino"
     record "counting"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_db9b9911e07db703
-    source "data/seed/meanings-coding-structure.lino"
-    record "explicit_ordering"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_f74e242174725043
-    source "data/seed/meanings-coding-structure.lino"
-    record "keyed_sum_order"
-    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_8ab377d6cbb9c163
     source "data/seed/meanings-coding-structure.lino"
     record "normalization"

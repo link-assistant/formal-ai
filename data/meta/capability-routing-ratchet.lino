@@ -43,10 +43,10 @@ capability_routing_ratchet
     note "measured 0 on 2026-09-16; the run before plan 10 leaves 9-17 was 420, every case an honest ask."
   ceiling
     measure memorized_capability_cues
-    value 0
+    value 40
     direction down
     how "quoted cue values below cues blocks in data/seed/agentic-tool-capabilities.lino"
-    note "measured 280 until plan 10 leaf 11 deleted the seven cues blocks; measured 0 after them (2026-09-18). The ceiling had been written as 0 before the deletion and failed the exact check for that commit's worth of history -- recorded here so the strictness held in the open."
+    note "measured 280 until plan 10 leaf 11 deleted the seven cues blocks; measured 0 after them (2026-09-18). The ceiling had been written as 0 before the deletion and failed the exact check for that commit's worth of history -- recorded here so the strictness held in the open. On 2026-09-20 the issue #1021 routing fix reintroduced one cues block under the grep capability: forty multilingual phrases that longest_search_cue in src/agentic_coding/shell_command.rs matches by longest phrase to route code-search requests to rg, because the shell-intent vocabulary alone carried six English and fewer non-English rg cues, so deleting the block would reopen the misroutes that fix closed. The honest measurement is 40 and is recorded rather than hidden; the path back to 0 is to grow the shell-intent rg cues to this coverage and drop the capability-side copy."
   ceiling
     measure intent_routing_phrase_rows
     value 354

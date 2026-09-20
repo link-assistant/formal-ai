@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 9
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_0413515a1781c6b9
+    source "data/seed/coding-composition-fragments.lino"
+    record "nested_sequence_value"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_a4edfeb74e132619
     source "data/seed/meanings-behavior-rules.lino"
     record "behavior_rule"
@@ -27,29 +31,13 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-request.lino"
     record "execute"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_1dfa904d49606ec9
-    source "data/seed/meanings-coding-structure.lino"
-    record "balanced_delimiter_groups"
+  gap seed_metadata_gap_760c29c9af457ad9
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "regex_lowercase_chunks"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_4115852f14b26209
-    source "data/seed/meanings-coding-structure.lino"
-    record "exclude_membership"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_1373c791a369f5c9
-    source "data/seed/meanings-coding-structure.lino"
-    record "power_square_each"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_1a0a6602d81bfbe9
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_multiply"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_84e4d05c659c61a9
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_operator"
-    missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_a2cb24fd2e53a379
-    source "data/seed/meanings-coding-structure.lino"
-    record "stringify_each"
+  gap seed_metadata_gap_5d981451208bf119
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "rotation_period"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_6b0fdee89ca69c49
     source "data/seed/meanings-computer-use.lino"

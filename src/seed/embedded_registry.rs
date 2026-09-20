@@ -70,6 +70,8 @@ pub const MEANINGS_CALCULATOR_LINO: &str = include_str!("../../data/seed/meaning
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
     include_str!("../../data/seed/meanings-coding-catalog.lino");
+pub const MEANINGS_CODING_CONFIG_LINO: &str =
+    include_str!("../../data/seed/meanings-coding-config.lino");
 pub const MEANINGS_CODING_REQUEST_LINO: &str =
     include_str!("../../data/seed/meanings-coding-request.lino");
 pub const MEANINGS_CODING_STRUCTURE_LINO: &str =
@@ -305,6 +307,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-calculator.lino", MEANINGS_CALCULATOR_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
         ("data/seed/meanings-coding-catalog.lino", MEANINGS_CODING_CATALOG_LINO),
+        ("data/seed/meanings-coding-config.lino", MEANINGS_CODING_CONFIG_LINO),
         ("data/seed/meanings-coding-request.lino", MEANINGS_CODING_REQUEST_LINO),
         ("data/seed/meanings-coding-structure.lino", MEANINGS_CODING_STRUCTURE_LINO),
         ("data/seed/meanings-coding-structure-2.lino", MEANINGS_CODING_STRUCTURE_2_LINO),
@@ -501,6 +504,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_CALCULATOR_LINO,
     MEANINGS_CALENDAR_LINO,
     MEANINGS_CODING_CATALOG_LINO,
+    MEANINGS_CODING_CONFIG_LINO,
     MEANINGS_CODING_REQUEST_LINO,
     MEANINGS_CODING_STRUCTURE_LINO,
     MEANINGS_CODING_STRUCTURE_2_LINO,

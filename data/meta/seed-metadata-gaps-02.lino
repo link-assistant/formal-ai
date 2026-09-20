@@ -15,6 +15,14 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_today"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_52d31e65cd8a2872
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "explicit_value_mapping"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_aa082b255fbf3192
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "keyed_sum_order"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_f5f8e03880609102
     source "data/seed/meanings-coding-structure.lino"
     record "character_class"
@@ -22,10 +30,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_0a9051feeb6272b2
     source "data/seed/meanings-coding-structure.lino"
     record "membership"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_1609e2ae8db04342
-    source "data/seed/meanings-coding-structure.lino"
-    record "prefix_enumeration"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_95b91c850984afb2
     source "data/seed/meanings-coding-structure.lino"

@@ -2,19 +2,19 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 51
-  source_lines_max 20367
+  source_lines_max 20439
   outside_core_file_count_max 49
-  outside_core_lines_max 19384
-  note "Issue #1138 B9, plan 09 leaf 1 corrected the four handlers outside src/solver_handlers. Plan 08 promoted the generic verifiable-task interpreter; the URL parsing split adds one recursively counted source but its structural parser reads language evidence from seed roles, so it is promoted core machinery rather than migration debt. Plan 09 leaf 17 registered the M2 retrieval interpreter as a component beside the census. Plan 09 leaf 18 retired the concept-lookup orchestration into src/concepts.rs and the network, refresh, learn and conflict procedures into src/retrieval_procedures.rs, lowering the dispatcher module and the two line ceilings by the same 350 lines. The leaf 18 landing then rebased the census on the committed tree: the verifiable-task interpreter that plan 08 promoted landed at 834 lines, not the 750 first recorded, because its derive family (flow signs, role offsets, unit conversion) that lowers seed-declared expectations into ProgramIr candidates grew past the early estimate; the dispatcher module settled at 582 lines after the 350-line retirement, and seven lines left the reviewed core outside the census, so both ceilings track the honest counts."
+  outside_core_lines_max 19456
+  note "Issue #1138 B9, plan 09 leaf 1 corrected the four handlers outside src/solver_handlers. Plan 08 promoted the generic verifiable-task interpreter; the URL parsing split adds one recursively counted source but its structural parser reads language evidence from seed roles, so it is promoted core machinery rather than migration debt. Plan 09 leaf 17 registered the M2 retrieval interpreter as a component beside the census. Plan 09 leaf 18 retired the concept-lookup orchestration into src/concepts.rs and the network, refresh, learn and conflict procedures into src/retrieval_procedures.rs, lowering the dispatcher module and the two line ceilings by the same 350 lines. The leaf 18 landing then rebased the census on the committed tree: the verifiable-task interpreter that plan 08 promoted landed at 834 lines, not the 750 first recorded, because its derive family (flow signs, role offsets, unit conversion) that lowers seed-declared expectations into ProgramIr candidates grew past the early estimate; the dispatcher module settled at 582 lines after the 350-line retirement, and seven lines left the reviewed core outside the census, so both ceilings track the honest counts. Re-measured 2026-09-20 after the issue #1021 routing fix (e4f0b3ac4) and plan 09 leaf 41 (12aa51b29) landed with the ledger unrefreshed: solver_handler_how.rs gained the honest-gap and mutating-request precedence arms, solver_handler_units.rs and solver_handlers/pattern_inference.rs grew their seed-driven rules, for 72 net lines; both ceilings now record the measured 20439 and 19456 rather than the stale 20367 and 19384."
   component retrieval_method_interpreter
     file src/retrieval_method.rs
     kind "Generic interpreter"
     reason "One retrieval procedure over data/seed/sources-registry.lino: resolve the prompt's unknown subject from the lexicon, consult the sources the registry declares for the need, read the capture cache or fetch, and render with provenance from the seed template. It embeds no domain vocabulary, no canned answer and no routing rule, so it passes the promotion test as a generic interpreter, not a handler; the M2 migration leaves retire the retrieval handlers into it."
   source src/solver_handler_how.rs
     disposition migrate
-    baseline_lines 884
+    baseline_lines 930
     data_target "how-to request recognition and guide rendering rules"
-    reason "How-to cue vocabulary, source ordering and rendered prose are domain knowledge over the sources registry."
+    reason "How-to cue vocabulary, source ordering and rendered prose are domain knowledge over the sources registry. Re-measured 2026-09-20: the issue #1021 routing fix (e4f0b3ac4) added the honest-gap and mutating-request precedence arms, growing the landed file from 884 to 930 lines with the ledger unrefreshed."
   source src/solver_handler_how_synthesis.rs
     disposition migrate
     baseline_lines 135
@@ -27,9 +27,9 @@ core_boundary_ledger
     reason "Which oracle snapshot answers which request is a seed table over the embedded snapshots."
   source src/solver_handler_units.rs
     disposition migrate
-    baseline_lines 150
+    baseline_lines 162
     data_target "unit conversion request rules"
-    reason "Unit vocabulary and conversion phrasing are seed data over one arithmetic primitive."
+    reason "Unit vocabulary and conversion phrasing are seed data over one arithmetic primitive. Re-measured 2026-09-20: the issue #1021 routing fix (e4f0b3ac4) extended the seed-driven rules by twelve lines with the ledger unrefreshed."
   source src/solver_handlers/agent_workspace.rs
     disposition migrate
     baseline_lines 128
@@ -157,9 +157,9 @@ core_boundary_ledger
     reason "List operation vocabulary, routing, and explanation are domain knowledge."
   source src/solver_handlers/pattern_inference.rs
     disposition migrate
-    baseline_lines 323
+    baseline_lines 337
     data_target "pattern inference rules and examples"
-    reason "Pattern families and explanatory examples belong in problem-solving data."
+    reason "Pattern families and explanatory examples belong in problem-solving data. Re-measured 2026-09-20: plan 09 leaf 41 (12aa51b29) grew the seed-driven rule matching by fourteen lines with the ledger unrefreshed."
   source src/solver_handlers/playwright_script.rs
     disposition migrate
     baseline_lines 140

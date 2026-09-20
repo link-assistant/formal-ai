@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 6
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_ce134c67799467c6
+    source "data/seed/coding-composition-fragments.lino"
+    record "divide_values"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_da1561a92324dbc6
     source "data/seed/meanings-agent-actions.lino"
     record "report_issue_action"
@@ -27,6 +31,14 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "wednesday"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_2cf3f6a110857876
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "bounded_top"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_9b8a99e18b1c3b56
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "stringify_each"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_f0f6b246fc3ca0c6
     source "data/seed/meanings-coding-structure.lino"
     record "distinct_elements"
@@ -38,10 +50,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_7a73ef9639fdb1f6
     source "data/seed/meanings-coding-structure.lino"
     record "range_inclusive"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_8d8677c27fd05676
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_subtract_one"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_ea036c6441e76c36
     source "data/seed/meanings-coding-structure.lino"

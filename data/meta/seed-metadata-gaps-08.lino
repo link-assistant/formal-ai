@@ -3,14 +3,54 @@ seed_metadata_gaps
   shard 8
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_f36d5fb33409c5d8
+    source "data/seed/coding-composition-fragments.lino"
+    record "boolean_and"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_4c46fae7736b8748
+    source "data/seed/coding-composition-fragments.lino"
+    record "diagonal_predecessors"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_bfa9b47dc2541838
+    source "data/seed/coding-composition-fragments.lino"
+    record "suffix_offsets"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_a3a5a56659c0c9c8
     source "data/seed/meanings-calculator.lino"
     record "exchange_rate"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_9fdb365daa82b4b8
-    source "data/seed/meanings-coding-structure.lino"
-    record "aligned_binary_xor"
+  gap seed_metadata_gap_1436d08299634eb8
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "absolute_deviation"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_3543b28d0beba7c8
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "balanced_delimiter_groups"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_4aaa4c9171810ba8
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "bounded_bottom"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_f1208156a49a52f8
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "group_max_nesting"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_23435bbeb555f418
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "palindrome_extension"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_fffc10b8f53d7938
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_conditional"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_2eccb3925f1ce448
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_multiply"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_528a9aebece5f3d8
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_operator"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_1d86b3f1deeb5968
     source "data/seed/meanings-coding-structure.lino"
     record "filter"
@@ -19,10 +59,6 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "map_each"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_29b2d7db878c34f8
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_add"
-    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_54b1bedf646dc1d8
     source "data/seed/meanings-coding-structure.lino"
     record "reduce_count"
@@ -30,18 +66,6 @@ seed_metadata_gaps
   gap seed_metadata_gap_174bf99e9df2e1e8
     source "data/seed/meanings-coding-structure.lino"
     record "reduce_len"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_24a80a7f51475908
-    source "data/seed/meanings-coding-structure.lino"
-    record "reduce_mean"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_3aae1d19e0fbf588
-    source "data/seed/meanings-coding-structure.lino"
-    record "regex_lowercase_underscore"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_939b89a0510c58a8
-    source "data/seed/meanings-coding-structure.lino"
-    record "rotation_period"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_962f821fefa99248
     source "data/seed/meanings-coding-structure.lino"

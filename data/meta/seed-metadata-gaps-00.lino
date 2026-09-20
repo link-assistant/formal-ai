@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 0
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_3c89fe1bcc074230
+    source "data/seed/coding-composition-fragments.lino"
+    record "integer_add"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_095908459ba7e800
     source "data/seed/meanings-behavior-rules.lino"
     record "rule_count_request"
@@ -11,29 +15,29 @@ seed_metadata_gaps
     source "data/seed/meanings-calculator.lino"
     record "money"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1006022de444a7e0
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "grid_minimum_cost_path"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_0f75d4aa9fd1c780
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "interpose_each"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_6ab25ee3ef846800
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_equal"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_edd3c7f86a06e380
     source "data/seed/meanings-coding-structure.lino"
     record "arithmetic_fractional_part"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_975378a45c4925c0
-    source "data/seed/meanings-coding-structure.lino"
-    record "duplicate_exists"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_96ee9b19a2227a20
     source "data/seed/meanings-coding-structure.lino"
     record "mapping"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_2a4ff4db9dda4fa0
-    source "data/seed/meanings-coding-structure.lino"
-    record "prefix_negative"
-    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_5b0ca4ac2c778170
     source "data/seed/meanings-coding-structure.lino"
     record "reduce_product"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_ca31b629992034d0
-    source "data/seed/meanings-coding-structure.lino"
-    record "remove_boundary_occurrences"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_1a5a085b515b6710
     source "data/seed/meanings-conversation.lino"

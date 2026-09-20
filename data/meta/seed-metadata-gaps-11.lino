@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 11
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_a283aa9b3622cebb
+    source "data/seed/coding-composition-fragments.lino"
+    record "group_nesting_depths"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_a7edfb895260f8eb
     source "data/seed/meanings-behavior-rules.lino"
     record "behavior_domain"
@@ -15,17 +19,17 @@ seed_metadata_gaps
     source "data/seed/meanings-calculator.lino"
     record "cosine"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_1dcac079187eb28b
-    source "data/seed/meanings-coding-structure.lino"
-    record "absolute_deviation"
+  gap seed_metadata_gap_02befa1bbcab7f9b
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_add"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_caa7187af9ff325b
-    source "data/seed/meanings-coding-structure.lino"
-    record "bounded_bottom"
+  gap seed_metadata_gap_b3b58f3bd6146d6b
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_subtract_one"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_d0ec8c2140cb405b
-    source "data/seed/meanings-coding-structure.lino"
-    record "composite_number"
+  gap seed_metadata_gap_e9ab1cf5414a6a8b
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "regex_lowercase_underscore"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_5c09f49ce9d4293b
     source "data/seed/meanings-coding-structure.lino"
@@ -35,14 +39,6 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "range"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_95ae26b6a129435b
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_equal"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_c727c6587d6f75bb
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_less_equal"
-    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_0faad29e99ead37b
     source "data/seed/meanings-coding-structure.lino"
     record "reduce_min"

@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 14
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_72368ff2ffcc943e
+    source "data/seed/coding-composition-fragments.lino"
+    record "append_reversed_prefix"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_7ee4576429b1e4ae
     source "data/seed/learned-request-openers.lino"
     record "concept_lookup_request_opener"
@@ -23,6 +27,22 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_day_after_tomorrow"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_61853f384a2d790e
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "conditional_expression"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_e03d589534616fae
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "exclude_membership"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_60af88a54af7ebee
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "explicit_ordering"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_758c0d67d27108ee
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_less_equal"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_328f3b83c49a1dee
     source "data/seed/meanings-coding-structure.lino"
     record "join_with_space"
@@ -31,10 +51,6 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure.lino"
     record "pairwise"
     missing "role,precondition,effect,unit,example"
-  gap seed_metadata_gap_5b4fe7cc15bd3e6e
-    source "data/seed/meanings-coding-structure.lino"
-    record "regex_lowercase_chunks"
-    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_824ca73c2d7fc30e
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_resource_form"

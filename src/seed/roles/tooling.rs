@@ -115,7 +115,7 @@ pub const ROLE_AGENT_ACTION_REPORT_SUBJECT: &str = "agent_action_report_subject"
 /// Semantic role: an explicit incompleteness marker collected during a bounded
 /// file analysis.
 ///
-/// The multilingual surfaces live in `data/seed/meanings-coding-tasks.lino`.
+/// The multilingual surfaces live in `data/seed/meanings-coding-config.lino`.
 /// The file-analysis planner turns those data-owned surfaces into the search
 /// expression it sends to an advertised grep tool; source code therefore owns
 /// the bounded search mechanism, not a fixed natural-language marker list.

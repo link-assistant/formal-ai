@@ -455,3 +455,67 @@ meanings
     unit "not applicable"
     example "return verified source code in the requested language after its checks pass"
     grounding "src/solver_handlers/verifiable_task.rs"
+  numeric_list
+    defined-by method
+    role action
+    precondition "a request supplies a list of values and asks for a transformation or reduction of it"
+    effect "classifies the requested operation through the list vocabulary and derives the result from its type ontology"
+    unit "not applicable"
+    example "sort, reverse or sum a supplied list through its declared operation family"
+    grounding "data/seed/numeric-list-operations.lino"
+  compose_boundary_note
+    defined-by method
+    role action
+    precondition "a composed answer carries only statements its cited sources support"
+    effect "renders the localized boundary note that nothing beyond the cited sources was added"
+    unit "not applicable"
+    example "prefix a composed statement list with its sourcing boundary"
+    grounding "src/solver_handlers/world_state.rs"
+  compose_sources_heading
+    defined-by method
+    role action
+    precondition "a composed answer cites more than one consulted source"
+    effect "renders the localized heading that introduces the source list"
+    unit "not applicable"
+    example "head the cited sources section of a composed answer"
+    grounding "src/solver_handlers/world_state.rs"
+  compose_no_verified_capture
+    defined-by method
+    role action
+    precondition "composition is requested but no verified source statement was captured"
+    effect "reports that nothing could be composed rather than fabricating statements"
+    unit "not applicable"
+    example "answer that no verified capture exists for the request"
+    grounding "src/solver_handlers/world_state.rs"
+  append_memory
+    defined-by method
+    role action
+    precondition "an environment declares the memory tool and a link is to be recorded"
+    effect "appends the link to the environment's persistent link store"
+    unit "not applicable"
+    example "record a new link in the running link store"
+    grounding "data/seed/environments.lino"
+  export_memory
+    defined-by method
+    role action
+    precondition "an environment declares the memory tool and its store is to be shared"
+    effect "serializes the link store to portable Links Notation"
+    unit "not applicable"
+    example "export the current link store as a shareable bundle"
+    grounding "data/seed/environments.lino"
+  import_memory
+    defined-by method
+    role action
+    precondition "an environment declares the memory tool and a Links Notation bundle is supplied"
+    effect "merges the bundle's links into the environment's store"
+    unit "not applicable"
+    example "import a shared memory bundle into the running store"
+    grounding "data/seed/environments.lino"
+  summarize_conversation
+    defined-by method
+    role action
+    precondition "an environment declares the summarization tool and a conversation is available"
+    effect "produces a bounded summary of the conversation that retains its provenance"
+    unit "not applicable"
+    example "summarize the current dialog while keeping source attribution"
+    grounding "data/seed/environments.lino"

@@ -1,0 +1,213 @@
+meanings
+  web_search_provider
+    defined-by concept
+    role coding_search_subject_kind
+    precondition "a workspace-inspection fact or coding request contains this concept surface"
+    effect "the fact or request is read as naming the search provider setting"
+    unit "not applicable"
+    example "search provider"
+    lexeme en
+      surface
+        text "search provider"
+      surface
+        text "search providers"
+      surface
+        text "trusted search providers"
+    lexeme ru
+      surface
+        text "поисковый провайдер"
+      surface
+        text "поисковых провайдеров"
+    lexeme hi
+      surface
+        text "खोज प्रदाता"
+      surface
+        text "खोज प्रदाताओं"
+    lexeme zh
+      surface
+        text 搜索来源
+      surface
+        text 搜索提供者
+    lexeme es
+      surface
+        text "proveedor de búsqueda"
+      surface
+        text "proveedores de búsqueda"
+  repository_provider
+    defined-by concept
+    role coding_search_subject_kind
+    precondition "a workspace-inspection fact or coding request contains this concept surface"
+    effect "the fact or request is read as naming the repository provider"
+    unit "not applicable"
+    example provider
+    lexeme en
+      surface
+        text provider
+      surface
+        text providers
+    lexeme ru
+      surface
+        text провайдер
+    lexeme hi
+      surface
+        text प्रदाता
+    lexeme zh
+      surface
+        text 来源
+      surface
+        text 提供者
+    lexeme es
+      surface
+        text proveedor
+      surface
+        text proveedores
+  repository_default_value
+    defined-by concept
+    role coding_search_subject_kind
+    precondition "a workspace-inspection fact or coding request contains this concept surface"
+    effect "the fact or request is read as naming a repository default value"
+    unit "not applicable"
+    example default
+    lexeme en
+      surface
+        text default
+    lexeme ru
+      surface
+        text "по умолчанию"
+    lexeme hi
+      surface
+        text डिफ़ॉल्ट
+    lexeme zh
+      surface
+        text 默认
+    lexeme es
+      surface
+        text "por defecto"
+  repository_timeout
+    defined-by concept
+    role coding_search_subject_kind
+    precondition "a workspace-inspection fact or coding request contains this concept surface"
+    effect "the fact or request is read as naming the repository timeout"
+    unit second
+    example timeout
+    lexeme en
+      surface
+        text timeout
+    lexeme ru
+      surface
+        text таймаут
+    lexeme hi
+      surface
+        text टाइमआउट
+    lexeme zh
+      surface
+        text 超时
+    lexeme es
+      surface
+        text "tiempo de espera"
+  file_analysis_gap_marker
+    defined-by predicate
+    role file_analysis_gap_marker
+    precondition "a source line under file analysis contains this marker surface"
+    effect "the line is reported as unfinished work"
+    unit "not applicable"
+    example "pending"
+    lexeme en
+      surface
+        text TODO
+      surface
+        text FIXME
+      surface
+        text TBD
+      surface
+        text remaining
+      surface
+        text pending
+      surface
+        text partial
+      surface
+        text blocked
+      surface
+        text deferred
+      surface
+        text "not implemented"
+      surface
+        text "not yet"
+      surface
+        text missing
+      surface
+        text incomplete
+    lexeme ru
+      surface
+        text осталось
+      surface
+        text ожидает
+      surface
+        text частично
+      surface
+        text заблокировано
+      surface
+        text отложено
+      surface
+        text "не реализовано"
+      surface
+        text "ещё не"
+      surface
+        text отсутствует
+      surface
+        text неполный
+    lexeme hi
+      surface
+        text शेष
+      surface
+        text लंबित
+      surface
+        text आंशिक
+      surface
+        text अवरुद्ध
+      surface
+        text स्थगित
+      surface
+        text "लागू नहीं"
+      surface
+        text अनुपस्थित
+      surface
+        text अधूरा
+    lexeme zh
+      surface
+        text 剩余
+      surface
+        text 待处理
+      surface
+        text 部分
+      surface
+        text 阻塞
+      surface
+        text 延期
+      surface
+        text 未实现
+      surface
+        text 尚未
+      surface
+        text 缺失
+      surface
+        text 不完整
+    lexeme es
+      surface
+        text restante
+      surface
+        text pendiente
+      surface
+        text parcial
+      surface
+        text bloqueado
+      surface
+        text diferido
+      surface
+        text "no implementado"
+      surface
+        text "todavía no"
+      surface
+        text falta
+      surface
+        text incompleto

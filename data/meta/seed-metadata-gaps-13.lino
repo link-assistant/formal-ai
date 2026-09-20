@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 13
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_02efc5b2f8864edd
+    source "data/seed/coding-composition-fragments.lino"
+    record "multiply_values"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_28dd1f4e2bf1b8dd
     source "data/seed/learned-request-openers.lino"
     record "tell_me_about_request_opener"
@@ -14,6 +18,22 @@ seed_metadata_gaps
   gap seed_metadata_gap_c7da0c2061d0a08d
     source "data/seed/meanings-calculator.lino"
     record "euro"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_d4bdd5cc88f5f31d
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "prefix_negative"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_d471d1aec8f593dd
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "regex_minimum_word_length"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1143c45d8d08edcd
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "remove_boundary_occurrences"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_8fbf1ee045b6733d
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "zero_based_range"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_dbb68cdb1b6c9d8d
     source "data/seed/meanings-coding-structure.lino"

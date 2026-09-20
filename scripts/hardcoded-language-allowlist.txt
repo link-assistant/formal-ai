@@ -46,14 +46,14 @@ src/agentic_coding/evidence_record.rs	The findings could not be recorded in `{}`
 src/agentic_coding/execution_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.
 src/agentic_coding/explain.rs	Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.
 src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
-src/agentic_coding/file_read.rs	- `{path}`: {summary}
 src/agentic_coding/file_read.rs	I can read `{path}` when the client advertises a file read tool or a shell tool.
 src/agentic_coding/file_read.rs	I can read the selected file after listing when the client advertises a read or shell tool.
 src/agentic_coding/file_read.rs	I can resolve that file selection when the client advertises a shell tool for listing files.
 src/agentic_coding/file_read.rs	No files were listed in `{directory}`.
-src/agentic_coding/file_read.rs	Read {} file(s):
-src/agentic_coding/file_read.rs	Value of `{key}` in `{path}`: {value}
 src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##' | sort
+src/agentic_coding/file_read/audit.rs	- `{path}`: {summary}
+src/agentic_coding/file_read/audit.rs	Read {} file(s):
+src/agentic_coding/file_read/audit.rs	Value of `{key}` in `{path}`: {value}
 src/agentic_coding/formalization_recipe.rs	cat {KB_PATH}
 src/agentic_coding/formalization_recipe.rs	the source text ({})
 src/agentic_coding/general_planner.rs	append the composed plan to {PLAN_PATH}
@@ -113,6 +113,18 @@ src/associative_package.rs	Package trigger: {}
 src/associative_package.rs	no installed associative package grants {capability}
 src/associative_persistence.rs	unresolved evidence link: {reference}
 src/attachment_context.rs	{message}\n\n{context}
+src/authoring_loop.rs	--pull-request must be a canonical GitHub pull-request URL: {pull_request}
+src/authoring_loop.rs	--seed is not a directory: {}
+src/authoring_loop.rs	Formal-AI-Session: {session_id}\nFormal-AI-Model: {model}\nFormal-AI-Evidence: {evidence_relative}\nFormal-AI-Pull-Request: {pull_request}\n
+src/authoring_loop.rs	formal-ai serve exited during startup (attempt {attempt})
+src/authoring_loop.rs	formal-ai serve never came up on port {}
+src/authoring_loop.rs	formal-ai session {session_id}\nformal-ai model {model}\n
+src/authoring_loop.rs	no artifact contains: {expected}
+src/authoring_loop.rs	the Agent CLI did not write {produced}
+src/authoring_loop.rs	the Agent CLI exited {agent_status}
+src/authoring_loop.rs	the stderr classifier is missing: {}
+src/authoring_loop.rs	{message}\n\n{trailers}
+src/authoring_loop.rs	{{\"provider\":{{\"formalai\":{{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{{\"baseURL\":\"http://127.0.0.1:{port}/api/openai/v1\",\"apiKey\":\"local\"}},\"models\":{{\"formal-ai\":{{\"name\":\"Formal AI\"}}}}}},\"model\":\"formalai/formal-ai\"}}}}
 src/calculation.rs	Interpreted \"{}\" as \"{}\".
 src/calculation_word_problem.rs	Box {id} = {factor} * {source_value} = {value} {result_label}.
 src/calculation_word_problem.rs	Box {id} = {source_value} + {addend} = {value} {result_label}.
@@ -188,7 +200,7 @@ src/coding/blueprint.rs	निष्पादन स्थिति: नही�
 src/coding/blueprint.rs	यहाँ {language_name} में एक प्रोग्राम है जो इस संयुक्त कार्य को हल करता है ({recipe_label})। मैंने आपके अनुरोध को इन उप-कार्यों में विभाजित किया है:
 src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。代码仅供审阅。自行运行：`{run_command}`。
 src/coding/blueprint.rs	执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：`{run_command}`。
-src/coding/blueprint.rs	这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。我已将您的请求分解为以下子任务：
+src/coding/blueprint.rs	这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。 我已将您的请求分解为以下子任务：
 src/coding/catalog/languages.rs	1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
 src/coding/catalog/languages.rs	Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.
 src/coding/catalog/languages.rs	The C# seed is returned with this warning until a dotnet-backed execution profile is available.
@@ -201,6 +213,7 @@ src/coding/catalog/languages.rs	The TypeScript seed is returned with this warnin
 src/coding/catalog/tasks.rs	Hello, world!
 src/coding/catalog/types.rs	printf '{}' | {run_command}
 src/coding/catalog/types.rs	write_program(language={}, task={})
+src/coding/composition_search.rs	{first}, {second}
 src/coding/guidance.rs	Check that it compiles: `{check_command}`.
 src/coding/guidance.rs	Compare the output with the expected output shown above.
 src/coding/guidance.rs	Install {setup_hint}.
@@ -245,6 +258,10 @@ src/coding/guidance.rs	टूलचेन इंस्टॉल करें: {s
 src/coding/guidance.rs	प्रोग्राम चलाएँ: `{run_command}`।
 src/coding/guidance.rs	像之前一样测试更新后的程序：将代码保存到文件 `{save_as}`，然后再次运行 `{run_command}`。
 src/coding/guidance.rs	将上面的代码保存到文件 `{save_as}`。
+src/coding/ir_lowering/python.rs	dict[{key}, {value}]
+src/coding/ir_lowering/python.rs	tuple[{left}, {right}]
+src/coding/ir_lowering/python.rs	{imports}\n\n{function}
+src/coding/ir_lowering/python.rs	{imports}\n{program}
 src/coding/recurrence.rs	def {function_name}({}):\n
 src/coding/recurrence.rs	invalid {operation:?} boundary operands
 src/coding/recurrence.rs	missing descriptor for source function {function_zid}
@@ -254,7 +271,9 @@ src/coding/recurrence.rs	unknown source reference {key}
 src/coding/recurrence.rs	unsupported non-integer literal {value}
 src/coding/recurrence.rs	{} if {} else {}
 src/coding/task_spec.rs	def {function_name}(
+src/concepts.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
 src/concepts.rs	{normalized} {context}
+src/concepts.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
 src/dreaming.rs	  action {:?} event={} bytes={} usage={} reason={}
 src/dreaming.rs	  candidate_task topic={} source={} passed={}
 src/dreaming.rs	  free_bytes: {free}
@@ -333,6 +352,8 @@ src/external_benchmarks/grade.rs	failed to write {}: {error}
 src/external_benchmarks/grade.rs	python exited with {}: {}
 src/external_benchmarks/grade.rs	{code}\n\n{setup}\n\n{}\n
 src/external_benchmarks/grade.rs	{code}\n\n{test_code}\n\ncheck({entry_point})\n
+src/external_benchmarks/learning.rs	  frontier_prompt\n
+src/external_benchmarks/learning.rs	the frontier needs {} continuation parts but only {provisioned_parts} are provisioned; widen the embedding before writing
 src/external_benchmarks/ledger.rs	line {}: expected `key \"value\"`, got `{line}`
 src/external_benchmarks/ledger.rs	line {}: field before any record id
 src/external_benchmarks/ledger.rs	line {}: unexpected indentation
@@ -703,6 +724,12 @@ src/repair_strategy.rs	Why did the reverse-sort answer change between releases?
 src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
 src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
 src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
+src/retrieval_procedures.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
+src/retrieval_procedures.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
+src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
+src/retrieval_procedures.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
+src/retrieval_procedures.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
+src/retrieval_procedures.rs	{intro}\n\n{summary}
 src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
 src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
@@ -768,7 +795,7 @@ src/solver_diagnostics.rs	{answer}\n\n[diagnostic]\n{}
 src/solver_formalization.rs	formalization:{index} score={} probability={probability:.6} {}
 src/solver_formalization.rs	selected=formalization:{index} probability={probability:.6} margin={margin:.6} epsilon={epsilon:.6} reason={}
 src/solver_formalization.rs	top=formalization:{top_index} runner_up=formalization:{runner_up_index} margin={margin:.6} epsilon={epsilon:.6}
-src/solver_handler_how.rs	For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\x20
+src/solver_handler_how.rs	For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\n\n
 src/solver_handler_how.rs	I answered that way because the prompt matched a deterministic Links Notation rule. To ask about a specific topic, try \"how does X work?\" where X is a concept I know (e.g. \"how does Wikipedia work?\"). The evidence and trace events are appended to the log; see the trace link for the full chain.
 src/solver_handler_how.rs	Mechanism discovery plan for `{subject}`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {provider_summary}. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details.
 src/solver_handler_how.rs	Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n{}I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{}` via `{}`. If those sources do not expose usable steps, the fallback path runs web search for `{}` across {} and merges the top results with reciprocal rank fusion (k = {}). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{}`.
@@ -1001,22 +1028,14 @@ src/solver_handlers/meta_explanation.rs	Я ответил так, потому �
 src/solver_handlers/meta_explanation.rs	मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: {} (`{}`). Runtime: {}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory ({}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: {}. पूरा internet local rules में preload नहीं है.
 src/solver_handlers/meta_explanation.rs	मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt deterministic Links Notation rule से मेल खाता था. evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें.
 src/solver_handlers/meta_explanation.rs	我不是 LLM runtime, 也不执行神经网络推理。当前环境: {} (`{}`)。Runtime: {}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 ({}); 然后只在当前环境允许时使用 web search: {}。整个互联网不会预加载到本地规则中。
-src/retrieval_procedures.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
 src/solver_handlers/mod.rs	Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link.
-src/retrieval_procedures.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
 src/solver_handlers/mod.rs	I could not identify a source phrase to translate from {source_slug} to {target_slug}.
 src/solver_handlers/mod.rs	I could not translate \"{surface}\" from {source_slug} to {target_slug} with the available formalization data. I recorded this as a translation gap for follow-up.
 src/solver_handlers/mod.rs	I do not embed a JavaScript runtime in this build, so I cannot execute the program for you. The deterministic solver only runs code that has been verified offline; running arbitrary JavaScript would violate that contract. Here is the program you asked me to run, copy-paste reviewable:\n\n```js\n{program}\n```\n\nTo execute it yourself, save the snippet as `program.js` and run `node program.js` (or `deno run program.js`).
 src/solver_handlers/mod.rs	I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}.
-src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
-src/concepts.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
-src/retrieval_procedures.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
-src/retrieval_procedures.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
 src/solver_handlers/mod.rs	Step {}: {step}
 src/solver_handlers/mod.rs	Therefore, there are {formatted} {label} in total.
 src/solver_handlers/mod.rs	{expression} = {formatted}
-src/retrieval_procedures.rs	{intro}\n\n{summary}
-src/concepts.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
 src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
 src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
 src/solver_handlers/natural_language_tools.rs	Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
@@ -1214,6 +1233,8 @@ src/solver_unknown_reasoning.rs	Missing localized response seed: {intent}/{langu
 src/solver_unknown_reasoning.rs	gave up after {} reasoning steps; legacy_unknown_fallback
 src/solver_unknown_reasoning.rs	language={} local_search=complete prompt_state={} questioning_rigor={:.2}
 src/solver_unknown_reasoning.rs	{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).
+src/source_capability.rs	Every statement below is carried by a cited source; nothing was added beyond them.
+src/source_capability.rs	No verified source statement was captured for this request, so nothing was composed.
 src/source_research.rs	provider={} rank={} url={}
 src/source_research.rs	rrf:k={WEB_SEARCH_RRF_K} results={}
 src/source_research.rs	url={} error={}
@@ -1256,6 +1277,7 @@ src/telegram.rs	<pre><code class=\"{class}\">
 src/telegram.rs	I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.
 src/telegram.rs	\n\n/trace {trace}
 src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
+src/telegram.rs	{first}\n\n[part 1/{total}]
 src/telegram_runtime.rs	curl exited with {status}: {stderr}
 src/thinking.rs	{label}: {trimmed}
 src/translation/cache.rs	failed to create cache directory {}: {error}

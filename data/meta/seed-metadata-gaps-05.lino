@@ -3,6 +3,18 @@ seed_metadata_gaps
   shard 5
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_46b36fec2c643c25
+    source "data/seed/coding-composition-fragments.lino"
+    record "drop_whitespace"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_4b50a927fb4231a5
+    source "data/seed/coding-composition-fragments.lino"
+    record "maximum_binary_operator"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_37c82f54bc19dae5
+    source "data/seed/coding-composition-fragments.lino"
+    record "slice_at_end_offsets"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_9ddaa4b0a93e5995
     source "data/seed/meanings-calculator.lino"
     record "tangent"
@@ -15,17 +27,17 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_timezone_alias"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_4a0b58194ebe32a5
-    source "data/seed/meanings-coding-structure.lino"
-    record "explicit_value_mapping"
+  gap seed_metadata_gap_6cc33e695eda9fc5
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "integer_at_least"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_591106a11df2fa75
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "prefix_enumeration"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_bab7630ebf99d845
     source "data/seed/meanings-coding-structure.lino"
     record "print_stdout"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_a0cd6460303c6815
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_subtract"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_0f8fc89e99d3fac5
     source "data/seed/meanings-coding-structure.lino"

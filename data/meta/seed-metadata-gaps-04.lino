@@ -3,6 +3,22 @@ seed_metadata_gaps
   shard 4
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_1fa9b66a582321d4
+    source "data/seed/coding-composition-fragments.lino"
+    record "add_binary_operator"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_cfb828c616cd2df4
+    source "data/seed/coding-composition-fragments.lino"
+    record "delimiter_depth_delta"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_cb5859e4fae892a4
+    source "data/seed/coding-composition-fragments.lino"
+    record "first_matching_offset"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_977ebe3d76879fa4
+    source "data/seed/coding-composition-fragments.lino"
+    record "orthogonal_predecessors"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_82f1c0f4b9dc9c34
     source "data/seed/meanings-calculator.lino"
     record "square_root"
@@ -15,21 +31,25 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "thursday"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_7b4a6d05c60a9c64
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "composite_number"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_2a1733751f768d14
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "frequency_rank"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_37498127a0658924
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "power_square_each"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_d585d9063e4c86e4
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "recurrence_subtract"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_37968cdb8cd7b704
     source "data/seed/meanings-coding-structure.lino"
     record "case_insensitive"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_8c19dad96c2dbff4
-    source "data/seed/meanings-coding-structure.lino"
-    record "one_bit_difference"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_7bf7affdeb76eb14
-    source "data/seed/meanings-coding-structure.lino"
-    record "regex_minimum_word_length"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_055c36e2dece3d24
-    source "data/seed/meanings-coding-structure.lino"
-    record "stable_longest"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_074beb3f9a2611b4
     source "data/seed/meanings-computer-use.lino"

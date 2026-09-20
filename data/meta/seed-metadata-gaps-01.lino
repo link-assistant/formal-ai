@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 1
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_d78123d6abd539a1
+    source "data/seed/coding-composition-fragments.lino"
+    record "integer_multiply"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_354da17c7be107a1
     source "data/seed/meanings-calculator.lino"
     record "natural_logarithm"
@@ -19,9 +23,13 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "saturday"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_b8dc2558fafc0b31
-    source "data/seed/meanings-coding-structure.lino"
-    record "group_max_nesting"
+  gap seed_metadata_gap_a49e049890052061
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "range_between"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_39cb957501a39421
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "reduce_mean"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_2ce960a4e4bffe31
     source "data/seed/meanings-definition-merge.lino"

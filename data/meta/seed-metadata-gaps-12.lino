@@ -3,6 +3,10 @@ seed_metadata_gaps
   shard 12
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_b4d4fea6a08430fc
+    source "data/seed/coding-composition-fragments.lino"
+    record "integer_divisible"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_4aed7b3fc08a3f6c
     source "data/seed/meanings-agent-actions.lino"
     record "report_issue_subject"

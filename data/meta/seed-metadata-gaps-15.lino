@@ -3,6 +3,18 @@ seed_metadata_gaps
   shard 15
   shard_count 16
   audit_scope "problem-solving concept records under data/seed meanings roots"
+  gap seed_metadata_gap_425632b21822d4df
+    source "data/seed/coding-composition-fragments.lino"
+    record "integer_floor_divide"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_9f1c3d1aff38553f
+    source "data/seed/coding-composition-fragments.lino"
+    record "integer_nonnegative"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_b52692f23e6c076f
+    source "data/seed/coding-composition-fragments.lino"
+    record "pair_destructuring_pattern"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_d29b5370fc463c3f
     source "data/seed/meanings-calculator.lino"
     record "division"
@@ -15,21 +27,13 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_schedule_action"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_cd8163faf41839cf
-    source "data/seed/meanings-coding-structure.lino"
-    record "frequency_rank"
+  gap seed_metadata_gap_738ef58b488c180f
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "one_bit_difference"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_1673f5197909a90f
-    source "data/seed/meanings-coding-structure.lino"
-    record "grid_minimum_cost_path"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_41778712c163baff
-    source "data/seed/meanings-coding-structure.lino"
-    record "palindrome_extension"
-    missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_bf038e06929646ff
-    source "data/seed/meanings-coding-structure.lino"
-    record "recurrence_conditional"
+  gap seed_metadata_gap_caa44e8d1d4fa93f
+    source "data/seed/meanings-coding-structure-2.lino"
+    record "stable_longest"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_d70a931c205956ff
     source "data/seed/meanings-coding-structure.lino"
