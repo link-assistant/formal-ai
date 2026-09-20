@@ -1005,6 +1005,18 @@ Ordered; each independently verifiable and commit-sized.
       pinned both sides of the commit. A row-count guard keeps the family
       from growing back. The exact-match rows only ever fired on whole-prompt
       equality, so their deletion changes no URL-bearing prompt's route.
+      Family two, `web_search`, is retired the same day: its six phrase rows
+      were each a duplicate of a `web_search_explicit_prefix` surface in
+      `meanings-web-search-query.lino`, a surface-plus-query prompt never
+      matched a row for the same whole-prompt-equality reason, the measure
+      reads 337, and the same test file pins Hindi and Chinese search
+      prompts that no row ever covered as derived before and after.
+      Drafting family two exposed one honest debt, recorded in the ratchet
+      note rather than papered over: the solver's web-search seed carries
+      no Spanish lexeme, so an es search prompt reaches `web_search`
+      nowhere in the intent derivation and answers as an unresolved
+      concept lookup — the es surfaces are future leaf work, and the
+      family never had es rows, so the retirement changes nothing for es.
       `url_navigate` is deliberately next-but-not-yet: its family carries
       bare verbs (`open`, `show`) whose whole-prompt forms need the object
       derivation proven for them before their rows can leave.**
