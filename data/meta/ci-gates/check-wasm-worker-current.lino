@@ -8,11 +8,11 @@
 # the wasm-stage gates run, so comparing the checked-in binary against the
 # working tree costs nothing extra and fails exactly when a commit changed the
 # worker sources or their seeds without shipping the rebuilt artifact. That is
-# how the branch went "js fallback" once already: plan 09 leaf 41 rewrote
-# `engine_handler_precedence` and the precedence seed, the stale binary parsed
-# the new seed into name-only rows, the browser worker's permutation assert
-# threw at init, and every E2E spec gated on the "wasm worker" status fell back
-# (issue #1138).
+# how the branch once fell back to the JS engine with no log line saying so.
+# Plan 09 leaf 41 rewrote `engine_handler_precedence` and the precedence seed,
+# the stale binary parsed the new seed into name-only rows, the browser worker
+# permutation assert threw at init, and every E2E spec gated on the wasm worker
+# status silently fell back (issue #1138).
 ci_gate check_wasm_worker_current
   stage wasm
   description "The checked-in WASM worker binary matches a rebuild of its sources."

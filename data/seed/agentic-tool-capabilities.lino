@@ -18,12 +18,6 @@ agentic_tool_capabilities
     command_aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash")
   capability "grep"
     aliases ("grep" "grep_search" "search" "codesearch" "Grep" "file_search")
-    # Not routing decisions (the (object, act, locus) table owns those, plan 10
-    # leaf 11) but the act-spelled-out admission of the code-search subject
-    # extraction in src/agentic_coding/shell_command.rs: a request that names
-    # one of these surfaces is a search, and its identifier-shaped subject
-    # becomes the grep pattern. Removing them sent "search the repository for
-    # CAPABILITY_SENTINEL" back out as its own pattern (issue #758).
     cues
       en ("search the code" "search code" "search the repository" "search the local" "find in the code" "find in the repository" "grep for" "look through source" "locate in source" "scan the code")
       ru ("найди в коде" "поиск в коде" "найди в репозитории" "поищи в файлах" "найди в исходниках" "выполни grep" "просмотри код" "отыщи в коде" "сканируй код" "поиск по репозиторию")
