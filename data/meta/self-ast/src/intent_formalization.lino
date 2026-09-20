@@ -2,10 +2,10 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 25213
-  line_count 716
-  content_id source_module_df4c9607b1c65ae3
-  symbol_count 43
+  byte_len 26840
+  line_count 750
+  content_id source_module_82abf8fc5606d0b5
+  symbol_count 44
   symbols
     module prompt_relevants 26 26
     module requirements 27 27
@@ -29,24 +29,25 @@ self_ast_census
     function record_intent_formalization 276 304
     function select_rule_for_intent 307 320
     struct MatchedRoute 323 326
-    function route_for_prompt 328 349
-    function matches_route 351 361
-    function contains_token 363 371
-    function write_program_rule_for_intent 373 382
-    struct WriteProgramRecovery 386 398
-    struct ProgramCoreferenceRewrite 402 405
-    function rewrite_bare_program_coreference_rule 415 444
-    struct ActiveProgramContext 446 449
-    function active_program_context 451 473
-    function recover_write_program_rule 489 560
-    function operation_vocabulary 562 565
-    static VOCABULARY 563 563
-    function detected_program_modifiers 574 581
-    function append_candidate_knowns 583 601
-    function slot_known_link 603 628
-    function has_any_token 630 632
-    function route_from_relevants 634 643
-    function infer_kind 645 689
-    function starts_with_question_word 691 706
-    function contains_question_mark 708 710
-    function push_unique 712 716
+    function route_for_prompt 328 355
+    function declared_role_surface_route 366 383
+    function matches_route 385 395
+    function contains_token 397 405
+    function write_program_rule_for_intent 407 416
+    struct WriteProgramRecovery 420 432
+    struct ProgramCoreferenceRewrite 436 439
+    function rewrite_bare_program_coreference_rule 449 478
+    struct ActiveProgramContext 480 483
+    function active_program_context 485 507
+    function recover_write_program_rule 523 594
+    function operation_vocabulary 596 599
+    static VOCABULARY 597 597
+    function detected_program_modifiers 608 615
+    function append_candidate_knowns 617 635
+    function slot_known_link 637 662
+    function has_any_token 664 666
+    function route_from_relevants 668 677
+    function infer_kind 679 723
+    function starts_with_question_word 725 740
+    function contains_question_mark 742 744
+    function push_unique 746 750

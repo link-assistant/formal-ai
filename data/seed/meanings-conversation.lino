@@ -778,3 +778,569 @@ meanings
       surface
         text saludos
 
+  social_wellbeing
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_wellbeing
+    lexeme en
+      surface
+        text "how are you"
+      surface
+        text "how are you doing"
+      surface
+        text "how do you do"
+      surface
+        text "how is it going"
+      surface
+        text "how s it going"
+      surface
+        text "how are things"
+    lexeme ru
+      surface
+        text "как дела"
+      surface
+        text "как твои дела"
+      surface
+        text "как ваши дела"
+      surface
+        text "как у тебя дела"
+      surface
+        text "как у вас дела"
+      surface
+        text "привет как дела"
+      surface
+        text "здравствуйте как ваши дела"
+      surface
+        text "как поживаешь"
+      surface
+        text "как вы поживаете"
+    lexeme hi
+      surface
+        text "कैसे हो"
+      surface
+        text "आप कैसे हैं"
+      surface
+        text "तुम कैसे हो"
+      surface
+        text "क्या हाल है"
+      surface
+        text "आपका क्या हाल है"
+      surface
+        text "सब कैसा चल रहा है"
+    lexeme zh
+      surface
+        text 你好吗
+      surface
+        text 你还好吗
+      surface
+        text 你怎么样
+      surface
+        text 您怎么样
+      surface
+        text 最近怎么样
+      surface
+        text 过得怎么样
+    lexeme es
+      surface
+        text "cómo estás"
+      surface
+        text "cómo está usted"
+      surface
+        text "qué tal"
+      surface
+        text "cómo te va"
+      surface
+        text "cómo andas"
+
+  social_farewell
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_farewell
+    lexeme en
+      surface
+        text bye
+      surface
+        text goodbye
+      surface
+        text farewell
+      surface
+        text "see you"
+      surface
+        text "see you later"
+      surface
+        text "take care"
+      surface
+        text "so long"
+      surface
+        text ciao
+      surface
+        text tschüss
+    lexeme ru
+      surface
+        text пока
+      surface
+        text прощай
+      surface
+        text увидимся
+      surface
+        text "до свидания"
+      surface
+        text досвидания
+      surface
+        text "до встречи"
+      surface
+        text "до скорого"
+      surface
+        text "всего доброго"
+    lexeme hi
+      surface
+        text अलविदा
+      surface
+        text विदा
+      surface
+        text बाय
+      surface
+        text टाटा
+      surface
+        text "फिर मिलेंगे"
+    lexeme zh
+      surface
+        text 再见
+      surface
+        text 拜拜
+      surface
+        text 回见
+      surface
+        text 改天见
+      surface
+        text 后会有期
+    lexeme es
+      surface
+        text adiós
+      surface
+        text "hasta luego"
+      surface
+        text "hasta pronto"
+      surface
+        text "hasta mañana"
+      surface
+        text "nos vemos"
+      surface
+        text chau
+
+  social_courtesy_response
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_courtesy_response
+    lexeme en
+      surface
+        text thanks
+      surface
+        text "thank you"
+      surface
+        text "i am fine thank you"
+      surface
+        text "i am fine thanks"
+      surface
+        text "i m fine thank you"
+      surface
+        text "i m fine thanks"
+      surface
+        text "i am good thank you"
+      surface
+        text "i am good thanks"
+      surface
+        text "i m good thank you"
+      surface
+        text "i m good thanks"
+      surface
+        text "fine thank you"
+      surface
+        text "fine thanks"
+      surface
+        text "good thank you"
+      surface
+        text "good thanks"
+      surface
+        text "doing well thank you"
+      surface
+        text "doing well thanks"
+    lexeme ru
+      surface
+        text спасибо
+      surface
+        text благодарю
+      surface
+        text "у меня все хорошо спасибо"
+      surface
+        text "у меня всё хорошо спасибо"
+      surface
+        text "все хорошо спасибо"
+      surface
+        text "всё хорошо спасибо"
+      surface
+        text "хорошо спасибо"
+      surface
+        text "нормально спасибо"
+      surface
+        text "ого чето начал соображать"
+      surface
+        text "ого чёто начал соображать"
+      surface
+        text "ого чё то начал соображать"
+      surface
+        text "ого что то начал соображать"
+    lexeme hi
+      surface
+        text धन्यवाद
+      surface
+        text शुक्रिया
+      surface
+        text "मैं ठीक हूँ धन्यवाद"
+      surface
+        text "ठीक हूँ धन्यवाद"
+      surface
+        text "मैं अच्छा हूँ धन्यवाद"
+    lexeme zh
+      surface
+        text 谢谢
+      surface
+        text 多谢
+      surface
+        text 我很好谢谢
+      surface
+        text "我很好 谢谢"
+      surface
+        text 好的谢谢
+      surface
+        text "好的 谢谢"
+      surface
+        text 非常感谢
+      surface
+        text 谢谢你
+    lexeme es
+      surface
+        text gracias
+      surface
+        text "muchas gracias"
+      surface
+        text "muy bien gracias"
+      surface
+        text "todo bien gracias"
+
+  social_test_status
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_test_status
+    lexeme en
+      surface
+        text test
+      surface
+        text ping
+      surface
+        text pong
+      surface
+        text testing
+      surface
+        text "test passed"
+      surface
+        text "testing 123"
+      surface
+        text "are you there"
+      surface
+        text "you there"
+      surface
+        text "i m here"
+      surface
+        text "i am here"
+    lexeme ru
+      surface
+        text тест
+      surface
+        text пинг
+      surface
+        text "я здесь"
+      surface
+        text "я тут"
+      surface
+        text "тест пройден"
+      surface
+        text "ты здесь"
+      surface
+        text "ты тут"
+      surface
+        text "вы здесь"
+      surface
+        text "вы тут"
+    lexeme hi
+      surface
+        text टेस्ट
+      surface
+        text परीक्षण
+      surface
+        text "परीक्षण सफल रहा"
+      surface
+        text "मैं यहाँ हूँ"
+      surface
+        text "मैं यहां हूं"
+      surface
+        text "क्या आप वहाँ हैं"
+      surface
+        text "क्या आप वहां हैं"
+    lexeme zh
+      surface
+        text 测试
+      surface
+        text 測試
+      surface
+        text 测试通过
+      surface
+        text 測試通過
+      surface
+        text 我在这里
+      surface
+        text 我在這裡
+      surface
+        text 你在吗
+      surface
+        text 您在吗
+      surface
+        text 你在嗎
+      surface
+        text 您在嗎
+    lexeme es
+      surface
+        text prueba
+      surface
+        text "prueba superada"
+      surface
+        text "estoy aquí"
+      surface
+        text "estoy aqui"
+      surface
+        text "estás ahí"
+      surface
+        text "estas ahi"
+      surface
+        text "sigues ahí"
+      surface
+        text "sigues ahi"
+
+  social_assistant_name
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_assistant_name
+    lexeme en
+      surface
+        text "what is your name"
+      surface
+        text "what s your name"
+      surface
+        text "what's your name"
+      surface
+        text "do you have a name"
+      surface
+        text "what should i call you"
+      surface
+        text "tell me your name"
+      surface
+        text "may i know your name"
+    lexeme ru
+      surface
+        text "как твое имя"
+      surface
+        text "как твоё имя"
+      surface
+        text "как тебя зовут"
+      surface
+        text "как вас зовут"
+      surface
+        text "у тебя есть имя"
+      surface
+        text "назови своё имя"
+      surface
+        text "назови свое имя"
+    lexeme hi
+      surface
+        text "आपका नाम क्या है"
+      surface
+        text "तुम्हारा नाम क्या है"
+      surface
+        text "क्या तुम्हारा कोई नाम है"
+      surface
+        text "मैं तुम्हें क्या कहूँ"
+      surface
+        text "अपना नाम बताओ"
+    lexeme zh
+      surface
+        text 你叫什么名字
+      surface
+        text 您叫什么名字
+      surface
+        text 你的名字是什么
+      surface
+        text 你有名字吗
+      surface
+        text "告诉我你的名字"
+    lexeme es
+      surface
+        text "cómo te llamas"
+      surface
+        text "cuál es tu nombre"
+      surface
+        text "cómo se llama usted"
+      surface
+        text "puedo saber tu nombre"
+
+  social_identity
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_identity
+    lexeme en
+      surface
+        text "who are you"
+      surface
+        text "what are you"
+      surface
+        text "who is formal ai"
+      surface
+        text "what is formal ai"
+      surface
+        text "who is formalai"
+      surface
+        text "what is formalai"
+      surface
+        text "tell me about yourself"
+      surface
+        text "introduce yourself"
+      surface
+        text "let s get acquainted"
+      surface
+        text "lets get acquainted"
+      surface
+        text "let us get acquainted"
+      surface
+        text "let s get to know each other"
+    lexeme ru
+      surface
+        text "кто ты"
+      surface
+        text "что ты"
+      surface
+        text "расскажи о себе"
+      surface
+        text "расскажи мне о себе"
+      surface
+        text "расскажи про себя"
+      surface
+        text "опиши себя"
+      surface
+        text представься
+      surface
+        text "давай знакомиться"
+      surface
+        text "давай познакомимся"
+      surface
+        text "давайте познакомимся"
+    lexeme hi
+      surface
+        text "तुम कौन हो"
+      surface
+        text "तू कौन है"
+      surface
+        text "आप कौन हैं"
+      surface
+        text "अपना परिचय दो"
+      surface
+        text "अपने बारे में बताओ"
+      surface
+        text "चलो परिचय करते हैं"
+      surface
+        text "आइए परिचय करें"
+      surface
+        text "चलो एक दूसरे को जानें"
+    lexeme zh
+      surface
+        text 你是谁
+      surface
+        text 您是谁
+      surface
+        text 你是什么
+      surface
+        text 介绍一下你自己
+      surface
+        text 告诉我你自己
+      surface
+        text 我们认识一下吧
+      surface
+        text 认识一下吧
+      surface
+        text 让我们认识一下
+    lexeme es
+      surface
+        text "quién eres"
+      surface
+        text "qué eres"
+      surface
+        text preséntate
+      surface
+        text "cuéntame de ti"
+
+  social_assistant_free_time
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_assistant_free_time
+    lexeme en
+      surface
+        text "what do you do in your free time"
+      surface
+        text "what do you do in free time"
+      surface
+        text "how do you spend your free time"
+      surface
+        text "what do you do when you are not working"
+      surface
+        text "how do you spend your spare time"
+    lexeme ru
+      surface
+        text "что делаешь в свободное время"
+      surface
+        text "что ты делаешь в свободное время"
+      surface
+        text "чем занимаешься в свободное время"
+      surface
+        text "чем ты занимаешься в свободное время"
+      surface
+        text "что делаешь когда свободен"
+      surface
+        text "как проводишь свободное время"
+    lexeme hi
+      surface
+        text "खाली समय में क्या करते हो"
+      surface
+        text "आप खाली समय में क्या करते हैं"
+      surface
+        text "फुर्सत में क्या करते हो"
+      surface
+        text "खाली वक्त में क्या करते हो"
+      surface
+        text "जब आप काम नहीं करते तो क्या करते हैं"
+    lexeme zh
+      surface
+        text 你空闲时间做什么
+      surface
+        text 你有空的时候做什么
+      surface
+        text 你业余时间做什么
+      surface
+        text 你休息的时候做什么
+      surface
+        text 你不工作的时候做什么
+    lexeme es
+      surface
+        text "qué haces en tu tiempo libre"
+      surface
+        text "cómo pasas tu tiempo libre"
+      surface
+        text "qué haces cuando no trabajas"
+

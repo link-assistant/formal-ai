@@ -1139,6 +1139,17 @@ function matchesIntentRoute(normalized, rawPrompt, id) {
   if (route.phrases && route.phrases.some((ph) => ph === normalized || ph === raw)) {
     return true;
   }
+  // Declared role surfaces (issue #1138 plan 10 leaf 20): the family's exact
+  // surfaces are the named seed roles' word inventories, matched under the
+  // same whole-prompt equality the keyword and phrase rows had.
+  if (
+    Array.isArray(route.roleSurfaces) &&
+    route.roleSurfaces.some((role) =>
+      wordsForRole(role).some((word) => word === normalized || word === raw),
+    )
+  ) {
+    return true;
+  }
   if (route.tokens && route.tokens.some((tok) => tokenContains(normalized, tok))) {
     return true;
   }

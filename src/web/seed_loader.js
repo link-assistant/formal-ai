@@ -825,12 +825,14 @@
           phrases: [],
           tokens: [],
           combos: [],
+          roleSurfaces: [],
         };
         for (var j = 0; j < child.children.length; j += 1) {
           var entry = child.children[j];
           if (entry.name === "keyword") route.keywords.push(entry.id);
           else if (entry.name === "phrase") route.phrases.push(entry.id);
           else if (entry.name === "token") route.tokens.push(entry.id);
+          else if (entry.name === "role_surface") route.roleSurfaces.push(entry.id);
           else if (entry.name === "combo") {
             route.combos.push(
               String(entry.id || "")

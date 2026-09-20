@@ -18,6 +18,49 @@ pub const ROLE_CLARIFICATION_REQUEST: &str = "clarification_request";
 /// surface inventory the intent-routing greeting family rows held (issue
 /// #1138 plan 10 leaf 20: the family retires onto this role).
 pub const ROLE_SOCIAL_GREETING: &str = "social_greeting";
+/// Semantic role: the user asking after the assistant's or their own state.
+///
+/// Carried by `social_wellbeing` in `meanings-conversation.lino` with the
+/// surface inventory the intent-routing wellbeing family rows held (issue
+/// #1138 plan 10 leaf 20: the family retires onto this role).
+pub const ROLE_SOCIAL_WELLBEING: &str = "social_wellbeing";
+/// Semantic role: the user closing the exchange.
+///
+/// Carried by `social_farewell` in `meanings-conversation.lino` with the
+/// surface inventory the intent-routing farewell family rows held (issue
+/// #1138 plan 10 leaf 20: the family retires onto this role).
+pub const ROLE_SOCIAL_FAREWELL: &str = "social_farewell";
+/// Semantic role: the user acknowledging the assistant with thanks.
+///
+/// Carried by `social_courtesy_response` in `meanings-conversation.lino` with
+/// the surface inventory the intent-routing courtesy_response family rows
+/// held (issue #1138 plan 10 leaf 20: the family retires onto this role).
+pub const ROLE_SOCIAL_COURTESY_RESPONSE: &str = "social_courtesy_response";
+/// Semantic role: the user pinging the assistant's presence or test status.
+///
+/// Carried by `social_test_status` in `meanings-conversation.lino` with the
+/// surface inventory the intent-routing test_status family rows held (issue
+/// #1138 plan 10 leaf 20: the family retires onto this role).
+pub const ROLE_SOCIAL_TEST_STATUS: &str = "social_test_status";
+/// Semantic role: the user asking the assistant's name.
+///
+/// Carried by `social_assistant_name` in `meanings-conversation.lino` with
+/// the surface inventory the intent-routing assistant_name family rows held
+/// (issue #1138 plan 10 leaf 20: the family retires onto this role).
+pub const ROLE_SOCIAL_ASSISTANT_NAME: &str = "social_assistant_name";
+/// Semantic role: the user asking who or what the assistant is.
+///
+/// Carried by `social_identity` in `meanings-conversation.lino` with the
+/// surface inventory the intent-routing identity family rows held (issue
+/// #1138 plan 10 leaf 20: the family retires onto this role).
+pub const ROLE_SOCIAL_IDENTITY: &str = "social_identity";
+/// Semantic role: the user asking how the assistant spends its free time.
+///
+/// Carried by `social_assistant_free_time` in `meanings-conversation.lino`
+/// with the surface inventory the intent-routing assistant_free_time family
+/// rows held (issue #1138 plan 10 leaf 20: the family retires onto this
+/// role, keeping the capabilities rules' `route_exact` veto meaningful).
+pub const ROLE_SOCIAL_ASSISTANT_FREE_TIME: &str = "social_assistant_free_time";
 /// Semantic role: a dialog-local request to stop using a quoted expression.
 pub const ROLE_CONVERSATION_PREFERENCE_AVOID: &str = "conversation_preference_avoid";
 /// Semantic role: a correction that an informational request did not authorize a mutation.

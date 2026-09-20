@@ -389,6 +389,12 @@ function serializeIntentRouteForWasm(normalized, rawPrompt, route) {
   };
   for (const value of route.keywords || []) append("K", value);
   for (const value of route.phrases || []) append("P", value);
+  // Declared role surfaces serialize as keyword lines: the wasm matcher's
+  // keyword semantics (exact whole-prompt equality) is exactly the semantics
+  // the roles' word inventories carry (issue #1138 plan 10 leaf 20).
+  for (const role of route.roleSurfaces || []) {
+    for (const word of wordsForRole(role)) append("K", word);
+  }
   for (const value of route.tokens || []) append("T", value);
   for (const combo of route.combos || []) {
     if (!Array.isArray(combo) || combo.length === 0) continue;

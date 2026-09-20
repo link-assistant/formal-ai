@@ -159,7 +159,18 @@ fn intent_routing_greeting_separates_keywords_from_tokens() {
         .iter()
         .find(|r| r.id == "intent_greeting")
         .expect("greeting route should exist");
-    assert!(greeting.keywords.iter().any(|k| k == "hello"));
+    // The family's exact-match keyword rows retired onto the declared
+    // `social_greeting` role (issue #1138 plan 10 leaf 20): `hello` is now a
+    // surface of the role's word inventory, matched under the same
+    // whole-prompt equality the keyword rows had. The role's inventory is
+    // pinned by the issue #1138 migration suite in tests/unit.
+    assert!(
+        greeting
+            .role_surfaces
+            .iter()
+            .any(|role| role == "social_greeting")
+    );
+    assert!(greeting.keywords.is_empty());
     assert!(
         greeting.tokens.iter().any(|t| t == "greet"),
         "the 'greet' fragment must be a token (substring match), not a keyword (exact match), \

@@ -632,6 +632,9 @@ pub fn concept_contexts() -> Vec<ContextRecord> {
 /// - `tokens`: any single whitespace-separated token equals the value
 /// - `combos`: every token in the combo appears as a whitespace-separated
 ///   token in the prompt (in any order)
+/// - `role_surfaces`: the route's exact surfaces are the named seed roles'
+///   word inventories under the same whole-prompt equality (issue #1138
+///   plan 10 leaf 20)
 #[derive(Debug, Clone, Default)]
 pub struct IntentRoute {
     pub id: String,
@@ -641,6 +644,7 @@ pub struct IntentRoute {
     pub phrases: Vec<String>,
     pub tokens: Vec<String>,
     pub combos: Vec<Vec<String>>,
+    pub role_surfaces: Vec<String>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -662,11 +666,13 @@ pub fn intent_routing() -> IntentRouting {
                     let mut phrases = Vec::new();
                     let mut tokens = Vec::new();
                     let mut combos = Vec::new();
+                    let mut role_surfaces = Vec::new();
                     for entry in &child.children {
                         match entry.name.as_str() {
                             "keyword" => keywords.push(entry.id.clone()),
                             "phrase" => phrases.push(entry.id.clone()),
                             "token" => tokens.push(entry.id.clone()),
+                            "role_surface" => role_surfaces.push(entry.id.clone()),
                             "combo" => combos.push(
                                 entry
                                     .id
@@ -687,6 +693,7 @@ pub fn intent_routing() -> IntentRouting {
                         phrases,
                         tokens,
                         combos,
+                        role_surfaces,
                     });
                 }
                 "article" => routing.article_prefixes.push(child.id.clone()),

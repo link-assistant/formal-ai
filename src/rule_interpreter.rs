@@ -301,6 +301,20 @@ impl LinkStoreSource {
                     };
                     let mut surfaces = store.field_values(&intent.index, "keyword");
                     surfaces.extend(store.field_values(&intent.index, "phrase"));
+                    // A family that retired its rows onto a declared role
+                    // (`role_surface`, issue #1138 plan 10 leaf 20) keeps its
+                    // exact-match semantics: the role's surfaces are the
+                    // route's surfaces, so `route_exact` conditions keep
+                    // deciding on the same whole prompts.
+                    for role in store.field_values(&intent.index, "role_surface") {
+                        if let Some(entries) = roles.get(&role) {
+                            for surface in entries {
+                                if !surfaces.contains(&surface.text) {
+                                    surfaces.push(surface.text.clone());
+                                }
+                            }
+                        }
+                    }
                     routes.insert(slug.to_owned(), surfaces);
                 }
             }

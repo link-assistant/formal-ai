@@ -338,10 +338,44 @@ fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
             response_link: String::from("response:write_program:synthesis"),
         });
     }
+    // Before the table: the conversational families' blocks sat ahead of the
+    // write_program family's, so their rows claimed `hello` before
+    // write_program's `keyword hello` (a row shadowed since it was written).
+    // The declared role surfaces keep that precedence for the retired rows.
+    declared_role_surface_route(normalized).or_else(|| {
+        seed::intent_routing()
+            .intents
+            .iter()
+            .find(|route| matches_route(normalized, route))
+            .map(|route| MatchedRoute {
+                slug: route.slug.clone(),
+                response_link: route.response_link.clone(),
+            })
+    })
+}
+
+/// The conversational families' bare whole prompts (`hi`, `how are you`,
+/// `who are you`) retired onto seeded roles (issue #1138 plan 10 leaf 20):
+/// the prompt has no object to derive from, so the decision is the declared
+/// roles' surface inventories under the same whole-prompt equality the
+/// exact-match rows had. The declaration lives on the family's own block
+/// (`role_surface <role>`), so a future family retires its rows by seeding
+/// the role and declaring it — no code change. Compound courtesy
+/// (`привет как дела`) is a surface of its own family's role, exactly as it
+/// was a phrase row.
+fn declared_role_surface_route(normalized: &str) -> Option<MatchedRoute> {
     seed::intent_routing()
         .intents
         .iter()
-        .find(|route| matches_route(normalized, route))
+        .filter(|route| !route.role_surfaces.is_empty())
+        .find(|route| {
+            route.role_surfaces.iter().any(|role| {
+                seed::lexicon()
+                    .words_for_role(role)
+                    .iter()
+                    .any(|word| word.as_str() == normalized)
+            })
+        })
         .map(|route| MatchedRoute {
             slug: route.slug.clone(),
             response_link: route.response_link.clone(),

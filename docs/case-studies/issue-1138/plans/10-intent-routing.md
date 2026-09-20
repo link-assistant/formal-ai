@@ -1035,7 +1035,44 @@ Ordered; each independently verifiable and commit-sized.
       seeding the conversational act/role derivation first (future
       family work, not a row deletion). `assistant_free_time` is
       additionally coupled to `data/seed/handler-rules.lino`'s
-      `route_exact` condition and must migrate with its rule together.**
+      `route_exact` condition and must migrate with its rule together.
+      Families four through ten retired the eight conversational
+      families the same day, and the coupling drafted above became the
+      mechanism: each family's exact surfaces now live as a seeded
+      conversation role's word inventory in
+      `data/seed/meanings-conversation.lino` (the retired rows verbatim,
+      plus a Spanish inventory no row ever held), and each family's own
+      intent block declares the role with a `role_surface` field — the
+      single retirement declaration. `IntentRoute.role_surfaces` carries
+      it in both parsers (and the `tests/source` mirror), a
+      `declared_role_surface_route` pass consults the declared roles
+      ahead of the table scan in `route_for_prompt` so the retired
+      families keep the file-order precedence their blocks held —
+      `greeting`'s rows sat ahead of `write_program`'s `keyword hello`,
+      a row shadowed since it was written, and the pass keeps that
+      outcome — the rule interpreter's `route_exact` projection merges
+      each role's surfaces into the route's surfaces so the capabilities
+      rules' `assistant_free_time` veto keeps deciding on the same whole
+      prompts, and the worker mirrors parse and match the declaration
+      (`seed_loader.js` `roleSurfaces`, `matchesIntentRoute`'s
+      whole-prompt fallback, wasm keyword-line serialization — identical
+      exact-equality semantics, no wasm export change). 256 rows left:
+      greeting 34, wellbeing 27, farewell 27, courtesy_response 41,
+      test_status 44, assistant_name 24, identity 38,
+      assistant_free_time 21; the measure reads 44, and each family's
+      count is pinned by a guard test. The migration suite asserts the
+      retired prompts in all five languages plus the new es surfaces —
+      the retirement's generalization — and records five prompts the
+      rows never decided at answer time (`how is it going`,
+      `आपका नाम क्या है`, `你叫什么名字`, `आप कौन हैं`, `你是谁`):
+      the `how_it_works`, `set_assistant_name` and `who_is_question`
+      handlers claimed them even while the rows existed, a finding the
+      drafting surfaced rather than fixed. What remains for this leaf:
+      the `greet` token and the `test_status`, `assistant_name` and
+      `identity` combos are contains matches — separate behavior with
+      their own retirement to draft — the es web-search lexeme debt
+      from family two, and `write_program`'s four keyword rows with
+      their shadowing to untangle.**
 
 **The ladder and the UI defect.**
 
