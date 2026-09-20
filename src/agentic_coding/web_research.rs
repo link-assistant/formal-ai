@@ -110,7 +110,7 @@ pub(super) fn mid_research_web_query_for(messages: &[ChatMessage]) -> Option<Str
         .or_else(|| {
             unresolved_research_query_with(messages, |text| {
                 let answer = FormalAiEngine.answer(text);
-                (!answer.intent.starts_with("clarify") && answer.is_inconclusive())
+                (!answer.asks_for_clarification() && answer.is_inconclusive())
                     || answer.defers_to_the_open_web()
             })
         })

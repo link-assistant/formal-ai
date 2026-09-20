@@ -99,7 +99,17 @@ impl SymbolicAnswer {
         matches!(
             self.intent.as_str(),
             "unknown" | "ill_formed" | "punctuation_only_prompt" | "concept_lookup_unresolved"
-        ) || self.intent.starts_with("clarify")
+        ) || self.asks_for_clarification()
+    }
+
+    /// Whether the answer is a clarifying question. An ask is not an unknown:
+    /// the engine knows exactly what is missing and says so, so a caller
+    /// admitting "unresolved" requests must exclude it. [`Self::is_inconclusive`]
+    /// includes it and states why; this half is the boundary callers such as
+    /// the research continuation gate subtract.
+    #[must_use]
+    pub fn asks_for_clarification(&self) -> bool {
+        self.intent.starts_with("clarify")
     }
 
     /// Whether the answer points at the open web instead of stating a finding.
