@@ -256,6 +256,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-membership
+    bundle true
+    lexicon meaning
   seed meanings-meta
     bundle true
     lexicon meaning
@@ -300,6 +303,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-routing-vocabulary
+    bundle true
+    lexicon meaning
   seed meanings-search
     lexicon meaning
   seed meanings-selection-criteria

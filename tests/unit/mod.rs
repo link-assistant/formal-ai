@@ -59,6 +59,7 @@ mod issue_1133_hive_mind_three_runs;
 mod issue_1136_mcp_search_precedence;
 mod issue_1138_concept_lookup;
 mod issue_1138_formalization_depth;
+mod issue_1138_membership_taxonomy;
 mod issue_1138_repository_world_model;
 mod issue_1138_retrieval_method;
 mod issue_1138_segmentation;

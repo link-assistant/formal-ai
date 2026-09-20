@@ -373,23 +373,26 @@ fn paraphrased_algebra_prompt_reaches_same_derivation() {
 }
 
 #[test]
-fn benchmark_object_counting_passes_by_composing_listed_sub_results() {
+fn benchmark_object_counting_derives_the_count_from_membership_sources() {
     let response = synthesis_solver()
         .solve("I have a clarinet, a violin, and a flute. How many musical instruments do I have?");
 
-    assert_eq!(response.intent, "object_counting");
-    assert!(response.answer.contains('3'));
+    assert_eq!(response.intent, "verifiable_task");
+    assert!(response.answer.contains('3'), "{}", response.answer);
     assert!(
         response
             .evidence_links
             .iter()
-            .any(|link| link.starts_with("composition:count:"))
+            .any(|link| link.starts_with("verifiable_task:executed:")),
+        "the count must be executed evidence, not a looked-up answer: {:?}",
+        response.evidence_links
     );
     assert!(
         response
-            .evidence_links
-            .iter()
-            .any(|link| link.starts_with("sub_result:"))
+            .links_notation
+            .contains("verifiable_task:membership_source"),
+        "each counted item must cite its membership evidence: {}",
+        response.links_notation
     );
 }
 
@@ -458,22 +461,26 @@ fn object_counting_filters_items_by_requested_category() {
         "I have a clarinet, a spoon, a violin, and a flute. How many musical instruments do I have?",
     );
 
-    assert_eq!(response.intent, "object_counting");
+    assert_eq!(response.intent, "verifiable_task");
     assert!(response.answer.contains('3'), "{}", response.answer);
     assert!(
         !response.answer.contains('4'),
         "mixed list must count only requested category matches: {}",
         response.answer
     );
+    for member in ["clarinet", "violin", "flute"] {
+        assert!(
+            response
+                .links_notation
+                .contains(&format!("{member}:seed:https://www.wikidata.org/wiki/")),
+            "counted member {member} must carry a seed membership source: {}",
+            response.links_notation
+        );
+    }
     assert!(
-        response
-            .links_notation
-            .contains("category=musical instruments")
-    );
-    assert!(
-        response
-            .links_notation
-            .contains("matched=clarinet|violin|flute")
+        !response.links_notation.contains("spoon:seed:"),
+        "spoon is cutlery, so it must contribute no musical-instrument evidence: {}",
+        response.links_notation
     );
 }
 

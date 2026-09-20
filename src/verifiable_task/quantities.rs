@@ -9,6 +9,10 @@
 
 use crate::seed::{ROLE_CARDINAL_NUMBER_WORD, ROLE_MEASUREMENT_UNIT};
 
+/// Seed role of the indefinite determiners ("a", "an", …), each of which
+/// states a multiplicity of one for the entity it introduces.
+const ROLE_INDEFINITE_DETERMINER: &str = "verifiable_quantity_determiner";
+
 /// A quantity the prompt states.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Quantity {
@@ -53,7 +57,7 @@ pub fn extract_quantities(prompt: &str, language: &str) -> Vec<Quantity> {
 /// Every entity the prompt lists, with the multiplicity it states.
 #[must_use]
 pub fn extract_entities(prompt: &str, language: &str) -> Vec<Entity> {
-    let quantities = quantity_matches(prompt, language);
+    let quantities = quantity_matches_with_indefinites(prompt, language);
     let Some(first) = quantities.first() else {
         return Vec::new();
     };
@@ -83,7 +87,7 @@ pub fn extract_entities(prompt: &str, language: &str) -> Vec<Entity> {
             let mut surface_start = start + cursor + leading;
             let surface_end = start + cursor + trailing;
             let item = &prompt[surface_start..surface_end];
-            let item_quantities = quantity_matches(item, language);
+            let item_quantities = quantity_matches_with_indefinites(item, language);
             let multiplicity = item_quantities
                 .first()
                 .map_or_else(|| String::from("1"), |found| found.value.clone());
@@ -107,7 +111,7 @@ pub fn extract_entities(prompt: &str, language: &str) -> Vec<Entity> {
             } else if let Some(prefix_len) = leading_role_surface_len(
                 &prompt[surface_start..surface_end],
                 language,
-                "verifiable_quantity_determiner",
+                ROLE_INDEFINITE_DETERMINER,
             ) {
                 surface_start += prefix_len;
             }
@@ -159,7 +163,26 @@ struct QuantityMatch {
 
 fn quantity_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
     let mut found = digit_matches(prompt);
+    found.extend(cardinal_word_matches(prompt, language));
+    ordered_unique(found)
+}
+
+/// Quantities plus the indefinite determiners, each stating multiplicity one.
+///
+/// A list can name its items without any numeral — "a clarinet, a violin" —
+/// because the indefinite determiner itself asserts one of each. Entity
+/// extraction needs those anchors; [`normalized_shape`] keeps the bare
+/// quantity view so prompt identity does not change.
+fn quantity_matches_with_indefinites(prompt: &str, language: &str) -> Vec<QuantityMatch> {
+    let mut found = digit_matches(prompt);
+    found.extend(cardinal_word_matches(prompt, language));
+    found.extend(indefinite_determiner_matches(prompt, language));
+    ordered_unique(found)
+}
+
+fn cardinal_word_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
     let lowered = prompt.to_lowercase();
+    let mut found = Vec::new();
     for meaning in crate::seed::lexicon().meanings_with_role(ROLE_CARDINAL_NUMBER_WORD) {
         let Some(value) = meaning
             .words()
@@ -185,6 +208,35 @@ fn quantity_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
             }
         }
     }
+    found
+}
+
+fn indefinite_determiner_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
+    let lowered = prompt.to_lowercase();
+    let mut found = Vec::new();
+    for meaning in crate::seed::lexicon().meanings_with_role(ROLE_INDEFINITE_DETERMINER) {
+        for surface in meaning
+            .lexemes
+            .iter()
+            .filter(|lexeme| lexeme.language == language)
+            .flat_map(|lexeme| &lexeme.words)
+            .map(|word| word.text.as_str())
+            .filter(|surface| surface.chars().any(char::is_alphabetic))
+        {
+            let needle = surface.to_lowercase();
+            for start in matching_offsets(&lowered, &needle) {
+                found.push(QuantityMatch {
+                    value: String::from("1"),
+                    start,
+                    end: start + needle.len(),
+                });
+            }
+        }
+    }
+    found
+}
+
+fn ordered_unique(mut found: Vec<QuantityMatch>) -> Vec<QuantityMatch> {
     found.sort_by(|left, right| {
         left.start
             .cmp(&right.start)

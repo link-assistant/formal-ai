@@ -370,29 +370,6 @@ meanings
         text 谷地 # source Q39816 labels.zh.value
         part_of_speech noun
         grammatical_number singular
-  violin
-    grounded-in Q8355
-    defined-by entity
-    lexeme en
-      surface
-        text violin # source Q8355 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text скрипка # source Q8355 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text वायलिन # source Q8355 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 小提琴 # source Q8355 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
   volcano
     grounded-in Q8072
     defined-by entity

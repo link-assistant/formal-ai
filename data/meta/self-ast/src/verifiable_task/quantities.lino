@@ -2,25 +2,30 @@ self_ast_census
   target src/verifiable_task/quantities.rs
   language rust
   fidelity signature
-  byte_len 12005
-  line_count 347
-  content_id source_module_17ba096e825fc7a8
-  symbol_count 17
+  byte_len 14076
+  line_count 399
+  content_id source_module_3a6a207ea991a830
+  symbol_count 22
   symbols
-    struct Quantity 14 23
-    struct Entity 27 34
-    function extract_quantities 38 51
-    function extract_entities 55 131
-    function leading_role_surface_len 133 151
-    struct QuantityMatch 154 158
-    function quantity_matches 160 204
-    function normalized_shape 206 221
-    function digit_matches 223 241
-    function matching_offsets 243 263
-    function following_meaning 265 297
-    function starts_with_surface 299 305
-    function list_separators 307 330
-    function is_sentence_end 332 334
-    function is_unspaced_script 336 338
-    function is_entity_prefix 340 342
-    function is_entity_edge 344 347
+    const ROLE_INDEFINITE_DETERMINER 14 14
+    struct Quantity 18 27
+    struct Entity 31 38
+    function extract_quantities 42 55
+    function extract_entities 59 135
+    function leading_role_surface_len 137 155
+    struct QuantityMatch 158 162
+    function quantity_matches 164 168
+    function quantity_matches_with_indefinites 176 181
+    function cardinal_word_matches 183 212
+    function indefinite_determiner_matches 214 237
+    function ordered_unique 239 256
+    function normalized_shape 258 273
+    function digit_matches 275 293
+    function matching_offsets 295 315
+    function following_meaning 317 349
+    function starts_with_surface 351 357
+    function list_separators 359 382
+    function is_sentence_end 384 386
+    function is_unspaced_script 388 390
+    function is_entity_prefix 392 394
+    function is_entity_edge 396 399

@@ -116,6 +116,7 @@ pub const MEANINGS_LEXICON_IMPORT_04_LINO: &str =
 pub const MEANINGS_LINKS_ROOT_LINO: &str = include_str!("../../data/seed/meanings-links-root.lino");
 pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
     include_str!("../../data/seed/meanings-local-search.lino");
+pub const MEANINGS_MEMBERSHIP_LINO: &str = include_str!("../../data/seed/meanings-membership.lino");
 pub const MEANINGS_META_LINO: &str = include_str!("../../data/seed/meanings-meta.lino");
 pub const MEANINGS_NOTE_COMPOSITION_LINO: &str =
     include_str!("../../data/seed/meanings-note-composition.lino");
@@ -331,6 +332,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-lexicon-import-04.lino", MEANINGS_LEXICON_IMPORT_04_LINO),
         ("data/seed/meanings-links-root.lino", MEANINGS_LINKS_ROOT_LINO),
         ("data/seed/meanings-local-search.lino", MEANINGS_LOCAL_SEARCH_LINO),
+        ("data/seed/meanings-membership.lino", MEANINGS_MEMBERSHIP_LINO),
         ("data/seed/meanings-meta.lino", MEANINGS_META_LINO),
         ("data/seed/meanings-note-composition.lino", MEANINGS_NOTE_COMPOSITION_LINO),
         ("data/seed/meanings-number-constraints.lino", MEANINGS_NUMBER_CONSTRAINTS_LINO),
@@ -526,6 +528,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_LEXICON_IMPORT_04_LINO,
     MEANINGS_LINKS_ROOT_LINO,
     MEANINGS_LOCAL_SEARCH_LINO,
+    MEANINGS_MEMBERSHIP_LINO,
     MEANINGS_META_LINO,
     MEANINGS_NOTE_COMPOSITION_LINO,
     MEANINGS_NUMBER_CONSTRAINTS_LINO,
