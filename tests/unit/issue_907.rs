@@ -564,3 +564,107 @@ fn the_gemini_cli_session_context_no_longer_hijacks_the_request() {
         "{call}"
     );
 }
+
+/// The toolset the real gemini CLI advertises to the server, in the order the
+/// E2E trace records them. Routing decisions may depend on which capabilities
+/// compete for the turn, so the regression below is only observable over the
+/// full set, not over the two-tool subset the report used.
+const GEMINI_CLI_TOOL_NAMES: [&str; 15] = [
+    "activate_skill",
+    "enter_plan_mode",
+    "glob",
+    "google_web_search",
+    "grep_search",
+    "invoke_agent",
+    "list_background_processes",
+    "list_directory",
+    "read_background_output",
+    "read_file",
+    "replace",
+    "run_shell_command",
+    "update_topic",
+    "web_fetch",
+    "write_file",
+];
+
+/// A declaration for every capability a caller may advertise: the three the
+/// issue's flow exercises carry their real parameters, the rest a bare object,
+/// because routing competes on names, not on schemas.
+fn full_function_declarations() -> serde_json::Value {
+    let schemas: std::collections::HashMap<&str, serde_json::Value> = [
+        (
+            "google_web_search",
+            serde_json::json!({"query": {"type": "STRING"}}),
+        ),
+        (
+            "run_shell_command",
+            serde_json::json!({"command": {"type": "STRING"}}),
+        ),
+        (
+            "write_file",
+            serde_json::json!({
+                "file_path": {"type": "STRING"},
+                "content": {"type": "STRING"}
+            }),
+        ),
+    ]
+    .into_iter()
+    .collect();
+    serde_json::json!([{"functionDeclarations": GEMINI_CLI_TOOL_NAMES
+        .iter()
+        .map(|name| {
+            let properties = schemas.get(name).cloned().unwrap_or(serde_json::json!({}));
+            let required: Vec<&str> = match *name {
+                "run_shell_command" => vec!["command"],
+                "write_file" => vec!["file_path", "content"],
+                "google_web_search" => vec!["query"],
+                _ => vec![],
+            };
+            serde_json::json!({
+                "name": name,
+                "description": format!("{name} tool"),
+                "parameters": {"type": "OBJECT", "properties": properties, "required": required},
+            })
+        })
+        .collect::<Vec<_>>()}])
+}
+
+/// The whole task over the full toolset: a caller that also advertises web
+/// search must not have its write request answered by a search. The agent-CLI
+/// E2E (`experiments/agent_cli_e2e/run_issue_907.sh`) regressed exactly this
+/// way after the handler-family changes: *"Write a hello world program in
+/// Python."* planned `google_web_search` with the whole prompt as the query,
+/// `main.py` was never written, and the turn ended in a Final quoting the
+/// search output — while the same request over the two-tool subset kept
+/// planning `write_file`.
+#[test]
+fn a_write_request_survives_a_web_search_tool_in_the_toolset() {
+    let request: GeminiGenerateContentRequest = serde_json::from_value(serde_json::json!({
+        "contents": [{
+            "role": "user",
+            "parts": [
+                {"text": GEMINI_SESSION_CONTEXT},
+                {"text": REQUEST},
+            ],
+        }],
+        "tools": full_function_declarations(),
+    }))
+    .expect("valid Gemini generateContent request");
+
+    let response = create_gemini_generate_content_response_with_solver_and_memory(
+        &request,
+        "formal-ai",
+        &agent_solver(),
+        &[],
+    );
+    let call = response["candidates"][0]["content"]["parts"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .find_map(|part| part.get("functionCall"))
+        .cloned()
+        .unwrap_or_else(|| panic!("expected a function call, got {response}"));
+
+    assert_eq!(call["name"], "write_file", "{call}");
+    assert_eq!(call["args"]["file_path"], "main.py", "{call}");
+}

@@ -21,6 +21,17 @@ pub fn runtime_steps(language: &str) -> Option<String> {
     Some(contract.find_child_value("ci_setup").to_owned())
 }
 
+/// Whether the typed recipe path claims `prompt`.
+///
+/// [`code_artifact`](crate::agentic_coding::code_artifact) defers to this path
+/// when the client can run commands; the deferral is honest only while the
+/// path really claims the request, so the predicate lives beside the answer it
+/// mirrors.
+#[must_use]
+pub fn claims(prompt: &str) -> bool {
+    answer(prompt, &mut EventLog::default()).is_some()
+}
+
 /// Read an explicitly quoted output operand in its own clause.
 fn explicit_stdout(prompt: &str) -> Option<String> {
     let mut previous_end = 0;

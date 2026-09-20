@@ -142,8 +142,14 @@ pub(super) fn plan_code_artifact_step(
     }
 
     // With a command capability, let the typed `ExecutionRecipe` path own code
-    // creation and verification. Write-only harnesses still receive the source.
-    if tool_for(tool_names, Capability::Run).is_some() {
+    // creation and verification -- but only when that path claims the request.
+    // Its contract reader binds explicit output literals; a catalog template
+    // with no pinned output is not a contract, and deferring it anyway left the
+    // request owned by no route, so the open-web decision table answered a
+    // program-writing request with a web search (issue #907).
+    if tool_for(tool_names, Capability::Run).is_some()
+        && crate::coding::program_contract::claims(task)
+    {
         return None;
     }
     let artifact = generated_artifact(task)?;

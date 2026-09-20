@@ -618,10 +618,26 @@ fn r916_06_caller_context_does_not_hijack_the_request() {
         Some("Write a hello world program in Python."),
         "the caller's own block is not the user speaking"
     );
-    assert!(
-        plan_chat_step(&messages, &["write_file", "run_shell_command"]).is_none(),
-        "`Today's date is …` inside a context block is not a question about the date"
-    );
+    // The planner once declined this request over a write+run
+    // toolset — the run capability deferred code creation to the typed recipe
+    // path, which claims only requests with explicit output literals — and the
+    // chat surface answered it alone. Declining is what let a client that also
+    // advertised a search tool have the write answered by a web search
+    // (issue #907), so the planner now answers the artifact itself, and the
+    // framing's date line never becomes a question.
+    match plan_chat_step(&messages, &["write_file", "run_shell_command"]) {
+        Some(AgenticPlan::ToolCalls(calls)) => {
+            assert_eq!(calls[0].tool, "write_file", "{calls:?}");
+            assert!(
+                calls[0].arguments.contains("main.py"),
+                "{}",
+                calls[0].arguments
+            );
+        }
+        other => panic!(
+            "`Today's date is …` inside a context block is not a question about the date: {other:?}"
+        ),
+    }
 
     // …so the run reaches the artifact the user actually asked for.
     let call = first_agentic_call(&messages, &["write_file", "run_shell_command"]);
