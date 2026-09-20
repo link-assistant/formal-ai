@@ -833,7 +833,7 @@ pub(super) fn plan_settled_routes(
         ));
     }
     if web_research::has_successful_search_result(messages)
-        && let Some(query) = web_research::unresolved_web_research_query_for(messages)
+        && let Some(query) = web_research::mid_research_web_query_for(messages)
         && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query)
     {
         return Some(plan);

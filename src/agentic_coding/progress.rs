@@ -247,6 +247,16 @@ impl Progress {
             .map(|attempt| attempt.detail.as_str())
     }
 
+    /// Arguments of the most recent successful attempt for one capability,
+    /// this turn. The transcript's own record of what was asked for.
+    pub(super) fn latest_successful_arguments(&self, capability: Capability) -> Option<&str> {
+        self.attempts
+            .iter()
+            .rev()
+            .find(|attempt| attempt.capability == capability && attempt.succeeded)
+            .and_then(|attempt| attempt.arguments.as_deref())
+    }
+
     /// Number of run attempts for one exact command, successful or failed.
     pub(super) fn run_count_for(&self, command: &str) -> usize {
         self.attempts

@@ -61,18 +61,94 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
 /// and the whole request stays the query when no single block qualifies --
 /// which is what a one-block prompt always is.
 pub(super) fn unresolved_web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
+    // Fresh admission keeps the narrow reading: a concept-lookup miss is not
+    // promoted here on its intent alone, because the same intent also names
+    // subjects the workspace owns -- the #1138 frontier's UI complaint reads
+    // as `concept_lookup_unresolved` too. Which fresh requests research may
+    // adopt is the decision table's (object, act, locus) question, and the
+    // table runs directly after this route.
+    unresolved_research_query_with(messages, |text| {
+        matches!(
+            FormalAiEngine.answer(text).intent.as_str(),
+            "unknown" | "web_search"
+        )
+    })
+}
+
+/// The research query for a turn whose own search has already come back.
+///
+/// A search result in hand is different evidence than an intent: something in
+/// this conversation already judged the request worth a web search, so the
+/// question is no longer whether research may *adopt* the request but whether
+/// it still owns the turn's composition. Three kinds of evidence answer that,
+/// strongest first:
+///
+/// 1. The transcript's own record: this turn's successful search was *called*
+///    with a query drawn from the request's text. Whichever door started the
+///    recipe -- the detectors, the open-web decision table -- the call's
+///    arguments name the subject it started for, so the recipe continues with
+///    that subject. "What countries have private space companies?" reads as a
+///    *resolved* `concept_lookup` to the engine (its terms are defined in the
+///    seed), yet the table routed it to a search whose result then sat
+///    uncomposed in the transcript (#771's English case -- the raw echo
+///    answered instead).
+/// 2. The explicit detectors of [`web_research_query_for`] still claim the
+///    request, so the fetch that follows their search is theirs to plan.
+/// 3. The engine's own inconclusive line -- the generic unknown and a lookup
+///    its sources left unresolved are the honest unknowns an external source
+///    answers (plan 01 doctrine, the #840 ladder's dictionary nodes), while a
+///    clarifying question is not one: the engine knows exactly what is missing
+///    and asks for it. `defers_to_the_open_web` is the same admission in the
+///    answer's own words: its text is a plan for a lookup nobody performed.
+///
+/// The two-intent list this replaced stopped at `unknown`, so a
+/// `concept_lookup_unresolved` request whose search had run was answered by
+/// the raw tool echo, teaser rows and all (the #840 ladder's 827.L1 node).
+pub(super) fn mid_research_web_query_for(messages: &[ChatMessage]) -> Option<String> {
+    recorded_search_query_for_task(messages)
+        .or_else(|| web_research_query_for(messages))
+        .or_else(|| {
+            unresolved_research_query_with(messages, |text| {
+                let answer = FormalAiEngine.answer(text);
+                (!answer.intent.starts_with("clarify") && answer.is_inconclusive())
+                    || answer.defers_to_the_open_web()
+            })
+        })
+}
+
+/// The query this turn's own successful search was called with, when that
+/// query is the request's own text. Routes build queries out of the request
+/// (a block of it, or the whole prompt cleaned), so containment is the
+/// transcript saying the search answered *this* request -- not a coincidence
+/// of vocabulary.
+fn recorded_search_query_for_task(messages: &[ChatMessage]) -> Option<String> {
+    let task = crate::protocol::latest_user_request(messages)?;
+    let query = Progress::scan(messages)
+        .latest_successful_arguments(Capability::Search)
+        .and_then(search_query_argument)?;
+    let normalized = crate::engine::normalize_prompt;
+    let query_text = normalized(&query);
+    (!query_text.is_empty() && normalized(&task).contains(&query_text)).then_some(query)
+}
+
+fn search_query_argument(arguments: &str) -> Option<String> {
+    let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
+    value
+        .get("query")
+        .and_then(|query| query.as_str())
+        .map(str::to_owned)
+}
+
+fn unresolved_research_query_with(
+    messages: &[ChatMessage],
+    unresolved: impl Fn(&str) -> bool,
+) -> Option<String> {
     let task = crate::protocol::latest_user_request(messages)?;
     // Once every specialized local route has declined, any unresolved request
     // is an open-world research task. This is deliberately intent-driven rather
     // than punctuation-driven: instructions can require missing knowledge just
     // as questions do. Conversation-meta requests remain local because searching
     // the public web cannot recover private dialog history.
-    let unresolved = |text: &str| {
-        matches!(
-            FormalAiEngine.answer(text).intent.as_str(),
-            "unknown" | "web_search"
-        )
-    };
     let preceding = messages
         .get(..messages.len().saturating_sub(1))
         .unwrap_or(&[]);

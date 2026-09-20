@@ -50,6 +50,17 @@ fn local_scope_dominates_search_verb_and_possessive_variations() {
         "Найди папку hive-mind-control center на моём рабочем столе",
         "मेरे डेस्कटॉप पर hive-mind-control center फ़ोल्डर खोजें",
         "在桌面上搜索 hive-mind-control center 文件夹",
+        // The respectful imperative खोजिए and the Spanish phrasings regressed
+        // when plan 10 leaf 11 retired the memorized cue phrases that used to
+        // cover them: the meaning vocabulary had no surface for either, so
+        // the request fell past this recipe to a bare `ls`. The ladder's
+        // 838.L4 hi/es nodes route through here again.
+        "मेरे डेस्कटॉप पर hive-mind-control center फ़ोल्डर खोजिए",
+        "मेरे डेस्कटॉप पर hive-mind-control-center खोजिए",
+        "डेस्कटॉप पर hive-mind-control center फ़ोल्डर खोजिए",
+        "Busca la carpeta hive-mind-control center en mi escritorio",
+        "Busca hive-mind-control-center en mi escritorio",
+        "Busca la carpeta hive-mind-control center en el escritorio",
     ] {
         let call = one_call(&[ChatMessage::user(prompt)]);
         assert_eq!(call.tool, "bash", "{prompt}: {call:?}");
@@ -389,6 +400,37 @@ fn unresolved_definition_question_with_output_instruction_routes_to_research() {
         serde_json::from_str(&call.arguments).expect("search arguments");
     let query = arguments["query"].as_str().expect("search query");
     assert!(query.contains("фуфломицин"), "{query}");
+}
+
+#[test]
+fn unresolved_concept_search_result_is_composed_not_echoed() {
+    // The #840 ladder's 827.L1 node regressed when a concept-lookup miss
+    // became its own intent (`concept_lookup_unresolved`): the research
+    // fallback's unresolved gate still matched a two-intent list, declined
+    // the turn after the search came back, and the raw tool echo answered
+    // with the page's teaser rows still in it. The gate now reads the
+    // engine's own inconclusive line, so the turn composes the definition
+    // the fixture page carries.
+    let call = one_call(&[ChatMessage::user("Что такое фуфломицин?")]);
+    assert_eq!(call.tool, "websearch", "{call:?}");
+    let mut messages = vec![ChatMessage::user("Что такое фуфломицин?")];
+    add_result(
+        &mut messages,
+        call,
+        "search_1",
+        "Фуфломицин — развернуть\nЧто такое рок — развернуть\n\nФуфломицин (жаргонное) — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями.\n\nЧитайте также — развернуть",
+    );
+    let plan = plan_chat_step(
+        &messages,
+        &["bash", "websearch", "webfetch", "request_user_input"],
+    )
+    .expect("the research route owns the turn after its search");
+    let AgenticPlan::Final(answer) = plan else {
+        panic!("the search result must be composed, not re-issued: {plan:?}");
+    };
+    assert!(answer.contains("недоказанной эффективностью"), "{answer}");
+    assert!(!answer.contains("развернуть"), "{answer}");
+    assert!(!answer.contains("Что такое рок"), "{answer}");
 }
 
 #[test]

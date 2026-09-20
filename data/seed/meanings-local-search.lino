@@ -28,6 +28,8 @@ meanings
       surface
         text खोजें
       surface
+        text खोजिए
+      surface
         text ढूँढें
       surface
         text खोज
@@ -40,6 +42,17 @@ meanings
         text 定位
       surface
         text 有没有
+    lexeme es
+      surface
+        text busca
+      surface
+        text buscar
+      surface
+        text encuentra
+      surface
+        text localiza
+      surface
+        text "hay …"
   local_path_list_action
     defined-by action
     role local_path_list_action
@@ -63,6 +76,11 @@ meanings
         text 列出
       surface
         text 显示
+    lexeme es
+      surface
+        text lista
+      surface
+        text muestra
   local_path_contents_request
     defined-by inquiry
     role local_path_contents_request
@@ -109,6 +127,11 @@ meanings
     lexeme zh
       surface
         text 文件还是文件夹
+    lexeme es
+      surface
+        text "archivo o carpeta"
+      surface
+        text "carpeta o archivo"
   local_path_scope_desktop
     defined-by concept
     role local_path_scope_desktop
@@ -151,8 +174,6 @@ meanings
         text "en escritorio"
       surface
         text "del escritorio"
-      surface
-        text 桌面上
   local_path_scope_home
     defined-by concept
     role local_path_scope_home
@@ -254,6 +275,15 @@ meanings
         text 文件夹
       surface
         text 目录
+    lexeme es
+      surface
+        text carpeta
+      surface
+        text carpetas
+      surface
+        text directorio
+      surface
+        text directorios
   local_path_file_kind
     defined-by concept
     role local_path_file_kind
@@ -283,6 +313,17 @@ meanings
         text 文件
       surface
         text 文档
+    lexeme es
+      surface
+        text archivo
+      surface
+        text archivos
+      surface
+        text fichero
+      surface
+        text documento
+      surface
+        text documentos
   local_path_query_noise
     defined-by concept
     role local_path_query_noise
@@ -320,6 +361,21 @@ meanings
     lexeme zh
       surface
         text 名为
+    lexeme es
+      surface
+        text la
+      surface
+        text el
+      surface
+        text una
+      surface
+        text un
+      surface
+        text llamada
+      surface
+        text llamado
+      surface
+        text exactamente
   local_path_route_question
     defined-by inquiry
     role local_path_route_question
