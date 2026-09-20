@@ -1,0 +1,79 @@
+self_ast_census
+  target src/agentic_coding/planner/continuation.rs
+  language rust
+  fidelity full_ast
+  byte_len 5981
+  line_count 137
+  content_id source_module_7ca75daaf0704243
+  symbol_count 6
+  symbols
+    function is_continuation_cue 14 16
+    function continued_agent_task 27 43
+    function compacted_agent_task 47 73
+    function repair_compacted_dot_paths 81 113
+    function preserved_first_user_turn 121 127
+    function trace_route 133 137
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3498
+    named_node_count 742
+    distinct_node_kinds 55
+    node_kinds
+      arguments 59
+      array_expression 1
+      array_type 2
+      assignment_expression 2
+      binary_expression 9
+      block 16
+      break_expression 1
+      call_expression 59
+      char_literal 9
+      closure_expression 13
+      closure_parameters 13
+      crate 2
+      doc_comment 37
+      else_clause 1
+      escape_sequence 6
+      expression_statement 12
+      field_expression 58
+      field_identifier 56
+      function_item 6
+      generic_type 3
+      identifier 129
+      if_expression 4
+      index_expression 7
+      inner_doc_comment_marker 5
+      integer_literal 5
+      let_condition 1
+      let_declaration 17
+      line_comment 43
+      macro_invocation 3
+      mutable_specifier 2
+      outer_doc_comment_marker 32
+      parameter 10
+      parameters 6
+      parenthesized_expression 1
+      primitive_type 8
+      range_expression 8
+      reference_expression 2
+      reference_type 7
+      return_expression 2
+      scoped_identifier 10
+      source_file 1
+      string_content 14
+      string_literal 15
+      super 6
+      token_tree 3
+      try_expression 4
+      tuple_pattern 1
+      tuple_struct_pattern 2
+      type_arguments 3
+      type_identifier 10
+      unary_expression 7
+      use_declaration 1
+      use_wildcard 1
+      visibility_modifier 6
+      while_expression 1

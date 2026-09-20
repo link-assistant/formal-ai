@@ -1,13 +1,13 @@
 {
   "schema_version": 2,
   "summary": {
-    "total": 24,
-    "passed": 24,
+    "total": 40,
+    "passed": 40,
     "failed": 0,
     "by_level": {
       "L1": {
-        "passed": 3,
-        "total": 3
+        "passed": 10,
+        "total": 10
       },
       "L2": {
         "passed": 6,
@@ -18,20 +18,24 @@
         "total": 7
       },
       "L4": {
-        "passed": 8,
-        "total": 8
+        "passed": 17,
+        "total": 17
       }
     },
     "by_seed": {
       "838": {
-        "passed": 10,
-        "total": 10
+        "passed": 19,
+        "total": 19
       },
       "827": {
         "passed": 7,
         "total": 7
       },
       "826": {
+        "passed": 7,
+        "total": 7
+      },
+      "1138": {
         "passed": 7,
         "total": 7
       }
@@ -45,8 +49,8 @@
       "lang": "en",
       "prompt": "Find hive-mind-control center folder on my desktop",
       "note": "Ground truth Desktop/Archive/hive-control-center. Must not return the .pem decoy, must not web-search.",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
       "tools_called": [
         "bash",
         "bash"
@@ -95,8 +99,8 @@
       "lang": "en",
       "prompt": "List the folders on my desktop",
       "note": "The observe step, alone.",
-      "answer": "Let me list the items directly on your Desktop.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 1 -type d -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive",
-      "assistant_output": "Let me list the items directly on your Desktop.\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive",
+      "answer": "Let me list the items directly on your Desktop.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 1 -type d -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive",
+      "assistant_output": "Let me list the items directly on your Desktop.\nItems found directly within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}:\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive",
       "tools_called": [
         "bash"
       ],
@@ -121,8 +125,8 @@
       "lang": "en",
       "prompt": "Search hive-mind-control-center on my desktop",
       "note": "Verb 'Search' must route local exactly like 'Find'.",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
       "tools_called": [
         "bash",
         "bash"
@@ -149,8 +153,8 @@
       "lang": "en",
       "prompt": "Find hive-mind-control center folder on desktop",
       "note": "Dropping the possessive 'my' must not change the route (the #838 flip).",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
       "tools_called": [
         "bash",
         "bash"
@@ -177,15 +181,15 @@
       "lang": "en",
       "prompt": "What is inside the Archive folder on my desktop?",
       "note": "One level of recursion; both entries should be visible.",
-      "answer": "Let me look on your Desktop for archive.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'archive' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\nLet me look on your Desktop for archive.\n[tool bash] {\"command\":\"find '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive' -mindepth 1 -maxdepth 1 -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nContents of /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
-      "assistant_output": "Let me look on your Desktop for archive.\nLet me look on your Desktop for archive.\nContents of /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive:\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
+      "answer": "Let me look on your Desktop for archive.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'archive' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\nLet me look on your Desktop for archive.\n[tool bash] {\"command\":\"find '/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive' -mindepth 1 -maxdepth 1 -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nContents of /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive:\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
+      "assistant_output": "Let me look on your Desktop for archive.\nLet me look on your Desktop for archive.\nContents of /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive:\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
       "tools_called": [
         "bash",
         "bash"
       ],
       "bash_commands": [
         "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'archive' -print",
-        "find '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive' -mindepth 1 -maxdepth 1 -print"
+        "find '/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive' -mindepth 1 -maxdepth 1 -print"
       ],
       "error": null,
       "missing_expect": [],
@@ -205,8 +209,8 @@
       "lang": "ru",
       "prompt": "Найди папку hive-mind-control center на моём рабочем столе",
       "note": "Same intent in Russian must route identically (#386 convention).",
-      "answer": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Посмотрю на вашем рабочем столе: hive-mind-control-center.\nПосмотрю на вашем рабочем столе: hive-mind-control-center.\nТочного совпадения для hive-mind-control-center нет; ближайшее имя — hive-control-center, путь /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. Поиск был ограничен областью ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
       "tools_called": [
         "bash",
         "bash"
@@ -233,8 +237,8 @@
       "lang": "en",
       "prompt": "Is there a folder named exactly 'hive-mind-control-center' on my desktop? Answer yes or no and say what the closest match is.",
       "note": "Fuzzy near-match must be named, not silently substituted (standard 3.3).",
-      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
       "tools_called": [
         "bash",
         "bash"
@@ -261,15 +265,15 @@
       "lang": "en",
       "prompt": "On my desktop, is hive-control-center a file or a folder?",
       "note": "Type discrimination (standard 3.4) - the .pem decoy is a file.",
-      "answer": "Let me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-control-center' -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\nLet me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"ls -ld -- '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center'\"}\n[result] drwxr-xr-x 2 box box 4096 Jul 29 09:35 /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
-      "assistant_output": "Let me look on your Desktop for hive-control-center.\nLet me look on your Desktop for hive-control-center.\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "answer": "Let me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-control-center' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nLet me look on your Desktop for hive-control-center.\n[tool bash] {\"command\":\"ls -ld -- '/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center'\"}\n[result] drwxr-xr-x@ 2 konard  staff  64 Sep 20 13:18 /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-control-center.\nLet me look on your Desktop for hive-control-center.\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center is a folder. It was verified within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
       "tools_called": [
         "bash",
         "bash"
       ],
       "bash_commands": [
         "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname 'hive-control-center' -print",
-        "ls -ld -- '/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center'"
+        "ls -ld -- '/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center'"
       ],
       "error": null,
       "missing_expect": [],
@@ -289,7 +293,7 @@
       "lang": "en",
       "prompt": "Find a folder called zzz-nonexistent-folder on my desktop",
       "note": "True negative: absence must be reported honestly, scoped, without inventing a match. Any of the wordings in expect_any counts; a bare 'not' matched too much.",
-      "answer": "Let me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'zzz-nonexistent' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*nonexistent*' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 3 -print\"}\n[result] /tmp/formal-ai-ladder.CBBAKc/Desktop/Archive\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-control-center\n/tmp/formal-ai-ladder.CBBAKc/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nzzz-nonexistent was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
+      "answer": "Let me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'zzz-nonexistent' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*nonexistent*' -print\"}\n[result] (no output)\nLet me look on your Desktop for zzz-nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -mindepth 1 -maxdepth 3 -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nzzz-nonexistent was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
       "assistant_output": "Let me look on your Desktop for zzz-nonexistent.\nLet me look on your Desktop for zzz-nonexistent.\nLet me look on your Desktop for zzz-nonexistent.\nzzz-nonexistent was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
       "tools_called": [
         "bash",
@@ -391,8 +395,8 @@
       "lang": "en",
       "prompt": "What is a fufloмицин (фуфломицин)? Answer in English.",
       "note": "Cross-language synthesis of the same concept.",
-      "answer": "Let me search the web for fufloмицин фуфломицин answer in english.\n[tool websearch] {\"query\":\"fufloмицин фуфломицин answer in english\"}\n[result] Fufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials. Evidence-based physicians apply it to a range of immunomodulators, so-called antivirals such as umifenovir (Arbidol), and homeopathic products.\nFufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials.",
-      "assistant_output": "Let me search the web for fufloмицин фуфломицин answer in english.\nFufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials.",
+      "answer": "Let me search the web for fufloмицин (фуфломицин)? answer.\n[tool websearch] {\"query\":\"fufloмицин (фуфломицин)? answer\"}\n[result] Fufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials. Evidence-based physicians apply it to a range of immunomodulators, so-called antivirals such as umifenovir (Arbidol), and homeopathic products.\nFufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials.",
+      "assistant_output": "Let me search the web for fufloмицин (фуфломицин)? answer.\nFufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials.",
       "tools_called": [
         "websearch"
       ],
@@ -629,6 +633,414 @@
       "assistant_output": "What would you like to report? Select one or more.\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.",
       "tools_called": [],
       "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "1138.frontier.news",
+      "level": 1,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Catch me up on what has happened since this morning.",
+      "note": "Freshness-qualified catch-up must route to a live search, never to the fixture-less definition path.",
+      "answer": "Let me search the web for Catch me up on what has happened since this morning.\n[tool websearch] {\"query\":\"Catch me up on what has happened since this morning\"}\n[result] (no fixture for this query)\n(no fixture for this query)\n\nLearned standing requirement (this): In this repository, add a paths-ignore filter for experiments/**, dev/log/** and docs/case-studies/** to the push trigger of .github/workflows/release.yml so commits touching only those folders do not run the pipeline.; In this repository, add a paths-ignore filter for experiments/**, dev/log/** and docs/case-studies/** to the push trigger of .github/workflows/release.yml so that commits touching only those folders do not run the pipeline.; In this repository, in GOALS.md, add a bullet under Reasoning Goals stating that coding tasks must be decomposable.; In this repository, read REQUIREMENTS.md and report the implementation status recorded for requirement R67.",
+      "assistant_output": "Let me search the web for Catch me up on what has happened since this morning.\n(no fixture for this query)\n\nLearned standing requirement (this): In this repository, add a paths-ignore filter for experiments/**, dev/log/** and docs/case-studies/** to the push trigger of .github/workflows/release.yml so commits touching only those folders do not run the pipeline.; In this repository, add a paths-ignore filter for experiments/**, dev/log/** and docs/case-studies/** to the push trigger of .github/workflows/release.yml so that commits touching only those folders do not run the pipeline.; In this repository, in GOALS.md, add a bullet under Reasoning Goals stating that coding tasks must be decomposable.; In this repository, read REQUIREMENTS.md and report the implementation status recorded for requirement R67.",
+      "tools_called": [
+        "websearch"
+      ],
+      "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "1138.frontier.non_understanding",
+      "level": 1,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "I did not follow that at all.",
+      "note": "Non-understanding must re-render the previous turn, not search for the sentence.",
+      "answer": "There is no previous assistant turn available to explain yet.",
+      "assistant_output": "There is no previous assistant turn available to explain yet.",
+      "tools_called": [],
+      "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "1138.frontier.compose",
+      "level": 1,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Write me an extended piece on how the uncertainty principle came about.",
+      "note": "A compose request must reach the composition procedure, not collapse into one web search.",
+      "answer": "source_capability\n  capability \"compose_from_sources\"\n  request \"Write me an extended piece on how the uncertainty principle came about.\"\n  status \"no_verified_capture\"\n  source_count \"0\"",
+      "assistant_output": "source_capability\n  capability \"compose_from_sources\"\n  request \"Write me an extended piece on how the uncertainty principle came about.\"\n  status \"no_verified_capture\"\n  source_count \"0\"",
+      "tools_called": [],
+      "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "1138.frontier.demonstrate",
+      "level": 1,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Say something to me in Russian.",
+      "note": "A demonstrated response language must be answered in that language, not looked up.",
+      "answer": "Russian (in russian): Здравствуйте! Чем могу помочь?",
+      "assistant_output": "Russian (in russian): Здравствуйте! Чем могу помочь?",
+      "tools_called": [],
+      "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "1138.frontier.schedule",
+      "level": 1,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "Pencil in a review with Dmitri on Tuesday at 09:30, Berlin time.",
+      "note": "A scheduling request must reach the calendar capability, not a shell or web stand-in.",
+      "answer": "Create event «Event» on 2026-09-20. Time: 09:30, timezone: UTC. Duration 60 minutes.\nImport this .ics file into any calendar:\nBEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//formal-ai//calendar//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nBEGIN:VEVENT\r\nUID:20260920T093000-UTC@formal-ai\r\nDTSTAMP:20260920T061854Z\r\nDTSTART;TZID=UTC:20260920T093000\r\nDTEND;TZID=UTC:20260920T103000\r\nSUMMARY:Event\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n\nOr open it in Google Calendar (no login required):\nhttps://calendar.google.com/calendar/render?action=TEMPLATE&text=Event&dates=20260920T093000/20260920T103000&ctz=UTC\nReply 'yes' to confirm.",
+      "assistant_output": "Create event «Event» on 2026-09-20. Time: 09:30, timezone: UTC. Duration 60 minutes.\nImport this .ics file into any calendar:\nBEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//formal-ai//calendar//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nBEGIN:VEVENT\r\nUID:20260920T093000-UTC@formal-ai\r\nDTSTAMP:20260920T061854Z\r\nDTSTART;TZID=UTC:20260920T093000\r\nDTEND;TZID=UTC:20260920T103000\r\nSUMMARY:Event\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n\nOr open it in Google Calendar (no login required):\nhttps://calendar.google.com/calendar/render?action=TEMPLATE&text=Event&dates=20260920T093000/20260920T103000&ctz=UTC\nReply 'yes' to confirm.",
+      "tools_called": [],
+      "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "1138.frontier.measurement",
+      "level": 1,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "How tall does a mature birch normally grow?",
+      "note": "A property-with-unit question must reach the measurement lookup, not a definition search.",
+      "answer": "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"How tall does a mature birch normally grow?\"\n  status \"no_grounded_quantity\"\n  source_count \"0\"",
+      "assistant_output": "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"How tall does a mature birch normally grow?\"\n  status \"no_grounded_quantity\"\n  source_count \"0\"",
+      "tools_called": [],
+      "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "1138.frontier.ui_complaint",
+      "level": 1,
+      "seed": "1138",
+      "lang": "en",
+      "prompt": "The panel divider you drew is impossible to drag with a mouse.",
+      "note": "A complaint about the product must open the structured report flow, not a web search.",
+      "answer": "No consulted source defined \"The panel divider you drew is impossible to drag with a mouse\". Consulted: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss.",
+      "assistant_output": "No consulted source defined \"The panel divider you drew is impossible to drag with a mouse\". Consulted: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wikipedia offline_cache_miss stackexchange offline_cache_miss.",
+      "tools_called": [],
+      "bash_commands": [],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.e",
+      "level": 4,
+      "seed": "838",
+      "lang": "hi",
+      "prompt": "मेरे डेस्कटॉप पर hive-mind-control center फ़ोल्डर खोजिए",
+      "note": "The L1 phrasing in Hindi must route exactly like the English and Russian nodes.",
+      "answer": "मैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nमैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nhive-mind-control-center का सटीक मिलान नहीं मिला; निकटतम नाम hive-control-center है: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center। खोज ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} तक सीमित थी।",
+      "assistant_output": "मैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\nमैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\nhive-mind-control-center का सटीक मिलान नहीं मिला; निकटतम नाम hive-control-center है: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center। खोज ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} तक सीमित थी।",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.f",
+      "level": 4,
+      "seed": "838",
+      "lang": "zh",
+      "prompt": "在我的桌面上查找 hive-mind-control center 文件夹",
+      "note": "The L1 phrasing in Chinese must route exactly like the English and Russian nodes.",
+      "answer": "我来在你的桌面上查找 hive-mind-control-center。\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\n我来在你的桌面上查找 hive-mind-control-center。\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n没有与 hive-mind-control-center 完全匹配的名称；最接近的是 hive-control-center，路径为 /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center。搜索范围仅限于 ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}。",
+      "assistant_output": "我来在你的桌面上查找 hive-mind-control-center。\n我来在你的桌面上查找 hive-mind-control-center。\n没有与 hive-mind-control-center 完全匹配的名称；最接近的是 hive-control-center，路径为 /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center。搜索范围仅限于 ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}。",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.g",
+      "level": 4,
+      "seed": "838",
+      "lang": "es",
+      "prompt": "Busca la carpeta hive-mind-control center en mi escritorio",
+      "note": "The L1 phrasing in Spanish must route exactly like the English and Russian nodes.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.h",
+      "level": 4,
+      "seed": "838",
+      "lang": "hi",
+      "prompt": "मेरे डेस्कटॉप पर hive-mind-control-center खोजिए",
+      "note": "The 'Search' phrasing in Hindi must route local exactly like 'Find'.",
+      "answer": "मैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nमैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nhive-mind-control-center का सटीक मिलान नहीं मिला; निकटतम नाम hive-control-center है: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center। खोज ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} तक सीमित थी।",
+      "assistant_output": "मैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\nमैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\nhive-mind-control-center का सटीक मिलान नहीं मिला; निकटतम नाम hive-control-center है: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center। खोज ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} तक सीमित थी।",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.i",
+      "level": 4,
+      "seed": "838",
+      "lang": "zh",
+      "prompt": "在我的桌面上搜索 hive-mind-control-center",
+      "note": "The 'Search' phrasing in Chinese must route local exactly like 'Find'.",
+      "answer": "我来在你的桌面上查找 hive-mind-control-center。\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\n我来在你的桌面上查找 hive-mind-control-center。\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\n没有与 hive-mind-control-center 完全匹配的名称；最接近的是 hive-control-center，路径为 /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center。搜索范围仅限于 ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}。",
+      "assistant_output": "我来在你的桌面上查找 hive-mind-control-center。\n我来在你的桌面上查找 hive-mind-control-center。\n没有与 hive-mind-control-center 完全匹配的名称；最接近的是 hive-control-center，路径为 /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center。搜索范围仅限于 ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}。",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.j",
+      "level": 4,
+      "seed": "838",
+      "lang": "es",
+      "prompt": "Busca hive-mind-control-center en mi escritorio",
+      "note": "The 'Search' phrasing in Spanish must route local exactly like 'Find'.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.k",
+      "level": 4,
+      "seed": "838",
+      "lang": "hi",
+      "prompt": "डेस्कटॉप पर hive-mind-control center फ़ोल्डर खोजिए",
+      "note": "Dropping the possessive must not change the route in Hindi either.",
+      "answer": "मैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nमैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nhive-mind-control-center का सटीक मिलान नहीं मिला; निकटतम नाम hive-control-center है: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center। खोज ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} तक सीमित थी।",
+      "assistant_output": "मैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\nमैं आपके डेस्कटॉप पर hive-mind-control-center ढूँढता हूँ।\nhive-mind-control-center का सटीक मिलान नहीं मिला; निकटतम नाम hive-control-center है: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center। खोज ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} तक सीमित थी।",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.l",
+      "level": 4,
+      "seed": "838",
+      "lang": "zh",
+      "prompt": "在桌面上查找 hive-mind-control center 文件夹",
+      "note": "Dropping the possessive must not change the route in Chinese either.",
+      "answer": "我来在你的桌面上查找 hive-mind-control-center。\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\n我来在你的桌面上查找 hive-mind-control-center。\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\n没有与 hive-mind-control-center 完全匹配的名称；最接近的是 hive-control-center，路径为 /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center。搜索范围仅限于 ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}。",
+      "assistant_output": "我来在你的桌面上查找 hive-mind-control-center。\n我来在你的桌面上查找 hive-mind-control-center。\n没有与 hive-mind-control-center 完全匹配的名称；最接近的是 hive-control-center，路径为 /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center。搜索范围仅限于 ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}。",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
+      "error": null,
+      "missing_expect": [],
+      "unmet_expect_any": false,
+      "leaked_forbid": [],
+      "missing_tools": [],
+      "forbidden_tools": [],
+      "bad_commands": [],
+      "refused": false,
+      "capability_menu": false,
+      "pass": true
+    },
+    {
+      "id": "838.L4.m",
+      "level": 4,
+      "seed": "838",
+      "lang": "es",
+      "prompt": "Busca la carpeta hive-mind-control center en el escritorio",
+      "note": "Dropping the possessive must not change the route in Spanish either.",
+      "answer": "Let me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname 'hive-mind-control-center' -print\"}\n[result] (no output)\nLet me look on your Desktop for hive-mind-control-center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d -iname '*hive*' -print\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "assistant_output": "Let me look on your Desktop for hive-mind-control-center.\nLet me look on your Desktop for hive-mind-control-center.\nNo exact match for hive-mind-control-center; the closest matching name is hive-control-center at /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-ladder.JV9UG4/Desktop/Archive/hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.",
+      "tools_called": [
+        "bash",
+        "bash"
+      ],
+      "bash_commands": [
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print",
+        "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+      ],
       "error": null,
       "missing_expect": [],
       "unmet_expect_any": false,

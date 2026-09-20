@@ -120,10 +120,16 @@ pub(super) fn mid_research_web_query_for(messages: &[ChatMessage]) -> Option<Str
 /// query is the request's own text. Routes build queries out of the request
 /// (a block of it, or the whole prompt cleaned), so containment is the
 /// transcript saying the search answered *this* request -- not a coincidence
-/// of vocabulary.
+/// of vocabulary. The record retires once a later attempt fails: a search
+/// whose fetch 403'd has already had its continuation and re-authorizing it
+/// re-plans the failed fetch every round.
 fn recorded_search_query_for_task(messages: &[ChatMessage]) -> Option<String> {
     let task = crate::protocol::latest_user_request(messages)?;
-    let query = Progress::scan(messages)
+    let progress = Progress::scan(messages);
+    if !progress.latest_success_unstalled(Capability::Search) {
+        return None;
+    }
+    let query = progress
         .latest_successful_arguments(Capability::Search)
         .and_then(search_query_argument)?;
     let normalized = crate::engine::normalize_prompt;

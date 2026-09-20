@@ -2,35 +2,37 @@ self_ast_census
   target src/seed_links.rs
   language rust
   fidelity signature
-  byte_len 10010
-  line_count 295
-  content_id source_module_b08eafdca0db933a
-  symbol_count 27
+  byte_len 10803
+  line_count 319
+  content_id source_module_3b556c072945a85f
+  symbol_count 29
   symbols
     function meta_documents 23 28
-    struct SeedLinkNetwork 32 36
-    function network 41 48
-    static CACHE 42 42
-    function from_documents 53 79
-    function project 81 91
-    function push 93 99
-    function links 103 105
-    function document_count 109 111
-    function document_paths 114 116
-    function document 120 125
-    function children 129 138
-    function nodes_under 142 147
-    function top_level 151 154
-    function value_of 158 164
-    function field 168 173
-    function field_values 177 184
-    function query 188 197
-    function children_pattern 201 207
-    function native_mirror_enabled 221 226
-    function seed_link_database_path 230 232
-    function mirror_native_store 243 252
-    function native_mirror_link_count 256 265
-    module native 268 295
-    static MIRROR 274 274
-    function mirror 276 289
-    function link_count 291 294
+    struct DocumentEntry 33 37
+    struct SeedLinkNetwork 41 45
+    function network 50 57
+    static CACHE 51 51
+    function from_documents 62 90
+    function project 92 102
+    function push 104 110
+    function links 114 116
+    function document_count 120 122
+    function document_paths 125 127
+    function document 131 136
+    function document_text 144 149
+    function children 153 162
+    function nodes_under 166 171
+    function top_level 175 178
+    function value_of 182 188
+    function field 192 197
+    function field_values 201 208
+    function query 212 221
+    function children_pattern 225 231
+    function native_mirror_enabled 245 250
+    function seed_link_database_path 254 256
+    function mirror_native_store 267 276
+    function native_mirror_link_count 280 289
+    module native 292 319
+    static MIRROR 298 298
+    function mirror 300 313
+    function link_count 315 318

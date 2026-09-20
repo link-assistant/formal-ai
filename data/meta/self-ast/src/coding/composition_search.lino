@@ -2,67 +2,21 @@ self_ast_census
   target src/coding/composition_search.rs
   language rust
   fidelity signature
-  byte_len 109280
-  line_count 2839
-  content_id source_module_f47782602a0944b8
-  symbol_count 59
+  byte_len 23864
+  line_count 573
+  content_id source_module_fe16c97503fc2b88
+  symbol_count 13
   symbols
-    struct SearchBounds 18 21
-    function default 24 29
-    function search 35 41
-    function search_with_structures 49 445
-    function recursive_reduce_programs 447 631
-    function prefer_supported 633 652
-    function recursive_reduce_program 655 768
-    function checked_recursive_programs 770 780
-    function lowered_candidate_is_closed 787 820
-    function collect_bindings_until 822 840
-    function fragment_binder_slots 850 950
-    function conditional_payload_slots 963 1020
-    function loop_variable_applies 1032 1296
-    function pair_loop_variable_applies 1306 1437
-    function literal_leaves 1446 1455
-    function parameter_reads 1457 1462
-    function collect_parameter_names 1464 1587
-    function walk 1465 1585
-    function python_tokens 1592 1622
-    struct Expression 1625 1648
-    function atom_expressions 1650 1694
-    function discovered_literals 1696 1776
-    function literal 1778 1793
-    function quoted_literals 1795 1812
-    function argument_choices 1815 1927
-    function constant_map_count 1935 1975
-    function references_parameter 1977 1987
-    function argument_root_type 1990 1998
-    function loose_feed 2003 2014
-    function inferred_expression_type 2022 2038
-    function type_has_open_variables 2043 2052
-    function collect_variable_bindings 2054 2082
-    function apply_variable_bindings 2084 2103
-    function loose_feeds 2107 2132
-    function type_key 2136 2146
-    function diversity_class 2160 2181
-    function has_computed_argument 2189 2205
-    function pathological_repeat 2213 2236
-    function walk 2214 2233
-    function repeats_a_fragment 2239 2257
-    function count 2240 2253
-    function diversify 2259 2276
-    function enumerate_arguments 2278 2300
-    function argument_grounded_structures 2312 2333
-    function binder_circularity 2335 2350
-    function argument_coherence 2352 2370
-    function node_contains_parameter 2372 2455
-    function fragment_coverage 2457 2465
-    function normalize_pool 2467 2522
-    function program_from_expression 2524 2544
-    function search_program 2546 2615
-    function fold_candidate 2617 2652
-    function neutral_literal 2654 2665
-    function annotation_type 2667 2677
-    function example_parameter_type 2686 2733
-    function types_may_unify 2735 2748
-    function types_fit_strictly 2754 2764
-    function words 2766 2771
-    function node_depth 2773 2839
+    module analysis 14 14
+    module arguments 15 15
+    module binders 16 16
+    module lowering 17 17
+    module pool 18 18
+    module recursive 19 19
+    struct SearchBounds 33 36
+    function default 39 44
+    function search 50 56
+    function search_with_structures 64 489
+    function fragment_citation 497 505
+    function dedup_preserving_first 509 518
+    function print_each_programs 525 573

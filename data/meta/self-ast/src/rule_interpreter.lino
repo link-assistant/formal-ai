@@ -2,10 +2,10 @@ self_ast_census
   target src/rule_interpreter.rs
   language rust
   fidelity signature
-  byte_len 34295
-  line_count 960
-  content_id source_module_dc213b990c9f2819
-  symbol_count 65
+  byte_len 34565
+  line_count 945
+  content_id source_module_7d3fa86913a457a2
+  symbol_count 62
   symbols
     module parser 23 23
     struct HandlerRules 29 31
@@ -16,59 +16,56 @@ self_ast_census
     enum RoleMode 99 108
     enum Condition 111 127
     struct ConditionSurface 132 136
-    trait ConditionSource 142 145
-    function role_surfaces 143 143
-    function exact_route_surfaces 144 144
-    struct SeedTables 149 151
-    function new 155 157
-    struct LinkStoreSource 162 165
-    enum ValueSource 168 173
-    enum ValueRef 176 181
-    enum Step 184 186
-    enum Fallback 189 193
-    enum Response 196 203
-    struct Node 205 210
-    struct Context 212 222
-    function role_surfaces 225 239
-    function exact_route_surfaces 241 255
-    function from_store 262 340
-    function role_surfaces 344 346
-    function exact_route_surfaces 348 350
-    function queried_nodes 353 359
-    function stored_surface 361 376
-    function slot_of 378 388
-    function rules 397 402
-    static CACHE 398 398
-    function handler_names 406 408
-    function run_handler 412 422
-    function handler_matches 426 431
-    struct ConditionVerdict 435 438
-    function parse 447 466
-    function handler 470 472
-    function handler_names 475 477
-    function rule_count 481 483
-    function condition_verdicts 488 507
-    function name 513 515
-    function rule_names 518 520
-    function run_with 524 533
-    function run_with_source 537 547
-    function matches_with 551 554
-    function matches_with_source 558 570
-    function new 574 595
-    function text 597 606
-    function languages 608 614
-    function run 618 644
-    function resolve_values 646 667
-    function resolve 671 681
-    function render 685 716
-    function substitute 719 725
-    function holds 728 837
-    function spelled_surface_present 849 872
-    function bounded_surface_present 874 885
-    const SEPARATED_ROLE_OBJECT_LIMIT 892 892
-    function separated_surface_present 894 908
-    function before_slot 910 912
-    const QUOTE_PAIRS 919 919
-    function holds 930 950
-    const URL_PREFIXES 955 955
-    function is_url 958 960
+    trait ConditionSource 143 146
+    function role_surfaces 144 144
+    function exact_route_surfaces 145 145
+    struct LinkStoreSource 154 157
+    enum ValueSource 160 165
+    enum ValueRef 168 173
+    enum Step 176 178
+    enum Fallback 181 185
+    enum Response 188 195
+    struct Node 197 202
+    struct Context 204 214
+    function shared 223 226
+    static CELL 224 224
+    function from_store 231 309
+    function role_surfaces 313 315
+    function exact_route_surfaces 317 319
+    function queried_nodes 322 328
+    function stored_surface 330 345
+    function slot_of 347 357
+    function rules 366 371
+    static CACHE 367 367
+    function handler_names 375 377
+    function run_handler 381 390
+    function handler_matches 394 398
+    struct ConditionVerdict 402 405
+    function parse 414 433
+    function handler 437 439
+    function handler_names 442 444
+    function rule_count 448 450
+    function condition_verdicts 455 474
+    function name 480 482
+    function rule_names 485 487
+    function run_with_source 491 501
+    function matches_with_source 505 517
+    function new 521 542
+    function text 544 553
+    function languages 555 561
+    function run 565 591
+    function resolve_values 593 614
+    function resolve 618 628
+    function render 632 663
+    function substitute 666 672
+    function holds 675 784
+    function spelled_surface_present 802 825
+    function bounded_surface_present 827 838
+    function phrase_present_as_words 845 870
+    const SEPARATED_ROLE_OBJECT_LIMIT 877 877
+    function separated_surface_present 879 893
+    function before_slot 895 897
+    const QUOTE_PAIRS 904 904
+    function holds 915 935
+    const URL_PREFIXES 940 940
+    function is_url 943 945

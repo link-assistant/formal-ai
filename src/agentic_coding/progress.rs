@@ -257,6 +257,24 @@ impl Progress {
             .and_then(|attempt| attempt.arguments.as_deref())
     }
 
+    /// Whether the recipe the latest successful `capability` attempt opened
+    /// is still progressing: nothing attempted after it has failed. A later
+    /// failure retires the record -- kept armed, it would re-plan the step
+    /// that just failed round after round (the opencode greeting loop, where
+    /// one `hi` search kept re-authorizing dictionary fetches that 403'd).
+    pub(super) fn latest_success_unstalled(&self, capability: Capability) -> bool {
+        let Some(index) = self
+            .attempts
+            .iter()
+            .rposition(|attempt| attempt.capability == capability && attempt.succeeded)
+        else {
+            return false;
+        };
+        self.attempts[index + 1..]
+            .iter()
+            .all(|attempt| attempt.succeeded)
+    }
+
     /// Number of run attempts for one exact command, successful or failed.
     pub(super) fn run_count_for(&self, command: &str) -> usize {
         self.attempts

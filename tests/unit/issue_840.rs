@@ -434,6 +434,48 @@ fn unresolved_concept_search_result_is_composed_not_echoed() {
 }
 
 #[test]
+fn failed_fetch_retires_the_search_record_instead_of_re_fetching() {
+    // The Agentic CLI Matrix's opencode greeting leg: a bare "hi" searched
+    // the web, the recipe opened the first dictionary result, and the site
+    // answered 403. The transcript-record door then re-authorized the
+    // recipe every round -- the successful search never left the turn --
+    // so the planner rotated through three dictionaries and blew the leg's
+    // model-round bound. A failed attempt after the search retires the
+    // record: the recipe ends in a final answer, not another fetch.
+    let mut messages = vec![ChatMessage::user("hi")];
+    add_result(
+        &mut messages,
+        PlannedToolCall {
+            tool: String::from("websearch"),
+            arguments: String::from("{\"query\":\"hi\"}"),
+        },
+        "search_hi",
+        "Title: HI Definition & Meaning | URL: https://www.merriam-webster.com/dictionary/hi | Highlights: | — used especially as a greeting",
+    );
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        String::from("fetch_hi"),
+        "webfetch",
+        String::from(
+            "{\"url\":\"https://www.merriam-webster.com/dictionary/hi\",\"format\":\"text\"}",
+        ),
+    )]));
+    messages.push(ChatMessage::tool_result_error(
+        "fetch_hi",
+        "webfetch",
+        "StatusCode: non 2xx status code (403 GET https://www.merriam-webster.com/dictionary/hi)",
+    ));
+    let plan = plan_chat_step(
+        &messages,
+        &["bash", "websearch", "webfetch", "request_user_input"],
+    )
+    .expect("the turn after a failed fetch still has a plan");
+    let AgenticPlan::Final(answer) = plan else {
+        panic!("a failed fetch must end the recipe, not rotate to the next dictionary: {plan:?}");
+    };
+    assert!(!answer.is_empty(), "{answer}");
+}
+
+#[test]
 fn later_definition_followup_reuses_the_prior_user_topic() {
     let call = one_call(&[
         ChatMessage::user("Что такое фуфломицин?"),

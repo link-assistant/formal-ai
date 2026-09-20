@@ -2,9 +2,9 @@ self_ast_census
   target src/web/wasm-worker/src/lib.rs
   language rust
   fidelity signature
-  byte_len 30277
-  line_count 946
-  content_id source_module_6f1a1e0ead53db12
+  byte_len 31334
+  line_count 973
+  content_id source_module_6e8d9cab6a3d286f
   symbol_count 78
   symbols
     module language 15 15
@@ -65,23 +65,23 @@ self_ast_census
     function engine_memory_query 500 513
     function engine_translate_formal_proof 519 531
     function engine_translate_formal_statement 536 548
-    function engine_handler_precedence 555 578
-    struct FactCheckTemplates 580 586
-    struct DialogueStatement 588 595
-    function build_dialogue_fact_check 597 636
-    function looks_declarative 638 649
-    function assess_dialogue_statement 651 686
-    function render_dialogue_statement 688 706
-    function fill_template 708 714
-    function serialize_dialogue_answer 716 774
-    function decode_uri_component 776 794
-    function hex_value 796 803
-    function serialize_arithmetic_assessment 805 827
-    function push_json_string 829 849
-    const HEX 830 830
-    function engine_stable_id 854 870
-    function engine_select_unknown_opener 875 890
-    function engine_match_intent_route 894 906
-    function web_search_registry_dump 910 928
-    function write_output 930 941
-    function panic 944 946
+    function engine_handler_precedence 555 605
+    struct FactCheckTemplates 607 613
+    struct DialogueStatement 615 622
+    function build_dialogue_fact_check 624 663
+    function looks_declarative 665 676
+    function assess_dialogue_statement 678 713
+    function render_dialogue_statement 715 733
+    function fill_template 735 741
+    function serialize_dialogue_answer 743 801
+    function decode_uri_component 803 821
+    function hex_value 823 830
+    function serialize_arithmetic_assessment 832 854
+    function push_json_string 856 876
+    const HEX 857 857
+    function engine_stable_id 881 897
+    function engine_select_unknown_opener 902 917
+    function engine_match_intent_route 921 933
+    function web_search_registry_dump 937 955
+    function write_output 957 968
+    function panic 971 973

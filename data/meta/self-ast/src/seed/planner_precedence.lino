@@ -1,0 +1,14 @@
+self_ast_census
+  target src/seed/planner_precedence.rs
+  language rust
+  fidelity signature
+  byte_len 2517
+  line_count 63
+  content_id source_module_f2a219eea7e53c18
+  symbol_count 5
+  symbols
+    function planner_precedence 23 26
+    static CELL 24 24
+    function load_planner_precedence 28 42
+    const PLANNER_PRECEDENCE_PATH 45 45
+    function planner_precedence_from 52 63

@@ -2,9 +2,9 @@ self_ast_census
   target src/meta_frame.rs
   language rust
   fidelity signature
-  byte_len 33987
+  byte_len 33980
   line_count 857
-  content_id source_module_6c4e40dc9643348f
+  content_id source_module_5a32257e8045ecd5
   symbol_count 40
   symbols
     function formalize_span 36 39

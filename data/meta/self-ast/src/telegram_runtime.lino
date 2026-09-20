@@ -2,10 +2,10 @@ self_ast_census
   target src/telegram_runtime.rs
   language rust
   fidelity signature
-  byte_len 21473
-  line_count 597
-  content_id source_module_e87074338b88b6b4
-  symbol_count 28
+  byte_len 23322
+  line_count 643
+  content_id source_module_0e560047d51eb184
+  symbol_count 29
   symbols
     const TELEGRAM_EXECUTION_HARD_LIMIT 24 24
     enum TelegramCodeExecution 29 51
@@ -33,5 +33,6 @@ self_ast_census
     function run_telegram_polling 444 451
     function run_telegram_polling_with_transport 455 509
     function run_telegram_webhook_server 512 514
-    function send_reply 516 584
-    function sleep_with_cancellation 586 597
+    function send_reply 516 586
+    function send_continuation_parts 593 630
+    function sleep_with_cancellation 632 643

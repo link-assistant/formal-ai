@@ -1,0 +1,14 @@
+self_ast_census
+  target src/execution_box/invocation.rs
+  language rust
+  fidelity signature
+  byte_len 2551
+  line_count 83
+  content_id source_module_8b9d703ab188c95c
+  symbol_count 5
+  symbols
+    function prefixed_invocation 5 18
+    function validate_image 20 33
+    function checked_workspace_path 35 52
+    function archive_workspace 54 69
+    function swebench_image 71 83

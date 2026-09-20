@@ -2,9 +2,9 @@ self_ast_census
   target src/obligation_ledger.rs
   language rust
   fidelity signature
-  byte_len 34753
-  line_count 897
-  content_id source_module_66e94c91a0c00591
+  byte_len 34925
+  line_count 900
+  content_id source_module_ae85cbcb6ea0f81f
   symbol_count 40
   symbols
     enum ObligationExpectation 29 65
@@ -43,7 +43,7 @@ self_ast_census
     function mismatch_template 744 757
     function need_for_clause 760 769
     enum ObligationStep 773 789
-    function need_status_with_observation 799 808
-    function need_ledger_with_execution 818 832
-    function next_step 843 891
-    module derivation 893 893
+    function need_status_with_observation 803 811
+    function need_ledger_with_execution 821 835
+    function next_step 846 894
+    module derivation 896 896

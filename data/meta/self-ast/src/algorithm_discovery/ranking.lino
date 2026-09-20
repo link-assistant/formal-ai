@@ -2,9 +2,9 @@ self_ast_census
   target src/algorithm_discovery/ranking.rs
   language rust
   fidelity signature
-  byte_len 2767
+  byte_len 2760
   line_count 63
-  content_id source_module_422f8f51b870302e
+  content_id source_module_01ce178274b79f88
   symbol_count 1
   symbols
     function rank_survivors 24 63

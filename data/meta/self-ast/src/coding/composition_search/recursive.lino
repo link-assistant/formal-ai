@@ -1,0 +1,12 @@
+self_ast_census
+  target src/coding/composition_search/recursive.rs
+  language rust
+  fidelity signature
+  byte_len 12391
+  line_count 326
+  content_id source_module_f845c41e872a3bd9
+  symbol_count 3
+  symbols
+    function recursive_reduce_programs 5 189
+    function prefer_supported 191 210
+    function recursive_reduce_program 213 326

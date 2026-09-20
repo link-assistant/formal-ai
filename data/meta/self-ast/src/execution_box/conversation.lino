@@ -1,0 +1,13 @@
+self_ast_census
+  target src/execution_box/conversation.rs
+  language rust
+  fidelity signature
+  byte_len 3661
+  line_count 114
+  content_id source_module_8b1ec604e85ffeec
+  symbol_count 4
+  symbols
+    function conversation_container_name 9 12
+    function conversation_create_invocation 16 38
+    function conversation_exec_invocation 44 63
+    function ensure_conversation_container 65 114

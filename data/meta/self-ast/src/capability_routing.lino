@@ -2,60 +2,42 @@ self_ast_census
   target src/capability_routing.rs
   language rust
   fidelity signature
-  byte_len 36197
-  line_count 976
-  content_id source_module_23a106fb00778224
-  symbol_count 52
+  byte_len 30157
+  line_count 795
+  content_id source_module_9f5b725268268fb6
+  symbol_count 34
   symbols
-    enum ObjectType 43 65
-    const OBJECT_TYPES 68 68
-    function slug 84 97
-    function from_slug 101 105
-    function rank 112 125
-    enum Act 132 143
-    const ACTS_IN_PRECEDENCE 150 150
-    function slug 164 176
-    function from_slug 180 185
-    function role 188 200
-    enum Locus 205 213
-    function slug 218 226
-    function from_slug 230 240
-    struct RouteRow 245 256
-    enum RoutingOutcome 261 274
-    struct RoutingDecision 283 292
-    function evidences 299 302
-    function evidence_strength 313 321
-    function is_url 324 329
-    function is_path 339 355
-    function looks_like_qualified_member 359 373
-    function is_web_host_suffix 377 382
-    function has_clock_time 385 393
-    function has_quoted_span 396 413
-    function has_explicit_content 421 423
-    function has_container_scope 429 438
-    function has_workspace_scope 443 445
-    function has_web_scope 450 452
-    function names_open_web 462 464
-    function is_freshness_live 469 471
-    function is_self_surface 474 478
-    function is_bare_clarification 489 496
-    function is_prior_turn_reference 506 508
-    function explicit_content 517 554
-    function assigned_content 563 578
-    function quoted_span 581 599
-    function first_path 603 615
-    function first_url 619 628
-    function table_routing_enabled 636 644
-    function object_type 649 713
-    function acts 721 740
-    function act 744 746
-    function locus_of 754 791
-    function locus 796 800
-    function routing_table 804 806
-    const CAPABILITY_ROUTING_LINO 809 809
-    function routing_table_from 817 849
-    function route 860 862
-    function route_decision 871 898
-    function route_with 902 938
-    function readings_for 946 973
-    const DEFAULT_OUTCOME 976 976
+    module evidence 42 42
+    enum ObjectType 48 84
+    const OBJECT_TYPES 87 87
+    function slug 108 126
+    function from_slug 130 134
+    function rank 153 171
+    enum Act 178 189
+    const ACTS_IN_PRECEDENCE 196 196
+    function slug 210 222
+    function from_slug 226 231
+    function role 234 246
+    enum Locus 251 259
+    function slug 264 272
+    function from_slug 276 286
+    struct RouteRow 291 302
+    enum RoutingOutcome 307 320
+    struct RoutingDecision 329 338
+    function table_routing_enabled 346 354
+    function object_type 359 476
+    function evidences_retrieve_act 488 490
+    function is_response_language_obligation 502 505
+    function acts 513 532
+    function act 536 538
+    function locus_of 546 586
+    function locus 591 595
+    function routing_table 599 601
+    const CAPABILITY_ROUTING_LINO 604 604
+    function routing_table_from 612 644
+    function route 655 657
+    function route_decision 666 693
+    function advertised_provides 701 717
+    function route_with 721 757
+    function readings_for 765 792
+    const DEFAULT_OUTCOME 795 795

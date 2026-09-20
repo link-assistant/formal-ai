@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/composition.rs
   language rust
   fidelity signature
-  byte_len 26099
-  line_count 764
-  content_id source_module_b318fdc567035ce9
+  byte_len 26468
+  line_count 771
+  content_id source_module_b09e961e7151379f
   symbol_count 28
   symbols
     struct DraftAttempt 15 19
@@ -18,20 +18,20 @@ self_ast_census
     function template 81 87
     struct Draft 90 99
     function compose 102 111
-    function compose_with_ir 118 257
-    function constant_bounded_domain 262 309
-    function ir_draft 311 349
-    function syntax_is_valid 352 354
-    function syntax_is_valid 357 359
-    function candidate_drafts 361 373
-    function candidate_draft 375 453
-    function source_examples 455 469
-    function adapt_implementation 471 502
-    function verify 504 590
-    function program_stdout_expectation 592 612
-    function derived_examples 614 667
-    function first_positive_integer 669 688
-    function render_comparison 690 702
-    function render_failure_trail 704 739
-    function blocked_fragment_need 741 747
-    function template 749 764
+    function compose_with_ir 118 259
+    function constant_bounded_domain 264 311
+    function ir_draft 313 356
+    function syntax_is_valid 359 361
+    function syntax_is_valid 364 366
+    function candidate_drafts 368 380
+    function candidate_draft 382 460
+    function source_examples 462 476
+    function adapt_implementation 478 509
+    function verify 511 597
+    function program_stdout_expectation 599 619
+    function derived_examples 621 674
+    function first_positive_integer 676 695
+    function render_comparison 697 709
+    function render_failure_trail 711 746
+    function blocked_fragment_need 748 754
+    function template 756 771

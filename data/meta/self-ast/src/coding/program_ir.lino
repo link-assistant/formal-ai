@@ -2,47 +2,35 @@ self_ast_census
   target src/coding/program_ir.rs
   language rust
   fidelity signature
-  byte_len 43586
-  line_count 1185
-  content_id source_module_43722d1f45709d33
-  symbol_count 39
+  byte_len 25629
+  line_count 750
+  content_id source_module_d8306e522e55a865
+  symbol_count 27
   symbols
-    module parse 19 19
-    enum ReuseMode 27 32
-    enum IrType 36 50
-    enum IrNode 54 133
-    struct ProgramIr 137 146
-    function action_cost 151 153
-    function type_check 157 169
-    function to_links_notation 173 205
-    function from_links_notation 209 256
-    function content_id 260 265
-    struct ElaborationBounds 269 272
-    function elaborate 276 338
-    function inferred_parameters 340 355
-    function type_from_annotation 357 367
-    function argument_for 369 380
-    function neutral_literal 382 394
-    function fragment_overlap 396 401
-    function normalized_words 403 408
-    function reuse_slug 410 415
-    function node_cost 417 466
-    function node_depth 468 534
-    function infer_node 536 786
-    function restore_binding 788 798
-    function iterable_element 800 808
-    function destructured_types 810 819
-    function check_reduction_fragment 821 847
-    function check_combination_fragment 849 879
-    function unify 881 918
-    function runtime_message 920 922
-    const FRAGMENT_TYPE_VARIABLE_OFFSET 924 924
-    const FRAGMENT_TYPE_VARIABLE_STRIDE 928 928
-    function fragment_type_variable 935 951
-    function contains_unknown 953 962
-    function resolve_type 964 982
-    function push_type 984 1016
-    function push_node 1018 1145
-    function push_child_node 1147 1150
-    function node_variant 1152 1167
-    function type_slug 1171 1185
+    module infer 19 19
+    module parse 22 22
+    enum ReuseMode 30 35
+    enum IrType 39 57
+    enum IrNode 61 140
+    struct ProgramIr 144 153
+    function action_cost 158 160
+    function type_check 164 176
+    function to_links_notation 180 212
+    function from_links_notation 216 263
+    function content_id 267 272
+    struct ElaborationBounds 276 279
+    function elaborate 283 345
+    function inferred_parameters 347 362
+    function type_from_annotation 364 374
+    function argument_for 376 387
+    function neutral_literal 389 401
+    function fragment_overlap 403 408
+    function normalized_words 410 415
+    function reuse_slug 417 422
+    function node_cost 424 473
+    function node_depth 475 541
+    function push_type 543 580
+    function push_node 582 709
+    function push_child_node 711 714
+    function node_variant 716 731
+    function type_slug 735 750

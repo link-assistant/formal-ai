@@ -2,50 +2,54 @@ self_ast_census
   target src/method_registry.rs
   language rust
   fidelity signature
-  byte_len 33794
-  line_count 815
-  content_id source_module_8de7c7f815e2649a
-  symbol_count 42
+  byte_len 35374
+  line_count 845
+  content_id source_module_808d78a97631f11b
+  symbol_count 46
   symbols
-    const METHOD_EXECUTION_LINO 29 29
-    enum MethodRuntimeKind 37 43
-    enum ResponseLanguageVariant 47 50
-    enum ProjectLookupPhase 54 57
-    struct MethodExecution 61 70
-    enum MethodSurface 81 89
-    function slug 94 100
-    struct Method 105 114
-    enum LearnedMethodStatus 118 124
-    function slug 129 134
-    function permits_dispatch 138 140
-    struct LearnedMethod 151 166
-    struct LearnedMethodExecution 176 181
-    function to_recipe_program 194 225
-    function is_executable 232 234
-    function execute 243 277
-    function to_links_notation 279 299
-    function to_links_notation 304 324
-    function slug 328 336
-    function entry_point 345 353
-    function slug 357 362
-    function slug 366 371
-    function step_emits 381 387
-    struct MethodRegistry 394 410
-    function from_dispatch 420 423
-    function from_dispatch_with_learned_seed 434 470
-    function heuristics_for 480 492
-    function method_count 496 498
-    function method_for_route 511 517
-    function learned_method 521 525
-    function explicit_learned_method_relevants 535 547
-    function execution_for 555 560
-    function count_on 564 566
-    function ordered_method_names_for_relevants 578 624
-    function to_links_notation 628 667
-    function parse_learned_methods 670 717
-    function parse_method_execution 719 775
-    function execution_for 777 779
-    function child_values 781 787
-    function push_unique 789 793
-    function event_kind_matches_base 795 800
-    function record_method_registry 810 815
+    const METHOD_EXECUTION_LINO 32 32
+    const METHOD_EXECUTION_PATH 33 33
+    const LEARNED_METHODS_PATH 34 34
+    enum MethodRuntimeKind 42 48
+    enum ResponseLanguageVariant 52 55
+    enum ProjectLookupPhase 59 62
+    struct MethodExecution 66 75
+    enum MethodSurface 86 94
+    function slug 99 105
+    struct Method 110 119
+    enum LearnedMethodStatus 123 129
+    function slug 134 139
+    function permits_dispatch 143 145
+    struct LearnedMethod 156 171
+    struct LearnedMethodExecution 181 186
+    function to_recipe_program 199 230
+    function is_executable 237 239
+    function execute 248 282
+    function to_links_notation 284 304
+    function to_links_notation 309 329
+    function slug 333 341
+    function entry_point 350 358
+    function slug 362 367
+    function slug 371 376
+    function step_emits 386 392
+    struct MethodRegistry 399 415
+    function shared 426 429
+    static CELL 427 427
+    function from_store 439 446
+    function from_store_with_learned_seed 460 500
+    function heuristics_for 510 522
+    function method_count 526 528
+    function method_for_route 541 547
+    function learned_method 551 555
+    function explicit_learned_method_relevants 565 577
+    function execution_for 585 590
+    function count_on 594 596
+    function ordered_method_names_for_relevants 608 654
+    function to_links_notation 658 697
+    function parse_learned_methods 700 747
+    function parse_method_execution 749 805
+    function execution_for 807 809
+    function child_values 811 817
+    function push_unique 819 823
+    function event_kind_matches_base 825 830
+    function record_method_registry 840 845
