@@ -991,6 +991,23 @@ Ordered; each independently verifiable and commit-sized.
       `keyword` rows onto acts and objects, family by family, lowering
       `intent_routing_phrase_rows` per commit; each family ships its held-out
       paraphrases first.
+      **Partial (2026-09-20). Family one, `http_fetch`, is retired: its
+      eleven phrases and its `fetch` token row left the file (the measure
+      reads 343, down from 354; the token row is not counted by it), the
+      family block keeps its `slug` and `response_link`, and a URL-bearing
+      fetch request is decided by the `url` object at the named-or-local
+      stage plus the shared `http_fetch` role surfaces of
+      `meanings-web-navigation.lino`. The held-out paraphrases shipped first
+      in `tests/unit/issue_1138_intent_phrase_migration.rs`: English,
+      Russian, Hindi and Chinese wrappings no row ever named each reach the
+      same answer and confidence the same language's canonical phrasing
+      reaches, before and after the deletion — derivation over memoization,
+      pinned both sides of the commit. A row-count guard keeps the family
+      from growing back. The exact-match rows only ever fired on whole-prompt
+      equality, so their deletion changes no URL-bearing prompt's route.
+      `url_navigate` is deliberately next-but-not-yet: its family carries
+      bare verbs (`open`, `show`) whose whole-prompt forms need the object
+      derivation proven for them before their rows can leave.**
 
 **The ladder and the UI defect.**
 

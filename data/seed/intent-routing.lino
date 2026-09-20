@@ -400,18 +400,6 @@ intent_routing
   intent intent_http_fetch
     slug http_fetch
     response_link "response:http_fetch"
-    token fetch
-    phrase "make a request to"
-    phrase "send a request to"
-    phrase "http request to"
-    phrase "fetch url"
-    phrase "fetch the url"
-    phrase "сделай запрос к"
-    phrase "сделай запрос на"
-    phrase "выполни запрос к"
-    phrase "выполни запрос на"
-    phrase запроси
-    phrase "http запрос к"
   intent intent_url_navigate
     slug url_navigate
     response_link "response:url_navigate"

@@ -49,10 +49,10 @@ capability_routing_ratchet
     note "measured 280 until plan 10 leaf 11 deleted the seven cues blocks; measured 0 after them (2026-09-18). The ceiling had been written as 0 before the deletion and failed the exact check for that commit's worth of history -- recorded here so the strictness held in the open. On 2026-09-20 the issue #1021 routing fix reintroduced one cues block under the grep capability: forty multilingual phrases that longest_search_cue in src/agentic_coding/shell_command.rs matches by longest phrase to route code-search requests to rg, because the shell-intent vocabulary alone carried six English and fewer non-English rg cues, so deleting the block would reopen the misroutes that fix closed. The honest measurement is 40 and is recorded rather than hidden; the path back to 0 is to grow the shell-intent rg cues to this coverage and drop the capability-side copy."
   ceiling
     measure intent_routing_phrase_rows
-    value 354
+    value 343
     direction down
     how "phrase and keyword rows of data/seed/intent-routing.lino"
-    note "measured 354 on 2026-09-16; 477 was the file's former line count, not this measure"
+    note "measured 354 on 2026-09-16; 477 was the file's former line count, not this measure. Lowered 354 to 343 on 2026-09-20 by plan 10 leaf 20 family one retiring the http_fetch family's exact-match rows: eleven phrases and one fetch token left the family, the measure counts the eleven phrases, and a URL-bearing fetch request is decided by the url object at the named-or-local stage plus the shared http_fetch role surfaces of meanings-web-navigation.lino, which the held-out paraphrase test pins in tests/unit/issue_1138_intent_phrase_migration.rs before and after. The token row is not counted by this measure; the family block keeps its slug and response_link."
   ceiling
     measure planner_route_arms
     value 58
