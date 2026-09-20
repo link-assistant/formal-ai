@@ -12,6 +12,12 @@
 /// "समझ नहीं आया", "我不明白", …). A meaning carrying this role is `defined_by`
 /// the `clarification` and `understanding` concepts.
 pub const ROLE_CLARIFICATION_REQUEST: &str = "clarification_request";
+/// Semantic role: the user opening the exchange with a social greeting.
+///
+/// Carried by `social_greeting` in `meanings-conversation.lino` with the
+/// surface inventory the intent-routing greeting family rows held (issue
+/// #1138 plan 10 leaf 20: the family retires onto this role).
+pub const ROLE_SOCIAL_GREETING: &str = "social_greeting";
 /// Semantic role: a dialog-local request to stop using a quoted expression.
 pub const ROLE_CONVERSATION_PREFERENCE_AVOID: &str = "conversation_preference_avoid";
 /// Semantic role: a correction that an informational request did not authorize a mutation.

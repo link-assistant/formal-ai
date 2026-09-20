@@ -690,4 +690,91 @@ meanings
         text "después"
       surface
         text "finalmente"
+  social_greeting
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_greeting
+    lexeme en
+      surface
+        text "hi"
+      surface
+        text hello
+      surface
+        text hey
+      surface
+        text howdy
+      surface
+        text greetings
+      surface
+        text "hi there"
+      surface
+        text "hello there"
+      surface
+        text "good morning"
+      surface
+        text "good afternoon"
+      surface
+        text "good evening"
+    lexeme ru
+      surface
+        text привет
+      surface
+        text здравствуйте
+      surface
+        text здравствуй
+      surface
+        text приветствую
+      surface
+        text шалом
+      surface
+        text "шабат шалом"
+      surface
+        text "доброе утро"
+      surface
+        text "добрый день"
+      surface
+        text "добрый вечер"
+    lexeme hi
+      surface
+        text नमस्ते
+      surface
+        text नमस्कार
+      surface
+        text सलाम
+      surface
+        text हाय
+      surface
+        text "राम राम"
+      surface
+        text "शुभ प्रभात"
+      surface
+        text "शुभ संध्या"
+    lexeme zh
+      surface
+        text 你好
+      surface
+        text 您好
+      surface
+        text 嗨
+      surface
+        text 哈喽
+      surface
+        text 早上好
+      surface
+        text 早安
+      surface
+        text 大家好
+      surface
+        text 晚上好
+    lexeme es
+      surface
+        text hola
+      surface
+        text "buenos días"
+      surface
+        text "buenas tardes"
+      surface
+        text "buenas noches"
+      surface
+        text saludos
 

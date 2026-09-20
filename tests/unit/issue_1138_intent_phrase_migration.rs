@@ -88,10 +88,7 @@ fn held_out_web_search_paraphrases_reach_the_canonical_search_answer() {
             "search the web for",
             "search the web for, and be thorough about",
         ),
-        (
-            "поищи в интернете",
-            "поищи в интернете, пожалуйста,",
-        ),
+        ("поищи в интернете", "поищи в интернете, пожалуйста,"),
     ] {
         let expected = answer(&format!("{canonical} {query}"));
         assert_eq!(
@@ -186,5 +183,38 @@ fn the_url_navigate_family_stays_row_free() {
          and zero after the retirement; the url_navigate role prefix surfaces of \
          meanings-web-navigation.lino decide host-bearing prompts, which the issue \
          #125 suite pins (plan 10 leaf 20)"
+    );
+}
+
+/// Plan 10 leaf 20, family four preparation: the greeting family's rows are
+/// bare whole prompts with no object, so they retire onto a seeded
+/// `social_greeting` role rather than a structural derivation. This guard
+/// ships BEFORE the wiring: every keyword and phrase the family holds today
+/// must already be carried by the role, so the later wiring provably covers
+/// each retired row. Spanish never had rows; the role carries es anyway,
+/// which is the coverage the retirement will generalize to.
+#[test]
+fn every_greeting_family_row_is_carried_by_the_social_greeting_role() {
+    let family = intent_routing()
+        .intents
+        .iter()
+        .find(|route| route.slug == "greeting")
+        .expect("the greeting family block keeps its slug while its rows retire");
+    let mut carried = formal_ai::seed::lexicon()
+        .words_for_role("social_greeting")
+        .into_iter()
+        .collect::<Vec<String>>();
+    carried.sort();
+    for row in family.keywords.iter().chain(family.phrases.iter()) {
+        assert!(
+            carried.binary_search(row).is_ok(),
+            "the social_greeting role must carry `{row}` before the family's rows retire"
+        );
+    }
+    let spanish =
+        formal_ai::seed::lexicon().words_for_role_in_languages("social_greeting", &["es"]);
+    assert!(
+        spanish.iter().any(|word| word == "hola"),
+        "the role carries Spanish greetings although the family never had es rows"
     );
 }
