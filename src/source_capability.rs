@@ -8,6 +8,7 @@
 //! number.
 
 use std::collections::BTreeSet;
+use std::fmt::Write as _;
 
 use crate::concept_lookup::ConceptSense;
 use crate::engine::SymbolicAnswer;
@@ -93,6 +94,61 @@ fn distinct_senses(senses: &[ConceptSense]) -> Vec<&ConceptSense> {
         .collect()
 }
 
+/// Compose an attributable document over the discovered concept senses.
+///
+/// The document is assembled from exactly what the captures contain: a title,
+/// the localized boundary note, every distinct gloss with its citation marker,
+/// and a sources footer naming each URL and licence. No connective prose is
+/// generated — a "few pages" request with one captured statement yields one
+/// statement, because padding to the requested length would be invention. An
+/// empty graph composes nothing and says so in the response language.
+#[must_use]
+pub fn compose_document(prompt: &str, senses: &[ConceptSense]) -> String {
+    let language = crate::language::detect(prompt).slug();
+    let senses = distinct_senses(senses);
+    if senses.is_empty() {
+        return crate::seed::localized_response("compose_no_verified_capture", language)
+            .unwrap_or_else(|| {
+                String::from(
+                    "No verified source statement was captured for this request, so nothing \
+                     was composed.",
+                )
+            });
+    }
+    let boundary_note = crate::seed::localized_response("compose_boundary_note", language)
+        .unwrap_or_else(|| {
+            String::from(
+                "Every statement below is carried by a cited source; nothing was added beyond \
+                 them.",
+            )
+        });
+    let sources_heading = crate::seed::localized_response("compose_sources_heading", language)
+        .unwrap_or_else(|| String::from("Sources"));
+    let subject = crate::solver_handlers::detect_web_search_query(prompt)
+        .unwrap_or_else(|| prompt.trim().to_owned());
+    let mut out = String::new();
+    let _ = writeln!(out, "# {subject}");
+    let _ = writeln!(out);
+    let _ = writeln!(out, "{boundary_note}");
+    let _ = writeln!(out);
+    for (index, sense) in senses.iter().enumerate() {
+        let marker = index + 1;
+        let _ = writeln!(out, "{} [{marker}]", sense.gloss);
+    }
+    let _ = writeln!(out);
+    let _ = writeln!(out, "## {sources_heading}");
+    let _ = writeln!(out);
+    for (index, sense) in senses.iter().enumerate() {
+        let marker = index + 1;
+        let _ = writeln!(
+            out,
+            "[{marker}] {} - {} ({})",
+            sense.source_id, sense.source_url, sense.license_name
+        );
+    }
+    out
+}
+
 fn source_header(capability: &str, prompt: &str, status: &str, source_count: usize) -> String {
     let mut out = String::new();
     push_lino_node(&mut out, 0, "source_capability", None);
@@ -121,25 +177,19 @@ pub(crate) fn execute(
     config: SolverConfig,
     log: &mut EventLog,
 ) -> SymbolicAnswer {
+    let senses = crate::solver_search::record_external_search(
+        &config,
+        log,
+        prompt,
+        crate::language::detect(prompt),
+    );
+    let mut composed_without_capture = false;
     let body = if config.offline {
-        // `record_external_search` records the policy boundary. Calling it even
-        // though the result is known empty keeps this path observationally the
-        // same as every other source lookup.
-        let senses = crate::solver_search::record_external_search(
-            &config,
-            log,
-            prompt,
-            crate::language::detect(prompt),
-        );
+        // The walk above already recorded the policy boundary, keeping this
+        // path observationally the same as every other source lookup.
         debug_assert!(senses.is_empty());
         unavailable(capability, prompt, "offline")
     } else {
-        let senses = crate::solver_search::record_external_search(
-            &config,
-            log,
-            prompt,
-            crate::language::detect(prompt),
-        );
         for sense in &senses {
             log.append(
                 "source_capability:evidence",
@@ -152,7 +202,14 @@ pub(crate) fn execute(
             );
         }
         match capability {
-            "compose_from_sources" => compose_source_evidence(prompt, &senses),
+            "compose_from_sources" => {
+                log.append(
+                    "compose:source_graph",
+                    compose_source_evidence(prompt, &senses),
+                );
+                composed_without_capture = senses.is_empty();
+                compose_document(prompt, &senses)
+            }
             "concept_measurement_lookup" => measurement_source_evidence(prompt, &senses),
             _ => unavailable(capability, prompt, "unsupported_source_projection"),
         }
@@ -163,7 +220,7 @@ pub(crate) fn execute(
         capability,
         &format!("response:{capability}"),
         &body,
-        if body.contains("status \"unavailable\"") {
+        if body.contains("status \"unavailable\"") || composed_without_capture {
             0.0
         } else {
             0.8

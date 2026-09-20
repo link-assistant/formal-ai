@@ -1415,3 +1415,51 @@ multilingual_responses
     intent coding_source_module_registration
     language rust
     text "pub mod {module};\n"
+  response response_compose_boundary_note_en
+    intent compose_boundary_note
+    language en
+    text "Every statement below is carried by a cited source; nothing was added beyond them."
+  response response_compose_boundary_note_ru
+    intent compose_boundary_note
+    language ru
+    text "Каждое утверждение ниже подтверждено источником; ничего сверх этого не добавлено."
+  response response_compose_boundary_note_hi
+    intent compose_boundary_note
+    language hi
+    text "नीचे का हर कथन एक उद्धृत स्रोत से है; उसके अतिरिक्त कुछ नहीं जोड़ा गया।"
+  response response_compose_boundary_note_zh
+    intent compose_boundary_note
+    language zh
+    text "以下每一条陈述都有引用来源；未添加来源之外的任何内容。"
+  response response_compose_sources_heading_en
+    intent compose_sources_heading
+    language en
+    text "Sources"
+  response response_compose_sources_heading_ru
+    intent compose_sources_heading
+    language ru
+    text "Источники"
+  response response_compose_sources_heading_hi
+    intent compose_sources_heading
+    language hi
+    text "स्रोत"
+  response response_compose_sources_heading_zh
+    intent compose_sources_heading
+    language zh
+    text "来源"
+  response response_compose_no_verified_capture_en
+    intent compose_no_verified_capture
+    language en
+    text "No verified source statement was captured for this request, so nothing was composed."
+  response response_compose_no_verified_capture_ru
+    intent compose_no_verified_capture
+    language ru
+    text "Для этого запроса не получено ни одного подтверждённого источником утверждения, поэтому ничего не составлено."
+  response response_compose_no_verified_capture_hi
+    intent compose_no_verified_capture
+    language hi
+    text "इस अनुरोध के लिए कोई सत्यापित स्रोत-कथन प्राप्त नहीं हुआ, इसलिए कुछ भी नहीं लिखा गया।"
+  response response_compose_no_verified_capture_zh
+    intent compose_no_verified_capture
+    language zh
+    text "没有为该请求捕获任何经来源验证的陈述，因此未作任何撰写。"

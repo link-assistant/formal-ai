@@ -904,9 +904,25 @@ Ordered; each independently verifiable and commit-sized.
       `clarification`'s five-language role surfaces, and this leaf removes only
       the three memorized literals, so the class stays routed while the
       memorization goes (plan 00 §9 X12, X13).**
-- [ ] 14. Compose: the composition procedure over a retrieved concept graph
+- [x] 14. Compose: the composition procedure over a retrieved concept graph
       (**after plans 01 and 04**); close #722 once plan 04's clause-splitting
       leaf has landed.
+      **Done (2026-09-20). The procedure is `compose_document`
+      (`src/source_capability.rs`): over the distinct content-addressed senses
+      the discovery walk captured, it emits a title, the localized boundary
+      note, each gloss verbatim with its `[n]` marker, and a sources footer
+      naming every source, URL and licence — and nothing else, so a
+      "few pages" request with one captured statement composes one statement
+      (pinned: the document's prose is exactly the boundary note plus the
+      captured glosses). An empty graph composes nothing and says so in the
+      response language (`compose_no_verified_capture`, four languages in
+      `data/seed/multilingual-responses-agentic.lino`, alongside
+      `compose_boundary_note` and `compose_sources_heading`). `execute` keeps
+      the attributable LN graph in the event log (`compose:source_graph`) and
+      answers with the document; composing without verified capture scores
+      0.0. Plan 04's clause-splitting landed with its L6-L8 batch, and the
+      `Привет, напиши мне эссе` decomposition case now reaches the act, so
+      #722 closes.**
 - [x] 15. Demonstrate: bind `language_name` to
       `SolverConfig::forced_response_language`; answer from a grounded record;
       close #724.

@@ -8,7 +8,7 @@
 use formal_ai::concept_lookup::ConceptSense;
 use formal_ai::relative_meta_logic::SourceTier;
 use formal_ai::solver::{SolverConfig, UniversalSolver};
-use formal_ai::source_capability::{compose_source_evidence, measurement_source_evidence};
+use formal_ai::source_capability::{compose_document, compose_source_evidence, measurement_source_evidence};
 
 fn sense(gloss: &str, source: &str, url: &str) -> ConceptSense {
     ConceptSense {
@@ -106,5 +106,82 @@ fn offline_measurement_executes_and_reports_the_observed_boundary() {
     assert_eq!(
         answer.answer,
         "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"How tall does a mature birch normally grow?\"\n  status \"unavailable\"\n  reason \"offline\"\n  source_count \"0\"\n"
+    );
+}
+
+#[test]
+fn composition_procedure_builds_an_attributable_document() {
+    let document = compose_document(
+        "Write me an extended piece on how the uncertainty principle came about.",
+        &[
+            sense(
+                "Heisenberg stated the uncertainty principle in 1927.",
+                "source-a",
+                "https://a.invalid/uncertainty",
+            ),
+            sense(
+                "The principle bounds how precisely paired values can be known.",
+                "source-b",
+                "https://b.invalid/uncertainty",
+            ),
+        ],
+    );
+    assert!(document.starts_with("# "), "{document}");
+    assert!(
+        document.contains("Heisenberg stated the uncertainty principle in 1927."),
+        "{document}"
+    );
+    assert!(
+        document.contains("[1]") && document.contains("[2]"),
+        "every statement carries its citation marker: {document}"
+    );
+    assert!(
+        document.contains("https://a.invalid/uncertainty")
+            && document.contains("https://b.invalid/uncertainty"),
+        "the sources footer names every url: {document}"
+    );
+    assert!(document.contains("fixture-license"), "{document}");
+}
+
+#[test]
+fn composition_procedure_adds_nothing_beyond_the_cited_statements() {
+    // A "few pages" request with one captured statement composes one
+    // statement: the document's prose is the boundary note and the glosses,
+    // nothing else. Padding to the requested length would be invention.
+    let document = compose_document(
+        "Write me a few pages on birch growth.",
+        &[sense(
+            "A mature birch commonly reaches 20 metres.",
+            "source-a",
+            "https://a.invalid/birch",
+        )],
+    );
+    let prose = document
+        .lines()
+        .filter(|line| {
+            let trimmed = line.trim();
+            !trimmed.is_empty()
+                && !trimmed.starts_with('#')
+                && !trimmed.starts_with('[')
+                && !trimmed.starts_with("http")
+        })
+        .collect::<Vec<_>>();
+    assert!(
+        prose.iter().any(|line| line.contains("20 metres")),
+        "{document}"
+    );
+    assert_eq!(
+        prose.len(),
+        2,
+        "the prose must be the boundary note and the captured statement only: {document}"
+    );
+}
+
+#[test]
+fn composition_procedure_composes_nothing_without_verified_capture() {
+    let document = compose_document("Write me a few pages on birch growth.", &[]);
+    assert!(
+        document.contains("verified") && !document.starts_with("# "),
+        "an empty graph must report the observed boundary, not compose: {document}"
     );
 }
