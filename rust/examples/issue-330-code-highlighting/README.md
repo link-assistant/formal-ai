@@ -1,7 +1,7 @@
 # Example — Syntax highlighting & copy buttons (issue #330)
 
 This example accompanies [issue #330](https://github.com/link-assistant/formal-ai/issues/330)
-and its [case study](../../docs/case-studies/issue-330/README.md). It shows the
+and its [case study](../../../docs/case-studies/issue-330/README.md). It shows the
 two pieces the feature adds to the chat UI and **how to run and test them**:
 
 1. `list_files.rs` — the exact Rust program the agent returns for *"list the

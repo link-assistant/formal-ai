@@ -6,10 +6,10 @@
     <title>Issue #1963 — UI/UX polish harness</title>
     <!-- Link the REAL shipped stylesheet so the harness renders exactly what
          the desktop app renders. The DOM below is copied verbatim from the
-         React render functions in src/web/app.js (ThinkingPreview,
+         React render functions in js/app.js (ThinkingPreview,
          PendingAssistantBubble, the desktop services + update panels, and the
          topbar), so every class resolves against production CSS. -->
-    <link rel="stylesheet" href="../src/web/styles.css" />
+    <link rel="stylesheet" href="../js/styles.css" />
     <style>
       /* Harness-only chrome — never ships. Lets the page flow for a full-height
          screenshot instead of the app's fixed 100dvh viewport. */
