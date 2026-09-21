@@ -343,9 +343,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
+          cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Install web test dependencies
-        run: npm ci --prefix tests/e2e --no-audit --no-fund
+        run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
       - name: Run registered gates (stage web)
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
@@ -1122,7 +1122,7 @@ jobs:
         with:
           check: e2e-local
           paths: >-
-            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock rust/tests/e2e package.json package-lock.json scripts .github/workflows/release.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock rust/tests/e2e js package.json bun.lock scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Setup Bun
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -1136,7 +1136,7 @@ jobs:
         with:
           node-version: '24.x'
           cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
+          cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Install web bundle dependencies
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bun install --frozen-lockfile
@@ -1146,7 +1146,7 @@ jobs:
       - name: Install Playwright and dependencies
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -1154,7 +1154,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('rust/tests/e2e/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
       - name: Install Playwright system dependencies (best effort)
@@ -1162,13 +1162,13 @@ jobs:
         timeout-minutes: 6
         continue-on-error: true
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npx playwright install-deps chromium
       - name: Install Playwright browsers
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 10
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npx playwright install chromium
       - name: Sync data/seed into js/seed (deployment mirror)
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -1176,14 +1176,14 @@ jobs:
       - name: Run local e2e tests
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npx playwright test --config=playwright.local.config.js
       - name: Upload Playwright report on failure
         if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-local
-          path: tests/e2e/playwright-report/
+          path: rust/tests/e2e/playwright-report/
           retention-days: 7
       - name: Upload generated /download screenshots
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -1444,29 +1444,29 @@ jobs:
         with:
           node-version: '24.x'
           cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
+          cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Install Playwright and dependencies
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npm ci --no-audit --no-fund
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('tests/e2e/package-lock.json') }}
+          key: ${{ runner.os }}-playwright-${{ hashFiles('rust/tests/e2e/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
       - name: Install Playwright system dependencies (best effort)
         timeout-minutes: 6
         continue-on-error: true
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npx playwright install-deps chromium
       - name: Install Playwright browsers
         timeout-minutes: 10
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           npx playwright install chromium
       - name: Wait for GitHub Pages deployment
         env:
@@ -1474,14 +1474,14 @@ jobs:
         run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-pages.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
       - name: Run GitHub Pages e2e tests
         run: |
-          cd tests/e2e
+          cd rust/tests/e2e
           PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-pages
-          path: tests/e2e/playwright-report/
+          path: rust/tests/e2e/playwright-report/
           retention-days: 7
   pipeline-status:
     name: Pipeline Status

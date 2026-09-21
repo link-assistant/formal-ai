@@ -6,8 +6,13 @@
 //! using changelog fragments in changelog.d/.
 //!
 //! Key behavior:
-//! - Detects if `version = "..."` line has changed in Cargo.toml
-//! - Fails the CI check if manual version change is detected
+//! - Reads the crate version at HEAD and at the base branch tip,
+//!   whichever manifest layout each side uses (root or rust/)
+//! - Fails the CI check when the two versions differ, so a pull
+//!   request cannot bump, lower, or introduce a version on its own
+//! - A version that arrived by merging the base branch back in keeps
+//!   both sides equal and passes; a moved manifest no longer reads as
+//!   a version change the way a raw merge-base diff did
 //! - Skips check for automated release branches (changelog-manual-release-*)
 //!
 //! Usage: rust-script scripts/check-version-modification.rs
@@ -19,7 +24,7 @@
 //!
 //! Exit codes:
 //!   - 0: No manual version changes detected (or check skipped)
-//!   - 1: Manual version changes detected
+//!   - 1: Manual version changes detected, or a side could not be read
 //!
 //! ```cargo
 //! [package]
@@ -29,16 +34,15 @@
 //! regex = "1"
 //! ```
 
+use regex::Regex;
 use std::env;
+use std::fs;
 use std::path::Path;
 use std::process::{Command, exit};
-use regex::Regex;
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
-        Ok(output) => {
-            String::from_utf8_lossy(&output.stdout).trim().to_string()
-        }
+        Ok(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
         Err(_) => String::new(),
     }
 }
@@ -90,36 +94,35 @@ fn get_rust_root() -> String {
     ".".to_string()
 }
 
-fn get_cargo_toml_path(rust_root: &str) -> String {
-    if rust_root == "." {
+fn version_in(manifest: &str) -> Option<String> {
+    let pattern = Regex::new(r#"(?m)^version\s*=\s*"([^"]+)""#).unwrap();
+    pattern.captures(manifest).map(|caps| caps[1].to_string())
+}
+
+fn head_version() -> Option<String> {
+    let rust_root = get_rust_root();
+    let path = if rust_root == "." {
         "Cargo.toml".to_string()
     } else {
         format!("{}/Cargo.toml", rust_root)
-    }
+    };
+    let manifest = fs::read_to_string(&path).ok()?;
+    version_in(&manifest)
 }
 
-fn get_cargo_toml_diff(cargo_toml_path: &str) -> String {
-    let base_ref = env::var("GITHUB_BASE_REF").unwrap_or_else(|_| "main".to_string());
-
-    // Ensure we have the base branch
-    exec_ignore_error("git", &["fetch", "origin", &base_ref, "--depth=1"]);
-
-    // Get the diff for Cargo.toml
-    exec(
-        "git",
-        &["diff", &format!("origin/{}...HEAD", base_ref), "--", cargo_toml_path],
-    )
-}
-
-fn has_version_change(diff: &str) -> bool {
-    if diff.is_empty() {
-        return false;
+fn base_version(base_ref: &str) -> Option<String> {
+    // The base branch may predate the rust/ layout, so try the root
+    // manifest first and the rust/ one second.
+    for path in ["Cargo.toml", "rust/Cargo.toml"] {
+        let manifest = exec("git", &["show", &format!("origin/{base_ref}:{path}")]);
+        if manifest.is_empty() {
+            continue;
+        }
+        if let Some(version) = version_in(&manifest) {
+            return Some(version);
+        }
     }
-
-    // Look for changes to the version line
-    // Match lines that start with + or - followed by version = "..."
-    let version_change_pattern = Regex::new(r#"(?m)^[+-]version\s*=\s*""#).unwrap();
-    version_change_pattern.is_match(diff)
+    None
 }
 
 fn main() {
@@ -137,30 +140,37 @@ fn main() {
         exit(0);
     }
 
-    // Get and check the diff
-    let rust_root = get_rust_root();
-    let cargo_toml_path = get_cargo_toml_path(&rust_root);
-    let diff = get_cargo_toml_diff(&cargo_toml_path);
+    let base_ref = env::var("GITHUB_BASE_REF").unwrap_or_else(|_| "main".to_string());
+    exec_ignore_error("git", &["fetch", "origin", &base_ref, "--depth=1"]);
 
-    if diff.is_empty() {
-        println!("No changes to Cargo.toml detected.");
-        println!("Version check passed.");
-        exit(0);
-    }
+    let Some(head) = head_version() else {
+        eprintln!("Error: Could not read a crate version from the checked-out tree.");
+        eprintln!("The release pipeline needs a version field in Cargo.toml.");
+        exit(1);
+    };
 
-    // Check for version changes
-    if has_version_change(&diff) {
-        eprintln!("Error: Manual version change detected in Cargo.toml!\n");
+    let Some(base) = base_version(&base_ref) else {
+        eprintln!(
+            "Error: Could not read a crate version from origin/{}.",
+            base_ref
+        );
+        eprintln!("Failing closed so a fetch problem cannot pass as \"no change\".");
+        exit(1);
+    };
+
+    if head != base {
+        eprintln!("Error: Manual version change detected!");
+        eprintln!("  pull request version: {}", head);
+        eprintln!("  origin/{} version: {}", base_ref, base);
+        eprintln!();
         eprintln!("Versions are managed automatically by the CI/CD pipeline.");
-        eprintln!("Please do not modify the version field directly.\n");
+        eprintln!("Please do not modify the version field directly.");
         eprintln!("To trigger a release, add a changelog fragment to changelog.d/");
-        eprintln!("with the appropriate bump type (major, minor, or patch).\n");
-        eprintln!("See changelog.d/README.md for more information.\n");
-        eprintln!("If you need to undo your version change, run:");
-        eprintln!("  git checkout origin/main -- Cargo.toml");
+        eprintln!("with the appropriate bump type (major, minor, or patch).");
+        eprintln!("See changelog.d/README.md for more information.");
         exit(1);
     }
 
-    println!("Cargo.toml was modified but version field was not changed.");
+    println!("Crate version matches origin/{} ({}).", base_ref, head);
     println!("Version check passed.");
 }

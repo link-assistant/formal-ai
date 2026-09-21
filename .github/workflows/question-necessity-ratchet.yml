@@ -7,7 +7,7 @@ on:
       - '.github/workflows/question-necessity-ratchet.yml'
       - '**.rs'
       - '**/Cargo.toml'
-      - 'Cargo.lock'
+      - 'rust/Cargo.lock'
       - 'data/benchmarks/question-necessity-suite.lino'
       - 'data/seed/question-necessity.lino'
   push:
@@ -15,7 +15,7 @@ on:
     paths:
       - '**.rs'
       - '**/Cargo.toml'
-      - 'Cargo.lock'
+      - 'rust/Cargo.lock'
       - 'data/benchmarks/question-necessity-suite.lino'
       - 'data/seed/question-necessity.lino'
       - '.github/workflows/question-necessity-ratchet.yml'

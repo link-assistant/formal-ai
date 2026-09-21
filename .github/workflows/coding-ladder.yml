@@ -11,7 +11,7 @@ on:
     paths:
       - '**.rs'
       - '**/Cargo.toml'
-      - 'Cargo.lock'
+      - 'rust/Cargo.lock'
       - 'data/seed/**'
       - 'data/meta/repository-workspace-protocol.lino'
       - 'data/meta/ladder-ratchet.lino'
@@ -22,8 +22,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - 'src/cli_solve.rs'
-      - 'src/repository_workspace/**'
+      - 'rust/src/cli_solve.rs'
+      - 'rust/src/repository_workspace/**'
       - 'data/meta/repository-workspace-protocol.lino'
       - 'data/meta/ladder-ratchet.lino'
       - 'data/meta/ci-gates/coding-ladder.lino'

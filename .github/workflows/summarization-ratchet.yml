@@ -25,20 +25,20 @@ on:
     # Duplicated below rather than shared through a YAML anchor: GitHub Actions
     # does not expand anchors in workflow files.
     paths:
-      - 'src/summarization/**'
-      - 'src/cli_summarization.rs'
+      - 'rust/src/summarization/**'
+      - 'rust/src/cli_summarization.rs'
       - 'data/summarization/**'
       - '**/Cargo.toml'
-      - 'Cargo.lock'
+      - 'rust/Cargo.lock'
       - '.github/workflows/summarization-ratchet.yml'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - 'src/summarization/**'
-      - 'src/cli_summarization.rs'
+      - 'rust/src/summarization/**'
+      - 'rust/src/cli_summarization.rs'
       - 'data/summarization/**'
       - '**/Cargo.toml'
-      - 'Cargo.lock'
+      - 'rust/Cargo.lock'
       - '.github/workflows/summarization-ratchet.yml'
   workflow_dispatch:
 
