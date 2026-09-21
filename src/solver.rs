@@ -331,7 +331,7 @@ impl UniversalSolver {
         let _forced_language_guard = crate::language::set_forced_language(
             self.config
                 .forced_response_language
-                .or_else(|| crate::meta_method_dispatch::established_response_language(history))
+                .or_else(|| crate::meta_method_answers::established_response_language(history))
                 .and_then(crate::language::from_slug),
         );
 

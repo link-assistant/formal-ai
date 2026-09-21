@@ -2,32 +2,25 @@ self_ast_census
   target src/meta_method_dispatch.rs
   language rust
   fidelity signature
-  byte_len 45381
-  line_count 1041
-  content_id source_module_cae99d2fe677d999
-  symbol_count 24
+  byte_len 38730
+  line_count 870
+  content_id source_module_db34dbf1fd5c8671
+  symbol_count 17
   symbols
-    function try_dispatch 36 215
-    const SOLVER_CAPABILITIES 221 232
-    function try_capability_route 240 576
-    function promoted_calendar_claims 582 587
-    function github_repository_traffic_claims 593 599
-    function capability_route_preempts 609 627
-    function solver_route_is_authoritative 637 653
-    function record_capability_route 655 671
-    function capability_gap 673 703
-    function request_anchors 709 755
-    function established_response_language 764 770
-    function response_language_demonstration 772 808
-    function explain_previous_turn 810 823
-    function try_learned_method 834 878
-    struct MethodRuntime 881 885
-    function new 888 909
-    function try_attributed_runtime 912 938
-    function try_response_language_variant 940 955
-    function try_diagnostic 957 995
-    function record_method 997 999
-    function record_method_answer 1001 1009
-    function record_contextual_method_answer 1011 1019
-    function refresh_answer_projection 1021 1037
-    function seeded_runtime_text 1039 1041
+    function try_dispatch 38 217
+    const SOLVER_CAPABILITIES 223 234
+    function try_capability_route 242 578
+    function promoted_calendar_claims 584 589
+    function github_repository_traffic_claims 595 601
+    function capability_route_preempts 611 629
+    function solver_route_is_authoritative 639 655
+    function record_capability_route 657 673
+    function try_learned_method 684 728
+    struct MethodRuntime 731 735
+    function new 738 759
+    function try_attributed_runtime 762 788
+    function try_diagnostic 790 828
+    function record_method 830 832
+    function record_method_answer 834 842
+    function record_contextual_method_answer 844 852
+    function refresh_answer_projection 854 870

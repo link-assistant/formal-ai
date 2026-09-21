@@ -902,19 +902,19 @@ src/solver_handlers/calculator_rate.rs	При расчетах валюты я �
 src/solver_handlers/calculator_rate.rs	Я распознал вопрос о курсе USD/RUB для расчетов, но link-calculator не смог его вычислить: {error}.
 src/solver_handlers/calculator_rate.rs	मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}.
 src/solver_handlers/calculator_rate.rs	货币计算时我使用 link-calculator。USD/RUB 返回: {calculation_body}.
-src/solver_handlers/calendar.rs	Create event «{title}» on {iso}. Time: {time}, timezone: {tz}. Duration {minutes} minutes.\nImport this .ics file into any calendar:\n{ics}\nOr open it in Google Calendar (no login required):\n{google_url}\nReply 'yes' to confirm.
 src/solver_handlers/calendar.rs	The day after {} is {}. I move {} by {} in the seven-day calendar cycle.
 src/solver_handlers/calendar.rs	The day before {} is {}. I move {} by {} in the seven-day calendar cycle.
 src/solver_handlers/calendar.rs	Today is {}, {iso_date} ({time_zone}).
-src/solver_handlers/calendar.rs	{iso} ({time}, समय क्षेत्र {tz}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\nपुष्टि के लिए «हाँ» उत्तर दें।
 src/solver_handlers/calendar.rs	{} के बाद {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।
 src/solver_handlers/calendar.rs	{} से पहले {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।
 src/solver_handlers/calendar.rs	Перед {} идёт {}. Я сдвинул {} на {} в семидневном календарном цикле.
 src/solver_handlers/calendar.rs	После {} наступает {}. Я сдвинул {} на {} в семидневном календарном цикле.
 src/solver_handlers/calendar.rs	Сегодня {}, {iso_date} ({time_zone}).
-src/solver_handlers/calendar.rs	Создать событие «{title}» на {day} число ({iso}). Время: {time}, часовой пояс: {tz}. Длительность {minutes} минут.\nИмпортируйте этот файл .ics в любой календарь:\n{ics}\nИли откройте в Google Календаре (вход не требуется):\n{google_url}\nОтветьте «да», чтобы подтвердить.
 src/solver_handlers/calendar.rs	आज {} है, {iso_date} ({time_zone}).
-src/solver_handlers/calendar.rs	在 {iso}（{time}，时区 {tz}）创建事件「{title}」。时长 {minutes} 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{google_url}\n回复「是」以确认。
+src/solver_handlers/calendar_create.rs	Create event «{title}» on {iso}. Time: {time}, timezone: {tz}. Duration {minutes} minutes.\nImport this .ics file into any calendar:\n{ics}\nOr open it in Google Calendar (no login required):\n{google_url}\nReply 'yes' to confirm.
+src/solver_handlers/calendar_create.rs	{iso} ({time}, समय क्षेत्र {tz}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\nपुष्टि के लिए «हाँ» उत्तर दें।
+src/solver_handlers/calendar_create.rs	Создать событие «{title}» на {day} число ({iso}). Время: {time}, часовой пояс: {tz}. Длительность {minutes} минут.\nИмпортируйте этот файл .ics в любой календарь:\n{ics}\nИли откройте в Google Календаре (вход не требуется):\n{google_url}\nОтветьте «да», чтобы подтвердить.
+src/solver_handlers/calendar_create.rs	在 {iso}（{time}，时区 {tz}）创建事件「{title}」。时长 {minutes} 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{google_url}\n回复「是」以确认。
 src/solver_handlers/compound_interest.rs	1 {source_currency} in {target_currency}
 src/solver_handlers/compound_interest.rs	1 {target_currency}
 src/solver_handlers/compound_interest.rs	Conversion: {source_currency} -> {target_currency}

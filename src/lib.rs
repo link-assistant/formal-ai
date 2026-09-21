@@ -104,6 +104,7 @@ pub(crate) mod meta_algorithm_builder;
 pub mod meta_construction;
 pub(crate) mod meta_core;
 pub mod meta_frame;
+pub(crate) mod meta_method_answers;
 pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;

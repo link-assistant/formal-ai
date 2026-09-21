@@ -2,60 +2,40 @@ self_ast_census
   target src/solver_handlers/calendar.rs
   language rust
   fidelity signature
-  byte_len 37817
-  line_count 1079
-  content_id source_module_fb38f7d9615855fe
-  symbol_count 52
+  byte_len 17060
+  line_count 486
+  content_id source_module_a4b182b073b0927c
+  symbol_count 32
   symbols
-    enum Weekday 23 31
-    function index 34 44
-    function from_index 46 56
-    function shifted 58 63
-    function slug 65 75
-    function from_slug 80 91
-    function en 93 103
-    function ru 105 115
-    function ru_genitive 117 127
-    function ru_instrumental 129 139
-    function hi 141 151
-    function zh 153 163
-    enum WeekdayOperation 167 170
-    function delta 173 178
-    function event_kind 180 185
-    struct CalendarDate 197 202
-    function iso 205 207
-    function try_calendar_reasoning 210 250
-    function try_current_day_reasoning 252 272
-    function mentions_current_day_question 274 298
-    function mentions_weekday_context 300 305
-    function detect_operation 307 325
-    function detect_weekday 327 335
-    function contains_term 337 347
-    function is_cjk_character 349 351
-    function is_word_character 353 355
-    function current_utc_date 357 361
-    function date_from_unix_days 363 371
-    function days_to_date 373 390
-    function weekday_for_unix_days 392 402
-    function render_current_day_answer 404 416
-    function render_answer 418 490
-    function try_calendar_create_event 505 515
-    function try_routed_calendar_create_event 524 613
-    function default_title 616 623
-    function calendar_claims 629 631
-    function mentions_calendar_create_request 633 680
-    function extract_day_number 682 721
-    function relative_date_offset 723 736
-    function extract_event_title 738 746
-    function compute_target_date_with_rollover 748 768
-    function extract_clock_time 770 817
-    function extract_spoken_hour_time 819 850
-    struct PlaceZone 854 858
-    function resolve_timezone 873 909
-    function normalize_zone_text 913 928
-    function extract_title 930 961
-    function extract_participant_title 963 969
-    function tidy_title 971 1016
-    function strip_action_words 1018 1032
-    function capitalize_first 1034 1039
-    function render_create_confirmation 1041 1079
+    enum Weekday 19 27
+    function index 30 40
+    function from_index 42 52
+    function shifted 54 59
+    function slug 61 71
+    function from_slug 76 87
+    function en 89 99
+    function ru 101 111
+    function ru_genitive 113 123
+    function ru_instrumental 125 135
+    function hi 137 147
+    function zh 149 159
+    enum WeekdayOperation 163 166
+    function delta 169 174
+    function event_kind 176 181
+    struct CalendarDate 193 198
+    function iso 201 203
+    function try_calendar_reasoning 206 246
+    function try_current_day_reasoning 248 268
+    function mentions_current_day_question 270 294
+    function mentions_weekday_context 296 301
+    function detect_operation 303 321
+    function detect_weekday 323 331
+    function contains_term 333 343
+    function is_cjk_character 345 347
+    function is_word_character 349 351
+    function current_utc_date 353 357
+    function date_from_unix_days 359 367
+    function days_to_date 369 386
+    function weekday_for_unix_days 388 398
+    function render_current_day_answer 400 412
+    function render_answer 414 486

@@ -1,0 +1,29 @@
+self_ast_census
+  target src/solver_handlers/calendar_create.rs
+  language rust
+  fidelity signature
+  byte_len 21703
+  line_count 612
+  content_id source_module_e9a6c69c671e415c
+  symbol_count 20
+  symbols
+    function try_calendar_create_event 38 48
+    function try_routed_calendar_create_event 57 146
+    function default_title 149 156
+    function calendar_claims 162 164
+    function mentions_calendar_create_request 166 213
+    function extract_day_number 215 254
+    function relative_date_offset 256 269
+    function extract_event_title 271 279
+    function compute_target_date_with_rollover 281 301
+    function extract_clock_time 303 350
+    function extract_spoken_hour_time 352 383
+    struct PlaceZone 387 391
+    function resolve_timezone 406 442
+    function normalize_zone_text 446 461
+    function extract_title 463 494
+    function extract_participant_title 496 502
+    function tidy_title 504 549
+    function strip_action_words 551 565
+    function capitalize_first 567 572
+    function render_create_confirmation 574 612

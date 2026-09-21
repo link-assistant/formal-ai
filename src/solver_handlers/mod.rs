@@ -6,9 +6,9 @@ pub use benchmark_prompts::{
     fact_store_resolves, try_brainstorming_request, try_conversation_topic_request,
     try_coreference_request, try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
-pub use calendar::{
-    calendar_claims, try_calendar_create_event, try_calendar_reasoning,
-    try_routed_calendar_create_event,
+pub use calendar::try_calendar_reasoning;
+pub use calendar_create::{
+    calendar_claims, try_calendar_create_event, try_routed_calendar_create_event,
 };
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;

@@ -12,25 +12,27 @@ use crate::capability_routing::{Act, ObjectType, RoutingOutcome};
 use crate::engine::{SymbolicAnswer, answer_links_notation};
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::IntentFormalization;
+use crate::meta_method_answers::{
+    capability_gap, established_response_language, explain_previous_turn,
+    response_language_demonstration, try_response_language_variant,
+};
 use crate::method_registry::{
-    MethodExecution, MethodRegistry, MethodRuntimeKind, ProjectLookupPhase, ResponseLanguageVariant,
+    MethodExecution, MethodRegistry, MethodRuntimeKind, ProjectLookupPhase,
 };
 use crate::proof_engine::ProofRenderConfig;
-use crate::solver::{ConversationRole, ConversationTurn, SolverConfig, UniversalSolver};
+use crate::solver::{ConversationTurn, SolverConfig, UniversalSolver};
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_dispatch::{
     ContextualOutcome, ContextualRuntime, PRELUDE_METHOD_NAMES, handler_for_method,
     try_contextual_override,
 };
 use crate::solver_handlers::{
-    CapabilityRuntime, SelfAwarenessRuntime, finalize_simple, try_behavior_rules_with_runtime,
-    try_concept_lookup_with_response_language, try_explicit_repository_lookup,
-    try_feature_capability, try_learn_from_source, try_natural_language_tool_request,
-    try_pattern_inference_with_response_language, try_playwright_script, try_project_lookup,
+    CapabilityRuntime, SelfAwarenessRuntime, try_behavior_rules_with_runtime,
+    try_explicit_repository_lookup, try_feature_capability, try_learn_from_source,
+    try_natural_language_tool_request, try_playwright_script, try_project_lookup,
     try_project_lookup_with_response_language, try_response_language_followup,
     try_routed_calendar_create_event, try_routed_http_fetch_with_offline,
 };
-use crate::translation::detect_response_language;
 
 /// Execute the single registry-backed method-selection path.
 pub fn try_dispatch(
@@ -670,158 +672,6 @@ fn record_capability_route(
     );
 }
 
-fn capability_gap(prompt: &str, log: &mut EventLog, needed: &str, missing: &str) -> SymbolicAnswer {
-    log.append_fields(
-        "capability_gap",
-        &[("needed", needed), ("missing", missing)],
-    );
-    let mut body = seeded_runtime_text(
-        "capability_gap",
-        &[("needed", needed), ("missing", missing)],
-    );
-    let anchors = request_anchors(prompt);
-    if !anchors.is_empty() {
-        let rendered = anchors
-            .iter()
-            .map(|anchor| format!("`{anchor}`"))
-            .collect::<Vec<_>>()
-            .join(", ");
-        log.append("capability_gap:request_anchors", anchors.join("|"));
-        body.push_str(&seeded_runtime_text(
-            "capability_gap_anchors",
-            &[("anchors", &rendered)],
-        ));
-    }
-    finalize_simple(
-        prompt,
-        log,
-        "capability_gap",
-        "response:capability_gap",
-        &body,
-        1.0,
-    )
-}
-
-/// Stable machine-addressable values that must survive an honest capability
-/// gap. A chat surface cannot open the requested workspace, but it must not
-/// discard an exact commit, path or code identifier before handing the request
-/// to a capable client.
-fn request_anchors(prompt: &str) -> Vec<&str> {
-    let mut anchors = Vec::new();
-    for token in prompt.split(|character: char| {
-        !(character.is_ascii_alphanumeric()
-            || matches!(character, '/' | '.' | '_' | '-' | ':' | '@'))
-    }) {
-        let token = token.trim_matches(['.', ',', ':', ';']);
-        let exact_commit =
-            token.len() == 40 && token.chars().all(|character| character.is_ascii_hexdigit());
-        let named_path =
-            token.contains('/') && !token.starts_with("http://") && !token.starts_with("https://");
-        let code_identifier = token.contains('_')
-            && token
-                .chars()
-                .all(|character| character.is_ascii_alphanumeric() || character == '_');
-        // A bare dotted filename (`alpha.txt`, `main.rs`) is an addressable
-        // workspace object with no slash to name it by: a refusal that drops
-        // it leaves the capable client nothing to open. The shape keeps the
-        // anchors honest against prose: one dot, a stem with a letter (a
-        // decimal number is not a filename), and a two-to-five character
-        // extension (so `e.g` stays prose and `1.5.0` stays a version).
-        let dotted_filename = !token.contains('/')
-            && token.split('.').collect::<Vec<_>>().len() == 2
-            && token.split('.').all(|part| !part.is_empty())
-            && {
-                let mut parts = token.split('.');
-                let stem = parts.next().unwrap_or_default();
-                let extension = parts.next().unwrap_or_default();
-                (2..=5).contains(&extension.len())
-                    && extension.chars().any(char::is_alphabetic)
-                    && extension
-                        .chars()
-                        .all(|character| character.is_ascii_alphanumeric())
-                    && stem
-                        .chars()
-                        .next()
-                        .is_some_and(|character| character.is_alphanumeric())
-                    && stem.chars().any(char::is_alphabetic)
-            };
-        if (exact_commit || named_path || code_identifier || dotted_filename)
-            && !anchors.contains(&token)
-        {
-            anchors.push(token);
-        }
-    }
-    anchors
-}
-
-/// The response language the conversation has already established, read from
-/// the user's own turns (plan 10 leaf 15, issue #724).
-///
-/// The marker is the seed-grounded response-language role
-/// ([`detect_response_language`]), so this holds no phrase table of its own and
-/// reads the request the same way the demonstration route does. Only user turns
-/// speak: an assistant turn merely obeyed.
-pub fn established_response_language(history: &[ConversationTurn]) -> Option<&'static str> {
-    history
-        .iter()
-        .rev()
-        .filter(|turn| turn.role == ConversationRole::User)
-        .find_map(|turn| detect_response_language(&turn.content.to_lowercase()))
-}
-
-fn response_language_demonstration(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let target = detect_response_language(normalized)?;
-    let canonical = crate::language::language_name(target).unwrap_or(target);
-    let surface = crate::seed::lexicon()
-        .meanings_with_role(crate::seed::ROLE_RESPONSE_LANGUAGE_MARKER)
-        .find(|meaning| {
-            meaning.defined_by.iter().any(|slug| {
-                crate::language::language_for_concept_slug(slug)
-                    == crate::language::from_slug(target)
-            })
-        })
-        .and_then(|meaning| meaning.words().find(|word| normalized.contains(word)))
-        .unwrap_or(canonical);
-    let demonstration =
-        crate::seed::response_for("greeting", target).unwrap_or_else(|| canonical.to_owned());
-    log.append("language_to", target.to_owned());
-    let body = seeded_runtime_text(
-        "response_language_demonstration",
-        &[
-            ("canonical", canonical),
-            ("surface", surface),
-            ("demonstration", &demonstration),
-        ],
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "response_language_demonstration",
-        "response:response_language_demonstration",
-        &body,
-        1.0,
-    ))
-}
-
-fn explain_previous_turn(prompt: &str, log: &mut EventLog) -> SymbolicAnswer {
-    let body = crate::solver_helpers::last_assistant_turn(log).map_or_else(
-        || seeded_runtime_text("explain_previous_turn_empty", &[]),
-        |previous| seeded_runtime_text("explain_previous_turn_answer", &[("previous", previous)]),
-    );
-    finalize_simple(
-        prompt,
-        log,
-        "explain_previous_turn",
-        "response:explain_previous_turn",
-        &body,
-        0.9,
-    )
-}
-
 /// Execute one adopted learned method as the recipe program its learned
 /// operations project onto (issue #1138 B7, plan 07 leaf 6).
 ///
@@ -937,23 +787,6 @@ fn try_attributed_runtime(
     Some(record_method_answer(prompt, log, answer, method_name))
 }
 
-fn try_response_language_variant(
-    variant: Option<ResponseLanguageVariant>,
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-    language: &str,
-) -> Option<SymbolicAnswer> {
-    match variant? {
-        ResponseLanguageVariant::ConceptLookup => {
-            try_concept_lookup_with_response_language(prompt, log, Some(language))
-        }
-        ResponseLanguageVariant::PatternInference => {
-            try_pattern_inference_with_response_language(prompt, normalized, log, language)
-        }
-    }
-}
-
 fn try_diagnostic(
     solver: &UniversalSolver,
     prompt: &str,
@@ -1034,8 +867,4 @@ fn refresh_answer_projection(
         answer_links_notation(prompt, &answer.intent, &answer.answer, log, &trace_id);
     answer.thinking_steps = log.thinking_steps_for_answer(&answer.answer);
     answer
-}
-
-fn seeded_runtime_text(intent: &str, values: &[(&str, &str)]) -> String {
-    crate::seed::render_response(intent, "en", values).unwrap_or_else(|| intent.to_owned())
 }

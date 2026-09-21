@@ -13,6 +13,7 @@ mod behavior_rules;
 mod benchmark_prompts;
 mod calculator_rate;
 mod calendar;
+mod calendar_create;
 mod calendar_ics;
 mod compound_interest;
 mod conversation_memory;

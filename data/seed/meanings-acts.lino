@@ -285,6 +285,10 @@ meanings
       surface
         text "напиши мне"
       surface
+        text "наброса"
+      surface
+        text "составь"
+      surface
         text "сочинени"
       surface
         text "развёрнут"

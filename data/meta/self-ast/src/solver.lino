@@ -2,9 +2,9 @@ self_ast_census
   target src/solver.rs
   language rust
   fidelity signature
-  byte_len 33922
+  byte_len 33921
   line_count 765
-  content_id source_module_2804ed3acea93399
+  content_id source_module_464d12155449c9e0
   symbol_count 18
   symbols
     struct SolverConfig 66 155
