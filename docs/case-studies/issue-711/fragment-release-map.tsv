@@ -487,6 +487,7 @@ changelog.d/20260730_203000_verified_computer_use.md	0.316.0
 changelog.d/20260731_060000_registry_driven_language_detection.md	0.317.0
 changelog.d/20260731_090000_generalized_computer_use.md	0.316.0
 changelog.d/20260731_170000_language_auto_learning.md	0.317.0
+changelog.d/20260801_000000_issue_710.md	0.351.0
 changelog.d/20260801_000000_issue_885.md	0.318.0
 changelog.d/20260801_081500_issue_709_search_fusion.md	0.320.0
 changelog.d/20260801_094500_bounded_memory_programs.md	0.319.0
@@ -639,3 +640,10 @@ changelog.d/20260912153000-manual-patch.md	0.349.1
 changelog.d/20260913_010000_dockerhub_defaults.md	0.349.2
 changelog.d/20260914_030000_mcp_research_tool_precedence.md	0.350.0
 changelog.d/20260914_120000_hive_mind_hello_world_runs.md	0.350.0
+changelog.d/20260914_210000_projection_rebuild_cost.md	0.351.0
+changelog.d/20260915_020000_coding_discovery.md	0.351.0
+changelog.d/20260915-repository-output-and-retention.md	0.351.0
+changelog.d/20260916-formalization-source-identity.md	0.351.0
+changelog.d/20260916-planned-is-not-satisfied.md	0.351.0
+changelog.d/20260916-recovery-and-authorship-evidence.md	0.351.0
+changelog.d/20260916-requirement-span-integrity.md	0.351.0

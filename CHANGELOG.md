@@ -7,6 +7,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.351.0] - 2026-09-15
+
+### Fixed
+
+- Recovered multi-question composition, multilingual assistant naming,
+  target-less modification clarification, and deterministic free-time response
+  variants; re-verified all 32 dropped-requirement audit rows with honest
+  evidence. A follow-up audit on v0.337.0 confirms 29 working requirements,
+  one superseded folder-routing requirement, and two focused open gaps.
+- Keep the issue #961 authorship regression valid after release automation
+  promotes its generated fragment from `changelog.d` into `CHANGELOG.md`.
+
+### Fixed
+- Rebuilding the native projection of a memory store no longer pays one `fsync` per doublet. The replacement database is scratch until a `rename` publishes it, so its transitions log is now staged without per-append syncing and flushed once before publishing; what reaches the served path is exactly as durable as before. A 112-event rebuild fell from 15.8 s to 0.2 s and the cost is flat instead of superlinear, which is what pushed the held-out computer-use generalization suite past its 600 s budget in one run while the same code finished in 85 s in another (issues #1106, #710).
+
+### Added
+- Coding synthesis can now recognize HumanEval, MBPP, and multilingual conversational task shapes, discover licensed operations from Python documentation and Wikifunctions, compose verified Python programs, and remember provenance-bearing procedures without benchmark-specific bodies. Upstream benchmark runs opt into live discovery with `--online`, while offline replay remains the default.
+- Coding synthesis now distinguishes callable functions from runnable programs, binds requested standard output through multilingual semantic slots, executes whole-program candidates in the bounded workspace, and carries every verified artifact through the shared agent write-tool contract.
+- Abstract Wikifunctions recurrences are now discovered as typed expression trees, grounded through fetched operator descriptions, proven to descend toward a boundary, replayed against source testers, and rendered without embedding benchmark-specific function bodies. A rebuildable non-seed web cache carries the same formalization and multilingual Wikidata aliases to the browser worker.
+- A generalized structural composer now covers arithmetic, collection, scan, ordering, pattern, predicate, symmetry, and weighted-grid families through source-grounded meanings and bounded example execution. The first 20 HumanEval tasks pass without a source cache, and the first 20 MBPP tasks pass when live discovery is enabled.
+- Named integer sequences and source-defined recurrences can now be discovered through the official OEIS JSON API. The bounded catalog follows cross-references, accepts only a strict arithmetic or linear-recurrence grammar, derives index mappings from examples, preserves CC-BY-SA provenance, and replays through the shared content-addressed source cache.
+- Rosetta Code example requests now return attributed GFDL examples, and explicit Rust execution requests run only in the bounded agent workspace.
+
+### Fixed
+- OEIS discovery now isolates the requested content-object noun between the tile and board dimensions, normalizes ordinary English plurals, and builds a canonical tiling query. Explanatory bridge prose can therefore no longer turn a source-backed recurrence request into an unrelated search phrase.
+- Structural coding meanings now use canonical nested surface facts and carry distinct official documentation groundings, preserving semantic-seed integrity without prompt-specific definitions.
+- Conversational coding recognition now considers only the outer instruction after benchmark signatures and assertions are parsed, so programming words inside a fenced document cannot steal an unrelated document-conversion request.
+- Pull requests that change the agentic routing subsystem now run the complete Agent, OpenCode, Claude, and Codex research replay before merge, closing the post-merge-only coverage gap from issue #1137 while unrelated branches retain the cheaper held-out gate.
+- CLI repository roots are resolved to a stable absolute path before benchmark or summarization child workspaces run, so `--repository-root .` no longer turns a valid grader script into a duplicated nested path after `current_dir` changes.
+- Python task recognition now selects the requested target definition after completed helpers, treats blank doctest output as `None`, and preserves periods inside quoted literals while splitting requirements.
+- Coding-structure lookup now normalizes punctuation and tolerates one edit in long single-token concepts, so hyphenation and ordinary misspellings do not create artificial capability gaps.
+- Agentic authoring now keeps read-and-author obligations together: it can derive caller-declared Links Notation fields from an inspected source record, write the result, and verify a decorated client read-back instead of ending after the input read.
+- Agentic structured-document authoring now preserves repeated source-record cardinality, scopes values to each record, retains repeated exact fields, rejects ambiguous partial field-name matches, and accepts schema lists spanning semicolons.
+- Agentic evidence authoring now distinguishes a requested schema or opening line from a literal payload, derives the remaining file content from observed tool results, and keeps repository statement audits ahead of generic file writing.
+- The general agentic planner now treats bare `with` as a literal file-content lead, allowing the real Formal AI Agent CLI self-authoring flow to preserve exact backticked multiline payloads.
+- The self-authoring harness now waits explicitly for its local Formal AI server to bind instead of relying on platform-dependent curl retry behavior.
+- The Rust lockfile now uses `rustls` 0.23.45, resolving RUSTSEC-2026-0285, and the dependency-audit proof parser uses extended `sed` expressions that work on both GNU/Linux and macOS.
+- Live-link checking now excludes the byte-for-byte Python documentation captures used for coding-discovery replay, so expired links inside upstream fixtures do not fail repository documentation checks.
+- Derived-artifact regeneration now formats generated Rust before producing byte-sensitive self-AST and planner fixtures, so a successful regeneration cannot make its own outputs stale.
+
+### Fixed
+
+- Compose literal-output program requirements with independent language, path and output operands; include source-backed CI runtime setup and executable exact-output verification.
+- Bind recipe progress to actual write bytes and ordered command results, and commit only the recipe's source artifacts.
+- Protect original and legacy memory under storage pressure, revalidate eviction at application time, and retain reconstruction provenance for disposable public-source caches.
+
+### Fixed
+
+- Preserve inline formalization sources across shared quote forms and in source
+  order. Domain words no longer replace user text with an unrelated cached work;
+  only an exact normalized catalogue title selects the supported reference.
+- Clarify that the current lexicon's shallow extraction is an implementation
+  limitation, not a claim that open-domain formalization requires neural inference.
+
+### Fixed
+
+- Separate selected methods (`planned`) from validated results (`satisfied`) in
+  the shared need ledger. Native and data-driven planning traces no longer
+  report complete resolution or demonstrated skills before execution.
+- Keep planned and blocked needs in the learning curriculum. Skill promotion
+  still requires its existing test and benchmark evidence gates.
+
+Resume recipe execution after an observed, correctly bound successful retry,
+without discarding the failed attempt or accepting unrelated setup as proof.
+Reject unchanged seeded artifacts as self-authored changes before publishing
+them, and clarify that the authoring helper's no-commit mode does not stage files.
+Reuse the shared source digest helper in the recurrence-cache generator.
+
+Preserve literal output, source URLs, file paths and numbered/unnumbered requirements during shared structural decomposition, including exact Unicode source offsets.
+
 ## [0.350.0] - 2026-09-14
 
 ### Fixed
