@@ -5,7 +5,8 @@ use super::{
     Reverse, argument_choices, argument_coherence, argument_grounded_structures,
     binder_circularity, constant_map_count, dedup_preserving_first, diversify, enumerate_arguments,
     fragment_citation, fragment_coverage, inferred_expression_type, literal_leaves, loose_feeds,
-    node_contains_parameter, node_depth, parameter_reads, python_tokens, types_may_unify,
+    node_contains_parameter, node_depth, parameter_displacement, parameter_reads, python_tokens,
+    types_may_unify,
 };
 
 pub(super) fn checked_recursive_programs(
@@ -349,6 +350,7 @@ pub(super) fn loop_variable_applies<'a>(
                         arguments,
                     ),
                     Reverse(argument_coherence(arguments)),
+                    parameter_displacement(arguments, parameters),
                 )
             });
             for arguments in combinations {
@@ -525,6 +527,7 @@ pub(super) fn loop_variable_applies<'a>(
                         arguments,
                     ),
                     Reverse(argument_coherence(arguments)),
+                    parameter_displacement(arguments, parameters),
                 )
             });
             for arguments in combinations {

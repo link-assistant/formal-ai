@@ -738,6 +738,8 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "method:learned:operations_verified" => {
                 format!("method:learned:operations_verified:{}", event.payload)
             }
+            "calendar:today" => format!("calendar:today:{}", event.payload),
+            "calendar:weekday" => format!("calendar:weekday:{}", event.payload),
             "intent" => format!("intent:{}", event.payload),
             "program_parameter:language" => {
                 format!("program_parameter:language:{}", event.payload)

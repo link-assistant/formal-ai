@@ -458,9 +458,15 @@ fn plan_routed_capability_step_in(
     // refused below by its own outcome, never downgraded to a search.
     let engine_answerable_concept = crate::concepts::extract_concept_query(routed_task).is_some()
         && !super::web_research::concept_lookup_leaves_unknown(routed_task);
+    // The concept half above answers definitions; the fact store answers
+    // questions its records name -- "What is the capital of France?" is the
+    // solver's own `fact_lookup` row, not a search (issue #1138: the gate
+    // read only the concept lookup, so a fact the engine owned leaked to the
+    // open web as soon as no concept matched).
+    let engine_answerable_fact = crate::solver_handlers::fact_store_resolves(routed_task);
     if stage == RoutingStage::OpenWeb
         && !crate::capability_routing::names_open_web(routed_task)
-        && engine_answerable_concept
+        && (engine_answerable_concept || engine_answerable_fact)
     {
         return None;
     }

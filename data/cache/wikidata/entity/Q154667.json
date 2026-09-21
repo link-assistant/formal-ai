@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "Q154667": {
+      "type": "item",
+      "id": "Q154667",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Kingdom of Georgia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Грузинское царство"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "格鲁吉亚王国"
+        },
+        "es": {
+          "language": "es",
+          "value": "Reino de Georgia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "medieval state in Eastern Europe"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство, существовавшее на Кавказе в средние века"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "历史国家"
+        },
+        "es": {
+          "language": "es",
+          "value": "monarquía medieval"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Georgian Empire"
+          },
+          {
+            "language": "en",
+            "value": "Georgia"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Королевство Грузии"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "角兒只"
+          },
+          {
+            "language": "zh",
+            "value": "角儿只"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Kingdom of Georgia"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Грузинское царство"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "格鲁吉亚王国"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Reino de Georgia"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

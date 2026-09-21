@@ -23,10 +23,6 @@ seed_metadata_gaps
     source "data/seed/meanings-calendar.lino"
     record "calendar_date"
     missing "precondition,effect,unit,example"
-  gap seed_metadata_gap_e806f61cf32a59f5
-    source "data/seed/meanings-calendar.lino"
-    record "calendar_timezone_alias"
-    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_6cc33e695eda9fc5
     source "data/seed/meanings-coding-structure-2.lino"
     record "integer_at_least"

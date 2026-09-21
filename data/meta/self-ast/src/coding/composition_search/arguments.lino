@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/composition_search/arguments.rs
   language rust
   fidelity signature
-  byte_len 29639
-  line_count 752
-  content_id source_module_231463e17a3432df
-  symbol_count 25
+  byte_len 30695
+  line_count 778
+  content_id source_module_e6082b7e0702ce77
+  symbol_count 26
   symbols
     function argument_choices 9 149
     function constant_map_count 157 201
@@ -29,6 +29,7 @@ self_ast_census
     function argument_grounded_structures 542 563
     function binder_circularity 565 580
     function argument_coherence 582 600
-    function node_contains_parameter 602 685
-    function fragment_coverage 687 695
-    function normalize_pool 697 752
+    function parameter_displacement 609 626
+    function node_contains_parameter 628 711
+    function fragment_coverage 713 721
+    function normalize_pool 723 778

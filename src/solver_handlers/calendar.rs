@@ -5,13 +5,15 @@
 //! clock or lookup.
 
 use crate::engine::SymbolicAnswer;
+use crate::entity_resolution::edit_budget;
 use crate::event_log::EventLog;
+use crate::fuzzy::typo_distance;
 use crate::language::detect as detect_language;
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT, ROLE_CALENDAR_DIRECTION_PREVIOUS,
     ROLE_CALENDAR_EVENT, ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_RELATIVE_DATE,
-    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_TIMEZONE_ALIAS,
-    ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY, lexicon,
+    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_TODAY,
+    ROLE_CALENDAR_WEEKDAY, lexicon,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -545,7 +547,18 @@ pub fn try_routed_calendar_create_event(
         },
     );
     let (hour, minute) = extract_clock_time(normalized).unwrap_or((17, 0));
-    let tz = resolve_timezone(normalized).unwrap_or("UTC");
+    let place = resolve_timezone(normalized);
+    let tz = match &place {
+        Some(place) => place.zone.as_str(),
+        None => "UTC",
+    };
+    log.append(
+        "calendar:timezone_origin",
+        match &place {
+            Some(place) => format!("entity:{}:{}", place.slug, place.surface),
+            None => String::from("default_utc_no_grounded_place"),
+        },
+    );
     // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
     // back to the matched event noun ("созвон" → "Созвон") before the localized
     // default, so a title-less request still proposes a meaningful event.
@@ -560,7 +573,7 @@ pub fn try_routed_calendar_create_event(
         day,
         hour,
         minute,
-        time_zone: tz,
+        time_zone: tz.to_owned(),
         duration_minutes: 60,
     };
 
@@ -570,7 +583,7 @@ pub fn try_routed_calendar_create_event(
         "calendar:parsed_time",
         format!("{:02}:{:02}", event.hour, event.minute),
     );
-    log.append("calendar:parsed_time_zone", event.time_zone.to_owned());
+    log.append("calendar:parsed_time_zone", event.time_zone.clone());
     log.append("calendar:parsed_title", event.title.clone());
     log.append(
         "calendar:parsed_duration_minutes",
@@ -609,6 +622,14 @@ fn default_title(language: &str) -> &'static str {
     }
 }
 
+/// Whether the calendar handler's own gate accepts this prompt: a date
+/// signal backed by entities (clock hour, timezone, participant) or an
+/// explicit scheduling act. The capability table asks before it answers a
+/// gap with the request (issue #595).
+pub fn calendar_claims(normalized: &str) -> bool {
+    mentions_calendar_create_request(normalized)
+}
+
 fn mentions_calendar_create_request(normalized: &str) -> bool {
     let lex = lexicon();
     let has_day_ref = lex
@@ -628,7 +649,7 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
     if !has_date_signal {
         return false;
     }
-    let has_timezone = mentions_timezone_alias(normalized);
+    let has_timezone = resolve_timezone(normalized).is_some();
     let has_participant = extract_participant_title(normalized).is_some();
     let has_action = lex
         .words_for_role(ROLE_CALENDAR_SCHEDULE_ACTION)
@@ -828,20 +849,82 @@ fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
     None
 }
 
-fn mentions_timezone_alias(normalized: &str) -> bool {
-    lexicon()
-        .words_for_role(ROLE_CALENDAR_TIMEZONE_ALIAS)
-        .iter()
-        .any(|w| contains_term(normalized, w))
-        || normalized.contains("asia/tbilisi")
-        || normalized.contains("tbilisi")
+/// One timezone-bearing place the prompt names: the IANA zone its grounding
+/// resolves to, the entity slug, and the surface that named it.
+struct PlaceZone {
+    zone: String,
+    slug: String,
+    surface: String,
 }
 
-fn resolve_timezone(normalized: &str) -> Option<&'static str> {
-    if mentions_timezone_alias(normalized) {
-        return Some("Asia/Tbilisi");
+/// Resolve the prompt's place mention to an IANA time zone through the entity
+/// registry.
+///
+/// Plan 10 leaf 16 (issue #869): the zone is not a memorized alias table. The
+/// registry's entities are grounded in Wikidata, their `timezone` field is the
+/// IANA zone the grounding script resolves through the entity's country and
+/// the tz database, and a mention is any surface of such an entity the prompt
+/// names — exactly, as part of a CJK token (`柏林时间` contains `柏林`), or
+/// within the same per-eight-characters edit budget `entity_resolution`
+/// corrects remembered names with, so an inflected form (`по Грузии`)
+/// resolves without its own seed row. The longest matching surface wins. A
+/// place whose grounding yields no single zone anchors nothing, and the
+/// caller records which zone it used instead.
+fn resolve_timezone(normalized: &str) -> Option<PlaceZone> {
+    let prompt = normalize_zone_text(normalized);
+    let tokens: Vec<&str> = prompt.split_whitespace().collect();
+    let mut best: Option<PlaceZone> = None;
+    for entity in crate::seed::entity_names() {
+        let Some(zone) = entity.timezone.as_deref() else {
+            continue;
+        };
+        for surface in &entity.surfaces {
+            let candidate = normalize_zone_text(surface);
+            if candidate.is_empty() {
+                continue;
+            }
+            let mentioned = if candidate.contains(' ') {
+                prompt.contains(candidate.as_str())
+            } else {
+                tokens.iter().any(|token| {
+                    **token == *candidate
+                        || token.contains(candidate.as_str())
+                        || typo_distance(token, &candidate) <= edit_budget(&candidate)
+                })
+            };
+            if mentioned
+                && best.as_ref().is_none_or(|current| {
+                    surface.chars().count() > current.surface.chars().count()
+                })
+            {
+                best = Some(PlaceZone {
+                    zone: zone.to_owned(),
+                    slug: entity.slug.clone(),
+                    surface: surface.clone(),
+                });
+            }
+        }
     }
-    None
+    best
+}
+
+/// Compare a place surface and the prompt on letters and digits alone, the
+/// same shape `entity_resolution` corrects remembered names with.
+fn normalize_zone_text(text: &str) -> String {
+    let mut normalized = String::new();
+    let mut pending_space = false;
+    for character in text.to_lowercase().chars() {
+        if character.is_alphanumeric() {
+            if pending_space && !normalized.is_empty() {
+                normalized.push(' ');
+            }
+            pending_space = false;
+            normalized.push(character);
+        } else {
+            pending_space = true;
+        }
+    }
+    normalized
 }
 
 fn extract_title(normalized: &str) -> Option<String> {
@@ -963,7 +1046,7 @@ fn render_create_confirmation(
 ) -> String {
     let iso = event.iso_date();
     let time = format!("{:02}:{:02}", event.hour, event.minute);
-    let tz = event.time_zone;
+    let tz = event.time_zone.as_str();
     let title = &event.title;
     let minutes = event.duration_minutes;
     match language {

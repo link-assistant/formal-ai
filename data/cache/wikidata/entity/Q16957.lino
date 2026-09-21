@@ -1,0 +1,68 @@
+Q16957
+  aliases
+    en (GDR DDR "Deutsche Demokratische Republik" "Communist Germany" "Socialist Germany" "East Germany")
+    es (RDA DDR "República Democrática de Alemania" "Alemania del Este" "República Democrática Alemana" "Alemania Socialista" "Alemania Comunista")
+    ru (DDR "Восточная Германия" "Германская Демократическая Республика")
+    zh ("德意志民主共和国" "民主德国")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q16957
+              numeric-id 16957
+          hash 69134fce674a39f3382130caf84f51e58518fb88
+          property P17
+          snaktype value
+        rank normal
+    P297
+      entry
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value DD
+          hash 2f536445be515328b57b26a02847cadbce49e62c
+          property P297
+          snaktype value
+        rank normal
+  descriptions
+    en "1949–1990 country in central Europe, unified into modern Germany"
+    es "estado socialista de la Europa Central entre 1949 y 1990"
+    hi "मध्य यूरोप का देश (1949–1990)"
+    ru "социалистическое государство в Центральной Европе (1949—1990)"
+    zh "1949年成立於德國蘇佔區的的社會主義國家"
+  id Q16957
+  labels
+    en "German Democratic Republic"
+    es "Alemania Oriental"
+    hi "पूर्व जर्मनी"
+    ru "ГДР"
+    zh "東德"
+  sitelinks
+    enwiki
+      site enwiki
+      title "East Germany"
+    eswiki
+      site eswiki
+      title "República Democrática Alemana"
+    hiwiki
+      site hiwiki
+      title "पूर्व जर्मनी"
+    ruwiki
+      site ruwiki
+      title "Германская Демократическая Республика"
+    zhwiki
+      site zhwiki
+      title "東德"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

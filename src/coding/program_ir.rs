@@ -175,6 +175,19 @@ impl ProgramIr {
         Ok(())
     }
 
+    /// The composed-structure projection: meaning fragments rendered inline
+    /// with their meaning arguments, scope fillers (parameters and literals)
+    /// omitted. This is the notation a derivation records as its
+    /// composition -- the structure the task reduced to, not the opaque
+    /// content hash, which the draft id already carries. `is_structure`
+    /// classifies fragment ids; runtime fragments (language materialization
+    /// templates like `python_materialize_tuple`) are rendering machinery,
+    /// not task structure, so they render as whatever they wrap.
+    #[must_use]
+    pub fn composition_notation(&self, is_structure: impl Fn(&str) -> bool) -> String {
+        fragment_spine(&self.body, &is_structure).unwrap_or_default()
+    }
+
     /// The canonical `.lino` projection; also the content-hash input.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
@@ -574,6 +587,143 @@ fn push_type(output: &mut String, indent: usize, ty: &IrType) {
             push_type(output, indent + 4, left);
             push_lino_node(output, indent + 2, "right", None);
             push_type(output, indent + 4, right);
+        }
+    }
+}
+
+/// Inline rendering of a node's fragment spine for
+/// [`ProgramIr::composition_notation`]: meaning fragments render as
+/// `name(arguments)` over the arguments that themselves carry structure,
+/// comma-joined; parameters and literals are scope fillers and drop out. A
+/// subtree with no meaning fragment at all renders `None`.
+fn fragment_spine(
+    node: &IrNode,
+    is_structure: &(impl Fn(&str) -> bool + ?Sized),
+) -> Option<String> {
+    let joined = |parts: &[Option<String>]| {
+        let rendered: Vec<String> = parts.iter().filter_map(Clone::clone).collect();
+        (!rendered.is_empty()).then(|| rendered.join(","))
+    };
+    match node {
+        IrNode::Parameter { .. } | IrNode::Literal { .. } => None,
+        IrNode::Apply {
+            fragment,
+            arguments,
+        } => {
+            let spines: Vec<Option<String>> = arguments
+                .iter()
+                .map(|argument| fragment_spine(argument, is_structure))
+                .collect();
+            // The membership connective applies a collection or character
+            // class to an element: when exactly one side carries composed
+            // structure, that side is the predicate and membership is the
+            // application syntax, so the class stands alone in the notation
+            // (`reduce_count(vowel_character_class)`, not
+            // `reduce_count(membership(vowel_character_class))`). With
+            // structure on both sides membership is real structure and
+            // renders in full.
+            if fragment == "membership"
+                && spines.iter().filter(|spine| spine.is_some()).count() == 1
+            {
+                return spines.into_iter().flatten().next();
+            }
+            // A runtime fragment is materialization machinery: it renders as
+            // whatever meaning structure it wraps and never under its own
+            // name.
+            if !is_structure(fragment) {
+                return joined(&spines);
+            }
+            match joined(&spines) {
+                Some(arguments) => Some(format!("{fragment}({arguments})")),
+                None => Some(fragment.clone()),
+            }
+        }
+        IrNode::Each { items, body, .. } => joined(&[
+            fragment_spine(items, is_structure),
+            fragment_spine(body, is_structure),
+        ])
+        .map(|parts| format!("for_each({parts})")),
+        IrNode::Fold {
+            items,
+            initial,
+            body,
+            ..
+        } => joined(&[
+            fragment_spine(items, is_structure),
+            fragment_spine(initial, is_structure),
+            fragment_spine(body, is_structure),
+        ])
+        .map(|parts| format!("fold({parts})")),
+        IrNode::Repeat { from, to, body, .. } => joined(&[
+            fragment_spine(from, is_structure),
+            fragment_spine(to, is_structure),
+            fragment_spine(body, is_structure),
+        ])
+        .map(|parts| format!("repeat({parts})")),
+        IrNode::Recurrence {
+            base,
+            transition,
+            index,
+            ..
+        } => {
+            let mut parts: Vec<Option<String>> = base
+                .iter()
+                .map(|node| fragment_spine(node, is_structure))
+                .collect();
+            parts.push(fragment_spine(transition, is_structure));
+            parts.push(fragment_spine(index, is_structure));
+            joined(&parts).map(|parts| format!("recurrence({parts})"))
+        }
+        IrNode::RecursiveReduce {
+            target,
+            items,
+            next,
+            admissible,
+            base_test,
+            base,
+            local,
+            reducer,
+            combine,
+            ..
+        } => {
+            let mut parts: Vec<Option<String>> = target
+                .iter()
+                .map(|node| fragment_spine(node, is_structure))
+                .collect();
+            parts.push(fragment_spine(items, is_structure));
+            parts.extend(next.iter().map(|node| fragment_spine(node, is_structure)));
+            parts.push(
+                admissible
+                    .as_deref()
+                    .and_then(|node| fragment_spine(node, is_structure)),
+            );
+            parts.push(fragment_spine(base_test, is_structure));
+            parts.push(fragment_spine(base, is_structure));
+            parts.push(fragment_spine(local, is_structure));
+            parts.push(Some(reducer.clone()));
+            parts.push(Some(combine.clone()));
+            joined(&parts).map(|parts| format!("recursive_reduce({parts})"))
+        }
+        IrNode::Condition {
+            test,
+            then_branch,
+            else_branch,
+        } => joined(&[
+            fragment_spine(test, is_structure),
+            fragment_spine(then_branch, is_structure),
+            fragment_spine(else_branch, is_structure),
+        ])
+        .map(|parts| format!("condition({parts})")),
+        IrNode::Bind { value, body, .. } => joined(&[
+            fragment_spine(value, is_structure),
+            fragment_spine(body, is_structure),
+        ])
+        .map(|parts| format!("bind({parts})")),
+        IrNode::Emit { value } => {
+            fragment_spine(value, is_structure).map(|part| format!("emit({part})"))
+        }
+        IrNode::Return { value } => {
+            fragment_spine(value, is_structure).map(|part| format!("return({part})"))
         }
     }
 }

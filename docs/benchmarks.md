@@ -365,14 +365,19 @@ The latest committed rows are dated `2026-09-18`: HumanEval's coding row is the
 (HumanEval 164 with `--online`; MBPP 500 cold-offline, recorded with its
 `mode offline` field so the runner command in the ledger reproduces it exactly),
 all on solver version `0.350.0` with the deterministic solver at
-`temperature = 0.0`. The `2026-09-15` first-20 rows remain as regression
-controls. Other suite rows remain at their latest `2026-09-07` measurements:
+`temperature = 0.0`. The same-day MBPP `--online` full-slice run scored 60/500
+and the 164-case cross-check scored 25/164 in both modes; the headline stays
+the reproducible cold-offline run. The `2026-09-15` first-20 rows remain as
+regression controls. Other suite rows remain at their latest `2026-09-07`
+measurements:
 
 | Suite | License | Slice | Grading | Passed | Total |
 | --- | --- | ---: | --- | ---: | ---: |
 | HumanEval | MIT | 164 | upstream unit test executed | 14 | 164 |
 | HumanEval | MIT | 20 | upstream unit test executed | 20 | 20 |
 | MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery | 49 | 500 |
+| MBPP | Apache-2.0 | 500 | upstream `test_list` asserts executed with live source discovery (`--online`) | 60 | 500 |
+| MBPP | Apache-2.0 | 164 | upstream `test_list` asserts executed with live source discovery | 25 | 164 |
 | MBPP | Apache-2.0 | 20 | upstream `test_list` asserts executed with live source discovery | 20 | 20 |
 | GSM8K | MIT | 20 | final number vs. `####` gold | 2 | 20 |
 | MATH (`prm800k` 500-problem split) | MIT | 20 | final `\boxed{...}` vs. gold | 0 | 20 |

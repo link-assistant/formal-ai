@@ -155,6 +155,10 @@ seed_metadata_gaps
     source "data/seed/meanings-units.lino"
     record "length"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_bb5bdd91a95dab7d
+    source "data/seed/meanings-units.lino"
+    record "measurement_property_height"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_2050097244db551d
     source "data/seed/meanings-units.lino"
     record "month"

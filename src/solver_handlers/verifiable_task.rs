@@ -370,6 +370,12 @@ fn derive_count(
     if count == 0 || urls.is_empty() {
         return Vec::new();
     }
+    // Same trace contract as the gsm8k/math composition paths: the counted
+    // category and the derived count are recorded as evidence so a membership
+    // count is auditable as a composition step, not only as a membership
+    // source list (issue #314: the object-counting trace prefixes).
+    log.append("composition:category", category);
+    log.append("composition:count", count.to_string());
     vec![expression_ir(
         count.to_string(),
         "retrieved_category_membership",
@@ -709,7 +715,7 @@ fn append_unit_check(task: &VerifiableTask, answer: &mut VerifiedAnswer) {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum AnswerAgreement {
+pub enum AnswerAgreement {
     Insufficient,
     Correlated,
     Independent,
@@ -734,7 +740,7 @@ fn derivations_are_disjoint(left: &VerifiedAnswer, right: &VerifiedAnswer) -> bo
             .all(|fragment| !right.fragments.contains(fragment))
 }
 
-fn classify_agreement(answers: &[VerifiedAnswer]) -> AnswerAgreement {
+pub fn classify_agreement(answers: &[VerifiedAnswer]) -> AnswerAgreement {
     if answers.len() < 2 {
         return AnswerAgreement::Insufficient;
     }
@@ -786,49 +792,3 @@ fn symbolic_check(derivation_id: &str, slug: &str, observed: &[u8]) -> Evidence 
     evidence
 }
 
-#[cfg(test)]
-mod agreement_tests {
-    use super::{AnswerAgreement, VerifiedAnswer, classify_agreement};
-
-    fn answer(value: &str, derivation_id: &str, fragments: &[&str]) -> VerifiedAnswer {
-        VerifiedAnswer {
-            value: value.to_owned(),
-            source: String::new(),
-            derivation_id: derivation_id.to_owned(),
-            fragments: fragments
-                .iter()
-                .map(|fragment| (*fragment).to_owned())
-                .collect(),
-            source_urls: Vec::new(),
-            source_licenses: Vec::new(),
-            checks: Vec::new(),
-        }
-    }
-
-    #[test]
-    fn two_independent_derivations_that_disagree_are_rejected() {
-        let answers = [
-            answer("5", "first", &["inverse"]),
-            answer("7", "second", &["substitution"]),
-        ];
-        assert_eq!(classify_agreement(&answers), AnswerAgreement::Disagreement);
-    }
-
-    #[test]
-    fn agreement_requires_disjoint_derivations() {
-        let correlated = [
-            answer("5", "first", &["shared"]),
-            answer("5", "second", &["shared"]),
-        ];
-        assert_eq!(classify_agreement(&correlated), AnswerAgreement::Correlated);
-
-        let independent = [
-            answer("5", "first", &["inverse"]),
-            answer("5.0", "second", &["substitution"]),
-        ];
-        assert_eq!(
-            classify_agreement(&independent),
-            AnswerAgreement::Independent
-        );
-    }
-}

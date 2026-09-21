@@ -460,6 +460,36 @@ fn count_scripts(prompt: &str, rules: &[Rule]) -> ScriptCounts {
     counts
 }
 
+/// Whether a marker occurs in `normalized` at a position that counts.
+///
+/// A marker written in the shared fallback script only counts where it begins
+/// a word: Spanish "escribe" must not claim English "describe". Markers in a
+/// script of their own may sit inside native morphology — Chinese "什么"
+/// following "是" — so they match anywhere, the way their languages write them.
+fn marker_present(normalized: &str, marker: &str, rules: &[Rule], fallback_script: &str) -> bool {
+    let Some(first) = marker.chars().next() else {
+        return false;
+    };
+    let needs_word_start = rules.iter().any(|rule| {
+        rule.script == fallback_script
+            && (rule.start..=rule.end).contains(&u32::from(first))
+            && (!rule.alphabetic_only || first.is_alphabetic())
+    });
+    let mut from = 0;
+    while let Some(at) = normalized[from..].find(marker) {
+        let start = from + at;
+        let word_start = normalized[..start]
+            .chars()
+            .next_back()
+            .is_none_or(|previous| !previous.is_alphabetic());
+        if word_start || !needs_word_start {
+            return true;
+        }
+        from = start + marker.len();
+    }
+    false
+}
+
 /// The language whose markers appear in the prompt, preferring the one whose
 /// script carries the most characters.
 ///
@@ -490,11 +520,10 @@ fn marker_language(
         if contested {
             continue;
         }
-        if !rule
-            .markers
-            .iter()
-            .any(|marker| normalized.contains(&marker.to_lowercase()))
-        {
+        if !rule.markers.iter().any(|marker| {
+            let lowered = marker.to_lowercase();
+            marker_present(&normalized, &lowered, rules, fallback_script)
+        }) {
             continue;
         }
         match best {

@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "Q195972": {
+      "type": "item",
+      "id": "Q195972",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Kingdom of Kartli"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Картлийское царство"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "卡爾特利王國"
+        },
+        "es": {
+          "language": "es",
+          "value": "Reino de Kartli"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "late medieval monarchy in the Caucasus"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "феодальное государство в Восточной Грузии, возникшее во второй половине XV века"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "高加索地区的王国"
+        },
+        "es": {
+          "language": "es",
+          "value": "monarquía tardomedieval y moderna en el Cáucaso (1478-1762)"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "卡特利王國"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Kingdom of Kartli"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Картлийское царство"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "卡尔特利王国"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Reino de Kartli"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

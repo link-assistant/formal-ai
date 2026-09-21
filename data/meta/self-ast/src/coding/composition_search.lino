@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/composition_search.rs
   language rust
   fidelity signature
-  byte_len 24597
-  line_count 583
-  content_id source_module_961aa5eb085a6f87
+  byte_len 24902
+  line_count 592
+  content_id source_module_5c1d39d60175e71e
   symbol_count 13
   symbols
     module analysis 14 14
@@ -13,10 +13,10 @@ self_ast_census
     module lowering 17 17
     module pool 18 18
     module recursive 19 19
-    struct SearchBounds 43 46
-    function default 49 54
-    function search 60 66
-    function search_with_structures 74 499
-    function fragment_citation 507 515
-    function dedup_preserving_first 519 528
-    function print_each_programs 535 583
+    struct SearchBounds 44 47
+    function default 50 55
+    function search 61 67
+    function search_with_structures 75 508
+    function fragment_citation 516 524
+    function dedup_preserving_first 528 537
+    function print_each_programs 544 592

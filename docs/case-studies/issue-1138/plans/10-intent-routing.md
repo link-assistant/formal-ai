@@ -1015,8 +1015,11 @@ Ordered; each independently verifiable and commit-sized.
       note rather than papered over: the solver's web-search seed carries
       no Spanish lexeme, so an es search prompt reaches `web_search`
       nowhere in the intent derivation and answers as an unresolved
-      concept lookup — the es surfaces are future leaf work, and the
-      family never had es rows, so the retirement changes nothing for es.
+      concept lookup — closed later the same day by seeding the es
+      lexeme of `web_search_explicit_prefix`
+      (`data/seed/meanings-web-search-query.lino`), so es search
+      prompts now derive with no row and no per-prompt code, pinned as
+      the gap's closing in the migration suite.
       Family three, `url_navigate`, retired the same day after its bare
       verbs were re-examined: the family's thirty-seven rows were all
       bare lead forms duplicating `url_navigate` role prefix surfaces, a
@@ -1070,9 +1073,10 @@ Ordered; each independently verifiable and commit-sized.
       drafting surfaced rather than fixed. What remains for this leaf:
       the `greet` token and the `test_status`, `assistant_name` and
       `identity` combos are contains matches — separate behavior with
-      their own retirement to draft — the es web-search lexeme debt
-      from family two, and `write_program`'s four keyword rows with
-      their shadowing to untangle.**
+      their own retirement to draft — and `write_program`'s four keyword
+      rows with their shadowing to untangle. The es web-search lexeme
+      debt from family two closed the same day in the seed, pinned as
+      the gap's closing in the migration suite.**
 
 **The ladder and the UI defect.**
 

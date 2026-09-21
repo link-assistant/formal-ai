@@ -117,6 +117,58 @@ pub fn names_incompatible_unit_pair(normalized: &str) -> bool {
     detect_incompatible_unit_pair(normalized).is_some()
 }
 
+/// Whether `normalized` names a quantity arithmetic computes rather than a
+/// measured property a source can look up: a duration between two clock
+/// times, or two units the lexicon places in the same physical dimension (an
+/// exact conversion, "how many grams in a kilogram"). The routing table's
+/// quantity rows read the same interrogative words, so the dispatcher's
+/// capability gate consults this before the measurement lookup executes and
+/// leaves the turn to the calculator.
+pub fn names_arithmetic_quantity(normalized: &str) -> bool {
+    if count_clock_times(normalized) >= 2 {
+        return true;
+    }
+    let lex = lexicon();
+    let mut per_dimension: Vec<(&'static str, usize)> = Vec::new();
+    for unit in lex.meanings_with_role(ROLE_MEASUREMENT_UNIT) {
+        let Some(dim) = dimension_label(lex, unit) else {
+            continue;
+        };
+        let mut matched = false;
+        for word in unit.words() {
+            if contains_unit_word(normalized, word) {
+                matched = true;
+                break;
+            }
+        }
+        if !matched {
+            continue;
+        }
+        match per_dimension.iter_mut().find(|(seen, _)| *seen == dim) {
+            Some(entry) => entry.1 += 1,
+            None => per_dimension.push((dim, 1)),
+        }
+    }
+    per_dimension.iter().any(|(_, count)| *count >= 2)
+}
+
+/// Count `hh:mm`-shaped clock times by their colons: each colon with a digit
+/// on both sides is one clock time, so two of them name a span arithmetic can
+/// subtract.
+fn count_clock_times(normalized: &str) -> usize {
+    let characters: Vec<char> = normalized.chars().collect();
+    characters
+        .iter()
+        .enumerate()
+        .filter(|&(index, character)| {
+            *character == ':'
+                && index > 0
+                && characters[index - 1].is_ascii_digit()
+                && characters.get(index + 1).is_some_and(char::is_ascii_digit)
+        })
+        .count()
+}
+
 /// Return the first matched unit token for each of two distinct physical
 /// dimensions, together with their dimension labels, or `None` if `normalized`
 /// does not mention units from at least two different dimensions.

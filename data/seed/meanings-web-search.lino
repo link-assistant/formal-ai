@@ -486,6 +486,20 @@ meanings
       surface
         text "ढूँढें …"
       surface
+        text "… खोजो"
+      surface
+        text "… खोजें"
+      surface
+        text "… खोजिए"
+      surface
+        text "… ढूंढो"
+      surface
+        text "… ढूँढो"
+      surface
+        text "… ढूंढें"
+      surface
+        text "… ढूँढें"
+      surface
         text "… के बारे में जानें"
     lexeme zh
       surface

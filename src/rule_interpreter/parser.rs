@@ -195,6 +195,7 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
         "word" => Condition::Word(node.first_arg()?, subject),
         "substring" => Condition::Substring(node.first_arg()?, subject),
         "prefix" => Condition::Prefix(node.first_arg()?, subject),
+        "cue_set" => Condition::CueSet(node.first_arg()?, subject),
         "only_characters" => Condition::OnlyCharacters(node.first_arg()?),
         "unbalanced_parentheses" => Condition::UnbalancedParentheses,
         "route_exact" => Condition::RouteExact(node.first_arg()?),

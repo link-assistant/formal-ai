@@ -15,7 +15,7 @@ entity_names
         text "伊隆·马斯克"
     lexeme es
       surface
-        text "Elon Musk" # source Q317521 labels.es.value
+        text "Elon Musk"
   entity donald_trump
     grounded-in Q22686
     lexeme en
@@ -32,7 +32,7 @@ entity_names
         text "唐納·川普"
     lexeme es
       surface
-        text "Donald Trump" # source Q22686 sitelinks.eswiki.title
+        text "Donald Trump"
   entity joe_biden
     grounded-in Q6279
     lexeme en
@@ -49,7 +49,7 @@ entity_names
         text "乔·拜登"
     lexeme es
       surface
-        text "Joe Biden" # source Q6279 sitelinks.eswiki.title
+        text "Joe Biden"
   entity barack_obama
     grounded-in Q76
     lexeme en
@@ -66,7 +66,7 @@ entity_names
         text "贝拉克·奥巴马"
     lexeme es
       surface
-        text "Barack Obama" # source Q76 sitelinks.eswiki.title
+        text "Barack Obama"
   entity vladimir_putin
     grounded-in Q7747
     lexeme en
@@ -83,7 +83,7 @@ entity_names
         text "弗拉基米尔·普京"
     lexeme es
       surface
-        text "Vladímir Putin" # source Q7747 labels.es.value
+        text "Vladímir Putin"
   entity albert_einstein
     grounded-in Q937
     lexeme en
@@ -100,7 +100,7 @@ entity_names
         text "阿尔伯特·爱因斯坦"
     lexeme es
       surface
-        text "Albert Einstein" # source Q937 sitelinks.eswiki.title
+        text "Albert Einstein"
   entity isaac_newton
     grounded-in Q935
     lexeme en
@@ -117,7 +117,7 @@ entity_names
         text "艾薩克·牛頓"
     lexeme es
       surface
-        text "Isaac Newton" # source Q935 labels.es.value
+        text "Isaac Newton"
   entity nikola_tesla
     grounded-in Q9036
     lexeme en
@@ -134,7 +134,7 @@ entity_names
         text "尼古拉·特斯拉"
     lexeme es
       surface
-        text "Nikola Tesla" # source Q9036 labels.es.value
+        text "Nikola Tesla"
   entity ada_lovelace
     grounded-in Q7259
     lexeme en
@@ -151,7 +151,7 @@ entity_names
         text "愛達·勒芙蕾絲"
     lexeme es
       surface
-        text "Ada Lovelace" # source Q7259 labels.es.value
+        text "Ada Lovelace"
   entity marie_curie
     grounded-in Q7186
     lexeme en
@@ -168,7 +168,7 @@ entity_names
         text "玛丽·居里"
     lexeme es
       surface
-        text "Marie Curie" # source Q7186 sitelinks.eswiki.title
+        text "Marie Curie"
   entity alan_turing
     grounded-in Q7251
     lexeme en
@@ -185,4 +185,58 @@ entity_names
         text "艾倫·圖靈"
     lexeme es
       surface
-        text "Alan Turing" # source Q7251 labels.es.value
+        text "Alan Turing"
+  entity georgia
+    grounded-in Q230
+    timezone "Asia/Tbilisi"
+    lexeme en
+      surface
+        text "Georgia"
+    lexeme ru
+      surface
+        text "Грузия"
+    lexeme hi
+      surface
+        text "जॉर्जिया"
+    lexeme zh
+      surface
+        text "格鲁吉亚"
+    lexeme es
+      surface
+        text "Georgia"
+  entity tbilisi
+    grounded-in Q994
+    timezone "Asia/Tbilisi"
+    lexeme en
+      surface
+        text "Tbilisi"
+    lexeme ru
+      surface
+        text "Тбилиси"
+    lexeme hi
+      surface
+        text "त्बिलिसी"
+    lexeme zh
+      surface
+        text "第比利斯"
+    lexeme es
+      surface
+        text "Tiflis"
+  entity berlin
+    grounded-in Q64
+    timezone "Europe/Berlin"
+    lexeme en
+      surface
+        text "Berlin"
+    lexeme ru
+      surface
+        text "Берлин"
+    lexeme hi
+      surface
+        text "बर्लिन"
+    lexeme zh
+      surface
+        text "柏林"
+    lexeme es
+      surface
+        text "Berlín"

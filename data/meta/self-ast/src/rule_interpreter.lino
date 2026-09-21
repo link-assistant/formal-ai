@@ -2,9 +2,9 @@ self_ast_census
   target src/rule_interpreter.rs
   language rust
   fidelity signature
-  byte_len 35385
-  line_count 959
-  content_id source_module_62b12c6113954d57
+  byte_len 35548
+  line_count 963
+  content_id source_module_2812300d01e79705
   symbol_count 62
   symbols
     module parser 23 23
@@ -14,58 +14,58 @@ self_ast_census
     enum Subject 53 70
     enum Shape 81 96
     enum RoleMode 99 108
-    enum Condition 111 127
-    struct ConditionSurface 132 136
-    trait ConditionSource 143 146
-    function role_surfaces 144 144
-    function exact_route_surfaces 145 145
-    struct LinkStoreSource 154 157
-    enum ValueSource 160 165
-    enum ValueRef 168 173
-    enum Step 176 178
-    enum Fallback 181 185
-    enum Response 188 195
-    struct Node 197 202
-    struct Context 204 214
-    function shared 223 226
-    static CELL 224 224
-    function from_store 231 323
-    function role_surfaces 327 329
-    function exact_route_surfaces 331 333
-    function queried_nodes 336 342
-    function stored_surface 344 359
-    function slot_of 361 371
-    function rules 380 385
-    static CACHE 381 381
-    function handler_names 389 391
-    function run_handler 395 404
-    function handler_matches 408 412
-    struct ConditionVerdict 416 419
-    function parse 428 447
-    function handler 451 453
-    function handler_names 456 458
-    function rule_count 462 464
-    function condition_verdicts 469 488
-    function name 494 496
-    function rule_names 499 501
-    function run_with_source 505 515
-    function matches_with_source 519 531
-    function new 535 556
-    function text 558 567
-    function languages 569 575
-    function run 579 605
-    function resolve_values 607 628
-    function resolve 632 642
-    function render 646 677
-    function substitute 680 686
-    function holds 689 798
-    function spelled_surface_present 816 839
-    function bounded_surface_present 841 852
-    function phrase_present_as_words 859 884
-    const SEPARATED_ROLE_OBJECT_LIMIT 891 891
-    function separated_surface_present 893 907
-    function before_slot 909 911
-    const QUOTE_PAIRS 918 918
-    function holds 929 949
-    const URL_PREFIXES 954 954
-    function is_url 957 959
+    enum Condition 111 128
+    struct ConditionSurface 133 137
+    trait ConditionSource 144 147
+    function role_surfaces 145 145
+    function exact_route_surfaces 146 146
+    struct LinkStoreSource 155 158
+    enum ValueSource 161 166
+    enum ValueRef 169 174
+    enum Step 177 179
+    enum Fallback 182 186
+    enum Response 189 196
+    struct Node 198 203
+    struct Context 205 215
+    function shared 224 227
+    static CELL 225 225
+    function from_store 232 324
+    function role_surfaces 328 330
+    function exact_route_surfaces 332 334
+    function queried_nodes 337 343
+    function stored_surface 345 360
+    function slot_of 362 372
+    function rules 381 386
+    static CACHE 382 382
+    function handler_names 390 392
+    function run_handler 396 405
+    function handler_matches 409 413
+    struct ConditionVerdict 417 420
+    function parse 429 448
+    function handler 452 454
+    function handler_names 457 459
+    function rule_count 463 465
+    function condition_verdicts 470 489
+    function name 495 497
+    function rule_names 500 502
+    function run_with_source 506 516
+    function matches_with_source 520 532
+    function new 536 557
+    function text 559 568
+    function languages 570 576
+    function run 580 606
+    function resolve_values 608 629
+    function resolve 633 643
+    function render 647 678
+    function substitute 681 687
+    function holds 690 802
+    function spelled_surface_present 820 843
+    function bounded_surface_present 845 856
+    function phrase_present_as_words 863 888
+    const SEPARATED_ROLE_OBJECT_LIMIT 895 895
+    function separated_surface_present 897 911
+    function before_slot 913 915
+    const QUOTE_PAIRS 922 922
+    function holds 933 953
+    const URL_PREFIXES 958 958
+    function is_url 961 963

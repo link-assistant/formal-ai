@@ -2,15 +2,21 @@ self_ast_census
   target src/source_capability.rs
   language rust
   fidelity signature
-  byte_len 8984
-  line_count 229
-  content_id source_module_5bf6e251d7554427
-  symbol_count 7
+  byte_len 14862
+  line_count 372
+  content_id source_module_ab33d8c7fceff1fd
+  symbol_count 13
   symbols
-    function compose_source_evidence 28 49
-    function measurement_source_evidence 58 87
-    function distinct_senses 89 95
-    function compose_document 106 150
-    function source_header 152 160
-    function unavailable 162 171
-    function execute 174 229
+    function compose_source_evidence 32 53
+    function measurement_source_evidence 70 139
+    function asked_measurement_property 148 166
+    function sentence_mentions 171 174
+    function sentence_at 178 191
+    function sentence_ender 193 195
+    function normalize_sentence 197 199
+    function consulted_source_kinds 204 228
+    function distinct_senses 230 236
+    function compose_document 247 291
+    function source_header 293 301
+    function unavailable 303 312
+    function execute 315 372

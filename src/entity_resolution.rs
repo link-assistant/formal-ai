@@ -142,7 +142,7 @@ fn normalize_name(term: &str) -> String {
     normalized
 }
 
-fn edit_budget(candidate: &str) -> usize {
+pub(crate) fn edit_budget(candidate: &str) -> usize {
     (candidate.chars().count() / 8).max(1)
 }
 

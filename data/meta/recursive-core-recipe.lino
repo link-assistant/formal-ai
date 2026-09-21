@@ -40,7 +40,7 @@ step_catalogue_methods
   order "5"
   id "catalogue_methods"
   title "Catalogue the resolving methods as link data"
-  detail "MethodRegistry::from_dispatch derives the catalogue of every prelude method, specialized handler, and contextual override a leaf can route to directly from the live dispatch code, serialized to Links Notation. Treating the specific algorithms as data (method records) rather than buried branches is what lets the meta algorithm reason about and execute through its own method set."
+  detail "MethodRegistry::from_store derives the catalogue of every prelude method, specialized handler, and contextual override a leaf can route to directly from the live dispatch code, serialized to Links Notation. Treating the specific algorithms as data (method records) rather than buried branches is what lets the meta algorithm reason about and execute through its own method set."
   source_file "src/method_registry.rs"
   records "record_method_registry"
 step_reason_white_box
@@ -141,9 +141,9 @@ fn_record_need_ledger
   record_type "meta_function"
   function "record_need_ledger"
   source_file "src/meta_frame.rs"
-fn_from_dispatch
+fn_from_store
   record_type "meta_function"
-  function "from_dispatch"
+  function "from_store"
   source_file "src/method_registry.rs"
 fn_record_method_registry
   record_type "meta_function"

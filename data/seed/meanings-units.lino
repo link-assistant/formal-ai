@@ -454,7 +454,11 @@ meanings
       surface
         text centimeter
       surface
+        text centimeters
+      surface
         text centimetre
+      surface
+        text centimetres
     lexeme ru
       surface
         text сантиметр
@@ -475,7 +479,11 @@ meanings
       surface
         text millimeter
       surface
+        text millimeters
+      surface
         text millimetre
+      surface
+        text millimetres
     lexeme ru
       surface
         text миллиметр
@@ -1021,3 +1029,125 @@ meanings
         text mililitro
       surface
         text mililitros
+  measurement_property_height
+    defined-by concept
+    role measurement_property_height
+    lexeme en
+      surface
+        text tall
+      surface
+        text height
+      surface
+        text high
+    lexeme ru
+      surface
+        text высок
+      surface
+        text высот
+      surface
+        text рост
+    lexeme hi
+      surface
+        text ऊँचा
+      surface
+        text ऊँचाई
+    lexeme zh
+      surface
+        text 高
+      surface
+        text 高度
+    lexeme es
+      surface
+        text alto
+      surface
+        text altura
+  measurement_property_depth
+    defined-by concept
+    role measurement_property_depth
+    lexeme en
+      surface
+        text deep
+      surface
+        text depth
+    lexeme ru
+      surface
+        text глубок
+      surface
+        text глубин
+    lexeme hi
+      surface
+        text गहरा
+      surface
+        text गहराई
+    lexeme zh
+      surface
+        text 深
+      surface
+        text 深度
+    lexeme es
+      surface
+        text profundo
+      surface
+        text profundidad
+  measurement_property_weight
+    defined-by concept
+    role measurement_property_weight
+    lexeme en
+      surface
+        text heavy
+      surface
+        text weigh
+      surface
+        text weight
+    lexeme ru
+      surface
+        text вес
+      surface
+        text весит
+      surface
+        text тяжёл
+    lexeme hi
+      surface
+        text भारी
+      surface
+        text वजन
+    lexeme zh
+      surface
+        text 重
+      surface
+        text 重量
+    lexeme es
+      surface
+        text pesa
+      surface
+        text pesado
+      surface
+        text peso
+  measurement_property_length
+    defined-by concept
+    role measurement_property_length
+    lexeme en
+      surface
+        text long
+      surface
+        text length
+    lexeme ru
+      surface
+        text длин
+      surface
+        text длина
+    lexeme hi
+      surface
+        text लंब
+      surface
+        text लंबाई
+    lexeme zh
+      surface
+        text 长
+      surface
+        text 长度
+    lexeme es
+      surface
+        text largo
+      surface
+        text longitud

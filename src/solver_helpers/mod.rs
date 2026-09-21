@@ -120,6 +120,25 @@ pub fn unresolved_surfaces_present(normalized: &str, language: &str) -> bool {
     !crate::concept_lookup::unknown_surfaces(normalized, language).is_empty()
 }
 
+/// Concept terms the concept-lookup handler asked about and the seed could not
+/// answer (`concept_lookup:miss` events whose payload is still the bare term —
+/// the consult walk's own misses carry a `consulted=` record instead).
+///
+/// A missed multi-word term is an external-lookup need exactly like an unknown
+/// token, but token-level [`crate::concept_lookup::unknown_surfaces`] cannot
+/// see it: "define associative memory" has three individually common words and
+/// one unknown phrase. Reading the handler's own miss keeps the phrase as one
+/// surface instead of fragmenting it into tokens.
+pub fn bare_concept_misses(log: &crate::event_log::EventLog) -> Vec<String> {
+    log.events()
+        .iter()
+        .filter(|event| {
+            event.kind == "concept_lookup:miss" && !event.payload.contains("consulted=")
+        })
+        .map(|event| event.payload.to_lowercase())
+        .collect()
+}
+
 pub fn record_decomposition(
     log: &mut EventLog,
     prompt: &str,

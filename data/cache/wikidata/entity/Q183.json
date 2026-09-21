@@ -4,42 +4,72 @@
       "type": "item",
       "id": "Q183",
       "labels": {
-        "zh": {
-          "language": "zh",
-          "value": "德國"
-        },
-        "hi": {
-          "language": "hi",
-          "value": "जर्मनी"
+        "en": {
+          "language": "en",
+          "value": "Germany"
         },
         "ru": {
           "language": "ru",
           "value": "Германия"
         },
-        "en": {
-          "language": "en",
-          "value": "Germany"
+        "hi": {
+          "language": "hi",
+          "value": "जर्मनी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "德國"
+        },
+        "es": {
+          "language": "es",
+          "value": "Alemania"
         }
       },
       "descriptions": {
-        "zh": {
-          "language": "zh",
-          "value": "歐洲國家"
+        "en": {
+          "language": "en",
+          "value": "country in Central Europe"
         },
         "ru": {
           "language": "ru",
           "value": "государство в Центральной Европе"
         },
-        "en": {
-          "language": "en",
-          "value": "country in Central Europe"
-        },
         "hi": {
           "language": "hi",
           "value": "मध्य यूरोप का देश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "歐洲國家"
+        },
+        "es": {
+          "language": "es",
+          "value": "país de Europa Occidental"
         }
       },
       "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Federal Republic of Germany"
+          },
+          {
+            "language": "en",
+            "value": "DE"
+          },
+          {
+            "language": "en",
+            "value": "DEU"
+          },
+          {
+            "language": "en",
+            "value": "FRG"
+          },
+          {
+            "language": "en",
+            "value": "BRD"
+          }
+        ],
         "ru": [
           {
             "language": "ru",
@@ -80,14 +110,87 @@
             "value": "德国"
           }
         ],
-        "en": [
+        "es": [
           {
-            "language": "en",
-            "value": "Federal Republic of Germany"
+            "language": "es",
+            "value": "República Federal de Alemania"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Germany"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Германия"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "जर्मनी"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "德国"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Alemania"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "ef7247b704f4ec0a7df39e83306bb388fea17d5f",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 183,
+                  "id": "Q183"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ],
+        "P297": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P297",
+              "hash": "e562e1204a566fea7392f14ec20c6a98896c6c00",
+              "datavalue": {
+                "value": "DE",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "rank": "normal"
           }
         ]
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

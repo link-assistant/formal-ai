@@ -12,13 +12,17 @@
           "language": "ru",
           "value": "Ада Лавлейс"
         },
+        "hi": {
+          "language": "hi",
+          "value": "एडा लवलेस"
+        },
         "zh": {
           "language": "zh",
           "value": "愛達·勒芙蕾絲"
         },
-        "hi": {
-          "language": "hi",
-          "value": "एडा लवलेस"
+        "es": {
+          "language": "es",
+          "value": "Ada Lovelace"
         }
       },
       "descriptions": {
@@ -30,13 +34,17 @@
           "language": "ru",
           "value": "английский математик"
         },
+        "hi": {
+          "language": "hi",
+          "value": "अंग्रेज़ी गणितज्ञ व कंप्यूटर प्रोग्रामिंग के प्रथम अन्वेषक।"
+        },
         "zh": {
           "language": "zh",
           "value": "英国数学家"
         },
-        "hi": {
-          "language": "hi",
-          "value": "अंग्रेज़ी गणितज्ञ व कंप्यूटर प्रोग्रामिंग के प्रथम अन्वेषक।"
+        "es": {
+          "language": "es",
+          "value": "matemática y escritora británica, la primera persona programadora de la historia y emprendedora"
         }
       },
       "aliases": {
@@ -47,21 +55,11 @@
           },
           {
             "language": "en",
-            "value": "Augusta Ada Byron"
-          },
-          {
-            "language": "en",
             "value": "Augusta Ada King, Countess of Lovelace"
           },
           {
             "language": "en",
             "value": "Ada Byron"
-          }
-        ],
-        "zh": [
-          {
-            "language": "zh",
-            "value": "爱达·勒芙蕾丝"
           }
         ],
         "ru": [
@@ -73,9 +71,78 @@
             "language": "ru",
             "value": "Лавлейс, Августа Ада"
           }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "爱达·勒芙蕾丝"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Augusta Ada King"
+          },
+          {
+            "language": "es",
+            "value": "Lady Ada"
+          },
+          {
+            "language": "es",
+            "value": "Ada King"
+          },
+          {
+            "language": "es",
+            "value": "Augusta Ada King-Noel"
+          },
+          {
+            "language": "es",
+            "value": "Lovelace, Ada"
+          },
+          {
+            "language": "es",
+            "value": "Ada Byron Lovelance"
+          }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Ada Lovelace"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Лавлейс, Ада"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "एडा लवलेस"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "愛達·勒芙蕾絲"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Ada Lovelace"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

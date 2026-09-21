@@ -20,7 +20,7 @@ pub(super) struct ScheduledEvent {
     pub(super) day: u32,
     pub(super) hour: u32,
     pub(super) minute: u32,
-    pub(super) time_zone: &'static str,
+    pub(super) time_zone: String,
     pub(super) duration_minutes: u32,
 }
 
@@ -90,7 +90,7 @@ impl ScheduledEvent {
             percent_encode(&self.title),
             self.start_stamp(),
             self.end_stamp(),
-            percent_encode(self.time_zone),
+            percent_encode(&self.time_zone),
         )
     }
 }

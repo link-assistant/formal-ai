@@ -8,6 +8,12 @@
 # would be the duplication issue #1037 removed.
 set -euo pipefail
 
+# Issue #1138: the branch suites shell out to `rust-script` for their gate
+# probes (tests/unit/docs_requirements/*, scripts gated with `--test`), and the
+# Test job stopped installing it when compiling moved out -- the installer is
+# idempotent, so a runner or a local caller that already has it skips this.
+bash scripts/install-rust-script.sh
+
 for target in unit integration source; do
   "dist/tests/$target" \
     --skip data_files:: --skip self_ast_census --skip specification::

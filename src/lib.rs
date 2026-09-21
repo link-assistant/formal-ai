@@ -455,8 +455,9 @@ pub use solver_handler_how_synthesis::{
     try_how_to_procedure_with_offline,
 };
 pub use solver_handlers::{
-    MemoryQueryExecution, answer_memory_recall, execute_memory_query,
-    execute_memory_query_with_options, try_web_search_with_client,
+    AnswerAgreement, MemoryQueryExecution, VerifiedAnswer, answer_memory_recall,
+    classify_agreement, execute_memory_query, execute_memory_query_with_options,
+    try_web_search_with_client,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{

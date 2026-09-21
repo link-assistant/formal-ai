@@ -113,6 +113,16 @@ fn answer_http_fetch_url(
     finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0)
 }
 
+/// Whether the seed's navigation recognizer claims this prompt for the
+/// `url_navigate` row (`Open github.com`, `Перейди на …`). The capability
+/// table's routed fetch runs ahead of that row and deliberately does not
+/// re-ask a verb recognizer, so it asks this instead: a request the
+/// navigation vocabulary claims is advice to open a tab, not a fetch of the
+/// page (the url-navigation ladder in `seed_and_memory`, issue #1138).
+pub fn url_navigation_claims(prompt: &str, normalized: &str) -> bool {
+    extract_url_navigate_url(prompt, normalized).is_some()
+}
+
 /// Match prompts that ask the assistant to navigate to or display a URL
 /// without performing an HTTP request (e.g. `Navigate to github.com`,
 /// `Go to github.com`, `Перейди на github.com`). The browser web app renders

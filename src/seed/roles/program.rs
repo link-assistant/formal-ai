@@ -53,6 +53,19 @@ pub const ROLE_HELLO_WORLD_REFERENCE: &str = "hello_world_reference";
 /// Semantic role: a concrete unit of measurement (metre, byte, kilogram, …).
 /// Each such meaning is `defined_by` the [`ROLE_PHYSICAL_DIMENSION`] it measures.
 pub const ROLE_MEASUREMENT_UNIT: &str = "measurement_unit";
+/// Semantic role: the height property of a measurement question (plan 10 leaf
+/// 17, issue #1063). `tall`, `high`, `высок`, `ऊँचा`, `高`, `alto` are seeded
+/// surfaces, so a quantity question that asks for height names it as data.
+pub const ROLE_MEASUREMENT_PROPERTY_HEIGHT: &str = "measurement_property_height";
+/// Semantic role: the depth property of a measurement question (plan 10 leaf
+/// 17, issue #1063).
+pub const ROLE_MEASUREMENT_PROPERTY_DEPTH: &str = "measurement_property_depth";
+/// Semantic role: the weight property of a measurement question (plan 10 leaf
+/// 17, issue #1063).
+pub const ROLE_MEASUREMENT_PROPERTY_WEIGHT: &str = "measurement_property_weight";
+/// Semantic role: the length property of a measurement question (plan 10 leaf
+/// 17, issue #1063).
+pub const ROLE_MEASUREMENT_PROPERTY_LENGTH: &str = "measurement_property_length";
 /// Semantic role: a physical dimension (length, mass, time, …). Units that
 /// belong to different dimensions cannot be converted into one another.
 pub const ROLE_PHYSICAL_DIMENSION: &str = "physical_dimension";
@@ -108,10 +121,6 @@ pub const ROLE_CALENDAR_EVENT: &str = "calendar_event";
 /// (17:00, в 17:00, 5 pm, вечером, …). Actual numeric extraction is in the
 /// handler; surfaces are data-driven.
 pub const ROLE_CALENDAR_TIME: &str = "calendar_time";
-/// Semantic role: alias phrases that indicate a target IANA timezone for a
-/// scheduled event (по грузии, по тбилиси, Asia/Tbilisi, …). The handler
-/// maps a hit on these surfaces to the concrete IANA string.
-pub const ROLE_CALENDAR_TIMEZONE_ALIAS: &str = "calendar_timezone_alias";
 /// Semantic role: a relative-date word that anchors a scheduled event to a day
 /// offset from "today" (tomorrow, завтра, послезавтра, 后天, …).
 ///

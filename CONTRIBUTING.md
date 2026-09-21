@@ -503,6 +503,23 @@ Removal from a public thread is not approval to retain another copy.
 
    CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
 
+   **Work in bulk; verify selectively.** Draft the whole change set — tests
+   and code together — before running anything, then let it fail in its
+   entirety and fix the failures with as few CI/CD runs as possible.
+   Small-change iteration multiplies CI runs; a batch fixed once is
+   cheaper than ten steps each verified alone. Three rules follow from
+   that:
+
+   - Every plan is drafted in tests and code first. If the drafting is
+     not finished, continue drafting — do not start fixing half a plan.
+   - Run only the specific tests you changed locally (the filter
+     arguments above); rely on CI/CD for everything else. The
+     workstation is a notebook: full suites belong to CI, and
+     sub-agents or helper scripts must never run them locally either.
+   - On long batches, commit at least once every four hours, and push
+     only after re-reading the issue, the pull request, and the diff
+     one more time.
+
 5. **Add a changelog fragment**
 
    For any user-facing changes, create a changelog fragment:

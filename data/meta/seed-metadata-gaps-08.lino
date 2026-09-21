@@ -91,6 +91,10 @@ seed_metadata_gaps
     source "data/seed/meanings-conversation.lino"
     record "memory_root_links_query"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_ff5abd26e5734828
+    source "data/seed/meanings-conversation.lino"
+    record "social_wellbeing"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_7a54c2ffe51815d8
     source "data/seed/meanings-definition-merge.lino"
     record "definition_merge_tail_boundary"

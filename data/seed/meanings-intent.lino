@@ -429,7 +429,9 @@ meanings
       surface
         text "не понимаю"
       surface
-        text "не поня…"
+        text "не понял"
+      surface
+        text "не поняла"
       surface
         text "не понятно"
       surface

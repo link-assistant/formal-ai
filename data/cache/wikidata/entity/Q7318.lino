@@ -1,0 +1,57 @@
+Q7318
+  aliases
+    en ("Third Reich" "Greater German Reich" "Hitler's Third Reich" "German Reich" "Thousand-Year Reich" Nazi-Germany)
+    es ("Régimen nazi" "Tercer Reich" "III Imperio Alemán" "Drittes Reich" "Nationalsozialistisches Deutsches Reich" "Deutsches Reich")
+    ru ("Третья империя" "Третья держава" "3 рейх" "Райх" "Германский рейх" "Великогерманский рейх" "Третий райх" "Германия (1933—1945)" "3-й рейх" "Третий рейх" "фашистская Германия" "гитлеровская Германия")
+    zh ("纳粹德国" "德意志第三帝国" "第三帝国" "德意志第三帝國" "第三帝國")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q1206012
+              numeric-id 1206012
+          hash 5b925ba516864377a76a45a5078658f219efc784
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "Germany from 1933 to 1945 while under control of the Nazi Party"
+    es "Alemania de 1933 a 1945 bajo el control del Partido Nazi"
+    hi "जर्मनी, नेशनल सोशलिस्ट जर्मन कार्यकर्ता पार्टी के नियंत्रण में (1933 - 1945)"
+    ru "германское государство в период тоталитарной диктатуры нацистской партии во главе с Адольфом Гитлером"
+    zh "1933—1945年納粹黨統治下的德國"
+  id Q7318
+  labels
+    en "Nazi Germany"
+    es "Alemania nazi"
+    hi "नाज़ी जर्मनी"
+    ru "Нацистская Германия"
+    zh "納粹德國"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Nazi Germany"
+    eswiki
+      site eswiki
+      title "Alemania nazi"
+    hiwiki
+      site hiwiki
+      title "नाज़ी जर्मनी"
+    ruwiki
+      site ruwiki
+      title "Нацистская Германия"
+    zhwiki
+      site zhwiki
+      title "納粹德國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

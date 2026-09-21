@@ -206,6 +206,51 @@ meanings
         text "वेब में खोजें …"
       surface
         text "नेट पर खोजें …"
+    lexeme es
+      surface
+        text "busca en internet …"
+      surface
+        text "busca en la web …"
+      surface
+        text "busca en la red …"
+      surface
+        text "busca en línea …"
+      surface
+        text "busca online …"
+      surface
+        text "busca en wikipedia …"
+      surface
+        text "busca en wikidata …"
+      surface
+        text "busca información sobre …"
+      surface
+        text "busca información de …"
+      surface
+        text "busca información acerca de …"
+      surface
+        text "busca datos sobre …"
+      surface
+        text "encuentra en internet …"
+      surface
+        text "encuentra información sobre …"
+      surface
+        text "encuentra información de …"
+      surface
+        text "encuentra online …"
+      surface
+        text "investiga en la web …"
+      surface
+        text "investiga en internet …"
+      surface
+        text "consulta en internet …"
+      surface
+        text "haz una búsqueda en internet de …"
+      surface
+        text "búsqueda en la web de …"
+      surface
+        text "me interesa …"
+      surface
+        text "… me interesa"
     lexeme zh
       surface
         text 在网上搜索…

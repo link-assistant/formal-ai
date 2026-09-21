@@ -11,6 +11,143 @@
 // ceiling enforced by scripts/check-file-size.rs. Function declarations hoist
 // across the concatenated worker bundle, so worker_20's dispatcher reaches the
 // handlers regardless of module order.
+
+// Issue #1138: the formalization-tuple builders and the associative-research
+// recall helpers moved here from formal_ai_worker_20.js to keep that module
+// inside its 1400-line warning band (tests/unit/ci-cd/issue_999.rs).
+// Function declarations hoist across the concatenated worker bundle, so
+// worker_20 solve calls reach them regardless of module order.
+function objectForFormalization(prompt, normalized, match) {
+  // For search-style ops we extract the explicit query the same way the web
+  // search handler does. For other ops we keep the prompt body that follows
+  // the detected verb so the tuple shows what the user is asking about.
+  const op = match && match.op;
+  if (op === "OP:search" || op === "OP:lookup") {
+    const query = extractWebSearchQuery(prompt, normalized);
+    if (query) return query;
+  }
+  if (op === "OP:procedure") {
+    const task = extractProceduralHowToTask(normalized);
+    if (task) return task.task;
+  }
+  const haystack = String(normalized || "").toLowerCase();
+  for (const { verb } of FORMALIZATION_VERBS) {
+    if (haystack.startsWith(verb + " ")) {
+      return cleanSearchQuery(normalized.slice(verb.length));
+    }
+  }
+  if (match && typeof match.objectText === "string") {
+    return cleanSearchQuery(match.objectText);
+  }
+  return cleanSearchQuery(normalized || "");
+}
+function virtualObjectId(term) {
+  const trimmed = String(term || "").trim();
+  if (!trimmed) return "?";
+  return `?${trimmed}`;
+}
+function formatFormalizationTuple(parts) {
+  return `(${parts.filter(Boolean).join(" ")})`;
+}
+function buildFormalization(prompt, normalized) {
+  const match = detectFormalizationMatch(prompt, normalized);
+  if (!match || match.ambiguous) {
+    const fallback = normalized || "(empty)";
+    return {
+      raw: String(prompt || ""),
+      subject: "@USER",
+      verb: "OP:express",
+      object: virtualObjectId(fallback),
+      tuple: formatFormalizationTuple(["@USER", "OP:express", virtualObjectId(fallback)]),
+      needsClarification: Boolean(match && match.ambiguous),
+      suggestions: match && match.suggestions ? match.suggestions : [],
+      interpretations: [],
+    };
+  }
+  const object = objectForFormalization(prompt, normalized, match);
+  return {
+    raw: String(prompt || ""),
+    subject: "@USER",
+    verb: match.op,
+    object: virtualObjectId(object),
+    tuple: formatFormalizationTuple(["@USER", match.op, virtualObjectId(object)]),
+    interpretations: match.interpretations || [],
+  };
+}
+function formalizationDetail(formalization) {
+  if (!formalization || typeof formalization !== "object") {
+    return String(formalization || "(empty)");
+  }
+  const arrow = formalization.raw && formalization.tuple ? " -> " : "";
+  return `${formalization.raw || ""}${arrow}${formalization.tuple || ""}`.trim();
+}
+function formalizationClarificationMessage(formalization, language) {
+  const suggestions = Array.isArray(formalization && formalization.suggestions)
+    ? formalization.suggestions
+    : [];
+  const rendered = suggestions.length > 0
+    ? suggestions.map((item) => `"${item}"`).join(", ")
+    : "one of the known commands";
+  if (language === "ru") {
+    return `Не уверен, как интерпретировать этот запрос. Вы имели в виду ${rendered}?`;
+  }
+  if (language === "zh") {
+    return `我不确定如何解释这个请求。你是指 ${rendered} 吗？`;
+  }
+  if (language === "hi") {
+    return `मुझे पक्का नहीं है कि इस अनुरोध को कैसे समझूं। क्या आपका मतलब ${rendered} था?`;
+  }
+  return `I am not sure how to interpret that request. Did you mean ${rendered}?`;
+}
+// Once a handler resolves the search object to a concrete entity, this helper
+// folds the resolved id back into the original formalization so the trace
+// shows the canonical (@USER OP:search Q<id>) tuple alongside the placeholder.
+function resolveFormalizationWithId(formalization, resolvedId) {
+  if (!formalization || !resolvedId) return null;
+  const next = Object.assign({}, formalization, {
+    object: resolvedId,
+    tuple: formatFormalizationTuple([
+      formalization.subject || "@USER",
+      formalization.verb || "OP:express",
+      resolvedId,
+    ]),
+  });
+  return next;
+}
+const associativeResearchId = (prompt) => stableBehaviorRuleId("associative_research", normalizePrompt(prompt));
+function recallAssociativeResearch(prompt, memory) {
+  const id = associativeResearchId(prompt);
+  for (const value of Array.isArray(memory) ? memory : []) {
+    const statement = String(value || "");
+    if (!statement.includes(id)) continue;
+    const association = parseLinoTree(statement).children.find((node) =>
+      node && node.name === "associative_research" && childValue(node, "id") === id);
+    if (!association) continue;
+    const content = childValue(association, "answer");
+    if (!content) continue;
+    const sources = association.children.filter((node) => node.name === "source" && node.value)
+      .map((node) => String(node.value));
+    return {
+      intent: "web_search", content, confidence: 0.86,
+      evidence: [`associative_research:memory_hit:${id}`, `associative_research:sources:${sources.length}`,
+        ...sources.map((source) => `source:${source}`)],
+      query: String(prompt || "").trim()
+    };
+  }
+  return null;
+}
+function associativeResearchMemoryOperation(prompt, answer) {
+  const fused = answer?.diagnostics?.fused;
+  if (!Array.isArray(fused) || fused.length === 0 || !answer.content) return null;
+  const id = associativeResearchId(prompt);
+  const sources = fused.map((entry) => String((entry && entry.url) || "").trim())
+    .filter((url, index, array) => url && array.indexOf(url) === index);
+  const lines = ["associative_research", `  id ${linoString(id)}`,
+    `  prompt ${linoString(normalizePrompt(prompt))}`, `  answer ${linoString(answer.content)}`,
+    ...sources.map((source) => `  source ${linoString(source)}`)];
+  return { action: "append", kind: "associative_research", statement: lines.join("\n") };
+}
+
 const RML_ASSUMED_TRUE_PRIOR = 0.6;
 const RML_TRUSTED_SOURCE_POLICY = [
   { slug: "original_first_party", weight: 1.0 },

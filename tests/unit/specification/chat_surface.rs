@@ -465,7 +465,7 @@ fn chat_mode_refuses_unbounded_multi_step_actions_without_agent_opt_in() {
     let response = answer("Continuously refactor my repository forever");
     assert_eq!(
         response.answer,
-        "This request routes to the `grep` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it."
+        "I can only run a bounded chat reply per message. To take repeated, open-ended actions I need an explicit opt-in to agent mode, and agent mode runs in an isolated sandbox so the host stays safe."
     );
     assert!(
         response

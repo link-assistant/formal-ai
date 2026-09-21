@@ -4,6 +4,10 @@
       "type": "item",
       "id": "Q64",
       "labels": {
+        "en": {
+          "language": "en",
+          "value": "Berlin"
+        },
         "ru": {
           "language": "ru",
           "value": "Берлин"
@@ -16,40 +20,34 @@
           "language": "zh",
           "value": "柏林"
         },
-        "en": {
-          "language": "en",
-          "value": "Berlin"
+        "es": {
+          "language": "es",
+          "value": "Berlín"
         }
       },
       "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "federated state, capital and largest city of Germany"
+        },
         "ru": {
           "language": "ru",
           "value": "крупнейший город и столица Германии"
-        },
-        "zh": {
-          "language": "zh",
-          "value": "德國首都"
         },
         "hi": {
           "language": "hi",
           "value": "जर्मनी की राजधानी और सबसे बड़ा शहर"
         },
-        "en": {
-          "language": "en",
-          "value": "federated state, capital and largest city of Germany"
+        "zh": {
+          "language": "zh",
+          "value": "德國首都"
+        },
+        "es": {
+          "language": "es",
+          "value": "estado federado, capital y ciudad más grande de Alemania"
         }
       },
       "aliases": {
-        "zh": [
-          {
-            "language": "zh",
-            "value": "柏林市"
-          },
-          {
-            "language": "zh",
-            "value": "柏林州"
-          }
-        ],
         "en": [
           {
             "language": "en",
@@ -65,9 +63,273 @@
             "language": "hi",
             "value": "बर्लिन, जर्मनी"
           }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "柏林市"
+          },
+          {
+            "language": "zh",
+            "value": "柏林州"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Stadt Berlin"
+          },
+          {
+            "language": "es",
+            "value": "Ciudad de Berlín"
+          },
+          {
+            "language": "es",
+            "value": "Berlin, Deutschland"
+          },
+          {
+            "language": "es",
+            "value": "Berlín, Alemania"
+          },
+          {
+            "language": "es",
+            "value": "DE-BE"
+          },
+          {
+            "language": "es",
+            "value": "Berlin"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Berlin"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Берлин"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "बर्लिन"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "柏林"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Berlín"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "cbecd66e53ccbfe51c6b0bc8cbb5bfd32edfff7b",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 148499,
+                  "id": "Q148499"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "2912edfbd81c95cdc517af31e8f77ad9ae13a548",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 157367,
+                  "id": "Q157367"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "103e000b44dd78a79bd677b7cbc02a2eaa6db934",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 27306,
+                  "id": "Q27306"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "a9e553a54f3929abc4751a96d438e772ec3873e4",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 150981,
+                  "id": "Q150981"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "f07e6efb1952c0a8e1aeab32299b781d428cf237",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 43287,
+                  "id": "Q43287"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "8bcc5ae2d75fae003719baaa6ead1f85aad55a3e",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 41304,
+                  "id": "Q41304"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "06f100f42eca9d3df6297b1648c73462578ce58a",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 7318,
+                  "id": "Q7318"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "c82feddccef337a70a9cf525991e76dfccf1b1f9",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 55300,
+                  "id": "Q55300"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "69134fce674a39f3382130caf84f51e58518fb88",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 16957,
+                  "id": "Q16957"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "ef7247b704f4ec0a7df39e83306bb388fea17d5f",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 183,
+                  "id": "Q183"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "preferred"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "3912570fabcfa6f9f41e1c53907ee233225c7211",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 713750,
+                  "id": "Q713750"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
         ]
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

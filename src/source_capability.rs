@@ -14,6 +14,10 @@ use crate::concept_lookup::ConceptSense;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::links_format::push_lino_node;
+use crate::seed::{
+    ROLE_MEASUREMENT_PROPERTY_DEPTH, ROLE_MEASUREMENT_PROPERTY_HEIGHT,
+    ROLE_MEASUREMENT_PROPERTY_LENGTH, ROLE_MEASUREMENT_PROPERTY_WEIGHT,
+};
 use crate::solver::SolverConfig;
 use crate::solver_handlers::finalize_simple;
 
@@ -54,36 +58,173 @@ pub fn compose_source_evidence(prompt: &str, senses: &[ConceptSense]) -> String 
 /// values and units in each source gloss. A number without a grounded unit is
 /// omitted: returning it as the requested measurement would be an unsupported
 /// inference. Provenance travels with every emitted quantity.
+///
+/// Plan 10 leaf 17 (issue #1063): a quantity question asks for a *property*
+/// ("how tall", "how deep", "cuánto pesa"), and the property is seeded data
+/// ([`ROLE_MEASUREMENT_PROPERTY_HEIGHT`] and siblings), so the answer says
+/// which property it looked for and keeps only the quantities whose own source
+/// sentence names that property. When no quantity matches, the honest body
+/// names the concept, the asked property, and the source kinds consulted —
+/// never an invented number and never a bare miss.
 #[must_use]
 pub fn measurement_source_evidence(prompt: &str, senses: &[ConceptSense]) -> String {
     let senses = distinct_senses(senses);
-    let measurements = senses
-        .iter()
-        .flat_map(|sense| {
+    let asked = asked_measurement_property(prompt);
+    let mut measurements = Vec::new();
+    let mut matched_property = 0usize;
+    for sense in &senses {
+        for quantity in
             crate::verifiable_task::quantities::extract_quantities(&sense.gloss, &sense.language)
-                .into_iter()
-                .filter_map(|quantity| quantity.unit.map(|unit| (quantity.value, unit, *sense)))
-        })
-        .collect::<Vec<_>>();
-    let mut out = source_header(
-        "concept_measurement_lookup",
-        prompt,
-        if measurements.is_empty() {
-            "no_grounded_quantity"
-        } else {
-            "measurements_extracted"
-        },
-        senses.len(),
-    );
-    for (value, unit, sense) in measurements {
+        {
+            let Some(unit) = quantity.unit.clone() else {
+                continue;
+            };
+            let sentence = normalize_sentence(sentence_at(&sense.gloss, quantity.offset));
+            let matching_ask = asked
+                .as_ref()
+                .is_some_and(|(role, _)| sentence_mentions(&sentence, role));
+            if matching_ask {
+                matched_property += 1;
+            }
+            measurements.push((quantity.value.clone(), unit, *sense, matching_ask));
+        }
+    }
+    let status = if measurements.is_empty() {
+        "no_grounded_quantity"
+    } else if asked.is_some() && matched_property == 0 {
+        "no_grounded_property"
+    } else {
+        "measurements_extracted"
+    };
+    let mut out = source_header("concept_measurement_lookup", prompt, status, senses.len());
+    if let Some((role, surface)) = &asked {
+        push_lino_node(&mut out, 2, "asked_property", None);
+        push_lino_node(&mut out, 4, "role", Some(role));
+        push_lino_node(&mut out, 4, "surface", Some(surface));
+        push_lino_node(&mut out, 4, "matched", Some(&matched_property.to_string()));
+    }
+    if status != "measurements_extracted" {
+        let concept = senses
+            .first()
+            .map(|sense| sense.surface.clone())
+            .unwrap_or_else(|| {
+                crate::solver_handlers::detect_web_search_query(prompt)
+                    .unwrap_or_else(|| prompt.trim().to_owned())
+            });
+        push_lino_node(&mut out, 2, "concept", Some(&concept));
+        push_lino_node(
+            &mut out,
+            2,
+            "source_kinds",
+            Some(&consulted_source_kinds(&senses)),
+        );
+    }
+    for (value, unit, sense, matching_ask) in measurements {
         push_lino_node(&mut out, 2, "measurement", None);
         push_lino_node(&mut out, 4, "value", Some(&value));
         push_lino_node(&mut out, 4, "unit", Some(&unit));
+        if matching_ask {
+            push_lino_node(
+                &mut out,
+                4,
+                "property",
+                Some(asked.as_ref().expect("matched implies asked").0),
+            );
+        }
         push_lino_node(&mut out, 4, "source", Some(&sense.source_id));
         push_lino_node(&mut out, 4, "url", Some(&sense.source_url));
         push_lino_node(&mut out, 4, "sha256", Some(&sense.sha256));
     }
     out
+}
+
+/// The measurement property a quantity question asks, when it asks one.
+///
+/// The property's surfaces are seeded (meanings-units.lino), one role per
+/// property, so a new property is a seed edit rather than a Rust branch. The
+/// first role whose surface the prompt mentions wins, and the matched surface
+/// travels out so the honest-failure body can name the property in the
+/// prompt's own words.
+fn asked_measurement_property(prompt: &str) -> Option<(&'static str, String)> {
+    let normalized = crate::web_engine_core::normalize_prompt(prompt);
+    [
+        ROLE_MEASUREMENT_PROPERTY_HEIGHT,
+        ROLE_MEASUREMENT_PROPERTY_DEPTH,
+        ROLE_MEASUREMENT_PROPERTY_WEIGHT,
+        ROLE_MEASUREMENT_PROPERTY_LENGTH,
+    ]
+    .into_iter()
+    .find(|role| sentence_mentions(&normalized, role))
+    .map(|role| {
+        let surface = crate::seed::lexicon()
+            .words_for_role(role)
+            .into_iter()
+            .find(|word| normalized.contains(word.as_str()))
+            .unwrap_or_default();
+        (role, surface)
+    })
+}
+
+/// Whether `text` (a prompt or one source sentence) mentions any surface of
+/// `role`. Both the token-bounded and raw-substring readings are consulted,
+/// the same contract the capability router's evidence predicates use.
+fn sentence_mentions(text: &str, role: &str) -> bool {
+    let lexicon = crate::seed::lexicon();
+    lexicon.mentions_role(role, text) || lexicon.mentions_role_raw(role, text)
+}
+
+/// The sentence of `gloss` that contains `offset`, so a quantity's property is
+/// read from the sentence its own source stated it in.
+fn sentence_at(gloss: &str, offset: usize) -> &str {
+    let start = gloss
+        .char_indices()
+        .filter(|(index, _)| *index < offset)
+        .filter_map(|(index, ender)| sentence_ender(ender).then_some(index + ender.len_utf8()))
+        .max()
+        .unwrap_or(0);
+    let end = gloss
+        .char_indices()
+        .skip_while(|(index, _)| *index <= offset)
+        .find_map(|(index, ender)| sentence_ender(ender).then_some(index))
+        .unwrap_or(gloss.len());
+    gloss[start..end].trim()
+}
+
+fn sentence_ender(character: char) -> bool {
+    matches!(character, '.' | '!' | '?' | ';' | '。' | '！' | '？')
+}
+
+fn normalize_sentence(sentence: &str) -> String {
+    crate::web_engine_core::normalize_prompt(sentence)
+}
+
+/// The source kinds a measurement consulted, for the honest-failure body: the
+/// registry kind of every distinct source that answered, or — when nothing
+/// answered — every registry source that declares it may answer a concept.
+fn consulted_source_kinds(senses: &[&ConceptSense]) -> String {
+    let registry = crate::seed::source_registry();
+    let mut kinds: Vec<&str> = Vec::new();
+    if senses.is_empty() {
+        for record in &registry {
+            if record.answers(crate::needs::NeedKind::Concept)
+                && !kinds.contains(&record.kind.as_str())
+            {
+                kinds.push(&record.kind);
+            }
+        }
+    } else {
+        for sense in senses {
+            let kind = registry
+                .iter()
+                .find(|record| record.id == sense.source_id)
+                .map(|record| record.kind.as_str())
+                .unwrap_or(sense.source_id.as_str());
+            if !kinds.contains(&kind) {
+                kinds.push(kind);
+            }
+        }
+    }
+    kinds.join(" ")
 }
 
 fn distinct_senses(senses: &[ConceptSense]) -> Vec<&ConceptSense> {
@@ -186,8 +327,10 @@ pub(crate) fn execute(
     let mut composed_without_capture = false;
     let body = if config.offline {
         // The walk above already recorded the policy boundary, keeping this
-        // path observationally the same as every other source lookup.
-        debug_assert!(senses.is_empty());
+        // path observationally the same as every other source lookup. The
+        // walk may still have replayed cached senses (offline cache replay
+        // is legitimate evidence), but a chat surface renders the honest
+        // unavailability notice rather than composing from them.
         unavailable(capability, prompt, "offline")
     } else {
         for sense in &senses {

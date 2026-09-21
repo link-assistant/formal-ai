@@ -1,0 +1,56 @@
+Q34266
+  aliases
+    en ("Tsarist Russia" "Imperial Russia" Russia "Empire of Russia" Moscovy "Moscovy or Russia" "Russia or Moscovy" Rossia Rusia)
+    es ("Rusia imperial" "Rusia zarista")
+    ru ("Россия" "Царская Россия" "РИ" "Императорская Россия" "Имперская Россия" "Россия имперского периода")
+    zh ("帝俄时代" "沙俄帝国" "帝俄" "沙俄" "沙皇俄國" "俄羅斯帝國")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q34266
+              numeric-id 34266
+          hash e64bc21e5649b2265a5047822c9b3f580989c9eb
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "former empire in Eurasia and North America (1721–1917)"
+    es "antiguo imperio en Eurasia (1721-1917) y en Norteamérica (1721-1867)"
+    ru "государство, существовавшее с 1721 по 1917 год"
+    zh "俄羅斯歷史上最後一個君主制政權"
+  id Q34266
+  labels
+    en "Russian Empire"
+    es "Imperio ruso"
+    hi "रूसी साम्राज्य"
+    ru "Российская империя"
+    zh "俄罗斯帝国"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Russian Empire"
+    eswiki
+      site eswiki
+      title "Imperio ruso"
+    hiwiki
+      site hiwiki
+      title "रूसी साम्राज्य"
+    ruwiki
+      site ruwiki
+      title "Российская империя"
+    zhwiki
+      site zhwiki
+      title "俄罗斯帝国"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

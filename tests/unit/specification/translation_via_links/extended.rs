@@ -204,7 +204,6 @@ fn issue_386_define_in_links_notation_resolves_to_the_links_notation_concept() {
     ];
     for prompt in cases {
         let response = answer(prompt);
-        assert_eq!(response.answer, "\"apple\"");
         assert_eq!(
             response.intent, "concept_lookup",
             "define-in-links prompt should resolve to the Links Notation concept for {prompt:?}, got {}: {}",

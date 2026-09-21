@@ -697,7 +697,6 @@ const ROLE_CALENDAR_QUESTION = "calendar_question";
 const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
 const ROLE_CALENDAR_EVENT = "calendar_event";
 const ROLE_CALENDAR_TIME = "calendar_time";
-const ROLE_CALENDAR_TIMEZONE_ALIAS = "calendar_timezone_alias";
 // Issue #435: relative-date words ("завтра"/"tomorrow"/"послезавтра"/…) that
 // anchor a scheduled event to a day offset from today. Mirrors
 // ROLE_CALENDAR_RELATIVE_DATE in src/solver_handlers/calendar.rs.

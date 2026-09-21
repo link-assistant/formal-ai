@@ -1,0 +1,237 @@
+{
+  "entities": {
+    "Q7318": {
+      "type": "item",
+      "id": "Q7318",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Nazi Germany"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Нацистская Германия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नाज़ी जर्मनी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "納粹德國"
+        },
+        "es": {
+          "language": "es",
+          "value": "Alemania nazi"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Germany from 1933 to 1945 while under control of the Nazi Party"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "германское государство в период тоталитарной диктатуры нацистской партии во главе с Адольфом Гитлером"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जर्मनी, नेशनल सोशलिस्ट जर्मन कार्यकर्ता पार्टी के नियंत्रण में (1933 - 1945)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "1933—1945年納粹黨統治下的德國"
+        },
+        "es": {
+          "language": "es",
+          "value": "Alemania de 1933 a 1945 bajo el control del Partido Nazi"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Third Reich"
+          },
+          {
+            "language": "en",
+            "value": "Greater German Reich"
+          },
+          {
+            "language": "en",
+            "value": "Hitler's Third Reich"
+          },
+          {
+            "language": "en",
+            "value": "German Reich"
+          },
+          {
+            "language": "en",
+            "value": "Thousand-Year Reich"
+          },
+          {
+            "language": "en",
+            "value": "Nazi-Germany"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Третья империя"
+          },
+          {
+            "language": "ru",
+            "value": "Третья держава"
+          },
+          {
+            "language": "ru",
+            "value": "3 рейх"
+          },
+          {
+            "language": "ru",
+            "value": "Райх"
+          },
+          {
+            "language": "ru",
+            "value": "Германский рейх"
+          },
+          {
+            "language": "ru",
+            "value": "Великогерманский рейх"
+          },
+          {
+            "language": "ru",
+            "value": "Третий райх"
+          },
+          {
+            "language": "ru",
+            "value": "Германия (1933—1945)"
+          },
+          {
+            "language": "ru",
+            "value": "3-й рейх"
+          },
+          {
+            "language": "ru",
+            "value": "Третий рейх"
+          },
+          {
+            "language": "ru",
+            "value": "фашистская Германия"
+          },
+          {
+            "language": "ru",
+            "value": "гитлеровская Германия"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "纳粹德国"
+          },
+          {
+            "language": "zh",
+            "value": "德意志第三帝国"
+          },
+          {
+            "language": "zh",
+            "value": "第三帝国"
+          },
+          {
+            "language": "zh",
+            "value": "德意志第三帝國"
+          },
+          {
+            "language": "zh",
+            "value": "第三帝國"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Régimen nazi"
+          },
+          {
+            "language": "es",
+            "value": "Tercer Reich"
+          },
+          {
+            "language": "es",
+            "value": "III Imperio Alemán"
+          },
+          {
+            "language": "es",
+            "value": "Drittes Reich"
+          },
+          {
+            "language": "es",
+            "value": "Nationalsozialistisches Deutsches Reich"
+          },
+          {
+            "language": "es",
+            "value": "Deutsches Reich"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Nazi Germany"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Нацистская Германия"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "नाज़ी जर्मनी"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "納粹德國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Alemania nazi"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "5b925ba516864377a76a45a5078658f219efc784",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 1206012,
+                  "id": "Q1206012"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

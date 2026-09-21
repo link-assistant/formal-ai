@@ -1,0 +1,33 @@
+Q157367
+  aliases
+    es (Brandemburgo-Prusia Brandenburgo-Prusia "Brandeburgo Prusia" "Brandemburgo Prusia")
+  descriptions
+    en "former country (1618–1701)"
+    es "unión personal entre el ducado de Prusia y el margraviato de Brandenburgo (1618-1701)"
+    ru "историческое государство на территории современной Германии"
+  id Q157367
+  labels
+    en Brandenburg-Prussia
+    es Brandeburgo-Prusia
+    ru "Бранденбург-Пруссия"
+    zh "勃蘭登堡-普魯士"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Brandenburg–Prussia"
+    eswiki
+      site eswiki
+      title Brandeburgo-Prusia
+    ruwiki
+      site ruwiki
+      title "Бранденбург-Пруссия"
+    zhwiki
+      site zhwiki
+      title "布蘭登堡-普魯士"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

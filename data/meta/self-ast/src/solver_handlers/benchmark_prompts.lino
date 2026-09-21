@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/benchmark_prompts.rs
   language rust
   fidelity signature
-  byte_len 21523
-  line_count 591
-  content_id source_module_1b1702f5e056b690
-  symbol_count 32
+  byte_len 22277
+  line_count 607
+  content_id source_module_139c770fcde3ed49
+  symbol_count 33
   symbols
     function summary_topic_seed_data 19 22
     static CELL 20 20
@@ -23,19 +23,20 @@ self_ast_census
     function numbered 247 255
     function fact_records 257 260
     static CELL 258 258
-    function detect_relation 278 287
-    function detect_subject_alias 291 297
-    function try_fact_lookup 299 365
-    function render_release_timeline 369 389
-    function coreference_seed_data 391 394
-    static CELL 392 392
-    function try_coreference_request 396 430
-    function resolve_coreference_antecedent 439 484
-    const REFERENCE 443 443
-    function matching_coreference_pronoun 486 500
-    function rewrite_coreference_prompt 502 514
-    function replace_token 516 546
-    function token_boundary 548 550
-    function persona_seed_data 552 555
-    static CELL 553 553
-    function try_roleplay_request 557 591
+    function fact_store_resolves 271 276
+    function detect_relation 294 303
+    function detect_subject_alias 307 313
+    function try_fact_lookup 315 381
+    function render_release_timeline 385 405
+    function coreference_seed_data 407 410
+    static CELL 408 408
+    function try_coreference_request 412 446
+    function resolve_coreference_antecedent 455 500
+    const REFERENCE 459 459
+    function matching_coreference_pronoun 502 516
+    function rewrite_coreference_prompt 518 530
+    function replace_token 532 562
+    function token_boundary 564 566
+    function persona_seed_data 568 571
+    static CELL 569 569
+    function try_roleplay_request 573 607

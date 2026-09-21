@@ -31,6 +31,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure-2.lino"
     record "reduce_mean"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_7b71a5b3397bd9b1
+    source "data/seed/meanings-conversation.lino"
+    record "social_farewell"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_2ce960a4e4bffe31
     source "data/seed/meanings-definition-merge.lino"
     record "definition_merge_action"

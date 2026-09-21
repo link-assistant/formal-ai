@@ -24,7 +24,22 @@ fn unknown_answer_with_variation(prompt: &str, language: &str, seed_text: &str) 
     if body.is_empty() {
         return String::from(opener);
     }
-    format!("{opener} {body}")
+    // CJK scripts carry sentence separation with 。 terminators and no
+    // inter-sentence space; joining with " " would inject one ("。 我") into a
+    // script that never uses one.
+    let opener_tail = opener
+        .chars()
+        .next_back()
+        .map(String::from)
+        .unwrap_or_default();
+    let body_head = body.chars().next().map(String::from).unwrap_or_default();
+    let separator =
+        if crate::coding::contains_cjk(&opener_tail) || crate::coding::contains_cjk(&body_head) {
+            ""
+        } else {
+            " "
+        };
+    format!("{opener}{separator}{body}")
 }
 
 fn strip_leading_opener(text: &str, openers: &[&str]) -> String {

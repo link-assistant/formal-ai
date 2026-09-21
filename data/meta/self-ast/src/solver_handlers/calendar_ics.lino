@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/calendar_ics.rs
   language rust
   fidelity signature
-  byte_len 6609
+  byte_len 6604
   line_count 198
-  content_id source_module_559c87cd6384e27c
+  content_id source_module_0b0432ea607a0f3b
   symbol_count 13
   symbols
     struct ScheduledEvent 16 25

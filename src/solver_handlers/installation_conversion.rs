@@ -354,6 +354,26 @@ fn fenced_blocks(text: &str) -> Vec<FencedBlock> {
     blocks
 }
 
+/// The document with its fenced blocks removed, the same line walk
+/// [`fenced_blocks`] performs. Fence bodies are consumed as code by
+/// `collect_script_commands`; the inline and bullet collectors must see only
+/// the prose around them, because the fence markers themselves toggle the
+/// inline-code state machine and the block re-enters the step list whole,
+/// info string embedded (issue #1138).
+fn text_without_fences(text: &str) -> String {
+    let mut prose = String::new();
+    let mut in_fence = false;
+    for line in text.lines() {
+        if line.trim_start().strip_prefix("```").is_some() {
+            in_fence = !in_fence;
+        } else if !in_fence {
+            prose.push_str(line);
+            prose.push('\n');
+        }
+    }
+    prose
+}
+
 fn extract_source_text(prompt: &str, source_format: InstallFormat) -> String {
     let fences = fenced_blocks(prompt);
     let matching = fences.iter().find(|block| match source_format {
@@ -390,8 +410,9 @@ fn extract_install_steps(source: &str, source_format: InstallFormat) -> Vec<Inst
                     collect_script_commands(&block.body, &mut commands);
                 }
             }
-            collect_inline_commands(source, &mut commands);
-            collect_bullet_commands(source, &mut commands);
+            let prose = text_without_fences(source);
+            collect_inline_commands(&prose, &mut commands);
+            collect_bullet_commands(&prose, &mut commands);
         }
         InstallFormat::ShellScript | InstallFormat::PowerShellScript => {
             collect_script_commands(source, &mut commands);

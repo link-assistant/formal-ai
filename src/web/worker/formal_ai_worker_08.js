@@ -505,7 +505,7 @@ function mentionsCalendarCreateRequest(normalized) {
   // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
   const hasDateSignal = hasDayRef || hasClock || hasRelativeDate;
   if (!hasDateSignal) return false;
-  const hasTimezone = mentionsTimezoneAlias(normalized);
+  const hasTimezone = resolveTimezone(normalized) !== null;
   const hasParticipant = extractParticipantTitle(normalized) !== null;
   const hasAction =
     wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
@@ -685,19 +685,44 @@ function hasSpokenHourPrefix(normalized, digitStart) {
   return ["в", "на", "к"].includes(last);
 }
 
-function mentionsTimezoneAlias(normalized) {
-  return (
-    wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
-      containsCalendarTerm(normalized, w),
-    ) ||
-    normalized.includes("asia/tbilisi") ||
-    normalized.includes("tbilisi")
-  );
+// Plan 10 leaf 16 (issue #869): the zone is not a memorized alias table. A
+// place mention resolves through the entity registry's `timezone` fields —
+// the same seed the Rust solver reads — with the same exact / CJK-compound /
+// one-edit-per-eight-characters match `suggestNameCorrection` corrects
+// remembered names with, so "по Грузии" and "по Берлину" resolve in the
+// browser too. A place the registry does not ground resolves to null and the
+// caller records the default zone it used instead.
+function resolveTimezonePlace(normalized) {
+  const prompt = normalizeEntityName(normalized);
+  const tokens = prompt.split(/\s+/).filter(Boolean);
+  let best = null;
+  for (const place of timezonePlaces()) {
+    for (const surface of place.surfaces) {
+      const candidate = normalizeEntityName(surface);
+      if (!candidate) continue;
+      let mentioned;
+      if (candidate.indexOf(" ") !== -1) {
+        mentioned = prompt.indexOf(candidate) !== -1;
+      } else {
+        mentioned = tokens.some(
+          (token) =>
+            token === candidate ||
+            token.indexOf(candidate) !== -1 ||
+            editDistance(token, candidate) <=
+              Math.max(1, Math.floor(Array.from(candidate).length / 8)),
+        );
+      }
+      if (mentioned && (!best || Array.from(surface).length > Array.from(best.surface).length)) {
+        best = { slug: place.slug, zone: place.zone, surface };
+      }
+    }
+  }
+  return best;
 }
 
 function resolveTimezone(normalized) {
-  if (mentionsTimezoneAlias(normalized)) return "Asia/Tbilisi";
-  return null;
+  const place = resolveTimezonePlace(normalized);
+  return place ? place.zone : null;
 }
 
 function defaultTitle(language) {
@@ -985,7 +1010,11 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
     [year, month, d] = computeTargetDateWithRollover(base, day);
   }
   const [hour, minute] = extractClockTime(normalized) || [17, 0];
-  const tz = resolveTimezone(normalized) || "UTC";
+  const place = resolveTimezonePlace(normalized);
+  const tz = place ? place.zone : "UTC";
+  const timezoneOrigin = place
+    ? `entity:${place.slug}:${place.surface}`
+    : "default_utc_no_grounded_place";
   // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
   // back to the matched event noun ("созвон" → "Созвон") before the localized
   // default, so a title-less request still proposes a meaningful event.
@@ -1011,6 +1040,7 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
     `calendar:parsed_date:${isoDate(year, month, d)}`,
     `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
     `calendar:parsed_time_zone:${tz}`,
+    `calendar:timezone_origin:${timezoneOrigin}`,
     `calendar:parsed_title:${title}`,
     `calendar:parsed_duration_minutes:${event.durationMinutes}`,
   ];

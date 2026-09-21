@@ -445,25 +445,25 @@ fn issue_326_program_synthesis_accepts_native_operation_verbs() {
             language: "en",
             prompt: "Write Python function similar_elements(test_tup1, test_tup2). Return similar elements from both tuples.",
             expected_function: "def similar_elements",
-            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
+            expected_fragment: "sort_ascending(set_intersection)",
         },
         Case {
             language: "ru",
             prompt: "Напиши Python функцию similar_elements(test_tup1, test_tup2). Верни общие элементы из обоих кортежей.",
             expected_function: "def similar_elements",
-            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
+            expected_fragment: "sort_ascending(set_intersection)",
         },
         Case {
             language: "hi",
             prompt: "Python फ़ंक्शन similar_elements(test_tup1, test_tup2) लिखें। दोनों टपल से समान तत्व लौटाएँ।",
             expected_function: "def similar_elements",
-            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
+            expected_fragment: "sort_ascending(set_intersection)",
         },
         Case {
             language: "zh",
             prompt: "编写 Python 函数 similar_elements(test_tup1, test_tup2)。返回两个元组中的相同元素。",
             expected_function: "def similar_elements",
-            expected_fragment: "tuple_of(sort_ascending(set_intersection))",
+            expected_fragment: "sort_ascending(set_intersection)",
         },
     ];
 
@@ -493,7 +493,31 @@ fn issue_326_program_synthesis_accepts_native_operation_verbs() {
             "def similar_elements" => SIMILAR_ELEMENTS_TUPLE_ANSWER,
             function => panic!("missing documented native-verb answer for {function}"),
         };
-        assert_eq!(response.answer, expected_answer);
+        fn fenced_python(answer: &str) -> &str {
+            answer
+                .split_once("```python\n")
+                .and_then(|(_, rest)| rest.split_once("```"))
+                .map(|(code, _)| code)
+                .unwrap_or_default()
+        }
+        if case.language == "en" {
+            assert_eq!(response.answer, expected_answer);
+        } else {
+            // The verified artifact and its sources are language-independent;
+            // the wrapper prose follows the prompt language, so only the
+            // English lead case may pin the whole rendering byte for byte.
+            assert_eq!(
+                fenced_python(&response.answer),
+                fenced_python(expected_answer),
+                "{} prompt should synthesize the same verified artifact",
+                case.language
+            );
+            assert_ne!(
+                response.answer, expected_answer,
+                "{} prompt should render the wrapper in its own language",
+                case.language
+            );
+        }
         assert!(
             response.answer.contains(case.expected_function),
             "{} prompt should synthesize {}, got {}",

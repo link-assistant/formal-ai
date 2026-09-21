@@ -37,53 +37,17 @@
         "zh": {
           "language": "zh",
           "value": "第46任美國總統"
+        },
+        "es": {
+          "language": "es",
+          "value": "46.º presidente de los Estados Unidos"
         }
       },
       "aliases": {
         "en": [
           {
             "language": "en",
-            "value": "POTUS 46"
-          },
-          {
-            "language": "en",
-            "value": "President Joe Biden"
-          },
-          {
-            "language": "en",
-            "value": "President Joseph Biden"
-          },
-          {
-            "language": "en",
-            "value": "President Joseph R. Biden"
-          },
-          {
-            "language": "en",
             "value": "Joseph Robinette Biden Jr."
-          },
-          {
-            "language": "en",
-            "value": "President Joseph Biden Jr."
-          },
-          {
-            "language": "en",
-            "value": "President Joseph Robinette Biden"
-          },
-          {
-            "language": "en",
-            "value": "President Joseph R. Biden Jr."
-          },
-          {
-            "language": "en",
-            "value": "Joe R. Biden"
-          },
-          {
-            "language": "en",
-            "value": "President Joseph Robinette Biden Jr."
-          },
-          {
-            "language": "en",
-            "value": "Joe Biden Jr."
           }
         ],
         "ru": [
@@ -121,9 +85,60 @@
             "language": "zh",
             "value": "喬·拜登"
           }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Robin Ware"
+          },
+          {
+            "language": "es",
+            "value": "Robert L. Peters"
+          },
+          {
+            "language": "es",
+            "value": "JRB Ware"
+          }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Joe Biden"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Байден, Джо"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "जो बाइडन"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "乔·拜登"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Joe Biden"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

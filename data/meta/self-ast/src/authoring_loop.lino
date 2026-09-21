@@ -2,10 +2,10 @@ self_ast_census
   target src/authoring_loop.rs
   language rust
   fidelity signature
-  byte_len 18482
-  line_count 489
-  content_id source_module_20f2eef376d4f9f7
-  symbol_count 16
+  byte_len 18123
+  line_count 468
+  content_id source_module_80624adfbc7ca0ad
+  symbol_count 13
   symbols
     struct AuthoringOutcome 37 48
     function canonical_pull_request 53 79
@@ -15,11 +15,8 @@ self_ast_census
     function new 95 100
     function drop 104 106
     function differs 109 116
-    function run_authoring 127 428
-    function contains_bytes 430 437
-    function copy_dir 439 452
-    struct ServerGuard 454 454
-    function drop 457 460
-    module tests 464 489
-    function a_canonical_pull_request_url_is_accepted 468 472
-    function a_pull_request_url_the_metric_cannot_parse_is_rejected_here 475 488
+    function run_authoring 127 435
+    function contains_bytes 437 444
+    function copy_dir 446 459
+    struct ServerGuard 461 461
+    function drop 464 467

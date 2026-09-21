@@ -1,0 +1,68 @@
+Q230
+  aliases
+    en ("Republic of Georgia" "Georgia (country)" "Georgia (Sakartvelo)" Sakartvelo)
+    es ("República de Georgia")
+    ru ("Республика Грузия" "Сакартвело")
+    zh ("格魯吉亞" "喬治亞" "格鲁吉亚共和国")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q230
+              numeric-id 230
+          hash 145bebe388f3ac6b97830000dee2c80ed9f0f910
+          property P17
+          snaktype value
+        rank normal
+    P297
+      entry
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value GE
+          hash 3d13d6cede9c6eadf44d3f3d570b158241dbcfc3
+          property P297
+          snaktype value
+        rank normal
+  descriptions
+    en "country in the Caucasus region of Europe and Asia"
+    es "país del Cáucaso en Europa Oriental y Asia Occidental"
+    hi "पूर्वी यूरोप में स्थित एक देश"
+    ru "государство в Евразии"
+    zh "高加索地區國家"
+  id Q230
+  labels
+    en Georgia
+    es Georgia
+    hi "जॉर्जिया"
+    ru "Грузия"
+    zh "格鲁吉亚"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Georgia (country)"
+    eswiki
+      site eswiki
+      title Georgia
+    hiwiki
+      site hiwiki
+      title "जॉर्जिया (देश)"
+    ruwiki
+      site ruwiki
+      title "Грузия"
+    zhwiki
+      site zhwiki
+      title "格鲁吉亚"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

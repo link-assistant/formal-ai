@@ -1,0 +1,36 @@
+Q245160
+  aliases
+    es ("República Democratica de Georgia" "Republica Democrática de Georgia" "Republica Democratica de Georgia")
+    ru ("ГДР" "Грузия" "Демократическая Республика Грузия")
+    zh ("格鲁吉亚民主共和国" "格魯吉亞民主共和國")
+  descriptions
+    en "first modern establishment of Georgia as an independent Country (1918-1921)"
+    es "antiguo estado europeo (1918-1921)"
+    ru "государство, существовавшее в 1918-1921 годах"
+    zh "历史国家"
+  id Q245160
+  labels
+    en "Democratic Republic of Georgia"
+    es "República Democrática de Georgia"
+    ru "Грузинская демократическая республика"
+    zh "喬治亞民主共和國"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Democratic Republic of Georgia"
+    eswiki
+      site eswiki
+      title "República Democrática de Georgia"
+    ruwiki
+      site ruwiki
+      title "Грузинская демократическая республика"
+    zhwiki
+      site zhwiki
+      title "喬治亞民主共和國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

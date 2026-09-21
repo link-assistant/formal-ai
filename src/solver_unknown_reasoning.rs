@@ -85,11 +85,13 @@ pub fn answer_unknown_prompt(
         return answer;
     }
 
-    if let Some(focus) = focus.as_deref().filter(|_| {
-        !config.offline
-            && seed::supported_languages()
-                .iter()
-                .any(|supported| supported == language.slug())
+    let language_supported = seed::supported_languages()
+        .iter()
+        .any(|supported| supported == language.slug());
+    if let Some(focus) = focus.as_deref().filter(|focus| {
+        (!config.offline || is_unresolved_bare_term_prompt(prompt, focus))
+            && language_supported
+            && focus_is_specific(prompt, focus)
     }) {
         let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
             WebSearchQueryKind::UnresolvedBareTerm
@@ -111,7 +113,13 @@ pub fn answer_unknown_prompt(
         .to_owned(),
     );
 
-    if let Some(focus) = focus {
+    // An unsupported language cannot nominate a narrower focus than the
+    // prompt itself, so the whole prompt is the researchable surface and the
+    // `_unknown` response templates carry the fall-back-to-English notice
+    // for it; the specificity filter stays for languages we can parse.
+    if let Some(focus) =
+        focus.filter(|focus| focus_is_specific(prompt, focus) || !language_supported)
+    {
         return answer_unresolved_unknown(prompt, language, log, &focus, config);
     }
 
@@ -231,6 +239,12 @@ fn answer_from_concept_lookup_miss(
         return None;
     }
     let surface = focus.unwrap_or(prompt).trim();
+    // A whole-prompt bare term is the search handoff's turn (the escalation
+    // below presents the web-search plan for it); an in-sentence term keeps
+    // the consulted-source record here.
+    if !focus_is_specific(prompt, surface) || is_unresolved_bare_term_prompt(prompt, surface) {
+        return None;
+    }
     let body = seed::render_response(
         "concept_lookup_unresolved",
         language.slug(),
@@ -316,8 +330,10 @@ fn answer_with_legacy_fallback(
             completed_steps + 1
         ),
     );
+    // The guide is the teaching answer a plain unmatched prompt is owed; the
+    // issue-report invitation is the reasoning body's closing question, and a
+    // prompt with nothing gathered has no failure to report.
     let body = language_aware_unknown_answer(prompt, language);
-    let body = crate::failure_reporting::append_invitation(&body, language.slug());
     finalize_simple(prompt, log, "unknown", "response:unknown", &body, 0.0)
 }
 
@@ -538,6 +554,19 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
     Some(trimmed.to_owned())
 }
 
+/// Whether the missing focus names a researchable term rather than restating
+/// the whole prompt. `infer_missing_focus` falls back to the whole prompt when
+/// no marker or question prefix extracts a subject, and a whole-sentence
+/// "focus" is a comprehension gap, not a lookup: consulting sources with it
+/// produces an attributed miss for a sentence nobody defines, escalates a
+/// sentence to web search, and buries the teaching guide the chat surface
+/// owes the user. Only a focus that differs from the prompt (an extracted
+/// subject) or is itself a bare term keeps the evidence chain.
+fn focus_is_specific(prompt: &str, focus: &str) -> bool {
+    is_unresolved_bare_term_prompt(prompt, focus)
+        || !clean_focus(focus).eq_ignore_ascii_case(clean_focus(prompt))
+}
+
 fn is_unresolved_bare_term_prompt(prompt: &str, focus: &str) -> bool {
     let trimmed = clean_focus(prompt);
     if !trimmed.eq_ignore_ascii_case(clean_focus(focus)) {
@@ -555,7 +584,7 @@ fn is_unresolved_bare_term_prompt(prompt: &str, focus: &str) -> bool {
 fn extract_question_subject(prompt: &str) -> Option<String> {
     let trimmed = clean_focus(prompt);
     let lower = trimmed.to_lowercase();
-    for prefix in [
+    let mut leads = [
         "what is the ",
         "what's the ",
         "what is ",
@@ -566,12 +595,44 @@ fn extract_question_subject(prompt: &str) -> Option<String> {
         "how should ",
         "how do i ",
         "how can i ",
-    ] {
-        if let Some(rest) = lower.strip_prefix(prefix) {
+    ]
+    .into_iter()
+    .map(str::to_owned)
+    .collect::<Vec<_>>();
+    // The multilingual definition leads share one authority with routing: the
+    // cue lexicon's concept_lookup set. Without them a "что такое X" prompt
+    // falls back to the whole prompt as focus, fails the specificity filter,
+    // and buries the consulted-source record under the generic unknown guide.
+    leads.extend(crate::cue_lexicon::cues("concept_lookup").iter().cloned());
+    for prefix in leads {
+        if let Some(rest) = lower.strip_prefix(prefix.as_str()) {
             let start = trimmed.len() - rest.len();
             let body = clean_focus(&trimmed[start..]);
             if !body.is_empty() {
                 return Some(body.to_owned());
+            }
+        }
+    }
+    // Subject-first word orders invert the same cues: a Hindi or Chinese
+    // definition question names the concept and ends with the cue
+    // ("Redis क्या है", "Redis是什么"). The prefix loop cannot see those, so
+    // the cue is retried from the end of the prompt; the lexicon stays the
+    // one authority for both readings. The byte-length guard keeps the
+    // slice sound for scripts whose lowercasing is not length-stable.
+    let punctuated = trimmed.trim_end_matches(['?', '？', '!', '！', '.', '。']);
+    let lowered = punctuated.to_lowercase();
+    if lowered.len() == punctuated.len() {
+        for cue in crate::cue_lexicon::cues("concept_lookup") {
+            let cue = cue.trim();
+            let spaced = format!(" {cue}");
+            let rest = lowered
+                .strip_suffix(spaced.as_str())
+                .or_else(|| lowered.strip_suffix(cue));
+            if let Some(rest) = rest {
+                let body = clean_focus(&punctuated[..rest.len()]);
+                if !body.is_empty() {
+                    return Some(body.to_owned());
+                }
             }
         }
     }
@@ -619,7 +680,7 @@ fn clean_focus(value: &str) -> &str {
     value
         .trim()
         .trim_matches(['"', '\'', '`', '“', '”', '‘', '’', '«', '»'])
-        .trim_end_matches(['?', '。', '.', '!', ',', ';', ':'])
+        .trim_end_matches(['?', '？', '。', '.', '!', '！', ',', ';', ':'])
         .trim()
 }
 

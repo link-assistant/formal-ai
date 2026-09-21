@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/verifiable_task.rs
   language rust
   fidelity signature
-  byte_len 27831
-  line_count 834
-  content_id source_module_bc12b437811c9457
-  symbol_count 37
+  byte_len 26780
+  line_count 794
+  content_id source_module_c04b794544912ae0
+  symbol_count 33
   symbols
     const FLOW_INCREASE 23 23
     const FLOW_DECREASE 24 24
@@ -18,29 +18,25 @@ self_ast_census
     function derive_candidates 201 211
     function derive_unknown 213 256
     function derive_numeric 258 304
-    function derive_count 306 378
-    function flow_signs 380 408
-    struct FlowCue 410 414
-    function flow_cues 416 435
-    function role_offsets 437 455
-    struct UnitScale 458 461
-    function conversion_scale 463 507
-    function unit_slug 509 518
-    function source_for 520 524
-    function signed_expression 526 528
-    function expression_ir 530 546
-    function execute_candidates 550 625
-    function canonical_answer_value 627 649
-    function output_has_shape 651 662
-    function append_round_trip_checks 664 692
-    function append_unit_check 694 709
-    enum AnswerAgreement 712 717
-    function same_answer 719 727
-    function derivations_are_disjoint 729 735
-    function classify_agreement 737 759
-    function evidence_check_slug 761 773
-    function symbolic_check 775 787
-    module agreement_tests 790 834
-    function answer 793 806
-    function two_independent_derivations_that_disagree_are_rejected 809 815
-    function agreement_requires_disjoint_derivations 818 833
+    function derive_count 306 384
+    function flow_signs 386 414
+    struct FlowCue 416 420
+    function flow_cues 422 441
+    function role_offsets 443 461
+    struct UnitScale 464 467
+    function conversion_scale 469 513
+    function unit_slug 515 524
+    function source_for 526 530
+    function signed_expression 532 534
+    function expression_ir 536 552
+    function execute_candidates 556 631
+    function canonical_answer_value 633 655
+    function output_has_shape 657 668
+    function append_round_trip_checks 670 698
+    function append_unit_check 700 715
+    enum AnswerAgreement 718 723
+    function same_answer 725 733
+    function derivations_are_disjoint 735 741
+    function classify_agreement 743 765
+    function evidence_check_slug 767 779
+    function symbolic_check 781 793

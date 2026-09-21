@@ -115,10 +115,10 @@ src/associative_persistence.rs	unresolved evidence link: {reference}
 src/attachment_context.rs	{message}\n\n{context}
 src/authoring_loop.rs	--pull-request must be a canonical GitHub pull-request URL: {pull_request}
 src/authoring_loop.rs	--seed is not a directory: {}
-src/authoring_loop.rs	Formal-AI-Session: {session_id}\nFormal-AI-Model: {model}\nFormal-AI-Evidence: {evidence_relative}\nFormal-AI-Pull-Request: {pull_request}\n
+src/authoring_loop.rs	Formal-AI-Session: {session_marker}\nFormal-AI-Model: {model}\nFormal-AI-Evidence: {evidence_relative}\nFormal-AI-Pull-Request: {pull_request}\n
 src/authoring_loop.rs	formal-ai serve exited during startup (attempt {attempt})
 src/authoring_loop.rs	formal-ai serve never came up on port {}
-src/authoring_loop.rs	formal-ai session {session_id}\nformal-ai model {model}\n
+src/authoring_loop.rs	formal-ai session {session_marker}\nformal-ai model {model}\n
 src/authoring_loop.rs	no artifact contains: {expected}
 src/authoring_loop.rs	the Agent CLI did not write {produced}
 src/authoring_loop.rs	the Agent CLI exited {agent_status}
@@ -785,12 +785,6 @@ src/skill_compiler/structured.rs	{}({args}) -> deterministic_response
 src/skill_ledger.rs	A method exists but the need's chain did not connect end to end; recorded as a gap to close.
 src/skill_ledger.rs	No catalogued method resolves this need; recorded as a gap to close.
 src/skill_ledger.rs	The need resolved to a method but was not satisfied; recorded as a gap to close.
-src/solver.rs	Flushing the source cache is an auditable action. Confirm explicitly.
-src/solver.rs	That message contains inappropriate content. Please keep the conversation respectful.
-src/solver.rs	The action will run inside an isolated sandbox once confirmed.
-src/solver.rs	loops are refused. Re-send a bounded version inside an isolated sandbox.
-src/solver.rs	mode runs in an isolated sandbox so the host stays safe.
-src/solver.rs	step will be appended to the action log.
 src/solver_diagnostics.rs	{answer}\n\n[diagnostic]\n{}
 src/solver_formalization.rs	formalization:{index} score={} probability={probability:.6} {}
 src/solver_formalization.rs	selected=formalization:{index} probability={probability:.6} margin={margin:.6} epsilon={epsilon:.6} reason={}
@@ -1085,6 +1079,12 @@ src/solver_handlers/playwright_script.rs	\nУточните URL, действи�
 src/solver_handlers/playwright_script.rs	Даю стартовый TypeScript-пример по документации Playwright.\n\n
 src/solver_handlers/playwright_script.rs	Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.
 src/solver_handlers/playwright_script.rs	Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.\n\n
+src/solver_handlers/policy_gates.rs	Flushing the source cache is an auditable action. Confirm explicitly.
+src/solver_handlers/policy_gates.rs	That message contains inappropriate content. Please keep the conversation respectful.
+src/solver_handlers/policy_gates.rs	The action will run inside an isolated sandbox once confirmed.
+src/solver_handlers/policy_gates.rs	loops are refused. Re-send a bounded version inside an isolated sandbox.
+src/solver_handlers/policy_gates.rs	mode runs in an isolated sandbox so the host stays safe.
+src/solver_handlers/policy_gates.rs	step will be appended to the action log.
 src/solver_handlers/program_synthesis.rs	tests_passed assertion_count={}
 src/solver_handlers/research_table.rs	The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: `{preview}`\n\nNext step: run the source search and use the returned sources to finish the calculation.
 src/solver_handlers/research_table.rs	The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `{preview}`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources.
@@ -1296,4 +1296,3 @@ src/translation/selection.rs	Should I read \"{}\" as \"{} {} {}\" or \"{} {} {}\
 src/translation/selection.rs	Which interpretation did you mean: {} or {}?
 src/translation/selection.rs	{impulse}\n{seed}
 src/translation/wikidata.rs	SELECT DISTINCT ?lemma WHERE {{ wd:{source_lexeme_id} ontolex:sense ?source_sense . wd:{source_lexeme_id} wikibase:lexicalCategory ?category . ?source_sense wdt:P5137 ?meaning . ?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning . ?lexeme wikibase:lexicalCategory ?category . ?lexeme dct:language ?language . ?language wdt:P218 \"{target_lang_iso}\" . ?lexeme wikibase:lemma ?lemma . }}
-src/unknown_opener.rs	{opener} {body}

@@ -43,6 +43,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure-2.lino"
     record "recurrence_less_equal"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_b1c2f03d5745b57e
+    source "data/seed/meanings-coding-structure.lino"
+    record "branch"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_328f3b83c49a1dee
     source "data/seed/meanings-coding-structure.lino"
     record "join_with_space"
@@ -62,6 +66,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_29796ef82597986e
     source "data/seed/meanings-conversation.lino"
     record "enumeration_cue"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_eba0c1e4ee14268e
+    source "data/seed/meanings-conversation.lino"
+    record "social_assistant_free_time"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_08c9574468aba89e
     source "data/seed/meanings-definition-merge.lino"
@@ -166,6 +174,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_74c7552dc6ae82fe
     source "data/seed/meanings-translation.lino"
     record "translate_from_chinese"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_ee081ad07c08ad1e
+    source "data/seed/meanings-units.lino"
+    record "measurement_property_weight"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_65c0cdce56d85bde
     source "data/seed/meanings-web-navigation.lino"

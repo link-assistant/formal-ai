@@ -1,0 +1,148 @@
+{
+  "entities": {
+    "Q713750": {
+      "type": "item",
+      "id": "Q713750",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "West Germany"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ФРГ"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पश्चिम जर्मनी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "西德"
+        },
+        "es": {
+          "language": "es",
+          "value": "Alemania Occidental"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Federal Republic of Germany in the period between its formation on 23 May 1949 and German reunification on 3 October 1990"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ФРГ до объединения Германии"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यूरोप का देश (1949–1990)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "存在於1949年至1990年的歐洲國家"
+        },
+        "es": {
+          "language": "es",
+          "value": "República Federal de Alemania desde su fundación, el 23 de mayo de 1949, hasta la reunificación alemana el 3 de octubre de 1990"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "West-Deutschland"
+          },
+          {
+            "language": "en",
+            "value": "BR Dtld."
+          },
+          {
+            "language": "en",
+            "value": "Federal Republic of Germany (1949–1990)"
+          },
+          {
+            "language": "en",
+            "value": "Bonn Republic"
+          },
+          {
+            "language": "en",
+            "value": "Second German Republic"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Западная Германия"
+          },
+          {
+            "language": "ru",
+            "value": "Боннская республика"
+          },
+          {
+            "language": "ru",
+            "value": "Федеративная Республика Германии"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "联邦德国"
+          },
+          {
+            "language": "zh",
+            "value": "德意志联邦共和国"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Alemania Federal"
+          },
+          {
+            "language": "es",
+            "value": "República Federal de Alemania"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "West Germany"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Федеративная Республика Германии (1949—1990)"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "पश्चिम जर्मनी"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "西德"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Alemania Occidental"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

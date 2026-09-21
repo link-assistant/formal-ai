@@ -35,6 +35,10 @@ seed_metadata_gaps
     source "data/seed/meanings-coding-structure-2.lino"
     record "stable_longest"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_d9048eeb07a2a0ef
+    source "data/seed/meanings-coding-structure.lino"
+    record "comparison"
+    missing "role,precondition,effect,unit,example"
   gap seed_metadata_gap_d70a931c205956ff
     source "data/seed/meanings-coding-structure.lino"
     record "sequence"
@@ -46,6 +50,14 @@ seed_metadata_gaps
   gap seed_metadata_gap_7fc97f419218704f
     source "data/seed/meanings-conversation.lino"
     record "memory_scope"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_328fd2b9c6cbfcff
+    source "data/seed/meanings-conversation.lino"
+    record "social_assistant_name"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_ef236eef6a385d4f
+    source "data/seed/meanings-conversation.lino"
+    record "social_identity"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_e1544176ce37e5ef
     source "data/seed/meanings-feature-capability.lino"
@@ -114,6 +126,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_2502b6bcb14f58af
     source "data/seed/meanings-units.lino"
     record "gigabyte"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_76cfa4f4f25a87cf
+    source "data/seed/meanings-units.lino"
+    record "measurement_property_depth"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_7dd1dcc5229c190f
     source "data/seed/meanings-units.lino"

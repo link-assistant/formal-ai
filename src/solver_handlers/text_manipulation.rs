@@ -65,6 +65,16 @@ pub fn try_text_manipulation(
     try_text_manipulation_with_history(prompt, normalized, log, &[])
 }
 
+/// Whether the text-manipulation handler owns this prompt. The capability
+/// table and its compose arm ask before claiming a turn, so an edit request
+/// the handler recognizes is answered as the edit it is instead of reporting
+/// a source or write capability gap (issue #1138: the text-operation family).
+#[must_use]
+pub fn names_text_operation(normalized: &str) -> bool {
+    let mut log = EventLog::new();
+    try_text_manipulation(normalized, normalized, &mut log).is_some()
+}
+
 pub fn try_text_manipulation_with_history(
     prompt: &str,
     normalized: &str,

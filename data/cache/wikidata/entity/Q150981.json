@@ -1,0 +1,138 @@
+{
+  "entities": {
+    "Q150981": {
+      "type": "item",
+      "id": "Q150981",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "North German Confederation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Северогерманский союз"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "北德意志邦聯"
+        },
+        "es": {
+          "language": "es",
+          "value": "Confederación Alemana del Norte"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "historical federal state in today's Northern Germany (1867–1871)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "объединение германских государств во главе с Пруссией (1867-1871)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "1867-1871年间位于德意志北部的联邦制组织"
+        },
+        "es": {
+          "language": "es",
+          "value": "antiguo país del centro de Europa (1867–1871)"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Северо-Германский Союз"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "北德意志联邦"
+          },
+          {
+            "language": "zh",
+            "value": "北日耳曼邦聯"
+          },
+          {
+            "language": "zh",
+            "value": "北德意志邦联"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Federacion Alemana del Norte"
+          },
+          {
+            "language": "es",
+            "value": "Federación del Norte de Alemania"
+          },
+          {
+            "language": "es",
+            "value": "Federacion del Norte de Alemania"
+          },
+          {
+            "language": "es",
+            "value": "Confederación de Alemania del Norte"
+          },
+          {
+            "language": "es",
+            "value": "Federación Alemana del Norte"
+          },
+          {
+            "language": "es",
+            "value": "Confederación Germana del Norte"
+          },
+          {
+            "language": "es",
+            "value": "Confederacion de Alemania del Norte"
+          },
+          {
+            "language": "es",
+            "value": "Confederacion Alemana del Norte"
+          },
+          {
+            "language": "es",
+            "value": "Confederacion Germana del Norte"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "North German Confederation"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Северогерманский союз"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "北德意志邦聯"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Confederación Alemana del Norte"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

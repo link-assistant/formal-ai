@@ -2,13 +2,15 @@ self_ast_census
   target src/solver_handler_units.rs
   language rust
   fidelity signature
-  byte_len 7633
-  line_count 162
-  content_id source_module_27804731a0283be8
-  symbol_count 5
+  byte_len 9598
+  line_count 214
+  content_id source_module_fabb37b10a992c6b
+  symbol_count 7
   symbols
     function try_incompatible_units 22 45
     function dimension_label 54 60
     function contains_unit_word 73 106
     function names_incompatible_unit_pair 116 118
-    function detect_incompatible_unit_pair 130 162
+    function names_arithmetic_quantity 127 153
+    function count_clock_times 158 170
+    function detect_incompatible_unit_pair 182 214

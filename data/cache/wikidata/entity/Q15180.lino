@@ -1,0 +1,68 @@
+Q15180
+  aliases
+    en ("Union of Soviet Socialist Republics" USSR U.S.S.R. "the Soviet Union" "the Soviets" CCCP SU "the USSR")
+    es ("Unión de Repúblicas Socialistas Soviéticas" "Union Sovietica" "Union de Republicas Socialistas Sovieticas")
+    ru ("Союз Советских Социалистических Республик" "Советский Союз" "Союз ССР" "С.С.С.Р." "Страна Советов" "Союз" "ссср" "Советы" "ССР")
+    zh ("蘇維埃社會主義共和國聯邦" "蘇維埃社會主義共和國聯盟" "蘇維埃社會主義國家聯盟" "前蘇聯")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q15180
+              numeric-id 15180
+          hash 07fa6eb2d1e5f1c75fc204938373173411385a84
+          property P17
+          snaktype value
+        rank normal
+    P297
+      entry
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value SU
+          hash a6ae4a3087998fbf4fc3592231baae042103fd1f
+          property P297
+          snaktype value
+        rank normal
+  descriptions
+    en "former country in Eurasia (1922–1991)"
+    es "país federal de Europa y Asia que existió entre 1922 y 1991"
+    hi "पूर्वी यूरोप और उत्तरी एशिया में संघीय समाजवादी राज्य (1922-1991)"
+    ru "государство в северной Евразии, существовавшее с 1922 по 1991 год"
+    zh "前東歐及北亞國家（1922–1991）"
+  id Q15180
+  labels
+    en "Soviet Union"
+    es "Unión Soviética"
+    hi "सोवियत संघ"
+    ru "СССР"
+    zh "蘇聯"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Soviet Union"
+    eswiki
+      site eswiki
+      title "Unión Soviética"
+    hiwiki
+      site hiwiki
+      title "सोवियत संघ"
+    ruwiki
+      site ruwiki
+      title "Союз Советских Социалистических Республик"
+    zhwiki
+      site zhwiki
+      title "苏联"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

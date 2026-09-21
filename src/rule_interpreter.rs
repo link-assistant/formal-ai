@@ -119,6 +119,7 @@ enum Condition {
     Word(String, Subject),
     Substring(String, Subject),
     Prefix(String, Subject),
+    CueSet(String, Subject),
     OnlyCharacters(String),
     UnbalancedParentheses,
     RouteExact(String),
@@ -766,6 +767,9 @@ impl Condition {
                 .any(|token| token == word),
             Self::Substring(needle, subject) => context.text(*subject).contains(needle.as_str()),
             Self::Prefix(needle, subject) => context.text(*subject).starts_with(needle.as_str()),
+            Self::CueSet(name, subject) => {
+                crate::cue_lexicon::matches(name, &context.text(*subject))
+            }
             Self::OnlyCharacters(set) => {
                 let trimmed = context.prompt.trim();
                 !trimmed.is_empty() && trimmed.chars().all(|ch| set.contains(ch))

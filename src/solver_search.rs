@@ -45,21 +45,42 @@ pub fn record_external_search(
     prompt: &str,
     language: crate::language::Language,
 ) -> Vec<crate::concept_lookup::ConceptSense> {
-    if config.offline {
-        log.append("search:external", "skipped:offline".to_owned());
-        return Vec::new();
+    // The offline refusal is a policy, not an absence of evidence: the same
+    // `policy:offline` link the probability consult records, so an offline
+    // run's trace shows the lookups were refused rather than silently never
+    // attempted. The walk below still runs: with the transport offline each
+    // service reports its own refusal status (`offline_cache_miss`,
+    // `unbound_template`), and a question naming an unknown term keeps the
+    // attributable consulted-source record instead of a generic miss.
+    let offline = config.offline;
+    if offline {
+        log.append("policy:offline", prompt.to_owned());
     }
-    log.append("search:external", prompt.to_owned());
+    log.append(
+        "search:external",
+        if offline {
+            "skipped:offline".to_owned()
+        } else {
+            prompt.to_owned()
+        },
+    );
     let normalized = crate::engine::normalize_prompt(prompt);
     let code = language.slug();
-    let surfaces = crate::concept_lookup::unknown_surfaces(&normalized, code);
+    let mut surfaces = crate::concept_lookup::unknown_surfaces(&normalized, code);
+    // A term the concept handler already missed is one surface, not the tokens
+    // it is made of: the walk should report who failed to define the phrase.
+    for missed in crate::solver_helpers::bare_concept_misses(log) {
+        if crate::concept_lookup::is_unknown_surface(&missed) && !surfaces.contains(&missed) {
+            surfaces.push(missed);
+        }
+    }
     let bounds = crate::source_walk::LookupBounds::default();
     let cache_root = crate::coding::synthesis_runtime::source_cache_root();
     let client = crate::source_fetch::CachedSourceClient::new(
         &cache_root,
         crate::source_fetch::CurlSourceTransport,
     )
-    .with_online(crate::coding::synthesis_runtime::live_fetch_enabled());
+    .with_online(!offline && crate::coding::synthesis_runtime::live_fetch_enabled());
     let preferences = crate::solver_handler_how_synthesis::service_preferences_from_env(log);
     let mut availability =
         crate::service_accessibility::ServiceAccessibilityCache::load(&cache_root);

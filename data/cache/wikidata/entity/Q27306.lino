@@ -1,0 +1,55 @@
+Q27306
+  aliases
+    es (Prusia)
+    ru ("Пруссия" "Прусское королевство" "Пруссия (королевство)")
+    zh ("普鲁士王国" "大布路斯國" "大布國" "布國")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q43287
+              numeric-id 43287
+          hash f07e6efb1952c0a8e1aeab32299b781d428cf237
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "former European state (1701–1918), part of the German Empire after 1871"
+    es "antiguo Estado europeo (1701-1918), integrante del Imperio alemán desde 1871"
+    ru "королевство в Европе, существовавшее в 1701-1918 годах; с 1871 года - часть Германской империи"
+    zh "歐洲國家（1701－1918年）"
+  id Q27306
+  labels
+    en "Kingdom of Prussia"
+    es "Reino de Prusia"
+    hi "प्रशा राज्य"
+    ru "Королевство Пруссия"
+    zh "普魯士王國"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Kingdom of Prussia"
+    eswiki
+      site eswiki
+      title "Reino de Prusia"
+    hiwiki
+      site hiwiki
+      title "प्रशा राज्य"
+    ruwiki
+      site ruwiki
+      title "Пруссия (королевство)"
+    zhwiki
+      site zhwiki
+      title "普魯士王國"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

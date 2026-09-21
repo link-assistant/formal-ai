@@ -1,0 +1,51 @@
+Q545205
+  aliases
+    en ("Transcaucasian SFSR" TSFSR "republic of the Soviet Union (1922 – 1936)")
+    es ("Republica Socialista Federativa Sovietica de Transcaucasia" "República Socialista Federal Soviética de Transcaucasia" "Republica Socialista Federal de Transcaucasia" "RSFS de Transcaucasia" RSFST)
+    ru ("ЗСФСР" "Закавказская Федерация" "Закавказье" "Федеративный Союз Социалистических Советских Республик Закавказья" "ФСССРЗ")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q15180
+              numeric-id 15180
+          hash 07fa6eb2d1e5f1c75fc204938373173411385a84
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "federation of Soviet republics in the South Caucasus and constituent republic of the Soviet Union"
+    es "antigua república soviética (1922-1936)"
+    ru "независимое государство (1922), союзная республика СССР (1922—1936). включала в себя Грузинскую ССР, Азербайджанскую ССР и Армянскую ССР"
+    zh "历史国家"
+  id Q545205
+  labels
+    en "Transcaucasian Socialist Federative Soviet Republic"
+    es "República Socialista Federativa Soviética de Transcaucasia"
+    ru "Закавказская Социалистическая Федеративная Советская Республика"
+    zh "外高加索苏维埃社会主义联邦共和国"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Transcaucasian Socialist Federative Soviet Republic"
+    eswiki
+      site eswiki
+      title "República Socialista Federativa Soviética de Transcaucasia"
+    ruwiki
+      site ruwiki
+      title "Закавказская Социалистическая Федеративная Советская Республика"
+    zhwiki
+      site zhwiki
+      title "外高加索社会主义联邦苏维埃共和国"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

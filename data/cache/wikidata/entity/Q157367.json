@@ -1,0 +1,94 @@
+{
+  "entities": {
+    "Q157367": {
+      "type": "item",
+      "id": "Q157367",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Brandenburg-Prussia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Бранденбург-Пруссия"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "勃蘭登堡-普魯士"
+        },
+        "es": {
+          "language": "es",
+          "value": "Brandeburgo-Prusia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "former country (1618–1701)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "историческое государство на территории современной Германии"
+        },
+        "es": {
+          "language": "es",
+          "value": "unión personal entre el ducado de Prusia y el margraviato de Brandenburgo (1618-1701)"
+        }
+      },
+      "aliases": {
+        "es": [
+          {
+            "language": "es",
+            "value": "Brandemburgo-Prusia"
+          },
+          {
+            "language": "es",
+            "value": "Brandenburgo-Prusia"
+          },
+          {
+            "language": "es",
+            "value": "Brandeburgo Prusia"
+          },
+          {
+            "language": "es",
+            "value": "Brandemburgo Prusia"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Brandenburg–Prussia"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Бранденбург-Пруссия"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "布蘭登堡-普魯士"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Brandeburgo-Prusia"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

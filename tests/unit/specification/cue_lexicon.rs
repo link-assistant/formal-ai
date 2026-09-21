@@ -85,7 +85,24 @@ fn migrated_cue_contents_match_the_lists_they_replaced() {
         cues("software_project"),
         ["build", "create", "implement", "develop"]
     );
-    assert_eq!(cues("concept_lookup"), ["what is ", "define "]);
+    // concept_lookup's list grew past the migrated literals when the definition
+    // lead cues became multilingual (issue #1138): the seeded definition leads of
+    // every language with meanings-web-research surfaces join the English pair.
+    assert_eq!(
+        cues("concept_lookup"),
+        [
+            "what is ",
+            "define ",
+            "что такое ",
+            "определи ",
+            "дай определение ",
+            "क्या है ",
+            "परिभाषित करें ",
+            "什么是",
+            "是什么",
+            "定义",
+        ]
+    );
     assert_eq!(cues("execution_failure_prompt"), ["undefined_function"]);
     assert_eq!(cues("execution_failure_normalized"), ["undefined function"]);
     assert_eq!(
@@ -136,6 +153,29 @@ fn a_missing_set_never_matches() {
 fn relevants_for(prompt: &str) -> Vec<String> {
     let candidate = formalize_prompt(prompt, "en");
     formalize_intent(prompt, "en", Some(&candidate)).relevants
+}
+
+#[test]
+fn multilingual_definition_leads_surface_concept_lookup() {
+    // The definition lead cues are seeded per language (meanings-web-research
+    // definition lexemes), so a mixed-script definition question must surface the
+    // same handler relevant the English opener does — issue #1138, the
+    // mixed-script formalization test.
+    let cases: &[(&str, &str)] = &[
+        ("ru", "Что такое vulkan layer"),
+        ("hi", "क्या है vulkan layer"),
+        ("zh", "什么是 vulkan layer"),
+    ];
+    for (language, prompt) in cases {
+        let candidate = formalize_prompt(prompt, language);
+        let relevants = formalize_intent(prompt, language, Some(&candidate)).relevants;
+        assert!(
+            relevants
+                .iter()
+                .any(|relevant| relevant == "handler:concept_lookup"),
+            "prompt {prompt:?} must surface handler:concept_lookup; got {relevants:?}"
+        );
+    }
 }
 
 #[test]

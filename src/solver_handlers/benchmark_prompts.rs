@@ -259,6 +259,22 @@ fn fact_records() -> &'static [FactRecord] {
     CELL.get_or_init(seed::facts).as_slice()
 }
 
+/// Whether the committed fact store has a record for this prompt.
+///
+/// The planner's open-web gate asks whether the symbolic engine can answer a
+/// request before releasing it to the open web (issue #989). Concepts and
+/// computations already answer there; a question the fact store matches --
+/// subject alias plus question keyword, exactly the dispatch the solver's
+/// `fact_lookup` row runs -- is equally answerable, and planning a web search
+/// for it would discard the answer the engine already owns (issue #1138).
+#[must_use]
+pub fn fact_store_resolves(prompt: &str) -> bool {
+    let normalized = crate::engine::normalize_prompt(prompt);
+    fact_records()
+        .iter()
+        .any(|record| record.matches_normalized(&normalized))
+}
+
 /// Detect which knowledge-base relation a prompt asks about.
 ///
 /// Issue #386: the relations are no longer a hardcoded per-language keyword

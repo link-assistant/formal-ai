@@ -109,9 +109,27 @@ fn held_out_web_search_paraphrases_reach_the_canonical_search_answer() {
         );
     }
     // No Hindi or Chinese row ever existed: these two were derived before
-    // the retirement and must stay derived after it. (Spanish is the known
-    // gap — the solver's web-search seed carries no es lexeme, recorded in
-    // the plan as future work, not asserted here.)
+    // the retirement and must stay derived after it. Spanish was the
+    // recorded gap until the same leaf seeded the es lexeme of
+    // `web_search_explicit_prefix` (meanings-web-search-query.lino): the
+    // canonical es prefix and a held-out es paraphrase both derive now,
+    // which is the generalization the gap's closing pins.
+    for (canonical_es, held_out_es) in [
+        ("busca en internet", "busca en la red"),
+        ("busca información sobre", "haz una búsqueda en internet de"),
+    ] {
+        let expected_es = answer(&format!("{canonical_es} {query}"));
+        assert_eq!(
+            expected_es.intent, "web_search",
+            "the canonical es phrasing `{canonical_es} …` must itself reach the search answer"
+        );
+        let held_out_es_answer = answer(&format!("{held_out_es} {query}"));
+        assert_eq!(
+            held_out_es_answer.intent, "web_search",
+            "the held-out es paraphrase `{held_out_es} …` must reach web_search from the \
+             seeded es lexeme, with no row and no per-prompt code"
+        );
+    }
     for language_held_out in ["वेब पर खोजें", "在线搜索"] {
         let held_out = answer(&format!("{language_held_out} {query}"));
         assert_eq!(

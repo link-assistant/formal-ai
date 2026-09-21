@@ -165,8 +165,6 @@ meanings
       surface
         text "на какую глубину"
       surface
-        text "каков"
-      surface
         text "диаметр"
     lexeme hi
       surface

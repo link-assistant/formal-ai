@@ -2,30 +2,32 @@ self_ast_census
   target src/meta_method_dispatch.rs
   language rust
   fidelity signature
-  byte_len 34674
-  line_count 862
-  content_id source_module_9510eeb26aec97b1
-  symbol_count 22
+  byte_len 43153
+  line_count 1007
+  content_id source_module_7724dfc37dfd6ace
+  symbol_count 24
   symbols
-    function try_dispatch 36 211
-    const SOLVER_CAPABILITIES 217 227
-    function try_capability_route 235 446
-    function capability_route_preempts 456 474
-    function solver_route_is_authoritative 484 500
-    function record_capability_route 502 518
-    function capability_gap 520 550
-    function request_anchors 556 576
-    function established_response_language 585 591
-    function response_language_demonstration 593 629
-    function explain_previous_turn 631 644
-    function try_learned_method 655 699
-    struct MethodRuntime 702 706
-    function new 709 730
-    function try_attributed_runtime 733 759
-    function try_response_language_variant 761 776
-    function try_diagnostic 778 816
-    function record_method 818 820
-    function record_method_answer 822 830
-    function record_contextual_method_answer 832 840
-    function refresh_answer_projection 842 858
-    function seeded_runtime_text 860 862
+    function try_dispatch 36 215
+    const SOLVER_CAPABILITIES 221 231
+    function try_capability_route 239 568
+    function promoted_calendar_claims 574 579
+    function github_repository_traffic_claims 585 591
+    function capability_route_preempts 601 619
+    function solver_route_is_authoritative 629 645
+    function record_capability_route 647 663
+    function capability_gap 665 695
+    function request_anchors 701 721
+    function established_response_language 730 736
+    function response_language_demonstration 738 774
+    function explain_previous_turn 776 789
+    function try_learned_method 800 844
+    struct MethodRuntime 847 851
+    function new 854 875
+    function try_attributed_runtime 878 904
+    function try_response_language_variant 906 921
+    function try_diagnostic 923 961
+    function record_method 963 965
+    function record_method_answer 967 975
+    function record_contextual_method_answer 977 985
+    function refresh_answer_projection 987 1003
+    function seeded_runtime_text 1005 1007

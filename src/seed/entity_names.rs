@@ -23,6 +23,11 @@ pub struct EntityName {
     pub slug: String,
     /// Wikidata entity id grounding the name, e.g. `Q317521`.
     pub grounded_in: String,
+    /// The entity's IANA time zone, when the grounding resolves to exactly
+    /// one through the tz database's country-to-zone table — a place with no
+    /// single grounded zone (or a person, which has no zone at all) projects
+    /// no `timezone` field and anchors no scheduled time.
+    pub timezone: Option<String>,
     /// Correctly spelled surfaces, in declaration order, across every
     /// supported language. The first entry is the canonical English form.
     pub surfaces: Vec<String>,
@@ -50,9 +55,14 @@ fn parse_entity_names() -> Vec<EntityName> {
 }
 
 fn parse_entity(node: &LinoNode) -> EntityName {
+    let timezone = {
+        let zone = node.find_child_value("timezone");
+        (!zone.is_empty()).then(|| zone.to_owned())
+    };
     EntityName {
         slug: node.id.clone(),
         grounded_in: node.find_child_value("grounded-in").to_owned(),
+        timezone,
         surfaces: parse_surfaces(node),
     }
 }

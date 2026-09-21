@@ -187,6 +187,7 @@ let OPERATION_VOCABULARY_LINO = "";
 let MARKET_PRICE_REFERENCES_LINO = "";
 let ENTITY_NAMES_LINO = "";
 let cachedKnownEntityNames = null;
+let cachedTimezonePlaces = null;
 let MEANINGS_LINO = "";
 let AGENT_INFO = {};
 // Bootstrap copy of `data/seed/language-detection.lino`, replaced verbatim by
@@ -234,6 +235,8 @@ function hydrateLinoSeedText(raw) {
     cachedUnknownOpenerRegistry = null;
   }
   cachedKnownEntityNames = null;
+  cachedTimezonePlaces = null;
+  cachedTimezonePlaces = null;
   MEANINGS_LINO = seedRawTexts(
     raw,
     (fileName) => fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),

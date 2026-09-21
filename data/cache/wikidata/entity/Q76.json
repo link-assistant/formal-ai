@@ -24,7 +24,7 @@
       "descriptions": {
         "en": {
           "language": "en",
-          "value": "president of the United States from 2009 to 2017"
+          "value": "44th President of the United States (2009–2017)"
         },
         "ru": {
           "language": "ru",
@@ -37,15 +37,13 @@
         "zh": {
           "language": "zh",
           "value": "第44任美國總統"
+        },
+        "es": {
+          "language": "es",
+          "value": "44.º presidente de los Estados Unidos"
         }
       },
       "aliases": {
-        "en": [
-          {
-            "language": "en",
-            "value": "POTUS 44"
-          }
-        ],
         "ru": [
           {
             "language": "ru",
@@ -139,9 +137,80 @@
             "language": "zh",
             "value": "奥巴马"
           }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Barack Hussein Obama Jr."
+          },
+          {
+            "language": "es",
+            "value": "Barack Hussein Obama Jr"
+          },
+          {
+            "language": "es",
+            "value": "Barack Hussein Obama, Jr"
+          },
+          {
+            "language": "es",
+            "value": "Barack Obama Jr"
+          },
+          {
+            "language": "es",
+            "value": "Barack Obama, Jr."
+          },
+          {
+            "language": "es",
+            "value": "Barack Obama Jr."
+          },
+          {
+            "language": "es",
+            "value": "Barack Obama, Jr"
+          },
+          {
+            "language": "es",
+            "value": "Barack Obama Junior"
+          }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Barack Obama"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Обама, Барак"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "बराक ओबामा"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "巴拉克·奧巴馬"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Barack Obama"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

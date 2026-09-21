@@ -30,7 +30,7 @@ pub(super) fn iteration_element_types(ty: &IrType) -> Vec<IrType> {
     }
 }
 
-pub(super) fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {
+pub(crate) fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {
     let owned: BTreeSet<String> = names.iter().map(|name| (*name).to_owned()).collect();
     let mut into = BTreeSet::new();
     collect_parameter_names(node, &owned, &mut into);
@@ -166,10 +166,119 @@ pub(super) fn collect_parameter_names(
     walk(node, names, &BTreeSet::new(), into);
 }
 
+/// How far every apply's direct argument slots sit from the declared
+/// positions of the parameters they name, summed over the whole tree.
+/// Mirror-image programs — a commutative fragment's operand orders — tie on
+/// coverage, cost, and structure counts, and a content-hash id would then
+/// decide by luck; the declared order is the canonical tie-break, so the
+/// operand spelling the task itself names is the one the oracle meets first
+/// (`set(arg1) & set(arg2)`, matching how upstream tasks write it).
+pub(super) fn canonical_displacement(node: &IrNode, parameters: &[(String, IrType)]) -> usize {
+    fn walk(node: &IrNode, parameters: &[(String, IrType)], total: &mut usize) {
+        match node {
+            IrNode::Parameter { .. } | IrNode::Literal { .. } => {}
+            IrNode::Apply { arguments, .. } => {
+                for (slot, argument) in arguments.iter().enumerate() {
+                    if let IrNode::Parameter { name, .. } = argument
+                        && let Some(index) = parameters
+                            .iter()
+                            .position(|(parameter, _)| parameter == name)
+                    {
+                        *total += slot.abs_diff(index);
+                    }
+                    walk(argument, parameters, total);
+                }
+            }
+            IrNode::Each {
+                items,
+                body,
+                predicate,
+                ..
+            } => {
+                walk(items, parameters, total);
+                walk(body, parameters, total);
+                if let Some(predicate) = predicate {
+                    walk(predicate, parameters, total);
+                }
+            }
+            IrNode::Fold {
+                items,
+                initial,
+                body,
+                ..
+            } => {
+                walk(items, parameters, total);
+                walk(initial, parameters, total);
+                walk(body, parameters, total);
+            }
+            IrNode::Repeat { from, to, body, .. } => {
+                walk(from, parameters, total);
+                walk(to, parameters, total);
+                walk(body, parameters, total);
+            }
+            IrNode::Recurrence {
+                base,
+                transition,
+                index,
+                ..
+            } => {
+                for value in base {
+                    walk(value, parameters, total);
+                }
+                walk(transition, parameters, total);
+                walk(index, parameters, total);
+            }
+            IrNode::RecursiveReduce {
+                target,
+                items,
+                next,
+                admissible,
+                base_test,
+                base,
+                local,
+                ..
+            } => {
+                for value in target {
+                    walk(value, parameters, total);
+                }
+                walk(items, parameters, total);
+                for value in next {
+                    walk(value, parameters, total);
+                }
+                if let Some(admissible) = admissible {
+                    walk(admissible, parameters, total);
+                }
+                walk(base_test, parameters, total);
+                walk(base, parameters, total);
+                walk(local, parameters, total);
+            }
+            IrNode::Condition {
+                test,
+                then_branch,
+                else_branch,
+            } => {
+                walk(test, parameters, total);
+                walk(then_branch, parameters, total);
+                walk(else_branch, parameters, total);
+            }
+            IrNode::Bind { value, body, .. } => {
+                walk(value, parameters, total);
+                walk(body, parameters, total);
+            }
+            IrNode::Emit { value } | IrNode::Return { value } => {
+                walk(value, parameters, total);
+            }
+        }
+    }
+    let mut total = 0;
+    walk(node, parameters, &mut total);
+    total
+}
+
 /// Minimal Python lexical scan for identifier scope. String contents are
 /// deliberately skipped, so a quoted example cannot accidentally bind or
 /// invalidate a placeholder with the same spelling.
-pub(super) fn python_tokens(source: &str) -> Vec<String> {
+pub(crate) fn python_tokens(source: &str) -> Vec<String> {
     let mut tokens = Vec::new();
     let mut characters = source.chars().peekable();
     while let Some(character) = characters.next() {

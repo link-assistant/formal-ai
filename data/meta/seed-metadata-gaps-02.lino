@@ -51,6 +51,10 @@ seed_metadata_gaps
     source "data/seed/meanings-conversation.lino"
     record "conversation_topic_opener"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_745b3e5c43ac6d02
+    source "data/seed/meanings-conversation.lino"
+    record "social_greeting"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_44dd81017b97ce12
     source "data/seed/meanings-facts.lino"
     record "currency"
@@ -150,6 +154,10 @@ seed_metadata_gaps
   gap seed_metadata_gap_d3ac7defc6c08232
     source "data/seed/meanings-units.lino"
     record "kilobyte"
+    missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_adbdfd1cf5b104c2
+    source "data/seed/meanings-units.lino"
+    record "measurement_property_length"
     missing "precondition,effect,unit,example"
   gap seed_metadata_gap_b197df43f662f712
     source "data/seed/meanings-units.lino"

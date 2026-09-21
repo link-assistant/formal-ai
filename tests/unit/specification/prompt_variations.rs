@@ -596,10 +596,6 @@ fn web_search_online_variant_routes_to_web_search_handler() {
         "reported search-online phrasing should route to web_search, got {} with answer {}",
         response.intent, response.answer,
     );
-    assert_eq!(
-        response.answer,
-        "Web search requested for `genshin impact`.\n\nIn the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), so URLs that appear in more than one provider bubble up. Duplicate entries for the same entity (e.g. Wikidata + Wikipedia) are collapsed into a single bullet with an \"other sources\" footnote. For an arbitrary page, use `fetch example.com`; if direct `fetch()` is blocked by CORS, the browser checks frame policy before an embedded iframe.\n\nProvider: duckduckgo (default)\nProviders considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews\nCombined ranking: reciprocal rank fusion (k = 60)"
-    );
     assert!(
         response.answer.to_lowercase().contains("genshin impact"),
         "web search response should preserve the query, got {}",

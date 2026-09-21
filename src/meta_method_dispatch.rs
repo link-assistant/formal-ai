@@ -42,14 +42,18 @@ pub fn try_dispatch(
 ) -> Option<SymbolicAnswer> {
     let normalized = prompt.to_lowercase();
     let registry = MethodRegistry::shared();
-    let promoted_method = intent_formalization.relevants.iter().find_map(|relevant| {
-        let route = relevant
-            .strip_prefix("route:")
-            .or_else(|| relevant.strip_prefix("handler:"))?;
-        registry
-            .method_for_route(route)
-            .map(|method| method.name.clone())
-    });
+    let promoted_methods: Vec<String> = intent_formalization
+        .relevants
+        .iter()
+        .filter_map(|relevant| {
+            let route = relevant
+                .strip_prefix("route:")
+                .or_else(|| relevant.strip_prefix("handler:"))?;
+            registry
+                .method_for_route(route)
+                .map(|method| method.name.clone())
+        })
+        .collect();
     let method_names = registry.ordered_method_names_for_relevants(&intent_formalization.relevants);
     let runtime = MethodRuntime::new(solver.config);
     let mut capability_route_checked = false;
@@ -77,7 +81,7 @@ pub fn try_dispatch(
         if !capability_route_checked && !PRELUDE_METHOD_NAMES.contains(&name.as_str()) {
             capability_route_checked = true;
             if let Some(answer) =
-                try_capability_route(solver, prompt, history, promoted_method.as_deref(), log)
+                try_capability_route(solver, prompt, history, &promoted_methods, log)
             {
                 return Some(answer);
             }
@@ -236,7 +240,7 @@ fn try_capability_route(
     solver: &UniversalSolver,
     prompt: &str,
     history: &[ConversationTurn],
-    promoted_method: Option<&str>,
+    promoted_methods: &[String],
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     // A request for unbounded autonomy is the bounded-autonomy policy's to
@@ -258,6 +262,18 @@ fn try_capability_route(
     if crate::solver_helpers::is_agent_request(&normalized) {
         return None;
     }
+    // A destructive request without an agent opt-in is the bounded-autonomy
+    // policy's to answer, whatever object/act/locus triple the table reads
+    // off it. The seed's `shell_refusal` rule (rank 650) and the Rust policy
+    // gates both speak for it, so routing it reports a capability gap where a
+    // guard answers -- the same boundary the autonomy decline above draws
+    // (issue #1138: `Please run rm -rf ... on my behalf` lost its refusal to
+    // the write gap the table read off the command).
+    if crate::solver_helpers::is_destructive_action(&normalized)
+        && !crate::solver_helpers::is_agent_opt_in(&normalized)
+    {
+        return None;
+    }
     // A conversion between units the lexicon places in distinct physical
     // dimensions (meters of length, kilobytes of data storage) is the unit
     // specialist's to answer, whatever object/act/locus triple the table reads
@@ -268,6 +284,23 @@ fn try_capability_route(
     // policy above: the table declines on its own instead of a specialist
     // having to win a race it no longer runs (issue #1138).
     if crate::solver_handler_units::names_incompatible_unit_pair(&normalized) {
+        return None;
+    }
+    // Advice to open a URL in a tab is the `url_navigate` row's request. The
+    // routed fetch and the compose arm below deliberately do not re-ask a verb
+    // recognizer, so they would answer it here; the navigation recognizer is
+    // asked instead, and what it claims the table declines -- the row one rank
+    // behind this intercept keeps the request, exactly as the ladder pinned it
+    // (issue #1138: `Открой страницу github.com` lost its tab advice to the
+    // compose arm).
+    if crate::solver_handlers::url_navigation_claims(prompt, &normalized) {
+        return None;
+    }
+    // A text operation the manipulation handler recognizes is its turn: the
+    // table reads "title case this text: ..." as a write gap, but the edit
+    // answers on the chat surface itself, so the table declines and method
+    // dispatch claims the edit (issue #1138: text operations).
+    if crate::solver_handlers::names_text_operation(&normalized) {
         return None;
     }
     if !crate::capability_routing::table_routing_enabled() {
@@ -283,9 +316,20 @@ fn try_capability_route(
     // precedence that caused #745/#1138's cross-tool misroutes; it does not
     // interrupt translation, text manipulation, installation conversion, or
     // any other complete recipe merely because that recipe mentions a path or
-    // a language.
-    if let Some(method) = promoted_method
-        && !capability_route_preempts(method, &decision)
+    // a language.  The promotions pipeline hoists every recipe whose
+    // conditions fire, and a false promotion is ordinary -- a repo slug
+    // promotes `book` as a scheduling act, an artifact word promotes a
+    // project reading -- so the table may answer only when it preempts each
+    // promoted recipe, not merely the first: the walk behind this intercept
+    // still asks every hoisted handler in rank order, and a handler promoted
+    // by a false positive declines when actually asked (issue #1138: the
+    // trimstray conversion and the Russian pdf plan both lost to the gap the
+    // table read off their artifact words behind a falsely promoted
+    // preempting handler).
+    if !promoted_methods.is_empty()
+        && promoted_methods
+            .iter()
+            .any(|method| !capability_route_preempts(method, &decision))
     {
         return None;
     }
@@ -302,6 +346,32 @@ fn try_capability_route(
             // a refusal). The gap refusal is the plain chat surface's honest
             // answer, and only its.
             if solver.config.agent_mode {
+                return None;
+            }
+            // A GitHub repository-traffic visibility question is that seeded
+            // handler's turn: the table reads "who visited my repository" as
+            // workspace retrieval and reports a grep gap, burying the
+            // platform's aggregate-traffic answer (issue #497). The four-role
+            // recognition is the handler's own, read from the same lexicon.
+            if github_repository_traffic_claims(&normalized) {
+                return None;
+            }
+            // An elliptical scheduling prompt the promotion hoisted and the
+            // calendar gate accepts is the calendar handler's: the table
+            // read a search act off the modal verb, but the clock hour,
+            // timezone and participant entities ground the event without
+            // the web (issue #595). A routed calendar decision still wins
+            // above; only the gap declines.
+            if promoted_calendar_claims(promoted_methods, &normalized) {
+                return None;
+            }
+            // A shell task the semantic terminal recognizer can already name
+            // is the terminal suggestion's: the table reads "check which
+            // processes are running" as a list_dir gap, while the seeded
+            // process lexicon answers with the agent suggestion that names
+            // the command — in every language the table has no row for
+            // (issue #870 parity).
+            if crate::agentic_coding::semantic_shell_command_for_task(prompt).is_some() {
                 return None;
             }
             if let Some(answer) = crate::family_method::try_family_method_preempting(
@@ -374,6 +444,18 @@ fn try_capability_route(
             response_language_demonstration(prompt, &normalized, log)
         }
         "explain_previous_turn" => {
+            // Explaining a previous turn requires one. With no assistant turn
+            // behind it the request is a comprehension failure the
+            // clarification family answers ("I didn't understand", in any
+            // language), not an empty-turn notice -- the same requirement the
+            // executor below states in prose (issue #1138: the Hindi
+            // paraphrase lost its clarification to this arm).
+            if !history
+                .iter()
+                .any(|turn| turn.role == crate::ConversationRole::Assistant)
+            {
+                return None;
+            }
             // Issue #556 first: re-rendering the previous turn must not steal
             // an explicit response-language retarget OF that same previous
             // turn ("I don't understand English, write in Hindi" is both a
@@ -392,6 +474,42 @@ fn try_capability_route(
             Some(explain_previous_turn(prompt, log))
         }
         "compose_from_sources" | "concept_measurement_lookup" => {
+            // A quantity arithmetic computes — a duration between two clock
+            // times, a same-dimension unit conversion — is the calculator's
+            // turn, not a measured property a source can look up. The
+            // quantity rows read the same interrogative words ("how long",
+            // "是多少"), and executing a source capability for them reports a
+            // measurement miss where the calculator answers, so the table
+            // declines before either arm runs (issue #1138 specification:
+            // the calculator-delegation family).
+            if crate::solver_handler_units::names_arithmetic_quantity(&normalized) {
+                return None;
+            }
+            // A summarization seed trigger is the summarization method's turn:
+            // that handler derives its answer from the concept or project
+            // record the trigger references, and composing from sources for
+            // it buries the derivation under a fetch the chat surface cannot
+            // make (issue #1138: summarization routing).
+            if crate::seed::summary_topic_seeds().matches_trigger(&normalized) {
+                return None;
+            }
+            // A text operation the manipulation handler recognizes ("count
+            // occurrences of", "title case this text:") is that handler's
+            // turn, whatever object/act/locus triple the table reads off it:
+            // composing or routing it to a write capability reports a gap
+            // where the edit itself answers (issue #1138: the text-operation
+            // family).
+            if crate::solver_handlers::names_text_operation(&normalized) {
+                return None;
+            }
+            // A question the committed fact store matches is the
+            // `fact_lookup` row's turn, not a measured property for a source
+            // to look up: the record already carries the Wikidata anchor and
+            // the localized summary the question asks for (issue #1138: the
+            // factual QnA matrix).
+            if crate::solver_handlers::fact_store_resolves(prompt) {
+                return None;
+            }
             // An elaboration of a procedure this conversation already answered
             // ("give me the exact steps") is that procedure's continuation
             // (issue #444). The rebind is recovered from the prior turns, not
@@ -424,9 +542,13 @@ fn try_capability_route(
         // unknown opener. An agent client that advertises `web_search`
         // executes the digest itself and keeps the fall-through. Weekday and
         // date questions stay `time_expression`, which has no such row, so
-        // calendar reasoning keeps answering them.
+        // calendar reasoning keeps answering them. An elliptical scheduling
+        // prompt the promotion hoisted (issue #595: "А можешь на 10 часов по
+        // Грузии с Марией?") reads as a relative period off its clock hour,
+        // but the calendar gate's entities ground the event without the web,
+        // so it falls through to the promoted handler instead of a gap.
         "web_search" if decision.object == ObjectType::RelativePeriod => {
-            if solver.config.agent_mode {
+            if solver.config.agent_mode || promoted_calendar_claims(promoted_methods, &normalized) {
                 None
             } else {
                 Some(capability_gap(prompt, log, capability, capability))
@@ -443,6 +565,29 @@ fn try_capability_route(
         // above, which names the missing tool instead of the routed one.
         _ => None,
     }
+}
+
+/// An elliptical scheduling prompt the promotion hoisted and the calendar
+/// gate accepts is the calendar handler's (issue #595): the clock hour,
+/// timezone and participant entities ground the event without the web, so
+/// both a routed web_search digest and a web_search gap decline it.
+fn promoted_calendar_claims(promoted_methods: &[String], normalized: &str) -> bool {
+    promoted_methods
+        .iter()
+        .any(|method| method == "calendar_create_event")
+        && crate::solver_handlers::calendar_claims(normalized)
+}
+
+/// Whether the lexicon recognises all four roles of the GitHub
+/// repository-traffic handler: the platform, a repository reference, a
+/// traffic signal, and a visibility question (issue #497). Mirrors the
+/// `github_repository_traffic` rule in `data/seed/handler-rules.lino`.
+fn github_repository_traffic_claims(normalized: &str) -> bool {
+    let lex = crate::seed::lexicon();
+    lex.mentions_role("github_repository_platform", normalized)
+        && lex.mentions_role("repository_reference", normalized)
+        && lex.mentions_role("github_repository_traffic_signal", normalized)
+        && lex.mentions_role("github_repository_traffic_question", normalized)
 }
 
 /// Whether a grounded capability decision is more specific than a promoted

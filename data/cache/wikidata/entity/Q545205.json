@@ -1,0 +1,159 @@
+{
+  "entities": {
+    "Q545205": {
+      "type": "item",
+      "id": "Q545205",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Transcaucasian Socialist Federative Soviet Republic"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Закавказская Социалистическая Федеративная Советская Республика"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "外高加索苏维埃社会主义联邦共和国"
+        },
+        "es": {
+          "language": "es",
+          "value": "República Socialista Federativa Soviética de Transcaucasia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "federation of Soviet republics in the South Caucasus and constituent republic of the Soviet Union"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "независимое государство (1922), союзная республика СССР (1922—1936). включала в себя Грузинскую ССР, Азербайджанскую ССР и Армянскую ССР"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "历史国家"
+        },
+        "es": {
+          "language": "es",
+          "value": "antigua república soviética (1922-1936)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Transcaucasian SFSR"
+          },
+          {
+            "language": "en",
+            "value": "TSFSR"
+          },
+          {
+            "language": "en",
+            "value": "republic of the Soviet Union (1922 – 1936)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ЗСФСР"
+          },
+          {
+            "language": "ru",
+            "value": "Закавказская Федерация"
+          },
+          {
+            "language": "ru",
+            "value": "Закавказье"
+          },
+          {
+            "language": "ru",
+            "value": "Федеративный Союз Социалистических Советских Республик Закавказья"
+          },
+          {
+            "language": "ru",
+            "value": "ФСССРЗ"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Republica Socialista Federativa Sovietica de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "República Socialista Federal Soviética de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Socialista Federal de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "RSFS de Transcaucasia"
+          },
+          {
+            "language": "es",
+            "value": "RSFST"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Transcaucasian Socialist Federative Soviet Republic"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Закавказская Социалистическая Федеративная Советская Республика"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "外高加索社会主义联邦苏维埃共和国"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "República Socialista Federativa Soviética de Transcaucasia"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "07fa6eb2d1e5f1c75fc204938373173411385a84",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 15180,
+                  "id": "Q15180"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

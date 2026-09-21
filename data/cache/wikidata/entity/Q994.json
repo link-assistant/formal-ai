@@ -1,0 +1,337 @@
+{
+  "entities": {
+    "Q994": {
+      "type": "item",
+      "id": "Q994",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Tbilisi"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Тбилиси"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "त्बिलिसी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "第比利斯"
+        },
+        "es": {
+          "language": "es",
+          "value": "Tiflis"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "capital and the largest city of Georgia (country)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столица Грузии"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जॉर्जिया की राजधानी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "格鲁吉亚首都"
+        },
+        "es": {
+          "language": "es",
+          "value": "capital de Georgia"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Tiflis"
+          },
+          {
+            "language": "en",
+            "value": "Tpilisi"
+          },
+          {
+            "language": "en",
+            "value": "Tbilissi"
+          },
+          {
+            "language": "en",
+            "value": "Tpilissi"
+          },
+          {
+            "language": "en",
+            "value": "Tbilisi, Georgia"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Тифлис"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "टिबिलीसी"
+          },
+          {
+            "language": "hi",
+            "value": "थ्बिलिसि"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "提比里西"
+          },
+          {
+            "language": "zh",
+            "value": "提比里斯"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Tiblisi"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Tbilisi"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Тбилиси"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "तिब्लिसी"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "第比利斯"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Tiflis"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "145bebe388f3ac6b97830000dee2c80ed9f0f910",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 230,
+                  "id": "Q230"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "preferred"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "07fa6eb2d1e5f1c75fc204938373173411385a84",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 15180,
+                  "id": "Q15180"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "be13d64bba78d6306485e9c427be33fca5acfa0e",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 545205,
+                  "id": "Q545205"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "e6391a437a7a45b6965c7dd72d94efe9b1e4c5b7",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 245160,
+                  "id": "Q245160"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "d0040be99c547a77bc8bcf6afef718a5259adb88",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 330756,
+                  "id": "Q330756"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "6c9436d784398ecaa06651d3925d12a5524d6a48",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 2630860,
+                  "id": "Q2630860"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "2105b57ef845085fc51db4dca6323f8f4bc08d60",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 139319,
+                  "id": "Q139319"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "e64bc21e5649b2265a5047822c9b3f580989c9eb",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 34266,
+                  "id": "Q34266"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "4e1a8d3492ff84ee386a72020ae8273a05c2c74e",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 282475,
+                  "id": "Q282475"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "b896bdc97c070f3d3c9d22bc354a65ff07d34678",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 195972,
+                  "id": "Q195972"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "14bf459a706206ad8e2989c2358e3f9c65dd2937",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 154667,
+                  "id": "Q154667"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

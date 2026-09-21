@@ -1,0 +1,49 @@
+Q55300
+  aliases
+    en ("Sowjetische Besatzungszone" SBZ "Germany (Territory under Allied occupation, 1945-1955 : Russian Zone)‏" "Soviet occupation zone in Germany")
+    es ("Zona de ocupacion sovietica")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q2415901
+              numeric-id 2415901
+          hash f2f6fba21c8001a26c1da375df42750960ee1d22
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "zone of Soviet occupation in postwar Germany"
+    es "área al este de Alemania ocupada por la Unión Soviética desde 1945, al finalizar Segunda Guerra Mundial en Europa"
+    ru "одна из четырёх зон оккупации Германии"
+  id Q55300
+  labels
+    en "Soviet occupation zone of Germany"
+    es "Zona de ocupación soviética"
+    ru "Советская зона оккупации Германии"
+    zh "苏联占领区"
+  sitelinks
+    enwiki
+      site enwiki
+      title "Soviet occupation zone in Germany"
+    eswiki
+      site eswiki
+      title "Zona de ocupación soviética"
+    ruwiki
+      site ruwiki
+      title "Советская зона оккупации Германии"
+    zhwiki
+      site zhwiki
+      title "德国苏占区"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

@@ -1,0 +1,208 @@
+{
+  "entities": {
+    "Q16957": {
+      "type": "item",
+      "id": "Q16957",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "German Democratic Republic"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ГДР"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पूर्व जर्मनी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "東德"
+        },
+        "es": {
+          "language": "es",
+          "value": "Alemania Oriental"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "1949–1990 country in central Europe, unified into modern Germany"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "социалистическое государство в Центральной Европе (1949—1990)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मध्य यूरोप का देश (1949–1990)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "1949年成立於德國蘇佔區的的社會主義國家"
+        },
+        "es": {
+          "language": "es",
+          "value": "estado socialista de la Europa Central entre 1949 y 1990"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "GDR"
+          },
+          {
+            "language": "en",
+            "value": "DDR"
+          },
+          {
+            "language": "en",
+            "value": "Deutsche Demokratische Republik"
+          },
+          {
+            "language": "en",
+            "value": "Communist Germany"
+          },
+          {
+            "language": "en",
+            "value": "Socialist Germany"
+          },
+          {
+            "language": "en",
+            "value": "East Germany"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "DDR"
+          },
+          {
+            "language": "ru",
+            "value": "Восточная Германия"
+          },
+          {
+            "language": "ru",
+            "value": "Германская Демократическая Республика"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "德意志民主共和国"
+          },
+          {
+            "language": "zh",
+            "value": "民主德国"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "RDA"
+          },
+          {
+            "language": "es",
+            "value": "DDR"
+          },
+          {
+            "language": "es",
+            "value": "República Democrática de Alemania"
+          },
+          {
+            "language": "es",
+            "value": "Alemania del Este"
+          },
+          {
+            "language": "es",
+            "value": "República Democrática Alemana"
+          },
+          {
+            "language": "es",
+            "value": "Alemania Socialista"
+          },
+          {
+            "language": "es",
+            "value": "Alemania Comunista"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "East Germany"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Германская Демократическая Республика"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "पूर्व जर्मनी"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "東德"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "República Democrática Alemana"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "69134fce674a39f3382130caf84f51e58518fb88",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 16957,
+                  "id": "Q16957"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ],
+        "P297": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P297",
+              "hash": "2f536445be515328b57b26a02847cadbce49e62c",
+              "datavalue": {
+                "value": "DD",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

@@ -3,11 +3,12 @@ include!("modules.rs");
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
-    try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
-    try_fact_lookup, try_roleplay_request, try_summarization_request,
+    fact_store_resolves, try_brainstorming_request, try_conversation_topic_request,
+    try_coreference_request, try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
 pub use calendar::{
-    try_calendar_create_event, try_calendar_reasoning, try_routed_calendar_create_event,
+    calendar_claims, try_calendar_create_event, try_calendar_reasoning,
+    try_routed_calendar_create_event,
 };
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
@@ -38,15 +39,18 @@ pub use shell_command_transform::{
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
-pub use text_manipulation::{names_a_quoted_replacement, text_outside_quoted_segments};
+pub use text_manipulation::{
+    names_a_quoted_replacement, names_text_operation, text_outside_quoted_segments,
+};
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use user_intent::{try_proof_request, try_proof_request_with_config};
 pub use verifiable_task::try_verifiable_task;
+pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
 pub use web_requests::{
     detect_web_search_query, try_explicit_repository_lookup, try_http_fetch,
     try_http_fetch_with_offline, try_project_lookup, try_project_lookup_with_response_language,
     try_routed_http_fetch_with_offline, try_url_navigate, try_web_search,
-    try_web_search_with_client, try_web_search_with_offline,
+    try_web_search_with_client, try_web_search_with_offline, url_navigation_claims,
 };
 pub use world_state::try_world_state;
 pub use {

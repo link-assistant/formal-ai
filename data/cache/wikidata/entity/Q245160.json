@@ -1,0 +1,118 @@
+{
+  "entities": {
+    "Q245160": {
+      "type": "item",
+      "id": "Q245160",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Democratic Republic of Georgia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Грузинская демократическая республика"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "喬治亞民主共和國"
+        },
+        "es": {
+          "language": "es",
+          "value": "República Democrática de Georgia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "first modern establishment of Georgia as an independent Country (1918-1921)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство, существовавшее в 1918-1921 годах"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "历史国家"
+        },
+        "es": {
+          "language": "es",
+          "value": "antiguo estado europeo (1918-1921)"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ГДР"
+          },
+          {
+            "language": "ru",
+            "value": "Грузия"
+          },
+          {
+            "language": "ru",
+            "value": "Демократическая Республика Грузия"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "格鲁吉亚民主共和国"
+          },
+          {
+            "language": "zh",
+            "value": "格魯吉亞民主共和國"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "República Democratica de Georgia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Democrática de Georgia"
+          },
+          {
+            "language": "es",
+            "value": "Republica Democratica de Georgia"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Democratic Republic of Georgia"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Грузинская демократическая республика"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "喬治亞民主共和國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "República Democrática de Georgia"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

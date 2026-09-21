@@ -601,33 +601,6 @@ meanings
     lexeme zh
       surface
         text 下午5点
-  calendar_timezone_alias
-    defined-by calendar_day
-    role calendar_timezone_alias
-    lexeme ru
-      surface
-        text "по грузии"
-      surface
-        text "по тбилиси"
-      surface
-        text "грузинское время"
-    lexeme en
-      surface
-        text "tbilisi time"
-      surface
-        text "georgia time"
-      surface
-        text "Asia/Tbilisi"
-    lexeme hi
-      surface
-        text "जॉर्जिया समय"
-      surface
-        text "त्बिलिसी समय"
-    lexeme zh
-      surface
-        text 格鲁吉亚时间
-      surface
-        text 第比利斯时间
   calendar_hour
     grounded-in Q2746606
     defined-by calendar_day

@@ -94,10 +94,6 @@ pub const ROLE_CALENDAR_EVENT: &str = "calendar_event";
 /// (17:00, в 17:00, 5 pm, вечером, …). Actual numeric extraction is in the
 /// handler; surfaces are data-driven.
 pub const ROLE_CALENDAR_TIME: &str = "calendar_time";
-/// Semantic role: alias phrases that indicate a target IANA timezone for a
-/// scheduled event (по грузии, по тбилиси, Asia/Tbilisi, …). The handler
-/// maps a hit on these surfaces to the concrete IANA string.
-pub const ROLE_CALENDAR_TIMEZONE_ALIAS: &str = "calendar_timezone_alias";
 /// Semantic role: a relative-date word that anchors a scheduled event to a day
 /// offset from "today" (tomorrow, завтра, послезавтра, 后天, …).
 ///

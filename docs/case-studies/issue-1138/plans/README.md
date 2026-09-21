@@ -90,6 +90,8 @@ provides); never lower a gate or loosen a policy to get CI green.
 | 12 | [Selection heuristics](12-selection-heuristics.md) | B12 | least action, TRIZ, 2-4-6 refutation-first search, balanced task splitting as registry methods | planned, reconciled |
 | 13 | [Merged-PR carry-over and issue coverage](13-merged-pr-carryover-and-issue-coverage.md) | all | every partial delivery declared in a merged PR mapped to a plan leaf; the open issues this PR closes and does not close, with reasons | planned, reconciled |
 | 14 | [Implementation order](14-implementation-order.md) | all | the single ordered leaf list across plans 01–12 plus plan 13's new leaves and plan 11's doc leaves — 340 leaves in waves T, I1–I9, F and D, each with its deliverable, files, test, gate and dependencies; plus the local resource rules | planned, reconciled |
+| 15 | [Repository world-model delta](15-repository-world-model-delta.md) | all | the world-model delta the pull request leaves behind | planned |
+| 16 | [js → ts → rust development cycle](16-js-ts-rust-cycle.md) | all | `./js`, `./ts`, `./rust` source roots; translation as a library, CLI command and agent tool; the dogfood loop; path-filtered CI with carry-forward and cycle enforcement; Rust → meta-language → ts/js round-trip verification; the dependency patch-and-issue policy | planned 2026-09-21, in delivery |
 
 ## Order of work
 

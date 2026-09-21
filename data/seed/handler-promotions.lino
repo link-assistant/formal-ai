@@ -28,11 +28,14 @@ handler_promotions
           role calendar_schedule_action of padded
           role calendar_event of padded
           all
+            role calendar_hour_reference of padded
+            shape digit of trimmed
+          all
             role calendar_date_marker of padded
             any
               role temporal_preposition of padded
               shape time_separator of trimmed
-    because "issue 869: a date signal conjoined with a scheduling act"
+    because "issue 869 and issue 595 — a date signal conjoined with a scheduling act, or an elliptical clock hour that only the calendar handler's entity context can ground"
   promotion program_synthesis
     rank 40
     when
@@ -116,15 +119,8 @@ handler_promotions
   promotion world_state
     rank 110
     when
-      any
-        all
-          substring what of cleaned
-          substring left of cleaned
-        substring remains of cleaned
-        substring осталось of cleaned
-        substring बाकी of cleaned
-        substring 还剩 of cleaned
-    because "a remaining-goal question reads the dialogue world model when that mode is enabled"
+      cue_set world_state_query of normalized
+    because "a remaining-goal question reads the dialogue world model when that mode is enabled; the cue lexicon holds the multilingual remaining-goal leads so this row cannot drift out of sync with recognition"
   promotion installation_conversion
     rank 120
     when
@@ -204,7 +200,100 @@ handler_promotions
   promotion concept_lookup
     rank 190
     when
-      any
-        prefix "what is " of normalized
-        prefix "define " of normalized
+      cue_set concept_lookup of normalized
     because "a definition question opens with the pinned concept_lookup lead cues (data/meta/cue-lexicon.lino), so the cue class routes by prefix instead of an exact-route enumeration that cannot cover the open class"
+  promotion document_generation_plan
+    rank 200
+    when
+      all
+        none
+          substring "http://" of lowercase
+          substring "https://" of lowercase
+          substring "www." of lowercase
+        any
+          substring "make me" of lowercase
+          substring "make a" of lowercase
+          substring "make an" of lowercase
+          substring create of lowercase
+          substring generate of lowercase
+          substring produce of lowercase
+          substring compile of lowercase
+          substring prepare of lowercase
+          substring assemble of lowercase
+          substring draft of lowercase
+          substring "build me" of lowercase
+          substring export of lowercase
+          substring "give me" of lowercase
+          substring "i need" of lowercase
+          substring "i want" of lowercase
+          substring "put together" of lowercase
+          substring сдела of lowercase
+          substring созда of lowercase
+          substring сгенерир of lowercase
+          substring подготов of lowercase
+          substring сформир of lowercase
+          substring состав of lowercase
+          substring собери of lowercase
+          substring собрать of lowercase
+          substring оформ of lowercase
+          substring выгрузи of lowercase
+          substring экспортир of lowercase
+          substring сверста of lowercase
+          substring बना of lowercase
+          substring तैयार of lowercase
+          substring उत्पन्न of lowercase
+          substring चाहिए of lowercase
+          substring 做 of lowercase
+          substring 制作 of lowercase
+          substring 生成 of lowercase
+          substring 创建 of lowercase
+          substring 编写 of lowercase
+          substring 整理 of lowercase
+          substring 给我 of lowercase
+          substring 帮我 of lowercase
+        any
+          substring pdf of lowercase
+          substring пдф of lowercase
+          substring docx of lowercase
+          substring ".doc" of lowercase
+          substring "word document" of lowercase
+          substring ворд of lowercase
+          substring xlsx of lowercase
+          substring csv of lowercase
+          substring spreadsheet of lowercase
+          substring excel of lowercase
+          substring эксель of lowercase
+          substring табличк of lowercase
+          substring 电子表格 of lowercase
+          substring 表格 of lowercase
+          substring स्प्रेडशीट of lowercase
+          substring pptx of lowercase
+          substring powerpoint of lowercase
+          substring "slide deck" of lowercase
+          substring презентаци of lowercase
+          substring слайд of lowercase
+          substring 演示 of lowercase
+          substring 幻灯片 of lowercase
+          substring प्रस्तुति of lowercase
+          substring document of lowercase
+          substring документ of lowercase
+          substring report of lowercase
+          substring отчет of lowercase
+          substring отчёт of lowercase
+          substring dossier of lowercase
+          substring досье of lowercase
+          substring brochure of lowercase
+          substring брошюр of lowercase
+          substring booklet of lowercase
+          substring буклет of lowercase
+          substring memo of lowercase
+          substring записку of lowercase
+          substring записка of lowercase
+          substring दस्तावेज़ of lowercase
+          substring दस्तावेज of lowercase
+          substring रिपोर्ट of lowercase
+          substring 文档 of lowercase
+          substring 文件 of lowercase
+          substring 报告 of lowercase
+    because "issue 425 and issue 1138: an authoring verb over a named document artifact is the document-generation recipe to plan. The mirrors are the recognizer in src/solver_handlers/document_request.rs until issue 1085 migrates that handler to rules, and the promotion exists because the capability table reads the output artifact as a workspace path and gaps it before rank 550 runs"
+

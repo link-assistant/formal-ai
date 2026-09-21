@@ -2,12 +2,12 @@ self_ast_census
   target src/unknown_opener.rs
   language rust
   fidelity signature
-  byte_len 3089
-  line_count 68
-  content_id source_module_873da1a9c0a3e6f9
+  byte_len 3669
+  line_count 83
+  content_id source_module_881b0085e22122cf
   symbol_count 4
   symbols
-    function unknown_answer_with_variation 21 28
-    function strip_leading_opener 30 47
-    function unknown_answer_variation_for 53 55
-    function language_aware_unknown_answer 58 68
+    function unknown_answer_with_variation 21 43
+    function strip_leading_opener 45 62
+    function unknown_answer_variation_for 68 70
+    function language_aware_unknown_answer 73 83

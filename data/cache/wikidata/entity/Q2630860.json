@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "Q2630860": {
+      "type": "item",
+      "id": "Q2630860",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Transcaucasian Commissariat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Закавказский комиссариат"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "外高加索委員部"
+        },
+        "es": {
+          "language": "es",
+          "value": "Comisariado Transcaucásico"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "interim government in Transcaucasia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Временное коалиционное правительство"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Seïm"
+          },
+          {
+            "language": "en",
+            "value": "Sejm"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Comisariado Transcaucasico"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Transcaucasian Commissariat"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Закавказский комиссариат"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "外高加索委員部"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Comisariado Transcaucásico"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "07fa6eb2d1e5f1c75fc204938373173411385a84",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 15180,
+                  "id": "Q15180"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

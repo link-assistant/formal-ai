@@ -19,12 +19,16 @@
         "zh": {
           "language": "zh",
           "value": "弗拉基米尔·普京"
+        },
+        "es": {
+          "language": "es",
+          "value": "Vladímir Putin"
         }
       },
       "descriptions": {
         "en": {
           "language": "en",
-          "value": "2nd and 4th President of Russia (2000–2008, 2012–present), 7th and 11th Prime Minister of Russia (1999–2000, 2008–2012)"
+          "value": "President of the Russian Federation"
         },
         "ru": {
           "language": "ru",
@@ -32,18 +36,26 @@
         },
         "hi": {
           "language": "hi",
-          "value": "रूस के राष्ट्रपति (1999-2008, 2012-वर्तमान)"
+          "value": "रूस के राष्ट्रपति (का. 1999–2008, 2012–)"
         },
         "zh": {
           "language": "zh",
           "value": "俄羅斯總統"
+        },
+        "es": {
+          "language": "es",
+          "value": "2.º y 4.º Presidente de la Federación Rusa"
         }
       },
       "aliases": {
         "ru": [
           {
             "language": "ru",
-            "value": "Владимир Путин"
+            "value": "В. В. Путин"
+          },
+          {
+            "language": "ru",
+            "value": "ВВП"
           },
           {
             "language": "ru",
@@ -51,23 +63,25 @@
           },
           {
             "language": "ru",
-            "value": "Путин, Владимир Владимирович"
-          },
-          {
-            "language": "ru",
-            "value": "В. В. Путин"
-          },
-          {
-            "language": "ru",
             "value": "Путин В. В."
           },
           {
             "language": "ru",
-            "value": "Путин"
+            "value": "Путин, Владимир Владимирович"
           },
           {
             "language": "ru",
-            "value": "ВВП"
+            "value": "Владимир Путин"
+          },
+          {
+            "language": "ru",
+            "value": "Путин"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पुतिन"
           }
         ],
         "zh": [
@@ -77,15 +91,58 @@
           },
           {
             "language": "zh",
-            "value": "普丁"
+            "value": "弗拉基米尔·弗拉基米罗维奇·普京"
           },
           {
             "language": "zh",
-            "value": "弗拉基米尔·弗拉基米罗维奇·普京"
+            "value": "普丁"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Vladímir Vladímirovich Putin"
           }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Vladimir Putin"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Путин, Владимир Владимирович"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "व्लादिमीर पुतिन"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "弗拉基米尔·普京"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Vladímir Putin"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

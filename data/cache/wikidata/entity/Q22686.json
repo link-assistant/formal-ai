@@ -24,7 +24,7 @@
       "descriptions": {
         "en": {
           "language": "en",
-          "value": "American businessman and politician (born 1946), President of the United States (2017–2021; since 2025)"
+          "value": "President of the United States (2017–2021; since 2025)"
         },
         "ru": {
           "language": "ru",
@@ -37,51 +37,13 @@
         "zh": {
           "language": "zh",
           "value": "第45、47任美國總統"
+        },
+        "es": {
+          "language": "es",
+          "value": "45.º y 47.º presidente de los Estados Unidos"
         }
       },
       "aliases": {
-        "en": [
-          {
-            "language": "en",
-            "value": "POTUS 45"
-          },
-          {
-            "language": "en",
-            "value": "President Donald Trump"
-          },
-          {
-            "language": "en",
-            "value": "President Trump"
-          },
-          {
-            "language": "en",
-            "value": "President Donald J. Trump"
-          },
-          {
-            "language": "en",
-            "value": "President Donald John Trump"
-          },
-          {
-            "language": "en",
-            "value": "President Donald J Trump"
-          },
-          {
-            "language": "en",
-            "value": "@realDonaldTrump"
-          },
-          {
-            "language": "en",
-            "value": "POTUS 47"
-          },
-          {
-            "language": "en",
-            "value": "President DJT"
-          },
-          {
-            "language": "en",
-            "value": "DJT"
-          }
-        ],
         "ru": [
           {
             "language": "ru",
@@ -156,8 +118,45 @@
             "value": "特朗普總統"
           }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Donald Trump"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Трамп, Дональд"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "डॉनल्ड ट्रम्प"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "唐納·川普"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Donald Trump"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "艾薩克·牛頓"
+        },
+        "es": {
+          "language": "es",
+          "value": "Isaac Newton"
         }
       },
       "descriptions": {
@@ -32,23 +36,19 @@
         },
         "hi": {
           "language": "hi",
-          "value": "ब्रिटिश भौतिक विज्ञानी ओर गणितज्ञ (1642-1726/27)"
+          "value": "अंग्रेज़ी भौतिक विज्ञानी ओर गणितज्ञ (1642–1726/27)"
         },
         "zh": {
           "language": "zh",
           "value": "英國物理學家"
+        },
+        "es": {
+          "language": "es",
+          "value": "físico y matemático inglés"
         }
       },
       "aliases": {
         "ru": [
-          {
-            "language": "ru",
-            "value": "Ньютон, Исаак"
-          },
-          {
-            "language": "ru",
-            "value": "Невтон, Исаак"
-          },
           {
             "language": "ru",
             "value": "Ньютон"
@@ -56,6 +56,14 @@
           {
             "language": "ru",
             "value": "Нютон, Исаак"
+          },
+          {
+            "language": "ru",
+            "value": "Ньютон, Исаак"
+          },
+          {
+            "language": "ru",
+            "value": "Невтон, Исаак"
           }
         ],
         "hi": [
@@ -69,10 +77,14 @@
           },
           {
             "language": "hi",
-            "value": "सर इज़ाक न्यूटन"
+            "value": "सर आइज़क न्यूटन"
           }
         ],
         "zh": [
+          {
+            "language": "zh",
+            "value": "牛顿"
+          },
           {
             "language": "zh",
             "value": "伊薩克·牛頓"
@@ -83,10 +95,6 @@
           },
           {
             "language": "zh",
-            "value": "牛顿"
-          },
-          {
-            "language": "zh",
             "value": "伊萨克·牛顿"
           },
           {
@@ -94,8 +102,45 @@
             "value": "牛顿，I."
           }
         ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Isaac Newton"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Ньютон, Исаак"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "आइज़क न्यूटन"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "艾萨克·牛顿"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "Isaac Newton"
+        }
       }
     }
   },
-  "success": 1
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
 }

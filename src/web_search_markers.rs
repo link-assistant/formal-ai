@@ -55,6 +55,9 @@ pub struct WebSearchMarkers {
     pub topic_before_markers: Vec<&'static str>,
     /// Imperative search leads whose query follows them ("search for …").
     pub imperative_lead_markers: Vec<&'static str>,
+    /// Imperative search tails whose query precedes them ("… खोजो"). The
+    /// verb-final spelling of the same command the leads open with.
+    pub imperative_tail_markers: Vec<&'static str>,
     /// Politeness / determiner noise stripped from the front of a query.
     pub leading_noise: Vec<&'static str>,
     /// Source/medium noise stripped from the end of a query.
@@ -113,6 +116,7 @@ pub fn markers() -> &'static WebSearchMarkers {
         topic_after_markers: prefix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
         topic_before_markers: suffix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
         imperative_lead_markers: prefix_literals(ROLE_WEB_SEARCH_IMPERATIVE_LEAD),
+        imperative_tail_markers: suffix_literals(ROLE_WEB_SEARCH_IMPERATIVE_LEAD),
         leading_noise: prefix_literals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
         trailing_noise: suffix_literals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
         source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),

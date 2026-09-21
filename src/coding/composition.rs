@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use crate::agent::{AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
 use crate::coding::concept_discovery::{CandidatePart, ConceptMap};
-use crate::coding::fragment_catalog::FragmentCatalog;
+use crate::coding::fragment_catalog::{FragmentCatalog, FragmentKind};
 use crate::coding::program_ir::{IrNode, IrType, ProgramIr};
 use crate::coding::python_render::render_function;
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
@@ -96,6 +96,19 @@ pub(super) struct Draft {
     pub(super) composition: String,
     pub(super) action_cost: usize,
     pub(super) typed_ir: bool,
+    /// Position in the search's own ordering. Two mirror-image programs (a
+    /// commutative fragment's operand orders) tie on action cost and source
+    /// length, and their content-hash ids would then decide by hash luck;
+    /// the search's ranking already prefers declared parameter order, so it
+    /// is the canonical tie-break. Non-search drafts sit after every ranked
+    /// one.
+    pub(super) search_rank: usize,
+    /// Distinct declared parameters the draft reads. A verified draft that
+    /// skips a task input agrees with the examples only by coincidence --
+    /// `abs(0 - threshold) < abs(1 - threshold)` passes a two-example check
+    /// while never reading `numbers` (issue #317) -- so more inputs read
+    /// outranks least action among drafts that verify.
+    pub(super) referenced_params: usize,
 }
 
 #[must_use]
@@ -148,8 +161,8 @@ pub fn compose_with_ir(
             ));
         }
     }
-    for program in programs {
-        match ir_draft(spec, catalog, program) {
+    for (search_rank, program) in programs.into_iter().enumerate() {
+        match ir_draft(spec, catalog, program, search_rank) {
             Ok(Some(draft)) => {
                 drafts.push(draft);
             }
@@ -211,15 +224,21 @@ pub fn compose_with_ir(
         }
     }
     passing.sort_by(|left, right| {
-        left.action_cost
-            .cmp(&right.action_cost)
+        right
+            .referenced_params
+            .cmp(&left.referenced_params)
+            .then_with(|| left.action_cost.cmp(&right.action_cost))
             .then_with(|| left.source.len().cmp(&right.source.len()))
+            .then_with(|| left.search_rank.cmp(&right.search_rank))
             .then_with(|| left.id.cmp(&right.id))
     });
     unverified.sort_by(|(left, _), (right, _)| {
-        left.action_cost
-            .cmp(&right.action_cost)
+        right
+            .referenced_params
+            .cmp(&left.referenced_params)
+            .then_with(|| left.action_cost.cmp(&right.action_cost))
             .then_with(|| left.source.len().cmp(&right.source.len()))
+            .then_with(|| left.search_rank.cmp(&right.search_rank))
             .then_with(|| left.id.cmp(&right.id))
     });
     let selected = passing.into_iter().next().map(|draft| VerifiedDraft {
@@ -314,6 +333,7 @@ fn ir_draft(
     spec: &CodingTaskSpec,
     catalog: &FragmentCatalog,
     program: ProgramIr,
+    search_rank: usize,
 ) -> Result<Option<Draft>, MissingFragment> {
     if let Some(id) = program
         .fragments
@@ -343,15 +363,32 @@ fn ir_draft(
     // that reads the task's inputs outranks an equally cheap one that
     // guesses a constant.
     action_cost += crate::coding::composition_search::literal_leaves(&program.body);
+    let parameter_names: Vec<&str> = spec
+        .parameters
+        .iter()
+        .map(|parameter| parameter.name.as_str())
+        .collect();
+    let referenced_params =
+        crate::coding::composition_search::parameter_reads(&program.body, &parameter_names);
+    let composition = format!(
+        "typed_search({})",
+        program.composition_notation(|id| {
+            catalog
+                .get(id)
+                .is_some_and(|fragment| fragment.kind == FragmentKind::Meaning)
+        })
+    );
     Ok(Some(Draft {
         id: content_id.clone(),
         source,
         callable_name: program.name,
         source_urls: program.source_urls,
         source_licenses: program.source_licenses,
-        composition: format!("typed_search({content_id})"),
+        composition,
         action_cost,
         typed_ir: true,
+        search_rank,
+        referenced_params,
     }))
 }
 
@@ -363,6 +400,18 @@ fn syntax_is_valid(language: &str, source: &str) -> bool {
 #[cfg(not(feature = "meta-language"))]
 fn syntax_is_valid(_language: &str, _source: &str) -> bool {
     true
+}
+
+/// Distinct declared parameters a rendered draft's source names. Drafts
+/// assembled from retrieved parts have no IR to walk, so their identifiers
+/// are read from the rendered source with the same lexical scan the search
+/// uses for scope.
+fn source_referenced_parameters(spec: &CodingTaskSpec, source: &str) -> usize {
+    let tokens = crate::coding::composition_search::python_tokens(source);
+    spec.parameters
+        .iter()
+        .filter(|parameter| tokens.iter().any(|token| token == &parameter.name))
+        .count()
 }
 
 fn candidate_drafts(
@@ -400,15 +449,18 @@ fn candidate_draft(
                 .transpose()?;
             let call = format!("{}({arguments})", candidate.id);
             let body = renderer.template("python_return", &[("expression", &call)])?;
+            let source = render_function(spec, &body, imports);
             Some(Draft {
                 id: format!("stdlib:{}", candidate.id),
-                source: render_function(spec, &body, imports),
+                source: source.clone(),
                 callable_name: spec.name.clone(),
                 source_urls: vec![candidate.source_url.clone()],
                 source_licenses: vec![candidate.license.clone()],
                 composition: format!("direct_stdlib({})", candidate.id),
                 action_cost: 1,
                 typed_ir: false,
+                search_rank: usize::MAX,
+                referenced_params: source_referenced_parameters(spec, &source),
             })
         }
         "wikifunctions_implementation" => {
@@ -418,15 +470,18 @@ fn candidate_draft(
             let Some(body) = adapt_implementation(code, spec) else {
                 return Ok(None);
             };
+            let source = render_function(spec, &body, Vec::new());
             Some(Draft {
                 id: format!("part:{}", candidate.id),
-                source: render_function(spec, &body, Vec::new()),
+                source: source.clone(),
                 callable_name: spec.name.clone(),
                 source_urls: vec![candidate.source_url.clone()],
                 source_licenses: vec![candidate.license.clone()],
                 composition: format!("direct_wrap({})", candidate.id),
                 action_cost: 2,
                 typed_ir: false,
+                search_rank: usize::MAX,
+                referenced_params: source_referenced_parameters(spec, &source),
             })
         }
         "wikifunctions_recurrence" => match (&candidate.code, &candidate.callable_name) {
@@ -439,6 +494,8 @@ fn candidate_draft(
                 composition: format!("source_recurrence({})", candidate.id),
                 action_cost: 3,
                 typed_ir: false,
+                search_rank: usize::MAX,
+                referenced_params: source_referenced_parameters(spec, source),
             }),
             _ => None,
         },
@@ -452,6 +509,8 @@ fn candidate_draft(
                 composition: candidate.label.clone(),
                 action_cost: 4,
                 typed_ir: false,
+                search_rank: usize::MAX,
+                referenced_params: source_referenced_parameters(spec, source),
             }),
             _ => None,
         },

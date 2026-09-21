@@ -61,8 +61,6 @@ roles
     kind meaning
   calendar_time
     kind predicate
-  calendar_timezone_alias
-    kind meaning
   calendar_today
     kind meaning
   calendar_weekday

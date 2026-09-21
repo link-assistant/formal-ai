@@ -18,12 +18,13 @@ mod lowering;
 mod pool;
 mod recursive;
 
-pub(crate) use analysis::literal_leaves;
-use analysis::{collect_parameter_names, iteration_element_types, parameter_reads, python_tokens};
+use analysis::{canonical_displacement, collect_parameter_names, iteration_element_types};
+pub(crate) use analysis::{literal_leaves, parameter_reads, python_tokens};
 use arguments::{
     argument_choices, argument_coherence, argument_grounded_structures, binder_circularity,
     constant_map_count, diversify, enumerate_arguments, fragment_coverage,
     inferred_expression_type, loose_feeds, node_contains_parameter, normalize_pool,
+    parameter_displacement,
 };
 use binders::{
     checked_recursive_programs, conditional_payload_slots, fragment_binder_slots,
@@ -318,6 +319,7 @@ pub fn search_with_structures(
                 (
                     binder_circularity(binders, binder_slot, arguments),
                     Reverse(argument_coherence(arguments)),
+                    parameter_displacement(arguments, &parameters),
                 )
             });
             combinations.truncate(2_048);
@@ -433,6 +435,7 @@ pub fn search_with_structures(
             candidate.action_cost(),
             literal_leaves(&candidate.body),
             Reverse(candidate.fragments.len()),
+            canonical_displacement(&candidate.body, &parameters),
             candidate.content_id(),
         )
     });
@@ -494,7 +497,13 @@ pub fn search_with_structures(
     if program_shape {
         candidates.extend(print_each_programs(spec, catalog, bounds, structure_ids));
     }
-    candidates.sort_by_key(|candidate| (candidate.action_cost(), candidate.content_id()));
+    candidates.sort_by_key(|candidate| {
+        (
+            candidate.action_cost(),
+            canonical_displacement(&candidate.body, &parameters),
+            candidate.content_id(),
+        )
+    });
     candidates
 }
 

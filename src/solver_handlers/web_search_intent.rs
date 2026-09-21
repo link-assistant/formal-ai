@@ -238,17 +238,26 @@ const fn is_sentence_boundary(character: char) -> bool {
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     let markers = markers();
     let imperative_candidate =
-        imperative_lead_candidate(normalized, &markers.imperative_lead_markers, markers);
+        imperative_lead_candidate(normalized, &markers.imperative_lead_markers, markers)
+            .or_else(|| imperative_tail_candidate(normalized, &markers.imperative_tail_markers));
     let has_imperative_lead = imperative_candidate.is_some();
     let has_action =
         has_imperative_lead || contains_any_search_marker(normalized, &markers.action_markers);
     if !has_action {
         return None;
     }
-    let has_strong_action =
-        imperative_lead_candidate(normalized, &markers.strong_imperative_lead_markers, markers)
-            .is_some()
-            || contains_any_search_marker(normalized, &markers.strong_action_markers);
+    // An explicit imperative is equally strong when the verb closes the
+    // request: Hindi writes `pandas DataFrame.join खोजो`, the command last,
+    // and the strength of a command cannot depend on word order (issue
+    // #1101's table asks for one behaviour across the four languages).
+    let has_strong_action = imperative_lead_candidate(
+        normalized,
+        &markers.strong_imperative_lead_markers,
+        markers,
+    )
+    .is_some()
+        || imperative_tail_candidate(normalized, &markers.imperative_tail_markers).is_some()
+        || contains_any_search_marker(normalized, &markers.strong_action_markers);
     if !has_strong_action && !contains_any_search_marker(normalized, &markers.signal_markers) {
         return None;
     }
@@ -278,6 +287,19 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
         return Some(query);
     }
     None
+}
+
+/// Return the typed argument of an imperative search tail.
+///
+/// Verb-final languages write the command last -- `pandas DataFrame.join
+/// खोजो` is the request `search for pandas DataFrame.join` spells with the
+/// verb in front -- so the query is whatever precedes the imperative
+/// surface. Mirrors [`imperative_lead_candidate`] in the other direction
+/// (issue #1101: the imperative's strength cannot depend on word order).
+fn imperative_tail_candidate<'a>(normalized: &'a str, tails: &[&str]) -> Option<&'a str> {
+    tails
+        .iter()
+        .find_map(|&tail| normalized.strip_suffix(tail))
 }
 
 /// Return the typed argument of an imperative search lead.

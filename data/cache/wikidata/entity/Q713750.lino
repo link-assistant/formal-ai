@@ -1,0 +1,42 @@
+Q713750
+  aliases
+    en (West-Deutschland "BR Dtld." "Federal Republic of Germany (1949–1990)" "Bonn Republic" "Second German Republic")
+    es ("Alemania Federal" "República Federal de Alemania")
+    ru ("Западная Германия" "Боннская республика" "Федеративная Республика Германии")
+    zh ("联邦德国" "德意志联邦共和国")
+  descriptions
+    en "Federal Republic of Germany in the period between its formation on 23 May 1949 and German reunification on 3 October 1990"
+    es "República Federal de Alemania desde su fundación, el 23 de mayo de 1949, hasta la reunificación alemana el 3 de octubre de 1990"
+    hi "यूरोप का देश (1949–1990)"
+    ru "ФРГ до объединения Германии"
+    zh "存在於1949年至1990年的歐洲國家"
+  id Q713750
+  labels
+    en "West Germany"
+    es "Alemania Occidental"
+    hi "पश्चिम जर्मनी"
+    ru "ФРГ"
+    zh "西德"
+  sitelinks
+    enwiki
+      site enwiki
+      title "West Germany"
+    eswiki
+      site eswiki
+      title "Alemania Occidental"
+    hiwiki
+      site hiwiki
+      title "पश्चिम जर्मनी"
+    ruwiki
+      site ruwiki
+      title "Федеративная Республика Германии (1949—1990)"
+    zhwiki
+      site zhwiki
+      title "西德"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

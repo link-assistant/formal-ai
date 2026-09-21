@@ -47,6 +47,10 @@ seed_metadata_gaps
     source "data/seed/meanings-computer-use.lino"
     record "computer_use_unique_values"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_1869c4e3b65bcc6b
+    source "data/seed/meanings-conversation.lino"
+    record "social_courtesy_response"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_d86b7d2569d3ce5b
     source "data/seed/meanings-feature-capability.lino"
     record "feature_action_arithmetic"

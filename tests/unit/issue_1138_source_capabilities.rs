@@ -62,6 +62,10 @@ fn composition_assembles_distinct_attributable_source_statements() {
 
 #[test]
 fn measurement_extracts_only_quantities_with_grounded_units() {
+    // Plan 10 leaf 17 (issue #1063): the question asks for a property ("tall")
+    // and no source sentence names it, so the body says what it looked for —
+    // the concept, the asked property and its surface, the source kinds —
+    // instead of silently returning an unattributed number.
     let evidence = measurement_source_evidence(
         "How tall is a mature birch?",
         &[
@@ -79,7 +83,48 @@ fn measurement_extracts_only_quantities_with_grounded_units() {
     );
     assert_eq!(
         evidence,
-        "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"How tall is a mature birch?\"\n  status \"measurements_extracted\"\n  source_count \"2\"\n  measurement\n    value \"20\"\n    unit \"metres\"\n    source \"source-a\"\n    url \"https://a.invalid/birch\"\n    sha256 \"sha256-source-a\"\n"
+        "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"How tall is a mature birch?\"\n  status \"no_grounded_property\"\n  source_count \"2\"\n  asked_property\n    role \"measurement_property_height\"\n    surface \"tall\"\n    matched \"0\"\n  concept \"birch\"\n  source_kinds \"source-a source-b\"\n  measurement\n    value \"20\"\n    unit \"metres\"\n    source \"source-a\"\n    url \"https://a.invalid/birch\"\n    sha256 \"sha256-source-a\"\n"
+    );
+}
+
+#[test]
+fn measurement_matches_the_quantity_whose_sentence_names_the_asked_property() {
+    let evidence = measurement_source_evidence(
+        "How tall does a mature birch normally grow?",
+        &[
+            sense(
+                "A mature birch commonly grows 25 metres tall in good habitat.",
+                "source-a",
+                "https://a.invalid/birch",
+            ),
+            sense(
+                "The trunk may reach a diameter of 40 centimetres.",
+                "source-b",
+                "https://b.invalid/birch",
+            ),
+        ],
+    );
+    assert_eq!(
+        evidence,
+        "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"How tall does a mature birch normally grow?\"\n  status \"measurements_extracted\"\n  source_count \"2\"\n  asked_property\n    role \"measurement_property_height\"\n    surface \"tall\"\n    matched \"1\"\n  measurement\n    value \"25\"\n    unit \"metres\"\n    property \"measurement_property_height\"\n    source \"source-a\"\n    url \"https://a.invalid/birch\"\n    sha256 \"sha256-source-a\"\n  measurement\n    value \"40\"\n    unit \"centimetres\"\n    source \"source-b\"\n    url \"https://b.invalid/birch\"\n    sha256 \"sha256-source-b\"\n"
+    );
+}
+
+#[test]
+fn measurement_without_an_asked_property_keeps_every_grounded_quantity() {
+    // A measurement request that names no seeded property keeps the
+    // property-agnostic behaviour: every grounded quantity is evidence.
+    let evidence = measurement_source_evidence(
+        "Measure a mature birch for me.",
+        &[sense(
+            "A mature birch commonly reaches 20 metres.",
+            "source-a",
+            "https://a.invalid/birch",
+        )],
+    );
+    assert_eq!(
+        evidence,
+        "source_capability\n  capability \"concept_measurement_lookup\"\n  request \"Measure a mature birch for me.\"\n  status \"measurements_extracted\"\n  source_count \"1\"\n  measurement\n    value \"20\"\n    unit \"metres\"\n    source \"source-a\"\n    url \"https://a.invalid/birch\"\n    sha256 \"sha256-source-a\"\n"
     );
 }
 

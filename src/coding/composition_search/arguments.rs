@@ -599,6 +599,32 @@ pub(super) fn argument_coherence(arguments: &[Expression]) -> usize {
         .sum()
 }
 
+/// How far each slot sits from the declared position of the parameter it
+/// reads, nested or bare (`set(arg2)` reads `arg2`). Two assignments of the
+/// same parameters tie under `argument_coherence` exactly when a commutative
+/// fragment accepts either order (`set(a) & set(b)`); the declared order is
+/// the canonical tie-break, matching how upstream tasks name their arguments
+/// (`arg1, arg2`). An argument reading several parameters scores by the
+/// closest one, so a slot that legitimately reads any of them is not punished.
+pub(super) fn parameter_displacement(
+    arguments: &[Expression],
+    parameters: &[(String, IrType)],
+) -> usize {
+    arguments
+        .iter()
+        .enumerate()
+        .map(|(slot, expression)| {
+            parameters
+                .iter()
+                .enumerate()
+                .filter(|(_, (parameter, _))| node_contains_parameter(&expression.node, parameter))
+                .map(|(index, _)| slot.abs_diff(index))
+                .min()
+                .unwrap_or(0)
+        })
+        .sum()
+}
+
 pub(super) fn node_contains_parameter(node: &IrNode, sought: &str) -> bool {
     match node {
         IrNode::Parameter { name, .. } => name == sought,

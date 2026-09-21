@@ -1,0 +1,205 @@
+{
+  "entities": {
+    "Q41304": {
+      "type": "item",
+      "id": "Q41304",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Weimar Republic"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Веймарская республика"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वाइमर गणराज्य"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "魏瑪共和国"
+        },
+        "es": {
+          "language": "es",
+          "value": "República de Weimar"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Germany in the years 1918/1919–1933"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "германское государство в 1918/1919–1933 годах"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जर्मनी देश 1919 से 1933 तक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "1918年至1933年的德国"
+        },
+        "es": {
+          "language": "es",
+          "value": "denominación historiografíca del régimen político en Alemania de 1918 a 1933"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "German Reich"
+          },
+          {
+            "language": "en",
+            "value": "Weimar Germany"
+          },
+          {
+            "language": "en",
+            "value": "Germany"
+          },
+          {
+            "language": "en",
+            "value": "German Republic"
+          },
+          {
+            "language": "en",
+            "value": "Republic of Germany"
+          },
+          {
+            "language": "en",
+            "value": "German People's State"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Веймаровская республика"
+          },
+          {
+            "language": "ru",
+            "value": "Ваймарская республика"
+          },
+          {
+            "language": "ru",
+            "value": "Веймарская Германия"
+          },
+          {
+            "language": "ru",
+            "value": "Германское государство"
+          },
+          {
+            "language": "ru",
+            "value": "Германский рейх"
+          },
+          {
+            "language": "ru",
+            "value": "Германия"
+          },
+          {
+            "language": "ru",
+            "value": "Германская республика"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "威瑪共和國"
+          },
+          {
+            "language": "zh",
+            "value": "威瑪共和"
+          },
+          {
+            "language": "zh",
+            "value": "魏瑪共和"
+          },
+          {
+            "language": "zh",
+            "value": "德意志帝國共和時期"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Alemania de Weimar"
+          },
+          {
+            "language": "es",
+            "value": "Republica de Weimar"
+          },
+          {
+            "language": "es",
+            "value": "Régimen de Weimar"
+          },
+          {
+            "language": "es",
+            "value": "Regimen de Weimar"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Weimar Republic"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Веймарская республика"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "वाइमर गणराज्य"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "魏瑪共和國"
+        },
+        "eswiki": {
+          "site": "eswiki",
+          "title": "República de Weimar"
+        }
+      },
+      "claims": {
+        "P17": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P17",
+              "hash": "5b925ba516864377a76a45a5078658f219efc784",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 1206012,
+                  "id": "Q1206012"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "es"
+    ],
+    "claims": [
+      "P17",
+      "P297"
+    ],
+    "claim_ranks": true,
+    "zone_tab": "zone1970.tab"
+  }
+}

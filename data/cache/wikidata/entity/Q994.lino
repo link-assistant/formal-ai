@@ -1,0 +1,188 @@
+Q994
+  aliases
+    en (Tiflis Tpilisi Tbilissi Tpilissi "Tbilisi, Georgia")
+    es (Tiblisi)
+    hi ("टिबिलीसी" "थ्बिलिसि")
+    ru ("Тифлис")
+    zh ("提比里西" "提比里斯")
+  claims
+    P17
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q230
+              numeric-id 230
+          hash 145bebe388f3ac6b97830000dee2c80ed9f0f910
+          property P17
+          snaktype value
+        rank preferred
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q15180
+              numeric-id 15180
+          hash 07fa6eb2d1e5f1c75fc204938373173411385a84
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q545205
+              numeric-id 545205
+          hash be13d64bba78d6306485e9c427be33fca5acfa0e
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q245160
+              numeric-id 245160
+          hash e6391a437a7a45b6965c7dd72d94efe9b1e4c5b7
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q330756
+              numeric-id 330756
+          hash d0040be99c547a77bc8bcf6afef718a5259adb88
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q2630860
+              numeric-id 2630860
+          hash 6c9436d784398ecaa06651d3925d12a5524d6a48
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q139319
+              numeric-id 139319
+          hash 2105b57ef845085fc51db4dca6323f8f4bc08d60
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q34266
+              numeric-id 34266
+          hash e64bc21e5649b2265a5047822c9b3f580989c9eb
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q282475
+              numeric-id 282475
+          hash 4e1a8d3492ff84ee386a72020ae8273a05c2c74e
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q195972
+              numeric-id 195972
+          hash b896bdc97c070f3d3c9d22bc354a65ff07d34678
+          property P17
+          snaktype value
+        rank normal
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q154667
+              numeric-id 154667
+          hash 14bf459a706206ad8e2989c2358e3f9c65dd2937
+          property P17
+          snaktype value
+        rank normal
+  descriptions
+    en "capital and the largest city of Georgia (country)"
+    es "capital de Georgia"
+    hi "जॉर्जिया की राजधानी"
+    ru "столица Грузии"
+    zh "格鲁吉亚首都"
+  id Q994
+  labels
+    en Tbilisi
+    es Tiflis
+    hi "त्बिलिसी"
+    ru "Тбилиси"
+    zh "第比利斯"
+  sitelinks
+    enwiki
+      site enwiki
+      title Tbilisi
+    eswiki
+      site eswiki
+      title Tiflis
+    hiwiki
+      site hiwiki
+      title "तिब्लिसी"
+    ruwiki
+      site ruwiki
+      title "Тбилиси"
+    zhwiki
+      site zhwiki
+      title "第比利斯"
+  type item
+grounding
+  claim_ranks true
+  claims (P17 P297)
+  languages (en ru hi zh es)
+  zone_tab zone1970.tab
+success 1

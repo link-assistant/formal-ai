@@ -50,6 +50,12 @@ meanings
   character_class
     defined-by concept
     grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
+  comparison
+    defined-by concept
+    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
+  branch
+    defined-by concept
+    grounding "https://docs.python.org/3.12/reference/compound_stmts.html#if"
   print_stdout
     defined-by output
     role coding_structure

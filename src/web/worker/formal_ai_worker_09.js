@@ -211,6 +211,39 @@ function knownEntityNames() {
   return names;
 }
 
+// Plan 10 leaf 16 (issue #869): entities whose grounding resolves to exactly
+// one IANA zone carry a `timezone <zone>` field in the registry. The calendar
+// reads those fields — never a hand-typed alias table — to anchor a scheduled
+// time to a place. `cachedTimezonePlaces` is declared with the other seed
+// caches in formal_ai_worker_00.js so hydrating a new seed bundle can
+// invalidate it.
+function timezonePlaces() {
+  if (cachedTimezonePlaces) return cachedTimezonePlaces;
+  const places = [];
+  if (ENTITY_NAMES_LINO) {
+    const root = parseLinoTree(ENTITY_NAMES_LINO);
+    const registry = root.children.find((child) => child.name === "entity_names") || root;
+    for (const entity of registry.children) {
+      if (entity.name !== "entity") continue;
+      const zoneNode = entity.children.find((child) => child.name === "timezone");
+      const zone = String((zoneNode && zoneNode.value) || "").trim();
+      if (!zone) continue;
+      const surfaces = [];
+      for (const lexeme of entity.children) {
+        if (lexeme.name !== "lexeme") continue;
+        for (const surface of lexeme.children) {
+          if (surface.name !== "surface") continue;
+          const text = surface.children.find((child) => child.name === "text");
+          if (text) surfaces.push(text.value);
+        }
+      }
+      places.push({ slug: entity.value, zone, surfaces });
+    }
+  }
+  cachedTimezonePlaces = places;
+  return places;
+}
+
 function normalizeEntityName(term) {
   const out = [];
   let pendingSpace = false;
