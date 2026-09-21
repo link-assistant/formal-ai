@@ -130,7 +130,7 @@ implemented, box ticked in the landing commit.
   Test: `tests/unit/issue_1138_round_trip_projection.rs` — for every Rust
   module with a declared projection, lino→ts→lino and lino→js→lino round
   trips are CST-identical.
-- [ ] **L6 — dependency policy wired to the cycle.** When the translator or
+- [x] **L6 — dependency policy wired to the cycle.** When the translator or
   the layer check needs a feature a self-maintained dependency has not
   released, the workaround is `[patch]`-style source installs, and a separate
   GitHub issue per dependency lists every patch applied and what blocks
