@@ -24,8 +24,14 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        digest=$(git ls-files -s src Cargo.toml Cargo.lock build.rs 2>/dev/null \
-          | git hash-object --stdin)
+        # The three-root layout (issue #1138 L1) put the crate under rust/; a
+        # root-level pathspec matches nothing there, the digest collapses to
+        # the hash of empty input, and every push then restores one stale
+        # binary no matter which sources changed. Fail the step if the
+        # pathspec goes empty again instead of caching on nothing.
+        entries=$(git ls-files -s rust/src rust/Cargo.toml rust/Cargo.lock rust/build.rs)
+        [ -n "$entries" ]
+        digest=$(printf '%s\n' "$entries" | git hash-object --stdin)
         echo "digest=$digest" >> "$GITHUB_OUTPUT"
         echo "source digest: $digest"
 
