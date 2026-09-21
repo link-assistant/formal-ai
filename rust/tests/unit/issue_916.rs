@@ -139,6 +139,49 @@ fn first_agentic_call(messages: &[ChatMessage], tools: &[&str]) -> String {
     )
 }
 
+/// The first tool call the surface plans, with its raw arguments: a harness
+/// echoes them back verbatim, so recipe-progress matching sees the exact write
+/// the recipe declared.
+fn first_agentic_call_raw(messages: &[ChatMessage], tools: &[&str]) -> (String, String) {
+    let request = ChatCompletionRequest {
+        model: Some(String::from("formal-ai")),
+        messages: messages.to_vec(),
+        tools: tools
+            .iter()
+            .map(|name| {
+                serde_json::json!({
+                    "type": "function",
+                    "function": {
+                        "name": name,
+                        "description": format!("issue-916 ladder tool: {name}"),
+                        "parameters": {"type": "object"}
+                    }
+                })
+            })
+            .collect(),
+        temperature: None,
+        stream: false,
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
+        stream_options: None,
+    };
+    let solver = UniversalSolver::new(SolverConfig {
+        agent_mode: true,
+        ..SolverConfig::default()
+    });
+    let completion = create_chat_completion_with_solver(&request, &solver);
+    let choice = &completion.choices[0];
+    let call = choice.message.tool_calls.first().unwrap_or_else(|| {
+        panic!(
+            "expected a tool call, got {:?}: {}",
+            choice.finish_reason,
+            choice.message.content.plain_text()
+        )
+    });
+    (call.function.name.clone(), call.function.arguments.clone())
+}
+
 // ---------------------------------------------------------------------------
 // R916-01 — a non-zero exit code is a failure, whatever the output says
 // ---------------------------------------------------------------------------
@@ -618,30 +661,50 @@ fn r916_06_caller_context_does_not_hijack_the_request() {
         Some("Write a hello world program in Python."),
         "the caller's own block is not the user speaking"
     );
-    // The planner once declined this request over a write+run
-    // toolset — the run capability deferred code creation to the typed recipe
-    // path, which claims only requests with explicit output literals — and the
-    // chat surface answered it alone. Declining is what let a client that also
-    // advertised a search tool have the write answered by a web search
-    // (issue #907), so the planner now answers the artifact itself, and the
-    // framing's date line never becomes a question.
-    match plan_chat_step(&messages, &["write_file", "run_shell_command"]) {
-        Some(AgenticPlan::ToolCalls(calls)) => {
-            assert_eq!(calls[0].tool, "write_file", "{calls:?}");
-            assert!(
-                calls[0].arguments.contains("main.py"),
-                "{}",
-                calls[0].arguments
-            );
-        }
-        other => panic!(
-            "`Today's date is …` inside a context block is not a question about the date: {other:?}"
-        ),
-    }
+    // The planner once declined this request over a write+run toolset, then
+    // answered it itself -- but a template write that never runs the program
+    // is not a completion the write-effect ladder accepts (R916-02: the
+    // program is compiled and run before any completion claim; R916-03: a
+    // failing check surfaces its exit code). So the planner defers to the
+    // typed recipe path whenever the client can run commands, and the surface
+    // below delivers the verified write--check--run chain. The framing's date
+    // line never becomes a question either way.
+    assert!(
+        plan_chat_step(&messages, &["write_file", "run_shell_command"]).is_none(),
+        "a writable program is deferred to the typed recipe path, not templated"
+    );
 
     // …so the run reaches the artifact the user actually asked for.
     let call = first_agentic_call(&messages, &["write_file", "run_shell_command"]);
     assert_eq!(call, "write_file(main.py)", "{prompt}");
+}
+
+/// R916-02 at the surface: once the write lands, the next planned step is the
+/// recipe's check command -- the program is compiled before any completion is
+/// claimed. A planner-owned template write skips exactly this step, which is
+/// the regression the rung's judge rejects as "no completion was reported".
+#[test]
+fn r916_02_a_written_program_is_checked_before_completion_is_claimed() {
+    let tools = ["write_file", "run_shell_command"];
+    let messages = vec![ChatMessage::user("Write a hello world program in Python.")];
+    let (tool, arguments) = first_agentic_call_raw(&messages, &tools);
+    assert_eq!(tool, "write_file", "{arguments}");
+    assert!(arguments.contains("main.py"), "{arguments}");
+
+    // The harness echoes the write back verbatim, as a real one does.
+    let written = tool_turn(
+        "Write a hello world program in Python.",
+        &tool,
+        &arguments,
+        "wrote main.py",
+    );
+    let (next_tool, next_arguments) = first_agentic_call_raw(&written, &tools);
+
+    assert_eq!(next_tool, "run_shell_command", "{next_arguments}");
+    assert!(
+        next_arguments.contains("py_compile"),
+        "the write is followed by the recipe's check command: {next_arguments}"
+    );
 }
 
 #[test]

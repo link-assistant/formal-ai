@@ -39,17 +39,17 @@ This document is a deterministic projection of committed ledgers.
 
 ## Latest self-hosting release
 
-- `tag`: `v0.350.0`
-- `percentage_basis_points`: `171`
-- `trailing_percentage_basis_points`: `389`
-- `target_percentage_basis_points`: `267`
+- `tag`: `v0.351.0`
+- `percentage_basis_points`: `14`
+- `trailing_percentage_basis_points`: `43`
+- `target_percentage_basis_points`: `389`
 
 ## Ledger inventory
 
 | Input | Lines |
 | --- | ---: |
 | `data/benchmarks/external-results.lino` | 946 |
-| `data/meta/self-hosting-ledger.lino` | 1230 |
+| `data/meta/self-hosting-ledger.lino` | 1245 |
 | `data/meta/debt-ratchet.lino` | 64 |
 | `data/meta/core-boundary-ledger.lino` | 277 |
 | `data/meta/handler-migration-ledger.lino` | 239 |

@@ -220,7 +220,7 @@ fn issue_894_requirements_are_traceable() {
             "| R894-3 ",
             "| R894-4 ",
             "docs/case-studies/issue-894/",
-            "rust/tests/unit/docs_requirements_issue_894.rs",
+            "rust/tests/unit/docs_requirements/issue_894.rs",
         ],
     );
 

@@ -444,6 +444,24 @@ fn plan_routed_capability_step_in(
         .into_iter()
         .next()
         .unwrap_or(task);
+    // A sentence that merely governs commands is the caller's framing, not
+    // the work: the task sentence after it states the request, and a policy
+    // sentence's own nouns ("files", "workspace") must not name a capability
+    // for the turn (issue #907's policy class -- the same sentence filter the
+    // shell route's reader applies). A prompt that is all policy keeps its
+    // whole shape, so the boundary below still declines it as governed.
+    let policy_free_request = super::shell_command_policy::sentence_spans(routed_task)
+        .into_iter()
+        .filter(|sentence| {
+            !super::shell_command_policy::states_a_command_policy(sentence)
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+    let routed_task: &str = if policy_free_request.is_empty() {
+        routed_task
+    } else {
+        &policy_free_request
+    };
     if !crate::capability_routing::table_routing_enabled() || stage_of(routed_task) != stage {
         return None;
     }
@@ -476,9 +494,17 @@ fn plan_routed_capability_step_in(
     // read only the concept lookup, so a fact the engine owned leaked to the
     // open web as soon as no concept matched).
     let engine_answerable_fact = crate::solver_handlers::fact_store_resolves(routed_task);
+    // The catalog half: a request the code catalog itself can template is a
+    // write the coding routes own. Deferring code creation to the typed recipe
+    // path leaves such a request to the solver, and when the table answered it
+    // instead, "Write a hello world program in Python." over a full toolset
+    // became a web search for the whole sentence (issue #907) -- the boundary
+    // is the catalog, because the recipe path also composes programs no
+    // contract pins.
+    let engine_answerable_program = super::code_artifact::catalog_claims(routed_task);
     if stage == RoutingStage::OpenWeb
         && !crate::capability_routing::names_open_web(routed_task)
-        && (engine_answerable_concept || engine_answerable_fact)
+        && (engine_answerable_concept || engine_answerable_fact || engine_answerable_program)
     {
         return None;
     }

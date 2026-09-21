@@ -243,6 +243,80 @@ fn ordinary_summary_keeps_the_existing_detailed_report() {
     assert!(answer.answer.contains("User turns:"));
 }
 
+/// A summarize request over a conversation that has not started yet is owned
+/// by the summary handler: the request itself is the only turn so far, and the
+/// honest answer summarizes it. Falling through ownerless once let the open-web
+/// decision table answer the bare phrase with a literal web search and a
+/// hallucinated fetch loop (agentic CLI matrix, summarize leg).
+#[test]
+fn a_summarize_request_over_an_empty_conversation_is_still_owned() {
+    let answer = solve_with_history(
+        "summarize our conversation so far in one short paragraph",
+        &[],
+    );
+
+    assert_eq!(answer.intent, "summarize_conversation");
+    assert!(
+        answer.answer.starts_with("Conversation summary:"),
+        "{}",
+        answer.answer
+    );
+    assert!(
+        answer.answer.contains("User turns:"),
+        "the summary names the one turn that exists: {}",
+        answer.answer
+    );
+}
+
+/// The same request through the agent chat surface, over the full matrix
+/// toolset (search and fetch advertised): ownership must show up as a direct
+/// prose answer in the first round, never as a web search of the sentence.
+#[test]
+fn an_empty_conversation_summary_never_becomes_a_web_search() {
+    use formal_ai::protocol::{
+        ChatCompletionRequest, ChatMessage, create_chat_completion_with_solver,
+    };
+
+    let request = ChatCompletionRequest {
+        model: Some(String::from("formal-ai")),
+        messages: vec![ChatMessage::user(
+            "summarize our conversation so far in one short paragraph",
+        )],
+        tools: ["bash", "read", "webfetch", "websearch", "write"]
+            .iter()
+            .map(|name| {
+                serde_json::json!({
+                    "type": "function",
+                    "function": {
+                        "name": name,
+                        "description": format!("matrix tool: {name}"),
+                        "parameters": {"type": "object"}
+                    }
+                })
+            })
+            .collect(),
+        temperature: None,
+        stream: false,
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
+        stream_options: None,
+    };
+
+    let completion = create_chat_completion_with_solver(&request, &agent_solver());
+    let choice = &completion.choices[0];
+    assert!(
+        choice.message.tool_calls.is_empty(),
+        "an empty conversation is summarized, not searched: {:?}",
+        choice.message.tool_calls
+    );
+    let text = choice.message.content.plain_text();
+    assert!(
+        text.starts_with("Conversation summary:"),
+        "the surface answers with the summary itself: {text}"
+    );
+}
+
 #[test]
 fn browser_worker_matches_the_rust_recap_contract() {
     let output = Command::new("node")

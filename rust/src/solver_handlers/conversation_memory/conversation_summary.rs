@@ -87,6 +87,14 @@ pub(super) fn try_summarize_conversation(
     {
         turns.push(DialogTurn::user(content));
     }
+    // A summarize request over a conversation that has not started yet is
+    // still owned here: the request itself is the only turn so far, and an
+    // honest one-turn summary beats falling through ownerless -- the open-web
+    // decision table answered the bare phrase with a literal web search and a
+    // hallucinated fetch loop (agentic CLI matrix, summarize leg).
+    if turns.is_empty() && !prompt.trim().is_empty() {
+        turns.push(DialogTurn::user(prompt.trim().to_owned()));
+    }
     let user_turn_count = turns.iter().filter(|turn| turn.role == "user").count();
     if user_turn_count == 0 {
         return None;

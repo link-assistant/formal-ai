@@ -142,14 +142,13 @@ pub(super) fn plan_code_artifact_step(
     }
 
     // With a command capability, let the typed `ExecutionRecipe` path own code
-    // creation and verification -- but only when that path claims the request.
-    // Its contract reader binds explicit output literals; a catalog template
-    // with no pinned output is not a contract, and deferring it anyway left the
-    // request owned by no route, so the open-web decision table answered a
-    // program-writing request with a web search (issue #907).
-    if tool_for(tool_names, Capability::Run).is_some()
-        && crate::coding::program_contract::claims(task)
-    {
+    // creation and verification. The un-owned-request leak that once gated this
+    // on `program_contract::claims` (issue #907) is closed at its real site:
+    // the open-web decision table declines a request the code catalog itself
+    // can template, so the deferral never strands the write -- and a template
+    // write that never runs the program is not a completion the write-effect
+    // ladder can accept (issue #916 rungs R916-02/R916-03).
+    if tool_for(tool_names, Capability::Run).is_some() {
         return None;
     }
     let artifact = generated_artifact(task)?;
@@ -163,6 +162,17 @@ pub(super) fn plan_code_artifact_step(
         write_tool,
         write_arguments(&artifact.path, &artifact.content),
     ))
+}
+
+/// Whether the code catalog itself can template `task` into a written program.
+///
+/// The open-web decision table asks this before answering a bare term at the
+/// end of its cascade: a request the catalog can write is a coding request,
+/// and the coding routes -- not a web search -- speak for it (issue #907). The
+/// boundary is the catalog, not an output literal, because the typed recipe
+/// path also composes programs no contract pins.
+pub(super) fn catalog_claims(task: &str) -> bool {
+    generated_artifact(task).is_some()
 }
 
 fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {

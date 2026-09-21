@@ -47,7 +47,9 @@ fn pull_requests_validate_the_same_dependency_profile_docs_rs_uses() {
     let workflow = ci_surface();
 
     assert!(workflow.contains("DOCS_RS: 1"));
-    assert!(workflow.contains("cargo doc --no-deps --lib --no-default-features"));
+    assert!(workflow.contains(
+        "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features"
+    ));
 }
 
 #[test]
@@ -70,7 +72,7 @@ fn whole_docs_task_is_fail_closed_from_validation_through_deployment() {
     let workflow = ci_surface();
 
     let validate = workflow
-        .find("cargo doc --no-deps --lib --no-default-features")
+        .find("cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features")
         .expect("missing docs.rs-compatible validation");
     let build = workflow
         .find("  build:\n")
