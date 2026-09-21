@@ -17,6 +17,7 @@ pub(crate) mod concepts;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
+pub(crate) mod entity_resolution;
 pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;

@@ -117,6 +117,7 @@ pub const MEANINGS_SUMMARY_LINO: &str = include_str!("../../../data/seed/meaning
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
     include_str!("../../../data/seed/meanings-coding-catalog.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../../data/seed/greetings.lino");
+pub const ENTITY_NAMES_LINO: &str = include_str!("../../../data/seed/entity-names.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
     include_str!("../../../data/seed/hello-world-programs.lino");
@@ -287,6 +288,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_CODING_CATALOG_LINO,
         ),
         ("data/seed/greetings.lino", GREETINGS_LINO),
+        ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
         (
             "data/seed/hello-world-programs.lino",
