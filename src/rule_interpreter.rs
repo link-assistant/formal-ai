@@ -335,11 +335,12 @@ impl ConditionSource for LinkStoreSource {
 }
 
 fn queried_nodes(store: &SeedLinkNetwork, parent: &str) -> Vec<crate::link_store::DoubletLink> {
-    store
-        .query(&SeedLinkNetwork::children_pattern(parent))
-        .into_iter()
-        .filter(|link| !link.index.ends_with('='))
-        .collect()
+    // `(parent $child)` over the whole network is the children index in
+    // disguise: a pattern query walks every projected link, and this read
+    // runs once per meaning child while the condition backend boots, which
+    // made boot cost O(children x links) once the seed grew past its
+    // taxonomy rounds (issue #1138: seconds of from_store on a cold server).
+    store.nodes_under(parent).into_iter().cloned().collect()
 }
 
 fn stored_surface(store: &SeedLinkNetwork, node: &str, language: &str) -> Option<ConditionSurface> {

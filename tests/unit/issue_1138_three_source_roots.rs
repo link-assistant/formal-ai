@@ -14,7 +14,11 @@
 //! - every reference that used to point at `src/web` resolves inside `./js`.
 //!
 //! This module is registered only when leaf L1 lands; before that it is an
-//! inert draft recording the plan's shape.
+//! inert draft recording the plan's shape. The draft is listed as `inert` on
+//! the `tests/unit/mod.rs` entry of `data/meta/merge-conflict-policy.lino`,
+//! so the ordered-list gate stays exact for every compiled module without
+//! forcing this one to register early; landing L1 means removing that entry
+//! and declaring the module here.
 
 use std::fs;
 use std::path::{Path, PathBuf};

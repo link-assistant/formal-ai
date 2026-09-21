@@ -65,14 +65,59 @@ pub(super) fn unresolved_web_research_query_for(messages: &[ChatMessage]) -> Opt
     // promoted here on its intent alone, because the same intent also names
     // subjects the workspace owns -- the #1138 frontier's UI complaint reads
     // as `concept_lookup_unresolved` too. Which fresh requests research may
-    // adopt is the decision table's (object, act, locus) question, and the
-    // table runs directly after this route.
+    // adopt is the decision table's (object, act, locus) question, and this
+    // route answers it *before* adopting, not after: returning a plan here
+    // preempts every later route, so a table-first check placed later never
+    // runs. The intent list stays as the cheap first door; the table then
+    // decides ownership -- a request any row sends to a capability the open
+    // web does not answer (the frontier's comprehension and complaint classes
+    // name `explain_previous_turn` and `report_issue`) is not research's to
+    // search, whatever the intent classifier made of its wording.
     unresolved_research_query_with(messages, |text| {
         matches!(
             FormalAiEngine.answer(text).intent.as_str(),
             "unknown" | "web_search"
-        )
+        ) && table_leaves_request_to_research(text)
     })
+}
+
+/// Whether the decision table leaves a request to open-web research.
+///
+/// The table is consulted with every capability its own rows can name, so the
+/// outcome is the row's ownership decision and not a statement about which
+/// tools this one client happens to advertise. A row that resolves names the
+/// capability that owns the request: research adopts it only when that
+/// capability is research itself (`web_search`, `web_fetch`). A triple with no
+/// row, or two rows that tie, is the honest open-world unknown only a trusted
+/// external source answers (plan 01 doctrine, the #840 ladder's dictionary
+/// nodes) -- and stays research's to adopt.
+fn table_leaves_request_to_research(text: &str) -> bool {
+    let table = crate::capability_routing::routing_table();
+    let mut slugs: Vec<&str> = Vec::new();
+    for row in &table {
+        if !slugs.contains(&row.capability.as_str()) {
+            slugs.push(&row.capability);
+        }
+        if let Some(fallback) = &row.fallback
+            && !slugs.contains(&fallback.as_str())
+        {
+            slugs.push(fallback);
+        }
+    }
+    match crate::capability_routing::route(text, &slugs) {
+        crate::capability_routing::RoutingOutcome::Routed { capability }
+        | crate::capability_routing::RoutingOutcome::Lowered { capability, .. } => {
+            is_research_capability(&capability)
+        }
+        crate::capability_routing::RoutingOutcome::HonestGap { needed, .. } => {
+            is_research_capability(&needed)
+        }
+        crate::capability_routing::RoutingOutcome::Ask { .. } => true,
+    }
+}
+
+fn is_research_capability(capability: &str) -> bool {
+    matches!(capability, "web_search" | "web_fetch")
 }
 
 /// The research query for a turn whose own search has already come back.

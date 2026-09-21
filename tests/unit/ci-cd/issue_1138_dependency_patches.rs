@@ -58,8 +58,8 @@ fn patch_entries(manifest: &str) -> Vec<PatchEntry> {
             in_patch_section = trimmed.starts_with("[patch");
             continue;
         }
-        let is_source_install = trimmed.contains("git =")
-            || (in_patch_section && trimmed.contains('='));
+        let is_source_install =
+            trimmed.contains("git =") || (in_patch_section && trimmed.contains('='));
         if !is_source_install || trimmed.is_empty() {
             if !trimmed.is_empty() {
                 pending_comment.clear();
@@ -72,13 +72,13 @@ fn patch_entries(manifest: &str) -> Vec<PatchEntry> {
             .map(str::trim)
             .unwrap_or_default()
             .to_owned();
-        let issue_reference = pending_comment
-            .iter()
-            .find_map(|comment| comment.find(ISSUE_URL_PATTERN).map(|start| {
+        let issue_reference = pending_comment.iter().find_map(|comment| {
+            comment.find(ISSUE_URL_PATTERN).map(|start| {
                 comment[start..]
                     .trim_end_matches(|c: char| !c.is_ascii_alphanumeric())
                     .to_owned()
-            }));
+            })
+        });
         entries.push(PatchEntry {
             line_number: index + 1,
             dependency,
@@ -113,14 +113,18 @@ fn lockfile_git_sources(lockfile: &str) -> Vec<String> {
 #[test]
 fn every_patch_entry_references_an_issue_by_url() {
     let entries = patch_entries(&repository_file("Cargo.toml"));
-    let unreferenced: Vec<&PatchEntry> = entries.iter().filter(|e| !entry_is_referenced(e)).collect();
+    let unreferenced: Vec<&PatchEntry> =
+        entries.iter().filter(|e| !entry_is_referenced(e)).collect();
     assert!(
         unreferenced.is_empty(),
         "patched or source-installed dependencies without a tracking issue \
          beside them: {}",
         unreferenced
             .iter()
-            .map(|entry| format!("{} (Cargo.toml line {})", entry.dependency, entry.line_number))
+            .map(|entry| format!(
+                "{} (Cargo.toml line {})",
+                entry.dependency, entry.line_number
+            ))
             .collect::<Vec<_>>()
             .join(", ")
     );

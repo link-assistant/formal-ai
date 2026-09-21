@@ -47,6 +47,12 @@ struct ListFile {
     /// Directory whose modules this list must declare, when the list is an
     /// exact mirror of a directory's contents.
     declares_directory: Option<String>,
+    /// Module stems present in `declares_directory` that the list deliberately
+    /// does not declare yet: a plan drafted as tests before its leaf lands
+    /// (issue #1138's draft-first discipline). The mirror stays exact for
+    /// everything else, so registering a red test early can never be forced by
+    /// this gate.
+    inert: Vec<String>,
 }
 
 // ---------------------------------------------------------------------------
@@ -106,6 +112,7 @@ fn parse_registry(source: &str) -> Vec<ListFile> {
                         path: String::new(),
                         list_kind: kind,
                         declares_directory: None,
+                        inert: Vec::new(),
                     });
                 }
             }
@@ -117,6 +124,11 @@ fn parse_registry(source: &str) -> Vec<ListFile> {
             (6, "declares_directory") => {
                 if let Some(file) = current.as_mut() {
                     file.declares_directory = Some(unquote(value));
+                }
+            }
+            (6, "inert") => {
+                if let Some(file) = current.as_mut() {
+                    file.inert.push(unquote(value));
                 }
             }
             _ => {}
@@ -524,6 +536,11 @@ fn canonical_content(root: &Path, file: &ListFile, current: &str) -> Result<Stri
                 {
                     expected.retain(|name| name != own_stem);
                 }
+                // A module the registry marks inert is a draft awaiting its
+                // leaf, not drift: the declaration list stays canonical
+                // without it, and the day the leaf lands the registry entry
+                // goes away and the mirror becomes exact again.
+                expected.retain(|name| !file.inert.contains(name));
                 let declared = declared_modules(&normalized);
                 let missing: Vec<&String> =
                     expected.iter().filter(|name| !declared.contains(name)).collect();
@@ -820,6 +837,7 @@ mod tests {
             path: "src/lib.rs".to_string(),
             list_kind: "rust_declarations".to_string(),
             declares_directory: None,
+            inert: Vec::new(),
         };
 
         assert_eq!(process(&root, &file, false), Outcome::Stale);
@@ -842,6 +860,7 @@ mod tests {
             path: "tests/unit/mod.rs".to_string(),
             list_kind: "rust_declarations".to_string(),
             declares_directory: Some("tests/unit".to_string()),
+            inert: Vec::new(),
         };
 
         assert_eq!(module_sources(&root.join("tests/unit")), ["alpha", "beta", "specification"]);
@@ -850,6 +869,39 @@ mod tests {
         };
         assert!(error.contains("beta"), "{error}");
         assert!(error.contains("specification"), "{error}");
+    }
+
+    #[test]
+    fn a_module_the_registry_marks_inert_is_a_draft_not_drift() {
+        // Plan 16 leaf L1 is drafted as tests before the layout exists, so its
+        // file sits in tests/unit/ unregistered. The mirror must stay exact for
+        // every compiled module without forcing the draft to be registered —
+        // registering it early would only land a red test in CI.
+        let root = temp_dir("inert");
+        write(&root, "tests/unit/alpha.rs", "// alpha\n");
+        write(
+            &root,
+            "tests/unit/issue_1138_three_source_roots.rs",
+            "// inert draft\n",
+        );
+        write(&root, "tests/unit/mod.rs", "mod alpha;\n");
+        let file = ListFile {
+            path: "tests/unit/mod.rs".to_string(),
+            list_kind: "rust_declarations".to_string(),
+            declares_directory: Some("tests/unit".to_string()),
+            inert: vec!["issue_1138_three_source_roots".to_string()],
+        };
+
+        assert_eq!(process(&root, &file, false), Outcome::Unchanged);
+
+        // The exemption is per module, not per file: a second unregistered
+        // module is still drift.
+        write(&root, "tests/unit/beta.rs", "// beta\n");
+        let Outcome::Failed(error) = process(&root, &file, false) else {
+            panic!("an undeclared module outside the inert list must fail");
+        };
+        assert!(error.contains("beta"), "{error}");
+        assert!(!error.contains("three_source_roots"), "{error}");
     }
 
     #[test]
@@ -863,6 +915,7 @@ mod tests {
             path: "src/web/worker-modules.js".to_string(),
             list_kind: "js_module_list".to_string(),
             declares_directory: Some("src/web/worker".to_string()),
+            inert: Vec::new(),
         };
 
         assert_eq!(

@@ -341,11 +341,17 @@ fn try_capability_route(
             capability,
         } => (capability.as_str(), Some(preferred.as_str())),
         RoutingOutcome::HonestGap { needed, missing } => {
-            // An agent client advertises the workspace tools itself (issue #671:
-            // `read the file alpha.txt` must reach the planner, never dead-end in
-            // a refusal). The gap refusal is the plain chat surface's honest
-            // answer, and only its.
-            if solver.config.agent_mode {
+            // An agent client that advertises the workspace tools itself must
+            // reach the planner, never dead-end in a refusal (issue #671:
+            // `read the file alpha.txt`). That is a statement about tool-bearing
+            // requests, which the protocol layer answers before the solver:
+            // a prose-only request over the HTTP agent surface carries no tools,
+            // falls through to the solver, and the gap refusal naming the
+            // requested path is the honest answer it is owed. Restricting the
+            // decline to surfaces without a workspace keeps both truths.
+            if solver.config.agent_mode
+                && solver.config.execution_surface != crate::ExecutionSurface::HttpServer
+            {
                 return None;
             }
             // A GitHub repository-traffic visibility question is that seeded
@@ -444,18 +450,12 @@ fn try_capability_route(
             response_language_demonstration(prompt, &normalized, log)
         }
         "explain_previous_turn" => {
-            // Explaining a previous turn requires one. With no assistant turn
-            // behind it the request is a comprehension failure the
-            // clarification family answers ("I didn't understand", in any
-            // language), not an empty-turn notice -- the same requirement the
-            // executor below states in prose (issue #1138: the Hindi
-            // paraphrase lost its clarification to this arm).
-            if !history
-                .iter()
-                .any(|turn| turn.role == crate::ConversationRole::Assistant)
-            {
-                return None;
-            }
+            // With no assistant turn behind it the request keeps the honest
+            // empty-turn notice the executor states in prose ("There is no
+            // previous assistant turn available to explain yet") -- declining
+            // here instead lands the comprehension failure in the generic
+            // unknown refusal, which answers nothing (issue #1138: the
+            // ladder's non-understanding node measured the decline).
             // Issue #556 first: re-rendering the previous turn must not steal
             // an explicit response-language retarget OF that same previous
             // turn ("I don't understand English, write in Hindi" is both a
@@ -713,7 +713,33 @@ fn request_anchors(prompt: &str) -> Vec<&str> {
             && token
                 .chars()
                 .all(|character| character.is_ascii_alphanumeric() || character == '_');
-        if (exact_commit || named_path || code_identifier) && !anchors.contains(&token) {
+        // A bare dotted filename (`alpha.txt`, `main.rs`) is an addressable
+        // workspace object with no slash to name it by: a refusal that drops
+        // it leaves the capable client nothing to open. The shape keeps the
+        // anchors honest against prose: one dot, a stem with a letter (a
+        // decimal number is not a filename), and a two-to-five character
+        // extension (so `e.g` stays prose and `1.5.0` stays a version).
+        let dotted_filename = !token.contains('/')
+            && token.split('.').collect::<Vec<_>>().len() == 2
+            && token.split('.').all(|part| !part.is_empty())
+            && {
+                let mut parts = token.split('.');
+                let stem = parts.next().unwrap_or_default();
+                let extension = parts.next().unwrap_or_default();
+                (2..=5).contains(&extension.len())
+                    && extension.chars().any(char::is_alphabetic)
+                    && extension
+                        .chars()
+                        .all(|character| character.is_ascii_alphanumeric())
+                    && stem
+                        .chars()
+                        .next()
+                        .is_some_and(|character| character.is_alphanumeric())
+                    && stem.chars().any(char::is_alphabetic)
+            };
+        if (exact_commit || named_path || code_identifier || dotted_filename)
+            && !anchors.contains(&token)
+        {
             anchors.push(token);
         }
     }

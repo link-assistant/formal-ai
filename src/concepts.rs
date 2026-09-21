@@ -226,6 +226,19 @@ fn strip_inverted_who_is<'a>(input: &'a str, lower: &str) -> Option<&'a str> {
     Some(body)
 }
 
+/// The subject a meaning interrogation asks about — "what does X mean",
+/// "meaning of X" — the one definition shape the cue-lexicon prefix set
+/// cannot see: its lead ("what does") is not itself a concept cue, and the
+/// interrogated surface is followed by a tail ("mean") instead of ending the
+/// prompt. The concept handler routes the same shape through
+/// [`extract_concept_query`], so this stays the one authority for the subject.
+#[must_use]
+pub fn meaning_question_subject(prompt: &str) -> Option<String> {
+    let trimmed = prompt.trim().trim_end_matches(['?', '.']).trim();
+    let lower = trimmed.to_lowercase();
+    strip_meaning_question_body(trimmed, &lower).map(str::to_owned)
+}
+
 fn strip_meaning_question_body<'a>(input: &'a str, lower: &str) -> Option<&'a str> {
     for prefix in [
         "what is the meaning of ",

@@ -249,8 +249,6 @@ handler_promotions
           substring 创建 of lowercase
           substring 编写 of lowercase
           substring 整理 of lowercase
-          substring 给我 of lowercase
-          substring 帮我 of lowercase
         any
           substring pdf of lowercase
           substring пдф of lowercase

@@ -103,6 +103,13 @@ handler_rules
       respond clarification
       link "response:clarification"
       confidence 0.9
+    rule clarification_inflected_stem
+      when
+        role clarification_request raw
+      respond clarification
+      intent clarification
+      link "response:clarification"
+      confidence 0.9
   handler punctuation_only_prompt
     rule punctuation_only_prompt
       when

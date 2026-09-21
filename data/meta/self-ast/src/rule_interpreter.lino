@@ -2,9 +2,9 @@ self_ast_census
   target src/rule_interpreter.rs
   language rust
   fidelity signature
-  byte_len 35548
-  line_count 963
-  content_id source_module_2812300d01e79705
+  byte_len 35821
+  line_count 964
+  content_id source_module_061361bed3d3ff53
   symbol_count 62
   symbols
     module parser 23 23
@@ -32,40 +32,40 @@ self_ast_census
     function from_store 232 324
     function role_surfaces 328 330
     function exact_route_surfaces 332 334
-    function queried_nodes 337 343
-    function stored_surface 345 360
-    function slot_of 362 372
-    function rules 381 386
-    static CACHE 382 382
-    function handler_names 390 392
-    function run_handler 396 405
-    function handler_matches 409 413
-    struct ConditionVerdict 417 420
-    function parse 429 448
-    function handler 452 454
-    function handler_names 457 459
-    function rule_count 463 465
-    function condition_verdicts 470 489
-    function name 495 497
-    function rule_names 500 502
-    function run_with_source 506 516
-    function matches_with_source 520 532
-    function new 536 557
-    function text 559 568
-    function languages 570 576
-    function run 580 606
-    function resolve_values 608 629
-    function resolve 633 643
-    function render 647 678
-    function substitute 681 687
-    function holds 690 802
-    function spelled_surface_present 820 843
-    function bounded_surface_present 845 856
-    function phrase_present_as_words 863 888
-    const SEPARATED_ROLE_OBJECT_LIMIT 895 895
-    function separated_surface_present 897 911
-    function before_slot 913 915
-    const QUOTE_PAIRS 922 922
-    function holds 933 953
-    const URL_PREFIXES 958 958
-    function is_url 961 963
+    function queried_nodes 337 344
+    function stored_surface 346 361
+    function slot_of 363 373
+    function rules 382 387
+    static CACHE 383 383
+    function handler_names 391 393
+    function run_handler 397 406
+    function handler_matches 410 414
+    struct ConditionVerdict 418 421
+    function parse 430 449
+    function handler 453 455
+    function handler_names 458 460
+    function rule_count 464 466
+    function condition_verdicts 471 490
+    function name 496 498
+    function rule_names 501 503
+    function run_with_source 507 517
+    function matches_with_source 521 533
+    function new 537 558
+    function text 560 569
+    function languages 571 577
+    function run 581 607
+    function resolve_values 609 630
+    function resolve 634 644
+    function render 648 679
+    function substitute 682 688
+    function holds 691 803
+    function spelled_surface_present 821 844
+    function bounded_surface_present 846 857
+    function phrase_present_as_words 864 889
+    const SEPARATED_ROLE_OBJECT_LIMIT 896 896
+    function separated_surface_present 898 912
+    function before_slot 914 916
+    const QUOTE_PAIRS 923 923
+    function holds 934 954
+    const URL_PREFIXES 959 959
+    function is_url 962 964

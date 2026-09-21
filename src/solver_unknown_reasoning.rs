@@ -241,8 +241,21 @@ fn answer_from_concept_lookup_miss(
     let surface = focus.unwrap_or(prompt).trim();
     // A whole-prompt bare term is the search handoff's turn (the escalation
     // below presents the web-search plan for it); an in-sentence term keeps
-    // the consulted-source record here.
-    if !focus_is_specific(prompt, surface) || is_unresolved_bare_term_prompt(prompt, surface) {
+    // the consulted-source record here. A focus that covers the prompt's
+    // whole question subject is the same case with more words — unless the
+    // prompt is itself a definition question of that subject, where the
+    // record is the direct answer to what was asked. The distinction is the
+    // seeded definition-question recognizer: "what does X mean" owes the
+    // consulted-source record, while "how should X be calibrated" asks an
+    // operative question the record would only restate, so the unknown
+    // answer with its issue-report invitation owns the final answer and the
+    // consulted trail stays in the recorded events.
+    if !focus_is_specific(prompt, surface)
+        || is_unresolved_bare_term_prompt(prompt, surface)
+        || (extract_question_subject(prompt).is_some_and(|subject| {
+            clean_focus(&subject).eq_ignore_ascii_case(clean_focus(surface))
+        }) && crate::concepts::extract_concept_query(prompt).is_none())
+    {
         return None;
     }
     let body = seed::render_response(
@@ -330,10 +343,15 @@ fn answer_with_legacy_fallback(
             completed_steps + 1
         ),
     );
-    // The guide is the teaching answer a plain unmatched prompt is owed; the
-    // issue-report invitation is the reasoning body's closing question, and a
-    // prompt with nothing gathered has no failure to report.
-    let body = language_aware_unknown_answer(prompt, language);
+    // The guide is the teaching answer a plain unmatched prompt is owed. A
+    // prompt the definition router claimed ("explain X", "meaning of X") and
+    // still could not resolve is a different failure: a handler owned it and
+    // produced nothing, so the issue-report invitation — the closing question
+    // of the unresolved-reasoning body (issue 864) — belongs there too.
+    let mut body = language_aware_unknown_answer(prompt, language);
+    if crate::concepts::extract_concept_query(prompt).is_some() {
+        body = crate::failure_reporting::append_invitation(&body, language.slug());
+    }
     finalize_simple(prompt, log, "unknown", "response:unknown", &body, 0.0)
 }
 
@@ -583,6 +601,18 @@ fn is_unresolved_bare_term_prompt(prompt: &str, focus: &str) -> bool {
 
 fn extract_question_subject(prompt: &str) -> Option<String> {
     let trimmed = clean_focus(prompt);
+    // A meaning interrogation ("what does X mean", "meaning of X") is the one
+    // definition shape the cue-lexicon leads below cannot see: its lead
+    // ("what does") is not a concept cue and the interrogated surface is
+    // followed by a tail ("mean") instead of ending the prompt. Without this
+    // arm the whole prompt becomes the focus, fails the specificity filter,
+    // and buries the consulted-source record under the generic unknown guide.
+    // The subject is read by the same seeded extractor the concept handler
+    // routes with, so it cannot drift from the term a routed lookup would
+    // have researched.
+    if let Some(subject) = crate::concepts::meaning_question_subject(prompt) {
+        return Some(subject);
+    }
     let lower = trimmed.to_lowercase();
     let mut leads = [
         "what is the ",
