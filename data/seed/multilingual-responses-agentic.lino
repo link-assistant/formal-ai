@@ -1250,7 +1250,7 @@ multilingual_responses
   response response_coding_source_string_constant_rust
     intent coding_source_string_constant
     language rust
-    text "{visibility}const {name}: &str = \"{value}\";\n"
+    text '{visibility}const {name}: &str = "{value}";\n'
   response response_coding_source_equality_test_rust
     intent coding_source_equality_test
     language rust

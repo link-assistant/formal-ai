@@ -95,7 +95,7 @@ self_use_case_spanish_routing_matrix
   id "spanish_routing_matrix"
   plan "10"
   frontier_issue "745"
-  requirement "#745's variation matrix asserts that a URL object routes to `web_fetch`, a local path to `read_file`, content-plus-file to `write_file`, a listing phrasing to `ls`, and a code search to `grep_search`. The matrix covers en/ru/hi/zh; `grep '\"es\"' tests/unit/issue_745.rs` returns nothing, and the seven capability cue lists in data/seed/agentic-tool-capabilities.lino carry 280 phrases in four languages and zero Spanish."
+  requirement '#745\x27s variation matrix asserts that a URL object routes to `web_fetch`, a local path to `read_file`, content-plus-file to `write_file`, a listing phrasing to `ls`, and a code search to `grep_search`. The matrix covers en/ru/hi/zh; `grep \x27"es"\x27 tests/unit/issue_745.rs` returns nothing, and the seven capability cue lists in data/seed/agentic-tool-capabilities.lino carry 280 phrases in four languages and zero Spanish.'
   observed "Four of six Spanish variations misroute to `websearch` under the Agent CLI in agent mode. The URL case is the starkest: `Lee https://example.com y dime qué dice.` carries the URL in the prompt and the system searched the web for the Spanish sentence instead, opening two LinkedIn posts and a SpanishDict entry. The write case wrote no file. Only the directory listing routed correctly, to `ls`."
   outcome "wrong_route"
   paraphrase spanish_web_fetch

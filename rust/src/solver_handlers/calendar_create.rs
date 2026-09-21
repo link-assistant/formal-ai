@@ -40,6 +40,14 @@ pub fn try_calendar_create_event(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // A software-authoring request (authoring verb plus software artifact)
+    // that mentions a schedule word is a build plan, not an event: "Build a
+    // bot ... that sends weekly notifications" schedules nothing. The claim
+    // declines here so the software-project handler answers it (issue #1138
+    // software-project corpus).
+    if super::software_project_claims(normalized) {
+        return None;
+    }
     if !mentions_calendar_create_request(normalized) {
         return None;
     }
@@ -59,6 +67,12 @@ pub fn try_routed_calendar_create_event(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // Same software-project decline as the standalone recognizer above: a
+    // build request that mentions a schedule word is a plan, not an event,
+    // whichever entry point the table selected it through.
+    if super::software_project_claims(normalized) {
+        return None;
+    }
     let base = current_utc_date()?;
     log.append("calendar:clock", "system_utc".to_owned());
 

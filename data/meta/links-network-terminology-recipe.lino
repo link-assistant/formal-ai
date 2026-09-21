@@ -16,7 +16,7 @@ step_deprecated_graph_alias
   order "2"
   id "deprecated_graph_alias"
   title "Keep /v1/graph alive as a deprecated alias"
-  detail "into_deprecated_alias in src/server.rs flags the legacy `/v1/graph` (and `/api/formal-ai/v1/graph`) response: the body is byte-identical to `/v1/network` so existing desktop / VS Code / e2e clients keep working, but the wire response carries a `deprecation: true` header and a `link: </v1/network>; rel=\"successor-version\"` marker so clients can migrate. The canonical route never emits the marker. Backward compatibility is preserved without endorsing the old vocabulary."
+  detail 'into_deprecated_alias in src/server.rs flags the legacy `/v1/graph` (and `/api/formal-ai/v1/graph`) response: the body is byte-identical to `/v1/network` so existing desktop / VS Code / e2e clients keep working, but the wire response carries a `deprecation: true` header and a `link: </v1/network>; rel="successor-version"` marker so clients can migrate. The canonical route never emits the marker. Backward compatibility is preserved without endorsing the old vocabulary.'
   seed_file "src/server.rs"
 step_rename_self_source_module
   record_type "meta_step"

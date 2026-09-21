@@ -55,7 +55,7 @@ requirement_status_ledger_shard requirements_06
     delivered "PR #469 (issue #468); custom-task fallback repaired by #1138 B4"
     issue "0468"
     automated_test ""
-    manual "manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 — the 2026-08-04 finding \"falls back to seeded fairy-tale KB rather than reflecting custom --task\" is now pinned as a regression"
+    manual 'manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 — the 2026-08-04 finding "falls back to seeded fairy-tale KB rather than reflecting custom --task" is now pinned as a regression'
   requirement
     id "R315"
     shard "docs/requirements/issue-0468-agentic-coding-mode.md"

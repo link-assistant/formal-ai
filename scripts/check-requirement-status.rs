@@ -42,11 +42,35 @@ fn requirement_ids(text: &str) -> BTreeSet<String> {
 }
 
 fn unquote(value: &str) -> String {
-    value
-        .trim()
-        .trim_matches('"')
-        .replace("\\\"", "\"")
-        .replace("\\\\", "\\")
+    // The ledger escapes a quote by doubling it (the canonical Links Notation
+    // form); the backslash dialect is still read so pre-conversion shards
+    // keep parsing. One left-to-right pass keeps the two escapes from
+    // bleeding into each other.
+    let trimmed = value.trim();
+    let inner = trimmed
+        .strip_prefix('"')
+        .and_then(|rest| rest.strip_suffix('"'))
+        .unwrap_or(trimmed);
+    let mut out = String::with_capacity(inner.len());
+    let mut chars = inner.chars();
+    while let Some(character) = chars.next() {
+        match character {
+            '"' if chars.as_str().starts_with('"') => {
+                chars.next();
+                out.push('"');
+            }
+            '\\' => match chars.next() {
+                Some(escaped @ ('"' | '\\')) => out.push(escaped),
+                Some(other) => {
+                    out.push('\\');
+                    out.push(other);
+                }
+                None => out.push('\\'),
+            },
+            other => out.push(other),
+        }
+    }
+    out
 }
 
 fn close_row(

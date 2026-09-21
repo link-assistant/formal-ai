@@ -19,7 +19,7 @@ multilingual_responses
   response response_thinking_step_impulse_en
     intent thinking_step_impulse
     language en
-    text "Read the request: \"{prompt}\"."
+    text 'Read the request: "{prompt}".'
   response response_thinking_step_impulse_ru
     intent thinking_step_impulse
     language ru
@@ -799,7 +799,7 @@ multilingual_responses
   response response_thinking_step_deformalize_en
     intent thinking_step_deformalize
     language en
-    text "Compose the answer: \"{answer}\"."
+    text 'Compose the answer: "{answer}".'
   response response_thinking_step_deformalize_ru
     intent thinking_step_deformalize
     language ru

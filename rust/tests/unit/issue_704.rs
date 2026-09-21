@@ -6,7 +6,8 @@ use std::time::Instant;
 
 const SEARCH_PROMPT: &str =
     "Using the numbers 3, 5, and 7 with the operations + and *, find an expression that equals 26.";
-const SEARCH_ANSWER: &str = "Found by budget-driven search: 3 * 7 + 5 = 26.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 256 candidate evaluations; a satisfying composition was found after 6 evaluations.\nSearch path: search_03a957b01beed257";
+const SEARCH_ANSWER: &str = "Found by budget-driven search: 3 * 7 + 5 = 26.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 256 candidate evaluations; a satisfying composition was found after 15 evaluations.\nSearch path: search_03a957b01beed257\n\n```links\ndraft_comparison_artifact\n  draft_count \"3\"\n  winner_index \"2\"\n  winner_strategy \"search\"\n  passed_tests \"3\"\n  total_tests \"3\"\n  rejected_drafts \"2\"\n  backtracked_drafts \"0\"\n  smaller_percent \"0\"\n  tie_break \"least_action\"\n  merge_order \"draft_index\"```\n";
+const SINGLE_DRAFT_ANSWER: &str = "Found by budget-driven search: 3 * 7 + 5 = 26.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 256 candidate evaluations; a satisfying composition was found after 6 evaluations.\nSearch path: search_03a957b01beed257";
 
 fn portfolio_solver(draft_count: u8) -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
@@ -75,7 +76,7 @@ fn default_one_draft_preserves_the_existing_search_path() {
     })
     .solve(SEARCH_PROMPT);
 
-    assert_eq!(answer.answer, SEARCH_ANSWER);
+    assert_eq!(answer.answer, SINGLE_DRAFT_ANSWER);
     assert_eq!(SolverConfig::default().draft_count, 1);
     assert_eq!(answer.answer, default_answer.answer);
     assert_eq!(answer.links_notation, default_answer.links_notation);

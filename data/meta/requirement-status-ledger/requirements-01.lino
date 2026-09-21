@@ -15,7 +15,7 @@ requirement_status_ledger_shard requirements_01
     delivered "pre-2026-07 (undated)"
     issue ""
     automated_test ""
-    manual "manually confirmed 2026-08-04 (audit): README `chat --prompt \"Write me hello world program in Rust\"` run, JSON chat format checked"
+    manual 'manually confirmed 2026-08-04 (audit): README `chat --prompt "Write me hello world program in Rust"` run, JSON chat format checked'
   requirement
     id "R100"
     shard "docs/requirements/issue-0016-multilingual-wikipedia-and-append-only-memory-requirements.md"
@@ -471,7 +471,7 @@ requirement_status_ledger_shard requirements_01
     delivered "PR #1027 (issue #1021), 2026-08-19"
     issue "1021"
     automated_test ""
-    manual "measured 2026-08-19: the eleven `ci_cd::issue_1021` tests pass locally in 3.8s; mutation-verified three times -- signalling only the root of the tree leaves the stalled child alive, restoring `timeout \"$attempt_seconds\"` fails the guard at `scripts/apt-install-with-retry.sh:90`, and reading elapsed time from bash's `SECONDS` alone fails the accuracy test with `a 3s deadline expired after 2.480484781s`. Measured accuracy (`experiments/issue-1021-deadline-precision/measure.sh`): 3.5s on a 3s deadline, 10.8s on a 10s one, never early. Confirmed on macOS 2026-08-19: all eleven tests pass on the macOS core slices of run 32294252392, including slices 15/16 and 16/16, the two that reported `timeout: command not found` in run 32282461075 (`docs/case-studies/issue-1021/logs/macos-deadline-tests-green.log`); the lower-bound test measured 3.835s against its 3s deadline there. See findings 16, 17 and 18"
+    manual 'measured 2026-08-19: the eleven `ci_cd::issue_1021` tests pass locally in 3.8s; mutation-verified three times -- signalling only the root of the tree leaves the stalled child alive, restoring `timeout "$attempt_seconds"` fails the guard at `scripts/apt-install-with-retry.sh:90`, and reading elapsed time from bash\x27s `SECONDS` alone fails the accuracy test with `a 3s deadline expired after 2.480484781s`. Measured accuracy (`experiments/issue-1021-deadline-precision/measure.sh`): 3.5s on a 3s deadline, 10.8s on a 10s one, never early. Confirmed on macOS 2026-08-19: all eleven tests pass on the macOS core slices of run 32294252392, including slices 15/16 and 16/16, the two that reported `timeout: command not found` in run 32282461075 (`docs/case-studies/issue-1021/logs/macos-deadline-tests-green.log`); the lower-bound test measured 3.835s against its 3s deadline there. See findings 16, 17 and 18'
   requirement
     id "R1021-31"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
@@ -511,7 +511,7 @@ requirement_status_ledger_shard requirements_01
     delivered "PR #1027 (issue #1021), 2026-08-21"
     issue "1021"
     automated_test ""
-    manual "falsified 2026-08-21 against the unpatched `rust/src/server.rs`: the hello-probe test fails with ``assertion `left == right` failed: HEAD /api/hello  left: 404  right: 200`` while the other two pass before and after, which is what makes them regression guards for behaviour that already held rather than tests written to match the fix. The upstream endpoint was measured rather than inferred -- `https://api.anthropic.com/api/hello` answers `200` and `{\"message\": \"hello\"}` to `GET` and `200` with a 0-byte body to `HEAD`, unauthenticated -- and the mechanism was read verbatim out of the shipped `@anthropic-ai/claude-code-linux-x64` binary, where `preconnectFired` and the `/api/hello` warm-up occur 4 and 1 times in 2.1.238 and 0 and 0 times in 2.1.215. The `t3code` half was reproduced locally under Node 22.23.2: 0.0.28 lists `start serve auth project connect`, 0.0.33 adds `pair` and `service`, and both new subcommands' help text was read to confirm neither opens a prompt path before the contract was re-recorded. Manual confirmation on a runner: not yet confirmed -- the matrix run on the commit carrying this fix is the first unattended check of it"
+    manual 'falsified 2026-08-21 against the unpatched `rust/src/server.rs`: the hello-probe test fails with ``assertion `left == right` failed: HEAD /api/hello  left: 404  right: 200`` while the other two pass before and after, which is what makes them regression guards for behaviour that already held rather than tests written to match the fix. The upstream endpoint was measured rather than inferred -- `https://api.anthropic.com/api/hello` answers `200` and `{"message": "hello"}` to `GET` and `200` with a 0-byte body to `HEAD`, unauthenticated -- and the mechanism was read verbatim out of the shipped `@anthropic-ai/claude-code-linux-x64` binary, where `preconnectFired` and the `/api/hello` warm-up occur 4 and 1 times in 2.1.238 and 0 and 0 times in 2.1.215. The `t3code` half was reproduced locally under Node 22.23.2: 0.0.28 lists `start serve auth project connect`, 0.0.33 adds `pair` and `service`, and both new subcommands\x27 help text was read to confirm neither opens a prompt path before the contract was re-recorded. Manual confirmation on a runner: not yet confirmed -- the matrix run on the commit carrying this fix is the first unattended check of it'
   requirement
     id "R1021-36"
     shard "docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md"
@@ -623,7 +623,7 @@ requirement_status_ledger_shard requirements_01
     delivered "PR #1074 (issue #1073), 2026-09-04"
     issue "1073"
     automated_test ""
-    manual "measured 2026-09-04 with `cargo run --example dump_reasoning_standard_audit` (docs/case-studies/issue-1073/logs/reasoning-standard-audit.log): the trivial request `\"hi\"` -- which triggers no world claim, no source, no conclusion and no action -- still has all seven declared gates enumerated, six reporting `not_triggered` with the trigger that was false and `instruction_formalization` reporting `violated` with the two sources it is missing named, and closes at `not_confirmed_not_refuted` with its blockers named"
+    manual 'measured 2026-09-04 with `cargo run --example dump_reasoning_standard_audit` (docs/case-studies/issue-1073/logs/reasoning-standard-audit.log): the trivial request `"hi"` -- which triggers no world claim, no source, no conclusion and no action -- still has all seven declared gates enumerated, six reporting `not_triggered` with the trigger that was false and `instruction_formalization` reporting `violated` with the two sources it is missing named, and closes at `not_confirmed_not_refuted` with its blockers named'
   requirement
     id "R1073-2"
     shard "docs/requirements/issue-1073-reasoning-standard.md"

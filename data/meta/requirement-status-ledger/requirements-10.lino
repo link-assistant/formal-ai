@@ -79,7 +79,7 @@ requirement_status_ledger_shard requirements_10
     delivered "pre-2026-07 (undated); issue #12"
     issue "0012"
     automated_test ""
-    manual "manually confirmed 2026-08-04 (audit): `chat --prompt \"What is 8% of $50?\"` run twice, outputs byte-identical (cmp)"
+    manual 'manually confirmed 2026-08-04 (audit): `chat --prompt "What is 8% of $50?"` run twice, outputs byte-identical (cmp)'
   requirement
     id "R62"
     shard "docs/requirements/issue-0012-holistic-vision-requirements.md"

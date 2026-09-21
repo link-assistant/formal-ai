@@ -167,7 +167,7 @@ fn issue_704_portfolio_rescues_the_industry_search_case() {
 
     assert_eq!(
         response.answer,
-        "Found by budget-driven search: 3 * 7 + 5 = 26.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 256 candidate evaluations; a satisfying composition was found after 15 evaluations.\nSearch path: search_03a957b01beed257\n\n```links\ndraft_comparison_artifact\n  draft_count \"3\"\n  winner_index \"2\"\n  winner_strategy \"search\"\n  passed_tests \"3\"\n  total_tests \"3\"\n  rejected_drafts \"2\"\n  backtracked_drafts \"0\"\n  smaller_percent \"0\"\n  tie_break \"least_action\"\n  merge_order \"draft_index\"```"
+        "Found by budget-driven search: 3 * 7 + 5 = 26.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: 256 candidate evaluations; a satisfying composition was found after 15 evaluations.\nSearch path: search_03a957b01beed257\n\n```links\ndraft_comparison_artifact\n  draft_count \"3\"\n  winner_index \"2\"\n  winner_strategy \"search\"\n  passed_tests \"3\"\n  total_tests \"3\"\n  rejected_drafts \"2\"\n  backtracked_drafts \"0\"\n  smaller_percent \"0\"\n  tie_break \"least_action\"\n  merge_order \"draft_index\"```\n"
     );
     assert!(response.answer.contains("= 26"), "{}", response.answer);
     assert_eq!(response.links_notation.matches(" draft:result ").count(), 3);

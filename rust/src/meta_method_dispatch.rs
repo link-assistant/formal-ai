@@ -383,6 +383,14 @@ fn try_capability_route(
             if crate::agentic_coding::semantic_shell_command_for_task(prompt).is_some() {
                 return None;
             }
+            // A software-authoring request the lexicon recognizes (authoring
+            // verb plus software artifact) is the software-project handler's:
+            // the table reads "imports customer records" as a file-read gap,
+            // but a scaffolded build is a plan, not a read (issue #1138
+            // software-project corpus).
+            if crate::solver_handlers::software_project_claims(&normalized) {
+                return None;
+            }
             if let Some(answer) = crate::family_method::try_family_method_preempting(
                 prompt,
                 &normalized,

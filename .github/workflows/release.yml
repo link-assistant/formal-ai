@@ -382,6 +382,12 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, test-suite: full }
+          # The specification suite ran only on macOS while the rest of the
+          # matrix ran on ubuntu, so a linux-only failure in it could not turn
+          # any required check red. A third leg closes that blind spot; the
+          # green ledger keys per os and suite, so it starts with no stale
+          # green to honor (issue #1107).
+          - { os: ubuntu-latest, test-suite: specification }
           - { os: macos-15-intel, test-suite: specification }
     steps:
       - uses: actions/checkout@v7

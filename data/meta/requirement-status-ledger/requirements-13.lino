@@ -79,7 +79,7 @@ requirement_status_ledger_shard requirements_13
     delivered "pre-2026-07 (undated)"
     issue ""
     automated_test ""
-    manual "manually confirmed 2026-08-04 (audit): README `chat --prompt \"Hi\"` en greeting run via built binary"
+    manual 'manually confirmed 2026-08-04 (audit): README `chat --prompt "Hi"` en greeting run via built binary'
   requirement
     id "R90"
     shard "docs/requirements/issue-0016-multilingual-wikipedia-and-append-only-memory-requirements.md"

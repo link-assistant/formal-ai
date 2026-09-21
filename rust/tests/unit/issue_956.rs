@@ -20,7 +20,10 @@ fn custom_quoted_task_formalizes_the_supplied_text() {
     assert!(!answer.contains("рыбке"), "{answer}");
     assert!(answer.contains("doc:input"), "{answer}");
     assert!(!answer.contains("all nine protocol primitives"), "{answer}");
-    assert!(answer.contains("2 of 9 protocol primitives"), "{answer}");
+    assert!(
+        answer.contains("2 records realising 1 of 9 protocol primitives"),
+        "{answer}"
+    );
 }
 
 /// With tools advertised, the recipe must not search or fetch the canonical

@@ -90,6 +90,23 @@ impl ApprovalState {
     }
 }
 
+/// Whether a prompt carries the software-project frame (a software-authoring
+/// verb plus a software artifact), recognized through the same lexicon tables
+/// [`SoftwareProjectMeaning::from_prompt`] uses. Callers that already answered
+/// a narrower reading of the prompt — the capability table's honest gap, the
+/// calendar-create handler's event gate — decline on this claim so a build
+/// request reaches the software-project plan instead of being read as a file
+/// read or a scheduled event (issue #1138 software-project corpus).
+pub fn software_project_claims(normalized: &str) -> bool {
+    if normalized.contains("hello") && normalized.contains("world") {
+        return false;
+    }
+    let actions = action_surface_table();
+    let artifacts = artifact_surface_table();
+    scan_match(normalized, |input| match_action(input, &actions)).is_some()
+        && scan_match(normalized, |input| match_artifact(input, &artifacts)).is_some()
+}
+
 impl SoftwareProjectMeaning {
     pub(super) fn from_prompt(prompt: &str, normalized: &str) -> Option<Self> {
         if normalized.contains("hello") && normalized.contains("world") {

@@ -1107,6 +1107,13 @@ function unescapeLinoValue(value) {
   let out = "";
   for (let index = 0; index < value.length; index += 1) {
     const ch = value[index];
+    // Links Notation doubles a delimiter to escape it; the seed corpus now
+    // writes that canonical form, so both dialects are read.
+    if (ch === '"' && value[index + 1] === '"') {
+      out += '"';
+      index += 1;
+      continue;
+    }
     if (ch === "\\" && index + 1 < value.length) {
       const next = value[index + 1];
       if (next === "n") {
@@ -1165,23 +1172,29 @@ function decodeRawReference(raw) {
 }
 
 function stripLinoComment(line) {
-  let inDoubleQuote = false;
+  // Mirrors rust/src/seed/parser.rs strip_comment: any of the three quote
+  // characters opens a string the comment rule must not see into, a doubled
+  // single quote is an escape, and a backslash escapes inside double quotes
+  // and backticks.
+  let quote = null;
   let escaped = false;
   let previousWasSpace = true;
   for (let index = 0; index < line.length; index += 1) {
     const ch = line[index];
-    if (inDoubleQuote) {
+    if (quote) {
       if (escaped) {
         escaped = false;
-      } else if (ch === "\\") {
+      } else if ((quote === '"' || quote === "`") && ch === "\\") {
         escaped = true;
-      } else if (ch === '"') {
-        inDoubleQuote = false;
+      } else if (quote === "'" && ch === "'" && line[index + 1] === "'") {
+        index += 1;
+      } else if (ch === quote) {
+        quote = null;
       }
       continue;
     }
-    if (ch === '"') {
-      inDoubleQuote = true;
+    if (ch === '"' || ch === "'" || ch === "`") {
+      quote = ch;
       previousWasSpace = false;
       continue;
     }

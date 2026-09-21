@@ -2,7 +2,7 @@ multilingual_responses
   response response_who_is_unknown_entity_en
     intent who_is_unknown_entity
     language en
-    text "I don't have a Links Notation fact for \"{term}\" yet. Add a fact or rule in Links Notation and run the request again."
+    text 'I don\x27t have a Links Notation fact for "{term}" yet. Add a fact or rule in Links Notation and run the request again.'
   response response_who_is_unknown_entity_ru
     intent who_is_unknown_entity
     language ru
@@ -10,7 +10,7 @@ multilingual_responses
   response response_who_is_unknown_entity_hi
     intent who_is_unknown_entity
     language hi
-    text "मेरे पास अभी \"{term}\" के लिए Links Notation में कोई तथ्य नहीं है। Links Notation में एक तथ्य या नियम जोड़ें और अनुरोध फिर से चलाएँ।"
+    text 'मेरे पास अभी "{term}" के लिए Links Notation में कोई तथ्य नहीं है। Links Notation में एक तथ्य या नियम जोड़ें और अनुरोध फिर से चलाएँ।'
   response response_who_is_unknown_entity_zh
     intent who_is_unknown_entity
     language zh
@@ -18,7 +18,7 @@ multilingual_responses
   response response_who_is_unknown_entity_suggestion_en
     intent who_is_unknown_entity_suggestion
     language en
-    text "I don't have a Links Notation fact for \"{term}\" yet. Did you mean \"{corrected}\"? Add a fact or rule in Links Notation and run the request again."
+    text 'I don\x27t have a Links Notation fact for "{term}" yet. Did you mean "{corrected}"? Add a fact or rule in Links Notation and run the request again.'
   response response_who_is_unknown_entity_suggestion_ru
     intent who_is_unknown_entity_suggestion
     language ru
@@ -26,7 +26,7 @@ multilingual_responses
   response response_who_is_unknown_entity_suggestion_hi
     intent who_is_unknown_entity_suggestion
     language hi
-    text "मेरे पास अभी \"{term}\" के लिए Links Notation में कोई तथ्य नहीं है। क्या आपका मतलब \"{corrected}\" था? Links Notation में एक तथ्य या नियम जोड़ें और अनुरोध फिर से चलाएँ।"
+    text 'मेरे पास अभी "{term}" के लिए Links Notation में कोई तथ्य नहीं है। क्या आपका मतलब "{corrected}" था? Links Notation में एक तथ्य या नियम जोड़ें और अनुरोध फिर से चलाएँ।'
   response response_who_is_unknown_entity_suggestion_zh
     intent who_is_unknown_entity_suggestion
     language zh

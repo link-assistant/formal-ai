@@ -30,7 +30,7 @@ step_ground_each_statement
   order "4"
   id "ground_each_statement"
   title "Ground each statement in a web-search fact-check query"
-  detail "grounding_query builds a dedicated `\"<statement>\" fact check source` query per statement so the fusion layer surfaces original first sources for or against it. document_originality_query and the WEB_SEARCH_PROVIDERS list drive the live search; the plan records exactly what would be checked for every statement."
+  detail 'grounding_query builds a dedicated `"<statement>" fact check source` query per statement so the fusion layer surfaces original first sources for or against it. document_originality_query and the WEB_SEARCH_PROVIDERS list drive the live search; the plan records exactly what would be checked for every statement.'
   seed_file "src/statement_verification.rs"
 step_weigh_relative_meta_logic
   record_type "meta_step"

@@ -563,7 +563,7 @@ multilingual_responses
   response response_agent_suggestion_en
     intent agent_suggestion
     language en
-    text "It looks like you want to run a terminal command: `{command}`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\nSwitch to Agent mode and grant the `shell` capability so I can run `{command}`? Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically)."
+    text 'It looks like you want to run a terminal command: `{command}`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\nSwitch to Agent mode and grant the `shell` capability so I can run `{command}`? Use the mode radio in the toolbar to pick "Agent" (or "Full Auto" to run commands automatically).'
   response response_agent_suggestion_ru
     intent agent_suggestion
     language ru
@@ -571,11 +571,11 @@ multilingual_responses
   response response_agent_suggestion_hi
     intent agent_suggestion
     language hi
-    text "ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\nशेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में मैं केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\nएजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं `{command}` चला सकूँ? टूलबार में मोड रेडियो से \"Agent\" चुनें (या स्वचालित निष्पादन के लिए \"Full Auto\")।"
+    text 'ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\nशेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में मैं केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\nएजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं `{command}` चला सकूँ? टूलबार में मोड रेडियो से "Agent" चुनें (या स्वचालित निष्पादन के लिए "Full Auto")।'
   response response_agent_suggestion_zh
     intent agent_suggestion
     language zh
-    text "看起来您想在终端中运行一个命令：`{command}`。\n\n运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会分析您的请求，而不会执行命令。\n\n切换到智能体模式并授予 `shell` 权限，以便我运行 `{command}`？请在工具栏的模式单选框中选择 \"Agent\"（或选择 \"Full Auto\" 自动运行命令）。"
+    text '看起来您想在终端中运行一个命令：`{command}`。\n\n运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会分析您的请求，而不会执行命令。\n\n切换到智能体模式并授予 `shell` 权限，以便我运行 `{command}`？请在工具栏的模式单选框中选择 "Agent"（或选择 "Full Auto" 自动运行命令）。'
   response response_agent_suggestion_active_en
     intent agent_suggestion_active
     language en
@@ -1375,7 +1375,7 @@ multilingual_responses
   response response_requirement_contradiction_ru
     intent requirement_contradiction
     language ru
-    text "Предупреждение: два ваших требования противоречат друг другу.\n- Утверждение 1 (вес {prior_weight}): «{prior}»\n- Утверждение 2 (вес {current_weight}): «{current}»\nОни предъявляют противоположные требования к одному предмету ({subject}), поэтому оба не могут выполняться одновременно.\nПредлагаемое решение: оставьте одно требование и отзовите другое замещающим требованием. Сеть требований работает только на добавление, поэтому отзыв записывается новым событием без удаления истории. Либо разделите смыслы или ограничьте требования разными контекстами."
+    text "Предупреждение: два ваших требования противоречат друг другу.\n- Утверждение 1 (вес {prior_weight}): «{prior}»\n- Утверждение 2 (вес {current_weight}): «{current}»\nОни предъявляют противоположные требования к одному предмету ({subject}), поэтому оба не могут выполняться одновременно.\nПредлагаемое решение: оставьте одно требование и отзовите другое (retract) замещающим требованием. Сеть требований работает только на добавление, поэтому отзыв записывается новым событием без удаления истории. Либо разделите смыслы или ограничьте требования разными контекстами."
   response response_requirement_contradiction_hi
     intent requirement_contradiction
     language hi

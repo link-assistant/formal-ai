@@ -68,7 +68,17 @@ fn requirement_ids(text: &str) -> Vec<String> {
 }
 
 fn quoted(value: &str) -> String {
-    format!("\"{}\"", value.replace('\\', "\\\\").replace('"', "\\\""))
+    // Canonical Links Notation reads a doubled delimiter as an escape and an
+    // even run of quotes as a possible longer opener, so a value carrying a
+    // double quote is wrapped in single quotes (the canonical writer's own
+    // preference); apostrophes then take the \x27 form this repository's
+    // readers decode. Backslashes double in both branches because the
+    // line-based reader unescapes them.
+    if value.contains('"') {
+        format!("'{}'", value.replace('\\', "\\\\").replace('\'', "\\x27"))
+    } else {
+        format!("\"{}\"", value.replace('\\', "\\\\"))
+    }
 }
 
 fn test_path(text: &str, root: &Path) -> String {

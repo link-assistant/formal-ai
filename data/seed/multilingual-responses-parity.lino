@@ -112,7 +112,7 @@ multilingual_responses
   response response_agent_suggestion_es
     intent agent_suggestion
     language es
-    text "Parece que quieres ejecutar un comando de terminal: `{command}`.\n\nLa ejecución de comandos de shell requiere el modo Agente. En el modo Chat solo razono sobre tu solicitud y no ejecuto comandos.\n\n¿Quieres cambiar al modo Agente y conceder la capacidad `shell` para que pueda ejecutar `{command}`? Usa el selector de modo de la barra de herramientas y elige \"Agent\" (o \"Full Auto\" para ejecutar comandos automáticamente)."
+    text 'Parece que quieres ejecutar un comando de terminal: `{command}`.\n\nLa ejecución de comandos de shell requiere el modo Agente. En el modo Chat solo razono sobre tu solicitud y no ejecuto comandos.\n\n¿Quieres cambiar al modo Agente y conceder la capacidad `shell` para que pueda ejecutar `{command}`? Usa el selector de modo de la barra de herramientas y elige "Agent" (o "Full Auto" para ejecutar comandos automáticamente).'
   response response_agent_suggestion_active_es
     intent agent_suggestion_active
     language es

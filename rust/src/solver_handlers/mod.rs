@@ -36,7 +36,7 @@ pub use self_awareness::SelfAwarenessRuntime;
 pub use shell_command_transform::{
     try_shell_command_transform, try_shell_command_transform_with_history,
 };
-pub use software_project::try_software_project_request;
+pub use software_project::{software_project_claims, try_software_project_request};
 pub use software_project_followup::try_software_project_followup;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
 pub use text_manipulation::{

@@ -135,7 +135,7 @@ fn language_coverage_gate_judges_handler_changes_by_line_not_by_path() {
         guard.contains("lineLevelPrefixes"),
         "the guard must decide handler changes per changed line, not per path"
     );
-    for prefix in ["src/solver_handlers/", "js/worker/"] {
+    for prefix in ["rust/src/solver_handlers/", "js/worker/"] {
         assert!(
             guard.contains(&format!("'{prefix}'")),
             "{prefix} carries language-independent code and must be judged by line"
@@ -161,7 +161,7 @@ fn language_coverage_gate_judges_handler_changes_by_line_not_by_path() {
 
     // Seed and translation data are localized content line for line, so they
     // must never be narrowed to the line-level test.
-    for prefix in ["data/seed/", "src/translation/"] {
+    for prefix in ["data/seed/", "rust/src/translation/"] {
         assert!(
             guard.contains(&format!("'{prefix}'")),
             "{prefix} must stay a file-level trigger"
@@ -417,7 +417,8 @@ fn re_recording_the_language_frontier_now_finds_nothing_to_learn() {
 fn a_language_without_localized_openers_reports_a_gap_not_english() {
     // "¿Cómo funciona …?" is Spanish (detected from seed rules alone), carries
     // no learned request frame and has no memoized answer. Issue #706 requires
-    // the honest `language_gap` behavior instead of a silent English fallback.
+    // the honest localized `unknown` behavior instead of a silent English
+    // fallback.
     //
     // Its sibling "¿Qué es …?" deliberately does *not* land here any more: the
     // learning cycle adopted that frame, so the prompt now routes exactly like
@@ -430,14 +431,20 @@ fn a_language_without_localized_openers_reports_a_gap_not_english() {
         "web_search",
         "an adopted Spanish frame must route like English"
     );
+    // An operative how-question keeps the unresolved-unknown answer — the same
+    // doctrine as the English "how should X be calibrated": the consulted
+    // walk's miss trail stays in the recorded events and the localized body
+    // owns the final answer. The earlier era answered this prompt with the
+    // English "I detected an unsupported language" notice because Spanish had
+    // no localized unknown text at all; the parity templates closed that gap,
+    // so the honest pin is the Spanish body itself.
     let answer = engine.answer("¿Cómo funciona la fotosíntesis submarina de xyzzy?");
-    assert_eq!(
-        answer.answer,
-        "Ninguna fuente consultada definió «¿Cómo funciona la fotosíntesis submarina de xyzzy». Fuentes consultadas: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss."
-    );
+    assert_eq!(answer.intent, "unknown");
     assert!(
-        answer.answer.contains("I detected an unsupported language"),
-        "expected the explicit language gap answer, got: {}",
+        answer
+            .answer
+            .starts_with("No pude determinar `¿Cómo funciona la fotosíntesis submarina de xyzzy`"),
+        "expected the localized unresolved-unknown body, got: {}",
         answer.answer
     );
 }
