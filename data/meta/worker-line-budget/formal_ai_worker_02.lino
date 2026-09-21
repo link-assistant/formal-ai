@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_02.js"
-  ceiling 1195
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker."
+  ceiling 1206
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1195 to 1206 when plan 10 L20 retired conversational phrase families onto declared roles and the mirror arms followed."

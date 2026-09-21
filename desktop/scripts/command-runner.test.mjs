@@ -12,7 +12,7 @@ const repoRoot = path.resolve(import.meta.dirname, "../..");
 test("production manifests and focused fallback limitations stay mapped", () => {
   const desktopManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, "desktop/package.json")));
   const vscodeManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, "vscode/package.json")));
-  const cargoManifest = fs.readFileSync(path.join(repoRoot, "Cargo.toml"), "utf8");
+  const cargoManifest = fs.readFileSync(path.join(repoRoot, "rust/Cargo.toml"), "utf8");
   const caseStudy = fs.readFileSync(
     path.join(repoRoot, "docs/case-studies/issue-990/README.md"),
     "utf8",

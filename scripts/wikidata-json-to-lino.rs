@@ -6,6 +6,8 @@
 fn main() {
     let status = std::process::Command::new("cargo")
         .arg("run")
+        .arg("--manifest-path")
+        .arg("rust/Cargo.toml")
         .arg("--example")
         .arg("wikidata_json_to_lino")
         .arg("--")

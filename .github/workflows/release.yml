@@ -1104,97 +1104,19 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
     needs: [detect-changes]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-      - name: Skip when identical inputs already passed
-        id: ledger
-        uses: ./.github/actions/green-ledger
-        with:
-          check: e2e-local
-          paths: >-
-            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock rust/tests/e2e js package.json bun.lock scripts .github/workflows/release.yml .github/actions
-          enabled: ${{ github.ref != 'refs/heads/main' }}
-      - name: Setup Bun
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-          no-cache: true
-      - name: Setup Node.js
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24.x'
-          cache: npm
-          cache-dependency-path: rust/tests/e2e/package-lock.json
-      - name: Install web bundle dependencies
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: bun install --frozen-lockfile
-      - name: Build web vendor bundle
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: bun run build:web
-      - name: Install Playwright and dependencies
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: |
-          cd rust/tests/e2e
-          npm ci --no-audit --no-fund
-      - name: Cache Playwright browsers
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        id: playwright-cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('rust/tests/e2e/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-      - name: Install Playwright system dependencies (best effort)
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        timeout-minutes: 6
-        continue-on-error: true
-        run: |
-          cd rust/tests/e2e
-          npx playwright install-deps chromium
-      - name: Install Playwright browsers
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        timeout-minutes: 10
-        run: |
-          cd rust/tests/e2e
-          npx playwright install chromium
-      - name: Sync data/seed into js/seed (deployment mirror)
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: scripts/sync-seed.sh
-      - name: Run local e2e tests
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: |
-          cd rust/tests/e2e
-          npx playwright test --config=playwright.local.config.js
-      - name: Upload Playwright report on failure
-        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-local
-          path: rust/tests/e2e/playwright-report/
-          retention-days: 7
-      - name: Upload generated /download screenshots
-        if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: download-page-screenshots
-          path: |
-            docs/screenshots/issue-347/
-            js/download/assets/app-preview*.png
-          retention-days: 14
-          if-no-files-found: error
+    # Issue #1138 moved the 83 lines of steps behind this call into
+    # `.github/workflows/e2e-local.yml`, returning this file to the 1500-line
+    # warning band; the reasoning is in that file's header. The cap moved with
+    # them, because a caller job declares none.
+    uses: ./.github/workflows/e2e-local.yml
+    permissions:
+      contents: read
   test-agent-cli-e2e:
     name: E2E Tests (agent CLI ↔ formal-ai)
     concurrency:

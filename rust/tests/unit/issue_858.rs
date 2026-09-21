@@ -256,15 +256,13 @@ fn a_summarize_request_over_an_empty_conversation_is_still_owned() {
     );
 
     assert_eq!(answer.intent, "summarize_conversation");
-    assert!(
-        answer.answer.starts_with("Conversation summary:"),
-        "{}",
-        answer.answer
-    );
-    assert!(
-        answer.answer.contains("User turns:"),
-        "the summary names the one turn that exists: {}",
-        answer.answer
+    // The one turn that exists over an empty history is the request itself.
+    assert_eq!(
+        answer.answer,
+        "Conversation summary: summarize our conversation so far in one short paragraph.\n\n\
+         Title: summarize our conversation so far\n\n\
+         User turns:\n  1. summarize our conversation so far in one short paragraph",
+        "the summarize owner answers the bare phrase itself instead of falling through"
     );
 }
 

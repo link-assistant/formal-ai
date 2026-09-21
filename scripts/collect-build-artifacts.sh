@@ -15,7 +15,7 @@ destination=${1:-dist}
 mkdir -p "$destination/tests"
 
 for target in unit integration source; do
-  newest=$(find target/release/deps -maxdepth 1 -type f -perm -u+x \
+  newest=$(find rust/target/release/deps -maxdepth 1 -type f -perm -u+x \
     -name "$target-*" ! -name '*.d' -exec ls -t {} + | head -1)
   if [ -z "$newest" ]; then
     echo "::error title=Missing test executable::\
@@ -32,7 +32,7 @@ done
 # `CARGO_BIN_EXE_with-formal-ai` -- so collecting one binary by name left that
 # test pointing at a file the artifact never carried. Copying what `--bins`
 # actually produced means a new binary is picked up without editing this list.
-find target/release -maxdepth 1 -type f -perm -u+x ! -name "*.d" \
+find rust/target/release -maxdepth 1 -type f -perm -u+x ! -name "*.d" \
   -exec cp {} "$destination/" ";"
 
 collected=$(find "$destination/tests" -maxdepth 1 -type f | wc -l | tr -d ' ')

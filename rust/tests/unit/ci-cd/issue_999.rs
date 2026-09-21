@@ -31,10 +31,10 @@ fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
     // argued twice, so this one only asserts that the partitioning below did
     // not remove it.
     assert!(macos.contains("\n    timeout-minutes:"));
-    assert!(macos.contains("cargo nextest archive"));
-    assert!(macos.contains("cargo nextest run --archive-file"));
+    assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml archive"));
+    assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml run --archive-file"));
     assert!(macos.contains("--macos-platform"));
-    assert!(test.contains("cargo test --test unit --all-features --verbose specification::"));
+    assert!(test.contains("cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification::"));
     assert!(macos.contains("test(specification::)"));
     assert!(test.contains("matrix.test-suite == 'full'"));
     assert!(test.contains("matrix.test-suite == 'specification'"));
@@ -170,8 +170,9 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         // all still here; they simply fit again. Anything that puts this file
         // back over 1500 should extract a job, not raise the number.
         (".github/workflows/release.yml", 1_500),
-        ("src/intent_formalization.rs", 900),
-        ("src/agentic_coding/general_planner.rs", 900),
+        // Issue #1138 (L1) moved the crate to `rust/`; the caps are unchanged.
+        ("rust/src/intent_formalization.rs", 900),
+        ("rust/src/agentic_coding/general_planner.rs", 900),
         ("js/worker/formal_ai_worker_20.js", 1_400),
         ("data/seed/multilingual-responses-agentic.lino", 1_400),
         ("data/seed/multilingual-responses-agentic-tools.lino", 1_400),
@@ -215,8 +216,8 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         "the seed registry must declare the split response file"
     );
     for generated in [
-        "src/seed/embedded_registry.rs",
-        "tests/source/seed/embedded.rs",
+        "rust/src/seed/embedded_registry.rs",
+        "rust/tests/source/seed/embedded.rs",
         "js/seed-files.js",
     ] {
         assert!(

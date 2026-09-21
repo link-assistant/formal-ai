@@ -471,8 +471,12 @@ fn full_suite_does_not_repeat_focused_data_integrity_checks() {
     .expect("macOS core workflow");
     let core_suite = workflow_step_block(&macos, "Run macOS platform tests");
 
-    assert!(test_job.contains("cargo test --test unit data_files -- --nocapture"));
-    assert!(test_job.contains("cargo test --test unit self_ast_census -- --nocapture"));
+    assert!(test_job.contains(
+        "cargo test --manifest-path rust/Cargo.toml --test unit data_files -- --nocapture"
+    ));
+    assert!(test_job.contains(
+        "cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture"
+    ));
     // Issue #1055 moved the skip flags into the runner script the lane invokes.
     let runner = fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -535,11 +539,11 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     let lint = job_block(&workflow, "lint");
 
     assert!(
-        lint.contains("cargo clippy --lib --bins --tests --all-features -- -D warnings"),
+        lint.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
         "clippy must lint executable test targets and fail the job on findings"
     );
     assert!(
-        lint.contains("cargo check --examples --all-features"),
+        lint.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
         "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
@@ -814,7 +818,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Same image, same steps, same budgets, same backstop (issue #1076).
         ("manual-release", 90),
         ("changelog-pr", 10),
-        ("test-e2e-local", 40),
+        // Issue #1138 moved the steps, and the 40-minute cap with them, into
+        // `.github/workflows/e2e-local.yml`; what is left here is the call.
+        ("test-e2e-local", 0),
         // Issue #538: real Agent CLI ↔ formal-ai OpenAI-compatible round-trip.
         // Boots `formal-ai serve`, drives it with `@link-assistant/agent`, and
         // asserts the CLI writes the enriched meaning file. The extra headroom
@@ -870,8 +876,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
                     panic!("{job_name} is listed as delegating but calls no reusable workflow")
                 })
                 .trim();
-            let reusable = fs::read_to_string(format!("{}/{called}", env!("CARGO_MANIFEST_DIR")))
-                .unwrap_or_else(|error| panic!("read {called}: {error}"));
+            let reusable =
+                fs::read_to_string(format!("{}/../{called}", env!("CARGO_MANIFEST_DIR")))
+                    .unwrap_or_else(|error| panic!("read {called}: {error}"));
             for inner_job in workflow_job_names(&reusable) {
                 assert!(
                     job_block(&reusable, inner_job).contains("    timeout-minutes:"),

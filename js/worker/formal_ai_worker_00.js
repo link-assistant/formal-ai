@@ -236,7 +236,6 @@ function hydrateLinoSeedText(raw) {
   }
   cachedKnownEntityNames = null;
   cachedTimezonePlaces = null;
-  cachedTimezonePlaces = null;
   MEANINGS_LINO = seedRawTexts(
     raw,
     (fileName) => fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),

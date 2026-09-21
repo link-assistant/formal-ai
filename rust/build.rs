@@ -172,9 +172,11 @@ fn install_git_hooks(manifest_dir: &Path) {
         return;
     }
 
-    let repository_root = manifest_dir
-        .parent()
-        .expect("crate sits below the repository root");
+    // No parent means there is no repository root above the crate -- a layout
+    // this build was never armed in -- so there is nothing to install.
+    let Some(repository_root) = manifest_dir.parent() else {
+        return;
+    };
     let hooks_dir = repository_root.join(".githooks");
     if !hooks_dir.is_dir() || !repository_root.join(".git").exists() {
         return;

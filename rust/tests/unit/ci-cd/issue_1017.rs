@@ -542,7 +542,7 @@ fn every_ignored_advisory_carries_a_proof_that_ci_rechecks() {
 #[test]
 fn cargo_lock_is_committed_so_cache_keys_stay_meaningful() {
     let tracked = Command::new("git")
-        .args(["ls-files", "--error-unmatch", "Cargo.lock"])
+        .args(["ls-files", "--error-unmatch", "rust/Cargo.lock"])
         .current_dir(
             Path::new(env!("CARGO_MANIFEST_DIR"))
                 .parent()

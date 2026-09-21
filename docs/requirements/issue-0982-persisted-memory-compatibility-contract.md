@@ -3,9 +3,9 @@
 Issue [#982](https://github.com/link-assistant/formal-ai/issues/982) requires a
 safe upgrade boundary for long-lived `.lino` memory shared by CLI, server,
 desktop, Telegram, and container deployments. The schema contract lives in
-`src/memory/upgrade.rs`; operator guidance is in
+`rust/src/memory/upgrade.rs`; operator guidance is in
 `docs/configuration/memory.md`; regression and container coverage is in
-`tests/integration/issue_982_memory_upgrade.rs` and
+`rust/tests/integration/issue_982_memory_upgrade.rs` and
 `experiments/issue_982_memory_upgrade/run_container_upgrade.sh`.
 
 | ID | Requirement | Status / Evidence |
@@ -18,6 +18,6 @@ desktop, Telegram, and container deployments. The schema contract lives in
 | R982-6 | Commit atomically and make interruption/retry safe and idempotent. | Same-directory create-new staging, `sync_all`, atomic rename, parent sync, cleanup on the pre-commit interruption hook, content-addressed default backup, and target-schema no-op retry; tested by interruption and whole-flow cases. |
 | R982-7 | Preserve unknown metadata, stable identifiers, event ordering, and history. | Migration inserts only the additive root marker; event parsing/formatting also round-trips unknown fields. The whole-flow test compares exact bytes apart from the marker and checks ids/order/extensions/query/export. |
 | R982-8 | Emit a durable machine-readable migration receipt with rollback instructions. | `MemoryMigrationReceipt` includes binary/schema versions, migration id, paths, before/after hashes, event count, changed flag, and rollback strategy; its exact JSON value is checked against stdout. |
-| R982-9 | Provide fixtures for every readable/released schema and reject an intentionally incompatible fixture. | `tests/fixtures/memory/schema-{1,2}.lino` are enumerated by `fixtures_cover_every_readable_schema`; the schema-99 test verifies status and migration refusals. |
+| R982-9 | Provide fixtures for every readable/released schema and reject an intentionally incompatible fixture. | `rust/tests/fixtures/memory/schema-{1,2}.lino` are enumerated by `fixtures_cover_every_readable_schema`; the schema-99 test verifies status and migration refusals. |
 | R982-10 | Prove a previous released container and candidate container can use the same named volume through upgrade, verification, rollback, and old-version reopen. | `run_container_upgrade.sh`, wired after the candidate Docker build in CI, writes with `0.335.0`, preflights/migrates, checks candidate server health/query/export, restores the verified backup, and reopens with `0.335.0`. |
 | R982-11 | Keep implementation provenance and self-hosting evidence reproducible. | The issue/PR evidence collector outputs are committed with manifests; two differently worded real Agent-CLI runs and deterministic session JSON live under `docs/case-studies/issue-982/self-hosting/` and are replayed byte-for-byte by the integration suite. |

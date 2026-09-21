@@ -77,7 +77,10 @@ fn playwright_setup_never_uses_the_unbounded_with_deps_shortcut() {
 
 #[test]
 fn both_playwright_jobs_cache_browsers_and_bound_the_apt_step() {
-    let workflow = release_workflow();
+    // Issue #1138 moved the local lane's steps into
+    // `.github/workflows/e2e-local.yml`; `pipeline_workflows()` splices them
+    // back in at the call, so the pipeline's steps stay visible here.
+    let workflow = crate::ci_gates::pipeline_workflows();
 
     for job_name in ["test-e2e-local", "test-e2e-pages"] {
         let job = job_block(&workflow, job_name);
@@ -117,7 +120,7 @@ fn both_playwright_jobs_cache_browsers_and_bound_the_apt_step() {
 /// never fired, and no report artifact was uploaded.
 #[test]
 fn playwright_aborts_before_the_job_clock_does() {
-    let config = repository_file("tests/e2e/playwright.local.config.js");
+    let config = repository_file("rust/tests/e2e/playwright.local.config.js");
 
     let global_timeout_minutes: u32 = config
         .lines()
@@ -132,7 +135,10 @@ fn playwright_aborts_before_the_job_clock_does() {
         .parse()
         .expect("numeric globalTimeout minutes");
 
-    let job_timeout_minutes = job_timeout_minutes(&release_workflow(), "test-e2e-local");
+    // The cap moved into `.github/workflows/e2e-local.yml` with the steps
+    // (issue #1138); the splice puts it back at the call site's position.
+    let job_timeout_minutes =
+        job_timeout_minutes(&crate::ci_gates::pipeline_workflows(), "test-e2e-local");
 
     assert!(
         global_timeout_minutes < job_timeout_minutes,

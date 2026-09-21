@@ -125,7 +125,7 @@ fn a_wrapped_dependency_list_reads_the_same_as_an_inline_one() {
 /// Link-time optimization stays off, so no job waits on a serial stage.
 #[test]
 fn the_release_profile_does_not_serialize_the_build() {
-    let manifest = repository_file("Cargo.toml");
+    let manifest = repository_file("rust/Cargo.toml");
     let profile = manifest
         .split("[profile.release]")
         .nth(1)
@@ -161,7 +161,11 @@ fn one_job_builds_and_the_rest_download() {
 
     let compiles = workflow
         .split("\n      - name: ")
-        .filter(|step| step.contains("cargo test --release --no-run --bins --tests"))
+        .filter(|step| {
+            step.contains(
+                "cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests",
+            )
+        })
         .count();
     assert_eq!(
         compiles, 1,

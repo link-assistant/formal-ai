@@ -152,7 +152,12 @@ fn macos_core_shards_reuse_one_nextest_archive() {
     // Issue #1059: one runner. What this test pins is that the lane reuses the
     // archive instead of compiling, which is unchanged.
     assert_eq!(macos.matches("- { partition:").count(), 1);
-    assert_eq!(macos.matches("cargo nextest archive").count(), 1);
+    assert_eq!(
+        macos
+            .matches("cargo nextest --manifest-path rust/Cargo.toml archive")
+            .count(),
+        1
+    );
     assert!(macos.contains("actions/upload-artifact@v7"));
     // Issue #1039 moved the download to `scripts/download-artifact-with-retry.sh`
     // so a transient storage failure retries instead of reddening a slice that
@@ -160,7 +165,7 @@ fn macos_core_shards_reuse_one_nextest_archive() {
     // archive* rather than each building their own -- the mechanism that
     // fetches it is free to change, and the retry is covered by issue #1039.
     assert!(macos.contains("scripts/download-artifact-with-retry.sh"));
-    assert!(macos.contains("cargo nextest run --archive-file"));
+    assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml run --archive-file"));
     assert!(macos.contains("--extract-to \"$GITHUB_WORKSPACE\""));
     assert!(macos.contains("--archive-file"));
     assert!(macos.contains("git rev-parse 'HEAD^{tree}'"));
@@ -170,8 +175,8 @@ fn macos_core_shards_reuse_one_nextest_archive() {
 
 #[test]
 fn unix_agent_runner_uses_command_streams_exact_argv_api() {
-    let cargo = repository_file("Cargo.toml");
-    let runner = repository_file("src/orchestration/runner.rs");
+    let cargo = repository_file("rust/Cargo.toml");
+    let runner = repository_file("rust/src/orchestration/runner.rs");
 
     assert!(cargo.contains("command-stream = \"=0.16.0\""));
     assert!(runner.contains("command_stream::StreamingRunner::from_argv("));
@@ -246,7 +251,7 @@ fn every_javascript_lock_surface_has_one_explicit_advisory_gate() {
     for lock in [
         "bun.lock",
         "experiments/agent_cli_e2e/issue_819_tui/bun.lock",
-        "tests/e2e/package-lock.json",
+        "rust/tests/e2e/package-lock.json",
         "desktop/package-lock.json",
         "vscode/package-lock.json",
     ] {

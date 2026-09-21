@@ -18,7 +18,7 @@ module.exports = defineConfig({
   },
   webServer: {
     command:
-      `bun --cwd ../.. run build:web && ../../scripts/sync-seed.sh && npx serve ../../js --listen ${PORT} --no-clipboard`,
+      `bun --cwd ../../.. run build:web && ../../../scripts/sync-seed.sh && npx serve ../../../js --listen ${PORT} --no-clipboard`,
     url: ORIGIN,
     reuseExistingServer: false,
     timeout: 15_000,

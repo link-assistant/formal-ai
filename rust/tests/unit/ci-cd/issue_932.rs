@@ -133,7 +133,7 @@ fn every_harness_script_is_tracked_executable_bash() {
         &contract.verify_script,
         &contract.container_script,
     ] {
-        let path = format!("{}/{script}", env!("CARGO_MANIFEST_DIR"));
+        let path = format!("{}/../{script}", env!("CARGO_MANIFEST_DIR"));
         let parsed = Command::new("bash")
             .arg("-n")
             .arg(&path)

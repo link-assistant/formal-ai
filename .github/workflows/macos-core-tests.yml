@@ -77,7 +77,7 @@ jobs:
         with:
           check: macos-core-archive
           paths: >-
-            rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/macos-core-rust/tests.yml .github/actions
+            rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/macos-core-tests.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' }}

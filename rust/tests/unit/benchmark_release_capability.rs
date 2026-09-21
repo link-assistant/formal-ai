@@ -60,14 +60,21 @@ fn release_candidate_measurements_match_the_latest_committed_ledger_rows() {
         "../../../data/benchmarks/external-results.lino"
     ))
     .expect("benchmark ledger");
+    // The release candidate rests on complete floors of one slice size; the
+    // ledger also carries honest partial scores at larger slices. Selecting
+    // by the measurement's own suite and slice keeps the cross-check real --
+    // the index must equal the newest committed row of exactly the run size
+    // it records -- without demanding the whole suite's newest honest score
+    // be a complete pass.
     let latest = ledger.results().into_iter().fold(
-        BTreeMap::<String, ResultEntry>::new(),
+        BTreeMap::<(String, String), ResultEntry>::new(),
         |mut rows, row| {
-            let replace = rows.get(&row.suite).is_none_or(|current| {
-                (row.date.as_str(), row.slice) > (current.date.as_str(), current.slice)
-            });
+            let key = (row.suite.clone(), row.slice.to_string());
+            let replace = rows
+                .get(&key)
+                .is_none_or(|current| row.date.as_str() > current.date.as_str());
             if replace {
-                rows.insert(row.suite.clone(), row);
+                rows.insert(key, row);
             }
             rows
         },
@@ -76,7 +83,10 @@ fn release_candidate_measurements_match_the_latest_committed_ledger_rows() {
     for identifier in ["humaneval_cold", "mbpp_live"] {
         let measurement = measurements.get(identifier).expect("release measurement");
         let row = latest
-            .get(&measurement["suite_id"])
+            .get(&(
+                measurement["suite_id"].clone(),
+                measurement["total_count"].clone(),
+            ))
             .expect("latest suite row");
         assert_eq!(measurement["passed_count"], row.passed.to_string());
         assert_eq!(measurement["total_count"], row.total.to_string());

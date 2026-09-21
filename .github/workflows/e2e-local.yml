@@ -1,0 +1,118 @@
+name: E2E Tests (local web app)
+
+# Issue #1138 moved this job out of `.github/workflows/release.yml`. That file
+# had reached 1505 lines against the 1500-line warning band its own gates pin
+# (`scripts/check-file-size.rs`, and the same number asserted by
+# `issue_999::warning_band_files_are_small_and_split_responses_cover_the_registry`
+# and `issue_1012::audited_warning_band_sources_stay_below_their_limits`), so
+# every run carried a size warning that could no longer warn about anything
+# new. The instruction for that situation is written beside the number itself:
+# extract a job, do not raise it.
+#
+# This job was the one to move for the same reasons issue #1081 moved the agent
+# CLI E2E lane: it is a leaf (nothing `needs:` it except the terminal
+# `pipeline-status` gate, so lifting it changes no ordering -- the same argument
+# issue #895 used for `coverage.yml`, issue #1014 for `macos-core-tests.yml`
+# and issue #1081 for `agent-cli-e2e.yml`), and it is a self-contained lane:
+# checkout, the green ledger, Bun/Node/Playwright setup, and the Playwright run
+# against the local web app. It compiles no Rust, so unlike the agent-CLI lane
+# it needs no copy of the caller's `env:` block -- none of its steps read it.
+#
+# The `if:`, `needs:` and `concurrency:` stay behind on the calling job, which
+# is where GitHub evaluates them. What moves is `runs-on`, the cap, and the
+# steps.
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-local:
+    name: E2E Tests (local web app)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: e2e-local
+          paths: >-
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock rust/tests/e2e js package.json bun.lock scripts .github/workflows/e2e-local.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
+      - name: Setup Bun
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          no-cache: true
+      - name: Setup Node.js
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+          cache: npm
+          cache-dependency-path: rust/tests/e2e/package-lock.json
+      - name: Install web bundle dependencies
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: bun install --frozen-lockfile
+      - name: Build web vendor bundle
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: bun run build:web
+      - name: Install Playwright and dependencies
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: |
+          cd rust/tests/e2e
+          npm ci --no-audit --no-fund
+      - name: Cache Playwright browsers
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('rust/tests/e2e/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      - name: Install Playwright system dependencies (best effort)
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        timeout-minutes: 6
+        continue-on-error: true
+        run: |
+          cd rust/tests/e2e
+          npx playwright install-deps chromium
+      - name: Install Playwright browsers
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        timeout-minutes: 10
+        run: |
+          cd rust/tests/e2e
+          npx playwright install chromium
+      - name: Sync data/seed into js/seed (deployment mirror)
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: scripts/sync-seed.sh
+      - name: Run local e2e tests
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: |
+          cd rust/tests/e2e
+          npx playwright test --config=playwright.local.config.js
+      - name: Upload Playwright report on failure
+        if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-local
+          path: rust/tests/e2e/playwright-report/
+          retention-days: 7
+      - name: Upload generated /download screenshots
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: download-page-screenshots
+          path: |
+            docs/screenshots/issue-347/
+            js/download/assets/app-preview*.png
+          retention-days: 14
+          if-no-files-found: error

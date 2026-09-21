@@ -24,7 +24,7 @@ fn repository_file(path: &str) -> String {
 /// The build script arms the hook, because that is the step nobody skips.
 #[test]
 fn the_build_script_installs_the_tracked_hooks_directory() {
-    let build = repository_file("build.rs");
+    let build = repository_file("rust/build.rs");
 
     assert!(
         build.contains("core.hooksPath"),
@@ -45,7 +45,7 @@ fn the_build_script_installs_the_tracked_hooks_directory() {
 /// so every step is best-effort.
 #[test]
 fn installing_hooks_cannot_fail_the_build() {
-    let build = repository_file("build.rs");
+    let build = repository_file("rust/build.rs");
 
     let function = build
         .split("fn install_git_hooks")
@@ -69,7 +69,7 @@ fn installing_hooks_cannot_fail_the_build() {
 /// A deliberate hooksPath is not overwritten.
 #[test]
 fn an_existing_hooks_path_is_left_alone() {
-    let build = repository_file("build.rs");
+    let build = repository_file("rust/build.rs");
 
     let function = build
         .split("fn install_git_hooks")

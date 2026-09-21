@@ -26,7 +26,7 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
     let workflow = coverage_workflow();
     let coverage = job_block(&workflow, "coverage");
     assert!(
-        coverage.contains("cargo llvm-cov --all-features --lcov --output-path lcov.info"),
+        coverage.contains("cargo llvm-cov --manifest-path rust/Cargo.toml --all-features --lcov --output-path lcov.info"),
         "the rust denominator is measured with cargo-llvm-cov"
     );
     assert!(

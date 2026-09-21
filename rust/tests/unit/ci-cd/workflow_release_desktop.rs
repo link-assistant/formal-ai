@@ -136,7 +136,7 @@ fn desktop_release_normalizes_linux_artifact_names_before_checksums() {
     let build = job_block(&workflow, "build");
     let normalize = workflow_step_block(build, "Normalize desktop artifact names");
     let normalizer = fs::read_to_string(format!(
-        "{}/desktop/scripts/normalize-artifacts.mjs",
+        "{}/../desktop/scripts/normalize-artifacts.mjs",
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap()

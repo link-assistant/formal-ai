@@ -162,7 +162,7 @@ module.exports = defineConfig({
     // The seed mirror under js/seed/ is generated from the canonical
     // data/seed/ tree on every server start so we never serve stale data.
     command:
-      `bun run --cwd ../.. build:web && ../../scripts/sync-seed.sh && npx serve ../../js --listen ${PORT} --no-clipboard`,
+      `bun run --cwd ../../.. build:web && ../../../scripts/sync-seed.sh && npx serve ../../../js --listen ${PORT} --no-clipboard`,
     url: ORIGIN,
     reuseExistingServer: false,
     timeout: 15_000,

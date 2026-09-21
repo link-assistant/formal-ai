@@ -44,7 +44,7 @@ fn the_commit_hook_checks_examples_instead_of_linking_them() {
          without linking. Hook:\n{hook}"
     );
     assert!(
-        hook.contains("cargo check --examples"),
+        hook.contains("cargo check --manifest-path rust/Cargo.toml --examples"),
         "examples still have to be type-checked; only the linking is dropped"
     );
 }
@@ -59,8 +59,8 @@ fn the_commit_hook_and_the_ci_gate_lint_the_same_targets() {
     let gate = repository_file("data/meta/ci-gates/run-clippy.lino");
 
     for fragment in [
-        "cargo clippy --lib --bins --tests --all-features -- -D warnings",
-        "cargo check --examples --all-features",
+        "cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings",
+        "cargo check --manifest-path rust/Cargo.toml --examples --all-features",
     ] {
         assert!(
             gate.contains(fragment),

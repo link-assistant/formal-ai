@@ -9,7 +9,7 @@ fn repository_file(path: &str) -> String {
 
 #[test]
 fn rust_sources_remain_rustfmt_clean() {
-    let source = repository_file("tests/unit/total_closure.rs");
+    let source = repository_file("rust/tests/unit/total_closure.rs");
     assert!(
         !source.lines().any(|line| {
             line.contains("misplaced.push(format!")
@@ -23,7 +23,7 @@ fn rust_sources_remain_rustfmt_clean() {
 
 #[test]
 fn unknown_opener_parity_case_cannot_be_intercepted_by_live_search() {
-    let spec = repository_file("tests/e2e/tests/issue-282.spec.js");
+    let spec = repository_file("rust/tests/e2e/tests/issue-282.spec.js");
     assert!(
         spec.contains("disableExternalResearch(page)"),
         "unknown-opener parity must disable external research before sending prompts"
@@ -36,7 +36,7 @@ fn unknown_opener_parity_case_cannot_be_intercepted_by_live_search() {
 
 #[test]
 fn cold_start_permission_test_waits_for_the_worker_answer() {
-    let spec = repository_file("tests/e2e/tests/issue-541-permissions-cold-start.spec.js");
+    let spec = repository_file("rust/tests/e2e/tests/issue-541-permissions-cold-start.spec.js");
     assert!(
         spec.contains(".toBeGreaterThan(initial + 1)"),
         "permission tests must allow one or more worker answers"

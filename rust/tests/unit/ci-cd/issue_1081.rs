@@ -795,7 +795,7 @@ fn every_standalone_script_test_suite_is_run_by_something() {
 
     let compiled_into_the_test_crate: Vec<String> = {
         let mut found = Vec::new();
-        let mut stack = vec![root.join("tests")];
+        let mut stack = vec![root.join("rust/tests")];
         while let Some(directory) = stack.pop() {
             for entry in fs::read_dir(&directory).expect("the test tree is readable") {
                 let path = entry.expect("a readable directory entry").path();

@@ -21,7 +21,7 @@ use std::{
 
 fn wrapper() -> String {
     format!(
-        "{}/desktop/scripts/package-macos-with-retry.sh",
+        "{}/../desktop/scripts/package-macos-with-retry.sh",
         env!("CARGO_MANIFEST_DIR")
     )
 }
@@ -554,7 +554,7 @@ fn every_packaging_leg_goes_through_the_retry_wrapper() {
 
     let wrapper = fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/desktop/scripts/package-macos-with-retry.sh"
+        "/../desktop/scripts/package-macos-with-retry.sh"
     ))
     .expect("read the packaging retry wrapper");
     assert!(

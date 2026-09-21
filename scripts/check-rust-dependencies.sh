@@ -41,7 +41,7 @@
 set -euo pipefail
 
 config=".cargo/audit.toml"
-lock="Cargo.lock"
+lock="rust/Cargo.lock"
 
 if [[ ! -f "$config" ]]; then
   echo "::error::$config is missing; cargo audit would silently lose its ignore proofs"
@@ -111,7 +111,7 @@ while IFS= read -r advisory; do
     fi
     echo "Proving $advisory is still blocked upstream: $blocked_spec ($report)"
     if ! tree="$(
-      cargo tree --locked --target all --all-features --edges all --invert "$blocked_spec" 2> /dev/null
+      cargo tree --manifest-path rust/Cargo.toml --locked --target all --all-features --edges all --invert "$blocked_spec" 2> /dev/null
     )" || [[ -z "${tree//[[:space:]]/}" ]]; then
       echo "::error::$config ignores $advisory for \`$blocked_spec\`, which no longer reaches the build graph."
       echo "  The upstream fix has landed; drop the ignore (and its proof line) from $config."
@@ -122,7 +122,7 @@ while IFS= read -r advisory; do
 
   echo "Proving $advisory is unreachable: $spec"
   if ! tree="$(
-    cargo tree --locked --target all --all-features --edges all --invert "$spec" 2> /dev/null
+    cargo tree --manifest-path rust/Cargo.toml --locked --target all --all-features --edges all --invert "$spec" 2> /dev/null
   )"; then
     echo "::error::$config ignores $advisory for \`$spec\`, which is no longer in $lock."
     echo "  The ignore is stale; drop it (and its proof line) from $config."

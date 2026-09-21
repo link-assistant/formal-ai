@@ -21,10 +21,10 @@ R649-19 are enumerated in `docs/case-studies/issue-649/requirements.md`.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R428 | Preserve the issue #649 source material, prepared PR #675 state, empty comment/review threads, and online research under a dedicated case-study directory. | Implemented by `docs/case-studies/issue-649/raw-data/` and protected by `tests/unit/docs_requirements_issue_649.rs`. |
+| R428 | Preserve the issue #649 source material, prepared PR #675 state, empty comment/review threads, and online research under a dedicated case-study directory. | Implemented by `docs/case-studies/issue-649/raw-data/` and protected by `rust/tests/unit/docs_requirements/issue_649.rs`. |
 | R429 | Produce a deep case-study analysis of the symbolic world-model request, including online research beyond the source video. | Implemented by `docs/case-studies/issue-649/README.md` and `docs/case-studies/issue-649/raw-data/online-research.md` (STRIPS/PDDL, situation calculus, JTMS/ATMS, AGM belief revision, and the world-model literature, all cited). |
 | R430 | Enumerate each and every requirement of the issue. | Implemented by `docs/case-studies/issue-649/requirements.md` (conceptual R649-01 … R649-14 plus meta-deliverable R649-15 … R649-19). |
 | R431 | Map every world-model / context concept to its associative-stack realization with honest Realized/Partial/Proposed status and `path:symbol` evidence. | Implemented by `docs/case-studies/issue-649/world-model-mapping.md` (3 realized substrate rows, 8 partial, 3 proposed across 14 concepts). |
 | R432 | Propose a solution plan for each requirement and survey known existing components/libraries that solve a similar problem. | Implemented by `docs/case-studies/issue-649/solution-plans.md` (per-requirement plans reusing `SubstitutionGraph`, `relative_meta_logic`, `probability`, `memory_sync`, `meta_frame`, plus a STRIPS/ATMS/JTMS/AGM/JEPA prior-art survey). |
 | R433 | Plan and execute every deliverable in the single PR #675. | Implemented by the full `docs/case-studies/issue-649/` tree plus this matrix section, the changelog fragment, and the traceability test. |
-| R434 | Protect the issue #649 case study with a documentation-traceability regression test. | Implemented by `tests/unit/docs_requirements_issue_649.rs`, registered in `tests/unit/mod.rs`. |
+| R434 | Protect the issue #649 case study with a documentation-traceability regression test. | Implemented by `rust/tests/unit/docs_requirements/issue_649.rs`, registered in `rust/tests/unit/mod.rs`. |

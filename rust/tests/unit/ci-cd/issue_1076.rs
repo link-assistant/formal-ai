@@ -461,7 +461,7 @@ fn workflows_are_audited_for_security_not_only_syntax() {
     // these workflows, which is the same silent pass in a new package. The job
     // lints a fixture whose only defect lives inside a `run:` block and fails
     // when that fixture *passes*.
-    let canary_path = "tests/fixtures/actionlint/shellcheck-canary.yml";
+    let canary_path = "rust/tests/fixtures/actionlint/shellcheck-canary.yml";
     assert!(
         audit.contains(canary_path),
         "the actionlint job must lint {canary_path} and fail when it passes, so \

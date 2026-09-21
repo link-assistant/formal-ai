@@ -112,7 +112,7 @@ fn lockfile_git_sources(lockfile: &str) -> Vec<String> {
 
 #[test]
 fn every_patch_entry_references_an_issue_by_url() {
-    let entries = patch_entries(&repository_file("Cargo.toml"));
+    let entries = patch_entries(&repository_file("rust/Cargo.toml"));
     let unreferenced: Vec<&PatchEntry> =
         entries.iter().filter(|e| !entry_is_referenced(e)).collect();
     assert!(
@@ -132,7 +132,7 @@ fn every_patch_entry_references_an_issue_by_url() {
 
 #[test]
 fn lockfile_git_sources_are_all_declared_in_the_manifest() {
-    let declared = lockfile_git_sources(&repository_file("Cargo.lock"));
+    let declared = lockfile_git_sources(&repository_file("rust/Cargo.lock"));
     assert!(
         declared.is_empty(),
         "Cargo.lock resolved git sources that Cargo.toml does not declare as \

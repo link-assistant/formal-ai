@@ -440,11 +440,20 @@ fn a_language_without_localized_openers_reports_a_gap_not_english() {
     // so the honest pin is the Spanish body itself.
     let answer = engine.answer("¿Cómo funciona la fotosíntesis submarina de xyzzy?");
     assert_eq!(answer.intent, "unknown");
-    assert!(
-        answer
-            .answer
-            .starts_with("No pude determinar `¿Cómo funciona la fotosíntesis submarina de xyzzy`"),
-        "expected the localized unresolved-unknown body, got: {}",
-        answer.answer
+    // The full localized unresolved-unknown body: the honest miss, the shared
+    // guidance paragraph, and the failure notice offering the report path.
+    assert_eq!(
+        answer.answer,
+        "No pude determinar `¿Cómo funciona la fotosíntesis submarina de xyzzy` a partir de la \
+         memoria local de Links Notation, el conocimiento público en caché ni la caché de fuentes, \
+         y no puedo inferir una respuesta verificada. Registré en la traza los intentos fallidos \
+         de recopilación.\n\n\
+         Si el razonamiento sigue sin resolverlo y hace falta un hecho semilla compartido o una \
+         regla de enlaces en Links Notation, usa Report issue con la traza. Para conservar una \
+         regla local del diálogo, exporta la memoria o enséñala con `When I say ... answer ...`; \
+         revisa las rutas con `List behavior rules` y `Show behavior rule unknown`.\n\n\
+         Detecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe \
+         del problema con el contexto de diagnóstico? Responde `Report issue`.",
+        "the localized unresolved-unknown body owns the answer"
     );
 }

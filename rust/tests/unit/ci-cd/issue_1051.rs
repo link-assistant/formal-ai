@@ -42,7 +42,11 @@ fn the_release_binary_is_compiled_once_per_pipeline() {
 
     let builders: Vec<&str> = workflow
         .split("\n      - name: ")
-        .filter(|step| step.contains("cargo test --release --no-run --bins --tests"))
+        .filter(|step| {
+            step.contains(
+                "cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests",
+            )
+        })
         .collect();
 
     assert_eq!(

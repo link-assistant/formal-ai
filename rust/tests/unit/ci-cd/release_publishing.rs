@@ -282,9 +282,9 @@ fn crate_package_manifest_uses_publish_allowlist() {
     for required in [
         "\"/Cargo.lock\"",
         "\"/Cargo.toml\"",
-        "\"/LICENSE\"",
-        "\"/README.md\"",
-        "\"/data/**\"",
+        "\"../LICENSE\"",
+        "\"../README.md\"",
+        "\"../data/**\"",
         "\"/src/**\"",
     ] {
         assert!(
@@ -358,7 +358,7 @@ fn build_job_verifies_the_publishable_archive_before_checking_its_size() {
         "build job should install rust-script before checking archive size"
     );
     assert!(
-        build.contains("cargo package --locked -p formal-ai")
+        build.contains("cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai")
             && !build.contains("cargo package --list --allow-dirty"),
         "the pull-request build must compile from the .crate archive, not merely list source-tree files"
     );
@@ -521,12 +521,12 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
 fn desktop_release_lets_electron_builder_read_package_json_build_key() {
     let workflow = desktop_release_workflow();
     let package_json = fs::read_to_string(format!(
-        "{}/desktop/package.json",
+        "{}/../desktop/package.json",
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap();
     let smoke = fs::read_to_string(format!(
-        "{}/desktop/scripts/smoke.mjs",
+        "{}/../desktop/scripts/smoke.mjs",
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap();
@@ -535,7 +535,7 @@ fn desktop_release_lets_electron_builder_read_package_json_build_key() {
     // invocation moved there. What matters is unchanged: electron-builder is
     // called without `--config`, so it reads the `build` key from package.json.
     let wrapper = fs::read_to_string(format!(
-        "{}/desktop/scripts/package-macos-with-retry.sh",
+        "{}/../desktop/scripts/package-macos-with-retry.sh",
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap();
@@ -571,7 +571,7 @@ fn desktop_linux_deb_package_metadata_is_configured() {
     // package metadata. Keep those fields explicit so Linux assets do not
     // disappear from future releases.
     let package_json = fs::read_to_string(format!(
-        "{}/desktop/package.json",
+        "{}/../desktop/package.json",
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap();

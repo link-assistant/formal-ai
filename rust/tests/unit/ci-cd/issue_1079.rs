@@ -502,7 +502,10 @@ fn the_upstream_reports_are_recorded_with_the_issues_they_were_filed_as() {
 
     // Every report body in the directory is linked from the index, so a report
     // cannot be written, filed and then lost.
-    let dir = format!("{}/{bundle}/upstream-reports", env!("CARGO_MANIFEST_DIR"));
+    let dir = format!(
+        "{}/../{bundle}/upstream-reports",
+        env!("CARGO_MANIFEST_DIR")
+    );
     let mut bodies = 0_usize;
     for entry in fs::read_dir(&dir).expect("upstream-reports directory") {
         let path = entry.expect("directory entry").path();

@@ -32,9 +32,12 @@ fn rustdoc_is_a_pre_release_pull_request_gate() {
     let lint = job_block(&workflow, "lint", "test");
 
     assert!(lint.contains("RUSTDOCFLAGS: -D warnings"));
-    assert!(lint.contains("cargo doc --no-deps --lib"));
+    assert!(lint.contains("cargo doc --manifest-path rust/Cargo.toml --no-deps --lib"));
     assert!(
-        workflow.find("cargo doc --no-deps --lib").unwrap() < workflow.find("  build:\n").unwrap(),
+        workflow
+            .find("cargo doc --manifest-path rust/Cargo.toml --no-deps --lib")
+            .unwrap()
+            < workflow.find("  build:\n").unwrap(),
         "the first fail-closed documentation build must run before packaging or release"
     );
 }

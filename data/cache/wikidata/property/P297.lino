@@ -1,0 +1,20 @@
+P297
+  aliases
+    en ("country code ISO 3166-1 alpha-2" "two letter code" "country code (ISO 3166-1 alpha-2)")
+    es ("ISO 3166-1alpha-2" "código de país ISO 3166-1 de 2 letras" "codigo de pais de dos letras ISO 3166-1" "codigo de pais de 2 letras ISO 3166-1" "codigo ISO 3166-1 de 2 letras")
+  datatype external-id
+  descriptions
+    en "identifier for a country in two-letter format per ISO 3166-1"
+    es "código de país de dos letras asignado por la ISO 3166-1"
+    hi "आईएसओ 3166-1 के अनुसार देश का दो अक्षर कोड"
+    ru "двухбуквенный код страны или подчинённой территории согласно международному стандарту ISO 3166-1"
+    zh "含二位字母的 ISO 3166-1 国家代码"
+  id P297
+  labels
+    en "ISO 3166-1 alpha-2 code"
+    es "código ISO 3166-1 de dos letras"
+    hi "आईएसओ 3166-1 अल्फा-2"
+    ru "ISO 3166-1 alpha-2"
+    zh "ISO 3166-1二位字母代码"
+  type property
+success 1

@@ -5,7 +5,7 @@ use std::fs;
 use super::workflow_fixtures::{ci_surface, desktop_release_workflow};
 
 fn read(path: &str) -> String {
-    fs::read_to_string(format!("{}/{}", env!("CARGO_MANIFEST_DIR"), path))
+    fs::read_to_string(format!("{}/../{}", env!("CARGO_MANIFEST_DIR"), path))
         .unwrap_or_else(|error| panic!("{path} must be readable: {error}"))
 }
 
@@ -48,7 +48,7 @@ fn wasm_only_partial_modules_document_their_intentional_dead_code() {
 
 #[test]
 fn platform_specific_shared_memory_state_is_platform_gated() {
-    let shared_memory = read("src/shared_memory.rs");
+    let shared_memory = read("rust/src/shared_memory.rs");
 
     assert!(
         shared_memory.contains("#[cfg(unix)]\n        let existed = parent.exists();"),
@@ -73,7 +73,8 @@ fn pull_request_ci_rejects_an_unsynchronized_cargo_lock() {
     let workflow = ci_surface();
 
     assert!(
-        workflow.contains("cargo metadata --locked --format-version 1"),
+        workflow
+            .contains("cargo metadata --manifest-path rust/Cargo.toml --locked --format-version 1"),
         "binary releases must be built only from a synchronized Cargo.lock"
     );
 }

@@ -42,7 +42,7 @@ fn workflow_files() -> Vec<(String, String)> {
 fn recorded_mode(path: &str) -> Option<String> {
     let output = Command::new("git")
         .arg("-C")
-        .arg(env!("CARGO_MANIFEST_DIR"))
+        .arg(concat!(env!("CARGO_MANIFEST_DIR"), "/.."))
         .args(["ls-files", "-s", "--", path])
         .output()
         .expect("git must run in the repository");

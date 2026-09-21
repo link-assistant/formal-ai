@@ -44,7 +44,7 @@ export RUSTFLAGS="${RUSTFLAGS:--Dwarnings}"
 # Scripts the unit test crate already compiles. `cargo test` runs their suites,
 # so running them again through rust-script would only buy a second compile.
 already_compiled=$(
-  grep -rhoE '#\[path = "[^"]*scripts/[^"]+\.rs"\]' tests --include='*.rs' 2>/dev/null |
+  grep -rhoE '#\[path = "[^"]*scripts/[^"]+\.rs"\]' rust/tests --include='*.rs' 2>/dev/null |
     sed -e 's|.*scripts/||' -e 's|"\]$||' |
     sort -u
 )

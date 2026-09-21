@@ -40,7 +40,12 @@ fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
         !macos.contains("- { partition: 2 }"),
         "sharding ten seconds of tests costs more than it saves"
     );
-    assert_eq!(macos.matches("cargo nextest archive").count(), 1);
+    assert_eq!(
+        macos
+            .matches("cargo nextest --manifest-path rust/Cargo.toml archive")
+            .count(),
+        1
+    );
     assert!(
         macos.contains("plan-test-partition.rs --macos-platform"),
         "the lane selects platform-sensitive modules, not a slice of everything"
@@ -216,7 +221,9 @@ fn stock_rust_workflow_uses_a_quiet_dependency_probe_and_installed_path() {
     let workflow = repository_file(".github/workflows/stock-rust-install.yml");
 
     assert!(!workflow.contains("cargo tree --locked -i openssl-sys"));
-    assert!(workflow.contains("cargo tree --locked --prefix none --format '{p}'"));
+    assert!(workflow.contains(
+        "cargo tree --manifest-path rust/Cargo.toml --locked --prefix none --format '{p}'"
+    ));
     assert!(workflow.contains("> /tmp/formal-ai-dependency-tree.txt"));
     assert!(!workflow.contains("<<<"));
     assert!(workflow.contains("CARGO_INSTALL_ROOT: /tmp/formal-ai-install"));
@@ -231,7 +238,11 @@ fn box_language_matrix_reuses_one_release_binary() {
     let matrix = job_block(&workflow, "box-language-projects");
 
     // Issue #1055 builds the binary and the test executables in one command.
-    assert!(build.contains("cargo test --release --no-run --bins --tests"));
+    assert!(
+        build.contains(
+            "cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests"
+        )
+    );
     assert!(build.contains("actions/upload-artifact@v7"));
     assert!(matrix.contains("needs: [detect-changes, build-artifacts]"));
     // Issue #1051 moved the download into `.github/actions/download-formal-ai-binary`
@@ -255,7 +266,7 @@ fn sccache_backend_diagnostics_are_available_but_off_by_default() {
 
 #[test]
 fn audited_warning_band_sources_stay_below_their_limits() {
-    let solver_lines = repository_file("src/solver.rs").lines().count();
+    let solver_lines = repository_file("rust/src/solver.rs").lines().count();
     assert!(
         solver_lines <= 900,
         "src/solver.rs has {solver_lines} lines; keep it below the 900-line warning band"

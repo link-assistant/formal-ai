@@ -135,9 +135,12 @@ fn run_bounded_audit_gate(
     let repository = env!("CARGO_MANIFEST_DIR");
     let output = Command::new("bash")
         .arg(format!(
-            "{repository}/scripts/check-javascript-dependencies.sh"
+            "{repository}/../scripts/check-javascript-dependencies.sh"
         ))
-        .current_dir(repository)
+        // The gate runs from the repository root, and `git ls-files` answers
+        // relative to the working directory -- running it from the crate would
+        // hide every lockfile outside rust/.
+        .current_dir(format!("{repository}/.."))
         .env(
             "PATH",
             format!(

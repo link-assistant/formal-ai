@@ -31,7 +31,7 @@ fn prepares_one_version_verifies_its_archive_and_can_resume_it() {
     assert!(auto_build < auto_package && auto_package < auto_publish);
     assert!(
         workflow_step_block(auto_release, "Verify packaged crate archive")
-            .contains("cargo package --locked -p formal-ai"),
+            .contains("cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai"),
         "the release must compile the packaged archive before cargo publish"
     );
 

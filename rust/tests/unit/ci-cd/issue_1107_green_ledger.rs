@@ -19,15 +19,13 @@ const ACTION: &str = ".github/actions/green-ledger/action.yml";
 const LEDGERED: &[(&str, &[&str])] = &[
     (
         ".github/workflows/release.yml",
-        &[
-            "test",
-            "docker-build",
-            "box-language-projects",
-            "test-e2e-local",
-        ],
+        &["test", "docker-build", "box-language-projects"],
     ),
+    // Issue #1138 moved the local E2E lane, ledger step included, into its own
+    // file; the marker id (`check: e2e-local`) is unchanged.
     (".github/workflows/macos-core-tests.yml", &["build-archive"]),
     (".github/workflows/agent-cli-e2e.yml", &["agent-cli-e2e"]),
+    (".github/workflows/e2e-local.yml", &["e2e-local"]),
     (".github/workflows/issue-1028-agent-ladder.yml", &["ladder"]),
     (".github/workflows/agentic-cli-matrix.yml", &["build"]),
 ];
