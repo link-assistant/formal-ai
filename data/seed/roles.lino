@@ -9,6 +9,8 @@
 # kind meaning   -> the role name is also a defined meaning slug
 # kind predicate -> the role name is a reserved role-only identifier
 roles
+  action
+    kind meaning
   agent_action_formalize_verb
     kind predicate
   agent_action_report_subject
@@ -18,6 +20,8 @@ roles
   agentic_continuation_cue
     kind meaning
   answer_rationale_lead
+    kind predicate
+  applicability_condition
     kind predicate
   architecture_concept
     kind meaning
@@ -31,6 +35,8 @@ roles
     kind meaning
   assistant_self_reference
     kind meaning
+  attribute_relation
+    kind predicate
   behavior_rule_edit_directive
     kind predicate
   binary_relation_property
@@ -53,6 +59,8 @@ roles
     kind predicate
   calendar_event
     kind meaning
+  calendar_hour_reference
+    kind predicate
   calendar_question
     kind predicate
   calendar_relative_date
@@ -72,6 +80,8 @@ roles
   capability_act_enumerate
     kind predicate
   capability_act_explain
+    kind predicate
+  capability_act_learn
     kind predicate
   capability_act_record
     kind predicate
@@ -123,6 +133,8 @@ roles
     kind predicate
   clarification_request
     kind meaning
+  classification_relation
+    kind predicate
   clause_continuation_marker
     kind meaning
   code_method_noun
@@ -138,6 +150,8 @@ roles
   coding_documentation_fact_query
     kind predicate
   coding_experiment_artifact_kind
+    kind predicate
+  coding_fragment
     kind predicate
   coding_identifier_rename_action
     kind predicate
@@ -211,6 +225,8 @@ roles
     kind predicate
   computer_use_resource_cue
     kind predicate
+  containment_relation
+    kind predicate
   conversation_preference_avoid
     kind meaning
   conversation_recall_other_query
@@ -263,6 +279,8 @@ roles
     kind meaning
   definition_merge_tail_boundary
     kind meaning
+  dependency_relation
+    kind predicate
   detail_modifier
     kind meaning
   document_composition_action
@@ -300,7 +318,7 @@ roles
   feature_capability_question
     kind meaning
   file_analysis_gap_marker
-    kind predicate
+    kind meaning
   file_edit_action_cue
     kind predicate
   file_edit_new_lead_cue
@@ -339,6 +357,8 @@ roles
     kind meaning
   game_tracker_mechanic
     kind meaning
+  generalization_relation
+    kind predicate
   git_branch_cue
     kind meaning
   git_commit_request
@@ -359,10 +379,16 @@ roles
     kind meaning
   implementation_language_preposition
     kind meaning
+  incompatibility_relation
+    kind predicate
   interest_cue
     kind predicate
   interrogative_opener
     kind meaning
+  inverse_incompatibility_relation
+    kind predicate
+  inverse_measurement_relation
+    kind predicate
   investment_cue
     kind predicate
   knowledge_inventory_interrogative
@@ -416,6 +442,16 @@ roles
   math_function_name
     kind predicate
   measurement_concept
+    kind predicate
+  measurement_property_depth
+    kind meaning
+  measurement_property_height
+    kind meaning
+  measurement_property_length
+    kind meaning
+  measurement_property_weight
+    kind meaning
+  measurement_relation
     kind predicate
   measurement_unit
     kind predicate
@@ -477,8 +513,12 @@ roles
     kind predicate
   operating_principle
     kind meaning
+  ordering_relation
+    kind predicate
   output_display_request
     kind meaning
+  part_whole_relation
+    kind predicate
   physical_action_trigger
     kind predicate
   physical_dimension
@@ -501,6 +541,8 @@ roles
     kind meaning
   procedural_task_modifier
     kind meaning
+  production_relation
+    kind predicate
   program_artifact
     kind predicate
   program_genus
@@ -543,6 +585,10 @@ roles
     kind predicate
   proof_request_lead
     kind predicate
+  property_relation
+    kind predicate
+  provenance_relation
+    kind predicate
   quantity_conversion_cue
     kind predicate
   reachability_operand_framing
@@ -551,6 +597,8 @@ roles
     kind predicate
   reachability_target_marker
     kind meaning
+  relation_predicate
+    kind predicate
   repository_reference
     kind meaning
   request_function_word
@@ -587,6 +635,8 @@ roles
     kind predicate
   script_authoring_verb
     kind predicate
+  script_classifier
+    kind predicate
   script_or_code_artifact
     kind predicate
   selection_criterion_brevity_cue
@@ -619,6 +669,22 @@ roles
     kind predicate
   skill_when_then_pair
     kind predicate
+  social_assistant_free_time
+    kind meaning
+  social_assistant_name
+    kind meaning
+  social_courtesy_response
+    kind meaning
+  social_farewell
+    kind meaning
+  social_greeting
+    kind meaning
+  social_identity
+    kind meaning
+  social_test_status
+    kind meaning
+  social_wellbeing
+    kind meaning
   software_approval
     kind meaning
   software_approval_trigger
@@ -734,7 +800,7 @@ roles
   url_navigate
     kind meaning
   verifiable_entity_separator
-    kind predicate
+    kind meaning
   verifiable_expectation
     kind predicate
   verifiable_expectation_count
@@ -800,6 +866,8 @@ roles
   wikidata_entity_anchor
     kind predicate
   workspace_inspection_action
+    kind predicate
+  writing_system
     kind predicate
   year_unit_cue
     kind predicate

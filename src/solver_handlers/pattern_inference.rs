@@ -26,15 +26,24 @@ use crate::solver_handlers::finalize_simple;
 
 /// Try to answer a concrete pattern-inference request over a sequence or grid.
 ///
-/// The report is rendered in English. Use
-/// [`try_pattern_inference_with_response_language`] when a response-language
-/// follow-up (issue #556) forces the reply into another seeded language.
+/// The report is rendered in English unless a language is forced onto this
+/// solve — a response-language follow-up replay (issue #556) or a language the
+/// conversation already established (issue #724). The pattern report's language
+/// is a fixed default rather than a detection, so it reads the forced slug
+/// directly instead of going through [`crate::language::detect`]; an explicit
+/// switch *to* English still records `language_to:en`, which the variant below
+/// treats as the no-op default and would not log.
 pub fn try_pattern_inference(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    try_pattern_inference_with_response_language(prompt, normalized, log, "en")
+    let forced = crate::language::forced_response_language_slug();
+    if forced == Some("en") {
+        log.append("language_to", "en");
+    }
+    let language = forced.unwrap_or("en");
+    try_pattern_inference_with_response_language(prompt, normalized, log, language)
 }
 
 /// Try to answer a pattern-inference request, rendering the human-readable

@@ -452,8 +452,6 @@ meanings
       surface
         text "workspace"
       surface
-        text "machine"
-      surface
         text "computer"
     lexeme ru
       surface

@@ -137,7 +137,9 @@ implemented, box ticked in the landing commit.
   using the latest release. Issues filed for dependencies are written
   generally (not Formal-AI-specific) so the general case moves into the
   dependency and Formal AI's own code shrinks. CONTRIBUTING carries the
-  policy; the first such issue is linked from this plan.
+  policy. As of 2026-09-21 the manifest carries no `[patch]` or source-install
+  entry, so there is not yet a first issue to link; the gate below forces the
+  link the moment one lands, and this plan will carry it.
   Test: `tests/unit/ci_cd/issue_1138_dependency_patches.rs` — every
   `[patch]`/source-install entry in `Cargo.toml` has an open issue referenced
   by URL in a comment beside it, and every referenced issue exists.

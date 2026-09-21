@@ -293,8 +293,6 @@ meanings
       surface
         text "текст"
       surface
-        text "материал"
-      surface
         text "стать"
       surface
         text "изложени"
@@ -302,8 +300,6 @@ meanings
         text "рассказ"
       surface
         text "письменн"
-      surface
-        text "подробн"
       surface
         text "с текстом"
     lexeme hi

@@ -426,6 +426,9 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-external-benchmark
+    bundle true
+    lexicon response
   seed multilingual-responses-issue-710
     bundle true
     lexicon response

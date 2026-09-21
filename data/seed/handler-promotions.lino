@@ -70,6 +70,7 @@ handler_promotions
           substring minus of lowercase
           substring times of lowercase
           substring divided of lowercase
+          role arithmetic_operator_word of lowercase
     because "a digit and an arithmetic operator form an executable arithmetic expression"
   promotion task_decomposition
     rank 70

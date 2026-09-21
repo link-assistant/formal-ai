@@ -225,19 +225,25 @@ fn plan_work_item_execution(
 /// A client with no run capability falls back to its fetch tool. That call
 /// carries a data-declared extraction instruction rather than the user's solve
 /// request, so required `prompt` fields cannot recursively execute the task.
+/// A protocol-hosted fetch tool runs server-side, so the fetch itself is the
+/// read and `gh` is never planned ahead of it (issue #904).
 fn plan_work_item_read(
     tool_names: &[&str],
     target: &str,
     progress: &Progress,
 ) -> Option<AgenticPlan> {
+    let fetch = tool_for(tool_names, Capability::Fetch);
+    if fetch.is_some_and(super::capability_router::is_hosted_research_tool) {
+        return fetch
+            .filter(|_| !progress.attempted_fetch_of(target))
+            .map(|tool| plan_one(tool, work_item_fetch_arguments(target)));
+    }
     if !progress.attempted_work_item_read_of(target)
         && let Some(run) = shell_command_tool(tool_names)
     {
         return Some(plan_one(run, json!({ "command": issue_view_command(target) }).to_string()));
     }
-    if !progress.attempted_fetch_of(target)
-        && let Some(tool) = tool_for(tool_names, Capability::Fetch)
-    {
+    if !progress.attempted_fetch_of(target) && let Some(tool) = fetch {
         return Some(plan_one(tool, work_item_fetch_arguments(target)));
     }
     None

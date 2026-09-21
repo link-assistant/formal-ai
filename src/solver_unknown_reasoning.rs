@@ -89,9 +89,7 @@ pub fn answer_unknown_prompt(
         .iter()
         .any(|supported| supported == language.slug());
     if let Some(focus) = focus.as_deref().filter(|focus| {
-        (!config.offline || is_unresolved_bare_term_prompt(prompt, focus))
-            && language_supported
-            && focus_is_specific(prompt, focus)
+        (!config.offline || is_unresolved_bare_term_prompt(prompt, focus)) && language_supported
     }) {
         let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
             WebSearchQueryKind::UnresolvedBareTerm

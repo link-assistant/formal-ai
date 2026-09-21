@@ -2,78 +2,79 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 34066
-  line_count 783
-  content_id source_module_b0fedf94e38b5f33
-  symbol_count 27
+  byte_len 34636
+  line_count 795
+  content_id source_module_604d0e2387e66583
+  symbol_count 28
   symbols
     function tool_for 24 59
     function shell_command_tool 67 78
     function tool_leaf_name 81 84
     function acts_in_capability_scope 92 100
-    function research_tool_rank 120 132
-    const HOSTED_RESEARCH_TOOLS 135 135
-    function is_browser_interaction_tool 148 152
-    const BROWSER_INTERACTION_MARKERS 154 154
-    function tool_matches_capability 168 178
-    function classify_tool 182 245
-    function workspace_creation_tool 254 261
-    function is_workspace_creation_tool 268 279
-    enum RoutingStage 293 298
-    function names_a_container_without_an_act 312 317
-    function stage_of 321 340
-    const ROUTED_CAPABILITIES 351 351
-    function plan_routed_capability_step 380 387
-    const NAMED_CAPABILITY_SLUGS 399 399
-    function plan_named_capability_step 412 424
-    function plan_routed_capability_step_in 426 572
-    function lowered_search_command 583 590
-    function routed_arguments 598 687
-    function arguments_for 695 726
-    function wildcard_token 728 732
-    function file_tokens 734 747
-    function shell_fallback 749 779
-    function shell_quote 781 783
+    function research_tool_rank 120 130
+    const HOSTED_RESEARCH_TOOLS 133 133
+    function is_hosted_research_tool 142 146
+    function is_browser_interaction_tool 153 157
+    const BROWSER_INTERACTION_MARKERS 159 159
+    function tool_matches_capability 173 183
+    function classify_tool 187 250
+    function workspace_creation_tool 259 266
+    function is_workspace_creation_tool 273 284
+    enum RoutingStage 298 303
+    function names_a_container_without_an_act 317 322
+    function stage_of 326 345
+    const ROUTED_CAPABILITIES 356 356
+    function plan_routed_capability_step 385 392
+    const NAMED_CAPABILITY_SLUGS 404 404
+    function plan_named_capability_step 417 429
+    function plan_routed_capability_step_in 431 584
+    function lowered_search_command 595 602
+    function routed_arguments 610 699
+    function arguments_for 707 738
+    function wildcard_token 740 744
+    function file_tokens 746 759
+    function shell_fallback 761 791
+    function shell_quote 793 795
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18006
-    named_node_count 3700
+    total_link_count 18214
+    named_node_count 3740
     distinct_node_kinds 78
     node_kinds
-      arguments 279
+      arguments 282
       array_expression 8
       array_type 15
       assignment_expression 1
       attribute 1
       attribute_item 1
       binary_expression 70
-      block 75
+      block 77
       boolean_literal 12
-      call_expression 279
+      call_expression 282
       char_literal 28
       closure_expression 38
       closure_parameters 38
       const_item 4
       crate 18
-      doc_comment 149
+      doc_comment 150
       else_clause 9
       enum_item 1
       enum_variant 2
       enum_variant_list 1
       escape_sequence 2
-      expression_statement 51
-      field_expression 183
-      field_identifier 183
+      expression_statement 53
+      field_expression 184
+      field_identifier 184
       field_pattern 3
       for_expression 1
-      function_item 22
+      function_item 23
       generic_function 1
       generic_type 16
-      identifier 811
-      if_expression 27
+      identifier 819
+      if_expression 28
       index_expression 1
       inner_doc_comment_marker 1
       integer_literal 8
@@ -82,7 +83,7 @@ self_ast_census
       let_declaration 42
       lifetime 11
       lifetime_parameter 3
-      line_comment 230
+      line_comment 235
       macro_invocation 20
       match_arm 27
       match_block 5
@@ -90,16 +91,16 @@ self_ast_census
       match_pattern 27
       mutable_specifier 3
       or_pattern 1
-      outer_doc_comment_marker 148
-      parameter 41
-      parameters 22
+      outer_doc_comment_marker 149
+      parameter 42
+      parameters 23
       parenthesized_expression 5
-      primitive_type 48
+      primitive_type 50
       reference_expression 13
-      reference_type 51
+      reference_type 52
       remaining_field_pattern 2
-      return_expression 18
-      scoped_identifier 155
+      return_expression 19
+      scoped_identifier 157
       scoped_type_identifier 4
       scoped_use_list 3
       shorthand_field_identifier 3
@@ -107,7 +108,7 @@ self_ast_census
       string_content 124
       string_literal 122
       struct_pattern 4
-      super 29
+      super 31
       token_tree 42
       try_expression 12
       tuple_expression 15
@@ -120,4 +121,4 @@ self_ast_census
       unary_expression 18
       use_declaration 8
       use_list 3
-      visibility_modifier 8
+      visibility_modifier 9

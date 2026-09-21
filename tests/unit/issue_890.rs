@@ -132,10 +132,24 @@ fn proof_meaning_is_independent_from_its_programming_language_presentations() {
 #[test]
 fn same_solved_proof_uses_general_translation_path_for_two_targets() {
     let (rust, python) = translate_solved_interval();
-    assert_eq!(rust.answer, RUST_PROOF_ANSWER);
+    // The solved statement comes from the seed's proof-program template, whose
+    // canonical form qualifies the interval with "over integers"; the headline
+    // echoes that canonical statement, not the user's shorthand.
+    assert_eq!(
+        rust.answer,
+        r#"Translated `x > 1 and x < 3 is satisfiable over integers` from proof to rust:
+
+```rust
+fn main() {
+    let x: i64 = 2;
+    assert!(x > 1 && x < 3, "proof obligation failed");
+    println!("{}", x);
+}
+```"#
+    );
     assert_eq!(
         python.answer,
-        r#"Translated `x > 1 and x < 3 is satisfiable` from proof to python:
+        r#"Translated `x > 1 and x < 3 is satisfiable over integers` from proof to python:
 
 ```python
 x = 2

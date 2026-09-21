@@ -76,15 +76,12 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     assert_eq!(calls.len(), 1);
     // A work item names an issue, and an issue URL names no artifact, so the
     // run reads the work item before deciding what it can execute (issue #904,
-    // follow-up). The structured `gh` read comes first when the client can run
-    // it (issue #1133); the model-backed fetch is the fallback for clients
-    // without a shell. The plan record is still written; it is no longer the
-    // first and only thing the run does.
-    assert_eq!(calls[0].tool, "run_command");
-    assert!(
-        calls[0].arguments.contains("gh issue view") && calls[0].arguments.contains("issues/698"),
-        "{calls:?}"
-    );
+    // follow-up). A protocol-hosted fetch tool runs the read server-side
+    // (issue #1133), so it comes first when the client has one; the structured
+    // `gh` read is the path for shell-only clients. The plan record is still
+    // written; it is no longer the first and only thing the run does.
+    assert_eq!(calls[0].tool, "web_fetch");
+    assert!(calls[0].arguments.contains("issues/698"), "{calls:?}");
 
     // A client with a shell but no fetch tool reads the work item through
     // `gh issue view` before anything is recorded (issue #1133); the record
@@ -122,21 +119,20 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
-    // Three steps: the run reads the work item and records it. The `gh` read is
-    // planned first, and the driver's default-deny sandbox refuses it, so the
-    // run falls back to its fetch tool before recording. Issue #904 removed the
-    // `cat .formal-ai/general-change-plan.lino` step, which verified nothing but
-    // the write the same run had just performed, and that step has not come
-    // back.
+    // Two steps: the run reads the work item through its hosted fetch and
+    // records it. Issue #904 removed the `cat .formal-ai/general-change-plan.lino`
+    // step, which verified nothing but the write the same run had just
+    // performed, and that step has not come back; the hosted-fetch read also
+    // replaced the `gh` plan the driver's default-deny sandbox refused.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["run_command", "web_fetch", "write_file"]
+        ["web_fetch", "write_file"]
     );
-    assert!(outcome.steps[2].arguments.contains(PLAN_PATH));
+    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
     assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
 }

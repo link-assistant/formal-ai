@@ -36,16 +36,20 @@ fn a_demonstrated_language_binds_for_the_rest_of_the_conversation() {
     let bound = offline_solver();
     let follow_up = bound.solve_with_history("What is an isogram?", &history);
 
-    // Plan 01 reworked the offline miss into the unknown-reasoning gather, so
-    // the bound conversation renders that family in Russian (`unknown_reasoning_trace`).
-    let expected = formal_ai::seed::render_response(
-        "unknown_reasoning_trace",
+    // Plan 01's honest miss for a definition question is the consulted-source
+    // record ("what does X mean" owes the record; batch a5abd1ab2 pinned that
+    // shape), so the bound conversation renders that family in Russian. The
+    // consulted list is environment-dependent, so the assertion pins the seed
+    // template up to the consulted field.
+    let russian_record = formal_ai::seed::render_response(
+        "concept_lookup_unresolved",
         "ru",
-        &[("focus", "an isogram")],
+        &[("surface", "an isogram"), ("consulted", "\u{1}")],
     )
-    .expect("the Russian unknown-reasoning trace response is seeded");
+    .expect("the Russian unresolved-source record is seeded");
+    let expected = russian_record.split('\u{1}').next().unwrap_or_default();
     assert!(
-        follow_up.answer.contains(&expected),
+        follow_up.answer.contains(expected),
         "a conversation that demonstrated Russian must keep answering in Russian: \
          {}",
         follow_up.answer
@@ -61,14 +65,17 @@ fn a_conversation_with_no_established_language_stays_in_the_prompt_language() {
     let unbound = offline_solver();
     let follow_up = unbound.solve_with_history("What is an isogram?", &history);
 
-    let russian = formal_ai::seed::render_response(
-        "unknown_reasoning_trace",
+    // The negative probe is the same Russian record prefix the binding test
+    // pins: only an established language can put it in the answer.
+    let russian_record = formal_ai::seed::render_response(
+        "concept_lookup_unresolved",
         "ru",
-        &[("focus", "an isogram")],
+        &[("surface", "an isogram"), ("consulted", "\u{1}")],
     )
-    .expect("the Russian unknown-reasoning trace response is seeded");
+    .expect("the Russian unresolved-source record is seeded");
+    let russian = russian_record.split('\u{1}').next().unwrap_or_default();
     assert!(
-        !follow_up.answer.contains(&russian),
+        !follow_up.answer.contains(russian),
         "no language was established, so the answer must not be Russian: {}",
         follow_up.answer
     );

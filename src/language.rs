@@ -135,6 +135,16 @@ pub fn set_forced_language(language: Option<Language>) -> ForcedLanguageGuard {
     ForcedLanguageGuard { previous }
 }
 
+/// The slug of the language forced onto this solve, if any.
+///
+/// Handlers that cannot derive their output language from [`detect`] (their
+/// report language is a fixed default, not a detection) read this instead, so a
+/// forced response language still reaches them (issues #556, #531).
+#[must_use]
+pub fn forced_response_language_slug() -> Option<&'static str> {
+    forced_language::get().map(Language::slug)
+}
+
 /// Resolve a language slug to a [`Language`], accepting every slug the
 /// detection registry declares.
 ///

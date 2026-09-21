@@ -192,6 +192,8 @@ pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-decomposition.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-entities.lino");
+pub const MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-external-benchmark.lino");
 pub const MULTILINGUAL_RESPONSES_ISSUE_710_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-issue-710.lino");
 pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
@@ -393,6 +395,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
         ),
         ("data/seed/multilingual-responses-entities.lino", MULTILINGUAL_RESPONSES_ENTITIES_LINO),
+        (
+            "data/seed/multilingual-responses-external-benchmark.lino",
+            MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO,
+        ),
         ("data/seed/multilingual-responses-issue-710.lino", MULTILINGUAL_RESPONSES_ISSUE_710_LINO),
         (
             "data/seed/multilingual-responses-language-protocol.lino",
@@ -472,6 +478,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
+    MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO,
     MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,

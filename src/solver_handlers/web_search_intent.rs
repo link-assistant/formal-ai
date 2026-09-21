@@ -121,6 +121,9 @@ pub(super) fn extract_web_search_request(
     if is_text_extraction_request(&normalized_words) {
         return None;
     }
+    if crate::solver_search::recognizes_reachability_problem(&normalized_words) {
+        return None;
+    }
     if let Some(query) = extract_semantic_web_search_query(&normalized_words) {
         return Some(WebSearchRequest {
             query,

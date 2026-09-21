@@ -259,3 +259,16 @@ sources_registry
     license_url "https://creativecommons.org/licenses/by/2.5/"
     cache_path data/cache/wikinews/
     note "Original journalism — events reported first-hand by Wikinews reporters. This is the original-first-source / original-journalism tier the document-verification handler weighs statements against (issue #535): reposts and unoriginal aggregations are ignored, original coverage is trusted. Reuses the Wikipedia action=parse path and shares the MediaWiki-family settings toggle."
+  source iana
+    name "IANA time zone database"
+    kind reference_table
+    default_enabled true
+    how_to_role none
+    need_kinds (concept)
+    primacy self_published
+      basis "The tz database is the registry IANA coordinates for time zone names, so on a zone's canonical name and the country it projects to, the source is the registry itself."
+    api "https://raw.githubusercontent.com/eggert/tz/main/zone1970.tab"
+    license_name "Public domain"
+    license_url "https://github.com/eggert/tz/blob/main/LICENSE"
+    cache_path data/cache/iana/
+    note "The zone1970.tab projection of tz zone names to countries, fetched once by scripts/ground-entity-names.py to ground entity hours (commit e8533a522). A committed static table the grounding script reads offline; no runtime fetch path binds it."

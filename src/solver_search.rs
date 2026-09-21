@@ -33,6 +33,13 @@ mod problem;
 
 use problem::parse_search_problem;
 
+/// Whether the prompt names a bounded arithmetic reachability problem, by the
+/// same seed-grounded recognizer the budget search stage gates on (issue #386).
+#[must_use]
+pub fn recognizes_reachability_problem(prompt: &str) -> bool {
+    parse_search_problem(prompt).is_some()
+}
+
 /// Ask the sources registry what the prompt's unresolved surfaces mean.
 ///
 /// Issue #1138 B1: an offline run records its policy boundary, while an online

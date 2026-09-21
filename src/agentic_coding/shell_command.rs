@@ -214,6 +214,20 @@ fn reads_as_prose(remainder: &str, vocab: &TerminalCommandVocabulary) -> bool {
     is_prose_word(first) || words.filter(|word| is_prose_word(word)).count() >= 2
 }
 
+/// The command an explicit passthrough prefix introduces, if any.
+///
+/// This is the boundary the shell cascade itself trusts: a prompt that opens
+/// with a run verb plus a known terminal token (`execute cp a.txt b.txt`)
+/// dictates the command verbatim, so the capability table must not re-read its
+/// operands as a request (issue #749).
+pub(super) fn explicit_passthrough_command(prompt: &str) -> Option<String> {
+    let prompt = strip_balanced_outer_quotes(prompt.trim());
+    if governs_commands_rather_than_requesting_one(prompt) {
+        return None;
+    }
+    prefixed_shell_command(prompt, &seed::terminal_command_vocabulary())
+}
+
 fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let first = prompt.split_whitespace().next()?;
     let command = normalize_command_word(first);

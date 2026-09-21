@@ -118,9 +118,7 @@ fn acts_in_capability_scope(name: &str, capability: Capability) -> bool {
 /// no longer win a fetch, which is what drove 547 identical empty-selector
 /// calls until the context window filled.
 fn research_tool_rank(name: &str) -> u8 {
-    let hosted = HOSTED_RESEARCH_TOOLS
-        .iter()
-        .any(|hosted| hosted.eq_ignore_ascii_case(name));
+    let hosted = is_hosted_research_tool(name);
     let namespaced = name.to_ascii_lowercase().starts_with("mcp__");
     let client_scoped = crate::tool_scope::scope_of_tool_name(name).is_client_workspace();
     match (hosted, namespaced, client_scoped) {
@@ -139,6 +137,13 @@ const HOSTED_RESEARCH_TOOLS: [&str; 5] = [
     "file_search",
     "computer_use_preview",
 ];
+
+/// Whether `name` is a protocol-native research tool the provider itself runs.
+pub(super) fn is_hosted_research_tool(name: &str) -> bool {
+    HOSTED_RESEARCH_TOOLS
+        .iter()
+        .any(|hosted| hosted.eq_ignore_ascii_case(name))
+}
 
 /// A browser-automation tool acts on a page the client is *driving*; it does
 /// not retrieve a document. `browser_click`, `browser_type`, `browser_snapshot`
@@ -440,6 +445,13 @@ fn plan_routed_capability_step_in(
         .next()
         .unwrap_or(task);
     if !crate::capability_routing::table_routing_enabled() || stage_of(routed_task) != stage {
+        return None;
+    }
+    // A prompt that dictates a shell command verbatim (`execute cp a.txt b.txt`)
+    // is not a request whose operands the table may re-read: it belongs to the
+    // shell cascade's passthrough, so the planner must not lower it through a
+    // capability row first (issue #749).
+    if super::shell_command::explicit_passthrough_command(routed_task).is_some() {
         return None;
     }
     // At the open-web position every route that reads the conversation and the
