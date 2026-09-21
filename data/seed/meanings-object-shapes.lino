@@ -786,6 +786,12 @@ meanings
       surface
         text "साथ नहीं चल"
       surface
+        text "समझ नहीं पा रहा"
+      surface
+        text "समझ नहीं पा रही"
+      surface
+        text "समझ नहीं पा रहे"
+      surface
         text "फिर से कहिए"
       surface
         text "मतलब ठीक"

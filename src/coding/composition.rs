@@ -8,6 +8,7 @@ use crate::coding::concept_discovery::{CandidatePart, ConceptMap};
 use crate::coding::fragment_catalog::{FragmentCatalog, FragmentKind};
 use crate::coding::program_ir::{IrNode, IrType, ProgramIr};
 use crate::coding::python_render::render_function;
+use crate::coding::python_signature::{matching_close_paren, split_top_level_commas};
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 use crate::needs::{Need, NeedKind, NeedState};
 
@@ -351,6 +352,13 @@ fn ir_draft(
     let Ok(source) = lowering.lower(&program, catalog) else {
         return Ok(None);
     };
+    // The prompt's declared surface travels with the derived artifact: a
+    // signature the task itself spelled out (annotations, return, imports)
+    // is echoed verbatim, never reconstructed from the unified types — the
+    // reconstruction would drop the spelling's own import (`List[float]`
+    // needs `from typing import List`) and with it the artifact's
+    // executability (issue #1085 upstream transfer, HumanEval/0).
+    let source = echo_declared_surface(spec, source);
     let content_id = program.content_id();
     let mut action_cost = program.action_cost();
     // A draft whose driving iteration runs over a constant performs
@@ -400,6 +408,86 @@ fn syntax_is_valid(language: &str, source: &str) -> bool {
 #[cfg(not(feature = "meta-language"))]
 fn syntax_is_valid(_language: &str, _source: &str) -> bool {
     true
+}
+
+/// Echo the prompt's declared signature into a lowered artifact. The search
+/// unifies types to find the composition; the surface the task declared —
+/// parameter spellings, the return annotation, the import block — stays the
+/// task's own words, ahead of anything the lowering hoisted.
+fn echo_declared_surface(spec: &CodingTaskSpec, source: String) -> String {
+    let declared_signature = spec
+        .parameters
+        .iter()
+        .any(|parameter| parameter.annotation.is_some())
+        || spec.return_annotation.is_some();
+    if !declared_signature && spec.imports.is_empty() {
+        return source;
+    }
+    let had_trailing_newline = source.ends_with('\n');
+    let is_import_line = |line: &str| line.starts_with("import ") || line.starts_with("from ");
+    let mut rest = source.lines().peekable();
+    let mut imports: Vec<&str> = spec.imports.iter().map(String::as_str).collect();
+    while let Some(line) = rest.peek().copied() {
+        if !is_import_line(line) {
+            break;
+        }
+        if !imports.contains(&line) {
+            imports.push(line);
+        }
+        rest.next();
+    }
+    let mut lines: Vec<String> = imports.iter().map(|line| (*line).to_owned()).collect();
+    if !lines.is_empty() {
+        // Imports and the definition are separate paragraphs (PEP 8).
+        if rest.peek().is_some_and(|line| line.trim().is_empty()) {
+            rest.next();
+        }
+        lines.push(String::new());
+    }
+    lines.extend(rest.map(str::to_owned));
+    if declared_signature
+        && let Some(index) = lines.iter().position(|line| line.starts_with("def "))
+        && let Some(rewritten) = echo_signature_line(spec, &lines[index])
+    {
+        lines[index] = rewritten;
+    }
+    let mut joined = lines.join("\n");
+    if had_trailing_newline {
+        joined.push('\n');
+    }
+    joined
+}
+
+/// One `def` line with the declared spellings restored: parameters keep
+/// their declared annotation verbatim (open ones keep what the lowering
+/// rendered), and the declared return travels before the colon.
+fn echo_signature_line(spec: &CodingTaskSpec, line: &str) -> Option<String> {
+    let open = line.find('(')?;
+    // `matching_close_paren` returns the index one past the closing paren.
+    let close = matching_close_paren(line, open)?;
+    if line[close..].trim() != ":" {
+        return None;
+    }
+    let rendered = split_top_level_commas(&line[open + 1..close - 1])
+        .iter()
+        .map(|raw| {
+            let name = raw.split(':').next().unwrap_or(raw).trim();
+            spec.parameters
+                .iter()
+                .find(|parameter| parameter.name == name)
+                .and_then(|parameter| parameter.annotation.as_deref())
+                .map_or_else(
+                    || (*raw).to_owned(),
+                    |annotation| format!("{}: {annotation}", name.trim_start_matches('*')),
+                )
+        })
+        .collect::<Vec<_>>()
+        .join(", ");
+    let return_annotation = spec
+        .return_annotation
+        .as_deref()
+        .map_or_else(String::new, |annotation| format!(" -> {annotation}"));
+    Some(format!("{}({rendered}){return_annotation}:", &line[..open]))
 }
 
 /// Distinct declared parameters a rendered draft's source names. Drafts

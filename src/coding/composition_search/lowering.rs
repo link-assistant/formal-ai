@@ -91,7 +91,10 @@ pub(super) fn annotation_type(annotation: &str) -> Option<IrType> {
 /// tells the search whether a parameter is a sequence or text, so scalar
 /// slots stop accepting whole collections. Only the structural classes are
 /// discovered — bare numbers stay open, and parameters whose examples
-/// disagree (or are absent) stay open too.
+/// disagree (or are absent) stay open too. A tuple argument stays open the
+/// same way: a bare `(3, 4, 5, 6)` is ambiguous between a fixed pair and an
+/// ordered sequence, so it discovers no class and the parameters stay
+/// generic by arity (issue #1085 upstream transfer, MBPP/2).
 pub(super) fn example_parameter_type(spec: &CodingTaskSpec, index: usize) -> Option<IrType> {
     let classes = spec
         .examples
@@ -108,14 +111,13 @@ pub(super) fn example_parameter_type(spec: &CodingTaskSpec, index: usize) -> Opt
     let mut discovered: Option<IrType> = None;
     for value in &classes {
         let trimmed = value.trim();
-        let class = if trimmed.starts_with('[') {
-            let inner = trimmed.trim_start_matches('[').trim_end_matches(']').trim();
+        let element_class = |inner: &str| {
             let elements = inner
                 .split(',')
                 .map(str::trim)
                 .filter(|element| !element.is_empty())
                 .collect::<Vec<_>>();
-            let element = if !elements.is_empty()
+            if !elements.is_empty()
                 && elements
                     .iter()
                     .all(|element| element.parse::<f64>().is_ok())
@@ -123,8 +125,13 @@ pub(super) fn example_parameter_type(spec: &CodingTaskSpec, index: usize) -> Opt
                 IrType::Float
             } else {
                 IrType::Unknown(9_001)
-            };
-            IrType::Sequence(Box::new(element))
+            }
+        };
+        let class = if trimmed.starts_with('[') {
+            let inner = trimmed.trim_start_matches('[').trim_end_matches(']').trim();
+            IrType::Sequence(Box::new(element_class(inner)))
+        } else if trimmed.starts_with('(') && trimmed.ends_with(')') {
+            continue;
         } else if trimmed.starts_with('\'') || trimmed.starts_with('"') {
             IrType::Text
         } else if trimmed.parse::<f64>().is_ok() || trimmed.is_empty() {

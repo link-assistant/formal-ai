@@ -2,37 +2,39 @@ self_ast_census
   target src/coding/composition.rs
   language rust
   fidelity signature
-  byte_len 29336
-  line_count 830
-  content_id source_module_126b63fb2869df76
-  symbol_count 29
+  byte_len 33104
+  line_count 918
+  content_id source_module_8237a664460e2f7d
+  symbol_count 31
   symbols
-    struct DraftAttempt 15 19
-    struct VerifiedDraft 22 29
-    struct UnverifiedDraft 34 41
-    struct CompositionOutcome 44 52
-    struct MissingFragment 55 57
-    function new 60 62
-    struct FragmentRenderer 72 74
-    function new 77 79
-    function template 81 87
-    struct Draft 90 112
-    function compose 115 124
-    function compose_with_ir 131 278
-    function constant_bounded_domain 283 330
-    function ir_draft 332 393
-    function syntax_is_valid 396 398
-    function syntax_is_valid 401 403
-    function source_referenced_parameters 409 415
-    function candidate_drafts 417 429
-    function candidate_draft 431 519
-    function source_examples 521 535
-    function adapt_implementation 537 568
-    function verify 570 656
-    function program_stdout_expectation 658 678
-    function derived_examples 680 733
-    function first_positive_integer 735 754
-    function render_comparison 756 768
-    function render_failure_trail 770 805
-    function blocked_fragment_need 807 813
-    function template 815 830
+    struct DraftAttempt 16 20
+    struct VerifiedDraft 23 30
+    struct UnverifiedDraft 35 42
+    struct CompositionOutcome 45 53
+    struct MissingFragment 56 58
+    function new 61 63
+    struct FragmentRenderer 73 75
+    function new 78 80
+    function template 82 88
+    struct Draft 91 113
+    function compose 116 125
+    function compose_with_ir 132 279
+    function constant_bounded_domain 284 331
+    function ir_draft 333 401
+    function syntax_is_valid 404 406
+    function syntax_is_valid 409 411
+    function echo_declared_surface 417 459
+    function echo_signature_line 464 491
+    function source_referenced_parameters 497 503
+    function candidate_drafts 505 517
+    function candidate_draft 519 607
+    function source_examples 609 623
+    function adapt_implementation 625 656
+    function verify 658 744
+    function program_stdout_expectation 746 766
+    function derived_examples 768 821
+    function first_positive_integer 823 842
+    function render_comparison 844 856
+    function render_failure_trail 858 893
+    function blocked_fragment_need 895 901
+    function template 903 918

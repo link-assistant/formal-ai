@@ -5,7 +5,7 @@ bump: patch
 ### Fixed
 
 - A learning directive that names a URL ("learn from … at
-  https://trends.google.com/…", "обратясь сюда ты узнаешь …", "यहाँ से सीख
+  trends.google.com/…", "обратясь сюда ты узнаешь …", "यहाँ से सीख
   सकते हो …", "在这里了解…") now routes to `learn_from_source` instead of the
   generic web fetch (issue #499). The act vocabulary gains a ninth act,
   *learn* — narrower than *retrieve* because the request asks the engine to
@@ -14,4 +14,4 @@ bump: patch
   the capability table. The handler stays gated on the seed-declared
   learnable-source registry, so a directive the registry declines falls
   through to the specialized walk unchanged, and cue-less prompts ("Open
-  https://…") keep the fetch route.
+  a bare URL") keep the fetch route.
