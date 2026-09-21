@@ -10,6 +10,12 @@ capability_routing
     capability web_fetch
     because "issue 745: a concrete URL is unambiguous whatever the verb"
   route
+    object url
+    act learn
+    locus web
+    capability learn_from_source
+    because "issue 499: a learning directive about a declared source teaches the engine, it does not fetch the URL once"
+  route
     object path
     act retrieve
     locus workspace

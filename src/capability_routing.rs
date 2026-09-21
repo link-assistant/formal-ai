@@ -26,8 +26,8 @@ use crate::seed::{
     self, ROLE_ASSISTANT_MECHANISM_INQUIRY, ROLE_CALENDAR_DAY_REFERENCE,
     ROLE_CALENDAR_HOUR_REFERENCE, ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CAPABILITY_ACT_COMPOSE,
     ROLE_CAPABILITY_ACT_DEMONSTRATE, ROLE_CAPABILITY_ACT_ENUMERATE, ROLE_CAPABILITY_ACT_EXPLAIN,
-    ROLE_CAPABILITY_ACT_RECORD, ROLE_CAPABILITY_ACT_RETRIEVE, ROLE_CAPABILITY_ACT_SCHEDULE,
-    ROLE_CAPABILITY_ACT_TRANSFORM, ROLE_CAPABILITY_CLOCK_REFERENCE,
+    ROLE_CAPABILITY_ACT_LEARN, ROLE_CAPABILITY_ACT_RECORD, ROLE_CAPABILITY_ACT_RETRIEVE,
+    ROLE_CAPABILITY_ACT_SCHEDULE, ROLE_CAPABILITY_ACT_TRANSFORM, ROLE_CAPABILITY_CLOCK_REFERENCE,
     ROLE_CAPABILITY_CONTAINER_SCOPE, ROLE_CAPABILITY_CONTENT_ASSIGNMENT,
     ROLE_CAPABILITY_CONTENT_INTRODUCER, ROLE_CAPABILITY_DELEGATION_MARKER,
     ROLE_CAPABILITY_FRESHNESS_LIVE, ROLE_CAPABILITY_LANGUAGE_REFERENCE,
@@ -170,7 +170,7 @@ impl ObjectType {
     }
 }
 
-/// The eight acts, one meaning per act, five languages, seeded in
+/// The nine acts, one meaning per act, five languages, seeded in
 /// `data/seed/meanings-acts.lino`. The act vocabulary is the one place
 /// per-language surfaces remain.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
@@ -183,6 +183,10 @@ pub enum Act {
     Explain,
     Demonstrate,
     Record,
+    /// Teaching the engine from a declared source — narrower than `Retrieve`
+    /// because the request asks the engine to *adopt* knowledge, not to fetch
+    /// it once (issue #499).
+    Learn,
     #[default]
     Unresolved,
 }
@@ -191,8 +195,9 @@ pub enum Act {
 ///
 /// `retrieve` is last because it is the most general: nearly every request
 /// retrieves something on the way to what it actually asks for, so a prompt that
-/// also evidences a narrower act means the narrower one.
-const ACTS_IN_PRECEDENCE: [Act; 8] = [
+/// also evidences a narrower act means the narrower one. `learn` sits just
+/// above it: a learning directive still retrieves on the way to adopting.
+const ACTS_IN_PRECEDENCE: [Act; 9] = [
     Act::Schedule,
     Act::Demonstrate,
     Act::Compose,
@@ -200,6 +205,7 @@ const ACTS_IN_PRECEDENCE: [Act; 8] = [
     Act::Transform,
     Act::Explain,
     Act::Record,
+    Act::Learn,
     Act::Retrieve,
 ];
 
@@ -216,6 +222,7 @@ impl Act {
             Self::Explain => "explain",
             Self::Demonstrate => "demonstrate",
             Self::Record => "record",
+            Self::Learn => "learn",
             Self::Unresolved => "unresolved",
         }
     }
@@ -240,6 +247,7 @@ impl Act {
             Self::Explain => ROLE_CAPABILITY_ACT_EXPLAIN,
             Self::Demonstrate => ROLE_CAPABILITY_ACT_DEMONSTRATE,
             Self::Record => ROLE_CAPABILITY_ACT_RECORD,
+            Self::Learn => ROLE_CAPABILITY_ACT_LEARN,
             Self::Unresolved => "",
         }
     }

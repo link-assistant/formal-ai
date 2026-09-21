@@ -1,9 +1,9 @@
-# `The eight acts of capability routing (issue #1138 B10, plan 10 leaf 6).`
+# `The nine acts of capability routing (issue #1138 B10, plan 10 leaf 6).`
 #
 # `Capability is a function of the object in the request, the act asked for,`
 # `and where the effect lands. Verbs select the *act*; they never select the`
 # `capability. This file is the one place per-language verb surfaces remain,`
-# `and it is shared by every capability -- so adding a language is eight`
+# `and it is shared by every capability -- so adding a language is nine`
 # `blocks here rather than eleven per-capability cue lists, and the asymmetry`
 # `that let "search" reach web_search while "find" reached read_file cannot`
 # `recur in any direction.`
@@ -853,3 +853,57 @@ meanings
         text "no hay quien"
       surface
         text "no funciona"
+  act_learn
+    defined-by action
+    role capability_act_learn
+    lexeme en
+      surface
+        text "learn from"
+      surface
+        text "train on"
+      surface
+        text "train yourself on"
+      surface
+        text "teach yourself from"
+      surface
+        text "here you can learn"
+    lexeme ru
+      surface
+        text "обратясь сюда"
+      surface
+        text "обратившись сюда"
+      surface
+        text "здесь ты узнаешь"
+      surface
+        text "тут ты узнаешь"
+      surface
+        text "ты узнаешь"
+      surface
+        text "вы узнаете"
+      surface
+        text "учись на"
+      surface
+        text "тут видны"
+      surface
+        text "здесь видны"
+      surface
+        text "узнаешь"
+      surface
+        text "узнаёшь"
+    lexeme hi
+      surface
+        text "यहाँ से सीख"
+      surface
+        text "यहां से सीख"
+      surface
+        text "सीख सकते"
+    lexeme zh
+      surface
+        text "从这里学习"
+      surface
+        text "在这里了解"
+      surface
+        text "可以了解"
+    lexeme es
+      surface
+        text "aprende de"

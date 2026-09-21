@@ -2,32 +2,32 @@ self_ast_census
   target src/meta_method_dispatch.rs
   language rust
   fidelity signature
-  byte_len 44798
-  line_count 1033
-  content_id source_module_291f214ecc8c8c77
+  byte_len 45381
+  line_count 1041
+  content_id source_module_cae99d2fe677d999
   symbol_count 24
   symbols
     function try_dispatch 36 215
-    const SOLVER_CAPABILITIES 221 231
-    function try_capability_route 239 568
-    function promoted_calendar_claims 574 579
-    function github_repository_traffic_claims 585 591
-    function capability_route_preempts 601 619
-    function solver_route_is_authoritative 629 645
-    function record_capability_route 647 663
-    function capability_gap 665 695
-    function request_anchors 701 747
-    function established_response_language 756 762
-    function response_language_demonstration 764 800
-    function explain_previous_turn 802 815
-    function try_learned_method 826 870
-    struct MethodRuntime 873 877
-    function new 880 901
-    function try_attributed_runtime 904 930
-    function try_response_language_variant 932 947
-    function try_diagnostic 949 987
-    function record_method 989 991
-    function record_method_answer 993 1001
-    function record_contextual_method_answer 1003 1011
-    function refresh_answer_projection 1013 1029
-    function seeded_runtime_text 1031 1033
+    const SOLVER_CAPABILITIES 221 232
+    function try_capability_route 240 576
+    function promoted_calendar_claims 582 587
+    function github_repository_traffic_claims 593 599
+    function capability_route_preempts 609 627
+    function solver_route_is_authoritative 637 653
+    function record_capability_route 655 671
+    function capability_gap 673 703
+    function request_anchors 709 755
+    function established_response_language 764 770
+    function response_language_demonstration 772 808
+    function explain_previous_turn 810 823
+    function try_learned_method 834 878
+    struct MethodRuntime 881 885
+    function new 888 909
+    function try_attributed_runtime 912 938
+    function try_response_language_variant 940 955
+    function try_diagnostic 957 995
+    function record_method 997 999
+    function record_method_answer 1001 1009
+    function record_contextual_method_answer 1011 1019
+    function refresh_answer_projection 1021 1037
+    function seeded_runtime_text 1039 1041

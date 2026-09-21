@@ -25,7 +25,7 @@ use crate::solver_dispatch::{
 use crate::solver_handlers::{
     CapabilityRuntime, SelfAwarenessRuntime, finalize_simple, try_behavior_rules_with_runtime,
     try_concept_lookup_with_response_language, try_explicit_repository_lookup,
-    try_feature_capability, try_natural_language_tool_request,
+    try_feature_capability, try_learn_from_source, try_natural_language_tool_request,
     try_pattern_inference_with_response_language, try_playwright_script, try_project_lookup,
     try_project_lookup_with_response_language, try_response_language_followup,
     try_routed_calendar_create_event, try_routed_http_fetch_with_offline,
@@ -220,6 +220,7 @@ pub fn try_dispatch(
 /// web-search handler to claim the request.
 const SOLVER_CAPABILITIES: &[&str] = &[
     "web_fetch",
+    "learn_from_source",
     "web_search",
     "calendar_create_event",
     "response_language_demonstration",
@@ -435,6 +436,13 @@ fn try_capability_route(
         "web_fetch" => {
             try_routed_http_fetch_with_offline(prompt, log, solver.config.offline || !live_fetch)
         }
+        // Issue #499: a learning directive that names a URL ("learn from … at
+        // https://…") asks the engine to adopt from a declared source, not to
+        // fetch the URL once, so the learn act outranks the retrieve default
+        // and the row lands here. The handler stays gated on the
+        // seed-declared learnable-source registry, so a directive the registry
+        // declines falls through to the specialized walk unchanged.
+        "learn_from_source" => try_learn_from_source(prompt, &normalized, log),
         "calendar_create_event" => try_routed_calendar_create_event(prompt, &normalized, log),
         "response_language_demonstration" => {
             if let Some(answer) =

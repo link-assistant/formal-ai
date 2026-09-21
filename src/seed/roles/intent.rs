@@ -626,6 +626,15 @@ pub const ROLE_CAPABILITY_ACT_DEMONSTRATE: &str = "capability_act_demonstrate";
 /// Semantic role: the *record* act — file what happened. Carried by
 /// `act_record`.
 pub const ROLE_CAPABILITY_ACT_RECORD: &str = "capability_act_record";
+/// Semantic role: the *learn* act — teach the engine from a declared source.
+///
+/// "learn from", "train on", "узнаешь", "यहाँ से सीख", "在这里了解" — the
+/// directive cues of `data/seed/learning-sources.lino` that name adoption
+/// into the engine's own knowledge rather than a one-off retrieval. Narrower
+/// than *retrieve* in the act precedence, so a URL a learning directive names
+/// routes to the learning capability instead of the generic fetch (issue
+/// #499). Carried by `act_learn` in `data/seed/meanings-acts.lino`.
+pub const ROLE_CAPABILITY_ACT_LEARN: &str = "capability_act_learn";
 /// Semantic role: the noun for a piece of the assistant's own surface.
 ///
 /// "panel", "панель", "पैनल", "面板", "panel" — read beside
