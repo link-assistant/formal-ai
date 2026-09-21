@@ -1,6 +1,6 @@
 link_edit
   leaf L25
-  path src/service_accessibility.rs
+  path rust/src/service_accessibility.rs
   language rust
   rule rename_identifier
     old "RECORD_INDENT"

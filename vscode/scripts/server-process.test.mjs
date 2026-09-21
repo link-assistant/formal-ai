@@ -25,7 +25,8 @@ test("apiCandidates adds a cargo-run candidate when a Cargo.toml is present", ()
   assert.equal(candidates[0].command, "cargo");
   assert.equal(candidates[0].label, "cargo run");
   assert.deepEqual(candidates[0].args, [
-    "run", "--quiet", "--", "serve", "--host", "127.0.0.1", "--port", "18080",
+    "run", "--quiet", "--manifest-path", "rust/Cargo.toml", "--",
+    "serve", "--host", "127.0.0.1", "--port", "18080",
   ]);
   assert.equal(candidates[0].cwd, repoRoot);
   assert.equal(candidates[1].command, "formal-ai");

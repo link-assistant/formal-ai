@@ -1,6 +1,6 @@
 # The one inventory of `data/seed/*.lino`, shared by every production path.
 #
-# Issue #991 moved it here. `src/seed/embedded.rs` and `src/web/seed_loader.js`
+# Issue #991 moved it here. `src/seed/embedded.rs` and `js/seed_loader.js`
 # each held this inventory as a hand-ordered list, and between them needed 41
 # manual conflict resolutions -- two branches adding a seed file always appended
 # to the same lines. Both files are now generated from this one, which is

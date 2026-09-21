@@ -1,6 +1,6 @@
 link_edit
   leaf L06
-  path src/solver_handlers/web_requests.rs
+  path rust/src/solver_handlers/web_requests.rs
   language rust
   rule insert_member
     list "PROMOTED_PROJECT_ORGS"

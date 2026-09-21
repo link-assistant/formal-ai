@@ -7,7 +7,7 @@
 # behaviour (SSE framing, tool_call planner, permission gate) from the CLI.
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8734}"
 LOG="/tmp/formal-ai-serve-$PORT.log"
 MEMDIR="$(mktemp -d)"

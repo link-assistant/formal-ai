@@ -170,7 +170,7 @@ fn is_excluded_from_code_changes(file_path: &str) -> bool {
     }
 
     // Exclude specific folders from code changes
-    let excluded_folders = ["changelog.d/", "docs/", "examples/"];
+    let excluded_folders = ["changelog.d/", "docs/", "examples/", "rust/examples/"];
 
     for folder in &excluded_folders {
         if file_path.starts_with(folder) {
@@ -329,7 +329,7 @@ fn main() {
     // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code
     // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still
     // trigger lint/test. .lino covers seed lexicons and language resources such
-    // as src/web/i18n-catalog.lino: the language-change-parity guard watches
+    // as js/i18n-catalog.lino: the language-change-parity guard watches
     // those files, so editing one must run lint/test that enforces the guard.
     set_output(
         "any-code-changed",

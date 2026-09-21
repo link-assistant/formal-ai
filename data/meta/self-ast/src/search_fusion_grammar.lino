@@ -2,9 +2,9 @@ self_ast_census
   target src/search_fusion_grammar.rs
   language rust
   fidelity signature
-  byte_len 1548
+  byte_len 1551
   line_count 37
-  content_id source_module_278c1816d6576c50
+  content_id source_module_2ec92451facc2657
   symbol_count 5
   symbols
     const LANGUAGE_GRAMMAR 3 3

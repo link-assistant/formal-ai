@@ -2,9 +2,9 @@ self_ast_census
   target src/proof_engine/types.rs
   language rust
   fidelity signature
-  byte_len 11800
+  byte_len 11795
   line_count 273
-  content_id source_module_24d7dff201c3547d
+  content_id source_module_21c6114333e19ca7
   symbol_count 15
   symbols
     enum ProofMethod 13 35

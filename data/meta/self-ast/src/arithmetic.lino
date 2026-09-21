@@ -2,9 +2,9 @@ self_ast_census
   target src/arithmetic.rs
   language rust
   fidelity signature
-  byte_len 27989
+  byte_len 27984
   line_count 842
-  content_id source_module_4e47516236f3c377
+  content_id source_module_14aff7b1fe850975
   symbol_count 50
   symbols
     enum ArithmeticError 40 47

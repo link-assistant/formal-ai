@@ -197,7 +197,7 @@ is data-driven and configurable through the seed.
 
 - **Persona & pain:** Sven the integrator wants a drop-in endpoint without a GPU
   bill or a cloud dependency.
-- **Trigger:** `cargo run -- serve --host 127.0.0.1 --port 8080`
+- **Trigger:** `cargo run --manifest-path rust/Cargo.toml -- serve --host 127.0.0.1 --port 8080`
 - **Journey:**
   1. Sven starts the loopback HTTP server, which exposes the same symbolic
      engine through OpenAI Chat Completions, OpenAI Responses, and Anthropic
@@ -218,7 +218,7 @@ is data-driven and configurable through the seed.
 
 - **Persona & pain:** Mikhail wants the same assistant in the messenger he
   already uses.
-- **Trigger:** `TELEGRAM_BOT_TOKEN=123:abc cargo run -- telegram`
+- **Trigger:** `TELEGRAM_BOT_TOKEN=123:abc cargo run --manifest-path rust/Cargo.toml -- telegram`
 - **Journey:**
   1. An operator starts the Telegram bot (long polling by default, opt-in
      webhook server) or runs the Docker-in-Docker image.
@@ -297,7 +297,7 @@ is data-driven and configurable through the seed.
 - **Journey today:** Wei states the procedure in plain language — *"when I paste
   a link, fetch its title, translate it to Russian, save both, and reply with
   the translation"* — and the shared intent formalizer decomposes it into
-  source-grounded requirements. `src/skill_procedure.rs` lowers those
+  source-grounded requirements. `rust/src/skill_procedure.rs` lowers those
   requirements into an ordered typed `.lino` artifact whose operations come
   from seeded and human-approved vocabulary. The stored artifact is parsed,
   integrity-checked, and walked step by step through a permissioned host; it
@@ -315,7 +315,7 @@ is data-driven and configurable through the seed.
   end.
 - **Status:** Supported today, delivered by
   [#674](https://github.com/link-assistant/formal-ai/issues/674) (PR #815)
-  (`cargo test arbitrary_skill_compilation`). Stored `.lino` procedures are
+  (`cargo test --manifest-path rust/Cargo.toml arbitrary_skill_compilation`). Stored `.lino` procedures are
   walked by the generic interpreter; generating a bespoke Rust/JS handler is
   intentionally unnecessary for these typed operations. See
   *Computation Model* in [`VISION.md`](../VISION.md#computation-model).
@@ -335,7 +335,7 @@ is data-driven and configurable through the seed.
   [#662](https://github.com/link-assistant/formal-ai/issues/662) (PR #695) and
   the parallel draft portfolios by
   [#704](https://github.com/link-assistant/formal-ai/issues/704) (PR #878)
-  (`src/draft_portfolio.rs`, `src/solver_search.rs`). Deeper evolutionary
+  (`rust/src/draft_portfolio.rs`, `rust/src/solver_search.rs`). Deeper evolutionary
   search over broader spaces is incremental work, not a missing mechanism. See
   *Reasoning Model* and [`ROADMAP.md`](../ROADMAP.md).
 

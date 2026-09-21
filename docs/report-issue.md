@@ -24,11 +24,11 @@ Every report body has the same six sections, in this order:
 The agentic path appends one more block after those six: the complete Links
 Notation context of the session (see [Oversize contexts](#oversize-contexts)).
 
-The format lives in exactly one place, [`src/issue_report.rs`](../src/issue_report.rs).
+The format lives in exactly one place, [`rust/src/issue_report.rs`](../rust/src/issue_report.rs).
 The browser cannot link the Rust core — the wasm worker is a standalone `rustc`
-build — so [`src/web/app/issue-report.js`](../src/web/app/issue-report.js) is a
+build — so [`js/app/issue-report.js`](../js/app/issue-report.js) is a
 hand-written mirror of it, and
-[`tests/integration/issue_839_report_parity.rs`](../tests/integration/issue_839_report_parity.rs)
+[`rust/tests/integration/issue_839_report_parity.rs`](../rust/tests/integration/issue_839_report_parity.rs)
 renders the same fixture through both and fails the moment they drift. Every
 phrase in the document comes from `data/seed/agent-info.lino`, so a surface
 cannot invent its own wording either.
@@ -139,7 +139,7 @@ before `gh` is reached. A report either carries the conversation or does not get
 filed.
 
 The tests in
-[`tests/integration/issue_839_report_script.rs`](../tests/integration/issue_839_report_script.rs)
+[`rust/tests/integration/issue_839_report_script.rs`](../rust/tests/integration/issue_839_report_script.rs)
 run the generated script end to end against a fixture session — with a stubbed
 `gh` on an otherwise empty `PATH` — and assert on the file `gh issue create`
 actually received.

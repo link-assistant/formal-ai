@@ -74,7 +74,7 @@ without a live daemon:
   the renderer as `serviceStatus()`, `startService()`,
   `installAgentEnvironment()`, `stopService()` through `contextBridge` (with
   `contextIsolation: true` / `nodeIntegration: false`).
-- [`src/web/app.js`](../../src/web/app.js) — renders the Services panel, polls
+- [`js/app.js`](../../js/app.js) — renders the Services panel, polls
   status, and calls the bridge from the **Start**/**Stop** buttons.
 
 Docker is required for this panel; if it is not installed the panel shows a

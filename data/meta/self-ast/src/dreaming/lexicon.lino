@@ -2,9 +2,9 @@ self_ast_census
   target src/dreaming/lexicon.rs
   language rust
   fidelity signature
-  byte_len 3866
+  byte_len 3869
   line_count 102
-  content_id source_module_14f4c530d1709a72
+  content_id source_module_d8e88579499a01fd
   symbol_count 8
   symbols
     const EMBEDDED_LEXICON 16 16

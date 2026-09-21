@@ -1,14 +1,14 @@
 // Executable browser-worker parity check for issue #840 local-vs-web routing.
 //
 // The worker is booted through `tests/web/support/browser-runtime.mjs`, which
-// runs `src/web/formal_ai_worker.js` itself: the entry point decides what to
+// runs `js/worker/formal_ai_worker.js` itself: the entry point decides what to
 // import (`seed-files.js`, `seed_loader.js`, `worker-modules.js`, then every
 // module the last one lists). Issue #991 made those lists generated, union
 // merged files precisely so nothing outside them has to name the inventory --
 // a harness that rebuilt the load order by hand went stale the moment a module
 // was added, which is what happened here before this rewrite.
 
-import { createWorkerContext, evaluate } from "../tests/web/support/browser-runtime.mjs";
+import { createWorkerContext, evaluate } from "../rust/tests/web/support/browser-runtime.mjs";
 
 const sandbox = createWorkerContext();
 await evaluate(sandbox, "loadSeed()");

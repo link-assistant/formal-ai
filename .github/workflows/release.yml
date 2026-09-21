@@ -134,7 +134,7 @@ jobs:
         with:
           check: docker-image
           paths: >-
-            src data build.rs Cargo.toml Cargo.lock Dockerfile docker scripts .github/workflows/release.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock Dockerfile docker scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -329,7 +329,7 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/run-ci-gates.rs --stage rust
       - name: Build Rust→WASM worker
-        run: sh src/web/wasm-worker/build.sh
+        run: sh js/wasm-worker/build.sh
       - name: Run registered gates (stage wasm)
         run: rust-script scripts/run-ci-gates.rs --stage wasm
       - name: Install web bundle dependencies
@@ -337,7 +337,7 @@ jobs:
       - name: Build web vendor bundle
         run: bun run build:web
       - name: Check web bundles are current
-        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/web-search-component.bundle.js src/web/ocr.bundle.js src/web/app.js
+        run: git diff --exit-code -- js/vendor.bundle.js js/web-search-component.bundle.js js/ocr.bundle.js js/app.js
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
@@ -412,7 +412,7 @@ jobs:
         with:
           check: unit-tests-${{ matrix.os }}-${{ matrix.test-suite }}
           paths: >-
-            src tests data examples build.rs Cargo.toml Cargo.lock scripts .github/workflows/release.yml .github/actions
+            rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
@@ -440,7 +440,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "LiNo data integrity" \
-            cargo test --test unit data_files -- --nocapture
+            cargo test --manifest-path rust/Cargo.toml --test unit data_files -- --nocapture
       - name: sccache counters after the first compiling step
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         run: sccache --show-stats
@@ -453,9 +453,9 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "self-AST census" \
-            cargo test --test unit self_ast_census -- --nocapture
+            cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture
       # Issue #1055: built once above; this only runs them. The binary comes
-      # too, because `CARGO_BIN_EXE_formal-ai` bakes `target/release/formal-ai`
+      # too, because `CARGO_BIN_EXE_formal-ai` bakes `rust/target/release/formal-ai`
       # into each executable at compile time -- 109 call sites across 36 test
       # files spawn it -- so the path has to exist here as well.
       - name: Download test executables
@@ -503,7 +503,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test build" \
-            cargo test --test unit --all-features --verbose --no-run
+            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose --no-run
       # Renamed with the split, and deliberately. `scripts/check-step-budget-
       # headroom.rs` joins measurements to budgets on the step name, so a name
       # kept across a change of what the step *does* would have the audit
@@ -521,7 +521,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
-            cargo test --test unit --all-features --verbose specification::
+            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification::
       - name: Run doc tests
         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
@@ -532,7 +532,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Doc tests" \
-            cargo test --doc --verbose
+            cargo test --manifest-path rust/Cargo.toml --doc --verbose
   macos-core-tests:
     name: macOS Core Tests
     needs: [detect-changes, base]
@@ -583,7 +583,7 @@ jobs:
       # Issue #1055: the binary exists; packaging needs no rebuild.
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
-        run: cargo package --locked -p formal-ai
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
       - name: Check crate package size
         run: rust-script scripts/check-crate-package-size.rs
   auto-release:
@@ -687,10 +687,10 @@ jobs:
         run: rust-script scripts/check-release-needed.rs
       - name: Build release
         if: steps.check.outputs.should_release == 'true'
-        run: cargo build --release
+        run: cargo build --manifest-path rust/Cargo.toml --release
       - name: Verify packaged crate archive
         if: steps.check.outputs.should_release == 'true'
-        run: cargo package --locked -p formal-ai
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
       - name: Publish to Crates.io
         if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'
         id: publish-crate
@@ -902,10 +902,10 @@ jobs:
         run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
       - name: Build release
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
-        run: cargo build --release
+        run: cargo build --manifest-path rust/Cargo.toml --release
       - name: Verify packaged crate archive
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
-        run: cargo package --locked -p formal-ai
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
       - name: Publish to Crates.io
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         id: publish-crate
@@ -1116,7 +1116,7 @@ jobs:
         with:
           check: e2e-local
           paths: >-
-            src data build.rs Cargo.toml Cargo.lock tests/e2e package.json package-lock.json scripts .github/workflows/release.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock rust/tests/e2e package.json package-lock.json scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Setup Bun
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -1164,7 +1164,7 @@ jobs:
         run: |
           cd tests/e2e
           npx playwright install chromium
-      - name: Sync data/seed into src/web/seed (deployment mirror)
+      - name: Sync data/seed into js/seed (deployment mirror)
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: scripts/sync-seed.sh
       - name: Run local e2e tests
@@ -1186,7 +1186,7 @@ jobs:
           name: download-page-screenshots
           path: |
             docs/screenshots/issue-347/
-            src/web/download/assets/app-preview*.png
+            js/download/assets/app-preview*.png
           retention-days: 14
           if-no-files-found: error
   test-agent-cli-e2e:
@@ -1250,7 +1250,7 @@ jobs:
           prefix: artifacts-
       # Issue #1055: one compile per platform; consumers download the results.
       - name: Build binaries and test executables
-        run: cargo test --release --no-run --bins --tests --all-features
+        run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
       - name: Upload formal-ai binaries
@@ -1301,7 +1301,7 @@ jobs:
         with:
           check: box-project-${{ matrix.language }}
           paths: >-
-            src data build.rs Cargo.toml Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
       - name: Free up runner disk space
@@ -1383,11 +1383,11 @@ jobs:
       - uses: ./.github/actions/cache-cargo-registry
         with:
           prefix: docs-
-      - name: Generate Rust API docs (cargo doc)
+      - name: Generate Rust API docs (cargo doc --manifest-path rust/Cargo.toml)
         env:
           RUSTDOCFLAGS: -D warnings
         run: bash scripts/build-rust-api-docs.sh
-      - name: Sync data/seed into src/web/seed (deployment mirror)
+      - name: Sync data/seed into js/seed (deployment mirror)
         run: scripts/sync-seed.sh
       - name: Read formal-ai version from Cargo.toml
         id: formal_ai_version
@@ -1400,15 +1400,15 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
           echo "Detected formal-ai version: ${version}"
       - name: Stamp GitHub Pages artifact
-        run: scripts/stamp-pages-artifact.sh src/web "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
+        run: scripts/stamp-pages-artifact.sh js "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
       - name: Copy Rust API docs into the Pages artifact (/docs/api)
         run: |
-          mkdir -p src/web/docs/api
-          cp -R target/doc/. src/web/docs/api/
+          mkdir -p js/docs/api
+          cp -R target/doc/. js/docs/api/
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: src/web
+          path: js
           include-hidden-files: true
       - name: Deploy Pages artifact
         id: deployment

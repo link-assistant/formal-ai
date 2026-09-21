@@ -2,9 +2,9 @@ self_ast_census
   target src/prerequisite/probe.rs
   language rust
   fidelity signature
-  byte_len 11721
+  byte_len 11724
   line_count 331
-  content_id source_module_3746951e3eca1fa3
+  content_id source_module_13eb11b3f1174ac2
   symbol_count 23
   symbols
     const TOOLCHAINS_LINO 20 20

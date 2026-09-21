@@ -155,7 +155,7 @@ fn contract(language: &Language, branch: &str) -> String {
         run,
         ..
     } = language;
-    let directory = format!("examples/hello-world/{slug}");
+    let directory = format!("rust/examples/hello-world/{slug}");
     // Described in words, never as escaped source: issue #1116.
     let task = format!(
         "Write a {name} program in the file `{file}`. Running it with `{run}` \
@@ -289,7 +289,7 @@ mod tests {
 
     /// A quoted value ends at its closing quote and carries no escape, because
     /// canonical Links Notation has none. The program text that would need one
-    /// lives in `examples/hello-world/` instead.
+    /// lives in `rust/examples/hello-world/` instead.
     #[test]
     fn quoted_values_end_at_the_closing_quote() {
         assert_eq!(parse_value(r#""python3 hello.py""#), "python3 hello.py");
@@ -308,7 +308,7 @@ mod tests {
     fn every_language_has_a_seed_that_prints_the_expected_output() {
         for entry in table() {
             let path = repo_root()
-                .join("examples/hello-world")
+                .join("rust/examples/hello-world")
                 .join(&entry.slug)
                 .join(&entry.file);
             let program = fs::read_to_string(&path)

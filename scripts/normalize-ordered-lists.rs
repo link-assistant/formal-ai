@@ -504,7 +504,9 @@ fn js_modules_in(dir: &Path) -> Vec<String> {
         let Some(name) = path.file_name().and_then(|name| name.to_str()) else {
             continue;
         };
-        if name.ends_with(".js") {
+        // `formal_ai_worker.js` is the entry point that loads this list, not
+        // a module in it: listing it would make the entry import itself.
+        if name.ends_with(".js") && name != "formal_ai_worker.js" {
             names.push(name.to_string());
         }
     }
@@ -907,24 +909,25 @@ mod tests {
     #[test]
     fn the_worker_list_is_regenerated_from_the_directory_it_mirrors() {
         let root = temp_dir("worker");
-        write(&root, "src/web/worker/formal_ai_worker_00.js", "// zero\n");
-        write(&root, "src/web/worker/how_to_guide.js", "// guide\n");
-        write(&root, "src/web/worker/notes.md", "not a module\n");
-        write(&root, "src/web/worker-modules.js", "self.FORMAL_AI_WORKER_MODULES = [];\n");
+        write(&root, "js/worker/formal_ai_worker.js", "// entry\n");
+        write(&root, "js/worker/formal_ai_worker_00.js", "// zero\n");
+        write(&root, "js/worker/how_to_guide.js", "// guide\n");
+        write(&root, "js/worker/notes.md", "not a module\n");
+        write(&root, "js/worker-modules.js", "self.FORMAL_AI_WORKER_MODULES = [];\n");
         let file = ListFile {
-            path: "src/web/worker-modules.js".to_string(),
+            path: "js/worker-modules.js".to_string(),
             list_kind: "js_module_list".to_string(),
-            declares_directory: Some("src/web/worker".to_string()),
+            declares_directory: Some("js/worker".to_string()),
             inert: Vec::new(),
         };
 
         assert_eq!(
-            js_modules_in(&root.join("src/web/worker")),
+            js_modules_in(&root.join("js/worker")),
             ["formal_ai_worker_00.js", "how_to_guide.js"],
-            "only JavaScript modules are listed"
+            "only JavaScript modules are listed, and the entry point that loads the list is not a module in it"
         );
         assert_eq!(process(&root, &file, true), Outcome::Rewritten);
-        let rendered = fs::read_to_string(root.join("src/web/worker-modules.js")).unwrap();
+        let rendered = fs::read_to_string(root.join("js/worker-modules.js")).unwrap();
         assert!(rendered.contains("\"worker/formal_ai_worker_00.js\""));
         assert!(rendered.contains("\"worker/how_to_guide.js\""));
         assert!(!rendered.contains("notes.md"));
@@ -934,7 +937,7 @@ mod tests {
     #[test]
     fn the_worker_list_is_rendered_from_the_directory_contents() {
         let rendered = render_js_module_list(
-            "src/web/worker",
+            "js/worker",
             &["formal_ai_worker_00.js".to_string(), "how_to_guide.js".to_string()],
         );
         assert!(rendered.contains("self.FORMAL_AI_WORKER_MODULES = Object.freeze(["));

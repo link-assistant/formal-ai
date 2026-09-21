@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/intent_routing.rs
   language rust
   fidelity signature
-  byte_len 6940
+  byte_len 6942
   line_count 166
-  content_id source_module_c5e92ce2f001dbbd
+  content_id source_module_4a7179f323301d34
   symbol_count 7
   symbols
     struct IntentRoute 24 33

@@ -1,6 +1,6 @@
 link_edit
   leaf L02
-  path src/thinking.rs
+  path rust/src/thinking.rs
   language rust
   rule insert_member
     list "PLAIN_STEPS"

@@ -11,7 +11,7 @@ const {
   RESPONSE_TYPE,
 } = require("../src/lib/webview-html.cjs");
 
-// A miniature stand-in for src/web/index.html with the same placeholders and
+// A miniature stand-in for js/index.html with the same placeholders and
 // script shape, so the builder can be tested without reading the real file.
 const SAMPLE_INDEX = `<!doctype html>
 <html lang="en">

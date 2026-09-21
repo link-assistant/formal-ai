@@ -5,4 +5,4 @@
 ci_gate check_bootstrap_deletability
   stage rust
   description "The fragment bootstrap is deletable: an absent seed yields an empty, logged catalog and a forgotten fragment rediscovers to the same content id, all offline."
-  run "cargo test --test unit coding_discovery::fragment_catalog -- --nocapture"
+  run "cargo test --manifest-path rust/Cargo.toml --test unit coding_discovery::fragment_catalog -- --nocapture"

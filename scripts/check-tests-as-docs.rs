@@ -64,7 +64,7 @@ const ALLOWLIST_PATH: &str = "scripts/tests-as-docs-allowlist.txt";
 
 /// Directory scanned for behavioural tests.
 #[cfg_attr(test, allow(dead_code))]
-const SCAN_DIR: &str = "tests";
+const SCAN_DIR: &str = "rust/tests";
 
 /// `tests/source/` is a checked-in copy of `src/` used by the source-placement
 /// guard, not a test suite of its own.

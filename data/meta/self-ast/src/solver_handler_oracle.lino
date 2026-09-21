@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handler_oracle.rs
   language rust
   fidelity signature
-  byte_len 5373
+  byte_len 5375
   line_count 127
-  content_id source_module_61052e9a70c3710e
+  content_id source_module_32fbb2bfcf663f85
   symbol_count 2
   symbols
     function try_unsupported_write_program 41 51

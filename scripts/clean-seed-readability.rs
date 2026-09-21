@@ -15,7 +15,7 @@
 //!    id (`Q146786 # plural`, `# concept not`, `# wikidata ...`) are preserved.
 //!
 //! Both transforms are idempotent. Browser builds read the canonical seed via
-//! `scripts/sync-seed.sh` and `src/web/seed_loader.js`, so this script does not
+//! `scripts/sync-seed.sh` and `js/seed_loader.js`, so this script does not
 //! produce a JavaScript seed copy.
 //!
 //! Run with `rust-script scripts/clean-seed-readability.rs` (std-only; can also

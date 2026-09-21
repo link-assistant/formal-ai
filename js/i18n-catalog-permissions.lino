@@ -1,0 +1,673 @@
+# Desktop tool-permission and Services UI translations (issue #511/#514).
+# Split out of i18n-catalog.lino to stay under the Links Notation line limit.
+# The loader (js/i18n.js) fetches this file together with i18n-catalog.lino
+# and i18n-catalog-messages.lino and merges their per-locale keys;
+# tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
+
+en
+  permissions
+    tool
+      http_fetch
+        label "HTTP fetch"
+        description "Fetch an HTTP(S) URL through the local process."
+      url_navigate
+        label "URL navigate"
+        description "Open or inspect a URL through the local process."
+      eval_js
+        label "Evaluate JS"
+        description "Run JavaScript inside the sandbox."
+      read_local_file
+        label "Read local file"
+        description "Read a file from the allowed local workspace."
+      write_file
+        label "Write file"
+        description "Create or replace a file in the allowed workspace."
+      edit_file
+        label "Edit file"
+        description "Replace selected text in a workspace file."
+      multi_edit
+        label "Multi-edit"
+        description "Apply several text edits to a workspace file."
+      code_exec
+        label "Code exec"
+        description "Run code inside the Docker sandbox."
+      shell
+        label "Shell"
+        description "Run a shell command on the host machine."
+      computer_fs_read
+        label "Read file"
+        description "Read a file from the isolated computer-use workspace."
+      computer_fs_write
+        label "Write file"
+        description "Write a confirmed file in the isolated computer-use workspace."
+      computer_fs_list
+        label "List files"
+        description "List entries in the isolated computer-use workspace."
+      computer_fs_move
+        label "Move file"
+        description "Move a confirmed file inside the isolated computer-use workspace."
+      computer_shell_run
+        label "Structured command"
+        description "Run a confirmed allowlisted data operation in isolation."
+      computer_http_fetch
+        label "Structured HTTP fetch"
+        description "Fetch and cache an HTTP(S) resource with provenance."
+      computer_http_post
+        label "Structured HTTP post"
+        description "Submit a confirmed HTTP POST and cache its response with provenance."
+      computer_dom_query
+        label "DOM query"
+        description "Extract text with a selector from a cached document."
+      computer_dom_extract
+        label "Structured extract"
+        description "Extract a value with a JSON pointer from cached structured data."
+      computer_archive_pack
+        label "Pack archive"
+        description "Create a confirmed deterministic archive in the isolated workspace."
+      computer_archive_unpack
+        label "Unpack archive"
+        description "Extract a confirmed deterministic archive inside the isolated workspace."
+      computer_process_status
+        label "Process status"
+        description "Record the status of the isolated computer-use workspace."
+    panel
+      title "Desktop tool permissions"
+      active "Agent tools active"
+      saved "Saved for Agent mode"
+      rowLabel "Permissions"
+    state
+      granted "Granted"
+      declined "Declined"
+      undecided "Not decided"
+    action
+      grant "Grant"
+      decline "Decline"
+      grantAll "Grant all and switch to Agent mode"
+      grantAllAndRun "Grant all, switch to Agent mode, and run pending task"
+    toolCount "{granted}/{total} tools granted"
+    command
+      title "Shell command request"
+      approve "Approve"
+      deny "Deny"
+      status
+        pending "Pending"
+        running "Running"
+        approved "Approved"
+        denied "Denied"
+    onboarding
+      intro "Agent and Full Auto use explicit desktop permissions."
+      perTool "Grant or decline each tool separately."
+      modes "Agent asks before each shell command; Full Auto skips per-command prompts but still only runs granted tools."
+    message
+      shellRan "Ran shell command in {mode} mode: `{command}`."
+      shellNotRun "Shell command was not run: `{command}`."
+      shellNotGranted "The `shell` tool is not granted. Grant `shell` in the desktop permission panel, then send the command again."
+      approvalPrompt "Approve this shell command before it runs:"
+      commandDeclined "Command declined: `{command}`. No shell command ran."
+      noOutput "(no output)"
+      reasonNoResult "desktop tool router returned no result"
+      reasonRefused "desktop tool router refused the request"
+  services
+    title "Services"
+    telegram
+      label "Telegram bot"
+    server
+      label "OpenAI-compatible server"
+    agent
+      label "Agent environment"
+    dockerMissing "Docker is not available. Install Docker Desktop to start the prepared containers."
+    installAgent "Install agent environment"
+    installing "Installing…"
+    start "Start"
+    starting "Starting…"
+    stop "Stop"
+    stopping "Stopping…"
+    state
+      ready "ready"
+      running "running"
+      stopped "stopped"
+      needsToken "needs token"
+      dockerUnavailable "Docker unavailable"
+      error "error"
+      unknown "unknown"
+  dataMigration
+    title "Profile data moved"
+    body "Your data was carried over from an earlier app profile ({source})."
+    bodyUnknown "Your profile was checked for data left behind by an earlier version."
+    copied "Transferred: {items}"
+    nothing "Nothing was left to transfer — this profile is already complete."
+    replay "Check again"
+    replaying "Checking..."
+    dismiss "Dismiss"
+    failed "The transfer could not be completed: {error}"
+  updates
+    title "Updates"
+    currentVersion "Version"
+    check "Check"
+    checking "Checking..."
+    update "Update"
+    updating "Updating..."
+    progress "{percent}% downloaded"
+    state
+      idle "Ready to check"
+      checking "Checking for updates"
+      available "Update {version} available"
+      notAvailable "Up to date"
+      downloading "Downloading update"
+      downloaded "Ready to restart"
+      installing "Installing update"
+      disabled "Unavailable"
+      error "Update error"
+  vscodeInstall
+    title "VS Code extension"
+    summary "Install the formal-ai extension into VS Code in one click. It downloads the latest signed .vsix and runs code --install-extension."
+    install "Install in VS Code"
+    installing "Installing…"
+    installed "Installed into {cli}. Reload VS Code to start using it."
+    noCli "No VS Code command-line tool was found. Install VS Code and enable the 'code' command in PATH."
+    noAsset "No extension has been published to the latest release yet."
+    lookupFailed "Could not reach the GitHub Releases API."
+    downloadFailed "Could not download the .vsix."
+    installFailed "code --install-extension failed."
+    error "Could not install the VS Code extension."
+
+ru
+  permissions
+    tool
+      http_fetch
+        label "HTTP-запрос"
+        description "Загрузить HTTP(S)-адрес через локальный процесс."
+      url_navigate
+        label "Переход по URL"
+        description "Открыть или просмотреть URL через локальный процесс."
+      eval_js
+        label "Выполнить JS"
+        description "Запустить JavaScript в песочнице."
+      read_local_file
+        label "Чтение локального файла"
+        description "Прочитать файл из разрешённого локального рабочего пространства."
+      write_file
+        label "Запись файла"
+        description "Создать или заменить файл в разрешённом рабочем пространстве."
+      edit_file
+        label "Изменение файла"
+        description "Заменить выбранный текст в файле рабочего пространства."
+      multi_edit
+        label "Несколько изменений"
+        description "Применить несколько изменений к файлу рабочего пространства."
+      code_exec
+        label "Выполнение кода"
+        description "Запустить код в песочнице Docker."
+      shell
+        label "Оболочка"
+        description "Выполнить команду оболочки на хост-машине."
+      computer_fs_read
+        label "Прочитать файл"
+        description "Прочитать файл из изолированного рабочего пространства."
+      computer_fs_write
+        label "Записать файл"
+        description "Записать подтверждённый файл в изолированном рабочем пространстве."
+      computer_fs_list
+        label "Список файлов"
+        description "Показать содержимое изолированного рабочего пространства."
+      computer_fs_move
+        label "Переместить файл"
+        description "Переместить подтверждённый файл внутри изолированного рабочего пространства."
+      computer_shell_run
+        label "Структурированная команда"
+        description "Выполнить подтверждённую разрешённую операцию с данными в изоляции."
+      computer_http_fetch
+        label "Структурированный HTTP GET"
+        description "Загрузить и кэшировать HTTP(S)-ресурс с данными о происхождении."
+      computer_http_post
+        label "Структурированный HTTP POST"
+        description "Выполнить подтверждённый HTTP POST и кэшировать ответ с данными о происхождении."
+      computer_dom_query
+        label "DOM-запрос"
+        description "Извлечь текст по селектору из кэшированного документа."
+      computer_dom_extract
+        label "Извлечение данных"
+        description "Извлечь значение по JSON-указателю из кэшированных данных."
+      computer_archive_pack
+        label "Упаковать архив"
+        description "Создать подтверждённый детерминированный архив в изолированном пространстве."
+      computer_archive_unpack
+        label "Распаковать архив"
+        description "Извлечь подтверждённый детерминированный архив в изолированном пространстве."
+      computer_process_status
+        label "Состояние процесса"
+        description "Записать состояние изолированного рабочего пространства."
+    panel
+      title "Разрешения инструментов рабочего стола"
+      active "Инструменты агента активны"
+      saved "Сохранено для режима агента"
+      rowLabel "Разрешения"
+    state
+      granted "Предоставлено"
+      declined "Отклонено"
+      undecided "Не решено"
+    action
+      grant "Предоставить"
+      decline "Отклонить"
+      grantAll "Предоставить все и включить режим агента"
+      grantAllAndRun "Предоставить все, включить режим агента и выполнить отложенную задачу"
+    toolCount "Предоставлено инструментов: {granted}/{total}"
+    command
+      title "Запрос команды оболочки"
+      approve "Одобрить"
+      deny "Отклонить"
+      status
+        pending "Ожидает"
+        running "Выполняется"
+        approved "Одобрено"
+        denied "Отклонено"
+    onboarding
+      intro "Агент и Авто используют явные разрешения рабочего стола."
+      perTool "Предоставьте или отклоните каждый инструмент отдельно."
+      modes "Агент спрашивает перед каждой командой оболочки; Авто пропускает запросы по каждой команде, но всё равно запускает только разрешённые инструменты."
+    message
+      shellRan "Команда оболочки выполнена в режиме {mode}: `{command}`."
+      shellNotRun "Команда оболочки не выполнена: `{command}`."
+      shellNotGranted "Инструмент `shell` не предоставлен. Предоставьте `shell` на панели разрешений рабочего стола и отправьте команду снова."
+      approvalPrompt "Одобрите эту команду оболочки перед запуском:"
+      commandDeclined "Команда отклонена: `{command}`. Команда оболочки не выполнялась."
+      noOutput "(нет вывода)"
+      reasonNoResult "маршрутизатор инструментов рабочего стола не вернул результат"
+      reasonRefused "маршрутизатор инструментов рабочего стола отклонил запрос"
+  services
+    title "Сервисы"
+    telegram
+      label "Telegram-бот"
+    server
+      label "OpenAI-совместимый сервер"
+    agent
+      label "Среда агента"
+    dockerMissing "Docker недоступен. Установите Docker Desktop, чтобы запускать подготовленные контейнеры."
+    installAgent "Установить среду агента"
+    installing "Установка…"
+    start "Запустить"
+    starting "Запуск…"
+    stop "Остановить"
+    stopping "Остановка…"
+    state
+      ready "готова"
+      running "работает"
+      stopped "остановлен"
+      needsToken "нужен токен"
+      dockerUnavailable "Docker недоступен"
+      error "ошибка"
+      unknown "неизвестно"
+  dataMigration
+    title "Данные профиля перенесены"
+    body "Ваши данные перенесены из профиля прежней версии ({source})."
+    bodyUnknown "Профиль проверен на данные, оставшиеся от прежней версии."
+    copied "Перенесено: {items}"
+    nothing "Переносить нечего — профиль уже полный."
+    replay "Проверить ещё раз"
+    replaying "Проверка..."
+    dismiss "Скрыть"
+    failed "Не удалось завершить перенос: {error}"
+  updates
+    title "Обновления"
+    currentVersion "Версия"
+    check "Проверить"
+    checking "Проверка..."
+    update "Обновить"
+    updating "Обновление..."
+    progress "Загружено {percent}%"
+    state
+      idle "Готово к проверке"
+      checking "Проверка обновлений"
+      available "Доступно обновление {version}"
+      notAvailable "Актуальная версия"
+      downloading "Загрузка обновления"
+      downloaded "Готово к перезапуску"
+      installing "Установка обновления"
+      disabled "Недоступно"
+      error "Ошибка обновления"
+  vscodeInstall
+    title "Расширение VS Code"
+    summary "Установите расширение formal-ai в VS Code одним кликом. Загружается последний подписанный .vsix и выполняется code --install-extension."
+    install "Установить в VS Code"
+    installing "Установка…"
+    installed "Установлено в {cli}. Перезагрузите VS Code, чтобы начать работу."
+    noCli "Инструмент командной строки VS Code не найден. Установите VS Code и включите команду «code» в PATH."
+    noAsset "Расширение ещё не опубликовано в последнем релизе."
+    lookupFailed "Не удалось обратиться к GitHub Releases API."
+    downloadFailed "Не удалось загрузить .vsix."
+    installFailed "Команда code --install-extension завершилась с ошибкой."
+    error "Не удалось установить расширение VS Code."
+
+zh
+  permissions
+    tool
+      http_fetch
+        label "HTTP 获取"
+        description "通过本地进程获取 HTTP(S) 网址。"
+      url_navigate
+        label "URL 导航"
+        description "通过本地进程打开或检查网址。"
+      eval_js
+        label "执行 JS"
+        description "在沙箱中运行 JavaScript。"
+      read_local_file
+        label "读取本地文件"
+        description "从允许的本地工作区读取文件。"
+      write_file
+        label "写入文件"
+        description "在允许的工作区中创建或替换文件。"
+      edit_file
+        label "编辑文件"
+        description "替换工作区文件中的选定文本。"
+      multi_edit
+        label "多项编辑"
+        description "对工作区文件应用多项文本编辑。"
+      code_exec
+        label "执行代码"
+        description "在 Docker 沙箱中运行代码。"
+      shell
+        label "Shell"
+        description "在主机上运行 shell 命令。"
+      computer_fs_read
+        label "读取文件"
+        description "从隔离的计算机操作工作区读取文件。"
+      computer_fs_write
+        label "写入文件"
+        description "在隔离的计算机操作工作区中写入已确认的文件。"
+      computer_fs_list
+        label "列出文件"
+        description "列出隔离的计算机操作工作区中的条目。"
+      computer_fs_move
+        label "移动文件"
+        description "在隔离的计算机操作工作区内移动已确认的文件。"
+      computer_shell_run
+        label "结构化命令"
+        description "在隔离环境中运行已确认的许可数据操作。"
+      computer_http_fetch
+        label "结构化 HTTP 获取"
+        description "获取并缓存带来源信息的 HTTP(S) 资源。"
+      computer_http_post
+        label "结构化 HTTP 提交"
+        description "执行已确认的 HTTP POST，并缓存带来源信息的响应。"
+      computer_dom_query
+        label "DOM 查询"
+        description "使用选择器从缓存文档中提取文本。"
+      computer_dom_extract
+        label "结构化提取"
+        description "使用 JSON 指针从缓存的结构化数据中提取值。"
+      computer_archive_pack
+        label "打包归档"
+        description "在隔离工作区中创建已确认的确定性归档。"
+      computer_archive_unpack
+        label "解包归档"
+        description "在隔离工作区中提取已确认的确定性归档。"
+      computer_process_status
+        label "进程状态"
+        description "记录隔离的计算机操作工作区状态。"
+    panel
+      title "桌面工具权限"
+      active "代理工具已激活"
+      saved "已为代理模式保存"
+      rowLabel "权限"
+    state
+      granted "已授予"
+      declined "已拒绝"
+      undecided "未决定"
+    action
+      grant "授予"
+      decline "拒绝"
+      grantAll "全部授予并切换到代理模式"
+      grantAllAndRun "全部授予、切换到代理模式并执行待处理任务"
+    toolCount "已授予 {granted}/{total} 个工具"
+    command
+      title "Shell 命令请求"
+      approve "批准"
+      deny "拒绝"
+      status
+        pending "待处理"
+        running "运行中"
+        approved "已批准"
+        denied "已拒绝"
+    onboarding
+      intro "代理和全自动使用明确的桌面权限。"
+      perTool "分别授予或拒绝每个工具。"
+      modes "代理在每个 shell 命令前询问；全自动跳过逐条命令提示，但仍然只运行已授予的工具。"
+    message
+      shellRan "已在 {mode} 模式下运行 shell 命令：`{command}`。"
+      shellNotRun "shell 命令未运行：`{command}`。"
+      shellNotGranted "未授予 `shell` 工具。请在桌面权限面板中授予 `shell`，然后再次发送命令。"
+      approvalPrompt "在运行此 shell 命令前请批准："
+      commandDeclined "命令已拒绝：`{command}`。没有运行任何 shell 命令。"
+      noOutput "（无输出）"
+      reasonNoResult "桌面工具路由器未返回结果"
+      reasonRefused "桌面工具路由器拒绝了该请求"
+  services
+    title "服务"
+    telegram
+      label "Telegram 机器人"
+    server
+      label "OpenAI 兼容服务器"
+    agent
+      label "代理环境"
+    dockerMissing "Docker 不可用。请安装 Docker Desktop 以启动预配置的容器。"
+    installAgent "安装代理环境"
+    installing "正在安装…"
+    start "启动"
+    starting "正在启动…"
+    stop "停止"
+    stopping "正在停止…"
+    state
+      ready "就绪"
+      running "运行中"
+      stopped "已停止"
+      needsToken "需要令牌"
+      dockerUnavailable "Docker 不可用"
+      error "错误"
+      unknown "未知"
+  dataMigration
+    title "配置文件数据已迁移"
+    body "您的数据已从早期版本的配置文件（{source}）迁移过来。"
+    bodyUnknown "已检查配置文件中早期版本遗留的数据。"
+    copied "已迁移：{items}"
+    nothing "没有需要迁移的内容——此配置文件已完整。"
+    replay "再次检查"
+    replaying "检查中..."
+    dismiss "关闭"
+    failed "迁移未能完成：{error}"
+  updates
+    title "更新"
+    currentVersion "版本"
+    check "检查"
+    checking "正在检查..."
+    update "更新"
+    updating "正在更新..."
+    progress "已下载 {percent}%"
+    state
+      idle "可检查更新"
+      checking "正在检查更新"
+      available "有可用更新 {version}"
+      notAvailable "已是最新"
+      downloading "正在下载更新"
+      downloaded "可重启更新"
+      installing "正在安装更新"
+      disabled "不可用"
+      error "更新错误"
+  vscodeInstall
+    title "VS Code 扩展"
+    summary "一键将 formal-ai 扩展安装到 VS Code。它会下载最新的已签名 .vsix 并运行 code --install-extension。"
+    install "安装到 VS Code"
+    installing "正在安装…"
+    installed "已安装到 {cli}。请重新加载 VS Code 以开始使用。"
+    noCli "未找到 VS Code 命令行工具。请安装 VS Code 并在 PATH 中启用 “code” 命令。"
+    noAsset "最新发布中尚未提供扩展。"
+    lookupFailed "无法访问 GitHub Releases API。"
+    downloadFailed "无法下载 .vsix。"
+    installFailed "code --install-extension 执行失败。"
+    error "无法安装 VS Code 扩展。"
+
+hi
+  permissions
+    tool
+      http_fetch
+        label "HTTP फ़ेच"
+        description "लोकल प्रोसेस के ज़रिए एक HTTP(S) URL फ़ेच करें।"
+      url_navigate
+        label "URL नेविगेट"
+        description "लोकल प्रोसेस के ज़रिए एक URL खोलें या जाँचें।"
+      eval_js
+        label "JS चलाएँ"
+        description "सैंडबॉक्स में JavaScript चलाएँ।"
+      read_local_file
+        label "लोकल फ़ाइल पढ़ें"
+        description "अनुमत लोकल वर्कस्पेस से एक फ़ाइल पढ़ें।"
+      write_file
+        label "फ़ाइल लिखें"
+        description "अनुमत वर्कस्पेस में फ़ाइल बनाएँ या बदलें।"
+      edit_file
+        label "फ़ाइल संपादित करें"
+        description "वर्कस्पेस फ़ाइल में चुना हुआ पाठ बदलें।"
+      multi_edit
+        label "बहु-संपादन"
+        description "वर्कस्पेस फ़ाइल में कई पाठ संपादन लागू करें।"
+      code_exec
+        label "कोड चलाएँ"
+        description "Docker सैंडबॉक्स में कोड चलाएँ।"
+      shell
+        label "शेल"
+        description "होस्ट मशीन पर एक शेल कमांड चलाएँ।"
+      computer_fs_read
+        label "फ़ाइल पढ़ें"
+        description "अलग कंप्यूटर-उपयोग वर्कस्पेस से फ़ाइल पढ़ें।"
+      computer_fs_write
+        label "फ़ाइल लिखें"
+        description "अलग वर्कस्पेस में पुष्टि की गई फ़ाइल लिखें।"
+      computer_fs_list
+        label "फ़ाइलें सूचीबद्ध करें"
+        description "अलग कंप्यूटर-उपयोग वर्कस्पेस की प्रविष्टियाँ दिखाएँ।"
+      computer_fs_move
+        label "फ़ाइल ले जाएँ"
+        description "अलग वर्कस्पेस में पुष्टि की गई फ़ाइल ले जाएँ।"
+      computer_shell_run
+        label "संरचित कमांड"
+        description "अलगाव में पुष्टि किया हुआ अनुमत डेटा ऑपरेशन चलाएँ।"
+      computer_http_fetch
+        label "संरचित HTTP फ़ेच"
+        description "स्रोत विवरण के साथ HTTP(S) संसाधन फ़ेच और कैश करें।"
+      computer_http_post
+        label "संरचित HTTP पोस्ट"
+        description "पुष्टि किया HTTP POST भेजें और स्रोत विवरण के साथ उत्तर कैश करें।"
+      computer_dom_query
+        label "DOM क्वेरी"
+        description "कैश किए दस्तावेज़ से चयनकर्ता द्वारा पाठ निकालें।"
+      computer_dom_extract
+        label "संरचित निष्कर्षण"
+        description "कैश किए डेटा से JSON पॉइंटर द्वारा मान निकालें।"
+      computer_archive_pack
+        label "आर्काइव पैक करें"
+        description "अलग वर्कस्पेस में पुष्टि किया नियतात्मक आर्काइव बनाएँ।"
+      computer_archive_unpack
+        label "आर्काइव अनपैक करें"
+        description "अलग वर्कस्पेस में पुष्टि किया नियतात्मक आर्काइव निकालें।"
+      computer_process_status
+        label "प्रोसेस स्थिति"
+        description "अलग कंप्यूटर-उपयोग वर्कस्पेस की स्थिति दर्ज करें।"
+    panel
+      title "डेस्कटॉप टूल अनुमतियाँ"
+      active "एजेंट टूल सक्रिय"
+      saved "एजेंट मोड के लिए सहेजा गया"
+      rowLabel "अनुमतियाँ"
+    state
+      granted "प्रदान किया"
+      declined "अस्वीकृत"
+      undecided "तय नहीं"
+    action
+      grant "प्रदान करें"
+      decline "अस्वीकार करें"
+      grantAll "सभी प्रदान करें और एजेंट मोड पर स्विच करें"
+      grantAllAndRun "सभी प्रदान करें, एजेंट मोड पर स्विच करें और लंबित कार्य चलाएँ"
+    toolCount "{granted}/{total} टूल प्रदान किए गए"
+    command
+      title "शेल कमांड अनुरोध"
+      approve "स्वीकृत करें"
+      deny "अस्वीकार करें"
+      status
+        pending "लंबित"
+        running "चल रहा है"
+        approved "स्वीकृत"
+        denied "अस्वीकृत"
+    onboarding
+      intro "एजेंट और फुल ऑटो स्पष्ट डेस्कटॉप अनुमतियों का उपयोग करते हैं।"
+      perTool "हर टूल को अलग-अलग प्रदान या अस्वीकार करें।"
+      modes "एजेंट हर शेल कमांड से पहले पूछता है; फुल ऑटो हर-कमांड प्रॉम्प्ट छोड़ देता है पर फिर भी केवल प्रदान किए गए टूल ही चलाता है।"
+    message
+      shellRan "{mode} मोड में शेल कमांड चलाई गई: `{command}`।"
+      shellNotRun "शेल कमांड नहीं चलाई गई: `{command}`।"
+      shellNotGranted "`shell` टूल प्रदान नहीं किया गया है। डेस्कटॉप अनुमति पैनल में `shell` प्रदान करें, फिर कमांड दोबारा भेजें।"
+      approvalPrompt "इस शेल कमांड को चलने से पहले स्वीकृत करें:"
+      commandDeclined "कमांड अस्वीकृत: `{command}`। कोई शेल कमांड नहीं चली।"
+      noOutput "(कोई आउटपुट नहीं)"
+      reasonNoResult "डेस्कटॉप टूल राउटर ने कोई परिणाम नहीं लौटाया"
+      reasonRefused "डेस्कटॉप टूल राउटर ने अनुरोध अस्वीकार कर दिया"
+  services
+    title "सेवाएँ"
+    telegram
+      label "Telegram बॉट"
+    server
+      label "OpenAI-संगत सर्वर"
+    agent
+      label "एजेंट वातावरण"
+    dockerMissing "Docker उपलब्ध नहीं है। तैयार कंटेनर शुरू करने के लिए Docker Desktop इंस्टॉल करें।"
+    installAgent "एजेंट वातावरण इंस्टॉल करें"
+    installing "इंस्टॉल हो रहा है…"
+    start "शुरू करें"
+    starting "शुरू हो रहा है…"
+    stop "रोकें"
+    stopping "रुक रहा है…"
+    state
+      ready "तैयार"
+      running "चल रहा है"
+      stopped "रुका हुआ"
+      needsToken "टोकन चाहिए"
+      dockerUnavailable "Docker उपलब्ध नहीं"
+      error "त्रुटि"
+      unknown "अज्ञात"
+  dataMigration
+    title "प्रोफ़ाइल डेटा स्थानांतरित हुआ"
+    body "आपका डेटा पहले के ऐप प्रोफ़ाइल ({source}) से लाया गया है।"
+    bodyUnknown "पुराने संस्करण से छूटे डेटा के लिए प्रोफ़ाइल की जाँच की गई।"
+    copied "स्थानांतरित: {items}"
+    nothing "स्थानांतरित करने को कुछ नहीं बचा — यह प्रोफ़ाइल पहले से पूर्ण है।"
+    replay "फिर से जाँचें"
+    replaying "जाँच हो रही है..."
+    dismiss "बंद करें"
+    failed "स्थानांतरण पूरा नहीं हो सका: {error}"
+  updates
+    title "अपडेट"
+    currentVersion "संस्करण"
+    check "जाँचें"
+    checking "जाँच हो रही है..."
+    update "अपडेट"
+    updating "अपडेट हो रहा है..."
+    progress "{percent}% डाउनलोड हुआ"
+    state
+      idle "जाँच के लिए तैयार"
+      checking "अपडेट की जाँच हो रही है"
+      available "अपडेट {version} उपलब्ध है"
+      notAvailable "नवीनतम है"
+      downloading "अपडेट डाउनलोड हो रहा है"
+      downloaded "रीस्टार्ट के लिए तैयार"
+      installing "अपडेट इंस्टॉल हो रहा है"
+      disabled "अनुपलब्ध"
+      error "अपडेट त्रुटि"
+  vscodeInstall
+    title "VS Code एक्सटेंशन"
+    summary "एक क्लिक में formal-ai एक्सटेंशन को VS Code में इंस्टॉल करें। यह नवीनतम हस्ताक्षरित .vsix डाउनलोड करता है और code --install-extension चलाता है।"
+    install "VS Code में इंस्टॉल करें"
+    installing "इंस्टॉल हो रहा है…"
+    installed "{cli} में इंस्टॉल हो गया। उपयोग शुरू करने के लिए VS Code पुनः लोड करें।"
+    noCli "कोई VS Code कमांड-लाइन टूल नहीं मिला। VS Code इंस्टॉल करें और PATH में 'code' कमांड सक्षम करें।"
+    noAsset "नवीनतम रिलीज़ में अभी तक कोई एक्सटेंशन प्रकाशित नहीं हुआ है।"
+    lookupFailed "GitHub Releases API तक नहीं पहुँचा जा सका।"
+    downloadFailed ".vsix डाउनलोड नहीं हो सका।"
+    installFailed "code --install-extension विफल रहा।"
+    error "VS Code एक्सटेंशन इंस्टॉल नहीं हो सका।"

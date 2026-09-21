@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/formal_statement.rs
   language rust
   fidelity signature
-  byte_len 13645
+  byte_len 13648
   line_count 425
-  content_id source_module_f26c88993a563250
+  content_id source_module_7e07bbec5b955683
   symbol_count 31
   symbols
     const PROJECTIONS 13 13

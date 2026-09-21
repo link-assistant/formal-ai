@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/learning_report/self_hosting_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1928
+  byte_len 1931
   line_count 46
-  content_id source_module_7b2e0b88d89f491b
+  content_id source_module_12d942312e0406c0
   symbol_count 7
   symbols
     const SELF_HOSTING_LEARNING_PATH 14 14

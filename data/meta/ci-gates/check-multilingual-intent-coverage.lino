@@ -6,4 +6,4 @@
 ci_gate check_multilingual_intent_coverage
   stage web
   description "Every routed intent is covered in every language the app advertises."
-  run "npm run --prefix tests/e2e check:intent-coverage"
+  run "npm run --prefix rust/tests/e2e check:intent-coverage"

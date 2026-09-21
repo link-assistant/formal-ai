@@ -245,13 +245,13 @@ fn static_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
         "intent_routing_phrase_rows".to_owned(),
         phrase_rows(&intent_routing),
     );
-    let planner = fs::read_to_string(root.join("src/agentic_coding/planner.rs"))
+    let planner = fs::read_to_string(root.join("rust/src/agentic_coding/planner.rs"))
         .map_err(|error| format!("planner.rs: {error}"))?;
     measured.insert(
         "planner_route_arms".to_owned(),
         planner_route_arms(&planner),
     );
-    let frontier = fs::read_to_string(root.join("tests/unit/issue_1138_frontier_classes.rs"))
+    let frontier = fs::read_to_string(root.join("rust/tests/unit/issue_1138_frontier_classes.rs"))
         .map_err(|error| format!("issue_1138_frontier_classes.rs: {error}"))?;
     let expected = [
         "news_class_routes_to_a_live_search",
@@ -328,6 +328,8 @@ fn runtime_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
             "+1.98.1",
             "run",
             "--quiet",
+            "--manifest-path",
+            "rust/Cargo.toml",
             "--example",
             "measure_capability_routing",
         ],

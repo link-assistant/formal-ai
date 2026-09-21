@@ -2,9 +2,9 @@ self_ast_census
   target src/thinking.rs
   language rust
   fidelity signature
-  byte_len 21634
+  byte_len 21631
   line_count 548
-  content_id source_module_b7ad670b4817a3b4
+  content_id source_module_1d38c10371912e6b
   symbol_count 26
   symbols
     const DEFAULT_THINKING_LANGUAGE 34 34

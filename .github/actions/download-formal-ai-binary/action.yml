@@ -12,11 +12,11 @@ runs:
         NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: formal-ai-release-binary
-        path: target/release
+        path: rust/target/release
     - shell: bash
       # Every binary the build produced, not just `formal-ai`:
       # `src/bin/with-formal-ai.rs` is auto-discovered by cargo and spawned by
       # `tests/integration/with_formal_ai.rs` through its own `CARGO_BIN_EXE_`.
       run: |
-        find target/release -maxdepth 1 -type f ! -name "*.d" \
+        find rust/target/release -maxdepth 1 -type f ! -name "*.d" \
           -exec chmod +x {} ";"

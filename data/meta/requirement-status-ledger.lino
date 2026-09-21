@@ -3,7 +3,7 @@ requirement_status_ledger
   source "REQUIREMENTS.md and docs/requirements/*.md"
   verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
   requirement_count 1146
-  implemented_count 449
+  implemented_count 0
   shard "data/meta/requirement-status-ledger/requirements-01.lino"
   shard "data/meta/requirement-status-ledger/requirements-02.lino"
   shard "data/meta/requirement-status-ledger/requirements-03.lino"

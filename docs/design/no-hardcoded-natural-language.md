@@ -23,10 +23,10 @@ to both directions of every reasoning path:
   surrounding prose.
 
 - **Web front-end (React).** Every user-facing string rendered by
-  `src/web/app.js` — panel titles, button labels, status words, onboarding copy,
-  and system messages — is a catalog entry in `src/web/i18n-catalog.lino`,
+  `js/app.js` — panel titles, button labels, status words, onboarding copy,
+  and system messages — is a catalog entry in `js/i18n-catalog.lino`,
   looked up at render time via `t(key, params)` (the `window.FormalAiI18n`
-  engine in `src/web/i18n.js`). The render helper `h(tag, props, …children)`
+  engine in `js/i18n.js`). The render helper `h(tag, props, …children)`
   never receives a prose string literal as a child; visible text is always a
   `t(...)` call so it follows the active UI language (en/ru/zh/hi) and fills
   placeholders such as `{command}` or `{granted}/{total}`.
@@ -51,12 +51,12 @@ This is why a behavioural change is a seed edit plus a lookup, not a new branch
 on a string. It is also why the same prompt is answered identically by the CLI,
 the library, the HTTP server, the Telegram bot, and the website: they all read
 the same seed (the Rust crate via `include_str!`, the browser via the
-`src/web/seed/` deployment mirror).
+`js/seed/` deployment mirror).
 
 ## Enforcement (CI, not just convention)
 
-1. **Total reference-closure gate.** `tests/unit/total_closure.rs` shells out to
-   `scripts/audit-total-closure.py` and is run by `cargo test --tests`. Every
+1. **Total reference-closure gate.** `rust/tests/unit/total_closure.rs` shells out to
+   `scripts/audit-total-closure.py` and is run by `cargo test --manifest-path rust/Cargo.toml --tests`. Every
    bare value token in any `data/seed/*.lino` must resolve to one of: a defined
    meaning slug, a declared role (`data/seed/roles.lino`), a cached dictionary
    lemma (`data/cache/wiktionary|wordnet/…`), a Wikidata id with a cached
@@ -82,7 +82,7 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    script without `--check`.
 
 3. **Roles are declared, then generated.** A new `role` is declared as a
-   `ROLE_*` constant in `src/seed/roles/*.rs`, re-exported from `src/seed.rs`,
+   `ROLE_*` constant in `rust/src/seed/roles/*.rs`, re-exported from `rust/src/seed.rs`,
    and the registry is regenerated with
    `python3 scripts/generate-role-registry.py` (keeps `data/seed/roles.lino` in
    lockstep; enforced by the `reference_closure` tests).
@@ -90,8 +90,8 @@ the same seed (the Rust crate via `include_str!`, the browser via the
 4. **Web-UI hardcoded-string guard (#511).** PR #528 reintroduced English prose
    directly inside `h(...)` render calls (permission-panel titles, button
    labels, status words). To stop that class of regression,
-   `tests/e2e/scripts/check-web-hardcoded-ui-strings.mjs` parses every
-   `h(tag, props, …children)` call in `src/web/app.js` and **fails the build**
+   `rust/tests/e2e/scripts/check-web-hardcoded-ui-strings.mjs` parses every
+   `h(tag, props, …children)` call in `js/app.js` and **fails the build**
    when a *child* argument is a bare prose string literal (a letter, whitespace,
    then another letter — i.e. two words a human reads). Dynamic values —
    `t(...)`, variables, ternaries, template literals — pass by construction, so
@@ -103,17 +103,17 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    Both run in `.github/workflows/release.yml` and locally with:
 
    ```sh
-   npm --prefix tests/e2e run check:web-hardcoded-ui
-   npm --prefix tests/e2e run check:i18n
+   npm --prefix rust/tests/e2e run check:web-hardcoded-ui
+   npm --prefix rust/tests/e2e run check:i18n
    ```
 
    To add a new web-UI string: add the key (and its translation) under the right
-   block in `src/web/i18n-catalog.lino` for **all four** locales, register the
+   block in `js/i18n-catalog.lino` for **all four** locales, register the
    key in `REQUIRED_KEYS` in `check-i18n-catalog.mjs`, and render it with
    `t("<key>", params)` — never a literal.
 
-5. **Rust `src/` hardcoded-language burn-down (#659).**
-   `scripts/check-hardcoded-language.rs` (rust-script) scans every `src/**/*.rs`
+5. **Rust `rust/src/` hardcoded-language burn-down (#659).**
+   `scripts/check-hardcoded-language.rs` (rust-script) scans every `rust/src/**/*.rs`
    file for user-facing prose string literals. Punctuated sentences are
    recognized globally when they contain a space, end in terminal punctuation
    (`.`, `!`, `?`), and hold at least two real words. Unpunctuated multi-word
@@ -127,8 +127,8 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    inventory of *today's* debt (`<relative-path>\t<canonical-literal-text>`). The
    check **fails the build two ways**, so the debt can only shrink:
 
-   - a literal in `src/` that is **not** in the allowlist (new debt is blocked);
-   - an allowlist row whose literal **no longer occurs** in `src/` (a migrated
+   - a literal in `rust/src/` that is **not** in the allowlist (new debt is blocked);
+   - an allowlist row whose literal **no longer occurs** in `rust/src/` (a migrated
      row must be pruned, keeping the inventory honest).
 
    Regenerate the allowlist after an intentional change with:
@@ -141,7 +141,7 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    `data/seed/*.lino`, read it back through `seed::response_for(...)` (never a
    literal), then re-run `--write` so the migrated rows drop out of the
    allowlist. PR #692 seeded the allowlist and migrated the duplicated
-   `src/engine_responses.rs` English fallbacks — which already existed for all
+   `rust/src/engine_responses.rs` English fallbacks — which already existed for all
    four languages in `data/seed/multilingual-responses.lino` — to prove the loop.
    The check runs in `.github/workflows/release.yml` and locally with:
 
@@ -158,14 +158,14 @@ suggestion. Nothing about it is hardcoded:
 - **Trigger vocabulary** — terminal/shell phrases, run verbs, Chinese run verbs,
   and leading shell tokens (`ls`, `git`, `cargo`, …) — lives in
   `data/seed/terminal-commands.lino`. Rust parses it via
-  `src/seed/terminal_commands.rs` (`seed::terminal_command_vocabulary()`); the
-  worker loads the synced `src/web/seed/terminal-commands.lino` deployment copy
-  via `src/web/seed_loader.js`, guarded by
+  `rust/src/seed/terminal_commands.rs` (`seed::terminal_command_vocabulary()`); the
+  worker loads the synced `js/seed/terminal-commands.lino` deployment copy
+  via `js/seed_loader.js`, guarded by
   `experiments/issue-513-sync-worker-terminal.mjs`.
 - **Response prose** for all four languages lives in
   `data/seed/multilingual-responses.lino` under the `agent_suggestion` and
   `agent_suggestion_active` intents, each with a `{command}` placeholder.
-  `src/solver_terminal.rs` (via `seed::response_for`) and the worker (via
+  `rust/src/solver_terminal.rs` (via `seed::response_for`) and the worker (via
   `answerFor`) look the template up and fill in the detected command.
 - **Grounding** — every new value token (each shell token, `command-line`, the
   `agent_suggestion*` intents and their `response_*` templates) is grounded as a

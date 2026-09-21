@@ -6,4 +6,4 @@
 ci_gate check_conversational_variation_floor
   stage web
   description "Every conversational test case holds at least five wording variations in every advertised language."
-  run "npm run --prefix tests/e2e check:variation-floor"
+  run "npm run --prefix rust/tests/e2e check:variation-floor"

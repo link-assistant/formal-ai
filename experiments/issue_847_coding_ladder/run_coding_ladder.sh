@@ -12,7 +12,7 @@
 #   ONLY=L4 experiments/issue_847_coding_ladder/run_coding_ladder.sh
 #
 # Environment knobs:
-#   BIN       Path to the release binary (default: target/release/formal-ai)
+#   BIN       Path to the release binary (default: rust/target/release/formal-ai)
 #   PROMPTS   Dataset path (default: alongside this script)
 #   OUT       Results JSON (default: <scriptdir>/results.json for a full run;
 #             filtered runs use results-partial-<filter>.json)
@@ -38,7 +38,7 @@ set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PROMPTS="${PROMPTS:-$HERE/prompts.json}"
 ONLY="${ONLY:-}"
 TIMEOUT="${TIMEOUT:-300}"

@@ -6,4 +6,4 @@
 ci_gate check_language_change_parity
   stage web
   description "A change to one language's seed data is mirrored in every other language."
-  run "npm run --prefix tests/e2e check:language-parity"
+  run "npm run --prefix rust/tests/e2e check:language-parity"

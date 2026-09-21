@@ -2576,9 +2576,9 @@ observed on the final tree.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-B5-1 | Every satisfied obligation node must carry a matching execution record: the command, its exit code or an explicit none, and a SHA-256 of the exact observed bytes. | Implemented by `src/execution_evidence.rs::Evidence::observed`, which hashes its raw byte slice, and by the evidence-bearing `ObligationOutcome::Satisfied` variant in `src/obligation_ledger.rs`. Verified by `tests/unit/specification/execution_evidence.rs` and `tests/unit/specification/obligation_ledger.rs`. |
-| R1138-B5-2 | An observation may discharge only the node whose expectation names its command or path; an unrelated result clears nothing. | Implemented by `src/obligation_ledger.rs::ObligationLedger::observe`. Verified by `tests/unit/specification/obligation_ledger.rs::an_unrelated_observation_discharges_nothing`. |
-| R1138-B5-3 | A clause with no derivable expectation is split, not discarded; a clause that cannot be split is reported as an unsatisfied gap with its byte span, never as completion prose. | Implemented by `src/obligation_ledger.rs::ObligationNode`, `src/agentic_coding/task_obligations.rs` and the `ObligationStep::ReportGap` branch in `src/agentic_coding/planner.rs`. Verified across ten prompts and five languages by `tests/unit/issue_1138_obligation_evidence.rs`. |
+| R1138-B5-1 | Every satisfied obligation node must carry a matching execution record: the command, its exit code or an explicit none, and a SHA-256 of the exact observed bytes. | Implemented by `rust/src/execution_evidence.rs::Evidence::observed`, which hashes its raw byte slice, and by the evidence-bearing `ObligationOutcome::Satisfied` variant in `rust/src/obligation_ledger.rs`. Verified by `rust/tests/unit/specification/execution_evidence.rs` and `rust/tests/unit/specification/obligation_ledger.rs`. |
+| R1138-B5-2 | An observation may discharge only the node whose expectation names its command or path; an unrelated result clears nothing. | Implemented by `rust/src/obligation_ledger.rs::ObligationLedger::observe`. Verified by `rust/tests/unit/specification/obligation_ledger.rs::an_unrelated_observation_discharges_nothing`. |
+| R1138-B5-3 | A clause with no derivable expectation is split, not discarded; a clause that cannot be split is reported as an unsatisfied gap with its byte span, never as completion prose. | Implemented by `rust/src/obligation_ledger.rs::ObligationNode`, `rust/src/agentic_coding/task_obligations.rs` and the `ObligationStep::ReportGap` branch in `rust/src/agentic_coding/planner.rs`. Verified across ten prompts and five languages by `rust/tests/unit/issue_1138_obligation_evidence.rs`. |
 
 ## Issue #1138 Composition From Retrieved Sources
 
@@ -2586,141 +2586,141 @@ Retrieved procedure text — not an enumerated shape catalog — is the source o
 coding answers. The steps are formalized into a language-neutral IR and lowered
 per language; the seeded idiom catalog that bootstrapped this path is itself
 deletable data whose loss is provably recoverable. The contract is covered by
-`tests/unit/coding_discovery/` (procedure text, program IR, IR lowering,
+`rust/tests/unit/coding_discovery/` (procedure text, program IR, IR lowering,
 composition search, multilingual parity) and the full-suite upstream rows in
 `data/benchmarks/external-results.lino`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-B2-1 | Retrieved procedure text becomes an ordered, typed step list with per-step source spans, never a stored answer body. | Implemented by `coding_discovery::procedure_text`; covered by `tests/unit/coding_discovery/procedure_text.rs`. |
-| R1138-B2-2 | The ordered step list lowers into a language-neutral `ProgramIr` whose nodes carry types, fragments, grounding, and license metadata. | Implemented by `src/coding/program_ir.rs`; covered by `tests/unit/coding_discovery/program_ir.rs`. |
-| R1138-B2-3 | The `ProgramIr` renders per target language — the lowerer is selected after composition and preserves the IR identity — and equivalent requirements in English, Russian, Hindi, Chinese, and Spanish expose the same frontier. | Implemented by IR lowering and Python rendering; covered by `tests/unit/coding_discovery/ir_lowering.rs` and the 25 held-out cases in `tests/unit/coding_discovery/multilingual.rs`. |
-| R1138-B2-4 | The seeded idiom catalog is a deletable bootstrap: every fragment is declared `bootstrap true` with a rediscovery query, and deleting it loses no source evidence. | Implemented by `data/seed/coding-composition-fragments.lino`; covered by `tests/unit/coding_discovery/fragment_catalog.rs`. |
-| R1138-B2-5 | Forgetting a discovered procedure and rediscovering it from the same trusted sources reproduces the same content id. | Implemented by the discovered-procedure ledger; covered by `forgotten_procedures_are_rediscovered_from_the_same_sources` in `tests/unit/coding_discovery/ledger.rs`. |
+| R1138-B2-1 | Retrieved procedure text becomes an ordered, typed step list with per-step source spans, never a stored answer body. | Implemented by `coding_discovery::procedure_text`; covered by `rust/tests/unit/coding_discovery/procedure_text.rs`. |
+| R1138-B2-2 | The ordered step list lowers into a language-neutral `ProgramIr` whose nodes carry types, fragments, grounding, and license metadata. | Implemented by `rust/src/coding/program_ir.rs`; covered by `rust/tests/unit/coding_discovery/program_ir.rs`. |
+| R1138-B2-3 | The `ProgramIr` renders per target language — the lowerer is selected after composition and preserves the IR identity — and equivalent requirements in English, Russian, Hindi, Chinese, and Spanish expose the same frontier. | Implemented by IR lowering and Python rendering; covered by `rust/tests/unit/coding_discovery/ir_lowering.rs` and the 25 held-out cases in `rust/tests/unit/coding_discovery/multilingual.rs`. |
+| R1138-B2-4 | The seeded idiom catalog is a deletable bootstrap: every fragment is declared `bootstrap true` with a rediscovery query, and deleting it loses no source evidence. | Implemented by `data/seed/coding-composition-fragments.lino`; covered by `rust/tests/unit/coding_discovery/fragment_catalog.rs`. |
+| R1138-B2-5 | Forgetting a discovered procedure and rediscovering it from the same trusted sources reproduces the same content id. | Implemented by the discovered-procedure ledger; covered by `forgotten_procedures_are_rediscovered_from_the_same_sources` in `rust/tests/unit/coding_discovery/ledger.rs`. |
 | R1138-B2-6 | The upstream coding suites are measured at full slice (HumanEval 164, MBPP 500), online and cold-offline, with per-slice floors and the recorded failure frontier — a first-20 score is a regression control, never a suite score. | Measured by `benchmark run --suite humaneval --slice 164` and `--suite mbpp --slice 500`, each cold-offline and with `--online`; rows recorded 2026-09-17 in `data/benchmarks/external-results.lino` with `--frontier-record`; floors raised by `external_benchmarks::ratchet`. |
-| R1138-B2-7 | Every held-out structural answer reports a `typed_search(…)` composition over seed fragments, and no benchmark identifier, task sentence, assertion, or expected-output literal may leak into source or seed data — an example's expected value is payable only as a conditional branch payload, never as a condition operand. | Covered by `tests/unit/coding_discovery/structural_composition.rs` and `tests/unit/coding_discovery/no_memorization.rs`; the observation-literal slot filter is enforced in `src/coding/composition_search.rs`. |
-| R1138-B2-8 | OEIS and the Python standard-library documentation are selected through the trusted-source registry as declared sources with pinned extractors, endpoints, licenses, and content-addressed caches. | Declared in `data/seed/sources-registry.lino` (`oeis`, `python_docs`); replay pinned by `tests/unit/coding_discovery/oeis.rs` and `tests/unit/coding_discovery/python_docs.rs`. |
+| R1138-B2-7 | Every held-out structural answer reports a `typed_search(…)` composition over seed fragments, and no benchmark identifier, task sentence, assertion, or expected-output literal may leak into source or seed data — an example's expected value is payable only as a conditional branch payload, never as a condition operand. | Covered by `rust/tests/unit/coding_discovery/structural_composition.rs` and `rust/tests/unit/coding_discovery/no_memorization.rs`; the observation-literal slot filter is enforced in `rust/src/coding/composition_search.rs`. |
+| R1138-B2-8 | OEIS and the Python standard-library documentation are selected through the trusted-source registry as declared sources with pinned extractors, endpoints, licenses, and content-addressed caches. | Declared in `data/seed/sources-registry.lino` (`oeis`, `python_docs`); replay pinned by `rust/tests/unit/coding_discovery/oeis.rs` and `rust/tests/unit/coding_discovery/python_docs.rs`. |
 
 ## Issue #1138 Formalization Depth
 
 Unfamiliar requirement text is recursively grounded rather than preserved as
 an assertion-shaped sentence. The contract is covered by
-`tests/unit/issue_1138_formalization_depth.rs`.
+`rust/tests/unit/issue_1138_formalization_depth.rs`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-B4-1 | Every ungrounded surface, relation, or procedure becomes an explicit need with source span and origin. | Implemented by the formalization graph; covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-2 | A need is satisfied through the shared registry lookup, and the retrieved gloss is recursively formalized to bounded depth. | Implemented by the formalization-depth loop; covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-3 | A grounded result is a sourced concept, predicate, entity, or procedure link, never a stored answer sentence. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-4 | Preserved text cannot satisfy an assertion primitive, and an unresolved need cannot be reported covered. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-5 | An extracted procedure enters memory only through bounded execution and named review with license metadata retained. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-6 | Equivalent English, Russian, Hindi, Chinese, and Spanish requirements produce one graph identity or a per-language gap. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-7 | Sentence segmentation is script-aware and every recorded span selects exactly its source text. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-8 | A custom agentic task is formalized instead of substituting a seeded example narrative. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-9 | One need type and status vocabulary serve the universal loop, coding path, and formalizer. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
-| R1138-B4-10 | Offline capture replay reproduces the graph identity, and deleting derived graph memory loses no source evidence. | Covered by `tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-1 | Every ungrounded surface, relation, or procedure becomes an explicit need with source span and origin. | Implemented by the formalization graph; covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-2 | A need is satisfied through the shared registry lookup, and the retrieved gloss is recursively formalized to bounded depth. | Implemented by the formalization-depth loop; covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-3 | A grounded result is a sourced concept, predicate, entity, or procedure link, never a stored answer sentence. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-4 | Preserved text cannot satisfy an assertion primitive, and an unresolved need cannot be reported covered. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-5 | An extracted procedure enters memory only through bounded execution and named review with license metadata retained. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-6 | Equivalent English, Russian, Hindi, Chinese, and Spanish requirements produce one graph identity or a per-language gap. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-7 | Sentence segmentation is script-aware and every recorded span selects exactly its source text. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-8 | A custom agentic task is formalized instead of substituting a seeded example narrative. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-9 | One need type and status vocabulary serve the universal loop, coding path, and formalizer. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
+| R1138-B4-10 | Offline capture replay reproduces the graph identity, and deleting derived graph memory loses no source evidence. | Covered by `rust/tests/unit/issue_1138_formalization_depth.rs`. |
 
 ## Issue #1138 Learning Effects
 
 Learning is accepted only when promotion changes held-out execution without a
 regression. The contract is covered by
-`tests/unit/issue_1138_learning_ratchet.rs` and
-`tests/unit/issue_1138_learned_items_change_answers.rs`.
+`rust/tests/unit/issue_1138_learning_ratchet.rs` and
+`rust/tests/unit/issue_1138_learned_items_change_answers.rs`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-B7-1 | An adopted learned item executes in live dispatch and its use is named in the trace. | Covered by `tests/unit/issue_1138_learned_items_change_answers.rs`. |
-| R1138-B7-2 | Adoption requires an improved before/after execution-record pair on held-out prompts in five languages with zero regressions. | Covered by `tests/unit/issue_1138_learning_ratchet.rs`. |
-| R1138-B7-3 | The human gate reviews a draft pull request carrying the seed edit; inertness is not treated as approval. | Covered by `tests/unit/issue_1138_learning_ratchet.rs`. |
-| R1138-B7-4 | A forgotten cache payload is refetched on demand, and a hash divergence is reported rather than substituted. | Covered by `tests/unit/issue_1138_learning_ratchet.rs`. |
+| R1138-B7-1 | An adopted learned item executes in live dispatch and its use is named in the trace. | Covered by `rust/tests/unit/issue_1138_learned_items_change_answers.rs`. |
+| R1138-B7-2 | Adoption requires an improved before/after execution-record pair on held-out prompts in five languages with zero regressions. | Covered by `rust/tests/unit/issue_1138_learning_ratchet.rs`. |
+| R1138-B7-3 | The human gate reviews a draft pull request carrying the seed edit; inertness is not treated as approval. | Covered by `rust/tests/unit/issue_1138_learning_ratchet.rs`. |
+| R1138-B7-4 | A forgotten cache payload is refetched on demand, and a hash divergence is reported rather than substituted. | Covered by `rust/tests/unit/issue_1138_learning_ratchet.rs`. |
 
 ## Issue #1138 Live Concept Lookup
 
 The universal and coding paths share one bounded, attributable source walk.
 The requirements below are pinned by
-`tests/unit/issue_1138_concept_lookup.rs` and
-`tests/unit/issue_1138_universal_loop_lookup.rs`.
+`rust/tests/unit/issue_1138_concept_lookup.rs` and
+`rust/tests/unit/issue_1138_universal_loop_lookup.rs`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-B1-1 | One source-lookup implementation walks the sources registry and serves both the universal loop and coding discovery. | Implemented by `src/concept_lookup.rs::SourceLookup`; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
-| R1138-B1-2 | Lookup is bounded by declared depth, pages, services, and capture age. | Implemented by `src/source_walk.rs::LookupBounds`; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
-| R1138-B1-3 | Every retrieved sense carries source id, exact URL, digest, fetch time, license, and depth; offline replay is byte-stable. | Implemented by the sense ledger and capture cache; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
-| R1138-B1-4 | A retrieved gloss is attributed and is never inserted into generated code as an answer template. | Enforced by the sense projection; covered by `tests/unit/issue_1138_universal_loop_lookup.rs`. |
-| R1138-B1-5 | A miss names every consulted source and its outcome instead of guessing. | Implemented by the lookup outcome ledger; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
-| R1138-B1-6 | Source-service opt-outs are authoritative for concept lookup. | Implemented by service preferences; covered by `tests/unit/issue_1138_concept_lookup.rs`. |
-| R1138-B1-7 | Held-out words absent from seed data resolve or report an attributable miss in English, Russian, Hindi, Chinese, and Spanish. | Covered by `tests/unit/issue_1138_universal_loop_lookup.rs`. |
-| R1138-B1-8 | Deleting the derived sense ledger and replaying the same captures reproduces the same content ids. | Covered by `tests/unit/issue_1138_concept_lookup.rs`. |
-| R1138-B1-9 | Native and browser runtimes use one source-walk contract and one parity fixture. | Covered by `tests/unit/issue_1138_concept_lookup.rs` and the browser parity suite. |
+| R1138-B1-1 | One source-lookup implementation walks the sources registry and serves both the universal loop and coding discovery. | Implemented by `rust/src/concept_lookup.rs::SourceLookup`; covered by `rust/tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-2 | Lookup is bounded by declared depth, pages, services, and capture age. | Implemented by `rust/src/source_walk.rs::LookupBounds`; covered by `rust/tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-3 | Every retrieved sense carries source id, exact URL, digest, fetch time, license, and depth; offline replay is byte-stable. | Implemented by the sense ledger and capture cache; covered by `rust/tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-4 | A retrieved gloss is attributed and is never inserted into generated code as an answer template. | Enforced by the sense projection; covered by `rust/tests/unit/issue_1138_universal_loop_lookup.rs`. |
+| R1138-B1-5 | A miss names every consulted source and its outcome instead of guessing. | Implemented by the lookup outcome ledger; covered by `rust/tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-6 | Source-service opt-outs are authoritative for concept lookup. | Implemented by service preferences; covered by `rust/tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-7 | Held-out words absent from seed data resolve or report an attributable miss in English, Russian, Hindi, Chinese, and Spanish. | Covered by `rust/tests/unit/issue_1138_universal_loop_lookup.rs`. |
+| R1138-B1-8 | Deleting the derived sense ledger and replaying the same captures reproduces the same content ids. | Covered by `rust/tests/unit/issue_1138_concept_lookup.rs`. |
+| R1138-B1-9 | Native and browser runtimes use one source-walk contract and one parity fixture. | Covered by `rust/tests/unit/issue_1138_concept_lookup.rs` and the browser parity suite. |
 
 ## Issue #1138 Prerequisite Discovery
 
 Missing tools become observable, consent-bounded prerequisite needs. The
-contract is covered by `tests/unit/issue_1138_prerequisite_need.rs` and
-`tests/unit/issue_1138_install_scope.rs`.
+contract is covered by `rust/tests/unit/issue_1138_prerequisite_need.rs` and
+`rust/tests/unit/issue_1138_install_scope.rs`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-6-1 | Toolchain availability is observed; an unprobed tool is `NotProbed`, never unavailable. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
-| R1138-6-2 | The check command runs before any output is called observed; unobserved output is labelled in every supported language. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
-| R1138-6-3 | A missing executable is distinguished from permission denial and ordinary compile failure by observed status. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
-| R1138-6-4 | A missing executable becomes a blocked prerequisite need until a re-probe observes it present. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
-| R1138-6-5 | Setup instructions come from the declared trusted publisher; lookalike hosts are refused and recorded. | Covered by `tests/unit/issue_1138_setup_publisher.rs`. |
-| R1138-6-6 | Installation is separately consented, workspace-scoped, and refuses any out-of-scope write before execution. | Covered by `tests/unit/issue_1138_install_scope.rs`. |
-| R1138-6-7 | A recipe without a postcondition is refused; a failing postcondition remains `StillMissing`. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
-| R1138-6-8 | Memory retains recipe and provenance rather than the installed payload, and rediscovery preserves the content id. | Covered by `tests/unit/issue_1138_prerequisite_need.rs`. |
-| R1138-6-9 | Execution uses an isolated selectable environment with network disabled unless the contract grants it. | Covered by `tests/unit/issue_1138_install_scope.rs`. |
-| R1138-6-10 | Deadlines report elapsed time, limit, partial output, and every attempted ladder level. | Covered by `tests/unit/issue_1138_named_tests.rs`. |
-| R1138-6-11 | The browser advertises runtime size and loads it only after explicit action; only an actual run yields observed output. | Covered by `tests/unit/issue_1138_surface_honesty.rs`. |
-| R1138-6-12 | With no execution environment, every language receives an honest refusal rather than fabricated observed output. | Covered by `tests/unit/issue_1138_surface_honesty.rs`. |
+| R1138-6-1 | Toolchain availability is observed; an unprobed tool is `NotProbed`, never unavailable. | Covered by `rust/tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-2 | The check command runs before any output is called observed; unobserved output is labelled in every supported language. | Covered by `rust/tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-3 | A missing executable is distinguished from permission denial and ordinary compile failure by observed status. | Covered by `rust/tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-4 | A missing executable becomes a blocked prerequisite need until a re-probe observes it present. | Covered by `rust/tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-5 | Setup instructions come from the declared trusted publisher; lookalike hosts are refused and recorded. | Covered by `rust/tests/unit/issue_1138_setup_publisher.rs`. |
+| R1138-6-6 | Installation is separately consented, workspace-scoped, and refuses any out-of-scope write before execution. | Covered by `rust/tests/unit/issue_1138_install_scope.rs`. |
+| R1138-6-7 | A recipe without a postcondition is refused; a failing postcondition remains `StillMissing`. | Covered by `rust/tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-8 | Memory retains recipe and provenance rather than the installed payload, and rediscovery preserves the content id. | Covered by `rust/tests/unit/issue_1138_prerequisite_need.rs`. |
+| R1138-6-9 | Execution uses an isolated selectable environment with network disabled unless the contract grants it. | Covered by `rust/tests/unit/issue_1138_install_scope.rs`. |
+| R1138-6-10 | Deadlines report elapsed time, limit, partial output, and every attempted ladder level. | Covered by `rust/tests/unit/issue_1138_named_tests.rs`. |
+| R1138-6-11 | The browser advertises runtime size and loads it only after explicit action; only an actual run yields observed output. | Covered by `rust/tests/unit/issue_1138_surface_honesty.rs`. |
+| R1138-6-12 | With no execution environment, every language receives an honest refusal rather than fabricated observed output. | Covered by `rust/tests/unit/issue_1138_surface_honesty.rs`. |
 
 ## Issue #1138 Repository Workspace Protocol
 
 Repository authoring uses one default-deny protocol, covered by
-`tests/unit/issue_1138_repository_workspace.rs` and
-`tests/unit/issue_1138_locate_targets.rs`.
+`rust/tests/unit/issue_1138_repository_workspace.rs` and
+`rust/tests/unit/issue_1138_locate_targets.rs`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-3-1 | A repository task carries an origin and an exact base commit; a branch name is refused as a base. | Implemented by the repository-workspace request parser; covered by `tests/unit/issue_1138_repository_workspace.rs`. |
-| R1138-3-2 | Named targets are located by repository census or literal/path occurrence; ambiguity resolves to no target. | Implemented by `src/repository_workspace/locate.rs`; covered by `tests/unit/issue_1138_locate_targets.rs`. |
-| R1138-3-3 | Named tests run and record command, exit code, and output before an obligation can be satisfied. | Implemented by the verification stage; covered by `tests/unit/issue_1138_named_tests.rs` and `tests/unit/issue_1138_repository_workspace.rs`. |
-| R1138-3-4 | The offered patch is a unified diff computed from the tree and verified against the exact base. | Implemented by the workspace outcome; covered by `tests/unit/issue_1138_repository_workspace.rs`. |
-| R1138-3-5 | SWE-bench, the coding ladder, and self-authoring consume the same protocol document. | Partial: SWE-bench and the coding ladder enter `WorkspaceProtocol`; `scripts/author-change-with-formal-ai.sh` still owns a separate Agent-CLI authoring loop, so the third caller is not unified yet. Covered by `tests/unit/issue_1138_repository_workspace.rs` and `tests/unit/issue_848_coding_ladder.rs`. |
-| R1138-3-6 | Commands are default-deny and allowed by program, subcommand, and argument shape from seed data. | Implemented by the repository command allowlist; covered by `tests/unit/issue_1138_command_allowlist.rs`. |
-| R1138-3-7 | Authoring refuses commits by default; an allowed commit carries all self-hosting trailers and exact model evidence. | Partial: `run_solve` is default-deny and its produced commit payload passes the canonical attribution parser, but the legacy authoring shell has not yet been reduced to that entry point. Covered by `tests/unit/issue_1138_solve_cli.rs` and `tests/unit/specification/self_hosting_metric/solve_attribution.rs`. |
-| R1138-3-8 | A missing prerequisite remains an evidenced unsatisfied need, never a pass or skip. | Implemented by the protocol outcome ledger; covered by `tests/unit/issue_1138_repository_workspace.rs`. |
-| R1138-3-9 | The protocol document is forgettable and regenerates to the same content id. | Covered by `tests/unit/specification/repository_workspace_protocol.rs`. |
+| R1138-3-1 | A repository task carries an origin and an exact base commit; a branch name is refused as a base. | Implemented by the repository-workspace request parser; covered by `rust/tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-2 | Named targets are located by repository census or literal/path occurrence; ambiguity resolves to no target. | Implemented by `rust/src/repository_workspace/locate.rs`; covered by `rust/tests/unit/issue_1138_locate_targets.rs`. |
+| R1138-3-3 | Named tests run and record command, exit code, and output before an obligation can be satisfied. | Implemented by the verification stage; covered by `rust/tests/unit/issue_1138_named_tests.rs` and `rust/tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-4 | The offered patch is a unified diff computed from the tree and verified against the exact base. | Implemented by the workspace outcome; covered by `rust/tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-5 | SWE-bench, the coding ladder, and self-authoring consume the same protocol document. | Partial: SWE-bench and the coding ladder enter `WorkspaceProtocol`; `scripts/author-change-with-formal-ai.sh` still owns a separate Agent-CLI authoring loop, so the third caller is not unified yet. Covered by `rust/tests/unit/issue_1138_repository_workspace.rs` and `rust/tests/unit/issue_848_coding_ladder.rs`. |
+| R1138-3-6 | Commands are default-deny and allowed by program, subcommand, and argument shape from seed data. | Implemented by the repository command allowlist; covered by `rust/tests/unit/issue_1138_command_allowlist.rs`. |
+| R1138-3-7 | Authoring refuses commits by default; an allowed commit carries all self-hosting trailers and exact model evidence. | Partial: `run_solve` is default-deny and its produced commit payload passes the canonical attribution parser, but the legacy authoring shell has not yet been reduced to that entry point. Covered by `rust/tests/unit/issue_1138_solve_cli.rs` and `rust/tests/unit/specification/self_hosting_metric/solve_attribution.rs`. |
+| R1138-3-8 | A missing prerequisite remains an evidenced unsatisfied need, never a pass or skip. | Implemented by the protocol outcome ledger; covered by `rust/tests/unit/issue_1138_repository_workspace.rs`. |
+| R1138-3-9 | The protocol document is forgettable and regenerates to the same content id. | Covered by `rust/tests/unit/specification/repository_workspace_protocol.rs`. |
 
 ## Issue #1138 Selection Heuristics
 
 Candidate selection is associative, deterministic, and subordinate to
 satisfaction. The contract is covered by
-`tests/unit/issue_1138_selection_heuristics.rs`.
+`rust/tests/unit/issue_1138_selection_heuristics.rs`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-B12-1 | Selection heuristics live in the method registry as link data, are never route targets, and their precedence changes by data edit. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
-| R1138-B12-2 | No heuristic may rank an unsatisfying candidate above a satisfying one, and no ranking key depends on wall-clock time. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
-| R1138-B12-3 | An empty heuristic table falls back to deterministic identity ordering and records that fallback. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
-| R1138-B12-4 | The non-binary work-unit count is measured, recorded, and strictly decreasing. | Covered by `tests/unit/issue_1138_selection_heuristics.rs`. |
+| R1138-B12-1 | Selection heuristics live in the method registry as link data, are never route targets, and their precedence changes by data edit. | Covered by `rust/tests/unit/issue_1138_selection_heuristics.rs`. |
+| R1138-B12-2 | No heuristic may rank an unsatisfying candidate above a satisfying one, and no ranking key depends on wall-clock time. | Covered by `rust/tests/unit/issue_1138_selection_heuristics.rs`. |
+| R1138-B12-3 | An empty heuristic table falls back to deterministic identity ordering and records that fallback. | Covered by `rust/tests/unit/issue_1138_selection_heuristics.rs`. |
+| R1138-B12-4 | The non-binary work-unit count is measured, recorded, and strictly decreasing. | Covered by `rust/tests/unit/issue_1138_selection_heuristics.rs`. |
 
 ## Issue #1138 Verifiable Task Routing
 
 Checkable natural-language tasks share the coding discovery and execution
-machinery. The contract is covered by `tests/unit/verifiable_task/mod.rs`.
+machinery. The contract is covered by `rust/tests/unit/verifiable_task/mod.rs`.
 
 | ID | Requirement | Status / evidence |
 | --- | --- | --- |
-| R1138-B8-1 | One shared task type represents expected answer shape, inputs, procedure needs, and checks. | Implemented by `src/verifiable_task.rs`; covered by `tests/unit/verifiable_task/identity.rs`. |
-| R1138-B8-2 | Recognition vocabulary is seed-driven in English, Russian, Hindi, Chinese, and Spanish. | Covered by `tests/unit/verifiable_task/recognition.rs`. |
-| R1138-B8-3 | A recognized task projects onto the shared discover-compose-execute-verify path. | Covered by `tests/unit/verifiable_task/execution.rs`. |
-| R1138-B8-4 | The answer is projected only from observed execution evidence. | Covered by `tests/unit/verifiable_task/execution.rs`. |
-| R1138-B8-5 | Type, range, relation, recomputation, and provenance checks are explicit and all must pass. | Covered by `tests/unit/verifiable_task/ledger.rs`. |
-| R1138-B8-6 | Derivation memory stores a recomputable recipe rather than replaying the previous answer. | Covered by `tests/unit/verifiable_task/ledger.rs`. |
-| R1138-B8-7 | Task categories are derived from seed meanings, not a hard-coded answer table. | Covered by `tests/unit/verifiable_task/recognition.rs`. |
-| R1138-B8-8 | The no-memorization gate scans production source and seed data for benchmark prompts and answers. | Covered by `tests/unit/verifiable_task/ratchets.rs`. |
-| R1138-B8-9 | Every solver generation re-measures the held-out five-language corpus and records gaps honestly. | Covered by `tests/unit/verifiable_task/rendering.rs`. |
+| R1138-B8-1 | One shared task type represents expected answer shape, inputs, procedure needs, and checks. | Implemented by `rust/src/verifiable_task.rs`; covered by `rust/tests/unit/verifiable_task/identity.rs`. |
+| R1138-B8-2 | Recognition vocabulary is seed-driven in English, Russian, Hindi, Chinese, and Spanish. | Covered by `rust/tests/unit/verifiable_task/recognition.rs`. |
+| R1138-B8-3 | A recognized task projects onto the shared discover-compose-execute-verify path. | Covered by `rust/tests/unit/verifiable_task/execution.rs`. |
+| R1138-B8-4 | The answer is projected only from observed execution evidence. | Covered by `rust/tests/unit/verifiable_task/execution.rs`. |
+| R1138-B8-5 | Type, range, relation, recomputation, and provenance checks are explicit and all must pass. | Covered by `rust/tests/unit/verifiable_task/ledger.rs`. |
+| R1138-B8-6 | Derivation memory stores a recomputable recipe rather than replaying the previous answer. | Covered by `rust/tests/unit/verifiable_task/ledger.rs`. |
+| R1138-B8-7 | Task categories are derived from seed meanings, not a hard-coded answer table. | Covered by `rust/tests/unit/verifiable_task/recognition.rs`. |
+| R1138-B8-8 | The no-memorization gate scans production source and seed data for benchmark prompts and answers. | Covered by `rust/tests/unit/verifiable_task/ratchets.rs`. |
+| R1138-B8-9 | Every solver generation re-measures the held-out five-language corpus and records gaps honestly. | Covered by `rust/tests/unit/verifiable_task/rendering.rs`. |
 
 ## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
 

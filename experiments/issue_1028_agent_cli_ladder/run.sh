@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-1028/agent-tree-run}"
 TREE_DEPTH="${TREE_DEPTH:-5}"
@@ -22,7 +22,7 @@ case "$AUTHORED_RULES" in
   *) echo "AUTHORED_RULES must be enabled or disabled" >&2; exit 2 ;;
 esac
 
-[[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai" >&2; exit 2; }
+[[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai --manifest-path rust/Cargo.toml" >&2; exit 2; }
 command -v "$AGENT" >/dev/null || { echo "Agent CLI not installed" >&2; exit 2; }
 command -v git >/dev/null || { echo "git is required" >&2; exit 2; }
 command -v curl >/dev/null || { echo "curl is required" >&2; exit 2; }

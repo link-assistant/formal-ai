@@ -26,7 +26,7 @@ the exact session that triggered the bug — no extra steps required.
 The same export is available in the CLI:
 
 ```bash
-cargo run -- memory export --from memory.lino --path formal-ai-memory.lino
+cargo run --manifest-path rust/Cargo.toml -- memory export --from memory.lino --path formal-ai-memory.lino
 ```
 
 ## Step 2 — Redact sensitive content
@@ -85,7 +85,7 @@ A maintainer (or you, on a different machine) can reconstruct the session with:
 1. Click **Import memory** in the topbar, then pick the `.lino` file.
 2. Or from the CLI:
    ```bash
-   cargo run -- memory import --path formal-ai-memory.lino --into memory.lino
+   cargo run --manifest-path rust/Cargo.toml -- memory import --path formal-ai-memory.lino --into memory.lino
    ```
 
 Both surfaces auto-detect the bundle vs. the legacy `demo_memory` format and

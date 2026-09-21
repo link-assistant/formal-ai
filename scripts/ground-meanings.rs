@@ -24,7 +24,7 @@
 //!      `data/seed/**/meanings*.lino` (idempotent — re-running is a no-op).
 //!
 //! Browser builds read the canonical seed via `scripts/sync-seed.sh` and
-//! `src/web/seed_loader.js`, so this script only updates `data/seed` and the
+//! `js/seed_loader.js`, so this script only updates `data/seed` and the
 //! checked-in Wikidata cache.
 //!
 //! Network access is only needed the first time an id is fetched; afterwards the

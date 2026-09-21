@@ -1,6 +1,6 @@
 name: Provide the formal-ai binary
 description: >-
-  Put `target/release/formal-ai` on the runner, reusing a cached build of the
+  Put `rust/target/release/formal-ai` on the runner, reusing a cached build of the
   exact same sources when one exists. Seven workflows compiled the same binary
   on every push; a release build costs two to five minutes each time, so the
   cache is the difference between a branch paying once per source change and
@@ -33,7 +33,7 @@ runs:
       id: cache
       uses: actions/cache@v4
       with:
-        path: target/release/formal-ai
+        path: rust/target/release/formal-ai
         key: ${{ inputs.cache-key-prefix }}-${{ runner.os }}-${{ steps.key.outputs.digest }}
 
     - name: Setup Rust
@@ -51,7 +51,7 @@ runs:
     - name: Build formal-ai
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
-      run: cargo build --release --locked --bin formal-ai
+      run: cargo build --manifest-path rust/Cargo.toml --release --locked --bin formal-ai
 
     - name: Report which binary this is
       shell: bash
@@ -59,6 +59,6 @@ runs:
         CACHE_HIT: ${{ steps.cache.outputs.cache-hit || 'false' }}
       run: |
         set -euo pipefail
-        chmod +x target/release/formal-ai
+        chmod +x rust/target/release/formal-ai
         printf 'formal-ai %s (cache hit: %s)\n' \
-          "$(target/release/formal-ai --version)" "$CACHE_HIT"
+          "$(rust/target/release/formal-ai --version)" "$CACHE_HIT"

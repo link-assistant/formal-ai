@@ -18,7 +18,7 @@ Two rules for this folder:
   requirement or plan contradicts the latest note, the document is wrong and
   must be fixed. The mechanically checkable part of that rule is enforced by
   the `docs_issue_citations` gate (`scripts/check-issue-citations.rs`) and the
-  benchmark ledger parity test (`tests/unit/docs_benchmarks.rs`); the rest is
+  benchmark ledger parity test (`rust/tests/unit/docs_benchmarks.rs`); the rest is
   this folder's standing instruction to every contributor.
 - **Note bodies are frozen at their date.** Numbers and states inside a note
   describe the moment the note was written and are deliberately not updated;

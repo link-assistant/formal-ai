@@ -77,14 +77,14 @@ jobs:
       - uses: ./.github/actions/formal-ai-binary
 
       - name: Show the published criteria
-        run: ./target/release/formal-ai summarization criteria
+        run: ./rust/target/release/formal-ai summarization criteria
 
       # The committed baseline is both the record of the last measurement and
       # the floor this run may not fall below.
       - name: Enforce the ratchet against the committed baseline
         run: |
           set -euo pipefail
-          ./target/release/formal-ai summarization ratchet \
+          ./rust/target/release/formal-ai summarization ratchet \
             | tee "${{ runner.temp }}/summarization-ratchet.log"
 
       - name: Record the score in the run summary

@@ -498,13 +498,13 @@ mod tests {
         path \"src/lib.rs\"\n  \
         artifact worker_modules\n    \
         cause sequential_file_name\n    \
-        path \"src/web/worker/formal_ai_worker_*.js\"\n";
+        path \"js/worker/formal_ai_worker_*.js\"\n";
 
     /// A ledger whose every path the SAMPLE registry accounts for.
     const SAMPLE_LEDGER: &str = "merge_conflict_ledger\n  \
         path \"src/lib.rs\"\n    \
         events 59\n  \
-        path \"src/web/worker/formal_ai_worker_07.js\"\n    \
+        path \"js/worker/formal_ai_worker_07.js\"\n    \
         events 11\n";
 
     fn always_exists(_path: &str) -> bool {
@@ -724,13 +724,13 @@ mod tests {
 
     #[test]
     fn an_extracted_from_path_counts_as_covered() {
-        // `src/web/formal_ai_worker.js` is the second most conflicted file in
+        // `js/formal_ai_worker.js` is the second most conflicted file in
         // the history, and the fix moved its list out rather than renaming it.
         let source = SAMPLE.replace(
             "    path \"src/lib.rs\"\n",
-            "    path \"src/lib.rs\"\n      extracted_from \"src/web/formal_ai_worker.js\"\n",
+            "    path \"src/lib.rs\"\n      extracted_from \"js/formal_ai_worker.js\"\n",
         );
-        let ledger = "merge_conflict_ledger\n  path \"src/web/formal_ai_worker.js\"\n    events 99\n";
+        let ledger = "merge_conflict_ledger\n  path \"js/formal_ai_worker.js\"\n    events 99\n";
         let attributes = BTreeSet::from(["src/lib.rs".to_string()]);
         let failures = violations(
             &parse_policy(&source),

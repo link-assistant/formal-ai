@@ -4,7 +4,7 @@
 // formal-ai web chat UI.
 //
 // Issue #353 (ROADMAP D2): rather than fork the UI, the extension loads the
-// committed `src/web/` app inside a Webview. Three things have to be reconciled
+// committed `js/` app inside a Webview. Three things have to be reconciled
 // with the Webview sandbox, and this module does all three on a *copy* of the
 // shipped `index.html` so the web/desktop builds stay untouched:
 //
@@ -19,7 +19,7 @@
 //      `blob:` for the worker shim, the local `apiBase` for server mode), and
 //      stamp that nonce on every `<script>` tag.
 //
-//   3. The same-origin Worker constraint. `src/web/app.js` starts its symbolic
+//   3. The same-origin Worker constraint. `js/app.js` starts its symbolic
 //      engine with `new Worker("formal_ai_worker.js")`. Because the worker URL
 //      resolves to the (cross-origin) resource host, a direct `new Worker` is
 //      blocked. The injected bridge shim wraps `Worker` so the script runs from
@@ -75,7 +75,7 @@ function bridgeShimSource(webRootUri, seedRootUri, status) {
   // URLs, protocol-relative URLs, and data:/blob: URIs pass through untouched, so
   // the absolute local-server chat endpoint is never rewritten. Paths under
   // \`seed/\` go to the seed origin (which is a *different* tree than the web root
-  // in a dev checkout: src/web vs data/seed); everything else goes to the asset
+  // in a dev checkout: js vs data/seed); everything else goes to the asset
   // origin.
   function rebaseUrl(u, assetBase, seedBase) {
     try {

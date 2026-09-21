@@ -2,9 +2,9 @@ self_ast_census
   target src/capability_routing.rs
   language rust
   fidelity signature
-  byte_len 30564
+  byte_len 30567
   line_count 804
-  content_id source_module_32f70c35987b2be3
+  content_id source_module_3266f13fbe4c6ee8
   symbol_count 34
   symbols
     module evidence 42 42

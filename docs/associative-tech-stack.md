@@ -53,7 +53,7 @@ references are the source of truth for how each is integrated.
 Repository: [link-foundation/link-cli](https://github.com/link-foundation/link-cli)
 
 Formal AI's default `doublets-native` Cargo feature selects `link-cli` as its
-native link-store library. `src/link_store.rs` uses link-cli's file-mapped
+native link-store library. `rust/src/link_store.rs` uses link-cli's file-mapped
 `DoubletsStorage` and `GenericTransactionsDecorator` directly: server writes
 are committed with an fsynced recovery log, explicit rollback restores both
 the native graph and its in-memory projection, and an interrupted projection is
@@ -67,7 +67,7 @@ Repository: [linksplatform/doublets-rs](https://github.com/linksplatform/doublet
 `doublets-rs` supplies link-cli's physical doublet network: each link has a
 source and target and can point to other links. It is now a transitive
 implementation detail of the link-cli library rather than a separately wired
-Formal AI dependency. `src/link_store.rs` reduces memory events to stable
+Formal AI dependency. `rust/src/link_store.rs` reduces memory events to stable
 `Type → SubType → Value` graphs while Links Notation remains the reviewable
 import/export projection. Its
 [`platform-mem`](https://github.com/linksplatform/mem-rs) allocator is likewise
@@ -92,7 +92,7 @@ Repository:
 This codec parses and formats object-shaped data expressed in Links Notation.
 Formal AI uses it at strict import boundaries and for canonical structured
 serialization, including associative packages and memory/substitution data.
-For example, `src/link_store.rs` and `src/associative_package.rs` use the
+For example, `rust/src/link_store.rs` and `rust/src/associative_package.rs` use the
 codec's indented-format parser before accepting input.
 
 ### `meta-language`
@@ -100,10 +100,10 @@ codec's indented-format parser before accepting input.
 Repository: [link-foundation/meta-language](https://github.com/link-foundation/meta-language)
 
 `meta-language` represents source text and documents as a mutable links
-network. In `src/coding/cst.rs`, Formal AI uses its real grammars to parse
+network. In `rust/src/coding/cst.rs`, Formal AI uses its real grammars to parse
 generated programs, inspect the concrete syntax tree (CST), project AST-like
 structure, verify a full match, and confirm lossless text reconstruction.
-`src/document_formats.rs` uses the same network for supported markup and
+`rust/src/document_formats.rs` uses the same network for supported markup and
 document conversions. It is an optional Cargo feature but is enabled by
 default.
 
@@ -112,7 +112,7 @@ default.
 Repository: [link-assistant/calculator](https://github.com/link-assistant/calculator)
 
 This component evaluates calculator-shaped expressions and returns the value,
-steps, and a Links Notation trace. `src/calculation.rs` delegates supported
+steps, and a Links Notation trace. `rust/src/calculation.rs` delegates supported
 calculation input to `link-calculator` first, then uses Formal AI's local
 fallback for syntax or word-problem normalization the component does not
 support.
@@ -122,7 +122,7 @@ support.
 Repository:
 [link-foundation/lino-arguments](https://github.com/link-foundation/lino-arguments)
 
-`lino-arguments` is the configuration boundary for the executable. `src/main.rs`
+`lino-arguments` is the configuration boundary for the executable. `rust/src/main.rs`
 initializes it before parsing commands, allowing Formal AI's CLI options to be
 populated consistently from command-line arguments, environment variables, and
 `.lenv` files. It configures the system; it does not perform reasoning.
@@ -133,7 +133,7 @@ Repository: [link-foundation/lino-i18n](https://github.com/link-foundation/lino-
 
 This JavaScript package parses Links Notation translation catalogs and resolves
 localized messages. It is declared in `package.json`, bundled for browser use,
-and loaded by `src/web/i18n.js`. Its boundary is web internationalization; it is
+and loaded by `js/i18n.js`. Its boundary is web internationalization; it is
 not part of the Rust solver.
 
 ## Architecture and protocol components
@@ -147,7 +147,7 @@ not linked into the Formal AI runtime.
 Repository: [linksplatform/doublets-web](https://github.com/linksplatform/doublets-web)
 
 `doublets-web` is the browser-side Links Platform store and a compatibility
-target, not a bundled JavaScript dependency. `src/web/memory.js` uses an
+target, not a bundled JavaScript dependency. `js/memory.js` uses an
 IndexedDB implementation with the same event-to-doublets projection and reports
 the `doublets-web` backend when a compatible global runtime is available. This
 keeps browser data portable without claiming that the upstream package is
@@ -159,7 +159,7 @@ Repository: [link-foundation/link-cli](https://github.com/link-foundation/link-c
 
 Besides the native storage APIs used directly above, `link-cli` defines the
 link query and substitution command conventions. Formal AI adapts those
-conventions in `src/links_query.rs` and `src/links_substitution_query/`; it
+conventions in `rust/src/links_query.rs` and `rust/src/links_substitution_query/`; it
 links the Rust library in-process and does not launch an external CLI binary.
 
 ### Reasoning model: `relative-meta-logic`
@@ -169,7 +169,7 @@ Repository:
 
 Relative Meta Logic models claims relative to contexts instead of forcing one
 global truth value. Formal AI has an in-repository implementation in
-`src/relative_meta_logic.rs`, integrated with `src/world_model.rs` for
+`rust/src/relative_meta_logic.rs`, integrated with `rust/src/world_model.rs` for
 context-relative facts, contradictions, and queries. The upstream repository
 is the architectural reference, not a linked crate.
 
@@ -187,7 +187,7 @@ Repository: [link-foundation/transformer](https://github.com/link-foundation/tra
 
 Transformer is a related model for graph transformations. Formal AI's current
 substitution engine is an in-repository implementation in
-`src/substitution.rs`, where `.lino` rules match and rewrite link patterns on
+`rust/src/substitution.rs`, where `.lino` rules match and rewrite link patterns on
 CRUD events. The repository is useful for comparison and vocabulary, but its
 code is not linked into the Formal AI runtime.
 
@@ -221,8 +221,8 @@ When an integration changes, update this guide from executable evidence:
 
 - `Cargo.toml` and its feature table define Rust runtime dependencies;
 - `package.json` defines the web bundle's direct packages;
-- `src/link_store.rs`, `src/coding/cst.rs`, `src/document_formats.rs`,
-  `src/calculation.rs`, `src/main.rs`, and `src/web/i18n.js` show the integration
+- `rust/src/link_store.rs`, `rust/src/coding/cst.rs`, `rust/src/document_formats.rs`,
+  `rust/src/calculation.rs`, `rust/src/main.rs`, and `js/i18n.js` show the integration
   boundaries; and
 - compatibility or conceptual repositories must remain in the architecture
   section until their code becomes an actual manifest dependency.

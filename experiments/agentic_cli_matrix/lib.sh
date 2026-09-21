@@ -10,7 +10,7 @@ set -uo pipefail
 
 MATRIX_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$MATRIX_DIR/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 LOCKFILE="${LOCKFILE:-$MATRIX_DIR/clients.lock}"
 
 # Fixture markers from docs/testing/agentic-cli-tools.md. Asserting on these

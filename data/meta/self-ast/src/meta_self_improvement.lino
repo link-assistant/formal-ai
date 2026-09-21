@@ -2,9 +2,9 @@ self_ast_census
   target src/meta_self_improvement.rs
   language rust
   fidelity signature
-  byte_len 12939
+  byte_len 12942
   line_count 337
-  content_id source_module_bca84fb8f6539f26
+  content_id source_module_461c5f88432f5a67
   symbol_count 23
   symbols
     const RECIPE_LINO 31 31

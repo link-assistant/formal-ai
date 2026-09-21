@@ -2,46 +2,46 @@ self_ast_census
   target src/search_fusion_learning.rs
   language rust
   fidelity signature
-  byte_len 17703
-  line_count 510
-  content_id source_module_d7dd1b448ded217a
+  byte_len 17713
+  line_count 511
+  content_id source_module_7cc1dff99b7e77f2
   symbol_count 38
   symbols
-    const LEARNING_CONTRACT 19 19
-    const SOURCE_POLICY 20 20
-    const SEARCH_FUSION_TASK_FAMILY 22 22
-    struct SearchFusionLearningError 25 27
-    function fmt 30 32
-    function error 37 41
-    struct FusionPolicy 44 48
-    function policy 50 82
-    struct SearchFusionLearningObservation 86 93
-    function from_execution 96 119
-    function validate_execution 122 151
-    struct SearchFusionRecipeCandidate 155 160
-    struct SearchFusionLearningFrontier 164 166
-    function new 170 174
-    function record_execution 178 193
-    function observation_count 196 198
-    function infer_candidate 200 220
-    function links_notation 223 246
-    struct SearchFusionLearningGate 250 254
-    function passed 258 264
-    function failed 267 273
-    function is_green 275 277
-    struct SearchFusionLearningApproval 281 284
-    function granted 288 293
-    function declined 296 301
-    struct ApprovedRecipe 305 310
-    struct SearchFusionRecipeLedger 314 316
-    function new 320 324
-    function promote 326 365
-    function plan_for 368 372
-    function links_notation 375 384
-    function review_body 386 411
-    function from_links_notation 413 452
-    function execute_search_fusion_with_recipe 456 476
-    function candidate_identity 478 485
-    function root_named 487 495
-    function required 497 504
-    function parse_usize 506 510
+    const LEARNING_CONTRACT 19 20
+    const SOURCE_POLICY 21 21
+    const SEARCH_FUSION_TASK_FAMILY 23 23
+    struct SearchFusionLearningError 26 28
+    function fmt 31 33
+    function error 38 42
+    struct FusionPolicy 45 49
+    function policy 51 83
+    struct SearchFusionLearningObservation 87 94
+    function from_execution 97 120
+    function validate_execution 123 152
+    struct SearchFusionRecipeCandidate 156 161
+    struct SearchFusionLearningFrontier 165 167
+    function new 171 175
+    function record_execution 179 194
+    function observation_count 197 199
+    function infer_candidate 201 221
+    function links_notation 224 247
+    struct SearchFusionLearningGate 251 255
+    function passed 259 265
+    function failed 268 274
+    function is_green 276 278
+    struct SearchFusionLearningApproval 282 285
+    function granted 289 294
+    function declined 297 302
+    struct ApprovedRecipe 306 311
+    struct SearchFusionRecipeLedger 315 317
+    function new 321 325
+    function promote 327 366
+    function plan_for 369 373
+    function links_notation 376 385
+    function review_body 387 412
+    function from_links_notation 414 453
+    function execute_search_fusion_with_recipe 457 477
+    function candidate_identity 479 486
+    function root_named 488 496
+    function required 498 505
+    function parse_usize 507 511

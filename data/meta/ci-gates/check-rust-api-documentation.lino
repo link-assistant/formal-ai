@@ -6,5 +6,5 @@
 ci_gate check_rust_api_documentation
   stage rust
   description "rustdoc builds the public API without a single warning, including broken intra-doc links."
-  run "cargo doc --no-deps --lib"
+  run "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib"
   env RUSTDOCFLAGS "-D warnings"

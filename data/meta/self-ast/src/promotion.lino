@@ -2,9 +2,9 @@ self_ast_census
   target src/promotion.rs
   language rust
   fidelity signature
-  byte_len 32198
+  byte_len 32204
   line_count 882
-  content_id source_module_4e1efecd63a43603
+  content_id source_module_df5f7d185fbbbaf9
   symbol_count 56
   symbols
     module draft_pull_request 37 37

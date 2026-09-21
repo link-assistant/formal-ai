@@ -65,14 +65,14 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           set -euo pipefail
-          cargo run --locked --bin formal-ai -- benchmark ratchet \
+          cargo run --manifest-path rust/Cargo.toml --locked --bin formal-ai -- benchmark ratchet \
             --base-ref "origin/${GITHUB_BASE_REF}"
 
       - name: Verify scheduled branch ledger
         if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
-          cargo run --locked --bin formal-ai -- benchmark ratchet
+          cargo run --manifest-path rust/Cargo.toml --locked --bin formal-ai -- benchmark ratchet
 
   # === EXTERNAL BENCHMARKS - run upstream suites and publish honest scores ===
   external-benchmarks:
@@ -128,7 +128,7 @@ jobs:
           set -euo pipefail
           mkdir -p ci-logs
           run_suite() {
-            ./target/release/formal-ai benchmark run \
+            ./rust/target/release/formal-ai benchmark run \
               --suite "$1" \
               --slice "$2" \
               --online \
@@ -155,7 +155,7 @@ jobs:
       - name: Verify the monotonic ratchet
         run: |
           set -euo pipefail
-          ./target/release/formal-ai benchmark ratchet
+          ./rust/target/release/formal-ai benchmark ratchet
 
       - name: Upload run log
         if: always()

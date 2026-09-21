@@ -239,7 +239,7 @@ formal-ai agent resume \
   --task "correct the parser and rerun its focused test" \
   --workspace /tmp/example-repository \
   --disproved-claim "the parser test passes" \
-  --evidence "cargo test parser failed at tests/parser.rs:42" \
+  --evidence "cargo test parser failed at rust/tests/parser.rs:42" \
   --session /tmp/corrected-session.json
 ```
 

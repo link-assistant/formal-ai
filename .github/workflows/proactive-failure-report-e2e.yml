@@ -3,11 +3,11 @@ name: Proactive failure report Agent CLI E2E
 on:
   pull_request:
     paths:
-      - "src/**"
+      - "rust/src/**"
       - "data/seed/**"
       - "experiments/agent_cli_e2e/run_issue_864.sh"
       - ".github/workflows/proactive-failure-report-e2e.yml"
-      - "Cargo.toml"
+      - "rust/Cargo.toml"
       - "Cargo.lock"
   workflow_dispatch:
 

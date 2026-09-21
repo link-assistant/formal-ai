@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
-import { parseRegisteredLanguages } from '../tests/e2e/scripts/lino-seed-parser.mjs';
+import { parseRegisteredLanguages } from '../rust/tests/e2e/scripts/lino-seed-parser.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);

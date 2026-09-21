@@ -5,7 +5,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8814}"
 AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-60}"

@@ -38,10 +38,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p learning-cycle
-          cargo run --release --bin formal-ai -- \
+          cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
             learn cycle --frontier google-trends --dry-run \
             > learning-cycle/run.lino 2> learning-cycle/run.log
-          cargo run --release --bin formal-ai -- \
+          cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
             learn cycle --frontier google-trends --dry-run --proposals \
             > learning-cycle/proposals.lino 2>> learning-cycle/run.log
           cat learning-cycle/run.log

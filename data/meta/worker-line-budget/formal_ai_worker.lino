@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker.js"
+  ceiling 88
+  rationale "The worker entry (issue #1138 moved it from src/web/ to js/worker/): it bootstraps the mirror by loading the module list rather than belonging to it, so it owns no solver logic of its own and its line count moves only when bootstrapping does."

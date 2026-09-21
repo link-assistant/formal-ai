@@ -6,7 +6,7 @@ import process from "node:process";
 
 const root = process.cwd();
 const seedPath = path.join(root, "data/seed/browser-handler-precedence.lino");
-const workerDir = path.join(root, "src/web/worker");
+const workerDir = path.join(root, "js/worker");
 const dispatchPath = path.join(workerDir, "formal_ai_worker_dispatch.js");
 
 function fail(message) {
@@ -61,17 +61,17 @@ for (const record of records) {
   }
 }
 
-const loader = readFileSync(path.join(root, "src/web/seed_loader.js"), "utf8");
+const loader = readFileSync(path.join(root, "js/seed_loader.js"), "utf8");
 if (!loader.includes("extractBrowserHandlerPrecedence")) {
-  fail("src/web/seed_loader.js does not export the seed projection");
+  fail("js/seed_loader.js does not export the seed projection");
 }
-const generatedInventory = readFileSync(path.join(root, "src/web/seed-files.js"), "utf8");
+const generatedInventory = readFileSync(path.join(root, "js/seed-files.js"), "utf8");
 if (!generatedInventory.includes('"seed/browser-handler-precedence.lino"')) {
-  fail("src/web/seed-files.js is stale; regenerate the seed registry");
+  fail("js/seed-files.js is stale; regenerate the seed registry");
 }
 
 const debtChecker = readFileSync(path.join(root, "scripts/check-debt-ratchet.rs"), "utf8");
-if (!debtChecker.includes('join("src/web/worker")') ||
+if (!debtChecker.includes('join("js/worker")') ||
     !debtChecker.includes('contains("function synchronousHandlerCandidates")')) {
   fail("the debt scanner must discover the real registry across the worker directory");
 }

@@ -58,31 +58,37 @@ merge_conflict_policy
     observed_conflicts 411
     note "Every body line is a mod declaration or a re-export block, so a union of two branches is always a superset of two correct files and the normalizer restores the canonical order."
     file
-      path "src/lib.rs"
+      path "rust/src/lib.rs"
+      extracted_from "src/lib.rs"
     file
-      path "tests/unit/mod.rs"
-      declares_directory "tests/unit"
-      inert "issue_1138_three_source_roots"
-      note "The inert module is plan 16 leaf L1 drafted as tests before the leaf lands, so the mirror is exact for every compiled module while the draft is not yet registered."
+      path "rust/tests/unit/mod.rs"
+      extracted_from "tests/unit/mod.rs"
+      declares_directory "rust/tests/unit"
     file
-      path "tests/unit/specification/mod.rs"
-      declares_directory "tests/unit/specification"
+      path "rust/tests/unit/specification/mod.rs"
+      extracted_from "tests/unit/specification/mod.rs"
+      declares_directory "rust/tests/unit/specification"
     file
-      path "tests/integration/mod.rs"
-      declares_directory "tests/integration"
+      path "rust/tests/integration/mod.rs"
+      extracted_from "tests/integration/mod.rs"
+      declares_directory "rust/tests/integration"
     file
-      path "tests/unit/ci-cd/mod.rs"
+      path "rust/tests/unit/ci-cd/mod.rs"
+      extracted_from "tests/unit/ci-cd/mod.rs"
       note "No declares_directory: several entries are `#[path]` declarations that pull a `scripts/*.rs` gate into the test binary, so the canonical list is not the directory listing."
     file
-      path "tests/source/mod.rs"
+      path "rust/tests/source/mod.rs"
+      extracted_from "tests/source/mod.rs"
     file
-      path "src/solver_handlers/modules.rs"
+      path "rust/src/solver_handlers/modules.rs"
+      extracted_from "src/solver_handlers/modules.rs"
       extracted_from "src/solver_handlers/mod.rs"
-      declares_directory "src/solver_handlers"
+      declares_directory "rust/src/solver_handlers"
     file
-      path "src/agentic_coding/modules.rs"
+      path "rust/src/agentic_coding/modules.rs"
+      extracted_from "src/agentic_coding/modules.rs"
       extracted_from "src/agentic_coding/mod.rs"
-      declares_directory "src/agentic_coding"
+      declares_directory "rust/src/agentic_coding"
       note "Both runs moved out, not just the `mod` declarations: the re-export run is the longer of the two and every new capability appends to it, so leaving it behind would have kept the append point alive."
   artifact worker_module_list
     cause mixed_list_and_code
@@ -92,9 +98,10 @@ merge_conflict_policy
     verify "rust-script scripts/normalize-ordered-lists.rs"
     observed_conflicts 99
     file
-      path "src/web/worker-modules.js"
+      path "js/worker-modules.js"
+      extracted_from "src/web/worker-modules.js"
       extracted_from "src/web/formal_ai_worker.js"
-      declares_directory "src/web/worker"
+      declares_directory "js/worker"
       note "The list is exactly the sorted contents of the directory, so the normalizer regenerates it instead of merely reordering it."
   artifact seed_inventory
     cause mixed_list_and_code
@@ -115,8 +122,10 @@ merge_conflict_policy
     merge union
     regenerate "rust-script scripts/generate-seed-registry.rs --write"
     verify "rust-script scripts/generate-seed-registry.rs"
-    path "src/seed/embedded_registry.rs"
-    path "src/web/seed-files.js"
+    path "rust/src/seed/embedded_registry.rs"
+    extracted_from "src/seed/embedded_registry.rs"
+    path "js/seed-files.js"
+    extracted_from "src/web/seed-files.js"
     note "`src/seed/embedded.rs` pulls its half in with `include!` rather than `mod`: rustfmt only reaches files a `mod` declaration names, so the generator owns every byte of the projection and a regeneration is byte-identical no matter which rustfmt version ran last."
   artifact branch_placeholder
     cause automation_placeholder
@@ -183,13 +192,15 @@ merge_conflict_policy
   artifact trusted_source_recurrence_cache
     cause derived_artifact
     merge union
-    path "src/web/source-cache/wikifunctions-recurrences.lino"
+    path "js/source-cache/wikifunctions-recurrences.lino"
+    extracted_from "src/web/source-cache/wikifunctions-recurrences.lino"
     regenerate "cargo run --example generate_recurrence_source_cache -- --write"
     verify "cargo run --example generate_recurrence_source_cache"
     note "This is procedure memory derived from committed Wikifunctions and Wikidata captures, not seed knowledge. Removing it and running the generator reconstructs the same formal recurrence, aliases, provenance, and source tests."
   artifact worker_modules
     cause sequential_file_name
-    path "src/web/worker/formal_ai_worker_*.js"
+    path "js/worker/formal_ai_worker_*.js"
+    extracted_from "src/web/worker/formal_ai_worker_*.js"
     frozen_prefix_max 24
     note "formal_ai_worker_00 through formal_ai_worker_24 predate this policy and keep their numbers; every module added after issue 991 is named after its subject."
     observed_conflicts 11

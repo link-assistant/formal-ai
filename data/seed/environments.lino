@@ -39,7 +39,7 @@ environments
   environment desktop
     label "Electron desktop shell"
     runtime "Electron main process; in-process agent by default, optional local Rust HTTP API"
-    seed_path "src/web/seed/ mirror plus data/seed/ fallback"
+    seed_path "js/seed/ mirror plus data/seed/ fallback"
     memory_store "Browser IndexedDB full bundle projection"
     memory_export_command "Export memory button (formal-ai-memory.lino, formal_ai_bundle)"
     bundle_export_command "Export memory button or formal-ai memory export --path PATH"

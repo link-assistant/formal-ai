@@ -3,7 +3,7 @@
 // Shared `WebviewView` provider for both extension hosts.
 //
 // Issue #353 (ROADMAP D2): the Node (desktop) host and the web (vscode.dev) host
-// render the *same* committed `src/web/` chat UI inside a VS Code Webview. The
+// render the *same* committed `js/` chat UI inside a VS Code Webview. The
 // only differences between the two hosts are the bridge backing (a real tool
 // router + local server on Node; in-process only on the web) and the shell
 // label. Everything else — locating the web assets, building the sandboxed HTML,
@@ -37,7 +37,7 @@ function makeNonce() {
 }
 
 // Candidate resource roots for the web app and its seed data. The extension
-// lives in `<repo>/vscode`; in a checkout the assets sit at `<repo>/src/web` and
+// lives in `<repo>/vscode`; in a checkout the assets sit at `<repo>/js` and
 // `<repo>/data/seed`, while a packaged `.vsix` copies them under `dist-web/`
 // (see scripts/prepare-resources.mjs). We try the packaged layout first, then
 // fall back to the dev layout.
@@ -46,7 +46,7 @@ function resourceRootCandidates(vscode, context) {
   const join = (...parts) => vscode.Uri.joinPath(base, ...parts);
   return [
     { web: join("dist-web"), seed: join("dist-web", "seed") },
-    { web: join("..", "..", "src", "web"), seed: join("..", "..", "data", "seed") },
+    { web: join("..", "..", "js"), seed: join("..", "..", "data", "seed") },
   ];
 }
 

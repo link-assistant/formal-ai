@@ -104,7 +104,7 @@ steps:
   - uses: actions/configure-pages@v6
   - uses: actions/upload-pages-artifact@v5
     with:
-      path: src/web
+      path: js
   - id: deployment
     uses: actions/deploy-pages@v5
 ```
@@ -130,7 +130,7 @@ If `build_type` is `workflow`, prefer the Pages artifact deployment path above.
 
 > **The release preflight cannot verify a crates.io token read-only.**
 > `GET /api/v1/me` is `AuthCheck::only_cookie()` in crates.io
-> (`src/controllers/user/me.rs`): it answers HTTP 403 to every API token,
+> (`rust/src/controllers/user/me.rs`): it answers HTTP 403 to every API token,
 > valid or not, and endpoint-scoped tokens are rejected on every route that
 > does not require their scope. A probe that reads that 403 as "revoked or
 > expired" is a false positive (run 34149311523 blocked a release with the
@@ -310,9 +310,9 @@ Sometimes crates.io has issues. Check: https://status.crates.io/
 ### 5. Verify Package Locally
 Before pushing, verify your package builds and passes checks:
 ```bash
-cargo fmt --all -- --check
-cargo clippy --lib --bins --tests --all-features
-cargo check --examples --all-features
-cargo test --lib --bins --tests --all-features
+cargo fmt --manifest-path rust/Cargo.toml --all -- --check
+cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features
+cargo check --manifest-path rust/Cargo.toml --examples --all-features
+cargo test --manifest-path rust/Cargo.toml --lib --bins --tests --all-features
 cargo package --list
 ```

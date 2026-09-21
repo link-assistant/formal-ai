@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/link_edit_rules.rs
   language rust
   fidelity full_ast
-  byte_len 20335
+  byte_len 20338
   line_count 535
-  content_id source_module_3b2a23011acf2ef9
+  content_id source_module_d030a4f91dc543dc
   symbol_count 19
   symbols
     const RULES 28 28

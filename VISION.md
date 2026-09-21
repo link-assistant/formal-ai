@@ -48,7 +48,7 @@ Stated by the architect, in his words
 > It should be capable of producting algorithms.
 
 There is no division of the source into a privileged part and the rest. All of
-`src/` serves the meta algorithm.
+`rust/src/` serves the meta algorithm.
 
 **Code is held in the meta language and emitted into languages.**
 
@@ -183,7 +183,7 @@ The assistant should use a universal problem-solving loop:
 
 1. Record the user message as an impulse event.
 2. Identify unknown concepts, requirements, constraints, and missing context.
-3. Search local links first, then external sources if local data is insufficient. Since issue #1138 B1 the external step is live when a run is online: unknown surfaces resolve through `src/concept_lookup.rs` over `data/seed/sources-registry.lino`, and an offline run records the boundary and skips retrieval.
+3. Search local links first, then external sources if local data is insufficient. Since issue #1138 B1 the external step is live when a run is online: unknown surfaces resolve through `rust/src/concept_lookup.rs` over `data/seed/sources-registry.lino`, and an offline run records the boundary and skips retrieval.
 4. Convert findings into link-native meanings with source metadata.
 5. Split the problem into smaller tasks until each task is executable or answerable.
 6. Draft experiments together with tests and traces.
@@ -231,7 +231,7 @@ These knobs are deterministic: the same prompt with the same config produces the
 
 ## Formalization And Temperature
 
-The reasoning loop is built around an explicit formalization layer rather than memoized prompt → answer pairs. Every input message is first translated into Links Notation as a sequence of statements or questions and appended to memory in its original form. The translated statement is then formalized: each verb phrase is mapped to a Wikidata **P-id** (property), each noun phrase to a Wikidata **Q-id** (item), with a fallback chain to Wikipedia article links and Wiktionary entries when no Wikidata anchor exists. Since issue #1138 B1 that chain runs live: `src/coding/concept_discovery.rs::discover_with_lookup` grounds every unresolved surface through `src/concept_lookup.rs` over the trusted sources in `data/seed/sources-registry.lino` when the run is online, and the surfaces it cannot ground become explicit needs. A candidate formalization is only accepted when the targeted concept actually mentions the surface form and matches it semantically — otherwise the candidate is recorded as `formalization_unresolved` and the next candidate is tried.
+The reasoning loop is built around an explicit formalization layer rather than memoized prompt → answer pairs. Every input message is first translated into Links Notation as a sequence of statements or questions and appended to memory in its original form. The translated statement is then formalized: each verb phrase is mapped to a Wikidata **P-id** (property), each noun phrase to a Wikidata **Q-id** (item), with a fallback chain to Wikipedia article links and Wiktionary entries when no Wikidata anchor exists. Since issue #1138 B1 that chain runs live: `rust/src/coding/concept_discovery.rs::discover_with_lookup` grounds every unresolved surface through `rust/src/concept_lookup.rs` over the trusted sources in `data/seed/sources-registry.lino` when the run is online, and the surfaces it cannot ground become explicit needs. A candidate formalization is only accepted when the targeted concept actually mentions the surface form and matches it semantically — otherwise the candidate is recorded as `formalization_unresolved` and the next candidate is tried.
 
 Multiple plausible formalizations are scored, then a temperature-controlled selector picks among them in the same way neural networks pick among logits: lower temperature collapses onto the highest-scoring interpretation; higher temperature keeps competing interpretations alive. When two or more candidates have probabilities that are equal or close, the solver either asks the smallest clarifying question that distinguishes them or guesses according to `guess_probability` — the choice is config-driven and visible in the trace. Every interpretation, every clarifying question, every guess, every accepted formalization, and every fallback is appended to the event log so the user can ask "why did you read it that way?" and get a complete answer.
 
@@ -243,7 +243,7 @@ The full pipeline is documented in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 Memory should grow with use, not just with prompts. Every reasoning step, every internal decision, every external request, and every response is appended to the same log so the next similar request can reuse the prior work in part or in full. The default native store is link-cli's transactional file-mapped doublets store in the library, CLI, server, and Telegram surfaces, with doublets-web (IndexedDB / `localStorage`) on the browser; portable source and backup documents are written as `.lino` files representing Links Notation, both to disk and to additional persistent storage (browser IndexedDB, future cloud sync).
 
-Treating the internet (Wikipedia, Wikidata, Wiktionary, Wikifunctions, Rosetta Code, public APIs) as a public database and the local doublets store as a cache for that database substitutes deterministic reasoning over reviewable links for opaque GPU-backed inference. The same caching pattern carries `source:`, `fetched_at`, and `sha256` metadata per the existing `cache_ttl_seconds` policy; offline mode refuses external lookups and emits a `policy:offline` event instead of synthesizing facts. Since issue #1138 B1 this retrieval is not only a handler behaviour: the universal loop's own external-search step resolves unknown surfaces through `src/concept_lookup.rs` over the trusted sources declared in `data/seed/sources-registry.lino` when the run is online, and an offline run records the boundary and skips retrieval.
+Treating the internet (Wikipedia, Wikidata, Wiktionary, Wikifunctions, Rosetta Code, public APIs) as a public database and the local doublets store as a cache for that database substitutes deterministic reasoning over reviewable links for opaque GPU-backed inference. The same caching pattern carries `source:`, `fetched_at`, and `sha256` metadata per the existing `cache_ttl_seconds` policy; offline mode refuses external lookups and emits a `policy:offline` event instead of synthesizing facts. Since issue #1138 B1 this retrieval is not only a handler behaviour: the universal loop's own external-search step resolves unknown surfaces through `rust/src/concept_lookup.rs` over the trusted sources declared in `data/seed/sources-registry.lino` when the run is online, and an offline run records the boundary and skips retrieval.
 
 ## Append-Only Event Log
 
@@ -316,7 +316,7 @@ produce syntax that looks plausible.
 
 The shell code should be about *interfacing* (rendering chat, dispatching tools, persisting events) and not about *logic*. The agent's identity, its multilingual responses, its concept table, and its registered tools should all live in seeded Links Notation files inside an associative store, so a user can fully reconfigure the agent — add a new language, retire an answer, register a new tool, change a rule — by editing data, not by rewriting code. The same principle applies to executable knowledge: precompiled handlers can be seeded, and dynamically-compiled Rust, JavaScript, and WebAssembly snippets can be linked into the store on demand, so the data graph itself defines what the agent can do.
 
-Concretely, `data/seed/` is the canonical knowledge surface for every interface in this repository. The browser worker fetches the files at runtime through `src/web/seed_loader.js`; the Rust library, CLI binary, HTTP server, and Telegram webhook read the same files through `src/seed.rs`, which `include_str!`-embeds each `.lino` at compile time so even offline builds expose the same data. `scripts/sync-seed.sh` keeps `src/web/seed/` mirrored from `data/seed/` for the GitHub Pages deploy. The seed currently covers multilingual responses, the concept table, the tool registry (HTTP fetch, web search, Wikipedia lookup, JS execution, local file read, memory append, memory export — each tagged `thinking` or `agent`), language-detection rules, prompt-question patterns, identity metadata, greetings, hello-world programs, demo dialogs, the trusted-sources registry (`data/seed/sources-registry.lino`, whose entries carry licenses, APIs, and cache paths for the how-to and coding-discovery paths), and the **intent-routing rule book** (`keyword` / `phrase` / `token` / `combo` semantics) that decides which handler runs for a given prompt. Any environment-specific tool (axios, file I/O, bash, docker, container actions) is registered through the same data shape.
+Concretely, `data/seed/` is the canonical knowledge surface for every interface in this repository. The browser worker fetches the files at runtime through `js/seed_loader.js`; the Rust library, CLI binary, HTTP server, and Telegram webhook read the same files through `rust/src/seed.rs`, which `include_str!`-embeds each `.lino` at compile time so even offline builds expose the same data. `scripts/sync-seed.sh` keeps `js/seed/` mirrored from `data/seed/` for the GitHub Pages deploy. The seed currently covers multilingual responses, the concept table, the tool registry (HTTP fetch, web search, Wikipedia lookup, JS execution, local file read, memory append, memory export — each tagged `thinking` or `agent`), language-detection rules, prompt-question patterns, identity metadata, greetings, hello-world programs, demo dialogs, the trusted-sources registry (`data/seed/sources-registry.lino`, whose entries carry licenses, APIs, and cache paths for the how-to and coding-discovery paths), and the **intent-routing rule book** (`keyword` / `phrase` / `token` / `combo` semantics) that decides which handler runs for a given prompt. Any environment-specific tool (axios, file I/O, bash, docker, container actions) is registered through the same data shape.
 
 ## Single-File Reproducibility
 
@@ -337,16 +337,16 @@ Where the substrate stands today, stated plainly (issue
 issue #1138 B9 plan 09 leaf 40): the seed is parsed once at boot and projected
 into the doublets store, and the solver's recognition reads that store on every
 turn — handler rules and handler promotions evaluate their conditions through
-the projected links (`src/rule_interpreter.rs` `LinkStoreSource`), not through
+the projected links (`rust/src/rule_interpreter.rs` `LinkStoreSource`), not through
 the parsed Rust tables, which remain only the projection's input. The link-cli
 store stays a write-behind projection for user memory, filled by
 `memory_sync.rs` after each `.lino` write. Behaviour still lives in compiled
 Rust handlers with `.lino` recipes that describe them; what changed is that the
 recipes' facts now flow through links. The representation layer is issue
 #558's delivery (PR #637): a committed `.lino` census covers every owned file
-under `src/`, one to one on every merged pull request, and the lossless
+under `rust/src/`, one to one on every merged pull request, and the lossless
 round-trip (`source → links → source`, byte for byte) exists in
-`tests/unit/issue_558_source_links.rs` -- it is exhaustive, so it is
+`rust/tests/unit/issue_558_source_links.rs` -- it is exhaustive, so it is
 `#[ignore]`d there and runs on demand with `--ignored`, not on every CI run;
 until it runs by default the committed census is a signature, not the source.
 The direction is unchanged: the meta-language
@@ -358,11 +358,11 @@ happens silently. The Rust line count is therefore a property of one emitted
 target and not a measure of the system: it may grow while the algorithm becomes
 more general.
 
-The current repository is a deterministic symbolic implementation. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. Every interface now reads its multilingual responses, concept table, tool registry, language-detection rules, prompt patterns, and intent-routing rule book from the shared `data/seed/` directory through `src/seed.rs` (Rust) and `src/web/seed_loader.js` (browser). Reasoning steps and tool invocations land in the append-only memory log on the web side; the merged seed bundle round-trips through one `formal_ai_seed_bundle` Links Notation file via `seed::merged_bundle()` / `seed::parse_bundle()`.
+The current repository is a deterministic symbolic implementation. It already has deterministic rules, Links Notation seed files, OpenAI-shaped API responses, a static web demo, Telegram support, execution metadata for simple code examples, and case-study documentation. Every interface now reads its multilingual responses, concept table, tool registry, language-detection rules, prompt patterns, and intent-routing rule book from the shared `data/seed/` directory through `rust/src/seed.rs` (Rust) and `js/seed_loader.js` (browser). Reasoning steps and tool invocations land in the append-only memory log on the web side; the merged seed bundle round-trips through one `formal_ai_seed_bundle` Links Notation file via `seed::merged_bundle()` / `seed::parse_bundle()`.
 
 The next step is to keep the implemented surfaces small while moving more of the assistant's behavior into explicit links: requirements, source facts, traces, prompts, handlers, permissions, tests, and reusable problem-solving procedures. Since issue #1138 B4 a formalized document is a concept graph rather than a set of preserved sentences: every surface the formalizer cannot ground becomes an explicit need, needs are satisfied by retrieval from the trusted sources the registry declares, and a need the sources cannot ground is reported as unresolved with its exact source span. Preserving a sentence is recorded as preservation, never as understanding. The CLI, server, and Telegram bot should expose the same bundle-export and simplified-issue-reporting actions the web demo offers while preserving the unified link-cli/doublets-web store and Links Notation migration surface across interfaces.
 
-Issue #710's dynamic coding discovery shipped in PR #888 (merged 2026-09-16): instead of answering coding requests from memoized catalog entries, the solver discovers what it needs — it asks about every surface a requirement sentence leaves unresolved, grounds those surfaces through the trusted sources in `data/seed/sources-registry.lino`, composes the answer from the retrieved facts, and records the whole walk as a reusable recipe (`data/meta/coding-discovery-recipe.lino`; implementation in `src/coding/concept_discovery.rs`, case study in `docs/case-studies/issue-710/`). PR #888 also forced the first honest upstream measurements (HumanEval 14/164 and MBPP 49/500 on the full slices, published per slice in `docs/benchmarks.md`), replacing the first-20 numbers that had read as suite scores. The limit that run exposed — a universal loop that recorded `search:external` without retrieving — is closed by issue #1138 B1: the loop now performs the live lookup described above when a run is online, and states the offline boundary when it is not.
+Issue #710's dynamic coding discovery shipped in PR #888 (merged 2026-09-16): instead of answering coding requests from memoized catalog entries, the solver discovers what it needs — it asks about every surface a requirement sentence leaves unresolved, grounds those surfaces through the trusted sources in `data/seed/sources-registry.lino`, composes the answer from the retrieved facts, and records the whole walk as a reusable recipe (`data/meta/coding-discovery-recipe.lino`; implementation in `rust/src/coding/concept_discovery.rs`, case study in `docs/case-studies/issue-710/`). PR #888 also forced the first honest upstream measurements (HumanEval 14/164 and MBPP 49/500 on the full slices, published per slice in `docs/benchmarks.md`), replacing the first-20 numbers that had read as suite scores. The limit that run exposed — a universal loop that recorded `search:external` without retrieving — is closed by issue #1138 B1: the loop now performs the live lookup described above when a run is online, and states the offline boundary when it is not.
 
 The foundation batches E1-E20, the reasoning batch E21-E27, the synthesis batch E28-E32, and the parity batch E33-E34 are merged (PRs #305-#311, #319-#323, #328-#329). Every user message is now formalized into a Links Notation intent before routing, unmatched prompts run a reasoning-under-unknowns loop instead of falling through to "I can't answer that", narrow per-language intents are collapsed into a parametric `write a program` intent, behavior can be expressed as substitution rules (`replace x y`, `when n do m`) over link CRUD, natural language can query memory / call APIs / execute code under the permission model, a bounded isolated agent runs allowlisted commands, and progress is measured against an imported industry benchmark slice (HumanEval, MBPP, GSM8K, MATH, BIG-bench).
 
@@ -397,9 +397,9 @@ deterministic loop through the OpenAI-compatible server (issues
 **world models** design — current-state and target-state contexts as links
 networks, their difference, merge/split, and action-consequence prediction — is
 specified in [`docs/case-studies/issue-649`](docs/case-studies/issue-649/README.md)
-and implemented by `src/world_model.rs` (issue
+and implemented by `rust/src/world_model.rs` (issue
 [#702](https://github.com/link-assistant/formal-ai/issues/702), PR #818): contexts, STRIPS-style actions, justification-based recalculation, and dialogue behaviors are covered by
-`tests/unit/issue_649_world_model.rs`.
+`rust/tests/unit/issue_649_world_model.rs`.
 
 The self-evolution frontier is explicit and benchmark-gated: proposals must
 pass tests and benchmark ratchets before a reviewed promotion materializes them
@@ -411,7 +411,7 @@ each release authored by Formal AI itself is measured honestly from 0% upward
 by the self-hosting ledger rendered in `docs/status.md` (issue
 [#657](https://github.com/link-assistant/formal-ai/issues/657), PR #735); the
 solver tries multiple candidate drafts in parallel and records why the
-winner won through `src/draft_portfolio.rs` (issue
+winner won through `rust/src/draft_portfolio.rs` (issue
 [#704](https://github.com/link-assistant/formal-ai/issues/704), PR #878,
 following the drafts→selection→composition shape of
 [konard/problem-solving](https://github.com/konard/problem-solving)); and the

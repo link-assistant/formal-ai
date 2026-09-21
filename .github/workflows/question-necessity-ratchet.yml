@@ -61,4 +61,4 @@ jobs:
             rust-script scripts/check-question-necessity-ratchet.rs
           fi
       - name: Run the deterministic question benchmark
-        run: cargo test --locked --test unit issue_920_question_necessity_benchmark_ratchets_down
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test unit issue_920_question_necessity_benchmark_ratchets_down

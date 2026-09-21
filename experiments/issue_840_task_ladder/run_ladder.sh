@@ -7,7 +7,7 @@
 #   experiments/issue_840_task_ladder/run_ladder.sh
 #
 # Environment knobs:
-#   BIN        Path to the release-mode formal-ai binary (default: target/release/formal-ai)
+#   BIN        Path to the release-mode formal-ai binary (default: rust/target/release/formal-ai)
 #   PORT       Server port (default: 8771)
 #   TASKS      Path to the ladder dataset (default: alongside this script)
 #   OUT        Results JSON path (default: <scriptdir>/results.json)
@@ -33,7 +33,7 @@ set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8771}"
 TASKS="${TASKS:-$HERE/tasks.json}"
 OUT="${OUT:-$HERE/results.json}"

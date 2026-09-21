@@ -2,9 +2,9 @@ self_ast_census
   target src/web_search_core.rs
   language rust
   fidelity signature
-  byte_len 25542
+  byte_len 25539
   line_count 753
-  content_id source_module_c6d8b7bf56de8c4c
+  content_id source_module_bf8ee6832d1dece5
   symbol_count 22
   symbols
     const WEB_SEARCH_RRF_K 33 33

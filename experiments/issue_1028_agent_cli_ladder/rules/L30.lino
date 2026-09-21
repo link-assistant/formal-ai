@@ -1,6 +1,6 @@
 link_edit
   leaf L30
-  path src/entity_resolution.rs
+  path rust/src/entity_resolution.rs
   language rust
   rule rename_identifier
     old "CORRECTED_PLACEHOLDER"

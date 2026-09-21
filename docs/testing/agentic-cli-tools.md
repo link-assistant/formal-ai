@@ -23,7 +23,7 @@ for reproducing a single leg or collecting visual GUI evidence.
 Build the server and wrapper binaries:
 
 ```bash
-cargo build --bin with-formal-ai --bin formal-ai
+cargo build --manifest-path rust/Cargo.toml --bin with-formal-ai --bin formal-ai
 ```
 
 Install the client CLIs the same way users receive them. For CI, replace
@@ -370,7 +370,7 @@ shipped without ever running, each have a replayable session on record.
 
 Every client `formal-ai clients` knows about has a row. The
 `agentic_cli_matrix_covers_every_seeded_client` test in
-[`tests/unit/issue_671_matrix_coverage.rs`](../../tests/unit/issue_671_matrix_coverage.rs)
+[`rust/tests/unit/issue_671_matrix_coverage.rs`](../../rust/tests/unit/issue_671_matrix_coverage.rs)
 fails the build if a client is added to `data/seed/client-integrations.lino`
 without one, so coverage cannot be "inferred from the shared adapters" again.
 
@@ -429,7 +429,7 @@ probe, i.e. it could never fail, which is worse than no assertion at all.
 | `globally` | #650 defect 4 — the `--globally` alias was rejected. |
 | `constraints` | The upstream limitations below, plus #746's hosted `web_search` advertisement. |
 | `launch` | #713 — a client that starts and is *not* pointed at our server is a launch blocker no headless run can see. |
-| `mcp` | The tool-server surface (`src/mcp.rs`): the handshake identifies us, `formal_ai_chat` is advertised, a call reaches the real solver, and an unknown tool name is refused with `-32601` rather than silently answered. |
+| `mcp` | The tool-server surface (`rust/src/mcp.rs`): the handshake identifies us, `formal_ai_chat` is advertised, a call reaches the real solver, and an unknown tool name is refused with `-32601` rather than silently answered. |
 
 ### Upstream constraints, asserted rather than skipped
 

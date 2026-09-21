@@ -30,10 +30,10 @@ function apiCandidates(options = {}) {
   if (override) {
     candidates.push({ command: override, args, cwd: repoRoot || undefined, label: "binary override" });
   }
-  if (repoRoot && fs.existsSync(path.join(repoRoot, "Cargo.toml"))) {
+  if (repoRoot && fs.existsSync(path.join(repoRoot, "rust", "Cargo.toml"))) {
     candidates.push({
       command: "cargo",
-      args: ["run", "--quiet", "--", ...args],
+      args: ["run", "--quiet", "--manifest-path", "rust/Cargo.toml", "--", ...args],
       cwd: repoRoot,
       label: "cargo run",
     });

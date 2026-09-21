@@ -2,7 +2,7 @@
 
 > Issue [#353](https://github.com/link-assistant/formal-ai/issues/353): *"Implement a VS Code extension with chat UI that can support all the same features as our web app."*
 
-The extension lives in [`vscode/`](../../vscode/) and embeds the **same committed `src/web/` chat UI** inside a VS Code Webview, around the **same HTTP/web boundary** the browser, the HTTP server, and the Electron desktop shell already use. There is no forked UI: the extension loads `src/web/index.html` and reuses `app.js`, the WebAssembly worker, the seed, and the memory bundle verbatim.
+The extension lives in [`vscode/`](../../vscode/) and embeds the **same committed `js/` chat UI** inside a VS Code Webview, around the **same HTTP/web boundary** the browser, the HTTP server, and the Electron desktop shell already use. There is no forked UI: the extension loads `js/index.html` and reuses `app.js`, the WebAssembly worker, the seed, and the memory bundle verbatim.
 
 The design goal is *reuse, not reimplementation*. Where the desktop shell (`desktop/`) wraps the web app in Electron and backs the `window.FormalAiDesktop` bridge with IPC, the VS Code extension wraps the same web app in a Webview and backs the **exact same bridge contract** over a `postMessage` channel. The desktop tool-router and memory-sync clients are reused as-is.
 
@@ -25,11 +25,11 @@ VS Code runs extensions in two different host processes, and a single extension 
 | Chat engine | local HTTP API when ready, else in-process WASM | always in-process WASM |
 | Tool router / memory sync | reused desktop clients | refused (no server) |
 
-The web host imports **only** `vscode` and the four pure libs (`config`, `bridge`, `chat-view`, `webview-html`) — it never requires `node:*`, never calls `startServer`, `createToolRouter`, or `createMemorySync`, and pins `serverCapable: false` so the surface stays in-process no matter what the settings say. This is enforced by [`vscode_surface.rs`](../../tests/unit/specification/vscode_surface.rs) (`vscode_web_host_is_in_process_only_with_no_node_builtins`) and the node smoke check.
+The web host imports **only** `vscode` and the four pure libs (`config`, `bridge`, `chat-view`, `webview-html`) — it never requires `node:*`, never calls `startServer`, `createToolRouter`, or `createMemorySync`, and pins `serverCapable: false` so the surface stays in-process no matter what the settings say. This is enforced by [`vscode_surface.rs`](../../rust/tests/unit/specification/vscode_surface.rs) (`vscode_web_host_is_in_process_only_with_no_node_builtins`) and the node smoke check.
 
 ## Why the web app needs no extension-specific code
 
-The web app drives every "desktop" affordance off a single status object via `normalizeDesktopStatus(status)` in `src/web/app.js`. It routes a prompt to the local server **only** when `apiReady && apiBase` are both set, and otherwise stays on the in-process symbolic engine. So:
+The web app drives every "desktop" affordance off a single status object via `normalizeDesktopStatus(status)` in `js/app.js`. It routes a prompt to the local server **only** when `apiReady && apiBase` are both set, and otherwise stays on the in-process symbolic engine. So:
 
 - An **in-process** surface is just a status with an empty `apiBase` (the web host, or the Node host before/without a running server).
 - A **server-backed** surface is a status with `apiReady: true` and a loopback `apiBase` (the Node host once `formal-ai serve` answers its health check).
@@ -41,13 +41,13 @@ The surface **label** is derived from `status.shell`: `desktopSurfaceLabel(statu
 | File | Role | `node:*`? |
 |---|---|---|
 | `package.json` | Manifest: dual entry points, 4 commands, 6 settings, webview view, `virtualWorkspaces` + `untrustedWorkspaces` capability | — |
-| `src/extension.node.cjs` | Node host: server lifecycle, host shell, Docker sandbox for code, tool router, memory sync, commands | yes |
-| `src/extension.web.cjs` | Web host: in-process only, commands explain desktop-only features | **no** |
-| `src/lib/config.cjs` | Pure settings → `desktopStatus` mapper (`statusFromConfig`, `withApiReady`, `withApiError`) | no |
-| `src/lib/bridge.cjs` | Host-agnostic `FormalAiDesktop` dispatcher (default-deny) | no |
-| `src/lib/webview-html.cjs` | Webview HTML builder: `<base>`, CSP nonce, Worker shim, postMessage bridge | no |
-| `src/lib/chat-view.cjs` | Shared `WebviewView` provider for both hosts | no |
-| `src/lib/server-process.cjs` | Node-only `formal-ai serve` discovery / health-wait / spawn | yes |
+| `rust/src/extension.node.cjs` | Node host: server lifecycle, host shell, Docker sandbox for code, tool router, memory sync, commands | yes |
+| `rust/src/extension.web.cjs` | Web host: in-process only, commands explain desktop-only features | **no** |
+| `rust/src/lib/config.cjs` | Pure settings → `desktopStatus` mapper (`statusFromConfig`, `withApiReady`, `withApiError`) | no |
+| `rust/src/lib/bridge.cjs` | Host-agnostic `FormalAiDesktop` dispatcher (default-deny) | no |
+| `rust/src/lib/webview-html.cjs` | Webview HTML builder: `<base>`, CSP nonce, Worker shim, postMessage bridge | no |
+| `rust/src/lib/chat-view.cjs` | Shared `WebviewView` provider for both hosts | no |
+| `rust/src/lib/server-process.cjs` | Node-only `formal-ai serve` discovery / health-wait / spawn | yes |
 | `scripts/prepare-resources.mjs` | Package step: mirror web assets + seed + desktop libs, sync version | yes |
 | `scripts/smoke.mjs` | Static manifest/contract smoke check | no |
 | `scripts/*.test.mjs` | `node:test` unit suites for the pure libs | no |
@@ -81,7 +81,7 @@ The shim also rebases **main-thread** `fetch` (the chat UI hydrates concept/envi
 
 ### Seed rebasing detail
 
-In a **dev checkout** the seed lives in a *different* tree than the web root (`data/seed` vs `src/web`), so `rebaseUrl` sends paths under `seed/` to `SEED_BASE` and everything else to `ASSET_BASE`. In a **packaged `.vsix`** both are mirrored under `dist-web/` (seed at `dist-web/seed/`), so the two bases differ only by the trailing `seed/` segment — the same rebasing logic handles both layouts. Absolute, protocol-relative, `data:`, and `blob:` URLs pass through untouched, so the absolute local-server chat endpoint is never rewritten.
+In a **dev checkout** the seed lives in a *different* tree than the web root (`data/seed` vs `js`), so `rebaseUrl` sends paths under `seed/` to `SEED_BASE` and everything else to `ASSET_BASE`. In a **packaged `.vsix`** both are mirrored under `dist-web/` (seed at `dist-web/seed/`), so the two bases differ only by the trailing `seed/` segment — the same rebasing logic handles both layouts. Absolute, protocol-relative, `data:`, and `blob:` URLs pass through untouched, so the absolute local-server chat endpoint is never rewritten.
 
 ## The bridge contract (default-deny)
 
@@ -104,12 +104,12 @@ Unknown methods are reported, never thrown, so a malformed message can never cra
 `prepare-resources.mjs` runs on `vscode:prepublish` (i.e. `vsce package`) and makes the extension self-contained:
 
 ```
-../../src/web           -> vscode/dist-web
+../../js           -> vscode/dist-web
 ../../data/seed         -> vscode/dist-web/seed
 ../../desktop/lib/*.cjs -> vscode/src/lib/vendor   (tool-router.cjs, memory-sync.cjs, shared-memory.cjs)
 ```
 
-It also syncs the extension version from `Cargo.toml` (the single source of truth for the formal-ai version), mirroring `desktop/scripts/prepare-resources.mjs`. Both generated trees (`vscode/dist-web/`, `vscode/src/lib/vendor/`) are **git-ignored** — they are mirrors of already-committed source. `chat-view.cjs` prefers `dist-web/` and falls back to the dev layout; `extension.node.cjs` prefers `src/lib/vendor/` and falls back to `<repo>/desktop/lib`.
+It also syncs the extension version from `Cargo.toml` (the single source of truth for the formal-ai version), mirroring `desktop/scripts/prepare-resources.mjs`. Both generated trees (`vscode/dist-web/`, `vscode/src/lib/vendor/`) are **git-ignored** — they are mirrors of already-committed source. `chat-view.cjs` prefers `dist-web/` and falls back to the dev layout; `extension.node.cjs` prefers `rust/src/lib/vendor/` and falls back to `<repo>/desktop/lib`.
 
 The Node host passes the same zero-configuration memory path as the desktop and
 CLI (`~/.formal-ai/memory.lino` on Unix/macOS,
@@ -118,7 +118,7 @@ CLI (`~/.formal-ai/memory.lino` on Unix/macOS,
 host filesystem; its IndexedDB store remains a browser cache and reconciles
 through the native server when that surface is available.
 
-> The issue-103 deferred-label guard and the docs-requirements scan skip these two mirror trees by exact path (see `tests/unit/docs_requirements.rs`), because scanning the committed originals is sufficient and a local `prepare-resources` run must not change which files the guards inspect.
+> The issue-103 deferred-label guard and the docs-requirements scan skip these two mirror trees by exact path (see `rust/tests/unit/docs_requirements.rs`), because scanning the committed originals is sufficient and a local `prepare-resources` run must not change which files the guards inspect.
 
 ## Testing
 
@@ -126,8 +126,8 @@ through the native server when that surface is available.
 |---|---|---|
 | Node unit + smoke | `npm run vscode:test` | 51 `node:test` cases across config/bridge/webview-html/chat-view/server-process, plus the static smoke check. Reads only committed source, so no `npm ci` or `prepare-resources` is needed. Wired into the CI **lint** job. |
 | Package dependency graph | `npm --prefix vscode run test:package` (after `scripts/install-node-dependencies.sh vscode`) | Bundles and loads the real desktop web-tools graph with esbuild, proving the Playwright runtime boundary before VSIX packaging. Wired into the **Desktop Release / Package VS Code extension** job after its dependency install. |
-| Rust spec | `cargo test --test unit vscode_surface` | Pins the VS Code file contracts (dual host, no-node-builtins web host, webview sandbox, default-deny bridge, settings→status, server launcher) **and** exercises the shared engine endpoints (`/v1/chat/completions`, `/v1/graph`, full-bundle memory round-trip) to prove "all the same features." |
-| E2E | `cd tests/e2e && npm run test:local -- issue-353` | Boots the committed web chat behind a fake `window.FormalAiDesktop` bridge and asserts the surface labelling for both hosts (Node-with-server and Web-in-process) plus language robustness. Wired into the `test-e2e-local` CI job. |
+| Rust spec | `cargo test --manifest-path rust/Cargo.toml --test unit vscode_surface` | Pins the VS Code file contracts (dual host, no-node-builtins web host, webview sandbox, default-deny bridge, settings→status, server launcher) **and** exercises the shared engine endpoints (`/v1/chat/completions`, `/v1/graph`, full-bundle memory round-trip) to prove "all the same features." |
+| E2E | `cd rust/tests/e2e && npm run test:local -- issue-353` | Boots the committed web chat behind a fake `window.FormalAiDesktop` bridge and asserts the surface labelling for both hosts (Node-with-server and Web-in-process) plus language robustness. Wired into the `test-e2e-local` CI job. |
 
 ## Honest caveats — what is *not* verified here
 

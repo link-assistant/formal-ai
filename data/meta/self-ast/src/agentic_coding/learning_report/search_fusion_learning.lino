@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/learning_report/search_fusion_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1114
+  byte_len 1117
   line_count 36
-  content_id source_module_401047b914b49cdf
+  content_id source_module_cdec11bd23be8b92
   symbol_count 7
   symbols
     const SEARCH_FUSION_LEARNING_PATH 5 5

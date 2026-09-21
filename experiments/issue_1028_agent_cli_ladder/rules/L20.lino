@@ -1,6 +1,6 @@
 link_edit
   leaf L20
-  path src/entity_resolution.rs
+  path rust/src/entity_resolution.rs
   language rust
   rule replace_literal
     old "{term}"

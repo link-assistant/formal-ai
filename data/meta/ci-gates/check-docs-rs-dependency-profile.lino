@@ -6,6 +6,6 @@
 ci_gate check_docs_rs_dependency_profile
   stage rust
   description "The docs.rs build profile -- no default features -- still documents cleanly."
-  run "cargo doc --no-deps --lib --no-default-features"
+  run "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features"
   env DOCS_RS "1"
   env RUSTDOCFLAGS "-D warnings"

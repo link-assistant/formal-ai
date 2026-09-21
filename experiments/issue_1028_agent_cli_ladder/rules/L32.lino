@@ -1,6 +1,6 @@
 link_edit
   leaf L32
-  path src/links_format.rs
+  path rust/src/links_format.rs
   language rust
   rule rename_identifier
     old "PROBE"

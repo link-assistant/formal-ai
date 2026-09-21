@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/fragment_catalog.rs
   language rust
   fidelity signature
-  byte_len 25907
+  byte_len 25910
   line_count 725
-  content_id source_module_c2cc100554384ec4
+  content_id source_module_927da831fe06f039
   symbol_count 37
   symbols
     enum FragmentOrigin 20 25

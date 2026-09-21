@@ -6,4 +6,4 @@
 ci_gate check_worker_handler_registry
   stage web
   description "The browser worker derives synchronous handler membership and order from seed data, and the debt scanner discovers the real dispatch module."
-  run "node scripts/check-worker-handler-registry.mjs && node --test tests/web/handler-registry.test.mjs"
+  run "node scripts/check-worker-handler-registry.mjs && node --test rust/tests/web/handler-registry.test.mjs"

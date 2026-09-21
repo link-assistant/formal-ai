@@ -25,6 +25,7 @@
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
+#[cfg(not(test))]
 use std::process::exit;
 use walkdir::WalkDir;
 

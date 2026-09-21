@@ -54,7 +54,7 @@ upstream score. The upstream scores are published in
 without the upstream number beside it (`NON-GOALS.md`).
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
-matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
+matrix in [`rust/tests/unit/specification/prompt_variations.rs`](../rust/tests/unit/specification/prompt_variations.rs)
 (greetings, farewells, identity, clarification, concept lookups, capabilities,
 hello-world, basic math, refusal, idioms across English/Russian/Hindi/Chinese).
 It is a prompt-category matrix rather than an imported third-party dataset, so it
@@ -148,10 +148,10 @@ Ten held-out requirements — two families (`isogram_requirement`,
 [`data/benchmarks/formalization-depth-requirements.lino`](../data/benchmarks/formalization-depth-requirements.lino).
 Neither family says what its key term means, so coverage can only come from the
 trusted sources. Every run is offline, replaying the committed plan 01 captures
-(`tests/fixtures/issue-1138-b1`) through the registry lookup; the per-language
+(`rust/tests/fixtures/issue-1138-b1`) through the registry lookup; the per-language
 grounded ratio and the observed-primitive count below are measured, never
-asserted as targets (`tests/unit/issue_1138_formalization_depth.rs`,
-`tests/integration/issue_1138_formalization_agent.rs`).
+asserted as targets (`rust/tests/unit/issue_1138_formalization_depth.rs`,
+`rust/tests/integration/issue_1138_formalization_agent.rs`).
 
 | Source | License | Domain | Upstream |
 | --- | --- | --- | --- |
@@ -199,7 +199,7 @@ are attribution for the task design, not for vendored data.
 Seventy-two self-authored equation types, each replayed through the production
 entry point (`FormalAiEngine::answer`) and each carrying the **exact answer the
 engine produced** — the expectations are observed, never hand-written
-(`cargo run --example issue_891_equation_probe`). The ratchet fails below 50
+(`cargo run --manifest-path rust/Cargo.toml --example issue_891_equation_probe`). The ratchet fails below 50
 distinct verified types or below the recorded pass count, which satisfies the
 issue #406 requirement of at least fifty verified equation-type examples.
 No third-party benchmark payload is imported.
@@ -337,7 +337,7 @@ harness that fetches the *unmodified upstream* case set at run time and reports
 `passed / total` over the first N cases **in upstream order**, with no curated
 subset and no invented floor. A low number is published as a low number.
 
-The harness lives in [`src/external_benchmarks/`](../src/external_benchmarks/),
+The harness lives in [`rust/src/external_benchmarks/`](../rust/src/external_benchmarks/),
 its provenance and results ledger is
 [`data/benchmarks/external-results.lino`](../data/benchmarks/external-results.lino),
 and the scheduled job that refreshes it is
@@ -350,7 +350,7 @@ byte length, and content id match the adjacent provenance record.
 ### Honest current numbers
 
 Pinned by `docs_benchmarks::latest_external_rows_are_published_from_the_ledger`
-(`tests/unit/docs_benchmarks.rs`): every table row below must equal the latest
+(`rust/tests/unit/docs_benchmarks.rs`): every table row below must equal the latest
 committed row for its suite in
 [`data/benchmarks/external-results.lino`](../data/benchmarks/external-results.lino),
 so editing this table without a matching ledger row — or the reverse — fails
@@ -465,39 +465,39 @@ automatically changes solver behavior or raises a floor.
 
 ```sh
 # List every upstream suite with license, provenance, and grading mode.
-cargo run --bin formal-ai -- benchmark list
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark list
 
 # Run 20 real upstream HumanEval cases with live coding discovery
 # (network + python3 required). Offline remains the default when omitted.
-cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20 --online
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite humaneval --slice 20 --online
 
 # Full-suite runs are the suite score; a first-20 slice is only a regression
 # control and is never cited without its slice. Cold-offline is the default;
 # `--online` adds live source discovery for externally defined knowledge.
 # `--frontier-record` writes the per-suite failure frontier next to the row.
-cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 164 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
-cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 164 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
-cargo run --bin formal-ai -- benchmark run --suite mbpp --slice 500 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
-cargo run --bin formal-ai -- benchmark run --suite mbpp --slice 500 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite humaneval --slice 164 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite humaneval --slice 164 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite mbpp --slice 500 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite mbpp --slice 500 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
 
 # The forget/rediscover round trip: delete the discovered-procedure ledger,
 # rediscover from the same trusted sources, and require the same content id.
-cargo test --test unit coding_discovery::ledger -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit coding_discovery::ledger -- --nocapture
 
 # Refresh every suite locally. SWE-bench's pinned official Python harness and
 # Docker are prerequisites the run discovers. `--allow-install` grants only the
 # pinned workspace-scoped harness procedure; without it a missing harness is
 # reported as unavailable instead of becoming a solver failure.
-cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --online --allow-install --append
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite all --slice 20 --online --allow-install --append
 
 # Verify the monotonic ratchet without running any suite.
-cargo run --bin formal-ai -- benchmark ratchet
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark ratchet
 
 # Compare the current ledger with a real git baseline.
-cargo run --bin formal-ai -- benchmark ratchet --base-ref origin/main
+cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark ratchet --base-ref origin/main
 
 # The same end-to-end run as an ignored test (network + python3 required).
-cargo test --test unit external_benchmarks -- --ignored --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit external_benchmarks -- --ignored --nocapture
 ```
 
 ## How to run
@@ -507,34 +507,34 @@ below the recorded `minimum_pass_count`.
 
 ```sh
 # Industry slice (#304/#317)
-cargo test --test unit issue_304_benchmark_suite_reports_pass_fail_counts -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit issue_304_benchmark_suite_reports_pass_fail_counts -- --nocapture
 
 # Multilingual coding-modification (#362)
-cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture
 # Optional network download-on-test integration:
-FORMAL_AI_BULK_BENCHMARK=1 cargo test --test unit issue_362_external_edit_datasets_download_on_test_only -- --ignored --nocapture
+FORMAL_AI_BULK_BENCHMARK=1 cargo test --manifest-path rust/Cargo.toml --test unit issue_362_external_edit_datasets_download_on_test_only -- --ignored --nocapture
 
 # Text/code edit profile (#408)
-cargo test --test unit issue_408_text_code_edit_profile_passes_local_ratchet -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit issue_408_text_code_edit_profile_passes_local_ratchet -- --nocapture
 
 # Procedural how-to / instruction-following (#444)
-cargo test --test unit issue_444_procedural_howto_suite_routes_each_case -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit issue_444_procedural_howto_suite_routes_each_case -- --nocapture
 
 # Nemotron training-data sample ingestion (#482)
-cargo test --test unit issue_482_nemotron_training -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit issue_482_nemotron_training -- --nocapture
 
 # Multilingual local-path discovery (#819)
-cargo test --test unit local_path_discovery_benchmark_routes_every_case_to_find -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit local_path_discovery_benchmark_routes_every_case_to_find -- --nocapture
 
 # Review-gated workspace-change generalization (#848)
-cargo test --test unit only_a_green_named_review_promotes_and_replays_the_held_out_rewrite -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit only_a_green_named_review_promotes_and_replays_the_held_out_rewrite -- --nocapture
 
 # Equation-type corpus (#891)
-cargo test --test unit issue_891_equation_corpus -- --nocapture
+cargo test --manifest-path rust/Cargo.toml --test unit issue_891_equation_corpus -- --nocapture
 
 # Conversational wording variations (#933)
-cargo test --test unit conversational_variation_benchmark_routes_every_case -- --nocapture
-npm run --prefix tests/e2e check:variation-floor   # the per-language floor
+cargo test --manifest-path rust/Cargo.toml --test unit conversational_variation_benchmark_routes_every_case -- --nocapture
+npm run --prefix rust/tests/e2e check:variation-floor   # the per-language floor
 ```
 
 ## Conventions

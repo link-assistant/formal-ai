@@ -2,15 +2,15 @@ coding_discovery_meta_recipe
   record_type meta_recipe
   topic dynamic_coding_discovery
   issue 710
-  recognizer src/coding/task_spec.rs
-  discovery src/coding/concept_discovery.rs
-  composer src/coding/composition.rs
-  verifier src/agent.rs
-  memory src/coding/discovered_procedures.rs
-  source src/coding/function_catalog/python_docs.rs
-  source src/coding/function_catalog/wikifunctions.rs
-  source src/coding/function_catalog/rosetta_code.rs
-  source src/concept_lookup.rs
+  recognizer rust/src/coding/task_spec.rs
+  discovery rust/src/coding/concept_discovery.rs
+  composer rust/src/coding/composition.rs
+  verifier rust/src/agent.rs
+  memory rust/src/coding/discovered_procedures.rs
+  source rust/src/coding/function_catalog/python_docs.rs
+  source rust/src/coding/function_catalog/wikifunctions.rs
+  source rust/src/coding/function_catalog/rosetta_code.rs
+  source rust/src/concept_lookup.rs
 coding_discovery_step_recognize
   record_type meta_step
   order 1

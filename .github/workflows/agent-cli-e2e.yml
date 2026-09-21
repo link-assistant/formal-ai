@@ -74,7 +74,7 @@ jobs:
         with:
           check: agent-cli-e2e-full-replay-${{ inputs.full-replay }}
           paths: >-
-            src data build.rs Cargo.toml Cargo.lock experiments/agent_cli_e2e experiments/issue_921_hive_mind_full_circle scripts tests/e2e .github/workflows/agent-cli-e2e.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/agent_cli_e2e experiments/issue_921_hive_mind_full_circle scripts rust/tests/e2e .github/workflows/agent-cli-e2e.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Setup Rust
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -276,7 +276,7 @@ jobs:
         timeout-minutes: 17
         env:
           PORT: 8907
-          BIN: ${{ github.workspace }}/target/release/formal-ai
+          BIN: ${{ github.workspace }}/rust/target/release/formal-ai
           EVIDENCE_DIR: /tmp/formal-ai-issue-707-evidence
           TEST_BUDGET_SECONDS: 900
         run: |
@@ -288,7 +288,7 @@ jobs:
         timeout-minutes: 12
         env:
           PORT: 8909
-          BIN: ${{ github.workspace }}/target/release/formal-ai
+          BIN: ${{ github.workspace }}/rust/target/release/formal-ai
           EVIDENCE_DIR: /tmp/formal-ai-issue-707-generalization-evidence
           TEST_BUDGET_SECONDS: 600
         run: |
@@ -389,23 +389,23 @@ jobs:
         run: experiments/agent_cli_e2e/run_issue_885_statement_audit.sh
       - name: "Run agent CLI E2E — proof translation invariant (issue #890)"
         if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
-        run: PORT=8890 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
+        run: PORT=8890 BIN=rust/target/release/formal-ai OUT=/tmp/formal-ai-issue-890-evidence experiments/issue_890_agent_cli.sh
       - name: "Run agent CLI E2E — formal projection invariant (issue #917)"
         if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
-        run: PORT=8917 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
+        run: PORT=8917 BIN=rust/target/release/formal-ai OUT=/tmp/formal-ai-issue-917-evidence experiments/issue_917_agent_cli.sh
       - name: "Run agent CLI E2E — minimal-core invariant (issue #918)"
         if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
-        run: PORT=8918 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
+        run: PORT=8918 BIN=rust/target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
       - name: Install @link-assistant/hive-mind CLI
         if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.15.1
       - name: "Run Hive Mind full-circle integration gate (issue #921)"
         if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
-        run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
+        run: GH_TOKEN=${{ github.token }} PORT=8921 BIN=$PWD/rust/target/release/formal-ai OUT=/tmp/formal-ai-issue-921-evidence experiments/issue_921_hive_mind_full_circle/run.sh
       - name: "Run agent CLI E2E — promoted method learning (issue #922)"
         if: ${{ (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
-        run: PORT=8922 BIN=target/release/formal-ai OUT=/tmp/formal-ai-issue-922-evidence examples/issue-922-method-learning/run.sh
+        run: PORT=8922 BIN=rust/target/release/formal-ai OUT=/tmp/formal-ai-issue-922-evidence rust/examples/issue-922-method-learning/run.sh
       # Issue #1081: this was the one heavy step in the job with neither a step
       # backstop nor a budget, so the only limit on it was the 45m job cap --
       # and a *job* cap kill is reported as `cancelled`, which turns nothing
@@ -423,7 +423,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Hive Mind self-coding replay" \
-            bash -c 'examples/self-coding/run.sh && cargo test self_coding_session_replays'
+            bash -c 'rust/examples/self-coding/run.sh && cargo test --manifest-path rust/Cargo.toml self_coding_session_replays'
       # Issue #1079: a failed harness prints nothing into the job log -- it
       # redirects the CLI's streams to files, and `set -e` ends it before
       # `scripts/classify-agent-cli-stderr.sh` can read them. Reading the same

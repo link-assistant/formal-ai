@@ -4,7 +4,7 @@
 #
 # Extracted from .github/workflows/desktop-release.yml so the decision logic
 # (the part that regressed in issue #479) is unit-testable with a mocked `gh`
-# CLI. See tests/unit/ci-cd/desktop_release_resolve.rs.
+# CLI. See rust/tests/unit/ci-cd/desktop_release_resolve.rs.
 #
 # ---------------------------------------------------------------------------
 # Background (issue #479: "Not available in latest release" for all desktop apps)

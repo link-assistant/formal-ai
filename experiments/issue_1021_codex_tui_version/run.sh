@@ -25,7 +25,7 @@ fi
 
 mkdir -p "$LOG_DIR"
 
-if [ ! -x "$ROOT/target/release/formal-ai" ]; then
+if [ ! -x "$ROOT/rust/target/release/formal-ai" ]; then
   echo "!! build the server first: cargo build --release --bin formal-ai" >&2
   exit 1
 fi

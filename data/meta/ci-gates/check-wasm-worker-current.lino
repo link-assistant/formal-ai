@@ -4,7 +4,7 @@
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
 #
-# The lint job rebuilds the worker (`sh src/web/wasm-worker/build.sh`) before
+# The lint job rebuilds the worker (`sh js/wasm-worker/build.sh`) before
 # the wasm-stage gates run, so comparing the checked-in binary against the
 # working tree costs nothing extra and fails exactly when a commit changed the
 # worker sources or their seeds without shipping the rebuilt artifact. That is
@@ -16,4 +16,4 @@
 ci_gate check_wasm_worker_current
   stage wasm
   description "The checked-in WASM worker binary matches a rebuild of its sources."
-  run "git diff --exit-code -- src/web/formal_ai_worker.wasm"
+  run "git diff --exit-code -- js/formal_ai_worker.wasm"

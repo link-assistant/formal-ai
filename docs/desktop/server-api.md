@@ -80,7 +80,7 @@ You can also run the server without the desktop app:
 ```bash
 formal-ai serve --host 127.0.0.1 --port 8080
 # or, from a checkout:
-cargo run -- serve --host 127.0.0.1 --port 8080
+cargo run --manifest-path rust/Cargo.toml -- serve --host 127.0.0.1 --port 8080
 ```
 
 | Flag     | Environment variable | Default     |
@@ -209,7 +209,7 @@ the `/api/formal-ai/v1/memory*` routes, with `/v1/memory*` kept as aliases.
 is the compatibility alias. It accepts either a JSON `{"query":"…"}` body or a
 Links-Notation `query "…"` body and returns a `links_query_result` envelope. The
 read-only LinksQL evaluator lives in
-[`src/links_query.rs`](../../src/links_query.rs); the graph projection comes from
+[`rust/src/links_query.rs`](../../rust/src/links_query.rs); the graph projection comes from
 `KnowledgeGraph::to_links_notation`.
 
 ---
@@ -519,7 +519,7 @@ so it cannot call formal-ai's OpenAI endpoint directly.
 
 formal-ai ships a **first-party** Anthropic→OpenAI adapter built into the server,
 so no third-party proxy is required. `POST /api/anthropic/v1/messages`
-([`src/anthropic.rs`](../../src/anthropic.rs)) flattens Anthropic message/system
+([`rust/src/anthropic.rs`](../../rust/src/anthropic.rs)) flattens Anthropic message/system
 blocks into the solver's chat request, calls the same engine the OpenAI endpoints
 use, and re-wraps the result as an Anthropic response — including the full
 `message_start` → `content_block_delta` → `message_stop` SSE sequence when
@@ -608,7 +608,7 @@ web search, to actually complete the task"* — exercised on the example task of
 formalizing «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.
 
 A single deterministic planner
-([`src/agentic_coding/planner.rs`](../../src/agentic_coding/planner.rs)) backs all
+([`rust/src/agentic_coding/planner.rs`](../../rust/src/agentic_coding/planner.rs)) backs all
 three surfaces, so the loop behaves identically whichever CLI you point at the
 server:
 
@@ -624,7 +624,7 @@ server:
 **Strictly opt-in.** Tools are refused unless the server is started with
 `formal-ai serve --agent-mode` or `FORMAL_AI_AGENT_MODE=1`, *and* each requested
 tool passes a per-tool permission gate
-([`src/associative_package.rs`](../../src/associative_package.rs),
+([`rust/src/associative_package.rs`](../../rust/src/associative_package.rs),
 `pkg_agentic_coding`). Without agent mode the server answers with a plain policy
 message and calls nothing — there is no hidden autonomous action. A non-agentic
 prompt falls through to the normal symbolic answer even when tools are advertised.
@@ -637,8 +637,8 @@ formal-ai agent --transcript   # runs search → fetch → write → run → fin
 ```
 
 The driver and offline corpus live in
-[`src/agentic_coding/`](../../src/agentic_coding/); the worked end-to-end loop is
-[`examples/issue_468_agentic_loop.rs`](../../examples/issue_468_agentic_loop.rs).
+[`rust/src/agentic_coding/`](../../rust/src/agentic_coding/); the worked end-to-end loop is
+[`rust/examples/issue_468_agentic_loop.rs`](../../rust/examples/issue_468_agentic_loop.rs).
 External CLIs are pointed *at* this server as front-ends (the configs in
 §4a–§4f); they are never embedded in the engine. See the
 [issue #468 case study](../case-studies/issue-468/README.md) for the full design.
@@ -649,7 +649,7 @@ External CLIs are pointed *at* this server as front-ends (the configs in
 
 ### 5a. One web bundle, two hosts
 
-The desktop shell serves the **unmodified** `src/web` bundle — the same HTML,
+The desktop shell serves the **unmodified** `js` bundle — the same HTML,
 CSS, and JavaScript published to GitHub Pages. There is no desktop-only fork of
 the UI; the shell only adds a status bridge.
 
@@ -685,7 +685,7 @@ When server mode is on, the desktop keeps the browser memory (the IndexedDB
 event log) and the native store in step automatically, so a conversation started
 in one surface continues in the other without a manual export/import.
 
-- The native side is [`src/memory_sync.rs`](../../src/memory_sync.rs): a
+- The native side is [`rust/src/memory_sync.rs`](../../rust/src/memory_sync.rs): a
   file-backed `demo_memory` log (`SyncStore`) with a union-by-id merge
   (`merge_union_by_id`) where incoming non-empty fields win, exposed over the
   `/v1/memory`, `/v1/memory/since`, and `/v1/memory/import` endpoints above.

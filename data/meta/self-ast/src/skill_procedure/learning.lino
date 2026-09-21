@@ -2,9 +2,9 @@ self_ast_census
   target src/skill_procedure/learning.rs
   language rust
   fidelity signature
-  byte_len 25245
+  byte_len 25248
   line_count 707
-  content_id source_module_8faa4a3848ccb159
+  content_id source_module_34a4d50fd6a2fc40
   symbol_count 35
   symbols
     struct ProcedureLearningProposal 16 21

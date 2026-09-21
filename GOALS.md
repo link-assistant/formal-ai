@@ -26,8 +26,8 @@ This project should build a practical, inspectable symbolic assistant before it 
 ## Reasoning Goals
 
 - Convert each user message into traceable requirements, source events, and candidate meanings.
-- Search local associative knowledge first and external sources only when local knowledge is insufficient. Live since issue #1138 B1: unknown surfaces resolve through `src/concept_lookup.rs` over `data/seed/sources-registry.lino` when a run is online; an offline run records the boundary and skips retrieval.
-- Understand each unknown word by live lookup from the trusted sources in `data/seed/sources-registry.lino`, then reconstruct the procedure from what was retrieved: the goal is not to know everything in advance, it is to know how to get to know anything when it is needed (2026-09-14 doctrine, `src/concept_lookup.rs`), bounded by the evidence the sources return rather than by a compute budget.
+- Search local associative knowledge first and external sources only when local knowledge is insufficient. Live since issue #1138 B1: unknown surfaces resolve through `rust/src/concept_lookup.rs` over `data/seed/sources-registry.lino` when a run is online; an offline run records the boundary and skips retrieval.
+- Understand each unknown word by live lookup from the trusted sources in `data/seed/sources-registry.lino`, then reconstruct the procedure from what was retrieved: the goal is not to know everything in advance, it is to know how to get to know anything when it is needed (2026-09-14 doctrine, `rust/src/concept_lookup.rs`), bounded by the evidence the sources return rather than by a compute budget.
 - Cache external source access with provenance and refresh policy rather than treating the web as untracked context.
 - Split every task recursively into smaller tasks that can be tested, executed, or answered. No task is rated hard, complex or ambitious before it is split: complex tasks are composed of simple tasks, so everything complex is recursively simple. If a task is big, split it in two and split the halves again, until each leaf is directly solvable.
 - Learn from failed code generation, failed tests, timeouts, and review comments.
@@ -40,7 +40,7 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Treat formalization, decomposition, candidate generation, validation, and simplification as first-class steps that always run, even when the answer is trivially known.
 - Generate at least one executable test or constraint check per requirement before committing to an answer, following test-driven development.
 - Reuse known parts of prior solutions before generating new ones; record reuse as `cache_hit:` evidence with a link back to the prior trace.
-- When no reusable part exists, combine reasoning, random search, and evolutionary search according to the available compute budget instead of giving up; today implemented for arithmetic reachability (`src/solver_search.rs`), a target for every other domain.
+- When no reusable part exists, combine reasoning, random search, and evolutionary search according to the available compute budget instead of giving up; today implemented for arithmetic reachability (`rust/src/solver_search.rs`), a target for every other domain.
 - After verification, apply meaning-preserving transformation rules to shorten the answer and pick the smallest sufficient form.
 - Surface execution failures as `trace:execution_failure` links instead of retrying silently.
 
@@ -111,7 +111,7 @@ recalled live; promotion remains explicitly benchmark- and human-gated.
 - Measure the share of each release authored by Formal AI itself, starting honestly at 0% and ratcheting upward; the current number lives only in `data/meta/self-hosting-ledger.lino`, rendered in `docs/status.md`, and every document cites it by reference rather than restating it.
 - Measure that share by the model that produced the change (`Formal-AI-Model` must be formal-ai and be named in the committed evidence) over behaviour-changing files only; documentation, logs and ledgers about Formal AI are not Formal AI authoring itself (issue #1085).
 - Define "Formal AI codes itself" as: Formal AI appends or supersedes links in `data/seed` and `data/meta` that change its own behaviour, or applies a link substitution to its own source, generates a held-out test, validates it through the interpreter and `cargo test`, and opens the pull request. Seed edits are the first rung; source edits follow through the same rule engine.
-- Keep a full meta-language representation of the source beside the source: a `.lino` per file under `src/`, one to one on every merged pull request (issue #558). One-to-one file correspondence holds today; the committed census is a signature, not the source, and the lossless round-trip that would make reconstruction real exists in `tests/unit/issue_558_source_links.rs` but is `#[ignore]`d there as exhaustive, run on demand with `--ignored`. Rust is an emission target of that representation, not the system; its line count measures an output and is not a release condition.
+- Keep a full meta-language representation of the source beside the source: a `.lino` per file under `rust/src/`, one to one on every merged pull request (issue #558). One-to-one file correspondence holds today; the committed census is a signature, not the source, and the lossless round-trip that would make reconstruction real exists in `rust/tests/unit/issue_558_source_links.rs` but is `#[ignore]`d there as exhaustive, run on demand with `--ignored`. Rust is an emission target of that representation, not the system; its line count measures an output and is not a release condition.
 - Never present unobserved output as observed. Every surface states its execution limit from a probe, in every supported language.
 
 ## Documentation Goals
@@ -131,4 +131,4 @@ recalled live; promotion remains explicitly benchmark- and human-gated.
 - Keep every new behavior covered by focused unit, integration, or e2e tests before expanding scope.
 - Implement the universal solver and append-only event log inside the existing Rust engine so every chat answer surfaces the full evidence-link namespace expected by the full-scope test suite.
 - Promote knobs from `SolverConfig` to environment variables and CLI flags so the same engine can be operated in chat, agent, and offline modes without code changes.
-- Cover each step of the universal solver with explicit unit tests; every tracked-requirement test under `tests/unit/specification/` now runs in CI — none is `#[ignore]`d — and the only remaining ignores there are network-gated benchmarks that must fetch external payloads.
+- Cover each step of the universal solver with explicit unit tests; every tracked-requirement test under `rust/tests/unit/specification/` now runs in CI — none is `#[ignore]`d — and the only remaining ignores there are network-gated benchmarks that must fetch external payloads.

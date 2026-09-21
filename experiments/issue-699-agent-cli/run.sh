@@ -5,7 +5,7 @@ set -euo pipefail
 # the first specialized-handler migration batch through the real Agent CLI.
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8899}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-699/agent-cli-evidence}"

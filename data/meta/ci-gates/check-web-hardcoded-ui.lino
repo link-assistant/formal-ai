@@ -6,4 +6,4 @@
 ci_gate check_web_hardcoded_ui
   stage web
   description "The web app renders no hardcoded user-facing string."
-  run "npm run --prefix tests/e2e check:web-hardcoded-ui"
+  run "npm run --prefix rust/tests/e2e check:web-hardcoded-ui"

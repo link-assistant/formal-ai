@@ -2,9 +2,9 @@ self_ast_census
   target src/family_method.rs
   language rust
   fidelity signature
-  byte_len 13805
+  byte_len 13808
   line_count 395
-  content_id source_module_c6ddd10552aafb51
+  content_id source_module_a0ad279fbf62ec34
   symbol_count 20
   symbols
     const FAMILY_METHODS_LINO 21 21

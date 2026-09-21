@@ -126,7 +126,7 @@ grounded_action_runtime_parity
   record_type "meta_parity"
   rust_source "src/agentic_coding/local_search.rs"
   rust_function "request_for"
-  js_source "src/web/worker/formal_ai_worker_17.js"
+  js_source "js/worker/formal_ai_worker_17.js"
   js_function "extractWebSearchRequest"
 grounded_action_property_benchmark
   record_type "meta_benchmark"

@@ -24,7 +24,7 @@
 # Usage: experiments/agent_cli_e2e/run_issue_1075.sh
 #
 # Environment knobs:
-#   BIN       release-mode formal-ai binary (default: target/release/formal-ai)
+#   BIN       release-mode formal-ai binary (default: rust/target/release/formal-ai)
 #   PORT      server port (default: 8975)
 #   CLIENTS   which CLIs to drive (default: "agent claude")
 #   IMAGE     container base with a matching glibc (default: ubuntu:24.04)
@@ -33,7 +33,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8975}"
 IMAGE="${IMAGE:-ubuntu:24.04}"
 ATTEMPTS="${ATTEMPTS:-3}"

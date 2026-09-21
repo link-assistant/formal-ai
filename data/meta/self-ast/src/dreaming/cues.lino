@@ -2,9 +2,9 @@ self_ast_census
   target src/dreaming/cues.rs
   language rust
   fidelity signature
-  byte_len 1120
+  byte_len 1123
   line_count 30
-  content_id source_module_c4abdc1af84b644e
+  content_id source_module_88eb3366656da5ed
   symbol_count 4
   symbols
     const EMBEDDED_CUES 13 13

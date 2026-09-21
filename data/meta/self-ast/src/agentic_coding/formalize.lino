@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/formalize.rs
   language rust
   fidelity full_ast
-  byte_len 26078
+  byte_len 26081
   line_count 694
-  content_id source_module_822aacb04b64362e
+  content_id source_module_c5c9bf0bfba2ee73
   symbol_count 23
   symbols
     const CANONICAL_FISHERMAN_SYNOPSIS 41 42

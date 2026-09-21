@@ -9,7 +9,7 @@
 # Usage: bash experiments/issue_1066_served_route/probe.sh <prompt-file> [workdir]
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PROMPT_FILE="${1:?usage: probe.sh <prompt-file> [workdir]}"
 WORK="${2:-$(mktemp -d)}"
 OUT="${OUT:-/tmp/issue-1066-served-route}"

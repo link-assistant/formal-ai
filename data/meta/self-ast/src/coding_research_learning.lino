@@ -2,9 +2,9 @@ self_ast_census
   target src/coding_research_learning.rs
   language rust
   fidelity signature
-  byte_len 31075
+  byte_len 31078
   line_count 892
-  content_id source_module_89d12330498bf816
+  content_id source_module_94299020e89e191d
   symbol_count 57
   symbols
     const SEARCH_PAGE_LIMIT 27 27

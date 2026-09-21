@@ -2,9 +2,9 @@ self_ast_census
   target src/recipe_interpreter.rs
   language rust
   fidelity signature
-  byte_len 19877
+  byte_len 19880
   line_count 491
-  content_id source_module_c35c366915dac259
+  content_id source_module_acbe7ab436260be6
   symbol_count 24
   symbols
     const RECIPE_LINO 44 44

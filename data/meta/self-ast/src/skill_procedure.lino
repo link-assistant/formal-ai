@@ -2,9 +2,9 @@ self_ast_census
   target src/skill_procedure.rs
   language rust
   fidelity signature
-  byte_len 31025
+  byte_len 31028
   line_count 809
-  content_id source_module_298d2b042e7d9cc7
+  content_id source_module_06f2aa7da91e6f96
   symbol_count 51
   symbols
     module artifact 46 46

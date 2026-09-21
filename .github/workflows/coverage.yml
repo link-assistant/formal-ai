@@ -133,7 +133,7 @@ jobs:
         uses: taiki-e/install-action@cargo-llvm-cov
 
       - name: Clean stale coverage artifacts
-        run: cargo llvm-cov clean --workspace
+        run: cargo llvm-cov --manifest-path rust/Cargo.toml clean --workspace
 
       # Issue #1076. Both steps print nothing unless the job-level switch above
       # is on. Switched on, they record CPU steal, load, memory and disk once
@@ -159,7 +159,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Instrumented coverage run" \
-            cargo llvm-cov --all-features --lcov --output-path lcov.info
+            cargo llvm-cov --manifest-path rust/Cargo.toml --all-features --lcov --output-path lcov.info
 
       # `kill 0` means "every process in my own process group", so a `:-0`
       # default here would make this step kill its own shell whenever the

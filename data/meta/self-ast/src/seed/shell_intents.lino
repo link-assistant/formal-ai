@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/shell_intents.rs
   language rust
   fidelity signature
-  byte_len 15323
+  byte_len 15318
   line_count 353
-  content_id source_module_6019def1499534a2
+  content_id source_module_8b64b7ee9d496646
   symbol_count 13
   symbols
     enum ShellIntentArgument 24 42

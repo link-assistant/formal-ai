@@ -6,13 +6,13 @@ import { bundleWebTools } from "./bundle-web-tools.mjs";
 
 // Package-time resource preparation for the VS Code extension (`vsce package`).
 //
-// Issue #353: the extension renders the committed `src/web/` chat UI inside a
+// Issue #353: the extension renders the committed `js/` chat UI inside a
 // Webview and reuses the desktop shell's tool-router / memory-sync clients. In a
-// dev checkout those assets are resolved across the repo (src/web, data/seed,
+// dev checkout those assets are resolved across the repo (js, data/seed,
 // desktop/lib); a packaged `.vsix` is self-contained, so this script copies them
 // into the extension directory:
 //
-//   ../../src/web              -> vscode/dist-web
+//   ../../js              -> vscode/dist-web
 //   ../../data/seed            -> vscode/dist-web/seed
 //   ../../desktop/lib/*.cjs    -> vscode/src/lib/vendor
 //
@@ -25,7 +25,7 @@ import { bundleWebTools } from "./bundle-web-tools.mjs";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const vscodeDir = path.resolve(scriptDir, "..");
 const repoRoot = path.resolve(vscodeDir, "..");
-const sourceWeb = path.join(repoRoot, "src", "web");
+const sourceWeb = path.join(repoRoot, "js");
 const sourceSeed = path.join(repoRoot, "data", "seed");
 const sourceLib = path.join(repoRoot, "desktop", "lib");
 const sourceLicense = path.join(repoRoot, "LICENSE");
@@ -48,7 +48,7 @@ const VENDOR_MODULES = [
 // listing always matches Cargo.toml, the single source of truth for the
 // formal-ai version (mirrors desktop/scripts/prepare-resources.mjs).
 function syncExtensionVersion() {
-  const cargoTomlPath = path.join(repoRoot, "Cargo.toml");
+  const cargoTomlPath = path.join(repoRoot, "rust", "Cargo.toml");
   const vscodePackagePath = path.join(vscodeDir, "package.json");
   const cargoToml = fs.readFileSync(cargoTomlPath, "utf8");
   const packageSection = cargoToml.split(/^\[/m).find((s) => s.startsWith("package]"));

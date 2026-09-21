@@ -23,12 +23,12 @@ on:
     # issue-#671 loop lived in the planner, and the issue-#650 defects lived in
     # the Responses transport and the `with` wrapper.
     paths:
-      - 'src/**'
+      - 'rust/src/**'
       - 'data/seed/**'
-      - 'tests/**'
+      - 'rust/tests/**'
       - 'experiments/agentic_cli_matrix/**'
-      - 'Cargo.toml'
-      - 'Cargo.lock'
+      - 'rust/Cargo.toml'
+      - 'rust/Cargo.lock'
       - '.github/workflows/agentic-cli-matrix.yml'
   workflow_dispatch:
 
@@ -64,7 +64,7 @@ jobs:
         with:
           check: agentic-cli-matrix
           paths: >-
-            src data build.rs Cargo.toml Cargo.lock experiments/agentic_cli_matrix scripts .github/workflows/agentic-cli-matrix.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/agentic_cli_matrix scripts .github/workflows/agentic-cli-matrix.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
 
 
@@ -78,7 +78,7 @@ jobs:
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         id: matrix-plan
         run: |
-          matrix="$(BIN=target/release/formal-ai experiments/agentic_cli_matrix/plan_matrix.sh)"
+          matrix="$(BIN=rust/target/release/formal-ai experiments/agentic_cli_matrix/plan_matrix.sh)"
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
       - name: Upload formal-ai binary
@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: formal-ai-binary
-          path: target/release/formal-ai
+          path: rust/target/release/formal-ai
           retention-days: 1
 
   matrix:
@@ -129,11 +129,11 @@ jobs:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: formal-ai-binary
-          path: target/release
+          path: rust/target/release
 
       - name: Make formal-ai executable
         if: ${{ needs.build.outputs.already-green != 'true' }}
-        run: chmod +x target/release/formal-ai
+        run: chmod +x rust/target/release/formal-ai
 
       - name: Install Xvfb
         if: ${{ (matrix.display) && needs.build.outputs.already-green != 'true' }}
@@ -282,7 +282,7 @@ jobs:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: formal-ai-binary
-          path: target/release
+          path: rust/target/release
 
       - name: Download every real-client observation
         if: ${{ needs.build.outputs.already-green != 'true' }}
@@ -298,7 +298,7 @@ jobs:
       - name: Infer human-gated contract amendments
         if: ${{ needs.build.outputs.already-green != 'true' }}
         run: |
-          chmod +x target/release/formal-ai
+          chmod +x rust/target/release/formal-ai
           mapfile -t observations < <(
             find matrix-evidence -name contract-observations.jsonl -type f | sort
           )
@@ -306,7 +306,7 @@ jobs:
             echo "the real-client legs produced no learning observations" >&2
             exit 1
           }
-          target/release/formal-ai clients learn "${observations[@]}" \
+          rust/target/release/formal-ai clients learn "${observations[@]}" \
             > client-contract-learning.lino
           grep -q 'human_gated "true"' client-contract-learning.lino
           grep -q 'independently_worded_groups "[1-9]' client-contract-learning.lino

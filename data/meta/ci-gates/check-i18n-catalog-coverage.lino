@@ -6,4 +6,4 @@
 ci_gate check_i18n_catalog_coverage
   stage web
   description "Every user-facing string has a translation in every registered language."
-  run "npm run --prefix tests/e2e check:i18n"
+  run "npm run --prefix rust/tests/e2e check:i18n"

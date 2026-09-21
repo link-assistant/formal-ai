@@ -2,9 +2,9 @@ self_ast_census
   target src/program_plan.rs
   language rust
   fidelity signature
-  byte_len 13113
+  byte_len 13116
   line_count 320
-  content_id source_module_f6f3d397d6261f15
+  content_id source_module_8e84a8ef9ec0aca8
   symbol_count 21
   symbols
     const TASK_NODE 46 46

@@ -2,7 +2,7 @@
 //! Generate the seed inventory every production path shares.
 //!
 //! Issue #991: `src/seed/embedded.rs` (27 manual conflict resolutions) and
-//! `src/web/seed_loader.js` (14) each carried the same list of `data/seed/*.lino`
+//! `js/seed_loader.js` (14) each carried the same list of `data/seed/*.lino`
 //! files, hand-ordered, so every branch that added a seed file appended to the
 //! same lines of both. The list now lives once in
 //! `data/meta/seed-registry.lino`, sorted by name and `merge=union`: two branches
@@ -16,7 +16,7 @@
 //!     only formats files it reaches through a `mod` declaration: the generator
 //!     therefore owns the layout outright and `cargo fmt --check` has nothing to
 //!     say about it.
-//!   * `src/web/seed-files.js` -- the list the browser worker fetches
+//!   * `js/seed-files.js` -- the list the browser worker fetches
 //!
 //! Usage:
 //!   rust-script scripts/generate-seed-registry.rs           # verify
@@ -41,7 +41,7 @@ const SEED_DIR: &str = "data/seed";
 #[cfg(not(test))]
 const RUST_TARGET: &str = "src/seed/embedded_registry.rs";
 #[cfg(not(test))]
-const WEB_TARGET: &str = "src/web/seed-files.js";
+const WEB_TARGET: &str = "js/seed-files.js";
 
 /// The column the generated Rust wraps at, matching rustfmt's default
 /// `max_width` so the file reads like the rest of the crate even though rustfmt
@@ -256,7 +256,7 @@ fn render_rust(registry: &Registry) -> String {
     out.push_str("\n/// Raw embedded contents (used by `merged_bundle` and by tests).\n");
     for seed in &embedded {
         let one_line = format!(
-            "pub const {}: &str = include_str!(\"../../{}\");",
+            "pub const {}: &str = include_str!(\"../../../{}\");",
             seed.constant(),
             seed.path()
         );
@@ -264,7 +264,7 @@ fn render_rust(registry: &Registry) -> String {
             out.push_str(&one_line);
         } else {
             out.push_str(&format!(
-                "pub const {}: &str =\n    include_str!(\"../../{}\");",
+                "pub const {}: &str =\n    include_str!(\"../../../{}\");",
                 seed.constant(),
                 seed.path()
             ));
@@ -455,19 +455,21 @@ fn main() {
         std::process::exit(1);
     }
 
+    // The crate's generated files moved under rust/ with the crate itself
+    // (issue #1138); the registry and the browser list stayed at the root.
     let targets = [
-        (REGISTRY, render_registry(&registry, &header)),
-        (RUST_TARGET, render_rust(&registry)),
-        (WEB_TARGET, render_web(&registry)),
+        (REGISTRY, root.join(REGISTRY), render_registry(&registry, &header)),
+        (RUST_TARGET, root.join("rust").join(RUST_TARGET), render_rust(&registry)),
+        (WEB_TARGET, root.join(WEB_TARGET), render_web(&registry)),
     ];
     let mut stale = Vec::new();
-    for (path, expected) in &targets {
-        let actual = fs::read_to_string(root.join(path)).unwrap_or_default();
+    for (path, full, expected) in &targets {
+        let actual = fs::read_to_string(full).unwrap_or_default();
         if &actual == expected {
             continue;
         }
         if write {
-            fs::write(root.join(path), expected).unwrap_or_else(|error| {
+            fs::write(full, expected).unwrap_or_else(|error| {
                 println!("::error::Could not write {path}: {error}");
                 std::process::exit(1);
             });
@@ -617,11 +619,11 @@ mod tests {
         ));
         let rust = render_rust(&registry);
         assert!(rust.contains(
-            "pub const AGENT_INFO_LINO: &str = include_str!(\"../../data/seed/agent-info.lino\");"
+            "pub const AGENT_INFO_LINO: &str = include_str!(\"../../../data/seed/agent-info.lino\");"
         ));
         assert!(rust.contains(
             "pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =\n    \
-             include_str!(\"../../data/seed/agentic-tool-capabilities.lino\");"
+             include_str!(\"../../../data/seed/agentic-tool-capabilities.lino\");"
         ));
         assert!(rust.lines().all(|line| line.len() <= MAX_WIDTH), "{rust}");
     }

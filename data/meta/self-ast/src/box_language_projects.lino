@@ -2,9 +2,9 @@ self_ast_census
   target src/box_language_projects.rs
   language rust
   fidelity signature
-  byte_len 12790
+  byte_len 12796
   line_count 323
-  content_id source_module_196e19fe85a34716
+  content_id source_module_bccd3dd77ecc570e
   symbol_count 25
   symbols
     const BOX_LANGUAGE_PROJECTS_LINO 21 21

@@ -1,7 +1,7 @@
 # Ordered synchronous browser-handler bindings.
 #
 # The browser worker used to repeat this inventory as an array literal in
-# src/web/worker/formal_ai_worker_dispatch.js.  Keeping the binding name,
+# js/worker/formal_ai_worker_dispatch.js.  Keeping the binding name,
 # arguments and result guards here makes one Links Notation document the
 # authority for both membership and first-match-wins order.  Child node names
 # are executable symbols rather than natural-language meaning references.

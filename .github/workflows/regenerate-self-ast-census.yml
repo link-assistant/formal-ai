@@ -1,7 +1,7 @@
 name: Regenerate self-AST census
 
 # Issue #1085. The per-module census under `data/meta/self-ast/` is a pure
-# function of the sources (`cargo run --example regenerate_self_ast_census`),
+# function of the sources (`cargo run --manifest-path rust/Cargo.toml --example regenerate_self_ast_census`),
 # and `tests/unit/issue_673_self_ast_census.rs` fails on drift. A contributor
 # whose machine cannot build the crate has no way to regenerate it; this job
 # builds it here on every pull request that touches a source module and hands
@@ -12,8 +12,8 @@ name: Regenerate self-AST census
 on:
   pull_request:
     paths:
-      - 'src/**/*.rs'
-      - 'examples/regenerate_self_ast_census.rs'
+      - 'rust/src/**/*.rs'
+      - 'rust/examples/regenerate_self_ast_census.rs'
       - '.github/workflows/regenerate-self-ast-census.yml'
   workflow_dispatch:
 
@@ -51,7 +51,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "self-AST census regeneration" \
-            cargo run --locked --example regenerate_self_ast_census
+            cargo run --manifest-path rust/Cargo.toml --locked --example regenerate_self_ast_census
       # The three byte-pinned documents derived from the planner source move
       # whenever `src/agentic_coding/planner.rs` does (`issue_538_agentic` and
       # `issue_558_self_healing` fail on drift); they are regenerated with the
@@ -59,9 +59,9 @@ jobs:
       - name: Regenerate the planner-derived documents
         run: |
           set -euo pipefail
-          cargo run --locked --quiet --example dump_self_ast > data/meta/self-ast.lino
-          cargo run --locked --quiet --example dump_self_healing_case > data/meta/self-healing-case.lino
-          cargo run --locked --quiet --example dump_self_ast_agent_cli_session \
+          cargo run --manifest-path rust/Cargo.toml --locked --quiet --example dump_self_ast > data/meta/self-ast.lino
+          cargo run --manifest-path rust/Cargo.toml --locked --quiet --example dump_self_healing_case > data/meta/self-healing-case.lino
+          cargo run --manifest-path rust/Cargo.toml --locked --quiet --example dump_self_ast_agent_cli_session \
             > docs/case-studies/issue-538/agent-cli-session-self-ast.json
       - name: Show what changed
         run: |

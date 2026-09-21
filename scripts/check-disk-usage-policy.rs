@@ -13,7 +13,10 @@ fn gate_registry() -> Vec<String> {
     let mut shards = fs::read_dir("data/meta/ci-gates")
         .expect("read data/meta/ci-gates")
         .map(|entry| entry.expect("read a gate shard").path())
-        .filter(|path| path.extension().is_some_and(|extension| extension == "lino"))
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|extension| extension == "lino")
+        })
         .collect::<Vec<_>>();
     shards.sort();
     shards
@@ -26,7 +29,7 @@ fn gate_registry() -> Vec<String> {
 }
 
 fn main() -> ExitCode {
-    let manifest = fs::read_to_string("Cargo.toml").expect("read Cargo.toml");
+    let manifest = fs::read_to_string("rust/Cargo.toml").expect("read rust/Cargo.toml");
     // Every workflow, not a hand-listed three: the policy read only
     // `release.yml` and `desktop-release.yml`, so `agentic-cli-matrix.yml` and
     // `external-benchmarks.yml` cached the target tree unnoticed -- the exact
@@ -80,7 +83,8 @@ fn main() -> ExitCode {
                 .to_owned(),
         );
     }
-    if !workflows.contains("cargo check --examples --all-features") {
+    if !workflows.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features")
+    {
         errors.push(
             "workflows must retain compile coverage for examples without linking them".to_owned(),
         );

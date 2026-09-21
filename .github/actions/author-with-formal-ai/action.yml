@@ -137,7 +137,7 @@ runs:
     - name: Build Formal AI from the checked-out sources
       if: steps.task.outputs.number != '' && inputs.formal-ai-source == 'source'
       shell: bash
-      run: cargo build --release --bin formal-ai
+      run: cargo build --manifest-path rust/Cargo.toml --release --bin formal-ai
 
     # A consuming repository has no sources to build. The published container
     # already carries the binary, so the action copies it out and runs it on

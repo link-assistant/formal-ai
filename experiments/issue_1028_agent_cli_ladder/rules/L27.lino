@@ -1,6 +1,6 @@
 link_edit
   leaf L27
-  path src/cli_report.rs
+  path rust/src/cli_report.rs
   language rust
   rule rename_identifier
     old "TRACE_SEPARATOR"

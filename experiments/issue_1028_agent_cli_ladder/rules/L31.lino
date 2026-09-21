@@ -1,6 +1,6 @@
 link_edit
   leaf L31
-  path src/learning_adoption_ledger.rs
+  path rust/src/learning_adoption_ledger.rs
   language rust
   rule rename_identifier
     old "UNKNOWN_INTENT"

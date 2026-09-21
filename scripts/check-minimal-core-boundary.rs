@@ -23,19 +23,19 @@ use std::process::exit;
 use walkdir::WalkDir;
 
 const LEDGER_PATH: &str = "data/meta/core-boundary-ledger.lino";
-const HANDLER_ROOT: &str = "src/solver_handlers";
+const HANDLER_ROOT: &str = "rust/src/solver_handlers";
 /// Handler files that live one directory up from `HANDLER_ROOT`.
 ///
-/// Issue #1138 B9, plan 09 leaf 1: four handlers sit in `src/` itself, so a
-/// scan root of `src/solver_handlers` alone counted 42 where the tree has 46 and
+/// Issue #1138 B9, plan 09 leaf 1: four handlers sit in `rust/src/` itself, so a
+/// scan root of `rust/src/solver_handlers` alone counted 42 where the tree has 46 and
 /// a migration could have lowered a ratchet by moving a file out of the scanned
 /// directory. They are named explicitly rather than matched by prefix so a new
 /// file cannot join the set without a reviewed edit here.
 const HANDLERS_OUTSIDE_ROOT: [&str; 4] = [
-    "src/solver_handler_how.rs",
-    "src/solver_handler_how_synthesis.rs",
-    "src/solver_handler_units.rs",
-    "src/solver_handler_oracle.rs",
+    "rust/src/solver_handler_how.rs",
+    "rust/src/solver_handler_how_synthesis.rs",
+    "rust/src/solver_handler_units.rs",
+    "rust/src/solver_handler_oracle.rs",
 ];
 /// The generated `mod` list issue #991 split out of each `mod.rs`.
 ///
@@ -70,7 +70,7 @@ struct Entry {
 ///
 /// Issue #1138 B9, plan 09 leaf 17: the migration families need somewhere to
 /// live that is not itself a ledgered handler. A `component` block names one
-/// file outside `src/solver_handlers`, the kind it was promoted under (the
+/// file outside `rust/src/solver_handlers`, the kind it was promoted under (the
 /// same promotion test the boundary document defines), and the reason it
 /// passes. The block is audited — the file must exist, must carry a kind and
 /// reason, and must NOT sit inside the census, where it would be unledgered
@@ -201,7 +201,7 @@ fn is_handler_source(path: &Path) -> bool {
             .is_some_and(|name| name != GENERATED_MODULE_LIST)
 }
 
-/// Every compiled handler source below `src/solver_handlers`, with its line
+/// Every compiled handler source below `rust/src/solver_handlers`, with its line
 /// count.
 ///
 /// Public because the unit suite compiles this script as a module
@@ -453,7 +453,7 @@ mod tests {
 
     fn sample_ledger() -> Ledger {
         parse_ledger(
-            "core_boundary_ledger\n  source_file_count_max 2\n  source_lines_max 5\n  outside_core_file_count_max 1\n  outside_core_lines_max 3\n  source src/solver_handlers/domain.rs\n    disposition migrate\n    baseline_lines 3\n    data_target \"domain rules\"\n    reason \"Domain policy belongs in data.\"\n  source src/solver_handlers/interpreter.rs\n    disposition promote\n    baseline_lines 2\n    core_component rule_interpreter\n    reason \"Executes generic rules.\"\n",
+            "core_boundary_ledger\n  source_file_count_max 2\n  source_lines_max 5\n  outside_core_file_count_max 1\n  outside_core_lines_max 3\n  source rust/src/solver_handlers/domain.rs\n    disposition migrate\n    baseline_lines 3\n    data_target \"domain rules\"\n    reason \"Domain policy belongs in data.\"\n  source rust/src/solver_handlers/interpreter.rs\n    disposition promote\n    baseline_lines 2\n    core_component rule_interpreter\n    reason \"Executes generic rules.\"\n",
         )
         .expect("sample ledger")
     }
@@ -470,8 +470,8 @@ mod tests {
     #[test]
     fn accepts_a_complete_exact_census() {
         let files = BTreeMap::from([
-            ("src/solver_handlers/domain.rs".to_owned(), 3),
-            ("src/solver_handlers/interpreter.rs".to_owned(), 2),
+            ("rust/src/solver_handlers/domain.rs".to_owned(), 3),
+            ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
         ]);
         assert!(audit(&sample_ledger(), &files).is_empty());
     }
@@ -479,13 +479,15 @@ mod tests {
     #[test]
     fn rejects_nested_growth_and_unledgered_sources() {
         let files = BTreeMap::from([
-            ("src/solver_handlers/domain.rs".to_owned(), 4),
-            ("src/solver_handlers/interpreter.rs".to_owned(), 2),
-            ("src/solver_handlers/nested/new.rs".to_owned(), 1),
+            ("rust/src/solver_handlers/domain.rs".to_owned(), 4),
+            ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
+            ("rust/src/solver_handlers/nested/new.rs".to_owned(), 1),
         ]);
         let errors = audit(&sample_ledger(), &files).join("\n");
         assert!(errors.contains("domain.rs grew from 3 to 4"));
-        assert!(errors.contains("unledgered handler source src/solver_handlers/nested/new.rs"));
+        assert!(
+            errors.contains("unledgered handler source rust/src/solver_handlers/nested/new.rs")
+        );
     }
 
     #[test]
@@ -496,14 +498,16 @@ mod tests {
         // not ask it to migrate -- and must not count it, or adding a handler
         // would move a ceiling shared by every branch.
         assert!(is_handler_source(Path::new(
-            "src/solver_handlers/domain.rs"
+            "rust/src/solver_handlers/domain.rs"
         )));
         assert!(!is_handler_source(Path::new(
-            "src/solver_handlers/modules.rs"
+            "rust/src/solver_handlers/modules.rs"
         )));
-        assert!(is_handler_source(Path::new("src/solver_handlers/mod.rs")));
+        assert!(is_handler_source(Path::new(
+            "rust/src/solver_handlers/mod.rs"
+        )));
         assert!(!is_handler_source(Path::new(
-            "src/solver_handlers/README.md"
+            "rust/src/solver_handlers/README.md"
         )));
     }
 
@@ -511,7 +515,7 @@ mod tests {
     /// two sources: the shape plan 09 leaf 17 introduced.
     fn sample_ledger_with_component() -> Ledger {
         parse_ledger(
-            "core_boundary_ledger\n  source_file_count_max 2\n  source_lines_max 5\n  outside_core_file_count_max 1\n  outside_core_lines_max 3\n  component retrieval_method_interpreter\n    file src/retrieval_method.rs\n    kind \"Generic interpreter\"\n    reason \"One retrieval procedure over the seed registry.\"\n  source src/solver_handlers/domain.rs\n    disposition migrate\n    baseline_lines 3\n    data_target \"domain rules\"\n    reason \"Domain policy belongs in data.\"\n  source src/solver_handlers/interpreter.rs\n    disposition promote\n    baseline_lines 2\n    core_component rule_interpreter\n    reason \"Executes generic rules.\"\n",
+            "core_boundary_ledger\n  source_file_count_max 2\n  source_lines_max 5\n  outside_core_file_count_max 1\n  outside_core_lines_max 3\n  component retrieval_method_interpreter\n    file rust/src/retrieval_method.rs\n    kind \"Generic interpreter\"\n    reason \"One retrieval procedure over the seed registry.\"\n  source rust/src/solver_handlers/domain.rs\n    disposition migrate\n    baseline_lines 3\n    data_target \"domain rules\"\n    reason \"Domain policy belongs in data.\"\n  source rust/src/solver_handlers/interpreter.rs\n    disposition promote\n    baseline_lines 2\n    core_component rule_interpreter\n    reason \"Executes generic rules.\"\n",
         )
         .expect("sample ledger with component")
     }
@@ -522,7 +526,7 @@ mod tests {
         assert_eq!(ledger.components.len(), 1);
         let record = &ledger.components[0];
         assert_eq!(record.name, "retrieval_method_interpreter");
-        assert_eq!(record.file, "src/retrieval_method.rs");
+        assert_eq!(record.file, "rust/src/retrieval_method.rs");
         assert_eq!(record.kind, "Generic interpreter");
         assert_eq!(
             record.reason,
@@ -530,7 +534,7 @@ mod tests {
         );
         // The component must not disturb the source entries around it.
         assert_eq!(ledger.entries.len(), 2);
-        assert_eq!(ledger.entries[0].path, "src/solver_handlers/domain.rs");
+        assert_eq!(ledger.entries[0].path, "rust/src/solver_handlers/domain.rs");
         assert_eq!(ledger.entries[0].data_target, "domain rules");
         assert_eq!(ledger.entries[1].core_component, "rule_interpreter");
     }
@@ -538,8 +542,8 @@ mod tests {
     #[test]
     fn a_component_outside_the_census_passes_the_audit() {
         let files = BTreeMap::from([
-            ("src/solver_handlers/domain.rs".to_owned(), 3),
-            ("src/solver_handlers/interpreter.rs".to_owned(), 2),
+            ("rust/src/solver_handlers/domain.rs".to_owned(), 3),
+            ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
         ]);
         assert!(audit(&sample_ledger_with_component(), &files).is_empty());
     }
@@ -547,10 +551,10 @@ mod tests {
     #[test]
     fn a_component_inside_the_census_is_rejected() {
         let files = BTreeMap::from([
-            ("src/solver_handlers/domain.rs".to_owned(), 3),
-            ("src/solver_handlers/interpreter.rs".to_owned(), 2),
+            ("rust/src/solver_handlers/domain.rs".to_owned(), 3),
+            ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
             // The registered interpreter must not also be counted handler debt.
-            ("src/retrieval_method.rs".to_owned(), 40),
+            ("rust/src/retrieval_method.rs".to_owned(), 40),
         ]);
         let errors = audit(&sample_ledger_with_component(), &files).join("\n");
         assert!(
@@ -558,13 +562,13 @@ mod tests {
             "a census file cannot double as a component: {errors}"
         );
         // ... and the unledgered census file is still reported on its own terms.
-        assert!(errors.contains("unledgered handler source src/retrieval_method.rs"));
+        assert!(errors.contains("unledgered handler source rust/src/retrieval_method.rs"));
     }
 
     #[test]
     fn a_component_without_a_kind_or_reason_is_rejected() {
         let ledger = parse_ledger(
-            "core_boundary_ledger\n  source_file_count_max 0\n  source_lines_max 0\n  outside_core_file_count_max 0\n  outside_core_lines_max 0\n  component unnamed_interpreter\n    file src/somewhere.rs\n  source src/solver_handlers/domain.rs\n    disposition delete\n",
+            "core_boundary_ledger\n  source_file_count_max 0\n  source_lines_max 0\n  outside_core_file_count_max 0\n  outside_core_lines_max 0\n  component unnamed_interpreter\n    file rust/src/somewhere.rs\n  source rust/src/solver_handlers/domain.rs\n    disposition delete\n",
         )
         .expect("ledger with hollow component");
         let errors = audit(&ledger, &BTreeMap::new()).join("\n");

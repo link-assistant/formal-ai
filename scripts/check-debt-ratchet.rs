@@ -210,7 +210,7 @@ fn between<'a>(text: &'a str, open: &str, close: &str) -> &'a str {
 /// The same reading `tests/unit/issue_699_handler_migration.rs` performs, so the
 /// test and the gate cannot disagree about what a dispatch entry is.
 fn try_dispatch_entries(root: &Path) -> Result<u64, String> {
-    let dispatch = read(root, "src/solver_dispatch.rs")?;
+    let dispatch = read(root, "rust/src/solver_dispatch.rs")?;
     Ok(between(&dispatch, "const HANDLER_FUNCTIONS", "];")
         .lines()
         .filter(|line| {
@@ -223,7 +223,7 @@ fn try_dispatch_entries(root: &Path) -> Result<u64, String> {
 /// Hard-coded promotion predicates: one `handler:<name>` literal per promotion
 /// the prompt formalizer decides in Rust instead of reading from seed data.
 fn promotion_predicates(root: &Path) -> Result<u64, String> {
-    let text = read(root, "src/intent_formalization/prompt_relevants.rs")?;
+    let text = read(root, "rust/src/intent_formalization/prompt_relevants.rs")?;
     Ok(text.matches("\"handler:").count() as u64)
 }
 
@@ -231,7 +231,7 @@ fn promotion_predicates(root: &Path) -> Result<u64, String> {
 /// comparisons or a name-based runtime match. Typed attribute matches do not
 /// count: their method-to-runtime association lives in seed data.
 fn dispatch_name_special_cases(root: &Path) -> Result<u64, String> {
-    let text = read(root, "src/meta_method_dispatch.rs")?;
+    let text = read(root, "rust/src/meta_method_dispatch.rs")?;
     let comparisons = text.matches("name == \"").count();
     let name_matches = between(&text, "match name", "_ => return None")
         .matches("\" =>")
@@ -242,7 +242,7 @@ fn dispatch_name_special_cases(root: &Path) -> Result<u64, String> {
 /// Handler names the browser worker states as literals rather than deriving from
 /// `data/seed/handler-precedence.lino`.
 fn worker_sync_handler_literals(root: &Path) -> Result<u64, String> {
-    let worker_dir = root.join("src/web/worker");
+    let worker_dir = root.join("js/worker");
     let mut dispatch_sources = Vec::new();
     for entry in
         fs::read_dir(&worker_dir).map_err(|error| format!("{}: {error}", worker_dir.display()))?
@@ -260,7 +260,7 @@ fn worker_sync_handler_literals(root: &Path) -> Result<u64, String> {
     }
     if dispatch_sources.len() != 1 {
         return Err(format!(
-            "expected exactly one synchronousHandlerCandidates owner under src/web/worker, found {}",
+            "expected exactly one synchronousHandlerCandidates owner under js/worker, found {}",
             dispatch_sources.len()
         ));
     }
@@ -276,7 +276,7 @@ fn worker_sync_handler_literals(root: &Path) -> Result<u64, String> {
 /// may not be stated as a fraction it has not measured (plan 00 §6.8).
 fn store_read_share(root: &Path) -> Result<u64, String> {
     let mut files = Vec::new();
-    rust_files(&root.join("src"), &mut files)?;
+    rust_files(&root.join("rust/src"), &mut files)?;
     let mut total = 0_u64;
     for file in &files {
         let path = relative(root, file);
@@ -292,7 +292,7 @@ fn store_read_share(root: &Path) -> Result<u64, String> {
 /// directories both count because either one is a top-level Rust suite surface.
 fn docs_requirements_suites(root: &Path) -> Result<u64, String> {
     let entries =
-        fs::read_dir(root.join("tests/unit")).map_err(|error| format!("tests/unit: {error}"))?;
+        fs::read_dir(root.join("rust/tests/unit")).map_err(|error| format!("tests/unit: {error}"))?;
     Ok(entries
         .filter_map(Result::ok)
         .filter(|entry| entry.file_name().to_string_lossy().starts_with("docs_"))
@@ -321,7 +321,7 @@ fn authored_ladder_rules(root: &Path) -> Result<u64, String> {
 /// Measure every value in a checkout.
 fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     let mut files = Vec::new();
-    rust_files(&root.join("src"), &mut files)?;
+    rust_files(&root.join("rust/src"), &mut files)?;
     let mut literals = 0_u64;
     let handler_files = handler_source_files(root)?.len() as u64;
     for file in &files {

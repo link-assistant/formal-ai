@@ -108,7 +108,7 @@ test("resourceRootCandidates prefers the packaged dist-web over the dev layout",
   const candidates = resourceRootCandidates(vscode, fakeContext());
   assert.equal(candidates[0].web.path, "/ext/dist-web");
   assert.equal(candidates[0].seed.path, "/ext/dist-web/seed");
-  assert.equal(candidates[1].web.path, "/ext/../../src/web");
+  assert.equal(candidates[1].web.path, "/ext/../../js");
   assert.equal(candidates[1].seed.path, "/ext/../../data/seed");
 });
 
@@ -119,17 +119,17 @@ test("resolveResourceRoots picks the packaged layout when dist-web/index.html ex
   assert.equal(roots.seed.path, "/ext/dist-web/seed");
 });
 
-test("resolveResourceRoots falls back to the dev layout when only src/web exists", async () => {
-  const vscode = fakeVscode({ existing: new Set(["/ext/../../src/web/index.html"]) });
+test("resolveResourceRoots falls back to the dev layout when only js exists", async () => {
+  const vscode = fakeVscode({ existing: new Set(["/ext/../../js/index.html"]) });
   const roots = await resolveResourceRoots(vscode, fakeContext());
-  assert.equal(roots.web.path, "/ext/../../src/web");
+  assert.equal(roots.web.path, "/ext/../../js");
   assert.equal(roots.seed.path, "/ext/../../data/seed");
 });
 
 test("resolveResourceRoots defaults to the dev layout when nothing is found", async () => {
   const vscode = fakeVscode({ existing: new Set() });
   const roots = await resolveResourceRoots(vscode, fakeContext());
-  assert.equal(roots.web.path, "/ext/../../src/web");
+  assert.equal(roots.web.path, "/ext/../../js");
 });
 
 test("readIndexHtml decodes the bytes as UTF-8", async () => {

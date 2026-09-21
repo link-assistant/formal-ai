@@ -29,7 +29,7 @@ with `ROOT="$(cd "$(dirname "$0")/../.." && pwd)"`.
 
 ```bash
 RUSTUP_TOOLCHAIN=1.98.0 cargo build --release --bin formal-ai
-PORT=8884 BIN=target/release/formal-ai experiments/issue_1069_e2e_661/run-keep.sh
+PORT=8884 BIN=rust/target/release/formal-ai experiments/issue_1069_e2e_661/run-keep.sh
 cat /tmp/e2e661-work/statement-audit.lino
 ```
 

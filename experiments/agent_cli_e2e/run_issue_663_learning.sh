@@ -7,7 +7,7 @@ set -euo pipefail
 # the learning task and must author the review-gated handler-precedence report.
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8885}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-663/agent-cli-evidence}"
