@@ -62,7 +62,10 @@ fn the_embedded_rule_document_declares_every_migrated_handler() {
     let parsed = HandlerRules::parse(HANDLER_RULES_LINO).expect("embedded rules must parse");
     let names: Vec<&str> = parsed.handler_names().collect();
     assert_eq!(names, MIGRATED_HANDLERS);
-    assert_eq!(parsed.rule_count(), 15);
+    // 16 since the clarification handler grew the inflected-stem rule that
+    // routes statements of non-understanding by act (issue #1138 batch
+    // a5abd1ab2).
+    assert_eq!(parsed.rule_count(), 16);
     let precedence = formal_ai::seed::handler_precedence();
     for name in MIGRATED_HANDLERS {
         assert!(

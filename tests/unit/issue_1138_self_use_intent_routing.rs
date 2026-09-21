@@ -335,9 +335,12 @@ fn spanish_typed_write_variations_keep_the_table_authoritative() {
             "the Spanish compose stem plus a typed path must select write_file: {prompt:?}"
         );
         let answer = solve_through_capability_table(prompt);
+        // Since the anchor-preservation feature the dotted-filename case pinned
+        // (issue #1138 HonestGap), the gap message also names the request's
+        // anchors so an agent client can resume with them.
         assert_eq!(
             answer.answer,
-            "This request routes to the `write_file` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it."
+            "This request routes to the `write_file` capability, but this chat surface does not expose the required `shell` tool. Use an agent client that advertises it.\nRequest anchors preserved for that client: `notes.txt`."
         );
         assert!(
             !is_a_search_instead_of_an_answer(&answer.answer),
