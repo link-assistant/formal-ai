@@ -11,8 +11,28 @@ use super::ChatMessage;
 /// The rule `agentic_continuation` in `data/seed/handler-rules.lino` compares
 /// the whole cleaned prompt with the role's surfaces -- "continue the migration
 /// in src/queue.rs" contains the word and keeps its own route.
-pub(super) fn is_continuation_cue(text: &str) -> bool {
+pub(in crate::agentic_coding) fn is_continuation_cue(text: &str) -> bool {
     crate::rule_interpreter::handler_matches("agentic_continuation", text)
+}
+
+/// Where the evidence window of the request being served opens.
+///
+/// A continuation cue resumes the run already under way (issue #1095): it
+/// opens no route of its own, and it opens no evidence window of its own. The
+/// tool results gathered while serving the standing task stay visible to the
+/// state machine that continues it -- slicing the window at the cue is what
+/// restarted the write--verify chain from its read on every ping and kept
+/// every binary-tree ladder leaf from reaching a completion (issue #1138,
+/// 0/32). A user message that is not a cue still opens a fresh window:
+/// results from an earlier request must not answer a new one.
+pub(in crate::agentic_coding) fn evidence_window_start(messages: &[ChatMessage]) -> usize {
+    messages
+        .iter()
+        .rposition(|message| {
+            message.role.eq_ignore_ascii_case("user")
+                && !is_continuation_cue(&message.content.plain_text())
+        })
+        .map_or(0, |index| index + 1)
 }
 
 /// The task a continuation cue continues.

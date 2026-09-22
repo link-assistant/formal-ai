@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 40482
-  line_count 914
-  content_id source_module_abdbd318dcf54168
+  byte_len 41553
+  line_count 931
+  content_id source_module_fa2897d8d1f95338
   symbol_count 35
   symbols
     struct DeliveryBinding 59 68
@@ -41,55 +41,55 @@ self_ast_census
     function looks_like_result_path_heading 846 848
     function source_authority 853 860
     function symbolic_answer 886 900
-    function with_residual_request 907 914
+    function with_residual_request 911 931
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21194
-    named_node_count 4505
+    total_link_count 21557
+    named_node_count 4587
     distinct_node_kinds 84
     node_kinds
-      arguments 378
+      arguments 386
       array_expression 10
       array_type 8
       assignment_expression 8
-      binary_expression 59
-      block 88
+      binary_expression 62
+      block 89
       boolean_literal 8
-      call_expression 378
+      call_expression 386
       captured_pattern 1
       char_literal 34
-      closure_expression 63
-      closure_parameters 63
+      closure_expression 64
+      closure_parameters 64
       const_item 3
       continue_expression 4
       crate 16
-      doc_comment 229
+      doc_comment 233
       else_clause 5
       escape_sequence 6
-      expression_statement 84
+      expression_statement 86
       field_declaration 4
       field_declaration_list 1
-      field_expression 301
-      field_identifier 305
+      field_expression 310
+      field_identifier 314
       field_initializer_list 1
       for_expression 6
       function_item 30
       generic_function 6
       generic_type 20
-      identifier 897
+      identifier 907
       if_expression 26
-      index_expression 6
+      index_expression 7
       inner_doc_comment_marker 38
-      integer_literal 15
+      integer_literal 17
       let_chain 1
       let_condition 6
       let_declaration 74
       lifetime 4
       lifetime_parameter 1
-      line_comment 297
+      line_comment 307
       macro_invocation 11
       match_arm 11
       match_block 4
@@ -98,29 +98,29 @@ self_ast_census
       mut_pattern 1
       mutable_specifier 14
       or_pattern 1
-      outer_doc_comment_marker 191
+      outer_doc_comment_marker 195
       parameter 53
       parameters 30
       parenthesized_expression 5
       primitive_type 76
-      range_expression 4
-      reference_expression 45
+      range_expression 5
+      reference_expression 46
       reference_pattern 1
       reference_type 59
       remaining_field_pattern 3
       return_expression 17
-      scoped_identifier 99
+      scoped_identifier 101
       scoped_type_identifier 5
       scoped_use_list 3
       shorthand_field_initializer 4
       slice_pattern 2
       source_file 1
-      string_content 81
-      string_literal 83
+      string_content 82
+      string_literal 84
       struct_expression 1
       struct_item 1
       struct_pattern 3
-      super 13
+      super 14
       token_tree 19
       try_expression 12
       tuple_expression 5
@@ -130,7 +130,7 @@ self_ast_census
       type_arguments 26
       type_identifier 55
       type_parameters 1
-      unary_expression 24
+      unary_expression 26
       unit_expression 1
       use_declaration 11
       use_list 3

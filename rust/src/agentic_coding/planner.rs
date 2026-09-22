@@ -4,7 +4,8 @@
 use serde_json::json;
 mod continuation;
 pub use continuation::trace_route;
-use continuation::{continued_agent_task, is_continuation_cue};
+pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
+use continuation::continued_agent_task;
 
 pub(super) use super::capability_router::tool_for;
 use super::code_task;

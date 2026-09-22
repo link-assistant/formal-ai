@@ -15,6 +15,12 @@
 //!   the effect file it was asked to write, so the file's `result=` line
 //!   carried a status template instead of the requested marker
 //!   (`unverified_leaf_result`, 17 leaves).
+//! * The client pings "Continue if you have next steps" after every tool
+//!   result, and each ping opened a fresh evidence window: the write state
+//!   machine lost sight of its own read and write, restarted the pair on every
+//!   round, and the leaf never reached its verification, its effect file, or a
+//!   completion. A continuation cue resumes the standing run (issue #1095) --
+//!   it must not erase what the run has already done.
 
 use formal_ai::protocol::{ChatMessage, MessageContent, ToolCall};
 use formal_ai::{
@@ -274,4 +280,117 @@ fn continue_turn_after_an_empty_result_write_resumes_the_delivery() {
             "the leaf's deliveries are outstanding; the continue turn must not claim nothing is in progress"
         );
     }
+}
+
+/// Drive the L01 leaf the way the harness does: run the planned call, answer a
+/// write with the client's empty acknowledgement, and ping "Continue if you
+/// have next steps" after every round. The tracked-file edit is only the first
+/// deliverable -- the run must advance to its verification command or the
+/// effect-file delivery rather than restarting the read--write pair on every
+/// ping, which is what held all 32 leaves at zero.
+#[test]
+fn continuation_pings_do_not_restart_the_leaf_write_state_machine() {
+    let source =
+        "pub const WEB_SEARCH_PROVIDERS: [&str; 3] = [\"duckduckgo\", \"brave\", \"startpage\"];\n";
+    let updated = "pub const WEB_SEARCH_PROVIDERS: [&str; 4] = [\"duckduckgo\", \"brave\", \"startpage\", \"wikiquote\"];\n";
+    let mut messages = vec![ChatMessage::user(ADD_TO_LIST_LEAF.to_owned())];
+    let mut steps: Vec<(String, String)> = Vec::new();
+    let mut advanced = false;
+    for _ in 0..10 {
+        let completion = agent_step(messages.clone());
+        if let Some((name, arguments)) = planned_call(&completion) {
+            let repeats = steps
+                .iter()
+                .filter(|prior| prior.0 == name && prior.1 == arguments)
+                .count();
+            assert!(
+                repeats < 2,
+                "a continuation ping restarted the {name} step for the third time: {arguments}"
+            );
+            if arguments.contains("agent-ladder-effects")
+                || (name == "bash" && arguments.contains("rust/src/web_search_core.rs"))
+            {
+                advanced = true;
+            }
+            steps.push((name.clone(), arguments.clone()));
+            let id = format!("c{}", messages.len());
+            let result = if name == "read" {
+                source.to_owned()
+            } else if name == "bash" && arguments.contains("cat") {
+                updated.to_owned()
+            } else {
+                String::new()
+            };
+            messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall {
+                id: id.clone(),
+                kind: "function".to_owned(),
+                function: formal_ai::protocol::FunctionCall {
+                    name: name.clone(),
+                    arguments: arguments.clone(),
+                },
+            }]));
+            messages.push(tool_reply(&id, &name, &result));
+        } else {
+            messages.push(ChatMessage::assistant(final_text(&completion)));
+        }
+        messages.push(ChatMessage::user("Continue if you have next steps"));
+    }
+    assert!(
+        advanced,
+        "the leaf must advance past its tracked-file edit to the verification command or the effect-file delivery; planned steps: {steps:?}"
+    );
+}
+
+/// The same ping pattern against a literal-file creation: the general plan
+/// writes its plan record, writes the requested file, and verifies it with the
+/// request-derived command. Every ping resetting the evidence window restarted
+/// the plan-record write instead, and the requested file was never verified or
+/// reported complete.
+#[test]
+fn continuation_pings_do_not_restart_a_literal_file_plan() {
+    let task = "Create the file notes/welcome.txt containing the single line hello wikiquote.";
+    let mut messages = vec![ChatMessage::user(task.to_owned())];
+    let mut steps: Vec<(String, String)> = Vec::new();
+    let mut completed = false;
+    for _ in 0..10 {
+        let completion = agent_step(messages.clone());
+        if let Some((name, arguments)) = planned_call(&completion) {
+            let repeats = steps
+                .iter()
+                .filter(|prior| prior.0 == name && prior.1 == arguments)
+                .count();
+            assert!(
+                repeats < 2,
+                "a continuation ping restarted the {name} step for the third time: {arguments}"
+            );
+            steps.push((name.clone(), arguments.clone()));
+            let id = format!("c{}", messages.len());
+            let result = if name == "bash" && arguments.contains("cat") {
+                "hello wikiquote\n".to_owned()
+            } else {
+                String::new()
+            };
+            messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall {
+                id: id.clone(),
+                kind: "function".to_owned(),
+                function: formal_ai::protocol::FunctionCall {
+                    name: name.clone(),
+                    arguments: arguments.clone(),
+                },
+            }]));
+            messages.push(tool_reply(&id, &name, &result));
+        } else {
+            let answer = final_text(&completion);
+            let lowered = answer.to_lowercase();
+            if lowered.contains("welcome.txt") || lowered.contains("wikiquote") {
+                completed = true;
+            }
+            messages.push(ChatMessage::assistant(answer));
+        }
+        messages.push(ChatMessage::user("Continue if you have next steps"));
+    }
+    assert!(
+        completed,
+        "the literal-file plan must reach a completion that reports the requested file; planned steps: {steps:?}"
+    );
 }

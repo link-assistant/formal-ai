@@ -899,16 +899,33 @@ fn symbolic_answer(residual: &str) -> Option<String> {
     (!text.is_empty()).then_some(text)
 }
 
-/// The same conversation with the latest user turn reduced to `residual`.
+/// The same conversation with the served request reduced to `residual`.
 ///
 /// Only the request text changes: every tool result the investigation has
 /// already collected stays in place, so the residual is re-planned with the
-/// progress it has actually made rather than from scratch.
+/// progress it has actually made rather than from scratch. The turn reduced is
+/// the request the run is serving -- the last user message that is not a
+/// continuation cue. Reducing the cue itself (issue #1138) put the residual at
+/// the end of the transcript, where every evidence window opened after it and
+/// the investigation re-read what it had already read, forever.
 fn with_residual_request(messages: &[ChatMessage], residual: &str) -> Option<Vec<ChatMessage>> {
-    let index = messages
-        .iter()
-        .rposition(|message| message.role == "user")?;
+    let index = messages.iter().rposition(|message| {
+        message.role == "user" && !super::planner::is_continuation_cue(&message.content.plain_text())
+    })?;
     let mut residual_messages = messages.to_vec();
     residual_messages[index].content = MessageContent::Text(residual.to_owned());
+    // Every user message after the served request is a continuation ping
+    // (the rposition above makes it so). Dropping them -- while keeping every
+    // assistant turn and tool result in between -- leaves the residual as the
+    // transcript's last user message. Left in place, the ping resumed the
+    // standing task through its summary envelope, which re-entered this peel
+    // with an identical residual and overflowed the stack (issue #1069).
+    residual_messages.truncate(index + 1);
+    residual_messages.extend(
+        messages[index + 1..]
+            .iter()
+            .filter(|message| !message.role.eq_ignore_ascii_case("user"))
+            .cloned(),
+    );
     Some(residual_messages)
 }

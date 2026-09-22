@@ -79,10 +79,11 @@ pub(super) fn plan_workspace_change_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
-    let latest_user = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    let current_turn = &messages[latest_user + 1..];
+    // A continuation cue resumes this run rather than opening a new request,
+    // so the read and write evidence gathered for it must survive the ping
+    // (issue #1138): slicing at the last user message -- the cue itself --
+    // restarted the read--write pair on every ping.
+    let current_turn = &messages[super::planner::evidence_window_start(messages)..];
 
     if let Some(change) = composite_module_change(task) {
         return plan_composite_step(task, current_turn, tool_names, &change);

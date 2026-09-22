@@ -799,7 +799,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // larger sum at or under the 70% share
         // `issue_1081::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
         // enforces: 2640/3900 is 67.7%.
-        ("test", 65),
+        // The same fix raised the cap from 65 to 90: the spec lane's worst
+        // budgeted group is 3600s, and 3600/5400 leaves it at 66% of the cap
+        // instead of 92% of the old one -- the budget, not the cap, stays the
+        // real deadline.
+        ("test", 90),
         // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
         ("macos-core-tests", 0),

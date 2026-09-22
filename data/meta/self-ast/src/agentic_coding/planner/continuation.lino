@@ -2,77 +2,78 @@ self_ast_census
   target src/agentic_coding/planner/continuation.rs
   language rust
   fidelity full_ast
-  byte_len 5997
-  line_count 139
-  content_id source_module_6a1e9c9661c3ab59
-  symbol_count 6
+  byte_len 7008
+  line_count 159
+  content_id source_module_26a97cea6938ecbf
+  symbol_count 7
   symbols
     function is_continuation_cue 14 16
-    function continued_agent_task 27 43
-    function compacted_agent_task 47 73
-    function repair_compacted_dot_paths 81 113
-    function preserved_first_user_turn 121 127
-    function trace_route 135 139
+    function evidence_window_start 28 36
+    function continued_agent_task 47 63
+    function compacted_agent_task 67 93
+    function repair_compacted_dot_paths 101 133
+    function preserved_first_user_turn 141 147
+    function trace_route 155 159
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3520
-    named_node_count 749
+    total_link_count 3922
+    named_node_count 841
     distinct_node_kinds 54
     node_kinds
-      arguments 59
+      arguments 65
       array_expression 1
-      array_type 2
+      array_type 3
       assignment_expression 2
-      binary_expression 9
-      block 16
+      binary_expression 11
+      block 18
       break_expression 1
-      call_expression 59
+      call_expression 65
       char_literal 9
-      closure_expression 13
-      closure_parameters 13
-      crate 2
-      doc_comment 39
+      closure_expression 15
+      closure_parameters 15
+      crate 4
+      doc_comment 49
       else_clause 1
       escape_sequence 6
       expression_statement 12
-      field_expression 58
-      field_identifier 56
-      function_item 6
+      field_expression 65
+      field_identifier 63
+      function_item 7
       generic_type 3
-      identifier 130
+      identifier 141
       if_expression 4
       index_expression 7
       inner_doc_comment_marker 5
-      integer_literal 5
+      integer_literal 7
       let_condition 1
       let_declaration 17
-      line_comment 45
+      line_comment 55
       macro_invocation 3
       mutable_specifier 2
-      outer_doc_comment_marker 34
-      parameter 10
-      parameters 6
+      outer_doc_comment_marker 44
+      parameter 11
+      parameters 7
       parenthesized_expression 1
-      primitive_type 8
+      primitive_type 9
       range_expression 8
-      reference_expression 2
-      reference_type 7
+      reference_expression 3
+      reference_type 8
       return_expression 2
-      scoped_identifier 11
+      scoped_identifier 13
       source_file 1
-      string_content 14
-      string_literal 15
-      super 6
+      string_content 15
+      string_literal 16
+      super 5
       token_tree 3
       try_expression 4
       tuple_pattern 1
       tuple_struct_pattern 2
       type_arguments 3
-      type_identifier 10
-      unary_expression 7
+      type_identifier 11
+      unary_expression 8
       use_declaration 1
-      visibility_modifier 6
+      visibility_modifier 7
       while_expression 1

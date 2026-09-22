@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 24198
-  line_count 668
-  content_id source_module_5c983b2cd7db8643
+  byte_len 24392
+  line_count 669
+  content_id source_module_470ac144743bc732
   symbol_count 28
   symbols
     struct GroundedRewrite 30 37
@@ -12,52 +12,52 @@ self_ast_census
     function stated_slots 52 52
     struct VerifiedChange 61 66
     struct CompositeModuleChange 69 74
-    function plan_workspace_change_step 76 92
-    function is_verification_failure_answer 104 114
-    function plan_rewrite_step 116 220
-    function plan_composite_step 222 338
-    function grounded_rewrite 340 388
-    function composite_module_change 392 413
-    function insert_registration 415 428
-    function compact_registration_edit 430 454
-    const MAX_SUFFIX_BYTES 431 431
-    function repeated_identifier_rewrite_command 456 485
-    function shell_safe_identifier 487 492
-    function identifier_tokens 494 497
-    function valid_identifier 499 509
-    function rust_paths 511 533
-    function result_for_path 535 559
-    function result_for_edit 561 573
-    function argument_matches_path 575 582
-    function argument_matches 584 587
-    function workspace_path_matches 589 596
-    function result_for_command 598 614
-    function plan_digest_verification 616 641
-    function matching_result 643 664
-    function read_arguments 666 668
+    function plan_workspace_change_step 76 93
+    function is_verification_failure_answer 105 115
+    function plan_rewrite_step 117 221
+    function plan_composite_step 223 339
+    function grounded_rewrite 341 389
+    function composite_module_change 393 414
+    function insert_registration 416 429
+    function compact_registration_edit 431 455
+    const MAX_SUFFIX_BYTES 432 432
+    function repeated_identifier_rewrite_command 457 486
+    function shell_safe_identifier 488 493
+    function identifier_tokens 495 498
+    function valid_identifier 500 510
+    function rust_paths 512 534
+    function result_for_path 536 560
+    function result_for_edit 562 574
+    function argument_matches_path 576 583
+    function argument_matches 585 588
+    function workspace_path_matches 590 597
+    function result_for_command 599 615
+    function plan_digest_verification 617 642
+    function matching_result 644 665
+    function read_arguments 667 669
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17327
-    named_node_count 3455
+    total_link_count 17265
+    named_node_count 3440
     distinct_node_kinds 86
     node_kinds
       abstract_type 2
-      arguments 307
+      arguments 305
       array_expression 12
       array_type 15
       attribute 3
       attribute_item 3
-      binary_expression 56
+      binary_expression 55
       block 81
       boolean_literal 6
       break_expression 1
-      call_expression 307
+      call_expression 305
       char_literal 16
-      closure_expression 33
-      closure_parameters 33
+      closure_expression 32
+      closure_parameters 32
       const_item 1
       continue_expression 1
       crate 5
@@ -68,8 +68,8 @@ self_ast_census
       expression_statement 76
       field_declaration 12
       field_declaration_list 3
-      field_expression 221
-      field_identifier 249
+      field_expression 217
+      field_identifier 245
       field_initializer 16
       field_initializer_list 5
       for_expression 2
@@ -78,18 +78,18 @@ self_ast_census
       function_type 1
       generic_function 4
       generic_type 17
-      identifier 877
+      identifier 875
       if_expression 34
       impl_item 1
       index_expression 5
       inner_doc_comment_marker 8
-      integer_literal 10
+      integer_literal 9
       let_chain 2
       let_condition 6
-      let_declaration 62
+      let_declaration 61
       lifetime 9
       lifetime_parameter 1
-      line_comment 61
+      line_comment 65
       macro_invocation 12
       match_arm 6
       match_block 3
@@ -105,19 +105,19 @@ self_ast_census
       reference_expression 100
       reference_type 64
       return_expression 35
-      scoped_identifier 73
+      scoped_identifier 75
       scoped_use_list 5
       self 5
       self_parameter 2
       shorthand_field_initializer 4
       source_file 1
-      string_content 61
-      string_literal 60
+      string_content 60
+      string_literal 59
       struct_expression 5
       struct_item 3
-      super 7
+      super 8
       token_tree 21
-      try_expression 31
+      try_expression 30
       tuple_expression 9
       tuple_pattern 9
       tuple_struct_pattern 15

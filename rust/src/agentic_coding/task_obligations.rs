@@ -171,6 +171,43 @@ pub(super) fn observed_file_outcome(
         ));
         return ledger.root.outcome;
     }
+    // The client tool protocol acknowledges a completed write with an empty
+    // result: no exit status, no error envelope. `Progress` -- which reads the
+    // harness's error flag and not just the bytes -- classified that
+    // acknowledgement as a landed write, while the ledger's digest-less
+    // judgement would read the same empty bytes as "no success observed" and
+    // refute a delivery that landed, and the refutation's failure prose then
+    // flowed into later deliveries (issue #1138). The classification is made
+    // here, the layer that sees the protocol; the record itself keeps its
+    // honestly absent exit status. The latest write that names the path is the
+    // observation the satisfaction carries.
+    if progress.successful_write_for(path) {
+        let records = super::transcript_evidence::records(messages);
+        let names_path = |record: &&Evidence| record.names(path);
+        let is_write = |record: &&Evidence| {
+            record
+                .command
+                .split_whitespace()
+                .next()
+                .and_then(super::capability_router::classify_tool)
+                == Some(super::planner::Capability::Write)
+        };
+        if let Some(record) = records
+            .iter()
+            .rev()
+            .find(|record| names_path(record) && record.reports_success())
+            .or_else(|| {
+                records
+                    .iter()
+                    .rev()
+                    .find(|record| names_path(record) && is_write(record))
+            })
+        {
+            return ObligationOutcome::Satisfied {
+                record: record.clone(),
+            };
+        }
+    }
     for record in super::transcript_evidence::records(messages) {
         let is_write = record
             .command

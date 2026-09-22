@@ -75,11 +75,11 @@ impl Progress {
         let mut run_outputs = Vec::new();
         let mut run_observations = Vec::new();
         let mut search_result = None;
-        // Ignore results from earlier user turns.
-        let current_turn = messages
-            .iter()
-            .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-            .map_or(0, |index| index + 1);
+        // Ignore results from earlier user turns -- except a continuation cue,
+        // which resumes the standing run instead of opening a new request, so
+        // the results gathered for that run stay visible across its pings
+        // (issue #1138).
+        let current_turn = super::planner::evidence_window_start(messages);
         for (index, message) in messages.iter().enumerate().skip(current_turn) {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;

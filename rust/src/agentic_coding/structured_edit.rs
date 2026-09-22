@@ -49,10 +49,12 @@ pub(super) fn plan_structured_edit_step(
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
     let edit = member_insertion(task)?;
-    let latest_user = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    let current_turn = &messages[latest_user + 1..];
+    // A continuation cue resumes this run rather than opening a new request,
+    // so the read, write, and verification evidence gathered for it must
+    // survive the ping (issue #1138): slicing at the last user message -- the
+    // cue itself -- restarted the read on every ping and the insertion never
+    // advanced.
+    let current_turn = &messages[super::planner::evidence_window_start(messages)..];
     let source = latest_result(current_turn, Capability::Read)
         .as_deref()
         .map(source_from_read_result)

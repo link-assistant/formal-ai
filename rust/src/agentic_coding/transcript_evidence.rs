@@ -35,10 +35,11 @@ const NAMING_KEYS: [&str; 8] = [
 /// Every tool result of the current user turn, as an execution record.
 #[must_use]
 pub fn records(messages: &[ChatMessage]) -> Vec<Evidence> {
-    let current_turn = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-        .map_or(0, |index| index + 1);
+    // A continuation cue resumes the standing run rather than opening a new
+    // request, so the run's tool results stay in the record (issue #1138):
+    // slicing at the cue left every write unobserved and its delivery
+    // re-planned on every ping.
+    let current_turn = super::planner::evidence_window_start(messages);
     let mut records = Vec::new();
     for (index, message) in messages.iter().enumerate().skip(current_turn) {
         if !message.role.eq_ignore_ascii_case("tool") {

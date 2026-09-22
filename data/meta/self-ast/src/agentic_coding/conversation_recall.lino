@@ -2,58 +2,62 @@ self_ast_census
   target src/agentic_coding/conversation_recall.rs
   language rust
   fidelity full_ast
-  byte_len 2432
-  line_count 49
-  content_id source_module_64f91e5fe6eec71b
-  symbol_count 1
+  byte_len 3276
+  line_count 68
+  content_id source_module_521b1448539afe51
+  symbol_count 2
   symbols
-    function plan_shared_solver_step 32 49
+    enum SharedSolverStep 36 44
+    function plan_shared_solver_step 46 68
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 957
-    named_node_count 207
-    distinct_node_kinds 40
+    total_link_count 1193
+    named_node_count 258
+    distinct_node_kinds 43
     node_kinds
       arguments 11
       array_type 2
-      block 2
+      block 5
       call_expression 11
       crate 2
-      doc_comment 24
-      expression_statement 3
+      doc_comment 32
+      else_clause 1
+      enum_item 1
+      enum_variant 3
+      enum_variant_list 1
+      expression_statement 4
       field_expression 7
       field_identifier 7
       function_item 1
-      generic_type 1
-      identifier 35
-      if_expression 1
+      identifier 44
+      if_expression 2
       inner_doc_comment_marker 10
       let_declaration 2
-      line_comment 24
+      line_comment 32
       match_arm 3
       match_block 1
       match_expression 1
       match_pattern 3
       or_pattern 1
-      outer_doc_comment_marker 14
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 22
       parameter 2
       parameters 1
       primitive_type 1
       reference_expression 3
       reference_type 3
       return_expression 1
-      scoped_identifier 8
+      scoped_identifier 13
       scoped_use_list 1
       source_file 1
       string_content 3
       string_literal 3
-      super 3
+      super 4
       tuple_pattern 1
-      type_arguments 1
-      type_identifier 3
+      type_identifier 4
       use_declaration 4
       use_list 1
-      visibility_modifier 1
+      visibility_modifier 2

@@ -82,7 +82,10 @@ fn associative_stack_guide_is_a_separate_discoverable_document() {
 
 #[test]
 fn every_direct_associative_dependency_has_a_repository_and_usage_boundary() {
-    let cargo_manifest = read("Cargo.toml");
+    // The crate manifest moved under rust/ when the repository grew its three
+    // source roots (plan 16 L1); the guide's manifest mentions are filenames,
+    // not paths, and stay as they are.
+    let cargo_manifest = read("rust/Cargo.toml");
     let package_manifest = read("package.json");
     let guide = guide();
 

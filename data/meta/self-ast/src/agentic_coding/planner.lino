@@ -2,37 +2,37 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 46391
-  line_count 938
-  content_id source_module_200ccf50bb5d0126
+  byte_len 46980
+  line_count 946
+  content_id source_module_8ef83b1c146814c7
   symbol_count 19
   symbols
     module continuation 5 5
-    enum AgenticPlan 68 73
-    struct PlannedToolCall 77 82
-    enum Capability 92 107
-    function permission_key 115 132
-    function registry_id 134 151
-    function tool_capability 160 162
-    function plan_chat_step 167 176
-    function stop_repeated_failure 186 207
-    const REPEATED_FAILURES_THAT_STOP 187 187
-    const PLANNER_ROUTE_ARMS 217 276
-    function checked_route_precedence 284 312
-    static CELL 285 285
-    function plan_chat_step_routes 314 411
-    function plan_settled_routes 427 878
-    function plan_shell_step 881 900
-    function plan_one 902 907
-    function write_arguments 915 923
-    function fetch_arguments 932 938
+    enum AgenticPlan 69 74
+    struct PlannedToolCall 78 83
+    enum Capability 93 108
+    function permission_key 116 133
+    function registry_id 135 152
+    function tool_capability 161 163
+    function plan_chat_step 168 177
+    function stop_repeated_failure 187 208
+    const REPEATED_FAILURES_THAT_STOP 188 188
+    const PLANNER_ROUTE_ARMS 218 277
+    function checked_route_precedence 285 313
+    static CELL 286 286
+    function plan_chat_step_routes 315 412
+    function plan_settled_routes 428 886
+    function plan_shell_step 889 908
+    function plan_one 910 915
+    function write_arguments 923 931
+    function fetch_arguments 940 946
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19798
-    named_node_count 3837
+    total_link_count 19974
+    named_node_count 3871
     distinct_node_kinds 84
     node_kinds
       arguments 255
@@ -48,7 +48,7 @@ self_ast_census
       closure_expression 10
       closure_parameters 10
       const_item 2
-      crate 11
+      crate 12
       declaration_list 1
       doc_comment 76
       else_clause 1
@@ -56,7 +56,7 @@ self_ast_census
       enum_variant 16
       enum_variant_list 2
       escape_sequence 3
-      expression_statement 149
+      expression_statement 148
       field_declaration 2
       field_declaration_list 1
       field_expression 51
@@ -66,22 +66,22 @@ self_ast_census
       function_item 12
       function_modifiers 2
       generic_type 7
-      identifier 1054
-      if_expression 68
+      identifier 1066
+      if_expression 67
       impl_item 1
       index_expression 2
       inner_doc_comment_marker 2
       integer_literal 1
       let_chain 11
-      let_condition 53
+      let_condition 52
       let_declaration 15
       lifetime 5
-      line_comment 318
+      line_comment 323
       macro_invocation 10
-      match_arm 32
-      match_block 3
-      match_expression 3
-      match_pattern 32
+      match_arm 35
+      match_block 4
+      match_expression 4
+      match_pattern 35
       mod_item 1
       mut_pattern 1
       mutable_specifier 4
@@ -93,8 +93,8 @@ self_ast_census
       primitive_type 18
       reference_expression 45
       reference_type 28
-      return_expression 70
-      scoped_identifier 220
+      return_expression 71
+      scoped_identifier 228
       scoped_type_identifier 2
       scoped_use_list 7
       self 4
@@ -116,6 +116,6 @@ self_ast_census
       type_arguments 7
       type_identifier 33
       unary_expression 4
-      use_declaration 51
+      use_declaration 52
       use_list 7
-      visibility_modifier 19
+      visibility_modifier 20
