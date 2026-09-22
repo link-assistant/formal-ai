@@ -404,6 +404,15 @@ fn issue_315_program_synthesis_accepts_supported_language_wrappers() {
     }
 }
 
+/// The python code fence of a synthesized answer, when it carries one.
+fn fenced_python(answer: &str) -> &str {
+    answer
+        .split_once("```python\n")
+        .and_then(|(_, rest)| rest.split_once("```"))
+        .map(|(code, _)| code)
+        .unwrap_or_default()
+}
+
 #[test]
 fn issue_326_program_synthesis_accepts_native_operation_verbs() {
     struct Case {
@@ -493,13 +502,6 @@ fn issue_326_program_synthesis_accepts_native_operation_verbs() {
             "def similar_elements" => SIMILAR_ELEMENTS_TUPLE_ANSWER,
             function => panic!("missing documented native-verb answer for {function}"),
         };
-        fn fenced_python(answer: &str) -> &str {
-            answer
-                .split_once("```python\n")
-                .and_then(|(_, rest)| rest.split_once("```"))
-                .map(|(code, _)| code)
-                .unwrap_or_default()
-        }
         if case.language == "en" {
             assert_eq!(response.answer, expected_answer);
         } else {

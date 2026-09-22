@@ -769,7 +769,7 @@ impl Condition {
             Self::Substring(needle, subject) => context.text(*subject).contains(needle.as_str()),
             Self::Prefix(needle, subject) => context.text(*subject).starts_with(needle.as_str()),
             Self::CueSet(name, subject) => {
-                crate::cue_lexicon::matches(name, &context.text(*subject))
+                crate::cue_lexicon::matches(name, context.text(*subject))
             }
             Self::OnlyCharacters(set) => {
                 let trimmed = context.prompt.trim();

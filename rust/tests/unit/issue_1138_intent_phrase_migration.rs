@@ -71,8 +71,9 @@ fn a_url_with_no_fetch_evidence_is_not_claimed_by_the_retired_rows() {
         .intents
         .iter()
         .find(|route| route.slug == "http_fetch")
-        .map(|route| route.keywords.len() + route.phrases.len() + route.tokens.len())
-        .unwrap_or(0);
+        .map_or(0, |route| {
+            route.keywords.len() + route.phrases.len() + route.tokens.len()
+        });
     assert!(
         family_rows <= 12,
         "the http_fetch family may not grow new phrase, keyword or token rows; \
@@ -147,8 +148,9 @@ fn the_web_search_family_stays_row_free() {
         .intents
         .iter()
         .find(|route| route.slug == "web_search")
-        .map(|route| route.keywords.len() + route.phrases.len() + route.tokens.len())
-        .unwrap_or(0);
+        .map_or(0, |route| {
+            route.keywords.len() + route.phrases.len() + route.tokens.len()
+        });
     assert!(
         family_rows <= 6,
         "the web_search family had six phrase rows at the draft and zero after the \
@@ -199,8 +201,9 @@ fn the_url_navigate_family_stays_row_free() {
         .intents
         .iter()
         .find(|route| route.slug == "url_navigate")
-        .map(|route| route.keywords.len() + route.phrases.len() + route.tokens.len())
-        .unwrap_or(0);
+        .map_or(0, |route| {
+            route.keywords.len() + route.phrases.len() + route.tokens.len()
+        });
     assert!(
         family_rows <= 37,
         "the url_navigate family had thirty-seven bare-lead phrase rows at the draft \
@@ -288,8 +291,9 @@ fn family_guard_count(slug: &str) -> usize {
         .intents
         .iter()
         .find(|route| route.slug == slug)
-        .map(|route| route.keywords.len() + route.phrases.len() + route.tokens.len())
-        .unwrap_or(0)
+        .map_or(0, |route| {
+            route.keywords.len() + route.phrases.len() + route.tokens.len()
+        })
 }
 
 #[test]
@@ -546,14 +550,13 @@ fn identity_prompts_route_through_the_social_identity_role() {
     // `आप कौन हैं` and `你是谁` are NOT asserted: the who_is_question handler
     // claimed both even while the identity rows existed, so those rows were
     // never the decision for them.
-    for spanish in ["quién eres"] {
-        assert_eq!(
-            answer(spanish).intent,
-            "identity",
-            "the Spanish identity prompt `{spanish}` was never a table row; the \
-             role carries it as the retirement's generalization"
-        );
-    }
+    let spanish = "quién eres";
+    assert_eq!(
+        answer(spanish).intent,
+        "identity",
+        "the Spanish identity prompt `{spanish}` was never a table row; the \
+         role carries it as the retirement's generalization"
+    );
     assert_ne!(
         answer("who wrote the hamlet play").intent,
         "identity",

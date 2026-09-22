@@ -30,7 +30,7 @@ pub(super) fn iteration_element_types(ty: &IrType) -> Vec<IrType> {
     }
 }
 
-pub(crate) fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {
+pub fn parameter_reads(node: &IrNode, names: &[&str]) -> usize {
     let owned: BTreeSet<String> = names.iter().map(|name| (*name).to_owned()).collect();
     let mut into = BTreeSet::new();
     collect_parameter_names(node, &owned, &mut into);
@@ -278,7 +278,7 @@ pub(super) fn canonical_displacement(node: &IrNode, parameters: &[(String, IrTyp
 /// Minimal Python lexical scan for identifier scope. String contents are
 /// deliberately skipped, so a quoted example cannot accidentally bind or
 /// invalidate a placeholder with the same spelling.
-pub(crate) fn python_tokens(source: &str) -> Vec<String> {
+pub fn python_tokens(source: &str) -> Vec<String> {
     let mut tokens = Vec::new();
     let mut characters = source.chars().peekable();
     while let Some(character) = characters.next() {

@@ -7,6 +7,7 @@
 //! ```
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::fmt::Write as _;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -81,10 +82,11 @@ fn indentation(line: &str, source: &str, line_number: usize) -> Result<usize, St
 /// Length-prefix every structural label. Unlike a slash-joined display path,
 /// this is collision-free even when a label itself contains a separator.
 fn encode_path(labels: &[String]) -> String {
-    labels
-        .iter()
-        .map(|label| format!("{}:{label}", label.len()))
-        .collect()
+    let mut encoded = String::new();
+    for label in labels {
+        let _ = write!(encoded, "{}:{label}", label.len());
+    }
+    encoded
 }
 
 fn gaps_from_documents<'a>(
@@ -302,7 +304,7 @@ fn split_quoted_words(value: &str) -> Result<Vec<String>, String> {
     Ok(words)
 }
 
-fn is_leap_year(year: u32) -> bool {
+const fn is_leap_year(year: u32) -> bool {
     year.is_multiple_of(4) && (!year.is_multiple_of(100) || year.is_multiple_of(400))
 }
 
@@ -407,11 +409,11 @@ fn parse_debt(text: &str) -> Result<DebtFile, String> {
                 ));
             }
             let mut fields = BTreeMap::new();
-            for pair in words[1..].chunks_exact(2) {
-                if fields.insert(pair[0].clone(), quote(&pair[1])).is_some() {
+            let mut pairs = words[1..].iter();
+            while let (Some(key), Some(value)) = (pairs.next(), pairs.next()) {
+                if fields.insert(key.clone(), quote(value)).is_some() {
                     return Err(format!(
-                        "{DEBT_FILE}:{line_number}: duplicate debt row field `{}`",
-                        pair[0]
+                        "{DEBT_FILE}:{line_number}: duplicate debt row field `{key}`"
                     ));
                 }
             }
@@ -489,9 +491,10 @@ fn render_debt(gaps: &[LanguageGap], date: &str) -> String {
     );
     for gap in gaps {
         let row = expected_row(gap, date);
-        output.push_str(&format!(
+        let _ = writeln!(
+            output,
             "  uncovered_behavior source {} owner_path {} meaning {} present_languages {} \
-             missing_languages {} observed_on {} gap {}\n",
+             missing_languages {} observed_on {} gap {}",
             quote(&row.source),
             quote(&row.owner_path),
             quote(&row.meaning),
@@ -499,7 +502,7 @@ fn render_debt(gaps: &[LanguageGap], date: &str) -> String {
             quote(&row.missing.join(",")),
             quote(&row.observed_on),
             quote(&row.gap)
-        ));
+        );
     }
     output
 }

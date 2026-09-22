@@ -53,9 +53,11 @@ pub const ROLE_HELLO_WORLD_REFERENCE: &str = "hello_world_reference";
 /// Semantic role: a concrete unit of measurement (metre, byte, kilogram, …).
 /// Each such meaning is `defined_by` the [`ROLE_PHYSICAL_DIMENSION`] it measures.
 pub const ROLE_MEASUREMENT_UNIT: &str = "measurement_unit";
-/// Semantic role: the height property of a measurement question (plan 10 leaf
-/// 17, issue #1063). `tall`, `high`, `высок`, `ऊँचा`, `高`, `alto` are seeded
-/// surfaces, so a quantity question that asks for height names it as data.
+/// Semantic role: the height property of a measurement question.
+///
+/// Plan 10 leaf 17, issue #1063: `tall`, `high`, `высок`, `ऊँचा`, `高`,
+/// `alto` are seeded surfaces, so a quantity question that asks for height
+/// names it as data.
 pub const ROLE_MEASUREMENT_PROPERTY_HEIGHT: &str = "measurement_property_height";
 /// Semantic role: the depth property of a measurement question (plan 10 leaf
 /// 17, issue #1063).

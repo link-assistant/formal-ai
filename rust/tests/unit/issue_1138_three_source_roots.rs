@@ -56,9 +56,10 @@ fn the_crate_lives_under_rust() {
     for optional in ["benches", "examples"] {
         // Present today; the gate does not demand they stay forever, only
         // that whatever exists of the crate lives inside rust/.
-        if repository_root().join(optional).exists() {
-            panic!("{optional}/ still sits at the repository top level");
-        }
+        assert!(
+            !repository_root().join(optional).exists(),
+            "{optional}/ still sits at the repository top level"
+        );
     }
 }
 
@@ -109,8 +110,7 @@ fn no_stale_src_web_references_remain() {
                 offenders.push(
                     entry
                         .strip_prefix(&root)
-                        .map(Path::display)
-                        .unwrap_or_else(|_| entry.display())
+                        .map_or_else(|_| entry.display(), Path::display)
                         .to_string(),
                 );
             }

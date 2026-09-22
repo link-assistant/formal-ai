@@ -104,13 +104,13 @@ pub fn measurement_source_evidence(prompt: &str, senses: &[ConceptSense]) -> Str
         push_lino_node(&mut out, 4, "matched", Some(&matched_property.to_string()));
     }
     if status != "measurements_extracted" {
-        let concept = senses
-            .first()
-            .map(|sense| sense.surface.clone())
-            .unwrap_or_else(|| {
+        let concept = senses.first().map_or_else(
+            || {
                 crate::solver_handlers::detect_web_search_query(prompt)
                     .unwrap_or_else(|| prompt.trim().to_owned())
-            });
+            },
+            |sense| sense.surface.clone(),
+        );
         push_lino_node(&mut out, 2, "concept", Some(&concept));
         push_lino_node(
             &mut out,
@@ -190,7 +190,7 @@ fn sentence_at(gloss: &str, offset: usize) -> &str {
     gloss[start..end].trim()
 }
 
-fn sentence_ender(character: char) -> bool {
+const fn sentence_ender(character: char) -> bool {
     matches!(character, '.' | '!' | '?' | ';' | '。' | '！' | '？')
 }
 
@@ -217,8 +217,7 @@ fn consulted_source_kinds(senses: &[&ConceptSense]) -> String {
             let kind = registry
                 .iter()
                 .find(|record| record.id == sense.source_id)
-                .map(|record| record.kind.as_str())
-                .unwrap_or(sense.source_id.as_str());
+                .map_or(sense.source_id.as_str(), |record| record.kind.as_str());
             if !kinds.contains(&kind) {
                 kinds.push(kind);
             }

@@ -13,7 +13,7 @@ fn browser_worker_executes_the_exact_query_language_parity_contract() {
     assert!(node.status.success(), "Node.js must be executable");
 
     let output = Command::new("node")
-        .current_dir(&root)
+        .current_dir(root)
         .arg("experiments/issue_708_agent_cli/test_browser_query_language.mjs")
         .output()
         .expect("run issue #708 browser query-language contract");

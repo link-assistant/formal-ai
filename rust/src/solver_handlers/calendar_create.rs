@@ -95,16 +95,13 @@ pub fn try_routed_calendar_create_event(
     );
     let (hour, minute) = extract_clock_time(normalized).unwrap_or((17, 0));
     let place = resolve_timezone(normalized);
-    let tz = match &place {
-        Some(place) => place.zone.as_str(),
-        None => "UTC",
-    };
+    let tz = place.as_ref().map_or("UTC", |place| place.zone.as_str());
     log.append(
         "calendar:timezone_origin",
-        match &place {
-            Some(place) => format!("entity:{}:{}", place.slug, place.surface),
-            None => String::from("default_utc_no_grounded_place"),
-        },
+        place.as_ref().map_or_else(
+            || String::from("default_utc_no_grounded_place"),
+            |place| format!("entity:{}:{}", place.slug, place.surface),
+        ),
     );
     // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
     // back to the matched event noun ("созвон" → "Созвон") before the localized

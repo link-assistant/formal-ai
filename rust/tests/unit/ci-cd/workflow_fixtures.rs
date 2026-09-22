@@ -133,7 +133,7 @@ pub fn workflow_files() -> Vec<(String, String)> {
     let mut files = Vec::new();
     collect_ci_files(
         &root.join(".github/workflows"),
-        &root,
+        root,
         &mut files,
         &["yml", "yaml"],
     );
@@ -158,13 +158,13 @@ pub fn ci_shell_files() -> Vec<(String, String)> {
     let mut files = Vec::new();
     collect_ci_files(
         &root.join(".github/workflows"),
-        &root,
+        root,
         &mut files,
         &["yml", "yaml"],
     );
     collect_ci_files(
         &root.join(".github/actions"),
-        &root,
+        root,
         &mut files,
         &["yml", "yaml", "sh"],
     );

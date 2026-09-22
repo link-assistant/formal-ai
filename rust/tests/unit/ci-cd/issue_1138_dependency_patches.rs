@@ -90,13 +90,10 @@ fn patch_entries(manifest: &str) -> Vec<PatchEntry> {
 }
 
 fn entry_is_referenced(entry: &PatchEntry) -> bool {
-    match &entry.issue_reference {
-        None => false,
-        Some(url) => {
-            let tail = url.strip_prefix(ISSUE_URL_PATTERN).unwrap_or_default();
-            !tail.is_empty() && tail.chars().all(|c| c.is_ascii_digit())
-        }
-    }
+    entry.issue_reference.as_ref().is_some_and(|url| {
+        let tail = url.strip_prefix(ISSUE_URL_PATTERN).unwrap_or_default();
+        !tail.is_empty() && tail.chars().all(|c| c.is_ascii_digit())
+    })
 }
 
 /// Git dependencies the lockfile actually resolved -- the ground truth that

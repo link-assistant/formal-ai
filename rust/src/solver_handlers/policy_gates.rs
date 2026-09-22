@@ -18,7 +18,7 @@ use crate::solver_helpers::{
 /// without an opt-in, forget and cache-flush requests, and the agent-mode
 /// confirmations. `execution_surface` is the caller's surface, because the
 /// HTTP server must stay declarative where the CLI may execute.
-pub(crate) fn try_policy_gates(
+pub fn try_policy_gates(
     execution_surface: ExecutionSurface,
     prompt: &str,
     log: &mut EventLog,

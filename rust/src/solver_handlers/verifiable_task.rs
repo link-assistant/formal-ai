@@ -740,6 +740,7 @@ fn derivations_are_disjoint(left: &VerifiedAnswer, right: &VerifiedAnswer) -> bo
             .all(|fragment| !right.fragments.contains(fragment))
 }
 
+#[must_use]
 pub fn classify_agreement(answers: &[VerifiedAnswer]) -> AnswerAgreement {
     if answers.len() < 2 {
         return AnswerAgreement::Insufficient;

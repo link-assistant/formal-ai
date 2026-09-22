@@ -15,8 +15,14 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+// The gate runs `rust-script --test` first; under test compilation `main` is
+// cfg'd out, so the items only main reaches are cfg'd out with it instead of
+// registering as dead code under `-D warnings`.
+#[cfg(not(test))]
 const RESULT: &str = "experiments/issue_847_coding_ladder/results.json";
+#[cfg(not(test))]
 const RATCHET: &str = "data/meta/ladder-ratchet.lino";
+#[cfg(not(test))]
 const WORKFLOW: &str = ".github/workflows/coding-ladder.yml";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -78,6 +84,7 @@ fn full_result(text: &str) -> Result<Measurement, String> {
     })
 }
 
+#[cfg(not(test))]
 fn ratchet_value(text: &str, field: &str) -> Result<u64, String> {
     text.lines()
         .find_map(|line| {
@@ -90,6 +97,7 @@ fn ratchet_value(text: &str, field: &str) -> Result<u64, String> {
         .map_err(|error| format!("{RATCHET} `{field}`: {error}"))
 }
 
+#[cfg(not(test))]
 fn ratchet_measurement(text: &str) -> Result<Measurement, String> {
     Ok(Measurement {
         total: ratchet_value(text, "coding_ladder_tasks")?,
@@ -129,6 +137,7 @@ fn compare_with_ratchet(
     Ok(())
 }
 
+#[cfg(not(test))]
 fn validate_workflow(text: &str) -> Result<(), String> {
     for required in [
         "workflow_dispatch:",
@@ -146,6 +155,7 @@ fn validate_workflow(text: &str) -> Result<(), String> {
     Ok(())
 }
 
+#[cfg(not(test))]
 fn base_ratchet(root: &Path, base: &str) -> Result<Option<Measurement>, String> {
     let output = Command::new("git")
         .args(["show", &format!("{base}:{RATCHET}")])
@@ -162,6 +172,7 @@ fn base_ratchet(root: &Path, base: &str) -> Result<Option<Measurement>, String> 
     }
 }
 
+#[cfg(not(test))]
 fn check(root: &Path, result: &Path, base: Option<&str>) -> Result<(), String> {
     let observed = full_result(
         &fs::read_to_string(result).map_err(|error| format!("{}: {error}", result.display()))?,
@@ -191,6 +202,7 @@ fn check(root: &Path, result: &Path, base: Option<&str>) -> Result<(), String> {
     Ok(())
 }
 
+#[cfg(not(test))]
 fn arguments() -> Result<(PathBuf, PathBuf, Option<String>), String> {
     let mut root = env::current_dir().map_err(|error| error.to_string())?;
     let mut result = None;

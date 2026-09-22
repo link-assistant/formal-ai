@@ -633,10 +633,10 @@ fn fragment_spine(
             if !is_structure(fragment) {
                 return joined(&spines);
             }
-            match joined(&spines) {
-                Some(arguments) => Some(format!("{fragment}({arguments})")),
-                None => Some(fragment.clone()),
-            }
+            Some(joined(&spines).map_or_else(
+                || fragment.clone(),
+                |arguments| format!("{fragment}({arguments})"),
+            ))
         }
         IrNode::Each { items, body, .. } => joined(&[
             fragment_spine(items, is_structure),

@@ -387,7 +387,7 @@ fn ir_draft(
         })
     );
     Ok(Some(Draft {
-        id: content_id.clone(),
+        id: content_id,
         source,
         callable_name: program.name,
         source_urls: program.source_urls,

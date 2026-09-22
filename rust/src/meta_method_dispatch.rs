@@ -588,7 +588,7 @@ fn try_capability_route(
 /// An elliptical scheduling prompt the promotion hoisted and the calendar
 /// gate accepts is the calendar handler's (issue #595): the clock hour,
 /// timezone and participant entities ground the event without the web, so
-/// both a routed web_search digest and a web_search gap decline it.
+/// both a routed `web_search` digest and a `web_search` gap decline it.
 fn promoted_calendar_claims(promoted_methods: &[String], normalized: &str) -> bool {
     promoted_methods
         .iter()

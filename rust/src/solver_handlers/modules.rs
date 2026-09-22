@@ -28,7 +28,7 @@ mod natural_language_tools;
 pub mod numeric_list;
 mod pattern_inference;
 mod playwright_script;
-pub(crate) mod policy_gates;
+pub mod policy_gates;
 mod procedure_rules;
 mod program_blueprint;
 mod program_synthesis;
