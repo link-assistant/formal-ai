@@ -36,10 +36,10 @@ const SCANNED_ROOTS: &[&str] = &[
     "ROADMAP.md",
     "GOALS.md",
     "docs",
-    "examples",
+    "rust/examples",
     "scripts",
     ".github",
-    "src",
+    "rust/src",
 ];
 
 const SCANNED_EXTENSIONS: &[&str] = &["md", "sh", "yml", "yaml", "rs", "toml", "json", "mjs", "ts"];
