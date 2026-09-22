@@ -104,6 +104,19 @@ fn request_anchors(prompt: &str) -> Vec<&str> {
     anchors
 }
 
+/// Whether the request names an exact commit: a forty-character hex object
+/// name. A commit is an unambiguous workspace certificate — an authoring
+/// request names identifiers and paths it will create, but only a request
+/// pointing at a specific revision of an existing repository carries one.
+pub fn names_exact_commit(prompt: &str) -> bool {
+    prompt
+        .split(|character: char| {
+            !(character.is_ascii_alphanumeric()
+                || matches!(character, '/' | '.' | '_' | '-' | ':' | '@'))
+        })
+        .any(|token| token.len() == 40 && token.chars().all(|c| c.is_ascii_hexdigit()))
+}
+
 /// The response language the conversation has already established, read from
 /// the user's own turns (plan 10 leaf 15, issue #724).
 ///

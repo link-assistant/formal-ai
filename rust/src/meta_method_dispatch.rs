@@ -314,6 +314,24 @@ fn try_capability_route(
         return None;
     }
 
+    // An honest gap over a commit-anchored request is the answer, not a
+    // suggestion of something else. A prompt that names an exact commit
+    // points at a specific revision of an existing repository, and the
+    // refusal below preserves that commit for the client that can open
+    // the workspace. Every sibling reading of the same words (a shell
+    // command suggestion, a calendar event, a web query) would silently
+    // drop it, so a commit outranks the promoted recipes, the family
+    // preemptions and the declines inside the arm. Identifiers and paths
+    // do not carry that force: an authoring request names the things it
+    // will create, so only the commit — a forty-character hex object name
+    // of something that already exists — is the workspace certificate
+    // (issue #1138 self-use: the commit-spec prompts lost their commit to
+    // a `bun test` suggestion, a calendar event titled "Коммите", and a
+    // web query). The agent-surface statement inside the arm still wins:
+    // a tool-bearing client reaches the planner, never a refusal.
+    let commit_anchored_gap = matches!(decision.outcome, RoutingOutcome::HonestGap { .. })
+        && crate::meta_method_answers::names_exact_commit(prompt);
+
     // A specifically promoted interpreter keeps the request it already
     // grounded.  The table replaces generic fetch/search/clarification
     // precedence that caused #745/#1138's cross-tool misroutes; it does not
@@ -330,6 +348,7 @@ fn try_capability_route(
     // table read off their artifact words behind a falsely promoted
     // preempting handler).
     if !promoted_methods.is_empty()
+        && !commit_anchored_gap
         && promoted_methods
             .iter()
             .any(|method| !capability_route_preempts(method, &decision))
@@ -371,7 +390,7 @@ fn try_capability_route(
             // timezone and participant entities ground the event without
             // the web (issue #595). A routed calendar decision still wins
             // above; only the gap declines.
-            if promoted_calendar_claims(promoted_methods, &normalized) {
+            if promoted_calendar_claims(promoted_methods, &normalized) && !commit_anchored_gap {
                 return None;
             }
             // A shell task the semantic terminal recognizer can already name
@@ -380,7 +399,9 @@ fn try_capability_route(
             // process lexicon answers with the agent suggestion that names
             // the command — in every language the table has no row for
             // (issue #870 parity).
-            if crate::agentic_coding::semantic_shell_command_for_task(prompt).is_some() {
+            if crate::agentic_coding::semantic_shell_command_for_task(prompt).is_some()
+                && !commit_anchored_gap
+            {
                 return None;
             }
             // A software-authoring request the lexicon recognizes (authoring
@@ -388,17 +409,20 @@ fn try_capability_route(
             // the table reads "imports customer records" as a file-read gap,
             // but a scaffolded build is a plan, not a read (issue #1138
             // software-project corpus).
-            if crate::solver_handlers::software_project_claims(&normalized) {
+            if crate::solver_handlers::software_project_claims(&normalized) && !commit_anchored_gap
+            {
                 return None;
             }
-            if let Some(answer) = crate::family_method::try_family_method_preempting(
-                prompt,
-                &normalized,
-                history,
-                log,
-                "capability_gap",
-                solver.config,
-            ) {
+            if !commit_anchored_gap
+                && let Some(answer) = crate::family_method::try_family_method_preempting(
+                    prompt,
+                    &normalized,
+                    history,
+                    log,
+                    "capability_gap",
+                    solver.config,
+                )
+            {
                 return Some(answer);
             }
             record_capability_route(log, decision.object, decision.act, decision.locus, needed);
