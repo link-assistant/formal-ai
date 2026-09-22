@@ -243,7 +243,7 @@ pub fn render_document() -> String {
         "A high-level, split-into-parts visual overview of how Formal AI drives its own agentic\n\
          CLI to complete a task. Part 1 shows how a request is routed to a recipe; each later part\n\
          details what happens for input handled by that recipe — the deterministic\n\
-         `search -> fetch -> write -> verify -> final` state machine in `src/agentic_coding/`.\n\n\
+         `search -> fetch -> write -> verify -> final` state machine in `rust/src/agentic_coding/`.\n\n\
          Scope: these diagrams cover the issue #468/#538 recipe slice. The planner also routes\n\
          self-heal, dreaming-audit, source-graph, ledger, explain, change-request, repair-strategy,\n\
          rebuild, Google-Trends learning/catalog, question-catalog, and the general capability\n\

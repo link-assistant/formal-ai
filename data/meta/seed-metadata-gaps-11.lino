@@ -79,6 +79,10 @@ seed_metadata_gaps
     source "data/seed/meanings-intent.lino"
     record "capability_query"
     missing "precondition,effect,unit,example"
+  gap seed_metadata_gap_c79e7c959b7027fb
+    source "data/seed/meanings-intent.lino"
+    record "personal_facts_listing_request"
+    missing "precondition,effect,unit,example"
   gap seed_metadata_gap_82925ca4e246f91b
     source "data/seed/meanings-intent.lino"
     record "self_introduction_request"

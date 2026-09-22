@@ -449,9 +449,13 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // before it was data. None is allowed to become a metadata gap.
     // Issue #1138 moved five repository-workflow meanings out of the coding
     // task source into their own complete domain source, then added four
-    // language-neutral repository-target meanings here. The net floor is 100;
-    // none of the nine records became an unreviewed metadata gap.
-    assert_eq!(coding_records, 100, "coding-path regression floor");
+    // language-neutral repository-target meanings here. Recounted 2026-09-22,
+    // the three complete coding sources carry 5 (config) + 28 (catalog) +
+    // 68 (tasks) = 101 records: the #1138 net-floor line said 100 and shipped
+    // unverified, masked by a run whose census-freshness step died before the
+    // unit tests executed. The floor is 101; none of the nine records became
+    // an unreviewed metadata gap.
+    assert_eq!(coding_records, 101, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -600,5 +604,14 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // honestly, in one place, by `data/meta/closure-audit.lino` -- 3,569 distinct
     // tokens as measured on 2026-09-16. The 695 rows that remain are the
     // hand-written gaps this audit has always been about.
-    assert_eq!(expected_gaps.len(), 695);
+    //
+    // The pin then drifted twice while every Test leg that should have caught
+    // it died at the census-freshness step before the unit tests ran:
+    // 8c831a451 added 28 rows and e8533a522 added 13 more -- both ran the
+    // audit script with --write so the shards told the truth while this
+    // assert kept the old count. Recounted 2026-09-22 the shards hold 737,
+    // including the `personal_facts_listing_request` role the personal-facts
+    // paydown added: its five reviewed fields are pending reviewed data, so
+    // it is a gap row like its siblings, not a silent omission.
+    assert_eq!(expected_gaps.len(), 737);
 }

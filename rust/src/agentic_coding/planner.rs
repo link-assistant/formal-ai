@@ -653,8 +653,15 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = report_issue::plan_report_flow(messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = conversation_recall::plan_shared_solver_step(messages, tool_names) {
-        return Some(plan);
+    match conversation_recall::plan_shared_solver_step(messages, tool_names) {
+        conversation_recall::SharedSolverStep::Ready(plan) => return Some(plan),
+        // The shared solver's typed recipe owns the turn and the client can run
+        // it: stop routing and yield the request so the server's recipe path
+        // delivers the verified write--check--run chain (issue #916) -- falling
+        // through instead would let the research arms below steal the prompt
+        // back (issue #936).
+        conversation_recall::SharedSolverStep::Defer => return None,
+        conversation_recall::SharedSolverStep::NotOurs => {}
     }
     if let Some(answer) = tool_result::follow_up_answer(messages, task) {
         return Some(AgenticPlan::Final(answer));

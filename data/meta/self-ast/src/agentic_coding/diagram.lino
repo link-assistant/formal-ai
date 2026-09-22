@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/diagram.rs
   language rust
   fidelity full_ast
-  byte_len 10823
+  byte_len 10828
   line_count 272
-  content_id source_module_1fb79676e128c5ae
+  content_id source_module_55533193a7fb38e3
   symbol_count 11
   symbols
     struct RecipeStep 23 28

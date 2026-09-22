@@ -26,24 +26,43 @@ use super::planner::AgenticPlan;
 /// whole sentence because no agentic route asked the solver that owned it
 /// (issue #936), and *"Write me a Rust program that lists the files in the
 /// current directory"* planned a directory listing of the workspace instead of
-/// the program. The solver's typed execution recipe is lowered into the
-/// client's own write and run tools when both are advertised; a client without
-/// them still receives the composed program as the answer.
+/// the program. When the typed execution recipe can be lowered into the
+/// client's own write and run tools, the planner *defers*: a template write
+/// that never runs the program is not a completion the write-effect ladder
+/// accepts, so the server's recipe path (`protocol::command_reroute_plan`)
+/// owns the whole verified write--check--run chain (issue #916) and the planner
+/// stops routing before any later arm can steal the prompt back. A client
+/// without those tools still receives the composed program as the answer.
+pub(super) enum SharedSolverStep {
+    /// No family the planner delegated to the solver: keep routing.
+    NotOurs,
+    /// The solver's typed recipe owns this turn and the client can run it:
+    /// yield the whole request so the server's recipe path lowers it.
+    Defer,
+    /// The solver answered directly.
+    Ready(AgenticPlan),
+}
+
 pub(super) fn plan_shared_solver_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
-) -> Option<AgenticPlan> {
+) -> SharedSolverStep {
     let (prompt, history) = chat_prompt_and_history(messages);
     if prompt.trim().is_empty() {
-        return None;
+        return SharedSolverStep::NotOurs;
     }
     let answer = solve_with_history(&prompt, &history);
     match answer.intent.as_str() {
-        "summarize_conversation" => Some(AgenticPlan::Final(answer.answer)),
-        "write_program" | "substitution_rule_export" => Some(
-            command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
-                .unwrap_or(AgenticPlan::Final(answer.answer)),
-        ),
-        _ => None,
+        "summarize_conversation" => SharedSolverStep::Ready(AgenticPlan::Final(answer.answer)),
+        "write_program" | "substitution_rule_export" => {
+            if command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+                .is_some()
+            {
+                SharedSolverStep::Defer
+            } else {
+                SharedSolverStep::Ready(AgenticPlan::Final(answer.answer))
+            }
+        }
+        _ => SharedSolverStep::NotOurs,
     }
 }

@@ -10,9 +10,16 @@
 //! edition = "2024"
 //! ```
 
+// These reach only the main flow; under `rust-script --test` main is cfg'd
+// out, so the imports are cfg'd out with it instead of registering as
+// unused under -D warnings.
+#[cfg(not(test))]
 use std::env;
+#[cfg(not(test))]
 use std::fs;
+#[cfg(not(test))]
 use std::path::{Path, PathBuf};
+#[cfg(not(test))]
 use std::process::Command;
 
 // The gate runs `rust-script --test` first; under test compilation `main` is

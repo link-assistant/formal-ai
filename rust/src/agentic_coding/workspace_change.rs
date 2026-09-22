@@ -103,15 +103,14 @@ pub(super) fn plan_workspace_change_step(
 /// template and every leaf read as an unverified result).
 pub(super) fn is_verification_failure_answer(task: &str, answer: &str) -> bool {
     let task = unwrap_transport_quotes(task);
-    let mut targets = compose_edit_request(task)
+    compose_edit_request(task)
         .map(|(target, _, _)| target)
         .into_iter()
-        .collect::<Vec<_>>();
-    targets.extend(rust_paths(task));
-    targets.into_iter().any(|target| {
-        render_seeded_outcome("coding_workspace_verification_failed", task, &target)
-            .is_some_and(|rendered| rendered == answer)
-    })
+        .chain(rust_paths(task))
+        .any(|target| {
+            render_seeded_outcome("coding_workspace_verification_failed", task, &target)
+                .is_some_and(|rendered| rendered == answer)
+        })
 }
 
 fn plan_rewrite_step(
