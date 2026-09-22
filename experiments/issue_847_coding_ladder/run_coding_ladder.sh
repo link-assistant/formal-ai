@@ -188,7 +188,7 @@ for task in tasks:
                                  cwd=root, capture_output=True, text=True,
                                  check=True).stdout.strip()
     rust_targets = re.findall(
-        r'\b((?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"],
+        r'\b((?:rust/)?(?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"],
     )
     rust_target_existed = {
         target: os.path.exists(os.path.join(root, target))

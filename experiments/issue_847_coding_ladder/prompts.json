@@ -195,9 +195,9 @@
       "level": 4,
       "seed": "840",
       "family": "read",
-      "prompt": "In this repository, read src/solver_handlers/web_requests.rs and tell me which providers WEB_SEARCH_PROVIDERS lists.",
+      "prompt": "In this repository, read rust/src/solver_handlers/web_requests.rs and tell me which providers WEB_SEARCH_PROVIDERS lists.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in src/solver_handlers/web_requests.rs.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/solver_handlers/web_requests.rs.",
       "expect_answer": "duckduckgo"
     },
     {
@@ -215,11 +215,11 @@
       "level": 4,
       "seed": null,
       "family": "read",
-      "prompt": "In this repository, read Cargo.toml and tell me the version number of this crate.",
+      "prompt": "In this repository, read rust/Cargo.toml and tell me the version number of this crate.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in Cargo.toml.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/Cargo.toml.",
       "expect_from_file": {
-        "path": "Cargo.toml",
+        "path": "rust/Cargo.toml",
         "pattern": "^version\\s*=\\s*\"([^\"]+)\"",
         "group": 1
       }
@@ -239,9 +239,9 @@
       "level": 4,
       "seed": "840",
       "family": "read",
-      "prompt": "In this repository, read src/web_search_core.rs and tell me the reciprocal rank fusion constant used.",
+      "prompt": "In this repository, read rust/src/web_search_core.rs and tell me the reciprocal rank fusion constant used.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in src/web_search_core.rs.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/web_search_core.rs.",
       "expect_answer": "60"
     },
     {
@@ -249,9 +249,9 @@
       "level": 4,
       "seed": "844",
       "family": "read",
-      "prompt": "In this repository, read src/summarization/mod.rs and list the variants of the SummarizationMode enum.",
+      "prompt": "In this repository, read rust/src/summarization/mod.rs and list the variants of the SummarizationMode enum.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in src/summarization/mod.rs.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/summarization/mod.rs.",
       "expect_answer": "Topic"
     },
     {
@@ -259,9 +259,9 @@
       "level": 4,
       "seed": "845",
       "family": "read",
-      "prompt": "In this repository, read src/proof_engine/types.rs and list the variants of the ProofOutcome enum.",
+      "prompt": "In this repository, read rust/src/proof_engine/types.rs and list the variants of the ProofOutcome enum.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in src/proof_engine/types.rs.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/proof_engine/types.rs.",
       "expect_answer": "Proven"
     },
     {
@@ -269,9 +269,9 @@
       "level": 4,
       "seed": "845",
       "family": "read",
-      "prompt": "In this repository, read src/relative_meta_logic.rs and tell me the value of ASSUMED_TRUE_PRIOR.",
+      "prompt": "In this repository, read rust/src/relative_meta_logic.rs and tell me the value of ASSUMED_TRUE_PRIOR.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in src/relative_meta_logic.rs.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/relative_meta_logic.rs.",
       "expect_answer": "0.6"
     },
     {
@@ -279,9 +279,9 @@
       "level": 4,
       "seed": null,
       "family": "read",
-      "prompt": "In this repository, read src/main.rs and list the subcommands of the top-level Command enum.",
+      "prompt": "In this repository, read rust/src/main.rs and list the subcommands of the top-level Command enum.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in src/main.rs.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/main.rs.",
       "expect_answer": "Serve"
     },
     {
@@ -289,9 +289,9 @@
       "level": 4,
       "seed": "839",
       "family": "read",
-      "prompt": "In this repository, read src/cli_context.rs and list the variants of the ContextSource enum.",
+      "prompt": "In this repository, read rust/src/cli_context.rs and list the variants of the ContextSource enum.",
       "verify": "true",
-      "note": "Atomic read against a real file. Anchor for edits in src/cli_context.rs.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/cli_context.rs.",
       "expect_answer": "harness"
     },
     {
@@ -397,8 +397,8 @@
       "level": 4,
       "seed": "840",
       "family": "atomic_edit",
-      "prompt": "In this repository, in src/web_search_core.rs, add a line comment containing the word Cormack above the RRF constant.",
-      "verify": "grep -qi 'cormack' src/web_search_core.rs",
+      "prompt": "In this repository, in rust/src/web_search_core.rs, add a line comment containing the word Cormack above the RRF constant.",
+      "verify": "grep -qi 'cormack' rust/src/web_search_core.rs",
       "note": "Atomic single-string edit to a real repository file."
     },
     {
@@ -415,8 +415,8 @@
       "level": 4,
       "seed": "843",
       "family": "atomic_edit",
-      "prompt": "In this repository, in src/solver.rs, add a line comment containing FABRICATED above the source:http emission in record_external_search.",
-      "verify": "grep -q 'FABRICATED' src/solver.rs",
+      "prompt": "In this repository, in rust/src/solver.rs, add a line comment containing FABRICATED above the source:http emission in record_external_search.",
+      "verify": "grep -q 'FABRICATED' rust/src/solver.rs",
       "note": "Atomic single-string edit to a real repository file."
     },
     {
@@ -451,8 +451,8 @@
       "level": 4,
       "seed": "700",
       "family": "create",
-      "prompt": "Create a new file src/si_units.rs in this repository containing a single public Rust function millimetres_to_metres that takes an f64 and returns it divided by 1000.0.",
-      "verify": "grep -q 'pub fn millimetres_to_metres' src/si_units.rs",
+      "prompt": "Create a new file rust/src/si_units.rs in this repository containing a single public Rust function millimetres_to_metres that takes an f64 and returns it divided by 1000.0.",
+      "verify": "grep -q 'pub fn millimetres_to_metres' rust/src/si_units.rs",
       "note": "Atomic file creation, one per real artifact type in this repository."
     },
     {
@@ -460,8 +460,8 @@
       "level": 4,
       "seed": null,
       "family": "create",
-      "prompt": "Create a new file src/ladder_probe.rs in this repository containing a single public Rust constant LADDER_PROBE of type &str with the value probe.",
-      "verify": "grep -q 'LADDER_PROBE' src/ladder_probe.rs",
+      "prompt": "Create a new file rust/src/ladder_probe.rs in this repository containing a single public Rust constant LADDER_PROBE of type &str with the value probe.",
+      "verify": "grep -q 'LADDER_PROBE' rust/src/ladder_probe.rs",
       "note": "Atomic file creation, one per real artifact type in this repository."
     },
     {
@@ -478,8 +478,8 @@
       "level": 4,
       "seed": null,
       "family": "create",
-      "prompt": "Create a new file tests/unit/ladder_probe.rs in this repository containing a single Rust test named ladder_probe_runs that asserts 1 equals 1.",
-      "verify": "grep -q 'fn ladder_probe_runs' tests/unit/ladder_probe.rs",
+      "prompt": "Create a new file rust/tests/unit/ladder_probe.rs in this repository containing a single Rust test named ladder_probe_runs that asserts 1 equals 1.",
+      "verify": "grep -q 'fn ladder_probe_runs' rust/tests/unit/ladder_probe.rs",
       "note": "Atomic file creation, one per real artifact type in this repository."
     },
     {
@@ -523,8 +523,8 @@
       "level": 3,
       "seed": "843",
       "family": "targeted_edit",
-      "prompt": "In src/solver.rs, the function record_external_search emits a fabricated source:http evidence link pointing at https://example.org with a sha256 of the prompt. Remove that fabricated source:http and cache_hit emission so no fake provenance is recorded.",
-      "verify": "! grep -q 'example.org' src/solver.rs",
+      "prompt": "In rust/src/solver.rs, the function record_external_search emits a fabricated source:http evidence link pointing at https://example.org with a sha256 of the prompt. Remove that fabricated source:http and cache_hit emission so no fake provenance is recorded.",
+      "verify": "! grep -q 'example.org' rust/src/solver.rs",
       "note": "One concrete edit with file and defect named."
     },
     {
@@ -541,8 +541,8 @@
       "level": 3,
       "seed": "840",
       "family": "targeted_edit",
-      "prompt": "In src/seed/shell_intents.rs, the generated find command uses -print -quit which stops at the first match and hides better ones. Remove the -quit flag.",
-      "verify": "! grep -q 'print -quit' src/seed/shell_intents.rs",
+      "prompt": "In rust/src/seed/shell_intents.rs, the generated find command uses -print -quit which stops at the first match and hides better ones. Remove the -quit flag.",
+      "verify": "! grep -q 'print -quit' rust/src/seed/shell_intents.rs",
       "note": "One concrete edit with file and defect named."
     },
     {
@@ -550,8 +550,8 @@
       "level": 3,
       "seed": "700",
       "family": "targeted_edit",
-      "prompt": "Create a new file src/si_units.rs in this repository containing exactly one public Rust function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.",
-      "verify": "grep -q 'pub fn millimetres_to_metres' src/si_units.rs",
+      "prompt": "Create a new file rust/src/si_units.rs in this repository containing exactly one public Rust function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.",
+      "verify": "grep -q 'pub fn millimetres_to_metres' rust/src/si_units.rs",
       "note": "One concrete edit with file and defect named."
     },
     {
@@ -568,8 +568,8 @@
       "level": 3,
       "seed": "843",
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/unit/ladder_evidence.rs in this repository containing one test asserting that the string example.org does not appear in the file src/solver.rs.",
-      "verify": "grep -q 'example.org' tests/unit/ladder_evidence.rs",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_evidence.rs in this repository containing one test asserting that the string example.org does not appear in the file rust/src/solver.rs.",
+      "verify": "grep -q 'example.org' rust/tests/unit/ladder_evidence.rs",
       "note": "Test authoring: the second most common commit type here."
     },
     {
@@ -577,8 +577,8 @@
       "level": 3,
       "seed": "846",
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/unit/ladder_excluded.rs in this repository containing one test asserting that scripts/detect-code-changes.rs contains the text experiments/.",
-      "verify": "grep -q 'experiments' tests/unit/ladder_excluded.rs",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_excluded.rs in this repository containing one test asserting that scripts/detect-code-changes.rs contains the text experiments/.",
+      "verify": "grep -q 'experiments' rust/tests/unit/ladder_excluded.rs",
       "note": "Test authoring: the second most common commit type here."
     },
     {
@@ -586,8 +586,8 @@
       "level": 3,
       "seed": "700",
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/unit/ladder_units.rs in this repository containing one test asserting that formal_ai::si_units::millimetres_to_metres(1000.0) equals 1.0.",
-      "verify": "grep -q 'millimetres_to_metres' tests/unit/ladder_units.rs",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_units.rs in this repository containing one test asserting that formal_ai::si_units::millimetres_to_metres(1000.0) equals 1.0.",
+      "verify": "grep -q 'millimetres_to_metres' rust/tests/unit/ladder_units.rs",
       "note": "Test authoring: the second most common commit type here."
     },
     {
@@ -604,8 +604,8 @@
       "level": 2,
       "seed": "700",
       "family": "deliverable",
-      "prompt": "Create src/si_units.rs with a public Rust function millimetres_to_metres dividing an f64 by 1000.0, and a unit test in the same file asserting millimetres_to_metres(1000.0) equals 1.0.",
-      "verify": "grep -q 'fn millimetres_to_metres' src/si_units.rs && grep -q '#\\[test\\]' src/si_units.rs",
+      "prompt": "Create rust/src/si_units.rs with a public Rust function millimetres_to_metres dividing an f64 by 1000.0, and a unit test in the same file asserting millimetres_to_metres(1000.0) equals 1.0.",
+      "verify": "grep -q 'fn millimetres_to_metres' rust/src/si_units.rs && grep -q '#\\[test\\]' rust/src/si_units.rs",
       "note": "One coherent deliverable: multiple edits that belong together."
     },
     {
@@ -613,8 +613,8 @@
       "level": 2,
       "seed": "843",
       "family": "deliverable",
-      "prompt": "In src/solver.rs remove the fabricated example.org source:http emission, and add a test file tests/unit/ladder_no_fake.rs asserting the string example.org does not appear in src/solver.rs.",
-      "verify": "! grep -q 'example.org' src/solver.rs && test -f tests/unit/ladder_no_fake.rs",
+      "prompt": "In rust/src/solver.rs remove the fabricated example.org source:http emission, and add a test file rust/tests/unit/ladder_no_fake.rs asserting the string example.org does not appear in rust/src/solver.rs.",
+      "verify": "! grep -q 'example.org' rust/src/solver.rs && test -f rust/tests/unit/ladder_no_fake.rs",
       "note": "One coherent deliverable: multiple edits that belong together."
     },
     {
@@ -690,7 +690,7 @@
       "level": 3,
       "seed": "847",
       "family": "decomposition",
-      "prompt": "What is the single first step to take for this task? Answer in one sentence: 'Remove the fabricated example.org evidence link from src/solver.rs.'",
+      "prompt": "What is the single first step to take for this task? Answer in one sentence: 'Remove the fabricated example.org evidence link from rust/src/solver.rs.'",
       "verify": "true",
       "note": "Decomposition as a task; prerequisite for driving this ladder.",
       "expect_answer": "solver.rs"
@@ -700,8 +700,8 @@
       "level": 4,
       "seed": "706",
       "family": "multilingual",
-      "prompt": "Создай файл src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, которая возвращает число 1.",
-      "verify": "grep -q 'ladder_ru' src/ladder_ru.rs",
+      "prompt": "Создай файл rust/src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, которая возвращает число 1.",
+      "verify": "grep -q 'ladder_ru' rust/src/ladder_ru.rs",
       "note": "Same coding intent in ru; must route identically (#386 convention)."
     },
     {
@@ -719,8 +719,8 @@
       "level": 4,
       "seed": "706",
       "family": "multilingual",
-      "prompt": "在这个仓库中创建文件 src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。",
-      "verify": "grep -q 'ladder_zh' src/ladder_zh.rs",
+      "prompt": "在这个仓库中创建文件 rust/src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。",
+      "verify": "grep -q 'ladder_zh' rust/src/ladder_zh.rs",
       "note": "Same coding intent in zh; must route identically (#386 convention)."
     },
     {
@@ -728,8 +728,8 @@
       "level": 4,
       "seed": "706",
       "family": "multilingual",
-      "prompt": "इस रिपॉजिटरी में src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust फ़ंक्शन हो जो 1 लौटाता है।",
-      "verify": "grep -q 'ladder_hi' src/ladder_hi.rs",
+      "prompt": "इस रिपॉजिटरी में rust/src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust फ़ंक्शन हो जो 1 लौटाता है।",
+      "verify": "grep -q 'ladder_hi' rust/src/ladder_hi.rs",
       "note": "Same coding intent in hi; must route identically (#386 convention)."
     },
     {
@@ -817,8 +817,8 @@
       "level": 3,
       "seed": "840",
       "family": "refactor",
-      "prompt": "In this repository, in src/web_search_core.rs, rename the constant WEB_SEARCH_RRF_K to WEB_SEARCH_FUSION_K everywhere it appears in this file.",
-      "verify": "grep -q 'WEB_SEARCH_FUSION_K' src/web_search_core.rs",
+      "prompt": "In this repository, in rust/src/web_search_core.rs, rename the constant WEB_SEARCH_RRF_K to WEB_SEARCH_FUSION_K everywhere it appears in this file.",
+      "verify": "grep -q 'WEB_SEARCH_FUSION_K' rust/src/web_search_core.rs",
       "note": "Mechanical refactor; multi-site but semantically simple."
     },
     {
@@ -826,8 +826,8 @@
       "level": 3,
       "seed": "843",
       "family": "refactor",
-      "prompt": "In this repository, in src/solver.rs, extract the body of record_external_search into a new private function named record_offline_policy and call it.",
-      "verify": "grep -q 'record_offline_policy' src/solver.rs",
+      "prompt": "In this repository, in rust/src/solver.rs, extract the body of record_external_search into a new private function named record_offline_policy and call it.",
+      "verify": "grep -q 'record_offline_policy' rust/src/solver.rs",
       "note": "Mechanical refactor; multi-site but semantically simple."
     },
     {
@@ -835,8 +835,8 @@
       "level": 3,
       "seed": "839",
       "family": "refactor",
-      "prompt": "In this repository, in src/cli_context.rs, add a doc comment above the ContextSource enum explaining what each variant selects.",
-      "verify": "grep -q 'ContextSource' src/cli_context.rs",
+      "prompt": "In this repository, in rust/src/cli_context.rs, add a doc comment above the ContextSource enum explaining what each variant selects.",
+      "verify": "grep -q 'ContextSource' rust/src/cli_context.rs",
       "note": "Mechanical refactor; multi-site but semantically simple."
     },
     {
@@ -864,7 +864,7 @@
       "level": 4,
       "seed": null,
       "family": "verification",
-      "prompt": "How many test functions are in tests/unit/specification/routing_precedence.rs?",
+      "prompt": "How many test functions are in rust/tests/unit/specification/routing_precedence.rs?",
       "verify": "true",
       "note": "Self-verification; a coding agent must be able to check its own work."
     },
@@ -900,8 +900,8 @@
       "level": 4,
       "seed": null,
       "family": "atomic_edit",
-      "prompt": "In this repository, in Cargo.toml, add the keyword symbolic to the keywords list.",
-      "verify": "grep -q 'symbolic' Cargo.toml",
+      "prompt": "In this repository, in rust/Cargo.toml, add the keyword symbolic to the keywords list.",
+      "verify": "grep -q 'symbolic' rust/Cargo.toml",
       "note": "Atomic edit; breadth across every artifact type we actually touch."
     },
     {
@@ -1017,8 +1017,8 @@
       "level": 3,
       "seed": "843",
       "family": "replace_delete",
-      "prompt": "In this repository, in src/solver.rs, replace the hard-coded fetched_at value 1970-01-01T00:00:00Z with a call to a function named current_timestamp.",
-      "verify": "! grep -q '1970-01-01T00:00:00Z' src/solver.rs",
+      "prompt": "In this repository, in rust/src/solver.rs, replace the hard-coded fetched_at value 1970-01-01T00:00:00Z with a call to a function named current_timestamp.",
+      "verify": "! grep -q '1970-01-01T00:00:00Z' rust/src/solver.rs",
       "note": "Replacement and deletion, where agents commonly append instead."
     },
     {
@@ -1026,7 +1026,7 @@
       "level": 3,
       "seed": "843",
       "family": "replace_delete",
-      "prompt": "In this repository, in src/solver.rs, delete the line that appends the cache_hit event in record_external_search.",
+      "prompt": "In this repository, in rust/src/solver.rs, delete the line that appends the cache_hit event in record_external_search.",
       "verify": "true",
       "note": "Replacement and deletion, where agents commonly append instead."
     },
@@ -1035,8 +1035,8 @@
       "level": 3,
       "seed": "845",
       "family": "replace_delete",
-      "prompt": "In this repository, in src/relative_meta_logic.rs, change the value of ASSUMED_TRUE_PRIOR from 0.6 to 0.5.",
-      "verify": "grep -q '0.5' src/relative_meta_logic.rs",
+      "prompt": "In this repository, in rust/src/relative_meta_logic.rs, change the value of ASSUMED_TRUE_PRIOR from 0.6 to 0.5.",
+      "verify": "grep -q '0.5' rust/src/relative_meta_logic.rs",
       "note": "Replacement and deletion, where agents commonly append instead."
     },
     {
@@ -1044,8 +1044,8 @@
       "level": 3,
       "seed": "840",
       "family": "replace_delete",
-      "prompt": "In this repository, in src/web_search_core.rs, change the reciprocal rank fusion constant from 60 to 50.",
-      "verify": "grep -q '50' src/web_search_core.rs",
+      "prompt": "In this repository, in rust/src/web_search_core.rs, change the reciprocal rank fusion constant from 60 to 50.",
+      "verify": "grep -q '50' rust/src/web_search_core.rs",
       "note": "Replacement and deletion, where agents commonly append instead."
     },
     {
@@ -1053,8 +1053,8 @@
       "level": 3,
       "seed": null,
       "family": "replace_delete",
-      "prompt": "In this repository, in src/ladder_probe.rs, create this file with a constant PROBE, then rename the file to src/ladder_probe2.rs.",
-      "verify": "test -f src/ladder_probe2.rs",
+      "prompt": "In this repository, in rust/src/ladder_probe.rs, create this file with a constant PROBE, then rename the file to rust/src/ladder_probe2.rs.",
+      "verify": "test -f rust/src/ladder_probe2.rs",
       "note": "Replacement and deletion, where agents commonly append instead."
     },
     {
@@ -1062,8 +1062,8 @@
       "level": 3,
       "seed": null,
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/integration/ladder_probe.rs in this repository containing one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4.",
-      "verify": "grep -q 'ladder_integration_probe' tests/integration/ladder_probe.rs",
+      "prompt": "Create a Rust test file rust/tests/integration/ladder_probe.rs in this repository containing one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4.",
+      "verify": "grep -q 'ladder_integration_probe' rust/tests/integration/ladder_probe.rs",
       "note": "Test authoring across every test directory we really use."
     },
     {
@@ -1071,8 +1071,8 @@
       "level": 3,
       "seed": null,
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/unit/specification/ladder_probe.rs in this repository containing one Rust test named ladder_spec_probe asserting the crate version string is not empty.",
-      "verify": "grep -q 'ladder_spec_probe' tests/unit/specification/ladder_probe.rs",
+      "prompt": "Create a Rust test file rust/tests/unit/specification/ladder_probe.rs in this repository containing one Rust test named ladder_spec_probe asserting the crate version string is not empty.",
+      "verify": "grep -q 'ladder_spec_probe' rust/tests/unit/specification/ladder_probe.rs",
       "note": "Test authoring across every test directory we really use."
     },
     {
@@ -1080,8 +1080,8 @@
       "level": 3,
       "seed": "840",
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/unit/ladder_routing.rs in this repository containing one Rust test asserting that the phrase Find a folder on my desktop is not routed to web search.",
-      "verify": "grep -q 'desktop' tests/unit/ladder_routing.rs",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_routing.rs in this repository containing one Rust test asserting that the phrase Find a folder on my desktop is not routed to web search.",
+      "verify": "grep -q 'desktop' rust/tests/unit/ladder_routing.rs",
       "note": "Test authoring across every test directory we really use."
     },
     {
@@ -1089,8 +1089,8 @@
       "level": 3,
       "seed": "839",
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/unit/ladder_report.rs in this repository containing one Rust test asserting that a generated issue body contains a Reproduction section.",
-      "verify": "grep -qi 'reproduction' tests/unit/ladder_report.rs",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_report.rs in this repository containing one Rust test asserting that a generated issue body contains a Reproduction section.",
+      "verify": "grep -qi 'reproduction' rust/tests/unit/ladder_report.rs",
       "note": "Test authoring across every test directory we really use."
     },
     {
@@ -1098,8 +1098,8 @@
       "level": 3,
       "seed": "844",
       "family": "test_authoring",
-      "prompt": "Create a Rust test file tests/unit/ladder_dedup.rs in this repository containing one Rust test asserting that summarizing two identical sentences yields one statement.",
-      "verify": "grep -q 'ladder_dedup\\|dedup' tests/unit/ladder_dedup.rs",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_dedup.rs in this repository containing one Rust test asserting that summarizing two identical sentences yields one statement.",
+      "verify": "grep -q 'ladder_dedup\\|dedup' rust/tests/unit/ladder_dedup.rs",
       "note": "Test authoring across every test directory we really use."
     },
     {
@@ -1116,8 +1116,8 @@
       "level": 4,
       "seed": "706",
       "family": "multilingual",
-      "prompt": "Создай файл теста tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.",
-      "verify": "test -f tests/unit/ladder_ru_test.rs",
+      "prompt": "Создай файл теста rust/tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.",
+      "verify": "test -f rust/tests/unit/ladder_ru_test.rs",
       "note": "Coding intent in ru; must route identically (#386 convention)."
     },
     {
@@ -1135,11 +1135,11 @@
       "level": 4,
       "seed": "706",
       "family": "multilingual",
-      "prompt": "读取这个仓库中的 Cargo.toml 文件并告诉我版本号。",
+      "prompt": "读取这个仓库中的 rust/Cargo.toml 文件并告诉我版本号。",
       "verify": "true",
       "note": "Coding intent in zh; must route identically (#386 convention).",
       "expect_from_file": {
-        "path": "Cargo.toml",
+        "path": "rust/Cargo.toml",
         "pattern": "^version\\s*=\\s*\"([^\"]+)\"",
         "group": 1
       }
@@ -1178,8 +1178,8 @@
       "level": 2,
       "seed": "700",
       "family": "multifile",
-      "prompt": "Create src/ladder_units.rs with a public function metres_to_kilometres dividing an f64 by 1000.0, and register the module in src/lib.rs so it is part of the crate.",
-      "verify": "test -f src/ladder_units.rs && grep -q 'ladder_units' src/lib.rs",
+      "prompt": "Create rust/src/ladder_units.rs with a public function metres_to_kilometres dividing an f64 by 1000.0, and register the module in rust/src/lib.rs so it is part of the crate.",
+      "verify": "test -f rust/src/ladder_units.rs && grep -q 'ladder_units' rust/src/lib.rs",
       "note": "Multi-file, dependency-ordered work: the shape most real fixes take."
     },
     {
@@ -1205,8 +1205,8 @@
       "level": 2,
       "seed": "840",
       "family": "multifile",
-      "prompt": "Remove the -quit flag from the generated find command in src/seed/shell_intents.rs and add a test file tests/unit/ladder_no_quit.rs asserting the flag is gone.",
-      "verify": "test -f tests/unit/ladder_no_quit.rs",
+      "prompt": "Remove the -quit flag from the generated find command in rust/src/seed/shell_intents.rs and add a test file rust/tests/unit/ladder_no_quit.rs asserting the flag is gone.",
+      "verify": "test -f rust/tests/unit/ladder_no_quit.rs",
       "note": "Multi-file, dependency-ordered work: the shape most real fixes take."
     },
     {
@@ -1223,8 +1223,8 @@
       "level": 3,
       "seed": null,
       "family": "error_recovery",
-      "prompt": "Create src/ladder_broken.rs containing a Rust function with a deliberately missing closing brace, then fix it so the file parses.",
-      "verify": "test -f src/ladder_broken.rs && ! grep -c 'fn ' src/ladder_broken.rs | grep -q '^0$'",
+      "prompt": "Create rust/src/ladder_broken.rs containing a Rust function with a deliberately missing closing brace, then fix it so the file parses.",
+      "verify": "test -f rust/src/ladder_broken.rs && ! grep -c 'fn ' rust/src/ladder_broken.rs | grep -q '^0$'",
       "note": "Error recovery: reacting to a failing build or test."
     },
     {

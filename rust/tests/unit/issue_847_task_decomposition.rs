@@ -8,7 +8,7 @@
 //!
 //! These tests pin the *observable* contract only — recognition, the shape of
 //! the answer, determinism, and the `sub_impulse:` trace. The algorithm's
-//! internals are pinned by `tests/unit/specification/task_decomposition.rs`.
+//! internals are pinned by `rust/tests/unit/specification/task_decomposition.rs`.
 
 use std::fs;
 
