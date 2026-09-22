@@ -88,12 +88,27 @@ pub fn answer_unknown_prompt(
     let language_supported = seed::supported_languages()
         .iter()
         .any(|supported| supported == language.slug());
-    if let Some(focus) = focus.as_deref().filter(|focus| {
-        language_supported
-            && (!config.offline
-                || (is_unresolved_bare_term_prompt(prompt, focus)
-                    && focus_is_specific(prompt, focus)))
-    }) {
+    // Wave F (issue #1138, plan 01): when the consult walk has already asked
+    // the sources and recorded its misses, the web-search handoff below would
+    // answer with a description of the search machinery — the provider list
+    // and the fusion formula — standing exactly where the walk's own evidence
+    // belongs. A question that turns on an unresolved word has already been
+    // looked up by the time this arm is reached; describing a search that
+    // already ran and found nothing replaces the honest refusal with a
+    // brochure. The handoff stays for a focus the loop never had a need to
+    // look up.
+    let consult_walk_ran = log
+        .events()
+        .iter()
+        .any(|event| event.kind == "concept_lookup:miss" && event.payload.contains("consulted="));
+    if !consult_walk_ran
+        && let Some(focus) = focus.as_deref().filter(|focus| {
+            language_supported
+                && (!config.offline
+                    || (is_unresolved_bare_term_prompt(prompt, focus)
+                        && focus_is_specific(prompt, focus)))
+        })
+    {
         let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
             WebSearchQueryKind::UnresolvedBareTerm
         } else {

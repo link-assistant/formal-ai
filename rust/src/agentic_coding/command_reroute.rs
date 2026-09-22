@@ -116,7 +116,11 @@ fn one_call(tool: &str, arguments: String) -> AgenticPlan {
 }
 
 impl ExecutionRecipe {
-    fn final_answer(&self, outputs: &[String], committed: Option<&CommitTarget>) -> String {
+    /// The harness-voice completion: artifact, fence, commands, actual output.
+    /// Shared with the literal-file general plan a resolved work item composes
+    /// (issue #1133), so every drive that ends in a harness-executed artifact
+    /// reports through one voice.
+    pub(super) fn final_answer(&self, outputs: &[String], committed: Option<&CommitTarget>) -> String {
         // With a commit step the last output is the push's; the verification
         // output the claim rests on is the one before it.
         let (verification_outputs, commit_output) = match committed {

@@ -23,6 +23,28 @@ pub(super) fn plan_general_change_step(
     tool_names: &[&str],
     plan: &GeneralChangePlan,
 ) -> AgenticPlan {
+    general_change_step(messages, tool_names, plan, false)
+}
+
+/// The same state machine entered from a resolved work item. Every step is
+/// identical; only the completion differs — the harness voice instead of the
+/// conversational one — because a user who hands over an issue reference
+/// commissioned an artifact, while a user who types the task asked for a
+/// conversation about a change (issue #1133, the literal-file run).
+pub(super) fn plan_work_item_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+) -> AgenticPlan {
+    general_change_step(messages, tool_names, plan, true)
+}
+
+fn general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+    resolved_from_work_item: bool,
+) -> AgenticPlan {
     let progress = Progress::scan(messages);
     // Reading the work item is an attempt to find out whether anything *can* be
     // executed, not a step the request named. A read that comes back missing or
@@ -168,7 +190,7 @@ pub(super) fn plan_general_change_step(
             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
         }
     }
-    finish_general_change(plan, &progress)
+    finish_general_change(plan, &progress, resolved_from_work_item)
 }
 
 /// Plan the next step from what the fetched work item actually asks for.
@@ -211,7 +233,7 @@ fn plan_work_item_execution(
     }
     let executable = compose_general_change_plan(objective)
         .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
-    Some(plan_general_change_step(messages, tool_names, &executable))
+    Some(plan_work_item_change_step(messages, tool_names, &executable))
 }
 
 /// The step that reads the work item, through whichever client tool reaches it.
@@ -288,7 +310,11 @@ fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress)
         .filter(|text| !text.trim().is_empty())
 }
 
-fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> AgenticPlan {
+fn finish_general_change(
+    plan: &GeneralChangePlan,
+    progress: &Progress,
+    resolved_from_work_item: bool,
+) -> AgenticPlan {
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         return AgenticPlan::Final(plan.planned_not_executed_answer());
     }
@@ -320,7 +346,33 @@ fn finish_general_change(plan: &GeneralChangePlan, progress: &Progress) -> Agent
             ));
         }
     }
+    if resolved_from_work_item && plan.mode == GeneralPlanMode::LiteralFile {
+        return AgenticPlan::Final(work_item_completion(plan, progress));
+    }
     AgenticPlan::Final(general_plan_completed(plan))
+}
+
+/// The completion a resolved work item earns: the harness voice the execution
+/// recipe already uses — the artifact created, the command that verified it,
+/// the output that command produced. A literal file the work item spelled out
+/// is an artifact whose side effects belong to the requesting client, so it is
+/// reported through the same recipe shape a composed program is (issue #1133,
+/// the literal-file run). A task the user typed into the conversation keeps
+/// the seeded conversational claim; its words are pinned by issues #905
+/// and #916.
+fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String {
+    let recipe = crate::engine::ExecutionRecipe {
+        language: "text".to_owned(),
+        source: plan.content.clone(),
+        path: plan.target.clone(),
+        supporting_files: Vec::new(),
+        commands: vec![plan.verification_command.clone()],
+    };
+    let outputs = progress
+        .latest_successful_run_output_for(&plan.verification_command)
+        .map(|output| vec![output.to_owned()])
+        .unwrap_or_default();
+    recipe.final_answer(&outputs, None)
 }
 
 /// The completion claim is the sentence the issue quotes as the false report,
