@@ -145,10 +145,16 @@ fn full_test_matrix_runs_on_a_supported_macos_image() {
         "the archive build needs at least 1200s (issue #961); found {archive_budget}"
     );
     assert!(MACOS_CORE_WORKFLOW.contains("taiki-e/install-action@nextest"));
-    assert_eq!(
-        MACOS_CORE_WORKFLOW.matches("cargo nextest archive").count(),
-        1
-    );
+    // Plan 16 L1 moved the manifest to rust/Cargo.toml, which sits between
+    // `nextest` and its `archive` subcommand; count the subcommand token on
+    // cargo-nextest lines instead of the three-word literal, so the contract
+    // (the archive is built exactly once) survives flag insertions.
+    let archive_builds = MACOS_CORE_WORKFLOW
+        .lines()
+        .filter(|line| line.contains("cargo nextest"))
+        .filter(|line| line.split_whitespace().any(|token| token == "archive"))
+        .count();
+    assert_eq!(archive_builds, 1);
 }
 
 #[test]
