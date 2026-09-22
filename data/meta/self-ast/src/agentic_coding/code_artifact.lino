@@ -2,65 +2,66 @@ self_ast_census
   target src/agentic_coding/code_artifact.rs
   language rust
   fidelity full_ast
-  byte_len 13524
-  line_count 352
-  content_id source_module_3c2f9ac0507cbdc7
-  symbol_count 17
+  byte_len 14079
+  line_count 362
+  content_id source_module_328fe9b680e2c602
+  symbol_count 18
   symbols
     const MAX_REWRITE_STEPS 24 24
     const RENDERED_TRACE_EDGE_STEPS 25 25
     struct WorkspaceArtifact 28 31
     struct WorkspaceRewrite 34 37
     function links_notation 40 90
-    function plan_code_artifact_step 93 166
-    function generated_artifact 168 177
-    function requested_rewrite 179 219
-    function explicit_substitution_query 227 234
-    function latest_workspace_artifact 236 253
-    function latest_result 255 272
-    function source_from_read_result 277 303
-    function source_from_agent_read_result 305 322
-    function read_arguments 324 326
-    function argument_string 328 330
-    function last_string_literal 332 334
-    function link_field 345 352
+    function plan_code_artifact_step 93 165
+    function catalog_claims 174 176
+    function generated_artifact 178 187
+    function requested_rewrite 189 229
+    function explicit_substitution_query 237 244
+    function latest_workspace_artifact 246 263
+    function latest_result 265 282
+    function source_from_read_result 287 313
+    function source_from_agent_read_result 315 332
+    function read_arguments 334 336
+    function argument_string 338 340
+    function last_string_literal 342 344
+    function link_field 355 362
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9853
-    named_node_count 2004
+    total_link_count 9986
+    named_node_count 2034
     distinct_node_kinds 82
     node_kinds
-      arguments 173
+      arguments 174
       array_expression 2
       array_type 5
       attribute 2
       attribute_item 2
-      binary_expression 22
-      block 44
+      binary_expression 21
+      block 45
       break_expression 1
-      call_expression 173
+      call_expression 174
       char_literal 4
       closure_expression 18
       closure_parameters 18
       const_item 2
       continue_expression 1
-      crate 5
+      crate 4
       declaration_list 1
-      doc_comment 22
+      doc_comment 29
       else_clause 1
       escape_sequence 17
       expression_statement 56
       field_declaration 4
       field_declaration_list 2
-      field_expression 149
-      field_identifier 159
+      field_expression 150
+      field_identifier 160
       field_initializer 7
       field_initializer_list 4
       for_expression 3
-      function_item 13
+      function_item 14
       generic_function 2
       generic_type 12
       identifier 469
@@ -73,23 +74,23 @@ self_ast_census
       let_declaration 39
       lifetime 3
       lifetime_parameter 1
-      line_comment 32
+      line_comment 40
       macro_invocation 12
       match_arm 3
       match_block 1
       match_expression 1
       match_pattern 3
       mutable_specifier 13
-      outer_doc_comment_marker 18
-      parameter 21
-      parameters 13
+      outer_doc_comment_marker 25
+      parameter 22
+      parameters 14
       parenthesized_expression 3
-      primitive_type 16
+      primitive_type 18
       range_expression 5
       reference_expression 44
-      reference_type 22
+      reference_type 23
       return_expression 18
-      scoped_identifier 31
+      scoped_identifier 28
       scoped_use_list 5
       self 5
       self_parameter 1
@@ -100,7 +101,7 @@ self_ast_census
       string_literal 41
       struct_expression 4
       struct_item 2
-      super 4
+      super 5
       token_tree 26
       try_expression 18
       tuple_expression 1
@@ -113,5 +114,5 @@ self_ast_census
       use_as_clause 1
       use_declaration 8
       use_list 5
-      visibility_modifier 3
+      visibility_modifier 4
       while_expression 1

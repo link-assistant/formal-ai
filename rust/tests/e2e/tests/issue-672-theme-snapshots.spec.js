@@ -248,7 +248,7 @@ test.describe('Issue #672 (F1): theme regression — full widget set', () => {
   // but regenerated on every run and uploaded by CI, so a reviewer can see the
   // dark surfaces the colour table describes.
   test('writes dark-theme review screenshots for both surfaces', async ({ page }) => {
-    const outDir = path.resolve(__dirname, '../../../docs/screenshots/issue-672');
+    const outDir = path.resolve(__dirname, '../../../..', 'docs/screenshots/issue-672');
     fs.mkdirSync(outDir, { recursive: true });
     for (const surface of SURFACES) {
       await bootThemeSurface(page, {

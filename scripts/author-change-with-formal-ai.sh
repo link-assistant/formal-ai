@@ -38,7 +38,7 @@ if [[ -n "${FORMAL_AI_REPO_ROOT:-}" ]]; then
 else
   ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 fi
-BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 
 die() {

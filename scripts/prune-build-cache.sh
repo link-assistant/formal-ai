@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prune `target/` down to the artifacts of the most recent build.
+# Prune `rust/target/` down to the artifacts of the most recent build.
 #
 # Cargo never removes anything: every branch, every dependency version and every
 # incremental session leaves artifacts behind, and this repository's debug tree
@@ -55,13 +55,13 @@ if [ -n "${CARGO_TEST_NO_PRUNE:-}" ]; then
   exit 0
 fi
 
-if [ ! -d target ]; then
-  echo "prune-build-cache: no target/ directory, nothing to prune"
+if [ ! -d rust/target ]; then
+  echo "prune-build-cache: no rust/target/ directory, nothing to prune"
   exit 0
 fi
 
 target_size_mb() {
-  echo $(( $(du -sk target 2>/dev/null | cut -f1 || echo 0) / 1024 ))
+  echo $(( $(du -sk rust/target 2>/dev/null | cut -f1 || echo 0) / 1024 ))
 }
 
 before=$(target_size_mb)
@@ -70,7 +70,7 @@ if command -v cargo-sweep >/dev/null 2>&1; then
   # `--installed` keeps only what the toolchains rustup currently has can use.
   # A toolchain upgrade orphans every artifact the old compiler produced, and
   # those are pure waste: nothing can ever link them again.
-  cargo sweep --installed >/dev/null 2>&1 || true
+  (cd rust && cargo sweep --installed) >/dev/null 2>&1 || true
 
   # The marker records when this build started, so `--file` removes everything
   # cargo did not touch for it while keeping the dependencies it still
@@ -102,15 +102,15 @@ if command -v cargo-sweep >/dev/null 2>&1; then
   # still catching everything from before it.
   [ -z "$marker_epoch" ] && marker_epoch=$(( $(date +%s) + 1 ))
 
-  if [ -e sweep.timestamp ]; then
+  if [ -e rust/sweep.timestamp ]; then
     # Someone else's stamp. Leave it alone rather than clobbering it.
-    cargo sweep --file . >/dev/null 2>&1 || true
+    cargo sweep --file rust >/dev/null 2>&1 || true
   else
     printf '{"secs_since_epoch":%s,"nanos_since_epoch":0}' "$marker_epoch" \
-      > sweep.timestamp
-    trap 'rm -f sweep.timestamp' EXIT
-    cargo sweep --file . >/dev/null 2>&1 || true
-    rm -f sweep.timestamp
+      > rust/sweep.timestamp
+    trap 'rm -f rust/sweep.timestamp' EXIT
+    cargo sweep --file rust >/dev/null 2>&1 || true
+    rm -f rust/sweep.timestamp
     trap - EXIT
   fi
   pruner="cargo-sweep"
@@ -122,15 +122,15 @@ else
     # No caller-supplied start time. Use the newest fingerprint cargo just
     # wrote: everything the current build touched is at least that new, and
     # everything older belongs to a build that no longer exists.
-    newest=$(find target -name '.fingerprint' -prune -o -type f -newer Cargo.toml -print 2>/dev/null | head -1 || true)
+    newest=$(find rust/target -name '.fingerprint' -prune -o -type f -newer rust/Cargo.toml -print 2>/dev/null | head -1 || true)
     marker=$(mktemp)
     cleanup_marker=$marker
     if [ -n "$newest" ]; then
       touch -r "$newest" "$marker"
     else
-      # Nothing newer than Cargo.toml: treat the whole tree as current and only
+      # Nothing newer than the manifest: treat the whole tree as current and only
       # drop artifacts older than the manifest.
-      touch -r Cargo.toml "$marker"
+      touch -r rust/Cargo.toml "$marker"
     fi
   fi
   # shellcheck disable=SC2064  # expand now: the path must survive this scope
@@ -138,10 +138,10 @@ else
 
   # Only build outputs are pruned. Binaries, test executables and cargo's own
   # bookkeeping stay, so the next build still links rather than starting cold.
-  find target -type f ! -newer "$marker" \
+  find rust/target -type f ! -newer "$marker" \
     \( -path '*/incremental/*' -o -name '*.rlib' -o -name '*.rmeta' -o -name '*.o' \) \
     -delete 2>/dev/null || true
-  find target -type d -empty -delete 2>/dev/null || true
+  find rust/target -type d -empty -delete 2>/dev/null || true
   pruner="timestamps (install cargo-sweep for fingerprint-accurate pruning)"
 fi
 
@@ -158,8 +158,8 @@ fi
 # example without linking it, which is what both the `run_clippy` CI gate and
 # the pre-commit hook use; a linked example binary only appears when someone
 # runs `--all-targets` by hand, and it is never read again afterwards.
-if [ -d target/debug/examples ] || [ -d target/release/examples ]; then
-  rm -rf target/debug/examples target/release/examples
+if [ -d rust/target/debug/examples ] || [ -d rust/target/release/examples ]; then
+  rm -rf rust/target/debug/examples rust/target/release/examples
 fi
 
 # A ceiling, applied after the sweep. Only local runs get one by default: see
@@ -172,7 +172,7 @@ fi
 if [ -n "$max_size_mb" ] && [ "$max_size_mb" -gt 0 ] 2>/dev/null; then
   if [ "$(target_size_mb)" -gt "$max_size_mb" ]; then
     if command -v cargo-sweep >/dev/null 2>&1; then
-      cargo sweep --maxsize "$max_size_mb" >/dev/null 2>&1 || true
+      (cd rust && cargo sweep --maxsize "$max_size_mb") >/dev/null 2>&1 || true
       echo "prune-build-cache: applied ${max_size_mb}MB ceiling"
     else
       echo "prune-build-cache: target/ exceeds ${max_size_mb}MB; install cargo-sweep to enforce the ceiling"

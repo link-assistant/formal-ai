@@ -2,7 +2,9 @@ const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const REPO_ROOT = path.resolve(__dirname, '../../..');
+// Plan 16 L1 moved this spec to rust/tests/e2e/tests/, so the repo root is
+// four levels up, not three.
+const REPO_ROOT = path.resolve(__dirname, '../../../..');
 const tasks = fs.readFileSync(
   path.join(REPO_ROOT, 'data/seed/computer-use-tasks.lino'),
   'utf8',

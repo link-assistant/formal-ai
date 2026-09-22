@@ -30,18 +30,20 @@ RUN apt-get update && \
 # manifest declares. `build.rs` is copied for real -- it reads
 # `data/seed/api-cache/` and emits an empty registry when absent, which is the
 # case in this build, so it does not pull the data tree into this layer.
-COPY Cargo.toml Cargo.lock build.rs ./
-RUN mkdir -p src tests/unit tests/integration && \
-    echo 'fn main() {}' > src/main.rs && \
-    echo '' > src/lib.rs && \
-    echo '' > tests/unit/mod.rs && \
-    echo '' > tests/integration/mod.rs && \
-    cargo build --release --locked --lib --bins && \
-    rm -rf src tests
+# Plan 16 L1 moved the crate to `rust/`, so the manifests and the stand-in
+# sources are staged under /app/rust and cargo runs against that manifest.
+COPY rust/Cargo.toml rust/Cargo.lock rust/build.rs rust/
+RUN mkdir -p rust/src rust/tests/unit rust/tests/integration && \
+    echo 'fn main() {}' > rust/src/main.rs && \
+    echo '' > rust/src/lib.rs && \
+    echo '' > rust/tests/unit/mod.rs && \
+    echo '' > rust/tests/integration/mod.rs && \
+    cargo build --release --locked --lib --bins --manifest-path rust/Cargo.toml && \
+    rm -rf rust/src rust/tests
 
 # Only this layer is invalidated by a source edit.
 COPY . .
-RUN cargo build --release --locked --bins
+RUN cargo build --release --locked --bins --manifest-path rust/Cargo.toml
 
 # `builder` under the name `BINARY_SOURCE` selects, so the historical stage name
 # stays what it has always been -- `docker_runtime` pins it, and renaming a
@@ -51,7 +53,7 @@ FROM builder AS compile-binary
 # The prebuilt path: no toolchain, no compilation, just the artifact the
 # pipeline already produced and tested.
 FROM scratch AS prebuilt-binary
-COPY target/release/formal-ai /app/target/release/formal-ai
+COPY rust/target/release/formal-ai /app/target/release/formal-ai
 
 # Resolves to whichever stage `BINARY_SOURCE` names.
 FROM ${BINARY_SOURCE}-binary AS selected-binary

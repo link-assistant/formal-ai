@@ -288,11 +288,11 @@ test.describe('Issue #511/#519: cold-start ls home journey', () => {
       'Set FORMAL_AI_E2E_AGENT_COMMANDER=1 with a ready formal-ai-agent container to run the real commander journey.',
     );
 
-    const repoRoot = path.resolve(__dirname, '../../..');
+    const repoRoot = path.resolve(__dirname, '../../../..');
     const apiBase = process.env.FORMAL_AI_E2E_AGENT_API_BASE || 'http://127.0.0.1:8080';
     const containerName = process.env.FORMAL_AI_E2E_AGENT_CONTAINER || 'formal-ai-agent';
     const commanderCommand = process.env.FORMAL_AI_E2E_AGENT_COMMANDER_COMMAND || 'start-agent';
-    const { createAgentProvider } = require('../../../desktop/lib/agent-provider.cjs');
+    const { createAgentProvider } = require('../../../../desktop/lib/agent-provider.cjs');
     const provider = createAgentProvider({
       type: 'commander',
       commanderCommand,

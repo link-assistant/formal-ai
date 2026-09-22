@@ -20,7 +20,7 @@ const path = require('node:path');
 const { test, expect } = require('@playwright/test');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
-const SCREENSHOT_DIR = path.resolve(__dirname, '../../../docs/screenshots/issue-672');
+const SCREENSHOT_DIR = path.resolve(__dirname, '../../../..', 'docs/screenshots/issue-672');
 
 const PREFERENCES = [
   'demo_preferences',

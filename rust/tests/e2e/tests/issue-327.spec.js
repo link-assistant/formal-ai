@@ -1,6 +1,8 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-const parityCases = require('../../../data/parity/cross-runtime-synthesis.json');
+// Plan 16 L1 moved this spec to rust/tests/e2e/tests/, so the repo root is
+// four levels up, not three.
+const parityCases = require('../../../../data/parity/cross-runtime-synthesis.json');
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');

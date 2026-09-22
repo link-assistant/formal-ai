@@ -23,8 +23,8 @@ fn repo_root() -> PathBuf {
 
 #[test]
 fn try_dispatch_has_no_name_special_cases() {
-    let source = fs::read_to_string(repo_root().join("src/meta_method_dispatch.rs"))
-        .expect("meta_method_dispatch.rs readable");
+    let source = fs::read_to_string(repo_root().join("rust/src/meta_method_dispatch.rs"))
+        .expect("rust/src/meta_method_dispatch.rs readable");
     let special_cases = source.matches("name == \"").count();
     assert_eq!(
         special_cases, 0,

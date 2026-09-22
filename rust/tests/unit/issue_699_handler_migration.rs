@@ -262,7 +262,7 @@ fn unsupported_write_program_fails_with_a_named_skill_gap() {
     // Anti-recitation guard: neither engine may answer with the catalogue.
     let recitation = ["Supported", "tasks:"].join(" ");
     for source in [
-        "src/engine.rs",
+        "rust/src/engine.rs",
         "js/worker/formal_ai_worker_14.js",
         "js/worker/formal_ai_worker_16.js",
     ] {
@@ -303,8 +303,8 @@ fn handler_migration_ratchet() {
          lower the reviewed ceiling in data/meta/debt-ratchet.lino in this commit",
     );
 
-    let dispatch =
-        fs::read_to_string(root.join("src/solver_dispatch.rs")).expect("solver dispatch source");
+    let dispatch = fs::read_to_string(root.join("rust/src/solver_dispatch.rs"))
+        .expect("solver dispatch source");
     let table = dispatch
         .split_once("const HANDLER_FUNCTIONS")
         .and_then(|(_, tail)| tail.split_once("];"))

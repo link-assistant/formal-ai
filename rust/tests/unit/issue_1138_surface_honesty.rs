@@ -80,8 +80,8 @@ fn an_unverified_answer_says_so_in_five_languages() {
 /// gets its own branch rather than the English default.
 #[test]
 fn guidance_has_a_spanish_branch() {
-    let guidance = fs::read_to_string(repo_root().join("src/coding/guidance.rs"))
-        .expect("src/coding/guidance.rs should be readable");
+    let guidance = fs::read_to_string(repo_root().join("rust/src/coding/guidance.rs"))
+        .expect("rust/src/coding/guidance.rs should be readable");
     assert!(
         guidance.contains("Language::Spanish"),
         "the how-to-test guidance must branch on Spanish rather than fall through to English"

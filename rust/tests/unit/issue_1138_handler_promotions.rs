@@ -195,8 +195,8 @@ fn no_handler_name_appears_in_prompt_relevants() {
     // `contains("в ")` / `contains(':')` glue; after it, the file evaluates the
     // seed and keeps no handler names at all.
     let source =
-        fs::read_to_string(repo_root().join("src/intent_formalization/prompt_relevants.rs"))
-            .expect("prompt_relevants.rs readable");
+        fs::read_to_string(repo_root().join("rust/src/intent_formalization/prompt_relevants.rs"))
+            .expect("rust/src/intent_formalization/prompt_relevants.rs readable");
     let literals = source.matches("\"handler:").count();
     assert_eq!(
         literals, 0,

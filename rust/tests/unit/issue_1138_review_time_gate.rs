@@ -102,8 +102,8 @@ fn self_improvement_ingestion_records_absent_gate_evidence_not_a_zero_floor() {
     // `issue_362_from_counts(0, 0)` reports a gate that ran and failed. Nothing
     // ran. Plan 07 leaf 9 replaces it with absent-gate-evidence semantics and
     // the rejection reason `no_gate_evidence`.
-    let source = fs::read_to_string(repo_root().join("src/self_improvement.rs"))
-        .expect("self_improvement.rs readable");
+    let source = fs::read_to_string(repo_root().join("rust/src/self_improvement.rs"))
+        .expect("rust/src/self_improvement.rs readable");
     assert!(
         !source.contains("issue_362_from_counts(0, 0)"),
         "src/self_improvement.rs still judges an ingested proposal against a benchmark \
@@ -133,8 +133,8 @@ fn meta_self_improvement_proposes_by_default_and_still_writes_nothing() {
     );
 
     // Proposing still writes nothing: no seed file is a proposal's destination.
-    let source = fs::read_to_string(repo_root().join("src/meta_self_improvement.rs"))
-        .expect("meta_self_improvement.rs readable");
+    let source = fs::read_to_string(repo_root().join("rust/src/meta_self_improvement.rs"))
+        .expect("rust/src/meta_self_improvement.rs readable");
     for writer in ["fs::write", "File::create", "write_all"] {
         assert!(
             !source.contains(writer),

@@ -8,7 +8,7 @@ const SCREENSHOT_PATH = process.env.ISSUE_864_SCREENSHOT_PATH;
 
 test('failure detection uses semantic signals instead of error-like prose', async () => {
   const moduleUrl = pathToFileURL(
-    path.resolve(__dirname, '../../../js/app/detected-failure.js'),
+    path.resolve(__dirname, '../../../..', 'js/app/detected-failure.js'),
   );
   const { answerHasDetectedFailure } = await import(moduleUrl.href);
 

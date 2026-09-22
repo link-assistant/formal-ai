@@ -2,25 +2,25 @@ self_ast_census
   target src/meta_method_dispatch.rs
   language rust
   fidelity signature
-  byte_len 38730
-  line_count 870
-  content_id source_module_db34dbf1fd5c8671
+  byte_len 39200
+  line_count 878
+  content_id source_module_929f1581625ab6dd
   symbol_count 17
   symbols
     function try_dispatch 38 217
     const SOLVER_CAPABILITIES 223 234
-    function try_capability_route 242 578
-    function promoted_calendar_claims 584 589
-    function github_repository_traffic_claims 595 601
-    function capability_route_preempts 611 629
-    function solver_route_is_authoritative 639 655
-    function record_capability_route 657 673
-    function try_learned_method 684 728
-    struct MethodRuntime 731 735
-    function new 738 759
-    function try_attributed_runtime 762 788
-    function try_diagnostic 790 828
-    function record_method 830 832
-    function record_method_answer 834 842
-    function record_contextual_method_answer 844 852
-    function refresh_answer_projection 854 870
+    function try_capability_route 242 586
+    function promoted_calendar_claims 592 597
+    function github_repository_traffic_claims 603 609
+    function capability_route_preempts 619 637
+    function solver_route_is_authoritative 647 663
+    function record_capability_route 665 681
+    function try_learned_method 692 736
+    struct MethodRuntime 739 743
+    function new 746 767
+    function try_attributed_runtime 770 796
+    function try_diagnostic 798 836
+    function record_method 838 840
+    function record_method_answer 842 850
+    function record_contextual_method_answer 852 860
+    function refresh_answer_projection 862 878

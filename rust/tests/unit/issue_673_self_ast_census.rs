@@ -421,7 +421,12 @@ fn walk(directory: &Path, out: &mut Vec<PathBuf>) {
 /// registry's own tests do.
 fn dispatch_sources() -> String {
     let mut joined = String::new();
-    for path in ["src/solver_dispatch.rs", "src/meta_method_dispatch.rs"] {
+    // Plan 16 L1 moved the crate to `rust/`; the repository root helper still
+    // points one level above the manifest, so the sources are reached through it.
+    for path in [
+        "rust/src/solver_dispatch.rs",
+        "rust/src/meta_method_dispatch.rs",
+    ] {
         joined.push_str(
             &fs::read_to_string(repository_root().join(path)).expect("read dispatch source"),
         );

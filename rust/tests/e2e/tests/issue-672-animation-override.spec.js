@@ -26,7 +26,7 @@ const path = require('node:path');
 const { test, expect } = require('@playwright/test');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
-const SCREENSHOT_DIR = path.resolve(__dirname, '../../../docs/screenshots/issue-672');
+const SCREENSHOT_DIR = path.resolve(__dirname, '../../../..', 'docs/screenshots/issue-672');
 
 // The maximum the settings slider allows. A long budget makes the
 // still-revealing window comfortably observable instead of a race.
