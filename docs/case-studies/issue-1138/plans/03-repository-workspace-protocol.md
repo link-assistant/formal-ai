@@ -809,15 +809,20 @@ Every one of these writes its number to a ledger before anything is tuned. A
 - [ ] **L11.** Run one SWE-bench Lite instance end to end and append the honest row to `data/benchmarks/external-results.lino`. No tuning in this commit.
 - [x] **L12.** Add `src/cli_solve.rs` + `Command::Solve` in `src/main.rs`, refusing to commit by default. Test: the three `solve_cli` cases.
 - [x] **L13.** Emit the four trailers and the evidence bundle from `run_solve`; reduce `scripts/author-change-with-formal-ai.sh` to a wrapper. Test: `scripts/self-hosting-attribution.rs::model_attribution` accepts the produced commit; a hosted model is refused.
-- [ ] **L14.** Convert `experiments/issue_847_coding_ladder/run_coding_ladder.sh` (today `cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]` at `run_coding_ladder.sh:196`) to `formal-ai solve --repository . --base-commit …`; rerun; record the new 130-task number whatever it is. **This commit must also update `tests/unit/issue_848_coding_ladder.rs:532-560`, which pins nine exact substrings of that script** (`"[\"rustc\", \"--edition=2024\""`, `"rust_target_existed[created]"`, `"\"dataset_total\": len(all_tasks)"`, `"\"complete\": not only"`, `"results-partial-$FILTER_SLUG.json"`, `"expect_from_file"`, `"re.MULTILINE"`, and both lines of the `server_started` / `not_measured` predicate at `run_coding_ladder.sh:284-288`). Every pinned semantic must survive; only the invocation line changes.
-  **Partial (2026-09-19). The conversion and pin halves are landed: the script's
-  invocation is `cmd = [binary, "solve", "--repository", ".", "--base-commit",
-  base_commit, "--task", task["prompt"], "--evidence", evidence_dir]`, and
-  `compiler_measurement_and_same_task_authorship_are_preserved` pins the new
-  argv while asserting the old `with agent --non-interactive` form is absent.
-  What remains is the measurement half: a fresh complete 130-task live run and
-  recording its number whatever it is — until then the pre-conversion 65/130
-  row stays the only honest result, and this leaf stays open.**
+- [x] **L14.** Convert `experiments/issue_847_coding_ladder/run_coding_ladder.sh` (today `cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]` at `run_coding_ladder.sh:196`) to `formal-ai solve --repository . --base-commit …`; rerun; record the new 130-task number whatever it is. **This commit must also update `tests/unit/issue_848_coding_ladder.rs:532-560`, which pins nine exact substrings of that script** (`"[\"rustc\", \"--edition=2024\""`, `"rust_target_existed[created]"`, `"\"dataset_total\": len(all_tasks)"`, `"\"complete\": not only"`, `"results-partial-$FILTER_SLUG.json"`, `"expect_from_file"`, `"re.MULTILINE"`, and both lines of the `server_started` / `not_measured` predicate at `run_coding_ladder.sh:284-288`). Every pinned semantic must survive; only the invocation line changes.
+  **Closed (2026-09-23). The conversion and pin halves landed 2026-09-19; the
+  measurement half landed with run 35783073283 (branch worktree-issue-1138,
+  9d98e28ad), the first complete post-conversion run — 20/130, L1 0/16, no
+  `NOT MEASURED` rows, reproduced at the same score by the df2701415 round.
+  This leaf's own instruction was to record the discontinuous number whatever
+  it is, so 20/130 replaces the 65/130 agent-transport row as the committed
+  canonical result and the ratchet floor, which may only rise from here. The
+  deterministic `solve` protocol's edit derivation currently covers one shape
+  (adding quoted members to a located declaration) and has no answer channel
+  for read-family tasks, which is where the 45-task difference lives; raising
+  the number is protocol capability work, not harness change. The v0.320.0
+  65/130 result stays recorded in
+  `docs/case-studies/issue-848/README.md`.**
 - [x] **L14b.** Wire the #848 ladder into CI — it has never run there (`docs/case-studies/issue-957/raw-data/verified-776-928.md:57,62`: "recorded score 65/130 with L1 = 0/16 — the exact 'honest attempt at L1' bar konard set is still failing, and nothing ratchets it"). Add `.github/workflows/coding-ladder.yml` modelled on `.github/workflows/task-ladder.yml` (weekly + `workflow_dispatch` + path-filtered), a `data/meta/ci-gates/coding-ladder.lino` row with its justification, and a floor in `data/meta/ladder-ratchet.lino` for the 130-task score that may only rise. This closes the R848-1 "ladder runs in CI with recorded score" clause that `docs/case-studies/issue-957/raw-data/verified-all.ndjson:880` marks `PARTIAL`.
 - [ ] **L15.** Add `leaf_nodes_passing_without_authored_rules` to `data/meta/ladder-ratchet.lino`, run `issue_1028_agent_cli_ladder` with rules disabled, record the number, and add `authored_ladder_rules: 32` to `data/meta/debt-ratchet.lino` as a shrink-only ceiling.
 - [ ] **L16.** Raise `swebench_slice` to `23` in `.github/workflows/external-benchmarks.yml` and record the full-split row. **A slice is a measurement width, not a ceiling: widening it can only lower the recorded score, and `historical_floor_violations` groups by `(suite, slice)`, so the recorded `0/1` floor is untouched. This is not a loosened gate (plan 00 §9 X7).**
@@ -841,7 +846,7 @@ the leaf must pass in this worktree first.
 | L11 | The ignored live one-instance test exists. No new network/container execution has been observed in this close-out, so no result may be appended. | Live clone, official evaluator run, and honest external-results row. |
 | L12 | `formal-ai solve` is registered and defaults to an isolated, non-committing run; the three required CLI behaviours have unit coverage. | Focused solve tests verified green on 2026-09-18; leaf checked. |
 | L13 | `run_solve` writes four trailers and commits the same model-bearing evidence bundle as its source edit, and the produced commit is now proved against the canonical attribution parser (`solve_attribution::solve_commit_payload_is_accepted_by_the_canonical_attribution_parser`, green 2026-09-18). The wrapper reduction landed 2026-09-19: `scripts/author-change-with-formal-ai.sh` is a thin translator onto `formal-ai solve`, the loop itself lives in `src/authoring_loop.rs` (behaviorally proved by `ci_cd::authoring_effects` and `solve_attribution::the_live_authoring_loop_lands_a_commit_the_canonical_parser_accepts`, green 2026-09-19 — four trailers in one commit, producer-naming evidence, framed-events-only capture, bounded readiness probe, seed replays refused as authorship), and the wrapper shape stays pinned by `ci_cd::issue_1069::the_authorship_route_is_a_wrapper_over_solve_and_never_publishes`. | Leaf checked. |
-| L14 | The coding ladder invokes `formal-ai solve`, validates stdout as a patch, then applies it before its existing judges. | A fresh complete 130-task live run; the pre-conversion 65/130 row remains the only honest result. |
+| L14 | The coding ladder invokes `formal-ai solve`, validates stdout as a patch, then applies it before its existing judges. | Closed 2026-09-23 by run 35783073283 (9d98e28ad): 20/130 complete, zero `NOT MEASURED`, recorded as the discontinuous baseline. |
 | L14b | The path-filtered scheduled workflow, gate record and 65/130 ratchet exist. | Re-run its hermetic checker. |
 | L15 | The `--no-authored-rules` run mode, the disabled-rule result field, the `not_measured` ratchet row and the `authored_ladder_rules: 32` shrink-only ceiling all exist. | Only a real 32-leaf Agent CLI run may set the passing value. |
 | L16 | Width-23 semantics and tests are encoded; historical floors remain keyed by `(suite, slice)`. | A full live run is still required before a `0/23` or better result row may be claimed. |
@@ -877,8 +882,11 @@ and on dispatch, and its temporary full result is checked against the 65/130
 floor. The fast registered `coding_ladder` gate only compares workflow,
 committed full result and ratchet; it never executes the 130 tasks. The
 committed evidence remains the honest 2026-08-02 result, including L1 0/16.
-Therefore L14 itself remains unchecked: only a fresh post-conversion 130-task
-run may replace that result and establish the discontinuous new baseline.
+Therefore L14 itself remained unchecked until 2026-09-23, when run 35783073283
+on 9d98e28ad completed the measurement half: 20/130, L1 0/16, zero
+`NOT MEASURED` rows, at the same score the df2701415 round had measured. That
+run is now the committed canonical result and the ratchet floor, and the
+pre-conversion 65/130 stays recorded in `docs/case-studies/issue-848/README.md`.
 
 ## Docs to update — exact statements, quoted, with replacement
 

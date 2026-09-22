@@ -12,9 +12,9 @@ ladder_ratchet
   baseline "the 2026-08-28 run passed 63 of 63 nodes under the read-and-echo criteria, where an effect file describing a change was enough. Under the compile-and-test criteria 15 of 32 leaves change their file and pass its tests; the seventeen that do not are three named mechanisms, recorded in docs/case-studies/issue-1085/ci-evidence/ladder-leaf-failures.md and filed as sub-issues of #1085."
   checker ".github/workflows/issue-1028-agent-ladder.yml step Compare the measured ladder with the record"
   coding_ladder_tasks 130
-  coding_ladder_passing 65
+  coding_ladder_passing 20
   coding_ladder_l1_tasks 16
   coding_ladder_l1_passing 0
-  coding_ladder_recorded_on 2026-08-02
-  coding_ladder_measured_by "experiments/issue_847_coding_ladder/results.json; the complete v0.320.0 run measured 130/130 with no unavailable servers"
+  coding_ladder_recorded_on 2026-09-23
+  coding_ladder_measured_by "run 35783073283 on branch worktree-issue-1138 (9d98e28ad), the first complete run after the plan 03 L14 conversion of the harness from the agent transport to the deterministic solve protocol; the discontinuous baseline that leaf directs be recorded whatever it is, with the v0.320.0 65/130 agent-transport result kept in docs/case-studies/issue-848/README.md"
   coding_ladder_checker "scripts/check-coding-ladder.rs compares the committed full result exactly, rejects a lower later full-run score, and keeps the honest L1 0/16 frontier visible"
