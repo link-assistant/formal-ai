@@ -120,6 +120,14 @@ pub fn unresolved_surfaces_present(normalized: &str, language: &str) -> bool {
     !crate::concept_lookup::unknown_surfaces(normalized, language).is_empty()
 }
 
+/// A `concept_lookup:miss` payload that names the sources it consulted —
+/// the consult walk's own record, as opposed to a bare term the handler
+/// could not ground. One helper so the marker string lives in one place
+/// (the debt ratchet counts literal predicates, issue #1085 D1).
+pub fn miss_names_consulted_sources(payload: &str) -> bool {
+    payload.contains("consulted=")
+}
+
 /// Concept terms the concept-lookup handler asked about and the seed could not
 /// answer (`concept_lookup:miss` events whose payload is still the bare term —
 /// the consult walk's own misses carry a `consulted=` record instead).
@@ -133,7 +141,7 @@ pub fn bare_concept_misses(log: &crate::event_log::EventLog) -> Vec<String> {
     log.events()
         .iter()
         .filter(|event| {
-            event.kind == "concept_lookup:miss" && !event.payload.contains("consulted=")
+            event.kind == "concept_lookup:miss" && !miss_names_consulted_sources(&event.payload)
         })
         .map(|event| event.payload.to_lowercase())
         .collect()

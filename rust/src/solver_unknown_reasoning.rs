@@ -14,7 +14,7 @@ use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::seed::{self, ConceptRecord, localized_response};
 use crate::solver_handlers::{WebSearchQueryKind, answer_web_search_query, finalize_simple};
-use crate::solver_helpers::humanize_url;
+use crate::solver_helpers::{humanize_url, miss_names_consulted_sources};
 use crate::unknown_opener::language_aware_unknown_answer;
 
 const FOCUS_PLACEHOLDER: &str = concat!("{", "focus", "}");
@@ -95,20 +95,18 @@ pub fn answer_unknown_prompt(
     // belongs. A question that turns on an unresolved word has already been
     // looked up by the time this arm is reached; describing a search that
     // already ran and found nothing replaces the honest refusal with a
-    // brochure. The handoff stays for a focus the loop never had a need to
-    // look up.
-    let consult_walk_ran = log
-        .events()
-        .iter()
-        .any(|event| event.kind == "concept_lookup:miss" && event.payload.contains("consulted="));
-    if !consult_walk_ran
-        && let Some(focus) = focus.as_deref().filter(|focus| {
-            language_supported
-                && (!config.offline
-                    || (is_unresolved_bare_term_prompt(prompt, focus)
-                        && focus_is_specific(prompt, focus)))
-        })
-    {
+    // brochure. One shape escapes: a bare term is itself a lookup request —
+    // the prompt is the term and nothing else — so the search is the answer
+    // in every language and the walk's verdict does not outrank it.
+    let consult_walk_ran = log.events().iter().any(|event| {
+        event.kind == "concept_lookup:miss" && miss_names_consulted_sources(&event.payload)
+    });
+    if let Some(focus) = focus.as_deref().filter(|focus| {
+        let bare_term_lookup = is_unresolved_bare_term_prompt(prompt, focus);
+        (!consult_walk_ran || bare_term_lookup)
+            && language_supported
+            && (!config.offline || (bare_term_lookup && focus_is_specific(prompt, focus)))
+    }) {
         let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
             WebSearchQueryKind::UnresolvedBareTerm
         } else {
@@ -265,8 +263,17 @@ fn answer_from_concept_lookup_miss(
     // consulted-source record, while "how should X be calibrated" asks an
     // operative question the record would only restate, so the unknown
     // answer with its issue-report invitation owns the final answer and the
-    // consulted trail stays in the recorded events.
-    if !focus_is_specific(prompt, surface)
+    // consulted trail stays in the recorded events. A definition-fusion
+    // directive the merge arm already declined is the same operative shape
+    // with no question to hang the record on: the merge arm's own miss
+    // event marks it, and fabricating a definitional non-answer would
+    // stand where the honest unknown belongs.
+    let merge_arm_declined = log
+        .events()
+        .iter()
+        .any(|event| event.kind == "definition_merge:miss");
+    if merge_arm_declined
+        || !focus_is_specific(prompt, surface)
         || is_unresolved_bare_term_prompt(prompt, surface)
         || (extract_question_subject(prompt).is_some_and(|subject| {
             clean_focus(&subject).eq_ignore_ascii_case(clean_focus(surface))

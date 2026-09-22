@@ -746,10 +746,39 @@ function isSummarizePrompt(normalized) {
   return (
     isReturnRecapPrompt(cleaned) ||
     lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_PHRASE, cleaned) ||
-    lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_COURTESY, cleaned) ||
+    (lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_COURTESY, cleaned) &&
+      courtesyFrameLeavesNoObject(cleaned)) ||
     (lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE, cleaned) &&
       lexiconMentionsRole(ROLE_CONVERSATION_REFERENCE, cleaned)) ||
     summaryDirectiveLeads(cleaned)
+  );
+}
+
+// The courtesy frames are frames, not owners: "can you summarize" opens a
+// request whose object, when one follows, belongs to whichever handler
+// summarizes that object. Stripping every courtesy and directive surface
+// from the prompt must leave nothing — "can you summarize" alone summarizes
+// the running conversation, "can you summarize Rust" names a topic. Longest
+// surfaces strip first so a frame that prefixes another ("подведи итог"
+// inside "подведи итоги") leaves no orphan letters. Mirror of
+// courtesy_frame_leaves_no_object in
+// src/solver_handlers/conversation_memory/conversation_summary.rs.
+function courtesyFrameLeavesNoObject(cleaned) {
+  const surfaces = [
+    ...wordsForRole(ROLE_CONVERSATION_SUMMARY_COURTESY),
+    ...wordsForRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE),
+  ]
+    .filter(Boolean)
+    .sort((a, b) => b.length - a.length);
+  let remainder = cleaned;
+  for (const surface of surfaces) {
+    remainder = remainder.split(surface).join(" ");
+  }
+  // Whitespace and ASCII punctuation are the only leftovers an objectless
+  // frame may show ("can you summarize?", "summarize!").
+  return !remainder.replace(
+    /[\s\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e]/gu,
+    "",
   );
 }
 

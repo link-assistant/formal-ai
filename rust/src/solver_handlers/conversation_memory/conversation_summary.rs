@@ -29,10 +29,40 @@ fn asks_for_conversation_summary(normalized: &str) -> bool {
     let lexicon = seed::lexicon();
     lexicon.mentions_role(seed::ROLE_CONVERSATION_RETURN_RECAP, &cleaned)
         || lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &cleaned)
-        || lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_COURTESY, &cleaned)
+        || (lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_COURTESY, &cleaned)
+            && courtesy_frame_leaves_no_object(&cleaned))
         || (lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE, &cleaned)
             && lexicon.mentions_role(seed::ROLE_CONVERSATION_REFERENCE, &cleaned))
         || summary_directive_leads(&cleaned)
+}
+
+/// The courtesy frames are frames, not owners: "can you summarize" opens a
+/// request whose object, when one follows, belongs to whichever handler
+/// summarizes that object (the topic summarizer sits below this one in the
+/// dispatch order, so this guard is where the handoff happens — the dispatch
+/// comment for `conversation_memory` and `conversation_summary_directive`'s
+/// role contract both leave a "summarize X" to other handlers). Stripping
+/// every courtesy and directive surface from the prompt must leave nothing:
+/// "can you summarize" alone summarizes the running conversation, while
+/// "can you summarize Rust" names a topic. Longest surfaces strip first so a
+/// frame that prefixes another ("подведи итог" inside "подведи итоги") does
+/// not leave orphan letters behind.
+fn courtesy_frame_leaves_no_object(cleaned: &str) -> bool {
+    let lexicon = seed::lexicon();
+    let mut surfaces: Vec<String> = lexicon
+        .words_for_role(seed::ROLE_CONVERSATION_SUMMARY_COURTESY)
+        .into_iter()
+        .chain(lexicon.words_for_role(seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE))
+        .filter(|surface| !surface.is_empty())
+        .collect();
+    surfaces.sort_by_key(|surface| std::cmp::Reverse(surface.chars().count()));
+    let mut remainder = cleaned.to_owned();
+    for surface in &surfaces {
+        remainder = remainder.replace(surface.as_str(), " ");
+    }
+    remainder
+        .chars()
+        .all(|c| c.is_whitespace() || c.is_ascii_punctuation())
 }
 
 /// A bare summary directive standing alone is itself a request to summarize the
