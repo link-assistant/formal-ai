@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/composition.rs
   language rust
   fidelity signature
-  byte_len 33104
+  byte_len 33096
   line_count 918
-  content_id source_module_8237a664460e2f7d
+  content_id source_module_2364eba4be6c4009
   symbol_count 31
   symbols
     struct DraftAttempt 16 20

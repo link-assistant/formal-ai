@@ -2,9 +2,9 @@ self_ast_census
   target src/rule_interpreter.rs
   language rust
   fidelity signature
-  byte_len 35821
+  byte_len 35820
   line_count 964
-  content_id source_module_061361bed3d3ff53
+  content_id source_module_edbc0fd52f5fd45f
   symbol_count 62
   symbols
     module parser 23 23

@@ -152,6 +152,16 @@ jobs:
       # The step that decides this job's outcome, and the one that was killed.
       # It owns its deadline so an overrun is a `failure` with an ::error
       # annotation naming the budget, never a silent `cancelled`.
+      #
+      # The one test skipped here (issue #1138, plan 10 leaf 10) answers every
+      # committed benchmark prompt — all 1355 of them — through the full
+      # engine. Measured 2026-09-22 on a dev notebook: 0.11s per answer,
+      # ~150s uninstrumented for the whole sweep; instrumented by llvm-cov on
+      # the worst host issue #1076 documented (7.4x), that one test exceeds
+      # 30 minutes alone — run 35689478703 had every other test finished by
+      # 05:19:49 while the sweep was still running at the 2400s kill. The
+      # sweep gate is adjudicated uninstrumented in the Test (ubuntu / full)
+      # lane; this lane measures lines, and no honest budget holds both.
       - name: Generate code coverage
         env:
           TEST_BUDGET_SECONDS: 2400
@@ -159,7 +169,8 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Instrumented coverage run" \
-            cargo llvm-cov --manifest-path rust/Cargo.toml --all-features --lcov --output-path lcov.info
+            cargo llvm-cov --manifest-path rust/Cargo.toml --all-features --lcov --output-path lcov.info \
+              -- --skip no_benchmark_prompt_reaches_the_unknown_opener
 
       # `kill 0` means "every process in my own process group", so a `:-0`
       # default here would make this step kill its own shell whenever the

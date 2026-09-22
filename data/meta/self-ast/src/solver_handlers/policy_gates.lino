@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/policy_gates.rs
   language rust
   fidelity signature
-  byte_len 5881
+  byte_len 5874
   line_count 153
-  content_id source_module_89d6eda4f6226cf6
+  content_id source_module_4dda14bb5c8b14dc
   symbol_count 2
   symbols
     function try_policy_gates 21 142

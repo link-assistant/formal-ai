@@ -2,35 +2,35 @@ self_ast_census
   target src/agentic_coding/command_reroute.rs
   language rust
   fidelity full_ast
-  byte_len 15805
-  line_count 401
-  content_id source_module_5e4adb87f10b31f7
+  byte_len 16090
+  line_count 405
+  content_id source_module_c1f703a2055e81fa
   symbol_count 17
   symbols
     function plan_symbolic_command_reroute 27 109
     function one_call 111 116
-    function final_answer 119 159
-    struct RecipeProgress 163 168
-    struct StepFailure 173 177
-    function report 186 210
-    const STEP_PLACEHOLDER 187 187
-    const PATH_PLACEHOLDER 188 188
-    const CODE_PLACEHOLDER 189 189
-    const REPORT_PLACEHOLDER 190 190
-    function after_latest_user 214 285
-    const EXIT_CODE_LABELS 289 289
-    const ABSENT_FIELD_VALUES 297 297
-    function reported_exit_code 312 322
-    function from_result 333 360
-    function reports_failure_in_prose 364 386
-    function run_command_of 389 401
+    function final_answer 123 163
+    struct RecipeProgress 167 172
+    struct StepFailure 177 181
+    function report 190 214
+    const STEP_PLACEHOLDER 191 191
+    const PATH_PLACEHOLDER 192 192
+    const CODE_PLACEHOLDER 193 193
+    const REPORT_PLACEHOLDER 194 194
+    function after_latest_user 218 289
+    const EXIT_CODE_LABELS 293 293
+    const ABSENT_FIELD_VALUES 301 301
+    function reported_exit_code 316 326
+    function from_result 337 364
+    function reports_failure_in_prose 368 390
+    function run_command_of 393 405
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 10512
-    named_node_count 2138
+    total_link_count 10576
+    named_node_count 2152
     distinct_node_kinds 82
     node_kinds
       arguments 177
@@ -51,7 +51,7 @@ self_ast_census
       continue_expression 7
       crate 6
       declaration_list 4
-      doc_comment 37
+      doc_comment 41
       else_clause 2
       escape_sequence 24
       expression_statement 38
@@ -74,14 +74,14 @@ self_ast_census
       let_chain 1
       let_condition 7
       let_declaration 39
-      line_comment 60
+      line_comment 64
       macro_invocation 8
       match_arm 5
       match_block 2
       match_expression 2
       match_pattern 5
       mutable_specifier 3
-      outer_doc_comment_marker 30
+      outer_doc_comment_marker 34
       parameter 23
       parameters 9
       parenthesized_expression 2
@@ -101,7 +101,7 @@ self_ast_census
       string_literal 36
       struct_expression 4
       struct_item 2
-      super 8
+      super 9
       token_tree 16
       try_expression 7
       tuple_expression 7
@@ -114,4 +114,4 @@ self_ast_census
       use_as_clause 1
       use_declaration 7
       use_list 3
-      visibility_modifier 1
+      visibility_modifier 2

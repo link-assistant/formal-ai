@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/verifiable_task.rs
   language rust
   fidelity signature
-  byte_len 26780
-  line_count 794
-  content_id source_module_c04b794544912ae0
+  byte_len 26792
+  line_count 795
+  content_id source_module_b0a97f5f2a69cfb4
   symbol_count 33
   symbols
     const FLOW_INCREASE 23 23
@@ -37,6 +37,6 @@ self_ast_census
     enum AnswerAgreement 718 723
     function same_answer 725 733
     function derivations_are_disjoint 735 741
-    function classify_agreement 743 765
-    function evidence_check_slug 767 779
-    function symbolic_check 781 793
+    function classify_agreement 744 766
+    function evidence_check_slug 768 780
+    function symbolic_check 782 794

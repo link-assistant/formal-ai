@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/program_ir.rs
   language rust
   fidelity signature
-  byte_len 31836
+  byte_len 31823
   line_count 899
-  content_id source_module_381f5c2a149e1fe0
+  content_id source_module_ecfa517256db8842
   symbol_count 29
   symbols
     module infer 19 19
