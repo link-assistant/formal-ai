@@ -653,8 +653,8 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = report_issue::plan_report_flow(messages, tool_names) {
         return Some(plan);
     }
-    if let Some(answer) = conversation_recall::recall_answer_for(messages) {
-        return Some(AgenticPlan::Final(answer));
+    if let Some(plan) = conversation_recall::plan_shared_solver_step(messages, tool_names) {
+        return Some(plan);
     }
     if let Some(answer) = tool_result::follow_up_answer(messages, task) {
         return Some(AgenticPlan::Final(answer));

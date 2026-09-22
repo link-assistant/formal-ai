@@ -9,9 +9,10 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_symbolic_command_reroute};
 use formal_ai::engine::ExecutionRecipe;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::{
-    CompiledSubstitutionProgram, ConversationTurn, CrudEvent, ProgramPlanCompilationError,
-    SubstitutionCompilationTarget, SubstitutionGraph, SubstitutionRuleSet, UniversalSolver,
-    compile_substitution_rules,
+    ChatCompletion, ChatCompletionRequest, CompiledSubstitutionProgram, ConversationTurn,
+    CrudEvent, ProgramPlanCompilationError, SolverConfig, SubstitutionCompilationTarget,
+    SubstitutionGraph, SubstitutionRuleSet, UniversalSolver, compile_substitution_rules,
+    create_chat_completion_with_solver,
 };
 
 const COUNTER_RULES: &str = r#"
@@ -548,4 +549,130 @@ fn live_agent_cli_export_and_self_authored_contract_are_preserved() {
     // spells the step, so read the spliced pipeline surface.
     let workflow = crate::ci_gates::pipeline_workflows();
     assert!(workflow.contains("experiments/agent_cli_e2e/run_issue_936.sh"));
+}
+
+// --- The agent-CLI surface over the full 14-tool advertisement -----------------
+//
+// The substitution export is a two-turn conversation on the chat-completions
+// surface the Agent CLI speaks, over the exact toolset its E2E advertises. Both
+// regressions this section pins were live in CI (`run_issue_936.sh`): the first
+// turn planned `list` — the program's *behaviour* words read as the request —
+// and the follow-up planned `websearch` with the whole sentence as the query,
+// so `program_plan_rules.mjs` never reached the workdir.
+
+/// The toolset the Agent CLI advertises to the server, in the order the E2E
+/// trace records them.
+const AGENT_CLI_TOOLS: [&str; 14] = [
+    "bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread",
+    "todowrite", "webfetch", "websearch", "write",
+];
+
+/// Routing competes on names, not on schemas, so every tool carries a bare
+/// object — the two tools the flow exercises included, with real schemas.
+fn agent_cli_tool_declarations() -> Vec<serde_json::Value> {
+    let schemas: std::collections::HashMap<&str, serde_json::Value> = [
+        (
+            "bash",
+            serde_json::json!({"command": {"type": "string"}, "run_in_background": {"type": "boolean"}}),
+        ),
+        (
+            "write",
+            serde_json::json!({"file_path": {"type": "string"}, "content": {"type": "string"}}),
+        ),
+    ]
+    .into_iter()
+    .collect();
+    AGENT_CLI_TOOLS
+        .iter()
+        .map(|name| {
+            serde_json::json!({
+                "type": "function",
+                "function": {
+                    "name": name,
+                    "description": format!("{name} tool"),
+                    "parameters": {"type": "object", "properties": schemas.get(name).cloned().unwrap_or_else(|| serde_json::json!({}))}
+                }
+            })
+        })
+        .collect()
+}
+
+fn agent_cli_solver() -> UniversalSolver {
+    UniversalSolver::new(SolverConfig {
+        agent_mode: true,
+        ..SolverConfig::default()
+    })
+}
+
+fn agent_cli_step(messages: Vec<ChatMessage>) -> ChatCompletion {
+    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "agent-cli",
+        "messages": messages,
+        "tools": agent_cli_tool_declarations(),
+    }))
+    .expect("valid chat completion request");
+    create_chat_completion_with_solver(&request, &agent_cli_solver())
+}
+
+/// The first tool call a step plans, with its arguments, or [`None`] when the
+/// turn ends in a final answer.
+fn planned_call(completion: &ChatCompletion) -> Option<(&str, String)> {
+    completion.choices.first().and_then(|choice| {
+        choice
+            .message
+            .tool_calls
+            .first()
+            .map(|call| (call.function.name.as_str(), call.function.arguments.clone()))
+    })
+}
+
+/// Whole task, first turn: a program-writing request must not be answered by
+/// the tool that performs the program's described behaviour. `list` is the
+/// regression this pins; the web tools are the ones the follow-up stole.
+#[test]
+fn a_program_request_is_not_answered_by_its_behaviour_tool() {
+    let completion = agent_cli_step(vec![ChatMessage::user(
+        "Write me a Rust program that lists the files in the current directory",
+    )]);
+
+    if let Some((name, _)) = planned_call(&completion) {
+        assert_ne!(
+            name, "list",
+            "the program's behaviour is not the request: {completion:?}"
+        );
+        assert_ne!(name, "websearch", "a program request is not a search");
+        assert_ne!(name, "webfetch", "a program request is not a fetch");
+    }
+}
+
+/// Whole task, resumed turn: the export follow-up lowers its typed recipe into
+/// the client's write tool, primary file first, with the interop source the E2E
+/// verifies (`WebAssembly.instantiate`) inside it.
+#[test]
+fn the_export_follow_up_writes_the_recipe_over_the_full_toolset() {
+    let initial_prompt = "Write me a Rust program that lists the files in the current directory";
+    let initial = agent_cli_solver().solve(initial_prompt);
+    let messages = vec![
+        ChatMessage::user(initial_prompt),
+        ChatMessage::assistant(initial.answer),
+        ChatMessage::user("Sort the results in reverse order and export the substitution rule to JavaScript"),
+    ];
+    let completion = agent_cli_step(messages);
+
+    let Some((name, arguments)) = planned_call(&completion) else {
+        panic!("the export must write its recipe, not end in prose: {completion:?}");
+    };
+    assert_eq!(name, "write", "{completion:?}");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&arguments).expect("write arguments are JSON");
+    assert_eq!(
+        arguments["file_path"], "program_plan_rules.mjs",
+        "the recipe writes its primary file first: {completion:?}"
+    );
+    assert!(
+        arguments["content"]
+            .as_str()
+            .is_some_and(|content| content.contains("WebAssembly.instantiate")),
+        "the primary artifact is the interop runner the E2E verifies: {completion:?}"
+    );
 }
