@@ -372,6 +372,56 @@ fn same_turn_definition_followup_reuses_only_the_antecedent_topic() {
 }
 
 #[test]
+fn definition_followup_corroborates_across_the_search_rows_before_answering() {
+    // The definition-followup journey's second ask ("so what is it exactly?")
+    // is a corroboration request: one page echoing the topic token has not
+    // established what the word *is*, so the research it drives reads the
+    // rows its own search surfaced before synthesizing. A plain research
+    // round keeps answering at full aspect coverage -- the opencode greeting
+    // leg's round bound depends on it -- but a single-aspect topic can only
+    // ever show vacuous coverage ("a page mentions the word"), and for the
+    // follow-up that is precisely the question still open.
+    let prompt = "Что такое фуфломицин? Затем: так что это такое то?";
+    let mut messages = vec![ChatMessage::user(prompt)];
+    add_result(
+        &mut messages,
+        PlannedToolCall {
+            tool: String::from("websearch"),
+            arguments: String::from("{\"query\":\"фуфломицин\"}"),
+        },
+        "search_1",
+        "Словарное определение https://dictionary.example.test/ru/fuflomicin\nСправка о доказательности https://evidence.example.test/ru/unproven-medicine\nУпотребление термина https://language.example.test/ru/fuflomicin-usage",
+    );
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        String::from("fetch_1"),
+        "webfetch",
+        String::from("{\"url\":\"https://dictionary.example.test/ru/fuflomicin\"}"),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "fetch_1",
+        "webfetch",
+        "Фуфломицин — разговорное неодобрительное название лекарства, клиническая эффективность которого не доказана.",
+    ));
+    let plan = plan_chat_step(
+        &messages,
+        &["bash", "websearch", "webfetch", "request_user_input"],
+    )
+    .expect("the follow-up journey still has a plan");
+    let AgenticPlan::ToolCalls(calls) = plan else {
+        panic!(
+            "a corroborating follow-up reads the next row, it does not answer from one page: {plan:?}"
+        );
+    };
+    assert_eq!(calls.len(), 1, "{calls:?}");
+    assert_eq!(calls[0].tool, "webfetch", "{calls:?}");
+    assert!(
+        calls[0].arguments.contains("evidence.example.test"),
+        "the next unread row is the corroboration: {}",
+        calls[0].arguments
+    );
+}
+
+#[test]
 fn definition_imperatives_route_to_research_in_every_supported_language() {
     for (prompt, subject) in [
         ("Define flarb in one sentence", "flarb"),

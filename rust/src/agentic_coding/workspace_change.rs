@@ -91,6 +91,29 @@ pub(super) fn plan_workspace_change_step(
     plan_rewrite_step(task, current_turn, tool_names, &rewrite)
 }
 
+/// Whether `answer` is one of this module's seeded verification-failure
+/// renderings for `task`'s targets.
+///
+/// The rendering is deterministic in the task and the target, so equality
+/// against it is a structural test with no phrase table: it recognises the
+/// failure report in whatever language the seed rendered it. The delivery
+/// route uses it to keep such prose out of the files it writes -- a report
+/// that a check failed is chat, never the `result=` line of an effect file
+/// (issue #1138: the binary-tree ladder's effect files carried the failure
+/// template and every leaf read as an unverified result).
+pub(super) fn is_verification_failure_answer(task: &str, answer: &str) -> bool {
+    let task = unwrap_transport_quotes(task);
+    let mut targets = compose_edit_request(task)
+        .map(|(target, _, _)| target)
+        .into_iter()
+        .collect::<Vec<_>>();
+    targets.extend(rust_paths(task));
+    targets.into_iter().any(|target| {
+        render_seeded_outcome("coding_workspace_verification_failed", task, &target)
+            .is_some_and(|rendered| rendered == answer)
+    })
+}
+
 fn plan_rewrite_step(
     task: &str,
     current_turn: &[ChatMessage],

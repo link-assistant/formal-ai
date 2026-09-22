@@ -387,10 +387,18 @@ fn seed_prefix_subject(task: &str, role: &str) -> Option<String> {
 /// fit inside the driver's turn budget with the fetches they imply.
 const MAX_RESEARCH_ROUNDS: usize = 3;
 
+/// Plan one round of the search → fetch research recipe.
+///
+/// `corroborate` states the ask's completion criterion. A plain question is
+/// answered when a fetched page covers every aspect of it; a definition
+/// follow-up ("so what is it exactly?") asks again precisely because one page
+/// naming the word has not shown what the word *is*, so its journey reads the
+/// rows its own search surfaced and answers when they are spent.
 pub(super) fn plan_web_research_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     query: &str,
+    corroborate: bool,
 ) -> Option<AgenticPlan> {
     let progress = Progress::scan(messages);
     if let Some(failure) = progress.latest_failure()
@@ -422,7 +430,16 @@ pub(super) fn plan_web_research_step(
             // the recipe a round too late. [`uncovered_aspects`] is empty for
             // an uncovered-by-nothing query too (no page read yet), so the
             // non-empty `fetched_pages` guard keeps the first fetch planned.
-            if !progress.fetched_pages.is_empty()
+            //
+            // A corroborating ask is the exception, and it is not tuning: a
+            // bare topic has a single aspect that every page mentioning it
+            // covers, so for a definition follow-up the coverage signal
+            // cannot distinguish "answered" from "one page echoed the word".
+            // Its journey keeps reading the rows the search surfaced, and
+            // row exhaustion below (or a failed fetch, retired by the
+            // failure guard above) still terminates it.
+            if !corroborate
+                && !progress.fetched_pages.is_empty()
                 && uncovered_aspects(query, &progress).is_empty()
             {
                 return Some(AgenticPlan::Final(final_answer(query, &progress)));

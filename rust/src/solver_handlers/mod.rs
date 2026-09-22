@@ -13,7 +13,7 @@ pub use calendar_create::{
 pub use compound_interest::try_compound_interest;
 pub use conversation_memory::is_exact_memory_query;
 pub use conversation_memory::{
-    MemoryQueryExecution, answer_memory_recall, execute_memory_query,
+    MemoryQueryExecution, answer_memory_recall, conversation_summary_answer, execute_memory_query,
     execute_memory_query_with_options, try_conversation_memory,
 };
 pub use document_originality::try_document_originality_check;

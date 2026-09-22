@@ -1197,15 +1197,13 @@ function webSearchMarkers() {
 
 // A request to filter the user's OWN contributed facts ("facts I contributed",
 // "my facts") is conversation search, not a web search. Mirrors
-// is_personal_fact_filter_request in src/solver_handlers/web_search_intent.rs.
+// is_personal_fact_filter_request in src/solver_handlers/web_search_intent.rs;
+// the cue family lives in the personal_facts_listing_request seed role
+// (data/seed/meanings-intent.lino), read through the boundary-aware
+// lexiconMentionsRole like the local-path roles above.
+const ROLE_PERSONAL_FACTS_LISTING_REQUEST = "personal_facts_listing_request";
 function isPersonalFactFilterRequest(normalized) {
-  const text = String(normalized || "");
-  return (
-    text.includes("facts i have contributed") ||
-    text.includes("facts ive contributed") ||
-    text.includes("facts i contributed") ||
-    text.includes("my facts")
-  );
+  return lexiconMentionsRole(ROLE_PERSONAL_FACTS_LISTING_REQUEST, normalized);
 }
 
 function containsSearchMarker(normalized, marker) {

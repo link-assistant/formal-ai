@@ -413,6 +413,22 @@ fn try_capability_route(
             {
                 return None;
             }
+            // A summary ask over the running conversation is the
+            // conversation-memory family's turn even when the table reads its
+            // tail ("which files we're working on") as a workspace
+            // enumeration: the Agent CLI's compaction request advertises no
+            // tools, and the `list_dir` gap refusal it received was stored by
+            // the client as the conversation's summary, so every later turn
+            // of the ladder's leaf ran blind (issue #1138). The summary is
+            // answered here rather than declined -- a decline inside the
+            // table's arms lands in the generic unknown refusal, which
+            // answers nothing.
+            if !commit_anchored_gap
+                && let Some(answer) =
+                    crate::solver_handlers::conversation_summary_answer(prompt, &normalized, log)
+            {
+                return Some(answer);
+            }
             if !commit_anchored_gap
                 && let Some(answer) = crate::family_method::try_family_method_preempting(
                     prompt,

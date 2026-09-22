@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 46342
-  line_count 936
-  content_id source_module_a5e80e3b10636355
+  byte_len 46391
+  line_count 938
+  content_id source_module_200ccf50bb5d0126
   symbol_count 19
   symbols
     module continuation 5 5
@@ -21,21 +21,21 @@ self_ast_census
     function checked_route_precedence 284 312
     static CELL 285 285
     function plan_chat_step_routes 314 411
-    function plan_settled_routes 427 876
-    function plan_shell_step 879 898
-    function plan_one 900 905
-    function write_arguments 913 921
-    function fetch_arguments 930 936
+    function plan_settled_routes 427 878
+    function plan_shell_step 881 900
+    function plan_one 902 907
+    function write_arguments 915 923
+    function fetch_arguments 932 938
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19776
+    total_link_count 19798
     named_node_count 3837
-    distinct_node_kinds 83
+    distinct_node_kinds 84
     node_kinds
-      arguments 256
+      arguments 255
       array_expression 1
       array_type 11
       assignment_expression 1
@@ -43,7 +43,8 @@ self_ast_census
       attribute_item 6
       binary_expression 5
       block 89
-      call_expression 256
+      boolean_literal 4
+      call_expression 255
       closure_expression 10
       closure_parameters 10
       const_item 2
@@ -65,7 +66,7 @@ self_ast_census
       function_item 12
       function_modifiers 2
       generic_type 7
-      identifier 1055
+      identifier 1054
       if_expression 68
       impl_item 1
       index_expression 2
@@ -93,7 +94,7 @@ self_ast_census
       reference_expression 45
       reference_type 28
       return_expression 70
-      scoped_identifier 221
+      scoped_identifier 220
       scoped_type_identifier 2
       scoped_use_list 7
       self 4

@@ -101,6 +101,22 @@ pub fn try_conversation_memory(
     None
 }
 
+/// The conversation-summary answer for a request the capability table read as
+/// a workspace gap (issue #1138: the Agent CLI's compaction ask names "which
+/// files we're working on", which the table parses as an enumeration).
+///
+/// Dispatched from the table's gap arm, where the regular method order never
+/// arrives, so a summarization turn over a tool-less surface is answered from
+/// the history the log already holds instead of by the gap refusal naming a
+/// `shell` tool the surface never offered.
+pub fn conversation_summary_answer(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_summarize_conversation(prompt, normalized, log)
+}
+
 #[must_use]
 pub fn answer_memory_recall(
     prompt: &str,

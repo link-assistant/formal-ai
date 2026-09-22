@@ -315,7 +315,22 @@ pub(super) fn plan_evidence_record_step(
                 trace_route("evidence_record", "investigating");
                 return Some(plan);
             }
-            Some(AgenticPlan::Final(answer)) => answer,
+            Some(AgenticPlan::Final(answer)) => {
+                // A route that answers the residual with its own failure
+                // prose has produced a chat report, not the bytes the caller
+                // asked to record: delivering it would write the failure
+                // template into the requested file (issue #1138: the
+                // ladder's effect file carried "Verification failed ..." on
+                // its `result=` line). The report itself stays the answer.
+                if super::workspace_change::is_verification_failure_answer(
+                    &obligation.residual,
+                    &answer,
+                ) {
+                    trace_route("evidence_record", "residual_reported_failure");
+                    return Some(AgenticPlan::Final(answer));
+                }
+                answer
+            }
             None => {
                 trace_route("evidence_record", "symbolic_residual");
                 symbolic_answer(&obligation.residual)?
@@ -870,7 +885,11 @@ fn source_authority(path_or_line: &str) -> usize {
 /// node proved.
 fn symbolic_answer(residual: &str) -> Option<String> {
     let answer = crate::engine::FormalAiEngine.answer(residual);
-    if answer.is_inconclusive()
+    // A gap refusal is a definite statement about the surface, not a finding
+    // to record: left through, the delivery wrote the refusal into the file
+    // the caller named (issue #1138).
+    if answer.intent == "capability_gap"
+        || answer.is_inconclusive()
         || answer.defers_to_the_open_web()
         || answer.announces_a_list_it_does_not_make()
     {

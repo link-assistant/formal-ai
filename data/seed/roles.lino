@@ -519,6 +519,8 @@ roles
     kind meaning
   part_whole_relation
     kind predicate
+  personal_facts_listing_request
+    kind meaning
   physical_action_trigger
     kind predicate
   physical_dimension

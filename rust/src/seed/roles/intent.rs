@@ -258,6 +258,14 @@ pub const ROLE_CONVERSATION_TOPIC_OPENER: &str = "conversation_topic_opener";
 /// [`crate::seed::Slot`]); a meaning carrying this role is `defined_by` the
 /// `inquiry` and `action` concepts.
 pub const ROLE_MECHANISM_INQUIRY: &str = "mechanism_inquiry";
+/// Semantic role: a request to list the facts the user personally contributed.
+///
+/// The personal-facts listing ("facts i have contributed", "my facts", …)
+/// names the conversation's own contributor filter, so the retrieval family
+/// answers it from the recorded filter and the web-search intent declines it
+/// as a web query. The cue family lives in
+/// `data/seed/meanings-intent.lino` (`personal_facts_listing_request`).
+pub const ROLE_PERSONAL_FACTS_LISTING_REQUEST: &str = "personal_facts_listing_request";
 /// Semantic role: a prompt requesting the ordered steps to accomplish a task.
 ///
 /// The how-to-X procedure question ("how to X", "как сделать X", "कैसे करें X",

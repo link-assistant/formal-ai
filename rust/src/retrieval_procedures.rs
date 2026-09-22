@@ -10,9 +10,10 @@
 //! moves each into seed rules and localized responses, and the migration
 //! ledger keeps all five rows pending until then.
 
-use crate::engine::{SymbolicAnswer, knowledge_links_notation, stable_id};
+use crate::engine::{SymbolicAnswer, knowledge_links_notation, normalize_prompt, stable_id};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::seed::ROLE_PERSONAL_FACTS_LISTING_REQUEST;
 use crate::seed::localized_response;
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::extract_concept_from_query;
@@ -54,9 +55,11 @@ pub fn try_network_query(
             1.0,
         ));
     }
-    if normalized.contains("list the facts i have contributed")
-        || normalized.contains("list my facts")
-        || normalized.starts_with("list facts")
+    if normalized.starts_with("list facts")
+        || crate::seed::lexicon().mentions_role(
+            ROLE_PERSONAL_FACTS_LISTING_REQUEST,
+            &normalize_prompt(prompt),
+        )
     {
         log.append("filter:user", "self".to_owned());
         let body = String::from(

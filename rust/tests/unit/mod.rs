@@ -57,6 +57,7 @@ mod issue_1131_member_insertion_guard;
 mod issue_1133_browser_is_not_a_fetch_tool;
 mod issue_1133_hive_mind_three_runs;
 mod issue_1136_mcp_search_precedence;
+mod issue_1138_agent_cli_ladder_recall;
 mod issue_1138_concept_lookup;
 mod issue_1138_formalization_depth;
 mod issue_1138_membership_taxonomy;

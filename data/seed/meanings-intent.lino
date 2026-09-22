@@ -585,6 +585,48 @@ meanings
         text 关于你自己的事实
       surface
         text 自我事实
+  personal_facts_listing_request
+    defined-by fact
+    defined-by self_reference
+    defined-by inquiry
+    role personal_facts_listing_request
+    lexeme en
+      surface
+        text "facts i have contributed"
+      surface
+        text "facts ive contributed"
+      surface
+        text "facts i contributed"
+      surface
+        text "my facts"
+    lexeme ru
+      surface
+        text "факты которые я добавил"
+      surface
+        text "факты которые я внес"
+      surface
+        text "мои факты"
+      surface
+        text "факты добавленные мной"
+    lexeme hi
+      surface
+        text "मैंने जो तथ्य दिए"
+      surface
+        text "मेरे तथ्य"
+    lexeme zh
+      surface
+        text 我贡献的事实
+      surface
+        text 我添加的事实
+      surface
+        text 我的事实
+    lexeme es
+      surface
+        text "hechos que he aportado"
+      surface
+        text "hechos que aporté"
+      surface
+        text "mis hechos"
   self_introduction_request
     defined-by introduction
     defined-by self_reference
@@ -845,6 +887,10 @@ meanings
         text "summarize so far"
       surface
         text "summarise so far"
+      surface
+        text "what did we do so far"
+      surface
+        text "what have we done so far"
     lexeme ru
       surface
         text "о чём мы разговаривали"
@@ -854,11 +900,19 @@ meanings
         text "о чём мы говорили"
       surface
         text "о чем мы говорили"
+      surface
+        text "что мы сделали"
+      surface
+        text "что мы уже сделали"
     lexeme hi
       surface
         text "हमने किस बारे में बात की"
       surface
         text "हमने क्या बात की"
+      surface
+        text "हमने अब तक क्या किया"
+      surface
+        text "हमने क्या किया"
     lexeme zh
       surface
         text 我们聊了什么
@@ -868,6 +922,10 @@ meanings
         text 我们说了什么
       surface
         text 我們聊了什麼
+      surface
+        text 我们做了什么
+      surface
+        text 我们刚才做了什么
   conversation_summary_courtesy
     defined-by inquiry
     defined-by conversation_summary_directive

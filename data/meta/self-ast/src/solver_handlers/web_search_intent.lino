@@ -2,56 +2,56 @@ self_ast_census
   target src/solver_handlers/web_search_intent.rs
   language rust
   fidelity signature
-  byte_len 36496
-  line_count 902
-  content_id source_module_42be2559b007149a
+  byte_len 36415
+  line_count 900
+  content_id source_module_f6ef6598f9b84eb1
   symbol_count 48
   symbols
-    function probable_local_file_name 32 58
-    enum WebSearchQueryKind 61 71
-    function as_str 74 86
-    struct WebSearchRequest 90 93
-    function extract_web_search_request 95 187
-    function web_search_query_for 199 201
-    function is_personal_fact_filter_request 203 208
-    function clean_search_query 210 218
-    function is_url_wrapper_punctuation 220 225
-    function is_url_trailing_punctuation 227 229
-    function is_sentence_boundary 234 239
-    function extract_semantic_web_search_query 241 293
-    function imperative_tail_candidate 302 306
-    function imperative_lead_candidate 314 334
-    function extract_source_grounded_question 339 347
-    function extract_current_source_information_request 352 361
-    function extract_topic_subject 366 383
-    function extract_explicit_web_search_query 385 416
-    function is_text_extraction_request 418 423
-    function extract_latest_news_search_request 425 433
-    function extract_records_information_request 446 460
-    function extract_current_public_event_question 469 480
-    function extract_term_information_request 492 526
-    function concept_lookup_resolves 528 532
-    function term_information_prompt_is_local_context 534 539
-    function term_information_query_is_local_context 541 546
-    function extract_implicit_research_question 548 571
-    function extract_externally_verifiable_question 602 626
-    function question_is_interrogative 632 635
-    function prompt_names_engineered_brand 649 658
-    function extract_enumeration_research_request 660 666
-    function starts_with_any 668 670
-    function strip_implicit_research_prefix 672 679
-    function strip_enumeration_research_prefix 681 688
-    function looks_like_enumeration_research_query 690 695
-    function contains_any_search_marker 697 701
-    function contains_search_marker 703 710
-    function states_when_to_search 729 734
-    function opens_with_non_referential_subject 748 756
-    function valid_search_query 758 761
-    function valid_news_search_query 763 766
-    function valid_clean_search_query 768 777
-    function truncate_search_instruction_tail 790 815
-    function is_token_start 819 824
-    function is_token_end 828 833
-    function boundary_before 838 867
-    function ends_with_token 872 881
-    function clean_semantic_search_query 883 902
+    function probable_local_file_name 33 59
+    enum WebSearchQueryKind 62 72
+    function as_str 75 87
+    struct WebSearchRequest 91 94
+    function extract_web_search_request 96 188
+    function web_search_query_for 200 202
+    function is_personal_fact_filter_request 204 206
+    function clean_search_query 208 216
+    function is_url_wrapper_punctuation 218 223
+    function is_url_trailing_punctuation 225 227
+    function is_sentence_boundary 232 237
+    function extract_semantic_web_search_query 239 291
+    function imperative_tail_candidate 300 304
+    function imperative_lead_candidate 312 332
+    function extract_source_grounded_question 337 345
+    function extract_current_source_information_request 350 359
+    function extract_topic_subject 364 381
+    function extract_explicit_web_search_query 383 414
+    function is_text_extraction_request 416 421
+    function extract_latest_news_search_request 423 431
+    function extract_records_information_request 444 458
+    function extract_current_public_event_question 467 478
+    function extract_term_information_request 490 524
+    function concept_lookup_resolves 526 530
+    function term_information_prompt_is_local_context 532 537
+    function term_information_query_is_local_context 539 544
+    function extract_implicit_research_question 546 569
+    function extract_externally_verifiable_question 600 624
+    function question_is_interrogative 630 633
+    function prompt_names_engineered_brand 647 656
+    function extract_enumeration_research_request 658 664
+    function starts_with_any 666 668
+    function strip_implicit_research_prefix 670 677
+    function strip_enumeration_research_prefix 679 686
+    function looks_like_enumeration_research_query 688 693
+    function contains_any_search_marker 695 699
+    function contains_search_marker 701 708
+    function states_when_to_search 727 732
+    function opens_with_non_referential_subject 746 754
+    function valid_search_query 756 759
+    function valid_news_search_query 761 764
+    function valid_clean_search_query 766 775
+    function truncate_search_instruction_tail 788 813
+    function is_token_start 817 822
+    function is_token_end 826 831
+    function boundary_before 836 865
+    function ends_with_token 870 879
+    function clean_semantic_search_query 881 900

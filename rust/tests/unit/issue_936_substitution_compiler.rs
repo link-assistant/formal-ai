@@ -563,8 +563,20 @@ fn live_agent_cli_export_and_self_authored_contract_are_preserved() {
 /// The toolset the Agent CLI advertises to the server, in the order the E2E
 /// trace records them.
 const AGENT_CLI_TOOLS: [&str; 14] = [
-    "bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread",
-    "todowrite", "webfetch", "websearch", "write",
+    "bash",
+    "batch",
+    "codesearch",
+    "edit",
+    "glob",
+    "grep",
+    "list",
+    "read",
+    "task",
+    "todoread",
+    "todowrite",
+    "webfetch",
+    "websearch",
+    "write",
 ];
 
 /// Routing competes on names, not on schemas, so every tool carries a bare
@@ -655,7 +667,9 @@ fn the_export_follow_up_writes_the_recipe_over_the_full_toolset() {
     let messages = vec![
         ChatMessage::user(initial_prompt),
         ChatMessage::assistant(initial.answer),
-        ChatMessage::user("Sort the results in reverse order and export the substitution rule to JavaScript"),
+        ChatMessage::user(
+            "Sort the results in reverse order and export the substitution rule to JavaScript",
+        ),
     ];
     let completion = agent_cli_step(messages);
 

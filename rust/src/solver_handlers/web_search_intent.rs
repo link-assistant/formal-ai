@@ -19,7 +19,8 @@ use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::normalize_prompt;
 use crate::seed::{
     self, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY, ROLE_CAPABILITY_QUERY_MORE,
-    ROLE_NON_REFERENTIAL_SUBJECT, ROLE_SELF_INTRODUCTION_REQUEST, Slot,
+    ROLE_NON_REFERENTIAL_SUBJECT, ROLE_PERSONAL_FACTS_LISTING_REQUEST,
+    ROLE_SELF_INTRODUCTION_REQUEST, Slot,
 };
 
 use super::web_requests::normalize_url_candidate;
@@ -201,10 +202,7 @@ pub fn web_search_query_for(prompt: &str) -> Option<String> {
 }
 
 fn is_personal_fact_filter_request(normalized: &str) -> bool {
-    normalized.contains("facts i have contributed")
-        || normalized.contains("facts ive contributed")
-        || normalized.contains("facts i contributed")
-        || normalized.contains("my facts")
+    seed::lexicon().mentions_role(ROLE_PERSONAL_FACTS_LISTING_REQUEST, normalized)
 }
 
 pub fn clean_search_query(value: &str) -> String {

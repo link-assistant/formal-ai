@@ -25,7 +25,8 @@ use crate::engine::normalize_prompt;
 use crate::seed::{
     self, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY, ROLE_CAPABILITY_QUERY_MORE,
     ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_ENUMERATION_CONSTRAINT, ROLE_ENUMERATION_REQUEST_OPENER,
-    ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_NON_REFERENTIAL_SUBJECT, ROLE_RESEARCH_EVALUATION_DOMAIN,
+    ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_NON_REFERENTIAL_SUBJECT,
+    ROLE_PERSONAL_FACTS_LISTING_REQUEST, ROLE_RESEARCH_EVALUATION_DOMAIN,
     ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_QUESTION_OPENER,
     ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_SELF_INTRODUCTION_REQUEST,
     ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
@@ -146,10 +147,7 @@ pub(super) fn extract_web_search_request(
 }
 
 fn is_personal_fact_filter_request(normalized: &str) -> bool {
-    normalized.contains("facts i have contributed")
-        || normalized.contains("facts ive contributed")
-        || normalized.contains("facts i contributed")
-        || normalized.contains("my facts")
+    seed::lexicon().mentions_role(ROLE_PERSONAL_FACTS_LISTING_REQUEST, normalized)
 }
 
 fn clean_search_query(value: &str) -> String {
