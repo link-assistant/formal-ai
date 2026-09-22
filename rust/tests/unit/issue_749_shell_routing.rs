@@ -88,14 +88,52 @@ fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
         ("en", "show git log", "git log"),
         ("en", "what changed in git", "git diff"),
         ("en", "commit my changes", "git commit"),
-        ("en", "run the tests", "cargo test"),
-        ("en", "install dependencies", "cargo fetch"),
-        ("en", "build the project", "cargo build"),
         ("ru", "удали файл old.txt", "rm old.txt"),
         ("ru", "скопируй a.txt в b.txt", "cp a.txt b.txt"),
         ("hi", "फ़ाइल old.txt हटाओ", "rm old.txt"),
-        ("hi", "प्रोजेक्ट बनाएँ", "cargo build"),
         ("zh", "删除文件 old.txt", "rm old.txt"),
+    ] {
+        assert_eq!(
+            shell_command(prompt).as_deref(),
+            Some(expected),
+            "{language}: {prompt}"
+        );
+    }
+}
+
+/// Restores the process working directory when dropped, including on the
+/// panic path of the assertions that run inside the controlled workspace.
+struct RestoreCwd(std::path::PathBuf);
+
+impl Drop for RestoreCwd {
+    fn drop(&mut self) {
+        std::env::set_current_dir(&self.0).expect("restore the working directory");
+    }
+}
+
+/// The build-family intents resolve through `formal-ai:workspace-test` and its
+/// siblings, which pick the command from the first marker file in the process's
+/// working directory. The repository root stopped being a cargo workspace when
+/// plan 16 L1 moved the manifest to `rust/`, so a runner that invokes cargo
+/// from the root legitimately resolves the bun workspace markers there. These
+/// pins therefore hold in a cargo workspace the test controls, not in whatever
+/// directory the runner happened to start from.
+#[test]
+fn workspace_intents_follow_the_cargo_marker_of_the_current_directory() {
+    let previous = std::env::current_dir().expect("current directory");
+    let workspace = std::env::temp_dir().join(format!(
+        "formal-ai-issue-749-workspace-{}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&workspace).expect("create the controlled workspace");
+    std::fs::write(workspace.join("Cargo.toml"), "[package]\n").expect("write the marker");
+    let restore = RestoreCwd(previous);
+    std::env::set_current_dir(&workspace).expect("enter the controlled workspace");
+    for (language, prompt, expected) in [
+        ("en", "run the tests", "cargo test"),
+        ("en", "install dependencies", "cargo fetch"),
+        ("en", "build the project", "cargo build"),
+        ("hi", "प्रोजेक्ट बनाएँ", "cargo build"),
         ("zh", "运行测试", "cargo test"),
     ] {
         assert_eq!(
@@ -104,6 +142,8 @@ fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
             "{language}: {prompt}"
         );
     }
+    drop(restore);
+    std::fs::remove_dir_all(&workspace).expect("remove the controlled workspace");
 }
 
 #[test]

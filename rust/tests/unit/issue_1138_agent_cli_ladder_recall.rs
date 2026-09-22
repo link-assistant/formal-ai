@@ -64,7 +64,7 @@ fn agent_solver() -> UniversalSolver {
     })
 }
 
-fn agent_step(messages: Vec<ChatMessage>) -> ChatCompletion {
+fn agent_step(messages: &[ChatMessage]) -> ChatCompletion {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "agent-cli",
         "messages": messages,
@@ -74,7 +74,7 @@ fn agent_step(messages: Vec<ChatMessage>) -> ChatCompletion {
     create_chat_completion_with_solver(&request, &agent_solver())
 }
 
-fn no_tool_step(messages: Vec<ChatMessage>) -> ChatCompletion {
+fn no_tool_step(messages: &[ChatMessage]) -> ChatCompletion {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "agent-cli",
         "messages": messages,
@@ -142,7 +142,7 @@ const COMPACTION_ASK: &str = "Provide a detailed but concise summary of our conv
 /// naming tools the surface never offered.
 #[test]
 fn compaction_summary_request_gets_a_summary_not_a_gap_refusal() {
-    let completion = no_tool_step(vec![
+    let completion = no_tool_step(&[
         ChatMessage::new("system", COMPACTION_SYSTEM),
         ChatMessage::user(ADD_TO_LIST_LEAF),
         ChatMessage::assistant("Let me open rust/src/web_search_core.rs and read what it says."),
@@ -174,7 +174,7 @@ fn compaction_summary_request_gets_a_summary_not_a_gap_refusal() {
 /// for the question itself.
 #[test]
 fn recall_turn_over_the_full_toolset_is_answered_from_history() {
-    let completion = agent_step(vec![
+    let completion = agent_step(&[
         ChatMessage::user(ADD_TO_LIST_LEAF),
         read_call("r1", "rust/src/web_search_core.rs"),
         tool_reply(
@@ -211,7 +211,7 @@ fn replace_leaf_edits_and_never_writes_failure_prose() {
     let mut messages = vec![ChatMessage::user(replace_leaf.to_owned())];
     let mut saw_edit = false;
     for _ in 0..4 {
-        let completion = agent_step(messages.clone());
+        let completion = agent_step(&messages);
         let Some((name, arguments)) = planned_call(&completion) else {
             break;
         };
@@ -254,7 +254,7 @@ fn replace_leaf_edits_and_never_writes_failure_prose() {
 #[test]
 fn continue_turn_after_an_empty_result_write_resumes_the_delivery() {
     let updated = "pub const WEB_SEARCH_PROVIDERS: [&str; 4] = [\"duckduckgo\", \"brave\", \"startpage\", \"wikiquote\"];\n";
-    let completion = agent_step(vec![
+    let completion = agent_step(&[
         ChatMessage::user(ADD_TO_LIST_LEAF),
         read_call("r1", "rust/src/web_search_core.rs"),
         tool_reply(
@@ -297,7 +297,7 @@ fn continuation_pings_do_not_restart_the_leaf_write_state_machine() {
     let mut steps: Vec<(String, String)> = Vec::new();
     let mut advanced = false;
     for _ in 0..10 {
-        let completion = agent_step(messages.clone());
+        let completion = agent_step(&messages);
         if let Some((name, arguments)) = planned_call(&completion) {
             let repeats = steps
                 .iter()
@@ -353,7 +353,7 @@ fn continuation_pings_do_not_restart_a_literal_file_plan() {
     let mut steps: Vec<(String, String)> = Vec::new();
     let mut completed = false;
     for _ in 0..10 {
-        let completion = agent_step(messages.clone());
+        let completion = agent_step(&messages);
         if let Some((name, arguments)) = planned_call(&completion) {
             let repeats = steps
                 .iter()

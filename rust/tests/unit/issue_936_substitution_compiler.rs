@@ -616,7 +616,7 @@ fn agent_cli_solver() -> UniversalSolver {
     })
 }
 
-fn agent_cli_step(messages: Vec<ChatMessage>) -> ChatCompletion {
+fn agent_cli_step(messages: &[ChatMessage]) -> ChatCompletion {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "agent-cli",
         "messages": messages,
@@ -643,7 +643,7 @@ fn planned_call(completion: &ChatCompletion) -> Option<(&str, String)> {
 /// regression this pins; the web tools are the ones the follow-up stole.
 #[test]
 fn a_program_request_is_not_answered_by_its_behaviour_tool() {
-    let completion = agent_cli_step(vec![ChatMessage::user(
+    let completion = agent_cli_step(&[ChatMessage::user(
         "Write me a Rust program that lists the files in the current directory",
     )]);
 
@@ -671,7 +671,7 @@ fn the_export_follow_up_writes_the_recipe_over_the_full_toolset() {
             "Sort the results in reverse order and export the substitution rule to JavaScript",
         ),
     ];
-    let completion = agent_cli_step(messages);
+    let completion = agent_cli_step(&messages);
 
     let Some((name, arguments)) = planned_call(&completion) else {
         panic!("the export must write its recipe, not end in prose: {completion:?}");
