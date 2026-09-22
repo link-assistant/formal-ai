@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const binary = readFileSync("src/web/formal_ai_worker.wasm");
+const binary = readFileSync("js/formal_ai_worker.wasm");
 const { instance } = await WebAssembly.instantiate(binary, {});
 const wasm = instance.exports;
 const encoder = new TextEncoder();

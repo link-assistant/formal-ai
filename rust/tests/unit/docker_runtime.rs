@@ -137,7 +137,7 @@ fn the_image_builds_dependencies_before_it_copies_the_sources() {
         fs::read_to_string(format!("{manifest_dir}/Dockerfile")).expect("Dockerfile is readable");
 
     let manifest_copy = dockerfile
-        .find("COPY Cargo.toml Cargo.lock build.rs ./")
+        .find("COPY rust/Cargo.toml rust/Cargo.lock rust/build.rs rust/")
         .expect("the image must copy its manifests before its sources");
     let source_copy = dockerfile
         .find("\nCOPY . .")

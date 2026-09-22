@@ -23,14 +23,18 @@ fn assert_shared_trace(links: &str, surface: &str) {
 
 #[test]
 fn every_coding_handler_imports_the_shared_builder() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate");
     for path in [
-        "src/solver_handlers/installation_conversion.rs",
-        "src/solver_handlers/program_synthesis.rs",
-        "src/coding/catalog/mod.rs",
-        "src/rule_synthesis.rs",
-        "src/solver_handlers/numeric_list/mod.rs",
+        "rust/src/solver_handlers/installation_conversion.rs",
+        "rust/src/solver_handlers/program_synthesis.rs",
+        "rust/src/coding/catalog/mod.rs",
+        "rust/src/rule_synthesis.rs",
+        "rust/src/solver_handlers/numeric_list/mod.rs",
     ] {
-        let source = fs::read_to_string(path).unwrap_or_else(|error| panic!("{path}: {error}"));
+        let source = fs::read_to_string(root.join(path))
+            .unwrap_or_else(|error| panic!("{}: {error}", root.join(path).display()));
         assert!(
             source.contains("meta_algorithm_builder"),
             "{path} still owns bespoke construction logic"

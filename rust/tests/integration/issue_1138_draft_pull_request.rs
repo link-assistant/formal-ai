@@ -98,7 +98,7 @@ fn the_published_draft_is_recorded_as_an_append_only_event() {
 fn without_the_flag_the_protocol_behaves_exactly_as_before() {
     // #656 regression: `--open-draft-pr` is opt-in. Without it, `run_improve`
     // still only prints the branch plan for a human to run.
-    let source = fs::read_to_string(repo_root().join("src/cli_improve.rs"))
+    let source = fs::read_to_string(repo_root().join("rust/src/cli_improve.rs"))
         .expect("cli_improve.rs readable");
     assert!(
         source.contains("open_draft_pr"),

@@ -9,7 +9,7 @@ fn repository_root() -> PathBuf {
 
 #[test]
 fn default_dependency_lock_has_no_system_openssl_stack() {
-    let lock = fs::read_to_string(repository_root().join("Cargo.lock"))
+    let lock = fs::read_to_string(repository_root().join("rust/Cargo.lock"))
         .expect("the committed Cargo.lock should be readable");
 
     for package in ["openssl", "openssl-sys", "native-tls", "tokio-native-tls"] {
@@ -22,7 +22,7 @@ fn default_dependency_lock_has_no_system_openssl_stack() {
 
 #[test]
 fn manifests_select_only_transport_independent_web_features() {
-    let manifest = fs::read_to_string(repository_root().join("Cargo.toml"))
+    let manifest = fs::read_to_string(repository_root().join("rust/Cargo.toml"))
         .expect("the workspace manifest should be readable");
 
     // The version is deliberately not part of the assertion. What keeps a stock
@@ -59,7 +59,7 @@ fn stock_rust_ci_installs_and_inspects_the_binary_without_apt() {
     // The container tag is derived, not spelled: the image has to be the floor
     // the manifest declares, or the job proves a stock install works on a
     // compiler the crate no longer claims to support.
-    let manifest = fs::read_to_string(repository_root().join("Cargo.toml"))
+    let manifest = fs::read_to_string(repository_root().join("rust/Cargo.toml"))
         .expect("the workspace manifest should be readable");
     let rust_version = manifest
         .lines()
@@ -72,12 +72,12 @@ fn stock_rust_ci_installs_and_inspects_the_binary_without_apt() {
 
     for required in [
         container.as_str(),
-        "cargo tree --locked --prefix none --format '{p}'",
+        "cargo tree --manifest-path rust/Cargo.toml --locked --prefix none --format '{p}'",
         "> /tmp/formal-ai-dependency-tree.txt",
         "grep -Eq '^openssl-sys v' /tmp/formal-ai-dependency-tree.txt",
         "CARGO_INSTALL_ROOT: /tmp/formal-ai-install",
         "export PATH=\"$CARGO_INSTALL_ROOT/bin:$PATH\"",
-        "cargo install --path . --locked",
+        "cargo install --path rust --locked",
         "ldd \"$(command -v formal-ai)\"",
         "libssl|libcrypto",
         "formal-ai --version",

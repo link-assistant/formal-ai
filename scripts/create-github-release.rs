@@ -633,11 +633,9 @@ mod tests {
 
     #[test]
     fn release_body_includes_the_recorded_self_hosting_metric() {
-        let script = Path::new(file!());
-        let ledger = script
+        let ledger = Path::new(env!("CARGO_MANIFEST_DIR"))
             .parent()
-            .and_then(Path::parent)
-            .expect("release script must live below the repository root")
+            .expect("the repository root sits one level above the crate")
             .join("data/meta/self-hosting-ledger.lino");
         let note =
             self_hosting_note(&ledger, "v0.296.0").expect("baseline self-hosting row must render");

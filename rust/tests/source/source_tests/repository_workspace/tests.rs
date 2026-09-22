@@ -1,4 +1,4 @@
-//! Source-placement tests for `src/repository_workspace/` (issue #1138, plan 03).
+//! Source-placement tests for `rust/src/repository_workspace/` (issue #1138, plan 03).
 //!
 //! The mirror exists to reach what `src/` keeps private, so a new module tree
 //! has to obey the same two rules every other module obeys: the files live where
@@ -18,20 +18,21 @@ const MAX_RUST_LINES: usize = 1_000;
 /// `world_model.rs` (plan 15's evidence-backed deltas), and
 /// `protocol-header.txt` (plan 03 L8's rediscovery header).
 const DECLARED: &[&str] = &[
-    "src/repository_workspace/mod.rs",
-    "src/repository_workspace/clone.rs",
-    "src/repository_workspace/locate.rs",
-    "src/repository_workspace/edit.rs",
-    "src/repository_workspace/verify.rs",
-    "src/repository_workspace/diff.rs",
-    "src/repository_workspace/outcome.rs",
-    "src/repository_workspace/world_model.rs",
-    "src/repository_workspace/protocol-header.txt",
-    "src/cli_solve.rs",
+    "rust/src/repository_workspace/mod.rs",
+    "rust/src/repository_workspace/clone.rs",
+    "rust/src/repository_workspace/locate.rs",
+    "rust/src/repository_workspace/edit.rs",
+    "rust/src/repository_workspace/verify.rs",
+    "rust/src/repository_workspace/diff.rs",
+    "rust/src/repository_workspace/outcome.rs",
+    "rust/src/repository_workspace/world_model.rs",
+    "rust/src/repository_workspace/protocol-header.txt",
+    "rust/src/cli_solve.rs",
 ];
 
 fn repo_root() -> PathBuf {
-    // `tests/source/` mirrors `src/`, so the manifest directory is the root.
+    // `tests/source/` mirrors `rust/src/`, so the repository root sits one
+    // level above the manifest directory.
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .ancestors()
         .nth(1)
@@ -48,13 +49,13 @@ fn module_files_are_where_the_convention_says() {
         );
     }
 
-    let directory = repo_root().join("src/repository_workspace");
+    let directory = repo_root().join("rust/src/repository_workspace");
     let mut present: Vec<String> = fs::read_dir(&directory)
         .expect("the module directory should be readable")
         .filter_map(Result::ok)
         .map(|entry| {
             format!(
-                "src/repository_workspace/{}",
+                "rust/src/repository_workspace/{}",
                 entry.file_name().to_string_lossy()
             )
         })
@@ -63,7 +64,7 @@ fn module_files_are_where_the_convention_says() {
 
     let mut declared: Vec<String> = DECLARED
         .iter()
-        .filter(|path| path.starts_with("src/repository_workspace/"))
+        .filter(|path| path.starts_with("rust/src/repository_workspace/"))
         .map(|path| (*path).to_owned())
         .collect();
     declared.sort();

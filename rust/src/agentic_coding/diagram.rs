@@ -236,7 +236,7 @@ pub fn render_document() -> String {
     );
     let _ = writeln!(
         out,
-        "     recipe table (src/agentic_coding/diagram.rs). Do not hand-edit; regenerate. -->\n"
+        "     recipe table (rust/src/agentic_coding/diagram.rs). Do not hand-edit; regenerate. -->\n"
     );
     let _ = writeln!(
         out,

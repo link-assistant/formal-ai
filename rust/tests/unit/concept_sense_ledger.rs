@@ -16,7 +16,7 @@ use formal_ai::service_accessibility::ServiceAccessibilityCache;
 use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use formal_ai::source_walk::{LookupBounds, SourceLookup};
 
-const FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b1";
+const FIXTURE_DIR: &str = "rust/tests/fixtures/issue-1138-b1";
 const HELD_OUT_WORD: &str = "isogram";
 
 fn fixture_dir() -> PathBuf {

@@ -5,22 +5,22 @@
       "label": "Browser production JavaScript",
       "lcov": "coverage/browser-lcov.info",
       "include": [
-        "src/web/"
+        "js/"
       ],
       "exclude": [
-        "src/web/app.js",
-        "src/web/ocr.bundle.js",
-        "src/web/vendor.bundle.js",
-        "src/web/web-search-component.bundle.js"
+        "js/app.js",
+        "js/ocr.bundle.js",
+        "js/vendor.bundle.js",
+        "js/web-search-component.bundle.js"
       ],
-      "lines_percent": 57.94,
-      "functions_percent": 57.23,
+      "lines_percent": 60.21,
+      "functions_percent": 62.13,
       "tolerance_percent": 0.5,
-      "reviewed": "2026-09-05",
-      "evidence": "`npm run coverage:web` runs tests/web/**/*.test.mjs under `node --test --experimental-test-coverage`. The unbundled page scripts and the 24-module worker mirror are executed through `node:vm` with their real repository paths as the script filename, so V8 attributes coverage to the files the browser downloads. The generated bundles above are build output and are excluded; their sources are measured instead.",
+      "reviewed": "2026-09-22",
+      "evidence": "`npm run coverage:web` runs rust/tests/web/*.test.mjs under `node --test --experimental-test-coverage`. The unbundled page scripts and the 24-module worker mirror are executed through `node:vm` with their real repository paths as the script filename, so V8 attributes coverage to the files the browser downloads. The generated bundles above are build output and are excluded; their sources are measured instead. Plan 16 L1 delivered the browser sources as the `js/` root, so the denominator names `js/` (the pre-move `src/web/` prefix no longer matches any file).",
       "inventory": {
         "roots": [
-          "src/web"
+          "js"
         ],
         "extensions": [
           "js",
@@ -33,7 +33,7 @@
       "label": "Rust workspace",
       "lcov": "lcov.info",
       "include": [
-        "src/"
+        "rust/src/"
       ],
       "exclude": [],
       "lines_percent": 86.47,

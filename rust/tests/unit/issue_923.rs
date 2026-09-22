@@ -178,7 +178,7 @@ fn new_dependency_is_optional_and_both_external_scores_are_registered() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let cargo = fs::read_to_string(root.join("Cargo.toml")).expect("Cargo.toml");
+    let cargo = fs::read_to_string(root.join("rust/Cargo.toml")).expect("Cargo.toml");
     assert!(cargo.contains("equality-saturation = [\"dep:egg\"]"));
     assert!(cargo.contains("egg = { version = \"0.11.0\""));
     assert!(cargo.contains("optional = true"));

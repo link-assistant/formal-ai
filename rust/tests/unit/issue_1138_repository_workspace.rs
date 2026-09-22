@@ -319,7 +319,7 @@ fn protocol_derives_and_observes_a_structural_member_edit() {
     );
     assert_eq!(
         outcome.edited,
-        vec![String::from("src/web_search_core.rs")],
+        vec![String::from("rust/src/web_search_core.rs")],
         "only the located source file is an authored edit"
     );
 

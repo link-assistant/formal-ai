@@ -15,7 +15,7 @@
 //! not an owned source file. It is therefore impossible to construct a
 //! [`SystemExplanation`] that cites a source file the repository does not actually
 //! ship — a fabricated citation fails to build the value. Data and test citations
-//! are path references into the repository (`data/meta/*.lino`, `tests/**`) whose
+//! are path references into the repository (`data/meta/*.lino`, `rust/tests/**`) whose
 //! on-disk existence is checked by the issue-#558 tests.
 //!
 //! Like [`crate::self_source_links`], the rendered explanation depends on the whole
@@ -40,7 +40,7 @@ pub enum CitationKind {
     Source,
     /// A generated data artifact (`data/meta/*.lino`).
     Data,
-    /// A test that locks the cited behaviour (`tests/**`).
+    /// A test that locks the cited behaviour (`rust/tests/**`).
     Test,
 }
 
@@ -181,7 +181,7 @@ impl SystemExplanation {
                 vec![
                     Citation::source("src/self_source_links.rs"),
                     Citation::source("src/agentic_coding/self_ast.rs"),
-                    Citation::test("tests/unit/issue_558_source_links.rs"),
+                    Citation::test("rust/tests/unit/issue_558_source_links.rs"),
                 ],
             ),
             ExplanationSection::new(
@@ -192,7 +192,7 @@ impl SystemExplanation {
                 vec![
                     Citation::source("src/self_healing.rs"),
                     Citation::data("data/meta/self-healing-case.lino"),
-                    Citation::test("tests/unit/issue_558_self_healing.rs"),
+                    Citation::test("rust/tests/unit/issue_558_self_healing.rs"),
                 ],
             ),
             ExplanationSection::new(
@@ -204,7 +204,7 @@ impl SystemExplanation {
                 vec![
                     Citation::source("src/learning_ledger.rs"),
                     Citation::data("data/meta/learning-ledger.lino"),
-                    Citation::test("tests/unit/issue_558_learning_ledger.rs"),
+                    Citation::test("rust/tests/unit/issue_558_learning_ledger.rs"),
                 ],
             ),
             ExplanationSection::new(
@@ -214,7 +214,7 @@ impl SystemExplanation {
                  planner and proven over the wire by server integration tests.",
                 vec![
                     Citation::source("src/agentic_coding/driver.rs"),
-                    Citation::test("tests/integration/issue_558_learning_ledger.rs"),
+                    Citation::test("rust/tests/integration/issue_558_learning_ledger.rs"),
                 ],
             ),
         ];

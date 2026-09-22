@@ -19,12 +19,12 @@ use std::path::{Path, PathBuf};
 
 /// The modules plan 02 adds, in the order the plan's leaves add them.
 const NEW_MODULES: [&str; 6] = [
-    "src/coding/program_ir.rs",
-    "src/coding/fragment_catalog.rs",
-    "src/coding/composition_search.rs",
-    "src/coding/ir_lowering/mod.rs",
-    "src/coding/ir_lowering/python.rs",
-    "src/coding/ir_lowering/rust.rs",
+    "rust/src/coding/program_ir.rs",
+    "rust/src/coding/fragment_catalog.rs",
+    "rust/src/coding/composition_search.rs",
+    "rust/src/coding/ir_lowering/mod.rs",
+    "rust/src/coding/ir_lowering/python.rs",
+    "rust/src/coding/ir_lowering/rust.rs",
 ];
 
 /// `scripts/check-file-size.rs:21-27`.
@@ -67,8 +67,8 @@ fn no_new_module_keeps_its_unit_tests_inline() {
 
 #[test]
 fn every_new_module_is_registered_and_reachable() {
-    let coding = read("src/coding/mod.rs");
-    let library = read("src/lib.rs");
+    let coding = read("rust/src/coding/mod.rs");
+    let library = read("rust/src/lib.rs");
     for module in [
         "program_ir",
         "fragment_catalog",
@@ -77,7 +77,7 @@ fn every_new_module_is_registered_and_reachable() {
     ] {
         assert!(
             coding.contains(&format!("pub mod {module};")),
-            "`{module}` is not registered in src/coding/mod.rs"
+            "`{module}` is not registered in rust/src/coding/mod.rs"
         );
         assert!(
             library.contains(&format!("pub use coding::{module};")),

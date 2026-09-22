@@ -129,10 +129,8 @@ jobs:
             the runtime, runs on main pushes and pull requests, runs the program
             and asserts the exact output. Use only the standard library.
           EXPECT_FILE: main.py
-          # Plan 16 L1 moved the crate to rust/, and the agent follows the
-          # repository layout it sees, so the verify script lands in rust/tests/.
           EXPECT_FILES: |
-            rust/tests/verify-output.sh
+            tests/verify-output.sh
             .github/workflows/run.yml
           EXPECT_TEXT: Saffron 61!
           EXPECT_AGENT_TEXTS: |

@@ -1,4 +1,4 @@
-//! Source-placement tests for `src/verifiable_task*` (issue #1138, plan 08).
+//! Source-placement tests for `rust/src/verifiable_task*` (issue #1138, plan 08).
 //!
 //! The verifiable-task route is the one place where a memorized table would be
 //! hardest to see, so its file set is pinned: the module tree holds exactly the
@@ -14,9 +14,9 @@ const MAX_RUST_LINES: usize = 1_000;
 /// Every file the module tree is declared to consist of (plan 08 "New and
 /// changed files").
 const DECLARED: &[&str] = &[
-    "src/verifiable_task.rs",
-    "src/verifiable_task/quantities.rs",
-    "src/verifiable_task/ledger.rs",
+    "rust/src/verifiable_task.rs",
+    "rust/src/verifiable_task/quantities.rs",
+    "rust/src/verifiable_task/ledger.rs",
 ];
 
 fn repo_root() -> PathBuf {
@@ -36,13 +36,13 @@ fn module_files_are_where_the_convention_says() {
         );
     }
 
-    let directory = repo_root().join("src/verifiable_task");
+    let directory = repo_root().join("rust/src/verifiable_task");
     let mut present: Vec<String> = fs::read_dir(&directory)
         .expect("the module directory should be readable")
         .filter_map(Result::ok)
         .map(|entry| {
             format!(
-                "src/verifiable_task/{}",
+                "rust/src/verifiable_task/{}",
                 entry.file_name().to_string_lossy()
             )
         })
@@ -51,7 +51,7 @@ fn module_files_are_where_the_convention_says() {
 
     let mut declared: Vec<String> = DECLARED
         .iter()
-        .filter(|path| path.starts_with("src/verifiable_task/"))
+        .filter(|path| path.starts_with("rust/src/verifiable_task/"))
         .map(|path| (*path).to_owned())
         .collect();
     declared.sort();

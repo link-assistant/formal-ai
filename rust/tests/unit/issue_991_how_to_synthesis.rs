@@ -29,7 +29,7 @@ use formal_ai::service_accessibility::{ServiceAccessibilityCache, ServiceStatus}
 use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
 /// The committed capture tree, relative to the crate root.
-const FIXTURE_DIR: &str = "tests/fixtures/issue-991";
+const FIXTURE_DIR: &str = "rust/tests/fixtures/issue-991";
 
 /// The cross-runtime parity expectation written by
 /// `examples/issue_991_how_to_parity.rs`.

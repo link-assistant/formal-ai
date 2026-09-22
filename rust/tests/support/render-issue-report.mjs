@@ -10,7 +10,7 @@ import {
   issueTitle,
   renderReportBody,
   truncateRecords,
-} from "../../js/app/issue-report.js";
+} from "../../../js/app/issue-report.js";
 
 const fixture = JSON.parse(readFileSync(0, "utf8"));
 const result = {};

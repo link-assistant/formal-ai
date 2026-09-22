@@ -33,8 +33,8 @@ const CORPUS: &str = "data/benchmarks/formalization-depth-requirements.lino";
 // Deep formalization consumes the exact concept captures recorded by plan 01.
 // Reusing that content-addressed fixture keeps one canonical copy of source
 // bytes instead of duplicating it under a plan-specific directory.
-const SOURCE_FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b1";
-const PARITY_FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b4";
+const SOURCE_FIXTURE_DIR: &str = "rust/tests/fixtures/issue-1138-b1";
+const PARITY_FIXTURE_DIR: &str = "rust/tests/fixtures/issue-1138-b4";
 const PARITY_FILE: &str = "expected-graphs.json";
 const RECORDED_GRAPH_IDENTITY: &str = "concept_graph_3a37a219dc8e55c7";
 

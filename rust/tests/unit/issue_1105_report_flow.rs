@@ -137,7 +137,8 @@ mod report_outcome {
 mod inline_budget {
     #[test]
     fn a_transcript_of_the_reported_size_no_longer_stays_inline() {
-        let source = fs::read_to_string("src/cli_report.rs").expect("read cli_report.rs");
+        let source = fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/src/cli_report.rs"))
+            .expect("read cli_report.rs");
         let line = source
             .lines()
             .find(|line| line.contains("const DEFAULT_INLINE_BYTES"))
@@ -169,7 +170,8 @@ mod inline_budget {
 mod latest_resolution {
     #[test]
     fn learn_resolves_latest_like_every_other_session_subcommand() {
-        let source = fs::read_to_string("src/cli_context.rs").expect("read cli_context.rs");
+        let source = fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/src/cli_context.rs"))
+            .expect("read cli_context.rs");
         let learn = source
             .split_once("ContextAction::Learn {")
             .expect("the learn arm exists")
@@ -191,7 +193,8 @@ mod latest_resolution {
 mod export_target {
     #[test]
     fn a_guessed_session_is_announced_to_the_caller() {
-        let source = fs::read_to_string("src/cli_context.rs").expect("read cli_context.rs");
+        let source = fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/src/cli_context.rs"))
+            .expect("read cli_context.rs");
         let block = source
             .split_once("latest_recorded_dialog(log_dir)")
             .expect("the recorded fallback exists")

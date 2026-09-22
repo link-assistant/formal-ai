@@ -28,7 +28,7 @@ use formal_ai::source_fetch::{
 use formal_ai::source_walk::{LookupBounds, select_sources};
 
 /// The committed capture tree for this bottleneck (plan 00 §9 R13).
-const FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b1";
+const FIXTURE_DIR: &str = "rust/tests/fixtures/issue-1138-b1";
 
 /// The cross-runtime parity expectation written by
 /// `examples/issue_1138_concept_lookup_parity.rs`.

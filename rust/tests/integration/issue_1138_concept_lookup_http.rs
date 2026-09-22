@@ -20,7 +20,7 @@ use crate::http_server::{http_post_json, reserve_loopback_port, spawn_formal_ai_
 const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
 
 /// The committed capture tree the server replays.
-const FIXTURE_DIR: &str = "tests/fixtures/issue-1138-b1";
+const FIXTURE_DIR: &str = "rust/tests/fixtures/issue-1138-b1";
 
 /// A private copy of the capture tree, removed when the test finishes.
 struct CaptureCache {

@@ -229,13 +229,15 @@ fn minimal_core_ledger_covers_every_recursive_handler_source() {
     // The URL parsing split then exposed another generic interpreter. Its
     // structural parser reads language evidence from seed roles, so recursive
     // source count rises while migration debt continues to fall.
-    assert_eq!(actual.len(), 51);
+    // The plan 16 L1 re-measure then ledgered the calendar-create split and the
+    // previously unledgered policy_gates.rs, so the honest census is 53 files.
+    assert_eq!(actual.len(), 53);
     assert_eq!(
         entries
             .iter()
             .filter(|entry| entry.disposition == "migrate")
             .count(),
-        49
+        51
     );
     assert_eq!(
         entries
@@ -378,7 +380,7 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
         .filter_map(|line| line.strip_prefix("  complete_source "))
         .map(|value| value.trim_matches('"').to_owned())
         .collect::<BTreeSet<_>>();
-    assert_eq!(complete_sources.len(), 2);
+    assert_eq!(complete_sources.len(), 3);
     let registered_languages = formal_ai::language::registered_languages();
     assert!(!registered_languages.is_empty(), "language registry");
 

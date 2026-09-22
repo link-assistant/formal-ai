@@ -26,7 +26,7 @@ use formal_ai::service_accessibility::ServiceAccessibilityCache;
 use formal_ai::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use formal_ai::source_walk::{LookupBounds, select_sources as select_sources_for_need};
 
-const FIXTURE_DIR: &str = "tests/fixtures/issue-991";
+const FIXTURE_DIR: &str = "rust/tests/fixtures/issue-991";
 const PARITY_FILE: &str = "expected-guides.json";
 
 /// The three #991 QA tasks: documented, corroborated, and undocumented.

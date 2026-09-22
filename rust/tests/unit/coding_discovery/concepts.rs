@@ -409,7 +409,7 @@ fn the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum() 
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let discovery = std::fs::read_to_string(root.join("src/coding/concept_discovery.rs"))
+    let discovery = std::fs::read_to_string(root.join("rust/src/coding/concept_discovery.rs"))
         .expect("the coding discovery module");
     assert!(
         discovery.contains("pub use crate::needs::Need as ConceptNeed"),
@@ -421,7 +421,7 @@ fn the_coding_path_and_the_formalizer_share_one_need_type_and_one_status_enum() 
     );
 
     let meta_frame =
-        std::fs::read_to_string(root.join("src/meta_frame.rs")).expect("the meta frame");
+        std::fs::read_to_string(root.join("rust/src/meta_frame.rs")).expect("the meta frame");
     assert!(
         meta_frame.contains("NeedState"),
         "`meta_frame::NeedStatus` maps onto the one need-state vocabulary"
@@ -439,9 +439,9 @@ fn coding_discovery_uses_only_the_shared_source_lookup_contract() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let discovery = std::fs::read_to_string(root.join("src/coding/concept_discovery.rs"))
+    let discovery = std::fs::read_to_string(root.join("rust/src/coding/concept_discovery.rs"))
         .expect("the coding discovery module");
-    let lookup = std::fs::read_to_string(root.join("src/concept_lookup.rs"))
+    let lookup = std::fs::read_to_string(root.join("rust/src/concept_lookup.rs"))
         .expect("the concept lookup module");
 
     assert!(

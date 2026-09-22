@@ -1,5 +1,5 @@
 process_verification
   source "https://pubs.opengroup.org/onlinepubs/9799919799/utilities/cmp.html"
   purpose "A byte comparison preserves case, spaces and trailing newlines; a failed process cannot pass by printing the expected text before exiting."
-  path "rust/tests/verify-output.sh"
+  path "tests/verify-output.sh"
   template '#!/bin/sh\nset -eu\nverification_dir=$(mktemp -d)\ntrap \x27rm -f "$verification_dir/expected" "$verification_dir/actual"; rmdir "$verification_dir"\x27 EXIT HUP INT TERM\nprintf \x27%s\\n\x27 {expected} > "$verification_dir/expected"\n{command} > "$verification_dir/actual"\ncmp "$verification_dir/expected" "$verification_dir/actual"\ncat "$verification_dir/actual"\n'
