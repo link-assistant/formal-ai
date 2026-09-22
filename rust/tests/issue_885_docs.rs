@@ -184,7 +184,9 @@ fn context_aware_audit_is_documented_as_bounded_and_inspectable() {
         ],
     );
 
-    let implementation = read("src/statement_audit/model.rs");
+    // The crate sources moved under rust/ when the repository grew its three
+    // source roots (plan 16 L1); the audit model is read at its real path.
+    let implementation = read("rust/src/statement_audit/model.rs");
     assert_contains_all(
         "statement audit model",
         &implementation,
