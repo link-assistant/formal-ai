@@ -369,13 +369,13 @@ fn real_agent_cli_record_replay_is_a_required_ci_gate() {
         "the terminal pipeline-status gate must observe the extracted job"
     );
 
-    let workflow = fs::read_to_string(called).expect("agent CLI E2E workflow");
+    let workflow = fs::read_to_string(root().join(called)).expect("agent CLI E2E workflow");
     assert!(
         workflow.contains("experiments/agent_cli_e2e/run_issue_707.sh"),
         "release CI must drive issue #707 through the real Agent CLI"
     );
 
-    let harness = fs::read_to_string("experiments/agent_cli_e2e/run_issue_707.sh")
+    let harness = fs::read_to_string(root().join("experiments/agent_cli_e2e/run_issue_707.sh"))
         .expect("issue #707 Agent CLI harness");
     assert!(harness.contains("for phase in record replay"));
     assert!(harness.contains("expected exactly ten seeded task ids"));

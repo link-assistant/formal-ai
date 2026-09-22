@@ -2,10 +2,10 @@ core_boundary_ledger
   issue 918
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 53
-  source_lines_max 20826
+  source_lines_max 20854
   outside_core_file_count_max 51
-  outside_core_lines_max 19896
-  note "Issue #1138 B9, plan 09 leaf 1 corrected the four handlers outside rust/src/solver_handlers. Plan 08 promoted the generic verifiable-task interpreter; the URL parsing split adds one recursively counted source but its structural parser reads language evidence from seed roles, so it is promoted core machinery rather than migration debt. Plan 09 leaf 17 registered the M2 retrieval interpreter as a component beside the census. Plan 09 leaf 18 retired the concept-lookup orchestration into rust/src/concepts.rs and the network, refresh, learn and conflict procedures into rust/src/retrieval_procedures.rs, lowering the dispatcher module and the two line ceilings by the same 350 lines. The leaf 18 landing then rebased the census on the committed tree: the verifiable-task interpreter that plan 08 promoted landed at 834 lines, not the 750 first recorded, because its derive family (flow signs, role offsets, unit conversion) that lowers seed-declared expectations into ProgramIr candidates grew past the early estimate; the dispatcher module settled at 582 lines after the 350-line retirement, and seven lines left the reviewed core outside the census, so both ceilings track the honest counts. Re-measured 2026-09-20 after the issue #1021 routing fix (e4f0b3ac4) and plan 09 leaf 41 (12aa51b29) landed with the ledger unrefreshed: solver_handler_how.rs gained the honest-gap and mutating-request precedence arms, solver_handler_units.rs and solver_handlers/pattern_inference.rs grew their seed-driven rules, for 72 net lines; both ceilings now record the measured 20439 and 19456 rather than the stale 20367 and 19384.Re-measured 2026-09-21 for the plan 16 L1 three-source-roots move; the crate sits under rust/ and every ledger path moved with it, the calendar-create split and the previously unledgered policy_gates.rs raise source_file_count_max to 53, eleven baselines re-record the measured tree, and ledgering the two previously uncounted rows raises both line ceilings to 20787 and 19857 with outside_core_file_count_max at 51.Re-measured 2026-09-22 after the recognition and routing batches landed with the ledger unrefreshed: calendar_create.rs gained the elliptical arm and clock-hour role of the entity-grounded hours work, conversation_summary.rs gained empty-history ownership so a summarize request never falls through ownerless, and software_project.rs gained its routing retirement, for 39 net lines; both ceilings record the measured 20826 and 19896."
+  outside_core_lines_max 19923
+  note "Issue #1138 B9, plan 09 leaf 1 corrected the four handlers outside rust/src/solver_handlers. Plan 08 promoted the generic verifiable-task interpreter; the URL parsing split adds one recursively counted source but its structural parser reads language evidence from seed roles, so it is promoted core machinery rather than migration debt. Plan 09 leaf 17 registered the M2 retrieval interpreter as a component beside the census. Plan 09 leaf 18 retired the concept-lookup orchestration into rust/src/concepts.rs and the network, refresh, learn and conflict procedures into rust/src/retrieval_procedures.rs, lowering the dispatcher module and the two line ceilings by the same 350 lines. The leaf 18 landing then rebased the census on the committed tree: the verifiable-task interpreter that plan 08 promoted landed at 834 lines, not the 750 first recorded, because its derive family (flow signs, role offsets, unit conversion) that lowers seed-declared expectations into ProgramIr candidates grew past the early estimate; the dispatcher module settled at 582 lines after the 350-line retirement, and seven lines left the reviewed core outside the census, so both ceilings track the honest counts. Re-measured 2026-09-20 after the issue #1021 routing fix (e4f0b3ac4) and plan 09 leaf 41 (12aa51b29) landed with the ledger unrefreshed: solver_handler_how.rs gained the honest-gap and mutating-request precedence arms, solver_handler_units.rs and solver_handlers/pattern_inference.rs grew their seed-driven rules, for 72 net lines; both ceilings now record the measured 20439 and 19456 rather than the stale 20367 and 19384.Re-measured 2026-09-21 for the plan 16 L1 three-source-roots move; the crate sits under rust/ and every ledger path moved with it, the calendar-create split and the previously unledgered policy_gates.rs raise source_file_count_max to 53, eleven baselines re-record the measured tree, and ledgering the two previously uncounted rows raises both line ceilings to 20787 and 19857 with outside_core_file_count_max at 51.Re-measured 2026-09-22 after the recognition and routing batches landed with the ledger unrefreshed: calendar_create.rs gained the elliptical arm and clock-hour role of the entity-grounded hours work, conversation_summary.rs gained empty-history ownership so a summarize request never falls through ownerless, and software_project.rs gained its routing retirement, for 39 net lines; both ceilings record the measured 20826 and 19896.Re-measured 2026-09-22 after the specification-red batch (bb43dbe90) landed with the ledger unrefreshed: conversation_summary.rs gained the courtesy-frame guard that strips every courtesy and directive surface before an unknown fallback (164 to 194 lines), solver_unknown_reasoning.rs gained the bare-term escape and the merge-arm-decline gate, and solver_helpers gained the shared miss_names_consulted_sources helper, for 27 net lines; outside_core_lines_max records the measured 19923. The batch J clippy sweep (5e1cc2f3d) then reflowed two ledgered rows after that measure, calendar_create.rs losing three redundant lines and verifiable_task.rs gaining one, so source_lines_max records the measured 20854."
   component retrieval_method_interpreter
     file rust/src/retrieval_method.rs
     kind "Generic interpreter"
@@ -67,9 +67,9 @@ core_boundary_ledger
     reason "Date intent, recurrence policy, and calendar rendering are domain knowledge."
   source rust/src/solver_handlers/calendar_create.rs
     disposition migrate
-    baseline_lines 626
+    baseline_lines 623
     data_target "calendar event creation rules"
-    reason "Split from calendar.rs so both stay under the 1000-line file gate; the routed create entry and event-creation recognition are domain knowledge over meanings-calendar.lino. Re-measured 2026-09-22: the entity-grounded hours batch added the elliptical arm and the clock-hour role, growing the landed file from 612 to 626 lines."
+    reason "Split from calendar.rs so both stay under the 1000-line file gate; the routed create entry and event-creation recognition are domain knowledge over meanings-calendar.lino. Re-measured 2026-09-22: the entity-grounded hours batch added the elliptical arm and the clock-hour role, growing the landed file from 612 to 626 lines. Re-measured again after the batch J clippy sweep (5e1cc2f3d) removed three redundant lines."
   source rust/src/solver_handlers/calendar_ics.rs
     disposition migrate
     baseline_lines 198
@@ -82,9 +82,9 @@ core_boundary_ledger
     reason "Compound-interest recognition and explanatory policy are domain knowledge."
   source rust/src/solver_handlers/conversation_memory/conversation_summary.rs
     disposition migrate
-    baseline_lines 164
+    baseline_lines 194
     data_target "conversation-summary selection rules"
-    reason "Summary cues and presentation policy belong in data over generic memory queries. Re-measured 2026-09-22: empty-history ownership landed here so a summarize request over no turns is still owned, growing the file from 156 to 164 lines."
+    reason "Summary cues and presentation policy belong in data over generic memory queries. Re-measured 2026-09-22: empty-history ownership landed here so a summarize request over no turns is still owned, growing the file from 156 to 164 lines. Re-measured again the same day: the courtesy-frame guard landed here (strip every courtesy and directive surface longest-first and require an empty remainder before the unknown fallback answers), growing the file from 164 to 194 lines."
   source rust/src/solver_handlers/conversation_memory/link_query.rs
     disposition migrate
     baseline_lines 126
@@ -247,9 +247,9 @@ core_boundary_ledger
     reason "Intent classification is seed knowledge consumed by the meta algorithm."
   source rust/src/solver_handlers/verifiable_task.rs
     disposition promote
-    baseline_lines 794
+    baseline_lines 795
     core_component verifiable_task_interpreter
-    reason "Generic interpreter of seed-declared expectations: composes shared IR, executes it in the bounded workspace, and records observed checks without storing domain answers. The baseline tracks the re-measured 794 lines: the derive family that lowers seed expectations into ProgramIr candidates (flow signs, role offsets, unit conversion) grew past the early 750 estimate while staying seed-driven."
+    reason "Generic interpreter of seed-declared expectations: composes shared IR, executes it in the bounded workspace, and records observed checks without storing domain answers. The baseline tracks the re-measured 794 lines: the derive family that lowers seed expectations into ProgramIr candidates (flow signs, role offsets, unit conversion) grew past the early 750 estimate while staying seed-driven. Re-measured 2026-09-22 after the batch J clippy sweep (5e1cc2f3d) added one line."
   source rust/src/solver_handlers/web_requests.rs
     disposition migrate
     baseline_lines 819

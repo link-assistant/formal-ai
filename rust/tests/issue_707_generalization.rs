@@ -9,10 +9,18 @@
 
 use std::collections::BTreeSet;
 use std::fs;
+use std::path::PathBuf;
 
 use formal_ai::computer_use::{
     capability_gap_for_request, plan_for_prompt, plan_request, run_verified_plan, synthesize,
 };
+
+fn root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate")
+        .to_path_buf()
+}
 
 const SUITE: &str = "data/benchmarks/computer-use-generalization.lino";
 
@@ -24,7 +32,7 @@ struct Case {
 }
 
 fn suite() -> Vec<Case> {
-    let text = fs::read_to_string(SUITE).expect("generalization suite");
+    let text = fs::read_to_string(root().join(SUITE)).expect("generalization suite");
     let mut cases: Vec<Case> = Vec::new();
     for line in text.lines() {
         let trimmed = line.trim();
@@ -54,7 +62,7 @@ fn suite() -> Vec<Case> {
 }
 
 fn minimum_cases() -> usize {
-    let text = fs::read_to_string(SUITE).expect("generalization suite");
+    let text = fs::read_to_string(root().join(SUITE)).expect("generalization suite");
     text.lines()
         .find_map(|line| line.trim().strip_prefix("minimum_cases "))
         .map(|value| value.trim().trim_matches('"').to_owned())

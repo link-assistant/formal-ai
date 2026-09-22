@@ -520,9 +520,14 @@ jobs:
         if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
           # The binary is built above, so this budget bounds execution only.
-          # The fastest observed combined step was 424s *including* its
-          # compile, which is the tightest upper bound the history offers.
-          TEST_BUDGET_SECONDS: 660
+          # The old 660s came from "the fastest observed combined step was 424s
+          # *including* its compile" -- but the suite has since grown to 1145
+          # tests, and every tip since at least 2026-09-21 23:14 was killed at
+          # exit 124 mid-stream (run 35703111768: 508 tests all ok in 662s).
+          # Measured 2026-09-22: the whole suite passes in 341s on a dev
+          # notebook; the CI host's observed pace (508 tests / 662s) puts the
+          # full run at ~1492s. 1800s holds that with ~20% headroom.
+          TEST_BUDGET_SECONDS: 1800
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \

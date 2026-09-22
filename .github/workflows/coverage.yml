@@ -155,13 +155,21 @@ jobs:
       #
       # The one test skipped here (issue #1138, plan 10 leaf 10) answers every
       # committed benchmark prompt — all 1355 of them — through the full
-      # engine. Measured 2026-09-22 on a dev notebook: 0.11s per answer,
-      # ~150s uninstrumented for the whole sweep; instrumented by llvm-cov on
-      # the worst host issue #1076 documented (7.4x), that one test exceeds
-      # 30 minutes alone — run 35689478703 had every other test finished by
-      # 05:19:49 while the sweep was still running at the 2400s kill. The
-      # sweep gate is adjudicated uninstrumented in the Test (ubuntu / full)
-      # lane; this lane measures lines, and no honest budget holds both.
+      # engine. Measured 2026-09-22 on a dev notebook, end to end: 1518s
+      # uninstrumented for the whole sweep. The cost is concentrated in the
+      # coding corpora (coding-discovery-paraphrases 444s/25 prompts,
+      # coding-composition-from-sources 416s/25, industry-suite 356s/13 —
+      # invented-identifier prompts like blorptide() or has_close_elements()
+      # cost 20-151s each) while every other corpus answers in ~0.1s; an
+      # earlier "~150s" note here had measured only those fast corpora.
+      # Instrumented (llvm-cov ~2.5x), the sweep alone is ~63 minutes —
+      # before the ~556s the rest of the suite costs this lane — so it
+      # cannot fit inside the 2400s budget on any host; run 35689478703 had
+      # every other test finished while the sweep was still running at the
+      # kill. The sweep gate is adjudicated uninstrumented in the Test
+      # (ubuntu / full) lane; this lane measures lines, and no honest
+      # budget holds both. (The whole lane with the skip in place measured
+      # 556s on 2026-09-22.)
       - name: Generate code coverage
         env:
           TEST_BUDGET_SECONDS: 2400

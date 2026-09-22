@@ -9,11 +9,19 @@
 
 use std::collections::BTreeSet;
 use std::fs;
+use std::path::PathBuf;
 
 use formal_ai::computer_use::{
     ComputerUsePrimitive, capability_gap_cue, learned, normalize_request, operation_cues,
     resource_cue, synthesize,
 };
+
+fn root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate")
+        .to_path_buf()
+}
 
 const SNAPSHOT: &str = "docs/case-studies/issue-707/learned-schemas.lino";
 
@@ -22,7 +30,7 @@ const PRODUCED_PREFIXES: [&str; 4] = ["reports/", "out/", "processed/", "restore
 
 #[test]
 fn the_committed_schema_snapshot_matches_a_fresh_induction() {
-    let committed = fs::read_to_string(SNAPSHOT).expect("committed schema snapshot");
+    let committed = fs::read_to_string(root().join(SNAPSHOT)).expect("committed schema snapshot");
     assert_eq!(
         committed,
         learned().links_notation(),
@@ -94,7 +102,7 @@ fn unexplained_steps_are_reported_rather_than_invented() {
         residue.iter().all(|entry| entry.contains(':')),
         "residue entries must name task and primitive: {residue:?}"
     );
-    let snapshot = fs::read_to_string(SNAPSHOT).expect("snapshot");
+    let snapshot = fs::read_to_string(root().join(SNAPSHOT)).expect("snapshot");
     for entry in residue {
         assert!(
             snapshot.contains(entry),
