@@ -34,6 +34,7 @@ pub(crate) static WORD_VALUE_TOKENS: &[(&str, &str)] = &[
     ("por", "*"),
     ("seis", "6"),
     ("seven", "7"),
+    ("siete", "7"),
     ("six", "6"),
     ("ten", "10"),
     ("three", "3"),
