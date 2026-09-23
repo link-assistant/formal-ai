@@ -37,8 +37,38 @@ fn strict_shell_schema_gets_required_extras_for_every_language() {
     }
 }
 
+/// Restores the process working directory when dropped, including on the
+/// panic path of the assertions that run inside the controlled workspace.
+struct RestoreCwd(std::path::PathBuf);
+
+impl Drop for RestoreCwd {
+    fn drop(&mut self) {
+        std::env::set_current_dir(&self.0).expect("restore the working directory");
+    }
+}
+
+/// The matrix asserts the whole plan a client would drive, and its "run the
+/// tests" row resolves through `formal-ai:workspace-test`, which picks the
+/// command from the first marker file in the process's working directory.
+/// The repository root stopped being a cargo workspace when plan 16 L1 moved
+/// the manifest to `rust/` and landed the bun umbrella at the root, and the
+/// prebuilt binaries issue #1055 ships run from the repository root, where
+/// the bun markers legitimately win (run 35919283963 answered `bun test`).
+/// A local `cargo test` starts the binary in `rust/`, where `Cargo.toml`
+/// wins instead — the same divergence the unit twin of this suite pins. The
+/// matrix therefore holds in a cargo workspace the test controls, not in
+/// whatever directory the runner happened to start from.
 #[test]
 fn whole_shell_task_matrix_routes_without_web_search() {
+    let previous = std::env::current_dir().expect("current directory");
+    let workspace = std::env::temp_dir().join(format!(
+        "formal-ai-issue-749-matrix-{}",
+        std::process::id()
+    ));
+    std::fs::create_dir_all(&workspace).expect("create the controlled workspace");
+    std::fs::write(workspace.join("Cargo.toml"), "[package]\n").expect("write the marker");
+    let restore = RestoreCwd(previous);
+    std::env::set_current_dir(&workspace).expect("enter the controlled workspace");
     for (prompt, expected) in [
         ("show current directory", "pwd"),
         ("show environment variables", "env"),
@@ -58,6 +88,8 @@ fn whole_shell_task_matrix_routes_without_web_search() {
             verified_recipe(expected).unwrap_or_else(|| vec![String::from(expected)]);
         assert_eq!(chat_shell_commands(prompt), expected_steps, "{prompt}");
     }
+    drop(restore);
+    std::fs::remove_dir_all(&workspace).expect("remove the controlled workspace");
 }
 
 #[test]
