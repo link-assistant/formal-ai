@@ -170,7 +170,9 @@ fn coding_source_templates_and_outcomes_are_seed_grounded() {
     )
     .expect("isolated agent workspace");
     assert!(
-        outcome.final_answer.starts_with("Файл `rust/src/ladder_ru.rs`"),
+        outcome
+            .final_answer
+            .starts_with("Файл `rust/src/ladder_ru.rs`"),
         "Russian task must naturalize the seeded Russian outcome: {}",
         outcome.final_answer
     );
@@ -413,7 +415,10 @@ fn composite_module_request_creates_source_and_registers_the_module() {
 
     let read_lib = only_call(plan_chat_step(&messages, &tools));
     assert_eq!(read_lib.tool, "read_file");
-    assert_eq!(json_arguments(&read_lib.arguments)["path"], "rust/src/lib.rs");
+    assert_eq!(
+        json_arguments(&read_lib.arguments)["path"],
+        "rust/src/lib.rs"
+    );
     push_result(&mut messages, "read_lib", &read_lib, LIB_BEFORE);
 
     let write_lib = only_call(plan_chat_step(&messages, &tools));
