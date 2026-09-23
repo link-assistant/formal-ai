@@ -178,7 +178,7 @@ impl BenchmarkGateReport {
             .to_owned();
         let runner = suite
             .field("runner")
-            .unwrap_or("cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture")
+            .unwrap_or("cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture")
             .to_owned();
         let minimum_pass_count = suite
             .field("minimum_pass_count")

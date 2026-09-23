@@ -3,7 +3,7 @@ benchmark_suite_issue_304_industry_permissive_slice
   id "issue_304_industry_permissive_slice"
   title "Permissive industry benchmark slice"
   purpose "Deterministic unseen-task benchmark cases for programming, math, and general problem-solving."
-  runner "cargo test --test unit issue_304_benchmark_suite_reports_pass_fail_counts -- --nocapture"
+  runner "cargo test --manifest-path rust/Cargo.toml --test unit issue_304_benchmark_suite_reports_pass_fail_counts -- --nocapture"
   report_mode "Pass/fail counts are reported; failing benchmark cases document capability gaps unless the pass-count floor regresses."
   minimum_pass_count "13"
   ratchet_policy "CI asserts passed >= minimum_pass_count so solved benchmark progress cannot silently regress."

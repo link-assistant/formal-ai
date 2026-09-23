@@ -183,7 +183,7 @@ fn issue_922_promotion_and_agent_cli_evidence_are_reproducible() {
             "improve --promote",
             "--apply --confirm",
             "--output-format stream-json",
-            "cmp \"$promotion_work/$TARGET\" \"$ROOT/$TARGET\"",
+            "cmp \"$promotion_work/$TARGET\" \"$REPO_ROOT/$TARGET\"",
             "cmp \"$promotion_work/$TARGET\" \"$external_work/$TARGET\"",
         ],
     );

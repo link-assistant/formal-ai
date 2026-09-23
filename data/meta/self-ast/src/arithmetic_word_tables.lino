@@ -2,10 +2,10 @@ self_ast_census
   target src/arithmetic_word_tables.rs
   language rust
   fidelity signature
-  byte_len 3296
-  line_count 119
-  content_id source_module_4312f8396327456e
+  byte_len 3316
+  line_count 120
+  content_id source_module_7200f1decf98b176
   symbol_count 2
   symbols
-    static WORD_VALUE_TOKENS 13 105
-    static WORD_VALUE_PHRASES 110 119
+    static WORD_VALUE_TOKENS 13 106
+    static WORD_VALUE_PHRASES 111 120

@@ -126,7 +126,7 @@ impl PromotionRatchet {
     pub fn unit_specs(passed: usize, failed: usize) -> Self {
         let mut gate = Self::new(
             "formal_ai_unit_specifications",
-            "cargo test --test unit issue_656 -- --nocapture",
+            "cargo test --manifest-path rust/Cargo.toml --test unit issue_656 -- --nocapture",
             1,
             passed,
             failed,

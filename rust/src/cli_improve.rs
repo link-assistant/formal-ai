@@ -5,7 +5,7 @@ use crate::cli_memory::load_memory_or_empty;
 use formal_ai::promotion::open_draft_pull_request;
 use formal_ai::{
     BundleInfo, MemoryStore, PromotionRun, agent_info, apply_promotions, export_memory_full,
-    parse_promotion_proposals, replay_promotion_gates,
+    external_benchmarks::repository_root, parse_promotion_proposals, replay_promotion_gates,
 };
 
 /// Explicit acknowledgement for destructive promotion materialization.
@@ -216,7 +216,11 @@ fn load_promotion_run(
     eprintln!(
         "Replaying coding-modification, industry, and unit-specification gates from canonical commands..."
     );
-    let root = std::env::current_dir()?;
+    // Gate runners reach the crate via `--manifest-path rust/Cargo.toml`
+    // relative to the repository root, so replay is anchored to the compiled
+    // checkout (plan 16 L1 moved the crate one level below it), not to the
+    // directory `improve` happened to be invoked from.
+    let root = repository_root();
     let replayed = replay_promotion_gates(parsed, &root)
         .map_err(|error| format!("promotion gate replay failed: {error}"))?;
     Ok(PromotionRun::evaluate(replayed))

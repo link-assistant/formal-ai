@@ -329,11 +329,8 @@ fn gate_replay_uses_all_canonical_commands_once_and_enforces_pass_rate() {
     assert_eq!(commands.len(), 3, "each canonical gate runs once");
     assert!(commands.iter().any(|command| command.contains("issue_362")));
     assert!(commands.iter().any(|command| command.contains("issue_304")));
-    assert!(
-        commands
-            .iter()
-            .any(|command| command == "cargo test --test unit issue_656 -- --nocapture")
-    );
+    assert!(commands.iter().any(|command| command
+        == "cargo test --manifest-path rust/Cargo.toml --test unit issue_656 -- --nocapture"));
     assert_eq!(replayed[0].gates.len(), 3);
     assert_eq!(replayed[0].outcome(), PromotionOutcome::Rejected);
     assert_eq!(replayed[0].failing_gates()[0].passed, 4);
