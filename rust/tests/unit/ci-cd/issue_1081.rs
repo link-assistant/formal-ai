@@ -115,9 +115,9 @@ fn steps_of(job: &str) -> Vec<Step> {
 ///
 /// Budgets under distinct `if:` conditions are summed per condition and only
 /// the largest group counts, because a matrix leg that runs one group does not
-/// run the others -- `release.yml`'s `test` job declares 5100s of budgets and
-/// can only ever spend 2640s of them. Summing those naively would demand a
-/// 121-minute cap for a job that never runs longer than 44, and a gate that
+/// run the others -- `release.yml`'s `test` job declares 7200s of budgets and
+/// can only ever spend 3600s of them. Summing those naively would demand a
+/// 171-minute cap for a job that never runs longer than 60, and a gate that
 /// asks for a backstop nothing needs is a gate contributors learn to raise
 /// rather than read.
 #[test]

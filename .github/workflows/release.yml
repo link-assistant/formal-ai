@@ -366,11 +366,13 @@ jobs:
     # and the cap is sized to hold the *sum* of one leg's budgets at or under
     # the 70% share `tests/unit/ci-cd/issue_1081.rs` enforces -- the invariant
     # the js pipeline template already carries and this repository only had
-    # half of. The specification lane owns the worst budgeted group at 3600s
+    # half of. The specification lane owns a worst budgeted group of 3600s
     # (two 1800s steps behind one condition), which the old 65-minute cap
     # held at a 92% share -- the budget, not the cap, was the real deadline.
-    # At 90 minutes the worst group sits at 66% of the cap and the full
-    # lane's 2640s at 49%, so the cap is the backstop again.
+    # At 90 minutes the worst groups -- the specification lane, and the full
+    # lane once issue #1138 raised `Run tests` to 2400s -- sit at 66% of the
+    # cap and the pre-raise full lane's 2640s at 49%, so the cap is the
+    # backstop again.
     timeout-minutes: 90
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}
@@ -487,7 +489,16 @@ jobs:
           # Issue #1081: 961s worst measured over 38 runs was 80.1% of the old
           # 1200s budget -- inside the band the step audit now warns on, and
           # invisible until it was measured.
-          TEST_BUDGET_SECONDS: 1440
+          # Issue #1138: raised from 1440. The L1-era suite outgrew it: the
+          # unit phase measures 1251-1315s and the integration phase ~200s
+          # (389 of its 397 tests inside the 164s window run 35877276920
+          # reached before its kill), so the step demands ~1520s and every
+          # post-L1 attempt that got past the unit phase died at exit 124 --
+          # 253687e0f only looked complete because its three real failures
+          # ended the step at 1344s first. 2400 holds the measured worst at
+          # 63%, and the full lane's sum reaches 3600s, 66.7% of the cap --
+          # still inside the 70% share, now tied with the specification lane.
+          TEST_BUDGET_SECONDS: 2400
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           chmod +x dist/tests/*

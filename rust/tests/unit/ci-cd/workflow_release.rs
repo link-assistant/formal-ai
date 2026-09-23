@@ -809,6 +809,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // budgeted group is 3600s, and 3600/5400 leaves it at 66% of the cap
         // instead of 92% of the old one -- the budget, not the cap, stays the
         // real deadline.
+        // Issue #1138 raised the full leg's `Run tests` budget from 1440 to
+        // 2400 (measured demand ~1520s: unit 1251-1315s + integration ~200s),
+        // which lifts that leg's sum to 3600s -- the same 66% of this cap.
         ("test", 90),
         // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
