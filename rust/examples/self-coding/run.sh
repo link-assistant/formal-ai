@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_ROOT="$(cd "$ROOT/.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8786}"
@@ -39,14 +40,19 @@ server_pid=$!
 curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
   "http://127.0.0.1:$PORT/health" >/dev/null
 config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}' "$PORT")"
+# --no-summarize-session and --compaction-models "(same)" keep every model
+# call on the formal-ai provider under test: the CLI's default session-summary
+# publish at exit routes through its hosted Console provider, which rejects
+# calls from outside its client and fails the run at teardown (issue #922).
 (cd "$work" && FORMAL_AI_API_KEY=local LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
   "$AGENT" --model formalai/formal-ai --permission-mode auto \
-  --output-format stream-json --compact-json --disable-stdin --prompt "$TASK" \
+  --output-format stream-json --compact-json --disable-stdin \
+  --no-summarize-session --compaction-models "(same)" --prompt "$TASK" \
   >"$raw_events" 2>"$agent_stderr") || {
     cat "$agent_stderr" >&2
     exit 1
   }
-"$ROOT/scripts/classify-agent-cli-stderr.sh" "$agent_stderr"
+"$REPO_ROOT/scripts/classify-agent-cli-stderr.sh" "$agent_stderr"
 grep '^{' "$raw_events" >"$events"
 rm "$raw_events" "$agent_stderr"
 test "$(cat "$work/self-coding-result.txt")" = 'self-coding=passed'

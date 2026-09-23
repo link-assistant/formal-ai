@@ -1,7 +1,7 @@
 {
   "type": "config",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.147Z",
+  "timestamp": "2026-09-23T14:15:46.937Z",
   "service": "default",
   "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
   "config": {
@@ -35,60 +35,60 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.153Z",
+  "timestamp": "2026-09-23T14:15:46.938Z",
   "service": "default",
   "version": "0.26.0",
-  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval. --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
-  "workingDirectory": "/tmp/tmp.Gk8qhbevoR",
-  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "command": "/Users/konard/.bun/bin/bun /Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval. --disable-stdin --no-summarize-session --compaction-models (same) --model formal-ai/formal-ai",
+  "workingDirectory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM",
+  "scriptPath": "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
   "message": "Agent started"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.154Z",
+  "timestamp": "2026-09-23T14:15:46.938Z",
   "service": "default",
-  "directory": "/tmp/tmp.Gk8qhbevoR",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM",
   "message": "creating instance"
 }
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.155Z",
+  "timestamp": "2026-09-23T14:15:46.938Z",
   "service": "project",
-  "directory": "/tmp/tmp.Gk8qhbevoR",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM",
   "message": "fromDirectory"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.169Z",
+  "timestamp": "2026-09-23T14:15:46.948Z",
   "service": "default",
   "processArgv": [
-    "/home/box/.bun/bin/bun",
-    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
     "run",
     "--prompt",
     "When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.",
     "--disable-stdin",
     "--no-summarize-session",
-    "--compaction-model",
-    "same",
+    "--compaction-models",
+    "(same)",
     "--model",
     "formal-ai/formal-ai"
   ],
   "bunArgv": [
-    "/home/box/.bun/bin/bun",
-    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "/Users/konard/.bun/bin/bun",
+    "/Users/konard/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
     "run",
     "--prompt",
     "When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.",
     "--disable-stdin",
     "--no-summarize-session",
-    "--compaction-model",
-    "same",
+    "--compaction-models",
+    "(same)",
     "--model",
     "formal-ai/formal-ai"
   ],
@@ -100,7 +100,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.169Z",
+  "timestamp": "2026-09-23T14:15:46.948Z",
   "service": "default",
   "rawModel": "formal-ai/formal-ai",
   "providerID": "formal-ai",
@@ -111,7 +111,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.172Z",
+  "timestamp": "2026-09-23T14:15:46.949Z",
   "service": "provider",
   "status": "started",
   "message": "state"
@@ -119,46 +119,46 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.176Z",
+  "timestamp": "2026-09-23T14:15:46.949Z",
   "service": "config",
-  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "path": "/Users/konard/.config/link-assistant-agent/config.json",
   "message": "loading"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.177Z",
+  "timestamp": "2026-09-23T14:15:46.950Z",
   "service": "config",
-  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.json",
   "message": "loading"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.178Z",
+  "timestamp": "2026-09-23T14:15:46.953Z",
   "service": "config",
-  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "path": "/Users/konard/.config/link-assistant-agent/opencode.jsonc",
   "message": "loading"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.188Z",
+  "timestamp": "2026-09-23T14:15:46.954Z",
   "service": "config",
-  "path": "/tmp/tmp.Gk8qhbevoR/opencode.json",
+  "path": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM/opencode.json",
   "message": "loading"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.237Z",
+  "timestamp": "2026-09-23T14:15:46.956Z",
   "service": "models.dev",
-  "path": "/home/box/.cache/link-assistant-agent/models.json",
-  "age": 21754202,
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
+  "age": 8709055,
   "threshold": 3600000,
   "message": "cache is stale, awaiting refresh"
 }
@@ -166,7 +166,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.237Z",
+  "timestamp": "2026-09-23T14:15:46.956Z",
   "service": "models.dev",
   "file": {},
   "message": "refreshing"
@@ -175,49 +175,36 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.455Z",
+  "timestamp": "2026-09-23T14:15:47.652Z",
   "service": "models.dev",
-  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "path": "/Users/konard/.cache/link-assistant-agent/models.json",
   "message": "cache unavailable, using bundled data"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.572Z",
+  "timestamp": "2026-09-23T14:15:47.873Z",
   "service": "provider",
   "message": "init"
 }
 
 {
   "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.594Z",
+  "level": "error",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "claude-oauth",
-  "subscriptionType": "max",
-  "scopes": [
-    "user:file_upload",
-    "user:inference",
-    "user:mcp_servers",
-    "user:profile",
-    "user:sessions:claude_code"
-  ],
-  "message": "loaded oauth credentials"
+  "error": {
+    "name": "ZodError",
+    "message": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"subscriptionType\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"claudeAiOauth\",\n      \"rateLimitTier\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n]"
+  },
+  "message": "failed to read credentials"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.594Z",
-  "service": "provider",
-  "source": "credentials file (max)",
-  "message": "using claude oauth credentials"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.595Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "provider",
   "providerID": "formal-ai",
   "message": "found"
@@ -226,7 +213,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.595Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "provider",
   "providerID": "formalai",
   "message": "found"
@@ -235,7 +222,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.595Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "provider",
   "providerID": "@link-assistant",
   "message": "found"
@@ -244,7 +231,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.595Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "provider",
   "providerID": "opencode",
   "message": "found"
@@ -253,7 +240,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.595Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "provider",
   "providerID": "kilo",
   "message": "found"
@@ -262,58 +249,36 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.595Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "provider",
-  "providerID": "claude-oauth",
+  "providerID": "link-assistant",
   "message": "found"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.595Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "provider",
   "status": "completed",
-  "duration": 423,
+  "duration": 928,
   "message": "state"
 }
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.607Z",
-  "service": "provider",
-  "modelID": "big-pickle",
-  "providerID": "opencode",
-  "message": "resolved short model name (single match)"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.607Z",
-  "service": "provider",
-  "modelID": "minimax-m2.5-free",
-  "providerID": "kilo",
-  "message": "resolved short model name (single match)"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.608Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "service": "default",
   "models": [
-    "opencode/big-pickle",
-    "kilo/minimax-m2.5-free",
     "same"
   ],
-  "source": "default",
+  "source": "cli",
   "message": "compaction models cascade configured"
 }
 
 {
   "type": "model_resolved",
-  "timestamp": "2026-09-04T05:49:50.608Z",
+  "timestamp": "2026-09-23T14:15:47.877Z",
   "requested": "formal-ai/formal-ai",
   "selector": "formal-ai/formal-ai",
   "providerID": "formal-ai",
@@ -324,7 +289,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.623Z",
+  "timestamp": "2026-09-23T14:15:47.886Z",
   "service": "server",
   "method": "POST",
   "path": "/session",
@@ -334,7 +299,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.623Z",
+  "timestamp": "2026-09-23T14:15:47.886Z",
   "service": "server",
   "status": "started",
   "method": "POST",
@@ -344,16 +309,16 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.627Z",
+  "timestamp": "2026-09-23T14:15:47.887Z",
   "service": "session",
-  "id": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "id": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "version": "0.26.0",
   "projectID": "global",
-  "directory": "/tmp/tmp.Gk8qhbevoR",
-  "title": "New session - 2026-09-04T05:49:50.627Z",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM",
+  "title": "New session - 2026-09-23T14:15:47.887Z",
   "time": {
-    "created": 1788500990627,
-    "updated": 1788500990627
+    "created": 1790172947887,
+    "updated": 1790172947887
   },
   "message": "created"
 }
@@ -361,7 +326,7 @@
 {
   "type": "session.created",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.629Z",
+  "timestamp": "2026-09-23T14:15:47.887Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -369,7 +334,7 @@
 {
   "type": "session.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.629Z",
+  "timestamp": "2026-09-23T14:15:47.887Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -377,10 +342,10 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.631Z",
+  "timestamp": "2026-09-23T14:15:47.888Z",
   "service": "server",
   "status": "completed",
-  "duration": 8,
+  "duration": 2,
   "method": "POST",
   "path": "/session",
   "message": "request"
@@ -388,7 +353,7 @@
 {
   "type": "*",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.633Z",
+  "timestamp": "2026-09-23T14:15:47.889Z",
   "service": "bus",
   "message": "subscribing"
 }
@@ -396,38 +361,38 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.634Z",
+  "timestamp": "2026-09-23T14:15:47.889Z",
   "service": "server",
   "method": "POST",
-  "path": "/session/ses_f9508a55dffeuP1mnVNKYqJAf6/message",
+  "path": "/session/ses_f31609a51ffeU6RSdVVZNdp0XX/message",
   "message": "request"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.634Z",
+  "timestamp": "2026-09-23T14:15:47.889Z",
   "service": "server",
   "status": "started",
   "method": "POST",
-  "path": "/session/ses_f9508a55dffeuP1mnVNKYqJAf6/message",
+  "path": "/session/ses_f31609a51ffeU6RSdVVZNdp0XX/message",
   "message": "request"
 }
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.646Z",
+  "timestamp": "2026-09-23T14:15:47.892Z",
   "service": "server",
   "status": "completed",
-  "duration": 12,
+  "duration": 3,
   "method": "POST",
-  "path": "/session/ses_f9508a55dffeuP1mnVNKYqJAf6/message",
+  "path": "/session/ses_f31609a51ffeU6RSdVVZNdp0XX/message",
   "message": "request"
 }
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.653Z",
+  "timestamp": "2026-09-23T14:15:47.897Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -435,7 +400,7 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.656Z",
+  "timestamp": "2026-09-23T14:15:47.899Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -443,7 +408,7 @@
 {
   "type": "session.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.658Z",
+  "timestamp": "2026-09-23T14:15:47.900Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -451,17 +416,17 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.662Z",
+  "timestamp": "2026-09-23T14:15:47.901Z",
   "service": "session.prompt",
   "step": 0,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "message": "loop"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.667Z",
+  "timestamp": "2026-09-23T14:15:47.902Z",
   "service": "session.prompt",
   "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
   "message": "title generation disabled"
@@ -470,11 +435,11 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.667Z",
+  "timestamp": "2026-09-23T14:15:47.902Z",
   "service": "session.prompt",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "step": 1,
   "message": "resolving model"
 }
@@ -482,7 +447,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.669Z",
+  "timestamp": "2026-09-23T14:15:47.902Z",
   "service": "provider",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
@@ -492,7 +457,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.670Z",
+  "timestamp": "2026-09-23T14:15:47.902Z",
   "service": "provider",
   "status": "started",
   "providerID": "formal-ai",
@@ -501,7 +466,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.670Z",
+  "timestamp": "2026-09-23T14:15:47.903Z",
   "service": "provider",
   "providerID": "formal-ai",
   "pkg": "@ai-sdk/openai-compatible",
@@ -512,7 +477,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.670Z",
+  "timestamp": "2026-09-23T14:15:47.903Z",
   "service": "provider",
   "providerID": "formal-ai",
   "pkg": "@ai-sdk/openai-compatible",
@@ -522,7 +487,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.671Z",
+  "timestamp": "2026-09-23T14:15:47.903Z",
   "service": "provider",
   "status": "completed",
   "duration": 1,
@@ -532,7 +497,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.671Z",
+  "timestamp": "2026-09-23T14:15:47.903Z",
   "service": "provider",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
@@ -542,7 +507,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.672Z",
+  "timestamp": "2026-09-23T14:15:47.903Z",
   "service": "session.prompt",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
@@ -553,67 +518,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:50.672Z",
-  "service": "provider",
-  "providerID": "opencode",
-  "modelID": "big-pickle",
-  "message": "getModel"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.672Z",
-  "service": "provider",
-  "status": "started",
-  "providerID": "opencode",
-  "message": "getSDK"
-}
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.672Z",
-  "service": "provider",
-  "providerID": "opencode",
-  "pkg": "@ai-sdk/openai-compatible",
-  "globalVerboseFetchInstalled": true,
-  "verboseAtCreation": false,
-  "message": "provider SDK fetch chain configured"
-}
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.672Z",
-  "service": "provider",
-  "providerID": "opencode",
-  "pkg": "@ai-sdk/openai-compatible",
-  "message": "using bundled provider (no installation needed)"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.672Z",
-  "service": "provider",
-  "status": "completed",
-  "duration": 0,
-  "providerID": "opencode",
-  "message": "getSDK"
-}
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:50.672Z",
-  "service": "provider",
-  "providerID": "opencode",
-  "modelID": "big-pickle",
-  "message": "found"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:51.696Z",
+  "timestamp": "2026-09-23T14:15:48.059Z",
   "service": "token",
   "message": "loaded gpt-tokenizer (o200k_base)"
 }
@@ -621,7 +526,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.704Z",
+  "timestamp": "2026-09-23T14:15:48.062Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -629,7 +534,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.710Z",
+  "timestamp": "2026-09-23T14:15:48.062Z",
   "service": "system-prompt",
   "prompt": "anthropic",
   "model": "formal-ai",
@@ -639,7 +544,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.771Z",
+  "timestamp": "2026-09-23T14:15:48.069Z",
   "service": "session.processor",
   "message": "process"
 }
@@ -647,7 +552,7 @@
 {
   "type": "session.status",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.786Z",
+  "timestamp": "2026-09-23T14:15:48.075Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -655,7 +560,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.800Z",
+  "timestamp": "2026-09-23T14:15:48.079Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -663,7 +568,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.800Z",
+  "timestamp": "2026-09-23T14:15:48.079Z",
   "service": "session.summary",
   "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
   "message": "session summarization disabled"
@@ -672,7 +577,7 @@
 {
   "type": "session.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.800Z",
+  "timestamp": "2026-09-23T14:15:48.079Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -680,7 +585,7 @@
 {
   "type": "session.diff",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:51.801Z",
+  "timestamp": "2026-09-23T14:15:48.080Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -688,26 +593,26 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.155Z",
+  "timestamp": "2026-09-23T14:15:49.684Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "step_start",
-  "timestamp": 1788500993155,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172949684,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76478001APwFu2mc6vFEgi",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af75ed4001Z62qsq5s6f5twy",
+    "id": "prt_0ce9f6cb2001U9TIE2OFqwtCS4",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f665d001390L9ifgI44aEv",
     "type": "step-start"
   }
 }
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.158Z",
+  "timestamp": "2026-09-23T14:15:49.685Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -715,21 +620,21 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.166Z",
+  "timestamp": "2026-09-23T14:15:49.686Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "tool_use",
-  "timestamp": 1788500993166,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172949686,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76486001cLdnO7JnJcEWYJ",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af75ed4001Z62qsq5s6f5twy",
+    "id": "prt_0ce9f6cb5001Uy5cmdO31KPO3r",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f665d001390L9ifgI44aEv",
     "type": "tool",
-    "callID": "call_6fe773b19e92f157",
+    "callID": "call_fa8ea64e07f9eb84",
     "tool": "write",
     "state": {
       "status": "pending",
@@ -741,54 +646,54 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.169Z",
+  "timestamp": "2026-09-23T14:15:49.686Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "text",
-  "timestamp": 1788500993169,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172949686,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76484001JhUAqx4wRknkof",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af75ed4001Z62qsq5s6f5twy",
+    "id": "prt_0ce9f6cb4001darq38OqCI0Abx",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f665d001390L9ifgI44aEv",
     "type": "text",
     "text": "Let me update self-healing-case.lino for you.",
     "time": {
-      "start": 1788500993168,
-      "end": 1788500993168
+      "start": 1790172949686,
+      "end": 1790172949686
     }
   }
 }
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.173Z",
+  "timestamp": "2026-09-23T14:15:49.687Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "tool_use",
-  "timestamp": 1788500993173,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172949687,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76486001cLdnO7JnJcEWYJ",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af75ed4001Z62qsq5s6f5twy",
+    "id": "prt_0ce9f6cb5001Uy5cmdO31KPO3r",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f665d001390L9ifgI44aEv",
     "type": "tool",
-    "callID": "call_6fe773b19e92f157",
+    "callID": "call_fa8ea64e07f9eb84",
     "tool": "write",
     "state": {
       "status": "running",
       "input": {
-        "content": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"16074\"\n    named_node_count \"3195\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
-        "filePath": "/tmp/tmp.Gk8qhbevoR/self-healing-case.lino"
+        "content": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"19974\"\n    named_node_count \"3871\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
+        "filePath": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM/self-healing-case.lino"
       },
       "time": {
-        "start": 1788500993169
+        "start": 1790172949686
       }
     }
   }
@@ -796,38 +701,38 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.179Z",
+  "timestamp": "2026-09-23T14:15:49.688Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "tool_use",
-  "timestamp": 1788500993179,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172949688,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76486001cLdnO7JnJcEWYJ",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af75ed4001Z62qsq5s6f5twy",
+    "id": "prt_0ce9f6cb5001Uy5cmdO31KPO3r",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f665d001390L9ifgI44aEv",
     "type": "tool",
-    "callID": "call_6fe773b19e92f157",
+    "callID": "call_fa8ea64e07f9eb84",
     "tool": "write",
     "state": {
       "status": "completed",
       "input": {
-        "content": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"16074\"\n    named_node_count \"3195\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
-        "filePath": "/tmp/tmp.Gk8qhbevoR/self-healing-case.lino"
+        "content": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"19974\"\n    named_node_count \"3871\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
+        "filePath": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM/self-healing-case.lino"
       },
       "output": "",
-      "title": "tmp/tmp.Gk8qhbevoR/self-healing-case.lino",
+      "title": "private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM/self-healing-case.lino",
       "metadata": {
         "diagnostics": {},
-        "filepath": "/tmp/tmp.Gk8qhbevoR/self-healing-case.lino",
+        "filepath": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM/self-healing-case.lino",
         "exists": false
       },
       "time": {
-        "start": 1788500993169,
-        "end": 1788500993176
+        "start": 1790172949686,
+        "end": 1790172949687
       }
     }
   }
@@ -835,25 +740,25 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.187Z",
+  "timestamp": "2026-09-23T14:15:49.689Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "step_finish",
-  "timestamp": 1788500993187,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172949689,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af7649f001sYxGLiO4YHGQ00",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af75ed4001Z62qsq5s6f5twy",
+    "id": "prt_0ce9f6cb9001lZkx5n6QQ1MNdW",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f665d001390L9ifgI44aEv",
     "type": "step-finish",
     "reason": "tool-calls",
     "cost": 0,
     "tokens": {
-      "input": 8702,
-      "output": 2901,
+      "input": 8755,
+      "output": 2985,
       "reasoning": 0,
       "cache": {
         "read": 0,
@@ -871,8 +776,8 @@
       "usableContext": 51808,
       "safeLimit": 38856,
       "safetyMargin": 0.75,
-      "currentTokens": 11603,
-      "headroom": 27253,
+      "currentTokens": 11740,
+      "headroom": 27116,
       "overflow": false
     }
   }
@@ -880,7 +785,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.188Z",
+  "timestamp": "2026-09-23T14:15:49.689Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -888,7 +793,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.188Z",
+  "timestamp": "2026-09-23T14:15:49.689Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -896,7 +801,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.193Z",
+  "timestamp": "2026-09-23T14:15:49.690Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -904,17 +809,17 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.194Z",
+  "timestamp": "2026-09-23T14:15:49.690Z",
   "service": "session.prompt",
   "step": 1,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "message": "loop"
 }
 
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.195Z",
+  "timestamp": "2026-09-23T14:15:49.690Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -922,7 +827,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.195Z",
+  "timestamp": "2026-09-23T14:15:49.690Z",
   "service": "session.summary",
   "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
   "message": "session summarization disabled"
@@ -931,7 +836,7 @@
 {
   "type": "session.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.195Z",
+  "timestamp": "2026-09-23T14:15:49.690Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -939,7 +844,7 @@
 {
   "type": "session.diff",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.195Z",
+  "timestamp": "2026-09-23T14:15:49.690Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -947,11 +852,11 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.196Z",
+  "timestamp": "2026-09-23T14:15:49.691Z",
   "service": "session.prompt",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "step": 2,
   "message": "resolving model"
 }
@@ -959,7 +864,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.198Z",
+  "timestamp": "2026-09-23T14:15:49.691Z",
   "service": "session.prompt",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
@@ -970,44 +875,33 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.200Z",
-  "service": "session.compaction",
-  "baseModelContextLimit": 60000,
-  "compactionModelContextLimit": 200000,
-  "message": "compaction model has larger context — using full base model context"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:53.200Z",
+  "timestamp": "2026-09-23T14:15:49.691Z",
   "service": "session.compaction",
   "modelID": "formal-ai",
   "contextLimit": 60000,
   "outputLimit": 8192,
   "usableContextWindow": 51808,
-  "safeLimit": 51808,
-  "safetyMarginRatio": 1,
-  "compactionModelID": "big-pickle",
-  "compactionModelContextLimit": 200000,
-  "currentTokens": 11603,
-  "providerTokens": 11603,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 11740,
+  "providerTokens": 11740,
   "estimatedInputTokens": 67,
   "usingEstimate": false,
   "tokensBreakdown": {
-    "input": 8702,
+    "input": 8755,
     "cacheRead": 0,
-    "output": 2901
+    "output": 2985
   },
   "overflow": false,
-  "headroom": 40205,
+  "headroom": 27116,
   "message": "overflow check"
 }
 
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.201Z",
+  "timestamp": "2026-09-23T14:15:49.691Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1015,7 +909,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.202Z",
+  "timestamp": "2026-09-23T14:15:49.691Z",
   "service": "system-prompt",
   "prompt": "anthropic",
   "model": "formal-ai",
@@ -1025,7 +919,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.211Z",
+  "timestamp": "2026-09-23T14:15:49.693Z",
   "service": "session.processor",
   "message": "process"
 }
@@ -1033,7 +927,7 @@
 {
   "type": "session.status",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:53.217Z",
+  "timestamp": "2026-09-23T14:15:49.693Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1041,26 +935,26 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.964Z",
+  "timestamp": "2026-09-23T14:15:50.344Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "step_start",
-  "timestamp": 1788500994965,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950344,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76b7c001EM0r4TFhPdEyMI",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af764b0001fU0qMGeunCb1Ad",
+    "id": "prt_0ce9f6f44001NggRpBVZfjGxzY",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6cbb001q6LiDHKP0dblam",
     "type": "step-start"
   }
 }
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.966Z",
+  "timestamp": "2026-09-23T14:15:50.344Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1068,19 +962,19 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.966Z",
+  "timestamp": "2026-09-23T14:15:50.345Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "tool_use",
-  "timestamp": 1788500994966,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950345,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76b96001Kkj0OLbcCUJnDZ",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af764b0001fU0qMGeunCb1Ad",
+    "id": "prt_0ce9f6f48002ubOeCa0b6MIorO",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6cbb001q6LiDHKP0dblam",
     "type": "tool",
     "callID": "call_d52acd8cb95e7eea",
     "tool": "bash",
@@ -1094,43 +988,43 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.967Z",
+  "timestamp": "2026-09-23T14:15:50.345Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "text",
-  "timestamp": 1788500994967,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950345,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76b95001XyCTuD0jIN58oO",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af764b0001fU0qMGeunCb1Ad",
+    "id": "prt_0ce9f6f48001nIbtHeZnYlXCW5",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6cbb001q6LiDHKP0dblam",
     "type": "text",
     "text": "Let me run the requested command to get that for you.",
     "time": {
-      "start": 1788500994967,
-      "end": 1788500994967
+      "start": 1790172950345,
+      "end": 1790172950345
     }
   }
 }
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.967Z",
+  "timestamp": "2026-09-23T14:15:50.345Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "tool_use",
-  "timestamp": 1788500994967,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950345,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76b96001Kkj0OLbcCUJnDZ",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af764b0001fU0qMGeunCb1Ad",
+    "id": "prt_0ce9f6f48002ubOeCa0b6MIorO",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6cbb001q6LiDHKP0dblam",
     "type": "tool",
     "callID": "call_d52acd8cb95e7eea",
     "tool": "bash",
@@ -1140,7 +1034,7 @@
         "command": "cat self-healing-case.lino"
       },
       "time": {
-        "start": 1788500994967
+        "start": 1790172950345
       }
     }
   }
@@ -1148,19 +1042,52 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.972Z",
+  "timestamp": "2026-09-23T14:15:50.352Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "tool_use",
-  "timestamp": 1788500994972,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950352,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76b96001Kkj0OLbcCUJnDZ",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af764b0001fU0qMGeunCb1Ad",
+    "id": "prt_0ce9f6f48002ubOeCa0b6MIorO",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6cbb001q6LiDHKP0dblam",
+    "type": "tool",
+    "callID": "call_d52acd8cb95e7eea",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat self-healing-case.lino"
+      },
+      "metadata": {
+        "output": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"19974\"\n    named_node_count \"3871\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n"
+      },
+      "time": {
+        "start": 1790172950352
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-09-23T14:15:50.353Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1790172950353,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+  "part": {
+    "id": "prt_0ce9f6f48002ubOeCa0b6MIorO",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6cbb001q6LiDHKP0dblam",
     "type": "tool",
     "callID": "call_d52acd8cb95e7eea",
     "tool": "bash",
@@ -1169,15 +1096,15 @@
       "input": {
         "command": "cat self-healing-case.lino"
       },
-      "output": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"16074\"\n    named_node_count \"3195\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
+      "output": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"19974\"\n    named_node_count \"3871\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
       "title": "cat self-healing-case.lino",
       "metadata": {
-        "output": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"16074\"\n    named_node_count \"3195\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
+        "output": "repair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"19974\"\n    named_node_count \"3871\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"\n",
         "exit": 0
       },
       "time": {
-        "start": 1788500994967,
-        "end": 1788500994972
+        "start": 1790172950345,
+        "end": 1790172950353
       }
     }
   }
@@ -1185,24 +1112,24 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.974Z",
+  "timestamp": "2026-09-23T14:15:50.354Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "step_finish",
-  "timestamp": 1788500994974,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950354,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af76b9d001nyHKj1WHNHvwyK",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af764b0001fU0qMGeunCb1Ad",
+    "id": "prt_0ce9f6f51001RmylAuc5HV7P5Z",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6cbb001q6LiDHKP0dblam",
     "type": "step-finish",
     "reason": "tool-calls",
     "cost": 0,
     "tokens": {
-      "input": 8747,
+      "input": 8800,
       "output": 97,
       "reasoning": 0,
       "cache": {
@@ -1221,8 +1148,8 @@
       "usableContext": 51808,
       "safeLimit": 38856,
       "safetyMargin": 0.75,
-      "currentTokens": 8844,
-      "headroom": 30012,
+      "currentTokens": 8897,
+      "headroom": 29959,
       "overflow": false
     }
   }
@@ -1230,7 +1157,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.974Z",
+  "timestamp": "2026-09-23T14:15:50.354Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1238,7 +1165,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.976Z",
+  "timestamp": "2026-09-23T14:15:50.354Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1246,7 +1173,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.984Z",
+  "timestamp": "2026-09-23T14:15:50.354Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1254,17 +1181,17 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.984Z",
+  "timestamp": "2026-09-23T14:15:50.354Z",
   "service": "session.prompt",
   "step": 2,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "message": "loop"
 }
 
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.993Z",
+  "timestamp": "2026-09-23T14:15:50.355Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1272,7 +1199,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.993Z",
+  "timestamp": "2026-09-23T14:15:50.355Z",
   "service": "session.summary",
   "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
   "message": "session summarization disabled"
@@ -1281,7 +1208,7 @@
 {
   "type": "session.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.993Z",
+  "timestamp": "2026-09-23T14:15:50.355Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1289,7 +1216,7 @@
 {
   "type": "session.diff",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.994Z",
+  "timestamp": "2026-09-23T14:15:50.355Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1297,11 +1224,11 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.996Z",
+  "timestamp": "2026-09-23T14:15:50.355Z",
   "service": "session.prompt",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "step": 3,
   "message": "resolving model"
 }
@@ -1309,7 +1236,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:54.996Z",
+  "timestamp": "2026-09-23T14:15:50.355Z",
   "service": "session.prompt",
   "providerID": "formal-ai",
   "modelID": "formal-ai",
@@ -1320,44 +1247,33 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:55.000Z",
-  "service": "session.compaction",
-  "baseModelContextLimit": 60000,
-  "compactionModelContextLimit": 200000,
-  "message": "compaction model has larger context — using full base model context"
-}
-
-{
-  "type": "log",
-  "level": "info",
-  "timestamp": "2026-09-04T05:49:55.000Z",
+  "timestamp": "2026-09-23T14:15:50.356Z",
   "service": "session.compaction",
   "modelID": "formal-ai",
   "contextLimit": 60000,
   "outputLimit": 8192,
   "usableContextWindow": 51808,
-  "safeLimit": 51808,
-  "safetyMarginRatio": 1,
-  "compactionModelID": "big-pickle",
-  "compactionModelContextLimit": 200000,
-  "currentTokens": 8844,
-  "providerTokens": 8844,
-  "estimatedInputTokens": 735,
+  "safeLimit": 38856,
+  "safetyMarginRatio": 0.75,
+  "compactionModelID": "formal-ai",
+  "currentTokens": 8897,
+  "providerTokens": 8897,
+  "estimatedInputTokens": 743,
   "usingEstimate": false,
   "tokensBreakdown": {
-    "input": 8747,
+    "input": 8800,
     "cacheRead": 0,
     "output": 97
   },
   "overflow": false,
-  "headroom": 42964,
+  "headroom": 29959,
   "message": "overflow check"
 }
 
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:55.001Z",
+  "timestamp": "2026-09-23T14:15:50.356Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1365,7 +1281,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:55.001Z",
+  "timestamp": "2026-09-23T14:15:50.356Z",
   "service": "system-prompt",
   "prompt": "anthropic",
   "model": "formal-ai",
@@ -1375,7 +1291,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:55.009Z",
+  "timestamp": "2026-09-23T14:15:50.357Z",
   "service": "session.processor",
   "message": "process"
 }
@@ -1383,7 +1299,7 @@
 {
   "type": "session.status",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:55.014Z",
+  "timestamp": "2026-09-23T14:15:50.358Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1391,26 +1307,26 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.949Z",
+  "timestamp": "2026-09-23T14:15:50.679Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "step_start",
-  "timestamp": 1788500996949,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950679,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af77353001AO7gqP3G4ZcHhv",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af76bb8001qqxnNlmRIf0lhc",
+    "id": "prt_0ce9f70960017Po53suSy2K7Mj",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6f54001twnuH7vI3mxEFG",
     "type": "step-start"
   }
 }
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.950Z",
+  "timestamp": "2026-09-23T14:15:50.679Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1418,49 +1334,49 @@
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.950Z",
+  "timestamp": "2026-09-23T14:15:50.680Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "text",
-  "timestamp": 1788500996950,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950680,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af77355001orxzNHajWhmdTH",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af76bb8001qqxnNlmRIf0lhc",
+    "id": "prt_0ce9f7097001lVotL7QMCYtJU6",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6f54001twnuH7vI3mxEFG",
     "type": "text",
-    "text": "Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto src/agentic_coding/planner.rs with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case (awaiting_review). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document (self-healing-case.lino):\n\nrepair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"16074\"\n    named_node_count \"3195\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"",
+    "text": "Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto src/agentic_coding/planner.rs with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case (awaiting_review). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document (self-healing-case.lino):\n\nrepair_case\n  id \"repair_case_9de88924139c1553\"\n  failure_prompt \"List the files but sort the results in reverse order\"\n  outcome \"awaiting_review\"\n  human_gated \"true\"\n  source_round_trip\n    module_path \"src/agentic_coding/planner.rs\"\n    total_link_count \"19974\"\n    named_node_count \"3871\"\n    faithful \"true\"\n  failure_trace\n    unknown_trace\n      id \"unknown_trace_0b5bfd2b6b7cdae9\"\n      prompt \"List the files but sort the results in reverse order\"\n      event_count \"3\"\n      event\n        kind \"selected_rule\"\n        id \"selected_rule_c4b73715d69a320a\"\n        payload \"initial unknown reason no_seed_route next try_rule_synthesis\"\n      event\n        kind \"rule_synthesis_candidate\"\n        id \"rule_synthesis_candidate_a72cf4a7d25ca712\"\n        payload \"rule_synthesis_candidate\\n  id reverse_sort_list_files\\n  source constructed_from_operation_vocabulary\\n  base_task list_files\\n  modifier reverse_sort\\n  operation sort\\n  operation_modifier descending\\n  target program:last.output_order\\n  resolved_task list_files_reverse_sort\"\n      event\n        kind \"rule_verification\"\n        id \"rule_verification_5225998dff6d7324\"\n        payload \"rule_verification\\n  candidate reverse_sort_list_files\\n  fixture list_files_output_order\\n  input a.txt,b.txt,c.txt\\n  expected_order c.txt,b.txt,a.txt\\n  lowering_check passed\\n  render_check passed\\n  status passed\"\n  learning_run\n    self_improvement_run\n      id \"self_improvement_run_10f7d0dab049048f\"\n      trace_count \"1\"\n      benchmark_suite \"issue_362_multilingual_coding_modification\"\n      benchmark_runner \"cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture\"\n      benchmark_passed \"4\"\n      benchmark_failed \"0\"\n      benchmark_minimum_pass_count \"4\"\n      benchmark_status \"passed\"\n      learned_rule\n        id \"learned_rule_1979c4a27fe2ea09\"\n        trace \"unknown_trace_0b5bfd2b6b7cdae9\"\n        rule \"reverse_sort_list_files\"\n        base_task \"list_files\"\n        modifier \"reverse_sort\"\n        resolved_task \"list_files_reverse_sort\"\n        fixture \"list_files_output_order\"\n        adoption \"adoptable\"\n        summary \"Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4).\"\n        seed_rule \"substitution_rules\\n  id 'learned_program_plan_rules'\\n  rule 'reverse_sort_list_files'\\n    order '90'\\n    event 'learned'\\n    when 'request:modifier -> reverse_sort'\\n    replace 'request:task -> list_files'\\n      with 'request:task -> list_files_reverse_sort'\"",
     "time": {
-      "start": 1788500996950,
-      "end": 1788500996950
+      "start": 1790172950679,
+      "end": 1790172950679
     }
   }
 }
 {
   "type": "message.part.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.951Z",
+  "timestamp": "2026-09-23T14:15:50.680Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "step_finish",
-  "timestamp": 1788500996951,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "timestamp": 1790172950680,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "part": {
-    "id": "prt_06af77357001DSPqQL0bG84iyh",
-    "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
-    "messageID": "msg_06af76bb8001qqxnNlmRIf0lhc",
+    "id": "prt_0ce9f7098001cvd9L0e0M83SoE",
+    "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
+    "messageID": "msg_0ce9f6f54001twnuH7vI3mxEFG",
     "type": "step-finish",
     "reason": "stop",
     "cost": 0,
     "tokens": {
-      "input": 11435,
-      "output": 3038,
+      "input": 11520,
+      "output": 3070,
       "reasoning": 0,
       "cache": {
         "read": 0,
@@ -1478,8 +1394,8 @@
       "usableContext": 51808,
       "safeLimit": 38856,
       "safetyMargin": 0.75,
-      "currentTokens": 14473,
-      "headroom": 24383,
+      "currentTokens": 14590,
+      "headroom": 24266,
       "overflow": false
     }
   }
@@ -1487,7 +1403,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.952Z",
+  "timestamp": "2026-09-23T14:15:50.680Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1495,7 +1411,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.952Z",
+  "timestamp": "2026-09-23T14:15:50.680Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1503,7 +1419,7 @@
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.955Z",
+  "timestamp": "2026-09-23T14:15:50.680Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1511,17 +1427,17 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.955Z",
+  "timestamp": "2026-09-23T14:15:50.680Z",
   "service": "session.prompt",
   "step": 3,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "message": "loop"
 }
 
 {
   "type": "message.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.964Z",
+  "timestamp": "2026-09-23T14:15:50.681Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1529,7 +1445,7 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.964Z",
+  "timestamp": "2026-09-23T14:15:50.681Z",
   "service": "session.summary",
   "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
   "message": "session summarization disabled"
@@ -1538,7 +1454,7 @@
 {
   "type": "session.updated",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.964Z",
+  "timestamp": "2026-09-23T14:15:50.681Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1546,7 +1462,7 @@
 {
   "type": "session.diff",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.964Z",
+  "timestamp": "2026-09-23T14:15:50.681Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1554,16 +1470,16 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.965Z",
+  "timestamp": "2026-09-23T14:15:50.681Z",
   "service": "session.prompt",
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "message": "exiting loop"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.966Z",
+  "timestamp": "2026-09-23T14:15:50.682Z",
   "service": "session.compaction",
   "message": "pruning"
 }
@@ -1571,16 +1487,16 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.970Z",
+  "timestamp": "2026-09-23T14:15:50.682Z",
   "service": "session.prompt",
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6",
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX",
   "message": "cancel"
 }
 
 {
   "type": "session.status",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.970Z",
+  "timestamp": "2026-09-23T14:15:50.682Z",
   "service": "bus",
   "message": "publishing"
 }
@@ -1588,20 +1504,20 @@
 {
   "type": "session.idle",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.970Z",
+  "timestamp": "2026-09-23T14:15:50.682Z",
   "service": "bus",
   "message": "publishing"
 }
 
 {
   "type": "session_idle",
-  "timestamp": 1788500996970,
-  "sessionID": "ses_f9508a55dffeuP1mnVNKYqJAf6"
+  "timestamp": 1790172950682,
+  "sessionID": "ses_f31609a51ffeU6RSdVVZNdp0XX"
 }
 {
   "type": "*",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.972Z",
+  "timestamp": "2026-09-23T14:15:50.683Z",
   "service": "bus",
   "message": "unsubscribing"
 }
@@ -1609,36 +1525,36 @@
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.973Z",
+  "timestamp": "2026-09-23T14:15:50.683Z",
   "service": "default",
-  "directory": "/tmp/tmp.Gk8qhbevoR",
+  "directory": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM",
   "message": "disposing instance"
 }
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.973Z",
+  "timestamp": "2026-09-23T14:15:50.683Z",
   "service": "state",
-  "key": "/tmp/tmp.Gk8qhbevoR",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM",
   "message": "waiting for state disposal to complete"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.974Z",
+  "timestamp": "2026-09-23T14:15:50.683Z",
   "service": "state",
-  "key": "/tmp/tmp.Gk8qhbevoR",
+  "key": "/private/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/tmp.zBhtVHV1OM",
   "message": "state disposal completed"
 }
 
 {
   "type": "log",
   "level": "info",
-  "timestamp": "2026-09-04T05:49:56.974Z",
+  "timestamp": "2026-09-23T14:15:50.683Z",
   "service": "default",
   "hasError": false,
-  "uptimeSeconds": 9,
+  "uptimeSeconds": 5,
   "message": "Agent exiting"
 }
 

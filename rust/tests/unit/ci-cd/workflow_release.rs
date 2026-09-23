@@ -782,7 +782,13 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // across the window) -- the deadline, not the backstop, and a cap kills
         // as `cancelled`. No single step dominates here, so the cap is the only
         // mechanism available; 25 puts the same worst case at 50.7%.
-        ("lint", 25),
+        // Issue #1138: raised from 25. The gate set kept growing and run
+        // 35806556194 consumed the full 25 minutes, killed mid-gate inside
+        // repository_workspace_protocol and reported as `cancelled` -- the red
+        // hidden behind a cancelled job, every gate that did run passing. The
+        // measured demand of at least 25.2 min sits under 56% of 45, back
+        // below the 70% warn line of check-job-headroom.rs.
+        ("lint", 45),
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.

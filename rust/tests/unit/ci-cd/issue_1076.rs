@@ -650,9 +650,10 @@ fn job_caps_are_audited_against_what_the_jobs_really_cost() {
     let release = repository_file(".github/workflows/release.yml");
     assert_eq!(
         job_timeout(job_block(&release, "lint")),
-        Some("25"),
-        "12.7 minutes measured against a 15-minute cap is 84.4%; the cap had \
-         become the deadline (issue #1076)"
+        Some("45"),
+        "the cap became the deadline twice: 12.7 min against 15 (issue #1076), \
+         then run 35806556194 consumed all 25 minutes once the gate set grew \
+         (issue #1138); 45 puts the measured demand back under the 70% share"
     );
     assert_eq!(
         job_timeout(job_block(&release, "build")),

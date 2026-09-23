@@ -92,7 +92,7 @@ Moving the general-change state machine into its own size-compliant module also
 changed the planner-derived self-healing fixture, and issue #1066 has moved code
 out of `src/agentic_coding/planner.rs` and back into it several times since, so
 the link counts the fixture pins describe a file that keeps changing. Session
-`ses_faf5f322effeicCLioH0QBuTdQ` reran the canonical self-healing recipe through
+`ses_f31609a51ffeU6RSdVVZNdp0XX` reran the canonical self-healing recipe through
 Formal AI and the real Agent CLI, wrote the refreshed fixture, and read it back
 successfully. The byte-identical artifact and trace are retained under
 [`self-hosting-fixture-refresh/`](self-hosting-fixture-refresh/); the replay
