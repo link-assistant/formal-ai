@@ -19,9 +19,14 @@ bash scripts/install-rust-script.sh
 # run 35893508679), which cannot share this step's budget with the unit
 # phase. It has its own workflow, benchmark-corpus-gate.yml -- the same
 # partition data_files, self_ast_census, and specification use above.
-CORPUS_GATE_SKIP="--skip issue_1138_no_silent_unknown"
+# An array, not a quoted string: "$CORPUS_GATE_SKIP" would hand libtest one
+# argument containing a space, which it rejects as
+# `Unrecognized option: 'skip issue_1138_no_silent_unknown'` (run 35912188200,
+# job 107358064235 -- the unit binary refused to start and the lane exited 101
+# twenty-six seconds in). "${CORPUS_GATE_SKIP[@]}" expands to the two words.
+CORPUS_GATE_SKIP=(--skip issue_1138_no_silent_unknown)
 
 for target in unit integration source; do
   "dist/tests/$target" \
-    --skip data_files:: --skip self_ast_census --skip specification:: "$CORPUS_GATE_SKIP"
+    --skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}"
 done
