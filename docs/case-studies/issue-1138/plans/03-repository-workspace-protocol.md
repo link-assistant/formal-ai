@@ -9,7 +9,7 @@ for any repository". Every type below is that contract's implementation; where
 an earlier draft of this plan used a different name for a contract type, the
 contract name wins (plan 00 §8). It consumes contract 4.1 (`need`), produces
 contract 4.3 (`evidence`), and reuses the default-deny command policy in
-`src/agentic_coding/shell_command_policy.rs` rather than duplicating it.
+`rust/src/agentic_coding/shell_command_policy.rs` rather than duplicating it.
 
 **Order.** Plan 00 §5 places this plan **after**
 [plan 06 — prerequisite discovery](06-prerequisite-discovery.md):
@@ -24,7 +24,7 @@ states of the branch; neither plan may claim the other's result.
 
 | Issue / PR | What it asks | What this plan delivers |
 | --- | --- | --- |
-| [#1138](https://github.com/link-assistant/formal-ai/issues/1138) B3 | "One workspace protocol shared by SWE-bench, the #848 ladder and self-coding: clone at base commit, locate the files the requirement names …, read, edit, run the named tests, produce the diff." | The whole plan: `src/repository_workspace/` plus the three call sites. |
+| [#1138](https://github.com/link-assistant/formal-ai/issues/1138) B3 | "One workspace protocol shared by SWE-bench, the #848 ladder and self-coding: clone at base commit, locate the files the requirement names …, read, edit, run the named tests, produce the diff." | The whole plan: `rust/src/repository_workspace/` plus the three call sites. |
 | [#848](https://github.com/link-assistant/formal-ai/issues/848) (closed by PR [#897](https://github.com/link-assistant/formal-ai/pull/897)) | A 130-task L1–L4 coding ladder over real open issues, verified "by observed effect … never by narration"; L1 must succeed or fail honestly. | The ladder's L1/L2 rungs get a repository workspace instead of the ambient checkout, so `issue_to_pr 0/16` becomes a measurable number rather than a structural zero (`experiments/issue_847_coding_ladder/results.json` summary: `{"total":130,"passed":65,…,"by_level":{"L1":{"passed":0,"total":16}…}}`). |
 | [#1021](https://github.com/link-assistant/formal-ai/issues/1021) / PR [#1027](https://github.com/link-assistant/formal-ai/pull/1027) | R1021-22: "a pull request opened by Formal AI from a real `solve` run, green without a human editing the branch." Recorded **Not achieved** (`REQUIREMENTS.md:2405`; `docs/requirements-traceability.md:800`). | The attributed authoring path: `formal-ai solve --model formal-ai` as a first-class subcommand that drives the same protocol and emits the four self-hosting trailers. |
 | [#1085](https://github.com/link-assistant/formal-ai/issues/1085) / PR [#1086](https://github.com/link-assistant/formal-ai/pull/1086) | R1085-9: ladder leaves must compile, composites apply both children's diffs to one tree, the deepest passing level ratchets. `data/meta/ladder-ratchet.lino` records `leaf_nodes_passing 15`, `deepest_passing_level none`. | The 32 leaves stop needing a pre-authored `experiments/issue_1028_agent_cli_ladder/rules/L*.lino` per leaf; the protocol locates and edits from the requirement, so leaf passing is a capability number rather than a rule-authoring number. |
@@ -41,9 +41,9 @@ states of the branch; neither plan may claim the other's result.
 
 ### (a) One SWE-bench Lite instance
 
-1. `src/external_benchmarks/manifest.rs:298-311` declares the suite: `id: "swebench_lite"`, `task_family: "agentic_repository_patch"`, `source: SuiteSource::ParquetRows { url: ".../dev-00000-of-00001.parquet", … }`, `grading: Grading::SweBenchTests`, `availability: Availability::Runnable`.
-2. `src/external_benchmarks/mod.rs:124-137` fetches and parses the records into `BenchmarkCase`s.
-3. `src/external_benchmarks/cases.rs:152-166` builds the case. The **entire** repository grounding is a sentence:
+1. `rust/src/external_benchmarks/manifest.rs:298-311` declares the suite: `id: "swebench_lite"`, `task_family: "agentic_repository_patch"`, `source: SuiteSource::ParquetRows { url: ".../dev-00000-of-00001.parquet", … }`, `grading: Grading::SweBenchTests`, `availability: Availability::Runnable`.
+2. `rust/src/external_benchmarks/mod.rs:124-137` fetches and parses the records into `BenchmarkCase`s.
+3. `rust/src/external_benchmarks/cases.rs:152-166` builds the case. The **entire** repository grounding is a sentence:
 
    ```rust
    prompt: format!(
@@ -52,8 +52,8 @@ states of the branch; neither plan may claim the other's result.
    ```
 
    There is no `git clone`, no `base_commit` read (the field exists in the upstream record and is passed through untouched inside `Expectation::SweBench { record: value.to_string() }` at `cases.rs:161-163`), and no file list.
-4. `src/external_benchmarks/mod.rs:151-156` runs the solver: `let workspace = cache_root.join("run").join(manifest.id);` then `.map(|case| solver.solve(&case.prompt))`. `workspace` is only ever handed to the grader; the solver never receives it.
-5. `src/external_benchmarks/grade.rs:172-192`: `grade_swebench` extracts a diff from each answer, and
+4. `rust/src/external_benchmarks/mod.rs:151-156` runs the solver: `let workspace = cache_root.join("run").join(manifest.id);` then `.map(|case| solver.solve(&case.prompt))`. `workspace` is only ever handed to the grader; the solver never receives it.
+5. `rust/src/external_benchmarks/grade.rs:172-192`: `grade_swebench` extracts a diff from each answer, and
 
    ```rust
    if patches.iter().all(Option::is_none) {
@@ -68,8 +68,8 @@ states of the branch; neither plan may claim the other's result.
 
 ### (b) A request to add a regression test to this repository
 
-1. Routing: `src/agentic_coding/general_planner.rs:153` `compose_general_change_plan(full_request)` builds a `GeneralChangePlan` whose steps are persisted to `PLAN_PATH = ".formal-ai/general-change-plan.lino"` (`general_planner.rs:21`).
-2. Target resolution: `src/agentic_coding/requirement_resolution.rs:24-26`
+1. Routing: `rust/src/agentic_coding/general_planner.rs:153` `compose_general_change_plan(full_request)` builds a `GeneralChangePlan` whose steps are persisted to `PLAN_PATH = ".formal-ai/general-change-plan.lino"` (`general_planner.rs:21`).
+2. Target resolution: `rust/src/agentic_coding/requirement_resolution.rs:24-26`
 
    ```rust
    pub fn resolve_requirement_target(requirement: &str) -> Option<RequirementTarget> {
@@ -77,7 +77,7 @@ states of the branch; neither plan may claim the other's result.
    }
    ```
 
-   and `src/self_ast_census.rs:478-481`
+   and `rust/src/self_ast_census.rs:478-481`
 
    ```rust
    pub fn workspace() -> &'static WorkspaceCensus {
@@ -87,8 +87,8 @@ states of the branch; neither plan may claim the other's result.
    ```
 
    `owned_source_files()` is the **compile-time** manifest generated by `build.rs`. The census therefore describes the sources the running binary was built from, not the tree on disk, and not any other repository.
-3. Editing: `src/agentic_coding/structured_edit.rs:105` `member_insertion(task)` and `src/agentic_coding/workspace_change.rs:318` `grounded_rewrite(task)` transform bytes for *literal-into-list* and *identifier rename* shapes; `src/agentic_coding/link_edit_rules.rs:32-53` names the three link-edit rules.
-4. Execution: `src/agentic_coding/driver.rs:39` advertises exactly four tools, `DRIVER_TOOLS = ["web_search", "web_fetch", "write_file", "run_command"]`, bounded by `MAX_TURNS = 12` (`driver.rs:43`). `run_command` lands in `src/agent.rs:242` → `run_command_inner` (`agent.rs:338`) → `resolve_allowed_program` (`agent.rs:642-657`), whose whole allowlist is
+3. Editing: `rust/src/agentic_coding/structured_edit.rs:105` `member_insertion(task)` and `rust/src/agentic_coding/workspace_change.rs:318` `grounded_rewrite(task)` transform bytes for *literal-into-list* and *identifier rename* shapes; `rust/src/agentic_coding/link_edit_rules.rs:32-53` names the three link-edit rules.
+4. Execution: `rust/src/agentic_coding/driver.rs:39` advertises exactly four tools, `DRIVER_TOOLS = ["web_search", "web_fetch", "write_file", "run_command"]`, bounded by `MAX_TURNS = 12` (`driver.rs:43`). `run_command` lands in `rust/src/agent.rs:242` → `run_command_inner` (`agent.rs:338`) → `resolve_allowed_program` (`agent.rs:642-657`), whose whole allowlist is
 
    ```rust
    "cat" | "ls" | "printf" | "env" | "python3" | "rustc"  // everything else: AgentError::UnsupportedCommand
@@ -102,11 +102,11 @@ states of the branch; neither plan may claim the other's result.
 
 ### (c) A Kotlin task on a machine without `kotlinc`
 
-`src/coding/catalog/languages.rs:186-201` declares `kotlin` with `status: ExecutionStatus::Unavailable`, `check_command: Some("kotlinc Main.kt -include-runtime -d Main.jar")`, and a **hard-coded** `setup_hint: "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)"`. No code executes `check_command`; `src/engine.rs:959-962` only renders it as prose, and `src/coding/guidance.rs:291-296` unconditionally prepends `format!("Install {setup_hint}.")`. Live evidence: `docs/case-studies/issue-710/plans/06-repository-task-generalization.md` records Kotlin session `ses_f5a282912ffeOLFh21bbx9Dqsl` *"ends honestly at `kotlinc: command not found` after five rounds"*, and the Scala CI job log *"confirms `scalac: command not found`, exit 127"*. Under this plan a Kotlin repository task reaches the same wall one step later: the clone succeeds, the edit succeeds, and the named test cannot run. **This plan stops there and hands the failure to Plan 06 as a need.** It does not install anything.
+`rust/src/coding/catalog/languages.rs:186-201` declares `kotlin` with `status: ExecutionStatus::Unavailable`, `check_command: Some("kotlinc Main.kt -include-runtime -d Main.jar")`, and a **hard-coded** `setup_hint: "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)"`. No code executes `check_command`; `rust/src/engine.rs:959-962` only renders it as prose, and `rust/src/coding/guidance.rs:291-296` unconditionally prepends `format!("Install {setup_hint}.")`. Live evidence: `docs/case-studies/issue-710/plans/06-repository-task-generalization.md` records Kotlin session `ses_f5a282912ffeOLFh21bbx9Dqsl` *"ends honestly at `kotlinc: command not found` after five rounds"*, and the Scala CI job log *"confirms `scalac: command not found`, exit 127"*. Under this plan a Kotlin repository task reaches the same wall one step later: the clone succeeds, the edit succeeds, and the named test cannot run. **This plan stops there and hands the failure to Plan 06 as a need.** It does not install anything.
 
 ### (d) A Telegram "run this code" request
 
-`src/main.rs:663-682` routes `Command::Telegram` into `run_telegram`. `data/seed/environments.lino:67-75` declares the telegram environment's tools as `("intent_routing" "write_program" "concept_lookup" "fact_lookup" "summarize_conversation" "brainstorm" "coreference" "roleplay" "html_replies")` — no execution tool at all. The docker-in-docker image exists (`Dockerfile:59` `FROM konard/box-dind:2.1.1`, `Dockerfile:66-67` `FORMAL_AI_START_ISOLATION=docker`, `FORMAL_AI_START_RUNNER="$ --isolated docker --auto-remove-docker-container --"`), and `scripts/verify-docker-runtime.sh:25-32` asserts those variables, but **no file under `src/` reads either variable**. The answer is composed from the static catalog and labelled "Expected output after verification" (`src/engine.rs:939-951`). This is Plan 06's trace; here it matters only because a repository task arriving over Telegram gets the same protocol and the same honest refusal surface.
+`rust/src/main.rs:663-682` routes `Command::Telegram` into `run_telegram`. `data/seed/environments.lino:67-75` declares the telegram environment's tools as `("intent_routing" "write_program" "concept_lookup" "fact_lookup" "summarize_conversation" "brainstorm" "coreference" "roleplay" "html_replies")` — no execution tool at all. The docker-in-docker image exists (`Dockerfile:59` `FROM konard/box-dind:2.1.1`, `Dockerfile:66-67` `FORMAL_AI_START_ISOLATION=docker`, `FORMAL_AI_START_RUNNER="$ --isolated docker --auto-remove-docker-container --"`), and `scripts/verify-docker-runtime.sh:25-32` asserts those variables, but **no file under `rust/src/` reads either variable**. The answer is composed from the static catalog and labelled "Expected output after verification" (`rust/src/engine.rs:939-951`). This is Plan 06's trace; here it matters only because a repository task arriving over Telegram gets the same protocol and the same honest refusal surface.
 
 ### Ledgers and gates as they stand
 
@@ -118,25 +118,25 @@ states of the branch; neither plan may claim the other's result.
 ## Root causes — numbered
 
 **RC1. The benchmark case constructor throws the repository away.**
-`src/external_benchmarks/cases.rs:152-166` reduces an instance to one prompt string. The `repo`, `base_commit`, `environment_setup_commit`, `FAIL_TO_PASS` and `PASS_TO_PASS` fields present in the upstream record survive only inside the opaque `record: String` that the grader re-parses (`grade.rs:200`). *Mechanism:* the solver's input type is `&str`, so nothing downstream can be repository-aware even if it wanted to be. Every future repository suite would have to repeat the same loss.
+`rust/src/external_benchmarks/cases.rs:152-166` reduces an instance to one prompt string. The `repo`, `base_commit`, `environment_setup_commit`, `FAIL_TO_PASS` and `PASS_TO_PASS` fields present in the upstream record survive only inside the opaque `record: String` that the grader re-parses (`grade.rs:200`). *Mechanism:* the solver's input type is `&str`, so nothing downstream can be repository-aware even if it wanted to be. Every future repository suite would have to repeat the same loss.
 
 **RC2. The solver's only entry point takes a prompt, not a task with a workspace.**
-`src/external_benchmarks/mod.rs:155` is `solver.solve(&case.prompt)`. *Mechanism:* there is no seam at which a working tree could be attached, so repository grounding cannot be added without changing the call, which is why the `workspace` variable at `mod.rs:151` exists purely for grading.
+`rust/src/external_benchmarks/mod.rs:155` is `solver.solve(&case.prompt)`. *Mechanism:* there is no seam at which a working tree could be attached, so repository grounding cannot be added without changing the call, which is why the `workspace` variable at `mod.rs:151` exists purely for grading.
 
 **RC3. File location is compile-time and self-only.**
-`src/self_ast_census.rs:478-481` memoizes `WorkspaceCensus::compile(owned_source_files())` in a `OnceLock`; `requirement_resolution.rs:24-26` is hard-wired to it. *Mechanism:* the one general "find the file a requirement names" capability the repository owns is physically incapable of describing a clone. Note the seam already exists — `WorkspaceCensus::compile(files: &[(&str, &str)])` (`self_ast_census.rs:293`) and `resolve_in(census, requirement)` (`requirement_resolution.rs:36`) are both parameterized — so this is a missing constructor, not a missing design.
+`rust/src/self_ast_census.rs:478-481` memoizes `WorkspaceCensus::compile(owned_source_files())` in a `OnceLock`; `requirement_resolution.rs:24-26` is hard-wired to it. *Mechanism:* the one general "find the file a requirement names" capability the repository owns is physically incapable of describing a clone. Note the seam already exists — `WorkspaceCensus::compile(files: &[(&str, &str)])` (`self_ast_census.rs:293`) and `resolve_in(census, requirement)` (`requirement_resolution.rs:36`) are both parameterized — so this is a missing constructor, not a missing design.
 
 **RC4. The sandbox allowlist excludes every tool a repository task needs.**
-`src/agent.rs:642-657`: six programs, default-deny via the `other =>` arm. *Mechanism:* `git clone`, `git diff`, `cargo test` and `pytest` are `AgentError::UnsupportedCommand`. The doctrine (default-deny with explicit allowlists) is right; the allowlist is simply empty of repository verbs, and it is a `match` in Rust rather than seed data, so widening it is a source edit rather than a data edit.
+`rust/src/agent.rs:642-657`: six programs, default-deny via the `other =>` arm. *Mechanism:* `git clone`, `git diff`, `cargo test` and `pytest` are `AgentError::UnsupportedCommand`. The doctrine (default-deny with explicit allowlists) is right; the allowlist is simply empty of repository verbs, and it is a `match` in Rust rather than seed data, so widening it is a source edit rather than a data edit.
 
 **RC5. Three consumers each invented their own working tree.**
-SWE-bench uses `target/formal-ai-benchmarks/run/<suite>` (`manifest.rs:143` `CACHE_DIR`, `mod.rs:151`). The #848 ladder edits the **real checkout** and reverts with `git checkout -- .` (`experiments/issue_847_coding_ladder/README.txt:44-47`). The #1085 ladder applies a pre-authored `.lino` rule per leaf (`experiments/issue_1028_agent_cli_ladder/rules/L01.lino` … `L32.lino`) against the checkout. The agentic driver uses a fresh temp dir (`src/agent.rs:60`, `AgentWorkspace::for_prompt`, `agent.rs:186-209`). *Mechanism:* four incompatible notions of "where the work happens" means no capability proven in one transfers to the others — exactly the "capability partial by its own number" note in `docs/case-studies/issue-710/plans/01-requirements-audit-coding-and-benchmarks.md:44`.
+SWE-bench uses `target/formal-ai-benchmarks/run/<suite>` (`manifest.rs:143` `CACHE_DIR`, `mod.rs:151`). The #848 ladder edits the **real checkout** and reverts with `git checkout -- .` (`experiments/issue_847_coding_ladder/README.txt:44-47`). The #1085 ladder applies a pre-authored `.lino` rule per leaf (`experiments/issue_1028_agent_cli_ladder/rules/L01.lino` … `L32.lino`) against the checkout. The agentic driver uses a fresh temp dir (`rust/src/agent.rs:60`, `AgentWorkspace::for_prompt`, `agent.rs:186-209`). *Mechanism:* four incompatible notions of "where the work happens" means no capability proven in one transfers to the others — exactly the "capability partial by its own number" note in `docs/case-studies/issue-710/plans/01-requirements-audit-coding-and-benchmarks.md:44`.
 
 **RC6. The #1085 ladder measures rule authorship, not capability.**
 `experiments/issue_1028_agent_cli_ladder/leaves.tsv` has 32 rows; each names its file, its literal and its symbol (`L01 … src/web_search_core.rs "wikiquote" WEB_SEARCH_PROVIDERS`), and each has a committed `rules/L<nn>.lino`. `data/meta/ladder-ratchet.lino` ratchets `leaf_nodes_passing`. *Mechanism:* the rule is the memoized answer. A leaf that passes proves the rule interpreter works, not that the requirement was understood; and no leaf outside the 32 can be attempted. This is the memoization the doctrine forbids, wearing a ratchet.
 
 **RC7. Attributed authoring is a shell script with a hand-written contract per task.**
-`scripts/author-change-with-formal-ai.sh:22-33` documents mandatory `--task`, `--produces`, `--into`, `--evidence`, `--pull-request`, `--message`. *Mechanism:* the human supplies the file the model must write and the text it must contain; the model supplies the bytes. That is why #1091 needed a bespoke contract and why `REQUIREMENTS.md:2405` still reads **Not achieved** for R1021-22. There is no `solve` subcommand at all: `src/main.rs:596-698` enumerates `Chat`, `Agent`, `Serve`, `Telegram`, `Benchmark`, … and no `Solve`.
+`scripts/author-change-with-formal-ai.sh:22-33` documents mandatory `--task`, `--produces`, `--into`, `--evidence`, `--pull-request`, `--message`. *Mechanism:* the human supplies the file the model must write and the text it must contain; the model supplies the bytes. That is why #1091 needed a bespoke contract and why `REQUIREMENTS.md:2405` still reads **Not achieved** for R1021-22. There is no `solve` subcommand at all: `rust/src/main.rs:596-698` enumerates `Chat`, `Agent`, `Serve`, `Telegram`, `Benchmark`, … and no `Solve`.
 
 **RC8. Nothing turns a produced tree into a reviewable unified diff.**
 `grade.rs:365+` reads the official harness report and `extract_diff(answer)` (`grade.rs:175`) pulls a diff out of *prose*. The system can recognize a diff it was handed; it cannot compute one from two trees. *Mechanism:* the SWE-bench pass criterion is "apply this patch", so without diff production the whole suite is unreachable regardless of edit quality.
@@ -145,7 +145,7 @@ SWE-bench uses `target/formal-ai-benchmarks/run/<suite>` (`manifest.rs:143` `CAC
 
 ### Option A — One `RepositoryWorkspace` in Rust, protocol steps in seed data, three call sites converted
 
-*Description.* Add `src/repository_workspace/` owning a checked-out tree, a base commit, a locator, an editor bridge, a named-test runner and a diff producer. The **order** of the steps is `data/meta/repository-workspace-protocol.lino`, walked by the existing recipe/rule machinery, not by a Rust state machine. Convert SWE-bench, the #848 ladder and the self-coding authoring path to it.
+*Description.* Add `rust/src/repository_workspace/` owning a checked-out tree, a base commit, a locator, an editor bridge, a named-test runner and a diff producer. The **order** of the steps is `data/meta/repository-workspace-protocol.lino`, walked by the existing recipe/rule machinery, not by a Rust state machine. Convert SWE-bench, the #848 ladder and the self-coding authoring path to it.
 
 *Architecture sketch.*
 
@@ -191,7 +191,7 @@ consumers: external_benchmarks::run_suite_with_online  (swebench branch)
 
 ### Option C — Retrieval-only: keep prompts, add a repository-context retriever
 
-*Description.* Leave `solve(&str)` alone. Before solving, fetch the repository at the base commit into the content-addressed source cache (the same machinery `src/solver_handler_how_synthesis.rs:34` `FORMAL_AI_SOURCE_CACHE_DIR` already uses) and inject the top-N relevant file excerpts into the prompt. Grade the emitted diff as today.
+*Description.* Leave `solve(&str)` alone. Before solving, fetch the repository at the base commit into the content-addressed source cache (the same machinery `rust/src/solver_handler_how_synthesis.rs:34` `FORMAL_AI_SOURCE_CACHE_DIR` already uses) and inject the top-N relevant file excerpts into the prompt. Grade the emitted diff as today.
 
 *Pros.* Smallest change; no allowlist widening; no new execution surface; works identically in the browser. Directly improves the "locate" half of B3 with no new failure modes.
 
@@ -219,7 +219,7 @@ Reasons:
 
 1. It is the only option that literally delivers B3's sentence: one protocol shared by all three consumers. B, C and D each leave at least one consumer on a different mechanism.
 2. The two hardest pieces already have seams: `WorkspaceCensus::compile(files)` (`self_ast_census.rs:293`) takes an explicit target set, and `resolve_in(census, requirement)` (`requirement_resolution.rs:36`) takes a census. Option A adds `WorkspaceCensus::of_directory` and changes nothing else in resolution. That is generalization of an existing boundary, which the doctrine prefers over a new mechanism.
-3. It keeps default-deny: the sandbox stays an allowlist, and the new entries are *subcommand-scoped* rows in seed data (`git clone <url> <dir>`, `git -C <root> diff`, …), reviewable as data, exactly as `data/seed/shell-intents.lino` already declares pre/post conditions for `mv`/`cp` (`src/agentic_coding/mutating_action.rs:29-33`).
+3. It keeps default-deny: the sandbox stays an allowlist, and the new entries are *subcommand-scoped* rows in seed data (`git clone <url> <dir>`, `git -C <root> diff`, …), reviewable as data, exactly as `data/seed/shell-intents.lino` already declares pre/post conditions for `mv`/`cp` (`rust/src/agentic_coding/mutating_action.rs:29-33`).
 4. It makes both ladders honest at once: the #848 ladder gets a defined tree instead of the operator's checkout (RC5), and the #1085 ladder can delete its 32 pre-authored rules and re-measure (RC6). A ratchet over *authored rules* is a memoization ratchet; a ratchet over *located-and-edited leaves* is a capability ratchet.
 5. Docker stays optional. Option B's coupling would make the capability disappear on macOS, and `ensure_swebench_runtime` (`grade.rs:333-362`) already proves how easily a missing daemon converts a capability question into an availability row.
 
@@ -252,15 +252,15 @@ reconciliation leaf has nothing to rename:
 
 | Contract (plan 00 §4.4) | Implementation | Module |
 | --- | --- | --- |
-| `WorkspaceSpec` | `WorkspaceSpec { origin, base_commit, sparse_paths }` | `src/repository_workspace/clone.rs` |
-| `Workspace::open` | `RepositoryWorkspace::open` / `::adopt` | `src/repository_workspace/mod.rs` |
-| `Location` | `Location { relative_path, symbol, how: LocationEvidence }` | `src/repository_workspace/locate.rs` |
-| `Workspace::locate` | `locate_targets(workspace, need)` | `src/repository_workspace/locate.rs` |
-| `Change` | reuses `structured_edit` / `link_edit_rules` / `workspace_change` shapes | `src/repository_workspace/edit.rs` |
-| `RunCommand` | `RunCommand { line, names }` — a named-test invocation or a build (plan 00 §9 R6) | `src/repository_workspace/verify.rs` |
-| `Evidence` | plan 05's single record in `src/execution_evidence.rs`, emitted by `edit` and `run`; this module adds no fields (plan 00 §9 R2) | `src/execution_evidence.rs` |
-| `UnifiedDiff` | `UnifiedDiff(String)`, computed from the tree | `src/repository_workspace/diff.rs` |
-| `Need` | plan 00 §4.1 link record; consumed, never redefined here | `src/meta_frame.rs` + plan 05 |
+| `WorkspaceSpec` | `WorkspaceSpec { origin, base_commit, sparse_paths }` | `rust/src/repository_workspace/clone.rs` |
+| `Workspace::open` | `RepositoryWorkspace::open` / `::adopt` | `rust/src/repository_workspace/mod.rs` |
+| `Location` | `Location { relative_path, symbol, how: LocationEvidence }` | `rust/src/repository_workspace/locate.rs` |
+| `Workspace::locate` | `locate_targets(workspace, need)` | `rust/src/repository_workspace/locate.rs` |
+| `Change` | reuses `structured_edit` / `link_edit_rules` / `workspace_change` shapes | `rust/src/repository_workspace/edit.rs` |
+| `RunCommand` | `RunCommand { line, names }` — a named-test invocation or a build (plan 00 §9 R6) | `rust/src/repository_workspace/verify.rs` |
+| `Evidence` | plan 05's single record in `rust/src/execution_evidence.rs`, emitted by `edit` and `run`; this module adds no fields (plan 00 §9 R2) | `rust/src/execution_evidence.rs` |
+| `UnifiedDiff` | `UnifiedDiff(String)`, computed from the tree | `rust/src/repository_workspace/diff.rs` |
+| `Need` | plan 00 §4.1 link record; consumed, never redefined here | `rust/src/meta_frame.rs` + plan 05 |
 
 `Workspace::locate` takes a `Need`, not a `&str`: the requirement arrives as the
 `need.subject` span in `need.language`, which is what makes the five held-out
@@ -287,7 +287,7 @@ data/seed/repository-task-verbs.lino
 data/seed/repository-command-allowlist.lino
 ```
 
-Every one of `RepositoryWorkspace`, `WorkspaceProtocol`, `WorkspaceSpec`, `UnifiedDiff`, `repository_workspace`, `of_directory`, `locate_targets`, `base_commit` returns **zero** hits from `grep -rn` over `src`, `tests`, `scripts`, `data` on the baseline, so no name collides. `NeedLedger` (`src/meta_frame.rs:644`), `RecipeProgress` (`src/agentic_coding/command_reroute.rs:163`), `ExecutionStatus` (`src/coding/catalog/types.rs:203`), `ProbeOutcome` (`src/reasoning_standard/refutation.rs:59`) and `AgentWorkspace` (`src/agent.rs:177`) are taken and are *reused*, not shadowed. `Location`, `Change`, `RunCommand` and `Evidence` are contract names owned by plan 00; this plan defines them in `src/repository_workspace/` only if plan 05 has not already placed them, and adopts plan 05's definitions otherwise.
+Every one of `RepositoryWorkspace`, `WorkspaceProtocol`, `WorkspaceSpec`, `UnifiedDiff`, `repository_workspace`, `of_directory`, `locate_targets`, `base_commit` returns **zero** hits from `grep -rn` over `src`, `tests`, `scripts`, `data` on the baseline, so no name collides. `NeedLedger` (`rust/src/meta_frame.rs:644`), `RecipeProgress` (`rust/src/agentic_coding/command_reroute.rs:163`), `ExecutionStatus` (`rust/src/coding/catalog/types.rs:203`), `ProbeOutcome` (`rust/src/reasoning_standard/refutation.rs:59`) and `AgentWorkspace` (`rust/src/agent.rs:177`) are taken and are *reused*, not shadowed. `Location`, `Change`, `RunCommand` and `Evidence` are contract names owned by plan 00; this plan defines them in `rust/src/repository_workspace/` only if plan 05 has not already placed them, and adopts plan 05's definitions otherwise.
 
 ### Types and signatures
 
@@ -407,7 +407,7 @@ pub fn locate_targets(
 ///
 /// **reconciled: was `Command`; now `RunCommand`, because `Command` is already
 /// taken twice — by `std::process::Command` and by clap's `Command` enum in
-/// `src/main.rs` — and this plan's own draft used `line` in the struct and
+/// `rust/src/main.rs` — and this plan's own draft used `line` in the struct and
 /// `command` at the SWE-bench call site (plan 00 §9 R6).**
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RunCommand {
@@ -418,7 +418,7 @@ pub struct RunCommand {
 }
 
 // Where the named tests actually execute is `crate::execution_box::ExecutionBackend`,
-// declared by plan 06 (`src/execution_box/mod.rs`) and consumed here.
+// declared by plan 06 (`rust/src/execution_box/mod.rs`) and consumed here.
 //
 // **reconciled: was `VerifyBackend { Sandbox, SweBenchImage, BoxImage }` declared
 // in this module; now plan 06's `ExecutionBackend { HostSandbox, Box { image },
@@ -439,7 +439,7 @@ pub fn run_named_tests(
     backend: &crate::execution_box::ExecutionBackend,
 ) -> Result<Evidence, WorkspaceError>;
 
-// `Evidence` is plan 05's single definition in `src/execution_evidence.rs`
+// `Evidence` is plan 05's single definition in `rust/src/execution_evidence.rs`
 // (plan 00 §4.3). This module declares no record of its own.
 //
 // **reconciled: this plan's draft declared a second `Evidence` struct carrying
@@ -568,7 +568,7 @@ repository_command_allowlist
     mutating "false"
 ```
 
-`src/agent.rs:642-657` `resolve_allowed_program` gains one arm that consults this table instead of growing a hard-coded list:
+`rust/src/agent.rs:642-657` `resolve_allowed_program` gains one arm that consults this table instead of growing a hard-coded list:
 
 ```rust
 fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
@@ -582,11 +582,11 @@ fn resolve_allowed_program(program: &str) -> Result<PathBuf, AgentError> {
 }
 ```
 
-The `other =>` default-deny arm survives verbatim; what changes is that the allowlist is reviewable data with per-command pre/post conditions, exactly as `data/seed/shell-intents.lino` already declares them for `mv` and `cp` (`src/agentic_coding/mutating_action.rs:29-33`, `src/seed/shell_intents.rs:92-102`).
+The `other =>` default-deny arm survives verbatim; what changes is that the allowlist is reviewable data with per-command pre/post conditions, exactly as `data/seed/shell-intents.lino` already declares them for `mv` and `cp` (`rust/src/agentic_coding/mutating_action.rs:29-33`, `rust/src/seed/shell_intents.rs:92-102`).
 
 ### SWE-bench conversion
 
-`src/external_benchmarks/cases.rs:152-166` stops manufacturing a prompt and starts manufacturing a task:
+`rust/src/external_benchmarks/cases.rs:152-166` stops manufacturing a prompt and starts manufacturing a task:
 
 ```rust
 "swebench_lite" => Ok(BenchmarkCase {
@@ -610,7 +610,7 @@ The `other =>` default-deny arm survives verbatim; what changes is that the allo
 
 `BenchmarkCase` gains `pub repository: Option<WorkspaceSpec>` and `pub tests: Option<RunCommand>`; every existing suite leaves both `None`, so `cases.rs:60-151` is untouched.
 
-`src/external_benchmarks/mod.rs:150-156` gains one branch:
+`rust/src/external_benchmarks/mod.rs:150-156` gains one branch:
 
 ```rust
 let responses = cases
@@ -632,7 +632,7 @@ Docker remains optional: `ExecutionBackend::SweBenchImage` is chosen only when `
 
 ### `#1085` ladder conversion
 
-`experiments/issue_1028_agent_cli_ladder/run.sh` keeps `leaves.tsv` (the 32 requirements) and **deletes `rules/L01.lino` … `rules/L32.lino`**. Each leaf becomes `locate_targets(workspace, need)` followed by the existing `link_edit_rules::apply_link_edit` (`src/agentic_coding/link_edit_rules.rs:177`) selected by shape, not by a pre-authored rule id. `data/meta/ladder-ratchet.lino` gains a second ratcheted number so the change is visible and honest:
+`experiments/issue_1028_agent_cli_ladder/run.sh` keeps `leaves.tsv` (the 32 requirements) and **deletes `rules/L01.lino` … `rules/L32.lino`**. Each leaf becomes `locate_targets(workspace, need)` followed by the existing `link_edit_rules::apply_link_edit` (`rust/src/agentic_coding/link_edit_rules.rs:177`) selected by shape, not by a pre-authored rule id. `data/meta/ladder-ratchet.lino` gains a second ratcheted number so the change is visible and honest:
 
 ```
   leaf_nodes_selected 32
@@ -645,7 +645,7 @@ The first number stays as the historical record; the second is what this plan mo
 
 ### `solve --model formal-ai` as an attributed authoring path
 
-New subcommand in `src/main.rs` (`Command::Solve` — clap's own `Command` enum at `src/main.rs:596-698`, unrelated to the contract type above) and `src/cli_solve.rs`:
+New subcommand in `rust/src/main.rs` (`Command::Solve` — clap's own `Command` enum at `rust/src/main.rs:596-698`, unrelated to the contract type above) and `rust/src/cli_solve.rs`:
 
 ```rust
 /// Arguments for `formal-ai solve`.
@@ -686,7 +686,7 @@ Formal-AI-Evidence: %s
 Formal-AI-Pull-Request: %s
 ```
 
-and `scripts/self-hosting-metric.rs` reads them (`SESSION_TRAILER`/`EVIDENCE_TRAILER`/`PULL_REQUEST_TRAILER` at `:30-32`, `MODEL_TRAILER` via `scripts/self-hosting-attribution.rs`). `run_solve` emits the identical four lines, writes the session id and the raw protocol trace under `--evidence`, and — because `commit_has_formal_ai_evidence` (`scripts/self-hosting-metric.rs:251-296`) requires each session id to appear *inside* an evidence file and the model string to be named there — writes `formal-ai/<CARGO_PKG_VERSION>` into the evidence bundle verbatim. The `--no-commit` default means mutation is opt-in, matching `src/contribution_write_path.rs`'s refuse-by-default ladder (PR #1027, R1021-x) and `data/meta/self-development-pull-request-contract.lino`.
+and `scripts/self-hosting-metric.rs` reads them (`SESSION_TRAILER`/`EVIDENCE_TRAILER`/`PULL_REQUEST_TRAILER` at `:30-32`, `MODEL_TRAILER` via `scripts/self-hosting-attribution.rs`). `run_solve` emits the identical four lines, writes the session id and the raw protocol trace under `--evidence`, and — because `commit_has_formal_ai_evidence` (`scripts/self-hosting-metric.rs:251-296`) requires each session id to appear *inside* an evidence file and the model string to be named there — writes `formal-ai/<CARGO_PKG_VERSION>` into the evidence bundle verbatim. The `--no-commit` default means mutation is opt-in, matching `rust/src/contribution_write_path.rs`'s refuse-by-default ladder (PR #1027, R1021-x) and `data/meta/self-development-pull-request-contract.lino`.
 
 `scripts/author-change-with-formal-ai.sh` is then reduced to a thin wrapper over `formal-ai solve`, keeping its CLI for the workflow in `.github/workflows/self-authored-pull-request.yml` while the logic lives in Rust and is unit-testable.
 
@@ -694,13 +694,13 @@ and `scripts/self-hosting-metric.rs` reads them (`SESSION_TRAILER`/`EVIDENCE_TRA
 
 - A protocol step whose postcondition is not observed sets `ProtocolOutcome::stopped_at` and lists every unmet requirement in `open`. The answer says which step stopped and what was observed; it never says "done".
 - `run_named_tests` returning `MissingPrerequisite` is **not** a test failure and **not** a pass. It is recorded as an unsatisfied need, handed to Plan 06, and the run reports "the named tests did not run because `<program>` is not available", with the exit code and stderr quoted.
-- A timeout is an `Evidence { timed_out: true, .. }` with the elapsed time and the deadline stated. It is a failure of the run, not a budget that silently truncates work: `src/agent.rs:338-395` already reaps the child and reports `timed_out` honestly, and `PYTHON_TIME_BUDGET_FLOOR` (`agent.rs:49`) documents why a floor exists — it is a backstop against start-up latency deciding an outcome, not an allowance.
+- A timeout is an `Evidence { timed_out: true, .. }` with the elapsed time and the deadline stated. It is a failure of the run, not a budget that silently truncates work: `rust/src/agent.rs:338-395` already reaps the child and reports `timed_out` honestly, and `PYTHON_TIME_BUDGET_FLOOR` (`agent.rs:49`) documents why a floor exists — it is a backstop against start-up latency deciding an outcome, not an allowance.
 - `locate_targets` returning empty on ambiguity is the existing `requirement_resolution::resolve_in` contract (`requirement_resolution.rs:28-34`: "a remaining tie is ambiguity and resolves to nothing rather than to a guess"); the protocol reports the ambiguity and the candidates.
 - A diff that does not apply cleanly to the base commit is refused before it is offered as an answer.
 
 ### Forget-and-rediscover
 
-The protocol document and the command allowlist are both data with content ids. `formal-ai learn cycle` already replays a frontier; the new gate is: delete `data/meta/repository-workspace-protocol.lino`, run the protocol reconstruction command, and assert the regenerated document's content id equals the committed one — the same shape `src/self_ast_census.rs:413` `content_id()` and `drift_report` (`:542`) already use for the census.
+The protocol document and the command allowlist are both data with content ids. `formal-ai learn cycle` already replays a frontier; the new gate is: delete `data/meta/repository-workspace-protocol.lino`, run the protocol reconstruction command, and assert the regenerated document's content id equals the committed one — the same shape `rust/src/self_ast_census.rs:413` `content_id()` and `drift_report` (`:542`) already use for the census.
 
 ## Tests first — held-out cases in en/ru/hi/zh/es with actual prompt text
 
@@ -717,7 +717,7 @@ fixture or ladder rule may contain their wording, and
 | zh | `在提交 {base} 的仓库里，可信搜索来源的列表缺少引语百科。请把它加进去，保持文件有效，并运行覆盖该列表的测试。` |
 | es | `En el repositorio en el commit {base}, la lista de proveedores de búsqueda de confianza no incluye la enciclopedia de citas. Añádela, mantén el archivo válido y ejecuta las pruebas que cubren esa lista.` |
 
-The target is `WEB_SEARCH_PROVIDERS` in `src/web_search_core.rs` — the same
+The target is `WEB_SEARCH_PROVIDERS` in `rust/src/web_search_core.rs` — the same
 declaration ladder leaf `L01` names (`experiments/issue_1028_agent_cli_ladder/leaves.tsv:1`)
 — but the prompts name neither the file nor the constant, so passing requires
 `locate_targets` via the census, not a pre-authored rule.
@@ -736,28 +736,28 @@ A second held-out family targets a **foreign, non-Rust** tree so `LocationEviden
 
 | Path | Name | Asserts |
 | --- | --- | --- |
-| `tests/unit/issue_1138_repository_workspace.rs` | `clone_at_base_refuses_a_branch_name` | `WorkspaceSpec { base_commit: "main", .. }` → `WorkspaceError::NotACommit`, no directory created. |
+| `rust/tests/unit/issue_1138_repository_workspace.rs` | `clone_at_base_refuses_a_branch_name` | `WorkspaceSpec { base_commit: "main", .. }` → `WorkspaceError::NotACommit`, no directory created. |
 | same | `clone_at_base_checks_out_the_exact_commit` | after `open`, `base_commit()` equals the spec and `git rev-parse HEAD` in the tree agrees. |
 | same | `workspace_is_isolated_from_the_ambient_checkout` | writing in the workspace leaves `CARGO_MANIFEST_DIR` byte-identical. |
 | same | `diff_is_empty_for_an_untouched_clone` | `diff()` == `""`. |
 | same | `diff_round_trips_through_git_apply` | the produced diff applies to a second clone at the same base and reproduces the edited tree byte for byte. |
-| `tests/unit/issue_1138_locate_targets.rs` | `census_locates_a_declaration_the_prompt_never_names` | each of the five prompts above resolves to `src/web_search_core.rs` / `WEB_SEARCH_PROVIDERS`. |
+| `rust/tests/unit/issue_1138_locate_targets.rs` | `census_locates_a_declaration_the_prompt_never_names` | each of the five prompts above resolves to `rust/src/web_search_core.rs` / `WEB_SEARCH_PROVIDERS`. |
 | same | `ambiguity_resolves_to_nothing` | a requirement matching two declarations returns `vec![]` and names both candidates. |
 | same | `literal_occurrence_locates_in_a_python_tree` | a three-file Python fixture with one occurrence of `DEFAULT_TIMEOUT` resolves; two occurrences do not. |
-| `tests/unit/issue_1138_named_tests.rs` | `missing_interpreter_is_a_prerequisite_not_a_failure` | a fixture whose runner is `kotlinc` yields `MissingPrerequisite { program: "kotlinc", exit_code: Some(127), .. }`, and no `Evidence` row is written. |
+| `rust/tests/unit/issue_1138_named_tests.rs` | `missing_interpreter_is_a_prerequisite_not_a_failure` | a fixture whose runner is `kotlinc` yields `MissingPrerequisite { program: "kotlinc", exit_code: Some(127), .. }`, and no `Evidence` row is written. |
 | same | `timeout_is_reported_with_the_deadline_and_elapsed` | `timed_out: true`, both numbers present, no pass claimed. |
-| `tests/unit/issue_1138_command_allowlist.rs` | `an_unlisted_program_is_still_refused` | `resolve_allowed_program("curl")` → `UnsupportedCommand`. |
+| `rust/tests/unit/issue_1138_command_allowlist.rs` | `an_unlisted_program_is_still_refused` | `resolve_allowed_program("curl")` → `UnsupportedCommand`. |
 | same | `an_unlisted_git_subcommand_is_refused` | `git push` is refused although `git clone` is allowed. |
 | same | `allowlist_rows_come_from_seed_not_from_rust` | the set of allowed programs equals the seed table's programs ∪ the six legacy ones. |
-| `tests/unit/issue_1138_solve_cli.rs` | `solve_refuses_to_commit_by_default` | without `--commit`, the tree is unchanged and the diff is printed. |
+| `rust/tests/unit/issue_1138_solve_cli.rs` | `solve_refuses_to_commit_by_default` | without `--commit`, the tree is unchanged and the diff is printed. |
 | same | `solve_writes_all_four_trailers` | the commit message contains the four trailer lines and the evidence bundle names `formal-ai/<version>`. |
 | same | `solve_with_a_hosted_model_is_not_an_authoring_path` | `--model claude-…` refuses to write the `Formal-AI-Model` trailer. |
-| `tests/unit/specification/repository_workspace_protocol.rs` | `protocol_document_matches_the_live_source` | every `meta_step.source_file` exists, `order` is contiguous 1..n, every `id` is matched by a `ProtocolStep` arm — the same grounding contract `tests/unit/specification/agentic_meta_algorithm.rs` applies to `data/meta/agentic-coding-recipe.lino`. |
+| `rust/tests/unit/specification/repository_workspace_protocol.rs` | `protocol_document_matches_the_live_source` | every `meta_step.source_file` exists, `order` is contiguous 1..n, every `id` is matched by a `ProtocolStep` arm — the same grounding contract `rust/tests/unit/specification/agentic_meta_algorithm.rs` applies to `data/meta/agentic-coding-recipe.lino`. |
 | same | `protocol_document_is_rediscoverable` | delete-and-regenerate reproduces the committed content id. |
-| `tests/integration/issue_1138_swebench_case.rs` | `swebench_case_carries_a_clone_spec` | the parsed case has `repository: Some(_)` with a 40-char base commit and non-empty `FAIL_TO_PASS`. |
+| `rust/tests/integration/issue_1138_swebench_case.rs` | `swebench_case_carries_a_clone_spec` | the parsed case has `repository: Some(_)` with a 40-char base commit and non-empty `FAIL_TO_PASS`. |
 | same *(`#[ignore]`, network)* | `one_lite_instance_runs_the_whole_protocol` | clone → locate → edit → verify → diff, with the diff recorded whatever it is. |
-| `tests/unit/docs_requirements/issue_1138.rs` | `requirements_shard_matches_the_plan` | the new `docs/requirements/issue-1138-…` shard names every R1138-3-x id used here. |
-| `tests/source/source_tests/repository_workspace/mod.rs` | `module_files_stay_under_the_size_ceiling` | the existing `scripts/check-file-size.rs` contract for the new directory. |
+| `rust/tests/unit/docs_requirements/issue_1138.rs` | `requirements_shard_matches_the_plan` | the new `docs/requirements/issue-1138-…` shard names every R1138-3-x id used here. |
+| `rust/tests/source/source_tests/repository_workspace/tests.rs` | `module_files_stay_under_the_size_ceiling` | the existing `scripts/check-file-size.rs` contract for the new directory. |
 
 ### Gates and ratchets
 
@@ -765,7 +765,7 @@ A second held-out family targets a **foreign, non-Rust** tree so `LocationEviden
 2. `data/meta/debt-ratchet.lino` gains `authored_ladder_rules` with the current value `32`; it may only **fall**, reaching `0` when RC6 is closed.
 3. A new `data/meta/ci-gates/` row `repository_workspace_protocol` with its justification (the gate-justification requirement of R1085-16).
 4. `.github/workflows/external-benchmarks.yml` `swebench_slice` default rises from `1` to `23` (the whole Lite dev split) once one instance completes the protocol without `benchmark_unavailable`, and the ledger records whatever the score is.
-5. The existing `benchmark ratchet` (`src/external_benchmarks/ratchet.rs`) keeps `0/1` as the floor until a run beats it; nothing in this plan may lower a recorded floor.
+5. The existing `benchmark ratchet` (`rust/src/external_benchmarks/ratchet.rs`) keeps `0/1` as the floor until a run beats it; nothing in this plan may lower a recorded floor.
 
 ### Benchmark commands — measure and record whatever it is
 
@@ -796,20 +796,20 @@ Every one of these writes its number to a ledger before anything is tuned. A
 
 ## Implementation leaves — ordered, each individually verifiable and commit-sized
 
-- [x] **L1.** Add `WorkspaceCensus::of_directory(root)` to `src/self_ast_census.rs` beside the existing `compile(files)` (`:293`). Test: a three-file fixture directory censuses identically to `compile` on the same `(path, source)` pairs.
-- [x] **L2.** Add `src/repository_workspace/clone.rs` with `WorkspaceSpec` and `clone_at_base`. Test: exact-commit checkout, branch-name refusal, deterministic tree.
-- [x] **L3.** Add `data/seed/repository-command-allowlist.lino` and route `src/agent.rs:642-657`'s `other =>` arm through it, keeping the default-deny arm. Test: `curl` refused, `git push` refused, `git clone` allowed, allowlist set equals the seed table.
-- [x] **L4.** Add `src/repository_workspace/mod.rs` with `RepositoryWorkspace::{open, adopt, root, base_commit, source_files, read, write}`. Test: isolation from the ambient checkout.
-- [x] **L5.** Add `src/repository_workspace/diff.rs` `unified_diff` and `RepositoryWorkspace::diff`. Test: empty diff for an untouched clone; `git apply` round trip.
-- [x] **L6.** Add `src/repository_workspace/locate.rs` `locate_targets`, delegating Rust trees to `requirement_resolution::resolve_in` unchanged. Test: the five held-out prompts and the ambiguity case.
-- [x] **L7.** Add `src/repository_workspace/verify.rs` `Command`, `ExecutionBackend`, `run_named_tests`, `Evidence`, and `WorkspaceError::MissingPrerequisite`. Test: missing interpreter, timeout, pass/fail split.
-- [x] **L8.** Add `data/meta/repository-workspace-protocol.lino` and `WorkspaceProtocol::{load, parse, execute}` plus `tests/unit/specification/repository_workspace_protocol.rs`. Test: source-file grounding, contiguous order, rediscovery content id.
-- [x] **L9.** Wire the protocol's per-step observations into `NeedLedger` rows so no step is `Satisfied` without an execution record (`src/meta_frame.rs:644-700`). Test: a step that did not run leaves its need `Planned`, never `Satisfied`.
+- [x] **L1.** Add `WorkspaceCensus::of_directory(root)` to `rust/src/self_ast_census.rs` beside the existing `compile(files)` (`:293`). Test: a three-file fixture directory censuses identically to `compile` on the same `(path, source)` pairs.
+- [x] **L2.** Add `rust/src/repository_workspace/clone.rs` with `WorkspaceSpec` and `clone_at_base`. Test: exact-commit checkout, branch-name refusal, deterministic tree.
+- [x] **L3.** Add `data/seed/repository-command-allowlist.lino` and route `rust/src/agent.rs:642-657`'s `other =>` arm through it, keeping the default-deny arm. Test: `curl` refused, `git push` refused, `git clone` allowed, allowlist set equals the seed table.
+- [x] **L4.** Add `rust/src/repository_workspace/mod.rs` with `RepositoryWorkspace::{open, adopt, root, base_commit, source_files, read, write}`. Test: isolation from the ambient checkout.
+- [x] **L5.** Add `rust/src/repository_workspace/diff.rs` `unified_diff` and `RepositoryWorkspace::diff`. Test: empty diff for an untouched clone; `git apply` round trip.
+- [x] **L6.** Add `rust/src/repository_workspace/locate.rs` `locate_targets`, delegating Rust trees to `requirement_resolution::resolve_in` unchanged. Test: the five held-out prompts and the ambiguity case.
+- [x] **L7.** Add `rust/src/repository_workspace/verify.rs` `Command`, `ExecutionBackend`, `run_named_tests`, `Evidence`, and `WorkspaceError::MissingPrerequisite`. Test: missing interpreter, timeout, pass/fail split.
+- [x] **L8.** Add `data/meta/repository-workspace-protocol.lino` and `WorkspaceProtocol::{load, parse, execute}` plus `rust/tests/unit/specification/repository_workspace_protocol.rs`. Test: source-file grounding, contiguous order, rediscovery content id.
+- [x] **L9.** Wire the protocol's per-step observations into `NeedLedger` rows so no step is `Satisfied` without an execution record (`rust/src/meta_frame.rs:644-700`). Test: a step that did not run leaves its need `Planned`, never `Satisfied`.
 - [x] **L10.** Widen `BenchmarkCase` with `repository` / `tests`; convert `cases.rs:152-166`; add the `solve_repository_case` branch at `mod.rs:150-156`. Test: parsed case carries a 40-char base commit; every other suite still has `None`.
 - [ ] **L11.** Run one SWE-bench Lite instance end to end and append the honest row to `data/benchmarks/external-results.lino`. No tuning in this commit.
-- [x] **L12.** Add `src/cli_solve.rs` + `Command::Solve` in `src/main.rs`, refusing to commit by default. Test: the three `solve_cli` cases.
+- [x] **L12.** Add `rust/src/cli_solve.rs` + `Command::Solve` in `rust/src/main.rs`, refusing to commit by default. Test: the three `solve_cli` cases.
 - [x] **L13.** Emit the four trailers and the evidence bundle from `run_solve`; reduce `scripts/author-change-with-formal-ai.sh` to a wrapper. Test: `scripts/self-hosting-attribution.rs::model_attribution` accepts the produced commit; a hosted model is refused.
-- [x] **L14.** Convert `experiments/issue_847_coding_ladder/run_coding_ladder.sh` (today `cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]` at `run_coding_ladder.sh:196`) to `formal-ai solve --repository . --base-commit …`; rerun; record the new 130-task number whatever it is. **This commit must also update `tests/unit/issue_848_coding_ladder.rs:532-560`, which pins nine exact substrings of that script** (`"[\"rustc\", \"--edition=2024\""`, `"rust_target_existed[created]"`, `"\"dataset_total\": len(all_tasks)"`, `"\"complete\": not only"`, `"results-partial-$FILTER_SLUG.json"`, `"expect_from_file"`, `"re.MULTILINE"`, and both lines of the `server_started` / `not_measured` predicate at `run_coding_ladder.sh:284-288`). Every pinned semantic must survive; only the invocation line changes.
+- [x] **L14.** Convert `experiments/issue_847_coding_ladder/run_coding_ladder.sh` (today `cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]` at `run_coding_ladder.sh:196`) to `formal-ai solve --repository . --base-commit …`; rerun; record the new 130-task number whatever it is. **This commit must also update `rust/tests/unit/issue_848_coding_ladder.rs:532-560`, which pins nine exact substrings of that script** (`"[\"rustc\", \"--edition=2024\""`, `"rust_target_existed[created]"`, `"\"dataset_total\": len(all_tasks)"`, `"\"complete\": not only"`, `"results-partial-$FILTER_SLUG.json"`, `"expect_from_file"`, `"re.MULTILINE"`, and both lines of the `server_started` / `not_measured` predicate at `run_coding_ladder.sh:284-288`). Every pinned semantic must survive; only the invocation line changes.
   **Closed (2026-09-23). The conversion and pin halves landed 2026-09-19; the
   measurement half landed with run 35783073283 (branch worktree-issue-1138,
   9d98e28ad), the first complete post-conversion run — 20/130, L1 0/16, no
@@ -845,7 +845,7 @@ the leaf must pass in this worktree first.
 | L10 | `BenchmarkCase` carries optional `WorkspaceSpec` / `RunCommand`; only SWE-bench populates them and the runner selects `solve_repository_case`. | Pinned integration parser test verified green on 2026-09-18; leaf checked. |
 | L11 | The ignored live one-instance test exists. No new network/container execution has been observed in this close-out, so no result may be appended. | Live clone, official evaluator run, and honest external-results row. |
 | L12 | `formal-ai solve` is registered and defaults to an isolated, non-committing run; the three required CLI behaviours have unit coverage. | Focused solve tests verified green on 2026-09-18; leaf checked. |
-| L13 | `run_solve` writes four trailers and commits the same model-bearing evidence bundle as its source edit, and the produced commit is now proved against the canonical attribution parser (`solve_attribution::solve_commit_payload_is_accepted_by_the_canonical_attribution_parser`, green 2026-09-18). The wrapper reduction landed 2026-09-19: `scripts/author-change-with-formal-ai.sh` is a thin translator onto `formal-ai solve`, the loop itself lives in `src/authoring_loop.rs` (behaviorally proved by `ci_cd::authoring_effects` and `solve_attribution::the_live_authoring_loop_lands_a_commit_the_canonical_parser_accepts`, green 2026-09-19 — four trailers in one commit, producer-naming evidence, framed-events-only capture, bounded readiness probe, seed replays refused as authorship), and the wrapper shape stays pinned by `ci_cd::issue_1069::the_authorship_route_is_a_wrapper_over_solve_and_never_publishes`. | Leaf checked. |
+| L13 | `run_solve` writes four trailers and commits the same model-bearing evidence bundle as its source edit, and the produced commit is now proved against the canonical attribution parser (`solve_attribution::solve_commit_payload_is_accepted_by_the_canonical_attribution_parser`, green 2026-09-18). The wrapper reduction landed 2026-09-19: `scripts/author-change-with-formal-ai.sh` is a thin translator onto `formal-ai solve`, the loop itself lives in `rust/src/authoring_loop.rs` (behaviorally proved by `ci_cd::authoring_effects` and `solve_attribution::the_live_authoring_loop_lands_a_commit_the_canonical_parser_accepts`, green 2026-09-19 — four trailers in one commit, producer-naming evidence, framed-events-only capture, bounded readiness probe, seed replays refused as authorship), and the wrapper shape stays pinned by `ci_cd::issue_1069::the_authorship_route_is_a_wrapper_over_solve_and_never_publishes`. | Leaf checked. |
 | L14 | The coding ladder invokes `formal-ai solve`, validates stdout as a patch, then applies it before its existing judges. | Closed 2026-09-23 by run 35783073283 (9d98e28ad): 20/130 complete, zero `NOT MEASURED`, recorded as the discontinuous baseline. |
 | L14b | The path-filtered scheduled workflow, gate record and 65/130 ratchet exist. | Re-run its hermetic checker. |
 | L15 | The `--no-authored-rules` run mode, the disabled-rule result field, the `not_measured` ratchet row and the `authored_ladder_rules: 32` shrink-only ceiling all exist. | Only a real 32-leaf Agent CLI run may set the passing value. |
@@ -863,7 +863,7 @@ its word for "providers" (*proveedores*) embeds the English "prove", and
 `shell` handoff every other language received. A prefix surface's lead half is
 a phrase, so it now must occur as complete words — a word boundary is the text
 edge or a non-alphanumeric character, which keeps "¿Cuántos litros …" matching
-while "proveedores" does not (`src/rule_interpreter.rs`).
+while "proveedores" does not (`rust/src/rule_interpreter.rs`).
 `issue_1138_handler_promotions::a_prefix_surface_does_not_match_inside_an_embedding_word`
 pins the promotion side; `issue_1138_self_use_repository_workspace::chat_hands_repository_location_to_a_workspace_capable_client`
 pins the five-language handoff it restores.
@@ -874,7 +874,7 @@ The runner now observes `HEAD`, calls `formal-ai solve --repository .
 --base-commit <observed HEAD> --task <prompt> --evidence <per-task temp dir>`,
 captures stdout as the sole diff transport, checks it with `git apply --check`,
 and applies it explicitly before the unchanged effect, compiler and reset
-judges run. `tests/unit/issue_848_coding_ladder.rs` pins that invocation and
+judges run. `rust/tests/unit/issue_848_coding_ladder.rs` pins that invocation and
 transport while retaining every earlier semantic pin.
 
 The standalone, path-filtered `.github/workflows/coding-ladder.yml` runs weekly
@@ -917,14 +917,14 @@ plan 11 row, never as a second copy here.
 
 ## Risks and open questions
 
-1. **`git` in the sandbox.** Even subcommand-scoped, `git clone` fetches arbitrary remote content and `git` reads user config. Mitigation: `--no-checkout --filter=blob:none` plus an explicit checkout of the base commit, `GIT_CONFIG_COUNT=0` and `.env_clear()` (already the case at `src/agent.rs:361`), and a seed-declared origin allowlist for the authoring path. Open: whether SWE-bench's 12 upstream origins should be enumerated in seed or accepted as "any `https://github.com/` origin named by the dataset".
+1. **`git` in the sandbox.** Even subcommand-scoped, `git clone` fetches arbitrary remote content and `git` reads user config. Mitigation: `--no-checkout --filter=blob:none` plus an explicit checkout of the base commit, `GIT_CONFIG_COUNT=0` and `.env_clear()` (already the case at `rust/src/agent.rs:361`), and a seed-declared origin allowlist for the authoring path. Open: whether SWE-bench's 12 upstream origins should be enumerated in seed or accepted as "any `https://github.com/` origin named by the dataset".
 2. **Disk.** SWE-bench Lite's 23 dev instances are large Python repositories; `scripts/free-runner-disk.sh:20-26` already deletes SDKs to make room for box images. Open: whether `sparse_paths` can be derived from the issue text well enough to avoid full clones, and what `scripts/check-disk-usage-policy.rs` should say about the clone cache.
 3. **Diff production without a dependency.** The repository keeps a deliberately thin dependency tree (`.github/workflows/stock-rust-install.yml:36-43`). A hand-written Myers diff is ~200 lines and must produce output `git apply` accepts exactly. Alternative: shell out to `git -C <root> diff` under the allowlist, which is simpler but makes `git` load-bearing for *reading* as well as cloning. Open; the tests (`diff_round_trips_through_git_apply`) are the same either way.
 4. **Non-Rust location quality.** `LocationEvidence::LiteralOccurrence` is deliberately weak. Every SWE-bench Lite instance is a Python repository, so the census path never helps there. This plan does not claim Python location works; it claims the *number* becomes measurable. Whether B1's concept lookup and B4's formalization are needed before the number moves is an open empirical question — record the number first.
 5. **Ladder discontinuity.** Converting the #848 ladder from the ambient checkout to a clone will change its score for reasons unrelated to capability (tasks that relied on the operator's dirty tree). The first post-conversion run must be recorded as a new baseline with the reason stated, not compared to 65/130 as if the measurement were the same.
 6. **Deleting the 32 authored rules.** `data/meta/ladder-ratchet.lino`'s `leaf_nodes_passing 15` is a committed floor. This plan does not lower it; it adds a second number. Open: whether the maintainer wants the authored-rule number retired entirely once the second number exceeds it.
 7. **Interaction with Plan 06.** Trace (c) stops at `kotlinc: command not found`. If Plan 06 lands first, the protocol's `MissingPrerequisite` becomes a requirement and the run continues; if this plan lands first, the run stops honestly. Both orders are acceptable; what is not acceptable is either plan claiming the other's result.
-8. **`solve` name.** `formal-ai solve` collides conceptually with `hive-mind solve` and with `UniversalSolver::solve`. `grep` shows no `Command::Solve` and no `"solve"` subcommand string in `src/main.rs`, so there is no code collision, but the documentation must be explicit that `formal-ai solve` is the repository-task entry point and `UniversalSolver::solve` remains the prompt entry point.
-9. **Brittle literal pins.** Three test modules assert exact substrings of the artifacts this plan edits: `tests/unit/issue_848_coding_ladder.rs:532-560` pins nine substrings of `run_coding_ladder.sh` and two `prompts.json` task shapes; `:617-666` pins the score strings `"38/130"`, `"61/130"`, `"62/130"`, `"65/130"` in `docs/case-studies/issue-848/README.md` (the `"65/130"` literal is at `tests/unit/issue_848_coding_ladder.rs:627`); `tests/unit/docs_requirements_issue_924.rs:82-97` pins five header substrings of `data/meta/self-hosting-ledger.lino`. Every one of these must be updated in the same commit as the artifact it pins, and none may be weakened to let a new number through. `REQUIREMENTS.md:1725-1745` and `docs/requirements/issue-0848-executable-coding-tasks.md:10` carry the same `65/130` line and must move together.
+8. **`solve` name.** `formal-ai solve` collides conceptually with `hive-mind solve` and with `UniversalSolver::solve`. `grep` shows no `Command::Solve` and no `"solve"` subcommand string in `rust/src/main.rs`, so there is no code collision, but the documentation must be explicit that `formal-ai solve` is the repository-task entry point and `UniversalSolver::solve` remains the prompt entry point.
+9. **Brittle literal pins.** Three test modules assert exact substrings of the artifacts this plan edits: `rust/tests/unit/issue_848_coding_ladder.rs:532-560` pins nine substrings of `run_coding_ladder.sh` and two `prompts.json` task shapes; `:669-722` pins the score strings `"38/130"`, `"61/130"`, `"62/130"`, `"65/130"` in `docs/case-studies/issue-848/README.md` (the `"65/130"` literal is at `rust/tests/unit/issue_848_coding_ladder.rs:681`); `rust/tests/unit/docs_requirements/issue_924.rs:82-97` pins five header substrings of `data/meta/self-hosting-ledger.lino`. Every one of these must be updated in the same commit as the artifact it pins, and none may be weakened to let a new number through. `REQUIREMENTS.md:1725-1745` and `docs/requirements/issue-0848-executable-coding-tasks.md:10` carry the same `65/130` line and must move together.
 10. **The 0.15 % figure is prose, not data.** Issue #1138's table cites "self-hosting share 0.15 % (58 of 38,373)". That number occurs exactly once in the repository, at `docs/case-studies/issue-710/plans/04-final-requirements-release-and-self-improvement.md:460-461`, as the output of a local `rust-script scripts/self-hosting-metric.rs` run; no ledger row has `percentage_basis_points "15"` or `changed_lines "38373"`, and it predates the failed strict measurement recorded at `docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:427-432`. Any claim this plan makes about moving the share must cite a ledger row in `data/meta/self-hosting-ledger.lino` (the newest is `tag "v0.350.0"`, `percentage_basis_points "171"`, `trailing_percentage_basis_points "389"` at lines 1214-1230), not that prose.
 11. **Attribution correctness.** PR #888's post-push audit (`docs/case-studies/issue-710/plans/07-prerequisite-discovery-bridge.md:427-441`) shows a trailer declaring `formal-ai/0.350.0` whose evidence never named that identifier, requiring an append-only retraction. `run_solve` must write the model identifier into the evidence bundle in the same commit, and L13's test must assert exactly that, or the same retraction will be needed again.
