@@ -280,8 +280,12 @@ jobs:
     name: Lint and Format Check
     runs-on: ubuntu-latest
     # Issue #1076 (D5): 12.7 min worst case was 84.4% of the old 15m cap -- a
-    # deadline, not a backstop. 25 puts it at 50.7% (check-job-headroom.rs).
-    timeout-minutes: 25
+    # deadline, not a backstop. 25 put that at 50.7%, but the gate set has
+    # grown since: run 35806556194 (a0745518a) consumed the whole 25 minutes
+    # and the cap killed it mid-gate in repository_workspace_protocol, which
+    # GitHub reports as cancelled. 45 keeps a measured demand of at least
+    # 25.2 minutes under 56% of the cap (check-job-headroom.rs warns at 70%).
+    timeout-minutes: 45
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-lint
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
