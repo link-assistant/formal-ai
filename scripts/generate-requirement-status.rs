@@ -91,7 +91,11 @@ fn test_path(text: &str, root: &Path) -> String {
             continue;
         };
         let candidate = &candidate[..end + 3];
-        if candidate.starts_with("tests/") && root.join(candidate).is_file() {
+        // The workspace move (plan 16 L1) put the Rust tests under `rust/`;
+        // shards name the new location, older trace rows the old one.
+        if (candidate.starts_with("tests/") || candidate.starts_with("rust/tests/"))
+            && root.join(candidate).is_file()
+        {
             return candidate.to_owned();
         }
     }

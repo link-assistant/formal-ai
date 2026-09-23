@@ -525,6 +525,28 @@ Removal from a public thread is not approval to retain another copy.
      only after re-reading the issue, the pull request, and the diff
      one more time.
 
+   **Delegate to Opus sub-agents only.** Sub-agents are always run on
+   the Opus model; the Fable model must never be used as a sub-agent
+   (project owner directive, 2026-09-15). Keep the agent count low —
+   the workstation is a notebook, and a fleet of agents competes with
+   the build for the same memory.
+
+   **Classify CI failures before touching them.** A branch with
+   tracked, owner-assigned reds (an allowlisted failing test, an
+   evidence gate awaiting a later wave, a rustfmt item already
+   assigned) is not an emergency; fix only failure classes that are
+   new to the branch, and record new standing reds in the owning plan
+   instead of churning the same site twice.
+
+   **Recover requirements from session transcripts.** When auditing
+   that every user directive made it into the requirements, recover
+   the user's messages from the session `.jsonl` transcripts with
+   `experiments/issue_1138_feedback_recovery/collect_user_feedback.py`
+   (it strips harness wrappers, agent reports, and cron echoes) and
+   diff the recovered directives against `docs/requirements/` — new
+   process or architecture notes discovered this way are recorded in
+   this file or the requirements shards, not left in chat history.
+
 5. **Add a changelog fragment**
 
    For any user-facing changes, create a changelog fragment:
