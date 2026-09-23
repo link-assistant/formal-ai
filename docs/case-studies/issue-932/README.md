@@ -63,7 +63,8 @@ The root cause is not in the installation handler. `data/seed/handler-precedence
 already ranks `installation_conversion` (42) ahead of `software_project` (46),
 but `MethodRegistry::ordered_method_names_for_relevants` hoists *any* method
 named by a `handler:<name>` relevant ahead of the whole precedence table. The
-promotion gates lived in one hardcoded array in `src/intent_formalization.rs`,
+promotion gates lived in one hardcoded array in `src/intent_formalization.rs`
+(in today's tree `rust/src/intent_formalization.rs`),
 and that array promoted `handler:software_project` and `handler:write_script`
 while never emitting `handler:installation_conversion`. A guide that says
 "create the project" and "build the project" therefore matched the promoted
@@ -71,9 +72,9 @@ software-project cues, and the declared precedence never got a chance to apply.
 
 The fix adds the missing promotion in declared order, so a prompt that fires
 both cues reaches the handler the seed already ranks first. The array moved to
-`src/intent_formalization/prompt_relevants.rs` in the same change: the parent
+`rust/src/intent_formalization/prompt_relevants.rs` in the same change: the parent
 module was at 897 of its reviewed 900-line ceiling
-(`tests/unit/ci-cd/issue_999.rs`), and the split follows the earlier
+(`rust/tests/unit/ci-cd/issue_999.rs`), and the split follows the earlier
 `write_program_request` split rather than shrinking the explanation.
 
 ## 4. Existing components and image survey
@@ -83,17 +84,24 @@ module was at 897 of its reviewed 900-line ceiling
 data in `data/meta/box-image-survey.lino` — the Agent-CLI-authored leaf — so a
 test, not a paragraph, is what stops the matrix naming an unpublished image.
 
-- Six per-language variants exist under the `konard` namespace: `box-rust`,
-  `box-python`, `box-js`, `box-go`, `box-java`, `box-ruby`. Every one publishes
-  the same semver ladder up to `2.4.0` plus `latest`, with `-amd64`/`-arm64`
-  suffixed manifests.
-- `2.4.0` is the newest semver tag present on *all six* variants, so it is the
-  tag the contract pins. `latest` was rejected: the check must not change
+- Eight repositories exist under the `konard` namespace: the full `box` image
+  plus seven per-language variants — `box-rust`, `box-python`, `box-js`,
+  `box-go`, `box-java`, `box-ruby`, and `box-kotlin`, which was published only
+  after the matrix had pinned its contract. `2.4.0` is the tag the contract
+  pins because it is the tag the whole matrix was verified against; the
+  registry ladder has continued since the pin (every published repository now
+  also carries `2.7.0` through `2.10.2`), and re-pinning is deliberately
+  deferred — a new tag earns trust only after every container leg re-runs
+  against it. `latest` was rejected from the start: the check must not change
   meaning between two runs of the same commit.
-- `konard/box-c`, `konard/box-cpp`, `konard/box-csharp` and `konard/box-dotnet`
-  do not exist. C, C++ and C# are therefore recorded as
-  `box_language_project_deferred` records naming the full `konard/box` image
-  they are waiting for, instead of being silently dropped from the matrix.
+- `konard/box-c`, `konard/box-cpp`, `konard/box-csharp`, `konard/box-dotnet`
+  and `konard/box-scala` do not exist. C, C++, C# and Scala are therefore
+  recorded as `box_language_project_deferred` records naming the full
+  `konard/box` image they are waiting for, instead of being silently dropped
+  from the matrix. Kotlin stays deferred too — its publication postdates the
+  pinned survey, so promoting it to a container-executed project is planned
+  follow-up and its record says so, rather than the contract silently drifting
+  from the survey that was re-run for it (2026-09-23, `raw-data/box-image-tags.log`).
 - Local sizes: `box-rust` 7.81 GB, `box-java` 7.07 GB, `box-python` 6.86 GB,
   `box-go` 6.72 GB, `box-ruby` 6.58 GB, `box-js` 4.21 GB. One runner cannot hold
   several of these next to a cargo build, which is why the CI leg is a matrix —
@@ -111,7 +119,7 @@ namespace, image tag, project directory, expected output, the four prompt
 locales, and one `box_language_project` record per language carrying its image,
 program file, code fence, prompt locale, optional shell prelude, whether the
 init needs network access, and the ordered traditional init steps.
-`src/box_language_projects.rs` reads it for Rust callers; both shell scripts
+`rust/src/box_language_projects.rs` reads it for Rust callers; both shell scripts
 read the same file with `awk`, so the matrix, the tests and the harness cannot
 drift apart.
 

@@ -93,7 +93,10 @@ fn the_loop_no_longer_claims_a_missing_fetch_capability() {
         .parent()
         .expect("the repository root sits one level above the crate");
     let mut offenders = Vec::new();
-    let mut pending = vec![root.join("src")];
+    // The sources moved under `rust/` when the crate grew its own workspace
+    // root (plan 16, L1); scan the live tree so the policy check cannot pass
+    // by looking where the sources used to be.
+    let mut pending = vec![root.join("rust/src")];
     while let Some(path) = pending.pop() {
         if path.is_dir() {
             pending.extend(

@@ -172,8 +172,13 @@ fn every_matrix_image_was_actually_found_on_the_registry() {
         contract.image_tag, survey.pinned_tag,
         "the matrix must pin the tag the survey found on every variant"
     );
+    // The crate lives one level below the repository root (plan 16 L1), so the
+    // cited log is resolved from the manifest dir, not the test's CWD.
+    let evidence = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../")
+        .join(&survey.evidence);
     assert!(
-        std::path::Path::new(&survey.evidence).exists(),
+        evidence.exists(),
         "the survey must cite a committed log, got {}",
         survey.evidence
     );

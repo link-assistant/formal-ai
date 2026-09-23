@@ -722,7 +722,7 @@ fn infer_kind(
     }
 }
 
-fn starts_with_question_word(normalized: &str) -> bool {
+pub(crate) fn starts_with_question_word(normalized: &str) -> bool {
     // The interrogative openers (the wh-words) are carried by the
     // `interrogative_opener` meaning in the seed, not hardcoded here. English and
     // Russian are head-initial, so the opener fronts the prompt and a prefix match
@@ -739,7 +739,7 @@ fn starts_with_question_word(normalized: &str) -> bool {
         })
 }
 
-fn contains_question_mark(prompt: &str) -> bool {
+pub(crate) fn contains_question_mark(prompt: &str) -> bool {
     prompt.contains('?') || prompt.contains('？')
 }
 

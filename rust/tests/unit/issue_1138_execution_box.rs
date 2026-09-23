@@ -147,29 +147,51 @@ fn a_missing_docker_daemon_is_a_refusal_not_a_skip() {
     }
 }
 
-/// The two toolchains that motivate prerequisite recovery have no dedicated
-/// image in the pinned registry survey. They must therefore remain explicit
-/// deferred contracts rather than silently borrowing the multi-gigabyte image
-/// or pretending execution was observed.
+/// The registry moved under the pinned survey: box-kotlin was published after
+/// the matrix pinned its contract, and box-scala remains unpublished. Both
+/// must stay explicit deferred contracts — kotlin's promotion to a container-
+/// executed project is planned follow-up; scala has no image at all — rather
+/// than silently borrowing the multi-gigabyte image or pretending execution
+/// was observed.
 #[test]
-fn kotlin_and_scala_are_deferred_when_the_survey_has_no_dedicated_image() {
+fn kotlin_and_scala_stay_deferred_against_the_pinned_survey() {
     let contract = box_language_contract();
     let survey = box_image_survey();
-    for (language, repository) in [("kotlin", "box-kotlin"), ("scala", "box-scala")] {
-        let project = contract
-            .deferred
+
+    let kotlin = contract
+        .deferred
+        .iter()
+        .find(|project| project.language == "kotlin")
+        .expect("kotlin: deferred project must be declared");
+    assert!(
+        kotlin.reason.contains("box-kotlin"),
+        "kotlin: the reason must name the image it defers"
+    );
+    assert!(
+        survey
+            .published
             .iter()
-            .find(|project| project.language == language)
-            .unwrap_or_else(|| panic!("{language}: deferred project must be declared"));
-        assert!(
-            project.reason.contains(repository),
-            "{language}: the reason must name the missing image"
-        );
-        assert!(
-            survey.missing.iter().any(|missing| missing == repository),
-            "{language}: the pinned survey must corroborate the deferral"
-        );
-    }
+            .any(|published| published == "box-kotlin"),
+        "kotlin: the survey records the publication the deferral explains"
+    );
+    assert!(
+        !survey.missing.iter().any(|missing| missing == "box-kotlin"),
+        "kotlin: a published repository must not be recorded missing"
+    );
+
+    let scala = contract
+        .deferred
+        .iter()
+        .find(|project| project.language == "scala")
+        .expect("scala: deferred project must be declared");
+    assert!(
+        scala.reason.contains("box-scala"),
+        "scala: the reason must name the missing image"
+    );
+    assert!(
+        survey.missing.iter().any(|missing| missing == "box-scala"),
+        "scala: the pinned survey must corroborate the deferral"
+    );
 }
 
 /// The Docker image's two environment declarations form one permission: both

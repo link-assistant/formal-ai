@@ -188,7 +188,7 @@ box_language_kotlin
   image "konard/box"
   code_fence "kotlin"
   program_file "Main.kt"
-  reason "no box-kotlin image was published in the pinned box image survey, so container execution is unavailable and prerequisite discovery must run"
+  reason "the box-kotlin image was published after the matrix pinned its contract, so its promotion to a container-executed project is planned follow-up and prerequisite discovery must run"
 box_language_scala
   record_type "box_language_project_deferred"
   language "scala"

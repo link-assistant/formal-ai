@@ -9,7 +9,7 @@ use std::sync::OnceLock;
 
 use crate::concept_lookup::ConceptSense;
 use crate::concepts::{ConceptQuery, lookup_concept_query};
-use crate::engine::{SymbolicAnswer, stable_id};
+use crate::engine::{SymbolicAnswer, normalize_prompt, stable_id};
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::seed::{self, ConceptRecord, localized_response};
@@ -95,15 +95,21 @@ pub fn answer_unknown_prompt(
     // belongs. A question that turns on an unresolved word has already been
     // looked up by the time this arm is reached; describing a search that
     // already ran and found nothing replaces the honest refusal with a
-    // brochure. One shape escapes: a bare term is itself a lookup request —
+    // brochure. Two shapes escape: a bare term is itself a lookup request —
     // the prompt is the term and nothing else — so the search is the answer
-    // in every language and the walk's verdict does not outrank it.
+    // in every language and the walk's verdict does not outrank it; and an
+    // instruction (issue #873, R873-1) names no single looked-up word for the
+    // walk's evidence to answer for, so an unresolved imperative stays a
+    // research trigger. The question shape is `?` in either width or a
+    // seed-carried interrogative opener fronting the prompt.
     let consult_walk_ran = log.events().iter().any(|event| {
         event.kind == "concept_lookup:miss" && miss_names_consulted_sources(&event.payload)
     });
+    let question_shape = crate::intent_formalization::contains_question_mark(prompt)
+        || crate::intent_formalization::starts_with_question_word(&normalize_prompt(prompt));
     if let Some(focus) = focus.as_deref().filter(|focus| {
         let bare_term_lookup = is_unresolved_bare_term_prompt(prompt, focus);
-        (!consult_walk_ran || bare_term_lookup)
+        (!consult_walk_ran || bare_term_lookup || !question_shape)
             && language_supported
             && (!config.offline || (bare_term_lookup && focus_is_specific(prompt, focus)))
     }) {
