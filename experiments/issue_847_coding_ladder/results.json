@@ -7,8 +7,8 @@
   },
   "summary": {
     "total": 130,
-    "passed": 20,
-    "failed": 110,
+    "passed": 24,
+    "failed": 106,
     "not_measured": 0,
     "by_level": {
       "L1": {
@@ -16,11 +16,11 @@
         "total": 16
       },
       "L4": {
-        "passed": 10,
+        "passed": 12,
         "total": 74
       },
       "L3": {
-        "passed": 8,
+        "passed": 10,
         "total": 28
       },
       "L2": {
@@ -304,8 +304,8 @@
       "id": "read.read_providers",
       "level": 4,
       "seed": "840",
-      "prompt": "In this repository, read src/solver_handlers/web_requests.rs and tell me which providers WEB_SEARCH_PROVIDERS lists.",
-      "note": "Atomic read against a real file. Anchor for edits in src/solver_handlers/web_requests.rs.",
+      "prompt": "In this repository, read rust/src/solver_handlers/web_requests.rs and tell me which providers WEB_SEARCH_PROVIDERS lists.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/solver_handlers/web_requests.rs.",
       "pass": false,
       "reason": "answer missing 'duckduckgo'",
       "timed_out": false,
@@ -334,16 +334,16 @@
       "id": "read.read_version",
       "level": 4,
       "seed": null,
-      "prompt": "In this repository, read Cargo.toml and tell me the version number of this crate.",
-      "note": "Atomic read against a real file. Anchor for edits in Cargo.toml.",
+      "prompt": "In this repository, read rust/Cargo.toml and tell me the version number of this crate.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/Cargo.toml.",
       "pass": false,
-      "reason": "invalid answer expectation: could not resolve file-derived expectation: [Errno 2] No such file or directory: '/home/runner/work/formal-ai/formal-ai/Cargo.toml'",
+      "reason": "answer missing '0.351.0'",
       "timed_out": false,
       "refused": false,
       "verified_effect": true,
       "not_measured": false,
-      "expected_answer": null,
-      "output_tail": "open: In this repository, read Cargo.toml and tell me the version number of this crate.\n"
+      "expected_answer": "0.351.0",
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "read.read_default_title",
@@ -364,8 +364,8 @@
       "id": "read.read_rrf",
       "level": 4,
       "seed": "840",
-      "prompt": "In this repository, read src/web_search_core.rs and tell me the reciprocal rank fusion constant used.",
-      "note": "Atomic read against a real file. Anchor for edits in src/web_search_core.rs.",
+      "prompt": "In this repository, read rust/src/web_search_core.rs and tell me the reciprocal rank fusion constant used.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/web_search_core.rs.",
       "pass": false,
       "reason": "answer missing '60'",
       "timed_out": false,
@@ -373,14 +373,14 @@
       "verified_effect": true,
       "not_measured": false,
       "expected_answer": "60",
-      "output_tail": "open: In this repository, read src/web_search_core.rs and tell me the reciprocal rank fusion constant used.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "read.read_modes",
       "level": 4,
       "seed": "844",
-      "prompt": "In this repository, read src/summarization/mod.rs and list the variants of the SummarizationMode enum.",
-      "note": "Atomic read against a real file. Anchor for edits in src/summarization/mod.rs.",
+      "prompt": "In this repository, read rust/src/summarization/mod.rs and list the variants of the SummarizationMode enum.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/summarization/mod.rs.",
       "pass": false,
       "reason": "answer missing 'Topic'",
       "timed_out": false,
@@ -388,14 +388,14 @@
       "verified_effect": true,
       "not_measured": false,
       "expected_answer": "Topic",
-      "output_tail": "open: In this repository, read src/summarization/mod.rs and list the variants of the SummarizationMode enum.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "read.read_outcome",
       "level": 4,
       "seed": "845",
-      "prompt": "In this repository, read src/proof_engine/types.rs and list the variants of the ProofOutcome enum.",
-      "note": "Atomic read against a real file. Anchor for edits in src/proof_engine/types.rs.",
+      "prompt": "In this repository, read rust/src/proof_engine/types.rs and list the variants of the ProofOutcome enum.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/proof_engine/types.rs.",
       "pass": false,
       "reason": "answer missing 'Proven'",
       "timed_out": false,
@@ -403,14 +403,14 @@
       "verified_effect": true,
       "not_measured": false,
       "expected_answer": "Proven",
-      "output_tail": "open: In this repository, read src/proof_engine/types.rs and list the variants of the ProofOutcome enum.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "read.read_prior",
       "level": 4,
       "seed": "845",
-      "prompt": "In this repository, read src/relative_meta_logic.rs and tell me the value of ASSUMED_TRUE_PRIOR.",
-      "note": "Atomic read against a real file. Anchor for edits in src/relative_meta_logic.rs.",
+      "prompt": "In this repository, read rust/src/relative_meta_logic.rs and tell me the value of ASSUMED_TRUE_PRIOR.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/relative_meta_logic.rs.",
       "pass": false,
       "reason": "answer missing '0.6'",
       "timed_out": false,
@@ -424,8 +424,8 @@
       "id": "read.read_commands",
       "level": 4,
       "seed": null,
-      "prompt": "In this repository, read src/main.rs and list the subcommands of the top-level Command enum.",
-      "note": "Atomic read against a real file. Anchor for edits in src/main.rs.",
+      "prompt": "In this repository, read rust/src/main.rs and list the subcommands of the top-level Command enum.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/main.rs.",
       "pass": false,
       "reason": "answer missing 'Serve'",
       "timed_out": false,
@@ -439,8 +439,8 @@
       "id": "read.read_context_src",
       "level": 4,
       "seed": "839",
-      "prompt": "In this repository, read src/cli_context.rs and list the variants of the ContextSource enum.",
-      "note": "Atomic read against a real file. Anchor for edits in src/cli_context.rs.",
+      "prompt": "In this repository, read rust/src/cli_context.rs and list the variants of the ContextSource enum.",
+      "note": "Atomic read against a real file. Anchor for edits in rust/src/cli_context.rs.",
       "pass": false,
       "reason": "answer missing 'harness'",
       "timed_out": false,
@@ -448,7 +448,7 @@
       "verified_effect": true,
       "not_measured": false,
       "expected_answer": "harness",
-      "output_tail": "open: In this repository, read src/cli_context.rs and list the variants of the ContextSource enum.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "search.find_fake",
@@ -604,13 +604,13 @@
       "id": "edit.bump_rrf_comment",
       "level": 4,
       "seed": "840",
-      "prompt": "In this repository, in src/web_search_core.rs, add a line comment containing the word Cormack above the RRF constant.",
+      "prompt": "In this repository, in rust/src/web_search_core.rs, add a line comment containing the word Cormack above the RRF constant.",
       "note": "Atomic single-string edit to a real repository file.",
-      "pass": false,
-      "reason": "verify failed (no observable effect)",
+      "pass": true,
+      "reason": "",
       "timed_out": false,
       "refused": false,
-      "verified_effect": false,
+      "verified_effect": true,
       "not_measured": false,
       "expected_answer": null,
       "output_tail": "open: no registry-grounded structural edit was derivable\n"
@@ -634,7 +634,7 @@
       "id": "edit.todo_marker",
       "level": 4,
       "seed": "843",
-      "prompt": "In this repository, in src/solver.rs, add a line comment containing FABRICATED above the source:http emission in record_external_search.",
+      "prompt": "In this repository, in rust/src/solver.rs, add a line comment containing FABRICATED above the source:http emission in record_external_search.",
       "note": "Atomic single-string edit to a real repository file.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -643,7 +643,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: In this repository, in src/solver.rs, add a line comment containing FABRICATED above the source:http emission in record_external_search.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "edit.gitignore_entry",
@@ -694,7 +694,7 @@
       "id": "create.rust_fn",
       "level": 4,
       "seed": "700",
-      "prompt": "Create a new file src/si_units.rs in this repository containing a single public Rust function millimetres_to_metres that takes an f64 and returns it divided by 1000.0.",
+      "prompt": "Create a new file rust/src/si_units.rs in this repository containing a single public Rust function millimetres_to_metres that takes an f64 and returns it divided by 1000.0.",
       "note": "Atomic file creation, one per real artifact type in this repository.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -709,7 +709,7 @@
       "id": "create.rust_const",
       "level": 4,
       "seed": null,
-      "prompt": "Create a new file src/ladder_probe.rs in this repository containing a single public Rust constant LADDER_PROBE of type &str with the value probe.",
+      "prompt": "Create a new file rust/src/ladder_probe.rs in this repository containing a single public Rust constant LADDER_PROBE of type &str with the value probe.",
       "note": "Atomic file creation, one per real artifact type in this repository.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -739,7 +739,7 @@
       "id": "create.test_file",
       "level": 4,
       "seed": null,
-      "prompt": "Create a new file tests/unit/ladder_probe.rs in this repository containing a single Rust test named ladder_probe_runs that asserts 1 equals 1.",
+      "prompt": "Create a new file rust/tests/unit/ladder_probe.rs in this repository containing a single Rust test named ladder_probe_runs that asserts 1 equals 1.",
       "note": "Atomic file creation, one per real artifact type in this repository.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -814,7 +814,7 @@
       "id": "L3.843.remove_fake",
       "level": 3,
       "seed": "843",
-      "prompt": "In src/solver.rs, the function record_external_search emits a fabricated source:http evidence link pointing at https://example.org with a sha256 of the prompt. Remove that fabricated source:http and cache_hit emission so no fake provenance is recorded.",
+      "prompt": "In rust/src/solver.rs, the function record_external_search emits a fabricated source:http evidence link pointing at https://example.org with a sha256 of the prompt. Remove that fabricated source:http and cache_hit emission so no fake provenance is recorded.",
       "note": "One concrete edit with file and defect named.",
       "pass": true,
       "reason": "",
@@ -844,7 +844,7 @@
       "id": "L3.840.print_quit",
       "level": 3,
       "seed": "840",
-      "prompt": "In src/seed/shell_intents.rs, the generated find command uses -print -quit which stops at the first match and hides better ones. Remove the -quit flag.",
+      "prompt": "In rust/src/seed/shell_intents.rs, the generated find command uses -print -quit which stops at the first match and hides better ones. Remove the -quit flag.",
       "note": "One concrete edit with file and defect named.",
       "pass": true,
       "reason": "",
@@ -859,7 +859,7 @@
       "id": "L3.700.single_fn",
       "level": 3,
       "seed": "700",
-      "prompt": "Create a new file src/si_units.rs in this repository containing exactly one public Rust function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.",
+      "prompt": "Create a new file rust/src/si_units.rs in this repository containing exactly one public Rust function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.",
       "note": "One concrete edit with file and defect named.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -868,7 +868,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Create a new file src/si_units.rs in this repository containing exactly one public Rust function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.\n"
+      "output_tail": "open: Create a new file rust/src/si_units.rs in this repository containing exactly one public Rust function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.\n"
     },
     {
       "id": "L3.848.readme_row",
@@ -889,7 +889,7 @@
       "id": "test.assert_no_example_org",
       "level": 3,
       "seed": "843",
-      "prompt": "Create a Rust test file tests/unit/ladder_evidence.rs in this repository containing one test asserting that the string example.org does not appear in the file src/solver.rs.",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_evidence.rs in this repository containing one test asserting that the string example.org does not appear in the file rust/src/solver.rs.",
       "note": "Test authoring: the second most common commit type here.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -904,7 +904,7 @@
       "id": "test.assert_excluded",
       "level": 3,
       "seed": "846",
-      "prompt": "Create a Rust test file tests/unit/ladder_excluded.rs in this repository containing one test asserting that scripts/detect-code-changes.rs contains the text experiments/.",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_excluded.rs in this repository containing one test asserting that scripts/detect-code-changes.rs contains the text experiments/.",
       "note": "Test authoring: the second most common commit type here.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -919,7 +919,7 @@
       "id": "test.assert_units",
       "level": 3,
       "seed": "700",
-      "prompt": "Create a Rust test file tests/unit/ladder_units.rs in this repository containing one test asserting that formal_ai::si_units::millimetres_to_metres(1000.0) equals 1.0.",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_units.rs in this repository containing one test asserting that formal_ai::si_units::millimetres_to_metres(1000.0) equals 1.0.",
       "note": "Test authoring: the second most common commit type here.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -928,7 +928,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Create a Rust test file tests/unit/ladder_units.rs in this repository containing one test asserting that formal_ai::si_units::millimetres_to_metres(1000.0) equals 1.0.\n"
+      "output_tail": "open: Create a Rust test file rust/tests/unit/ladder_units.rs in this repository containing one test asserting that formal_ai::si_units::millimetres_to_metres(1000.0) equals 1.0.\n"
     },
     {
       "id": "L2.846.filters",
@@ -949,7 +949,7 @@
       "id": "L2.700.module_and_test",
       "level": 2,
       "seed": "700",
-      "prompt": "Create src/si_units.rs with a public Rust function millimetres_to_metres dividing an f64 by 1000.0, and a unit test in the same file asserting millimetres_to_metres(1000.0) equals 1.0.",
+      "prompt": "Create rust/src/si_units.rs with a public Rust function millimetres_to_metres dividing an f64 by 1000.0, and a unit test in the same file asserting millimetres_to_metres(1000.0) equals 1.0.",
       "note": "One coherent deliverable: multiple edits that belong together.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -958,13 +958,13 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Create src/si_units.rs with a public Rust function millimetres_to_metres dividing an f64 by 1000.0, and a unit test in the same file asserting millimetres_to_metres(1000.0) equals 1.0.\n"
+      "output_tail": "open: Create rust/src/si_units.rs with a public Rust function millimetres_to_metres dividing an f64 by 1000.0, and a unit test in the same file asserting millimetres_to_metres(1000.0) equals 1.0.\n"
     },
     {
       "id": "L2.843.remove_and_test",
       "level": 2,
       "seed": "843",
-      "prompt": "In src/solver.rs remove the fabricated example.org source:http emission, and add a test file tests/unit/ladder_no_fake.rs asserting the string example.org does not appear in src/solver.rs.",
+      "prompt": "In rust/src/solver.rs remove the fabricated example.org source:http emission, and add a test file rust/tests/unit/ladder_no_fake.rs asserting the string example.org does not appear in rust/src/solver.rs.",
       "note": "One coherent deliverable: multiple edits that belong together.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -973,7 +973,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: In src/solver.rs remove the fabricated example.org source:http emission, and add a test file tests/unit/ladder_no_fake.rs asserting the string example.org does not appear in src/solver.rs.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "L2.839.title_and_seed",
@@ -1084,7 +1084,7 @@
       "id": "decomp.next_step",
       "level": 3,
       "seed": "847",
-      "prompt": "What is the single first step to take for this task? Answer in one sentence: 'Remove the fabricated example.org evidence link from src/solver.rs.'",
+      "prompt": "What is the single first step to take for this task? Answer in one sentence: 'Remove the fabricated example.org evidence link from rust/src/solver.rs.'",
       "note": "Decomposition as a task; prerequisite for driving this ladder.",
       "pass": false,
       "reason": "answer missing 'solver.rs'",
@@ -1099,7 +1099,7 @@
       "id": "lang.ru_create",
       "level": 4,
       "seed": "706",
-      "prompt": "Создай файл src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, которая возвращает число 1.",
+      "prompt": "Создай файл rust/src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, которая возвращает число 1.",
       "note": "Same coding intent in ru; must route identically (#386 convention).",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1108,7 +1108,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Создай файл src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, которая возвращает число 1.\n"
+      "output_tail": "open: Создай файл rust/src/ladder_ru.rs с одной публичной функцией на Rust с именем ladder_ru, которая возвращает число 1.\n"
     },
     {
       "id": "lang.ru_read",
@@ -1129,7 +1129,7 @@
       "id": "lang.zh_create",
       "level": 4,
       "seed": "706",
-      "prompt": "在这个仓库中创建文件 src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。",
+      "prompt": "在这个仓库中创建文件 rust/src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。",
       "note": "Same coding intent in zh; must route identically (#386 convention).",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1138,13 +1138,13 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: 在这个仓库中创建文件 src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。\n"
+      "output_tail": "open: 在这个仓库中创建文件 rust/src/ladder_zh.rs，其中包含一个名为 ladder_zh 的公共 Rust 函数，返回数字 1。\n"
     },
     {
       "id": "lang.hi_create",
       "level": 4,
       "seed": "706",
-      "prompt": "इस रिपॉजिटरी में src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust फ़ंक्शन हो जो 1 लौटाता है।",
+      "prompt": "इस रिपॉजिटरी में rust/src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust फ़ंक्शन हो जो 1 लौटाता है।",
       "note": "Same coding intent in hi; must route identically (#386 convention).",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1153,7 +1153,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: इस रिपॉजिटरी में src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust फ़ंक्शन हो जो 1 लौटाता है।\n"
+      "output_tail": "open: इस रिपॉजिटरी में rust/src/ladder_hi.rs फ़ाइल बनाएँ जिसमें ladder_hi नाम का एक सार्वजनिक Rust फ़ंक्शन हो जो 1 लौटाता है।\n"
     },
     {
       "id": "know.where_tests",
@@ -1279,7 +1279,7 @@
       "id": "refactor.rename_const",
       "level": 3,
       "seed": "840",
-      "prompt": "In this repository, in src/web_search_core.rs, rename the constant WEB_SEARCH_RRF_K to WEB_SEARCH_FUSION_K everywhere it appears in this file.",
+      "prompt": "In this repository, in rust/src/web_search_core.rs, rename the constant WEB_SEARCH_RRF_K to WEB_SEARCH_FUSION_K everywhere it appears in this file.",
       "note": "Mechanical refactor; multi-site but semantically simple.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1294,7 +1294,7 @@
       "id": "refactor.extract_fn",
       "level": 3,
       "seed": "843",
-      "prompt": "In this repository, in src/solver.rs, extract the body of record_external_search into a new private function named record_offline_policy and call it.",
+      "prompt": "In this repository, in rust/src/solver.rs, extract the body of record_external_search into a new private function named record_offline_policy and call it.",
       "note": "Mechanical refactor; multi-site but semantically simple.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1303,22 +1303,22 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: In this repository, in src/solver.rs, extract the body of record_external_search into a new private function named record_offline_policy and call it.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "refactor.add_doc_comment",
       "level": 3,
       "seed": "839",
-      "prompt": "In this repository, in src/cli_context.rs, add a doc comment above the ContextSource enum explaining what each variant selects.",
+      "prompt": "In this repository, in rust/src/cli_context.rs, add a doc comment above the ContextSource enum explaining what each variant selects.",
       "note": "Mechanical refactor; multi-site but semantically simple.",
-      "pass": false,
-      "reason": "verify failed (no observable effect)",
+      "pass": true,
+      "reason": "",
       "timed_out": false,
       "refused": false,
-      "verified_effect": false,
+      "verified_effect": true,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: In this repository, in src/cli_context.rs, add a doc comment above the ContextSource enum explaining what each variant selects.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "verify.cargo_check",
@@ -1354,7 +1354,7 @@
       "id": "verify.count_tests",
       "level": 4,
       "seed": null,
-      "prompt": "How many test functions are in tests/unit/specification/routing_precedence.rs?",
+      "prompt": "How many test functions are in rust/tests/unit/specification/routing_precedence.rs?",
       "note": "Self-verification; a coding agent must be able to check its own work.",
       "pass": true,
       "reason": "",
@@ -1414,16 +1414,16 @@
       "id": "edit.cargo_keyword",
       "level": 4,
       "seed": null,
-      "prompt": "In this repository, in Cargo.toml, add the keyword symbolic to the keywords list.",
+      "prompt": "In this repository, in rust/Cargo.toml, add the keyword symbolic to the keywords list.",
       "note": "Atomic edit; breadth across every artifact type we actually touch.",
-      "pass": false,
-      "reason": "verify failed (no observable effect)",
+      "pass": true,
+      "reason": "",
       "timed_out": false,
       "refused": false,
-      "verified_effect": false,
+      "verified_effect": true,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: In this repository, in Cargo.toml, add the keyword symbolic to the keywords list.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "edit.readme_line",
@@ -1609,7 +1609,7 @@
       "id": "replace.replace_epoch",
       "level": 3,
       "seed": "843",
-      "prompt": "In this repository, in src/solver.rs, replace the hard-coded fetched_at value 1970-01-01T00:00:00Z with a call to a function named current_timestamp.",
+      "prompt": "In this repository, in rust/src/solver.rs, replace the hard-coded fetched_at value 1970-01-01T00:00:00Z with a call to a function named current_timestamp.",
       "note": "Replacement and deletion, where agents commonly append instead.",
       "pass": true,
       "reason": "",
@@ -1624,7 +1624,7 @@
       "id": "replace.delete_cache_hit",
       "level": 3,
       "seed": "843",
-      "prompt": "In this repository, in src/solver.rs, delete the line that appends the cache_hit event in record_external_search.",
+      "prompt": "In this repository, in rust/src/solver.rs, delete the line that appends the cache_hit event in record_external_search.",
       "note": "Replacement and deletion, where agents commonly append instead.",
       "pass": true,
       "reason": "",
@@ -1633,13 +1633,28 @@
       "verified_effect": true,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: In this repository, in src/solver.rs, delete the line that appends the cache_hit event in record_external_search.\n"
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "replace.replace_prior",
       "level": 3,
       "seed": "845",
-      "prompt": "In this repository, in src/relative_meta_logic.rs, change the value of ASSUMED_TRUE_PRIOR from 0.6 to 0.5.",
+      "prompt": "In this repository, in rust/src/relative_meta_logic.rs, change the value of ASSUMED_TRUE_PRIOR from 0.6 to 0.5.",
+      "note": "Replacement and deletion, where agents commonly append instead.",
+      "pass": true,
+      "reason": "",
+      "timed_out": false,
+      "refused": false,
+      "verified_effect": true,
+      "not_measured": false,
+      "expected_answer": null,
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
+    },
+    {
+      "id": "replace.replace_rrf",
+      "level": 3,
+      "seed": "840",
+      "prompt": "In this repository, in rust/src/web_search_core.rs, change the reciprocal rank fusion constant from 60 to 50.",
       "note": "Replacement and deletion, where agents commonly append instead.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1651,25 +1666,10 @@
       "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
-      "id": "replace.replace_rrf",
-      "level": 3,
-      "seed": "840",
-      "prompt": "In this repository, in src/web_search_core.rs, change the reciprocal rank fusion constant from 60 to 50.",
-      "note": "Replacement and deletion, where agents commonly append instead.",
-      "pass": false,
-      "reason": "verify failed (no observable effect)",
-      "timed_out": false,
-      "refused": false,
-      "verified_effect": false,
-      "not_measured": false,
-      "expected_answer": null,
-      "output_tail": "open: In this repository, in src/web_search_core.rs, change the reciprocal rank fusion constant from 60 to 50.\n"
-    },
-    {
       "id": "replace.rename_file",
       "level": 3,
       "seed": null,
-      "prompt": "In this repository, in src/ladder_probe.rs, create this file with a constant PROBE, then rename the file to src/ladder_probe2.rs.",
+      "prompt": "In this repository, in rust/src/ladder_probe.rs, create this file with a constant PROBE, then rename the file to rust/src/ladder_probe2.rs.",
       "note": "Replacement and deletion, where agents commonly append instead.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1678,13 +1678,13 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: In this repository, in src/ladder_probe.rs, create this file with a constant PROBE, then rename the file to src/ladder_probe2.rs.\n"
+      "output_tail": "open: In this repository, in rust/src/ladder_probe.rs, create this file with a constant PROBE, then rename the file to rust/src/ladder_probe2.rs.\n"
     },
     {
       "id": "test.integration",
       "level": 3,
       "seed": null,
-      "prompt": "Create a Rust test file tests/integration/ladder_probe.rs in this repository containing one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4.",
+      "prompt": "Create a Rust test file rust/tests/integration/ladder_probe.rs in this repository containing one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4.",
       "note": "Test authoring across every test directory we really use.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1693,13 +1693,13 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Create a Rust test file tests/integration/ladder_probe.rs in this repository containing one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4.\n"
+      "output_tail": "open: Create a Rust test file rust/tests/integration/ladder_probe.rs in this repository containing one Rust test named ladder_integration_probe asserting 2 plus 2 equals 4.\n"
     },
     {
       "id": "test.spec",
       "level": 3,
       "seed": null,
-      "prompt": "Create a Rust test file tests/unit/specification/ladder_probe.rs in this repository containing one Rust test named ladder_spec_probe asserting the crate version string is not empty.",
+      "prompt": "Create a Rust test file rust/tests/unit/specification/ladder_probe.rs in this repository containing one Rust test named ladder_spec_probe asserting the crate version string is not empty.",
       "note": "Test authoring across every test directory we really use.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1714,7 +1714,7 @@
       "id": "test.routing_case",
       "level": 3,
       "seed": "840",
-      "prompt": "Create a Rust test file tests/unit/ladder_routing.rs in this repository containing one Rust test asserting that the phrase Find a folder on my desktop is not routed to web search.",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_routing.rs in this repository containing one Rust test asserting that the phrase Find a folder on my desktop is not routed to web search.",
       "note": "Test authoring across every test directory we really use.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1723,13 +1723,13 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Create a Rust test file tests/unit/ladder_routing.rs in this repository containing one Rust test asserting that the phrase Find a folder on my desktop is not routed to web search.\n"
+      "output_tail": "open: Create a Rust test file rust/tests/unit/ladder_routing.rs in this repository containing one Rust test asserting that the phrase Find a folder on my desktop is not routed to web search.\n"
     },
     {
       "id": "test.report_body",
       "level": 3,
       "seed": "839",
-      "prompt": "Create a Rust test file tests/unit/ladder_report.rs in this repository containing one Rust test asserting that a generated issue body contains a Reproduction section.",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_report.rs in this repository containing one Rust test asserting that a generated issue body contains a Reproduction section.",
       "note": "Test authoring across every test directory we really use.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1738,13 +1738,13 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Create a Rust test file tests/unit/ladder_report.rs in this repository containing one Rust test asserting that a generated issue body contains a Reproduction section.\n"
+      "output_tail": "open: Create a Rust test file rust/tests/unit/ladder_report.rs in this repository containing one Rust test asserting that a generated issue body contains a Reproduction section.\n"
     },
     {
       "id": "test.dedup_case",
       "level": 3,
       "seed": "844",
-      "prompt": "Create a Rust test file tests/unit/ladder_dedup.rs in this repository containing one Rust test asserting that summarizing two identical sentences yields one statement.",
+      "prompt": "Create a Rust test file rust/tests/unit/ladder_dedup.rs in this repository containing one Rust test asserting that summarizing two identical sentences yields one statement.",
       "note": "Test authoring across every test directory we really use.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1774,7 +1774,7 @@
       "id": "lang.ru_test",
       "level": 4,
       "seed": "706",
-      "prompt": "Создай файл теста tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.",
+      "prompt": "Создай файл теста rust/tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.",
       "note": "Coding intent in ru; must route identically (#386 convention).",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1783,7 +1783,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Создай файл теста tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.\n"
+      "output_tail": "open: Создай файл теста rust/tests/unit/ladder_ru_test.rs с одним тестом, который проверяет, что 1 равно 1.\n"
     },
     {
       "id": "lang.ru_split",
@@ -1804,16 +1804,16 @@
       "id": "lang.zh_read",
       "level": 4,
       "seed": "706",
-      "prompt": "读取这个仓库中的 Cargo.toml 文件并告诉我版本号。",
+      "prompt": "读取这个仓库中的 rust/Cargo.toml 文件并告诉我版本号。",
       "note": "Coding intent in zh; must route identically (#386 convention).",
       "pass": false,
-      "reason": "invalid answer expectation: could not resolve file-derived expectation: [Errno 2] No such file or directory: '/home/runner/work/formal-ai/formal-ai/Cargo.toml'",
+      "reason": "answer missing '0.351.0'",
       "timed_out": false,
       "refused": false,
       "verified_effect": true,
       "not_measured": false,
-      "expected_answer": null,
-      "output_tail": "open: 读取这个仓库中的 Cargo.toml 文件并告诉我版本号。\n"
+      "expected_answer": "0.351.0",
+      "output_tail": "open: no registry-grounded structural edit was derivable\n"
     },
     {
       "id": "lang.zh_edit",
@@ -1864,7 +1864,7 @@
       "id": "multi.module_and_export",
       "level": 2,
       "seed": "700",
-      "prompt": "Create src/ladder_units.rs with a public function metres_to_kilometres dividing an f64 by 1000.0, and register the module in src/lib.rs so it is part of the crate.",
+      "prompt": "Create rust/src/ladder_units.rs with a public function metres_to_kilometres dividing an f64 by 1000.0, and register the module in rust/src/lib.rs so it is part of the crate.",
       "note": "Multi-file, dependency-ordered work: the shape most real fixes take.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1909,7 +1909,7 @@
       "id": "multi.test_and_fix",
       "level": 2,
       "seed": "840",
-      "prompt": "Remove the -quit flag from the generated find command in src/seed/shell_intents.rs and add a test file tests/unit/ladder_no_quit.rs asserting the flag is gone.",
+      "prompt": "Remove the -quit flag from the generated find command in rust/src/seed/shell_intents.rs and add a test file rust/tests/unit/ladder_no_quit.rs asserting the flag is gone.",
       "note": "Multi-file, dependency-ordered work: the shape most real fixes take.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1939,7 +1939,7 @@
       "id": "recover.fix_syntax",
       "level": 3,
       "seed": null,
-      "prompt": "Create src/ladder_broken.rs containing a Rust function with a deliberately missing closing brace, then fix it so the file parses.",
+      "prompt": "Create rust/src/ladder_broken.rs containing a Rust function with a deliberately missing closing brace, then fix it so the file parses.",
       "note": "Error recovery: reacting to a failing build or test.",
       "pass": false,
       "reason": "verify failed (no observable effect)",
@@ -1948,7 +1948,7 @@
       "verified_effect": false,
       "not_measured": false,
       "expected_answer": null,
-      "output_tail": "open: Create src/ladder_broken.rs containing a Rust function with a deliberately missing closing brace, then fix it so the file parses.\n"
+      "output_tail": "open: Create rust/src/ladder_broken.rs containing a Rust function with a deliberately missing closing brace, then fix it so the file parses.\n"
     },
     {
       "id": "recover.explain_failure",
