@@ -14,7 +14,14 @@ set -euo pipefail
 # idempotent, so a runner or a local caller that already has it skips this.
 bash scripts/install-rust-script.sh
 
+# Issue #1138, plan 10 leaf 10: the corpus gate answers all ~1355 benchmark
+# prompts through the full engine (842-873s locally, >1154s unfinished in CI
+# run 35893508679), which cannot share this step's budget with the unit
+# phase. It has its own workflow, benchmark-corpus-gate.yml -- the same
+# partition data_files, self_ast_census, and specification use above.
+CORPUS_GATE_SKIP="--skip issue_1138_no_silent_unknown"
+
 for target in unit integration source; do
   "dist/tests/$target" \
-    --skip data_files:: --skip self_ast_census --skip specification::
+    --skip data_files:: --skip self_ast_census --skip specification:: "$CORPUS_GATE_SKIP"
 done

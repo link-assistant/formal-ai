@@ -1,0 +1,98 @@
+name: Benchmark Corpus Gate
+
+# Issue #1138, plan 10 leaf 10: `no_benchmark_prompt_reaches_the_unknown_
+# opener` answers all ~1355 committed benchmark prompts through the full
+# engine, so it costs 842-873s on a dev notebook and more than double that
+# on CI hardware -- run 35893508679 gave it the 1154s left after the unit
+# phase and it still had not finished when the 2400s step budget expired,
+# which is why it cannot share `Run tests` with the rest of the integration
+# suite (the lane would need a ~75-minute step for one test). It runs here,
+# alone, with budgets measured for its own work -- the same partition the
+# coding ladder and task ladder measurements already use. The gate is
+# written failing-first (plan 14 wave T): red here is the expected state
+# until the leaf that places every prompt lands.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'rust/src/**'
+      - 'rust/tests/integration/issue_1138_no_silent_unknown.rs'
+      - 'data/benchmarks/**'
+      - 'data/seed/**'
+      - 'data/meta/**'
+      - 'rust/Cargo.toml'
+      - 'rust/Cargo.lock'
+      - '.github/workflows/benchmark-corpus-gate.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'rust/src/**'
+      - 'rust/tests/integration/issue_1138_no_silent_unknown.rs'
+      - 'data/benchmarks/**'
+      - 'data/seed/**'
+      - 'data/meta/**'
+      - 'rust/Cargo.toml'
+      - 'rust/Cargo.lock'
+      - '.github/workflows/benchmark-corpus-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: benchmark-corpus-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  corpus-gate:
+    name: no benchmark prompt reaches the unknown opener
+    runs-on: ubuntu-latest
+    # 5700s of budgets (1500 build + 4200 gate) under a 140-minute cap sits
+    # at 68%, inside the 70% share issue #1081 caps a job's spendable group
+    # at. The cap is a backstop: a typical run is build ~700s plus the gate
+    # itself, and the budget comments below carry the measurements.
+    timeout-minutes: 140
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: ./.github/actions/setup-sccache
+
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+
+      - name: Build the corpus gate binary
+        env:
+          # One test target plus the lib. The all-targets build job measures
+          # ~1200s worst with sccache warm (run 34095902681); a single
+          # target with the same cache sits well under that, and a cold
+          # miss has 1500s of room before the cap is what fires.
+          TEST_BUDGET_SECONDS: 1500
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Corpus gate binary build" \
+            cargo test --manifest-path rust/Cargo.toml --test integration --no-run
+
+      - name: Run the benchmark corpus gate
+        env:
+          # The gate answers every committed benchmark prompt through the
+          # full engine: 842s and 873s measured locally on 2026-09-23/24.
+          # CI pace is spawn-bound (one python3 per verified draft) and run
+          # 35893508679 proves it is at least 1.3x local -- 1154s of
+          # execution did not finish the scan. The specification lane
+          # measured CI at up to 4.4x its local pace (341s -> 1492s), so
+          # 4200s holds even that worst observed ratio (~3815s) with room,
+          # and the first green run's own measurement tunes this number.
+          TEST_BUDGET_SECONDS: 4200
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Benchmark corpus gate" \
+            cargo test --manifest-path rust/Cargo.toml --test integration issue_1138_no_silent_unknown -- --nocapture

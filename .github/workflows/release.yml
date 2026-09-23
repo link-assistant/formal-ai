@@ -498,6 +498,10 @@ jobs:
           # ended the step at 1344s first. 2400 holds the measured worst at
           # 63%, and the full lane's sum reaches 3600s, 66.7% of the cap --
           # still inside the 70% share, now tied with the specification lane.
+          # The 397th integration test -- the benchmark corpus gate -- moved
+          # to its own workflow (benchmark-corpus-gate.yml): run 35893508679
+          # showed it needs more than the 1154s this step had left after the
+          # unit phase, alone; it is skipped via run-prebuilt-tests.sh.
           TEST_BUDGET_SECONDS: 2400
           TEST_WARN_RATIO_PERCENT: 70
         run: |
