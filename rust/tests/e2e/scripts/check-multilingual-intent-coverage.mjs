@@ -77,6 +77,7 @@ function parseIntentRouting() {
         phrases: [],
         tokens: [],
         combos: [],
+        role_surfaces: [],
       };
       routes.set(current.id, current);
       continue;
@@ -98,6 +99,91 @@ function parseIntentRouting() {
   }
 
   return routes;
+}
+
+// The conversational families' exact surfaces retired from intent-routing
+// rows onto seeded roles (issue #1138 plan 10 leaf 20): each family's block
+// declares `role_surface <role>`, and `declared_role_surface_route`
+// (rust/src/intent_formalization.rs) consults `Lexicon::words_for_role` —
+// every meaning carrying that `role` field — under the same whole-prompt
+// equality the rows had. Mirror that view: role -> language -> surface
+// texts, aggregated across every meanings seed so a role resolves here the
+// way it resolves in the engine.
+function parseMeaningsRoleInventories() {
+  const inventories = new Map();
+  const seedDir = path.join(repoRoot, 'data/seed');
+  const meaningsFiles = fs
+    .readdirSync(seedDir)
+    .filter((file) => file.startsWith('meanings') && file.endsWith('.lino'))
+    .sort();
+
+  const flushMeaning = (meaning) => {
+    for (const role of meaning.roles) {
+      if (!inventories.has(role)) inventories.set(role, new Map());
+      const roleInventory = inventories.get(role);
+      for (const [language, texts] of meaning.lexemes) {
+        if (!roleInventory.has(language)) roleInventory.set(language, new Set());
+        const surfaces = roleInventory.get(language);
+        for (const text of texts) surfaces.add(text);
+      }
+    }
+  };
+
+  for (const file of meaningsFiles) {
+    let meaning = null;
+    let language = null;
+    let inSurface = false;
+
+    for (const line of fs.readFileSync(path.join(seedDir, file), 'utf8').split(/\r?\n/)) {
+      const meaningHeader = line.match(/^ {2}([a-z0-9_]+)$/);
+      if (meaningHeader) {
+        if (meaning) flushMeaning(meaning);
+        meaning = { roles: [], lexemes: new Map() };
+        language = null;
+        inSurface = false;
+        continue;
+      }
+      if (!meaning) continue;
+
+      const meaningField = parseLinoField(line, 4);
+      if (meaningField) {
+        inSurface = false;
+        if (meaningField.key === 'role') meaning.roles.push(meaningField.value);
+        language = meaningField.key === 'lexeme' ? meaningField.value : null;
+        continue;
+      }
+
+      if (parseLinoEntry(line, 6, 'surface') !== null) {
+        inSurface = true;
+        continue;
+      }
+
+      const surfaceField = parseLinoField(line, 8);
+      if (surfaceField && surfaceField.key === 'text' && inSurface && language !== null) {
+        if (!meaning.lexemes.has(language)) meaning.lexemes.set(language, []);
+        meaning.lexemes.get(language).push(surfaceField.value);
+      }
+    }
+    if (meaning) flushMeaning(meaning);
+  }
+
+  return inventories;
+}
+
+function roleAttendsSurface(inventories, role, language, surface) {
+  return inventories.get(role)?.get(language)?.has(surface) ?? false;
+}
+
+// A surface routes an intent when the intent's own block carries it as a
+// keyword or phrase row — one shared exact-equality semantics in
+// `matches_route` — or when a declared `role_surface` inventory attests the
+// surface in `language` (`declared_role_surface_route`, plan 10 leaf 20).
+function routeAttendsSurface(route, inventories, language, surface) {
+  if (!route) return false;
+  if (route.keywords.includes(surface) || route.phrases.includes(surface)) return true;
+  return route.role_surfaces.some((role) =>
+    roleAttendsSurface(inventories, role, language, surface),
+  );
 }
 
 function parsePromptPatterns() {
@@ -302,6 +388,7 @@ function parseBrowserTranslationRegistry() {
 
 const supportedLanguages = parseSupportedLanguages();
 const routes = parseIntentRouting();
+const roleInventories = parseMeaningsRoleInventories();
 const patterns = parsePromptPatterns();
 const responses = parseResponseRecords();
 const concepts = parseConceptRecords();
@@ -367,9 +454,23 @@ function assertPromptPatternCoverageGroups(intent) {
   }
 }
 
+// Every `role_surface` declaration must resolve: `declared_role_surface_route`
+// consults the seeded role inventories, so a declaration naming an unseeded
+// role silently routes nothing (plan 10 leaf 20).
+for (const route of routes.values()) {
+  for (const role of route.role_surfaces) {
+    assert(
+      roleInventories.has(role),
+      `intent-routing.lino ${route.id} declares role_surface ${role}, but no meanings seed registers role ${role}`,
+    );
+  }
+}
+
 // Issue #676: "how are you?" small talk is its own `wellbeing` intent, distinct
 // from a bare greeting, so the reply differs from "Hello". Keep the family
-// routed and documented under wellbeing across every supported language.
+// routed and documented under wellbeing across every supported language. The
+// family's phrase rows retired onto its declared role (plan 10 leaf 20), so
+// routing is verified through the role's seeded inventory.
 const howAreYouWellbeingPhrases = {
   en: ['how are you', 'how are you doing'],
   ru: ['как дела', 'как твои дела'],
@@ -385,7 +486,7 @@ assert(wellbeingRoute, 'intent-routing.lino must define intent_wellbeing');
 for (const [language, phrases] of Object.entries(howAreYouWellbeingPhrases)) {
   for (const phrase of phrases) {
     assert(
-      wellbeingRoute?.phrases.includes(phrase),
+      routeAttendsSurface(wellbeingRoute, roleInventories, language, phrase),
       `intent_wellbeing must route ${language} how-are-you phrase ${JSON.stringify(phrase)}`,
     );
     assert(
@@ -431,9 +532,8 @@ assert(testStatusRoute, 'intent-routing.lino must define intent_test_status');
 
 for (const [language, entries] of Object.entries(testStatusPatterns)) {
   for (const entry of entries) {
-    const routeCollection = entry.kind === 'keyword' ? 'keywords' : 'phrases';
     assert(
-      testStatusRoute?.[routeCollection].includes(entry.text),
+      routeAttendsSurface(testStatusRoute, roleInventories, language, entry.text),
       `intent_test_status must route ${language} ${entry.kind} ${JSON.stringify(entry.text)}`,
     );
     assert(
