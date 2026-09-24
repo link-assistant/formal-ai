@@ -8,7 +8,7 @@ use clap::{Args as ClapArgs, Subcommand};
 use formal_ai::{GithubLogCollectorConfig, collect_github_logs, render_github_log_plan};
 
 #[derive(Debug, Subcommand)]
-pub(crate) enum GithubLogsAction {
+pub enum GithubLogsAction {
     /// Print the exact `gh` commands and output files without executing them.
     Plan(GithubLogsOptions),
     /// Execute the `gh` command plan and write captures plus `manifest.json`.
@@ -16,7 +16,7 @@ pub(crate) enum GithubLogsAction {
 }
 
 #[derive(Debug, Clone, ClapArgs)]
-pub(crate) struct GithubLogsOptions {
+pub struct GithubLogsOptions {
     /// Repository in OWNER/REPO format.
     #[arg(long)]
     repo: String,
@@ -70,7 +70,7 @@ impl GithubLogsOptions {
     }
 }
 
-pub(crate) fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
+pub fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
     match action {
         GithubLogsAction::Plan(options) => {
             let config = options.into_config();

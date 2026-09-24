@@ -61,10 +61,8 @@ impl Drop for RestoreCwd {
 #[test]
 fn whole_shell_task_matrix_routes_without_web_search() {
     let previous = std::env::current_dir().expect("current directory");
-    let workspace = std::env::temp_dir().join(format!(
-        "formal-ai-issue-749-matrix-{}",
-        std::process::id()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("formal-ai-issue-749-matrix-{}", std::process::id()));
     std::fs::create_dir_all(&workspace).expect("create the controlled workspace");
     std::fs::write(workspace.join("Cargo.toml"), "[package]\n").expect("write the marker");
     let restore = RestoreCwd(previous);

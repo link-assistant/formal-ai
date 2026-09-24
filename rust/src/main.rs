@@ -649,7 +649,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             to,
             input,
             list,
-        } => run_translate(from, to, input, list)?,
+        } => run_translate(from.as_deref(), to.as_deref(), input, list)?,
         Command::Coding(args) => run_coding(args)?,
         Command::Context(args) => run_context(args)?,
         Command::Report(args) => run_report(args)?,

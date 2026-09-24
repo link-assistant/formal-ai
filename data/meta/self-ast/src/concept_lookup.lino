@@ -2,9 +2,9 @@ self_ast_census
   target src/concept_lookup.rs
   language rust
   fidelity signature
-  byte_len 30356
-  line_count 818
-  content_id source_module_b3452cacd22bb66c
+  byte_len 30364
+  line_count 820
+  content_id source_module_928dd7ab8ff6f776
   symbol_count 43
   symbols
     struct ConceptSense 31 62
@@ -47,6 +47,6 @@ self_ast_census
     const PAIRS 720 720
     function outside_quotes 767 791
     const PAIRS 768 768
-    function has_quoted_span 798 800
-    function seeded_surfaces 803 818
-    static CACHE 804 804
+    function has_quoted_span 800 802
+    function seeded_surfaces 805 820
+    static CACHE 806 806

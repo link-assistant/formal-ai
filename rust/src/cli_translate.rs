@@ -6,9 +6,9 @@ use std::path::PathBuf;
 
 use formal_ai::meta_translate::{self, SourceRoot, TranslationOutcome};
 
-pub(crate) fn run_translate(
-    from: Option<String>,
-    to: Option<String>,
+pub fn run_translate(
+    from: Option<&str>,
+    to: Option<&str>,
     input: Option<PathBuf>,
     list: bool,
 ) -> Result<(), Box<dyn Error>> {
@@ -18,11 +18,13 @@ pub(crate) fn run_translate(
         }
         return Ok(());
     }
-    let (Some(from_name), Some(to_name)) = (&from, &to) else {
+    let (Some(from_name), Some(to_name)) = (from, to) else {
         return Err("translate needs --from and --to (or --list to see every direction)".into());
     };
     let Some(from_root) = SourceRoot::parse(from_name) else {
-        return Err(format!("unknown --from '{from_name}': expected one of rust|js|ts|meta").into());
+        return Err(
+            format!("unknown --from '{from_name}': expected one of rust|js|ts|meta").into(),
+        );
     };
     let Some(to_root) = SourceRoot::parse(to_name) else {
         return Err(format!("unknown --to '{to_name}': expected one of rust|js|ts|meta").into());
@@ -53,12 +55,7 @@ pub(crate) fn run_translate(
         .into());
     };
     let source = std::fs::read_to_string(&path)?;
-    match meta_translate::translate(
-        from_root,
-        to_root,
-        &path.display().to_string(),
-        &source,
-    ) {
+    match meta_translate::translate(from_root, to_root, &path.display().to_string(), &source) {
         TranslationOutcome::Rendered { target } => {
             println!("{target}");
             Ok(())

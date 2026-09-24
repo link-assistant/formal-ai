@@ -434,9 +434,9 @@ requirement_status_ledger_shard requirements_09
     manual "not yet confirmed"
   requirement
     id "R536"
-    shard "docs/requirements/doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.md"
-    verdict "partial"
-    delivered "doctrine adopted 2026-08-04"
+    shard "docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md"
+    verdict "superseded"
+    delivered "doctrine adopted 2026-08-04; boundary superseded 2026-09-24 by R992-R996 (ratchet remains in force per R995)"
     issue ""
     automated_test ""
     manual "n/a"

@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_unknown_reasoning.rs
   language rust
   fidelity signature
-  byte_len 31723
-  line_count 823
-  content_id source_module_befdf7f10de2c219
+  byte_len 31771
+  line_count 825
+  content_id source_module_4de419c72ba83c29
   symbol_count 32
   symbols
     const FOCUS_PLACEHOLDER 20 20
@@ -16,26 +16,26 @@ self_ast_census
     function answer_from_concept_lookup_miss 239 325
     function record_initial_unknown_trace 327 355
     function answer_unresolved_unknown 357 374
-    function answer_with_legacy_fallback 376 435
-    function answer_from_link_memory 437 474
-    function answer_from_public_knowledge_cache 476 520
-    function public_concepts 522 525
-    static CELL 523 523
-    function public_concept_candidate_terms 527 554
-    function concept_candidate_surfaces 556 566
-    function render_concept_plain 568 588
-    function concept_source 590 596
-    function render_source_link 598 605
-    function render_unresolved_unknown 607 615
-    function localized_seed_response 617 620
-    function infer_missing_focus 622 652
-    function is_question_shape 657 660
-    function focus_is_specific 670 673
-    function is_unresolved_bare_term_prompt 675 687
-    function extract_question_subject 689 757
-    function tail_after_marker 759 763
-    function extract_memory_fact 765 781
-    function split_fact_statement 783 794
-    function clean_focus 796 802
-    function normalize_fact_subject 804 812
-    function normalize_search_surface 814 823
+    function answer_with_legacy_fallback 376 437
+    function answer_from_link_memory 439 476
+    function answer_from_public_knowledge_cache 478 522
+    function public_concepts 524 527
+    static CELL 525 525
+    function public_concept_candidate_terms 529 556
+    function concept_candidate_surfaces 558 568
+    function render_concept_plain 570 590
+    function concept_source 592 598
+    function render_source_link 600 607
+    function render_unresolved_unknown 609 617
+    function localized_seed_response 619 622
+    function infer_missing_focus 624 654
+    function is_question_shape 659 662
+    function focus_is_specific 672 675
+    function is_unresolved_bare_term_prompt 677 689
+    function extract_question_subject 691 759
+    function tail_after_marker 761 765
+    function extract_memory_fact 767 783
+    function split_fact_statement 785 796
+    function clean_focus 798 804
+    function normalize_fact_subject 806 814
+    function normalize_search_surface 816 825

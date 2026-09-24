@@ -217,9 +217,11 @@ pub fn try_dispatch(
 }
 
 /// Capabilities the symbolic solver can execute without a client-owned
-/// workspace tool.  Filesystem capabilities are deliberately absent: when the
-/// table selects one, its `HonestGap` is surfaced instead of allowing a later
-/// web-search handler to claim the request.
+/// workspace tool.
+///
+/// Filesystem capabilities are deliberately absent: when the table selects
+/// one, its `HonestGap` is surfaced instead of allowing a later web-search
+/// handler to claim the request.
 pub const SOLVER_CAPABILITIES: &[&str] = &[
     "web_fetch",
     "learn_from_source",

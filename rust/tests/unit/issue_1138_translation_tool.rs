@@ -43,7 +43,9 @@ fn rust_to_meta_is_the_live_leg() {
             assert!(target.contains("engine meta_language"));
             assert!(target.contains("named_node_count"));
         }
-        other => panic!("rust → meta must render the self-AST document; got {other:?}"),
+        other @ TranslationOutcome::Pending { .. } => {
+            panic!("rust → meta must render the self-AST document; got {other:?}")
+        }
     }
 }
 
@@ -82,7 +84,9 @@ fn a_pending_leg_translates_to_the_honest_gap_never_a_no_op() {
         "export const x = 1;\n",
     ) {
         TranslationOutcome::Pending { plan_leaf } => assert_eq!(plan_leaf, "L2"),
-        other => panic!("js → ts is pending and must say so; got {other:?}"),
+        other @ TranslationOutcome::Rendered { .. } => {
+            panic!("js → ts is pending and must say so; got {other:?}")
+        }
     }
 }
 
@@ -97,8 +101,14 @@ fn source_root_names_round_trip() {
         assert_eq!(SourceRoot::parse(root.name()), Some(root));
     }
     assert_eq!(SourceRoot::parse("rs"), Some(SourceRoot::Rust));
-    assert_eq!(SourceRoot::parse("javascript"), Some(SourceRoot::JavaScript));
-    assert_eq!(SourceRoot::parse("typescript"), Some(SourceRoot::TypeScript));
+    assert_eq!(
+        SourceRoot::parse("javascript"),
+        Some(SourceRoot::JavaScript)
+    );
+    assert_eq!(
+        SourceRoot::parse("typescript"),
+        Some(SourceRoot::TypeScript)
+    );
     assert_eq!(SourceRoot::parse("lino"), Some(SourceRoot::Meta));
     assert_eq!(SourceRoot::parse(""), None);
     assert_eq!(SourceRoot::parse("python"), None);

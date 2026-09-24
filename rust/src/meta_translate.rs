@@ -37,7 +37,7 @@ impl SourceRoot {
 
     /// The canonical CLI spelling.
     #[must_use]
-    pub fn name(self) -> &'static str {
+    pub const fn name(self) -> &'static str {
         match self {
             Self::Rust => "rust",
             Self::JavaScript => "js",
@@ -69,16 +69,15 @@ pub enum TranslationOutcome {
 /// same-root non-direction: no leaf owes it because it is not a translation,
 /// and callers reject it before listing.
 #[must_use]
-pub fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static str> {
+pub const fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static str> {
     match (from, to) {
         (SourceRoot::Rust, SourceRoot::Meta) => None,
-        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript) => Some("L5"),
-        (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta) => Some("L5"),
-        (SourceRoot::Meta, SourceRoot::Rust) => Some("L5"),
-        (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript) => Some("L2"),
-        (SourceRoot::JavaScript, SourceRoot::TypeScript) | (SourceRoot::TypeScript, SourceRoot::JavaScript) => {
-            Some("L2")
-        }
+        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript)
+        | (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta)
+        | (SourceRoot::Meta, SourceRoot::Rust) => Some("L5"),
+        (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript)
+        | (SourceRoot::JavaScript, SourceRoot::TypeScript)
+        | (SourceRoot::TypeScript, SourceRoot::JavaScript) => Some("L2"),
         (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => Some("L3"),
         (SourceRoot::Rust, SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::JavaScript)
@@ -135,13 +134,16 @@ pub fn directions() -> Vec<(SourceRoot, SourceRoot, Option<&'static str>)> {
 
 /// The one-line CLI rendering of a leg row.
 #[must_use]
-pub fn describe_leg(
-    from: SourceRoot,
-    to: SourceRoot,
-    pending: Option<&'static str>,
-) -> String {
-    match pending {
-        None => format!("{} → {}  live", from.name(), to.name()),
-        Some(leaf) => format!("{} → {}  pending (plan 16 {})", from.name(), to.name(), leaf),
-    }
+pub fn describe_leg(from: SourceRoot, to: SourceRoot, pending: Option<&'static str>) -> String {
+    pending.map_or_else(
+        || format!("{} → {}  live", from.name(), to.name()),
+        |leaf| {
+            format!(
+                "{} → {}  pending (plan 16 {})",
+                from.name(),
+                to.name(),
+                leaf
+            )
+        },
+    )
 }

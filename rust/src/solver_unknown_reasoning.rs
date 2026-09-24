@@ -395,7 +395,10 @@ fn answer_with_legacy_fallback(
         ) {
             Some(crate::capability_routing::RoutingOutcome::Routed { capability }) => {
                 return crate::meta_method_answers::capability_gap(
-                    prompt, log, &capability, &capability,
+                    prompt,
+                    log,
+                    &capability,
+                    &capability,
                 );
             }
             Some(crate::capability_routing::RoutingOutcome::Lowered { preferred, .. }) => {
@@ -406,8 +409,7 @@ fn answer_with_legacy_fallback(
             Some(crate::capability_routing::RoutingOutcome::HonestGap { needed, missing }) => {
                 return crate::meta_method_answers::capability_gap(prompt, log, &needed, &missing);
             }
-            Some(crate::capability_routing::RoutingOutcome::Ask { .. })
-            | None => {}
+            Some(crate::capability_routing::RoutingOutcome::Ask { .. }) | None => {}
         }
     }
     let completed_steps = log
