@@ -17,7 +17,8 @@ import sys
 
 TAG_BLOCK = re.compile(
     r"<(system-reminder|task-notification|local-command-caveat|"
-    r"command-name|command-message|command-args|local-command-stdout)"
+    r"command-name|command-message|command-args|local-command-stdout|"
+    r"agent-message)"
     r"\b[^>]*>.*?</\1>",
     re.DOTALL,
 )
@@ -68,11 +69,22 @@ def main():
                     entry = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if entry.get("type") != "user":
-                    continue
-                text = clean(message_text(entry))
-                if genuine(text):
-                    messages.append((entry.get("timestamp", ""), text))
+                if entry.get("type") == "user":
+                    text = clean(message_text(entry))
+                    if genuine(text):
+                        messages.append((entry.get("timestamp", ""), text))
+                elif entry.get("type") == "queue-operation":
+                    # A message the user typed while a turn was already running
+                    # is recorded as an enqueue whose content is the raw prompt
+                    # (harness wrappers and agent reports arrive here too and
+                    # are dropped by the same filters). Each enqueue is usually
+                    # replayed once, so exact-duplicate collapse below keeps a
+                    # single copy.
+                    text = clean(entry.get("content", ""))
+                    if genuine(text):
+                        messages.append((entry.get("timestamp", ""), text))
+
+    messages.sort(key=lambda item: item[0])
 
     seen = {}
     ordered = []

@@ -20,3 +20,10 @@ words.
 
 > We should have function or script for translation in any direction via meta
 > language.
+
+> That may reduce the need to use lots of resources locally for development in
+> Rust, as JavaScript and after it TypeScript can help to speed up single cases
+> tests and so on.
+
+> We can also use back JavaScript and TypeScript to meta language translation
+> to quickly apply changes to Rust itself.
