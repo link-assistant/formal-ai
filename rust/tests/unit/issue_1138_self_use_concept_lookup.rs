@@ -290,15 +290,17 @@ fn a_spanish_prompt_is_not_reported_as_an_unsupported_language() {
         .find(|c| c.language == "es")
         .expect("the corpus family must carry the Spanish paraphrase");
     let answer = solve(&case.prompt).answer;
-    // The lipogram question is a predicate question, not a definition request,
-    // so since the unknown-reasoning redesign it closes with the localized
-    // unresolved body instead of the consulted-source record — the record is
-    // owed by definition interrogations ("what is X", "meaning of X"). The
-    // point this test guards is unchanged: the answer is Spanish, honest about
-    // what failed to resolve, and never the unsupported-language fallback.
+    // A quoted-example predicate question ("… lipograma en e" names its
+    // example inside quotes and turns on the unresolved predicate outside
+    // them) owes the consulted-source record in every language — the consult
+    // walk already asked the sources for that predicate, so any other body
+    // would stand where the walk's own evidence belongs. Spanish closes with
+    // the same record as en/ru/hi/zh; the point this test guards is
+    // unchanged: the answer is Spanish, honest about what failed to resolve,
+    // and never the unsupported-language fallback.
     assert_eq!(
         answer,
-        "No pude determinar `¿La frase \"quick brown fox\" es un lipograma en e` a partir de la memoria local de Links Notation, el conocimiento público en caché ni la caché de fuentes, y no puedo inferir una respuesta verificada. Registré en la traza los intentos fallidos de recopilación.\n\nSi el razonamiento sigue sin resolverlo y hace falta un hecho semilla compartido o una regla de enlaces en Links Notation, usa Report issue con la traza. Para conservar una regla local del diálogo, exporta la memoria o enséñala con `When I say ... answer ...`; revisa las rutas con `List behavior rules` y `Show behavior rule unknown`.\n\nDetecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe del problema con el contexto de diagnóstico? Responde `Report issue`."
+        "Ninguna fuente consultada definió «¿La frase \"quick brown fox\" es un lipograma en e». Fuentes consultadas: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss; github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet unbound_template wikipedia offline_cache_miss stackexchange offline_cache_miss."
     );
     assert!(
         !answer.contains("unsupported language"),

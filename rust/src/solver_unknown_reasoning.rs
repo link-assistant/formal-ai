@@ -23,6 +23,7 @@ const FOCUS_PLACEHOLDER: &str = concat!("{", "focus", "}");
 pub struct UnknownReasoningConfig {
     pub questioning_rigor: f32,
     pub offline: bool,
+    pub agent_mode: bool,
 }
 
 pub fn answer_unknown_prompt(
@@ -105,8 +106,7 @@ pub fn answer_unknown_prompt(
     let consult_walk_ran = log.events().iter().any(|event| {
         event.kind == "concept_lookup:miss" && miss_names_consulted_sources(&event.payload)
     });
-    let question_shape = crate::intent_formalization::contains_question_mark(prompt)
-        || crate::intent_formalization::starts_with_question_word(&normalize_prompt(prompt));
+    let question_shape = is_question_shape(prompt);
     if let Some(focus) = focus.as_deref().filter(|focus| {
         let bare_term_lookup = is_unresolved_bare_term_prompt(prompt, focus);
         (!consult_walk_ran || bare_term_lookup || !question_shape)
@@ -143,7 +143,7 @@ pub fn answer_unknown_prompt(
         return answer_unresolved_unknown(prompt, language, log, &focus, config);
     }
 
-    answer_with_legacy_fallback(prompt, language, log)
+    answer_with_legacy_fallback(prompt, language, log, config)
 }
 
 fn answer_from_retrieved_senses(
@@ -278,8 +278,26 @@ fn answer_from_concept_lookup_miss(
         .events()
         .iter()
         .any(|event| event.kind == "definition_merge:miss");
+    // A quoted-example question — «…» липограммой …, "…" a lipogram …,
+    // "…" लिपोग्राम … — turns on the unresolved predicate named outside the
+    // quotes, and the consult walk has already asked the sources for exactly
+    // that predicate (a quoted span is the question's subject, never a
+    // concept the system is missing, so every miss the walk recorded is that
+    // predicate). The record is owed even though the focus never shrank
+    // below the whole prompt: the language-modifier scan that trims the
+    // English shape's " in e" tail correctly rejects "на букву e" (a letter
+    // is not a language) and the head-final Hindi and Chinese shapes carry
+    // no preposition at all, so without this arm ru, hi and zh answered
+    // with the unknown opener while en named its consulted sources. A
+    // question that quotes nothing stays a comprehension gap (issue #44):
+    // the teaching ladder is the answer a riddle or a content question is
+    // owed. Every language closes on the same record — supported or not —
+    // so an unsupported language is never demoted to a different answer
+    // shape than the prompt's supported paraphrases.
+    let quoted_example_question =
+        is_question_shape(prompt) && crate::concept_lookup::has_quoted_span(prompt);
     if merge_arm_declined
-        || !focus_is_specific(prompt, surface)
+        || (!focus_is_specific(prompt, surface) && !quoted_example_question)
         || is_unresolved_bare_term_prompt(prompt, surface)
         || (extract_question_subject(prompt).is_some_and(|subject| {
             clean_focus(&subject).eq_ignore_ascii_case(clean_focus(surface))
@@ -359,7 +377,39 @@ fn answer_with_legacy_fallback(
     prompt: &str,
     language: Language,
     log: &mut EventLog,
+    config: UnknownReasoningConfig,
 ) -> SymbolicAnswer {
+    // Plan 10 leaf 10-10: the capability table's placement outranks a silent
+    // unknown at this terminal — but only a placement the prompt's own words
+    // evidence. `route_placed` drops the manufactured `bare_term + retrieve +
+    // web` triple (retrieve is appended to every request and the web locus is
+    // the default for a term nothing scopes), so a prompt that names neither
+    // the open web nor what is true right now keeps this ladder's teaching
+    // answer, while every evidence-backed placement states the route and the
+    // tool this chat surface lacks — a placed prompt is owed its route, not an
+    // opener. An agent client advertises the tool and keeps the fall-through.
+    if !config.agent_mode {
+        match crate::capability_routing::route_placed(
+            prompt,
+            crate::meta_method_dispatch::SOLVER_CAPABILITIES,
+        ) {
+            Some(crate::capability_routing::RoutingOutcome::Routed { capability }) => {
+                return crate::meta_method_answers::capability_gap(
+                    prompt, log, &capability, &capability,
+                );
+            }
+            Some(crate::capability_routing::RoutingOutcome::Lowered { preferred, .. }) => {
+                return crate::meta_method_answers::capability_gap(
+                    prompt, log, &preferred, &preferred,
+                );
+            }
+            Some(crate::capability_routing::RoutingOutcome::HonestGap { needed, missing }) => {
+                return crate::meta_method_answers::capability_gap(prompt, log, &needed, &missing);
+            }
+            Some(crate::capability_routing::RoutingOutcome::Ask { .. })
+            | None => {}
+        }
+    }
     let completed_steps = log
         .events()
         .iter()
@@ -599,6 +649,14 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
         }
     }
     Some(trimmed.to_owned())
+}
+
+/// The question shape the wave-F web-search handoff and the quoted-example
+/// record agree on: `?` in either width, or a seed-carried interrogative
+/// opener fronting the prompt.
+fn is_question_shape(prompt: &str) -> bool {
+    crate::intent_formalization::contains_question_mark(prompt)
+        || crate::intent_formalization::starts_with_question_word(&normalize_prompt(prompt))
 }
 
 /// Whether the missing focus names a researchable term rather than restating

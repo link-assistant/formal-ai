@@ -1,0 +1,17 @@
+self_ast_census
+  target src/meta_translate.rs
+  language rust
+  fidelity signature
+  byte_len 5530
+  line_count 147
+  content_id source_module_9cfbe4f0f79ce5f6
+  symbol_count 8
+  symbols
+    enum SourceRoot 17 22
+    function parse 28 36
+    function name 40 47
+    enum TranslationOutcome 53 58
+    function pending_leg 72 88
+    function translate 96 113
+    function directions 118 134
+    function describe_leg 138 147

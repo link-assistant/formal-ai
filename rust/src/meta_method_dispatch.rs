@@ -220,7 +220,7 @@ pub fn try_dispatch(
 /// workspace tool.  Filesystem capabilities are deliberately absent: when the
 /// table selects one, its `HonestGap` is surfaced instead of allowing a later
 /// web-search handler to claim the request.
-const SOLVER_CAPABILITIES: &[&str] = &[
+pub const SOLVER_CAPABILITIES: &[&str] = &[
     "web_fetch",
     "learn_from_source",
     "web_search",

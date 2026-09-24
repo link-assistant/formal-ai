@@ -48,9 +48,44 @@ fn cached_response(
     .as_str()
 }
 
+/// Resolve a localized response from the seed with no prose fallback: the
+/// lookup degrades to the intent slug — a meaning, not natural language
+/// (the R379 rule the engine's own copy of this module follows).
+fn localized_cell(cell: &'static OnceLock<String>, intent: &str, language: &str) -> &'static str {
+    cell.get_or_init(|| {
+        seed::localized_response(intent, language).unwrap_or_else(|| intent.to_string())
+    })
+    .as_str()
+}
+
 pub fn greeting_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "greeting", "en", FALLBACK_GREETING_ANSWER)
+}
+
+// The wellbeing family reads the seed the way the engine's own copy does
+// (`localized_response`, issue #1138 plan 10 leaf 20): the record exists for
+// all four languages, and on the build-time-impossible parse failure the
+// value degrades to the intent slug — a meaning, never hardcoded prose
+// (R379), so no FALLBACK constant belongs beside these.
+pub fn wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    localized_cell(&CELL, "wellbeing", "en")
+}
+
+pub fn russian_wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    localized_cell(&CELL, "wellbeing", "ru")
+}
+
+pub fn hindi_wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    localized_cell(&CELL, "wellbeing", "hi")
+}
+
+pub fn chinese_wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    localized_cell(&CELL, "wellbeing", "zh")
 }
 
 pub fn farewell_answer() -> &'static str {

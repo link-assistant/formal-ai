@@ -1,0 +1,10 @@
+self_ast_census
+  target src/cli_translate.rs
+  language rust
+  fidelity signature
+  byte_len 2434
+  line_count 73
+  content_id source_module_0134028539e5e601
+  symbol_count 1
+  symbols
+    function run_translate 9 73

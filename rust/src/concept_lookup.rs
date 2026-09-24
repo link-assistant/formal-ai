@@ -790,6 +790,15 @@ fn outside_quotes(value: &str) -> String {
     out
 }
 
+/// Whether `value` carries at least one quoted span. [`unknown_surfaces`]
+/// skips quoted spans because a quoted example is the subject of the question,
+/// never a concept the system is missing; callers that need the same subject
+/// test on the raw prompt use this instead of re-scanning the pairs.
+#[must_use]
+pub fn has_quoted_span(value: &str) -> bool {
+    outside_quotes(value) != value
+}
+
 /// Every surface the seed lexicon declares, folded once.
 fn seeded_surfaces() -> &'static BTreeSet<String> {
     static CACHE: OnceLock<BTreeSet<String>> = OnceLock::new();

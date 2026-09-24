@@ -66,6 +66,7 @@ mod issue_1138_retrieval_method;
 mod issue_1138_segmentation;
 mod issue_1138_source_walk_parity;
 mod issue_1138_three_source_roots;
+mod issue_1138_translation_tool;
 mod issue_1138_universal_loop_lookup;
 mod issue_1963;
 mod issue_337;

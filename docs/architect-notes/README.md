@@ -38,3 +38,4 @@ Two rules for this folder:
 | 2026-09-12 | [Nothing is a hard task](2026-09-12-nothing-is-a-hard-task.md) | No rating, judgement or assessment of a given task |
 | 2026-09-12 | [Notes are notes; the vision is VISION.md](2026-09-12-notes-are-notes-vision-is-vision.md) | Naming; this folder's existence |
 | 2026-09-14 | [Know how to get to know anything when it is needed](2026-09-14-know-how-to-get-to-know-anything.md) | Dynamic discovery, trusted sources, rediscoverable knowledge, and retained experience |
+| 2026-09-24 | [Three roots, full parity, via the meta language](2026-09-24-three-roots-full-parity-via-the-meta-language.md) | Full js/ts/rust parity for client and backend; translation in any direction (PR #1139) |

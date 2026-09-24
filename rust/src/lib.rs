@@ -108,6 +108,7 @@ pub(crate) mod meta_method_answers;
 pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
+pub mod meta_translate;
 pub mod method_learning;
 pub mod method_registry;
 pub mod needs;

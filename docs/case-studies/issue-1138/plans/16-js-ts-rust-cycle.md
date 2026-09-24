@@ -4,6 +4,8 @@ Status: planned 2026-09-21 from the maintainer's instruction that day; not yet
 reconciled against plan 14's wave order (it is appended after wave D because it
 was opened six days into the pull request, to buy iteration speed the Rust-only
 cycle cannot give). Every leaf below is delivered **in this pull request**.
+Scope extended 2026-09-24 (below): the cycle is one face of full three-root
+parity, not a browser-worker convenience.
 
 ## The instruction this plan answers
 
@@ -54,6 +56,38 @@ because the translation cycle is their first consumer:
 > We also need to make sure that in all our dependencies we create issues that
 > are not specific to Formal AI only, so we can simplify code of Formal AI,
 > moving most of general cases to our maintained dependencies.
+
+## The scope extension of 2026-09-24
+
+Quoted, not paraphrased, from the same pull request's review thread:
+
+> Full partity between Rust, JavaScript, TypeScript for client and backend,
+> and all translatable to each other via meta language.
+
+> That is not about browser worker, JavaScript and TypeScript code must be
+> fully implemented the entire backend server and all other logic, not only
+> browseer.
+
+> Make sure we have it in requirements and our development guidelines and
+> architect notes. As that may speed up iteration drammatically as JavaScript
+> executes faster than Rust compiles.
+
+> We should have function or script for translation in any direction via meta
+> language.
+
+What this changes in the plan: the js and ts trees are not thin iterated
+convenience copies — they are full implementation roots for the client **and
+the backend server and all other logic**, so L2's translation product and L3's
+dogfood loop aim at whole-system coverage, not at the browser worker subset.
+The requirement side is the standing doctrine of 2026-09-24 (R992-R996,
+`REQUIREMENTS.md`), which supersedes the 2026-08-04 interfacing-only-JavaScript
+boundary while keeping the worker shrink ratchet in force until the parity
+migration replaces the mirrored modules; the architect note is
+`docs/architect-notes/2026-09-24-three-roots-full-parity-via-the-meta-language.md`,
+and the any-direction dispatcher (library function plus `formal-ai translate`
+subcommand, rust → meta live, every other leg naming its owing leaf) is
+delivered as `rust/src/meta_translate.rs` with
+`rust/tests/unit/issue_1138_translation_tool.rs`.
 
 ## Root cause this plan attacks
 

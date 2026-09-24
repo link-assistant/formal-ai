@@ -42,6 +42,11 @@ use crate::web_engine_core::normalize_prompt;
 mod evidence;
 pub use evidence::*;
 
+/// The capability table rows the symbolic solver itself can place a prompt on.
+/// Shared with the comprehension-gap terminal (plan 10 leaf 10-10): a prompt
+/// the table places is owed its route, never a silent unknown opener.
+pub use crate::meta_method_dispatch::SOLVER_CAPABILITIES;
+
 /// What the request is *about*, derived structurally with no natural-language
 /// vocabulary in the derivation (plan 10 Architecture 1).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
@@ -698,6 +703,36 @@ pub fn route_decision(prompt: &str, advertised: &[&str]) -> RoutingDecision {
         act,
         locus,
         outcome: route_with(&table, highest, act, locus, advertised),
+    }
+}
+
+/// The placement the comprehension-gap terminal owes a prompt (plan 10 leaf
+/// 10-10): the table's answer counts only when the prompt's own words carry
+/// the evidence the deciding triple rests on.
+///
+/// `retrieve` is appended to every request and a bare term nothing scopes
+/// defaults to the web locus, so a prompt that names neither the open web nor
+/// what is true right now manufactures a `bare_term + retrieve + web` triple
+/// out of defaults alone. Defaults are not evidence — the planner already
+/// keeps such a triple from answering a bare term at the end of its cascade
+/// ([`names_open_web`]), and this projection holds the same line for the
+/// terminal: the manufactured triple returns `None` and the unknown-reasoning
+/// ladder answers, while every evidence-backed placement (a named open web, a
+/// live freshness, a workspace scope, a structural object) keeps its route.
+#[must_use]
+pub fn route_placed(prompt: &str, advertised: &[&str]) -> Option<RoutingOutcome> {
+    let decision = route_decision(prompt, advertised);
+    match decision.outcome {
+        RoutingOutcome::Ask { .. } => None,
+        outcome => {
+            let default_web = decision.locus == Locus::Web
+                && matches!(
+                    decision.object,
+                    ObjectType::BareTerm | ObjectType::QuantityQuestion
+                )
+                && !has_web_scope(&normalize_prompt(prompt));
+            (!default_web).then_some(outcome)
+        }
     }
 }
 

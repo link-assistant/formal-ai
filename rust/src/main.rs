@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::path::PathBuf;
 
-use clap::{Args as ClapArgs, CommandFactory, Subcommand, ValueEnum};
+use clap::{CommandFactory, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
 mod cli_algorithm;
@@ -13,6 +13,7 @@ mod cli_computer_use;
 mod cli_context;
 mod cli_environments;
 mod cli_file_legality;
+mod cli_github_logs;
 mod cli_import;
 mod cli_improve;
 mod cli_learn;
@@ -26,6 +27,7 @@ mod cli_shared_dialog;
 mod cli_statement_audit;
 mod cli_summarization;
 mod cli_telegram;
+mod cli_translate;
 
 use cli_algorithm::{AlgorithmArgs, run_algorithm};
 use cli_benchmark::{BenchmarkAction, run_benchmark};
@@ -36,6 +38,7 @@ use cli_computer_use::{ComputerUseArgs, run_computer_use};
 use cli_context::{ContextArgs, run_context};
 use cli_environments::run_environments;
 use cli_file_legality::{FileLegalityArgs, run_file_legality};
+use cli_github_logs::{GithubLogsAction, run_github_logs};
 use cli_import::{ImportAction, run_import};
 use cli_improve::{ImproveArgs, run_improve};
 use cli_learn::{LearnAction, run_learn_action};
@@ -48,14 +51,15 @@ use cli_shared_dialog::{SharedDialogAction, run_shared_dialog};
 use cli_statement_audit::{StatementAuditArgs, run_statement_audit};
 use cli_summarization::{SummarizationAction, run_summarization};
 use cli_telegram::run_telegram;
+use cli_translate::run_translate;
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
-    ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, GithubLogCollectorConfig,
-    ProxyConfig, ResponsesRequest, SolverConfig, SymbolicAnswer, UniversalSolver, WithFormalAiArgs,
-    collect_github_logs, create_chat_completion_with_solver, create_response_with_solver,
-    delimit_tool_args, enable_http_agent_mode_for_current_process, knowledge_links_notation,
-    naturalize_thinking_step_in, render_github_log_plan, run_proxy, run_with_formal_ai,
-    thinking_answer_language, thinking_trace_heading,
+    ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, ProxyConfig,
+    ResponsesRequest, SolverConfig, SymbolicAnswer, UniversalSolver, WithFormalAiArgs,
+    create_chat_completion_with_solver, create_response_with_solver, delimit_tool_args,
+    enable_http_agent_mode_for_current_process, knowledge_links_notation,
+    naturalize_thinking_step_in, run_proxy, run_with_formal_ai, thinking_answer_language,
+    thinking_trace_heading,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -113,6 +117,23 @@ enum Command {
         draft_count: Option<u8>,
     },
     Dataset,
+    /// Translate a document between the source roots through the meta
+    /// language (plan 16 L2): `--from`/`--to` one of rust|js|ts|meta,
+    /// `--input` the source file for a live leg, `--list` every direction
+    /// and the leaf that owes the ones still pending.
+    Translate {
+        #[arg(long)]
+        from: Option<String>,
+
+        #[arg(long)]
+        to: Option<String>,
+
+        #[arg(long)]
+        input: Option<PathBuf>,
+
+        #[arg(long, default_value_t = false)]
+        list: bool,
+    },
     /// Forget or rediscover source-grounded coding fragments.
     Coding(CodingArgs),
     /// Export complete conversations or convert arbitrary JSON to Links Notation.
@@ -540,53 +561,6 @@ enum BundleAction {
     },
 }
 
-#[derive(Debug, Subcommand)]
-enum GithubLogsAction {
-    /// Print the exact `gh` commands and output files without executing them.
-    Plan(GithubLogsOptions),
-    /// Execute the `gh` command plan and write captures plus `manifest.json`.
-    Collect(GithubLogsOptions),
-}
-
-#[derive(Debug, Clone, ClapArgs)]
-struct GithubLogsOptions {
-    /// Repository in OWNER/REPO format.
-    #[arg(long)]
-    repo: String,
-
-    /// Directory where captured JSON, diff, and log files are written.
-    #[arg(long, default_value = "docs/case-studies/github-logs/raw-data")]
-    output_dir: PathBuf,
-
-    /// Issue number to capture. Repeat for multiple issues.
-    #[arg(long = "issue")]
-    issues: Vec<u64>,
-
-    /// Pull request number to capture. Repeat for multiple pull requests.
-    #[arg(long = "pull")]
-    pulls: Vec<u64>,
-
-    /// GitHub Actions run database id to capture. Repeat for multiple runs.
-    #[arg(long = "run")]
-    runs: Vec<u64>,
-
-    /// Number of recent issues to list for repository context.
-    #[arg(long, default_value_t = 10)]
-    recent_issues: usize,
-
-    /// Number of recent pull requests to list for repository context.
-    #[arg(long, default_value_t = 10)]
-    recent_pulls: usize,
-
-    /// Number of recent Actions runs to list for repository context.
-    #[arg(long, default_value_t = 5)]
-    recent_runs: usize,
-
-    /// Optional branch filter for recent Actions runs.
-    #[arg(long)]
-    branch: Option<String>,
-}
-
 #[derive(Debug, Clone, Copy, ValueEnum)]
 enum OutputFormat {
     Text,
@@ -670,6 +644,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             draft_count,
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
+        Command::Translate {
+            from,
+            to,
+            input,
+            list,
+        } => run_translate(from, to, input, list)?,
         Command::Coding(args) => run_coding(args)?,
         Command::Context(args) => run_context(args)?,
         Command::Report(args) => run_report(args)?,
@@ -802,29 +782,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
-    match action {
-        GithubLogsAction::Plan(options) => {
-            let config = options.into_config();
-            print!("{}", render_github_log_plan(&config)?);
-        }
-        GithubLogsAction::Collect(options) => {
-            let config = options.into_config();
-            let summary = collect_github_logs(&config)?;
-            eprintln!(
-                "Captured {} file(s) into {}; manifest: {}",
-                summary.captured.len(),
-                summary.output_dir.display(),
-                summary.manifest_path.display()
-            );
-            for capture in summary.captured {
-                eprintln!("  {}", capture.file);
-            }
-        }
-    }
-    Ok(())
-}
-
 fn run_agent(
     task: &str,
     transcript: bool,
@@ -849,22 +806,6 @@ fn run_agent(
     }
     println!("{}", outcome.final_answer);
     Ok(())
-}
-
-impl GithubLogsOptions {
-    fn into_config(self) -> GithubLogCollectorConfig {
-        GithubLogCollectorConfig {
-            repo: self.repo,
-            output_dir: self.output_dir,
-            issues: self.issues,
-            pulls: self.pulls,
-            runs: self.runs,
-            recent_issues: self.recent_issues,
-            recent_pulls: self.recent_pulls,
-            recent_runs: self.recent_runs,
-            branch: self.branch,
-        }
-    }
 }
 
 pub(crate) struct TelegramRunArgs {

@@ -525,6 +525,29 @@ Removal from a public thread is not approval to retain another copy.
      only after re-reading the issue, the pull request, and the diff
      one more time.
 
+   **The three-root cycle is js-first.** Rust, JavaScript and TypeScript
+   are all full implementation roots — client and backend — kept
+   equivalent through the meta language rather than by shrinking any
+   root out (standing doctrine of 2026-09-24, R992-R996; it supersedes
+   the 2026-08-04 interfacing-only-JavaScript boundary). Because
+   JavaScript executes faster than Rust compiles, author and test a
+   change in `js/` first when the change touches shared logic, then
+   translate outward rather than hand-porting:
+
+   ```bash
+   formal-ai translate --list                  # every direction and its status
+   formal-ai translate --from rust --to meta --input rust/src/module.rs
+   ```
+
+   Translation in any direction goes through the meta pivot
+   (`rust/src/meta_translate.rs`); a leg that is not materialized yet
+   names the plan-16 leaf that owes it
+   ([plan 16](docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md))
+   instead of silently producing nothing. Today only `rust → meta` is
+   live, so the cycle's practical form is still rust-authored; do not
+   claim the closed js-first loop until plan 16 L4 (path-filtered CI)
+   and L5 (CST-equal round trip) land.
+
    **Delegate to Opus sub-agents only.** Sub-agents are always run on
    the Opus model; the Fable model must never be used as a sub-agent
    (project owner directive, 2026-09-15). Keep the agent count low —

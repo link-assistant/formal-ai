@@ -24,6 +24,9 @@ use crate::{concepts, seed};
 mod requirements;
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
 
+mod routing;
+use routing::route_for_prompt;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
     Task,
@@ -300,6 +303,7 @@ pub(crate) fn record_intent_formalization(
 pub(crate) fn select_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
     match intent.route.as_deref() {
         Some("greeting") => SelectedRule::Greeting,
+        Some("wellbeing") => SelectedRule::Wellbeing,
         Some("farewell") => SelectedRule::Farewell,
         Some("test_status") => SelectedRule::TestStatus,
         Some("courtesy_response") => SelectedRule::CourtesyResponse,
@@ -334,41 +338,6 @@ pub(crate) fn ordered_handler_names<'a>(
         }
     }
     ordered
-}
-
-#[derive(Debug, Clone)]
-struct MatchedRoute {
-    slug: String,
-    response_link: String,
-}
-
-fn route_for_prompt(normalized: &str) -> Option<MatchedRoute> {
-    if write_program_parameters(normalized).is_some() {
-        return Some(MatchedRoute {
-            slug: String::from(WRITE_PROGRAM_INTENT),
-            response_link: String::from("response:write_program"),
-        });
-    }
-    seed::intent_routing()
-        .intents
-        .into_iter()
-        .find(|route| matches_route(normalized, route))
-        .map(|route| MatchedRoute {
-            slug: route.slug,
-            response_link: route.response_link,
-        })
-}
-
-fn matches_route(normalized: &str, route: &seed::IntentRoute) -> bool {
-    route.keywords.iter().any(|keyword| normalized == keyword)
-        || route.phrases.iter().any(|phrase| normalized == phrase)
-        || route
-            .tokens
-            .iter()
-            .any(|token| contains_token(normalized, token))
-        || route.combos.iter().any(|combo| {
-            !combo.is_empty() && combo.iter().all(|token| contains_token(normalized, token))
-        })
 }
 
 fn contains_token(normalized: &str, expected: &str) -> bool {

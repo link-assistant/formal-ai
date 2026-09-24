@@ -1014,6 +1014,45 @@ There is no floor and no guess. Three distinguishable outcomes, each rendered fr
 longer be true; leaving it would be a fabricated provenance of the system's own
 state. Any consulted-but-failed source produces a real outcome row instead.
 
+#### Delivery note 2026-09-24 — the six wave-T opener hits root-caused
+
+The wave-T gate (`rust/tests/integration/issue_1138_no_silent_unknown.rs`) held six
+red prompts: the quoted-example lipogram paraphrases for ru, hi and zh, duplicated
+across `data/benchmarks/self-use-concept-lookup.lino` and
+`data/benchmarks/concept-lookup-paraphrases.lino`. The consult walk had already
+recorded attributed misses for every variant, but the record arm
+(`answer_from_concept_lookup_miss`) rejected ru/hi/zh on focus specificity, and
+every later arm was either blocked (web-search handoff: the walk had run and the
+prompt is a question), shape-rejected (unresolved arm), or opener-varying (legacy
+fallback) — so the final answer embedded a seeded unknown opener and the gate
+failed on exactly those six.
+
+The specificity divergence was itself an accident of language shape, not a
+designed distinction:
+
+- **en** passed only because `implementation_language::without_modifier` strips
+  the phrase-final token after ` in` — here ` in e`, where `e` is a *letter*, not
+  a language — shrinking the focus below the prompt and satisfying the filter.
+- **ru** `на букву e` is correctly rejected (a letter is not a language; `букву`
+  is not a language noun), so the focus stayed the whole prompt.
+- **hi** and **zh** are head-final and carry no en/ru-shaped preposition at all,
+  so no modifier scan could shrink anything.
+
+The fix is structural, not vocabulary (the held-out policy forbids teaching the
+words): a prompt that quotes its example — «…» липограммой …, `"…" a lipogram …`,
+`"…" लिपोग्राम …` — and carries the question shape turns on the unresolved
+predicate outside the quotes; `unknown_surfaces` already skips quoted spans for
+exactly that reason, and the record is what that walk's evidence owes. The miss
+arm now accepts a quoted-example question even when the focus never shrank below
+the whole prompt (`solver_unknown_reasoning.rs`, the `quoted_example_question`
+guard; `concept_lookup::has_quoted_span` exposes the existing quote scan). A
+question that quotes nothing keeps the teaching ladder (issue #44's riddles and
+content questions pin it), and all five languages now close on the same record —
+including es, whose pin
+(`a_spanish_prompt_is_not_reported_as_an_unsupported_language`) moved from the
+localized unresolved body to the Spanish consulted-source record. en is
+byte-identical to its pin throughout.
+
 ### How the universal loop and the coding path share one implementation
 
 Both construct the same three values — a `CachedSourceClient` over the same cache

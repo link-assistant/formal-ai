@@ -43,6 +43,17 @@ handler sources outside the minimal core), `data/meta/ladder-ratchet.lino`
 (the coding-ladder record), and `data/meta/self-hosting-ledger.lino` (the
 release metric).
 
+The meta language is also the pivot between the three source roots: since
+2026-09-24 (plan 16, R992-R996) translation between any two of rust, js, ts
+and meta is a product, not an aspiration — the library function
+`formal_ai::meta_translate::translate` and the `formal-ai translate`
+subcommand dispatch every direction through the pivot, with `rust → meta`
+live (the self-AST projection behind
+[`data/meta/self-ast/`](../data/meta/self-ast/)) and every unmaterialized leg
+naming the plan-16 leaf that owes it. The full-backend js/ts parity migration
+that turns this into the js-first development cycle is tracked in
+[plan 16](case-studies/issue-1138/plans/16-js-ts-rust-cycle.md).
+
 ## Why a recipe, not just code
 
 The recipe names every part the handler is made of — seed roles, handler

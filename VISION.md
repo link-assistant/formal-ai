@@ -136,6 +136,25 @@ under storage pressure, forgotten only when its rediscovery procedure remains
 available. Irreplaceable user history and the system's own experience are kept
 until the user chooses otherwise.
 
+**Three roots, full parity, one pivot.**
+
+Stated by the architect in the
+[2026-09-24 note](docs/architect-notes/2026-09-24-three-roots-full-parity-via-the-meta-language.md):
+
+> Full partity between Rust, JavaScript, TypeScript for client and backend,
+> and all translatable to each other via meta language.
+
+Rust, JavaScript and TypeScript are all full implementation roots — client and
+backend server and all other logic — not a compiled core with browser glue.
+They are kept equivalent by translation through the meta language rather than
+by shrinking any root out, and translation in any direction is a function and a
+script. Because JavaScript executes faster than Rust compiles, the iteration
+cycle may run js-first and translate outward. This supersedes the 2026-08-04
+interfacing-only-JavaScript boundary; the honest current state and the measured
+migration are recorded in the 2026-09-24 standing doctrine in
+[`REQUIREMENTS.md`](REQUIREMENTS.md) and planned in
+[plan 16](docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md).
+
 ### Where the architect's notes live
 
 This section is kept up to date from
@@ -261,7 +280,7 @@ Formal AI should use trigger-style computation over links. A trigger can react t
 
 1. **Pure data rules** — `when x do y` substitutions stored directly as doublets, executable by a simple matcher in any environment.
 2. **Compiled Rust handlers** — registered through `solver_handlers` and addressable as data so the rule index can point at them.
-3. **Compiled JS handlers** — registered through the browser worker and addressable the same way, so the same rule can have language-specific implementations; under the compiled-logic doctrine this shape is transitional — logic belongs in compiled Rust (native or WASM), and the JS registration surface remains only until the worker absorption (issue #658) completes.
+3. **Compiled JS handlers** — registered through the browser worker and addressable the same way, so the same rule can have language-specific implementations; under the 2026-09-24 three-root parity doctrine JavaScript and TypeScript are full implementation roots kept equivalent to Rust by translation through the meta language, so this shape grows into a peer of the Rust handler rather than a transitional surface (the 2026-08-04 interfacing-only boundary is superseded).
 4. **Dynamically compiled Rust/JS code stored as data** — source text is itself a link payload; the runtime can compile-on-demand and cache the resulting handler.
 5. **Natural-language skills / instructions** — stored as `.lino` text, executed either by an interpreter that walks them one step at a time or by an on-demand compiler that translates them into rules in any of the four shapes above (and ultimately into native binaries when the platform allows).
 

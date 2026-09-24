@@ -1,0 +1,13 @@
+self_ast_census
+  target src/cli_github_logs.rs
+  language rust
+  fidelity signature
+  byte_len 3039
+  line_count 94
+  content_id source_module_21de03a3e33d7c16
+  symbol_count 4
+  symbols
+    enum GithubLogsAction 11 16
+    struct GithubLogsOptions 19 55
+    function into_config 58 70
+    function run_github_logs 73 94

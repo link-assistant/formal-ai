@@ -2,42 +2,43 @@ self_ast_census
   target src/capability_routing.rs
   language rust
   fidelity signature
-  byte_len 30567
-  line_count 804
-  content_id source_module_3266f13fbe4c6ee8
-  symbol_count 34
+  byte_len 32341
+  line_count 839
+  content_id source_module_f0506419db9e778a
+  symbol_count 35
   symbols
     module evidence 42 42
-    enum ObjectType 48 84
-    const OBJECT_TYPES 87 87
-    function slug 108 126
-    function from_slug 130 134
-    function rank 153 170
-    enum Act 177 192
-    const ACTS_IN_PRECEDENCE 200 200
-    function slug 215 228
-    function from_slug 232 237
-    function role 240 253
-    enum Locus 258 266
-    function slug 271 279
-    function from_slug 283 293
-    struct RouteRow 298 309
-    enum RoutingOutcome 314 327
-    struct RoutingDecision 336 345
-    function table_routing_enabled 353 361
-    function object_type 366 483
-    function evidences_retrieve_act 495 497
-    function is_response_language_obligation 509 512
-    function acts 520 539
-    function act 543 545
-    function locus_of 553 595
-    function locus 600 604
-    function routing_table 608 610
-    const CAPABILITY_ROUTING_LINO 613 613
-    function routing_table_from 621 653
-    function route 664 666
-    function route_decision 675 702
-    function advertised_provides 710 726
-    function route_with 730 766
-    function readings_for 774 801
-    const DEFAULT_OUTCOME 804 804
+    enum ObjectType 53 89
+    const OBJECT_TYPES 92 92
+    function slug 113 131
+    function from_slug 135 139
+    function rank 158 175
+    enum Act 182 197
+    const ACTS_IN_PRECEDENCE 205 205
+    function slug 220 233
+    function from_slug 237 242
+    function role 245 258
+    enum Locus 263 271
+    function slug 276 284
+    function from_slug 288 298
+    struct RouteRow 303 314
+    enum RoutingOutcome 319 332
+    struct RoutingDecision 341 350
+    function table_routing_enabled 358 366
+    function object_type 371 488
+    function evidences_retrieve_act 500 502
+    function is_response_language_obligation 514 517
+    function acts 525 544
+    function act 548 550
+    function locus_of 558 600
+    function locus 605 609
+    function routing_table 613 615
+    const CAPABILITY_ROUTING_LINO 618 618
+    function routing_table_from 626 658
+    function route 669 671
+    function route_decision 680 707
+    function route_placed 723 737
+    function advertised_provides 745 761
+    function route_with 765 801
+    function readings_for 809 836
+    const DEFAULT_OUTCOME 839 839

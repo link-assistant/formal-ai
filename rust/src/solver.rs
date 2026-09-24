@@ -665,6 +665,7 @@ impl UniversalSolver {
                 UnknownReasoningConfig {
                     questioning_rigor: self.config.questioning_rigor,
                     offline: self.config.offline,
+                    agent_mode: self.config.agent_mode,
                 },
                 &senses,
             );
