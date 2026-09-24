@@ -181,12 +181,6 @@ rust/src/cli_memory.rs	Wrote full-memory backup with {} event(s) to {}.
 rust/src/cli_memory.rs	Wrote {} events (events-only)
 rust/src/cli_shared_dialog.rs	Wrote demo_memory to {}.
 rust/src/cli_telegram.rs	Telegram polling mode requires a bot token. Pass --token or set TELEGRAM_BOT_TOKEN.
-rust/src/cli_translate.rs	translate {} → {} is pending: plan 16 {plan_leaf} owes it
-rust/src/cli_translate.rs	translate {} → {} is pending: plan 16 {plan_leaf} owes it (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)
-rust/src/cli_translate.rs	translate {} → {} reads a source file: pass --input PATH
-rust/src/cli_translate.rs	unknown --from '{from_name}': expected one of rust|js|ts|meta
-rust/src/cli_translate.rs	unknown --to '{to_name}': expected one of rust|js|ts|meta
-rust/src/cli_translate.rs	{} → {} is not a direction: the roots are the same
 rust/src/client_integrations.rs	temporary config path escapes its root: {relative}
 rust/src/client_integrations.rs	temporary config path must be relative: {relative}
 rust/src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
@@ -467,7 +461,6 @@ rust/src/meta_self_improvement.rs	Propose citing undescribed pipeline stage(s): 
 rust/src/meta_self_improvement.rs	Propose citing {add}; propose dropping stale citation(s): {drop}.
 rust/src/meta_self_improvement.rs	Propose dropping stale recipe citation(s): {drop}.
 rust/src/meta_self_improvement.rs	The recipe already describes every pipeline stage; no update proposed.
-rust/src/meta_translate.rs	{} → {}  pending (plan 16 {})
 rust/src/network_endpoint.rs	invalid LinksQL query: {error}
 rust/src/number_constraints.rs	If real numbers are allowed, the answer is not unique; for example, x = {} also fits.
 rust/src/number_constraints.rs	If this is an integer-number riddle, the answer is not unique: every integer from {start} through {end} fits.

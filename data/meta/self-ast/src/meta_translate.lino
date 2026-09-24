@@ -2,9 +2,9 @@ self_ast_census
   target src/meta_translate.rs
   language rust
   fidelity signature
-  byte_len 5568
-  line_count 149
-  content_id source_module_4f11eb6b0b139119
+  byte_len 5954
+  line_count 157
+  content_id source_module_b9d0744535a7df7c
   symbol_count 8
   symbols
     enum SourceRoot 17 22
@@ -14,4 +14,4 @@ self_ast_census
     function pending_leg 72 87
     function translate 95 112
     function directions 117 133
-    function describe_leg 137 149
+    function describe_leg 138 157

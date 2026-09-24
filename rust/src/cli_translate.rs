@@ -5,6 +5,15 @@ use std::error::Error;
 use std::path::PathBuf;
 
 use formal_ai::meta_translate::{self, SourceRoot, TranslationOutcome};
+use formal_ai::render_response;
+
+/// Render one `translate_*` intent from the seed.
+///
+/// The intent id is the fallback so a missing record stays visible on
+/// stderr instead of silently rendering nothing.
+fn cli_text(intent: &str, values: &[(&str, &str)]) -> String {
+    render_response(intent, "en", values).unwrap_or_else(|| intent.to_string())
+}
 
 pub fn run_translate(
     from: Option<&str>,
@@ -19,40 +28,31 @@ pub fn run_translate(
         return Ok(());
     }
     let (Some(from_name), Some(to_name)) = (from, to) else {
-        return Err("translate needs --from and --to (or --list to see every direction)".into());
+        return Err(cli_text("translate_needs_from_to", &[]).into());
     };
     let Some(from_root) = SourceRoot::parse(from_name) else {
-        return Err(
-            format!("unknown --from '{from_name}': expected one of rust|js|ts|meta").into(),
-        );
+        return Err(cli_text("translate_unknown_from", &[("from", from_name)]).into());
     };
     let Some(to_root) = SourceRoot::parse(to_name) else {
-        return Err(format!("unknown --to '{to_name}': expected one of rust|js|ts|meta").into());
+        return Err(cli_text("translate_unknown_to", &[("to", to_name)]).into());
     };
+    let roots = [("from", from_root.name()), ("to", to_root.name())];
     if from_root == to_root {
-        return Err(format!(
-            "{} → {} is not a direction: the roots are the same",
-            from_root.name(),
-            to_root.name()
-        )
-        .into());
+        return Err(cli_text("translate_same_roots", &roots).into());
     }
     if let Some(plan_leaf) = meta_translate::pending_leg(from_root, to_root) {
-        return Err(format!(
-            "translate {} → {} is pending: plan 16 {plan_leaf} owes it \
-             (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)",
-            from_root.name(),
-            to_root.name()
+        return Err(cli_text(
+            "translate_pending_docs",
+            &[
+                ("from", from_root.name()),
+                ("to", to_root.name()),
+                ("leaf", plan_leaf),
+            ],
         )
         .into());
     }
     let Some(path) = input else {
-        return Err(format!(
-            "translate {} → {} reads a source file: pass --input PATH",
-            from_root.name(),
-            to_root.name()
-        )
-        .into());
+        return Err(cli_text("translate_needs_input", &roots).into());
     };
     let source = std::fs::read_to_string(&path)?;
     match meta_translate::translate(from_root, to_root, &path.display().to_string(), &source) {
@@ -60,10 +60,13 @@ pub fn run_translate(
             println!("{target}");
             Ok(())
         }
-        TranslationOutcome::Pending { plan_leaf } => Err(format!(
-            "translate {} → {} is pending: plan 16 {plan_leaf} owes it",
-            from_root.name(),
-            to_root.name()
+        TranslationOutcome::Pending { plan_leaf } => Err(cli_text(
+            "translate_pending",
+            &[
+                ("from", from_root.name()),
+                ("to", to_root.name()),
+                ("leaf", plan_leaf),
+            ],
         )
         .into()),
     }

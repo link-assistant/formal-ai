@@ -1,0 +1,37 @@
+multilingual_responses
+  response response_translate_needs_from_to_en
+    intent translate_needs_from_to
+    language en
+    text "translate needs --from and --to (or --list to see every direction)"
+  response response_translate_unknown_from_en
+    intent translate_unknown_from
+    language en
+    text "unknown --from '{from}': expected one of rust, js, ts, or meta"
+  response response_translate_unknown_to_en
+    intent translate_unknown_to
+    language en
+    text "unknown --to '{to}': expected one of rust, js, ts, or meta"
+  response response_translate_same_roots_en
+    intent translate_same_roots
+    language en
+    text "{from} → {to} is not a direction: the roots are the same"
+  response response_translate_pending_en
+    intent translate_pending
+    language en
+    text "translate {from} → {to} is pending: plan 16 {leaf} owes it"
+  response response_translate_pending_docs_en
+    intent translate_pending_docs
+    language en
+    text "translate {from} → {to} is pending: plan 16 {leaf} owes it (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)"
+  response response_translate_needs_input_en
+    intent translate_needs_input
+    language en
+    text "translate {from} → {to} reads a source file: pass --input PATH"
+  response response_translate_leg_live_en
+    intent translate_leg_live
+    language en
+    text "{from} → {to}  live"
+  response response_translate_leg_pending_en
+    intent translate_leg_pending
+    language en
+    text "{from} → {to}  pending (plan 16 {leaf})"

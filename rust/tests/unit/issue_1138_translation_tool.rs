@@ -6,6 +6,42 @@
 use formal_ai::meta_translate::{self, SourceRoot, TranslationOutcome};
 
 #[test]
+fn every_translate_cli_text_lives_in_the_seed() {
+    for intent in [
+        "translate_needs_from_to",
+        "translate_unknown_from",
+        "translate_unknown_to",
+        "translate_same_roots",
+        "translate_pending",
+        "translate_pending_docs",
+        "translate_needs_input",
+        "translate_leg_live",
+        "translate_leg_pending",
+    ] {
+        assert!(
+            formal_ai::response_for(intent, "en").is_some(),
+            "intent {intent} must live in data/seed/multilingual-responses-translate lino"
+        );
+    }
+    assert_eq!(
+        formal_ai::render_response(
+            "translate_leg_live",
+            "en",
+            &[("from", "rust"), ("to", "meta")]
+        ),
+        Some("rust → meta  live".to_owned())
+    );
+    assert_eq!(
+        formal_ai::render_response(
+            "translate_leg_pending",
+            "en",
+            &[("from", "rust"), ("to", "js"), ("leaf", "L5")]
+        ),
+        Some("rust → js  pending (plan 16 L5)".to_owned())
+    );
+}
+
+#[test]
 fn every_distinct_pair_is_listed_exactly_once() {
     let directions = meta_translate::directions();
     assert_eq!(

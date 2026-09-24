@@ -2,9 +2,10 @@ self_ast_census
   target src/cli_translate.rs
   language rust
   fidelity signature
-  byte_len 2405
-  line_count 70
-  content_id source_module_5806763944b0a9fb
-  symbol_count 1
+  byte_len 2555
+  line_count 73
+  content_id source_module_8e34a640ea44a6e7
+  symbol_count 2
   symbols
-    function run_translate 9 70
+    function cli_text 14 16
+    function run_translate 18 73

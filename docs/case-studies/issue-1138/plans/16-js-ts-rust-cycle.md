@@ -178,6 +178,62 @@ implemented, box ticked in the landing commit.
   `[patch]`/source-install entry in `Cargo.toml` has an open issue referenced
   by URL in a comment beside it, and every referenced issue exists.
 
+### Design note 2026-09-25 — L2's material legs (written before any L2 code)
+
+Survey the same day, so the leaf is planned against measured facts and not
+against hope:
+
+- The crate holds no JavaScript parser. The worker mirrors and the
+  module-list machinery read `./js` as text; nothing tokenizes it. The pivot
+  the cycle leans on — the self-AST census — projects Rust at
+  `fidelity signature` (symbol names and line spans), which is a table of
+  contents, not a CST.
+- `./js` today is 63 ES-module files of the plain web subset (no TS-only
+  syntax, no JSX); `./ts` is a README placeholder. `release.yml` and
+  `coverage.yml` carry no path predicates at all, and no per-layer job
+  exists for L4 to filter — L4 stays ordered after L2/L3 exactly as listed.
+
+The syntactic fact that shapes the first rung: TypeScript is a syntactic
+superset of the committed `./js` corpus. That makes the two directions
+asymmetric, and the translator must say so rather than flatten them:
+
+- `js → ts` is a token-faithful carry. Zero refused constructs here is a
+  property of the corpus, not a promise — the report still enumerates every
+  construct class it carried, and the first TS-incompatible construct that
+  lands in `./js` is refused by name.
+- `ts → js` is the real translation: type annotations, interfaces, type
+  aliases, generics, enums, `as`/`satisfies` either strip under a rule or
+  are refused; nothing is guessed.
+
+Engine/data split, per the founding doctrine: the tokenizer and token-tree
+normalizer are engine code — one general ES lexer serving both roots — while
+the projection (which token class each construct maps to in each target, and
+which are refused) lives as per-language projection rules in the
+meta-language seed, discovered from the Rust↔worker parity corpus, never
+hard-coded per test. The CST diff is a comparison of normalized token trees,
+so "the translation landed perfectly" is a checkable statement.
+
+Leaf split for implementation, each landing with its named test failing
+first, per repo convention:
+
+- **L2a** — the ES tokenizer and token tree.
+  `tests/unit/issue_1138_js_tokenizer.rs`: the committed `./js` corpus
+  tokenizes with balanced structure; regex-versus-division and
+  template-literal edges pinned by fixtures.
+- **L2b** — the js → meta extractor (token tree into a pivot document),
+  extending the census vocabulary from `fidelity signature` toward
+  `fidelity token_tree` for the JS root.
+- **L2c** — the meta → ts renderer plus the first seed projection rules.
+- **L2d** — the ts → meta extractor: type-construct recognition with the
+  refused list populated from real files, not from imagination.
+- **L2e** — the meta → js renderer (strips exactly what the seed rules say).
+- **L2f** — the `TranslationReport` (translated, refused, CST diff) and the
+  L2 acceptance test: js → ts → js over the committed `./js` tree reports
+  zero refused constructs and a null CST diff on the identity round trip.
+- **L2g** — `--write` mode and the agent `translate` tool, so the dogfood
+  loop of L3 has something to turn.
+
+
 ## Risks
 
 1. **The restructure churns every path.** Mitigation: L1 lands as one commit

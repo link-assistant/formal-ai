@@ -236,6 +236,8 @@ pub const MULTILINGUAL_RESPONSES_THINKING_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-thinking.lino");
 pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-thinking-narrative.lino");
+pub const MULTILINGUAL_RESPONSES_TRANSLATE_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-translate.lino");
 pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
     include_str!("../../../data/seed/numeric-list-operations.lino");
 pub const OBLIGATION_MISMATCH_LINO: &str =
@@ -451,6 +453,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/multilingual-responses-thinking-narrative.lino",
             MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
         ),
+        ("data/seed/multilingual-responses-translate.lino", MULTILINGUAL_RESPONSES_TRANSLATE_LINO),
         ("data/seed/numeric-list-operations.lino", NUMERIC_LIST_OPERATIONS_LINO),
         ("data/seed/obligation-mismatch.lino", OBLIGATION_MISMATCH_LINO),
         ("data/seed/operation-vocabulary.lino", OPERATION_VOCABULARY_LINO),
@@ -510,6 +513,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
     MULTILINGUAL_RESPONSES_THINKING_LINO,
     MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
+    MULTILINGUAL_RESPONSES_TRANSLATE_LINO,
 ];
 
 /// The registered set of meaning-lexicon files, concatenated by

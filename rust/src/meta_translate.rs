@@ -132,18 +132,26 @@ pub fn directions() -> Vec<(SourceRoot, SourceRoot, Option<&'static str>)> {
     listed
 }
 
-/// The one-line CLI rendering of a leg row.
+/// The one-line CLI rendering of a leg row; the row text is carried by the
+/// seed (`translate_leg_live` / `translate_leg_pending`).
 #[must_use]
 pub fn describe_leg(from: SourceRoot, to: SourceRoot, pending: Option<&'static str>) -> String {
-    pending.map_or_else(
-        || format!("{} → {}  live", from.name(), to.name()),
-        |leaf| {
-            format!(
-                "{} → {}  pending (plan 16 {})",
-                from.name(),
-                to.name(),
-                leaf
-            )
-        },
-    )
+    pending
+        .map_or_else(
+            || {
+                crate::seed::render_response(
+                    "translate_leg_live",
+                    "en",
+                    &[("from", from.name()), ("to", to.name())],
+                )
+            },
+            |leaf| {
+                crate::seed::render_response(
+                    "translate_leg_pending",
+                    "en",
+                    &[("from", from.name()), ("to", to.name()), ("leaf", leaf)],
+                )
+            },
+        )
+        .unwrap_or_else(|| "translate_leg".to_string())
 }

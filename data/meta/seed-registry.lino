@@ -485,6 +485,9 @@ seed_registry
   seed multilingual-responses-thinking-narrative
     bundle true
     lexicon response
+  seed multilingual-responses-translate
+    bundle true
+    lexicon response
   seed numeric-list-operations
     bundle true
     web true
