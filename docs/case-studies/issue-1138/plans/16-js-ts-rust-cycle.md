@@ -256,12 +256,27 @@ implemented, box ticked in the landing commit.
   the `javascript` and `typescript` spellings per construct — the same
   row serves rust → js and rust → ts.
 - Rule sets serialize as lino (`to_lino`/`from_lino`), so the rules are
-  seed data here by construction; the leaf's open questions, to measure
-  before any row ships: whether `LinkQuery` selects by the tree-sitter
-  node kinds the census already inventories (that inventory is the
-  corpus's construct list, free), what `render_roots` does with an
-  unruled root (partial output or nothing — the refusal contract depends
-  on it), and the template placeholder syntax for captures.
+  seed data here by construction. The leaf's open questions, measured
+  2026-09-25 against the renderer source:
+  - `LinkQuery` selects links by `by_type(LinkType)` plus `with_term` /
+    `with_language`, or an s-expression with named captures — expressive
+    enough to rule per node kind; the exact encoding of a tree-sitter
+    kind on the parsed link (type vs term) is measured when the first
+    rule is authored.
+  - `render_roots` returns `None` only when *no* root has a template; an
+    unruled link inside a ruled root falls back to `render_unclaimed`
+    fallback rendering — **the dependency does not refuse unruled
+    constructs**. So the leaf's refusal contract ("each unruled construct
+    refuses by name") is Formal AI's own coverage pre-check: walk the
+    network, require every link the roots reach to be claimed by a rule
+    with a template for the target, and refuse naming the census kind
+    otherwise — the es_meta carried/refused report pattern restated.
+  - Template placeholders carry modes: `{name}` renders the captured link
+    recursively, `{name:text}` / `{name:source}` splice captured source,
+    `{name:term}` the link's term, `.` is the matched link itself;
+    captures resolve from query captures by name, then reference indices.
+  - `with_language_fallback` exists but is unnecessary here: each rule
+    carries both the `javascript` and `typescript` templates.
 - `data/seed/formal-language-projections.lino` is a different projection
   family (FOL ↔ natural-language statements, plan 04's territory); the
   L8 rules get their own seed surface, declared the way L2 declared the
