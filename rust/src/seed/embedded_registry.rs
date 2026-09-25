@@ -47,6 +47,8 @@ pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
 pub const FORMALIZATION_RELATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/formalization-relations.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../embedded/data/seed/greetings.lino");
+pub const GRAMMAR_PROJECTION_RULES_LINO: &str =
+    include_str!("../../embedded/data/seed/grammar-projection-rules.lino");
 pub const HANDLER_FAMILY_METHODS_LINO: &str =
     include_str!("../../embedded/data/seed/handler-family-methods.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str =
@@ -333,6 +335,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),
         ("data/seed/formalization-relations.lino", FORMALIZATION_RELATIONS_LINO),
         ("data/seed/greetings.lino", GREETINGS_LINO),
+        ("data/seed/grammar-projection-rules.lino", GRAMMAR_PROJECTION_RULES_LINO),
         ("data/seed/handler-family-methods.lino", HANDLER_FAMILY_METHODS_LINO),
         ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
         ("data/seed/handler-promotions.lino", HANDLER_PROMOTIONS_LINO),

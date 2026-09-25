@@ -155,6 +155,7 @@ pub mod route_method_alias;
 pub mod rule_interpreter;
 pub(crate) mod rule_synthesis;
 pub(crate) mod rule_synthesis_portfolio;
+pub mod rust_projection;
 pub mod search_fusion;
 pub mod search_fusion_grammar;
 pub mod search_fusion_learning;

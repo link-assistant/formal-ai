@@ -155,3 +155,195 @@ fn meta_to_rust_is_declared_network_and_live() {
     );
     assert_eq!(back, PROBE);
 }
+
+/// The L8 machinery probe: the walk follows the data, built through the
+/// same public builder path the seed generator uses. One tiny module
+/// exercises every placeholder form the walk expands — the variadic
+/// `{*cap|sep}` over all bindings, recursive `{cap}`, the `{cap:text}`
+/// span splice, `{.:text}`, the `{{`/`}}` escapes — and the declared
+/// refusal that splices an integer literal through verbatim.
+#[test]
+fn grammar_projection_walk_follows_the_data() {
+    use formal_ai::rust_projection::{ProjectionOutcome, project, projection_from};
+    use meta_language::{LinkQuery, LinkType, TranslationRule, TranslationRuleSet};
+
+    let probe_set = || {
+        // The template literals below are projection placeholders, not
+        // format strings.
+        #[allow(clippy::literal_string_with_formatting_args, clippy::type_complexity)]
+        let rows: &[(&str, &str, &[(&str, &str)])] = &[
+            (
+                "source_file",
+                "(source_file (_)* @item)",
+                &[("", "{*item|\n}")],
+            ),
+            ("identifier", "(identifier)", &[("", "{.:text}")]),
+            (
+                "function_item",
+                "(function_item name: (identifier) @name parameters: (parameters) @parameters body: (block) @body)",
+                &[("", "function {name}({parameters}) {{\n{body}\n}}")],
+            ),
+            (
+                "parameters",
+                "(parameters (_)* @param)",
+                &[("", "{*param|, }")],
+            ),
+            (
+                // A bare parameter is a type_identifier child of
+                // parameters — there is no parameter node at all.
+                "type_identifier",
+                "(type_identifier)",
+                &[("", "{.:text}")],
+            ),
+            (
+                "block",
+                "(block (_)* @statement)",
+                &[("", "{*statement|\n}")],
+            ),
+            (
+                "expression_statement",
+                "(expression_statement (_) @expression)",
+                &[("", "{expression};")],
+            ),
+            (
+                "binary_expression",
+                "(binary_expression left: (_) @left operator: (_) @operator right: (_) @right)",
+                &[("", "{left} {operator:text} {right}")],
+            ),
+        ];
+        let mut rule_set = TranslationRuleSet::new("grammar-projection-probe");
+        for (name, sexpression, templates) in rows {
+            let query = LinkQuery::from_sexpression(sexpression)
+                .unwrap_or_else(|error| panic!("{name}: {error}"))
+                .with_link_type(LinkType::Syntax);
+            let mut rule = TranslationRule::new(format!("probe:{name}"), query);
+            for (_, template) in *templates {
+                rule = rule.with_template("javascript", *template);
+            }
+            rule_set = rule_set.with_rule(rule);
+        }
+        rule_set.to_lino()
+    };
+
+    // The declared refusal rides the same document as an extra root child
+    // of the network round-trip — the composition the generator performs.
+    let lino = probe_set();
+    let network = meta_language::LinkNetwork::from_lino(&lino).expect("the probe serializes");
+    let rule_root = network
+        .links()
+        .find(|link| link.metadata().term() == Some("translation-rule-set"))
+        .expect("the rule set root is present")
+        .id();
+    let mut network = network;
+    network.insert_link(
+        [rule_root],
+        meta_language::LinkMetadata::new()
+            .with_link_type(LinkType::Semantic)
+            .with_named(true)
+            .with_term("integer_literal")
+            .with_language("grammar-projection-refusal")
+            .with_definition("any"),
+    );
+    let seed = network.to_lino();
+
+    let projection = projection_from(&seed).expect("the probe seed loads");
+    // The semicoloned body keeps the expression_statement wrapper a block
+    // tail expression would drop.
+    let source = "fn add(a, b) { a + 1; }";
+    let parsed = formal_ai::grammar_kinds::parse_network("rust", source);
+    let rendered = projection
+        .render(&parsed, source, "javascript")
+        .expect("the probe module is fully covered");
+    assert_eq!(rendered, "function add(a, b) {\na + 1;\n}");
+
+    // The public entry composes the same walk over the probe seed's
+    // contract: without the refusal row, the walk refuses naming the kind.
+    let bare = projection_from(&probe_set()).expect("the bare probe loads");
+    let kinds: std::collections::BTreeSet<String> =
+        formal_ai::grammar_kinds::named_source_kinds("rust", source)
+            .into_iter()
+            .map(|(kind, _)| kind)
+            .collect();
+    let refusals = bare.coverage_kinds(&kinds, "javascript");
+    assert!(
+        refusals
+            .iter()
+            .any(|refusal| refusal.construct == "integer_literal"),
+        "the undeclared literal must be refused by name: {refusals:?}"
+    );
+    assert!(
+        refusals
+            .iter()
+            .all(|refusal| refusal.construct != "source_file"
+                && refusal.construct != "function_item"
+                && refusal.construct != "block"),
+        "a ruled kind is covered, so an empty ruled table cannot pass: {refusals:?}"
+    );
+    match project("rust", "javascript", source) {
+        ProjectionOutcome::Rendered { .. } => {}
+        refused @ ProjectionOutcome::Refused { .. } => {
+            panic!("the embedded seed decides this leg, not the probe: {refused:?}")
+        }
+    }
+}
+
+/// The embedded seed is well-formed and loads through the public loader,
+/// and the entry refuses unknown or same-label directions honestly.
+#[test]
+fn grammar_projection_seed_loads_and_entry_refuses_honestly() {
+    use formal_ai::rust_projection::{ProjectionOutcome, project};
+
+    let projection =
+        formal_ai::rust_projection::projection_from(formal_ai::seed::GRAMMAR_PROJECTION_RULES_LINO)
+            .expect("the embedded seed is well-formed");
+    assert!(projection.rule_count() > 0, "the seed carries rules");
+    assert!(projection.refusal_count() > 0, "the seed carries refusals");
+    for (from, target) in [("nope", "rust"), ("rust", "nope"), ("rust", "rust")] {
+        match project(from, target, "x") {
+            ProjectionOutcome::Refused { refusals } => {
+                assert_eq!(refusals.len(), 1, "{from} -> {target} refuses once");
+            }
+            rendered @ ProjectionOutcome::Rendered { .. } => {
+                panic!("{from} -> {target} must be refused, not {rendered:?}")
+            }
+        }
+    }
+}
+
+/// The corpus ratchet: the seed's authored rows grow against the measured
+/// corpus inventories. A direction goes live only when its remaining count
+/// reaches zero; until then the pins here only ever move down.
+#[test]
+fn grammar_projection_corpus_ratchet() {
+    use std::collections::BTreeSet;
+
+    use formal_ai::grammar_kinds::{corpus_sources, named_corpus_inventory};
+    use formal_ai::rust_projection::projection_from;
+
+    // Pins, tightened to the measured counts as the authored table grows.
+    const RUST_TO_JAVASCRIPT_REMAINING: usize = 120;
+    const RUST_TO_TYPESCRIPT_REMAINING: usize = 120;
+    const JAVASCRIPT_TO_RUST_REMAINING: usize = 79;
+    const TYPESCRIPT_TO_RUST_REMAINING: usize = 83;
+
+    let projection = projection_from(formal_ai::seed::GRAMMAR_PROJECTION_RULES_LINO)
+        .expect("the embedded seed is well-formed");
+    let root = root();
+    let pins: [((&str, &str), usize); 4] = [
+        (("rust", "javascript"), RUST_TO_JAVASCRIPT_REMAINING),
+        (("rust", "typescript"), RUST_TO_TYPESCRIPT_REMAINING),
+        (("javascript", "rust"), JAVASCRIPT_TO_RUST_REMAINING),
+        (("typescript", "rust"), TYPESCRIPT_TO_RUST_REMAINING),
+    ];
+    for ((from, target), pin) in pins {
+        let corpus = formal_ai::grammar_kinds::corpus_by_label(from)
+            .expect("the direction's corpus is owned");
+        let sources = corpus_sources(&root, *corpus);
+        let kinds: BTreeSet<String> = named_corpus_inventory(from, &sources).into_keys().collect();
+        let remaining = projection.coverage_kinds(&kinds, target);
+        assert!(
+            remaining.len() <= pin,
+            "{from} -> {target}: {remaining:?} must shrink to {pin} or below"
+        );
+    }
+}

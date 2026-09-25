@@ -8,14 +8,11 @@
 //! The inventory is the rule checklist the grammar-projection seed must
 //! cover — every kind a committed module parses into is either ruled or
 //! refused-by-name in `data/seed/grammar-projection-rules.lino`, and this
-//! dump is how that checklist is measured rather than remembered. The
-//! owned rust corpus is the census set (the same derived set the round-trip
-//! proof walks); the ES corpora are the committed `js/` and `ts/` trees.
+//! dump is how that checklist is measured rather than remembered.
 
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
-use formal_ai::grammar_kinds::corpus_inventory;
+use formal_ai::grammar_kinds::{corpus_inventory, corpus_sources};
 
 fn main() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -34,43 +31,4 @@ fn main() {
             println!("{kind}\t{count}");
         }
     }
-}
-
-fn corpus_sources(root: &Path, corpus: formal_ai::grammar_kinds::Corpus) -> Vec<PathBuf> {
-    let mut sources = Vec::new();
-    if corpus.census_derived {
-        collect(
-            &root.join("data").join("meta").join("self-ast"),
-            "lino",
-            &mut sources,
-        );
-        sources = sources
-            .into_iter()
-            .map(|census_path| {
-                let relative = census_path
-                    .strip_prefix(root.join("data").join("meta").join("self-ast"))
-                    .expect("collected under the census tree")
-                    .with_extension("rs");
-                root.join("rust").join(relative)
-            })
-            .collect();
-    } else {
-        collect(&root.join(corpus.directory), corpus.extension, &mut sources);
-    }
-    sources
-}
-
-fn collect(directory: &Path, extension: &str, out: &mut Vec<PathBuf>) {
-    let Ok(entries) = fs::read_dir(directory) else {
-        return;
-    };
-    for entry in entries.flatten() {
-        let path = entry.path();
-        if path.is_dir() {
-            collect(&path, extension, out);
-        } else if path.extension().and_then(|ext| ext.to_str()) == Some(extension) {
-            out.push(path);
-        }
-    }
-    out.sort();
 }
