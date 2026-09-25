@@ -78,4 +78,4 @@ multilingual_responses
   response response_translate_tool_schema_en
     intent translate_tool_schema
     language en
-    text "Translate a source file (or, with no path, the whole tree) between the js and ts roots through the meta pivot; refusals are named, never guessed. Arguments: from js|ts, to js|ts, path string, write boolean."
+    text "Translate a source file (or, with no path, the whole tree) between the js and ts roots through the meta pivot; refusals are named, never guessed. Arguments: from js or ts, to js or ts, path string, write boolean."

@@ -59,7 +59,7 @@ fn the_driver_advertises_and_executes_the_translate_tool() {
     // the row states the write mapping's own argument shape.
     let schema = formal_ai::render_response("translate_tool_schema", "en", &[])
         .expect("the seed renders the tool schema");
-    for needle in ["whole tree", "from js|ts", "write boolean"] {
+    for needle in ["whole tree", "from js or ts", "write boolean"] {
         assert!(
             schema.contains(needle),
             "the schema must state {needle:?}: {schema}"

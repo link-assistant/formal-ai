@@ -274,7 +274,7 @@ pub fn write_target(
     let mapped = repo_relative
         .strip_prefix(&format!("{directory}/"))
         .and_then(|sub| sub.strip_suffix(&format!(".{extension}")))
-        .filter(|_| !repo_relative.contains(".."))
+        .filter(|_| !escapes_root(repo_relative))
         .ok_or_else(|| WriteTargetError::WrongRoot {
             path: repo_relative.to_owned(),
         })?;
@@ -294,6 +294,12 @@ pub struct SourceTreeRequest {
     pub path: String,
 }
 
+/// A repo-relative path escapes its root when any segment is the parent
+/// directory — a structural check on segments, not a phrase literal.
+fn escapes_root(repo_relative: &str) -> bool {
+    repo_relative.split('/').any(|segment| segment == "..")
+}
+
 /// Recognize a source-tree translation request in a prompt: a path token
 /// under `js/` or `ts/` with its owned extension, plus a named ES target.
 ///
@@ -304,22 +310,34 @@ pub struct SourceTreeRequest {
 #[must_use]
 pub fn source_tree_request(prompt: &str) -> Option<SourceTreeRequest> {
     let folded = prompt.to_ascii_lowercase();
-    let path = folded
-        .split_whitespace()
-        .find(|token| {
-            (token.starts_with("js/") && token.ends_with(".js"))
-                || (token.starts_with("ts/") && token.ends_with(".ts"))
-        })?
+    // The path token's shape is the two ES roots' own data — their directory
+    // spellings and owned extensions — so a future root joins by declaring
+    // itself, not by another literal here.
+    let es_roots = [SourceRoot::JavaScript, SourceRoot::TypeScript];
+    let mut path_token = None;
+    for token in folded.split_whitespace() {
+        for root in es_roots {
+            let prefix = format!("{}/", root.directory());
+            let suffix = format!(
+                ".{}",
+                root.owned_extension().expect("an ES root owns files")
+            );
+            if token.starts_with(&prefix) && token.ends_with(&suffix) {
+                path_token = Some((root, token));
+                break;
+            }
+        }
+        if path_token.is_some() {
+            break;
+        }
+    }
+    let (from, token) = path_token?;
+    let path = token
         .trim_matches(|c: char| !c.is_ascii_alphanumeric() && c != '/' && c != '.')
         .to_owned();
-    if path.contains("..") {
+    if escapes_root(&path) {
         return None;
     }
-    let from = if path.starts_with("js/") {
-        SourceRoot::JavaScript
-    } else {
-        SourceRoot::TypeScript
-    };
     let words = folded.split_whitespace().collect::<Vec<_>>();
     let to_alias = ["typescript", "javascript"].into_iter().find(|alias| {
         words
