@@ -76,7 +76,7 @@ fn the_driver_advertises_and_executes_the_translate_tool() {
 
 #[test]
 fn the_planner_lowers_a_source_tree_request_to_one_translate_call() {
-    let messages = vec![ChatMessage::user(&format!(
+    let messages = vec![ChatMessage::user(format!(
         "Translate {MISSING_SOURCE} to TypeScript and write it"
     ))];
     match plan_chat_step(&messages, &["translate", "write_file"]) {
@@ -104,7 +104,7 @@ fn the_planner_lowers_a_source_tree_request_to_one_translate_call() {
 
 #[test]
 fn without_the_tool_the_solver_answers_with_its_seed_gap() {
-    let messages = vec![ChatMessage::user(&format!(
+    let messages = vec![ChatMessage::user(format!(
         "Translate {MISSING_SOURCE} to TypeScript and write it"
     ))];
     // The client advertises writing but not translation: the read belongs

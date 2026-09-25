@@ -244,8 +244,7 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
             || file == LAYERED_WORKFLOW
             || file == LAYER_CLASSIFIER
     };
-    let ts_tier_input =
-        |file: &str| js_tier_input(file) || file.starts_with("ts/");
+    let ts_tier_input = |file: &str| js_tier_input(file) || file.starts_with("ts/");
     let rust_tier_input = |file: &str| {
         ts_tier_input(file)
             || file.starts_with("rust/")
@@ -398,7 +397,7 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::{
-        ChangeFlags, LAYERED_WORKFLOW, LAYER_CLASSIFIER, classify_changes, comparison_for_event,
+        ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, classify_changes, comparison_for_event,
     };
 
     #[test]

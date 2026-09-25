@@ -5,7 +5,7 @@
 //! behaviour on text the closed lexicon does not recognise.
 
 use formal_ai::agentic_coding::{
-    AgenticPlan, CANONICAL_FISHERMAN_SYNOPSIS, CANONICAL_SOURCE_URL, DRIVER_TOOLS,
+    AgenticPlan, CANONICAL_FISHERMAN_SYNOPSIS, CANONICAL_SOURCE_URL, CORE_RECIPE_TOOLS,
     FISHERMAN_DOC_ID, KB_PATH, PRIMITIVE_KINDS, PlannedToolCall, SEARCH_QUERY, corpus,
     coverage_line, formalize_text_to_links, plan_chat_step, run_agentic_task,
 };
@@ -692,7 +692,7 @@ fn corpus_fetch_reports_a_404_for_an_unknown_url() {
 
 #[test]
 fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer() {
-    // The driver plays an external agentic CLI: it advertises the four tools,
+    // The driver plays an external agentic CLI: it advertises its tool set,
     // executes every tool call the server emits against the offline corpus and a
     // sandboxed workspace, feeds results back, and loops until the server returns
     // the finished knowledge base. This is the end-to-end "agentic coding mode".
@@ -704,13 +704,16 @@ fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer() {
 
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
 
-    // The recipe executes exactly the four tools, in canonical order.
+    // The driver advertises DRIVER_TOOLS (five, translator included); this
+    // recipe executes exactly the four core tools, in canonical order — the
+    // advertised surface and the executed surface are pinned separately so a
+    // new tool cannot hide inside an old recipe's expectations.
     let executed: Vec<&str> = outcome
         .steps
         .iter()
         .map(|step| step.tool.as_str())
         .collect();
-    assert_eq!(executed, DRIVER_TOOLS.to_vec());
+    assert_eq!(executed, CORE_RECIPE_TOOLS.to_vec());
 
     // The final answer is the formalizer's report plus the knowledge base inline.
     assert!(

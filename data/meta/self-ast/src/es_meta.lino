@@ -2,10 +2,10 @@ self_ast_census
   target src/es_meta.rs
   language rust
   fidelity signature
-  byte_len 27592
-  line_count 797
-  content_id source_module_2ee32525315a765a
-  symbol_count 46
+  byte_len 28020
+  line_count 810
+  content_id source_module_2b2f5399e3432575
+  symbol_count 47
   symbols
     enum SourceLanguage 39 44
     function name 49 54
@@ -45,11 +45,12 @@ self_ast_census
     struct Refusal 574 579
     struct RenderReport 583 588
     struct RenderedSource 592 597
-    function render_source 605 623
-    function refuse_classes 627 658
-    function check_class 660 676
-    enum LevelItem 681 684
-    function level_items 686 695
-    function refuse_constructs 701 741
-    function window_matches 743 756
-    function write_source 763 797
+    function render_source 605 607
+    function render_source_under 615 636
+    function refuse_classes 640 671
+    function check_class 673 689
+    enum LevelItem 694 697
+    function level_items 699 708
+    function refuse_constructs 714 754
+    function window_matches 756 769
+    function write_source 776 810

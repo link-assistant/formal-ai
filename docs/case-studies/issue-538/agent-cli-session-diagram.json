@@ -27,7 +27,8 @@
     "web_search",
     "web_fetch",
     "write_file",
-    "run_command"
+    "run_command",
+    "translate"
   ],
   "turns": 3
 }

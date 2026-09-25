@@ -259,7 +259,7 @@ fn temp_source_tree(files: &[(&str, &str)]) -> std::path::PathBuf {
     let root = std::env::temp_dir().join(format!(
         "formal-ai-l2g-write-{}-{:p}",
         std::process::id(),
-        files as *const _
+        std::ptr::from_ref(files)
     ));
     let _ = std::fs::remove_dir_all(&root);
     for (path, content) in files {

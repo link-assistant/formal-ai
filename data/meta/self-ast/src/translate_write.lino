@@ -1,0 +1,19 @@
+self_ast_census
+  target src/translate_write.rs
+  language rust
+  fidelity signature
+  byte_len 10035
+  line_count 265
+  content_id source_module_17debed8bbbad4c8
+  symbol_count 10
+  symbols
+    function refusal_items 20 34
+    struct WrittenFile 38 45
+    enum WriteReport 49 69
+    function intent 75 119
+    function is_failure 123 125
+    function write_one 131 155
+    function write_tree 160 204
+    function render_one 208 230
+    function write_target_file 233 250
+    function collect_owned_files 252 265

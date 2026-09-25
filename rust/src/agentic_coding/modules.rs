@@ -90,7 +90,8 @@ pub use command_reroute::plan_symbolic_command_reroute;
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
 pub use driver::{
-    run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
+    run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, CORE_RECIPE_TOOLS,
+    DRIVER_TOOLS,
 };
 pub use execution_learning::{
     is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,

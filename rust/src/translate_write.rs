@@ -127,6 +127,7 @@ impl WriteReport {
 
 /// Translate `repo_relative` and write it at its mapped sibling path under
 /// `root` (the repository root the path is relative to).
+#[must_use]
 pub fn write_one(
     from: SourceRoot,
     to: SourceRoot,
@@ -143,7 +144,7 @@ pub fn write_one(
     let report = render_one(root, repo_relative, from, to).and_then(|(text, carried)| {
         write_target_file(root, &target, &text).map(|()| WrittenFile {
             source: repo_relative.to_owned(),
-            target: target.to_owned(),
+            target: target.clone(),
             carried,
         })
     });
@@ -155,12 +156,10 @@ pub fn write_one(
 
 /// Translate every owned file under `root/<from>/` and write the whole
 /// sibling tree — or, on any refusal or invalid file, nothing at all.
+#[must_use]
 pub fn write_tree(from: SourceRoot, to: SourceRoot, root: &Path) -> WriteReport {
-    let extension = match from.owned_extension() {
-        Some(extension) => extension,
-        None => {
-            return WriteReport::UnsupportedLeg { from, to };
-        }
+    let Some(extension) = from.owned_extension() else {
+        return WriteReport::UnsupportedLeg { from, to };
     };
     let source_root = root.join(from.directory());
     let mut sources = Vec::new();

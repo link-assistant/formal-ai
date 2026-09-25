@@ -254,7 +254,6 @@ impl SourceRoot {
 /// sibling trees the cycle turns; every other leg is refused by name rather
 /// than guessed, and the refusal carries the roots so the seed can say what
 /// is owed.
-#[must_use]
 pub fn write_target(
     from: SourceRoot,
     to: SourceRoot,

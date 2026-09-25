@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 33206
-  line_count 935
-  content_id source_module_4b3e2e35ae561524
+  byte_len 33522
+  line_count 942
+  content_id source_module_4c4acac6833684ed
   symbol_count 42
   symbols
     module cli_algorithm 7 7
@@ -33,19 +33,19 @@ self_ast_census
     module cli_translate 30 30
     const DEFAULT_AGENT_TASK 66 86
     struct Args 75 86
-    enum Command 89 382
-    enum MemoryAction 385 535
-    enum BundleAction 538 562
-    enum OutputFormat 565 569
-    enum DefinitionFusionMode 572 575
-    enum TelegramMode 578 581
-    function fmt 584 590
-    function fmt 594 599
-    function fmt 603 608
-    function main 611 783
-    function run_agent 785 809
-    struct TelegramRunArgs 811 820
-    function solver_for_chat 822 839
-    function print_thinking_trace 852 870
-    function run_chat 872 925
-    function read_input 927 935
+    enum Command 89 388
+    enum MemoryAction 391 541
+    enum BundleAction 544 568
+    enum OutputFormat 571 575
+    enum DefinitionFusionMode 578 581
+    enum TelegramMode 584 587
+    function fmt 590 596
+    function fmt 600 605
+    function fmt 609 614
+    function main 617 790
+    function run_agent 792 816
+    struct TelegramRunArgs 818 827
+    function solver_for_chat 829 846
+    function print_thinking_trace 859 877
+    function run_chat 879 932
+    function read_input 934 942

@@ -54,17 +54,19 @@ pub fn run_translate(
     }
     if write {
         let root = std::env::current_dir()?;
-        let report = match input.as_deref().and_then(|path| path.to_str()) {
-            // `--input` carries a path relative to the working directory,
-            // which is the repository root the sibling mapping is stated on.
-            Some(input) => formal_ai::translate_write::write_one(
-                from_root,
-                to_root,
-                &root,
-                &input.replace('\\', "/"),
-            ),
-            None => formal_ai::translate_write::write_tree(from_root, to_root, &root),
-        };
+        // `--input` carries a path relative to the working directory, which
+        // is the repository root the sibling mapping is stated on.
+        let report = input.as_deref().and_then(|path| path.to_str()).map_or_else(
+            || formal_ai::translate_write::write_tree(from_root, to_root, &root),
+            |input| {
+                formal_ai::translate_write::write_one(
+                    from_root,
+                    to_root,
+                    &root,
+                    &input.replace('\\', "/"),
+                )
+            },
+        );
         let (intent, values) = report.intent();
         let values = values
             .iter()

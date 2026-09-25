@@ -11,7 +11,7 @@
 //! change the issue asked for — not a hand-authored approximation.
 
 use formal_ai::agentic_coding::{
-    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, corpus, diagram, is_meaning_detail_task,
+    AgenticPlan, CORE_RECIPE_TOOLS, PlannedToolCall, corpus, diagram, is_meaning_detail_task,
     meaning_detail, plan_chat_step, run_agentic_task, self_ast,
 };
 use formal_ai::{ChatMessage, ToolCall};
@@ -198,9 +198,11 @@ fn driver_runs_the_meaning_detail_loop_and_writes_the_seed_block() {
 
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
 
-    // The recipe executes exactly the four tools, in canonical order.
+    // The recipe executes exactly the four core tools, in canonical order —
+    // the advertised surface additionally carries the translator, which this
+    // recipe never calls.
     let executed: Vec<&str> = outcome.steps.iter().map(|s| s.tool.as_str()).collect();
-    assert_eq!(executed, DRIVER_TOOLS.to_vec());
+    assert_eq!(executed, CORE_RECIPE_TOOLS.to_vec());
 
     // Step 3 writes the enriched block; its JSON content is the seed block.
     let write = &outcome.steps[2];
@@ -277,7 +279,7 @@ fn driver_runs_the_potato_recipe_with_a_different_request() {
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
 
     let executed: Vec<&str> = outcome.steps.iter().map(|s| s.tool.as_str()).collect();
-    assert_eq!(executed, DRIVER_TOOLS.to_vec());
+    assert_eq!(executed, CORE_RECIPE_TOOLS.to_vec());
 
     let write = &outcome.steps[2];
     assert_eq!(write.tool, "write_file");

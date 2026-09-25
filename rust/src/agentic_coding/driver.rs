@@ -34,10 +34,18 @@ use crate::protocol::{
 use crate::skill_procedure::CompiledProcedure;
 use crate::solver::{SolverConfig, UniversalSolver};
 
-/// The tool set the driver advertises — the four capabilities the planner's recipe
-/// relies on (`web_search` → `web_fetch` → `write_file` → `run_command`), plus
-/// the source-tree translator (plan 16 L2g) so the agent CLI can turn the js/ts
-/// cycle mid-session without shelling out.
+/// The four capabilities every recipe relies on (`web_search` → `web_fetch` →
+/// `write_file` → `run_command`).
+///
+/// `DRIVER_TOOLS` is these plus the translator, which a recipe calls only
+/// when it means to turn the js/ts cycle — so a recipe's executed tools pin
+/// against this list, never against the whole advertised surface.
+pub const CORE_RECIPE_TOOLS: [&str; 4] = ["web_search", "web_fetch", "write_file", "run_command"];
+
+/// The tool set the driver advertises.
+///
+/// [`CORE_RECIPE_TOOLS`] plus the source-tree translator (plan 16 L2g) so the
+/// agent CLI can turn the js/ts cycle mid-session without shelling out.
 pub const DRIVER_TOOLS: [&str; 5] = [
     "web_search",
     "web_fetch",
