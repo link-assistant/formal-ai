@@ -404,11 +404,16 @@ function assert(condition, message) {
 }
 
 function assertMatrixMatchesSupportedLanguages(name, matrix) {
-  const matrixLanguages = Object.keys(matrix).sort();
-  const supported = [...supportedLanguages].sort();
+  // Every advertised language must be covered. Registered-but-partial
+  // languages (data/seed/languages.lino) may appear ahead of being
+  // advertised -- the change-parity gate keeps their content fresh --
+  // so an extra matrix language is preparation, not a coverage failure.
+  const missing = [...supportedLanguages]
+    .filter((language) => !(language in matrix))
+    .sort();
   assert(
-    matrixLanguages.join('|') === supported.join('|'),
-    `${name} must cover every supported language: expected ${supported.join(', ')}, got ${matrixLanguages.join(', ')}`,
+    missing.length === 0,
+    `${name} must cover every supported language: expected ${supportedLanguages.join(', ')}, missing ${missing.join(', ') || 'none'}`,
   );
 }
 
