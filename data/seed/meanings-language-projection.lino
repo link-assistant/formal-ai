@@ -97,7 +97,7 @@ meanings
     grounding "data/seed/language-projection.lino"
   signature
     defined-by concept
-    role translation_property
+    role projection_fidelity
     precondition "a projection row states the fidelity its pivot carries"
     effect "declares that the leg carries only the signature dialect of the meta root"
     unit "not applicable"
@@ -105,7 +105,7 @@ meanings
     grounding "data/seed/language-projection.lino"
   token_tree
     defined-by concept
-    role translation_property
+    role projection_fidelity
     precondition "a projection row states the fidelity its pivot carries"
     effect "declares that the leg carries the token-tree dialect of the meta root"
     unit "not applicable"
@@ -113,7 +113,7 @@ meanings
     grounding "data/seed/language-projection.lino"
   live
     defined-by concept
-    role translation_property
+    role projection_fidelity
     precondition "a projection row states whether its leg is delivered"
     effect "declares that the leg renders today through the public translate surface"
     unit "not applicable"
@@ -121,17 +121,73 @@ meanings
     grounding "data/seed/language-projection.lino"
   owed_by
     defined-by concept
-    role translation_property
+    role projection_fidelity
     precondition "a projection row states whether its leg is delivered"
     effect "declares that a named plan leaf still owes the leg"
     unit "not applicable"
     example "the grammar legs are owed by the L8 leaf"
     grounding "data/seed/language-projection.lino"
-  meta
-    defined-by concept
-    role projection_root
-    precondition "a directed pair of source roots names the pivot endpoint"
-    effect "declares that the leg passes through the intermediate-representation root"
+  projection_refusal_uncovered_kind
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk meets a link kind no rule row covers"
+    effect "answers with the seeded refusal that names the uncovered kind"
     unit "not applicable"
-    example "every es leg routes through the meta root"
-    grounding "data/seed/language-projection.lino"
+    example "the walk refuses a kind no template renders"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_walk_depth
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk descends past its depth bound"
+    effect "answers with the seeded refusal that names the depth reached"
+    unit "not applicable"
+    example "the walk refuses a nest deeper than the bound allows"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_dangling_capture
+    defined-by relation
+    role projection_refusal
+    precondition "a projection rule captures a link the network no longer holds"
+    effect "answers with the seeded refusal that names the dangling link"
+    unit "not applicable"
+    example "the walk refuses a capture whose link was consumed"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_missing_template
+    defined-by relation
+    role projection_refusal
+    precondition "a rule row matched a walk whose target carries no template for it"
+    effect "answers with the seeded refusal that names the rule and target"
+    unit "not applicable"
+    example "the walk refuses a rule that renders no template for the target"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_unruled_kind
+    defined-by relation
+    role projection_refusal
+    precondition "a grammar projection walk ends with links no rule row claimed"
+    effect "answers with the seeded refusal that names the target without a row"
+    unit "not applicable"
+    example "the walk refuses a kind the seed lists no rule for"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_unknown_placeholder
+    defined-by relation
+    role projection_refusal
+    precondition "a template names a placeholder form the walk does not expand"
+    effect "answers with the seeded refusal that names the placeholder"
+    unit "not applicable"
+    example "the walk refuses a placeholder no form renders"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_variadic_mode
+    defined-by relation
+    role projection_refusal
+    precondition "a variadic template names a mode other than text or source"
+    effect "answers with the seeded refusal that names the mode"
+    unit "not applicable"
+    example "the walk refuses a variadic mode it cannot join with"
+    grounding "data/seed/multilingual-responses-translate.lino"
+  projection_refusal_placeholder_mode
+    defined-by relation
+    role projection_refusal
+    precondition "a placeholder template names a mode other than text, source, or term"
+    effect "answers with the seeded refusal that names the mode"
+    unit "not applicable"
+    example "the walk refuses a placeholder mode it cannot render"
+    grounding "data/seed/multilingual-responses-translate.lino"

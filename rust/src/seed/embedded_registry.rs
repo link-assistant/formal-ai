@@ -46,9 +46,9 @@ pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
     include_str!("../../embedded/data/seed/formal-language-projections.lino");
 pub const FORMALIZATION_RELATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/formalization-relations.lino");
-pub const GREETINGS_LINO: &str = include_str!("../../embedded/data/seed/greetings.lino");
 pub const GRAMMAR_PROJECTION_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/grammar-projection-rules.lino");
+pub const GREETINGS_LINO: &str = include_str!("../../embedded/data/seed/greetings.lino");
 pub const HANDLER_FAMILY_METHODS_LINO: &str =
     include_str!("../../embedded/data/seed/handler-family-methods.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str =
@@ -81,8 +81,6 @@ pub const MEANINGS_LINO: &str = include_str!("../../embedded/data/seed/meanings.
 pub const MEANINGS_ACTS_LINO: &str = include_str!("../../embedded/data/seed/meanings-acts.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-agent-actions.lino");
-pub const MEANINGS_LANGUAGE_PROJECTION_LINO: &str =
-    include_str!("../../embedded/data/seed/meanings-language-projection.lino");
 pub const MEANINGS_BEHAVIOR_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-behavior-rules.lino");
 pub const MEANINGS_CALCULATOR_LINO: &str =
@@ -130,6 +128,8 @@ pub const MEANINGS_FORMALIZATION_REPORT_LINO: &str =
 pub const MEANINGS_HOW_LINO: &str = include_str!("../../embedded/data/seed/meanings-how.lino");
 pub const MEANINGS_INTENT_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-intent.lino");
+pub const MEANINGS_LANGUAGE_PROJECTION_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-language-projection.lino");
 pub const MEANINGS_LEXICAL_META_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-lexical-meta.lino");
 pub const MEANINGS_LEXICON_IMPORT_01_LINO: &str =
@@ -336,8 +336,8 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/facts.lino", FACTS_LINO),
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),
         ("data/seed/formalization-relations.lino", FORMALIZATION_RELATIONS_LINO),
-        ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/grammar-projection-rules.lino", GRAMMAR_PROJECTION_RULES_LINO),
+        ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/handler-family-methods.lino", HANDLER_FAMILY_METHODS_LINO),
         ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
         ("data/seed/handler-promotions.lino", HANDLER_PROMOTIONS_LINO),
@@ -357,7 +357,6 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/meanings-acts.lino", MEANINGS_ACTS_LINO),
         ("data/seed/meanings-agent-actions.lino", MEANINGS_AGENT_ACTIONS_LINO),
-        ("data/seed/meanings-language-projection.lino", MEANINGS_LANGUAGE_PROJECTION_LINO),
         ("data/seed/meanings-behavior-rules.lino", MEANINGS_BEHAVIOR_RULES_LINO),
         ("data/seed/meanings-calculator.lino", MEANINGS_CALCULATOR_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
@@ -383,6 +382,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-formalization-report.lino", MEANINGS_FORMALIZATION_REPORT_LINO),
         ("data/seed/meanings-how.lino", MEANINGS_HOW_LINO),
         ("data/seed/meanings-intent.lino", MEANINGS_INTENT_LINO),
+        ("data/seed/meanings-language-projection.lino", MEANINGS_LANGUAGE_PROJECTION_LINO),
         ("data/seed/meanings-lexical-meta.lino", MEANINGS_LEXICAL_META_LINO),
         ("data/seed/meanings-lexicon-import-01.lino", MEANINGS_LEXICON_IMPORT_01_LINO),
         ("data/seed/meanings-lexicon-import-02.lino", MEANINGS_LEXICON_IMPORT_02_LINO),
@@ -563,7 +563,6 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_LINO,
     MEANINGS_ACTS_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
-    MEANINGS_LANGUAGE_PROJECTION_LINO,
     MEANINGS_BEHAVIOR_RULES_LINO,
     MEANINGS_CALCULATOR_LINO,
     MEANINGS_CALENDAR_LINO,
@@ -589,6 +588,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FORMALIZATION_REPORT_LINO,
     MEANINGS_HOW_LINO,
     MEANINGS_INTENT_LINO,
+    MEANINGS_LANGUAGE_PROJECTION_LINO,
     MEANINGS_LEXICAL_META_LINO,
     MEANINGS_LEXICON_IMPORT_01_LINO,
     MEANINGS_LEXICON_IMPORT_02_LINO,

@@ -73,6 +73,11 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     "&&",
     "||",
     "!",
+    // Assignment is glyph-identical in all three grammars — the operator
+    // token has no field label to capture, and every compound form
+    // (`+=`, `-=`, ...) splices verbatim, so the whole expression is
+    // splice-class rather than ruled.
+    "assignment_expression",
     // Literals that keep their spelling.
     "integer_literal",
     "float_literal",
@@ -81,9 +86,24 @@ const SPLICE_CLASS_KINDS: &[&str] = &[
     "string",
     "true",
     "false",
-    // Comments share the // and /* */ syntax.
+    // The interior of a refused literal or comment: the parent's splice
+    // carries it whole, and the coverage table answers for named kinds.
+    "string_content",
+    "string_fragment",
+    // Comments share the // and /* */ syntax; rust doc comments are //
+    // comments in every target.
     "comment",
     "line_comment",
+    "doc_comment",
+    "outer_doc_comment_marker",
+    // A bare type name splices: where a template renders it the span is
+    // the answer, and inside ruled parents the template decides.
+    "primitive_type",
+    // Rust borrow markers ride their ruled parents' templates; a
+    // `mut` inside a let never renders because the let template omits it.
+    "mutable_specifier",
+    // A macro token tree is balanced token soup, valid in every target.
+    "token_tree",
 ];
 
 /// The four L8 legs: (from grammar, target grammar).
@@ -142,8 +162,11 @@ const RULE_ROWS: &[RuleRow] = &[
         ],
     },
     RuleRow {
-        name: "rust:let_statement",
-        sexpression: "(let_statement pattern: (identifier) @name value: (_) @value)",
+        // The grammar's statement-level let is let_declaration; a `mut`
+        // or type annotation rides unrendered children the template
+        // omits.
+        name: "rust:let_declaration",
+        sexpression: "(let_declaration pattern: (_) @name value: (_) @value)",
         templates: &[
             ("javascript", "let {name} = {value};"),
             ("typescript", "let {name} = {value};"),
@@ -181,7 +204,91 @@ const RULE_ROWS: &[RuleRow] = &[
             ("typescript", "({*argument|, })"),
         ],
     },
-    // javascript / typescript → rust: the statement spine.
+    RuleRow {
+        // The engine's rust grammar names the receiver field `value`, not
+        // `base` — a wrong field name makes the row dead weight the
+        // coverage table still counts, so the label is measured.
+        name: "rust:field_expression",
+        sexpression: "(field_expression value: (_) @value field: (field_identifier) @field)",
+        templates: &[
+            ("javascript", "{value}.{field}"),
+            ("typescript", "{value}.{field}"),
+        ],
+    },
+    RuleRow {
+        // `path::name` crosses to property access — the mechanical
+        // projection at token fidelity; a nested path recurses.
+        name: "rust:scoped_identifier",
+        sexpression: "(scoped_identifier path: (_) @path name: (_) @name)",
+        templates: &[
+            ("javascript", "{path}.{name}"),
+            ("typescript", "{path}.{name}"),
+        ],
+    },
+    RuleRow {
+        // No target has borrows; the reference marker drops and the
+        // referred type carries.
+        name: "rust:reference_type",
+        sexpression: "(reference_type type: (_) @type)",
+        templates: &[("javascript", "{type}"), ("typescript", "{type}")],
+    },
+    RuleRow {
+        name: "rust:reference_expression",
+        sexpression: "(reference_expression value: (_) @value)",
+        templates: &[("javascript", "{value}"), ("typescript", "{value}")],
+    },
+    RuleRow {
+        // Where the target keeps type positions the annotation renders;
+        // javascript drops it because the template below omits it.
+        name: "rust:parameter",
+        sexpression: "(parameter pattern: (_) @pattern type: (_) @type)",
+        templates: &[
+            ("javascript", "{pattern}"),
+            ("typescript", "{pattern}: {type}"),
+        ],
+    },
+    RuleRow {
+        // No target has visibility; the marker renders empty where a
+        // template reaches it at all.
+        name: "rust:visibility_modifier",
+        sexpression: "(visibility_modifier)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        name: "rust:type_arguments",
+        sexpression: "(type_arguments)",
+        templates: &[("javascript", ""), ("typescript", "")],
+    },
+    RuleRow {
+        // `build::<u32>()` wraps the callee in generic_function — the
+        // turbofish crosses to nothing in javascript and to typescript's
+        // own angle-bracket generics.
+        name: "rust:generic_function",
+        sexpression: "(generic_function function: (_) @function type_arguments: (type_arguments) @arguments)",
+        templates: &[
+            ("javascript", "{function}"),
+            ("typescript", "{function}{arguments}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:generic_type",
+        sexpression: "(generic_type type: (_) @type type_arguments: (type_arguments) @arguments)",
+        templates: &[
+            ("javascript", "{type}"),
+            ("typescript", "{type}{arguments}"),
+        ],
+    },
+    RuleRow {
+        name: "rust:field_initializer",
+        sexpression: "(field_initializer name: (_) @name value: (_) @value)",
+        templates: &[
+            ("javascript", "{name}: {value}"),
+            ("typescript", "{name}: {value}"),
+        ],
+    },
+    // javascript / typescript → rust: the statement spine. A kind with
+    // both a general and a specific row lists the specific row first —
+    // the claim pass gives a link to the first rule that matches it.
     RuleRow {
         name: "es:program",
         sexpression: "(program (_)* @statement)",
@@ -198,14 +305,82 @@ const RULE_ROWS: &[RuleRow] = &[
         templates: &[("rust", "{.:text}")],
     },
     RuleRow {
-        name: "es:expression_statement:identifier",
-        sexpression: "(expression_statement (identifier) @expression)",
+        name: "es:function_declaration",
+        sexpression: "(function_declaration name: (identifier) @name parameters: (formal_parameters) @parameters body: (statement_block) @body)",
+        templates: &[("rust", "fn {name}({parameters}) {body}")],
+    },
+    RuleRow {
+        name: "es:formal_parameters",
+        sexpression: "(formal_parameters (_)* @parameter)",
+        templates: &[("rust", "{*parameter|, }")],
+    },
+    RuleRow {
+        // The block owns its braces; ruled parents like the function
+        // template do not add their own.
+        name: "es:statement_block",
+        sexpression: "(statement_block (_)* @statement)",
+        templates: &[("rust", "{{\n{*statement|\n}\n}}")],
+    },
+    RuleRow {
+        name: "es:return_statement",
+        sexpression: "(return_statement (_) @argument)",
+        templates: &[("rust", "return {argument};")],
+    },
+    RuleRow {
+        // `return;` — listed after the valued row so a return with an
+        // argument claims there first.
+        name: "es:return_statement:bare",
+        sexpression: "(return_statement)",
+        templates: &[("rust", "return;")],
+    },
+    RuleRow {
+        name: "es:expression_statement",
+        sexpression: "(expression_statement (_) @expression)",
         templates: &[("rust", "{expression};")],
     },
     RuleRow {
-        name: "es:expression_statement:number",
-        sexpression: "(expression_statement (number) @expression)",
-        templates: &[("rust", "{expression};")],
+        name: "es:binary_expression",
+        sexpression: "(binary_expression left: (_) @left operator: (_) @operator right: (_) @right)",
+        templates: &[("rust", "{left} {operator:text} {right}")],
+    },
+    RuleRow {
+        name: "es:call_expression",
+        sexpression: "(call_expression function: (_) @function arguments: (arguments) @arguments)",
+        templates: &[("rust", "{function}{arguments}")],
+    },
+    RuleRow {
+        name: "es:arguments",
+        sexpression: "(arguments (_)* @argument)",
+        templates: &[("rust", "({*argument|, })")],
+    },
+    RuleRow {
+        name: "es:member_expression",
+        sexpression: "(member_expression object: (_) @object property: (property_identifier) @property)",
+        templates: &[("rust", "{object}.{property}")],
+    },
+    RuleRow {
+        // var, let and const are one node kind; all three cross to a
+        // rust let, the mechanical projection at token fidelity.
+        name: "es:variable_declaration",
+        sexpression: "(variable_declaration (_)* @declarator)",
+        templates: &[("rust", "let {*declarator|; let };")],
+    },
+    RuleRow {
+        name: "es:variable_declarator",
+        sexpression: "(variable_declarator name: (_) @name value: (_) @value)",
+        templates: &[("rust", "{name} = {value}")],
+    },
+    RuleRow {
+        // `var x;` — the valueless declarator, listed after the valued
+        // row for the same reason as the bare return.
+        name: "es:variable_declarator:bare",
+        sexpression: "(variable_declarator name: (_) @name)",
+        templates: &[("rust", "{name}")],
+    },
+    RuleRow {
+        name: "es:parenthesized_expression",
+        sexpression: "(parenthesized_expression (_) @expression)",
+        templates: &[("rust", "({expression})")],
     },
 ];
 
@@ -255,16 +430,17 @@ fn main() {
     let projection = formal_ai::rust_projection::projection_from(&lino)
         .expect("the generated seed loads through projection_from");
 
-    let corpus_kinds: Vec<(&'static str, BTreeSet<String>)> = CORPORA
+    let corpus_kinds: Vec<(
+        &'static str,
+        BTreeSet<String>,
+        std::collections::BTreeMap<String, usize>,
+    )> = CORPORA
         .iter()
         .map(|corpus| {
             let sources = corpus_sources(root, *corpus);
-            (
-                corpus.label,
-                named_corpus_inventory(corpus.label, &sources)
-                    .into_keys()
-                    .collect(),
-            )
+            let inventory = named_corpus_inventory(corpus.label, &sources);
+            let kinds = inventory.keys().cloned().collect();
+            (corpus.label, kinds, inventory)
         })
         .collect();
     // The fantasy check answers over the full inventory — anonymous
@@ -291,16 +467,37 @@ fn main() {
         projection.refusal_count()
     );
     for (from, target) in DIRECTIONS {
-        let kinds = corpus_kinds
+        let (kinds, inventory) = corpus_kinds
             .iter()
-            .find(|(label, _)| label == from)
-            .map(|(_, kinds)| kinds)
+            .find(|(label, _, _)| label == from)
+            .map(|(_, kinds, inventory)| (kinds, inventory))
             .expect("the direction's corpus is committed");
         let remaining = projection.coverage_kinds(kinds, target);
+        // The authoring work list: what a rule row clears next, most
+        // frequent first.
+        let mut work_list: Vec<(usize, String)> = remaining
+            .iter()
+            .map(|refusal| {
+                (
+                    inventory
+                        .get(refusal.construct.as_str())
+                        .copied()
+                        .unwrap_or(0),
+                    refusal.construct.clone(),
+                )
+            })
+            .collect();
+        work_list.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
+        let head: Vec<String> = work_list
+            .iter()
+            .take(15)
+            .map(|(count, kind)| format!("{kind}:{count}"))
+            .collect();
         println!(
-            "{from} -> {target}: {} kinds, {} remaining",
+            "{from} -> {target}: {} kinds, {} remaining; next: {}",
             kinds.len(),
-            remaining.len()
+            remaining.len(),
+            head.join(" ")
         );
     }
     if !fantasy.is_empty() {

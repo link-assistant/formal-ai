@@ -573,7 +573,9 @@ roles
     kind meaning
   program_task_alias
     kind predicate
-  projection_root
+  projection_fidelity
+    kind predicate
+  projection_refusal
     kind predicate
   projection_route
     kind predicate

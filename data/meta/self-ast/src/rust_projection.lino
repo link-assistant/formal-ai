@@ -2,10 +2,10 @@ self_ast_census
   target src/rust_projection.rs
   language rust
   fidelity signature
-  byte_len 28102
-  line_count 704
-  content_id source_module_74fee95f232353b4
-  symbol_count 33
+  byte_len 31344
+  line_count 770
+  content_id source_module_acee58e96e1d711f
+  symbol_count 35
   symbols
     const REFUSAL_LANGUAGE 25 25
     const ANY_TARGET 28 28
@@ -17,26 +17,28 @@ self_ast_census
     function project 60 62
     function projection_project 65 111
     function projection_project 114 121
-    module engine 124 701
-    struct GrammarProjection 144 149
-    struct Claim 153 156
-    struct Walk 160 165
-    function rule_count 170 172
-    function refusal_count 177 179
-    function is_ruled 183 187
-    function is_refused 192 198
-    function coverage_kinds 207 216
-    function render 223 263
-    function claim_map 267 305
-    function expand_link 308 369
-    function expand_template 372 406
-    function expand_placeholder 409 526
-    function projection_from 535 606
-    function embedded 610 616
-    static EMBEDDED 611 611
-    function bound_captures 618 640
-    function root_kind_of_spec 642 653
-    function syntax_kinds 655 662
-    function span_text 664 673
-    function span_of 675 693
-    function unescape_separator 695 700
+    module engine 124 767
+    function seeded_detail 137 139
+    struct GrammarProjection 152 157
+    struct Claim 162 166
+    struct Walk 170 175
+    function rule_count 180 182
+    function refusal_count 187 189
+    function is_ruled 193 197
+    function is_refused 202 208
+    function coverage_kinds 217 229
+    function render 236 276
+    function claim_map 284 343
+    function expand_link 346 415
+    function expand_template 418 452
+    function expand_placeholder 455 577
+    function projection_from 586 657
+    function embedded 661 667
+    static EMBEDDED 662 662
+    function content_count 672 682
+    function bound_captures 684 706
+    function root_kind_of_spec 708 719
+    function syntax_kinds 721 728
+    function span_text 730 739
+    function span_of 741 759
+    function unescape_separator 761 766

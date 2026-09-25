@@ -82,6 +82,8 @@ seed_registry
   seed formalization-relations
     bundle true
     web true
+  seed grammar-projection-rules
+    bundle true
   seed greetings
     bundle true
     web true
@@ -238,6 +240,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-language-projection
+    bundle true
+    lexicon meaning
   seed meanings-lexical-meta
     bundle true
     lexicon meaning

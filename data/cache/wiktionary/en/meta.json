@@ -1,0 +1,176 @@
+[
+  {
+    "word": "meta",
+    "phonetic": "/ˈmɛtə/",
+    "phonetics": [
+      {
+        "text": "/ˈmɛtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/meta-1-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=88876236",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/mɛɾə/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Self-referential; structured analogously, but at a higher level.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Suppose you have a genie that grants you three wishes. If you wish for infinite wishes, that is a meta wish."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/meta"
+    ]
+  },
+  {
+    "word": "meta",
+    "phonetic": "/ˈmiːtə/",
+    "phonetics": [
+      {
+        "text": "/ˈmiːtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/meta-2-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=88876237",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/miːɾə/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Boundary marker.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Either of the conical columns at each end of an Ancient Roman circus.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/meta"
+    ]
+  },
+  {
+    "word": "meta",
+    "phonetic": "/ˈmɛtə/",
+    "phonetics": [
+      {
+        "text": "/ˈmɛtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/meta-3-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=88876236",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/mɛɾə/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Metagame; the most effective tactics and strategies used in a competitive video game.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Prominent in the metagame; effective and frequently used in competitive gameplay.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I don't think the character will be meta even with the recent buffs."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/meta"
+    ]
+  },
+  {
+    "word": "meta",
+    "phonetic": "/ˈmɛtə/",
+    "phonetics": [
+      {
+        "text": "/ˈmɛtə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈmɛtə/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Metoidioplasty.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/meta"
+    ]
+  }
+]

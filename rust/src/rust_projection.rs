@@ -130,6 +130,14 @@ mod engine {
     };
     use crate::es_meta::Refusal;
 
+    /// One seeded refusal detail (R379): the sentences live in
+    /// data/seed/multilingual-responses-translate.lino under
+    /// `projection_refusal_*` intents, with the intent id as the fallback
+    /// so a missing record stays visible instead of rendering empty.
+    fn seeded_detail(intent: &str, values: &[(&str, &str)]) -> String {
+        crate::seed::render_response(intent, "en", values).unwrap_or_else(|| intent.to_string())
+    }
+
     use meta_language::{
         LinkId, LinkNetwork, LinkType, QueryMatch, TranslationRule, TranslationRuleSet,
     };
@@ -149,9 +157,11 @@ mod engine {
     }
 
     /// One claim: the rule that won a link, and the captures its query
-    /// bound for it, in match order.
+    /// bound for it, in match order, with how many of those bindings are
+    /// named syntax content.
     struct Claim {
         rule_index: usize,
+        content: usize,
         captures: Vec<(String, LinkId)>,
     }
 
@@ -210,7 +220,10 @@ mod engine {
                 .filter(|kind| !self.is_ruled(kind, target) && !self.is_refused(kind, target))
                 .map(|kind| Refusal {
                     construct: kind.clone(),
-                    detail: format!("no {target} template and no refusal row"),
+                    detail: seeded_detail(
+                        "projection_refusal_uncovered_kind",
+                        &[("target", target)],
+                    ),
                 })
                 .collect()
         }
@@ -226,7 +239,7 @@ mod engine {
             source: &str,
             target: &str,
         ) -> Result<String, Refusal> {
-            let claims = self.claim_map(network);
+            let claims = self.claim_map(network, target);
             let walk = Walk {
                 network,
                 source,
@@ -263,12 +276,19 @@ mod engine {
         }
 
         /// Claims every link a rule's query matches, first rule in seed
-        /// order winning the link.
-        fn claim_map(&self, network: &LinkNetwork) -> HashMap<LinkId, Claim> {
+        /// order winning the link. Only rules carrying a template for
+        /// `target` compete: the grammars share kind names
+        /// (`binary_expression` is rust's and javascript's), and a rule
+        /// that cannot render the target must not steal the link from the
+        /// direction's own row.
+        fn claim_map(&self, network: &LinkNetwork, target: &str) -> HashMap<LinkId, Claim> {
             let kind_list = syntax_kinds(network);
             let present_kinds: BTreeSet<&str> = kind_list.iter().map(String::as_str).collect();
             let mut claims: HashMap<LinkId, Claim> = HashMap::new();
             for (rule_index, rule) in self.rule_set.rules().iter().enumerate() {
+                if rule.templates().get(target).is_none() {
+                    continue;
+                }
                 if self
                     .root_kinds
                     .get(rule_index)
@@ -280,21 +300,39 @@ mod engine {
                 for query_match in network.query_matches(rule.query()) {
                     let matched = query_match.link_id();
                     let captures = bound_captures(network, rule, &query_match);
+                    let content = content_count(network, &captures);
+                    // A wildcard child pattern also binds the anonymous
+                    // keyword and punctuation wrappers a parse carries, so
+                    // a match whose every binding is one of those binds no
+                    // content at all — structural noise the claim pass
+                    // skips, which is what lets a bare `(return_statement)`
+                    // row claim `return;` instead of a wildcard match that
+                    // happened to bind the `return` keyword itself.
+                    if !captures.is_empty() && content == 0 {
+                        continue;
+                    }
                     // A quantified child pattern makes the engine return
                     // one match per binding count — zero items, one item,
                     // and so on — so the greedy match is the one with the
                     // most captures, and that is the claim the template
-                    // expands. The first rule in seed order still wins the
-                    // link outright.
+                    // expands. A single unquantified wildcard enumerates
+                    // the children one match at a time, all with one
+                    // capture, so among equally greedy matches the one
+                    // binding more named content wins: the anonymous
+                    // wrapper is structure, the named child is what the
+                    // template means. The first rule in seed order still
+                    // wins the link outright.
                     let better = claims.get(&matched).is_none_or(|existing| {
                         existing.rule_index == rule_index
-                            && existing.captures.len() < captures.len()
+                            && (existing.content, existing.captures.len())
+                                < (content, captures.len())
                     });
                     if better {
                         claims.insert(
                             matched,
                             Claim {
                                 rule_index,
+                                content,
                                 captures,
                             },
                         );
@@ -318,13 +356,19 @@ mod engine {
             if depth > MAX_WALK_DEPTH {
                 return Err(Refusal {
                     construct: "walk".to_owned(),
-                    detail: format!("projection walk exceeded depth {MAX_WALK_DEPTH}"),
+                    detail: seeded_detail(
+                        "projection_refusal_walk_depth",
+                        &[("depth", &MAX_WALK_DEPTH.to_string())],
+                    ),
                 });
             }
             let Some(link) = network.link(link_id) else {
                 return Err(Refusal {
                     construct: "walk".to_owned(),
-                    detail: format!("capture bound a link the network does not hold: {link_id:?}"),
+                    detail: seeded_detail(
+                        "projection_refusal_dangling_capture",
+                        &[("link", &format!("{link_id:?}"))],
+                    ),
                 });
             };
             let metadata = link.metadata();
@@ -349,10 +393,9 @@ mod engine {
                         }
                         return Err(Refusal {
                             construct: kind,
-                            detail: format!(
-                                "rule {} matched without a {} template",
-                                rule.name(),
-                                target
+                            detail: seeded_detail(
+                                "projection_refusal_missing_template",
+                                &[("rule", rule.name()), ("target", target)],
                             ),
                         });
                     }
@@ -361,7 +404,10 @@ mod engine {
                     }
                     Err(Refusal {
                         construct: kind,
-                        detail: format!("no projection rule and no refusal row for {target}"),
+                        detail: seeded_detail(
+                            "projection_refusal_unruled_kind",
+                            &[("target", target)],
+                        ),
                     })
                 }
                 _ => Ok(span_text(source, metadata.span())),
@@ -418,8 +464,9 @@ mod engine {
             let claims = walk.claims;
             let unknown = |placeholder: &str| Refusal {
                 construct: kind.to_owned(),
-                detail: format!(
-                    "template references `{placeholder}`, which is not a placeholder form this walk expands"
+                detail: seeded_detail(
+                    "projection_refusal_unknown_placeholder",
+                    &[("placeholder", placeholder)],
                 ),
             };
 
@@ -447,7 +494,10 @@ mod engine {
                     Some((_, other)) => {
                         return Err(Refusal {
                             construct: kind.to_owned(),
-                            detail: format!("variadic mode `{other}` is not one of text, source"),
+                            detail: seeded_detail(
+                                "projection_refusal_variadic_mode",
+                                &[("mode", other)],
+                            ),
                         });
                     }
                 };
@@ -506,8 +556,9 @@ mod engine {
                     }
                     other => Err(Refusal {
                         construct: kind.to_owned(),
-                        detail: format!(
-                            "placeholder mode `{other}` is not one of text, source, term"
+                        detail: seeded_detail(
+                            "projection_refusal_placeholder_mode",
+                            &[("mode", other)],
                         ),
                     }),
                 };
@@ -613,6 +664,21 @@ mod engine {
             projection_from(crate::seed::GRAMMAR_PROJECTION_RULES_LINO)
                 .expect("the embedded grammar projection seed is well-formed")
         })
+    }
+
+    /// How many of a match's bindings are named syntax links — the
+    /// content of the match, as opposed to the anonymous wrappers and
+    /// gap tokens a parse carries around it.
+    fn content_count(network: &LinkNetwork, captures: &[(String, LinkId)]) -> usize {
+        captures
+            .iter()
+            .filter(|(_, link_id)| {
+                network.link(*link_id).is_some_and(|link| {
+                    link.metadata().link_type() == Some(LinkType::Syntax)
+                        && link.metadata().is_named()
+                })
+            })
+            .count()
     }
 
     fn bound_captures(

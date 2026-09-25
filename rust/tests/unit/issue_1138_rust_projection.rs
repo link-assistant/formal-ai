@@ -321,10 +321,10 @@ fn grammar_projection_corpus_ratchet() {
     use formal_ai::rust_projection::projection_from;
 
     // Pins, tightened to the measured counts as the authored table grows.
-    const RUST_TO_JAVASCRIPT_REMAINING: usize = 120;
-    const RUST_TO_TYPESCRIPT_REMAINING: usize = 120;
-    const JAVASCRIPT_TO_RUST_REMAINING: usize = 79;
-    const TYPESCRIPT_TO_RUST_REMAINING: usize = 83;
+    const RUST_TO_JAVASCRIPT_REMAINING: usize = 102;
+    const RUST_TO_TYPESCRIPT_REMAINING: usize = 102;
+    const JAVASCRIPT_TO_RUST_REMAINING: usize = 66;
+    const TYPESCRIPT_TO_RUST_REMAINING: usize = 70;
 
     let projection = projection_from(formal_ai::seed::GRAMMAR_PROJECTION_RULES_LINO)
         .expect("the embedded seed is well-formed");
@@ -345,5 +345,108 @@ fn grammar_projection_corpus_ratchet() {
             remaining.len() <= pin,
             "{from} -> {target}: {remaining:?} must shrink to {pin} or below"
         );
+    }
+}
+
+/// The authored tranche, walked end to end through the public entry the
+/// way a caller gets it. Each probe is chosen to walk the rows it names —
+/// a rule whose query never matches is dead weight the coverage table
+/// cannot see — and every render must re-parse under the target grammar
+/// with no error flags, because a projection that emits target syntax the
+/// target parser rejects is not a projection.
+#[test]
+fn grammar_projection_tranche_renders_and_reparses() {
+    use formal_ai::rust_projection::{ProjectionOutcome, project};
+
+    // The template literals below are projection placeholders, not
+    // format strings.
+    #[allow(clippy::literal_string_with_formatting_args, clippy::type_complexity)]
+    let probes: &[(&str, &str, &str, &str)] = &[
+        // visibility drops, the parameter keeps its name for javascript
+        // and its annotation for typescript, the block tail expression
+        // rides the block row.
+        (
+            "rust",
+            "javascript",
+            "pub fn area(w: u32) -> u32 { w * w }",
+            "function area(w) {\nw * w\n}",
+        ),
+        (
+            "rust",
+            "typescript",
+            "pub fn area(w: u32) -> u32 { w * w }",
+            "function area(w: u32) {\nw * w\n}",
+        ),
+        // field access, the scoped path as property access, the call,
+        // and the borrow dropped from both the type and the value.
+        (
+            "rust",
+            "javascript",
+            "fn go(x: u32, r: &u32) { let a = x.field; let b = std::next(x); let c = &x; }",
+            "function go(x, r) {\nlet a = x.field;\nlet b = std.next(x);\nlet c = x;\n}",
+        ),
+        (
+            "rust",
+            "typescript",
+            "fn go(x: u32, r: &u32) { let a = x.field; let b = std::next(x); let c = &x; }",
+            "function go(x: u32, r: u32) {\nlet a = x.field;\nlet b = std.next(x);\nlet c = x;\n}",
+        ),
+        // the generic type and the turbofish both drop; the let omits
+        // the annotation in every target.
+        (
+            "rust",
+            "javascript",
+            "fn make() { let v: Vec<u32> = build::<u32>(); }",
+            "function make() {\nlet v = build();\n}",
+        ),
+        // the function declaration, its parameters, its block owning the
+        // braces, and the valued return.
+        (
+            "javascript",
+            "rust",
+            "function add(a, b) { return a + b; }",
+            "fn add(a, b) {\nreturn a + b;\n}",
+        ),
+        // the valued declarator under the one declaration kind, the
+        // member access, and the call with its argument list.
+        (
+            "javascript",
+            "rust",
+            "var total = obj.compute(1, 2);",
+            "let total = obj.compute(1, 2);",
+        ),
+        // the bare declarator, the bare return, the assignment, the
+        // parenthesized expression, and the general expression statement
+        // carrying a call.
+        (
+            "javascript",
+            "rust",
+            "var x;\nfunction f() { return; }\nx = (x + 1);\nconsole.log(x);",
+            "let x;\n\nfn f() {\nreturn;\n}\n\nx = (x + 1);\n\nconsole.log(x);",
+        ),
+    ];
+    for (from, target, source, expected) in probes {
+        match project(from, target, source) {
+            ProjectionOutcome::Rendered { source: output, .. } => {
+                assert_eq!(output, *expected, "{from} -> {target} over {source}");
+                let reparsed = formal_ai::grammar_kinds::parse_network(target, &output);
+                let flagged: Vec<String> = reparsed
+                    .links()
+                    .filter(|link| {
+                        let flags = link.metadata().flags();
+                        flags.is_error() || flags.has_error()
+                    })
+                    .filter_map(|link| link.metadata().term().map(str::to_owned))
+                    .collect();
+                assert!(
+                    flagged.is_empty(),
+                    "{from} -> {target} render does not re-parse under the target \
+                     grammar: {output} flagged {flagged:?}"
+                );
+            }
+            refused @ ProjectionOutcome::Refused { .. } => {
+                panic!("{from} -> {target} must render {source}: {refused:?}")
+            }
+        }
     }
 }
