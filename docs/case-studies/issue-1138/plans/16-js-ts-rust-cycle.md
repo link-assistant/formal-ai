@@ -284,6 +284,57 @@ both renderers. Decisions fixed before any of it is written:
   stay pending (L3/L5) exactly as before; only the L2 rows of the leg
   table change.
 
+### Design note 2026-09-25 — the shipped crate carries its own data (L1 remediation)
+
+`cargo package` failed on the first green tip after L1 (Build Package in
+`release.yml`). Root cause, measured before the fix was chosen: **230
+distinct `include_str!` targets in `rust/src` (2.3 MiB) live outside the
+package root** (`data/seed`, `data/meta`, `js/worker`, one script), read
+through `../`-escaping literals. A package cannot pack or read files
+outside its root: `cargo package` verification extracts the `.crate` as
+the package root and the escaping literals then point one level above it,
+so the lib cannot compile from the archive — and this crate is published
+to crates.io, where the `.crate` is all a consumer ever gets. The
+manifest's `include = ["../data/**", ...]` rows could never fix this:
+cargo packs those files at `data/**` *inside* the extracted root, while
+the sources look for them one level above it; no single literal can
+resolve in both layouts.
+
+Scope was measured, not assumed: verification compiles **lib + bins
+only** (proved with a probe crate whose broken test/example includes
+package cleanly), and the manifest's `include` list already excludes
+`tests/` and `examples/` from the archive — so only `rust/src`'s 230
+targets are packaging-relevant. Test and example includes that read
+`docs/`, `vscode/`, or `.github/` are repository self-audits and keep
+reading the repository, which is the honest division: the library is
+shipped, the audits are not.
+
+Fix (the mirror pattern this repo already practices in both directions —
+`data/meta/self-ast/` mirrors `rust/src` for audits, `js/seed-files.js`
+embeds 118 seeds for the browser):
+
+- `rust/embedded/` is a committed byte mirror of every repo file a
+  `rust/src` `include_str!` names, at its repository-relative subpath
+  (`rust/embedded/data/seed/...`, `rust/embedded/js/worker/...`) — 231
+  files, 2.3 MiB, of which 167 are seeds.
+  `scripts/mirror-package-data.rs` regenerates it (`--write`) and gates
+  it (`--check`): byte-equality against the source files, no
+  unreferenced mirror files, and — the invariant that keeps the class
+  from returning — **no `include_str!` in `rust/src` resolving outside
+  the package root**. The step runs in
+  `scripts/regenerate-derived-artifacts.sh`, so the existing
+  derived-artifacts `--check` CI catches a stale mirror.
+- The 254 include sites across 66 source files are rewritten once,
+  mechanically, to plain relative paths into `rust/embedded/` — identical
+  bytes, identical behavior, resolvable in-repo and in-archive.
+- The manifest's dead `../`-escaping include rows are replaced by
+  `/embedded/**`.
+
+Sized against the limits before landing: the `.crate` grows by the
+mirror's ~2.3 MiB raw (lino text compresses ~4×) on top of today's
+2.1 MiB compressed, far under the 10 MiB crates.io ceiling that
+`scripts/check-crate-package-size.rs` enforces.
+
 
 ## Risks
 

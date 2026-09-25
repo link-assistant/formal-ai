@@ -179,9 +179,9 @@ fn grounded_artifacts() -> Vec<ReattachArtifact> {
     // The crate manifest recompiled into the new binary/worker.
     let cargo_toml = include_str!("../Cargo.toml");
     // The worker glue that loads the recompiled WebAssembly and reattaches it to the UI.
-    let worker_glue = include_str!("../../js/worker/formal_ai_worker.js");
+    let worker_glue = include_str!("../embedded/js/worker/formal_ai_worker.js");
     // The UI entry that mounts the worker.
-    let ui_entry = include_str!("../../js/index.html");
+    let ui_entry = include_str!("../embedded/js/index.html");
 
     // The server/CLI entry that serves the reattached UI, grounded against the owned
     // manifest exactly like a change request's target — a fabricated entry cannot appear.

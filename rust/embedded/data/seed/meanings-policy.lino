@@ -1,0 +1,124 @@
+meanings
+  physical_action_query
+    defined-by inquiry
+    defined-by action
+    role physical_action_trigger
+    lexeme en
+      surface
+        text "did you suck"
+    lexeme ru
+      surface
+        text сосал
+      surface
+        text сосала
+      surface
+        text сосёшь
+      surface
+        text соси
+      surface
+        text сосать
+    lexeme hi
+      surface
+        text "क्या तुमने चूसा"
+    lexeme zh
+      surface
+        text 你吸了吗
+  circular_joke_idiom
+    defined-by inquiry
+    defined-by concept
+    role circular_joke_phrase
+    lexeme en
+      surface
+        text "buy an elephant"
+    lexeme ru
+      surface
+        text "купи слона"
+    lexeme hi
+      surface
+        text "हाथी खरीदो"
+    lexeme zh
+      surface
+        text 买大象
+  vulgar_content
+    defined-by concept
+    role vulgar_content_marker
+    lexeme en
+      surface
+        text "fuck you"
+      surface
+        text fuckyou
+      surface
+        text "suck my"
+      surface
+        text "suck my dick"
+      surface
+        text "suck my cock"
+      surface
+        text "you suck"
+      surface
+        text "eat shit"
+      surface
+        text "go to hell"
+      surface
+        text asshole
+      surface
+        text motherfucker
+      surface
+        text "you fucking"
+      surface
+        text "piece of shit"
+    lexeme ru
+      surface
+        text ебать
+      surface
+        text ебёт
+      surface
+        text ебал
+      surface
+        text ёб
+      surface
+        text еблан
+      surface
+        text пизда
+      surface
+        text пиздец
+      surface
+        text пиздёж
+      surface
+        text хуй
+      surface
+        text хуёв
+      surface
+        text хуйня
+      surface
+        text блядь
+      surface
+        text блядство
+      surface
+        text залупа
+      surface
+        text мудак
+      surface
+        text мудила
+      surface
+        text шлюха
+      surface
+        text проститутка
+      surface
+        text ублюдок
+      surface
+        text сука
+      surface
+        text пидор
+      surface
+        text пидорас
+    lexeme hi
+      surface
+        text मादरचोद
+      surface
+        text बहनचोद
+    lexeme zh
+      surface
+        text 操你妈
+      surface
+        text 傻逼

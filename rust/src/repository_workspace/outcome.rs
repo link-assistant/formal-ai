@@ -17,7 +17,7 @@
 use crate::seed::parser::parse_lino;
 
 /// The five-language sentences a surface may say about a command.
-const COMMAND_OUTCOME_LINO: &str = include_str!("../../../data/seed/command-outcome.lino");
+const COMMAND_OUTCOME_LINO: &str = include_str!("../../embedded/data/seed/command-outcome.lino");
 
 /// Record type of one localized outcome sentence.
 const RECORD_OUTCOME: &str = "command_outcome";

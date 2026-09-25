@@ -17,8 +17,8 @@ use crate::seed::parser::{LinoNode, parse_lino};
 use crate::source_fetch::{CachedSourceClient, SourceTransport};
 
 const LEARNING_CONTRACT: &str =
-    include_str!("../../data/meta/search-fusion-learning-contract.lino");
-const SOURCE_POLICY: &str = include_str!("../../data/meta/search-fusion-source-policy.lino");
+    include_str!("../embedded/data/meta/search-fusion-learning-contract.lino");
+const SOURCE_POLICY: &str = include_str!("../embedded/data/meta/search-fusion-source-policy.lino");
 
 pub const SEARCH_FUSION_TASK_FAMILY: &str = "captured_search_statement_fusion";
 

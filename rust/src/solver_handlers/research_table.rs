@@ -18,7 +18,7 @@ use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 use super::finalize_simple;
 
 const RESEARCH_TABLE_PROCEDURE_LINO: &str =
-    include_str!("../../../data/seed/research-table-procedure.lino");
+    include_str!("../../embedded/data/seed/research-table-procedure.lino");
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Criterion {

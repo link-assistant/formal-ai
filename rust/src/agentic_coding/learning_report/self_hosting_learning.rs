@@ -20,7 +20,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("metric_fixture_exact_share_and_honest_ledger_ratchet_pass"),
     path: SELF_HOSTING_LEARNING_PATH,
     task: SELF_HOSTING_LEARNING_TASK,
-    memory: include_str!("../../../../data/meta/issue-657-self-hosting-learning.lino"),
+    memory: include_str!("../../../embedded/data/meta/issue-657-self-hosting-learning.lino"),
     subject: "self-hosting attribution observations and amendments",
 };
 

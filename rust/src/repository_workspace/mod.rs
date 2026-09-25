@@ -50,14 +50,16 @@ use verify::RunCommand;
 /// reads every word of a `data/seed/**.lino` comment as a value token that must
 /// resolve to a grounded meaning, so the rationale for a seed table lives in the
 /// module that reads it. No committed seed file carries `#` comments.
-const ALLOWLIST_LINO: &str = include_str!("../../../data/seed/repository-command-allowlist.lino");
+const ALLOWLIST_LINO: &str =
+    include_str!("../../embedded/data/seed/repository-command-allowlist.lino");
 
 /// Record type of one allowlist row.
 const RECORD_ALLOWED: &str = "allowed_command";
 
 /// The ordered protocol, as data. Adding "run the linter before the tests" is a
 /// `.lino` edit, not a Rust edit.
-const PROTOCOL_LINO: &str = include_str!("../../../data/meta/repository-workspace-protocol.lino");
+const PROTOCOL_LINO: &str =
+    include_str!("../../embedded/data/meta/repository-workspace-protocol.lino");
 
 /// Record type of one protocol step.
 const RECORD_STEP: &str = "meta_step";

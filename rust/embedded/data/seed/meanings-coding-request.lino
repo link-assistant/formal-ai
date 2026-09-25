@@ -1,0 +1,261 @@
+meanings
+  execute
+    defined-by action
+  coding_request_write
+    defined-by write
+    defined-by action
+    role coding_request_verb
+    precondition "the prompt asks to produce a coding artifact"
+    effect "the coding-task recognizer may bind a requested artifact"
+    unit "not applicable"
+    example write
+    lexeme en
+      surface
+        text write
+    lexeme ru
+      surface
+        text напиши
+    lexeme hi
+      surface
+        text लिखो
+      surface
+        text लिखें
+    lexeme zh
+      surface
+        text 写
+    lexeme es
+      surface
+        text escribe
+  coding_request_implement
+    defined-by action
+    role coding_request_verb
+    precondition "the prompt asks to implement a coding artifact"
+    effect "the coding-task recognizer may bind a requested artifact"
+    unit "not applicable"
+    example implement
+    lexeme en
+      surface
+        text implement
+    lexeme ru
+      surface
+        text реализуй
+    lexeme hi
+      surface
+        text "लागू करो"
+      surface
+        text "लागू करें"
+    lexeme zh
+      surface
+        text 实现
+    lexeme es
+      surface
+        text implementa
+  coding_request_complete
+    defined-by action
+    role coding_request_verb
+    precondition "the prompt asks to complete a coding artifact"
+    effect "the coding-task recognizer may bind a requested artifact"
+    unit "not applicable"
+    example complete
+    lexeme en
+      surface
+        text complete
+    lexeme ru
+      surface
+        text дополни
+    lexeme hi
+      surface
+        text "पूरा करो"
+    lexeme zh
+      surface
+        text 完成
+    lexeme es
+      surface
+        text completa
+  coding_request_define
+    defined-by action
+    role coding_request_verb
+    precondition "the prompt asks to define a coding artifact"
+    effect "the coding-task recognizer may bind a requested artifact"
+    unit "not applicable"
+    example define
+    lexeme en
+      surface
+        text define
+    lexeme ru
+      surface
+        text определи
+    lexeme hi
+      surface
+        text "परिभाषित करो"
+    lexeme zh
+      surface
+        text 定义
+    lexeme es
+      surface
+        text define
+  coding_request_create
+    defined-by create
+    defined-by action
+    role coding_request_verb
+    precondition "the prompt asks to create a coding artifact"
+    effect "the coding-task recognizer may bind a requested artifact"
+    unit "not applicable"
+    example create
+    lexeme en
+      surface
+        text create
+    lexeme ru
+      surface
+        text создай
+    lexeme hi
+      surface
+        text बनाओ
+    lexeme zh
+      surface
+        text 创建
+    lexeme es
+      surface
+        text crea
+  coding_request_function
+    defined-by function
+    defined-by code
+    role coding_request_object
+    precondition "a request verb governs this artifact noun"
+    effect "the requested artifact is a callable function"
+    unit "not applicable"
+    example function
+    lexeme en
+      surface
+        text function
+    lexeme ru
+      surface
+        text функция
+      surface
+        text функцию
+    lexeme hi
+      surface
+        text फ़ंक्शन
+      surface
+        text फंक्शन
+    lexeme zh
+      surface
+        text 函数
+    lexeme es
+      surface
+        text función
+  coding_request_method
+    defined-by function
+    defined-by code
+    role coding_request_object
+    precondition "a request verb governs this artifact noun"
+    effect "the requested artifact is a method"
+    unit "not applicable"
+    example method
+    lexeme en
+      surface
+        text method
+    lexeme ru
+      surface
+        text метод
+    lexeme hi
+      surface
+        text मेथड
+    lexeme zh
+      surface
+        text 方法
+    lexeme es
+      surface
+        text método
+  coding_request_program
+    defined-by code
+    role coding_request_object
+    precondition "a request verb governs this artifact noun"
+    effect "the requested artifact is a program"
+    unit "not applicable"
+    example program
+    lexeme en
+      surface
+        text program
+    lexeme ru
+      surface
+        text программа
+      surface
+        text программу
+    lexeme hi
+      surface
+        text प्रोग्राम
+    lexeme zh
+      surface
+        text 程序
+    lexeme es
+      surface
+        text programa
+  coding_example_request
+    defined-by request
+    defined-by example
+    role example_request
+    precondition "the prompt asks to see a coding example"
+    effect "the coding source handler may retrieve an attributed example"
+    unit "not applicable"
+    example "give me an example"
+    lexeme en
+      surface
+        text "give me example"
+      surface
+        text "give me an example"
+      surface
+        text example
+    lexeme ru
+      surface
+        text "покажи пример"
+      surface
+        text "дай пример"
+    lexeme hi
+      surface
+        text "उदाहरण दें"
+      surface
+        text उदाहरण
+    lexeme zh
+      surface
+        text 示例
+      surface
+        text 例子
+    lexeme es
+      surface
+        text "dame un ejemplo"
+      surface
+        text ejemplo
+  coding_execute_url_request
+    defined-by request
+    defined-by execute
+    role execute_url_request
+    precondition "the prompt asks to execute the program example at a URL"
+    effect "the coding source handler may run a fetched example in a bounded workspace"
+    unit "not applicable"
+    example execute
+    lexeme en
+      surface
+        text execute
+      surface
+        text run
+    lexeme ru
+      surface
+        text выполни
+      surface
+        text запусти
+    lexeme hi
+      surface
+        text चलाएँ
+      surface
+        text निष्पादित
+    lexeme zh
+      surface
+        text 执行
+      surface
+        text 运行
+    lexeme es
+      surface
+        text ejecuta
+      surface
+        text ejecutar

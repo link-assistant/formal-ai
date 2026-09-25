@@ -1,0 +1,60 @@
+# Plan 16 L2 projection rules (issue #1138) — which ES token classes and
+# TypeScript-only constructs each source root accepts. The engine
+# (rust/src/es_meta.rs) is a generic matcher over this table; nothing here
+# is decided in code, so a rule change re-points every renderer at once.
+#
+# Honest limit, stated where it bites — generic parameter lists (`<T>`)
+# cannot be recognized at token-tree fidelity because `a < b > c` is legal
+# plain JavaScript, so they carry silently rather than being guessed at.
+# An `as` cast signature is excluded for the same reason from the other
+# side — `export { x as y }` is plain ES module syntax, so `as` followed
+# by an identifier is not TypeScript-only evidence. A fidelity raise or a
+# real ./ts corpus owes both recognizers.
+language_projection
+  description "Token-class and construct projection rules for the plan 16 js ts rust cycle. A token class either carries to a root or is refused there. A ts_construct signature names a leaf and group sequence that cannot be valid plain JavaScript, and refusing it to js is how the ts to js direction stays honest. Generic parameter lists are not recognizable at token fidelity and carry; that gap is deliberate and documented."
+  token_class identifier
+    carries_to js
+    carries_to ts
+  token_class numeric
+    carries_to js
+    carries_to ts
+  token_class string
+    carries_to js
+    carries_to ts
+  token_class template_chunk
+    carries_to js
+    carries_to ts
+  token_class regexp
+    carries_to js
+    carries_to ts
+  token_class punctuator
+    carries_to js
+    carries_to ts
+  token_class group
+    carries_to js
+    carries_to ts
+  token_class template
+    carries_to js
+    carries_to ts
+  token_class interpolation
+    carries_to js
+    carries_to ts
+  ts_construct interface_declaration
+    signature leaf interface
+    signature identifier
+    signature group brace
+    refuses_to js
+  ts_construct enum_declaration
+    signature leaf enum
+    signature identifier
+    signature group brace
+    refuses_to js
+  ts_construct type_alias
+    signature leaf type
+    signature identifier
+    signature leaf =
+    refuses_to js
+  ts_construct satisfies_expression
+    signature leaf satisfies
+    signature identifier
+    refuses_to js

@@ -15,9 +15,9 @@ use crate::normal_markov::{RewriteHalt, RewriteProgram, RewriteRule};
 use crate::seed::parser::{LinoNode, parse_lino};
 
 const LEARNING_CONTRACT: &str =
-    include_str!("../../data/meta/workspace-change-learning-contract.lino");
+    include_str!("../embedded/data/meta/workspace-change-learning-contract.lino");
 const EXECUTION_POLICY: &str =
-    include_str!("../../data/meta/workspace-change-execution-policy.lino");
+    include_str!("../embedded/data/meta/workspace-change-execution-policy.lino");
 const MAX_REWRITE_STEPS: usize = 100_000;
 
 pub const WORKSPACE_CHANGE_TASK_FAMILY: &str = "verified_workspace_rewrite";

@@ -2,9 +2,9 @@ self_ast_census
   target src/selection_heuristics.rs
   language rust
   fidelity signature
-  byte_len 21999
+  byte_len 22005
   line_count 603
-  content_id source_module_e6e66935bf9d575e
+  content_id source_module_e89dff10b8944d70
   symbol_count 64
   symbols
     module refutation 23 23

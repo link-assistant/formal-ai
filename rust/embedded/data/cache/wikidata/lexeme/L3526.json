@@ -1,0 +1,709 @@
+{
+  "entities": {
+    "L3526": {
+      "pageid": 55175628,
+      "ns": 146,
+      "title": "Lexeme:L3526",
+      "lastrevid": 2337336180,
+      "modified": "2025-04-12T19:31:36Z",
+      "type": "lexeme",
+      "id": "L3526",
+      "lemmas": {
+        "ru": {
+          "language": "ru",
+          "value": "помидор"
+        }
+      },
+      "lexicalCategory": "Q1084",
+      "language": "Q7737",
+      "claims": {
+        "P1552": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P1552",
+              "hash": "4a8a9c18866f69b289d57a6e908b0e4ca7270049",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 51927539,
+                  "id": "Q51927539"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "type": "statement",
+            "id": "L3526$34421f81-40cb-ac46-3dd3-9028a1df97f1",
+            "rank": "normal"
+          }
+        ],
+        "P5185": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5185",
+              "hash": "432320b20cb3975ff4969b6ade525ca6bd81ca47",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 499327,
+                  "id": "Q499327"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "type": "statement",
+            "id": "L3526$659c8f62-4db4-fbeb-2dee-fb6b23128fc1",
+            "rank": "normal"
+          }
+        ],
+        "P11319": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P11319",
+              "hash": "4cea73c70aa3dd50aa12d92b7a45c558ce997f53",
+              "datavalue": {
+                "value": "16/ma328209",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3526$E4347CC1-80D2-44EA-8517-D2CC89D36BB3",
+            "rank": "normal"
+          }
+        ],
+        "P11536": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P11536",
+              "hash": "7885669eb0cced99a4365094469e0ee41bfb745c",
+              "datavalue": {
+                "value": "16/us356406",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3526$973CDA00-F278-4671-9946-0CCAA29E2BB2",
+            "rank": "normal"
+          }
+        ],
+        "P11138": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P11138",
+              "hash": "6e64d196e8596932234cfba428e7300deb0c52f1",
+              "datavalue": {
+                "value": "483923",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3526$14D5E2A8-B228-4E86-9757-7CF3A0A43006",
+            "rank": "normal"
+          }
+        ],
+        "P13131": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P13131",
+              "hash": "3d49a41cc96907a28f9033ac55b5747c87034eb2",
+              "datavalue": {
+                "value": "16#e1396",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "qualifiers": {
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "6c04e48ef7dc033bedd2b0c26acfd25fea8bbe0b",
+                  "datavalue": {
+                    "value": "pam'idór",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ]
+            },
+            "qualifiers-order": [
+              "P1810"
+            ],
+            "id": "L3526$28e30888-4de3-0226-7cf4-1afd359d9cad",
+            "rank": "normal"
+          }
+        ],
+        "P5911": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5911",
+              "hash": "eb84868970597368b16237b23eae9f1807db980c",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 66689134,
+                  "id": "Q66689134"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "type": "statement",
+            "id": "L3526$a1f2fca8-46e9-5c8b-ccd6-e159fd3cd2ef",
+            "rank": "normal"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5911",
+              "hash": "e8867852bfb03227e9420f3838785ea1ef42f969",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 66311515,
+                  "id": "Q66311515"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "type": "statement",
+            "id": "L3526$a6a46189-401e-d367-5272-157f7fbec57d",
+            "rank": "normal"
+          }
+        ]
+      },
+      "forms": [
+        {
+          "id": "L3526-F1",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидор"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q131105",
+            "Q146078"
+          ],
+          "claims": {
+            "P898": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P898",
+                  "hash": "58440cc32fa5d08936acd55d7ab22f5decb84c85",
+                  "datavalue": {
+                    "value": "pəmʲɪˈdor",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                },
+                "type": "statement",
+                "id": "L3526-F1$58221d9e-442a-14ce-751a-6823b252e1e1",
+                "rank": "normal",
+                "references": [
+                  {
+                    "hash": "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5",
+                    "snaks": {
+                      "P143": [
+                        {
+                          "snaktype": "value",
+                          "property": "P143",
+                          "hash": "3229fb16bc3564064e40e98db7ff1d0bc7935f2f",
+                          "datavalue": {
+                            "value": {
+                              "entity-type": "item",
+                              "numeric-id": 22116890,
+                              "id": "Q22116890"
+                            },
+                            "type": "wikibase-entityid"
+                          },
+                          "datatype": "wikibase-item"
+                        }
+                      ]
+                    },
+                    "snaks-order": [
+                      "P143"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "P443": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "ca4f9b0baa03771174322396358898a0b34fce0b",
+                  "datavalue": {
+                    "value": "LL-Q7737 (rus)-Infovarius-помидор.wav",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-F1$d01b489e-facb-435d-88a6-46d76475cc03",
+                "rank": "normal",
+                "references": [
+                  {
+                    "hash": "fa8ef11b7b7b41d9f130547137b1065b5575d287",
+                    "snaks": {
+                      "P854": [
+                        {
+                          "snaktype": "value",
+                          "property": "P854",
+                          "hash": "f6a3b57f46e63e892b2368ee4168c344bc5f2fe9",
+                          "datavalue": {
+                            "value": "https://lingualibre.fr/wiki/Q63233",
+                            "type": "string"
+                          },
+                          "datatype": "url"
+                        }
+                      ]
+                    },
+                    "snaks-order": [
+                      "P854"
+                    ]
+                  }
+                ]
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "1525a55e4f4d9142ef6a12d442e6f5e2c3a0c1d4",
+                  "datavalue": {
+                    "value": "Ru-помидор.ogg",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-F1$402D1883-9185-4018-A5AC-7D355662AF8F",
+                "rank": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "id": "L3526-F2",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидора"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q146233"
+          ],
+          "claims": {
+            "P443": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "08193bbe6f08a846f9799faf02a53112c943c2e4",
+                  "datavalue": {
+                    "value": "LL-Q7737 (rus)-Infovarius-помидора.wav",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-F2$6114224f-9f6d-4436-83ec-939c1a985495",
+                "rank": "normal",
+                "references": [
+                  {
+                    "hash": "780d5cdc8abc81f4171ffd5b830d233a587779cb",
+                    "snaks": {
+                      "P854": [
+                        {
+                          "snaktype": "value",
+                          "property": "P854",
+                          "hash": "d76745c20b2cffab165d3d9cc22ea628d7a2ccc1",
+                          "datavalue": {
+                            "value": "https://lingualibre.fr/wiki/Q63234",
+                            "type": "string"
+                          },
+                          "datatype": "url"
+                        }
+                      ]
+                    },
+                    "snaks-order": [
+                      "P854"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "L3526-F3",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидоры"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q131105",
+            "Q146078",
+            "Q146786"
+          ],
+          "claims": {
+            "P443": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "0e1dd745bc158baec42d6424787a84a48a2768e6",
+                  "datavalue": {
+                    "value": "LL-Q7737 (rus)-Infovarius-помидоры.wav",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-F3$5edc2882-12fa-418e-b7a6-387b60abe560",
+                "rank": "normal",
+                "references": [
+                  {
+                    "hash": "c80346fb208f1ce60b890085b157543522bacde6",
+                    "snaks": {
+                      "P854": [
+                        {
+                          "snaktype": "value",
+                          "property": "P854",
+                          "hash": "41a55ee54196b946d1d5fe3f9dda48369d2adcbb",
+                          "datavalue": {
+                            "value": "https://lingualibre.fr/wiki/Q63235",
+                            "type": "string"
+                          },
+                          "datatype": "url"
+                        }
+                      ]
+                    },
+                    "snaks-order": [
+                      "P854"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "L3526-F4",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидора"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q146233"
+          ],
+          "claims": {
+            "P443": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "08193bbe6f08a846f9799faf02a53112c943c2e4",
+                  "datavalue": {
+                    "value": "LL-Q7737 (rus)-Infovarius-помидора.wav",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-F4$a596e58b-4bda-00e3-87d1-70e1dacaaf99",
+                "rank": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "id": "L3526-F5",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидору"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q145599"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L3526-F6",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидор"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q146078"
+          ],
+          "claims": {
+            "P443": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "ca4f9b0baa03771174322396358898a0b34fce0b",
+                  "datavalue": {
+                    "value": "LL-Q7737 (rus)-Infovarius-помидор.wav",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-F6$1823aa57-4276-94b0-be11-b18aef5283f9",
+                "rank": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "id": "L3526-F7",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидором"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q192997"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L3526-F8",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидоре"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q2114906"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L3526-F9",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидоров"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q146233",
+            "Q146786"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L3526-F10",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидорам"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q145599",
+            "Q146786"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L3526-F11",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидоры"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q146078",
+            "Q146786"
+          ],
+          "claims": {
+            "P443": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "0e1dd745bc158baec42d6424787a84a48a2768e6",
+                  "datavalue": {
+                    "value": "LL-Q7737 (rus)-Infovarius-помидоры.wav",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-F11$a475538f-4466-6457-2cde-f2c6d483dae1",
+                "rank": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "id": "L3526-F12",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидорами"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q146786",
+            "Q192997"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L3526-F13",
+          "representations": {
+            "ru": {
+              "language": "ru",
+              "value": "помидорах"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q146786",
+            "Q2114906"
+          ],
+          "claims": {}
+        }
+      ],
+      "senses": [
+        {
+          "id": "L3526-S1",
+          "glosses": {
+            "ru": {
+              "language": "ru",
+              "value": "плод растения"
+            }
+          },
+          "claims": {
+            "P5137": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5137",
+                  "hash": "9e61e964a3a433fbf49312b69245d3e60ed3a4d4",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 20638126,
+                      "id": "Q20638126"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                },
+                "type": "statement",
+                "id": "L3526-S1$56d7a3eb-4973-1748-d98c-b9c5d23827f9",
+                "rank": "normal"
+              }
+            ],
+            "P18": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P18",
+                  "hash": "c6d6d0724dcaf6d741e1cc1675885481bbfab291",
+                  "datavalue": {
+                    "value": "Tomato je.jpg",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-S1$f773f603-4b84-d6ab-23cc-818288e12502",
+                "rank": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "id": "L3526-S2",
+          "glosses": {
+            "ru": {
+              "language": "ru",
+              "value": "вид растений семейства паслёновых"
+            }
+          },
+          "claims": {
+            "P5137": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5137",
+                  "hash": "c318db72d30dabf5155fdbd023c2f15be83366a3",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 23501,
+                      "id": "Q23501"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                },
+                "type": "statement",
+                "id": "L3526-S2$b85dc72c-4f7c-86f8-e2ad-a7e405313379",
+                "rank": "normal"
+              }
+            ],
+            "P18": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P18",
+                  "hash": "89050b86c44803397d0ff2b3298f08ccb3d4e883",
+                  "datavalue": {
+                    "value": "Rajče1.jpg",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "id": "L3526-S2$60b7c9b5-4b15-4689-c0b0-cc1890d06932",
+                "rank": "normal"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "success": 1
+}

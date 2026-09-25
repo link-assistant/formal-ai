@@ -33,7 +33,7 @@ const ROUND_PLACEHOLDER: &str = concat!("{", "round", "}");
 
 /// Data-authored policy interpreted before every research round.
 pub const CODING_RESEARCH_LEARNING_CONTRACT: &str =
-    include_str!("../../data/meta/coding-research-learning-contract.lino");
+    include_str!("../embedded/data/meta/coding-research-learning-contract.lino");
 
 /// A failed research or verification stage. `cycle` retains the audit trail up
 /// to the failure so callers can inspect it without accepting a procedure.

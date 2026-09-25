@@ -14,8 +14,9 @@ use alloc::vec::Vec;
 use core::convert::TryFrom;
 use core::fmt::Write as _;
 
-const WIKIDATA_MEANINGS: &str = include_str!("../../data/seed/meanings-wikidata.lino");
-const STATEMENT_MEANINGS: &str = include_str!("../../data/seed/meanings-statement-merge.lino");
+const WIKIDATA_MEANINGS: &str = include_str!("../embedded/data/seed/meanings-wikidata.lino");
+const STATEMENT_MEANINGS: &str =
+    include_str!("../embedded/data/seed/meanings-statement-merge.lino");
 const ENTITY_ROLE: &str = "wikidata_entity_anchor";
 const RELATION_ROLE: &str = "binary_relation_property";
 const FUNCTION_WORD_ROLE: &str = "statement_function_word";

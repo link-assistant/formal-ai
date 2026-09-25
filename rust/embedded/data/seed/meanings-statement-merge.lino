@@ -1,0 +1,489 @@
+meanings
+  statement_function_word
+    defined-by concept
+    role statement_function_word
+    lexeme en
+      surface
+        text "the"
+      surface
+        text "a"
+      surface
+        text "an"
+      surface
+        text "of"
+      surface
+        text "to"
+      surface
+        text "in"
+      surface
+        text "on"
+      surface
+        text "at"
+      surface
+        text "by"
+      surface
+        text "for"
+      surface
+        text "with"
+      surface
+        text "from"
+      surface
+        text "as"
+      surface
+        text "into"
+      surface
+        text "onto"
+      surface
+        text "over"
+      surface
+        text "than"
+      surface
+        text "then"
+      surface
+        text "and"
+      surface
+        text "or"
+      surface
+        text "but"
+      surface
+        text "that"
+      surface
+        text "this"
+      surface
+        text "these"
+      surface
+        text "those"
+      surface
+        text "it"
+      surface
+        text "its"
+      surface
+        text "is"
+      surface
+        text "are"
+      surface
+        text "was"
+      surface
+        text "were"
+      surface
+        text "be"
+      surface
+        text "been"
+      surface
+        text "being"
+      surface
+        text "am"
+      surface
+        text "do"
+      surface
+        text "does"
+      surface
+        text "did"
+      surface
+        text "has"
+      surface
+        text "have"
+      surface
+        text "had"
+      surface
+        text "will"
+      surface
+        text "would"
+      surface
+        text "can"
+      surface
+        text "could"
+      surface
+        text "should"
+      surface
+        text "there"
+      surface
+        text "their"
+      surface
+        text "here"
+    lexeme ru
+      surface
+        text "и"
+      surface
+        text "в"
+      surface
+        text "во"
+      surface
+        text "на"
+      surface
+        text "с"
+      surface
+        text "со"
+      surface
+        text "по"
+      surface
+        text "для"
+      surface
+        text "из"
+      surface
+        text "о"
+      surface
+        text "об"
+      surface
+        text "а"
+      surface
+        text "но"
+      surface
+        text "или"
+      surface
+        text "это"
+      surface
+        text "эта"
+      surface
+        text "этот"
+      surface
+        text "есть"
+      surface
+        text "был"
+      surface
+        text "была"
+      surface
+        text "были"
+      surface
+        text "к"
+      surface
+        text "у"
+      surface
+        text "же"
+      surface
+        text "то"
+      surface
+        text "как"
+      surface
+        text "что"
+    lexeme hi
+      surface
+        text "का"
+      surface
+        text "के"
+      surface
+        text "की"
+      surface
+        text "को"
+      surface
+        text "में"
+      surface
+        text "से"
+      surface
+        text "पर"
+      surface
+        text "है"
+      surface
+        text "हैं"
+      surface
+        text "था"
+      surface
+        text "थे"
+      surface
+        text "थी"
+      surface
+        text "और"
+      surface
+        text "या"
+      surface
+        text "यह"
+      surface
+        text "वह"
+      surface
+        text "एक"
+      surface
+        text "ने"
+      surface
+        text "भी"
+      surface
+        text "तो"
+    lexeme zh
+      surface
+        text "的"
+      surface
+        text "了"
+      surface
+        text "是"
+      surface
+        text "在"
+      surface
+        text "和"
+      surface
+        text "与"
+      surface
+        text "或"
+      surface
+        text "这"
+      surface
+        text "那"
+      surface
+        text "有"
+      surface
+        text "被"
+      surface
+        text "对"
+  statement_negation_cue
+    defined-by concept
+    role statement_negation_cue
+    lexeme en
+      surface
+        text "not"
+      surface
+        text "no"
+      surface
+        text "never"
+      surface
+        text "without"
+      surface
+        text "cannot"
+      surface
+        text "isn't"
+      surface
+        text "aren't"
+      surface
+        text "wasn't"
+      surface
+        text "weren't"
+      surface
+        text "doesn't"
+      surface
+        text "don't"
+      surface
+        text "didn't"
+      surface
+        text "can't"
+      surface
+        text "won't"
+      surface
+        text "nor"
+    lexeme ru
+      surface
+        text "не"
+      surface
+        text "нет"
+      surface
+        text "ни"
+      surface
+        text "никогда"
+      surface
+        text "без"
+      surface
+        text "нельзя"
+    lexeme hi
+      surface
+        text "नहीं"
+      surface
+        text "न"
+      surface
+        text "बिना"
+      surface
+        text "कभी"
+    lexeme zh
+      surface
+        text "不"
+      surface
+        text "没"
+      surface
+        text "没有"
+      surface
+        text "无"
+      surface
+        text "非"
+      surface
+        text "未"
+      surface
+        text "别"
+  identifier_reserved_word
+    defined-by concept
+    role identifier_reserved_word
+    lexeme en
+      surface
+        text "False"
+      surface
+        text "None"
+      surface
+        text "Self"
+      surface
+        text "True"
+      surface
+        text "and"
+      surface
+        text "as"
+      surface
+        text "assert"
+      surface
+        text "async"
+      surface
+        text "await"
+      surface
+        text "become"
+      surface
+        text "box"
+      surface
+        text "break"
+      surface
+        text "case"
+      surface
+        text "catch"
+      surface
+        text "class"
+      surface
+        text "const"
+      surface
+        text "continue"
+      surface
+        text "crate"
+      surface
+        text "debugger"
+      surface
+        text "def"
+      surface
+        text "default"
+      surface
+        text "del"
+      surface
+        text "delete"
+      surface
+        text "do"
+      surface
+        text "dyn"
+      surface
+        text "elif"
+      surface
+        text "else"
+      surface
+        text "enum"
+      surface
+        text "except"
+      surface
+        text "export"
+      surface
+        text "extends"
+      surface
+        text "extern"
+      surface
+        text "false"
+      surface
+        text "final"
+      surface
+        text "finally"
+      surface
+        text "fn"
+      surface
+        text "for"
+      surface
+        text "from"
+      surface
+        text "function"
+      surface
+        text "global"
+      surface
+        text "if"
+      surface
+        text "impl"
+      surface
+        text "implements"
+      surface
+        text "import"
+      surface
+        text "in"
+      surface
+        text "instanceof"
+      surface
+        text "interface"
+      surface
+        text "is"
+      surface
+        text "lambda"
+      surface
+        text "let"
+      surface
+        text "loop"
+      surface
+        text "macro"
+      surface
+        text "match"
+      surface
+        text "mod"
+      surface
+        text "move"
+      surface
+        text "mut"
+      surface
+        text "new"
+      surface
+        text "nonlocal"
+      surface
+        text "not"
+      surface
+        text "null"
+      surface
+        text "or"
+      surface
+        text "override"
+      surface
+        text "package"
+      surface
+        text "pass"
+      surface
+        text "priv"
+      surface
+        text "private"
+      surface
+        text "protected"
+      surface
+        text "pub"
+      surface
+        text "public"
+      surface
+        text "raise"
+      surface
+        text "ref"
+      surface
+        text "return"
+      surface
+        text "self"
+      surface
+        text "static"
+      surface
+        text "struct"
+      surface
+        text "super"
+      surface
+        text "switch"
+      surface
+        text "this"
+      surface
+        text "throw"
+      surface
+        text "trait"
+      surface
+        text "true"
+      surface
+        text "try"
+      surface
+        text "type"
+      surface
+        text "typeof"
+      surface
+        text "undefined"
+      surface
+        text "unsafe"
+      surface
+        text "unsized"
+      surface
+        text "use"
+      surface
+        text "var"
+      surface
+        text "virtual"
+      surface
+        text "void"
+      surface
+        text "where"
+      surface
+        text "while"
+      surface
+        text "with"
+      surface
+        text "yield"

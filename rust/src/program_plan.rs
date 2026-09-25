@@ -52,7 +52,7 @@ pub const PROGRAM_PLAN_RULES_LINO: &str = crate::seed::PROGRAM_PLAN_RULES_LINO;
 /// Human-reviewed learned program-plan rules. The promotion protocol writes
 /// this seed; it deliberately starts empty, with only the schema root.
 pub const LEARNED_PROGRAM_RULES_LINO: &str =
-    include_str!("../../data/seed/learned-program-rules.lino");
+    include_str!("../embedded/data/seed/learned-program-rules.lino");
 
 /// Parsed, cached program-plan rule set embedded at compile time.
 ///

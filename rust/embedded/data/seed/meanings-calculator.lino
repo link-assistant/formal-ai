@@ -1,0 +1,659 @@
+meanings
+  money
+    grounded-in Q1368
+    defined-by concept
+    role monetary_concept
+    lexeme en
+      surface
+        text money
+      surface
+        text currency
+    lexeme ru
+      surface
+        text деньги
+      surface
+        text валюта
+    lexeme hi
+      surface
+        text पैसा
+      surface
+        text मुद्रा
+    lexeme zh
+      surface
+        text 货币
+      surface
+        text 钱
+  exchange_rate
+    grounded-in Q66100
+    defined-by money
+    defined-by relation
+    role exchange_rate_reference
+    lexeme en
+      surface
+        text "exchange rate"
+      surface
+        text "currency rate"
+    lexeme ru
+      surface
+        text курс
+    lexeme hi
+      surface
+        text "विनिमय दर"
+    lexeme zh
+      surface
+        text 汇率
+  us_dollar
+    grounded-in Q4917
+    defined-by money
+    role currency_usd_reference
+    role calculation_domain_term
+    lexeme en
+      surface
+        text usd
+      surface
+        text dollar
+      surface
+        text dollars
+    lexeme ru
+      surface
+        text доллар
+      surface
+        text долар
+      surface
+        text долор
+    lexeme hi
+      surface
+        text डॉलर
+    lexeme zh
+      surface
+        text 美元
+  euro
+    grounded-in Q4916
+    defined-by money
+    role currency_eur_reference
+    role calculation_domain_term
+    lexeme en
+      surface
+        text eur
+      surface
+        text euro
+      surface
+        text euros
+    lexeme ru
+      surface
+        text евро
+    lexeme hi
+      surface
+        text यूरो
+    lexeme zh
+      surface
+        text 欧元
+  ruble
+    grounded-in Q41044
+    defined-by money
+    role currency_rub_reference
+    role calculation_domain_term
+    lexeme en
+      surface
+        text rub
+      surface
+        text ruble
+      surface
+        text rubles
+    lexeme ru
+      surface
+        text рубль
+      surface
+        text рублей
+      surface
+        text руб
+    lexeme hi
+      surface
+        text रूबल
+    lexeme zh
+      surface
+        text 卢布
+  calculation_basis
+    defined-by action
+    defined-by inquiry
+    role calculation_basis_reference
+    lexeme en
+      surface
+        text calculation
+      surface
+        text calculations
+      surface
+        text "do you use"
+      surface
+        text "used for"
+      surface
+        text "your rate"
+    lexeme ru
+      surface
+        text "при расчет"
+      surface
+        text "при расчёт"
+      surface
+        text "в расчет"
+      surface
+        text "в расчёт"
+      surface
+        text "для расчет"
+      surface
+        text "для расчёт"
+      surface
+        text "у тебя"
+      surface
+        text использ
+      surface
+        text берешь
+      surface
+        text берёшь
+      surface
+        text примен
+    lexeme hi
+      surface
+        text गणना
+      surface
+        text उपयोग
+    lexeme zh
+      surface
+        text 计算
+      surface
+        text 使用
+  arithmetic_operation
+    grounded-in Q12170668
+    defined-by action
+    role numeric_concept
+    lexeme en
+      surface
+        text "arithmetic operation"
+      surface
+        text operator
+    lexeme ru
+      surface
+        text "арифметическая операция"
+    lexeme hi
+      surface
+        text "अंकगणितीय संक्रिया"
+    lexeme zh
+      surface
+        text 算术运算
+  addition
+    grounded-in Q32043
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text plus
+      surface
+        text +
+    lexeme ru
+      surface
+        text плюс
+    lexeme hi
+      surface
+        text जोड़
+      surface
+        text जमा
+    lexeme zh
+      surface
+        text 加上
+      surface
+        text 加
+    lexeme es
+      surface
+        text "más"
+  subtraction
+    grounded-in Q40754
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text minus
+      surface
+        text -
+    lexeme ru
+      surface
+        text минус
+    lexeme hi
+      surface
+        text घटा
+    lexeme zh
+      surface
+        text 减去
+      surface
+        text 减
+    lexeme es
+      surface
+        text "menos"
+  multiplication
+    grounded-in Q40276
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text times
+      surface
+        text "multiplied by"
+      surface
+        text *
+    lexeme ru
+      surface
+        text умножить
+      surface
+        text умножь
+      surface
+        text "умножить на"
+    lexeme hi
+      surface
+        text गुणा
+    lexeme zh
+      surface
+        text 乘以
+      surface
+        text 乘
+    lexeme es
+      surface
+        text "por"
+      surface
+        text "multiplicado por"
+  division
+    grounded-in Q1226939
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text "divided by"
+      surface
+        text /
+    lexeme ru
+      surface
+        text "разделить на"
+      surface
+        text "делить на"
+    lexeme hi
+      surface
+        text भाग
+      surface
+        text बटा
+    lexeme zh
+      surface
+        text 除以
+      surface
+        text 除
+    lexeme es
+      surface
+        text "dividido por"
+      surface
+        text "entre"
+  modulo
+    grounded-in Q1799665
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text modulo
+      surface
+        text mod
+      surface
+        text %
+    lexeme ru
+      surface
+        text "по модулю"
+    lexeme hi
+      surface
+        text मॉड्यूलो
+    lexeme zh
+      surface
+        text 取模
+    lexeme es
+      surface
+        text "módulo"
+  calculation_request
+    defined-by action
+    defined-by inquiry
+    role calculation_request_cue
+    lexeme en
+      surface
+        text "please calculate"
+      surface
+        text "please compute"
+      surface
+        text "can you calculate"
+      surface
+        text "can you compute"
+      surface
+        text "could you calculate"
+      surface
+        text "could you compute"
+      surface
+        text "what is"
+      surface
+        text "what's"
+      surface
+        text "what does"
+      surface
+        text calculate
+      surface
+        text compute
+      surface
+        text evaluate
+      surface
+        text "how much is"
+      surface
+        text "solve the equation"
+      surface
+        text "solve equation"
+      surface
+        text solve
+    lexeme ru
+      surface
+        text "сколько будет"
+      surface
+        text "реши уравнение"
+      surface
+        text "решите уравнение"
+      surface
+        text реши
+      surface
+        text решите
+      surface
+        text посчитай
+      surface
+        text посчитайте
+      surface
+        text вычисли
+      surface
+        text вычислите
+      surface
+        text рассчитай
+      surface
+        text рассчитайте
+    lexeme zh
+      surface
+        text 请计算
+      surface
+        text 请算一下
+      surface
+        text 计算一下
+      surface
+        text 算一下
+      surface
+        text 解方程
+      surface
+        text 求解
+      surface
+        text 计算
+    lexeme hi
+      surface
+        text "कृपया गणना करें"
+      surface
+        text "समीकरण हल करें"
+      surface
+        text "समीकरण हल करो"
+      surface
+        text "हल करें"
+      surface
+        text "हल करो"
+      surface
+        text "गणना करें"
+    lexeme es
+      surface
+        text "resuelve la ecuación"
+      surface
+        text "resolver la ecuación"
+      surface
+        text "cuánto es"
+      surface
+        text resuelve
+      surface
+        text calcular
+      surface
+        text calcula
+  politeness
+    grounded-in Q281287
+    defined-by property
+    role politeness_cue
+    lexeme en
+      surface
+        text please
+      surface
+        text "for me"
+    lexeme ru
+      surface
+        text пожалуйста
+    lexeme hi
+      surface
+        text कृपया
+    lexeme zh
+      surface
+        text 请
+  calculation_result_query
+    defined-by action
+    defined-by inquiry
+    role calculation_result_query_cue
+    lexeme en
+      surface
+        text equal
+      surface
+        text equals
+      surface
+        text =
+    lexeme ru
+      surface
+        text равно
+    lexeme zh
+      surface
+        text 是多少
+      surface
+        text 等于多少
+      surface
+        text 等于几
+    lexeme hi
+      surface
+        text "कितना है"
+      surface
+        text "कितना होता है"
+      surface
+        text "कितने होते हैं"
+      surface
+        text "क्या है"
+      surface
+        text "की गणना करें"
+    lexeme es
+      surface
+        text "cuánto es"
+      surface
+        text "cuánto da"
+      surface
+        text "cuántos son"
+  time_duration
+    defined-by time
+    defined-by inquiry
+    role time_duration_cue
+    lexeme en
+      surface
+        text "how long"
+      surface
+        text "elapsed time"
+      surface
+        text "travel time"
+    lexeme ru
+      surface
+        text "сколько времени"
+      surface
+        text длительность
+      surface
+        text продолжительность
+      surface
+        text "сколько длится"
+    lexeme hi
+      surface
+        text "कितना समय"
+      surface
+        text अवधि
+    lexeme zh
+      surface
+        text 多久
+      surface
+        text 时长
+      surface
+        text 经过时间
+  quantity_conversion
+    grounded-in Q618655
+    defined-by action
+    defined-by relation
+    role quantity_conversion_cue
+    lexeme en
+      surface
+        text to
+      surface
+        text into
+      surface
+        text convert
+      surface
+        text exchange
+    lexeme ru
+      surface
+        text конвертировать
+      surface
+        text обмен
+    lexeme hi
+      surface
+        text बदलें
+      surface
+        text परिवर्तित
+    lexeme zh
+      surface
+        text 转换
+      surface
+        text 兑换
+      surface
+        text 换成
+  mathematical_function
+    grounded-in Q11348
+    defined-by function
+    role numeric_concept
+    lexeme en
+      surface
+        text "mathematical function"
+    lexeme ru
+      surface
+        text "математическая функция"
+    lexeme hi
+      surface
+        text "गणितीय फलन"
+    lexeme zh
+      surface
+        text 数学函数
+  square_root
+    grounded-in Q134237
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text sqrt
+      surface
+        text "square root"
+    lexeme ru
+      surface
+        text "квадратный корень"
+      surface
+        text корень
+    lexeme hi
+      surface
+        text वर्गमूल
+    lexeme zh
+      surface
+        text 平方根
+  sine
+    grounded-in Q152415
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text sin
+      surface
+        text sine
+    lexeme ru
+      surface
+        text синус
+    lexeme hi
+      surface
+        text ज्या
+    lexeme zh
+      surface
+        text 正弦
+  cosine
+    grounded-in Q1256164
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text cos
+      surface
+        text cosine
+    lexeme ru
+      surface
+        text косинус
+    lexeme hi
+      surface
+        text कोज्या
+    lexeme zh
+      surface
+        text 余弦
+  tangent
+    grounded-in Q1129196
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text tan
+      surface
+        text tangent
+    lexeme ru
+      surface
+        text тангенс
+    lexeme hi
+      surface
+        text स्पर्शज्या
+    lexeme zh
+      surface
+        text 正切
+  logarithm
+    grounded-in Q11197
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text log
+      surface
+        text logarithm
+    lexeme ru
+      surface
+        text логарифм
+    lexeme hi
+      surface
+        text लघुगणक
+    lexeme zh
+      surface
+        text 对数
+  natural_logarithm
+    grounded-in Q204037
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text ln
+      surface
+        text "natural logarithm"
+    lexeme ru
+      surface
+        text "натуральный логарифм"
+    lexeme hi
+      surface
+        text "प्राकृतिक लघुगणक"
+    lexeme zh
+      surface
+        text 自然对数

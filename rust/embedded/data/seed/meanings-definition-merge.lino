@@ -1,0 +1,147 @@
+meanings
+  definition_merge_action
+    defined-by action
+    role definition_merge_action
+    lexeme en
+      surface
+        text merge
+      surface
+        text merged
+      surface
+        text combine
+      surface
+        text combined
+      surface
+        text fuse
+      surface
+        text fusion
+    lexeme ru
+      surface
+        text объедин
+      surface
+        text слия
+    lexeme hi
+      surface
+        text विलय
+      surface
+        text संयोजन
+    lexeme zh
+      surface
+        text 合并
+      surface
+        text 融合
+  definition_artifact_request
+    defined-by inquiry
+    role definition_artifact_request
+    lexeme en
+      surface
+        text definition
+      surface
+        text definitions
+      surface
+        text translation
+      surface
+        text translations
+      surface
+        text translated
+      surface
+        text wikipedia
+    lexeme ru
+      surface
+        text определени
+      surface
+        text перевод
+      surface
+        text википеди
+    lexeme hi
+      surface
+        text परिभाषा
+      surface
+        text अनुवाद
+    lexeme zh
+      surface
+        text 定义
+      surface
+        text 翻译
+  definition_merge_marker
+    defined-by inquiry
+    role definition_merge_marker
+    lexeme en
+      surface
+        text "translated definitions for …"
+      surface
+        text "translated definitions of …"
+      surface
+        text "wikipedia definitions for …"
+      surface
+        text "wikipedia definitions of …"
+      surface
+        text "definitions for …"
+      surface
+        text "definitions of …"
+      surface
+        text "definition for …"
+      surface
+        text "definition of …"
+      surface
+        text "translations for …"
+      surface
+        text "translations of …"
+      surface
+        text "translation for …"
+      surface
+        text "translation of …"
+    lexeme ru
+      surface
+        text "переведенные определения для …"
+      surface
+        text "определения для …"
+      surface
+        text "определение …"
+      surface
+        text "перевод …"
+    lexeme hi
+      surface
+        text "की परिभाषाएँ …"
+      surface
+        text "का अनुवाद …"
+    lexeme zh
+      surface
+        text "的定义 …"
+      surface
+        text "的翻译 …"
+  definition_merge_tail_boundary
+    defined-by relation
+    role definition_merge_tail_boundary
+    lexeme en
+      surface
+        text from
+      surface
+        text using
+      surface
+        text with
+      surface
+        text by
+      surface
+        text into
+      surface
+        text across
+    lexeme ru
+      surface
+        text из
+      surface
+        text с
+      surface
+        text по
+      surface
+        text в
+    lexeme hi
+      surface
+        text से
+      surface
+        text "के साथ"
+    lexeme zh
+      surface
+        text 从
+      surface
+        text 使用

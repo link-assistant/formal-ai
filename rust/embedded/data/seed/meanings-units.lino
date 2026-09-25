@@ -1,0 +1,1153 @@
+meanings
+  quantity
+    grounded-in Q309314
+    defined-by unit
+    defined-by property
+    defined-by amount
+    defined-by size
+    role measurement_concept
+    lexeme en
+      surface
+        text quantity
+    lexeme ru
+      surface
+        text количество
+    lexeme hi
+      surface
+        text मात्रा
+    lexeme zh
+      surface
+        text 数量
+  unit
+    grounded-in Q47574
+    defined-by quantity
+    role measurement_concept
+    lexeme en
+      surface
+        text unit
+    lexeme ru
+      surface
+        text единица
+    lexeme hi
+      surface
+        text इकाई
+    lexeme zh
+      surface
+        text 单位
+  cardinal_number
+    grounded-in Q1329258
+    defined-by quantity
+    role numeric_concept
+    lexeme en
+      surface
+        text "cardinal number"
+      surface
+        text number
+    lexeme ru
+      surface
+        text "количественное число"
+    lexeme hi
+      surface
+        text "गणन संख्या"
+    lexeme zh
+      surface
+        text 基数
+  zero
+    grounded-in Q204
+    defined-by cardinal_number
+    defined-by empty
+    role cardinal_number_word
+    lexeme en
+      surface
+        text zero
+      surface
+        text 0
+    lexeme ru
+      surface
+        text ноль
+      surface
+        text нуль
+    lexeme hi
+      surface
+        text शून्य
+    lexeme zh
+      surface
+        text 零
+    lexeme es
+      surface
+        text cero
+  one
+    grounded-in Q199
+    defined-by cardinal_number
+    defined-by single
+    role cardinal_number_word
+    lexeme en
+      surface
+        text one
+      surface
+        text 1
+    lexeme ru
+      surface
+        text один
+      surface
+        text одна
+      surface
+        text одно
+    lexeme hi
+      surface
+        text एक
+    lexeme zh
+      surface
+        text 一
+    lexeme es
+      surface
+        text un
+      surface
+        text una
+      surface
+        text uno
+  two
+    grounded-in Q200
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text two
+      surface
+        text 2
+    lexeme ru
+      surface
+        text два
+      surface
+        text две
+    lexeme hi
+      surface
+        text दो
+    lexeme zh
+      surface
+        text 二
+      surface
+        text 两
+    lexeme es
+      surface
+        text dos
+  three
+    grounded-in Q201
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text three
+      surface
+        text 3
+    lexeme ru
+      surface
+        text три
+    lexeme hi
+      surface
+        text तीन
+    lexeme zh
+      surface
+        text 三
+    lexeme es
+      surface
+        text tres
+  four
+    grounded-in Q202
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text four
+      surface
+        text 4
+    lexeme ru
+      surface
+        text четыре
+    lexeme hi
+      surface
+        text चार
+    lexeme zh
+      surface
+        text 四
+    lexeme es
+      surface
+        text cuatro
+  five
+    grounded-in Q203
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text five
+      surface
+        text 5
+    lexeme ru
+      surface
+        text пять
+    lexeme hi
+      surface
+        text पाँच
+    lexeme zh
+      surface
+        text 五
+    lexeme es
+      surface
+        text cinco
+  six
+    grounded-in Q23488
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text six
+      surface
+        text 6
+    lexeme ru
+      surface
+        text шесть
+    lexeme hi
+      surface
+        text छह
+    lexeme zh
+      surface
+        text 六
+    lexeme es
+      surface
+        text seis
+  seven
+    grounded-in Q23350
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text seven
+      surface
+        text 7
+    lexeme ru
+      surface
+        text семь
+    lexeme hi
+      surface
+        text सात
+    lexeme zh
+      surface
+        text 七
+    lexeme es
+      surface
+        text siete
+  eight
+    grounded-in Q23355
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text eight
+      surface
+        text 8
+    lexeme ru
+      surface
+        text восемь
+    lexeme hi
+      surface
+        text आठ
+    lexeme zh
+      surface
+        text 八
+    lexeme es
+      surface
+        text ocho
+  nine
+    grounded-in Q19108
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text nine
+      surface
+        text 9
+    lexeme ru
+      surface
+        text девять
+    lexeme hi
+      surface
+        text नौ
+    lexeme zh
+      surface
+        text 九
+    lexeme es
+      surface
+        text nueve
+  ten
+    grounded-in Q23806
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text ten
+      surface
+        text 10
+    lexeme ru
+      surface
+        text десять
+    lexeme hi
+      surface
+        text दस
+    lexeme zh
+      surface
+        text 十
+    lexeme es
+      surface
+        text diez
+  length
+    grounded-in Q36253
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text length
+    lexeme ru
+      surface
+        text длина
+    lexeme hi
+      surface
+        text लंबाई
+    lexeme zh
+      surface
+        text 长度
+  data_storage
+    grounded-in Q105666562
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text "data storage"
+    lexeme ru
+      surface
+        text "хранение данных"
+    lexeme hi
+      surface
+        text "डेटा भंडारण"
+    lexeme zh
+      surface
+        text 数据存储
+  mass
+    grounded-in Q11423
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text mass
+    lexeme ru
+      surface
+        text масса
+    lexeme hi
+      surface
+        text द्रव्यमान
+    lexeme zh
+      surface
+        text 质量
+  time
+    grounded-in Q11471
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text time
+    lexeme ru
+      surface
+        text время
+    lexeme hi
+      surface
+        text समय
+    lexeme zh
+      surface
+        text 时间
+  temperature
+    grounded-in Q11466
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text temperature
+    lexeme ru
+      surface
+        text температура
+    lexeme hi
+      surface
+        text तापमान
+    lexeme zh
+      surface
+        text 温度
+  meter
+    grounded-in Q11573
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text meter
+      surface
+        text metre
+      surface
+        text meters
+      surface
+        text metres
+    lexeme ru
+      surface
+        text метр
+      surface
+        text метра
+      surface
+        text метру
+      surface
+        text метром
+      surface
+        text метре
+      surface
+        text метров
+    lexeme hi
+      surface
+        text मीटर
+    lexeme zh
+      surface
+        text 米
+  kilometer
+    grounded-in Q828224
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text km
+      surface
+        text kilometer
+      surface
+        text kilometre
+      surface
+        text kilometers
+      surface
+        text kilometres
+    lexeme ru
+      surface
+        text километр
+      surface
+        text километра
+      surface
+        text километров
+    lexeme hi
+      surface
+        text किलोमीटर
+    lexeme zh
+      surface
+        text 千米
+      surface
+        text 公里
+  centimeter
+    grounded-in Q174728
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text cm
+      surface
+        text centimeter
+      surface
+        text centimeters
+      surface
+        text centimetre
+      surface
+        text centimetres
+    lexeme ru
+      surface
+        text сантиметр
+    lexeme hi
+      surface
+        text सेंटीमीटर
+    lexeme zh
+      surface
+        text 厘米
+  millimeter
+    grounded-in Q174789
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text mm
+      surface
+        text millimeter
+      surface
+        text millimeters
+      surface
+        text millimetre
+      surface
+        text millimetres
+    lexeme ru
+      surface
+        text миллиметр
+    lexeme hi
+      surface
+        text मिलीमीटर
+    lexeme zh
+      surface
+        text 毫米
+  byte
+    grounded-in Q8799
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text byte
+      surface
+        text bytes
+    lexeme ru
+      surface
+        text байт
+      surface
+        text байта
+      surface
+        text байтов
+    lexeme hi
+      surface
+        text बाइट
+    lexeme zh
+      surface
+        text 字节
+  kilobyte
+    grounded-in Q79726
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text kb
+      surface
+        text kilobyte
+      surface
+        text kilobytes
+    lexeme ru
+      surface
+        text килобайт
+    lexeme hi
+      surface
+        text किलोबाइट
+    lexeme zh
+      surface
+        text 千字节
+  megabyte
+    grounded-in Q79735
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text mb
+      surface
+        text megabyte
+      surface
+        text megabytes
+    lexeme ru
+      surface
+        text мегабайт
+    lexeme hi
+      surface
+        text मेगाबाइट
+    lexeme zh
+      surface
+        text 兆字节
+  gigabyte
+    grounded-in Q79738
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text gb
+      surface
+        text gigabyte
+      surface
+        text gigabytes
+    lexeme ru
+      surface
+        text гигабайт
+    lexeme hi
+      surface
+        text गीगाबाइट
+    lexeme zh
+      surface
+        text 吉字节
+  terabyte
+    grounded-in Q79741
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text tb
+      surface
+        text terabyte
+      surface
+        text terabytes
+    lexeme ru
+      surface
+        text терабайт
+    lexeme hi
+      surface
+        text टेराबाइट
+    lexeme zh
+      surface
+        text 太字节
+  bit
+    grounded-in Q8805
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text bit
+      surface
+        text bits
+    lexeme ru
+      surface
+        text бит
+      surface
+        text бита
+      surface
+        text битов
+    lexeme hi
+      surface
+        text बिट
+    lexeme zh
+      surface
+        text 比特
+  kilogram
+    grounded-in Q11570
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text kg
+      surface
+        text kilogram
+      surface
+        text kilograms
+    lexeme ru
+      surface
+        text кг
+      surface
+        text килограмм
+      surface
+        text килограмма
+      surface
+        text килограмму
+      surface
+        text килограммом
+      surface
+        text килограмме
+      surface
+        text килограммов
+    lexeme hi
+      surface
+        text किलोग्राम
+    lexeme zh
+      surface
+        text 千克
+      surface
+        text 公斤
+  gram
+    grounded-in Q41803
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text gram
+      surface
+        text grams
+    lexeme ru
+      surface
+        text грамм
+      surface
+        text грамма
+      surface
+        text грамму
+      surface
+        text граммом
+      surface
+        text грамме
+      surface
+        text граммов
+    lexeme hi
+      surface
+        text ग्राम
+    lexeme zh
+      surface
+        text 克
+  pound
+    grounded-in Q100995
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text pound
+      surface
+        text pounds
+    lexeme ru
+      surface
+        text фунт
+    lexeme hi
+      surface
+        text पाउंड
+    lexeme zh
+      surface
+        text 磅
+  ton
+    grounded-in Q191118
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text ton
+      surface
+        text tons
+      surface
+        text tonne
+    lexeme ru
+      surface
+        text тонна
+      surface
+        text тонны
+      surface
+        text тонн
+    lexeme hi
+      surface
+        text टन
+    lexeme zh
+      surface
+        text 吨
+  second
+    grounded-in Q11574
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text second
+      surface
+        text seconds
+    lexeme ru
+      surface
+        text секунда
+      surface
+        text секунды
+      surface
+        text секунд
+    lexeme hi
+      surface
+        text सेकंड
+    lexeme zh
+      surface
+        text 秒
+  minute
+    grounded-in Q7727
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text minute
+      surface
+        text minutes
+    lexeme ru
+      surface
+        text минута
+      surface
+        text минуты
+      surface
+        text минут
+    lexeme hi
+      surface
+        text मिनट
+    lexeme zh
+      surface
+        text 分钟
+  hour
+    grounded-in Q25235
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text hour
+      surface
+        text hours
+    lexeme ru
+      surface
+        text час
+      surface
+        text часа
+      surface
+        text часов
+    lexeme hi
+      surface
+        text घंटा
+    lexeme zh
+      surface
+        text 小时
+  millisecond
+    grounded-in Q723733
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text ms
+      surface
+        text millisecond
+      surface
+        text milliseconds
+    lexeme ru
+      surface
+        text миллисекунда
+      surface
+        text миллисекунд
+    lexeme hi
+      surface
+        text मिलीसेकंड
+    lexeme zh
+      surface
+        text 毫秒
+  day
+    grounded-in Q573
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text day
+      surface
+        text days
+    lexeme ru
+      surface
+        text день
+      surface
+        text дня
+      surface
+        text дней
+    lexeme hi
+      surface
+        text दिन
+    lexeme zh
+      surface
+        text 天
+      surface
+        text 日
+  month
+    grounded-in Q5151
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text month
+      surface
+        text months
+    lexeme ru
+      surface
+        text месяц
+      surface
+        text месяца
+      surface
+        text месяцев
+    lexeme hi
+      surface
+        text महीना
+      surface
+        text महीने
+    lexeme zh
+      surface
+        text 月
+      surface
+        text 个月
+  celsius
+    grounded-in Q25267
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text celsius
+    lexeme ru
+      surface
+        text цельсий
+    lexeme hi
+      surface
+        text सेल्सियस
+    lexeme zh
+      surface
+        text 摄氏度
+  fahrenheit
+    grounded-in Q42289
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text fahrenheit
+    lexeme ru
+      surface
+        text фаренгейт
+    lexeme hi
+      surface
+        text फ़ारेनहाइट
+    lexeme zh
+      surface
+        text 华氏度
+  kelvin
+    grounded-in Q11579
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text kelvin
+    lexeme ru
+      surface
+        text кельвин
+    lexeme hi
+      surface
+        text केल्विन
+    lexeme zh
+      surface
+        text 开尔文
+  volume
+    defined-by quantity
+    role physical_dimension
+    precondition "a quantity describes occupied three-dimensional space"
+    effect "classifies the quantity as volume"
+    unit "not applicable"
+    example "container capacity is a volume quantity"
+    lexeme en
+      surface
+        text volume
+    lexeme ru
+      surface
+        text объём
+    lexeme hi
+      surface
+        text आयतन
+    lexeme zh
+      surface
+        text 体积
+    lexeme es
+      surface
+        text volumen
+  litre
+    defined-by volume
+    defined-by unit
+    role measurement_unit
+    precondition "a volume quantity is expressed in litres"
+    effect "binds the quantity to the litre unit"
+    unit litre
+    example "two litres of water"
+    lexeme en
+      surface
+        text litre
+      surface
+        text litres
+      surface
+        text liter
+      surface
+        text liters
+    lexeme ru
+      surface
+        text литр
+      surface
+        text литра
+      surface
+        text литров
+    lexeme hi
+      surface
+        text लीटर
+    lexeme zh
+      surface
+        text 升
+    lexeme es
+      surface
+        text litro
+      surface
+        text litros
+  millilitre
+    defined-by volume
+    defined-by unit
+    role measurement_unit
+    precondition "a volume quantity is expressed in millilitres"
+    effect "binds the quantity to the millilitre unit"
+    unit millilitre
+    example "five hundred millilitres of water"
+    lexeme en
+      surface
+        text millilitre
+      surface
+        text millilitres
+      surface
+        text milliliter
+      surface
+        text milliliters
+    lexeme ru
+      surface
+        text миллилитр
+      surface
+        text миллилитра
+      surface
+        text миллилитров
+    lexeme hi
+      surface
+        text मिलीलीटर
+    lexeme zh
+      surface
+        text 毫升
+    lexeme es
+      surface
+        text mililitro
+      surface
+        text mililitros
+  measurement_property_height
+    defined-by concept
+    role measurement_property_height
+    lexeme en
+      surface
+        text tall
+      surface
+        text height
+      surface
+        text high
+    lexeme ru
+      surface
+        text высок
+      surface
+        text высот
+      surface
+        text рост
+    lexeme hi
+      surface
+        text ऊँचा
+      surface
+        text ऊँचाई
+    lexeme zh
+      surface
+        text 高
+      surface
+        text 高度
+    lexeme es
+      surface
+        text alto
+      surface
+        text altura
+  measurement_property_depth
+    defined-by concept
+    role measurement_property_depth
+    lexeme en
+      surface
+        text deep
+      surface
+        text depth
+    lexeme ru
+      surface
+        text глубок
+      surface
+        text глубин
+    lexeme hi
+      surface
+        text गहरा
+      surface
+        text गहराई
+    lexeme zh
+      surface
+        text 深
+      surface
+        text 深度
+    lexeme es
+      surface
+        text profundo
+      surface
+        text profundidad
+  measurement_property_weight
+    defined-by concept
+    role measurement_property_weight
+    lexeme en
+      surface
+        text heavy
+      surface
+        text weigh
+      surface
+        text weight
+    lexeme ru
+      surface
+        text вес
+      surface
+        text весит
+      surface
+        text тяжёл
+    lexeme hi
+      surface
+        text भारी
+      surface
+        text वजन
+    lexeme zh
+      surface
+        text 重
+      surface
+        text 重量
+    lexeme es
+      surface
+        text pesa
+      surface
+        text pesado
+      surface
+        text peso
+  measurement_property_length
+    defined-by concept
+    role measurement_property_length
+    lexeme en
+      surface
+        text long
+      surface
+        text length
+    lexeme ru
+      surface
+        text длин
+      surface
+        text длина
+    lexeme hi
+      surface
+        text लंब
+      surface
+        text लंबाई
+    lexeme zh
+      surface
+        text 长
+      surface
+        text 长度
+    lexeme es
+      surface
+        text largo
+      surface
+        text longitud

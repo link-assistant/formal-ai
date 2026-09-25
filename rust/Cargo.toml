@@ -16,9 +16,7 @@ include = [
     "../LICENSE",
     "../README.md",
     "/build.rs",
-    "../data/**",
-    "../js/**",
-    "../scripts/opencode-conversation-to-lino.py",
+    "/embedded/**",
     "/src/**",
 ]
 build = "build.rs"

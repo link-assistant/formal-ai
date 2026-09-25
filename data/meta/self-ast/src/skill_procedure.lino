@@ -2,59 +2,59 @@ self_ast_census
   target src/skill_procedure.rs
   language rust
   fidelity signature
-  byte_len 31028
-  line_count 809
-  content_id source_module_06f2aa7da91e6f96
+  byte_len 31038
+  line_count 810
+  content_id source_module_193c1ce45bf5797a
   symbol_count 51
   symbols
     module artifact 46 46
     module learning 47 47
     const MINIMUM_STEPS 63 63
     const PROCEDURE_CONFORMANCE_TRIGGER 68 68
-    const PROCEDURE_MEANINGS_LINO 70 70
-    struct ProcedureRequirement 75 80
-    struct ProcedureStep 84 101
-    function arguments 106 112
-    struct ProcedureTrigger 117 126
-    struct CompiledProcedure 130 145
-    enum ProcedureCompileError 149 164
-    function fmt 167 172
-    function gap_name 185 189
-    function compile_procedure 199 201
-    function compile_procedure_with_ledger 206 321
-    struct StepOutcome 325 332
-    struct ProcedureRun 336 341
-    function answer 346 348
-    function links_notation 352 370
-    struct ProcedureRunError 375 382
-    function fmt 385 391
-    struct ProcedureArtifactError 398 400
-    function new 403 407
-    function fmt 411 413
-    trait ProcedureHost 424 432
-    function perform 431 431
-    function execute 440 466
-    function conformance_links_notation 471 476
-    function restate_steps 484 499
-    function links_notation 506 530
-    function link_records 536 561
-    struct ProcedureConformanceHost 564 564
-    function perform 567 569
-    function canonical_program 573 588
-    struct Found 592 596
-    function requirement_id 598 606
-    function procedure_lexicon 608 611
-    static CACHE 609 609
-    function procedure_role_surfaces 613 619
-    function meaning_has_role 621 625
-    function first_step_match 627 653
-    function first_match 661 663
-    function first_procedure_match 665 667
-    function first_match_in 669 695
-    function objects_in 701 723
-    function surfaces 726 733
-    function is_standalone 743 754
-    function is_ideographic 757 759
-    function link_record 761 791
-    function push_field 793 801
-    function push_doublet 803 809
+    const PROCEDURE_MEANINGS_LINO 70 71
+    struct ProcedureRequirement 76 81
+    struct ProcedureStep 85 102
+    function arguments 107 113
+    struct ProcedureTrigger 118 127
+    struct CompiledProcedure 131 146
+    enum ProcedureCompileError 150 165
+    function fmt 168 173
+    function gap_name 186 190
+    function compile_procedure 200 202
+    function compile_procedure_with_ledger 207 322
+    struct StepOutcome 326 333
+    struct ProcedureRun 337 342
+    function answer 347 349
+    function links_notation 353 371
+    struct ProcedureRunError 376 383
+    function fmt 386 392
+    struct ProcedureArtifactError 399 401
+    function new 404 408
+    function fmt 412 414
+    trait ProcedureHost 425 433
+    function perform 432 432
+    function execute 441 467
+    function conformance_links_notation 472 477
+    function restate_steps 485 500
+    function links_notation 507 531
+    function link_records 537 562
+    struct ProcedureConformanceHost 565 565
+    function perform 568 570
+    function canonical_program 574 589
+    struct Found 593 597
+    function requirement_id 599 607
+    function procedure_lexicon 609 612
+    static CACHE 610 610
+    function procedure_role_surfaces 614 620
+    function meaning_has_role 622 626
+    function first_step_match 628 654
+    function first_match 662 664
+    function first_procedure_match 666 668
+    function first_match_in 670 696
+    function objects_in 702 724
+    function surfaces 727 734
+    function is_standalone 744 755
+    function is_ideographic 758 760
+    function link_record 762 792
+    function push_field 794 802
+    function push_doublet 804 810

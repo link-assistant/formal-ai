@@ -731,7 +731,7 @@ pub(crate) fn record_obligation_ledger(
 }
 
 /// The five-language sentences that say what an observation did not match.
-const MISMATCH_LINO: &str = include_str!("../../data/seed/obligation-mismatch.lino");
+const MISMATCH_LINO: &str = include_str!("../embedded/data/seed/obligation-mismatch.lino");
 
 /// Record type of one localized mismatch sentence.
 const RECORD_MISMATCH: &str = "obligation_mismatch";

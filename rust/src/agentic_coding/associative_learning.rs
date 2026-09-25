@@ -17,7 +17,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: None,
     path: ASSOCIATIVE_LEARNING_PATH,
     task: ASSOCIATIVE_LEARNING_TASK,
-    memory: include_str!("../../../data/meta/associative-learning-case.lino"),
+    memory: include_str!("../../embedded/data/meta/associative-learning-case.lino"),
     subject: "expressions",
 };
 

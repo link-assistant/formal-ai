@@ -41,7 +41,7 @@ use crate::solution_evidence::SolutionEvidence;
 
 /// The recipe — the meta algorithm encoded as link data — embedded at compile
 /// time so the interpreter can execute it with no runtime filesystem dependency.
-const RECIPE_LINO: &str = include_str!("../../data/meta/recursive-core-recipe.lino");
+const RECIPE_LINO: &str = include_str!("../embedded/data/meta/recursive-core-recipe.lino");
 
 /// One ordered step of the recipe, parsed from a `meta_step` record.
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/work_item_steps.rs
   language rust
   fidelity full_ast
-  byte_len 1591
+  byte_len 1597
   line_count 43
-  content_id source_module_d6164d5ac59a5055
+  content_id source_module_b0b136d453403dfb
   symbol_count 5
   symbols
     const STEPS 9 9

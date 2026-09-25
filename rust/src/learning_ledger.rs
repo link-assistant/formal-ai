@@ -32,7 +32,7 @@ use crate::link_store::LinkStore;
 use crate::memory::{MemoryEvent, MemoryStore};
 use crate::self_healing::{RepairCase, RepairOutcome};
 
-const APPROVED_LESSONS_LINO: &str = include_str!("../../data/seed/approved-lessons.lino");
+const APPROVED_LESSONS_LINO: &str = include_str!("../embedded/data/seed/approved-lessons.lino");
 
 /// An explicit, auditable human decision on a reviewed [`RepairCase`].
 ///

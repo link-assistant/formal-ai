@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/external_benchmark_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1476
+  byte_len 1482
   line_count 38
-  content_id source_module_8c3e377e2a623d4d
+  content_id source_module_352f5e9908d09e8b
   symbol_count 5
   symbols
     const EXTERNAL_BENCHMARK_LEARNING_PATH 11 11

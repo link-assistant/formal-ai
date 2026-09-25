@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/lexicon.rs
   language rust
   fidelity full_ast
-  byte_len 14802
+  byte_len 14808
   line_count 447
-  content_id source_module_0555d988de3c747e
+  content_id source_module_29dc73ddf6a667f0
   symbol_count 32
   symbols
     const LEXICON_LINO 14 14

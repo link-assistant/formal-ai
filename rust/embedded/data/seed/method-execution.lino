@@ -1,0 +1,22 @@
+method_execution
+  issue 1138
+  purpose "Execution attributes for registry methods. Selection and execution read the same method record; the dispatcher never branches on a method name."
+  method diagnostic
+    runtime diagnostic
+  method nl_tool
+    runtime natural_language_tool
+  method behavior_rules
+    runtime behavior_rules
+  method feature_capability
+    runtime feature_capability
+    project_lookup before_runtime
+  method capabilities
+    project_lookup before_runtime
+  method playwright_script
+    runtime playwright_script
+  method concept_lookup
+    definition_fusion true
+    response_language concept_lookup
+    project_lookup fallback
+  method pattern_inference
+    response_language pattern_inference

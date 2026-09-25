@@ -55,7 +55,7 @@ pub const GOOGLE_TRENDS_FRONTIER: &str = "google-trends";
 
 /// The committed, frozen record of the Google Trends frontier.
 pub const GOOGLE_TRENDS_FRONTIER_RECORD: &str =
-    include_str!("../../data/meta/learning-frontier-google-trends.lino");
+    include_str!("../embedded/data/meta/learning-frontier-google-trends.lino");
 
 /// The frontier slug of the language learning frontier (issue #706).
 pub const LANGUAGE_GAP_FRONTIER: &str = "language-gap";
@@ -63,7 +63,7 @@ pub const LANGUAGE_GAP_FRONTIER: &str = "language-gap";
 /// The committed record of the language frontier, produced by
 /// `cargo run --example issue_706_language_frontier`.
 pub const LANGUAGE_GAP_FRONTIER_RECORD: &str =
-    include_str!("../../data/meta/learning-frontier-language-gap.lino");
+    include_str!("../embedded/data/meta/learning-frontier-language-gap.lino");
 
 /// The frontier slug of the upstream benchmark failures (issue #1085 D5.1).
 pub const UPSTREAM_BENCHMARKS_FRONTIER: &str = "upstream-benchmarks";
@@ -80,13 +80,13 @@ pub const UPSTREAM_BENCHMARKS_FRONTIER: &str = "upstream-benchmarks";
 /// header-only placeholders, so exactly this many part files exist and the
 /// embed compiles whatever the frontier's size.
 pub const UPSTREAM_BENCHMARKS_FRONTIER_RECORD: &str = concat!(
-    include_str!("../../data/meta/learning-frontier-upstream-benchmarks.lino"),
-    include_str!("../../data/meta/learning-frontier-upstream-benchmarks-part1.lino"),
-    include_str!("../../data/meta/learning-frontier-upstream-benchmarks-part2.lino"),
-    include_str!("../../data/meta/learning-frontier-upstream-benchmarks-part3.lino"),
-    include_str!("../../data/meta/learning-frontier-upstream-benchmarks-part4.lino"),
-    include_str!("../../data/meta/learning-frontier-upstream-benchmarks-part5.lino"),
-    include_str!("../../data/meta/learning-frontier-upstream-benchmarks-part6.lino"),
+    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks.lino"),
+    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part1.lino"),
+    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part2.lino"),
+    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part3.lino"),
+    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part4.lino"),
+    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part5.lino"),
+    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part6.lino"),
 );
 
 /// How many `-partN.lino` continuation files the record above embeds.

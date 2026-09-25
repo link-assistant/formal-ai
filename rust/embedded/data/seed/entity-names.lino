@@ -1,0 +1,242 @@
+entity_names
+  entity elon_musk
+    grounded-in Q317521
+    lexeme en
+      surface
+        text "Elon Musk"
+    lexeme ru
+      surface
+        text "Илон Маск"
+    lexeme hi
+      surface
+        text "एलन मस्क"
+    lexeme zh
+      surface
+        text "伊隆·马斯克"
+    lexeme es
+      surface
+        text "Elon Musk"
+  entity donald_trump
+    grounded-in Q22686
+    lexeme en
+      surface
+        text "Donald Trump"
+    lexeme ru
+      surface
+        text "Дональд Трамп"
+    lexeme hi
+      surface
+        text "डॉनल्ड ट्रम्प"
+    lexeme zh
+      surface
+        text "唐納·川普"
+    lexeme es
+      surface
+        text "Donald Trump"
+  entity joe_biden
+    grounded-in Q6279
+    lexeme en
+      surface
+        text "Joe Biden"
+    lexeme ru
+      surface
+        text "Джо Байден"
+    lexeme hi
+      surface
+        text "जो बाइडेन"
+    lexeme zh
+      surface
+        text "乔·拜登"
+    lexeme es
+      surface
+        text "Joe Biden"
+  entity barack_obama
+    grounded-in Q76
+    lexeme en
+      surface
+        text "Barack Obama"
+    lexeme ru
+      surface
+        text "Барак Обама"
+    lexeme hi
+      surface
+        text "बराक ओबामा"
+    lexeme zh
+      surface
+        text "贝拉克·奥巴马"
+    lexeme es
+      surface
+        text "Barack Obama"
+  entity vladimir_putin
+    grounded-in Q7747
+    lexeme en
+      surface
+        text "Vladimir Putin"
+    lexeme ru
+      surface
+        text "Владимир Владимирович Путин"
+    lexeme hi
+      surface
+        text "व्लादिमीर पुतिन"
+    lexeme zh
+      surface
+        text "弗拉基米尔·普京"
+    lexeme es
+      surface
+        text "Vladímir Putin"
+  entity albert_einstein
+    grounded-in Q937
+    lexeme en
+      surface
+        text "Albert Einstein"
+    lexeme ru
+      surface
+        text "Альберт Эйнштейн"
+    lexeme hi
+      surface
+        text "अल्बर्ट आइंस्टीन"
+    lexeme zh
+      surface
+        text "阿尔伯特·爱因斯坦"
+    lexeme es
+      surface
+        text "Albert Einstein"
+  entity isaac_newton
+    grounded-in Q935
+    lexeme en
+      surface
+        text "Isaac Newton"
+    lexeme ru
+      surface
+        text "Исаак Ньютон"
+    lexeme hi
+      surface
+        text "आइज़क न्यूटन"
+    lexeme zh
+      surface
+        text "艾薩克·牛頓"
+    lexeme es
+      surface
+        text "Isaac Newton"
+  entity nikola_tesla
+    grounded-in Q9036
+    lexeme en
+      surface
+        text "Nikola Tesla"
+    lexeme ru
+      surface
+        text "Никола Тесла"
+    lexeme hi
+      surface
+        text "निकोला टेस्ला"
+    lexeme zh
+      surface
+        text "尼古拉·特斯拉"
+    lexeme es
+      surface
+        text "Nikola Tesla"
+  entity ada_lovelace
+    grounded-in Q7259
+    lexeme en
+      surface
+        text "Ada Lovelace"
+    lexeme ru
+      surface
+        text "Ада Лавлейс"
+    lexeme hi
+      surface
+        text "एडा लवलेस"
+    lexeme zh
+      surface
+        text "愛達·勒芙蕾絲"
+    lexeme es
+      surface
+        text "Ada Lovelace"
+  entity marie_curie
+    grounded-in Q7186
+    lexeme en
+      surface
+        text "Marie Curie"
+    lexeme ru
+      surface
+        text "Мария Склодовская-Кюри"
+    lexeme hi
+      surface
+        text "मेरी क्युरी"
+    lexeme zh
+      surface
+        text "玛丽·居里"
+    lexeme es
+      surface
+        text "Marie Curie"
+  entity alan_turing
+    grounded-in Q7251
+    lexeme en
+      surface
+        text "Alan Turing"
+    lexeme ru
+      surface
+        text "Алан Тьюринг"
+    lexeme hi
+      surface
+        text "एलेन ट्यूरिंग"
+    lexeme zh
+      surface
+        text "艾倫·圖靈"
+    lexeme es
+      surface
+        text "Alan Turing"
+  entity georgia
+    grounded-in Q230
+    timezone "Asia/Tbilisi"
+    lexeme en
+      surface
+        text "Georgia"
+    lexeme ru
+      surface
+        text "Грузия"
+    lexeme hi
+      surface
+        text "जॉर्जिया"
+    lexeme zh
+      surface
+        text "格鲁吉亚"
+    lexeme es
+      surface
+        text "Georgia"
+  entity tbilisi
+    grounded-in Q994
+    timezone "Asia/Tbilisi"
+    lexeme en
+      surface
+        text "Tbilisi"
+    lexeme ru
+      surface
+        text "Тбилиси"
+    lexeme hi
+      surface
+        text "त्बिलिसी"
+    lexeme zh
+      surface
+        text "第比利斯"
+    lexeme es
+      surface
+        text "Tiflis"
+  entity berlin
+    grounded-in Q64
+    timezone "Europe/Berlin"
+    lexeme en
+      surface
+        text "Berlin"
+    lexeme ru
+      surface
+        text "Берлин"
+    lexeme hi
+      surface
+        text "बर्लिन"
+    lexeme zh
+      surface
+        text "柏林"
+    lexeme es
+      surface
+        text "Berlín"

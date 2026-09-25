@@ -111,7 +111,7 @@ const HEURISTIC_RECORD_TYPE: &str = "selection_heuristic";
 
 /// The shipped catalog, embedded so the browser build reads the same data.
 pub const SELECTION_HEURISTICS_LINO: &str =
-    include_str!("../../data/meta/selection-heuristics.lino");
+    include_str!("../embedded/data/meta/selection-heuristics.lino");
 
 /// Load the catalog from `data/meta/selection-heuristics.lino`.
 ///

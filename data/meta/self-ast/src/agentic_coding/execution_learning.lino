@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/execution_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1669
+  byte_len 1675
   line_count 42
-  content_id source_module_58220114c043b099
+  content_id source_module_8e004ef2f8550f27
   symbol_count 7
   symbols
     const EXECUTION_LEARNING_PATH 10 10

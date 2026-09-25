@@ -117,7 +117,7 @@ impl TierCurve {
 }
 
 const QUESTION_LEXICON_LINO: &str =
-    include_str!("../../data/seed/question-generation-lexicon.lino");
+    include_str!("../embedded/data/seed/question-generation-lexicon.lino");
 
 /// The question-generation lexicon, parsed once from the embedded link data.
 fn question_lexicon() -> &'static QuestionLexicon {

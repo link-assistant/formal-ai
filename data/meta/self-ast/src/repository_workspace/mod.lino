@@ -2,9 +2,9 @@ self_ast_census
   target src/repository_workspace/mod.rs
   language rust
   fidelity signature
-  byte_len 34628
-  line_count 874
-  content_id source_module_c6e230a59fcbf63c
+  byte_len 34648
+  line_count 876
+  content_id source_module_be64639c4915584c
   symbol_count 50
   symbols
     module clone 12 12
@@ -14,46 +14,46 @@ self_ast_census
     module outcome 16 16
     module verify 17 17
     module world_model 18 18
-    const ALLOWLIST_LINO 53 53
-    const RECORD_ALLOWED 56 56
-    const PROTOCOL_LINO 60 60
-    const RECORD_STEP 63 63
-    const PROTOCOL_HEADER 67 67
-    enum WorkspaceError 71 104
-    function fmt 107 130
-    struct RepositoryWorkspace 137 143
-    function open 150 157
-    function adopt 164 175
-    function root 179 181
-    function spec 185 187
-    function base_commit 191 193
-    function source_files 199 204
-    function read 210 216
-    function write 222 239
-    function diff 245 251
-    function baseline 256 258
-    struct ProtocolStep 264 273
-    struct RepositoryTask 277 284
-    struct ProtocolOutcome 288 304
-    struct WorkspaceProtocol 309 311
-    function render_protocol_template 316 318
-    function render_protocol_template_from 323 338
-    function load 343 345
-    function parse 349 363
-    function source_files 367 374
-    function steps 378 380
-    function execute 387 607
-    function regenerate_document 612 649
-    function protocol_ledger 652 674
-    function record_step_observation 676 714
-    struct AllowedCommand 718 733
-    function command_allowlist 738 753
-    const DEFAULT_DEADLINE_SECONDS 756 756
-    function deadline_seconds 765 778
-    function optional 781 787
-    const GIT_GLOBAL_FLAGS 795 795
-    const GLOBAL_FLAG_PROGRAM 798 798
-    function subcommand_of 802 811
-    function allows 821 831
-    function shape_matches 836 851
-    function collect_files 854 874
+    const ALLOWLIST_LINO 53 54
+    const RECORD_ALLOWED 57 57
+    const PROTOCOL_LINO 61 62
+    const RECORD_STEP 65 65
+    const PROTOCOL_HEADER 69 69
+    enum WorkspaceError 73 106
+    function fmt 109 132
+    struct RepositoryWorkspace 139 145
+    function open 152 159
+    function adopt 166 177
+    function root 181 183
+    function spec 187 189
+    function base_commit 193 195
+    function source_files 201 206
+    function read 212 218
+    function write 224 241
+    function diff 247 253
+    function baseline 258 260
+    struct ProtocolStep 266 275
+    struct RepositoryTask 279 286
+    struct ProtocolOutcome 290 306
+    struct WorkspaceProtocol 311 313
+    function render_protocol_template 318 320
+    function render_protocol_template_from 325 340
+    function load 345 347
+    function parse 351 365
+    function source_files 369 376
+    function steps 380 382
+    function execute 389 609
+    function regenerate_document 614 651
+    function protocol_ledger 654 676
+    function record_step_observation 678 716
+    struct AllowedCommand 720 735
+    function command_allowlist 740 755
+    const DEFAULT_DEADLINE_SECONDS 758 758
+    function deadline_seconds 767 780
+    function optional 783 789
+    const GIT_GLOBAL_FLAGS 797 797
+    const GLOBAL_FLAG_PROGRAM 800 800
+    function subcommand_of 804 813
+    function allows 823 833
+    function shape_matches 838 853
+    function collect_files 856 876

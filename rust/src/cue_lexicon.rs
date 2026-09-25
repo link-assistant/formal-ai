@@ -88,7 +88,7 @@ impl CueSet {
 }
 
 /// The cue lexicon document, embedded for the seed links network.
-pub const CUE_LEXICON_LINO: &str = include_str!("../../data/meta/cue-lexicon.lino");
+pub const CUE_LEXICON_LINO: &str = include_str!("../embedded/data/meta/cue-lexicon.lino");
 
 /// Repository path of the cue lexicon, its name in the seed links network.
 pub const CUE_LEXICON_PATH: &str = "data/meta/cue-lexicon.lino";

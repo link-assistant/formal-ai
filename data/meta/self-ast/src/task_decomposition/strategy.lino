@@ -2,9 +2,9 @@ self_ast_census
   target src/task_decomposition/strategy.rs
   language rust
   fidelity signature
-  byte_len 9286
+  byte_len 9298
   line_count 254
-  content_id source_module_c52c8de236b1925e
+  content_id source_module_ede039c6a48a24a6
   symbol_count 20
   symbols
     const STRATEGIES_LINO 11 12

@@ -2,9 +2,9 @@ self_ast_census
   target src/repository_workspace/outcome.rs
   language rust
   fidelity signature
-  byte_len 6507
+  byte_len 6513
   line_count 169
-  content_id source_module_0d9f7ca88ba4d504
+  content_id source_module_b3d03bc1537dd846
   symbol_count 9
   symbols
     const COMMAND_OUTCOME_LINO 20 20

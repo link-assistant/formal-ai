@@ -1,0 +1,274 @@
+sources_registry
+  source wikidata
+    name "Wikidata"
+    kind structured_knowledge
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    need_kinds (concept)
+    extractor wikidata_entity_v1
+    how_to_role none
+    primacy editorial_synthesis
+      upstream "the external references cited on each statement"
+      basis "Wikidata:Verifiability, the project's own policy, requires each statement to cite a source outside Wikidata, so an item is a synthesis one hop from the references it names."
+    api "https://www.wikidata.org/wiki/Special:EntityData/{id}.json"
+    lexeme_api "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&type=lexeme&search={lemma}&language={language}&uselang={language}&limit=5"
+    api_language en ru hi zh es
+    license_name "CC0 1.0"
+    license_url "https://creativecommons.org/publicdomain/zero/1.0/"
+    cache_path data/cache/wikidata/
+    id_pattern ("Q" "P" "L")
+    note "Entities (Q), properties (P), and lexemes (L). Public-domain dump and EntityData API; one raw .json plus a compact .lino projection per id under entity/property/lexeme folders. `api` binds {id}, which a bare surface cannot supply, so this source never enters a concept walk; `lexeme_api` is the surface-addressable endpoint plan 01 L10 measured against and is declared here so the attempt is rediscoverable. Measured 2026-09-16 against the held-out corpus: it returns an empty `search` array for both held-out surfaces in en, hi and ru, and one Spanish lexeme for one of them."
+  source wiktionary
+    name "Wiktionary"
+    kind dictionary
+    service_group external_trusted
+    settings_key externalServiceWiktionary
+    default_enabled true
+    need_kinds (concept)
+    extractor wiktionary_entry_v1
+    how_to_role none
+    primacy editorial_synthesis
+      upstream "the durably archived usages each entry attests"
+      basis "Wiktionary's criteria for inclusion require an entry to be attested from durably archived sources, so an entry stands one hop from the usage record it summarises."
+    api "https://api.dictionaryapi.dev/api/v2/entries/{language}/{lemma}"
+    language_api "https://{language}.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles={lemma}"
+    api_language en ru hi zh es
+    license_name "CC BY-SA 3.0"
+    license_url "https://creativecommons.org/licenses/by-sa/3.0/"
+    cache_path data/cache/wiktionary/
+    note "Free Dictionary API serving Wiktionary content; one verified entry per English lemma as .json plus a lossless .lino projection. `language_api` is the same project's own per-language endpoint, added by plan 01 L10 after the coverage measurement: the Free Dictionary surface serves only the language `api_language` leads with, so every other language is asked through its own Wiktionary's MediaWiki extracts API. It binds {lemma} and not {title} because Wiktionary alone among the wikis is first-letter case-sensitive, so a capitalised title misses every lowercase entry. Measured 2026-09-16 against the held-out corpus: it answers zh for one of the two held-out surfaces, and it is the endpoint on which hi was measured unserved for both."
+  source wordnet
+    name "Open English WordNet 2024"
+    kind lexical_database
+    service_group external_trusted
+    settings_key externalServiceWordnet
+    default_enabled true
+    need_kinds (concept)
+    extractor wordnet_sense_v1
+    how_to_role none
+    primacy editorial_synthesis
+      upstream "the corpus evidence the lexicographers compiled the synsets from"
+      basis "The Open English WordNet lexicon is compiled by lexicographers from recorded English usage, so on the meaning of a word it is a synthesis over that usage rather than the usage itself."
+    api "https://en-word.net/api/lemma/{lemma}"
+    api_language en
+    license_name "CC BY 4.0"
+    license_url "https://creativecommons.org/licenses/by/4.0/"
+    cache_path data/cache/wordnet/
+    note "OEWN 2024 lexicon imported offline via the wn library; one compact per-lemma synset projection (.json + .lino) under en/. Source database is fetched on demand and stays out of git per the small-seed principle."
+  source wikipedia
+    name "Wikipedia"
+    kind encyclopedia
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    need_kinds (concept)
+    extractor mediawiki_summary_v1
+    how_to_role none
+    primacy editorial_synthesis
+      upstream "the published sources each article cites"
+      basis "Wikipedia:No original research, the project's own policy, requires article content to come from published sources, so an article stands one hop from the sources it cites."
+    api "https://{language}.wikipedia.org/api/rest_v1/page/summary/{title}"
+    api_language en ru hi zh es
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikipedia/
+    note "Article summaries cross-referenced from Wikidata sitelinks; cached per title when an article anchors a meaning."
+  source wikihow
+    name "wikiHow"
+    kind how_to_guide
+    service_group external_trusted
+    settings_key externalServiceWikihow
+    default_enabled true
+    how_to_role primary
+    need_kinds (procedure)
+    source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the procedures its contributors and credited expert reviewers describe"
+      basis "wikiHow articles are written and revised by contributors and credited reviewers rather than by whoever built the thing the article is about, so a guide stands one hop from the procedure it reports."
+    api "https://www.wikihow.com/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-NC-SA 3.0"
+    license_url "https://creativecommons.org/licenses/by-nc-sa/3.0/"
+    cache_path data/cache/wikihow/
+    note "Ordered how-to steps via the MediaWiki action=parse surface; primary structured source for procedural 'how to X' guides. Consulted live and opt-out-able from settings."
+  source stackexchange
+    name "Stack Exchange / Stack Overflow"
+    kind qa_network
+    service_group external_trusted
+    settings_key externalServiceStackExchange
+    default_enabled true
+    how_to_role secondary
+    need_kinds (concept procedure)
+    source_tier independent_corroboration
+    primacy citation
+      upstream "the documentation and command output the answers quote"
+      basis "Answers on the network are written by practitioners who quote the documentation and the output they saw, so an answer stands one hop from the record it cites."
+    api "https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q={query}&site=stackoverflow&filter=withbody"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/stackexchange/
+    note "Developer Q&A with accepted answers across the Stack Exchange network (Stack Overflow, Super User, etc.); a structured second source for technical procedures. Consulted live and opt-out-able from settings."
+  source wikifunctions
+    name "Wikifunctions"
+    kind function_catalog
+    use function_parts
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part procedure)
+    source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the function definitions its contributors publish"
+      basis "Wikifunctions catalogues functions contributed and reviewed by its community rather than published by the language implementors, so a catalogue entry stands one hop from the implementation it describes."
+    api "https://www.wikifunctions.org/w/api.php?action=query&format=json&formatversion=2&list=wikilambdasearch_functions&wikilambdasearch_functions_search={query}&wikilambdasearch_functions_language={language}&wikilambdasearch_functions_limit=5"
+    fetch_api "https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids={zids}&language={language}"
+    definition_license "CC0-1.0"
+    implementation_license "Apache-2.0"
+    license_name "CC0 1.0 (function definitions); Apache-2.0 (implementations)"
+    license_url "https://www.wikifunctions.org/wiki/Wikifunctions:FAQ"
+    cache_path data/cache/wikifunctions/
+    note "Multilingual function definitions and implementations. The unknown-intent research pass queries its MediaWiki search surface and merges matching functions with other trusted sources."
+  source rosetta_code
+    name "Rosetta Code"
+    kind programming_task_catalog
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part procedure)
+    source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the language implementations its contributors exercised"
+      basis "Rosetta Code tasks are solutions contributed and revised by its community rather than published by the language implementors, so an entry stands one hop from the language it demonstrates."
+    api "https://rosettacode.org/w/api.php?action=opensearch&search={query}&limit=5&format=json&origin=*"
+    parse_api "https://rosettacode.org/w/api.php?action=parse&page={page}&prop=wikitext%7Cdisplaytitle&format=json&origin=*"
+    license_name "GNU Free Documentation License 1.2"
+    license_url "https://www.gnu.org/licenses/old-licenses/fdl-1.2.html"
+    cache_path data/cache/rosetta-code/
+    note "Programming tasks implemented across languages. The unknown-intent research pass queries its MediaWiki search surface and merges matching examples with other trusted sources."
+  source wikibooks
+    name "Wikibooks"
+    kind open_textbook
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    how_to_role secondary
+    need_kinds (procedure)
+    source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the published sources its textbooks build on"
+      basis "Wikibooks textbooks are written by contributors from published material rather than by the subject itself, so a chapter stands one hop from the sources behind it."
+    api "https://en.wikibooks.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikibooks/
+    note "Open textbooks and step-by-step tutorials; reuses the Wikipedia action=parse path. Part of the MediaWiki-family toggle in settings."
+  source wikiversity
+    name "Wikiversity"
+    kind learning_resource
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    how_to_role secondary
+    need_kinds (procedure)
+    source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the published material its courses and lab procedures build on"
+      basis "Wikiversity learning resources are assembled by contributors from published material rather than by the subject itself, so a resource stands one hop from the sources behind it."
+    api "https://en.wikiversity.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikiversity/
+    note "Learning materials, lab procedures, and courses; reuses the Wikipedia action=parse path. Part of the MediaWiki-family toggle in settings."
+  source wikivoyage
+    name "Wikivoyage"
+    kind travel_guide
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    how_to_role secondary
+    need_kinds (procedure)
+    source_tier independent_corroboration
+    primacy editorial_synthesis
+      upstream "the travellers' reports and official information its guides summarise"
+      basis "Wikivoyage guides are written by contributors summarising trips and official information rather than published by the places described, so a guide stands one hop from what it reports."
+    api "https://en.wikivoyage.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikivoyage/
+    note "Travel and itinerary how-tos; reuses the Wikipedia action=parse path. Part of the MediaWiki-family toggle in settings."
+  source github
+    name "GitHub READMEs & docs"
+    kind software_docs
+    service_group external_trusted
+    settings_key externalServiceGithub
+    default_enabled true
+    how_to_role secondary
+    need_kinds (concept procedure prerequisite)
+    source_tier original_first_party
+    primacy self_published
+      basis "A repository's README and docs tree are published by the project they document, so on the question of how that project works the source is the subject speaking about itself."
+    api "https://api.github.com/repos/{owner}/{repo}/readme"
+    license_name "Varies (per repository)"
+    license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
+    cache_path data/cache/github/
+    note "Project READMEs and docs/ trees for software 'how to' questions, fetched per repository; each repo carries its own license. Consulted live and opt-out-able from settings."
+  source oeis
+    name "The On-Line Encyclopedia of Integer Sequences"
+    kind sequence_catalog
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part)
+    extractor oeis_sequence_v1
+    primacy editorial_synthesis
+      upstream "the formulas, references, and programs attached to each sequence record"
+      basis "OEIS records are curated descriptions of integer sequences assembled from their cited mathematical sources and contributor submissions."
+    api "https://oeis.org/search?q={query}&fmt=json"
+    license_name "CC-BY-SA-4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/oeis/
+    note "Official sequence search and record JSON used to retrieve definitions and recurrence parts; candidate programs remain hypotheses until the ordinary verifier accepts them."
+  source python_docs
+    name "Python 3.12 standard-library documentation"
+    kind language_documentation
+    default_enabled true
+    how_to_role secondary
+    need_kinds (part procedure)
+    extractor python_docs_v1
+    primacy self_published
+      basis "The Python Software Foundation publishes the language and standard-library documentation for the implementation it stewards."
+    api "https://docs.python.org/3.12/library/{title}"
+    license_name "PSF-2.0"
+    license_url "https://docs.python.org/3/license.html"
+    cache_path data/cache/python-docs/
+    note "Official Python standard-library reference used to discover callable parts and their semantics from documentation rather than a compiled symbol list."
+  source wikinews
+    name "Wikinews"
+    kind original_journalism
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    how_to_role none
+    need_kinds (evidence)
+    source_tier original_journalism
+    primacy first_hand_record
+      basis "Wikinews:Original reporting, the project's own policy, covers material its reporters gathered themselves, so a story under that policy is a first-hand record of the event rather than a report of someone else's report."
+    api "https://en.wikinews.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY 2.5"
+    license_url "https://creativecommons.org/licenses/by/2.5/"
+    cache_path data/cache/wikinews/
+    note "Original journalism — events reported first-hand by Wikinews reporters. This is the original-first-source / original-journalism tier the document-verification handler weighs statements against (issue #535): reposts and unoriginal aggregations are ignored, original coverage is trusted. Reuses the Wikipedia action=parse path and shares the MediaWiki-family settings toggle."
+  source iana
+    name "IANA time zone database"
+    kind reference_table
+    default_enabled true
+    how_to_role none
+    need_kinds (concept)
+    primacy self_published
+      basis "The tz database is the registry IANA coordinates for time zone names, so on a zone's canonical name and the country it projects to, the source is the registry itself."
+    api "https://raw.githubusercontent.com/eggert/tz/main/zone1970.tab"
+    license_name "Public domain"
+    license_url "https://github.com/eggert/tz/blob/main/LICENSE"
+    cache_path data/cache/iana/
+    note "The zone1970.tab projection of tz zone names to countries, fetched once by scripts/ground-entity-names.py to ground entity hours (commit e8533a522). A committed static table the grounding script reads offline; no runtime fetch path binds it."

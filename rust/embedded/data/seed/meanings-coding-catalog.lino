@@ -1,0 +1,859 @@
+meanings
+  program_language
+    grounded-in Q9143
+    defined-by software_language
+    role program_language
+    precondition "a coding request needs an implementation language"
+    effect "the implementation-language concept can be selected"
+    unit "not applicable"
+    example "programming language"
+    lexeme en
+      surface
+        text "programming language"
+    lexeme ru
+      surface
+        text "язык программирования"
+    lexeme hi
+      surface
+        text "प्रोग्रामिंग भाषा"
+    lexeme zh
+      surface
+        text 编程语言
+  program_language_rust
+    grounded-in Q575650
+    defined-by program_language
+    defined-by language_rust
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Rust"
+    unit "not applicable"
+    example "rust"
+    lexeme en
+      surface
+        text rust
+      surface
+        text rs
+    lexeme ru
+      surface
+        text раст
+      surface
+        text расте
+    lexeme hi
+      surface
+        text रस्ट
+    lexeme zh
+      surface
+        text rust
+  program_language_python
+    grounded-in Q28865
+    defined-by program_language
+    defined-by language_python
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Python"
+    unit "not applicable"
+    example "python"
+    lexeme en
+      surface
+        text python
+      surface
+        text py
+    lexeme ru
+      surface
+        text питон
+      surface
+        text питоне
+    lexeme hi
+      surface
+        text पायथन
+    lexeme zh
+      surface
+        text python
+  program_language_javascript
+    grounded-in Q2005
+    defined-by program_language
+    defined-by language_javascript
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to JavaScript"
+    unit "not applicable"
+    example "javascript"
+    lexeme en
+      surface
+        text javascript
+      surface
+        text js
+      surface
+        text node
+    lexeme ru
+      surface
+        text джаваскрипт
+    lexeme hi
+      surface
+        text जावास्क्रिप्ट
+    lexeme zh
+      surface
+        text javascript
+  program_language_typescript
+    grounded-in Q978185
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to TypeScript"
+    unit "not applicable"
+    example "typescript"
+    lexeme en
+      surface
+        text typescript
+      surface
+        text ts
+    lexeme ru
+      surface
+        text тайпскрипт
+    lexeme hi
+      surface
+        text टाइपस्क्रिप्ट
+    lexeme zh
+      surface
+        text typescript
+  program_language_go
+    grounded-in Q37227
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Go"
+    unit "not applicable"
+    example "go"
+    lexeme en
+      surface
+        text go
+      surface
+        text golang
+    lexeme ru
+      surface
+        text го
+    lexeme hi
+      surface
+        text गो
+    lexeme zh
+      surface
+        text go
+  program_language_c
+    grounded-in Q15777
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to C"
+    unit "not applicable"
+    example "c"
+    lexeme en
+      surface
+        text c
+    lexeme ru
+      surface
+        text си
+    lexeme hi
+      surface
+        text सी
+    lexeme zh
+      surface
+        text c
+  program_language_cpp
+    grounded-in Q2407
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to C++"
+    unit "not applicable"
+    example "cpp"
+    lexeme en
+      surface
+        text cpp
+      surface
+        text c++
+      surface
+        text cplusplus
+    lexeme ru
+      surface
+        text сиплюсплюс
+    lexeme hi
+      surface
+        text सीपीपी
+    lexeme zh
+      surface
+        text c++
+  program_language_java
+    grounded-in Q251
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Java"
+    unit "not applicable"
+    example "java"
+    lexeme en
+      surface
+        text java
+    lexeme ru
+      surface
+        text джава
+    lexeme hi
+      surface
+        text जावा
+    lexeme zh
+      surface
+        text java
+  program_language_csharp
+    grounded-in Q2370
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to C sharp"
+    unit "not applicable"
+    example "csharp"
+    lexeme en
+      surface
+        text csharp
+      surface
+        text "c#"
+      surface
+        text cs
+      surface
+        text dotnet
+    lexeme ru
+      surface
+        text сишарп
+    lexeme hi
+      surface
+        text सीशार्प
+    lexeme zh
+      surface
+        text "c#"
+  program_language_ruby
+    grounded-in Q161053
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Ruby"
+    unit "not applicable"
+    example "ruby"
+    lexeme en
+      surface
+        text ruby
+      surface
+        text rb
+    lexeme ru
+      surface
+        text руби
+    lexeme hi
+      surface
+        text रूबी
+    lexeme zh
+      surface
+        text ruby
+  program_language_scala
+    grounded-in Q460584
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Scala"
+    unit "not applicable"
+    example "scala"
+    lexeme en
+      surface
+        text scala
+    lexeme ru
+      surface
+        text скала
+    lexeme hi
+      surface
+        text स्काला
+    lexeme zh
+      surface
+        text scala
+  program_language_kotlin
+    grounded-in Q3816639
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Kotlin"
+    unit "not applicable"
+    example "kotlin"
+    lexeme en
+      surface
+        text kotlin
+      surface
+        text kt
+    lexeme ru
+      surface
+        text котлин
+    lexeme hi
+      surface
+        text कोटलिन
+    lexeme zh
+      surface
+        text kotlin
+  program_language_php
+    grounded-in Q59
+    defined-by program_language
+    defined-by language_php
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to PHP"
+    unit "not applicable"
+    example "php"
+    lexeme en
+      surface
+        text php
+    lexeme ru
+      surface
+        text php
+      surface
+        text пхп
+    lexeme hi
+      surface
+        text पीएचपी
+    lexeme zh
+      surface
+        text php
+  program_language_laravel
+    grounded-in Q13634357
+    defined-by program_language
+    defined-by language_php
+    role program_language_alias
+    precondition "a coding request contains this framework surface"
+    effect "the program-language slot is bound to Laravel"
+    unit "not applicable"
+    example "laravel"
+    lexeme en
+      surface
+        text laravel
+    lexeme ru
+      surface
+        text laravel
+    lexeme hi
+      surface
+        text laravel
+    lexeme zh
+      surface
+        text laravel
+  program_task
+    defined-by program
+    role program_task
+    precondition "a coding request needs a program objective"
+    effect "the program-task concept can be selected"
+    unit "not applicable"
+    example "coding task"
+    lexeme en
+      surface
+        text "coding task"
+    lexeme ru
+      surface
+        text "задача программирования"
+    lexeme hi
+      surface
+        text "प्रोग्रामिंग कार्य"
+    lexeme zh
+      surface
+        text 编程任务
+  program_task_hello_world
+    defined-by program_task
+    defined-by hello_world
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to hello world"
+    unit "not applicable"
+    example "hello world"
+    lexeme en
+      surface
+        text "hello world"
+    lexeme ru
+      surface
+        text "хелло ворлд"
+    lexeme hi
+      surface
+        text "हैलो वर्ल्ड"
+    lexeme zh
+      surface
+        text 你好世界
+  program_task_count_to_three
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to count to three"
+    unit "not applicable"
+    example "count to three"
+    lexeme en
+      surface
+        text "count to three"
+      surface
+        text "count to 3"
+      surface
+        text "counts to three"
+      surface
+        text "counts to 3"
+    lexeme ru
+      surface
+        text "посчитай до трёх"
+      surface
+        text "посчитай до 3"
+    lexeme hi
+      surface
+        text "तीन तक गिनें"
+      surface
+        text "3 तक गिनें"
+    lexeme zh
+      surface
+        text 数到三
+      surface
+        text 数到3
+  program_task_list_files
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to list files"
+    unit "not applicable"
+    example "list files in the current directory"
+    lexeme en
+      surface
+        text "list files in the current directory"
+      surface
+        text "list files in current directory"
+      surface
+        text "list files in the directory"
+      surface
+        text "list the files in the current directory"
+      surface
+        text "lists files in the current directory"
+      surface
+        text "lists the files in the current directory"
+      surface
+        text "list files in a directory"
+      surface
+        text "list directory files"
+      surface
+        text "list files"
+      surface
+        text "lists files"
+      surface
+        text "files in the current directory"
+      surface
+        text "files in current directory"
+    lexeme ru
+      surface
+        text "список файлов в текущей директории"
+      surface
+        text "список файлов в текущем каталоге"
+      surface
+        text "список файлов в директории"
+      surface
+        text "список файлов в каталоге"
+      surface
+        text "выдаёт список файлов"
+      surface
+        text "выдает список файлов"
+      surface
+        text "выводит список файлов"
+      surface
+        text "вывести список файлов"
+      surface
+        text "вывод списка файлов"
+      surface
+        text "список файлов"
+      surface
+        text "файлы в текущей директории"
+      surface
+        text "файлы в текущем каталоге"
+    lexeme hi
+      surface
+        text "फ़ाइलों की सूची"
+      surface
+        text "फाइलों की सूची"
+      surface
+        text "वर्तमान निर्देशिका की फ़ाइलें"
+      surface
+        text "वर्तमान निर्देशिका की फाइलें"
+      surface
+        text "निर्देशिका की फ़ाइलें"
+    lexeme zh
+      surface
+        text 列出当前目录中的文件
+      surface
+        text 列出当前目录中文件
+      surface
+        text 列出当前目录的文件
+      surface
+        text 列出当前目录文件
+      surface
+        text 列出目录中的文件
+      surface
+        text 列出文件
+  program_task_list_files_arg
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to list files from an argument"
+    unit "not applicable"
+    example "list files in the directory given as a path argument"
+    lexeme en
+      surface
+        text "list files in the directory given as a path argument"
+      surface
+        text "list files in a directory given as an argument"
+      surface
+        text "list files in the directory passed as an argument"
+      surface
+        text "list files in a path argument"
+      surface
+        text "list files with a path argument"
+      surface
+        text "list files accepting a path argument"
+    lexeme ru
+      surface
+        text "список файлов в каталоге переданном как аргумент"
+      surface
+        text "список файлов в директории переданной как аргумент"
+      surface
+        text "список файлов по пути из аргумента"
+    lexeme hi
+      surface
+        text "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची"
+    lexeme zh
+      surface
+        text 列出作为路径参数给出的目录中的文件
+      surface
+        text 列出路径参数指定目录中的文件
+  program_task_list_files_reverse_sort
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to reverse-sorted file listing"
+    unit "not applicable"
+    example "list files in reverse order"
+    lexeme en
+      surface
+        text "list files in reverse order"
+      surface
+        text "list files sorted in reverse order"
+      surface
+        text "list files in descending order"
+      surface
+        text "reverse sorted list files"
+    lexeme ru
+      surface
+        text "список файлов в обратном порядке"
+      surface
+        text "список файлов с обратной сортировкой"
+    lexeme hi
+      surface
+        text "फ़ाइलों की सूची उल्टे क्रम में"
+      surface
+        text "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
+    lexeme zh
+      surface
+        text 按相反顺序列出文件
+      surface
+        text 倒序列出文件
+  program_task_list_files_arg_reverse_sort
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to reverse-sorted argument-path listing"
+    unit "not applicable"
+    example "list files from a path argument in reverse order"
+    lexeme en
+      surface
+        text "list files from a path argument in reverse order"
+      surface
+        text "list files with a path argument in reverse order"
+      surface
+        text "list files with a path argument sorted descending"
+      surface
+        text "reverse sorted list files with a path argument"
+    lexeme ru
+      surface
+        text "список файлов по пути из аргумента в обратном порядке"
+      surface
+        text "список файлов из аргумента с обратной сортировкой"
+    lexeme hi
+      surface
+        text "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में"
+      surface
+        text "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
+    lexeme zh
+      surface
+        text 按相反顺序列出路径参数中的文件
+      surface
+        text 倒序列出路径参数指定目录中的文件
+  program_task_fizzbuzz
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to fizzbuzz"
+    unit "not applicable"
+    example "fizzbuzz"
+    lexeme en
+      surface
+        text fizzbuzz
+      surface
+        text "fizz buzz"
+    lexeme ru
+      surface
+        text физзбазз
+      surface
+        text "физз базз"
+      surface
+        text физбаз
+    lexeme hi
+      surface
+        text फ़िज़बज़
+      surface
+        text फिज़बज़
+    lexeme zh
+      surface
+        text 菲茨巴兹
+  program_task_factorial
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to factorial"
+    unit "not applicable"
+    example "factorial of 5"
+    lexeme en
+      surface
+        text "factorial of 5"
+      surface
+        text "factorial of five"
+      surface
+        text "5 factorial"
+      surface
+        text "five factorial"
+    lexeme ru
+      surface
+        text "факториал 5"
+      surface
+        text "факториал пяти"
+      surface
+        text "факториал числа 5"
+    lexeme hi
+      surface
+        text "5 का फैक्टोरियल"
+      surface
+        text "पाँच का फैक्टोरियल"
+    lexeme zh
+      surface
+        text 5的阶乘
+      surface
+        text 五的阶乘
+  program_task_reverse_string
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to reverse string"
+    unit "not applicable"
+    example "reverse a string"
+    lexeme en
+      surface
+        text "reverse a string"
+      surface
+        text "reverse the string hello"
+      surface
+        text "reverse hello"
+      surface
+        text "reverse string hello"
+      surface
+        text "reverse the word hello"
+    lexeme ru
+      surface
+        text "перевернуть строку"
+      surface
+        text "перевернуть строку hello"
+      surface
+        text "развернуть строку"
+    lexeme hi
+      surface
+        text "स्ट्रिंग को उलटें"
+      surface
+        text "स्ट्रिंग पलटें"
+    lexeme zh
+      surface
+        text 反转字符串
+      surface
+        text 翻转字符串
+      surface
+        text 反转hello
+  program_task_sum_to_ten
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to sum to ten"
+    unit "not applicable"
+    example "sum of 1 to 10"
+    lexeme en
+      surface
+        text "sum of 1 to 10"
+      surface
+        text "sum from 1 to 10"
+      surface
+        text "sum the numbers 1 to 10"
+      surface
+        text "sum of numbers from 1 to 10"
+      surface
+        text "sum 1 to 10"
+      surface
+        text "sum to ten"
+    lexeme ru
+      surface
+        text "сумма от 1 до 10"
+      surface
+        text "сумма чисел от 1 до 10"
+      surface
+        text "сумма чисел от одного до десяти"
+    lexeme hi
+      surface
+        text "1 से 10 तक का योग"
+      surface
+        text "1 से 10 तक योग"
+    lexeme zh
+      surface
+        text 1到10的和
+      surface
+        text 1到10求和
+      surface
+        text 求1到10的和
+  program_task_fibonacci
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to recursive fibonacci"
+    unit "not applicable"
+    example "fibonacci sequence recursively"
+    lexeme en
+      surface
+        text "fibonacci sequence recursively"
+      surface
+        text "fibonacci sequence"
+      surface
+        text "recursive fibonacci"
+      surface
+        text "fibonacci recursively"
+      surface
+        text "fibonacci function"
+      surface
+        text "fibonacci numbers"
+      surface
+        text "fibonacci number"
+      surface
+        text "10th fibonacci number"
+      surface
+        text "the 10th fibonacci number"
+      surface
+        text "tenth fibonacci number"
+      surface
+        text "nth fibonacci number"
+    lexeme ru
+      surface
+        text "последовательность фибоначчи"
+      surface
+        text "числа фибоначчи"
+      surface
+        text "число фибоначчи"
+      surface
+        text "рекурсивный фибоначчи"
+      surface
+        text "фибоначчи рекурсивно"
+      surface
+        text "10-е число фибоначчи"
+      surface
+        text "десятое число фибоначчи"
+    lexeme hi
+      surface
+        text "फ़िबोनाची अनुक्रम"
+      surface
+        text "फिबोनाची अनुक्रम"
+      surface
+        text "फ़िबोनाची संख्या"
+      surface
+        text "फिबोनाची संख्या"
+    lexeme zh
+      surface
+        text 斐波那契数列
+      surface
+        text 斐波那契序列
+      surface
+        text 斐波那契数
+      surface
+        text 递归斐波那契
+  program_task_copy_stdin_to_stdout
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request contains this task surface"
+    effect "the program-task slot is bound to copying standard input to standard output"
+    unit "not applicable"
+    example "copy stdin to stdout"
+    lexeme en
+      surface
+        text "copy standard input to standard output"
+      surface
+        text "copy stdin to stdout"
+      surface
+        text "copies standard input to standard output"
+      surface
+        text "copies stdin to stdout"
+      surface
+        text "read stdin and write it to stdout"
+      surface
+        text "echo stdin to stdout"
+      surface
+        text "copy input to output"
+      surface
+        text "stdin to stdout"
+    lexeme ru
+      surface
+        text "скопировать стандартный ввод в стандартный вывод"
+      surface
+        text "копировать стандартный ввод в стандартный вывод"
+      surface
+        text "скопируй stdin в stdout"
+      surface
+        text "скопировать stdin в stdout"
+      surface
+        text "стандартный ввод в стандартный вывод"
+      surface
+        text "из stdin в stdout"
+      surface
+        text "копирования stdin в stdout"
+    lexeme hi
+      surface
+        text "मानक इनपुट को मानक आउटपुट में कॉपी करें"
+      surface
+        text "मानक इनपुट को मानक आउटपुट में कॉपी"
+      surface
+        text "stdin को stdout में कॉपी करें"
+      surface
+        text "stdin से stdout"
+      surface
+        text "stdin को stdout में कॉपी"
+    lexeme zh
+      surface
+        text 将标准输入复制到标准输出
+      surface
+        text 把标准输入复制到标准输出
+      surface
+        text 标准输入复制到标准输出
+      surface
+        text 标准输入到标准输出
+      surface
+        text "stdin 复制到 stdout"
+    lexeme es
+      surface
+        text "copiar la entrada estándar a la salida estándar"
+      surface
+        text "copiar entrada estándar a salida estándar"
+      surface
+        text "copia la entrada estándar a la salida estándar"
+      surface
+        text "copia stdin a stdout"
+      surface
+        text "copiar stdin a stdout"
+      surface
+        text "de stdin a stdout"

@@ -698,10 +698,9 @@ fn parse_usize(node: &LinoNode, name: &str) -> Result<usize, ProcedureLearningEr
 pub(super) fn default_capability_ledger() -> &'static ProcedureCapabilityLedger {
     static LEDGER: OnceLock<ProcedureCapabilityLedger> = OnceLock::new();
     LEDGER.get_or_init(|| {
-        ProcedureCapabilityLedger::from_links_notation(include_str!(concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../data/meta/procedure-capability-ledger.lino"
-        )))
+        ProcedureCapabilityLedger::from_links_notation(include_str!(
+            "../../embedded/data/meta/procedure-capability-ledger.lino"
+        ))
         .expect("embedded procedure capability ledger must validate")
     })
 }

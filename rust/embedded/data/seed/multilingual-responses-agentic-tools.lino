@@ -1,0 +1,401 @@
+multilingual_responses
+  response response_evidence_exact_composition_en
+    intent evidence_exact_composition
+    language en
+    text "{values}; together these exact observations compose the result."
+  response response_evidence_exact_composition_ru
+    intent evidence_exact_composition
+    language ru
+    text "{values}; вместе эти точные наблюдения составляют результат."
+  response response_evidence_exact_composition_hi
+    intent evidence_exact_composition
+    language hi
+    text "{values}; ये सटीक अवलोकन मिलकर परिणाम बनाते हैं।"
+  response response_evidence_exact_composition_zh
+    intent evidence_exact_composition
+    language zh
+    text "{values}；这些精确观察共同构成结果。"
+  response response_evidence_exact_composition_es
+    intent evidence_exact_composition
+    language es
+    text "{values}; juntas, estas observaciones exactas componen el resultado."
+  response response_file_read_many_unavailable_en
+    intent file_read_many_unavailable
+    language en
+    text "I can read those files when the client advertises a file-read tool or a shell tool."
+  response response_file_read_many_unavailable_ru
+    intent file_read_many_unavailable
+    language ru
+    text "Я смогу прочитать эти файлы, когда клиент предоставит инструмент чтения файлов или оболочки."
+  response response_file_read_many_unavailable_hi
+    intent file_read_many_unavailable
+    language hi
+    text "क्लाइंट के फ़ाइल-पठन या शेल उपकरण उपलब्ध कराने पर मैं उन फ़ाइलों को पढ़ सकता हूँ।"
+  response response_file_read_many_unavailable_zh
+    intent file_read_many_unavailable
+    language zh
+    text "客户端提供文件读取工具或 shell 工具后，我可以读取这些文件。"
+  response response_file_read_many_unavailable_es
+    intent file_read_many_unavailable
+    language es
+    text "Puedo leer esos archivos cuando el cliente ofrece una herramienta de lectura de archivos o de shell."
+  response response_link_cli_publish_failed_en
+    intent link_cli_publish_failed
+    language en
+    text "Failed to publish the link-cli replacement at {path}: {error}"
+  response response_link_cli_publish_failed_ru
+    intent link_cli_publish_failed
+    language ru
+    text "Не удалось опубликовать замену link-cli в {path}: {error}"
+  response response_link_cli_publish_failed_hi
+    intent link_cli_publish_failed
+    language hi
+    text "{path} पर link-cli प्रतिस्थापन प्रकाशित नहीं हो सका: {error}"
+  response response_link_cli_publish_failed_zh
+    intent link_cli_publish_failed
+    language zh
+    text "无法在 {path} 发布 link-cli 替换文件：{error}"
+  response response_link_cli_publish_failed_es
+    intent link_cli_publish_failed
+    language es
+    text "No se pudo publicar el reemplazo de link-cli en {path}: {error}"
+  response response_coding_member_inserted_en
+    intent coding_member_inserted
+    language en
+    text "Added {members} to the list in `{path}` and observed the result."
+  response response_coding_member_inserted_ru
+    intent coding_member_inserted
+    language ru
+    text "Добавлено {members} в список в `{path}`, результат проверен."
+  response response_coding_member_inserted_hi
+    intent coding_member_inserted
+    language hi
+    text "`{path}` की सूची में {members} जोड़ा और परिणाम सत्यापित किया।"
+  response response_coding_member_inserted_zh
+    intent coding_member_inserted
+    language zh
+    text "已将 {members} 添加到 `{path}` 的列表中并验证了结果。"
+  response response_coding_member_inserted_es
+    intent coding_member_inserted
+    language es
+    text "Se añadió {members} a la lista en `{path}` y se verificó el resultado."
+  response response_coding_member_already_present_en
+    intent coding_member_already_present
+    language en
+    text "`{path}` already lists {members}; nothing needed to change."
+  response response_coding_member_already_present_ru
+    intent coding_member_already_present
+    language ru
+    text "В `{path}` уже перечислено {members}; менять ничего не потребовалось."
+  response response_coding_member_already_present_hi
+    intent coding_member_already_present
+    language hi
+    text "`{path}` में {members} पहले से सूचीबद्ध है; कुछ बदलने की आवश्यकता नहीं थी।"
+  response response_coding_member_already_present_zh
+    intent coding_member_already_present
+    language zh
+    text "`{path}` 中已列出 {members}；无需更改。"
+  response response_coding_member_already_present_es
+    intent coding_member_already_present
+    language es
+    text "`{path}` ya incluye {members}; no hizo falta cambiar nada."
+  response response_coding_text_replaced_en
+    intent coding_text_replaced
+    language en
+    text "Replaced `{old}` with `{new}` in `{path}` and observed the result."
+  response response_coding_text_replaced_ru
+    intent coding_text_replaced
+    language ru
+    text "В `{path}` текст `{old}` заменён на `{new}`, результат проверен."
+  response response_coding_text_replaced_hi
+    intent coding_text_replaced
+    language hi
+    text "`{path}` में `{old}` को `{new}` से बदला और परिणाम सत्यापित किया।"
+  response response_coding_text_replaced_zh
+    intent coding_text_replaced
+    language zh
+    text "已在 `{path}` 中将 `{old}` 替换为 `{new}` 并验证了结果。"
+  response response_coding_text_replaced_es
+    intent coding_text_replaced
+    language es
+    text "Se reemplazó `{old}` por `{new}` en `{path}` y se verificó el resultado."
+  response response_coding_identifier_renamed_en
+    intent coding_identifier_renamed
+    language en
+    text "Renamed `{old}` to `{new}` in `{path}` and observed the result."
+  response response_coding_identifier_renamed_ru
+    intent coding_identifier_renamed
+    language ru
+    text "В `{path}` идентификатор `{old}` переименован в `{new}`, результат проверен."
+  response response_coding_identifier_renamed_hi
+    intent coding_identifier_renamed
+    language hi
+    text "`{path}` में `{old}` का नाम बदलकर `{new}` किया और परिणाम सत्यापित किया।"
+  response response_coding_identifier_renamed_zh
+    intent coding_identifier_renamed
+    language zh
+    text "已在 `{path}` 中将 `{old}` 重命名为 `{new}` 并验证了结果。"
+  response response_coding_identifier_renamed_es
+    intent coding_identifier_renamed
+    language es
+    text "Se renombró `{old}` a `{new}` en `{path}` y se verificó el resultado."
+  response response_coding_workspace_effect_observed_en
+    intent coding_workspace_effect_observed
+    language en
+    text "Created or updated and observed `{path}` through the workspace tools."
+  response response_coding_workspace_effect_observed_ru
+    intent coding_workspace_effect_observed
+    language ru
+    text "Файл `{path}` создан или обновлён и проверен через инструменты рабочей области."
+  response response_coding_workspace_effect_observed_hi
+    intent coding_workspace_effect_observed
+    language hi
+    text "`{path}` को कार्यक्षेत्र उपकरणों के माध्यम से बनाया या बदला और सत्यापित किया गया।"
+  response response_coding_workspace_effect_observed_zh
+    intent coding_workspace_effect_observed
+    language zh
+    text "已通过工作区工具创建或更新并验证 `{path}`。"
+  response response_coding_workspace_effect_observed_es
+    intent coding_workspace_effect_observed
+    language es
+    text "Se creó o actualizó `{path}` y se comprobó mediante las herramientas del espacio de trabajo."
+  response response_coding_workspace_written_unverified_en
+    intent coding_workspace_written_unverified
+    language en
+    text "Created `{path}` through the workspace file tools without read-back verification."
+  response response_coding_workspace_written_unverified_ru
+    intent coding_workspace_written_unverified
+    language ru
+    text "Файл `{path}` создан через файловые инструменты рабочей области без проверки чтением."
+  response response_coding_workspace_written_unverified_hi
+    intent coding_workspace_written_unverified
+    language hi
+    text "`{path}` को कार्यक्षेत्र फ़ाइल उपकरणों के माध्यम से बिना पुनः पढ़कर सत्यापन के बनाया गया।"
+  response response_coding_workspace_written_unverified_zh
+    intent coding_workspace_written_unverified
+    language zh
+    text "已通过工作区文件工具创建 `{path}`，但未进行回读验证。"
+  response response_coding_workspace_written_unverified_es
+    intent coding_workspace_written_unverified
+    language es
+    text "Se creó `{path}` mediante las herramientas de archivos del espacio de trabajo, sin verificación de lectura."
+  response response_coding_workspace_verification_failed_en
+    intent coding_workspace_verification_failed
+    language en
+    text "Verification failed for `{path}`: the observed bytes differ from the planned workspace effect."
+  response response_coding_workspace_verification_failed_ru
+    intent coding_workspace_verification_failed
+    language ru
+    text "Проверка `{path}` не удалась: считанные байты отличаются от запланированного изменения рабочей области."
+  response response_coding_workspace_verification_failed_hi
+    intent coding_workspace_verification_failed
+    language hi
+    text "`{path}` का सत्यापन विफल रहा: पढ़े गए बाइट नियोजित कार्यक्षेत्र परिवर्तन से अलग हैं।"
+  response response_coding_workspace_verification_failed_zh
+    intent coding_workspace_verification_failed
+    language zh
+    text "`{path}` 验证失败：读取的字节与计划的工作区更改不同。"
+  response response_coding_workspace_verification_failed_es
+    intent coding_workspace_verification_failed
+    language es
+    text "La verificación de `{path}` falló: los bytes observados difieren del cambio planificado en el espacio de trabajo."
+  response response_tool_result_failed_exit_code_en
+    intent tool_result_failed_exit_code
+    language en
+    text "The command failed: `{tool}` exited with code {exit_code}.\n\n```text\n{error}\n```"
+  response response_tool_result_failed_exit_code_ru
+    intent tool_result_failed_exit_code
+    language ru
+    text "Команда завершилась с ошибкой: `{tool}` завершилась с кодом {exit_code}.\n\n```text\n{error}\n```"
+  response response_tool_result_failed_exit_code_hi
+    intent tool_result_failed_exit_code
+    language hi
+    text "कमांड विफल रही: `{tool}` कोड {exit_code} के साथ समाप्त हुई।\n\n```text\n{error}\n```"
+  response response_tool_result_failed_exit_code_zh
+    intent tool_result_failed_exit_code
+    language zh
+    text "命令失败：`{tool}` 以代码 {exit_code} 退出。\n\n```text\n{error}\n```"
+  response response_tool_result_failed_exit_code_es
+    intent tool_result_failed_exit_code
+    language es
+    text "El comando falló: `{tool}` terminó con código {exit_code}.\n\n```text\n{error}\n```"
+  response response_mutating_action_completed_en
+    intent mutating_action_completed
+    language en
+    text "Completed the action `{action}` and verified it with {checks}."
+  response response_mutating_action_completed_ru
+    intent mutating_action_completed
+    language ru
+    text "Действие `{action}` выполнено и проверено командами {checks}."
+  response response_mutating_action_completed_hi
+    intent mutating_action_completed
+    language hi
+    text "क्रिया `{action}` पूरी हुई और {checks} से सत्यापित की गई।"
+  response response_mutating_action_completed_zh
+    intent mutating_action_completed
+    language zh
+    text "已完成操作 `{action}`，并通过 {checks} 进行了验证。"
+  response response_mutating_action_completed_es
+    intent mutating_action_completed
+    language es
+    text "Se completó la acción `{action}` y se verificó con {checks}."
+  response response_mutating_action_blocked_en
+    intent mutating_action_blocked
+    language en
+    text "I did not run `{action}`. The check `{check}` exited {exit_code}, so the action was skipped and nothing in the workspace changed."
+  response response_mutating_action_blocked_ru
+    intent mutating_action_blocked
+    language ru
+    text "Я не выполнил `{action}`. Проверка `{check}` завершилась с кодом {exit_code}, поэтому действие пропущено и в рабочем каталоге ничего не изменилось."
+  response response_mutating_action_blocked_hi
+    intent mutating_action_blocked
+    language hi
+    text "मैंने `{action}` नहीं चलाया। जाँच `{check}` {exit_code} कोड के साथ समाप्त हुई, इसलिए क्रिया छोड़ दी गई और कार्यक्षेत्र में कुछ नहीं बदला।"
+  response response_mutating_action_blocked_zh
+    intent mutating_action_blocked
+    language zh
+    text "我没有执行 `{action}`。检查 `{check}` 以退出码 {exit_code} 结束，因此跳过了该操作，工作区没有发生任何变化。"
+  response response_mutating_action_blocked_es
+    intent mutating_action_blocked
+    language es
+    text "No ejecuté `{action}`. La comprobación `{check}` terminó con código {exit_code}, así que se omitió la acción y nada cambió en el espacio de trabajo."
+  response response_coding_repository_source_observation_en
+    intent coding_repository_source_observation
+    language en
+    text "{result} (observed in repository source)."
+  response response_coding_repository_source_observation_ru
+    intent coding_repository_source_observation
+    language ru
+    text "{result} (наблюдается в исходном коде репозитория)."
+  response response_coding_repository_source_observation_hi
+    intent coding_repository_source_observation
+    language hi
+    text "{result} (रिपॉज़िटरी स्रोत में देखा गया)।"
+  response response_coding_repository_source_observation_zh
+    intent coding_repository_source_observation
+    language zh
+    text "{result}（在仓库源代码中观察到）。"
+  response response_coding_repository_source_observation_es
+    intent coding_repository_source_observation
+    language es
+    text "{result} (observado en el código fuente del repositorio)."
+  response response_coding_repository_result_observation_en
+    intent coding_repository_result_observation
+    language en
+    text "Observed repository result: {result}"
+  response response_coding_repository_result_observation_ru
+    intent coding_repository_result_observation
+    language ru
+    text "Результат, наблюдаемый в репозитории: {result}"
+  response response_coding_repository_result_observation_hi
+    intent coding_repository_result_observation
+    language hi
+    text "रिपॉज़िटरी में देखा गया परिणाम: {result}"
+  response response_coding_repository_result_observation_zh
+    intent coding_repository_result_observation
+    language zh
+    text "在仓库中观察到的结果：{result}"
+  response response_coding_repository_result_observation_es
+    intent coding_repository_result_observation
+    language es
+    text "Resultado observado en el repositorio: {result}"
+  response response_agentic_formalization_report_en
+    intent agentic_formalization_report
+    language en
+    text "Formalized {subject} into a Links Notation knowledge base: {records} records realising {covered_count} of {primitive_count} protocol primitives ({coverage}).\n\nKnowledge base ({path}):\n\n{kb}"
+  response response_agentic_formalization_report_ru
+    intent agentic_formalization_report
+    language ru
+    text "Источник {subject} формализован в базу знаний Links Notation: {records} записей, реализовано {covered_count} из {primitive_count} примитивов протокола ({coverage}).\n\nБаза знаний ({path}):\n\n{kb}"
+  response response_agentic_formalization_report_hi
+    intent agentic_formalization_report
+    language hi
+    text "{subject} को Links Notation ज्ञान आधार में औपचारिक किया: {records} रिकॉर्ड, {primitive_count} में से {covered_count} प्रोटोकॉल मूल तत्व मौजूद हैं ({coverage})।\n\nज्ञान आधार ({path}):\n\n{kb}"
+  response response_agentic_formalization_report_zh
+    intent agentic_formalization_report
+    language zh
+    text "已将 {subject} 形式化为 Links Notation 知识库：{records} 条记录，实现了 {primitive_count} 种协议原语中的 {covered_count} 种（{coverage}）。\n\n知识库（{path}）：\n\n{kb}"
+  response response_agentic_formalization_report_es
+    intent agentic_formalization_report
+    language es
+    text "Se formalizó {subject} en una base de conocimiento Links Notation: {records} registros que representan {covered_count} de {primitive_count} primitivas del protocolo ({coverage}).\n\nBase de conocimiento ({path}):\n\n{kb}"
+  response response_agentic_formalization_need_report_en
+    intent agentic_formalization_need_report
+    language en
+    text "needs_raised {total}; needs_grounded {grounded}."
+  response response_agentic_formalization_need_report_ru
+    intent agentic_formalization_need_report
+    language ru
+    text "Потребностей поднято: {total}; обосновано: {grounded}."
+  response response_agentic_formalization_need_report_hi
+    intent agentic_formalization_need_report
+    language hi
+    text "उठाई गई आवश्यकताएँ: {total}; प्रमाणित: {grounded}।"
+  response response_agentic_formalization_need_report_zh
+    intent agentic_formalization_need_report
+    language zh
+    text "提出的需求 {total}；已获依据 {grounded}。"
+  response response_agentic_formalization_need_report_es
+    intent agentic_formalization_need_report
+    language es
+    text "Necesidades planteadas: {total}; fundamentadas: {grounded}."
+  response response_file_analysis_heading_en
+    intent file_analysis_heading
+    language en
+    text "Bounded audit evidence from {count} file(s):"
+  response response_file_analysis_heading_ru
+    intent file_analysis_heading
+    language ru
+    text "Ограниченные данные аудита из файлов ({count}):"
+  response response_file_analysis_heading_hi
+    intent file_analysis_heading
+    language hi
+    text "{count} फ़ाइलों से सीमित ऑडिट साक्ष्य:"
+  response response_file_analysis_heading_zh
+    intent file_analysis_heading
+    language zh
+    text "来自 {count} 个文件的有界审计证据："
+  response response_file_analysis_heading_es
+    intent file_analysis_heading
+    language es
+    text "Evidencia de auditoría acotada de {count} archivo(s):"
+  response response_file_analysis_no_marker_en
+    intent file_analysis_no_marker
+    language en
+    text "No explicit gap marker was observed in the bounded evidence."
+  response response_file_analysis_no_marker_ru
+    intent file_analysis_no_marker
+    language ru
+    text "В ограниченных данных не обнаружен явный маркер незавершённой работы."
+  response response_file_analysis_no_marker_hi
+    intent file_analysis_no_marker
+    language hi
+    text "सीमित साक्ष्य में कोई स्पष्ट अपूर्णता चिह्न नहीं मिला।"
+  response response_file_analysis_no_marker_zh
+    intent file_analysis_no_marker
+    language zh
+    text "有界证据中未观察到明确的缺口标记。"
+  response response_file_analysis_no_marker_es
+    intent file_analysis_no_marker
+    language es
+    text "No se observó ningún marcador explícito de trabajo incompleto en la evidencia acotada."
+  response response_file_analysis_absence_boundary_en
+    intent file_analysis_absence_boundary
+    language en
+    text "Absence of an explicit marker in this bounded evidence does not prove completion."
+  response response_file_analysis_absence_boundary_ru
+    intent file_analysis_absence_boundary
+    language ru
+    text "Отсутствие явного маркера в этих ограниченных данных не доказывает завершённость."
+  response response_file_analysis_absence_boundary_hi
+    intent file_analysis_absence_boundary
+    language hi
+    text "इस सीमित साक्ष्य में स्पष्ट चिह्न का न होना पूर्णता सिद्ध नहीं करता।"
+  response response_file_analysis_absence_boundary_zh
+    intent file_analysis_absence_boundary
+    language zh
+    text "此有界证据中没有明确标记并不能证明工作已经完成。"
+  response response_file_analysis_absence_boundary_es
+    intent file_analysis_absence_boundary
+    language es
+    text "La ausencia de un marcador explícito en esta evidencia acotada no demuestra que el trabajo esté completo."

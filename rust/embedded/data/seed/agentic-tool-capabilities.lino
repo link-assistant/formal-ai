@@ -1,0 +1,39 @@
+agentic_tool_capabilities
+  capability "web_search"
+    aliases ("web_search" "websearch" "google_web_search" "search_web" "WebSearch")
+  capability "web_fetch"
+    aliases ("web_fetch" "webfetch" "fetch" "WebFetch" "open_url" "read_url")
+  capability "read_file"
+    aliases ("read" "read_file" "view_file" "Read" "openFile" "open_file" "read_local_file" "file_read")
+  capability "write_file"
+    aliases ("write" "write_file" "create_file" "Write")
+  capability "edit_file"
+    aliases ("edit" "str_replace_editor" "str_replace" "apply_patch" "Edit" "patch" "replace")
+  capability "multi_edit"
+    aliases ("multi_edit" "MultiEdit")
+  capability "read_many"
+    aliases "read_many_files"
+  capability "shell"
+    aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash" "computer_use" "code_interpreter")
+    command_aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash")
+  capability "grep"
+    aliases ("grep" "grep_search" "search" "codesearch" "Grep" "file_search")
+    cues
+      en ("search the code" "search code" "search the repository" "search the local" "find in the code" "find in the repository" "grep for" "look through source" "locate in source" "scan the code")
+      ru ("найди в коде" "поиск в коде" "найди в репозитории" "поищи в файлах" "найди в исходниках" "выполни grep" "просмотри код" "отыщи в коде" "сканируй код" "поиск по репозиторию")
+      hi ("कोड में खोजें" "कोड खोजें" "रिपॉजिटरी में खोजें" "स्थानीय फ़ाइलों में खोजें" "कोड में ढूँढें" "स्रोत में खोजें" "grep करें" "कोड देखें" "स्रोत में पता लगाएँ" "कोड स्कैन करें")
+      zh ("在代码中搜索" "搜索代码" "在仓库中搜索" "搜索本地文件" "在代码中查找" "在源代码中查找" "执行 grep" "查看代码" "定位源代码" "扫描代码")
+  capability "glob"
+    aliases ("glob" "Glob" "find_files")
+  capability "list_dir"
+    aliases ("list_directory" "list" "ls" "LS")
+  capability "todo"
+    aliases ("todo_write" "todowrite" "update_plan" "create_todo_list" "update_todo_list" "TodoWrite")
+  capability "subagent"
+    aliases ("task" "multi_agent_v1" "invoke_agent" "Task" "Agent")
+  capability "save_memory"
+    aliases "save_memory"
+  capability "view_image"
+    aliases "view_image"
+  capability "ask_user"
+    aliases ("request_user_input" "question" "ask_user" "AskUserQuestion")

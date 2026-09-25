@@ -421,7 +421,7 @@ fn unresolved_session() -> String {
 
 /// Run the harness extractor, returning its stdout or its own diagnostic.
 fn run_extractor(args: &[&str], db: Option<&Path>) -> Result<Vec<u8>, Box<dyn Error>> {
-    const EXTRACTOR: &str = include_str!("../../scripts/opencode-conversation-to-lino.py");
+    const EXTRACTOR: &str = include_str!("../embedded/scripts/opencode-conversation-to-lino.py");
     let mut command = Command::new("python3");
     command.args(["-c", EXTRACTOR]).args(args);
     if let Some(path) = db {

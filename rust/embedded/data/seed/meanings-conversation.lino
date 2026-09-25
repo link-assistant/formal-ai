@@ -1,0 +1,1346 @@
+meanings
+  conversation_preference_avoid
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_preference_avoid
+    lexeme en
+      surface
+        text "don t use"
+      surface
+        text "do not use"
+      surface
+        text "stop using"
+      surface
+        text "avoid using"
+    lexeme ru
+      surface
+        text "не используй"
+      surface
+        text "не используйте"
+    lexeme hi
+      surface
+        text "उपयोग मत करो"
+      surface
+        text "इस्तेमाल मत करो"
+    lexeme zh
+      surface
+        text 不要使用
+      surface
+        text 别再用
+    lexeme es
+      surface
+        text "no uses"
+      surface
+        text "deja de usar"
+      surface
+        text "evita usar"
+  unauthorized_mutation_correction
+    defined-by inquiry
+    defined-by conversation_reference
+    role unauthorized_mutation_correction
+    lexeme en
+      surface
+        text "i didn t ask to update"
+      surface
+        text "i did not ask to update"
+      surface
+        text "i didn t ask to change"
+      surface
+        text "i did not ask to change"
+    lexeme ru
+      surface
+        text "я не просил обновлять"
+      surface
+        text "я не просила обновлять"
+    lexeme hi
+      surface
+        text "मैंने अपडेट करने को नहीं कहा"
+    lexeme zh
+      surface
+        text 我没让你更新
+    lexeme es
+      surface
+        text "no te pedí actualizar"
+      surface
+        text "no te pedí cambiar"
+  memory_link_count_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_link_count_query
+    lexeme en
+      surface
+        text "how many links are in your memory"
+    lexeme ru
+      surface
+        text "сколько ссылок в твоей памяти"
+    lexeme hi
+      surface
+        text "तुम्हारी स्मृति में कितने लिंक हैं"
+    lexeme zh
+      surface
+        text 你的记忆中有多少链接
+    lexeme es
+      surface
+        text "cuántos enlaces hay en tu memoria"
+  memory_inventory_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_inventory_query
+    lexeme en
+      surface
+        text "what is available in your local memory"
+      surface
+        text "what s available in your local memory"
+    lexeme ru
+      surface
+        text "что доступно в твоей локальной памяти"
+    lexeme hi
+      surface
+        text "तुम्हारी स्थानीय स्मृति में क्या उपलब्ध है"
+    lexeme zh
+      surface
+        text 你的本地记忆中有什么
+    lexeme es
+      surface
+        text "qué hay disponible en tu memoria local"
+  memory_root_links_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_root_links_query
+    lexeme en
+      surface
+        text "give me root links you have in your memory"
+      surface
+        text "show root links in your memory"
+    lexeme ru
+      surface
+        text "покажи корневые ссылки в твоей памяти"
+    lexeme hi
+      surface
+        text "अपनी स्मृति के रूट लिंक दिखाओ"
+    lexeme zh
+      surface
+        text 显示你记忆中的根链接
+    lexeme es
+      surface
+        text "muéstrame los enlaces raíz de tu memoria"
+      surface
+        text "dame los enlaces raíz que tienes en tu memoria"
+  memory_retrieval_correction
+    defined-by inquiry
+    defined-by knowledge
+    role memory_retrieval_correction
+    lexeme en
+      surface
+        text "not about document generation it is about associative memory data retrieval"
+    lexeme ru
+      surface
+        text "речь не о создании документа а об извлечении данных из ассоциативной памяти"
+    lexeme hi
+      surface
+        text "यह दस्तावेज़ बनाने के बारे में नहीं बल्कि एसोसिएटिव मेमोरी डेटा प्राप्त करने के बारे में है"
+    lexeme zh
+      surface
+        text 这不是生成文档而是检索关联记忆数据
+    lexeme es
+      surface
+        text "no se trata de generar documentos sino de recuperar datos de la memoria asociativa"
+  conversation_topic_opener
+    defined-by inquiry
+    defined-by action
+    role conversation_topic_opener
+    lexeme en
+      surface
+        text "let's talk about …"
+      surface
+        text "lets talk about …"
+      surface
+        text "can we talk about …"
+      surface
+        text "talk about …"
+    lexeme ru
+      surface
+        text "давай поговорим о …"
+      surface
+        text "давай поговорим об …"
+      surface
+        text "давайте поговорим о …"
+      surface
+        text "давайте поговорим об …"
+      surface
+        text "поговорим о …"
+        action scan
+      surface
+        text "поговорим об …"
+      surface
+        text "обсудим …"
+    lexeme hi
+      surface
+        text "चलो बात करें …"
+      surface
+        text "बात करें …"
+    lexeme zh
+      surface
+        text 聊聊…
+      surface
+        text 谈谈…
+  conversation_recall_query
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_query
+    lexeme en
+      surface
+        text "when did i ask about …"
+      surface
+        text "when did i ask …"
+      surface
+        text "when did i mention …"
+      surface
+        text "when did i talk about …"
+      surface
+        text "have i asked about …"
+      surface
+        text "have i mentioned …"
+      surface
+        text "did i ask about …"
+      surface
+        text "did i mention …"
+      surface
+        text "search my conversations for …"
+      surface
+        text "search conversations for …"
+      surface
+        text "search my chats for …"
+      surface
+        text "recall …"
+    lexeme ru
+      surface
+        text "когда я спрашивал про …"
+      surface
+        text "когда я спрашивал о …"
+      surface
+        text "когда я спрашивал …"
+      surface
+        text "когда я упоминал …"
+      surface
+        text "поиск по беседам …"
+      surface
+        text "поиск в беседах …"
+      surface
+        text "найди в беседах …"
+    lexeme hi
+      surface
+        text "मेरी बातचीत में खोजो …"
+      surface
+        text "मेरी चैट में खोजो …"
+      surface
+        text "याद करो …"
+    lexeme zh
+      surface
+        text 我什么时候问过…
+      surface
+        text 我什么时候提到…
+      surface
+        text 搜索我的对话…
+      surface
+        text 在对话中搜索…
+  conversation_recall_previous_message
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_previous_message
+    lexeme en
+      surface
+        text "what was written in the previous message"
+      surface
+        text "what was in the previous message"
+      surface
+        text "what did the previous message say"
+      surface
+        text "what was the previous message"
+      surface
+        text "what was the last message"
+      surface
+        text "what was written before"
+      surface
+        text "show the previous message"
+      surface
+        text "the previous message"
+      surface
+        text "previous message"
+    lexeme ru
+      surface
+        text "что было написано в прошлом сообщении"
+      surface
+        text "что было в прошлом сообщении"
+      surface
+        text "что было написано в предыдущем сообщении"
+      surface
+        text "что было в предыдущем сообщении"
+      surface
+        text "в прошлом сообщении"
+      surface
+        text "в предыдущем сообщении"
+      surface
+        text "покажи прошлое сообщение"
+      surface
+        text "прошлое сообщение"
+      surface
+        text "предыдущее сообщение"
+    lexeme hi
+      surface
+        text "पिछले संदेश में क्या लिखा था"
+      surface
+        text "पिछले संदेश में क्या था"
+      surface
+        text "पिछला संदेश क्या था"
+      surface
+        text "पिछला संदेश दिखाओ"
+      surface
+        text "पिछले संदेश में"
+      surface
+        text "पिछला संदेश"
+    lexeme zh
+      surface
+        text 上一条消息写了什么
+      surface
+        text 上一条消息是什么
+      surface
+        text 显示上一条消息
+      surface
+        text 上一条消息
+      surface
+        text 前一条消息
+      surface
+        text 上条消息
+  conversation_recall_previous_user_message
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_previous_user_message
+    lexeme en
+      surface
+        text "what did i ask"
+      surface
+        text "what did i ask in the previous message"
+      surface
+        text "what did i ask in the last message"
+      surface
+        text "what was my previous question"
+      surface
+        text "what was the previous question"
+      surface
+        text "what was my last question"
+      surface
+        text "what was my previous message"
+      surface
+        text "repeat my last message"
+      surface
+        text "what did i say"
+    lexeme ru
+      surface
+        text "что я спрашивал"
+      surface
+        text "я что спрашивал"
+      surface
+        text "а я что спрашивал"
+      surface
+        text "а что я спрашивал"
+      surface
+        text "что я спрашивал в прошлом сообщении"
+      surface
+        text "что я спрашивал в предыдущем сообщении"
+      surface
+        text "что я спросил"
+      surface
+        text "что я просил"
+      surface
+        text "что я писал"
+      surface
+        text "какой был мой прошлый вопрос"
+      surface
+        text "какой был мой предыдущий вопрос"
+    lexeme hi
+      surface
+        text "मैंने क्या पूछा था"
+      surface
+        text "मेरा पिछला सवाल क्या था"
+      surface
+        text "मैंने पिछले संदेश में क्या पूछा था"
+    lexeme zh
+      surface
+        text 我刚才问了什么
+      surface
+        text 我之前问了什么
+      surface
+        text 我的上一个问题是什么
+  conversation_recall_other_query
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_other_query
+    lexeme en
+      surface
+        text "find … in another conversation"
+      surface
+        text "find … in other conversations"
+      surface
+        text "find … in my other conversations"
+      surface
+        text "find … in my conversations"
+      surface
+        text "find … in another chat"
+      surface
+        text "find … in other chats"
+      surface
+        text "search for … in another conversation"
+      surface
+        text "search for … in other conversations"
+    lexeme ru
+      surface
+        text "найди … в другой беседе"
+      surface
+        text "найди … в других беседах"
+      surface
+        text "найди … в другом чате"
+      surface
+        text "найди … в других чатах"
+      surface
+        text "поищи … в других беседах"
+    lexeme hi
+      surface
+        text "… दूसरी बातचीत में खोजो"
+      surface
+        text "… दूसरी चैट में खोजो"
+    lexeme zh
+      surface
+        text 查找…在其他对话中
+      surface
+        text 搜索…在其他对话中
+      surface
+        text 查找…在另一个对话中
+  memory_append_directive
+    defined-by action
+    defined-by answer
+    role memory_append_directive
+    lexeme en
+      surface
+        text "remember that …"
+      surface
+        text "remember …"
+      surface
+        text "record memory …"
+      surface
+        text "record that …"
+      surface
+        text "append memory …"
+      surface
+        text "note that …"
+      surface
+        text "save to memory …"
+      surface
+        text "memorize …"
+    lexeme ru
+      surface
+        text "запомни что …"
+      surface
+        text "запомни …"
+      surface
+        text "запиши в память …"
+      surface
+        text "запиши что …"
+      surface
+        text "запиши …"
+      surface
+        text "сохрани в память …"
+      surface
+        text "заметь что …"
+    lexeme hi
+      surface
+        text "याद रखो कि …"
+      surface
+        text "याद रखो …"
+      surface
+        text "याद रखना …"
+      surface
+        text "स्मृति में सहेजो …"
+      surface
+        text "नोट करो कि …"
+      surface
+        text "नोट करो …"
+    lexeme zh
+      surface
+        text 记住…
+      surface
+        text 记下…
+      surface
+        text 记录…
+      surface
+        text 存入记忆…
+  memory_scope
+    defined-by action
+    defined-by answer
+    role memory_scope
+    lexeme en
+      surface
+        text "in memory"
+      surface
+        text "into memory"
+      surface
+        text "to memory"
+      surface
+        text "in the memory"
+    lexeme ru
+      surface
+        text "в памяти"
+      surface
+        text "в память"
+    lexeme hi
+      surface
+        text "स्मृति में"
+      surface
+        text "मेमोरी में"
+      surface
+        text "याद में"
+    lexeme zh
+      surface
+        text 在记忆中
+      surface
+        text 记忆中
+      surface
+        text 在内存中
+  memory_substitution_connector
+    defined-by action
+    defined-by answer
+    role memory_substitution_connector
+    lexeme en
+      surface
+        text with
+      surface
+        text by
+    lexeme ru
+      surface
+        text на
+    lexeme hi
+      surface
+        text "की जगह"
+      surface
+        text "के बजाय"
+      surface
+        text "की बजाय"
+    lexeme zh
+      surface
+        text 换成
+      surface
+        text 替换为
+      surface
+        text 替换成
+      surface
+        text 更换为
+  memory_substitution_directive
+    defined-by action
+    defined-by answer
+    role memory_substitution_directive
+    lexeme en
+      surface
+        text replace
+      surface
+        text substitute
+    lexeme ru
+      surface
+        text замени
+      surface
+        text заменить
+      surface
+        text замените
+      surface
+        text поменяй
+    lexeme hi
+      surface
+        text बदलो
+      surface
+        text "बदल दो"
+      surface
+        text रखो
+      surface
+        text लिखो
+    lexeme zh
+      surface
+        text 把
+      surface
+        text 将
+      surface
+        text 替换
+      surface
+        text 更换
+  agentic_continuation_cue
+    defined-by conversation_reference
+    role agentic_continuation_cue
+    lexeme en
+      surface
+        text "continue if you have next steps"
+      surface
+        text "continue"
+      surface
+        text "go on"
+      surface
+        text "please continue"
+      surface
+        text "next steps"
+    lexeme ru
+      surface
+        text "продолжай"
+      surface
+        text "продолжи"
+      surface
+        text "продолжи если есть следующие шаги"
+      surface
+        text "продолжай если есть следующие шаги"
+    lexeme hi
+      surface
+        text "जारी रखें"
+      surface
+        text "जारी रखो"
+      surface
+        text "अगर अगले कदम हैं तो जारी रखें"
+    lexeme zh
+      surface
+        text 继续
+      surface
+        text 请继续
+      surface
+        text 如果还有下一步请继续
+      surface
+        text 如果还有下一步 请继续
+    lexeme es
+      surface
+        text "continúa"
+      surface
+        text "continua si tienes próximos pasos"
+  enumeration_cue
+    defined-by conversation_reference
+    role enumeration_cue
+    lexeme en
+      surface
+        text "first"
+      surface
+        text "second"
+      surface
+        text "third"
+      surface
+        text "then"
+      surface
+        text "next"
+      surface
+        text "after that"
+      surface
+        text "also"
+      surface
+        text "finally"
+      surface
+        text "lastly"
+    lexeme ru
+      surface
+        text "сначала"
+      surface
+        text "во-первых"
+      surface
+        text "во-вторых"
+      surface
+        text "затем"
+      surface
+        text "потом"
+      surface
+        text "далее"
+      surface
+        text "также"
+      surface
+        text "наконец"
+      surface
+        text "после этого"
+    lexeme hi
+      surface
+        text "पहले"
+      surface
+        text "दूसरा"
+      surface
+        text "फिर"
+      surface
+        text "उसके बाद"
+      surface
+        text "अंत में"
+    lexeme zh
+      surface
+        text 首先
+      surface
+        text 其次
+      surface
+        text 然后
+      surface
+        text 接着
+      surface
+        text 之后
+      surface
+        text 最后
+    lexeme es
+      surface
+        text "primero"
+      surface
+        text "segundo"
+      surface
+        text "luego"
+      surface
+        text "después"
+      surface
+        text "finalmente"
+  social_greeting
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_greeting
+    lexeme en
+      surface
+        text "hi"
+      surface
+        text hello
+      surface
+        text hey
+      surface
+        text howdy
+      surface
+        text greetings
+      surface
+        text "hi there"
+      surface
+        text "hello there"
+      surface
+        text "good morning"
+      surface
+        text "good afternoon"
+      surface
+        text "good evening"
+    lexeme ru
+      surface
+        text привет
+      surface
+        text здравствуйте
+      surface
+        text здравствуй
+      surface
+        text приветствую
+      surface
+        text шалом
+      surface
+        text "шабат шалом"
+      surface
+        text "доброе утро"
+      surface
+        text "добрый день"
+      surface
+        text "добрый вечер"
+    lexeme hi
+      surface
+        text नमस्ते
+      surface
+        text नमस्कार
+      surface
+        text सलाम
+      surface
+        text हाय
+      surface
+        text "राम राम"
+      surface
+        text "शुभ प्रभात"
+      surface
+        text "शुभ संध्या"
+    lexeme zh
+      surface
+        text 你好
+      surface
+        text 您好
+      surface
+        text 嗨
+      surface
+        text 哈喽
+      surface
+        text 早上好
+      surface
+        text 早安
+      surface
+        text 大家好
+      surface
+        text 晚上好
+    lexeme es
+      surface
+        text hola
+      surface
+        text "buenos días"
+      surface
+        text "buenas tardes"
+      surface
+        text "buenas noches"
+      surface
+        text saludos
+
+  social_wellbeing
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_wellbeing
+    lexeme en
+      surface
+        text "how are you"
+      surface
+        text "how are you doing"
+      surface
+        text "how do you do"
+      surface
+        text "how is it going"
+      surface
+        text "how s it going"
+      surface
+        text "how are things"
+    lexeme ru
+      surface
+        text "как дела"
+      surface
+        text "как твои дела"
+      surface
+        text "как ваши дела"
+      surface
+        text "как у тебя дела"
+      surface
+        text "как у вас дела"
+      surface
+        text "привет как дела"
+      surface
+        text "здравствуйте как ваши дела"
+      surface
+        text "как поживаешь"
+      surface
+        text "как вы поживаете"
+    lexeme hi
+      surface
+        text "कैसे हो"
+      surface
+        text "आप कैसे हैं"
+      surface
+        text "तुम कैसे हो"
+      surface
+        text "क्या हाल है"
+      surface
+        text "आपका क्या हाल है"
+      surface
+        text "सब कैसा चल रहा है"
+    lexeme zh
+      surface
+        text 你好吗
+      surface
+        text 你还好吗
+      surface
+        text 你怎么样
+      surface
+        text 您怎么样
+      surface
+        text 最近怎么样
+      surface
+        text 过得怎么样
+    lexeme es
+      surface
+        text "cómo estás"
+      surface
+        text "cómo está usted"
+      surface
+        text "qué tal"
+      surface
+        text "cómo te va"
+      surface
+        text "cómo andas"
+
+  social_farewell
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_farewell
+    lexeme en
+      surface
+        text bye
+      surface
+        text goodbye
+      surface
+        text farewell
+      surface
+        text "see you"
+      surface
+        text "see you later"
+      surface
+        text "take care"
+      surface
+        text "so long"
+      surface
+        text ciao
+      surface
+        text tschüss
+    lexeme ru
+      surface
+        text пока
+      surface
+        text прощай
+      surface
+        text увидимся
+      surface
+        text "до свидания"
+      surface
+        text досвидания
+      surface
+        text "до встречи"
+      surface
+        text "до скорого"
+      surface
+        text "всего доброго"
+    lexeme hi
+      surface
+        text अलविदा
+      surface
+        text विदा
+      surface
+        text बाय
+      surface
+        text टाटा
+      surface
+        text "फिर मिलेंगे"
+    lexeme zh
+      surface
+        text 再见
+      surface
+        text 拜拜
+      surface
+        text 回见
+      surface
+        text 改天见
+      surface
+        text 后会有期
+    lexeme es
+      surface
+        text adiós
+      surface
+        text "hasta luego"
+      surface
+        text "hasta pronto"
+      surface
+        text "hasta mañana"
+      surface
+        text "nos vemos"
+      surface
+        text chau
+
+  social_courtesy_response
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_courtesy_response
+    lexeme en
+      surface
+        text thanks
+      surface
+        text "thank you"
+      surface
+        text "i am fine thank you"
+      surface
+        text "i am fine thanks"
+      surface
+        text "i m fine thank you"
+      surface
+        text "i m fine thanks"
+      surface
+        text "i am good thank you"
+      surface
+        text "i am good thanks"
+      surface
+        text "i m good thank you"
+      surface
+        text "i m good thanks"
+      surface
+        text "fine thank you"
+      surface
+        text "fine thanks"
+      surface
+        text "good thank you"
+      surface
+        text "good thanks"
+      surface
+        text "doing well thank you"
+      surface
+        text "doing well thanks"
+    lexeme ru
+      surface
+        text спасибо
+      surface
+        text благодарю
+      surface
+        text "у меня все хорошо спасибо"
+      surface
+        text "у меня всё хорошо спасибо"
+      surface
+        text "все хорошо спасибо"
+      surface
+        text "всё хорошо спасибо"
+      surface
+        text "хорошо спасибо"
+      surface
+        text "нормально спасибо"
+      surface
+        text "ого чето начал соображать"
+      surface
+        text "ого чёто начал соображать"
+      surface
+        text "ого чё то начал соображать"
+      surface
+        text "ого что то начал соображать"
+    lexeme hi
+      surface
+        text धन्यवाद
+      surface
+        text शुक्रिया
+      surface
+        text "मैं ठीक हूँ धन्यवाद"
+      surface
+        text "ठीक हूँ धन्यवाद"
+      surface
+        text "मैं अच्छा हूँ धन्यवाद"
+    lexeme zh
+      surface
+        text 谢谢
+      surface
+        text 多谢
+      surface
+        text 我很好谢谢
+      surface
+        text "我很好 谢谢"
+      surface
+        text 好的谢谢
+      surface
+        text "好的 谢谢"
+      surface
+        text 非常感谢
+      surface
+        text 谢谢你
+    lexeme es
+      surface
+        text gracias
+      surface
+        text "muchas gracias"
+      surface
+        text "muy bien gracias"
+      surface
+        text "todo bien gracias"
+
+  social_test_status
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_test_status
+    lexeme en
+      surface
+        text test
+      surface
+        text ping
+      surface
+        text pong
+      surface
+        text testing
+      surface
+        text "test passed"
+      surface
+        text "testing 123"
+      surface
+        text "are you there"
+      surface
+        text "you there"
+      surface
+        text "i m here"
+      surface
+        text "i am here"
+    lexeme ru
+      surface
+        text тест
+      surface
+        text пинг
+      surface
+        text "я здесь"
+      surface
+        text "я тут"
+      surface
+        text "тест пройден"
+      surface
+        text "ты здесь"
+      surface
+        text "ты тут"
+      surface
+        text "вы здесь"
+      surface
+        text "вы тут"
+    lexeme hi
+      surface
+        text टेस्ट
+      surface
+        text परीक्षण
+      surface
+        text "परीक्षण सफल रहा"
+      surface
+        text "मैं यहाँ हूँ"
+      surface
+        text "मैं यहां हूं"
+      surface
+        text "क्या आप वहाँ हैं"
+      surface
+        text "क्या आप वहां हैं"
+    lexeme zh
+      surface
+        text 测试
+      surface
+        text 測試
+      surface
+        text 测试通过
+      surface
+        text 測試通過
+      surface
+        text 我在这里
+      surface
+        text 我在這裡
+      surface
+        text 你在吗
+      surface
+        text 您在吗
+      surface
+        text 你在嗎
+      surface
+        text 您在嗎
+    lexeme es
+      surface
+        text prueba
+      surface
+        text "prueba superada"
+      surface
+        text "estoy aquí"
+      surface
+        text "estoy aqui"
+      surface
+        text "estás ahí"
+      surface
+        text "estas ahi"
+      surface
+        text "sigues ahí"
+      surface
+        text "sigues ahi"
+
+  social_assistant_name
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_assistant_name
+    lexeme en
+      surface
+        text "what is your name"
+      surface
+        text "what s your name"
+      surface
+        text "what's your name"
+      surface
+        text "do you have a name"
+      surface
+        text "what should i call you"
+      surface
+        text "tell me your name"
+      surface
+        text "may i know your name"
+    lexeme ru
+      surface
+        text "как твое имя"
+      surface
+        text "как твоё имя"
+      surface
+        text "как тебя зовут"
+      surface
+        text "как вас зовут"
+      surface
+        text "у тебя есть имя"
+      surface
+        text "назови своё имя"
+      surface
+        text "назови свое имя"
+    lexeme hi
+      surface
+        text "आपका नाम क्या है"
+      surface
+        text "तुम्हारा नाम क्या है"
+      surface
+        text "क्या तुम्हारा कोई नाम है"
+      surface
+        text "मैं तुम्हें क्या कहूँ"
+      surface
+        text "अपना नाम बताओ"
+    lexeme zh
+      surface
+        text 你叫什么名字
+      surface
+        text 您叫什么名字
+      surface
+        text 你的名字是什么
+      surface
+        text 你有名字吗
+      surface
+        text "告诉我你的名字"
+    lexeme es
+      surface
+        text "cómo te llamas"
+      surface
+        text "cuál es tu nombre"
+      surface
+        text "cómo se llama usted"
+      surface
+        text "puedo saber tu nombre"
+
+  social_identity
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_identity
+    lexeme en
+      surface
+        text "who are you"
+      surface
+        text "what are you"
+      surface
+        text "who is formal ai"
+      surface
+        text "what is formal ai"
+      surface
+        text "who is formalai"
+      surface
+        text "what is formalai"
+      surface
+        text "tell me about yourself"
+      surface
+        text "introduce yourself"
+      surface
+        text "let s get acquainted"
+      surface
+        text "lets get acquainted"
+      surface
+        text "let us get acquainted"
+      surface
+        text "let s get to know each other"
+    lexeme ru
+      surface
+        text "кто ты"
+      surface
+        text "что ты"
+      surface
+        text "расскажи о себе"
+      surface
+        text "расскажи мне о себе"
+      surface
+        text "расскажи про себя"
+      surface
+        text "опиши себя"
+      surface
+        text представься
+      surface
+        text "давай знакомиться"
+      surface
+        text "давай познакомимся"
+      surface
+        text "давайте познакомимся"
+    lexeme hi
+      surface
+        text "तुम कौन हो"
+      surface
+        text "तू कौन है"
+      surface
+        text "आप कौन हैं"
+      surface
+        text "अपना परिचय दो"
+      surface
+        text "अपने बारे में बताओ"
+      surface
+        text "चलो परिचय करते हैं"
+      surface
+        text "आइए परिचय करें"
+      surface
+        text "चलो एक दूसरे को जानें"
+    lexeme zh
+      surface
+        text 你是谁
+      surface
+        text 您是谁
+      surface
+        text 你是什么
+      surface
+        text 介绍一下你自己
+      surface
+        text 告诉我你自己
+      surface
+        text 我们认识一下吧
+      surface
+        text 认识一下吧
+      surface
+        text 让我们认识一下
+    lexeme es
+      surface
+        text "quién eres"
+      surface
+        text "qué eres"
+      surface
+        text preséntate
+      surface
+        text "cuéntame de ti"
+
+  social_assistant_free_time
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_assistant_free_time
+    lexeme en
+      surface
+        text "what do you do in your free time"
+      surface
+        text "what do you do in free time"
+      surface
+        text "how do you spend your free time"
+      surface
+        text "what do you do when you are not working"
+      surface
+        text "how do you spend your spare time"
+    lexeme ru
+      surface
+        text "что делаешь в свободное время"
+      surface
+        text "что ты делаешь в свободное время"
+      surface
+        text "чем занимаешься в свободное время"
+      surface
+        text "чем ты занимаешься в свободное время"
+      surface
+        text "что делаешь когда свободен"
+      surface
+        text "как проводишь свободное время"
+    lexeme hi
+      surface
+        text "खाली समय में क्या करते हो"
+      surface
+        text "आप खाली समय में क्या करते हैं"
+      surface
+        text "फुर्सत में क्या करते हो"
+      surface
+        text "खाली वक्त में क्या करते हो"
+      surface
+        text "जब आप काम नहीं करते तो क्या करते हैं"
+    lexeme zh
+      surface
+        text 你空闲时间做什么
+      surface
+        text 你有空的时候做什么
+      surface
+        text 你业余时间做什么
+      surface
+        text 你休息的时候做什么
+      surface
+        text 你不工作的时候做什么
+    lexeme es
+      surface
+        text "qué haces en tu tiempo libre"
+      surface
+        text "cómo pasas tu tiempo libre"
+      surface
+        text "qué haces cuando no trabajas"
+

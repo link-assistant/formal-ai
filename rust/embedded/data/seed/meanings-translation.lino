@@ -1,0 +1,1304 @@
+meanings
+  human_language
+    grounded-in Q33742
+    defined-by concept
+    role translation_language_genus
+    lexeme en
+      surface
+        text language
+    lexeme ru
+      surface
+        text язык
+    lexeme hi
+      surface
+        text भाषा
+    lexeme zh
+      surface
+        text 语言
+  language_english
+    grounded-in Q1860
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
+        text english
+    lexeme ru
+      surface
+        text английский
+    lexeme hi
+      surface
+        text अंग्रेज़ी
+      surface
+        text अंग्रेजी
+    lexeme zh
+      surface
+        text 英语
+      surface
+        text 英文
+  language_russian
+    grounded-in Q7737
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
+        text russian
+    lexeme ru
+      surface
+        text русский
+    lexeme hi
+      surface
+        text रूसी
+    lexeme zh
+      surface
+        text 俄语
+  language_hindi
+    grounded-in Q1568
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
+        text hindi
+    lexeme ru
+      surface
+        text хинди
+    lexeme hi
+      surface
+        text हिंदी
+      surface
+        text हिन्दी
+    lexeme zh
+      surface
+        text 印地语
+  language_chinese
+    grounded-in Q7850
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
+        text chinese
+    lexeme ru
+      surface
+        text китайский
+    lexeme hi
+      surface
+        text चीनी
+    lexeme zh
+      surface
+        text 中文
+      surface
+        text 汉语
+      surface
+        text 漢語
+  language_spanish
+    grounded-in Q1321
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
+        text spanish
+    lexeme ru
+      surface
+        text испанский
+    lexeme hi
+      surface
+        text स्पेनिश
+    lexeme zh
+      surface
+        text 西班牙语
+    lexeme es
+      surface
+        text español
+  translate
+    grounded-in Q7553
+    defined-by action
+    role translation_action
+    lexeme en
+      surface
+        text translate
+    lexeme ru
+      surface
+        text перевести
+      surface
+        text переведи
+      surface
+        text опиши
+    lexeme hi
+      surface
+        text अनुवाद
+    lexeme zh
+      surface
+        text 翻译
+      surface
+        text 翻譯
+  translation_direction_source
+    defined-by relation
+    role translation_source_direction
+    lexeme en
+      surface
+        text from
+    lexeme ru
+      surface
+        text с
+    lexeme hi
+      surface
+        text से
+    lexeme zh
+      surface
+        text 从
+  translation_direction_target
+    defined-by relation
+    role translation_target_direction
+    lexeme en
+      surface
+        text to
+    lexeme ru
+      surface
+        text на
+    lexeme hi
+      surface
+        text में
+    lexeme zh
+      surface
+        text 成
+      surface
+        text 为
+      surface
+        text 為
+      surface
+        text 到
+  response_language_english
+    defined-by language_english
+    role response_language_marker
+    lexeme en
+      surface
+        text "in english"
+      surface
+        text "in the english language"
+    lexeme ru
+      surface
+        text "на английском"
+      surface
+        text "на английском языке"
+      surface
+        text "по-английски"
+    lexeme hi
+      surface
+        text "अंग्रेजी में"
+      surface
+        text "अंग्रेज़ी में"
+    lexeme zh
+      surface
+        text 用英文
+      surface
+        text 用英语
+      surface
+        text 用英語
+    lexeme es
+      surface
+        text "en inglés"
+  response_language_russian
+    defined-by language_russian
+    role response_language_marker
+    lexeme en
+      surface
+        text "in russian"
+      surface
+        text "in the russian language"
+    lexeme ru
+      surface
+        text "на русском"
+      surface
+        text "на русском языке"
+      surface
+        text "по-русски"
+      surface
+        text "по русски"
+    lexeme hi
+      surface
+        text "रूसी में"
+    lexeme zh
+      surface
+        text 用俄语
+      surface
+        text 用俄語
+    lexeme es
+      surface
+        text "en ruso"
+  response_language_hindi
+    defined-by language_hindi
+    role response_language_marker
+    lexeme en
+      surface
+        text "in hindi"
+      surface
+        text "in the hindi language"
+    lexeme ru
+      surface
+        text "на хинди"
+      surface
+        text "на языке хинди"
+    lexeme hi
+      surface
+        text "हिंदी में"
+      surface
+        text "हिन्दी में"
+    lexeme zh
+      surface
+        text 用印地语
+      surface
+        text 用印地文
+    lexeme es
+      surface
+        text "en hindi"
+  response_language_chinese
+    defined-by language_chinese
+    role response_language_marker
+    lexeme en
+      surface
+        text "in chinese"
+      surface
+        text "in the chinese language"
+    lexeme ru
+      surface
+        text "на китайском"
+      surface
+        text "на китайском языке"
+    lexeme hi
+      surface
+        text "चीनी में"
+    lexeme zh
+      surface
+        text 用中文
+      surface
+        text 用汉语
+      surface
+        text 用漢語
+    lexeme es
+      surface
+        text "en chino"
+  response_language_spanish
+    defined-by language_spanish
+    role response_language_marker
+    lexeme en
+      surface
+        text "in spanish"
+      surface
+        text "in the spanish language"
+    lexeme ru
+      surface
+        text "на испанском"
+      surface
+        text "на испанском языке"
+    lexeme hi
+      surface
+        text "स्पेनिश में"
+    lexeme zh
+      surface
+        text 用西班牙语
+      surface
+        text 用西班牙文
+    lexeme es
+      surface
+        text "en español"
+  comprehension_failure
+    grounded-in Q46744 # wikidata understanding
+    defined-by concept
+    role comprehension_failure_marker
+    lexeme en
+      surface
+        text "do not understand"
+      surface
+        text "don't understand"
+      surface
+        text "dont understand"
+      surface
+        text "can't understand"
+      surface
+        text "cant understand"
+      surface
+        text "cannot understand"
+      surface
+        text "do not speak"
+      surface
+        text "don't speak"
+    lexeme ru
+      surface
+        text "не понимаю"
+      surface
+        text "ничего не понятно"
+    lexeme hi
+      surface
+        text "समझ नहीं"
+      surface
+        text "नहीं आती"
+      surface
+        text "समझ में नहीं"
+    lexeme zh
+      surface
+        text 不懂
+      surface
+        text 看不懂
+      surface
+        text 听不懂
+      surface
+        text 聽不懂
+  translate_from_english
+    defined-by language_english
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
+        text "from english"
+    lexeme ru
+      surface
+        text "с английского"
+    lexeme hi
+      surface
+        text "अंग्रेजी से"
+      surface
+        text "अंग्रेज़ी से"
+    lexeme zh
+      surface
+        text 从英语
+      surface
+        text 从英文
+  translate_from_russian
+    defined-by language_russian
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
+        text "from russian"
+    lexeme ru
+      surface
+        text "с русского"
+    lexeme hi
+      surface
+        text "रूसी से"
+    lexeme zh
+      surface
+        text 从俄语
+  translate_from_hindi
+    defined-by language_hindi
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
+        text "from hindi"
+    lexeme ru
+      surface
+        text "с хинди"
+    lexeme hi
+      surface
+        text "हिंदी से"
+      surface
+        text "हिन्दी से"
+    lexeme zh
+      surface
+        text 从印地语
+      surface
+        text 从印地文
+  translate_from_chinese
+    defined-by language_chinese
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
+        text "from chinese"
+    lexeme ru
+      surface
+        text "с китайского"
+    lexeme hi
+      surface
+        text "चीनी से"
+    lexeme zh
+      surface
+        text 从中文
+      surface
+        text 从汉语
+      surface
+        text 从漢語
+  translate_from_spanish
+    defined-by language_spanish
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
+        text "from spanish"
+    lexeme ru
+      surface
+        text "с испанского"
+    lexeme hi
+      surface
+        text "स्पेनिश से"
+    lexeme zh
+      surface
+        text 从西班牙语
+    lexeme es
+      surface
+        text "del español"
+  translate_into_english
+    defined-by language_english
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
+        text "to english"
+    lexeme ru
+      surface
+        text "на английский"
+      surface
+        text "на английском"
+    lexeme hi
+      surface
+        text "अंग्रेजी में"
+      surface
+        text "अंग्रेज़ी में"
+    lexeme zh
+      surface
+        text 成英文
+      surface
+        text 成英语
+      surface
+        text 为英文
+      surface
+        text 为英语
+      surface
+        text 為英文
+      surface
+        text 為英语
+      surface
+        text 到英文
+      surface
+        text 到英语
+  translate_into_russian
+    defined-by language_russian
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
+        text "to russian"
+    lexeme ru
+      surface
+        text "на русский"
+    lexeme hi
+      surface
+        text "रूसी में"
+    lexeme zh
+      surface
+        text 成俄语
+      surface
+        text 成俄語
+      surface
+        text 为俄语
+      surface
+        text 为俄語
+      surface
+        text 為俄语
+      surface
+        text 為俄語
+      surface
+        text 到俄语
+      surface
+        text 到俄語
+  translate_into_hindi
+    defined-by language_hindi
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
+        text "to hindi"
+    lexeme ru
+      surface
+        text "на хинди"
+    lexeme hi
+      surface
+        text "हिंदी में"
+      surface
+        text "हिन्दी में"
+    lexeme zh
+      surface
+        text 成印地语
+      surface
+        text 成印地文
+      surface
+        text 为印地语
+      surface
+        text 为印地文
+      surface
+        text 為印地语
+      surface
+        text 為印地文
+      surface
+        text 到印地语
+      surface
+        text 到印地文
+  translate_into_chinese
+    defined-by language_chinese
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
+        text "to chinese"
+    lexeme ru
+      surface
+        text "на китайский"
+    lexeme hi
+      surface
+        text "चीनी में"
+    lexeme zh
+      surface
+        text 成中文
+      surface
+        text 成汉语
+      surface
+        text 成漢語
+      surface
+        text 为中文
+      surface
+        text 为汉语
+      surface
+        text 为漢語
+      surface
+        text 為中文
+      surface
+        text 為汉语
+      surface
+        text 為漢語
+      surface
+        text 到中文
+      surface
+        text 到汉语
+      surface
+        text 到漢語
+  translate_into_spanish
+    defined-by language_spanish
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
+        text "to spanish"
+    lexeme ru
+      surface
+        text "на испанский"
+    lexeme hi
+      surface
+        text "स्पेनिश में"
+    lexeme zh
+      surface
+        text 到西班牙语
+    lexeme es
+      surface
+        text "al español"
+  translation_unquoted_frame
+    defined-by translate
+    defined-by translation_direction_target
+    role translation_unquoted_frame
+    lexeme en
+      surface
+        text "translate … to "
+      surface
+        text "… translate to "
+    lexeme ru
+      surface
+        text "переведи … на "
+      surface
+        text "… переведи на "
+    lexeme hi
+      surface
+        text अनुवाद
+    lexeme zh
+      surface
+        text 翻译
+      surface
+        text 翻譯
+      surface
+        text …翻译成
+      surface
+        text …翻譯成
+  translation_into_marker
+    defined-by translate
+    defined-by translation_direction_target
+    role translation_into_marker
+    lexeme en
+      surface
+        text "translate into"
+    lexeme ru
+      surface
+        text "перевести на"
+    lexeme hi
+      surface
+        text " में अनुवाद"
+      surface
+        text " मे अनुवाद"
+    lexeme zh
+      surface
+        text 翻译成
+      surface
+        text 翻译为
+      surface
+        text 翻译到
+      surface
+        text 翻譯成
+      surface
+        text 翻譯為
+      surface
+        text 翻譯到
+  translation_object_marker
+    defined-by relation
+    role translation_object_marker
+    lexeme en
+      surface
+        text of
+    lexeme ru
+      surface
+        text слова
+    lexeme hi
+      surface
+        text " का "
+      surface
+        text " को "
+    lexeme zh
+      surface
+        text 把
+      surface
+        text 将
+  definition_command
+    defined-by action
+    role definition_command
+    lexeme en
+      surface
+        text define
+      surface
+        text "give a definition of"
+    lexeme ru
+      surface
+        text определи
+      surface
+        text "дай определение"
+    lexeme hi
+      surface
+        text "परिभाषित करें"
+    lexeme zh
+      surface
+        text 定义
+  links_notation_format
+    defined-by concept
+    role links_notation_format
+    lexeme en
+      surface
+        text "links notation"
+    lexeme ru
+      surface
+        text "в links"
+    lexeme hi
+      surface
+        text "लिंक्स नोटेशन"
+    lexeme zh
+      surface
+        text 链接表示法
+  apple
+    grounded-in Q89
+    defined-by entity
+    role compositional_lemma
+    source-lexeme L3257 # wikidata english source lexeme
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L3257-F1 # wikidata form apple
+        feature Q110786 # wikidata grammatical feature
+      form L3257-F2 # wikidata form apples
+        feature Q146786 # wikidata grammatical feature
+      sense L3257-S1 # wikidata grounded sense
+    surface L3257-F1 # wikidata english surface
+      text apple
+      language en
+      sense L3257-S1 # wikidata grounded sense
+    lexeme ru
+      surface
+        text яблоко
+      surface
+        text яблока
+      surface
+        text яблоку
+      surface
+        text яблоком
+      surface
+        text яблоке
+      surface
+        text яблоки
+      surface
+        text яблок
+      surface
+        text яблокам
+      surface
+        text яблоками
+      surface
+        text яблоках
+    lexeme hi
+      surface
+        text सेब
+    lexeme zh
+      surface
+        text 苹果
+    lexeme es
+      surface
+        text manzana
+  greeting_hello
+    grounded-in Q98815142
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text hello
+    lexeme ru
+      surface
+        text привет
+      surface
+        text здравствуйте
+    lexeme hi
+      surface
+        text नमस्ते
+    lexeme zh
+      surface
+        text 你好
+    lexeme es
+      surface
+        text hola
+  gratitude_thank_you
+    grounded-in Q2728730
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text "thank you"
+      surface
+        text thanks
+    lexeme ru
+      surface
+        text спасибо
+    lexeme hi
+      surface
+        text धन्यवाद
+    lexeme zh
+      surface
+        text 谢谢
+      surface
+        text 謝謝
+    lexeme es
+      surface
+        text gracias
+  affirmation_yes
+    grounded-in Q6452715
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text yes
+    lexeme ru
+      surface
+        text да
+    lexeme hi
+      surface
+        text हाँ
+    lexeme zh
+      surface
+        text 是
+    lexeme es
+      surface
+        text sí
+  negation_no
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text no
+    lexeme ru
+      surface
+        text нет
+    lexeme hi
+      surface
+        text नहीं
+    lexeme zh
+      surface
+        text 不
+  tomato
+    grounded-in Q23501
+    defined-by entity
+    role compositional_lemma
+    source-lexeme L7993 # wikidata english source lexeme
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L7993-F1 # wikidata form tomato
+        feature Q110786 # wikidata grammatical feature singular
+      form L7993-F2 # wikidata form tomatoes
+        feature Q146786 # wikidata grammatical feature plural
+      sense L7993-S1 # wikidata grounded sense
+    surface L7993-F1 # wikidata english singular surface
+      text tomato
+      language en
+      part_of_speech noun
+      grammatical_number singular
+      sense L7993-S1 # wikidata grounded sense
+    surface L7993-F2 # wikidata english plural surface
+      text tomatoes
+      language en
+      part_of_speech noun
+      grammatical_number plural
+      sense L7993-S1 # wikidata grounded sense
+    source-lexeme L3526 # wikidata russian source lexeme помидор
+      language Q7737 # wikidata language russian
+      lexical-category Q1084 # wikidata category noun
+      form L3526-F1 # wikidata form помидор
+        feature Q110786 # wikidata grammatical feature singular
+      form L3526-F3 # wikidata form помидоры
+        feature Q146786 # wikidata grammatical feature plural
+      sense L3526-S1 # wikidata grounded sense
+    surface L3526-F1 # wikidata russian singular surface помидор
+      text помидор
+      language ru
+      part_of_speech noun
+      grammatical_number singular
+      sense L3526-S1 # wikidata grounded sense
+    surface L3526-F3 # wikidata russian plural surface помидоры
+      text помидоры
+      language ru
+      part_of_speech noun
+      grammatical_number plural
+      sense L3526-S1 # wikidata grounded sense
+    source-lexeme L170542 # wikidata russian source lexeme томат
+      language Q7737 # wikidata language russian
+      lexical-category Q1084 # wikidata category noun
+      form L170542-F1 # wikidata form томат
+        feature Q110786 # wikidata grammatical feature singular
+      form L170542-F7 # wikidata form томаты
+        feature Q146786 # wikidata grammatical feature plural
+    surface L170542-F1 # wikidata russian singular surface томат
+      text томат
+      language ru
+      part_of_speech noun
+      grammatical_number singular
+    surface L170542-F7 # wikidata russian plural surface томаты
+      text томаты
+      language ru
+      part_of_speech noun
+      grammatical_number plural
+    lexeme hi
+      surface
+        text टमाटर
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 番茄
+        part_of_speech noun
+      surface
+        text 西红柿
+        part_of_speech noun
+  cucumber
+    grounded-in Q2735883
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text cucumber
+    lexeme ru
+      surface
+        text огурец
+    lexeme hi
+      surface
+        text खीरा
+    lexeme zh
+      surface
+        text 黄瓜
+  potato
+    grounded-in Q10998
+    defined-by entity
+    role compositional_lemma
+    source-lexeme L3784 # wikidata english source lexeme
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L3784-F1 # wikidata form potato
+        feature Q110786 # wikidata grammatical feature singular
+      form L3784-F2 # wikidata form potatoes
+        feature Q146786 # wikidata grammatical feature plural
+      sense L3784-S1 # wikidata grounded sense
+    surface L3784-F1 # wikidata english singular surface
+      text potato
+      language en
+      part_of_speech noun
+      grammatical_number singular
+      sense L3784-S1 # wikidata grounded sense
+    surface L3784-F2 # wikidata english plural surface
+      text potatoes
+      language en
+      part_of_speech noun
+      grammatical_number plural
+      sense L3784-S1 # wikidata grounded sense
+    lexeme ru
+      surface
+        text картофель
+        part_of_speech noun
+      surface
+        text картошка
+        part_of_speech noun
+    lexeme hi
+      surface
+        text आलू
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 土豆
+        part_of_speech noun
+      surface
+        text 马铃薯
+        part_of_speech noun
+  carrot
+    grounded-in Q81
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text carrot
+    lexeme ru
+      surface
+        text морковь
+    lexeme hi
+      surface
+        text गाजर
+    lexeme zh
+      surface
+        text 胡萝卜
+  bread
+    grounded-in Q7802
+    defined-by entity
+    role compositional_lemma
+    source-lexeme L3865 # wikidata english source lexeme
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L3865-F1 # wikidata form bread
+        feature Q110786 # wikidata grammatical feature
+      form L3865-F2 # wikidata form breads
+        feature Q146786 # wikidata grammatical feature
+      sense L3865-S1 # wikidata grounded sense
+    surface L3865-F1 # wikidata english surface
+      text bread
+      language en
+      sense L3865-S1 # wikidata grounded sense
+    lexeme ru
+      surface
+        text хлеб
+    lexeme hi
+      surface
+        text रोटी
+    lexeme zh
+      surface
+        text 面包
+    lexeme es
+      surface
+        text pan
+  water
+    grounded-in Q283
+    defined-by entity
+    role compositional_lemma
+    source-lexeme L3302 # wikidata english source lexeme
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L3302-F1 # wikidata form water
+        feature Q110786 # wikidata grammatical feature
+      form L3302-F2 # wikidata form waters
+        feature Q146786 # wikidata grammatical feature
+      sense L3302-S1 # wikidata grounded sense
+    surface L3302-F1 # wikidata english surface
+      text water
+      language en
+      sense L3302-S1 # wikidata grounded sense
+    lexeme ru
+      surface
+        text вода
+    lexeme hi
+      surface
+        text पानी
+    lexeme zh
+      surface
+        text 水
+    lexeme es
+      surface
+        text agua
+  good
+    defined-by property
+    role compositional_lemma
+    lexeme en
+      surface
+        text good
+    lexeme ru
+      surface
+        text доброе
+      surface
+        text добрый
+      surface
+        text добрая
+      surface
+        text добрые
+      surface
+        text доброго
+      surface
+        text добрую
+      surface
+        text добрым
+      surface
+        text хорошее
+      surface
+        text хороший
+      surface
+        text хорошая
+      surface
+        text хорошие
+      surface
+        text хорошего
+      surface
+        text хорошую
+      surface
+        text хорошим
+    lexeme hi
+      surface
+        text अच्छा
+    lexeme zh
+      surface
+        text 好
+  find
+    defined-by action
+    role compositional_lemma
+    lexeme en
+      surface
+        text find
+    lexeme ru
+      surface
+        text найди
+      surface
+        text найдите
+      surface
+        text найти
+    lexeme hi
+      surface
+        text खोजें
+    lexeme zh
+      surface
+        text 查找
+  synonym
+    grounded-in Q42106
+    defined-by concept
+    role compositional_lemma
+    role compositional_genitive_head
+    lexeme en
+      surface
+        text synonyms
+    lexeme ru
+      surface
+        text синоним
+      surface
+        text синонимы
+      surface
+        text синонимов
+    lexeme hi
+      surface
+        text पर्यायवाची
+    lexeme zh
+      surface
+        text 同义词
+  example
+    grounded-in Q14944328
+    defined-by concept
+    role compositional_lemma
+    role compositional_genitive_head
+    lexeme en
+      surface
+        text examples
+    lexeme ru
+      surface
+        text пример
+      surface
+        text примеры
+      surface
+        text примеров
+    lexeme hi
+      surface
+        text उदाहरण
+    lexeme zh
+      surface
+        text 例子
+  agreement
+    defined-by concept
+    role compositional_lemma
+    lexeme en
+      surface
+        text agreement
+    lexeme ru
+      surface
+        text согласование
+      surface
+        text согласования
+        action genitive
+      surface
+        text согласованию
+      surface
+        text согласованием
+      surface
+        text согласовании
+    lexeme hi
+      surface
+        text सहमति
+    lexeme zh
+      surface
+        text 一致
+  conjunction_or
+    grounded-in Q1651704
+    defined-by relation
+    role compositional_lemma
+    lexeme en
+      surface
+        text or
+    lexeme ru
+      surface
+        text или
+    lexeme hi
+      surface
+        text या
+    lexeme zh
+      surface
+        text 或
+  who_are_you
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
+        text "Who are you?"
+    lexeme ru
+      surface
+        text "кто ты"
+      surface
+        text "кто ты такой"
+      surface
+        text "кто ты такая"
+      surface
+        text "кто вы"
+      surface
+        text "кто вы такой"
+      surface
+        text "кто вы такая"
+    lexeme hi
+      surface
+        text "आप कौन हैं"
+    lexeme zh
+      surface
+        text 你是谁
+  what_is_this
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
+        text "What is this?"
+    lexeme ru
+      surface
+        text "что это"
+      surface
+        text "что это такое"
+    lexeme hi
+      surface
+        text "यह क्या है"
+    lexeme zh
+      surface
+        text 这是什么
+  how_are_you
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
+        text "how are you"
+    lexeme ru
+      surface
+        text "как дела"
+    lexeme hi
+      surface
+        text "आप कैसे हैं"
+    lexeme zh
+      surface
+        text 你好吗
+  formal_system_incomplete_or_inconsistent
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
+        text "any formal system is either incomplete or inconsistent"
+    lexeme ru
+      surface
+        text "любая формальная система либо неполна, либо противоречива"
+    lexeme hi
+      surface
+        text "कोई भी औपचारिक प्रणाली या तो अपूर्ण होती है या असंगत"
+    lexeme zh
+      surface
+        text "任何形式系统要么是不完备的，要么是不一致的"
+  es
+    defined-by human_language
+    lexeme en
+      surface
+        text "Spanish language code"
+  full
+    defined-by concept
+    lexeme en
+      surface
+        text "full language protocol status"
+  partial
+    defined-by concept
+    lexeme en
+      surface
+        text "partial language protocol status"
+  explicit_gap
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit language gap policy"
+  explicit_language_context
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit language context detection"
+  language_gap
+    defined-by concept
+    lexeme en
+      surface
+        text "language coverage gap"
+  response_greeting_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish greeting response"
+  response_identity_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish identity response"
+  response_language_gap_en
+    defined-by concept
+    lexeme en
+      surface
+        text "English language gap response"
+  response_language_gap_ru
+    defined-by concept
+    lexeme en
+      surface
+        text "Russian language gap response"
+  response_language_gap_hi
+    defined-by concept
+    lexeme en
+      surface
+        text "Hindi language gap response"
+  response_language_gap_zh
+    defined-by concept
+    lexeme en
+      surface
+        text "Chinese language gap response"
+  response_language_gap_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish language gap response"

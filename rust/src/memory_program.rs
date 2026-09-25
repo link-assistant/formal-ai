@@ -22,7 +22,7 @@ pub use execution::{
     MemoryProgramAuthorization, MemoryProgramHalt, MemoryProgramOutcome, execute_memory_program,
 };
 
-const MEMORY_PROGRAMS_LINO: &str = include_str!("../../data/seed/memory-programs.lino");
+const MEMORY_PROGRAMS_LINO: &str = include_str!("../embedded/data/seed/memory-programs.lino");
 
 /// Explicit resource bounds carried by every compiled program and trace.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

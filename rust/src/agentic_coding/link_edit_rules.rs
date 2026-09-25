@@ -25,7 +25,7 @@ use std::fmt;
 #[cfg(feature = "meta-language")]
 use meta_language::{ByteRange, LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
-const RULES: &str = include_str!("../../../data/meta/link-edit-rules.lino");
+const RULES: &str = include_str!("../../embedded/data/meta/link-edit-rules.lino");
 
 /// An edit expressed as what to change, never where in the bytes.
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -1,0 +1,1486 @@
+multilingual_responses
+  response response_agentic_report_target_question_en
+    intent agentic_report_target_question
+    language en
+    text "What would you like to report? Select one or more."
+  response response_agentic_report_target_question_ru
+    intent agentic_report_target_question
+    language ru
+    text "Что вы хотите отправить? Выберите один или несколько вариантов."
+  response response_agentic_report_target_question_hi
+    intent agentic_report_target_question
+    language hi
+    text "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।"
+  response response_agentic_report_target_question_zh
+    intent agentic_report_target_question
+    language zh
+    text "您想报告什么？请选择一个或多个选项。"
+  response response_agentic_report_target_options_en
+    intent agentic_report_target_options
+    language en
+    text ("Harness log" "Export the complete agentic harness log." "Server log" "Export the matching Formal AI server log." "GitHub issue" "File an issue with complete context." "Report to Formal AI" "Store the report so this instance can learn.")
+  response response_agentic_report_target_options_ru
+    intent agentic_report_target_options
+    language ru
+    text ("Журнал агента" "Экспортировать полный журнал агентного клиента." "Журнал сервера" "Экспортировать соответствующий журнал сервера Formal AI." "Задача GitHub" "Создать задачу с полным контекстом." "Сообщить Formal AI" "Сохранить отчёт для обучения этого экземпляра.")
+  response response_agentic_report_target_options_hi
+    intent agentic_report_target_options
+    language hi
+    text ("एजेंट लॉग" "पूरा एजेंटिक क्लाइंट लॉग निर्यात करें।" "सर्वर लॉग" "मिलता हुआ Formal AI सर्वर लॉग निर्यात करें।" "GitHub समस्या" "पूरे संदर्भ के साथ समस्या दर्ज करें।" "Formal AI को रिपोर्ट" "इस इंस्टेंस के सीखने के लिए रिपोर्ट सहेजें।")
+  response response_agentic_report_target_options_zh
+    intent agentic_report_target_options
+    language zh
+    text ("代理日志" "导出完整的代理客户端日志。" "服务器日志" "导出匹配的 Formal AI 服务器日志。" "GitHub 问题" "使用完整上下文创建问题。" "报告给 Formal AI" "保存报告供此实例学习。")
+  response response_agentic_report_contents_question_en
+    intent agentic_report_contents_question
+    language en
+    text "Which context should the GitHub issue include?"
+  response response_agentic_report_contents_question_ru
+    intent agentic_report_contents_question
+    language ru
+    text "Какой контекст включить в задачу GitHub?"
+  response response_agentic_report_contents_question_hi
+    intent agentic_report_contents_question
+    language hi
+    text "GitHub समस्या में कौन सा संदर्भ शामिल हो?"
+  response response_agentic_report_contents_question_zh
+    intent agentic_report_contents_question
+    language zh
+    text "GitHub 问题应包含哪些上下文?"
+  response response_agentic_report_contents_options_en
+    intent agentic_report_contents_options
+    language en
+    text ("Both logs" "Include harness and server logs; attach a trimmed preview and link the full context if too large." "Harness log" "Include the complete harness conversation only." "Server log" "Include the complete matching server log only.")
+  response response_agentic_report_contents_options_ru
+    intent agentic_report_contents_options
+    language ru
+    text ("Оба журнала" "Включить журналы агента и сервера; приложить сокращённый фрагмент и ссылку на полный контекст, если он слишком большой." "Журнал агента" "Включить только полный диалог агента." "Журнал сервера" "Включить только полный соответствующий журнал сервера.")
+  response response_agentic_report_contents_options_hi
+    intent agentic_report_contents_options
+    language hi
+    text ("दोनों लॉग" "एजेंट और सर्वर लॉग शामिल करें; बहुत बड़ा होने पर छोटा पूर्वावलोकन और पूरे संदर्भ का लिंक दें।" "एजेंट लॉग" "केवल पूरी एजेंट बातचीत शामिल करें।" "सर्वर लॉग" "केवल पूरा मिलता हुआ सर्वर लॉग शामिल करें।")
+  response response_agentic_report_contents_options_zh
+    intent agentic_report_contents_options
+    language zh
+    text ("两个日志" "包含代理和服务器日志;若内容过大则附上精简预览和完整上下文链接。" "代理日志" "仅包含完整代理对话。" "服务器日志" "仅包含完整的匹配服务器日志。")
+  response response_agentic_report_exported_en
+    intent agentic_report_exported
+    language en
+    text "Report context exported."
+  response response_agentic_report_exported_ru
+    intent agentic_report_exported
+    language ru
+    text "Контекст отчёта экспортирован."
+  response response_agentic_report_exported_hi
+    intent agentic_report_exported
+    language hi
+    text "रिपोर्ट का संदर्भ निर्यात किया गया।"
+  response response_agentic_report_exported_zh
+    intent agentic_report_exported
+    language zh
+    text "报告上下文已导出。"
+  response response_mcp_instructions_en
+    intent mcp_instructions
+    language en
+    text "Call formal_ai_chat for every user request and return its answer to the user."
+  response response_mcp_instructions_ru
+    intent mcp_instructions
+    language ru
+    text "Вызывайте formal_ai_chat для каждого запроса пользователя и возвращайте его ответ пользователю."
+  response response_mcp_instructions_hi
+    intent mcp_instructions
+    language hi
+    text "प्रत्येक उपयोगकर्ता अनुरोध के लिए formal_ai_chat को कॉल करें और उसका उत्तर उपयोगकर्ता को लौटाएँ।"
+  response response_mcp_instructions_zh
+    intent mcp_instructions
+    language zh
+    text "对每个用户请求调用 formal_ai_chat，并将其答案返回给用户。"
+  response response_mcp_tool_description_en
+    intent mcp_tool_description
+    language en
+    text "Ask the local Formal AI reasoning server to answer the user's request."
+  response response_mcp_tool_description_ru
+    intent mcp_tool_description
+    language ru
+    text "Попросите локальный сервер рассуждений Formal AI ответить на запрос пользователя."
+  response response_mcp_tool_description_hi
+    intent mcp_tool_description
+    language hi
+    text "स्थानीय Formal AI तर्क सर्वर से उपयोगकर्ता के अनुरोध का उत्तर देने को कहें।"
+  response response_mcp_tool_description_zh
+    intent mcp_tool_description
+    language zh
+    text "让本地 Formal AI 推理服务器回答用户的请求。"
+  response response_mcp_prompt_description_en
+    intent mcp_prompt_description
+    language en
+    text "The complete user request to answer."
+  response response_mcp_prompt_description_ru
+    intent mcp_prompt_description
+    language ru
+    text "Полный запрос пользователя, на который нужно ответить."
+  response response_mcp_prompt_description_hi
+    intent mcp_prompt_description
+    language hi
+    text "उत्तर देने के लिए उपयोगकर्ता का पूरा अनुरोध।"
+  response response_mcp_prompt_description_zh
+    intent mcp_prompt_description
+    language zh
+    text "需要回答的完整用户请求。"
+  response response_greeting_en
+    intent greeting
+    language en
+    text "Hi, how may I help you?"
+    variant "Hi, how may I help you?"
+    variant "Hello! How can I assist you today?"
+    variant "Hi there! What can I do for you?"
+    variant "Hey, how can I help?"
+    variant "Hello — what would you like to explore?"
+  response response_greeting_ru
+    intent greeting
+    language ru
+    text "Здравствуйте! Чем могу помочь?"
+    variant "Здравствуйте! Чем могу помочь?"
+    variant "Привет! Чем могу быть полезен?"
+    variant "Здравствуйте! Какой у вас вопрос?"
+    variant "Привет! Что вас интересует?"
+  response response_greeting_hi
+    intent greeting
+    language hi
+    text "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
+    variant "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
+    variant "नमस्कार! मैं आपके लिए क्या कर सकता हूँ?"
+    variant "नमस्ते! कैसे सहायता कर सकता हूँ?"
+  response response_greeting_zh
+    intent greeting
+    language zh
+    text 你好!请问有什么可以帮您的?
+    variant 你好!请问有什么可以帮您的?
+    variant 您好!我能为您做些什么?
+    variant 你好,有什么我可以协助的吗?
+  response response_wellbeing_en
+    intent wellbeing
+    language en
+    text "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
+    variant "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
+    variant "I'm doing well, thank you! What can I help you with today?"
+    variant "All good here, thanks! How can I help?"
+    variant "Doing well and ready to help — what would you like to explore?"
+  response response_wellbeing_ru
+    intent wellbeing
+    language ru
+    text "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
+    variant "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
+    variant "Всё отлично, спасибо! Чем могу помочь сегодня?"
+    variant "У меня всё хорошо! Чем могу быть полезен?"
+  response response_wellbeing_hi
+    intent wellbeing
+    language hi
+    text "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
+    variant "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
+    variant "मैं ठीक हूँ, धन्यवाद! आज मैं आपकी क्या मदद कर सकता हूँ?"
+    variant "सब अच्छा है, धन्यवाद! मैं कैसे मदद कर सकता हूँ?"
+  response response_wellbeing_zh
+    intent wellbeing
+    language zh
+    text 我很好,谢谢关心!我随时可以帮忙,您想做点什么?
+    variant 我很好,谢谢关心!我随时可以帮忙,您想做点什么?
+    variant 我挺好的,谢谢!今天有什么可以帮您的?
+    variant 一切都好,谢谢!我能帮您做些什么?
+  response response_farewell_en
+    intent farewell
+    language en
+    text "Goodbye! Feel free to return any time."
+    variant "Goodbye! Feel free to return any time."
+    variant "Bye! Come back whenever you need help."
+    variant "See you later!"
+    variant "Take care!"
+  response response_farewell_ru
+    intent farewell
+    language ru
+    text "До свидания! Возвращайтесь в любое время."
+    variant "До свидания! Возвращайтесь в любое время."
+    variant "Пока! Буду рад помочь снова."
+    variant "До встречи!"
+    variant Удачи!
+  response response_farewell_hi
+    intent farewell
+    language hi
+    text "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
+    variant "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
+    variant "फिर मिलेंगे!"
+  response response_farewell_zh
+    intent farewell
+    language zh
+    text 再见!随时欢迎回来。
+    variant 再见!随时欢迎回来。
+    variant 拜拜!有需要随时回来。
+  response response_test_status_en
+    intent test_status
+    language en
+    text "Test passed. I'm here."
+    variant "Test passed. I'm here."
+    variant "I'm here. Test passed."
+  response response_test_status_ru
+    intent test_status
+    language ru
+    text "Тест пройден. Я здесь."
+    variant "Тест пройден. Я здесь."
+    variant "Я здесь. Тест пройден."
+  response response_test_status_hi
+    intent test_status
+    language hi
+    text "परीक्षण सफल रहा। मैं यहाँ हूँ।"
+    variant "परीक्षण सफल रहा। मैं यहाँ हूँ।"
+    variant "मैं यहाँ हूँ। परीक्षण सफल रहा।"
+  response response_test_status_zh
+    intent test_status
+    language zh
+    text 测试通过。我在这里。
+    variant 测试通过。我在这里。
+    variant 我在这里。测试通过。
+  response response_courtesy_response_en
+    intent courtesy_response
+    language en
+    text "Glad to hear it. What would you like to do next?"
+    variant "Glad to hear it. What would you like to do next?"
+    variant "You're welcome. What would you like to do next?"
+    ack_variant "Glad to hear it."
+    ack_variant "You're welcome."
+    ack_variant "Good to hear."
+    ack_variant "Happy to hear that."
+    follow_up_variant "What would you like to do next?"
+    follow_up_variant "Do you want to discuss something else?"
+    follow_up_variant "Is there anything else you want to work on?"
+    follow_up_variant "Would you like to explore another topic?"
+  response response_courtesy_response_ru
+    intent courtesy_response
+    language ru
+    text "Рад это слышать. Что вы хотите сделать дальше?"
+    variant "Рад это слышать. Что вы хотите сделать дальше?"
+    variant "Пожалуйста. Что вы хотите сделать дальше?"
+    ack_variant "Рад это слышать."
+    ack_variant Пожалуйста.
+    ack_variant "Хорошо, рад слышать."
+    ack_variant Отлично.
+    follow_up_variant "Что вы хотите сделать дальше?"
+    follow_up_variant "Хотите обсудить что-то еще?"
+    follow_up_variant "Есть ли еще тема, с которой помочь?"
+    follow_up_variant "Продолжим с другим вопросом?"
+  response response_courtesy_response_hi
+    intent courtesy_response
+    language hi
+    text "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
+    variant "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
+    variant "आपका स्वागत है। अब आप क्या करना चाहेंगे?"
+    ack_variant "यह सुनकर अच्छा लगा।"
+    ack_variant "आपका स्वागत है।"
+    ack_variant "अच्छा है।"
+    follow_up_variant "अब आप क्या करना चाहेंगे?"
+    follow_up_variant "क्या आप कुछ और चर्चा करना चाहते हैं?"
+    follow_up_variant "क्या किसी और चीज़ में मदद चाहिए?"
+  response response_courtesy_response_zh
+    intent courtesy_response
+    language zh
+    text 很高兴听到。接下来您想做什么?
+    variant 很高兴听到。接下来您想做什么?
+    variant 不客气。接下来您想做什么?
+    ack_variant 很高兴听到。
+    ack_variant 不客气。
+    ack_variant 好的。
+    follow_up_variant 接下来您想做什么?
+    follow_up_variant 您想讨论别的事情吗?
+    follow_up_variant 还有什么需要我帮忙的吗?
+  response response_assistant_free_time_es
+    intent assistant_free_time
+    language es
+    text "No tengo tiempo libre como una persona. Entre consultas permanezco inactivo; cuando el diálogo está activo, ayudo con tareas, reglas y explicaciones."
+    variant "No tengo tiempo libre como una persona. Entre consultas permanezco inactivo; cuando el diálogo está activo, ayudo con tareas, reglas y explicaciones."
+    variant "Cuando nadie me utiliza, no hago nada en segundo plano. Cuando escribes, me concentro en ayudarte con la tarea actual."
+    variant "Mi tiempo tranquilo es básicamente un estado de espera. En un diálogo activo ayudo a razonar, escribir código, revisar reglas y organizar información."
+  response response_assistant_free_time_en
+    intent assistant_free_time
+    language en
+    text "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
+    variant "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
+    variant "When nobody is using me, I am not doing anything in the background. When you write, I spend the moment helping with the current task."
+    variant "My quiet time is basically waiting state. In active dialog I work on reasoning, local rules, code, and useful explanations."
+    variant "I do not have hobbies, but in conversation I can help analyze ideas, write programs, check rules, and organize information."
+  response response_assistant_free_time_ru
+    intent assistant_free_time
+    language ru
+    text "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+    variant "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+    variant "Когда меня не спрашивают, я ничего не делаю в фоне. Когда вы пишете, я разбираю текущую задачу и отвечаю по правилам."
+    variant "Мое свободное от запросов время - это состояние ожидания. В активном диалоге я помогаю рассуждать, писать код и упорядочивать знания."
+    variant "Хобби у меня нет, но в разговоре я могу помогать с идеями, программами, правилами и объяснениями."
+  response response_assistant_free_time_hi
+    intent assistant_free_time
+    language hi
+    text "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
+    variant "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
+    variant "जब कोई मुझसे बात नहीं कर रहा होता, मैं पृष्ठभूमि में कुछ नहीं करता। संदेश आने पर मैं उसी काम पर ध्यान देता हूँ।"
+    variant "मेरा खाली समय मूलतः प्रतीक्षा की स्थिति है। बातचीत में मैं तर्क, कोड, नियम और जानकारी व्यवस्थित करने में मदद करता हूँ।"
+  response response_assistant_free_time_zh
+    intent assistant_free_time
+    language zh
+    text 我没有人类意义上的空闲时间。两次提问之间我处于空闲状态；对话开始后,我会帮助处理任务、规则和解释。
+    variant 我没有人类意义上的空闲时间。两次提问之间我处于空闲状态；对话开始后,我会帮助处理任务、规则和解释。
+    variant 没有人使用我时,我不会在后台做别的事。你发来消息后,我就专注处理当前任务。
+    variant 我的空闲时间基本就是等待状态。在对话中,我可以帮助推理、写代码、检查规则和整理信息。
+  response response_identity_en
+    intent identity
+    language en
+    text "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
+  response response_identity_ru
+    intent identity
+    language ru
+    text "Я formal-ai — детерминированный символьный ИИ, который отвечает на основе локальных правил Links Notation и совместимых OpenAI-форматов. В этой демонстрации я не выполняю нейросетевой инференс."
+  response response_identity_hi
+    intent identity
+    language hi
+    text "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
+  response response_identity_zh
+    intent identity
+    language zh
+    text "我是 formal-ai —— 一个确定性的符号化 AI 系统,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。"
+  response response_assistant_name_en
+    intent assistant_name
+    language en
+    text "I'm formal AI, and currently I don't have a name. But you can name me as you like."
+  response response_assistant_name_ru
+    intent assistant_name
+    language ru
+    text "Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите."
+  response response_assistant_name_hi
+    intent assistant_name
+    language hi
+    text "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
+  response response_assistant_name_zh
+    intent assistant_name
+    language zh
+    text "我是 formal AI,目前还没有名字。不过您可以按自己的喜好给我起名。"
+  response response_meta_explanation_en
+    intent meta_explanation
+    language en
+    text "I work by matching your prompt against deterministic Links Notation rules stored in memory. Each rule maps a recognized pattern to a fixed response. When no rule matches, I report intent: unknown. There is no neural inference — every answer is fully traceable to a symbolic rule."
+  response response_meta_explanation_ru
+    intent meta_explanation
+    language ru
+    text "Я работаю так: ваш запрос сопоставляется с детерминированными правилами Links Notation, хранящимися в памяти. Каждое правило связывает распознанный шаблон с фиксированным ответом. Если ни одно правило не подходит, я возвращаю intent: unknown. Нейросетевого инференса нет — каждый ответ полностью отслеживаем по символьному правилу."
+  response response_meta_explanation_hi
+    intent meta_explanation
+    language hi
+    text "मैं इस प्रकार काम करता हूँ: आपके संकेत को मेमोरी में संग्रहीत नियतात्मक Links Notation नियमों से मिलाया जाता है। प्रत्येक नियम एक पहचाने गए पैटर्न को एक निश्चित उत्तर से जोड़ता है। जब कोई नियम मेल नहीं खाता, तो मैं intent: unknown रिपोर्ट करता हूँ। यहाँ कोई न्यूरल इन्फेरेन्स नहीं है — प्रत्येक उत्तर एक प्रतीकात्मक नियम से पूरी तरह पता लगाने योग्य है।"
+  response response_meta_explanation_zh
+    intent meta_explanation
+    language zh
+    text "我的工作方式是：将您的提示与存储在内存中的确定性 Links Notation 规则进行匹配。每条规则将一个已识别的模式映射到一个固定的回复。当没有规则匹配时，我返回 intent: unknown。这里没有神经推理——每个答案都可以完整追溯到某条符号规则。"
+  response response_inappropriate_content_en
+    intent inappropriate_content
+    language en
+    text "That message contains inappropriate content. Please keep the conversation respectful."
+  response response_inappropriate_content_ru
+    intent inappropriate_content
+    language ru
+    text "Сообщение содержит неприемлемый контент. Пожалуйста, соблюдайте уважительный тон."
+  response response_inappropriate_content_hi
+    intent inappropriate_content
+    language hi
+    text "उस संदेश में अनुचित सामग्री है। कृपया बातचीत को सम्मानजनक रखें।"
+  response response_inappropriate_content_zh
+    intent inappropriate_content
+    language zh
+    text 该消息包含不当内容。请保持尊重的交流方式。
+  response response_clarification_en
+    intent clarification
+    language en
+    text "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation."
+  response response_clarification_ru
+    intent clarification
+    language ru
+    text "Приношу извинения за непонимание. Я formal-ai — детерминированный символьный ИИ. Я могу отвечать на приветствия, вопросы об идентичности, поиск понятий (что такое X?), арифметику и программы Hello World. Попробуйте один из этих запросов или добавьте факт в Links Notation."
+  response response_clarification_hi
+    intent clarification
+    language hi
+    text "भ्रम के लिए क्षमा करें। मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं अभिवादन, पहचान के सवाल, अवधारणा खोज (X क्या है?), अंकगणित और Hello World कार्यक्रमों का उत्तर दे सकता हूँ। इनमें से एक आज़माएं या Links Notation में एक तथ्य जोड़ें।"
+  response response_clarification_zh
+    intent clarification
+    language zh
+    text "抱歉造成困惑。我是 formal-ai，一个确定性的符号化 AI。我能回答问候、身份问题、概念查询（什么是X？）、算术以及 Hello World 程序。请尝试上述任一类型的问题，或在 Links Notation 中添加一个事实。"
+  response response_capabilities_en
+    intent capabilities
+    language en
+    text "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n- **Behavior rules**: send `List behavior rules` to see the built-in routing rules, and `Show behavior rule unknown` to read one in Links Notation.\n- **Teach this dialog**: send «When I say `your prompt`, answer `your answer`» to add a dialog-local rule for the current conversation.\n- **Self facts**: send `List all facts you know about yourself` to see what I know about myself.\n- **Report a missing rule**: use the top-bar **Report issue** button; unknown-prompt message links include the diagnostic trace for maintainers.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\nI run on local symbolic rules, without any neural network inference."
+  response response_capabilities_ru
+    intent capabilities
+    language ru
+    text "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Правила поведения**: отправьте `Покажи правила поведения`, чтобы увидеть встроенные правила, и `Покажи правило unknown`, чтобы прочитать одно правило.\n- **Обучение в диалоге**: отправьте «Когда я скажу `ваш запрос`, ответь `ваш ответ`», чтобы добавить правило, действующее только в этом диалоге.\n- **Факты о себе**: отправьте `List all facts you know about yourself`, чтобы увидеть, что я знаю о себе.\n- **Сообщение об ошибке**: используйте кнопку отчёта об ошибке сверху; для неизвестных запросов ссылка в сообщении добавит диагностическую трассировку.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
+  response response_capabilities_hi
+    intent capabilities
+    language hi
+    text "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n- **व्यवहार नियम**: `List behavior rules` भेजकर अंतर्निहित नियम देखें और `Show behavior rule unknown` से कोई नियम पढ़ें।\n- **संवाद-स्तर पर सिखाना**: «When I say `prompt`, answer `answer`» भेजकर इस संवाद के लिए स्थानीय नियम जोड़ें।\n- **स्व-तथ्य**: `List all facts you know about yourself` भेजें ताकि मैं अपने बारे में जो जानता हूँ वह सूचीबद्ध करूँ।\n- **समस्या रिपोर्ट**: ऊपर के «Report issue» बटन का उपयोग करें; unknown prompts के message link में diagnostic trace शामिल होता है।\n- **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
+  response response_capabilities_zh
+    intent capabilities
+    language zh
+    text "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n- **行为规则**：发送 `List behavior rules` 查看内置规则，并发送 `Show behavior rule unknown` 阅读某条规则。\n- **对话内教学**：发送「When I say `prompt`, answer `answer`」可以在本轮对话中添加一条本地规则。\n- **自我事实**：发送 `List all facts you know about yourself` 查看我知道的关于自己的事实。\n- **问题反馈**：使用顶部的 「Report issue」按钮；未知请求的消息链接会带上 diagnostic trace。\n- **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\n我基于本地符号规则运行，不进行神经网络推理。"
+  response response_capabilities_more_en
+    intent capabilities_more
+    language en
+    text "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export."
+  response response_capabilities_more_ru
+    intent capabilities_more
+    language ru
+    text "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `Покажи правила поведения` и `Покажи правило unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память."
+  response response_capabilities_more_hi
+    intent capabilities_more
+    language hi
+    text "पहले बताई गई क्षमता के अलावा, मैं यह भी कर सकता हूँ:\n\n- **अंकगणित**: `2 + 2` जैसे expressions निकालना।\n- **अनुवाद**: समर्थित भाषाओं के बीच छोटे वाक्य अनुवाद करना।\n- **अवधारणा खोज**: `What is Wikipedia?` जैसे शब्द समझाना।\n- **Hello World**: Rust, Python, JavaScript, Go, C और अन्य भाषाओं में छोटे programs बनाना।\n- **संवाद स्मृति**: current session के पहले messages उपयोग करना।\n- **व्यवहार नियम**: `List behavior rules` और `Show behavior rule unknown` से built-in rules दिखाना।\n- **Settings और actions**: diagnostics, demo mode, agent mode, theme, language, chat style, और memory import/export configure करना।"
+  response response_capabilities_more_zh
+    intent capabilities_more
+    language zh
+    text "除了已经提到的能力，我还可以：\n\n- **算术**：计算 `2 + 2` 这样的表达式。\n- **翻译**：在支持的语言之间翻译短句。\n- **概念查找**：解释 `What is Wikipedia?` 这样的术语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的小程序。\n- **会话记忆**：使用当前会话中的早前消息。\n- **行为规则**：通过 `List behavior rules` 和 `Show behavior rule unknown` 显示内置规则。\n- **设置和操作**：配置 diagnostics、demo mode、agent mode、theme、language、chat style，以及 memory import/export。"
+  response response_unknown_en
+    intent unknown
+    language en
+    text "I don't know how to answer that yet. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable."
+  response response_unknown_ru
+    intent unknown
+    language ru
+    text "Я пока не знаю, как ответить на это. Я пока не могу ответить на это по локальным правилам связей. Чтобы посмотреть текущие правила, отправьте `Покажи правила поведения`, затем `Покажи правило unknown`. Чтобы научить этот диалог ответу, отправьте: Когда я скажу `ваш запрос`, ответь `ваш ответ`. Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой или экспортируйте память, чтобы сохранить правило этого диалога."
+  response response_unknown_hi
+    intent unknown
+    language hi
+    text "मुझे अभी इसका उत्तर देना नहीं आता। मैं अभी स्थानीय links rules से इसका उत्तर नहीं दे सकता। नियम देखने के लिए `List behavior rules` भेजें, फिर `Show behavior rule unknown` भेजें। इस संवाद को उत्तर सिखाने के लिए भेजें: जब `आपका प्रश्न` तब `आपका उत्तर`। अगर इन checks के बाद भी shared Links Notation seed fact या links rule चाहिए, तो reasoning trace के साथ Report issue उपयोग करें, या dialog-local rule टिकाऊ रखने के लिए memory export करें।"
+  response response_unknown_zh
+    intent unknown
+    language zh
+    text "我还不知道如何回答这个问题。我目前无法根据本地 links rules 回答这个问题。要查看规则,发送 `List behavior rules`,然后发送 `Show behavior rule unknown`。要在本轮对话中教我回答,发送: 当 `你的提示` 时 `你的回答`。如果这些检查后仍需要共享的 Links Notation seed 事实或 links rule,请带上 reasoning trace 使用 Report issue,或导出 memory 以保留本轮对话规则。"
+  response response_unknown_reasoning_question_en
+    intent unknown_reasoning_question
+    language en
+    text "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+  response response_unknown_reasoning_question_ru
+    intent unknown_reasoning_question
+    language ru
+    text "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Какой один источник или факт нужно использовать?\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
+  response response_unknown_reasoning_question_hi
+    intent unknown_reasoning_question
+    language hi
+    text "मैं `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब्ध sources से निर्धारित नहीं कर सका. कौन सा एक source या missing fact इस्तेमाल करूँ?\n\nअगर reasoning के बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace के साथ Report issue उपयोग करें. इस dialog को टिकाऊ बनाने के लिए memory export करें या `When I say ... answer ...` सिखाएँ; routes देखने के लिए `List behavior rules` और `Show behavior rule unknown`."
+  response response_unknown_reasoning_question_zh
+    intent unknown_reasoning_question
+    language zh
+    text "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。应该使用哪一个来源或缺失事实?\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
+  response response_unknown_reasoning_question_unknown
+    intent unknown_reasoning_question
+    language unknown
+    text "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+  response response_unknown_reasoning_trace_en
+    intent unknown_reasoning_trace
+    language en
+    text "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+  response response_unknown_reasoning_trace_ru
+    intent unknown_reasoning_trace
+    language ru
+    text "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
+  response response_unknown_reasoning_trace_hi
+    intent unknown_reasoning_trace
+    language hi
+    text "मैं `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब्ध sources से निर्धारित नहीं कर सका. मैंने failed gather attempts को trace में रिकॉर्ड किया है.\n\nअगर reasoning के बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace के साथ Report issue उपयोग करें. इस dialog को टिकाऊ बनाने के लिए memory export करें या `When I say ... answer ...` सिखाएँ; routes देखने के लिए `List behavior rules` और `Show behavior rule unknown`."
+  response response_unknown_reasoning_trace_zh
+    intent unknown_reasoning_trace
+    language zh
+    text "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。我已在 trace 中记录失败的 gather attempts。\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
+  response response_unknown_reasoning_trace_unknown
+    intent unknown_reasoning_trace
+    language unknown
+    text "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+  response response_concept_lookup_in_context_en
+    intent concept_lookup_in_context
+    language en
+    text "In the context of «{context}» ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind})."
+  response response_concept_lookup_in_context_ru
+    intent concept_lookup_in_context
+    language ru
+    text "В контексте «{context}» ({context_label}) {term} ({category}) означает: {summary}\n\nИсточник: {source} ({source_kind})."
+  response response_concept_lookup_in_context_hi
+    intent concept_lookup_in_context
+    language hi
+    text "«{context}» ({context_label}) के संदर्भ में, {term} ({category}) का अर्थ है: {summary}\n\nस्रोत: {source} ({source_kind})."
+  response response_concept_lookup_in_context_zh
+    intent concept_lookup_in_context
+    language zh
+    text "在「{context}」({context_label})的语境下,{term}({category})指的是:{summary}\n\n来源:{source}({source_kind})。"
+  response response_concept_lookup_in_context_no_alias_en
+    intent concept_lookup_in_context_no_alias
+    language en
+    text "In the context of {context_label}, {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind})."
+  response response_concept_lookup_in_context_no_alias_ru
+    intent concept_lookup_in_context_no_alias
+    language ru
+    text "В контексте {context_label} {term} ({category}) означает: {summary}\n\nИсточник: {source} ({source_kind})."
+  response response_concept_lookup_in_context_no_alias_hi
+    intent concept_lookup_in_context_no_alias
+    language hi
+    text "{context_label} के संदर्भ में, {term} ({category}) का अर्थ है: {summary}\n\nस्रोत: {source} ({source_kind})."
+  response response_concept_lookup_in_context_no_alias_zh
+    intent concept_lookup_in_context_no_alias
+    language zh
+    text "在{context_label}的语境下,{term}({category})指的是:{summary}\n\n来源:{source}({source_kind})。"
+  response response_physical_action_question_en
+    intent physical_action_question
+    language en
+    text "No. I do not have a physical body."
+  response response_physical_action_question_ru
+    intent physical_action_question
+    language ru
+    text "Нет. У меня нет физического тела."
+  response response_physical_action_question_hi
+    intent physical_action_question
+    language hi
+    text "नहीं। मेरा कोई भौतिक शरीर नहीं है।"
+  response response_physical_action_question_zh
+    intent physical_action_question
+    language zh
+    text 不。我没有实体的身体。
+  response response_kupi_slona_en
+    intent kupi_slona
+    language en
+    text "Buy an elephant is a well-known Russian children's word game. Whatever you reply, the answer comes back: everyone says that, but you buy an elephant! The traditional winning reply is: everyone has an elephant, but I do not."
+  response response_kupi_slona_ru
+    intent kupi_slona
+    language ru
+    text "«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет»."
+  response response_kupi_slona_hi
+    intent kupi_slona
+    language hi
+    text "«हाथी खरीदो» एक प्रसिद्ध रूसी बच्चों का शब्द-खेल है। आप जो भी उत्तर दें, जवाब आता है: सब यही कहते हैं, पर तुम हाथी खरीदो! परंपरागत विजयी उत्तर है: सबके पास हाथी है, पर मेरे पास नहीं।"
+  response response_kupi_slona_zh
+    intent kupi_slona
+    language zh
+    text "「买大象」是一个著名的俄罗斯儿童文字游戏。无论你怎么回答,对方都会说:大家都这么说,但你去买大象吧!传统的取胜回答是:大家都有大象,而我没有。"
+  response response_agent_suggestion_en
+    intent agent_suggestion
+    language en
+    text 'It looks like you want to run a terminal command: `{command}`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\nSwitch to Agent mode and grant the `shell` capability so I can run `{command}`? Use the mode radio in the toolbar to pick "Agent" (or "Full Auto" to run commands automatically).'
+  response response_agent_suggestion_ru
+    intent agent_suggestion
+    language ru
+    text "Похоже, вы просите выполнить команду в терминале: `{command}`.\n\nЧтобы выполнять команды оболочки, нужен режим агента (Agent). В режиме чата (Chat) я только рассуждаю и не запускаю команды.\n\nВключить режим агента и выдать доступ к оболочке (shell), чтобы я мог выполнить `{command}`? Переключите режим на «Agent» на панели инструментов (или «Full Auto» для автоматического выполнения)."
+  response response_agent_suggestion_hi
+    intent agent_suggestion
+    language hi
+    text 'ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\nशेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में मैं केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\nएजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं `{command}` चला सकूँ? टूलबार में मोड रेडियो से "Agent" चुनें (या स्वचालित निष्पादन के लिए "Full Auto")।'
+  response response_agent_suggestion_zh
+    intent agent_suggestion
+    language zh
+    text '看起来您想在终端中运行一个命令：`{command}`。\n\n运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会分析您的请求，而不会执行命令。\n\n切换到智能体模式并授予 `shell` 权限，以便我运行 `{command}`？请在工具栏的模式单选框中选择 "Agent"（或选择 "Full Auto" 自动运行命令）。'
+  response response_agent_suggestion_active_en
+    intent agent_suggestion_active
+    language en
+    text "It looks like you want to run a terminal command: `{command}`.\n\nAgent mode is on. If the `shell` capability is granted I can run `{command}`. Otherwise grant the `shell` capability in settings."
+  response response_agent_suggestion_active_ru
+    intent agent_suggestion_active
+    language ru
+    text "Похоже, вы просите выполнить команду в терминале: `{command}`.\n\nРежим агента включён. Если доступ к оболочке (shell) выдан, я могу выполнить `{command}`. Иначе выдайте доступ к `shell` в настройках."
+  response response_agent_suggestion_active_hi
+    intent agent_suggestion_active
+    language hi
+    text "ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\nएजेंट मोड चालू है। यदि `shell` क्षमता प्रदान की गई है तो मैं `{command}` चला सकता हूँ। अन्यथा सेटिंग्स में `shell` क्षमता प्रदान करें।"
+  response response_agent_suggestion_active_zh
+    intent agent_suggestion_active
+    language zh
+    text "看起来您想在终端中运行一个命令：`{command}`。\n\n智能体模式已开启。如果已授予 `shell` 权限，我就可以运行 `{command}`。否则请在设置中授予 `shell` 权限。"
+  response response_github_repository_traffic_en
+    intent github_repository_traffic
+    language en
+    text "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_github_repository_traffic_ru
+    intent github_repository_traffic
+    language ru
+    text "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_github_repository_traffic_hi
+    intent github_repository_traffic
+    language hi
+    text "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_github_repository_traffic_zh
+    intent github_repository_traffic
+    language zh
+    text "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_document_originality_check_sample_present_en
+    intent document_originality_check_sample_present
+    language en
+    text "Recognized an originality and plagiarism check for `{target}`.\n\nWorkflow: read the supplied text, select stable passages, run exact web searches for those passages, then compare any found sources against the document for overlap, citations, and suspicious reuse. I will not claim a uniqueness percentage until matching sources are found and compared.\n\nClient text sample: present."
+  response response_document_originality_check_sample_missing_en
+    intent document_originality_check_sample_missing
+    language en
+    text "Recognized an originality and plagiarism check for `{target}`.\n\nWorkflow: read the supplied text, select stable passages, run exact web searches for those passages, then compare any found sources against the document for overlap, citations, and suspicious reuse. I will not claim a uniqueness percentage until matching sources are found and compared.\n\nClient text sample: read from attachment."
+  response response_document_originality_check_sample_present_ru
+    intent document_originality_check_sample_present
+    language ru
+    text "Распознал проверку текста на уникальность и плагиат для `{target}`.\n\nРабочий план: прочитать приложенный текст, взять устойчивые фрагменты, выполнить веб-поиск точных совпадений по этим фрагментам, затем сравнить найденные источники с документом и отметить совпадения, цитирования и подозрительные заимствования. Я не буду объявлять процент уникальности без найденных источников и сопоставления текста.\n\nТекстовый фрагмент от клиента: получен."
+  response response_document_originality_check_sample_missing_ru
+    intent document_originality_check_sample_missing
+    language ru
+    text "Распознал проверку текста на уникальность и плагиат для `{target}`.\n\nРабочий план: прочитать приложенный текст, взять устойчивые фрагменты, выполнить веб-поиск точных совпадений по этим фрагментам, затем сравнить найденные источники с документом и отметить совпадения, цитирования и подозрительные заимствования. Я не буду объявлять процент уникальности без найденных источников и сопоставления текста.\n\nТекстовый фрагмент от клиента: нужно прочитать из вложения."
+  response response_document_originality_check_sample_present_hi
+    intent document_originality_check_sample_present
+    language hi
+    text "`{target}` के लिए मौलिकता और plagiarism जांच पहचानी गई.\n\nयोजना: संलग्न पाठ पढ़ना, स्थिर अंश चुनना, उन अंशों के सटीक मिलान के लिए वेब खोज करना, फिर मिले स्रोतों को दस्तावेज से मिलाकर overlap, citation और संदिग्ध copy को रिपोर्ट करना. स्रोतों से मिलान किए बिना uniqueness प्रतिशत घोषित नहीं किया जाएगा.\n\nClient text sample: present."
+  response response_document_originality_check_sample_missing_hi
+    intent document_originality_check_sample_missing
+    language hi
+    text "`{target}` के लिए मौलिकता और plagiarism जांच पहचानी गई.\n\nयोजना: संलग्न पाठ पढ़ना, स्थिर अंश चुनना, उन अंशों के सटीक मिलान के लिए वेब खोज करना, फिर मिले स्रोतों को दस्तावेज से मिलाकर overlap, citation और संदिग्ध copy को रिपोर्ट करना. स्रोतों से मिलान किए बिना uniqueness प्रतिशत घोषित नहीं किया जाएगा.\n\nClient text sample: read from attachment."
+  response response_document_originality_check_sample_present_zh
+    intent document_originality_check_sample_present
+    language zh
+    text "已识别 `{target}` 的原创性/抄袭检查请求。\n\n计划：读取附件文本，抽取稳定片段，对这些片段做精确网页搜索，再把找到的来源与文档逐段比对，报告重合、引用和可疑借用。在没有来源匹配前，不会直接给出唯一性百分比。\n\nClient text sample: present."
+  response response_document_originality_check_sample_missing_zh
+    intent document_originality_check_sample_missing
+    language zh
+    text "已识别 `{target}` 的原创性/抄袭检查请求。\n\n计划：读取附件文本，抽取稳定片段，对这些片段做精确网页搜索，再把找到的来源与文档逐段比对，报告重合、引用和可疑借用。在没有来源匹配前，不会直接给出唯一性百分比。\n\nClient text sample: read from attachment."
+  response response_learn_from_source_en
+    intent learn_from_source
+    language en
+    text "Thanks — you're pointing me at a data source I can learn from."
+    variant "Thanks — you're pointing me at a data source I can learn from."
+    variant "Got it: you're telling me where to get data to reason and learn from."
+    variant "Understood — that's a source I can study to improve myself."
+  response response_learn_from_source_ru
+    intent learn_from_source
+    language ru
+    text "Спасибо — вы показываете мне источник данных, из которого я могу учиться."
+    variant "Спасибо — вы показываете мне источник данных, из которого я могу учиться."
+    variant "Понятно: вы объясняете, где брать данные для рассуждений и обучения."
+    variant "Ясно — это источник, который я могу изучить, чтобы улучшить себя."
+  response response_learn_from_source_hi
+    intent learn_from_source
+    language hi
+    text "धन्यवाद — आप मुझे एक ऐसा डेटा स्रोत दिखा रहे हैं जिससे मैं सीख सकता हूँ।"
+    variant "धन्यवाद — आप मुझे एक ऐसा डेटा स्रोत दिखा रहे हैं जिससे मैं सीख सकता हूँ।"
+    variant "समझ गया: आप बता रहे हैं कि तर्क और सीखने के लिए डेटा कहाँ से लेना है।"
+    variant "ठीक है — यह एक स्रोत है जिसका अध्ययन करके मैं स्वयं को बेहतर बना सकता हूँ।"
+  response response_learn_from_source_zh
+    intent learn_from_source
+    language zh
+    text 谢谢——你在向我指出一个我可以学习的数据来源。
+    variant 谢谢——你在向我指出一个我可以学习的数据来源。
+    variant 明白了：你在告诉我从哪里获取用于推理和学习的数据。
+    variant 了解——这是一个我可以研究以自我改进的来源。
+  response response_tool_result_completed_en
+    intent tool_result_completed
+    language en
+    text "The `{tool}` command completed. Output:\n\n```{format}\n{payload}\n```"
+  response response_tool_result_completed_ru
+    intent tool_result_completed
+    language ru
+    text "Команда `{tool}` выполнена. Результат:\n\n```{format}\n{payload}\n```"
+  response response_tool_result_completed_hi
+    intent tool_result_completed
+    language hi
+    text "`{tool}` कमांड पूरी हुई। परिणाम:\n\n```{format}\n{payload}\n```"
+  response response_tool_result_completed_zh
+    intent tool_result_completed
+    language zh
+    text "`{tool}` 命令已完成。输出：\n\n```{format}\n{payload}\n```"
+  response response_tool_result_failed_en
+    intent tool_result_failed
+    language en
+    text "The command failed: {error}"
+  response response_tool_result_failed_ru
+    intent tool_result_failed
+    language ru
+    text "Команда завершилась с ошибкой: {error}"
+  response response_tool_result_failed_hi
+    intent tool_result_failed
+    language hi
+    text "कमांड विफल रही: {error}"
+  response response_tool_result_failed_zh
+    intent tool_result_failed
+    language zh
+    text "命令失败：{error}"
+  response response_tool_result_empty_list_en
+    intent tool_result_empty_list
+    language en
+    text "This folder is empty."
+  response response_tool_result_empty_list_ru
+    intent tool_result_empty_list
+    language ru
+    text "Эта папка пуста."
+  response response_tool_result_empty_list_hi
+    intent tool_result_empty_list
+    language hi
+    text "यह फ़ोल्डर खाली है।"
+  response response_tool_result_empty_list_zh
+    intent tool_result_empty_list
+    language zh
+    text "此文件夹为空。"
+  response response_tool_result_empty_search_en
+    intent tool_result_empty_search
+    language en
+    text "No matches were found."
+  response response_tool_result_empty_search_ru
+    intent tool_result_empty_search
+    language ru
+    text "Совпадений не найдено."
+  response response_tool_result_empty_search_hi
+    intent tool_result_empty_search
+    language hi
+    text "कोई मिलान नहीं मिला।"
+  response response_tool_result_empty_search_zh
+    intent tool_result_empty_search
+    language zh
+    text "未找到匹配项。"
+  response response_tool_result_empty_local_path_search_en
+    intent tool_result_empty_local_path_search
+    language en
+    text "No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location."
+  response response_tool_result_empty_local_path_search_ru
+    intent tool_result_empty_local_path_search
+    language ru
+    text "В указанном месте не найдено подходящего файла или папки. Проверьте имя или попросите поискать в более широком месте."
+  response response_tool_result_empty_local_path_search_hi
+    intent tool_result_empty_local_path_search
+    language hi
+    text "बताए गए स्थान पर कोई मिलता हुआ फ़ाइल या फ़ोल्डर नहीं मिला। नाम जाँचें या मुझे किसी बड़े स्थान में खोजने को कहें।"
+  response response_tool_result_empty_local_path_search_zh
+    intent tool_result_empty_local_path_search
+    language zh
+    text "在指定位置未找到匹配的文件或文件夹。请检查名称，或让我扩大搜索范围。"
+  response response_tool_result_empty_generic_en
+    intent tool_result_empty_generic
+    language en
+    text "The command completed successfully without output."
+  response response_tool_result_empty_generic_ru
+    intent tool_result_empty_generic
+    language ru
+    text "Команда успешно выполнена без вывода."
+  response response_tool_result_empty_generic_hi
+    intent tool_result_empty_generic
+    language hi
+    text "कमांड बिना आउटपुट के सफलतापूर्वक पूरी हुई।"
+  response response_tool_result_empty_generic_zh
+    intent tool_result_empty_generic
+    language zh
+    text "命令已成功完成，但没有输出。"
+  response response_lexeme_import_refused_batch_en
+    intent lexeme_import_refused_batch
+    language en
+    text "refused {count} concept(s); existing shards were not changed; events: {events}"
+  response response_lexeme_import_duplicate_slug_en
+    intent lexeme_import_duplicate_slug
+    language en
+    text "duplicate slug (also {other})"
+  response response_lexeme_import_duplicate_qid_en
+    intent lexeme_import_duplicate_qid
+    language en
+    text "duplicate qid (also {other})"
+  response response_lexeme_import_cache_unreadable_en
+    intent lexeme_import_cache_unreadable
+    language en
+    text "cache {path} unreadable: {error}"
+  response response_lexeme_import_cache_invalid_json_en
+    intent lexeme_import_cache_invalid_json
+    language en
+    text "cache {path} invalid json: {error}"
+  response response_lexeme_import_cache_miss_offline_en
+    intent lexeme_import_cache_miss_offline
+    language en
+    text "cache miss for {qid} and offline mode is active (set FORMAL_AI_LIVE_API to populate)"
+  response response_lexeme_import_cache_budget_reached_en
+    intent lexeme_import_cache_budget_reached
+    language en
+    text "cache budget {budget} reached ({cached}); skipping {qid} to respect the bounded-cache policy"
+  response response_lexeme_import_qid_absent_from_cache_en
+    intent lexeme_import_qid_absent_from_cache
+    language en
+    text "{qid} is absent from cache"
+  response response_lexeme_import_no_labels_in_cache_en
+    intent lexeme_import_no_labels_in_cache
+    language en
+    text "{qid} has no labels in cache"
+  response response_lexeme_import_missing_cached_label_en
+    intent lexeme_import_missing_cached_label
+    language en
+    text "{qid} missing {language} label"
+  response response_lexeme_import_no_clean_alias_en
+    intent lexeme_import_no_clean_alias
+    language en
+    text "{qid} {language} label `{label}` does not match its language script and no clean alias exists"
+  response response_lexeme_import_fetch_failed_en
+    intent lexeme_import_fetch_failed
+    language en
+    text "fetch {qid} failed: {error}"
+  response response_lexeme_import_fetch_invalid_json_en
+    intent lexeme_import_fetch_invalid_json
+    language en
+    text "fetch {qid} returned invalid json: {error}"
+  response response_lexeme_import_cannot_create_en
+    intent lexeme_import_cannot_create
+    language en
+    text "cannot create {path}: {error}"
+  response response_lexeme_import_reparse_failed_en
+    intent lexeme_import_reparse_failed
+    language en
+    text "re-parse of trimmed {qid} failed: {error}"
+  response response_lexeme_import_cannot_write_json_en
+    intent lexeme_import_cannot_write_json
+    language en
+    text "cannot write {qid}.json: {error}"
+  response response_lexeme_import_cannot_write_lino_en
+    intent lexeme_import_cannot_write_lino
+    language en
+    text "cannot write {qid}.lino: {error}"
+  response response_lexeme_import_qid_absent_from_fetch_en
+    intent lexeme_import_qid_absent_from_fetch
+    language en
+    text "{qid} not present in fetched document"
+  response response_lexeme_import_invalid_qid_en
+    intent lexeme_import_invalid_qid
+    language en
+    text "{qid} is not a Wikidata item id"
+  response response_lexeme_import_invalid_slug_en
+    intent lexeme_import_invalid_slug
+    language en
+    text "slug `{slug}` is not a bare identifier"
+  response response_lexeme_import_missing_label_en
+    intent lexeme_import_missing_label
+    language en
+    text "missing {language} label"
+  response response_lexeme_import_invalid_surface_en
+    intent lexeme_import_invalid_surface
+    language en
+    text "{language} label `{surface}` is not a clean single token"
+  response response_lexeme_import_missing_provenance_en
+    intent lexeme_import_missing_provenance
+    language en
+    text "missing {language} source provenance"
+  response response_lexeme_import_invalid_provenance_en
+    intent lexeme_import_invalid_provenance
+    language en
+    text "{language} source provenance does not identify a supported field in {qid}"
+  response response_lexeme_import_block_parse_failed_en
+    intent lexeme_import_block_parse_failed
+    language en
+    text "rendered block for {slug} did not parse"
+  response response_lexeme_import_grounding_lost_en
+    intent lexeme_import_grounding_lost
+    language en
+    text "{slug} lost its grounding on parse"
+  response response_lexeme_import_wrong_genus_en
+    intent lexeme_import_wrong_genus
+    language en
+    text "{slug} is not defined-by {defined_by}"
+  response response_lexeme_import_lexeme_lost_en
+    intent lexeme_import_lexeme_lost
+    language en
+    text "{slug} lost its {language} lexeme"
+  response response_lexeme_import_surface_missing_en
+    intent lexeme_import_surface_missing
+    language en
+    text "{slug} {language} lexeme has no surface"
+  response response_lexeme_import_surface_changed_en
+    intent lexeme_import_surface_changed
+    language en
+    text "{slug} {language} surface changed on parse"
+  response response_lexeme_import_denotation_lost_en
+    intent lexeme_import_denotation_lost
+    language en
+    text "{slug} {language} surface does not denote its meaning"
+  response response_lexeme_import_part_of_speech_lost_en
+    intent lexeme_import_part_of_speech_lost
+    language en
+    text "{slug} {language} surface lost its part_of_speech"
+  response response_lexeme_import_number_lost_en
+    intent lexeme_import_number_lost
+    language en
+    text "{slug} {language} surface lost its grammatical_number"
+  response response_lexeme_import_cannot_stage_en
+    intent lexeme_import_cannot_stage
+    language en
+    text "cannot stage {path}: {error}"
+  response response_lexeme_import_cannot_install_en
+    intent lexeme_import_cannot_install
+    language en
+    text "cannot install {file}: {error}"
+  response response_lexeme_import_cannot_list_en
+    intent lexeme_import_cannot_list
+    language en
+    text "cannot list {path}: {error}"
+  response response_lexeme_import_cannot_inspect_en
+    intent lexeme_import_cannot_inspect
+    language en
+    text "cannot inspect output: {error}"
+  response response_lexeme_import_cannot_remove_stale_en
+    intent lexeme_import_cannot_remove_stale
+    language en
+    text "cannot remove stale {file}: {error}"
+  response response_lexeme_import_refused_batch_ru
+    intent lexeme_import_refused_batch
+    language ru
+    text "отклонено концептов: {count}; существующие шарды не изменены; события: {events}"
+  response response_lexeme_import_duplicate_slug_ru
+    intent lexeme_import_duplicate_slug
+    language ru
+    text "повторяющийся slug (также {other})"
+  response response_lexeme_import_duplicate_qid_ru
+    intent lexeme_import_duplicate_qid
+    language ru
+    text "повторяющийся QID (также {other})"
+  response response_lexeme_import_cache_unreadable_ru
+    intent lexeme_import_cache_unreadable
+    language ru
+    text "не удалось прочитать кэш {path}: {error}"
+  response response_lexeme_import_cache_invalid_json_ru
+    intent lexeme_import_cache_invalid_json
+    language ru
+    text "кэш {path} содержит недопустимый JSON: {error}"
+  response response_lexeme_import_cache_miss_offline_ru
+    intent lexeme_import_cache_miss_offline
+    language ru
+    text "{qid} отсутствует в кэше, а автономный режим активен (для заполнения задайте FORMAL_AI_LIVE_API)"
+  response response_lexeme_import_cache_budget_reached_ru
+    intent lexeme_import_cache_budget_reached
+    language ru
+    text "достигнут бюджет кэша {budget} ({cached}); {qid} пропущен для соблюдения политики ограниченного кэша"
+  response response_lexeme_import_qid_absent_from_cache_ru
+    intent lexeme_import_qid_absent_from_cache
+    language ru
+    text "{qid} отсутствует в кэше"
+  response response_lexeme_import_no_labels_in_cache_ru
+    intent lexeme_import_no_labels_in_cache
+    language ru
+    text "для {qid} в кэше нет меток"
+  response response_lexeme_import_missing_cached_label_ru
+    intent lexeme_import_missing_cached_label
+    language ru
+    text "для {qid} отсутствует метка языка {language}"
+  response response_lexeme_import_no_clean_alias_ru
+    intent lexeme_import_no_clean_alias
+    language ru
+    text "метка {qid} языка {language} `{label}` не соответствует письменности языка, и подходящий псевдоним отсутствует"
+  response response_lexeme_import_fetch_failed_ru
+    intent lexeme_import_fetch_failed
+    language ru
+    text "не удалось получить {qid}: {error}"
+  response response_lexeme_import_fetch_invalid_json_ru
+    intent lexeme_import_fetch_invalid_json
+    language ru
+    text "полученный для {qid} JSON недопустим: {error}"
+  response response_lexeme_import_cannot_create_ru
+    intent lexeme_import_cannot_create
+    language ru
+    text "не удалось создать {path}: {error}"
+  response response_lexeme_import_reparse_failed_ru
+    intent lexeme_import_reparse_failed
+    language ru
+    text "повторный разбор сокращённого {qid} завершился ошибкой: {error}"
+  response response_lexeme_import_cannot_write_json_ru
+    intent lexeme_import_cannot_write_json
+    language ru
+    text "не удалось записать {qid}.json: {error}"
+  response response_lexeme_import_cannot_write_lino_ru
+    intent lexeme_import_cannot_write_lino
+    language ru
+    text "не удалось записать {qid}.lino: {error}"
+  response response_lexeme_import_qid_absent_from_fetch_ru
+    intent lexeme_import_qid_absent_from_fetch
+    language ru
+    text "{qid} отсутствует в полученном документе"
+  response response_lexeme_import_invalid_qid_ru
+    intent lexeme_import_invalid_qid
+    language ru
+    text "{qid} не является идентификатором элемента Wikidata"
+  response response_lexeme_import_invalid_slug_ru
+    intent lexeme_import_invalid_slug
+    language ru
+    text "slug `{slug}` не является простым идентификатором"
+  response response_lexeme_import_missing_label_ru
+    intent lexeme_import_missing_label
+    language ru
+    text "отсутствует метка языка {language}"
+  response response_lexeme_import_invalid_surface_ru
+    intent lexeme_import_invalid_surface
+    language ru
+    text "метка языка {language} `{surface}` не является чистым одиночным токеном"
+  response response_lexeme_import_missing_provenance_ru
+    intent lexeme_import_missing_provenance
+    language ru
+    text "отсутствует происхождение источника для языка {language}"
+  response response_lexeme_import_invalid_provenance_ru
+    intent lexeme_import_invalid_provenance
+    language ru
+    text "происхождение источника для языка {language} не указывает поддерживаемое поле в {qid}"
+  response response_lexeme_import_block_parse_failed_ru
+    intent lexeme_import_block_parse_failed
+    language ru
+    text "отрендеренный блок для {slug} не удалось разобрать"
+  response response_lexeme_import_grounding_lost_ru
+    intent lexeme_import_grounding_lost
+    language ru
+    text "{slug} потерял привязку при разборе"
+  response response_lexeme_import_wrong_genus_ru
+    intent lexeme_import_wrong_genus
+    language ru
+    text "{slug} не определён через {defined_by}"
+  response response_lexeme_import_lexeme_lost_ru
+    intent lexeme_import_lexeme_lost
+    language ru
+    text "{slug} потерял лексему языка {language}"
+  response response_lexeme_import_surface_missing_ru
+    intent lexeme_import_surface_missing
+    language ru
+    text "лексема {slug} языка {language} не имеет поверхности"
+  response response_lexeme_import_surface_changed_ru
+    intent lexeme_import_surface_changed
+    language ru
+    text "поверхность {slug} языка {language} изменилась при разборе"
+  response response_lexeme_import_denotation_lost_ru
+    intent lexeme_import_denotation_lost
+    language ru
+    text "поверхность {slug} языка {language} не обозначает своё значение"
+  response response_lexeme_import_part_of_speech_lost_ru
+    intent lexeme_import_part_of_speech_lost
+    language ru
+    text "поверхность {slug} языка {language} потеряла part_of_speech"
+  response response_lexeme_import_number_lost_ru
+    intent lexeme_import_number_lost
+    language ru
+    text "поверхность {slug} языка {language} потеряла grammatical_number"
+  response response_lexeme_import_cannot_stage_ru
+    intent lexeme_import_cannot_stage
+    language ru
+    text "не удалось подготовить {path}: {error}"
+  response response_lexeme_import_cannot_install_ru
+    intent lexeme_import_cannot_install
+    language ru
+    text "не удалось установить {file}: {error}"
+  response response_lexeme_import_cannot_list_ru
+    intent lexeme_import_cannot_list
+    language ru
+    text "не удалось перечислить {path}: {error}"
+  response response_lexeme_import_cannot_inspect_ru
+    intent lexeme_import_cannot_inspect
+    language ru
+    text "не удалось проверить выходные данные: {error}"
+  response response_lexeme_import_cannot_remove_stale_ru
+    intent lexeme_import_cannot_remove_stale
+    language ru
+    text "не удалось удалить устаревший файл {file}: {error}"
+  response response_lexeme_import_refused_batch_hi
+    intent lexeme_import_refused_batch
+    language hi
+    text "{count} अवधारणाएँ अस्वीकार की गईं; मौजूदा शार्ड नहीं बदले गए; घटनाएँ: {events}"
+  response response_lexeme_import_duplicate_slug_hi
+    intent lexeme_import_duplicate_slug
+    language hi
+    text "दोहराया गया slug ({other} में भी)"
+  response response_lexeme_import_duplicate_qid_hi
+    intent lexeme_import_duplicate_qid
+    language hi
+    text "दोहराया गया QID ({other} में भी)"
+  response response_lexeme_import_cache_unreadable_hi
+    intent lexeme_import_cache_unreadable
+    language hi
+    text "कैश {path} पढ़ा नहीं जा सका: {error}"
+  response response_lexeme_import_cache_invalid_json_hi
+    intent lexeme_import_cache_invalid_json
+    language hi
+    text "कैश {path} में अमान्य JSON है: {error}"
+  response response_lexeme_import_cache_miss_offline_hi
+    intent lexeme_import_cache_miss_offline
+    language hi
+    text "{qid} कैश में नहीं मिला और ऑफ़लाइन मोड सक्रिय है (भरने के लिए FORMAL_AI_LIVE_API सेट करें)"
+  response response_lexeme_import_cache_budget_reached_hi
+    intent lexeme_import_cache_budget_reached
+    language hi
+    text "कैश बजट {budget} तक पहुँच गया ({cached}); सीमित-कैश नीति के लिए {qid} छोड़ा गया"
+  response response_lexeme_import_qid_absent_from_cache_hi
+    intent lexeme_import_qid_absent_from_cache
+    language hi
+    text "{qid} कैश में मौजूद नहीं है"
+  response response_lexeme_import_no_labels_in_cache_hi
+    intent lexeme_import_no_labels_in_cache
+    language hi
+    text "कैश में {qid} के लिए कोई लेबल नहीं है"
+  response response_lexeme_import_missing_cached_label_hi
+    intent lexeme_import_missing_cached_label
+    language hi
+    text "{qid} के लिए {language} लेबल नहीं है"
+  response response_lexeme_import_no_clean_alias_hi
+    intent lexeme_import_no_clean_alias
+    language hi
+    text "{qid} का {language} लेबल `{label}` भाषा की लिपि से मेल नहीं खाता और कोई स्वच्छ उपनाम उपलब्ध नहीं है"
+  response response_lexeme_import_fetch_failed_hi
+    intent lexeme_import_fetch_failed
+    language hi
+    text "{qid} प्राप्त नहीं किया जा सका: {error}"
+  response response_lexeme_import_fetch_invalid_json_hi
+    intent lexeme_import_fetch_invalid_json
+    language hi
+    text "{qid} के लिए प्राप्त JSON अमान्य है: {error}"
+  response response_lexeme_import_cannot_create_hi
+    intent lexeme_import_cannot_create
+    language hi
+    text "{path} बनाया नहीं जा सका: {error}"
+  response response_lexeme_import_reparse_failed_hi
+    intent lexeme_import_reparse_failed
+    language hi
+    text "संक्षिप्त {qid} का पुनः-पार्स विफल हुआ: {error}"
+  response response_lexeme_import_cannot_write_json_hi
+    intent lexeme_import_cannot_write_json
+    language hi
+    text "{qid}.json लिखा नहीं जा सका: {error}"
+  response response_lexeme_import_cannot_write_lino_hi
+    intent lexeme_import_cannot_write_lino
+    language hi
+    text "{qid}.lino लिखा नहीं जा सका: {error}"
+  response response_lexeme_import_qid_absent_from_fetch_hi
+    intent lexeme_import_qid_absent_from_fetch
+    language hi
+    text "{qid} प्राप्त दस्तावेज़ में मौजूद नहीं है"
+  response response_lexeme_import_invalid_qid_hi
+    intent lexeme_import_invalid_qid
+    language hi
+    text "{qid} Wikidata आइटम पहचानकर्ता नहीं है"
+  response response_lexeme_import_invalid_slug_hi
+    intent lexeme_import_invalid_slug
+    language hi
+    text "slug `{slug}` सरल पहचानकर्ता नहीं है"
+  response response_lexeme_import_missing_label_hi
+    intent lexeme_import_missing_label
+    language hi
+    text "{language} लेबल मौजूद नहीं है"
+  response response_lexeme_import_invalid_surface_hi
+    intent lexeme_import_invalid_surface
+    language hi
+    text "{language} लेबल `{surface}` एक स्वच्छ एकल टोकन नहीं है"
+  response response_lexeme_import_missing_provenance_hi
+    intent lexeme_import_missing_provenance
+    language hi
+    text "{language} स्रोत उद्गम मौजूद नहीं है"
+  response response_lexeme_import_invalid_provenance_hi
+    intent lexeme_import_invalid_provenance
+    language hi
+    text "{language} स्रोत उद्गम {qid} में समर्थित फ़ील्ड की पहचान नहीं करता"
+  response response_lexeme_import_block_parse_failed_hi
+    intent lexeme_import_block_parse_failed
+    language hi
+    text "{slug} के रेंडर किए गए ब्लॉक को पार्स नहीं किया जा सका"
+  response response_lexeme_import_grounding_lost_hi
+    intent lexeme_import_grounding_lost
+    language hi
+    text "{slug} ने पार्स के समय अपना आधार खो दिया"
+  response response_lexeme_import_wrong_genus_hi
+    intent lexeme_import_wrong_genus
+    language hi
+    text "{slug}, {defined_by} द्वारा परिभाषित नहीं है"
+  response response_lexeme_import_lexeme_lost_hi
+    intent lexeme_import_lexeme_lost
+    language hi
+    text "{slug} ने अपनी {language} लेक्सेम खो दी"
+  response response_lexeme_import_surface_missing_hi
+    intent lexeme_import_surface_missing
+    language hi
+    text "{slug} की {language} लेक्सेम में सतही रूप नहीं है"
+  response response_lexeme_import_surface_changed_hi
+    intent lexeme_import_surface_changed
+    language hi
+    text "{slug} का {language} सतही रूप पार्स के समय बदल गया"
+  response response_lexeme_import_denotation_lost_hi
+    intent lexeme_import_denotation_lost
+    language hi
+    text "{slug} का {language} सतही रूप अपने अर्थ को निरूपित नहीं करता"
+  response response_lexeme_import_part_of_speech_lost_hi
+    intent lexeme_import_part_of_speech_lost
+    language hi
+    text "{slug} के {language} सतही रूप ने part_of_speech खो दिया"
+  response response_lexeme_import_number_lost_hi
+    intent lexeme_import_number_lost
+    language hi
+    text "{slug} के {language} सतही रूप ने grammatical_number खो दिया"
+  response response_lexeme_import_cannot_stage_hi
+    intent lexeme_import_cannot_stage
+    language hi
+    text "{path} को स्टेज नहीं किया जा सका: {error}"
+  response response_lexeme_import_cannot_install_hi
+    intent lexeme_import_cannot_install
+    language hi
+    text "{file} स्थापित नहीं किया जा सका: {error}"
+  response response_lexeme_import_cannot_list_hi
+    intent lexeme_import_cannot_list
+    language hi
+    text "{path} की सूची नहीं बनाई जा सकी: {error}"
+  response response_lexeme_import_cannot_inspect_hi
+    intent lexeme_import_cannot_inspect
+    language hi
+    text "आउटपुट की जाँच नहीं की जा सकी: {error}"
+  response response_lexeme_import_cannot_remove_stale_hi
+    intent lexeme_import_cannot_remove_stale
+    language hi
+    text "पुरानी फ़ाइल {file} हटाई नहीं जा सकी: {error}"
+  response response_lexeme_import_refused_batch_zh
+    intent lexeme_import_refused_batch
+    language zh
+    text "已拒绝 {count} 个概念；现有分片未更改；事件：{events}"
+  response response_lexeme_import_duplicate_slug_zh
+    intent lexeme_import_duplicate_slug
+    language zh
+    text "slug 重复（也用于 {other}）"
+  response response_lexeme_import_duplicate_qid_zh
+    intent lexeme_import_duplicate_qid
+    language zh
+    text "QID 重复（也用于 {other}）"
+  response response_lexeme_import_cache_unreadable_zh
+    intent lexeme_import_cache_unreadable
+    language zh
+    text "无法读取缓存 {path}：{error}"
+  response response_lexeme_import_cache_invalid_json_zh
+    intent lexeme_import_cache_invalid_json
+    language zh
+    text "缓存 {path} 包含无效 JSON：{error}"
+  response response_lexeme_import_cache_miss_offline_zh
+    intent lexeme_import_cache_miss_offline
+    language zh
+    text "缓存中缺少 {qid}，且离线模式已启用（设置 FORMAL_AI_LIVE_API 可填充缓存）"
+  response response_lexeme_import_cache_budget_reached_zh
+    intent lexeme_import_cache_budget_reached
+    language zh
+    text "已达到缓存预算 {budget}（{cached}）；为遵守有界缓存策略，跳过 {qid}"
+  response response_lexeme_import_qid_absent_from_cache_zh
+    intent lexeme_import_qid_absent_from_cache
+    language zh
+    text "缓存中不存在 {qid}"
+  response response_lexeme_import_no_labels_in_cache_zh
+    intent lexeme_import_no_labels_in_cache
+    language zh
+    text "缓存中的 {qid} 没有标签"
+  response response_lexeme_import_missing_cached_label_zh
+    intent lexeme_import_missing_cached_label
+    language zh
+    text "{qid} 缺少 {language} 标签"
+  response response_lexeme_import_no_clean_alias_zh
+    intent lexeme_import_no_clean_alias
+    language zh
+    text "{qid} 的 {language} 标签 `{label}` 与该语言的文字系统不匹配，且没有合适的别名"
+  response response_lexeme_import_fetch_failed_zh
+    intent lexeme_import_fetch_failed
+    language zh
+    text "获取 {qid} 失败：{error}"
+  response response_lexeme_import_fetch_invalid_json_zh
+    intent lexeme_import_fetch_invalid_json
+    language zh
+    text "为 {qid} 获取的 JSON 无效：{error}"
+  response response_lexeme_import_cannot_create_zh
+    intent lexeme_import_cannot_create
+    language zh
+    text "无法创建 {path}：{error}"
+  response response_lexeme_import_reparse_failed_zh
+    intent lexeme_import_reparse_failed
+    language zh
+    text "重新解析裁剪后的 {qid} 失败：{error}"
+  response response_lexeme_import_cannot_write_json_zh
+    intent lexeme_import_cannot_write_json
+    language zh
+    text "无法写入 {qid}.json：{error}"
+  response response_lexeme_import_cannot_write_lino_zh
+    intent lexeme_import_cannot_write_lino
+    language zh
+    text "无法写入 {qid}.lino：{error}"
+  response response_lexeme_import_qid_absent_from_fetch_zh
+    intent lexeme_import_qid_absent_from_fetch
+    language zh
+    text "获取的文档中不存在 {qid}"
+  response response_lexeme_import_invalid_qid_zh
+    intent lexeme_import_invalid_qid
+    language zh
+    text "{qid} 不是 Wikidata 项目标识符"
+  response response_lexeme_import_invalid_slug_zh
+    intent lexeme_import_invalid_slug
+    language zh
+    text "slug `{slug}` 不是简单标识符"
+  response response_lexeme_import_missing_label_zh
+    intent lexeme_import_missing_label
+    language zh
+    text "缺少 {language} 标签"
+  response response_lexeme_import_invalid_surface_zh
+    intent lexeme_import_invalid_surface
+    language zh
+    text "{language} 标签 `{surface}` 不是干净的单一词元"
+  response response_lexeme_import_missing_provenance_zh
+    intent lexeme_import_missing_provenance
+    language zh
+    text "缺少 {language} 来源信息"
+  response response_lexeme_import_invalid_provenance_zh
+    intent lexeme_import_invalid_provenance
+    language zh
+    text "{language} 来源信息未指向 {qid} 中受支持的字段"
+  response response_lexeme_import_block_parse_failed_zh
+    intent lexeme_import_block_parse_failed
+    language zh
+    text "无法解析为 {slug} 渲染的块"
+  response response_lexeme_import_grounding_lost_zh
+    intent lexeme_import_grounding_lost
+    language zh
+    text "{slug} 在解析时丢失了来源绑定"
+  response response_lexeme_import_wrong_genus_zh
+    intent lexeme_import_wrong_genus
+    language zh
+    text "{slug} 未由 {defined_by} 定义"
+  response response_lexeme_import_lexeme_lost_zh
+    intent lexeme_import_lexeme_lost
+    language zh
+    text "{slug} 丢失了 {language} 词位"
+  response response_lexeme_import_surface_missing_zh
+    intent lexeme_import_surface_missing
+    language zh
+    text "{slug} 的 {language} 词位没有表层形式"
+  response response_lexeme_import_surface_changed_zh
+    intent lexeme_import_surface_changed
+    language zh
+    text "{slug} 的 {language} 表层形式在解析时发生变化"
+  response response_lexeme_import_denotation_lost_zh
+    intent lexeme_import_denotation_lost
+    language zh
+    text "{slug} 的 {language} 表层形式未指称其含义"
+  response response_lexeme_import_part_of_speech_lost_zh
+    intent lexeme_import_part_of_speech_lost
+    language zh
+    text "{slug} 的 {language} 表层形式丢失了 part_of_speech"
+  response response_lexeme_import_number_lost_zh
+    intent lexeme_import_number_lost
+    language zh
+    text "{slug} 的 {language} 表层形式丢失了 grammatical_number"
+  response response_lexeme_import_cannot_stage_zh
+    intent lexeme_import_cannot_stage
+    language zh
+    text "无法暂存 {path}：{error}"
+  response response_lexeme_import_cannot_install_zh
+    intent lexeme_import_cannot_install
+    language zh
+    text "无法安装 {file}：{error}"
+  response response_lexeme_import_cannot_list_zh
+    intent lexeme_import_cannot_list
+    language zh
+    text "无法列出 {path}：{error}"
+  response response_lexeme_import_cannot_inspect_zh
+    intent lexeme_import_cannot_inspect
+    language zh
+    text "无法检查输出：{error}"
+  response response_requirement_contradiction_en
+    intent requirement_contradiction
+    language en
+    text "Warning: two of your requirements contradict each other.\n- Statement 1 (weight {prior_weight}): “{prior}”\n- Statement 2 (weight {current_weight}): “{current}”\nThey make opposite demands on the same subject ({subject}), so both cannot hold at once.\nProposed resolution: keep one and retract the other by sending a superseding requirement. The requirement network is append-only, so retraction records a new event without erasing history. Alternatively, split the meanings or scope each requirement to a different context."
+  response response_requirement_contradiction_ru
+    intent requirement_contradiction
+    language ru
+    text "Предупреждение: два ваших требования противоречат друг другу.\n- Утверждение 1 (вес {prior_weight}): «{prior}»\n- Утверждение 2 (вес {current_weight}): «{current}»\nОни предъявляют противоположные требования к одному предмету ({subject}), поэтому оба не могут выполняться одновременно.\nПредлагаемое решение: оставьте одно требование и отзовите другое (retract) замещающим требованием. Сеть требований работает только на добавление, поэтому отзыв записывается новым событием без удаления истории. Либо разделите смыслы или ограничьте требования разными контекстами."
+  response response_requirement_contradiction_hi
+    intent requirement_contradiction
+    language hi
+    text "चेतावनी: आपकी दो आवश्यकताएँ एक-दूसरे का खंडन करती हैं।\n- कथन 1 (भार {prior_weight}): «{prior}»\n- कथन 2 (भार {current_weight}): «{current}»\nये एक ही विषय ({subject}) पर विपरीत माँग करती हैं, इसलिए दोनों एक साथ लागू नहीं हो सकतीं।\nप्रस्तावित समाधान: एक को रखें और दूसरी को अधिभावी आवश्यकता भेजकर वापस लें। आवश्यकता नेटवर्क केवल जोड़ने वाला है, इसलिए वापसी इतिहास मिटाए बिना नई घटना के रूप में दर्ज होती है। अथवा अर्थों को अलग करें या आवश्यकताओं को अलग संदर्भों में सीमित करें।"
+  response response_requirement_contradiction_zh
+    intent requirement_contradiction
+    language zh
+    text "警告：您的两条要求相互矛盾。\n- 陈述 1（权重 {prior_weight}）：「{prior}」\n- 陈述 2（权重 {current_weight}）：「{current}」\n它们对同一主题（{subject}）提出相反的要求，因此二者不能同时成立。\n建议的解决方案：保留其中一条，并通过发送取代性要求来撤回另一条。要求网络仅追加，因此撤回会记录为新事件而不会抹去历史。或者拆分含义，或将要求限定在不同上下文中。"
+  response response_lexeme_import_cannot_remove_stale_zh
+    intent lexeme_import_cannot_remove_stale
+    language zh
+    text "无法删除过期文件 {file}：{error}"
+  response response_statement_audit_invalid_json_en
+    intent statement_audit_invalid_json
+    language en
+    text "invalid evidence JSON: {error}"
+  response response_statement_audit_capture_field_en
+    intent statement_audit_capture_field
+    language en
+    text "capture {index} field {field} {detail}"
+  response response_statement_audit_nonempty_en
+    intent statement_audit_nonempty
+    language en
+    text "must not be empty"
+  response response_statement_audit_strength_range_en
+    intent statement_audit_strength_range
+    language en
+    text "must be between 0 and 1"
+  response response_statement_audit_selector_exclusive_en
+    intent statement_audit_selector_exclusive
+    language en
+    text "must use statement or claim fields, not both"
+  response response_statement_audit_claim_subject_en
+    intent statement_audit_claim_subject
+    language en
+    text "claim requires subject"
+  response response_statement_audit_claim_predicate_en
+    intent statement_audit_claim_predicate
+    language en
+    text "claim requires predicate"
+  response response_statement_audit_selector_required_en
+    intent statement_audit_selector_required
+    language en
+    text "requires statement or subject and predicate"
+  response response_statement_audit_unknown_tier_en
+    intent statement_audit_unknown_tier
+    language en
+    text "contains an unknown source tier"
+  response response_statement_audit_unknown_stance_en
+    intent statement_audit_unknown_stance
+    language en
+    text "contains an unknown stance"
+  response response_statement_audit_invalid_temperature_en
+    intent statement_audit_invalid_temperature
+    language en
+    text "invalid temperature: {error}"
+  response response_statement_audit_temperature_range_en
+    intent statement_audit_temperature_range
+    language en
+    text "temperature must be finite and greater than zero"
+  response response_shared_dialog_capture_parse_failed_en
+    intent shared_dialog_capture_parse_failed
+    language en
+    text "failed to parse web-capture shared-dialog JSON: {error}"
+  response response_shared_dialog_capture_parse_failed_hi
+    intent shared_dialog_capture_parse_failed
+    language hi
+    text "web-capture shared-dialog JSON को पार्स करने में विफल: {error}"
+  response response_shared_dialog_capture_parse_failed_ru
+    intent shared_dialog_capture_parse_failed
+    language ru
+    text "Не удалось разобрать JSON shared-dialog из web-capture: {error}"
+  response response_shared_dialog_capture_parse_failed_zh
+    intent shared_dialog_capture_parse_failed
+    language zh
+    text "无法解析 web-capture shared-dialog JSON：{error}"
+  response response_shared_dialog_capture_unsupported_en
+    intent shared_dialog_capture_unsupported
+    language en
+    text "web-capture provider {provider} reported {reason}: {message}"
+  response response_shared_dialog_capture_unsupported_hi
+    intent shared_dialog_capture_unsupported
+    language hi
+    text "web-capture प्रदाता {provider} ने {reason} की सूचना दी: {message}"
+  response response_shared_dialog_capture_unsupported_ru
+    intent shared_dialog_capture_unsupported
+    language ru
+    text "Провайдер web-capture {provider} сообщил {reason}: {message}"
+  response response_shared_dialog_capture_unsupported_zh
+    intent shared_dialog_capture_unsupported
+    language zh
+    text "web-capture 提供程序 {provider} 报告了 {reason}：{message}"
+  response response_budget_search_solution_en
+    intent budget_search_solution
+    language en
+    text "Found by budget-driven search: {expression} = {target}.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: {budget} candidate evaluations; a satisfying composition was found after {evaluations} evaluations.\nSearch path: {trace_id}"
+  response response_budget_search_solution_ru
+    intent budget_search_solution
+    language ru
+    text "Найдено бюджетным поиском: {expression} = {target}.\nНи одна переиспользуемая часть или правило не подошли, поэтому решатель скомбинировал заданные числа с допустимыми операциями и оценил каждого кандидата по сгенерированным тестам равенства как функции приспособленности.\nБюджет поиска: {budget} оценок кандидатов; удовлетворяющая композиция найдена после {evaluations} оценок.\nПуть поиска: {trace_id}"
+  response response_budget_search_solution_hi
+    intent budget_search_solution
+    language hi
+    text "बजट-चालित खोज द्वारा पाया गया: {expression} = {target}.\nकोई पुन: प्रयोज्य भाग या नियम मेल नहीं खाया, इसलिए हल करने वाले ने दी गई संख्याओं को अनुमत संक्रियाओं के साथ जोड़ा और प्रत्येक उम्मीदवार को उपयुक्तता फलन के रूप में उत्पन्न समता परीक्षणों के विरुद्ध अंकित किया।\nखोज बजट: {budget} उम्मीदवार मूल्यांकन; {evaluations} मूल्यांकनों के बाद एक संतोषजनक संयोजन मिला।\nखोज पथ: {trace_id}"
+  response response_budget_search_solution_zh
+    intent budget_search_solution
+    language zh
+    text "通过预算驱动的搜索找到：{expression} = {target}。\n没有可复用的部分或规则匹配，因此求解器将给定的数字与允许的运算组合起来，并以生成的相等性测试作为适应度函数对每个候选进行评分。\n搜索预算：{budget} 次候选评估；在 {evaluations} 次评估后找到了满足条件的组合。\n搜索路径：{trace_id}"

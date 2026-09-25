@@ -2,9 +2,9 @@ self_ast_census
   target src/learning_ledger.rs
   language rust
   fidelity signature
-  byte_len 20371
+  byte_len 20377
   line_count 491
-  content_id source_module_0c9d2c3c05db2d11
+  content_id source_module_ab7f98835b8bb51f
   symbol_count 31
   symbols
     const APPROVED_LESSONS_LINO 35 35

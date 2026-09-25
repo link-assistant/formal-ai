@@ -39,7 +39,7 @@ use crate::links_format::format_lino_record;
 /// fallback-text makes the agentic loop produce a stable knowledge base either
 /// way.
 pub const CANONICAL_FISHERMAN_SYNOPSIS: &str =
-    include_str!("../../../data/agentic-coding/fisherman-synopsis.txt");
+    include_str!("../../embedded/data/agentic-coding/fisherman-synopsis.txt");
 
 /// The default document id used when a caller does not supply one and the text is
 /// recognised as the canonical tale.

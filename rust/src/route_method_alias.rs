@@ -34,7 +34,7 @@ pub struct RouteMethodAlias {
     pub rationale: String,
 }
 
-const ALIASES_LINO: &str = include_str!("../../data/meta/route-method-aliases.lino");
+const ALIASES_LINO: &str = include_str!("../embedded/data/meta/route-method-aliases.lino");
 
 /// The route→method alias catalogue, parsed once from the embedded link data.
 #[must_use]

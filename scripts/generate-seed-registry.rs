@@ -255,8 +255,11 @@ fn render_rust(registry: &Registry) -> String {
 
     out.push_str("\n/// Raw embedded contents (used by `merged_bundle` and by tests).\n");
     for seed in &embedded {
+        // The mirror path (`rust/embedded/<repo-relative>`) keeps every
+        // include_str! inside the package root, so the published crate
+        // compiles from its own archive (issue #1138).
         let one_line = format!(
-            "pub const {}: &str = include_str!(\"../../../{}\");",
+            "pub const {}: &str = include_str!(\"../../embedded/{}\");",
             seed.constant(),
             seed.path()
         );
@@ -264,7 +267,7 @@ fn render_rust(registry: &Registry) -> String {
             out.push_str(&one_line);
         } else {
             out.push_str(&format!(
-                "pub const {}: &str =\n    include_str!(\"../../../{}\");",
+                "pub const {}: &str =\n    include_str!(\"../../embedded/{}\");",
                 seed.constant(),
                 seed.path()
             ));
@@ -619,11 +622,11 @@ mod tests {
         ));
         let rust = render_rust(&registry);
         assert!(rust.contains(
-            "pub const AGENT_INFO_LINO: &str = include_str!(\"../../../data/seed/agent-info.lino\");"
+            "pub const AGENT_INFO_LINO: &str = include_str!(\"../../embedded/data/seed/agent-info.lino\");"
         ));
         assert!(rust.contains(
             "pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =\n    \
-             include_str!(\"../../../data/seed/agentic-tool-capabilities.lino\");"
+             include_str!(\"../../embedded/data/seed/agentic-tool-capabilities.lino\");"
         ));
         assert!(rust.lines().all(|line| line.len() <= MAX_WIDTH), "{rust}");
     }

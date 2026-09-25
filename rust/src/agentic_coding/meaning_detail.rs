@@ -146,15 +146,15 @@ pub const TOMATO: Concept = Concept {
     sources: &[
         SourceRef {
             id: "L7993",
-            json: include_str!("../../../data/cache/wikidata/lexeme/L7993.json"),
+            json: include_str!("../../embedded/data/cache/wikidata/lexeme/L7993.json"),
         },
         SourceRef {
             id: "L3526",
-            json: include_str!("../../../data/cache/wikidata/lexeme/L3526.json"),
+            json: include_str!("../../embedded/data/cache/wikidata/lexeme/L3526.json"),
         },
         SourceRef {
             id: "L170542",
-            json: include_str!("../../../data/cache/wikidata/lexeme/L170542.json"),
+            json: include_str!("../../embedded/data/cache/wikidata/lexeme/L170542.json"),
         },
     ],
     extras: &[
@@ -190,7 +190,7 @@ pub const POTATO: Concept = Concept {
     kb_path: "meanings-potato-detail.lino",
     sources: &[SourceRef {
         id: "L3784",
-        json: include_str!("../../../data/cache/wikidata/lexeme/L3784.json"),
+        json: include_str!("../../embedded/data/cache/wikidata/lexeme/L3784.json"),
     }],
     extras: &[
         ExtraRef {

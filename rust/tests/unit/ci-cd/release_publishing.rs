@@ -284,7 +284,7 @@ fn crate_package_manifest_uses_publish_allowlist() {
         "\"/Cargo.toml\"",
         "\"../LICENSE\"",
         "\"../README.md\"",
-        "\"../data/**\"",
+        "\"/embedded/**\"",
         "\"/src/**\"",
     ] {
         assert!(
@@ -300,6 +300,13 @@ fn crate_package_manifest_uses_publish_allowlist() {
         "\"/examples/**\"",
         "\"/experiments/**\"",
         "\"/.github/**\"",
+        // `cargo package` extracts the .crate as the package root, so any
+        // `../`-escaping row packs files at paths no rust/src literal can
+        // resolve (issue #1138): sources read the rust/embedded/ mirror
+        // instead, and only that mirror ships.
+        "\"../data/**\"",
+        "\"../js/**\"",
+        "\"../scripts/opencode-conversation-to-lino.py\"",
     ] {
         assert!(
             !manifest.contains(excluded),

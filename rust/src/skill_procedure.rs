@@ -67,7 +67,8 @@ const MINIMUM_STEPS: usize = 2;
 /// are requested.
 pub const PROCEDURE_CONFORMANCE_TRIGGER: &str = "https://example.com/article";
 
-const PROCEDURE_MEANINGS_LINO: &str = include_str!("../../data/seed/meanings-skill-procedure.lino");
+const PROCEDURE_MEANINGS_LINO: &str =
+    include_str!("../embedded/data/seed/meanings-skill-procedure.lino");
 
 /// One ordered, source-grounded subrequirement produced by the shared
 /// intent-formalization decomposer.

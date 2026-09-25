@@ -18,7 +18,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("nested_context_runtime_and_parity_fixtures_pass"),
     path: CONTEXT_HIERARCHY_LEARNING_PATH,
     task: CONTEXT_HIERARCHY_LEARNING_TASK,
-    memory: include_str!("../../../../data/meta/issue-702-context-hierarchy-learning.lino"),
+    memory: include_str!("../../../embedded/data/meta/issue-702-context-hierarchy-learning.lino"),
     subject: "nested-context observations and hierarchy amendments",
 };
 

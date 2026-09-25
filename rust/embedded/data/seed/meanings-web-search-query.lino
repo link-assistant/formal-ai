@@ -1,0 +1,617 @@
+meanings
+  explicit_web_search_command
+    defined-by web_search
+    defined-by action
+    role web_search_explicit_prefix
+    lexeme en
+      surface
+        text "search the web for …"
+      surface
+        text "search web for …"
+      surface
+        text "search the internet for …"
+      surface
+        text "search internet for …"
+      surface
+        text "search online for …"
+      surface
+        text "search wikipedia for …"
+      surface
+        text "search wikidata for …"
+      surface
+        text "search wiktionary for …"
+      surface
+        text "search for information about …"
+      surface
+        text "search for information on …"
+      surface
+        text "web search for …"
+      surface
+        text "find on the internet …"
+      surface
+        text "find online …"
+      surface
+        text "find information about …"
+      surface
+        text "find information on …"
+      surface
+        text "find detailed information about …"
+      surface
+        text "find detailed information on …"
+      surface
+        text "find info about …"
+      surface
+        text "find info on …"
+      surface
+        text "look up information about …"
+      surface
+        text "look up information on …"
+      surface
+        text "look up info about …"
+      surface
+        text "look up info on …"
+      surface
+        text "look up online …"
+      surface
+        text "interested in …"
+      surface
+        text "i am interested in …"
+      surface
+        text "… interests me"
+      surface
+        text "google search for …"
+      surface
+        text "research online …"
+      surface
+        text "investigate on the web …"
+      surface
+        text "discover online …"
+      surface
+        text "query the web for …"
+      surface
+        text "browse the web for …"
+      surface
+        text "seek online …"
+      surface
+        text "check the web for …"
+    lexeme ru
+      surface
+        text "найди в интернете …"
+      surface
+        text "поищи в интернете …"
+      surface
+        text "поиск в интернете …"
+      surface
+        text "найди онлайн …"
+      surface
+        text "поищи онлайн …"
+      surface
+        text "найди в сети …"
+      surface
+        text "поищи в сети …"
+      surface
+        text "найди информацию в интернете о …"
+      surface
+        text "найди информацию в интернете об …"
+      surface
+        text "поищи информацию в интернете о …"
+      surface
+        text "поищи информацию в интернете об …"
+      surface
+        text "найди информацию о …"
+      surface
+        text "найди информацию об …"
+      surface
+        text "найди информацию про …"
+      surface
+        text "найди информацию по …"
+      surface
+        text "найти информацию о …"
+      surface
+        text "найти информацию об …"
+      surface
+        text "поищи информацию о …"
+      surface
+        text "поищи информацию об …"
+      surface
+        text "поищи информацию про …"
+      surface
+        text "поищи информацию по …"
+      surface
+        text "найди инфу о …"
+      surface
+        text "найди инфу об …"
+      surface
+        text "поищи инфу о …"
+      surface
+        text "поищи инфу об …"
+      surface
+        text "найди сведения о …"
+      surface
+        text "найди сведения об …"
+      surface
+        text "поищи сведения о …"
+      surface
+        text "поищи сведения об …"
+      surface
+        text "найди материалы о …"
+      surface
+        text "найди материалы об …"
+      surface
+        text "поищи материалы о …"
+      surface
+        text "поищи материалы об …"
+      surface
+        text "интересует …"
+      surface
+        text "меня интересует …"
+      surface
+        text "поиск в сети …"
+      surface
+        text "посмотри в интернете …"
+      surface
+        text "загугли …"
+      surface
+        text "исследуй онлайн …"
+      surface
+        text "проверь в сети …"
+      surface
+        text "отыщи в интернете …"
+      surface
+        text "выполни веб поиск …"
+      surface
+        text "запроси сеть о …"
+      surface
+        text "изучи в интернете …"
+      surface
+        text "разыщи онлайн …"
+    lexeme hi
+      surface
+        text "इंटरनेट पर खोजें …"
+      surface
+        text "वेब पर खोजें …"
+      surface
+        text "ऑनलाइन खोजें …"
+      surface
+        text "विकिपीडिया पर खोजें …"
+      surface
+        text "मुझे … में रुचि है"
+      surface
+        text "मुझे … में दिलचस्पी है"
+      surface
+        text "… में रुचि है"
+      surface
+        text "… में दिलचस्पी है"
+      surface
+        text "वेब खोज …"
+      surface
+        text "ऑनलाइन ढूँढें …"
+      surface
+        text "इंटरनेट पर देखें …"
+      surface
+        text "गूगल करें …"
+      surface
+        text "ऑनलाइन शोध करें …"
+      surface
+        text "वेब पर जाँचें …"
+      surface
+        text "ऑनलाइन पता लगाएँ …"
+      surface
+        text "वेब से पूछें …"
+      surface
+        text "इंटरनेट खंगालें …"
+      surface
+        text "ऑनलाइन तलाशें …"
+      surface
+        text "वेब में खोजें …"
+      surface
+        text "नेट पर खोजें …"
+    lexeme es
+      surface
+        text "busca en internet …"
+      surface
+        text "busca en la web …"
+      surface
+        text "busca en la red …"
+      surface
+        text "busca en línea …"
+      surface
+        text "busca online …"
+      surface
+        text "busca en wikipedia …"
+      surface
+        text "busca en wikidata …"
+      surface
+        text "busca información sobre …"
+      surface
+        text "busca información de …"
+      surface
+        text "busca información acerca de …"
+      surface
+        text "busca datos sobre …"
+      surface
+        text "encuentra en internet …"
+      surface
+        text "encuentra información sobre …"
+      surface
+        text "encuentra información de …"
+      surface
+        text "encuentra online …"
+      surface
+        text "investiga en la web …"
+      surface
+        text "investiga en internet …"
+      surface
+        text "consulta en internet …"
+      surface
+        text "haz una búsqueda en internet de …"
+      surface
+        text "búsqueda en la web de …"
+      surface
+        text "me interesa …"
+      surface
+        text "… me interesa"
+    lexeme zh
+      surface
+        text 在网上搜索…
+      surface
+        text 在互联网上搜索…
+      surface
+        text 在维基百科上搜索…
+      surface
+        text 上网查找…
+      surface
+        text 对…感兴趣
+      surface
+        text 我对…感兴趣
+      surface
+        text 搜索网络…
+      surface
+        text 在线搜索…
+      surface
+        text 网页搜索…
+      surface
+        text 在线查找…
+      surface
+        text 谷歌搜索…
+      surface
+        text 在线研究…
+      surface
+        text 在网络上调查…
+      surface
+        text 在线发现…
+      surface
+        text 查询网络…
+      surface
+        text 浏览网络查找…
+      surface
+        text 在线寻找…
+      surface
+        text 在互联网上查找…
+      surface
+        text 检查网络上的…
+  topic_connective
+    defined-by relation
+    role web_search_topic_marker
+    lexeme en
+      surface
+        text " about …"
+      surface
+        text " on …"
+      surface
+        text " regarding …"
+      surface
+        text " concerning …"
+      surface
+        text " for …"
+    lexeme ru
+      surface
+        text " о …"
+      surface
+        text " об …"
+      surface
+        text " про …"
+      surface
+        text " по …"
+      surface
+        text " насчет …"
+      surface
+        text " относительно …"
+    lexeme hi
+      surface
+        text "… के बारे में"
+      surface
+        text "… के विषय में"
+      surface
+        text "… से संबंधित"
+      surface
+        text "… पर"
+      surface
+        text "… की जानकारी"
+      surface
+        text "… की सूचना"
+    lexeme zh
+      surface
+        text 关于…
+      surface
+        text 關於…
+      surface
+        text 有关…
+      surface
+        text 有關…
+  query_leading_noise
+    defined-by concept
+    role web_search_query_leading_noise
+    lexeme en
+      surface
+        text "please …"
+      surface
+        text "can you …"
+      surface
+        text "could you …"
+      surface
+        text "would you …"
+      surface
+        text "me …"
+      surface
+        text "the …"
+      surface
+        text "some …"
+      surface
+        text "detailed …"
+      surface
+        text "more …"
+      surface
+        text "current …"
+      surface
+        text "latest …"
+      surface
+        text "upcoming …"
+      surface
+        text "information about …"
+      surface
+        text "information on …"
+      surface
+        text "info about …"
+      surface
+        text "info on …"
+      surface
+        text "details about …"
+      surface
+        text "details on …"
+      surface
+        text "data about …"
+      surface
+        text "data on …"
+    lexeme ru
+      surface
+        text "мне …"
+      surface
+        text "актуальные …"
+      surface
+        text "актуальных …"
+      surface
+        text "предстоящие …"
+      surface
+        text "предстоящих …"
+      surface
+        text "свежие …"
+      surface
+        text "свежих …"
+      surface
+        text "подробные …"
+      surface
+        text "информацию о …"
+      surface
+        text "информацию об …"
+      surface
+        text "инфу о …"
+      surface
+        text "инфу об …"
+      surface
+        text "сведения о …"
+      surface
+        text "сведения об …"
+      surface
+        text "материалы о …"
+      surface
+        text "материалы об …"
+      surface
+        text "материалы по …"
+      surface
+        text "данные о …"
+      surface
+        text "данные об …"
+      surface
+        text "о …"
+      surface
+        text "об …"
+      surface
+        text "про …"
+      surface
+        text "по …"
+    lexeme hi
+      surface
+        text "कृपया …"
+      surface
+        text "मेरे लिए …"
+      surface
+        text "नवीनतम …"
+      surface
+        text "आगामी …"
+      surface
+        text "जानकारी …"
+      surface
+        text "सूचना …"
+      surface
+        text "विवरण …"
+      surface
+        text "सामग्री …"
+    lexeme zh
+      surface
+        text 最新…
+      surface
+        text 当前…
+      surface
+        text 近期…
+      surface
+        text 即将举行的…
+      surface
+        text 关于…
+      surface
+        text 關於…
+      surface
+        text 有关…
+      surface
+        text 有關…
+  query_trailing_noise
+    defined-by concept
+    role web_search_query_trailing_noise
+    lexeme en
+      surface
+        text "… online"
+      surface
+        text "… on the internet"
+      surface
+        text "… on the web"
+      surface
+        text "… on wikipedia"
+      surface
+        text "… in wikipedia"
+      surface
+        text "… from wikipedia"
+      surface
+        text "… information"
+      surface
+        text "… info"
+      surface
+        text "… details"
+      surface
+        text "… data"
+      surface
+        text "… material"
+      surface
+        text "… materials"
+      surface
+        text "… resources"
+      surface
+        text "… sources"
+      surface
+        text "… articles"
+      surface
+        text "… facts"
+    lexeme ru
+      surface
+        text "… в интернете"
+      surface
+        text "… онлайн"
+      surface
+        text "… в сети"
+      surface
+        text "… в википедии"
+      surface
+        text "… википедии"
+      surface
+        text "… информация"
+      surface
+        text "… сведения"
+      surface
+        text "… материалы"
+      surface
+        text "… данные"
+      surface
+        text "… сейчас проходят"
+      surface
+        text "… проходят сейчас"
+    lexeme hi
+      surface
+        text "… के बारे में"
+      surface
+        text "… के विषय में"
+      surface
+        text "… से संबंधित"
+      surface
+        text "… पर"
+      surface
+        text "… की जानकारी"
+      surface
+        text "… की सूचना"
+      surface
+        text "… जानकारी"
+      surface
+        text "… सूचना"
+      surface
+        text "… विवरण"
+      surface
+        text "… सामग्री"
+      surface
+        text "… स्रोत"
+      surface
+        text "… विकिपीडिया में"
+      surface
+        text "… ऑनलाइन"
+      surface
+        text "… इंटरनेट पर"
+      surface
+        text "… खोजो"
+      surface
+        text "… खोजें"
+      surface
+        text "… खोजिए"
+      surface
+        text "… ढूंढो"
+      surface
+        text "… ढूँढो"
+      surface
+        text "… ढूंढें"
+      surface
+        text "… ढूँढें"
+      surface
+        text "… अभी हो रहे हैं"
+      surface
+        text "… अभी चल रहे हैं"
+    lexeme zh
+      surface
+        text …的信息
+      surface
+        text …的資料
+      surface
+        text …的资料
+      surface
+        text …信息
+      surface
+        text …資料
+      surface
+        text …资料
+      surface
+        text …内容
+      surface
+        text …文章
+      surface
+        text …在维基百科上
+      surface
+        text …在維基百科上
+      surface
+        text …现在举行
+      surface
+        text …正在举行
+      surface
+        text …维基百科
+      surface
+        text …維基百科
+      surface
+        text …网上
+      surface
+        text …網上
+      surface
+        text …在线
+      surface
+        text …在線
+      surface
+        text …搜索
+      surface
+        text …查找
+      surface
+        text …查一下
+      surface
+        text …搜一下

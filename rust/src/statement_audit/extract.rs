@@ -4,7 +4,7 @@ use crate::engine::stable_id;
 
 use super::model::{Claim, RepositoryCorpus, SourceKind, SourceLocation};
 
-const REGISTRY: &str = include_str!("../../../data/meta/statement-audit.lino");
+const REGISTRY: &str = include_str!("../../embedded/data/meta/statement-audit.lino");
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct ExtractedStatement {

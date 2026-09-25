@@ -2,9 +2,9 @@ self_ast_census
   target src/question_generation.rs
   language rust
   fidelity signature
-  byte_len 25801
+  byte_len 25807
   line_count 755
-  content_id source_module_afa2414f0d337d09
+  content_id source_module_95f5b8be2cb2e07b
   symbol_count 61
   symbols
     const BASIS_POINTS_DENOMINATOR 16 16

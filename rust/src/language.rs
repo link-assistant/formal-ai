@@ -19,7 +19,7 @@ use alloc::vec::Vec;
 
 /// The detection registry, embedded so the browser worker (`no_std` + `alloc`,
 /// no filesystem) reads exactly the same rules as the native build.
-const LANGUAGE_DETECTION: &str = include_str!("../../data/seed/language-detection.lino");
+const LANGUAGE_DETECTION: &str = include_str!("../embedded/data/seed/language-detection.lino");
 
 /// Detected language, identified by the slug the registry gives it.
 ///
@@ -175,7 +175,7 @@ pub fn fallback_language() -> Language {
 /// The coverage ledger, embedded next to the detection registry. It carries the
 /// English `name` of every registered language, which handlers used to spell out
 /// in `match` arms.
-const LANGUAGE_LEDGER: &str = include_str!("../../data/seed/languages.lino");
+const LANGUAGE_LEDGER: &str = include_str!("../embedded/data/seed/languages.lino");
 
 /// The English name of a registered language slug (`en` → `English`).
 ///

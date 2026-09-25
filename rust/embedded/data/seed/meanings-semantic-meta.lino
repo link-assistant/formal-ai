@@ -1,0 +1,239 @@
+meanings
+  semantic_facet
+    defined-by relation
+    role ontology_category
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation relation
+    connotation concept
+    lexeme en
+      surface
+        text "semantic facet"
+        notation word_surface
+        denotation semantic_facet
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "семантический аспект"
+        notation word_surface
+        denotation semantic_facet
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "अर्थ पक्ष"
+        notation word_surface
+        denotation semantic_facet
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 语义方面
+        notation word_surface
+        denotation semantic_facet
+        part_of_speech noun_phrase
+  notation
+    defined-by semantic_facet
+    role semantic_facet_kind
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation semantic_facet
+    connotation links_notation_format
+    lexeme en
+      surface
+        text notation
+        notation word_surface
+        denotation notation
+        part_of_speech noun
+    lexeme ru
+      surface
+        text нотация
+        notation word_surface
+        denotation notation
+        part_of_speech noun
+    lexeme hi
+      surface
+        text संकेतन
+        notation word_surface
+        denotation notation
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 记法
+        notation word_surface
+        denotation notation
+        part_of_speech noun
+  annotation
+    defined-by semantic_facet
+    role semantic_facet_kind
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation semantic_facet
+    connotation semantic_gloss
+    lexeme en
+      surface
+        text annotation
+        notation word_surface
+        denotation annotation
+        part_of_speech noun
+    lexeme ru
+      surface
+        text аннотация
+        notation word_surface
+        denotation annotation
+        part_of_speech noun
+    lexeme hi
+      surface
+        text टिप्पणी
+        notation word_surface
+        denotation annotation
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 注释
+        notation word_surface
+        denotation annotation
+        part_of_speech noun
+  denotation
+    defined-by semantic_facet
+    role semantic_facet_kind
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation semantic_facet
+    connotation relation
+    lexeme en
+      surface
+        text denotation
+        notation word_surface
+        denotation denotation
+        part_of_speech noun
+    lexeme ru
+      surface
+        text денотация
+        notation word_surface
+        denotation denotation
+        part_of_speech noun
+    lexeme hi
+      surface
+        text "निरूपित अर्थ"
+        notation word_surface
+        denotation denotation
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 外延
+        notation word_surface
+        denotation denotation
+        part_of_speech noun
+  connotation
+    defined-by semantic_facet
+    role semantic_facet_kind
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation semantic_facet
+    connotation concept
+    lexeme en
+      surface
+        text connotation
+        notation word_surface
+        denotation connotation
+        part_of_speech noun
+    lexeme ru
+      surface
+        text коннотация
+        notation word_surface
+        denotation connotation
+        part_of_speech noun
+    lexeme hi
+      surface
+        text व्यंजना
+        notation word_surface
+        denotation connotation
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 内涵
+        notation word_surface
+        denotation connotation
+        part_of_speech noun
+  semantic_gloss
+    defined-by annotation
+    role semantic_annotation_artifact
+    lexeme en
+      surface
+        text gloss
+        notation word_surface
+        denotation semantic_gloss
+        part_of_speech noun
+    lexeme ru
+      surface
+        text глосса
+        notation word_surface
+        denotation semantic_gloss
+        part_of_speech noun
+    lexeme hi
+      surface
+        text ग्लॉस
+        notation word_surface
+        denotation semantic_gloss
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 释义
+        notation word_surface
+        denotation semantic_gloss
+        part_of_speech noun
+  external_knowledge_source
+    defined-by entity
+    defined-by annotation
+    role semantic_grounding_artifact
+    lexeme en
+      surface
+        text "external source"
+        notation word_surface
+        denotation external_knowledge_source
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "внешний источник"
+        notation word_surface
+        denotation external_knowledge_source
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "बाहरी स्रोत"
+        notation word_surface
+        denotation external_knowledge_source
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 外部来源
+        notation word_surface
+        denotation external_knowledge_source
+        part_of_speech noun_phrase
+  cached_source_response
+    defined-by external_knowledge_source
+    defined-by annotation
+    role semantic_grounding_artifact
+    lexeme en
+      surface
+        text "cached source response"
+        notation word_surface
+        denotation cached_source_response
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "кэшированный ответ источника"
+        notation word_surface
+        denotation cached_source_response
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "कैश स्रोत उत्तर"
+        notation word_surface
+        denotation cached_source_response
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 缓存来源响应
+        notation word_surface
+        denotation cached_source_response
+        part_of_speech noun_phrase

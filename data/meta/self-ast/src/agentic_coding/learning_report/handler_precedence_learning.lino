@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/learning_report/handler_precedence_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1909
+  byte_len 1915
   line_count 43
-  content_id source_module_4e2b1e75d7ccfc01
+  content_id source_module_899136692822308b
   symbol_count 7
   symbols
     const HANDLER_PRECEDENCE_LEARNING_PATH 12 12

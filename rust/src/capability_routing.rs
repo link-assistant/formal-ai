@@ -615,7 +615,8 @@ pub fn routing_table() -> Vec<RouteRow> {
 }
 
 /// The shipped decision table, embedded so the browser build reads the same data.
-pub const CAPABILITY_ROUTING_LINO: &str = include_str!("../../data/seed/capability-routing.lino");
+pub const CAPABILITY_ROUTING_LINO: &str =
+    include_str!("../embedded/data/seed/capability-routing.lino");
 
 /// Parse a routing table document, so a fixture row can change routing with no
 /// Rust edit.

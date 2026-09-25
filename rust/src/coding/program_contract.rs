@@ -8,7 +8,7 @@ use crate::event_log::EventLog;
 use crate::normal_markov::quoted_segment_spans;
 use crate::seed::{self, parser::parse_lino};
 
-const CONTRACTS: &str = include_str!("../../../data/meta/stdout-program-contracts.lino");
+const CONTRACTS: &str = include_str!("../../embedded/data/meta/stdout-program-contracts.lino");
 
 pub fn runtime_steps(language: &str) -> Option<String> {
     let root = parse_lino(CONTRACTS);
@@ -148,7 +148,9 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     reason = "bind operands in the shared process-verification template"
 )]
 fn output_verifier(expected: &str, command: &str) -> Option<ExecutionRecipeFile> {
-    let root = parse_lino(include_str!("../../../data/meta/process-verification.lino"));
+    let root = parse_lino(include_str!(
+        "../../embedded/data/meta/process-verification.lino"
+    ));
     let contract = root.children.first()?;
     let expected = format!("'{}'", expected.replace('\'', "'\\''"));
     Some(ExecutionRecipeFile {

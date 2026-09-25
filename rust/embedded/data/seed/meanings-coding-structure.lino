@@ -1,0 +1,1033 @@
+meanings
+  quantifier
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/functions.html#any"
+  mapping
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/functions.html#map"
+  filter
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/functions.html#filter"
+  reduction
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/functools.html#functools.reduce"
+  pairwise
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/itertools.html#itertools.combinations"
+  predicate
+    defined-by concept
+    grounding "https://docs.python.org/3.12/glossary.html#term-expression"
+  optimization
+    defined-by concept
+    grounding "https://plato.stanford.edu/entries/optimization/"
+  tuple
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#tuple"
+  sequence
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/collections.abc.html#collections.abc.Sequence"
+  set
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset"
+  normalization
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/unicodedata.html#unicodedata.normalize"
+  ordering
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
+  counting
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/collections.html#collections.Counter"
+  splitting
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.split"
+  joining
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.join"
+  range
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#range"
+  character_class
+    defined-by concept
+    grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
+  comparison
+    defined-by concept
+    grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
+  branch
+    defined-by concept
+    grounding "https://docs.python.org/3.12/reference/compound_stmts.html#if"
+  print_stdout
+    defined-by output
+    role coding_structure
+    role output_display_request
+    idiom "print({value})"
+    fragment_signature "unknown:0"
+    fragment_result "unknown:0"
+    grounding "https://docs.python.org/3.12/library/functions.html#print"
+    lexeme en
+      surface
+        text print
+      surface
+        text prints
+      surface
+        text "print …"
+      surface
+        text "prints …"
+    lexeme ru
+      surface
+        text выводит
+      surface
+        text "выводит …"
+    lexeme hi
+      surface
+        text प्रिंट
+      surface
+        text "जो … प्रिंट करता है"
+    lexeme zh
+      surface
+        text 打印
+      surface
+        text "打印 … 的"
+    lexeme es
+      surface
+        text imprime
+      surface
+        text "imprime …"
+    bootstrap true
+    rediscovery_query "print a value to standard output"
+  quantifier_any
+    defined-by quantifier
+    role coding_structure
+    idiom "any({predicate} for {item} in {items})"
+    fragment_signature (boolean "unknown:0" "sequence<unknown:0>")
+    fragment_result boolean
+    supports prefix_negative
+    supports composite_number
+    grounding "https://docs.python.org/3.12/library/functions.html#any"
+    license "PSF-2.0"
+    lexeme en
+      surface
+        text any
+      surface
+        text some
+      surface
+        text "at least one"
+    lexeme ru
+      surface
+        text любой
+      surface
+        text "хотя бы один"
+    lexeme hi
+      surface
+        text कोई
+      surface
+        text "कम से कम एक"
+    lexeme zh
+      surface
+        text 任意
+      surface
+        text 至少一个
+    lexeme es
+      surface
+        text cualquiera
+      surface
+        text "al menos uno"
+    bootstrap true
+    rediscovery_query "whether any element satisfies the predicate"
+  quantifier_all
+    defined-by quantifier
+    role coding_structure
+    idiom "all({predicate} for {item} in {items})"
+    grounding "https://docs.python.org/3.12/library/functions.html#all"
+    lexeme en
+      surface
+        text all
+      surface
+        text every
+      surface
+        text each
+    lexeme ru
+      surface
+        text все
+      surface
+        text всех
+      surface
+        text каждый
+      surface
+        text каждой
+    lexeme hi
+      surface
+        text सभी
+      surface
+        text हर
+    lexeme zh
+      surface
+        text 所有
+      surface
+        text 每个
+      surface
+        text 每一
+      surface
+        text 逐个
+    lexeme es
+      surface
+        text todos
+      surface
+        text cada
+    bootstrap true
+    rediscovery_query "whether every element satisfies the predicate"
+  map_each
+    defined-by mapping
+    role coding_structure
+    idiom "[{expression} for {item} in {items}]"
+    fragment_signature ("unknown:1" "unknown:0" "sequence<unknown:0>")
+    fragment_result "sequence<unknown:1>"
+    supports reduce_mean
+    supports balanced_delimiter_groups
+    supports group_max_nesting
+    supports rotation_period
+    grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
+    lexeme en
+      surface
+        text "for each"
+      surface
+        text "for every"
+      surface
+        text transform
+    lexeme ru
+      surface
+        text "для каждого"
+      surface
+        text "для каждой"
+      surface
+        text преобразовать
+    lexeme hi
+      surface
+        text "प्रत्येक के लिए"
+      surface
+        text "हर … के लिए"
+      surface
+        text बदलें
+    lexeme zh
+      surface
+        text 对每个
+      surface
+        text 每一
+      surface
+        text 转换
+    lexeme es
+      surface
+        text "para cada"
+      surface
+        text "por cada"
+      surface
+        text transformar
+    bootstrap true
+    rediscovery_query "build one transformed value for every element"
+  filter_only
+    defined-by filter
+    role coding_structure
+    idiom "[{item} for {item} in {items} if {predicate}]"
+    fragment_signature ("unknown:0" "sequence<unknown:0>" boolean)
+    fragment_result "sequence<unknown:0>"
+    grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
+    lexeme en
+      surface
+        text filter
+      surface
+        text "only those"
+      surface
+        text which
+    lexeme ru
+      surface
+        text фильтровать
+      surface
+        text только
+      surface
+        text которые
+    lexeme hi
+      surface
+        text छाँटें
+      surface
+        text केवल
+    lexeme zh
+      surface
+        text 过滤
+      surface
+        text 仅
+      surface
+        text 其中
+    lexeme es
+      surface
+        text filtrar
+      surface
+        text solo
+    bootstrap true
+    rediscovery_query "keep only the elements that satisfy the predicate"
+  reduce_sum
+    defined-by reduction
+    role coding_structure
+    idiom "sum({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
+    grounding "https://docs.python.org/3.12/library/functions.html#sum"
+    lexeme en
+      surface
+        text sum
+      surface
+        text total
+    lexeme ru
+      surface
+        text сумма
+      surface
+        text сумму
+      surface
+        text суммы
+    lexeme hi
+      surface
+        text योग
+    lexeme zh
+      surface
+        text 总和
+      surface
+        text 求和
+    lexeme es
+      surface
+        text suma
+    bootstrap true
+    rediscovery_query "add up every element of the sequence"
+  reduce_product
+    defined-by reduction
+    role coding_structure
+    idiom "__import__('math').prod({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
+    grounding "https://docs.python.org/3.12/library/math.html#math.prod"
+    lexeme en
+      surface
+        text product
+    lexeme ru
+      surface
+        text произведение
+      surface
+        text произведения
+    lexeme hi
+      surface
+        text गुणनफल
+    lexeme zh
+      surface
+        text 乘积
+    lexeme es
+      surface
+        text producto
+    bootstrap true
+    rediscovery_query "multiply every element of the sequence together"
+  reduce_max
+    defined-by reduction
+    role coding_structure
+    idiom "max({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
+    supports group_max_nesting
+    grounding "https://docs.python.org/3.12/library/functions.html#max"
+    lexeme en
+      surface
+        text largest
+      surface
+        text maximum
+      surface
+        text greatest
+    lexeme ru
+      surface
+        text наибольший
+      surface
+        text максимум
+    lexeme hi
+      surface
+        text अधिकतम
+      surface
+        text महत्तम
+    lexeme zh
+      surface
+        text 最大
+    lexeme es
+      surface
+        text mayor
+      surface
+        text máximo
+    bootstrap true
+    rediscovery_query "the largest element of the sequence"
+  reduce_min
+    defined-by reduction
+    role coding_structure
+    idiom "min({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "unknown:0"
+    grounding "https://docs.python.org/3.12/library/functions.html#min"
+    license "PSF-2.0"
+    bootstrap true
+    rediscovery_query "minimum value from a sequence"
+    supports grid_minimum_cost_path
+    lexeme en
+      surface
+        text smallest
+      surface
+        text minimum
+    lexeme ru
+      surface
+        text наименьший
+      surface
+        text наименьшее
+      surface
+        text минимум
+    lexeme hi
+      surface
+        text न्यूनतम
+    lexeme zh
+      surface
+        text 最小
+      surface
+        text 最少
+    lexeme es
+      surface
+        text menor
+      surface
+        text mínimo
+  reduce_count
+    defined-by reduction
+    role coding_structure
+    idiom "sum(1 for {character} in {items} if {predicate})"
+    fragment_signature ("unknown:0" "sequence<unknown:0>" boolean)
+    fragment_result integer
+    grounding "https://docs.python.org/3.12/library/functions.html#sum"
+    license "PSF-2.0"
+    lexeme en
+      surface
+        text count
+      surface
+        text "how many"
+      surface
+        text "number of"
+    lexeme ru
+      surface
+        text количество
+      surface
+        text число
+      surface
+        text подсчитать
+    lexeme hi
+      surface
+        text संख्या
+      surface
+        text गिनें
+    lexeme zh
+      surface
+        text 数量
+      surface
+        text 次数
+      surface
+        text 计数
+    lexeme es
+      surface
+        text cantidad
+      surface
+        text número
+      surface
+        text contar
+    bootstrap true
+    rediscovery_query "how many elements satisfy the predicate"
+  reduce_len
+    defined-by reduction
+    role coding_structure
+    idiom "len({items})"
+    fragment_signature "unknown:0"
+    fragment_result integer
+    supports reduce_count
+    supports regex_minimum_word_length
+    grounding "https://docs.python.org/3.12/library/functions.html#len"
+    lexeme en
+      surface
+        text length
+      surface
+        text size
+    lexeme ru
+      surface
+        text длина
+      surface
+        text размер
+    lexeme hi
+      surface
+        text लंबाई
+      surface
+        text आकार
+    lexeme zh
+      surface
+        text 长度
+      surface
+        text 大小
+    lexeme es
+      surface
+        text longitud
+      surface
+        text tamaño
+    bootstrap true
+    rediscovery_query "how many elements the sequence holds"
+  pairwise_distinct
+    defined-by pairwise
+    role coding_structure
+    idiom "__import__('itertools').combinations({items}, 2)"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "sequence<pair<unknown:0,unknown:0>>"
+    grounding "https://docs.python.org/3.12/library/itertools.html#itertools.combinations"
+    license "PSF-2.0"
+    lexeme en
+      surface
+        text "any two"
+      surface
+        text "each pair"
+      surface
+        text "every pair"
+      surface
+        text "distinct pair"
+      surface
+        text "two numbers"
+    lexeme ru
+      surface
+        text "любые два"
+      surface
+        text "каждая пара"
+      surface
+        text "два числа"
+      surface
+        text "двух чисел"
+    lexeme hi
+      surface
+        text "कोई दो"
+      surface
+        text "हर जोड़ी"
+      surface
+        text "एक जोड़ी"
+      surface
+        text "दो संख्याएँ"
+    lexeme zh
+      surface
+        text 任意两个
+      surface
+        text 每对
+      surface
+        text 两个数
+      surface
+        text 两数
+    lexeme es
+      surface
+        text "cualesquiera dos"
+      surface
+        text "cada par"
+      surface
+        text "dos números"
+    bootstrap true
+    rediscovery_query "every distinct pair of elements"
+  predicate_abs_diff_lt
+    defined-by predicate
+    role coding_structure
+    idiom "abs({left} - {right}) < {threshold}"
+    fragment_signature (float float float)
+    fragment_result boolean
+    grounding "https://docs.python.org/3.12/library/functions.html#abs"
+    license "PSF-2.0"
+    lexeme en
+      surface
+        text "closer to each other than"
+      surface
+        text "differ by less than"
+      surface
+        text "difference is less than"
+      surface
+        text "difference that is less than"
+      surface
+        text within
+    lexeme ru
+      surface
+        text "ближе друг к другу чем"
+      surface
+        text "различаются меньше чем"
+      surface
+        text "различается меньше чем"
+    lexeme hi
+      surface
+        text "से कम अंतर"
+      surface
+        text करीब
+    lexeme zh
+      surface
+        text 差小于
+      surface
+        text 更接近
+    lexeme es
+      surface
+        text "más cerca entre sí que"
+      surface
+        text "difieren menos que"
+    bootstrap true
+    rediscovery_query "whether two values differ by less than the threshold"
+  tuple_of
+    defined-by tuple
+    role coding_structure
+    idiom "({left}, {right})"
+    fragment_signature ("unknown:0" "unknown:1")
+    fragment_result "pair<unknown:0,unknown:1>"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#tuple"
+    lexeme en
+      surface
+        text "tuple consisting of"
+      surface
+        text "tuple of"
+    lexeme ru
+      surface
+        text "кортеж состоящий из"
+      surface
+        text кортеж
+    lexeme hi
+      surface
+        text "से बना टपल"
+      surface
+        text टपल
+    lexeme zh
+      surface
+        text 组成的元组
+      surface
+        text 元组
+    lexeme es
+      surface
+        text "tupla compuesta por"
+      surface
+        text tupla
+    bootstrap true
+    rediscovery_query "hold two values together as one pair"
+  running_prefix
+    defined-by sequence
+    role coding_structure
+    idiom "__import__('itertools').accumulate({items}, {operation})"
+    fragment_signature ("sequence<unknown:0>" callable)
+    fragment_result "sequence<unknown:0>"
+    supports prefix_negative
+    supports balanced_delimiter_groups
+    supports group_max_nesting
+    grounding "https://docs.python.org/3.12/library/itertools.html#itertools.accumulate"
+    lexeme en
+      surface
+        text cumulative
+      surface
+        text rolling
+      surface
+        text "so far"
+    lexeme ru
+      surface
+        text накопительный
+      surface
+        text "до сих пор"
+    lexeme hi
+      surface
+        text संचयी
+      surface
+        text "अब तक"
+    lexeme zh
+      surface
+        text 累积
+      surface
+        text 到目前为止
+    lexeme es
+      surface
+        text acumulativo
+      surface
+        text "hasta ahora"
+    bootstrap true
+    rediscovery_query "the running accumulation across the sequence"
+  distinct_elements
+    defined-by set
+    role coding_structure
+    idiom "set({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "sequence<unknown:0>"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#set"
+    lexeme en
+      surface
+        text distinct
+      surface
+        text unique
+      surface
+        text different
+    lexeme ru
+      surface
+        text уникальные
+      surface
+        text различные
+    lexeme hi
+      surface
+        text विशिष्ट
+      surface
+        text अलग
+    lexeme zh
+      surface
+        text 不同
+      surface
+        text 唯一
+    lexeme es
+      surface
+        text distintos
+      surface
+        text únicos
+    bootstrap true
+    rediscovery_query "the elements without duplicates"
+  case_insensitive
+    defined-by normalization
+    role coding_structure
+    idiom "{text}.lower()"
+    fragment_signature text
+    fragment_result text
+    supports regex_lowercase_underscore
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.lower"
+    lexeme en
+      surface
+        text "ignoring case"
+      surface
+        text "regardless of case"
+      surface
+        text case-insensitive
+    lexeme ru
+      surface
+        text "без учета регистра"
+    lexeme hi
+      surface
+        text "अक्षर केस की परवाह किए बिना"
+    lexeme zh
+      surface
+        text 忽略大小写
+    lexeme es
+      surface
+        text "sin distinguir mayúsculas"
+    bootstrap true
+    rediscovery_query "lowercase the text to ignore letter case"
+  sort_ascending
+    defined-by ordering
+    role coding_structure
+    idiom "sorted({items})"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "ordered<unknown:0>"
+    supports set_intersection
+    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
+    license "PSF-2.0"
+    lexeme en
+      surface
+        text ascending
+      surface
+        text sorted
+      surface
+        text "smallest to largest"
+    lexeme ru
+      surface
+        text возрастанию
+      surface
+        text отсортированный
+      surface
+        text отсортированном
+    lexeme hi
+      surface
+        text आरोही
+      surface
+        text क्रमबद्ध
+    lexeme zh
+      surface
+        text 升序
+      surface
+        text 排序
+    lexeme es
+      surface
+        text ascendente
+      surface
+        text ordenado
+      surface
+        text ordenada
+    bootstrap true
+    rediscovery_query "arrange the elements from smallest to largest"
+  sort_descending
+    defined-by ordering
+    role coding_structure
+    idiom "sorted({items}, reverse=True)"
+    fragment_signature "sequence<unknown:0>"
+    fragment_result "sequence<unknown:0>"
+    grounding "https://docs.python.org/3.12/library/functions.html#sorted"
+    lexeme en
+      surface
+        text descending
+      surface
+        text reverse-sorted
+      surface
+        text "largest to smallest"
+    lexeme ru
+      surface
+        text убыванию
+    lexeme hi
+      surface
+        text अवरोही
+    lexeme zh
+      surface
+        text 降序
+    lexeme es
+      surface
+        text descendente
+    bootstrap true
+    rediscovery_query "arrange the elements from largest to smallest"
+  count_overlapping
+    defined-by counting
+    role coding_structure
+    idiom "sum(1 for i in range(len({text})) if {text}.startswith({substring}, i))"
+    fragment_signature (text text)
+    fragment_result integer
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.startswith"
+    lexeme en
+      surface
+        text overlap
+      surface
+        text "count overlapping"
+      surface
+        text overlapping
+    lexeme ru
+      surface
+        text "перекрывающиеся вхождения"
+    lexeme hi
+      surface
+        text "ओवरलैप घटनाएँ"
+    lexeme zh
+      surface
+        text 重叠出现
+    lexeme es
+      surface
+        text "apariciones superpuestas"
+    bootstrap true
+    rediscovery_query "count every occurrence of a substring, overlaps included"
+  split_on_space
+    defined-by splitting
+    role coding_structure
+    idiom "{text}.split()"
+    fragment_signature text
+    fragment_result "sequence<text>"
+    supports group_max_nesting
+    supports regex_minimum_word_length
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.split"
+    lexeme en
+      surface
+        text space-delimited
+      surface
+        text "separated by spaces"
+    lexeme ru
+      surface
+        text "разделенные пробелами"
+    lexeme hi
+      surface
+        text "रिक्त स्थान से अलग"
+    lexeme zh
+      surface
+        text 空格分隔
+    lexeme es
+      surface
+        text "separado por espacios"
+    bootstrap true
+    rediscovery_query "break the text into words at whitespace"
+  join_with_space
+    defined-by joining
+    role coding_structure
+    idiom "' '.join({items})"
+    fragment_signature "sequence<text>"
+    fragment_result text
+    supports split_on_space
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#str.join"
+    lexeme en
+      surface
+        text "joined with spaces"
+      surface
+        text "space-delimited result"
+    lexeme ru
+      surface
+        text "соединенные пробелами"
+    lexeme hi
+      surface
+        text "रिक्त स्थान से जोड़ें"
+    lexeme zh
+      surface
+        text 用空格连接
+    lexeme es
+      surface
+        text "unido con espacios"
+    bootstrap true
+    rediscovery_query "join the words with single spaces"
+  range_inclusive
+    defined-by range
+    role coding_structure
+    idiom "range(1, {bound} + 1)"
+    fragment_signature integer
+    fragment_result "sequence<integer>"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#range"
+    lexeme en
+      surface
+        text "count to"
+      surface
+        text "counts to"
+      surface
+        text "up to"
+      surface
+        text inclusive
+    lexeme ru
+      surface
+        text "посчитай до"
+      surface
+        text включительно
+    lexeme hi
+      surface
+        text "तक गिनो"
+      surface
+        text सहित
+    lexeme zh
+      surface
+        text 数到
+      surface
+        text 包含
+    lexeme es
+      surface
+        text "cuenta hasta"
+      surface
+        text inclusive
+    bootstrap true
+    rediscovery_query "every integer from one through the bound"
+  membership
+    defined-by predicate
+    role coding_structure
+    idiom "{item} in {collection}"
+    fragment_signature ("unknown:0" "sequence<unknown:0>")
+    fragment_result boolean
+    supports vowel_character_class
+    grounding "https://docs.python.org/3.12/reference/expressions.html#membership-test-operations"
+    cites false
+    lexeme en
+      surface
+        text contain
+      surface
+        text contains
+    lexeme ru
+      surface
+        text содержит
+    lexeme hi
+      surface
+        text शामिल
+    lexeme zh
+      surface
+        text 包含
+    lexeme es
+      surface
+        text contiene
+    bootstrap true
+    rediscovery_query "whether the collection contains the value"
+  set_intersection
+    defined-by set
+    role coding_structure
+    idiom "set({left}) & set({right})"
+    fragment_signature ("sequence<unknown:0>" "sequence<unknown:0>")
+    fragment_result "sequence<unknown:0>"
+    grounding "https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset"
+    license "PSF-2.0"
+    lexeme en
+      surface
+        text shared
+      surface
+        text common
+      surface
+        text intersection
+      surface
+        text "occur in both"
+      surface
+        text "similar elements"
+    lexeme ru
+      surface
+        text общие
+      surface
+        text пересечение
+      surface
+        text "похожие элементы"
+    lexeme hi
+      surface
+        text प्रतिच्छेदन
+      surface
+        text "समान तत्व"
+    lexeme zh
+      surface
+        text 交集
+      surface
+        text 相同元素
+    lexeme es
+      surface
+        text comunes
+      surface
+        text intersección
+      surface
+        text "elementos similares"
+    bootstrap true
+    rediscovery_query "the values present in both collections"
+  vowel_character_class
+    defined-by character_class
+    role coding_structure
+    idiom "'aeiouAEIOU'"
+    fragment_result text
+    grounding "https://www.unicode.org/versions/Unicode15.1.0/ch03.pdf"
+    license "PSF-2.0"
+    lexeme en
+      surface
+        text vowels
+      surface
+        text vowel
+    lexeme ru
+      surface
+        text гласных
+      surface
+        text гласные
+    lexeme hi
+      surface
+        text स्वरों
+      surface
+        text स्वर
+    lexeme zh
+      surface
+        text 元音
+    lexeme es
+      surface
+        text vocales
+      surface
+        text vocal
+    bootstrap true
+    rediscovery_query "the vowel letters of the alphabet"
+  arithmetic_fractional_part
+    defined-by reduction
+    role coding_structure
+    idiom "{value} % 1.0"
+    fragment_signature float
+    fragment_result float
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    lexeme en
+      surface
+        text "decimal part"
+      surface
+        text "fractional part"
+      surface
+        text "leftover part"
+    bootstrap true
+    rediscovery_query "the part of the number after its decimal point"
+  geometric_measure
+    defined-by reduction
+    role coding_structure
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    lexeme en
+      surface
+        text perimeter
+      surface
+        text volume
+      surface
+        text area

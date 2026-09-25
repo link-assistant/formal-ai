@@ -10,7 +10,7 @@ use std::sync::OnceLock;
 
 use crate::seed;
 
-const PROJECTIONS: &str = include_str!("../../../data/seed/formal-language-projections.lino");
+const PROJECTIONS: &str = include_str!("../../embedded/data/seed/formal-language-projections.lino");
 const SUBJECT_SLOT: &str = "{subject}";
 const PREDICATE_SLOT: &str = "{predicate}";
 const OBJECT_SLOT: &str = "{object}";

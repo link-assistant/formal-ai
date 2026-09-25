@@ -11,7 +11,7 @@ use crate::engine::stable_id;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
 
-const POLICY_SEED: &str = include_str!("../../data/seed/question-necessity.lino");
+const POLICY_SEED: &str = include_str!("../embedded/data/seed/question-necessity.lino");
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum QuestionClass {

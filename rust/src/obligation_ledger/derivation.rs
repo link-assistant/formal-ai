@@ -200,7 +200,8 @@ pub struct ExpectationRules {
 }
 
 /// The contract document, embedded so the derivation needs no filesystem.
-const CONTRACT_LINO: &str = include_str!("../../../data/meta/obligation-evidence-contract.lino");
+const CONTRACT_LINO: &str =
+    include_str!("../../embedded/data/meta/obligation-evidence-contract.lino");
 
 /// The `when` keys the contract's rule rows are addressed by. Each is one token,
 /// because a rule condition is a key the document and this reader agree on, not

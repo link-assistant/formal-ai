@@ -17,7 +17,7 @@ use core::fmt::Write as _;
 use crate::rule_interpreter::{ConditionSource, HandlerRules, LinkStoreSource};
 use crate::seed::parser::{LinoNode, parse_lino};
 
-const PROMOTIONS_LINO: &str = include_str!("../../data/seed/handler-promotions.lino");
+const PROMOTIONS_LINO: &str = include_str!("../embedded/data/seed/handler-promotions.lino");
 
 /// One promotion row: a handler name, the rank that orders it against the other
 /// promotions that fired, the condition block in the handler-rules grammar, and

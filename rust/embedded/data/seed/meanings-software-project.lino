@@ -1,0 +1,1337 @@
+meanings
+  software_followup
+    defined-by software_followup_verification
+    defined-by software_followup_execution
+    defined-by software_followup_demonstration
+    defined-by action
+    role software_followup
+    lexeme en
+      surface
+        text follow-up
+      surface
+        text exercise
+    lexeme ru
+      surface
+        text продолжение
+      surface
+        text отработка
+    lexeme hi
+      surface
+        text अनुवर्ती
+      surface
+        text अभ्यास
+    lexeme zh
+      surface
+        text 后续
+      surface
+        text 演练
+  software_followup_verification
+    defined-by software_followup
+    role software_followup_verification
+    lexeme en
+      surface
+        text "test it"
+      surface
+        text "test the"
+      surface
+        text "test this"
+      surface
+        text verify
+      surface
+        text "check it"
+      surface
+        text "check that"
+      surface
+        text "run the tests"
+    lexeme ru
+      surface
+        text протестируй
+      surface
+        text протестировать
+      surface
+        text проверь
+      surface
+        text тестируй
+    lexeme hi
+      surface
+        text परीक्षण
+      surface
+        text जाँच
+      surface
+        text जांच
+    lexeme zh
+      surface
+        text 测试
+      surface
+        text 检验
+      surface
+        text 检查
+  software_followup_execution
+    defined-by software_followup
+    role software_followup_execution
+    lexeme en
+      surface
+        text "run it"
+      surface
+        text "run this"
+      surface
+        text "run the"
+      surface
+        text "execute it"
+      surface
+        text "execute the"
+      surface
+        text "try it"
+    lexeme ru
+      surface
+        text запусти
+      surface
+        text выполни
+    lexeme hi
+      surface
+        text चलाओ
+      surface
+        text निष्पादित
+    lexeme zh
+      surface
+        text 运行
+      surface
+        text 执行
+  software_followup_demonstration
+    defined-by software_followup
+    role software_followup_demonstration
+    lexeme en
+      surface
+        text "demo it"
+      surface
+        text "show me"
+      surface
+        text "show the"
+      surface
+        text "print the"
+    lexeme ru
+      surface
+        text покажи
+    lexeme hi
+      surface
+        text दिखाओ
+    lexeme zh
+      surface
+        text 显示
+      surface
+        text 展示
+  output_display_request
+    defined-by software_followup
+    defined-by action
+    role output_display_request
+    lexeme en
+      surface
+        text "show me …"
+      surface
+        text "show …"
+      surface
+        text "print …"
+      surface
+        text "display …"
+    lexeme ru
+      surface
+        text "покажи мне …"
+      surface
+        text "покажи …"
+      surface
+        text "выведи …"
+    lexeme hi
+      surface
+        text "मुझे दिखाओ …"
+      surface
+        text "दिखाओ …"
+    lexeme zh
+      surface
+        text 给我看…
+      surface
+        text 显示…
+  implement
+    defined-by code
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
+        text implement
+      surface
+        text solve
+      surface
+        text resolve
+    lexeme ru
+      surface
+        text реализуй
+      surface
+        text реализовать
+      surface
+        text реши
+      surface
+        text решить
+    lexeme hi
+      surface
+        text लागू
+      surface
+        text हल
+    lexeme zh
+      surface
+        text 实现
+      surface
+        text 解决
+    lexeme es
+      surface
+        text implementa
+      surface
+        text implementar
+      surface
+        text resuelve
+      surface
+        text resolver
+  develop
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
+        text develop
+    lexeme ru
+      surface
+        text разработай
+      surface
+        text разработать
+    lexeme hi
+      surface
+        text विकसित
+    lexeme zh
+      surface
+        text 开发
+    lexeme es
+      surface
+        text desarrolla
+      surface
+        text desarrollar
+  design
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
+        text design
+    lexeme ru
+      surface
+        text спроектируй
+      surface
+        text "создай дизайн"
+    lexeme hi
+      surface
+        text डिज़ाइन
+    lexeme zh
+      surface
+        text 设计
+    lexeme es
+      surface
+        text diseña
+      surface
+        text diseñar
+  scaffold
+    defined-by code
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
+        text scaffold
+    lexeme ru
+      surface
+        text "создай каркас"
+      surface
+        text "сгенерируй каркас"
+    lexeme hi
+      surface
+        text "ढाँचा बनाओ"
+    lexeme zh
+      surface
+        text 搭建
+  software_artifact
+    defined-by artifact_application
+    defined-by artifact_tool
+    defined-by entity
+    role software_artifact
+    lexeme en
+      surface
+        text "software artifact"
+      surface
+        text deliverable
+    lexeme ru
+      surface
+        text "программный продукт"
+      surface
+        text артефакт
+    lexeme hi
+      surface
+        text "सॉफ़्टवेयर कलाकृति"
+    lexeme zh
+      surface
+        text 软件制品
+  artifact_browser_extension
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text "browser extension"
+    lexeme ru
+      surface
+        text "расширение браузера"
+    lexeme hi
+      surface
+        text "ब्राउज़र एक्सटेंशन"
+    lexeme zh
+      surface
+        text 浏览器扩展
+  artifact_command_line_tool
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text "command line tool"
+      surface
+        text "cli tool"
+    lexeme ru
+      surface
+        text "консольная утилита"
+      surface
+        text "утилита командной строки"
+    lexeme hi
+      surface
+        text "कमांड लाइन टूल"
+    lexeme zh
+      surface
+        text 命令行工具
+  artifact_github_action
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text "github action"
+    lexeme ru
+      surface
+        text "действие github"
+    lexeme hi
+      surface
+        text "गिटहब एक्शन"
+    lexeme zh
+      surface
+        text "github 操作"
+  artifact_mobile_app
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text "mobile app"
+    lexeme ru
+      surface
+        text "мобильное приложение"
+    lexeme hi
+      surface
+        text "मोबाइल ऐप"
+    lexeme zh
+      surface
+        text 移动应用
+  artifact_web_app
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text "web app"
+    lexeme ru
+      surface
+        text "веб приложение"
+    lexeme hi
+      surface
+        text "वेब ऐप"
+    lexeme zh
+      surface
+        text 网页应用
+  artifact_application
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text application
+    lexeme ru
+      surface
+        text приложение
+    lexeme hi
+      surface
+        text एप्लिकेशन
+    lexeme zh
+      surface
+        text 应用程序
+  artifact_extension
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text extension
+      surface
+        text "add on"
+      surface
+        text addon
+    lexeme ru
+      surface
+        text расширение
+      surface
+        text дополнение
+    lexeme hi
+      surface
+        text एक्सटेंशन
+      surface
+        text ऐड-ऑन
+    lexeme zh
+      surface
+        text 扩展
+      surface
+        text 扩展程序
+  artifact_dashboard
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text dashboard
+    lexeme ru
+      surface
+        text "панель управления"
+      surface
+        text дашборд
+    lexeme hi
+      surface
+        text डैशबोर्ड
+    lexeme zh
+      surface
+        text 仪表板
+  artifact_scraper
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text scraper
+    lexeme ru
+      surface
+        text скрапер
+      surface
+        text парсер
+    lexeme hi
+      surface
+        text स्क्रैपर
+    lexeme zh
+      surface
+        text 爬虫
+  artifact_library
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text library
+    lexeme ru
+      surface
+        text библиотека
+      surface
+        text библиотеку
+    lexeme hi
+      surface
+        text लाइब्रेरी
+    lexeme zh
+      surface
+        text 库
+  artifact_website
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text website
+    lexeme ru
+      surface
+        text сайт
+      surface
+        text "веб сайт"
+    lexeme hi
+      surface
+        text वेबसाइट
+    lexeme zh
+      surface
+        text 网站
+  artifact_plugin
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text plugin
+    lexeme ru
+      surface
+        text плагин
+    lexeme hi
+      surface
+        text प्लगइन
+    lexeme zh
+      surface
+        text 插件
+  artifact_service
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text service
+    lexeme ru
+      surface
+        text сервис
+      surface
+        text служба
+      surface
+        text службу
+    lexeme hi
+      surface
+        text सेवा
+    lexeme zh
+      surface
+        text 服务
+  artifact_bot
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text bot
+    lexeme ru
+      surface
+        text бот
+    lexeme hi
+      surface
+        text बॉट
+    lexeme zh
+      surface
+        text 机器人
+  artifact_app
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text app
+    lexeme ru
+      surface
+        text приложение
+    lexeme hi
+      surface
+        text ऐप
+    lexeme zh
+      surface
+        text 应用
+  artifact_api
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text api
+    lexeme ru
+      surface
+        text апи
+    lexeme hi
+      surface
+        text एपीआई
+    lexeme zh
+      surface
+        text 接口
+  artifact_sdk
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text sdk
+    lexeme ru
+      surface
+        text сдк
+    lexeme hi
+      surface
+        text एसडीके
+    lexeme zh
+      surface
+        text 开发包
+  artifact_tool
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text tool
+    lexeme ru
+      surface
+        text инструмент
+    lexeme hi
+      surface
+        text टूल
+      surface
+        text उपकरण
+    lexeme zh
+      surface
+        text 工具
+  artifact_mod
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
+        text mod
+    lexeme ru
+      surface
+        text мод
+    lexeme hi
+      surface
+        text मॉड
+    lexeme zh
+      surface
+        text 模组
+  software_feature
+    defined-by requirement_state_tracking
+    defined-by requirement_project_behavior
+    defined-by property
+    role software_feature
+    lexeme en
+      surface
+        text feature
+      surface
+        text features
+      surface
+        text requirement
+      surface
+        text requirements
+    lexeme ru
+      surface
+        text функция
+      surface
+        text требование
+    lexeme hi
+      surface
+        text सुविधा
+      surface
+        text आवश्यकता
+    lexeme zh
+      surface
+        text 功能
+      surface
+        text 需求
+  requirement_state_tracking
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
+        text track
+      surface
+        text hp
+      surface
+        text status
+      surface
+        text damage
+      surface
+        text cooldown
+    lexeme ru
+      surface
+        text состояние
+      surface
+        text урон
+      surface
+        text откат
+    lexeme hi
+      surface
+        text स्थिति
+      surface
+        text क्षति
+    lexeme zh
+      surface
+        text 状态
+      surface
+        text 伤害
+      surface
+        text 冷却
+  requirement_data_exchange
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
+        text import
+      surface
+        text export
+      surface
+        text csv
+      surface
+        text backup
+      surface
+        text report
+      surface
+        text calendar
+    lexeme ru
+      surface
+        text импорт
+      surface
+        text экспорт
+      surface
+        text "резервная копия"
+      surface
+        text отчёт
+    lexeme hi
+      surface
+        text आयात
+      surface
+        text निर्यात
+      surface
+        text रिपोर्ट
+    lexeme zh
+      surface
+        text 导入
+      surface
+        text 导出
+      surface
+        text 备份
+      surface
+        text 报告
+  requirement_automation
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
+        text reminder
+      surface
+        text notification
+      surface
+        text schedule
+      surface
+        text weekly
+    lexeme ru
+      surface
+        text напоминание
+      surface
+        text уведомление
+      surface
+        text расписание
+    lexeme hi
+      surface
+        text अनुस्मारक
+      surface
+        text सूचना
+    lexeme zh
+      surface
+        text 提醒
+      surface
+        text 通知
+      surface
+        text 计划
+  requirement_validation
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
+        text validate
+      surface
+        text check
+      surface
+        text conflict
+      surface
+        text audit
+    lexeme ru
+      surface
+        text проверка
+      surface
+        text проверь
+      surface
+        text аудит
+    lexeme hi
+      surface
+        text सत्यापन
+      surface
+        text जाँच
+    lexeme zh
+      surface
+        text 验证
+      surface
+        text 检查
+      surface
+        text 审计
+  requirement_integration
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
+        text api
+      surface
+        text discord
+      surface
+        text telegram
+      surface
+        text github
+      surface
+        text browser
+    lexeme ru
+      surface
+        text интеграция
+      surface
+        text апи
+      surface
+        text браузер
+    lexeme hi
+      surface
+        text एकीकरण
+      surface
+        text एपीआई
+    lexeme zh
+      surface
+        text 集成
+      surface
+        text 接口
+      surface
+        text 浏览器
+  requirement_user_interface
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
+        text dashboard
+      surface
+        text chart
+      surface
+        text filter
+      surface
+        text progress
+    lexeme ru
+      surface
+        text панель
+      surface
+        text график
+      surface
+        text фильтр
+    lexeme hi
+      surface
+        text डैशबोर्ड
+      surface
+        text चार्ट
+    lexeme zh
+      surface
+        text 仪表板
+      surface
+        text 图表
+      surface
+        text 筛选
+  requirement_project_behavior
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
+        text add
+      surface
+        text admin
+      surface
+        text customer
+      surface
+        text date
+      surface
+        text email
+      surface
+        text expense
+      surface
+        text file
+      surface
+        text history
+      surface
+        text invoice
+      surface
+        text log
+      surface
+        text maintenance
+      surface
+        text payment
+      surface
+        text protection
+      surface
+        text record
+      surface
+        text rename
+      surface
+        text resistance
+      surface
+        text retry
+      surface
+        text scrape
+      surface
+        text stack
+      surface
+        text sync
+      surface
+        text tracking
+      surface
+        text upload
+    lexeme ru
+      surface
+        text добавить
+      surface
+        text клиент
+      surface
+        text файл
+      surface
+        text загрузка
+    lexeme hi
+      surface
+        text जोड़ें
+      surface
+        text फ़ाइल
+    lexeme zh
+      surface
+        text 添加
+      surface
+        text 文件
+      surface
+        text 上传
+  software_delivery
+    defined-by software_artifact
+    defined-by delivery_manual_instructions
+    role software_delivery
+    lexeme en
+      surface
+        text delivery
+    lexeme ru
+      surface
+        text доставка
+    lexeme hi
+      surface
+        text वितरण
+    lexeme zh
+      surface
+        text 交付
+  delivery_manual_instructions
+    defined-by software_delivery
+    role software_delivery_mode
+    lexeme en
+      surface
+        text "manual instruction"
+      surface
+        text "manual instructions"
+      surface
+        text instruction
+      surface
+        text instructions
+      surface
+        text "no code"
+    lexeme ru
+      surface
+        text инструкция
+      surface
+        text инструкции
+      surface
+        text вручную
+    lexeme hi
+      surface
+        text निर्देश
+      surface
+        text मैनुअल
+    lexeme zh
+      surface
+        text 手动说明
+      surface
+        text 说明
+  delivery_immediate_execution
+    defined-by software_delivery
+    role software_delivery_mode
+    lexeme en
+      surface
+        text execute
+      surface
+        text "run command"
+      surface
+        text "run commands"
+      surface
+        text "run it"
+      surface
+        text webvm
+    lexeme ru
+      surface
+        text выполни
+      surface
+        text "запусти команду"
+    lexeme hi
+      surface
+        text "निष्पादित करें"
+      surface
+        text चलाएँ
+    lexeme zh
+      surface
+        text 立即运行
+      surface
+        text 执行
+  delivery_script_generation
+    defined-by software_delivery
+    role software_delivery_mode
+    lexeme en
+      surface
+        text bash
+      surface
+        text shell
+      surface
+        text script
+      surface
+        text scripts
+      surface
+        text commands
+    lexeme ru
+      surface
+        text скрипт
+      surface
+        text оболочка
+      surface
+        text команды
+    lexeme hi
+      surface
+        text स्क्रिप्ट
+      surface
+        text शेल
+    lexeme zh
+      surface
+        text 脚本
+      surface
+        text 外壳脚本
+  software_language
+    defined-by software_artifact
+    defined-by language_python
+    role software_language
+    lexeme en
+      surface
+        text "programming language"
+    lexeme ru
+      surface
+        text "язык программирования"
+    lexeme hi
+      surface
+        text "प्रोग्रामिंग भाषा"
+    lexeme zh
+      surface
+        text 编程语言
+  language_python
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
+        text python
+      surface
+        text django
+      surface
+        text fastapi
+    lexeme ru
+      surface
+        text питон
+      surface
+        text пайтон
+    lexeme hi
+      surface
+        text पायथन
+    lexeme zh
+      surface
+        text python
+  language_rust
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
+        text rust
+      surface
+        text cargo
+    lexeme ru
+      surface
+        text раст
+    lexeme hi
+      surface
+        text रस्ट
+    lexeme zh
+      surface
+        text rust
+  language_javascript
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
+        text javascript
+      surface
+        text node
+    lexeme ru
+      surface
+        text джаваскрипт
+    lexeme hi
+      surface
+        text जावास्क्रिप्ट
+    lexeme zh
+      surface
+        text javascript
+  language_php
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
+        text php
+      surface
+        text laravel
+      surface
+        text symfony
+    lexeme ru
+      surface
+        text php
+      surface
+        text пхп
+    lexeme hi
+      surface
+        text पीएचपी
+    lexeme zh
+      surface
+        text php
+  implementation_language_preposition
+    defined-by software_language
+    role implementation_language_preposition
+    lexeme en
+      surface
+        text in
+    lexeme ru
+      surface
+        text на
+    lexeme hi
+      surface
+        text में
+    lexeme zh
+      surface
+        text 用
+  implementation_language_noun
+    defined-by software_language
+    role implementation_language_noun
+    lexeme en
+      surface
+        text language
+    lexeme ru
+      surface
+        text языке
+    lexeme hi
+      surface
+        text भाषा
+    lexeme zh
+      surface
+        text 语言
+  tabletop_game_tracker
+    defined-by game_tracker_domain
+    defined-by game_tracker_mechanic
+    role tabletop_game_tracker
+    lexeme en
+      surface
+        text "tabletop game tracker"
+    lexeme ru
+      surface
+        text "трекер настольной игры"
+    lexeme hi
+      surface
+        text "टेबलटॉप गेम ट्रैकर"
+    lexeme zh
+      surface
+        text 桌游追踪器
+  game_tracker_domain
+    defined-by tabletop_game_tracker
+    role game_tracker_domain
+    lexeme en
+      surface
+        text dnd
+      surface
+        text wargame
+      surface
+        text tabletop
+      surface
+        text unit
+      surface
+        text token
+      surface
+        text owlbear
+    lexeme ru
+      surface
+        text "настольная игра"
+      surface
+        text фишка
+      surface
+        text жетон
+    lexeme hi
+      surface
+        text टेबलटॉप
+      surface
+        text मोहरा
+    lexeme zh
+      surface
+        text 桌游
+      surface
+        text 棋子
+      surface
+        text 战棋
+  game_tracker_mechanic
+    defined-by tabletop_game_tracker
+    defined-by requirement_state_tracking
+    role game_tracker_mechanic
+    lexeme en
+      surface
+        text hp
+      surface
+        text damage
+      surface
+        text protection
+      surface
+        text resistance
+      surface
+        text cooldown
+      surface
+        text cooldowns
+    lexeme ru
+      surface
+        text хп
+      surface
+        text урон
+      surface
+        text защита
+      surface
+        text сопротивление
+      surface
+        text откат
+    lexeme hi
+      surface
+        text एचपी
+      surface
+        text क्षति
+      surface
+        text रक्षा
+    lexeme zh
+      surface
+        text 生命值
+      surface
+        text 伤害
+      surface
+        text 防护
+      surface
+        text 抗性
+      surface
+        text 冷却
+  software_approval
+    defined-by software_approval_trigger
+    defined-by software_step_granularity
+    defined-by concept
+    role software_approval
+    lexeme en
+      surface
+        text approval
+    lexeme ru
+      surface
+        text одобрение
+    lexeme hi
+      surface
+        text अनुमोदन
+    lexeme zh
+      surface
+        text 批准
+  software_approval_trigger
+    defined-by software_approval
+    role software_approval_trigger
+    lexeme en
+      surface
+        text approve
+      surface
+        text approved
+      surface
+        text "approve plan"
+      surface
+        text yes
+      surface
+        text "yes proceed"
+      surface
+        text proceed
+      surface
+        text "go ahead"
+      surface
+        text "looks good"
+      surface
+        text "do it"
+      surface
+        text "start implementation"
+      surface
+        text "generate code"
+      surface
+        text "convert to code"
+    lexeme ru
+      surface
+        text одобряю
+      surface
+        text да
+      surface
+        text приступай
+      surface
+        text поехали
+    lexeme hi
+      surface
+        text स्वीकृत
+      surface
+        text हाँ
+      surface
+        text "आगे बढ़ो"
+    lexeme zh
+      surface
+        text 批准
+      surface
+        text 同意
+      surface
+        text 开始
+  software_step_granularity
+    defined-by software_approval
+    role software_step_granularity
+    lexeme en
+      surface
+        text "each step"
+      surface
+        text "step by step"
+    lexeme ru
+      surface
+        text "каждый шаг"
+      surface
+        text пошагово
+    lexeme hi
+      surface
+        text "हर चरण"
+      surface
+        text "चरण दर चरण"
+    lexeme zh
+      surface
+        text 每一步
+      surface
+        text 逐步
+  software_bash_command
+    defined-by software_delivery
+    role software_bash_command
+    lexeme en
+      surface
+        text shell
+      surface
+        text bash
+      surface
+        text command
+      surface
+        text commands
+      surface
+        text docker
+      surface
+        text webvm
+    lexeme ru
+      surface
+        text оболочка
+      surface
+        text команда
+      surface
+        text команды
+    lexeme hi
+      surface
+        text शेल
+      surface
+        text कमांड
+    lexeme zh
+      surface
+        text 外壳
+      surface
+        text 命令
+      surface
+        text docker

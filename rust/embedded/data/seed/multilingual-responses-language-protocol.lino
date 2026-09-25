@@ -1,0 +1,29 @@
+multilingual_responses
+  response response_greeting_es
+    intent greeting
+    language es
+    text "¡Hola! ¿Cómo puedo ayudarte?"
+  response response_identity_es
+    intent identity
+    language es
+    text "Soy formal-ai, una implementación de IA simbólica determinista que responde mediante reglas locales en Links Notation."
+  response response_language_gap_en
+    intent language_gap
+    language en
+    text "This language is only partially covered for that meaning; no English answer was substituted."
+  response response_language_gap_ru
+    intent language_gap
+    language ru
+    text "Для этого значения язык поддерживается лишь частично; ответ на английском не подставлялся."
+  response response_language_gap_hi
+    intent language_gap
+    language hi
+    text "इस अर्थ के लिए भाषा का कवरेज आंशिक है; अंग्रेज़ी उत्तर का उपयोग नहीं किया गया।"
+  response response_language_gap_zh
+    intent language_gap
+    language zh
+    text 对于这个含义,该语言仅有部分覆盖;系统没有改用英语回答。
+  response response_language_gap_es
+    intent language_gap
+    language es
+    text "Este significado aún no está cubierto en español; no se sustituyó por una respuesta en inglés."

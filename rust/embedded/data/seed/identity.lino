@@ -1,0 +1,12 @@
+identity_1
+  text "Who are you?"
+  intent identity
+  response_link "response:identity"
+identity_2
+  text "What are you?"
+  intent identity
+  response_link "response:identity"
+identity_3
+  text "Tell me about yourself"
+  intent identity
+  response_link "response:identity"

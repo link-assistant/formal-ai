@@ -13,7 +13,7 @@
 use std::path::PathBuf;
 use std::sync::OnceLock;
 
-const EMBEDDED_LEXICON: &str = include_str!("../../../data/meta/dreaming-lexicon.lino");
+const EMBEDDED_LEXICON: &str = include_str!("../../embedded/data/meta/dreaming-lexicon.lino");
 
 /// The parsed cue lists dreaming consults.
 #[derive(Debug, Default, Clone)]

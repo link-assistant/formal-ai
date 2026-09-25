@@ -11,7 +11,7 @@
 //! they are *what the lexicon recognised*; [`super::formalize`] consumes them.
 
 /// The closed-class lexicon (data, not code), loaded at compile time.
-pub const LEXICON_LINO: &str = include_str!("../../../data/agentic-coding/fisherman-lexicon.lino");
+pub const LEXICON_LINO: &str = include_str!("../../embedded/data/agentic-coding/fisherman-lexicon.lino");
 
 /// The kind of a recognised term.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

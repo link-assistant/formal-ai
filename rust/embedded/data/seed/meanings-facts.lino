@@ -1,0 +1,296 @@
+meanings
+  knowledge_relation
+    defined-by knowledge_subject
+    defined-by knowledge_value
+    defined-by relation
+    role knowledge_relation
+    lexeme en
+      surface
+        text relation
+      surface
+        text property
+    lexeme ru
+      surface
+        text отношение
+      surface
+        text свойство
+    lexeme hi
+      surface
+        text संबंध
+      surface
+        text गुण
+    lexeme zh
+      surface
+        text 关系
+      surface
+        text 属性
+  knowledge_subject
+    defined-by knowledge_relation
+    role knowledge_subject
+    lexeme en
+      surface
+        text subject
+      surface
+        text entity
+      surface
+        text topic
+    lexeme ru
+      surface
+        text субъект
+      surface
+        text сущность
+      surface
+        text предмет
+    lexeme hi
+      surface
+        text विषय
+      surface
+        text इकाई
+    lexeme zh
+      surface
+        text 主体
+      surface
+        text 实体
+  knowledge_value
+    defined-by knowledge_relation
+    role knowledge_value
+    lexeme en
+      surface
+        text value
+      surface
+        text answer
+    lexeme ru
+      surface
+        text значение
+      surface
+        text ответ
+    lexeme hi
+      surface
+        text मान
+      surface
+        text उत्तर
+    lexeme zh
+      surface
+        text 值
+      surface
+        text 答案
+  capital
+    grounded-in P36
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text capital
+    lexeme ru
+      surface
+        text столица
+      surface
+        text столицы
+      surface
+        text столицей
+    lexeme hi
+      surface
+        text राजधानी
+    lexeme zh
+      surface
+        text 首都
+  population
+    grounded-in P1082
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text population
+      surface
+        text "how many people"
+    lexeme ru
+      surface
+        text население
+    lexeme hi
+      surface
+        text जनसंख्या
+      surface
+        text आबादी
+    lexeme zh
+      surface
+        text 人口
+  currency
+    grounded-in P38
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text currency
+    lexeme ru
+      surface
+        text валюта
+    lexeme hi
+      surface
+        text मुद्रा
+    lexeme zh
+      surface
+        text 货币
+      surface
+        text 貨幣
+  official_language
+    grounded-in P37
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "official language"
+      surface
+        text "what language"
+    lexeme ru
+      surface
+        text "государственный язык"
+      surface
+        text "официальный язык"
+    lexeme hi
+      surface
+        text राजभाषा
+      surface
+        text "आधिकारिक भाषा"
+    lexeme zh
+      surface
+        text 官方语言
+      surface
+        text 官方語言
+  continent
+    grounded-in P30
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text continent
+    lexeme ru
+      surface
+        text континент
+    lexeme hi
+      surface
+        text महाद्वीप
+    lexeme zh
+      surface
+        text 大洲
+  author_of_book
+    grounded-in P50
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "who wrote"
+      surface
+        text author
+      surface
+        text "written by"
+    lexeme ru
+      surface
+        text "кто написал"
+      surface
+        text написал
+      surface
+        text автор
+    lexeme hi
+      surface
+        text "किसने लिखी"
+      surface
+        text "किसने लिखा"
+      surface
+        text लेखक
+    lexeme zh
+      surface
+        text 是谁写的
+      surface
+        text 作者
+  painter_of_painting
+    grounded-in P170
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "who painted"
+      surface
+        text painted
+      surface
+        text painter
+      surface
+        text artist
+    lexeme ru
+      surface
+        text "кто написал"
+      surface
+        text написал
+      surface
+        text художник
+    lexeme hi
+      surface
+        text "किसने बनाई"
+      surface
+        text चित्रकार
+      surface
+        text कलाकार
+    lexeme zh
+      surface
+        text 谁画的
+      surface
+        text 画家
+  built_year
+    grounded-in P571
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text when
+      surface
+        text built
+      surface
+        text construction
+    lexeme ru
+      surface
+        text когда
+      surface
+        text построена
+      surface
+        text построили
+    lexeme hi
+      surface
+        text बनी
+      surface
+        text बनाई
+      surface
+        text कब
+    lexeme zh
+      surface
+        text 何时
+      surface
+        text 建于
+      surface
+        text 建造
+  physical_constant
+    grounded-in Q173227
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "speed of light"
+      surface
+        text "what is"
+      surface
+        text "how fast"
+    lexeme ru
+      surface
+        text "скорость света"
+      surface
+        text какова
+      surface
+        text "чему равна"
+    lexeme hi
+      surface
+        text "प्रकाश की गति"
+      surface
+        text कितनी
+    lexeme zh
+      surface
+        text 光速
+      surface
+        text 是多少

@@ -1,0 +1,241 @@
+meanings
+  summary_statement_kind
+    defined-by concept
+    role summary_statement_kind
+    lexeme en
+      surface
+        text "statement kind"
+      surface
+        text "sentence kind"
+    lexeme ru
+      surface
+        text "вид утверждения"
+      surface
+        text "тип предложения"
+    lexeme hi
+      surface
+        text "कथन का प्रकार"
+      surface
+        text "वाक्य का प्रकार"
+    lexeme zh
+      surface
+        text 陈述类型
+      surface
+        text 句子类型
+  summary_kind_install
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
+        text "to install"
+      surface
+        text "install with"
+      surface
+        text installation
+      surface
+        text "npm install"
+      surface
+        text "cargo install"
+      surface
+        text "pip install"
+    lexeme ru
+      surface
+        text установить
+      surface
+        text установка
+      surface
+        text установите
+    lexeme hi
+      surface
+        text "इंस्टॉल करें"
+      surface
+        text स्थापना
+    lexeme zh
+      surface
+        text 安装
+      surface
+        text 安装方法
+  summary_kind_example
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
+        text "for example"
+      surface
+        text "example:"
+      surface
+        text e.g.
+      surface
+        text "run --"
+      surface
+        text "$ "
+      surface
+        text "```"
+    lexeme ru
+      surface
+        text выполни
+      surface
+        text например
+    lexeme hi
+      surface
+        text "उदाहरण के लिए"
+      surface
+        text "उदाहरण:"
+    lexeme zh
+      surface
+        text 例如
+      surface
+        text 比如
+  summary_kind_language
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
+        text "written in "
+      surface
+        text "language:"
+      surface
+        text "is a "
+      surface
+        text "build with "
+    lexeme ru
+      surface
+        text "написан на "
+      surface
+        text "на языке "
+    lexeme hi
+      surface
+        text "में लिखा"
+      surface
+        text "भाषा:"
+    lexeme zh
+      surface
+        text 语言
+      surface
+        text 编写
+  summary_kind_stars
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
+        text " stars"
+      surface
+        text "github stars"
+      surface
+        text ★
+      surface
+        text stargazers
+    lexeme ru
+      surface
+        text звёзды
+      surface
+        text звезд
+    lexeme hi
+      surface
+        text सितारे
+      surface
+        text तारे
+    lexeme zh
+      surface
+        text 星标
+      surface
+        text 星数
+  summary_kind_purpose
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
+        text "is for "
+      surface
+        text "is the ai"
+      surface
+        text "is an ai"
+      surface
+        text "is used to"
+      surface
+        text "is meant to"
+      surface
+        text "is designed to"
+      surface
+        text "helps you"
+      surface
+        text "lets you"
+    lexeme ru
+      surface
+        text "это ии"
+      surface
+        text предназнач
+    lexeme hi
+      surface
+        text "के लिए है"
+      surface
+        text "मदद करता है"
+    lexeme zh
+      surface
+        text 用于
+      surface
+        text 旨在
+      surface
+        text 帮助你
+  summary_kind_use_case
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
+        text "use it when"
+      surface
+        text "use this when"
+      surface
+        text "when you need"
+      surface
+        text "ideal for"
+      surface
+        text "useful when"
+    lexeme ru
+      surface
+        text "используйте когда"
+      surface
+        text "когда нужно"
+      surface
+        text "идеально для"
+    lexeme hi
+      surface
+        text "जब आपको चाहिए"
+      surface
+        text "के लिए आदर्श"
+    lexeme zh
+      surface
+        text 当你需要
+      surface
+        text 适用于
+  summary_kind_feature
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
+        text " supports "
+      surface
+        text " provides "
+      surface
+        text " offers "
+      surface
+        text " exposes "
+      surface
+        text " ships "
+      surface
+        text " orchestrates "
+    lexeme ru
+      surface
+        text " предоставляет "
+      surface
+        text " поддерживает "
+    lexeme hi
+      surface
+        text "समर्थन करता है"
+      surface
+        text "प्रदान करता है"
+    lexeme zh
+      surface
+        text 支持
+      surface
+        text 提供

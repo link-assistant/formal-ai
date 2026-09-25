@@ -16,7 +16,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("normal_algorithm_laws_multilingual_slots_and_agent_cli_e2e_pass"),
     path: CODE_REWRITE_LEARNING_PATH,
     task: CODE_REWRITE_LEARNING_TASK,
-    memory: include_str!("../../../data/meta/issue-715-code-rewrite-learning.lino"),
+    memory: include_str!("../../embedded/data/meta/issue-715-code-rewrite-learning.lino"),
     subject: "workspace-rewrite observations and amendments",
 };
 

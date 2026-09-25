@@ -29,7 +29,7 @@ use crate::solver_dispatch::{
     CONTEXTUAL_HANDLER_NAMES, PRELUDE_METHOD_NAMES, specialized_handlers,
 };
 
-const METHOD_EXECUTION_LINO: &str = include_str!("../../data/seed/method-execution.lino");
+const METHOD_EXECUTION_LINO: &str = include_str!("../embedded/data/seed/method-execution.lino");
 const METHOD_EXECUTION_PATH: &str = "data/seed/method-execution.lino";
 const LEARNED_METHODS_PATH: &str = "data/seed/learned-methods.lino";
 

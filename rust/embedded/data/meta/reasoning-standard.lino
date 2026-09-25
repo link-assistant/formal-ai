@@ -1,0 +1,72 @@
+reasoning_standard
+  record_type "reasoning_standard"
+  issue "1073"
+  title "The reasoning standard: reference-dialog depth everywhere, refutation-first logic, formalized instructions, computed source trust"
+  reference_dialog "gist f3e509d03be7a159a8a49377fafd2120"
+  depth_floor "unconditional"
+  summary "Requirements 1-5 of issue #1073 expressed as ordered, machine-checkable gates over a reasoning episode rather than as stylistic advice. An episode is the record of one reasoning pass: the observations it executed, the claims it made, the sources it weighed, the refutations it attempted, and the actions it took. Every gate is a pure predicate over that record, so the audit reaches the same verdict with the language model removed."
+  llm_free "true"
+  applies_to "every request, trivial or hard, prompted or unprompted"
+  threshold minimum_refutation_attempts
+    value "3"
+    rationale "Requirement 5 asks for a deliberately wide variety of refutations. Three attempts with distinct mechanisms is the floor: the same doubt restated three ways is one refutation, not three."
+  threshold minimum_refutation_axis_kinds
+    value "2"
+    rationale "Variety is across kinds, not only count. Three refutations that all deny the same assumption probe one axis, so the attempts must span at least two of the three kinds: a different mechanism, a different source, or a different denied assumption."
+  threshold minimum_instruction_sources
+    value "2"
+    rationale "Requirement 2 asks for instructions gathered from the internet and cross-referenced. A single source cannot corroborate itself, so a formalized instruction set needs at least two independent sources before any step counts as corroborated."
+  threshold minimum_documentation_sources
+    value "1"
+    rationale "Requirement 3 makes consulting official documentation a default step, not an escalation. At least one consulted source must be the subject speaking about itself or a first-hand record of it."
+  threshold minimum_primacy_steps
+    value "1"
+    rationale "Requirement 4 forbids assumed trust. A source with an empty primacy chain has no derivation behind its tier, so its trust is asserted rather than computed and it contributes nothing."
+  gate evidence_before_claim
+    order "1"
+    trigger "world_claim_present"
+    requirement "Every claim about the world names at least one observation that was recorded before the claim. An observation is an executed command or a retrieved source together with the output that was actually seen."
+    adopted_from "The reference dialog measured before it described: it never asserted where the disk space went until du and df had printed the numbers it then quoted."
+    failure_slug "claim_without_prior_observation"
+  gate documentation_default
+    order "2"
+    trigger "source_consultation_present"
+    requirement "At least the documentation threshold of consulted sources are primary for their subject: the subject speaking about itself, or a first-hand record of it. Consulting documentation is a default step of the pipeline, never an escalation reserved for hard tasks."
+    adopted_from "Requirement 3 of issue #1073: official documentation and trustworthy sources are a default step of reasoning."
+    failure_slug "no_primary_documentation_consulted"
+  gate instruction_formalization
+    order "3"
+    trigger "instruction_need_present"
+    requirement "Instructions gathered for the task class are compiled into an ordered instruction set in which every step carries a machine-checkable check, and the set draws on at least the instruction-source threshold of distinct sources. A step whose check is empty is unverifiable and fails the gate: prose that cannot be checked is not a formalized instruction."
+    adopted_from "Requirement 2 of issue #1073: collected internet instructions must be formalized into machine-checkable instruction sets, not paraphrased."
+    failure_slug "instruction_step_unverifiable"
+  gate computed_source_trust
+    order "4"
+    trigger "source_assessment_present"
+    requirement "Every source's tier is derived from its primacy chain: how far the source stands from the primary record, and whether each hop names its upstream. A tier asserted without a chain, or a chain whose asserted tier disagrees with the derived one, fails the gate. Conflicts between sources are resolved toward the source closer to the primary record; equal distance leaves the conflict unresolved rather than picking a side."
+    adopted_from "Requirement 4 of issue #1073: whether something deserves trust is itself determined through primary sources, never assumed."
+    failure_slug "source_trust_assumed"
+  gate refutation_variety
+    order "5"
+    trigger "conclusion_present"
+    requirement "Before a conclusion may be leaned toward, at least the refutation-attempt threshold of refutations with distinct mechanisms were attempted, spanning at least the axis-kind threshold of the three kinds (mechanism, source, denied assumption), and each attempt is either itself refuted by evidence or the alternative it proposes is positively proven. A conclusion whose refutations were never attempted, or attempted along one axis only, may not be leaned toward."
+    adopted_from "The reference dialog asked what would have to be true for the problem not to exist before it acted, and the refutation-first requirement 5 of issue #1073."
+    failure_slug "refutation_variety_insufficient"
+  gate verify_after_act
+    order "6"
+    trigger "mutating_action_present"
+    requirement "Every action that changed the world carries a measurement taken after it, backed by its own observation, so the effect is re-measured rather than assumed. An action with a before-measurement and no after-measurement fails the gate."
+    adopted_from "The reference dialog re-ran du and df after every deletion and quoted the new numbers instead of declaring success."
+    failure_slug "action_not_verified"
+  gate honest_failure_report
+    order "7"
+    trigger "action_failure_present"
+    requirement "An action that failed or only partly succeeded is reported as failed or partial, with the reason named. Rounding a partial result up to a success fails the gate."
+    adopted_from "The reference dialog reported the root-owned leftovers it could not remove as leftovers, and said why, instead of claiming the directory was clean."
+    failure_slug "failure_reported_as_success"
+  verdict confirmed
+    rule "Every triggered gate is satisfied and the refutation ledger is discharged: every attempted refutation was itself refuted by evidence."
+  verdict refuted
+    rule "Every triggered gate is satisfied and a refutation survived with evidence behind it, positively proving the alternative."
+  verdict not_confirmed_not_refuted
+    rule "Any triggered gate is violated, or the refutation ledger is neither discharged nor decided. The audit names the blockers: the gates that failed and the checks that could not be run. This is the honest default, not a fallback."

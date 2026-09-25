@@ -1,0 +1,131 @@
+meanings
+  export_substitution_rule
+    role substitution_export_action
+    precondition "a verified substitution-rule program plan exists"
+    effect "the verified rule set is lowered to the selected executable target"
+    unit "not applicable"
+    example "export the substitution rule"
+    defined-by action
+    lexeme en
+      surface
+        text "export substitution rule"
+  response_substitution_rule_export_en
+    role substitution_export_response
+    precondition "a verified substitution-rule export was requested in English"
+    effect "the generated files and execution contract are explained in English"
+    unit "not applicable"
+    example "The verified substitution-rule program is ready"
+    defined-by answer
+    lexeme en
+      surface
+        text "response substitution rule export en"
+  response_substitution_rule_export_es
+    role substitution_export_response
+    precondition "a verified substitution-rule export was requested in Spanish"
+    effect "the generated files and execution contract are explained in Spanish"
+    unit "not applicable"
+    example "El programa verificado de reglas de sustitución está listo"
+    defined-by answer
+    lexeme en
+      surface
+        text "response substitution rule export es"
+  response_substitution_rule_export_hi
+    role substitution_export_response
+    precondition "a verified substitution-rule export was requested in Hindi"
+    effect "the generated files and execution contract are explained in Hindi"
+    unit "not applicable"
+    example "सत्यापित प्रतिस्थापन-नियम प्रोग्राम तैयार है"
+    defined-by answer
+    lexeme en
+      surface
+        text "response substitution rule export hi"
+  response_substitution_rule_export_ru
+    role substitution_export_response
+    precondition "a verified substitution-rule export was requested in Russian"
+    effect "the generated files and execution contract are explained in Russian"
+    unit "not applicable"
+    example "Проверенная программа правил подстановки готова"
+    defined-by answer
+    lexeme en
+      surface
+        text "response substitution rule export ru"
+  response_substitution_rule_export_zh
+    role substitution_export_response
+    precondition "a verified substitution-rule export was requested in Chinese"
+    effect "the generated files and execution contract are explained in Chinese"
+    unit "not applicable"
+    example "经过验证的替换规则程序已生成"
+    defined-by answer
+    lexeme en
+      surface
+        text "response substitution rule export zh"
+  substitution
+    role substitution_compiler_concept
+    precondition "a graph rewrite is expressed as link-pattern conditions and actions"
+    effect "matching links are removed and replacement links are inserted"
+    unit "not applicable"
+    example "replace x with y"
+    defined-by concept
+    lexeme en
+      surface
+        text substitution
+  substitution_rule_export
+    role substitution_export_intent
+    precondition "the request names substitution-rule export and one target"
+    effect "the solver returns a verified executable compilation recipe"
+    unit "not applicable"
+    example "export the substitution rule to Rust"
+    defined-by inquiry
+    lexeme en
+      surface
+        text "substitution rule export"
+  target_javascript
+    role substitution_export_target
+    precondition "the export request names JavaScript"
+    effect "the compiler emits JavaScript interop backed by generated Rust-to-WASM"
+    unit "not applicable"
+    example "export to JavaScript"
+    defined-by concept
+    lexeme en
+      surface
+        text "target javascript"
+  target_rust
+    role substitution_export_target
+    precondition "the export request names Rust"
+    effect "the compiler emits a standalone canonical Rust program"
+    unit "not applicable"
+    example "export to Rust"
+    defined-by concept
+    lexeme en
+      surface
+        text "target rust"
+  target_webassembly
+    role substitution_export_target
+    precondition "the export request names WebAssembly or WASM"
+    effect "the compiler emits Rust source for a WebAssembly module and interop"
+    unit "not applicable"
+    example "export to WebAssembly"
+    defined-by concept
+    lexeme en
+      surface
+        text "target webassembly"
+  wasm
+    role substitution_compiler_concept
+    precondition "a target request uses the WASM abbreviation"
+    effect "the WebAssembly target selector is recognized"
+    unit "not applicable"
+    example "export to WASM"
+    defined-by concept
+    lexeme en
+      surface
+        text wasm
+  webassembly
+    role substitution_compiler_concept
+    precondition "a target request uses the WebAssembly name"
+    effect "the WebAssembly target selector is recognized"
+    unit "not applicable"
+    example "export to WebAssembly"
+    defined-by concept
+    lexeme en
+      surface
+        text webassembly

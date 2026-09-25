@@ -14,7 +14,7 @@ use crate::learning_ledger::LearningLedger;
 use crate::substitution::SubstitutionRuleSet;
 
 const CODING_MODIFICATION_SUITE_LINO: &str =
-    include_str!("../../data/benchmarks/coding-modification-suite.lino");
+    include_str!("../embedded/data/benchmarks/coding-modification-suite.lino");
 
 /// A solver trace that reached or started from the unknown path.
 ///

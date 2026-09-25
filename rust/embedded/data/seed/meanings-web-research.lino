@@ -1,0 +1,1150 @@
+meanings
+  term_information_request_opener
+    defined-by inquiry
+    defined-by concept
+    role term_information_request_opener
+    lexeme en
+      surface
+        text "tell me about …"
+      surface
+        text "can you tell me about …"
+      surface
+        text "could you tell me about …"
+    lexeme ru
+      surface
+        text "расскажи мне об …"
+      surface
+        text "расскажи мне о …"
+      surface
+        text "расскажи мне про …"
+      surface
+        text "расскажи об …"
+      surface
+        text "расскажи о …"
+      surface
+        text "расскажи про …"
+    lexeme hi
+      surface
+        text "बताओ …"
+    lexeme zh
+      surface
+        text 告诉我…
+  research_question_opener
+    defined-by inquiry
+    role research_question_opener
+    lexeme en
+      surface
+        text "define …"
+      surface
+        text "give a definition of …"
+      surface
+        text "what is the …"
+      surface
+        text "what is a …"
+      surface
+        text "what is an …"
+      surface
+        text "what is …"
+      surface
+        text "what are the …"
+      surface
+        text "what are …"
+      surface
+        text "what s the …"
+      surface
+        text "what s a …"
+      surface
+        text "what s an …"
+      surface
+        text "what s …"
+      surface
+        text "which is the …"
+      surface
+        text "which is a …"
+      surface
+        text "which is an …"
+      surface
+        text "which are the …"
+      surface
+        text "which are …"
+      surface
+        text "which …"
+      surface
+        text "is there …"
+      surface
+        text "are there …"
+      surface
+        text "does …"
+      surface
+        text "who is the …"
+      surface
+        text "who are the …"
+      surface
+        text "who …"
+      surface
+        text "where is the …"
+      surface
+        text "where are the …"
+      surface
+        text "where …"
+      surface
+        text "when is the …"
+      surface
+        text "when are the …"
+      surface
+        text "when …"
+      surface
+        text "why is the …"
+      surface
+        text "why are the …"
+      surface
+        text "why …"
+      surface
+        text "how is the …"
+      surface
+        text "how are the …"
+      surface
+        text "how …"
+      surface
+        text "can you tell me …"
+      surface
+        text "could you tell me …"
+      surface
+        text "do you know …"
+      surface
+        text "do …"
+      surface
+        text "what does …"
+    lexeme ru
+      surface
+        text "дай определение …"
+      surface
+        text "определи …"
+      surface
+        text "что такое …"
+      surface
+        text "что за …"
+      surface
+        text "есть ли …"
+      surface
+        text "бывает ли …"
+      surface
+        text "предлагает ли …"
+      surface
+        text "имеет ли …"
+      surface
+        text "какие …"
+      surface
+        text "какой …"
+      surface
+        text "какая …"
+      surface
+        text "какое …"
+      surface
+        text "кто такой …"
+      surface
+        text "кто такая …"
+      surface
+        text "кто …"
+      surface
+        text "где …"
+      surface
+        text "когда …"
+      surface
+        text "почему …"
+      surface
+        text "зачем …"
+      surface
+        text "как …"
+      surface
+        text "расскажи мне …"
+      surface
+        text "ты знаешь …"
+    lexeme hi
+      surface
+        text "परिभाषित करें …"
+      surface
+        text "क्या …"
+      surface
+        text "क्या होता है …"
+      surface
+        text "क्या है …"
+      surface
+        text "कौन से …"
+      surface
+        text "कौन है …"
+      surface
+        text "कौन …"
+      surface
+        text "कहाँ है …"
+      surface
+        text "कहाँ …"
+      surface
+        text "कब …"
+      surface
+        text "क्यों …"
+      surface
+        text "कैसे …"
+      surface
+        text "बताओ …"
+    lexeme zh
+      surface
+        text 定义…
+      surface
+        text 有没有…
+      surface
+        text 是否…
+      surface
+        text 什么是…
+      surface
+        text 谁是…
+      surface
+        text 哪里是…
+      surface
+        text 哪里…
+      surface
+        text 哪些…
+      surface
+        text 哪个…
+      surface
+        text 什么时候…
+      surface
+        text 为什么…
+      surface
+        text 怎么…
+      surface
+        text 如何…
+      surface
+        text 告诉我…
+      surface
+        text 你知道…
+  document_originality_check_action
+    grounded-in Q953429
+    defined-by inquiry
+    defined-by action
+    role document_originality_check_action
+    lexeme en
+      surface
+        text check
+      surface
+        text verify
+      surface
+        text scan
+      surface
+        text analyze
+      surface
+        text validate
+      surface
+        text authenticate
+      surface
+        text "fact-check"
+      surface
+        text "fact check"
+      surface
+        text "cross-check"
+      surface
+        text "check …"
+      surface
+        text "verify …"
+      surface
+        text "scan …"
+      surface
+        text "analyze …"
+      surface
+        text "fact-check …"
+    lexeme ru
+      surface
+        text проверь
+      surface
+        text проверить
+      surface
+        text проверьте
+      surface
+        text проверка
+      surface
+        text сверь
+      surface
+        text сверить
+      surface
+        text подтверди
+      surface
+        text подтвердить
+      surface
+        text "проверь …"
+      surface
+        text "проверить …"
+      surface
+        text "проверьте …"
+    lexeme hi
+      surface
+        text जांच
+      surface
+        text जाँच
+      surface
+        text जांचें
+      surface
+        text जाँचें
+      surface
+        text जांचो
+      surface
+        text जाँचो
+      surface
+        text सत्यापित
+      surface
+        text परखें
+      surface
+        text "जांचें …"
+      surface
+        text "जाँचें …"
+    lexeme zh
+      surface
+        text 检查
+      surface
+        text 檢查
+      surface
+        text 检测
+      surface
+        text 檢測
+      surface
+        text 查重
+      surface
+        text 核实
+      surface
+        text 核實
+      surface
+        text 核对
+      surface
+        text 核對
+      surface
+        text 核查
+      surface
+        text 验证
+      surface
+        text 驗證
+      surface
+        text 甄别
+      surface
+        text 检查…
+      surface
+        text 檢查…
+      surface
+        text 查重…
+    lexeme es
+      surface
+        text "revisa"
+      surface
+        text "revisar"
+      surface
+        text "comprueba"
+      surface
+        text "verifica"
+      surface
+        text "analiza"
+      surface
+        text "valida"
+      surface
+        text "chequea"
+  document_originality_subject
+    grounded-in Q2914681
+    grounded-in Q2360032
+    grounded-in Q59555084
+    grounded-in Q164666
+    defined-by inquiry
+    role document_originality_subject
+    lexeme en
+      surface
+        text plagiaris
+      surface
+        text plagiarism
+      surface
+        text originality
+      surface
+        text uniqueness
+      surface
+        text copied
+      surface
+        text duplicate
+      surface
+        text authentic
+      surface
+        text authenticity
+      surface
+        text genuine
+      surface
+        text "fact-check"
+      surface
+        text "fact check"
+      surface
+        text factual
+      surface
+        text truthfulness
+      surface
+        text veracity
+      surface
+        text accuracy
+      surface
+        text credibility
+      surface
+        text misinformation
+      surface
+        text disinformation
+      surface
+        text fabricated
+    lexeme ru
+      surface
+        text плагиат
+      surface
+        text уникальн
+      surface
+        text оригинальн
+      surface
+        text заимствован
+      surface
+        text подлинность
+      surface
+        text подлинн
+      surface
+        text достоверн
+      surface
+        text правдивость
+      surface
+        text точность
+      surface
+        text фейк
+      surface
+        text дезинформац
+      surface
+        text фальсификац
+    lexeme hi
+      surface
+        text plagiarism
+      surface
+        text मौलिकता
+      surface
+        text नकल
+      surface
+        text "साहित्यिक चोरी"
+      surface
+        text प्रामाणिकता
+      surface
+        text सत्यता
+      surface
+        text तथ्य
+      surface
+        text विश्वसनीयता
+      surface
+        text सच्चाई
+    lexeme zh
+      surface
+        text 原创
+      surface
+        text 原創
+      surface
+        text 抄袭
+      surface
+        text 抄襲
+      surface
+        text 查重
+      surface
+        text 重复率
+      surface
+        text 重複率
+      surface
+        text 真实性
+      surface
+        text 真實性
+      surface
+        text 真伪
+      surface
+        text 真偽
+      surface
+        text 事实核查
+      surface
+        text 事實查核
+      surface
+        text 可信度
+      surface
+        text 可靠性
+      surface
+        text 真假
+      surface
+        text 虚假
+      surface
+        text 谣言
+      surface
+        text 謠言
+    lexeme es
+      surface
+        text "copiado"
+      surface
+        text "copiada"
+      surface
+        text "plagio"
+      surface
+        text "plagiado"
+      surface
+        text "originalidad"
+      surface
+        text "unicidad"
+      surface
+        text "auténtic"
+  document_originality_document
+    grounded-in Q49848
+    defined-by inquiry
+    role document_originality_document
+    lexeme en
+      surface
+        text text
+      surface
+        text document
+      surface
+        text file
+      surface
+        text attached
+      surface
+        text attachment
+      surface
+        text manuscript
+      surface
+        text article
+      surface
+        text essay
+      surface
+        text paper
+      surface
+        text passage
+      surface
+        text submission
+      surface
+        text writing
+      surface
+        text statement
+      surface
+        text claim
+      surface
+        text "attached text"
+      surface
+        text "this text"
+    lexeme ru
+      surface
+        text текст
+      surface
+        text документ
+      surface
+        text файл
+      surface
+        text вложение
+      surface
+        text вложенный
+      surface
+        text приложенный
+      surface
+        text статья
+      surface
+        text статью
+      surface
+        text рукопись
+      surface
+        text сочинение
+      surface
+        text утверждение
+      surface
+        text заявление
+      surface
+        text "данный текст"
+    lexeme hi
+      surface
+        text पाठ
+      surface
+        text दस्तावेज
+      surface
+        text दस्तावेज़
+      surface
+        text फ़ाइल
+      surface
+        text फाइल
+      surface
+        text संलग्न
+      surface
+        text लेख
+      surface
+        text निबंध
+      surface
+        text कथन
+      surface
+        text दावा
+    lexeme zh
+      surface
+        text 文本
+      surface
+        text 文档
+      surface
+        text 文件
+      surface
+        text 附件
+      surface
+        text 稿件
+      surface
+        text 论文
+      surface
+        text 論文
+      surface
+        text 文章
+      surface
+        text 段落
+      surface
+        text 陈述
+      surface
+        text 陳述
+      surface
+        text 声明
+      surface
+        text 聲明
+      surface
+        text 说法
+      surface
+        text 說法
+  research_superlative_modifier
+    defined-by property
+    role research_superlative_modifier
+    lexeme en
+      surface
+        text " most "
+      surface
+        text " best "
+      surface
+        text " top "
+      surface
+        text " leading "
+      surface
+        text " standard "
+      surface
+        text " de facto "
+      surface
+        text " widely used "
+      surface
+        text " commonly used "
+      surface
+        text " popular "
+      surface
+        text " recommended "
+      surface
+        text " current "
+      surface
+        text " latest "
+      surface
+        text " recent "
+      surface
+        text " state of the art "
+      surface
+        text " sota "
+      surface
+        text " should i use "
+      surface
+        text " should we use "
+      surface
+        text " should be used "
+    lexeme ru
+      surface
+        text " лучший "
+      surface
+        text " лучшая "
+      surface
+        text " лучшие "
+      surface
+        text " самый "
+      surface
+        text " самые "
+      surface
+        text " топ "
+      surface
+        text " ведущий "
+      surface
+        text " популярный "
+      surface
+        text " стандартный "
+      surface
+        text " рекомендуемый "
+      surface
+        text " текущий "
+      surface
+        text " последний "
+      surface
+        text " недавний "
+    lexeme hi
+      surface
+        text " सबसे अच्छा "
+      surface
+        text " सर्वश्रेष्ठ "
+      surface
+        text " शीर्ष "
+      surface
+        text " प्रमुख "
+      surface
+        text " मानक "
+      surface
+        text " लोकप्रिय "
+      surface
+        text " अनुशंसित "
+      surface
+        text " वर्तमान "
+      surface
+        text " नवीनतम "
+      surface
+        text " हाल ही का "
+    lexeme zh
+      surface
+        text 最好
+      surface
+        text 最佳
+      surface
+        text 顶级
+      surface
+        text 领先
+      surface
+        text 标准
+      surface
+        text 流行
+      surface
+        text 推荐
+      surface
+        text 当前
+      surface
+        text 最新
+      surface
+        text 最近
+  research_evidence_domain
+    defined-by entity
+    role research_evidence_domain
+    lexeme en
+      surface
+        text " dataset "
+      surface
+        text " datasets "
+      surface
+        text " benchmark "
+      surface
+        text " benchmarks "
+      surface
+        text " corpus "
+      surface
+        text " corpora "
+      surface
+        text " metric "
+      surface
+        text " metrics "
+      surface
+        text " framework "
+      surface
+        text " frameworks "
+      surface
+        text " paper "
+      surface
+        text " papers "
+      surface
+        text " study "
+      surface
+        text " studies "
+    lexeme ru
+      surface
+        text " датасет "
+      surface
+        text " набор данных "
+      surface
+        text " бенчмарк "
+      surface
+        text " корпус "
+      surface
+        text " метрика "
+      surface
+        text " фреймворк "
+      surface
+        text " статья "
+      surface
+        text " исследование "
+    lexeme hi
+      surface
+        text " डेटासेट "
+      surface
+        text " बेंचमार्क "
+      surface
+        text " कॉर्पस "
+      surface
+        text " मीट्रिक "
+      surface
+        text " फ्रेमवर्क "
+      surface
+        text " पेपर "
+      surface
+        text " अध्ययन "
+    lexeme zh
+      surface
+        text 数据集
+      surface
+        text 基准
+      surface
+        text 语料库
+      surface
+        text 指标
+      surface
+        text 框架
+      surface
+        text 论文
+      surface
+        text 研究
+  commercial_subscription_evidence
+    defined-by entity
+    role research_evidence_domain
+    lexeme en
+      surface
+        text " subscription "
+      surface
+        text " subscriptions "
+      surface
+        text " plan "
+      surface
+        text " plans "
+      surface
+        text " tier "
+      surface
+        text " tiers "
+      surface
+        text " pricing "
+      surface
+        text " billing "
+      surface
+        text " monthly "
+      surface
+        text " annual "
+      surface
+        text " yearly "
+    lexeme ru
+      surface
+        text " подписк"
+      surface
+        text " тариф"
+      surface
+        text " план "
+      surface
+        text " планы "
+      surface
+        text " прайс"
+      surface
+        text " оплат"
+      surface
+        text " биллинг"
+      surface
+        text " помесячн"
+      surface
+        text " ежемесячн"
+      surface
+        text " год "
+      surface
+        text " годов"
+    lexeme hi
+      surface
+        text " subscription "
+      surface
+        text " subscriptions "
+      surface
+        text " सदस्यता "
+      surface
+        text " योजना "
+      surface
+        text " प्लान "
+      surface
+        text " मूल्य "
+      surface
+        text " कीमत "
+      surface
+        text " मासिक "
+      surface
+        text " वार्षिक "
+      surface
+        text " सालाना "
+    lexeme zh
+      surface
+        text 订阅
+      surface
+        text 訂閱
+      surface
+        text 套餐
+      surface
+        text 方案
+      surface
+        text 价格
+      surface
+        text 價格
+      surface
+        text 月付
+      surface
+        text 年付
+      surface
+        text 年度
+      surface
+        text 每月
+      surface
+        text 每年
+  research_evaluation_domain
+    defined-by concept
+    role research_evaluation_domain
+    lexeme en
+      surface
+        text " evaluation "
+      surface
+        text " evaluate "
+      surface
+        text " validation "
+      surface
+        text " validate "
+      surface
+        text " quality "
+      surface
+        text " translation "
+      surface
+        text " compare "
+      surface
+        text " comparison "
+    lexeme ru
+      surface
+        text " оценка "
+      surface
+        text " оценить "
+      surface
+        text " валидация "
+      surface
+        text " проверка "
+      surface
+        text " качество "
+      surface
+        text " перевод "
+      surface
+        text " сравнить "
+      surface
+        text " сравнение "
+    lexeme hi
+      surface
+        text " मूल्यांकन "
+      surface
+        text " सत्यापन "
+      surface
+        text " गुणवत्ता "
+      surface
+        text " अनुवाद "
+      surface
+        text " तुलना "
+    lexeme zh
+      surface
+        text 评估
+      surface
+        text 评价
+      surface
+        text 验证
+      surface
+        text 质量
+      surface
+        text 翻译
+      surface
+        text 比较
+  commercial_pricing_evaluation
+    defined-by concept
+    role research_evaluation_domain
+    lexeme en
+      surface
+        text " discount "
+      surface
+        text " discounts "
+      surface
+        text " price "
+      surface
+        text " prices "
+      surface
+        text " cost "
+      surface
+        text " costs "
+      surface
+        text " cheaper "
+      surface
+        text " savings "
+      surface
+        text " deal "
+      surface
+        text " deals "
+      surface
+        text " offer "
+      surface
+        text " offers "
+    lexeme ru
+      surface
+        text " скидк"
+      surface
+        text " цен"
+      surface
+        text " стоимост"
+      surface
+        text " дешев"
+      surface
+        text " выгод"
+      surface
+        text " предложени"
+    lexeme hi
+      surface
+        text " discount "
+      surface
+        text " छूट "
+      surface
+        text " कीमत "
+      surface
+        text " मूल्य "
+      surface
+        text " लागत "
+      surface
+        text " सस्ता "
+      surface
+        text " बचत "
+      surface
+        text " ऑफर "
+    lexeme zh
+      surface
+        text 折扣
+      surface
+        text 优惠
+      surface
+        text 優惠
+      surface
+        text 价格
+      surface
+        text 價格
+      surface
+        text 成本
+      surface
+        text 费用
+      surface
+        text 費用
+      surface
+        text 便宜
+  enumeration_request_opener
+    defined-by inquiry
+    defined-by action
+    role enumeration_request_opener
+    lexeme en
+      surface
+        text "list all …"
+      surface
+        text "list every …"
+      surface
+        text "list the …"
+      surface
+        text "show all …"
+      surface
+        text "show me all …"
+      surface
+        text "show me the …"
+      surface
+        text "give me all …"
+      surface
+        text "name all …"
+      surface
+        text "enumerate all …"
+    lexeme ru
+      surface
+        text "перечисли всех …"
+      surface
+        text "перечисли все …"
+      surface
+        text "список всех …"
+      surface
+        text "назови всех …"
+    lexeme hi
+      surface
+        text "सभी …"
+      surface
+        text "हर …"
+    lexeme zh
+      surface
+        text "列出所有 …"
+      surface
+        text "列出全部 …"
+      surface
+        text "显示所有 …"
+      surface
+        text "枚举所有 …"
+  enumeration_constraint
+    defined-by relation
+    role enumeration_constraint
+    lexeme en
+      surface
+        text " with "
+      surface
+        text " that "
+      surface
+        text " who "
+      surface
+        text " whose "
+      surface
+        text " where "
+      surface
+        text " which "
+      surface
+        text " having "
+      surface
+        text " have "
+      surface
+        text " has "
+      surface
+        text " featuring "
+      surface
+        text " capable of "
+      surface
+        text " can "
+      surface
+        text " for "
+      surface
+        text " by "
+      surface
+        text " in "
+    lexeme ru
+      surface
+        text " с "
+      surface
+        text " у которых "
+      surface
+        text " которые "
+      surface
+        text " имеющие "
+      surface
+        text " имеющих "
+      surface
+        text " для "
+      surface
+        text " в "
+    lexeme hi
+      surface
+        text " जिनके "
+      surface
+        text " जिनमें "
+      surface
+        text " जिसमें "
+      surface
+        text " वाले "
+      surface
+        text " के साथ "
+      surface
+        text " के लिए "
+      surface
+        text " में "
+    lexeme zh
+      surface
+        text " 具有 "
+      surface
+        text " 有 "
+      surface
+        text " 带有 "
+      surface
+        text " 可以 "
+      surface
+        text " 能 "
+      surface
+        text " 在 "
+      surface
+        text " 用于 "

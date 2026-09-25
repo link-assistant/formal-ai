@@ -1,0 +1,187 @@
+# Specialized-handler precedence as rank links (plan 09 leaf 41, issue #1138
+# stage 3). Each handler row declares its dispatch precedence as an explicit
+# `rank` link — first-match-wins tries handlers in ascending rank order, and two
+# rows never share a rank. The rank step is 10 so a new handler can be slotted
+# between two neighbours without renumbering the table. Document position
+# carries no meaning — the loader sorts by rank, so an operator edit is
+# changing a rank value, not moving a row.
+#
+# `browser_only true` marks rows only the browser worker runs; the native
+# dispatcher skips them when it joins the order to its function pointers
+# (plan 09 leaf 13). Trailing guard notes are `note` fields, still comments to
+# the meaning-closure audit — only value tokens are grounded, never the head
+# slug a row names.
+handler_precedence
+  handler conversation_control
+    rank 10
+    note "explicit preferences and corrections stay local instead of becoming web searches"
+  handler agentic_continuation
+    rank 20
+    note "a turn that is only a continuation cue resumes the agentic task; with nothing to resume it is answered here, never searched for (issue 1095)"
+  handler exact_memory_query
+    rank 30
+    browser_only true
+    note "the memory store lives in the worker, so the exact-memory query runs there alone (plan 09 leaf 13)"
+  handler memory_program
+    rank 40
+    browser_only true
+    note "the worker interprets stored memory programs there alone (plan 09 leaf 13)"
+  handler memory_program_gap
+    rank 50
+    browser_only true
+    note "surfaces what the stored memory program cannot yet answer (plan 09 leaf 13)"
+  handler current_dialogue_fact_checking
+    rank 60
+    browser_only true
+    note "checks the running dialogue against the worker's memory (plan 09 leaf 13)"
+  handler link_native_synthesis
+    rank 70
+    browser_only true
+    note "synthesizes over the link store the worker itself holds (plan 09 leaf 13)"
+  handler historical
+    rank 80
+    browser_only true
+    note "replays the worker's stored conversation history (plan 09 leaf 13)"
+  handler write_program_coreference
+    rank 90
+    browser_only true
+    note "context-bound write-program rewrite over resolved coreference (plan 09 leaf 13)"
+  handler program_blueprint_from_prompt
+    rank 100
+    browser_only true
+    note "composes the program blueprint from a bare prompt (plan 09 leaf 13)"
+  handler write_program_concrete
+    rank 110
+    browser_only true
+    note "context-bound concrete write-program binding (plan 09 leaf 13)"
+  handler software_project_request
+    rank 120
+    browser_only true
+    note "the browser's interactive software-project dialogue (plan 09 leaf 13)"
+  handler http_fetch
+    rank 130
+    note "phase async -- the worker answers fetches in its async network phase"
+  handler url_navigate
+    rank 140
+    note "phase async -- the worker answers navigations in its async network phase"
+  handler github_repository_traffic
+    rank 150
+  handler document_originality_check
+    rank 160
+  handler web_search
+    rank 170
+    note "phase async -- the worker answers searches in its async network phase"
+  handler learn_from_source
+    rank 180
+    note "issue 499 learn-from-source directive sits after url and search handlers and above general lookups; phase async"
+  handler research_comparison_table
+    rank 190
+  handler research_result_followup
+    rank 200
+  handler docs_method_explanation
+    rank 210
+  handler procedural_how_to
+    rank 220
+  handler procedural_how_to_followup
+    rank 230
+    note "issue 444 a bare follow-up rebinds to the prior how-to procedure"
+  handler conversation_memory
+    rank 240
+  handler software_project_followup
+    rank 250
+    note "issue 341 a decomposed step stays bound to the active software-project dialogue"
+  handler summarization
+    rank 260
+  handler verifiable_task
+    rank 270
+    note "generic recognise/discover/compose/execute/verify interpreter; includes seed-gated pattern inference"
+  handler text_manipulation
+    rank 280
+  handler brainstorming
+    rank 290
+  handler conversation_topic
+    rank 300
+  handler fact_lookup
+    rank 310
+    note "phase async -- the worker's fact query runs after the synchronous table"
+  handler coreference
+    rank 320
+  handler roleplay
+    rank 330
+  handler translation
+    rank 340
+  handler response_language_followup
+    rank 350
+  handler capabilities
+    rank 360
+  handler calendar_reasoning
+    rank 370
+  handler calendar_create_event
+    rank 380
+  handler compound_interest
+    rank 390
+  handler numeric_list
+    rank 400
+    note "issue 395 generated code plus deterministic result beats arithmetic and the generic algorithm handler"
+  handler shell_command_transform
+    rank 410
+    note "issue 552 a shell-command rewrite beats generic script writing and terminal-command refusal"
+  handler number_constraint_reasoning
+    rank 420
+  handler program_synthesis
+    rank 430
+    note "issue 710 structural coding-task recognition beats arithmetic and concepts inside examples/docstrings"
+  handler arithmetic
+    rank 440
+  handler javascript_execution
+    rank 450
+  handler definition_merge
+    rank 460
+  handler concept_lookup
+    rank 470
+  handler who_is
+    rank 480
+  handler how_it_works
+    rank 490
+  handler meta_explanation
+    rank 500
+  handler network_query
+    rank 510
+  handler execution_failure
+    rank 520
+    note "runs before write_script so an explicit failure prompt surfaces a trace instead of a passing snippet"
+  handler installation_conversion
+    rank 530
+    note "issue 423 an install or deploy guide conversion beats a generic write_script request"
+  handler write_script
+    rank 540
+  handler document_generation_plan
+    rank 550
+    note "issue 425 a document request beats the software_project build"
+  handler software_project
+    rank 560
+  handler algorithm
+    rank 570
+  handler source_refresh
+    rank 580
+  handler source_conflict
+    rank 590
+  handler clarification
+    rank 600
+  handler punctuation_only_prompt
+    rank 610
+  handler ill_formed
+    rank 620
+  handler physical_action_question
+    rank 630
+  handler kupi_slona
+    rank 640
+  handler shell_refusal
+    rank 650
+  handler proof_request
+    rank 660
+    note "a proof request beats opinion_question so it reaches the formalization pipeline explanation"
+  handler opinion_question
+    rank 670
+  handler incompatible_units
+    rank 680

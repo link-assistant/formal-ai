@@ -11,7 +11,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("issue_709_held_out_zero_failures_and_named_review"),
     path: SEARCH_FUSION_LEARNING_PATH,
     task: SEARCH_FUSION_LEARNING_TASK,
-    memory: include_str!("../../../../data/meta/issue-709-search-fusion-learning.lino"),
+    memory: include_str!("../../../embedded/data/meta/issue-709-search-fusion-learning.lino"),
     subject: "search-fusion execution observations and reusable corrections",
 };
 

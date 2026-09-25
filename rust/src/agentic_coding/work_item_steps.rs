@@ -6,7 +6,7 @@
 //! each is a line of wording with placeholders, and the wording is data. This
 //! module only fills the placeholders.
 
-const STEPS: &str = include_str!("../../../data/meta/work-item-steps.lino");
+const STEPS: &str = include_str!("../../embedded/data/meta/work-item-steps.lino");
 
 /// The template registered under `key`, with `{placeholders}` filled in.
 ///

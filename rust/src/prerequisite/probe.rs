@@ -17,7 +17,7 @@ use std::process::Command;
 use crate::seed::parser::parse_lino;
 
 /// The seed document declaring one probe per catalogued program.
-const TOOLCHAINS_LINO: &str = include_str!("../../../data/seed/toolchains.lino");
+const TOOLCHAINS_LINO: &str = include_str!("../../embedded/data/seed/toolchains.lino");
 
 /// Record type of one probe row in `data/seed/toolchains.lino`.
 const RECORD_PROBE: &str = "toolchain_probe";

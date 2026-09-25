@@ -2,9 +2,9 @@ self_ast_census
   target src/obligation_ledger.rs
   language rust
   fidelity signature
-  byte_len 34928
+  byte_len 34934
   line_count 900
-  content_id source_module_b8ef6196bca9b6f6
+  content_id source_module_6a576d094905eae4
   symbol_count 40
   symbols
     enum ObligationExpectation 29 65

@@ -2,9 +2,9 @@ self_ast_census
   target src/learning_cycle.rs
   language rust
   fidelity signature
-  byte_len 26575
+  byte_len 26629
   line_count 636
-  content_id source_module_6cc96594bab4e98d
+  content_id source_module_20eac58dc2b17e93
   symbol_count 38
   symbols
     const GOOGLE_TRENDS_FRONTIER 54 54

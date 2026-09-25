@@ -46,11 +46,11 @@ use instructions::InstructionSet;
 use refutation::{LedgerState, RefutationLedger};
 
 /// The formal standard, embedded so the audit ships with the library.
-const REASONING_STANDARD: &str = include_str!("../../../data/meta/reasoning-standard.lino");
+const REASONING_STANDARD: &str = include_str!("../../embedded/data/meta/reasoning-standard.lino");
 
 /// The reference episode distilled from the dialog issue #1073 points at.
 const REFERENCE_EPISODE: &str =
-    include_str!("../../../data/meta/reasoning-standard-reference-episode.lino");
+    include_str!("../../embedded/data/meta/reasoning-standard-reference-episode.lino");
 
 /// A structural problem in the standard's data file.
 #[derive(Debug, Clone, PartialEq, Eq)]

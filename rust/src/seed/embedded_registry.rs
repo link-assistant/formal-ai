@@ -11,275 +11,299 @@
 // byte-identical whatever rustfmt would have preferred.
 
 /// Raw embedded contents (used by `merged_bundle` and by tests).
-pub const AGENT_INFO_LINO: &str = include_str!("../../../data/seed/agent-info.lino");
+pub const AGENT_INFO_LINO: &str = include_str!("../../embedded/data/seed/agent-info.lino");
 pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =
-    include_str!("../../../data/seed/agentic-tool-capabilities.lino");
-pub const APPROVED_LESSONS_LINO: &str = include_str!("../../../data/seed/approved-lessons.lino");
-pub const BRAINSTORM_SEEDS_LINO: &str = include_str!("../../../data/seed/brainstorm-seeds.lino");
-pub const CALLER_CONTEXT_LINO: &str = include_str!("../../../data/seed/caller-context.lino");
+    include_str!("../../embedded/data/seed/agentic-tool-capabilities.lino");
+pub const APPROVED_LESSONS_LINO: &str =
+    include_str!("../../embedded/data/seed/approved-lessons.lino");
+pub const BRAINSTORM_SEEDS_LINO: &str =
+    include_str!("../../embedded/data/seed/brainstorm-seeds.lino");
+pub const CALLER_CONTEXT_LINO: &str = include_str!("../../embedded/data/seed/caller-context.lino");
 pub const CLIENT_COMPLETION_CONTRACTS_LINO: &str =
-    include_str!("../../../data/seed/client-completion-contracts.lino");
+    include_str!("../../embedded/data/seed/client-completion-contracts.lino");
 pub const CLIENT_INTEGRATIONS_LINO: &str =
-    include_str!("../../../data/seed/client-integrations.lino");
-pub const CODING_GUIDANCE_LINO: &str = include_str!("../../../data/seed/coding-guidance.lino");
-pub const CODING_IDIOMS_LINO: &str = include_str!("../../../data/seed/coding-idioms.lino");
-pub const COMMAND_OUTCOME_LINO: &str = include_str!("../../../data/seed/command-outcome.lino");
+    include_str!("../../embedded/data/seed/client-integrations.lino");
+pub const CODING_GUIDANCE_LINO: &str =
+    include_str!("../../embedded/data/seed/coding-guidance.lino");
+pub const CODING_IDIOMS_LINO: &str = include_str!("../../embedded/data/seed/coding-idioms.lino");
+pub const COMMAND_OUTCOME_LINO: &str =
+    include_str!("../../embedded/data/seed/command-outcome.lino");
 pub const COMPUTER_USE_TASKS_LINO: &str =
-    include_str!("../../../data/seed/computer-use-tasks.lino");
-pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../../data/seed/concept-contexts.lino");
-pub const CONCEPTS_LINO: &str = include_str!("../../../data/seed/concepts.lino");
+    include_str!("../../embedded/data/seed/computer-use-tasks.lino");
+pub const CONCEPT_CONTEXTS_LINO: &str =
+    include_str!("../../embedded/data/seed/concept-contexts.lino");
+pub const CONCEPTS_LINO: &str = include_str!("../../embedded/data/seed/concepts.lino");
 pub const CONTRIBUTION_ARTIFACTS_LINO: &str =
-    include_str!("../../../data/seed/contribution-artifacts.lino");
-pub const COREFERENCE_LINO: &str = include_str!("../../../data/seed/coreference.lino");
-pub const DEMO_DIALOGS_LINO: &str = include_str!("../../../data/seed/demo-dialogs.lino");
-pub const DRAFT_STRATEGIES_LINO: &str = include_str!("../../../data/seed/draft-strategies.lino");
-pub const ENTITY_NAMES_LINO: &str = include_str!("../../../data/seed/entity-names.lino");
-pub const ENVIRONMENTS_LINO: &str = include_str!("../../../data/seed/environments.lino");
-pub const FACTS_LINO: &str = include_str!("../../../data/seed/facts.lino");
+    include_str!("../../embedded/data/seed/contribution-artifacts.lino");
+pub const COREFERENCE_LINO: &str = include_str!("../../embedded/data/seed/coreference.lino");
+pub const DEMO_DIALOGS_LINO: &str = include_str!("../../embedded/data/seed/demo-dialogs.lino");
+pub const DRAFT_STRATEGIES_LINO: &str =
+    include_str!("../../embedded/data/seed/draft-strategies.lino");
+pub const ENTITY_NAMES_LINO: &str = include_str!("../../embedded/data/seed/entity-names.lino");
+pub const ENVIRONMENTS_LINO: &str = include_str!("../../embedded/data/seed/environments.lino");
+pub const FACTS_LINO: &str = include_str!("../../embedded/data/seed/facts.lino");
 pub const FORMAL_LANGUAGE_PROJECTIONS_LINO: &str =
-    include_str!("../../../data/seed/formal-language-projections.lino");
+    include_str!("../../embedded/data/seed/formal-language-projections.lino");
 pub const FORMALIZATION_RELATIONS_LINO: &str =
-    include_str!("../../../data/seed/formalization-relations.lino");
-pub const GREETINGS_LINO: &str = include_str!("../../../data/seed/greetings.lino");
+    include_str!("../../embedded/data/seed/formalization-relations.lino");
+pub const GREETINGS_LINO: &str = include_str!("../../embedded/data/seed/greetings.lino");
 pub const HANDLER_FAMILY_METHODS_LINO: &str =
-    include_str!("../../../data/seed/handler-family-methods.lino");
+    include_str!("../../embedded/data/seed/handler-family-methods.lino");
 pub const HANDLER_PRECEDENCE_LINO: &str =
-    include_str!("../../../data/seed/handler-precedence.lino");
+    include_str!("../../embedded/data/seed/handler-precedence.lino");
 pub const HANDLER_PROMOTIONS_LINO: &str =
-    include_str!("../../../data/seed/handler-promotions.lino");
-pub const HANDLER_RULES_LINO: &str = include_str!("../../../data/seed/handler-rules.lino");
+    include_str!("../../embedded/data/seed/handler-promotions.lino");
+pub const HANDLER_RULES_LINO: &str = include_str!("../../embedded/data/seed/handler-rules.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
-    include_str!("../../../data/seed/hello-world-programs.lino");
-pub const IDENTITY_LINO: &str = include_str!("../../../data/seed/identity.lino");
-pub const INTENT_ROUTING_LINO: &str = include_str!("../../../data/seed/intent-routing.lino");
+    include_str!("../../embedded/data/seed/hello-world-programs.lino");
+pub const IDENTITY_LINO: &str = include_str!("../../embedded/data/seed/identity.lino");
+pub const INTENT_ROUTING_LINO: &str = include_str!("../../embedded/data/seed/intent-routing.lino");
 pub const INTERFACE_CAPABILITIES_LINO: &str =
-    include_str!("../../../data/seed/interface-capabilities.lino");
+    include_str!("../../embedded/data/seed/interface-capabilities.lino");
 pub const LANGUAGE_DETECTION_LINO: &str =
-    include_str!("../../../data/seed/language-detection.lino");
+    include_str!("../../embedded/data/seed/language-detection.lino");
 pub const LANGUAGE_PROJECTION_LINO: &str =
-    include_str!("../../../data/seed/language-projection.lino");
-pub const LANGUAGES_LINO: &str = include_str!("../../../data/seed/languages.lino");
-pub const LEARNED_METHODS_LINO: &str = include_str!("../../../data/seed/learned-methods.lino");
+    include_str!("../../embedded/data/seed/language-projection.lino");
+pub const LANGUAGES_LINO: &str = include_str!("../../embedded/data/seed/languages.lino");
+pub const LEARNED_METHODS_LINO: &str =
+    include_str!("../../embedded/data/seed/learned-methods.lino");
 pub const LEARNED_PROGRAM_RULES_LINO: &str =
-    include_str!("../../../data/seed/learned-program-rules.lino");
+    include_str!("../../embedded/data/seed/learned-program-rules.lino");
 pub const LEARNED_REQUEST_OPENERS_LINO: &str =
-    include_str!("../../../data/seed/learned-request-openers.lino");
-pub const LEARNING_SOURCES_LINO: &str = include_str!("../../../data/seed/learning-sources.lino");
+    include_str!("../../embedded/data/seed/learned-request-openers.lino");
+pub const LEARNING_SOURCES_LINO: &str =
+    include_str!("../../embedded/data/seed/learning-sources.lino");
 pub const MARKET_PRICE_REFERENCES_LINO: &str =
-    include_str!("../../../data/seed/market-price-references.lino");
-pub const MEANINGS_LINO: &str = include_str!("../../../data/seed/meanings.lino");
-pub const MEANINGS_ACTS_LINO: &str = include_str!("../../../data/seed/meanings-acts.lino");
+    include_str!("../../embedded/data/seed/market-price-references.lino");
+pub const MEANINGS_LINO: &str = include_str!("../../embedded/data/seed/meanings.lino");
+pub const MEANINGS_ACTS_LINO: &str = include_str!("../../embedded/data/seed/meanings-acts.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
-    include_str!("../../../data/seed/meanings-agent-actions.lino");
+    include_str!("../../embedded/data/seed/meanings-agent-actions.lino");
 pub const MEANINGS_BEHAVIOR_RULES_LINO: &str =
-    include_str!("../../../data/seed/meanings-behavior-rules.lino");
+    include_str!("../../embedded/data/seed/meanings-behavior-rules.lino");
 pub const MEANINGS_CALCULATOR_LINO: &str =
-    include_str!("../../../data/seed/meanings-calculator.lino");
-pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../../data/seed/meanings-calendar.lino");
+    include_str!("../../embedded/data/seed/meanings-calculator.lino");
+pub const MEANINGS_CALENDAR_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-calendar.lino");
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
-    include_str!("../../../data/seed/meanings-coding-catalog.lino");
+    include_str!("../../embedded/data/seed/meanings-coding-catalog.lino");
 pub const MEANINGS_CODING_CONFIG_LINO: &str =
-    include_str!("../../../data/seed/meanings-coding-config.lino");
+    include_str!("../../embedded/data/seed/meanings-coding-config.lino");
 pub const MEANINGS_CODING_REQUEST_LINO: &str =
-    include_str!("../../../data/seed/meanings-coding-request.lino");
+    include_str!("../../embedded/data/seed/meanings-coding-request.lino");
 pub const MEANINGS_CODING_STRUCTURE_LINO: &str =
-    include_str!("../../../data/seed/meanings-coding-structure.lino");
+    include_str!("../../embedded/data/seed/meanings-coding-structure.lino");
 pub const MEANINGS_CODING_STRUCTURE_2_LINO: &str =
-    include_str!("../../../data/seed/meanings-coding-structure-2.lino");
+    include_str!("../../embedded/data/seed/meanings-coding-structure-2.lino");
 pub const MEANINGS_CODING_TASKS_LINO: &str =
-    include_str!("../../../data/seed/meanings-coding-tasks.lino");
+    include_str!("../../embedded/data/seed/meanings-coding-tasks.lino");
 pub const MEANINGS_COMPUTER_USE_LINO: &str =
-    include_str!("../../../data/seed/meanings-computer-use.lino");
+    include_str!("../../embedded/data/seed/meanings-computer-use.lino");
 pub const MEANINGS_CONCEPT_LOOKUP_LINO: &str =
-    include_str!("../../../data/seed/meanings-concept-lookup.lino");
+    include_str!("../../embedded/data/seed/meanings-concept-lookup.lino");
 pub const MEANINGS_CONVERSATION_LINO: &str =
-    include_str!("../../../data/seed/meanings-conversation.lino");
+    include_str!("../../embedded/data/seed/meanings-conversation.lino");
 pub const MEANINGS_DECOMPOSITION_LINO: &str =
-    include_str!("../../../data/seed/meanings-decomposition.lino");
+    include_str!("../../embedded/data/seed/meanings-decomposition.lino");
 pub const MEANINGS_DEFINITION_MERGE_LINO: &str =
-    include_str!("../../../data/seed/meanings-definition-merge.lino");
-pub const MEANINGS_DOCS_LINO: &str = include_str!("../../../data/seed/meanings-docs.lino");
-pub const MEANINGS_FACTS_LINO: &str = include_str!("../../../data/seed/meanings-facts.lino");
+    include_str!("../../embedded/data/seed/meanings-definition-merge.lino");
+pub const MEANINGS_DOCS_LINO: &str = include_str!("../../embedded/data/seed/meanings-docs.lino");
+pub const MEANINGS_FACTS_LINO: &str = include_str!("../../embedded/data/seed/meanings-facts.lino");
 pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
-    include_str!("../../../data/seed/meanings-feature-capability.lino");
+    include_str!("../../embedded/data/seed/meanings-feature-capability.lino");
 pub const MEANINGS_FILE_EDIT_LINO: &str =
-    include_str!("../../../data/seed/meanings-file-edit.lino");
+    include_str!("../../embedded/data/seed/meanings-file-edit.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str =
-    include_str!("../../../data/seed/meanings-file-write.lino");
-pub const MEANINGS_FINANCE_LINO: &str = include_str!("../../../data/seed/meanings-finance.lino");
+    include_str!("../../embedded/data/seed/meanings-file-write.lino");
+pub const MEANINGS_FINANCE_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-finance.lino");
 pub const MEANINGS_FORMALIZATION_NEEDS_LINO: &str =
-    include_str!("../../../data/seed/meanings-formalization-needs.lino");
+    include_str!("../../embedded/data/seed/meanings-formalization-needs.lino");
 pub const MEANINGS_FORMALIZATION_RELATIONS_LINO: &str =
-    include_str!("../../../data/seed/meanings-formalization-relations.lino");
+    include_str!("../../embedded/data/seed/meanings-formalization-relations.lino");
 pub const MEANINGS_FORMALIZATION_REPORT_LINO: &str =
-    include_str!("../../../data/seed/meanings-formalization-report.lino");
-pub const MEANINGS_HOW_LINO: &str = include_str!("../../../data/seed/meanings-how.lino");
-pub const MEANINGS_INTENT_LINO: &str = include_str!("../../../data/seed/meanings-intent.lino");
+    include_str!("../../embedded/data/seed/meanings-formalization-report.lino");
+pub const MEANINGS_HOW_LINO: &str = include_str!("../../embedded/data/seed/meanings-how.lino");
+pub const MEANINGS_INTENT_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-intent.lino");
 pub const MEANINGS_LEXICAL_META_LINO: &str =
-    include_str!("../../../data/seed/meanings-lexical-meta.lino");
+    include_str!("../../embedded/data/seed/meanings-lexical-meta.lino");
 pub const MEANINGS_LEXICON_IMPORT_01_LINO: &str =
-    include_str!("../../../data/seed/meanings-lexicon-import-01.lino");
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-01.lino");
 pub const MEANINGS_LEXICON_IMPORT_02_LINO: &str =
-    include_str!("../../../data/seed/meanings-lexicon-import-02.lino");
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-02.lino");
 pub const MEANINGS_LEXICON_IMPORT_03_LINO: &str =
-    include_str!("../../../data/seed/meanings-lexicon-import-03.lino");
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-03.lino");
 pub const MEANINGS_LEXICON_IMPORT_04_LINO: &str =
-    include_str!("../../../data/seed/meanings-lexicon-import-04.lino");
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-04.lino");
 pub const MEANINGS_LINKS_ROOT_LINO: &str =
-    include_str!("../../../data/seed/meanings-links-root.lino");
+    include_str!("../../embedded/data/seed/meanings-links-root.lino");
 pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
-    include_str!("../../../data/seed/meanings-local-search.lino");
+    include_str!("../../embedded/data/seed/meanings-local-search.lino");
 pub const MEANINGS_MEMBERSHIP_LINO: &str =
-    include_str!("../../../data/seed/meanings-membership.lino");
-pub const MEANINGS_META_LINO: &str = include_str!("../../../data/seed/meanings-meta.lino");
+    include_str!("../../embedded/data/seed/meanings-membership.lino");
+pub const MEANINGS_META_LINO: &str = include_str!("../../embedded/data/seed/meanings-meta.lino");
 pub const MEANINGS_NOTE_COMPOSITION_LINO: &str =
-    include_str!("../../../data/seed/meanings-note-composition.lino");
+    include_str!("../../embedded/data/seed/meanings-note-composition.lino");
 pub const MEANINGS_NUMBER_CONSTRAINTS_LINO: &str =
-    include_str!("../../../data/seed/meanings-number-constraints.lino");
+    include_str!("../../embedded/data/seed/meanings-number-constraints.lino");
 pub const MEANINGS_OBJECT_SHAPES_LINO: &str =
-    include_str!("../../../data/seed/meanings-object-shapes.lino");
-pub const MEANINGS_ONTOLOGY_LINO: &str = include_str!("../../../data/seed/meanings-ontology.lino");
+    include_str!("../../embedded/data/seed/meanings-object-shapes.lino");
+pub const MEANINGS_ONTOLOGY_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-ontology.lino");
 pub const MEANINGS_PLAYWRIGHT_LINO: &str =
-    include_str!("../../../data/seed/meanings-playwright.lino");
-pub const MEANINGS_POLICY_LINO: &str = include_str!("../../../data/seed/meanings-policy.lino");
+    include_str!("../../embedded/data/seed/meanings-playwright.lino");
+pub const MEANINGS_POLICY_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-policy.lino");
 pub const MEANINGS_PROGRAM_SYNTHESIS_LINO: &str =
-    include_str!("../../../data/seed/meanings-program-synthesis.lino");
-pub const MEANINGS_PROOF_LINO: &str = include_str!("../../../data/seed/meanings-proof.lino");
+    include_str!("../../embedded/data/seed/meanings-program-synthesis.lino");
+pub const MEANINGS_PROOF_LINO: &str = include_str!("../../embedded/data/seed/meanings-proof.lino");
 pub const MEANINGS_REPOSITORY_WORKFLOW_LINO: &str =
-    include_str!("../../../data/seed/meanings-repository-workflow.lino");
+    include_str!("../../embedded/data/seed/meanings-repository-workflow.lino");
 pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
-    include_str!("../../../data/seed/meanings-research-table.lino");
+    include_str!("../../embedded/data/seed/meanings-research-table.lino");
 pub const MEANINGS_ROUTING_VOCABULARY_LINO: &str =
-    include_str!("../../../data/seed/meanings-routing-vocabulary.lino");
-pub const MEANINGS_SEARCH_LINO: &str = include_str!("../../../data/seed/meanings-search.lino");
+    include_str!("../../embedded/data/seed/meanings-routing-vocabulary.lino");
+pub const MEANINGS_SEARCH_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-search.lino");
 pub const MEANINGS_SELECTION_CRITERIA_LINO: &str =
-    include_str!("../../../data/seed/meanings-selection-criteria.lino");
+    include_str!("../../embedded/data/seed/meanings-selection-criteria.lino");
 pub const MEANINGS_SEMANTIC_META_LINO: &str =
-    include_str!("../../../data/seed/meanings-semantic-meta.lino");
+    include_str!("../../embedded/data/seed/meanings-semantic-meta.lino");
 pub const MEANINGS_SKILL_COMPILER_LINO: &str =
-    include_str!("../../../data/seed/meanings-skill-compiler.lino");
+    include_str!("../../embedded/data/seed/meanings-skill-compiler.lino");
 pub const MEANINGS_SKILL_PROCEDURE_LINO: &str =
-    include_str!("../../../data/seed/meanings-skill-procedure.lino");
+    include_str!("../../embedded/data/seed/meanings-skill-procedure.lino");
 pub const MEANINGS_SOFTWARE_PROJECT_LINO: &str =
-    include_str!("../../../data/seed/meanings-software-project.lino");
+    include_str!("../../embedded/data/seed/meanings-software-project.lino");
 pub const MEANINGS_STATEMENT_MERGE_LINO: &str =
-    include_str!("../../../data/seed/meanings-statement-merge.lino");
+    include_str!("../../embedded/data/seed/meanings-statement-merge.lino");
 pub const MEANINGS_SUBSTITUTION_COMPILER_LINO: &str =
-    include_str!("../../../data/seed/meanings-substitution-compiler.lino");
-pub const MEANINGS_SUMMARY_LINO: &str = include_str!("../../../data/seed/meanings-summary.lino");
+    include_str!("../../embedded/data/seed/meanings-substitution-compiler.lino");
+pub const MEANINGS_SUMMARY_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-summary.lino");
 pub const MEANINGS_TOOL_ACCESS_LINO: &str =
-    include_str!("../../../data/seed/meanings-tool-access.lino");
+    include_str!("../../embedded/data/seed/meanings-tool-access.lino");
 pub const MEANINGS_TRANSLATE_CYCLE_LINO: &str =
-    include_str!("../../../data/seed/meanings-translate-cycle.lino");
+    include_str!("../../embedded/data/seed/meanings-translate-cycle.lino");
 pub const MEANINGS_TRANSLATION_LINO: &str =
-    include_str!("../../../data/seed/meanings-translation.lino");
-pub const MEANINGS_UNITS_LINO: &str = include_str!("../../../data/seed/meanings-units.lino");
+    include_str!("../../embedded/data/seed/meanings-translation.lino");
+pub const MEANINGS_UNITS_LINO: &str = include_str!("../../embedded/data/seed/meanings-units.lino");
 pub const MEANINGS_VERIFIABLE_TASK_LINO: &str =
-    include_str!("../../../data/seed/meanings-verifiable-task.lino");
+    include_str!("../../embedded/data/seed/meanings-verifiable-task.lino");
 pub const MEANINGS_WEB_FOLLOWUP_LINO: &str =
-    include_str!("../../../data/seed/meanings-web-followup.lino");
+    include_str!("../../embedded/data/seed/meanings-web-followup.lino");
 pub const MEANINGS_WEB_NAVIGATION_LINO: &str =
-    include_str!("../../../data/seed/meanings-web-navigation.lino");
+    include_str!("../../embedded/data/seed/meanings-web-navigation.lino");
 pub const MEANINGS_WEB_RESEARCH_LINO: &str =
-    include_str!("../../../data/seed/meanings-web-research.lino");
+    include_str!("../../embedded/data/seed/meanings-web-research.lino");
 pub const MEANINGS_WEB_SEARCH_LINO: &str =
-    include_str!("../../../data/seed/meanings-web-search.lino");
+    include_str!("../../embedded/data/seed/meanings-web-search.lino");
 pub const MEANINGS_WEB_SEARCH_QUERY_LINO: &str =
-    include_str!("../../../data/seed/meanings-web-search-query.lino");
-pub const MEANINGS_WIKIDATA_LINO: &str = include_str!("../../../data/seed/meanings-wikidata.lino");
+    include_str!("../../embedded/data/seed/meanings-web-search-query.lino");
+pub const MEANINGS_WIKIDATA_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-wikidata.lino");
 pub const MEANINGS_WRITING_SYSTEMS_LINO: &str =
-    include_str!("../../../data/seed/meanings-writing-systems.lino");
-pub const MEMORY_PROGRAMS_LINO: &str = include_str!("../../../data/seed/memory-programs.lino");
-pub const METHOD_EXECUTION_LINO: &str = include_str!("../../../data/seed/method-execution.lino");
-pub const MODEL_ALIASES_LINO: &str = include_str!("../../../data/seed/model-aliases.lino");
+    include_str!("../../embedded/data/seed/meanings-writing-systems.lino");
+pub const MEMORY_PROGRAMS_LINO: &str =
+    include_str!("../../embedded/data/seed/memory-programs.lino");
+pub const METHOD_EXECUTION_LINO: &str =
+    include_str!("../../embedded/data/seed/method-execution.lino");
+pub const MODEL_ALIASES_LINO: &str = include_str!("../../embedded/data/seed/model-aliases.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-agentic.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-agentic.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-agentic-continuation.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-agentic-continuation.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-agentic-tools.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-agentic-tools.lino");
 pub const MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-client-config.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-client-config.lino");
 pub const MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-concept-lookup.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-concept-lookup.lino");
 pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-decomposition.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-decomposition.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-entities.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-entities.lino");
 pub const MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-external-benchmark.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-external-benchmark.lino");
 pub const MULTILINGUAL_RESPONSES_ISSUE_710_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-issue-710.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-issue-710.lino");
 pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-language-protocol.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-language-protocol.lino");
 pub const MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-memory-program.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-memory-program.lino");
 pub const MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-orchestration.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-orchestration.lino");
 pub const MULTILINGUAL_RESPONSES_PARITY_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-parity.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-parity.lino");
 pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-pattern.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-pattern.lino");
 pub const MULTILINGUAL_RESPONSES_POLICY_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-policy.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-policy.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-procedure.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-procedure.lino");
 pub const MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-substitution-compiler.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-substitution-compiler.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-summarization.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-summarization.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-summarization-quality.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-summarization-quality.lino");
 pub const MULTILINGUAL_RESPONSES_SYMBOLIC_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-symbolic.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-symbolic.lino");
 pub const MULTILINGUAL_RESPONSES_SYNTHESIS_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-synthesis.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-synthesis.lino");
 pub const MULTILINGUAL_RESPONSES_THINKING_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-thinking.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-thinking.lino");
 pub const MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-thinking-narrative.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-thinking-narrative.lino");
 pub const MULTILINGUAL_RESPONSES_TRANSLATE_LINO: &str =
-    include_str!("../../../data/seed/multilingual-responses-translate.lino");
+    include_str!("../../embedded/data/seed/multilingual-responses-translate.lino");
 pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
-    include_str!("../../../data/seed/numeric-list-operations.lino");
+    include_str!("../../embedded/data/seed/numeric-list-operations.lino");
 pub const OBLIGATION_MISMATCH_LINO: &str =
-    include_str!("../../../data/seed/obligation-mismatch.lino");
+    include_str!("../../embedded/data/seed/obligation-mismatch.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
-    include_str!("../../../data/seed/operation-vocabulary.lino");
-pub const PERSONAS_LINO: &str = include_str!("../../../data/seed/personas.lino");
+    include_str!("../../embedded/data/seed/operation-vocabulary.lino");
+pub const PERSONAS_LINO: &str = include_str!("../../embedded/data/seed/personas.lino");
 pub const PLANNER_PRECEDENCE_LINO: &str =
-    include_str!("../../../data/seed/planner-precedence.lino");
+    include_str!("../../embedded/data/seed/planner-precedence.lino");
 pub const PROGRAM_CST_GRAMMARS_LINO: &str =
-    include_str!("../../../data/seed/program-cst-grammars.lino");
+    include_str!("../../embedded/data/seed/program-cst-grammars.lino");
 pub const PROGRAM_PLAN_RULES_LINO: &str =
-    include_str!("../../../data/seed/program-plan-rules.lino");
-pub const PROJECTS_LINO: &str = include_str!("../../../data/seed/projects.lino");
-pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../../data/seed/prompt-patterns.lino");
+    include_str!("../../embedded/data/seed/program-plan-rules.lino");
+pub const PROJECTS_LINO: &str = include_str!("../../embedded/data/seed/projects.lino");
+pub const PROMPT_PATTERNS_LINO: &str =
+    include_str!("../../embedded/data/seed/prompt-patterns.lino");
 pub const PROOF_PROGRAM_TEMPLATES_LINO: &str =
-    include_str!("../../../data/seed/proof-program-templates.lino");
+    include_str!("../../embedded/data/seed/proof-program-templates.lino");
 pub const QUESTION_NECESSITY_LINO: &str =
-    include_str!("../../../data/seed/question-necessity.lino");
-pub const RELEASE_TIMELINES_LINO: &str = include_str!("../../../data/seed/release-timelines.lino");
+    include_str!("../../embedded/data/seed/question-necessity.lino");
+pub const RELEASE_TIMELINES_LINO: &str =
+    include_str!("../../embedded/data/seed/release-timelines.lino");
 pub const REPOSITORY_COMMAND_ALLOWLIST_LINO: &str =
-    include_str!("../../../data/seed/repository-command-allowlist.lino");
+    include_str!("../../embedded/data/seed/repository-command-allowlist.lino");
 pub const RESEARCH_TABLE_PROCEDURE_LINO: &str =
-    include_str!("../../../data/seed/research-table-procedure.lino");
+    include_str!("../../embedded/data/seed/research-table-procedure.lino");
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
-    include_str!("../../../data/seed/self-improvement-loop.lino");
+    include_str!("../../embedded/data/seed/self-improvement-loop.lino");
 pub const SENTENCE_PUNCTUATION_LINO: &str =
-    include_str!("../../../data/seed/sentence-punctuation.lino");
-pub const SETUP_PUBLISHERS_LINO: &str = include_str!("../../../data/seed/setup-publishers.lino");
-pub const SHELL_INTENTS_LINO: &str = include_str!("../../../data/seed/shell-intents.lino");
-pub const SOURCES_REGISTRY_LINO: &str = include_str!("../../../data/seed/sources-registry.lino");
-pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../../data/seed/summary-topics.lino");
-pub const TERMINAL_COMMANDS_LINO: &str = include_str!("../../../data/seed/terminal-commands.lino");
+    include_str!("../../embedded/data/seed/sentence-punctuation.lino");
+pub const SETUP_PUBLISHERS_LINO: &str =
+    include_str!("../../embedded/data/seed/setup-publishers.lino");
+pub const SHELL_INTENTS_LINO: &str = include_str!("../../embedded/data/seed/shell-intents.lino");
+pub const SOURCES_REGISTRY_LINO: &str =
+    include_str!("../../embedded/data/seed/sources-registry.lino");
+pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../embedded/data/seed/summary-topics.lino");
+pub const TERMINAL_COMMANDS_LINO: &str =
+    include_str!("../../embedded/data/seed/terminal-commands.lino");
 pub const TOOL_RESOURCE_SCOPES_LINO: &str =
-    include_str!("../../../data/seed/tool-resource-scopes.lino");
-pub const TOOLCHAINS_LINO: &str = include_str!("../../../data/seed/toolchains.lino");
-pub const TOOLS_LINO: &str = include_str!("../../../data/seed/tools.lino");
-pub const TRIZ_PRINCIPLES_LINO: &str = include_str!("../../../data/seed/triz-principles.lino");
+    include_str!("../../embedded/data/seed/tool-resource-scopes.lino");
+pub const TOOLCHAINS_LINO: &str = include_str!("../../embedded/data/seed/toolchains.lino");
+pub const TOOLS_LINO: &str = include_str!("../../embedded/data/seed/tools.lino");
+pub const TRIZ_PRINCIPLES_LINO: &str =
+    include_str!("../../embedded/data/seed/triz-principles.lino");
 
 /// Embedded copy of every Links Notation seed file. Returned in registry
 /// order so callers can render the merged bundle deterministically.

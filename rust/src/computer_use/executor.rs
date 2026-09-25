@@ -517,7 +517,7 @@ impl ComputerUseSession {
         let (status, body) = if request_body == "token=fixture-token" {
             (
                 200,
-                include_str!("../../../data/fixtures/computer-use/submission.json").trim(),
+                include_str!("../../embedded/data/fixtures/computer-use/submission.json").trim(),
             )
         } else {
             (400, r#"{"accepted":false,"error":"invalid token"}"#)
@@ -767,16 +767,16 @@ fn digest(bytes: &[u8]) -> String {
 fn fixture(url: &str) -> Option<&'static str> {
     match url {
         "fixture://orders.json" => {
-            Some(include_str!("../../../data/fixtures/computer-use/orders.json").trim())
+            Some(include_str!("../../embedded/data/fixtures/computer-use/orders.json").trim())
         }
         "fixture://status.html" => {
-            Some(include_str!("../../../data/fixtures/computer-use/status.html").trim())
+            Some(include_str!("../../embedded/data/fixtures/computer-use/status.html").trim())
         }
         "fixture://form.html" => {
-            Some(include_str!("../../../data/fixtures/computer-use/form.html").trim())
+            Some(include_str!("../../embedded/data/fixtures/computer-use/form.html").trim())
         }
         "fixture://inventory.csv" => {
-            Some(include_str!("../../../data/fixtures/computer-use/inventory.csv").trim())
+            Some(include_str!("../../embedded/data/fixtures/computer-use/inventory.csv").trim())
         }
         _ => None,
     }

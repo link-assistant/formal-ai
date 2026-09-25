@@ -1,0 +1,37 @@
+stdout_program_contracts
+  purpose "Reusable literal -> stdout operation and process entry point; no task answers or benchmark identifiers. Source and target slots are bound from requirements."
+  instruction '{comment} {command}\n'
+  documented_source '{instructions}{comment} Emit the requested text followed by a newline.\n{source}'
+  response '```{language}\n{source}```\n\nSource: {source_url}\nExecution status: not run; the client must execute and verify the program.'
+  language rust
+    source "https://doc.rust-lang.org/std/macro.println.html"
+    entry 'fn main() {\n    {body}\n}\n'
+    operation 'println!("{}", {value});'
+    comment "//"
+    unicode_escape "\\u{{{hex}}}"
+    ci_setup "      - name: Set up Rust\n        run: rustup toolchain install stable --profile minimal && rustup default stable\n"
+  language kotlin
+    source "https://kotlinlang.org/docs/command-line.html"
+    entry 'fun main() {\n    {body}\n}\n'
+    operation 'println({value})'
+    comment "//"
+    escape_characters "$"
+    unicode_escape "\\u{hex4}"
+    ci_setup "      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961\n        with:\n          distribution: temurin\n          java-version: '21'\n      - uses: fwilhe2/setup-kotlin@51a059ff08b95e2b83aa952b5b46b696d5b615a0\n        with:\n          version: '2.3.10'\n"
+    ci_source "https://github.com/fwilhe2/setup-kotlin/blob/51a059ff08b95e2b83aa952b5b46b696d5b615a0/action.yml"
+  language scala
+    source "https://docs.scala-lang.org/tour/basics.html"
+    entry 'object Main {\n  def main(args: Array[String]): Unit = {\n    {body}\n  }\n}\n'
+    operation 'println({value})'
+    comment "//"
+    unicode_escape "\\u{hex4}"
+    ci_setup "      - uses: coursier/setup-action@9b7939bf01fd1185ce2babe16135168361bf2c62\n        with:\n          jvm: temurin:21\n          apps: scala:2.13.18 scalac:2.13.18\n"
+    ci_source "https://github.com/coursier/setup-action/blob/9b7939bf01fd1185ce2babe16135168361bf2c62/action.yml"
+  language python
+    source "https://docs.python.org/3/library/functions.html#print"
+    entry '{body}\n'
+    operation 'print({value})'
+    comment "#"
+    unicode_escape "\\u{hex4}"
+    ci_setup "      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1\n        with:\n          python-version: '3.14'\n"
+    ci_source "https://github.com/actions/setup-python/blob/ece7cb06caefa5fff74198d8649806c4678c61a1/action.yml"

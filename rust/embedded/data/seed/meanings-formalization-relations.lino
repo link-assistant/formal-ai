@@ -1,0 +1,389 @@
+meanings
+  formalization-relation
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role relation_predicate
+    precondition "source and target concepts are available"
+    effect "records a typed relation between formalized concepts"
+    unit "not applicable"
+    example "precondition relates a method to what must hold before it runs"
+    lexeme en
+      surface
+        text "formalization relation"
+    lexeme ru
+      surface
+        text связь
+      surface
+        text "отношение формализации"
+    lexeme hi
+      surface
+        text "औपचारिकता संबंध"
+    lexeme zh
+      surface
+        text 形式化关系
+    lexeme es
+      surface
+        text "relacion de formalizacion"
+      surface
+        text relación
+  taxonomic
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role classification_relation
+    precondition "two concepts can be compared by generality"
+    effect "places a concept in a generalization hierarchy"
+    unit "not applicable"
+    example "a litre is classified under a volume unit"
+    lexeme en
+      surface
+        text taxonomic
+    lexeme ru
+      surface
+        text таксономический
+    lexeme hi
+      surface
+        text वर्गीकरण
+    lexeme zh
+      surface
+        text 分类的
+    lexeme es
+      surface
+        text taxonómico
+  subsumes
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role generalization_relation
+    precondition "a broader concept and a narrower concept are available"
+    effect "records that the broader concept includes the narrower concept"
+    unit "not applicable"
+    example "a measurement unit subsumes a volume unit"
+    lexeme en
+      surface
+        text subsumes
+    lexeme ru
+      surface
+        text обобщает
+    lexeme hi
+      surface
+        text समाहित
+    lexeme zh
+      surface
+        text 涵盖
+    lexeme es
+      surface
+        text subsume
+  attributive
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role attribute_relation
+    precondition "an entity and a descriptive value are available"
+    effect "attaches the descriptive value to the entity"
+    unit "not applicable"
+    example "a source is attributed with its license"
+    lexeme en
+      surface
+        text attributive
+    lexeme ru
+      surface
+        text атрибутивный
+    lexeme hi
+      surface
+        text विशेषणात्मक
+    lexeme zh
+      surface
+        text 属性的
+    lexeme es
+      surface
+        text atributivo
+  property_of
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role property_relation
+    precondition "a property and its owning concept are available"
+    effect "records which concept owns the property"
+    unit "not applicable"
+    example "runtime size is a property of an execution environment"
+    lexeme en
+      surface
+        text "property of"
+    lexeme ru
+      surface
+        text "свойство чего-либо"
+    lexeme hi
+      surface
+        text "का गुण"
+    lexeme zh
+      surface
+        text 的属性
+    lexeme es
+      surface
+        text "propiedad de"
+  meronymic
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role part_whole_relation
+    precondition "a part and a containing whole are available"
+    effect "records a typed part-whole relation"
+    unit "not applicable"
+    example "a prerequisite step is part of a setup recipe"
+    lexeme en
+      surface
+        text meronymic
+    lexeme ru
+      surface
+        text партитивный
+    lexeme hi
+      surface
+        text अवयवी
+    lexeme zh
+      surface
+        text 部分整体的
+    lexeme es
+      surface
+        text meronímico
+  has_part
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role containment_relation
+    precondition "a whole and a candidate part are available"
+    effect "records the candidate as a part of the whole"
+    unit "not applicable"
+    example "a procedure has an ordered verification step"
+    lexeme en
+      surface
+        text "has part"
+    lexeme ru
+      surface
+        text "имеет часть"
+    lexeme hi
+      surface
+        text "भाग रखता है"
+    lexeme zh
+      surface
+        text 含有部分
+    lexeme es
+      surface
+        text "tiene parte"
+  precondition
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role applicability_condition
+    precondition "a method and a required prior state are available"
+    effect "records what must hold before the method applies"
+    unit "not applicable"
+    example "a repository edit requires a writable workspace"
+    lexeme en
+      surface
+        text precondition
+    lexeme ru
+      surface
+        text предусловие
+    lexeme hi
+      surface
+        text पूर्वशर्त
+    lexeme zh
+      surface
+        text 前提条件
+    lexeme es
+      surface
+        text precondición
+  required_by
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role dependency_relation
+    precondition "a prerequisite and a dependent operation are available"
+    effect "records the operation that needs the prerequisite"
+    unit "not applicable"
+    example "a compiler is required by a compilation step"
+    lexeme en
+      surface
+        text "required by"
+    lexeme ru
+      surface
+        text "требуется для"
+    lexeme hi
+      surface
+        text "के लिए आवश्यक"
+    lexeme zh
+      surface
+        text 被需要
+    lexeme es
+      surface
+        text "requerido por"
+  production
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role production_relation
+    precondition "an operation and a prospective artifact are available"
+    effect "records the artifact produced by the operation"
+    unit "not applicable"
+    example "a renderer produces a generated document"
+    lexeme en
+      surface
+        text production
+    lexeme ru
+      surface
+        text порождение
+    lexeme hi
+      surface
+        text उत्पादन
+    lexeme zh
+      surface
+        text 生成
+    lexeme es
+      surface
+        text producción
+  produced_by
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role provenance_relation
+    precondition "an artifact and its producing operation are available"
+    effect "records the operation that produced the artifact"
+    unit "not applicable"
+    example "a status page is produced by its ledger renderer"
+    lexeme en
+      surface
+        text "produced by"
+    lexeme ru
+      surface
+        text "порождается чем-либо"
+    lexeme hi
+      surface
+        text "द्वारा उत्पन्न"
+    lexeme zh
+      surface
+        text 由此产生
+    lexeme es
+      surface
+        text "producido por"
+  follows
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role ordering_relation
+    precondition "two ordered steps are available"
+    effect "records that one step occurs after the other"
+    unit "not applicable"
+    example "verification follows an edit"
+    lexeme en
+      surface
+        text follows
+    lexeme ru
+      surface
+        text следует
+    lexeme hi
+      surface
+        text अनुसरण
+    lexeme zh
+      surface
+        text 随后
+    lexeme es
+      surface
+        text sigue
+  exclusion
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role incompatibility_relation
+    precondition "two alternatives are available for comparison"
+    effect "records that the alternatives cannot both apply"
+    unit "not applicable"
+    example "offline-only execution excludes network access"
+    lexeme en
+      surface
+        text exclusion
+    lexeme ru
+      surface
+        text исключение
+    lexeme hi
+      surface
+        text अपवर्जन
+    lexeme zh
+      surface
+        text 排除
+    lexeme es
+      surface
+        text exclusión
+  excluded_by
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role inverse_incompatibility_relation
+    precondition "an option and an excluding condition are available"
+    effect "records the condition that prevents the option"
+    unit "not applicable"
+    example "network access is excluded by an offline-only capability"
+    lexeme en
+      surface
+        text "excluded by"
+    lexeme ru
+      surface
+        text "исключается чем-либо"
+    lexeme hi
+      surface
+        text "द्वारा वर्जित"
+    lexeme zh
+      surface
+        text 被排除
+    lexeme es
+      surface
+        text "excluido por"
+  measure
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role measurement_relation
+    precondition "a measurable concept and a unit are available"
+    effect "records the unit used to interpret the concept"
+    unit "not applicable"
+    example "elapsed time has the measure second"
+    lexeme en
+      surface
+        text measure
+    lexeme ru
+      surface
+        text мера
+    lexeme hi
+      surface
+        text माप
+    lexeme zh
+      surface
+        text 度量
+    lexeme es
+      surface
+        text medida
+  measures
+    defined-by formalization-relation
+    denotation relation
+    connotation concept
+    role inverse_measurement_relation
+    precondition "a unit and a measurable concept are available"
+    effect "records the concept quantified by the unit"
+    unit "not applicable"
+    example "a second measures elapsed time"
+    lexeme en
+      surface
+        text measures
+    lexeme ru
+      surface
+        text измеряет
+    lexeme hi
+      surface
+        text मापता
+    lexeme zh
+      surface
+        text 计量
+    lexeme es
+      surface
+        text mide

@@ -76,6 +76,11 @@ run_step "reviewed method proposals (rust/examples/issue-922-method-learning/ope
 # several minutes into the suite.
 run_step "planner fixtures (data/meta/self-ast.lino, data/meta/self-healing-case.lino, docs/case-studies/issue-538/agent-cli-session-self-ast.json)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_planner_fixtures
+# Last, because earlier steps rewrite data/ and docs/ files the mirror copies:
+# every producer runs before the mirror is refreshed. The committed
+# rust/embedded/ tree is what the published crate ships (issue #1138).
+run_step "package-data mirror (rust/embedded/)" \
+  rust-script scripts/mirror-package-data.rs --write
 
 echo ""
 if [ "$CHECK_ONLY" -eq 1 ]; then

@@ -19,7 +19,7 @@ use crate::solver::{ConversationRole, ConversationTurn};
 /// recorded `check-hardcoded-language.rs` debt and stay where the burn-down
 /// allowlist already inventories them; Spanish lands in seed because that
 /// allowlist may only shrink.
-const CODING_GUIDANCE_LINO: &str = include_str!("../../../data/seed/coding-guidance.lino");
+const CODING_GUIDANCE_LINO: &str = include_str!("../../embedded/data/seed/coding-guidance.lino");
 
 /// The Spanish sentence seed carries for `id`, or the empty string when seed
 /// carries none — an absence the caller renders as the English fallback rather

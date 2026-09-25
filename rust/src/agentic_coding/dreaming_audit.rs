@@ -20,8 +20,8 @@ pub const DREAMING_AUDIT_TASK: &str =
      learning, storage consent, and idle runtime, then record the generalization that resolves \
      each gap as Links Notation in dreaming-gap-analysis.lino.";
 
-const EMBEDDED_RECIPE: &str = include_str!("../../../data/meta/dreaming-recipe.lino");
-const EMBEDDED_CUES: &str = include_str!("../../../data/meta/dreaming-cues.lino");
+const EMBEDDED_RECIPE: &str = include_str!("../../embedded/data/meta/dreaming-recipe.lino");
+const EMBEDDED_CUES: &str = include_str!("../../embedded/data/meta/dreaming-cues.lino");
 
 /// One record parsed from the recipe document: the quoted fields under a
 /// top-level Links-Notation link.

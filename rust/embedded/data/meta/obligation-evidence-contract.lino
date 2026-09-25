@@ -1,0 +1,33 @@
+obligation_evidence_contract
+  record_type "meta_invariant"
+  satisfied "a node reaches satisfied only while carrying an execution record with a command, an exit code or an explicit none, and a sha256 of the observed bytes"
+  binding "an observation discharges only the node whose expectation names its command or path; an unrelated result clears nothing"
+  underivable "a clause with no derivable expectation is split; a clause that cannot be split is reported as an unsatisfied gap with its byte span"
+  honesty "unattempted and unsatisfiable are reportable outcomes; absence of an observation is never rendered as completion"
+  determinism "record identity derives from command, argv, exit code and observed hash only; no wall clock, pid or machine identity enters the id"
+  hashing "the full observed bytes are hashed; output that is not byte-stable must use a command-exit or file-bytes expectation, never an output hash"
+  source_reader "src/obligation_ledger.rs"
+obligation_expectation_rules
+  record_type "meta_rule_set"
+  source_reader "src/obligation_ledger/derivation.rs"
+  rule literal_file_write
+    when "general_plan_mode"
+    mode "literal_file"
+    expectation "file_bytes"
+  rule command_output_write
+    when "general_plan_mode"
+    mode "command_output"
+    expectation "output_hash"
+    otherwise "command_exit"
+  rule repository_work_item
+    when "general_plan_mode"
+    mode "repository_work_item"
+    expectation "underivable"
+    reason "planned_not_executed_has_no_verification_command"
+  rule generated_check
+    when "generated_check"
+    expectation "symbolic_check"
+  rule no_artifact
+    when "no_artifact"
+    expectation "underivable"
+    reason "no_artifact_in_clause"

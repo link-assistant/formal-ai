@@ -1,0 +1,88 @@
+meanings
+  playwright
+    defined-by entity
+    role playwright_tool_name
+    lexeme en
+      surface
+        text playwright
+      surface
+        text playright
+        action playwright
+    lexeme ru
+      surface
+        text плейврайт
+      surface
+        text плейрайт
+    lexeme hi
+      surface
+        text प्लेराइट
+    lexeme zh
+      surface
+        text 普莱赖特
+  playwright_script_request_cue
+    defined-by concept
+    role playwright_script_cue
+    lexeme en
+      surface
+        text script
+      surface
+        text test
+      surface
+        text spec
+      surface
+        text code
+      surface
+        text write
+      surface
+        text create
+      surface
+        text generate
+      surface
+        text make
+      surface
+        text build
+      surface
+        text "can you"
+      surface
+        text "could you"
+    lexeme ru
+      surface
+        text скрипт
+      surface
+        text сценар
+      surface
+        text тест
+      surface
+        text код
+      surface
+        text напиши
+      surface
+        text написать
+      surface
+        text можешь
+      surface
+        text сделай
+      surface
+        text создай
+    lexeme hi
+      surface
+        text स्क्रिप्ट
+      surface
+        text टेस्ट
+      surface
+        text कोड
+      surface
+        text लिखो
+      surface
+        text बनाओ
+    lexeme zh
+      surface
+        text 脚本
+      surface
+        text 测试
+      surface
+        text 代码
+      surface
+        text 写
+      surface
+        text 生成

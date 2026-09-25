@@ -2,37 +2,37 @@ self_ast_census
   target src/prerequisite/mod.rs
   language rust
   fidelity signature
-  byte_len 21313
-  line_count 585
-  content_id source_module_065f909abc642f10
+  byte_len 21323
+  line_count 586
+  content_id source_module_b5f13e7c9fef5b98
   symbol_count 29
   symbols
     module install 11 11
     module ledger 12 12
     module probe 13 13
     module publisher 14 14
-    const PREREQUISITE_RECIPE_LINO 25 25
-    enum Platform 30 39
-    function observed 48 50
-    function from_os 54 61
-    function slug 65 72
-    function from_slug 76 83
-    struct PrerequisiteNeed 91 102
-    enum PrerequisiteError 106 163
-    struct RecoveryStep 167 176
-    enum RecoveryOutcome 181 210
-    function recovery_steps 218 233
-    function recover 244 252
-    function recover_discovered_procedure 260 276
-    function recover_bounded 280 362
-    function finish_recovery 364 420
-    function setup_observation 422 443
-    function probe_for 447 450
-    function retry_command 453 460
-    function observation 463 487
-    const PRODUCED_BY 490 490
-    function verdict_bytes 493 500
-    function classify_failure 508 549
-    const PERMISSION_DENIED_MARKER 553 553
-    function need_status 559 570
-    function to_need 575 584
+    const PREREQUISITE_RECIPE_LINO 25 26
+    enum Platform 31 40
+    function observed 49 51
+    function from_os 55 62
+    function slug 66 73
+    function from_slug 77 84
+    struct PrerequisiteNeed 92 103
+    enum PrerequisiteError 107 164
+    struct RecoveryStep 168 177
+    enum RecoveryOutcome 182 211
+    function recovery_steps 219 234
+    function recover 245 253
+    function recover_discovered_procedure 261 277
+    function recover_bounded 281 363
+    function finish_recovery 365 421
+    function setup_observation 423 444
+    function probe_for 448 451
+    function retry_command 454 461
+    function observation 464 488
+    const PRODUCED_BY 491 491
+    function verdict_bytes 494 501
+    function classify_failure 509 550
+    const PERMISSION_DENIED_MARKER 554 554
+    function need_status 560 571
+    function to_need 576 585

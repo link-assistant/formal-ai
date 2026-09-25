@@ -257,7 +257,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 /// filesystem) varies its unknown answers from exactly the same data as the
 /// native build. Issue #706: a language's openers are a seed edit, so this
 /// module holds no per-language branch.
-const UNKNOWN_OPENERS: &str = include_str!("../../data/seed/unknown-openers.lino");
+const UNKNOWN_OPENERS: &str = include_str!("../embedded/data/seed/unknown-openers.lino");
 
 /// Strip the surrounding quotes of a seed value, if any.
 fn unquote_seed_value(value: &'static str) -> &'static str {

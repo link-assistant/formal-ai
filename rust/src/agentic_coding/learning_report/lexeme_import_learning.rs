@@ -11,7 +11,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("bulk_lexeme_import_integrity_and_dual_agent_cli_e2e_pass"),
     path: LEXEME_IMPORT_LEARNING_PATH,
     task: LEXEME_IMPORT_LEARNING_TASK,
-    memory: include_str!("../../../../data/meta/issue-660-lexeme-import-learning.lino"),
+    memory: include_str!("../../../embedded/data/meta/issue-660-lexeme-import-learning.lino"),
     subject: "bulk-import observations and amendments",
 };
 

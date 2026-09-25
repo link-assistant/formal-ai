@@ -1,0 +1,68 @@
+greeting_1
+  text Hi
+  intent greeting
+  response_link "response:greeting"
+greeting_2
+  text Hello
+  intent greeting
+  response_link "response:greeting"
+greeting_3
+  text Hey
+  intent greeting
+  response_link "response:greeting"
+greeting_4
+  text шалом
+  intent greeting
+  response_link "response:greeting"
+greeting_5
+  text "шабат шалом"
+  intent greeting
+  response_link "response:greeting"
+wellbeing_1
+  text "как твои дела"
+  intent wellbeing
+  response_link "response:wellbeing"
+wellbeing_2
+  text "как дела"
+  intent wellbeing
+  response_link "response:wellbeing"
+wellbeing_3
+  text "how are you"
+  intent wellbeing
+  response_link "response:wellbeing"
+wellbeing_4
+  text "आप कैसे हैं"
+  intent wellbeing
+  response_link "response:wellbeing"
+wellbeing_5
+  text 你好吗
+  intent wellbeing
+  response_link "response:wellbeing"
+farewell_1
+  text Bye
+  intent farewell
+  response_link "response:farewell"
+farewell_2
+  text Goodbye
+  intent farewell
+  response_link "response:farewell"
+farewell_3
+  text пока
+  intent farewell
+  response_link "response:farewell"
+farewell_4
+  text "до свидания"
+  intent farewell
+  response_link "response:farewell"
+courtesy_response_1
+  text "I am fine, thank you"
+  intent courtesy_response
+  response_link "response:courtesy_response"
+courtesy_response_2
+  text thanks
+  intent courtesy_response
+  response_link "response:courtesy_response"
+courtesy_response_3
+  text спасибо
+  intent courtesy_response
+  response_link "response:courtesy_response"

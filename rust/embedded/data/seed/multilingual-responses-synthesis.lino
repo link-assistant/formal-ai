@@ -1,0 +1,721 @@
+multilingual_responses
+  response response_capability_gap_en
+    intent capability_gap
+    language en
+    text "This request routes to the `{needed}` capability, but this chat surface does not expose the required `{missing}` tool. Use an agent client that advertises it."
+  response response_capability_gap_anchors_en
+    intent capability_gap_anchors
+    language en
+    text "\nRequest anchors preserved for that client: {anchors}."
+  response response_language_demonstration_en
+    intent response_language_demonstration
+    language en
+    text "{canonical} ({surface}): {demonstration}"
+  response response_explain_previous_turn_empty_en
+    intent explain_previous_turn_empty
+    language en
+    text "There is no previous assistant turn available to explain yet."
+  response response_explain_previous_turn_answer_en
+    intent explain_previous_turn_answer
+    language en
+    text "Here is the previous answer in a simpler form:\n\n{previous}"
+  response response_code_execution_refused_en
+    intent code_execution_refused
+    language en
+    text "This code was not tested, not compiled, not checked because no execution backend is configured."
+  response response_code_execution_refused_ru
+    intent code_execution_refused
+    language ru
+    text "Этот код не тестировался, не компилировался и не проверялся, потому что среда выполнения не настроена."
+  response response_code_execution_refused_hi
+    intent code_execution_refused
+    language hi
+    text "इस कोड का परीक्षण, संकलन या जाँच नहीं हुई क्योंकि कोई execution backend कॉन्फ़िगर नहीं है।"
+  response response_code_execution_refused_zh
+    intent code_execution_refused
+    language zh
+    text "此代码未经测试、编译或检查，因为尚未配置执行后端。"
+  response response_code_execution_refused_es
+    intent code_execution_refused
+    language es
+    text "Este código no fue probado, compilado ni comprobado porque no hay un entorno de ejecución configurado."
+  response response_code_execution_observed_en
+    intent code_execution_observed
+    language en
+    text "Execution status: observed in `{backend}` (exit {exit}, {elapsed_ms} ms; deadline {deadline_ms} ms).\n\nOutput:\n```text\n{output}\n```\n\nEvidence: `{evidence}`"
+  response response_code_execution_observed_ru
+    intent code_execution_observed
+    language ru
+    text "Статус выполнения: наблюдалось в `{backend}` (код {exit}, {elapsed_ms} мс; предел {deadline_ms} мс).\n\nВывод:\n```text\n{output}\n```\n\nСвидетельство: `{evidence}`"
+  response response_code_execution_observed_hi
+    intent code_execution_observed
+    language hi
+    text "निष्पादन स्थिति: `{backend}` में देखा गया (exit {exit}, {elapsed_ms} ms; deadline {deadline_ms} ms)।\n\nआउटपुट:\n```text\n{output}\n```\n\nसाक्ष्य: `{evidence}`"
+  response response_code_execution_observed_zh
+    intent code_execution_observed
+    language zh
+    text "执行状态：已在 `{backend}` 中观察（退出码 {exit}，{elapsed_ms} 毫秒；时限 {deadline_ms} 毫秒）。\n\n输出：\n```text\n{output}\n```\n\n证据：`{evidence}`"
+  response response_code_execution_observed_es
+    intent code_execution_observed
+    language es
+    text "Estado de ejecución: observado en `{backend}` (salida {exit}, {elapsed_ms} ms; límite {deadline_ms} ms).\n\nSalida:\n```text\n{output}\n```\n\nEvidencia: `{evidence}`"
+  response response_code_execution_failed_en
+    intent code_execution_failed
+    language en
+    text "Execution failed in `{backend}`. Nothing is reported as verified.\n\nVerbose observation:\n```text\n{log}\n```"
+  response response_code_execution_failed_ru
+    intent code_execution_failed
+    language ru
+    text "Выполнение в `{backend}` завершилось сбоем. Ничего не объявлено проверенным.\n\nПодробное наблюдение:\n```text\n{log}\n```"
+  response response_code_execution_failed_hi
+    intent code_execution_failed
+    language hi
+    text "`{backend}` में निष्पादन विफल हुआ। कुछ भी सत्यापित घोषित नहीं किया गया।\n\nविस्तृत अवलोकन:\n```text\n{log}\n```"
+  response response_code_execution_failed_zh
+    intent code_execution_failed
+    language zh
+    text "在 `{backend}` 中执行失败。没有任何结果被声明为已验证。\n\n详细观察：\n```text\n{log}\n```"
+  response response_code_execution_failed_es
+    intent code_execution_failed
+    language es
+    text "La ejecución falló en `{backend}`. No se declara nada como verificado.\n\nObservación detallada:\n```text\n{log}\n```"
+  response response_code_execution_request_markers_en
+    intent code_execution_request_markers
+    language en
+    text ("run this" "execute this" "compile and run" "tell me exactly what it prints")
+  response response_code_execution_request_markers_ru
+    intent code_execution_request_markers
+    language ru
+    text ("запусти это" "выполни это" "скомпилируй и запусти" "что оно печатает")
+  response response_code_execution_request_markers_hi
+    intent code_execution_request_markers
+    language hi
+    text ("इसे चलाओ" "इसे निष्पादित" "संकलित करके चलाओ" "क्या छापता")
+  response response_code_execution_request_markers_zh
+    intent code_execution_request_markers
+    language zh
+    text ("运行这个" "执行这个" "编译并运行" "打印了什么")
+  response response_code_execution_request_markers_es
+    intent code_execution_request_markers
+    language es
+    text ("ejecuta esto" "compílalo y ejecútalo" "qué imprime")
+  response response_browser_runtime_downloadable_en
+    intent browser_runtime_downloadable
+    language en
+    text "Python is not loaded. Pyodide can be downloaded on explicit click (about {size}); until then this code was not tested, not compiled, not checked."
+  response response_browser_runtime_downloadable_ru
+    intent browser_runtime_downloadable
+    language ru
+    text "Python не загружен. Pyodide можно скачать явным нажатием (около {size}); до этого код не тестировался, не компилировался и не проверялся."
+  response response_browser_runtime_downloadable_hi
+    intent browser_runtime_downloadable
+    language hi
+    text "Python लोड नहीं है। स्पष्ट क्लिक पर Pyodide डाउनलोड किया जा सकता है (लगभग {size}); तब तक इस कोड का परीक्षण, संकलन या जाँच नहीं हुई।"
+  response response_browser_runtime_downloadable_zh
+    intent browser_runtime_downloadable
+    language zh
+    text "Python 尚未加载。明确点击后可下载 Pyodide（约 {size}）；在此之前，此代码未经测试、编译或检查。"
+  response response_browser_runtime_downloadable_es
+    intent browser_runtime_downloadable
+    language es
+    text "Python no está cargado. Pyodide puede descargarse con un clic explícito (aproximadamente {size}); hasta entonces este código no fue probado, compilado ni comprobado."
+  response response_browser_runtime_ready_en
+    intent browser_runtime_ready
+    language en
+    text "The Pyodide Python runtime is loaded; an explicit run request can now be observed in the browser worker."
+  response response_browser_runtime_ready_ru
+    intent browser_runtime_ready
+    language ru
+    text "Среда Python Pyodide загружена; теперь явный запрос запуска можно наблюдать в браузерном worker."
+  response response_browser_runtime_ready_hi
+    intent browser_runtime_ready
+    language hi
+    text "Pyodide Python runtime लोड है; अब स्पष्ट run request को browser worker में देखा जा सकता है।"
+  response response_browser_runtime_ready_zh
+    intent browser_runtime_ready
+    language zh
+    text "Pyodide Python 运行时已加载；现在可在浏览器 worker 中观察明确的运行请求。"
+  response response_browser_runtime_ready_es
+    intent browser_runtime_ready
+    language es
+    text "El entorno Python Pyodide está cargado; ahora se puede observar una solicitud explícita de ejecución en el worker del navegador."
+  response response_verifiable_task_verified_en
+    intent verifiable_task_verified
+    language en
+    text "Computed and corroborated by an independent check."
+  response response_verifiable_task_verified_ru
+    intent verifiable_task_verified
+    language ru
+    text "Вычислено и подтверждено независимой проверкой."
+  response response_verifiable_task_verified_hi
+    intent verifiable_task_verified
+    language hi
+    text "गणना की गई और स्वतंत्र जाँच से पुष्ट किया गया।"
+  response response_verifiable_task_verified_zh
+    intent verifiable_task_verified
+    language zh
+    text "已计算并由独立检查相互印证。"
+  response response_verifiable_task_verified_es
+    intent verifiable_task_verified
+    language es
+    text "Calculado y corroborado mediante una comprobación independiente."
+  response response_verifiable_task_uncorroborated_en
+    intent verifiable_task_uncorroborated
+    language en
+    text "Computed, but not independently corroborated."
+  response response_verifiable_task_uncorroborated_ru
+    intent verifiable_task_uncorroborated
+    language ru
+    text "Вычислено, но не подтверждено независимой проверкой."
+  response response_verifiable_task_uncorroborated_hi
+    intent verifiable_task_uncorroborated
+    language hi
+    text "गणना की गई, पर स्वतंत्र रूप से पुष्ट नहीं हुई।"
+  response response_verifiable_task_uncorroborated_zh
+    intent verifiable_task_uncorroborated
+    language zh
+    text "已计算，但尚未得到独立印证。"
+  response response_verifiable_task_uncorroborated_es
+    intent verifiable_task_uncorroborated
+    language es
+    text "Calculado, pero sin corroboración independiente."
+  response response_verifiable_task_gap_en
+    intent verifiable_task_gap
+    language en
+    text "I could not derive a checked answer from the available evidence. The research trail is recorded; no value was guessed."
+  response response_verifiable_task_gap_ru
+    intent verifiable_task_gap
+    language ru
+    text "Мне не удалось вывести проверяемый ответ из доступных свидетельств. Ход исследования записан; значение не угадывалось."
+  response response_verifiable_task_gap_hi
+    intent verifiable_task_gap
+    language hi
+    text "उपलब्ध साक्ष्य से जाँचा हुआ उत्तर नहीं निकला। शोध क्रम दर्ज है; कोई मान अनुमान से नहीं दिया गया।"
+  response response_verifiable_task_gap_zh
+    intent verifiable_task_gap
+    language zh
+    text "无法从现有证据推导出经检查的答案。研究轨迹已记录；没有猜测任何值。"
+  response response_verifiable_task_gap_es
+    intent verifiable_task_gap
+    language es
+    text "No pude derivar una respuesta comprobada de la evidencia disponible. El recorrido de investigación queda registrado; no se adivinó ningún valor."
+  response response_verifiable_task_browser_unverified_en
+    intent verifiable_task_browser_unverified
+    language en
+    text "I recognized a `{expectation}` verifiable task and formalized its requirements. This browser has no executor for the derived program, so the result remains unverified and no value is presented as an answer."
+  response response_verifiable_task_browser_unverified_ru
+    intent verifiable_task_browser_unverified
+    language ru
+    text "Я распознал проверяемую задачу типа `{expectation}` и формализовал её требования. В этом браузере нет исполнителя для выведенной программы, поэтому результат остаётся непроверенным и никакое значение не выдаётся как ответ."
+  response response_verifiable_task_browser_unverified_hi
+    intent verifiable_task_browser_unverified
+    language hi
+    text "मैंने `{expectation}` प्रकार का सत्यापन योग्य कार्य पहचाना और उसकी आवश्यकताओं को औपचारिक बनाया। इस ब्राउज़र में निकाले गए प्रोग्राम का executor नहीं है, इसलिए परिणाम असत्यापित है और कोई मान उत्तर के रूप में प्रस्तुत नहीं किया गया।"
+  response response_verifiable_task_browser_unverified_zh
+    intent verifiable_task_browser_unverified
+    language zh
+    text "我识别出一个 `{expectation}` 类型的可验证任务，并形式化了它的要求。此浏览器没有可执行派生程序的执行器，因此结果仍未验证，也不会把任何值当作答案。"
+  response response_verifiable_task_browser_unverified_es
+    intent verifiable_task_browser_unverified
+    language es
+    text "Reconocí una tarea verificable de tipo `{expectation}` y formalicé sus requisitos. Este navegador no tiene un ejecutor para el programa derivado, así que el resultado sigue sin verificar y no se presenta ningún valor como respuesta."
+  response response_verifiable_task_trailing_number_en
+    intent verifiable_task_trailing_number
+    language en
+    text "{value}"
+  response response_verifiable_task_trailing_number_ru
+    intent verifiable_task_trailing_number
+    language ru
+    text "{value}"
+  response response_verifiable_task_trailing_number_hi
+    intent verifiable_task_trailing_number
+    language hi
+    text "{value}"
+  response response_verifiable_task_trailing_number_zh
+    intent verifiable_task_trailing_number
+    language zh
+    text "{value}"
+  response response_verifiable_task_trailing_number_es
+    intent verifiable_task_trailing_number
+    language es
+    text "{value}"
+  response response_verifiable_task_delimited_value_en
+    intent verifiable_task_delimited_value
+    language en
+    text "{value}"
+  response response_verifiable_task_delimited_value_ru
+    intent verifiable_task_delimited_value
+    language ru
+    text "{value}"
+  response response_verifiable_task_delimited_value_hi
+    intent verifiable_task_delimited_value
+    language hi
+    text "{value}"
+  response response_verifiable_task_delimited_value_zh
+    intent verifiable_task_delimited_value
+    language zh
+    text "{value}"
+  response response_verifiable_task_delimited_value_es
+    intent verifiable_task_delimited_value
+    language es
+    text "{value}"
+  response response_verifiable_task_code_block_en
+    intent verifiable_task_code_block
+    language en
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_ru
+    intent verifiable_task_code_block
+    language ru
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_hi
+    intent verifiable_task_code_block
+    language hi
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_zh
+    intent verifiable_task_code_block
+    language zh
+    text "```\n{value}\n```"
+  response response_verifiable_task_code_block_es
+    intent verifiable_task_code_block
+    language es
+    text "```\n{value}\n```"
+  response response_write_program_skill_gap_name_en
+    intent write_program_skill_gap_name
+    language en
+    text "no synthesis route reaches task ""{task}"" in language ""{language}"""
+  response response_write_program_skill_gap_name_ru
+    intent write_program_skill_gap_name
+    language ru
+    text "ни один маршрут синтеза не покрывает задачу «{task}» на языке «{language}»"
+  response response_write_program_skill_gap_name_hi
+    intent write_program_skill_gap_name
+    language hi
+    text "«{task}» कार्य को «{language}» भाषा में बनाने वाला कोई synthesis route नहीं है"
+  response response_write_program_skill_gap_name_zh
+    intent write_program_skill_gap_name
+    language zh
+    text "没有合成路线能用「{language}」完成任务「{task}」"
+  response response_write_program_skill_gap_name_es
+    intent write_program_skill_gap_name
+    language es
+    text "ninguna ruta de síntesis cubre la tarea «{task}» en el lenguaje «{language}»"
+  response response_write_program_skill_gap_en
+    intent write_program_skill_gap
+    language en
+    text "I cannot write this program: {gap}.\n\nI decomposed the request and tried every synthesis route I have, in order — {routes} — and none of them derives it.\n\nNothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `{language}`, or restate the task in steps I can already compile."
+  response response_write_program_skill_gap_ru
+    intent write_program_skill_gap
+    language ru
+    text "Я не могу написать эту программу: {gap}.\n\nЯ разложил запрос на части и по порядку попробовал все имеющиеся маршруты синтеза — {routes} — ни один из них её не выводит.\n\nНичего не угадано: я не возвращаю программу, которую не могу вывести, и не перечисляю имеющиеся шаблоны. Научите меня недостающей идиоме для `{language}` или переформулируйте задачу шагами, которые я уже компилирую."
+  response response_write_program_skill_gap_hi
+    intent write_program_skill_gap
+    language hi
+    text "मैं यह program नहीं लिख सकता: {gap}.\n\nमैंने request को decompose किया और अपने सारे synthesis routes क्रम से आज़माए — {routes} — इनमें से कोई भी इसे derive नहीं करता.\n\nकुछ भी अनुमान से नहीं दिया गया: जो program मैं derive नहीं कर सकता उसे नहीं लौटाता, और अपने पास मौजूद templates गिनाता भी नहीं. `{language}` के लिए छूटी हुई idiom सिखाइए, या task को उन steps में कहिए जिन्हें मैं पहले से compile करता हूँ."
+  response response_write_program_skill_gap_zh
+    intent write_program_skill_gap
+    language zh
+    text "我无法编写这个程序：{gap}。\n\n我已把请求分解，并按顺序尝试了全部合成路线——{routes}——没有一条能推导出它。\n\n没有任何猜测：推导不出来的程序我不会返回，也不会罗列我手头的模板。请教我 `{language}` 缺失的写法，或者用我已经能编译的步骤重述该任务。"
+  response response_write_program_skill_gap_es
+    intent write_program_skill_gap
+    language es
+    text "No puedo escribir este programa: {gap}.\n\nDescompuse la solicitud y probé, en orden, todas las rutas de síntesis disponibles — {routes} — y ninguna lo deriva.\n\nNo se ha adivinado nada: no devuelvo un programa que no puedo derivar ni enumero las plantillas que tengo. Enséñame el modismo que falta para `{language}` o reformula la tarea en pasos que ya pueda compilar."
+  response response_coding_synthesis_sources_heading_en
+    intent coding_synthesis_sources_heading
+    language en
+    text "Sources:"
+  response response_coding_synthesis_sources_heading_ru
+    intent coding_synthesis_sources_heading
+    language ru
+    text "Источники:"
+  response response_coding_synthesis_sources_heading_hi
+    intent coding_synthesis_sources_heading
+    language hi
+    text "स्रोत:"
+  response response_coding_synthesis_sources_heading_zh
+    intent coding_synthesis_sources_heading
+    language zh
+    text "来源："
+  response response_coding_synthesis_sources_heading_es
+    intent coding_synthesis_sources_heading
+    language es
+    text "Fuentes:"
+  response response_coding_synthesis_research_trail_en
+    intent coding_synthesis_research_trail
+    language en
+    text "Research trail: {trail}"
+  response response_coding_synthesis_research_trail_ru
+    intent coding_synthesis_research_trail
+    language ru
+    text "Ход исследования: {trail}"
+  response response_coding_synthesis_research_trail_hi
+    intent coding_synthesis_research_trail
+    language hi
+    text "शोध क्रम: {trail}"
+  response response_coding_synthesis_research_trail_zh
+    intent coding_synthesis_research_trail
+    language zh
+    text "研究轨迹：{trail}"
+  response response_coding_synthesis_research_trail_es
+    intent coding_synthesis_research_trail
+    language es
+    text "Recorrido de investigación: {trail}"
+  response response_write_program_skill_gap_name_task_unspecified_en
+    intent write_program_skill_gap_name_task_unspecified
+    language en
+    text "no synthesis route reaches this request in language ""{language}"""
+  response response_write_program_skill_gap_name_task_unspecified_ru
+    intent write_program_skill_gap_name_task_unspecified
+    language ru
+    text "ни один маршрут синтеза не покрывает этот запрос на языке «{language}»"
+  response response_write_program_skill_gap_name_task_unspecified_hi
+    intent write_program_skill_gap_name_task_unspecified
+    language hi
+    text "इस request को «{language}» भाषा में बनाने वाला कोई synthesis route नहीं है"
+  response response_write_program_skill_gap_name_task_unspecified_zh
+    intent write_program_skill_gap_name_task_unspecified
+    language zh
+    text "没有合成路线能用「{language}」完成这个请求"
+  response response_write_program_skill_gap_name_task_unspecified_es
+    intent write_program_skill_gap_name_task_unspecified
+    language es
+    text "ninguna ruta de síntesis cubre esta solicitud en el lenguaje «{language}»"
+  response response_write_program_language_unspecified_name_en
+    intent write_program_language_unspecified_name
+    language en
+    text "no implementation language was named for task ""{task}"""
+  response response_write_program_language_unspecified_name_ru
+    intent write_program_language_unspecified_name
+    language ru
+    text "для задачи «{task}» не назван язык реализации"
+  response response_write_program_language_unspecified_name_hi
+    intent write_program_language_unspecified_name
+    language hi
+    text "«{task}» कार्य के लिए कोई implementation language नहीं बताई गई"
+  response response_write_program_language_unspecified_name_zh
+    intent write_program_language_unspecified_name
+    language zh
+    text "任务「{task}」没有指明实现语言"
+  response response_write_program_language_unspecified_name_es
+    intent write_program_language_unspecified_name
+    language es
+    text "no se nombró ningún lenguaje de implementación para la tarea «{task}»"
+  response response_write_program_request_unspecified_name_en
+    intent write_program_request_unspecified_name
+    language en
+    text "the request named neither a task nor an implementation language"
+  response response_write_program_request_unspecified_name_ru
+    intent write_program_request_unspecified_name
+    language ru
+    text "в запросе не названы ни задача, ни язык реализации"
+  response response_write_program_request_unspecified_name_hi
+    intent write_program_request_unspecified_name
+    language hi
+    text "request में न task बताया गया है और न implementation language"
+  response response_write_program_request_unspecified_name_zh
+    intent write_program_request_unspecified_name
+    language zh
+    text "请求既没有指明任务，也没有指明实现语言"
+  response response_write_program_request_unspecified_name_es
+    intent write_program_request_unspecified_name
+    language es
+    text "la solicitud no nombró ni una tarea ni un lenguaje de implementación"
+  response response_write_program_language_unspecified_en
+    intent write_program_language_unspecified
+    language en
+    text "I will not guess an implementation language. You asked for `{task}`, but the request does not say which programming language to write it in, and choosing one for you would answer a request you did not make.\n\nName the language — for example by adding ""in <language>"" — and I will derive the program in it."
+  response response_write_program_language_unspecified_ru
+    intent write_program_language_unspecified
+    language ru
+    text "Я не угадываю язык реализации. Вы попросили `{task}`, но в запросе не сказано, на каком языке программирования его написать, а выбрать язык за вас — значит ответить на запрос, которого вы не делали.\n\nНазовите язык — например, добавив «на <язык>» — и я выведу программу на нём."
+  response response_write_program_language_unspecified_hi
+    intent write_program_language_unspecified
+    language hi
+    text "मैं implementation language का अनुमान नहीं लगाऊँगा. आपने `{task}` माँगा, पर request में यह नहीं है कि इसे किस programming language में लिखना है, और आपकी जगह भाषा चुनना उस request का उत्तर देना होगा जो आपने की ही नहीं.\n\nभाषा बताइए — जैसे «<भाषा> में» जोड़कर — और मैं उसी में program derive कर दूँगा."
+  response response_write_program_language_unspecified_zh
+    intent write_program_language_unspecified
+    language zh
+    text "我不会猜测实现语言。你要的是 `{task}`，但请求没有说用哪种编程语言来写，替你挑一种就等于回答了一个你并未提出的请求。\n\n请指明语言——例如加上「用<语言>」——我就会用它推导出程序。"
+  response response_write_program_language_unspecified_es
+    intent write_program_language_unspecified
+    language es
+    text "No voy a adivinar el lenguaje de implementación. Pediste `{task}`, pero la solicitud no dice en qué lenguaje de programación escribirlo, y elegirlo por ti sería responder a una solicitud que no hiciste.\n\nNombra el lenguaje — por ejemplo añadiendo «en <lenguaje>» — y derivaré el programa en él."
+  response response_write_program_request_unspecified_en
+    intent write_program_request_unspecified
+    language en
+    text "I will not guess what to write. This reads as a program request, but it names neither what the program must do nor which programming language to write it in.\n\nSay what the program should do and which language it should be written in, and I will derive it."
+  response response_write_program_request_unspecified_ru
+    intent write_program_request_unspecified
+    language ru
+    text "Я не угадываю, что писать. Это похоже на запрос программы, но в нём не названо ни что программа должна делать, ни на каком языке программирования её написать.\n\nСкажите, что должна делать программа и на каком языке, и я её выведу."
+  response response_write_program_request_unspecified_hi
+    intent write_program_request_unspecified
+    language hi
+    text "मैं अनुमान से नहीं लिखूँगा. यह program request जैसा लगता है, पर इसमें न यह बताया गया है कि program को करना क्या है, न यह कि उसे किस programming language में लिखना है.\n\nबताइए कि program को क्या करना चाहिए और किस भाषा में लिखा जाए, फिर मैं उसे derive कर दूँगा."
+  response response_write_program_request_unspecified_zh
+    intent write_program_request_unspecified
+    language zh
+    text "我不会猜测要写什么。这看起来是一个程序请求，但它既没有说明程序要做什么，也没有说明用哪种编程语言来写。\n\n请说明程序应当做什么、用哪种语言编写，我就会把它推导出来。"
+  response response_write_program_request_unspecified_es
+    intent write_program_request_unspecified
+    language es
+    text "No voy a adivinar qué escribir. Esto se lee como una solicitud de programa, pero no nombra ni lo que el programa debe hacer ni en qué lenguaje de programación escribirlo.\n\nDi qué debe hacer el programa y en qué lenguaje debe escribirse, y lo derivaré."
+  response response_coding_meta_algorithm_heading_en
+    intent coding_meta_algorithm_heading
+    language en
+    text "Meta algorithm for constructing conversion algorithms:"
+  response response_coding_meta_algorithm_heading_ru
+    intent coding_meta_algorithm_heading
+    language ru
+    text "Метаалгоритм построения алгоритмов преобразования:"
+  response response_coding_meta_algorithm_heading_hi
+    intent coding_meta_algorithm_heading
+    language hi
+    text "रूपांतरण एल्गोरिदम बनाने के लिए मेटा एल्गोरिदम:"
+  response response_coding_meta_algorithm_heading_zh
+    intent coding_meta_algorithm_heading
+    language zh
+    text "用于构建转换算法的元算法："
+  response response_coding_meta_algorithm_heading_es
+    intent coding_meta_algorithm_heading
+    language es
+    text "Metaalgoritmo para construir algoritmos de conversión:"
+  response response_coding_meta_algorithm_stage_en
+    intent coding_meta_algorithm_stage
+    language en
+    text "{index}. {stage} -> {output}; verification fixture: {verifier}."
+  response response_coding_meta_algorithm_stage_ru
+    intent coding_meta_algorithm_stage
+    language ru
+    text "{index}. {stage} -> {output}; проверочный пример: {verifier}."
+  response response_coding_meta_algorithm_stage_hi
+    intent coding_meta_algorithm_stage
+    language hi
+    text "{index}. {stage} -> {output}; सत्यापन उदाहरण: {verifier}।"
+  response response_coding_meta_algorithm_stage_zh
+    intent coding_meta_algorithm_stage
+    language zh
+    text "{index}. {stage} -> {output}；验证样例：{verifier}。"
+  response response_coding_meta_algorithm_stage_es
+    intent coding_meta_algorithm_stage
+    language es
+    text "{index}. {stage} -> {output}; caso de verificación: {verifier}."
+  response response_coding_meta_algorithm_surface_en
+    intent coding_meta_algorithm_surface
+    language en
+    text "- {surface}{active}: {projection}."
+  response response_coding_meta_algorithm_surface_ru
+    intent coding_meta_algorithm_surface
+    language ru
+    text "- {surface}{active}: {projection}."
+  response response_coding_meta_algorithm_surface_hi
+    intent coding_meta_algorithm_surface
+    language hi
+    text "- {surface}{active}: {projection}।"
+  response response_coding_meta_algorithm_surface_zh
+    intent coding_meta_algorithm_surface
+    language zh
+    text "- {surface}{active}：{projection}。"
+  response response_coding_meta_algorithm_surface_es
+    intent coding_meta_algorithm_surface
+    language es
+    text "- {surface}{active}: {projection}."
+  response response_coding_meta_algorithm_solutions_heading_en
+    intent coding_meta_algorithm_solutions_heading
+    language en
+    text "Coding solutions using the same meta algorithm:"
+  response response_coding_meta_algorithm_solutions_heading_ru
+    intent coding_meta_algorithm_solutions_heading
+    language ru
+    text "Решения для программирования, использующие тот же метаалгоритм:"
+  response response_coding_meta_algorithm_solutions_heading_hi
+    intent coding_meta_algorithm_solutions_heading
+    language hi
+    text "उसी मेटा एल्गोरिदम का उपयोग करने वाले कोडिंग समाधान:"
+  response response_coding_meta_algorithm_solutions_heading_zh
+    intent coding_meta_algorithm_solutions_heading
+    language zh
+    text "使用同一元算法的编程解决方案："
+  response response_coding_meta_algorithm_solutions_heading_es
+    intent coding_meta_algorithm_solutions_heading
+    language es
+    text "Soluciones de programación que usan el mismo metaalgoritmo:"
+  response response_coding_synthesis_verified_answer_en
+    intent coding_synthesis_verified_answer
+    language en
+    text "Here is a derived Python artifact reconstructed from discovered parts and verified in an isolated workspace:\n\n```python\n{source}\n```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {count}/{count} executable checks passed.\nWorkspace isolation: temporary agent workspace with no inherited environment beyond a constructed temporary directory, and a bounded command budget."
+  response response_coding_synthesis_verified_answer_ru
+    intent coding_synthesis_verified_answer
+    language ru
+    text "Ниже приведён выведенный артефакт Python, собранный из найденных частей и проверенный в изолированной рабочей среде:\n\n```python\n{source}\n```\n\nСтатус выполнения: тесты пройдены в изолированной ограниченной рабочей среде агента.\nКоманда проверки: `python3 solution.py`\nРезультат тестов: пройдено {count}/{count} исполняемых проверок.\nИзоляция: временная рабочая среда агента без унаследованного окружения и с ограниченным бюджетом команд."
+  response response_coding_synthesis_verified_answer_hi
+    intent coding_synthesis_verified_answer
+    language hi
+    text "यह खोजे गए भागों से पुनर्निर्मित और पृथक workspace में सत्यापित Python artifact है:\n\n```python\n{source}\n```\n\nExecution status: सीमित पृथक agent workspace में tests pass हुए।\nजाँच command: `python3 solution.py`\nTest outcome: {count}/{count} executable checks pass हुए।\nWorkspace isolation: inherited environment के बिना अस्थायी agent workspace और सीमित command budget।"
+  response response_coding_synthesis_verified_answer_zh
+    intent coding_synthesis_verified_answer
+    language zh
+    text "这是由发现的部件重建并在隔离工作区中验证的 Python 构件：\n\n```python\n{source}\n```\n\n执行状态：测试已在受限的隔离代理工作区中通过。\n检查命令：`python3 solution.py`\n测试结果：{count}/{count} 个可执行检查通过。\n工作区隔离：临时代理工作区不继承环境，并受命令预算限制。"
+  response response_coding_synthesis_verified_answer_es
+    intent coding_synthesis_verified_answer
+    language es
+    text "Este es un artefacto de Python derivado, reconstruido a partir de partes descubiertas y verificado en un espacio aislado:\n\n```python\n{source}\n```\n\nEstado de ejecución: las pruebas pasaron en el espacio aislado y limitado del agente.\nComando de comprobación: `python3 solution.py`\nResultado: {count}/{count} comprobaciones ejecutables pasaron.\nAislamiento: espacio temporal sin entorno heredado y con un presupuesto de comandos limitado."
+  response response_coding_rosetta_answer_en
+    intent coding_rosetta_answer
+    language en
+    text "This {language} example for {task} was retrieved from Rosetta Code; it was not generated:\n\n```{language}\n{code}\n```\n\nSource: {source}\nLicense: {license}\n{execution}\n{capture}"
+  response response_coding_rosetta_answer_ru
+    intent coding_rosetta_answer
+    language ru
+    text "Этот пример на {language} для задачи {task} получен с Rosetta Code, а не сгенерирован:\n\n```{language}\n{code}\n```\n\nИсточник: {source}\nЛицензия: {license}\n{execution}\n{capture}"
+  response response_coding_rosetta_answer_hi
+    intent coding_rosetta_answer
+    language hi
+    text "{task} के लिए यह {language} उदाहरण Rosetta Code से लिया गया है; इसे generate नहीं किया गया:\n\n```{language}\n{code}\n```\n\nस्रोत: {source}\nलाइसेंस: {license}\n{execution}\n{capture}"
+  response response_coding_rosetta_answer_zh
+    intent coding_rosetta_answer
+    language zh
+    text "这个用于 {task} 的 {language} 示例来自 Rosetta Code，并非生成：\n\n```{language}\n{code}\n```\n\n来源：{source}\n许可证：{license}\n{execution}\n{capture}"
+  response response_coding_rosetta_answer_es
+    intent coding_rosetta_answer
+    language es
+    text "Este ejemplo de {language} para {task} se obtuvo de Rosetta Code; no fue generado:\n\n```{language}\n{code}\n```\n\nFuente: {source}\nLicencia: {license}\n{execution}\n{capture}"
+  response response_coding_rosetta_not_requested_en
+    intent coding_rosetta_not_requested
+    language en
+    text "Execution status: not requested."
+  response response_coding_rosetta_not_requested_ru
+    intent coding_rosetta_not_requested
+    language ru
+    text "Статус выполнения: запуск не запрашивался."
+  response response_coding_rosetta_not_requested_hi
+    intent coding_rosetta_not_requested
+    language hi
+    text "Execution status: चलाने का अनुरोध नहीं किया गया।"
+  response response_coding_rosetta_not_requested_zh
+    intent coding_rosetta_not_requested
+    language zh
+    text "执行状态：未请求运行。"
+  response response_coding_rosetta_not_requested_es
+    intent coding_rosetta_not_requested
+    language es
+    text "Estado de ejecución: no solicitado."
+  response response_coding_rosetta_rust_only_en
+    intent coding_rosetta_rust_only
+    language en
+    text "Execution status: not run; bounded execution is currently available only for Rust examples, not {language}."
+  response response_coding_rosetta_rust_only_ru
+    intent coding_rosetta_rust_only
+    language ru
+    text "Статус выполнения: не запущено; ограниченное выполнение пока доступно только для примеров Rust, но не {language}."
+  response response_coding_rosetta_rust_only_hi
+    intent coding_rosetta_rust_only
+    language hi
+    text "Execution status: नहीं चलाया गया; सीमित execution अभी केवल Rust उदाहरणों के लिए उपलब्ध है, {language} के लिए नहीं।"
+  response response_coding_rosetta_rust_only_zh
+    intent coding_rosetta_rust_only
+    language zh
+    text "执行状态：未运行；受限执行目前仅适用于 Rust 示例，不适用于 {language}。"
+  response response_coding_rosetta_rust_only_es
+    intent coding_rosetta_rust_only
+    language es
+    text "Estado de ejecución: no ejecutado; la ejecución limitada solo está disponible para ejemplos de Rust, no de {language}."
+  response response_coding_rosetta_workspace_unavailable_en
+    intent coding_rosetta_workspace_unavailable
+    language en
+    text "Execution status: unavailable; the isolated workspace could not be created."
+  response response_coding_rosetta_workspace_unavailable_ru
+    intent coding_rosetta_workspace_unavailable
+    language ru
+    text "Статус выполнения: недоступно; изолированную рабочую среду создать не удалось."
+  response response_coding_rosetta_workspace_unavailable_hi
+    intent coding_rosetta_workspace_unavailable
+    language hi
+    text "Execution status: उपलब्ध नहीं; पृथक workspace बनाया नहीं जा सका।"
+  response response_coding_rosetta_workspace_unavailable_zh
+    intent coding_rosetta_workspace_unavailable
+    language zh
+    text "执行状态：不可用；无法创建隔离工作区。"
+  response response_coding_rosetta_workspace_unavailable_es
+    intent coding_rosetta_workspace_unavailable
+    language es
+    text "Estado de ejecución: no disponible; no se pudo crear el espacio aislado."
+  response response_coding_rosetta_passed_en
+    intent coding_rosetta_passed
+    language en
+    text "Execution status: compiled and ran in an isolated bounded agent workspace."
+  response response_coding_rosetta_passed_ru
+    intent coding_rosetta_passed
+    language ru
+    text "Статус выполнения: скомпилировано и запущено в изолированной ограниченной рабочей среде агента."
+  response response_coding_rosetta_passed_hi
+    intent coding_rosetta_passed
+    language hi
+    text "Execution status: सीमित पृथक agent workspace में compile होकर चला।"
+  response response_coding_rosetta_passed_zh
+    intent coding_rosetta_passed
+    language zh
+    text "执行状态：已在受限的隔离代理工作区中编译并运行。"
+  response response_coding_rosetta_passed_es
+    intent coding_rosetta_passed
+    language es
+    text "Estado de ejecución: compilado y ejecutado en el espacio aislado y limitado del agente."
+  response response_coding_rosetta_failed_en
+    intent coding_rosetta_failed
+    language en
+    text "Execution status: unavailable or failed in the isolated bounded agent workspace."
+  response response_coding_rosetta_failed_ru
+    intent coding_rosetta_failed
+    language ru
+    text "Статус выполнения: недоступно или завершилось ошибкой в изолированной ограниченной рабочей среде агента."
+  response response_coding_rosetta_failed_hi
+    intent coding_rosetta_failed
+    language hi
+    text "Execution status: सीमित पृथक agent workspace में उपलब्ध नहीं था या विफल हुआ।"
+  response response_coding_rosetta_failed_zh
+    intent coding_rosetta_failed
+    language zh
+    text "执行状态：在受限的隔离代理工作区中不可用或失败。"
+  response response_coding_rosetta_failed_es
+    intent coding_rosetta_failed
+    language es
+    text "Estado de ejecución: no disponible o falló en el espacio aislado y limitado del agente."
+  response response_coding_rosetta_capture_cached_en
+    intent coding_rosetta_capture_cached
+    language en
+    text "Source capture: cached {sha256}."
+  response response_coding_rosetta_capture_cached_ru
+    intent coding_rosetta_capture_cached
+    language ru
+    text "Снимок источника: кэширован {sha256}."
+  response response_coding_rosetta_capture_cached_hi
+    intent coding_rosetta_capture_cached
+    language hi
+    text "Source capture: cache से {sha256}."
+  response response_coding_rosetta_capture_cached_zh
+    intent coding_rosetta_capture_cached
+    language zh
+    text "来源快照：缓存 {sha256}。"
+  response response_coding_rosetta_capture_cached_es
+    intent coding_rosetta_capture_cached
+    language es
+    text "Captura de fuente: {sha256} en caché."
+  response response_coding_rosetta_capture_fetched_en
+    intent coding_rosetta_capture_fetched
+    language en
+    text "Source capture: fetched {sha256}."
+  response response_coding_rosetta_capture_fetched_ru
+    intent coding_rosetta_capture_fetched
+    language ru
+    text "Снимок источника: получен {sha256}."
+  response response_coding_rosetta_capture_fetched_hi
+    intent coding_rosetta_capture_fetched
+    language hi
+    text "Source capture: fetch किया गया {sha256}."
+  response response_coding_rosetta_capture_fetched_zh
+    intent coding_rosetta_capture_fetched
+    language zh
+    text "来源快照：已获取 {sha256}。"
+  response response_coding_rosetta_capture_fetched_es
+    intent coding_rosetta_capture_fetched
+    language es
+    text "Captura de fuente: se obtuvo {sha256}."

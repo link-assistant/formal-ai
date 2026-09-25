@@ -9,9 +9,9 @@ use crate::seed::{self, ROLE_DECOMPOSABLE_TASK_NOUN, parser::parse_lino};
 use super::learning::TaskStrategyLedger;
 
 pub const STRATEGIES_LINO: &str =
-    include_str!("../../../data/meta/task-decomposition-strategies.lino");
+    include_str!("../../embedded/data/meta/task-decomposition-strategies.lino");
 pub const CONTRACT_LINO: &str =
-    include_str!("../../../data/meta/task-decomposition-invariant.lino");
+    include_str!("../../embedded/data/meta/task-decomposition-invariant.lino");
 const TASK_PLACEHOLDER: &str = "{task}";
 
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -10,7 +10,7 @@ use std::sync::OnceLock;
 
 use super::lexicon::load_data_document;
 
-const EMBEDDED_CUES: &str = include_str!("../../../data/meta/dreaming-cues.lino");
+const EMBEDDED_CUES: &str = include_str!("../../embedded/data/meta/dreaming-cues.lino");
 
 /// Parse the `cue "..."` lines of a dreaming-cues document.
 #[must_use]

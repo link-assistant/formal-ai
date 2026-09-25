@@ -1,0 +1,225 @@
+meanings
+  prove
+    defined-by inquiry
+    defined-by action
+    role proof_directive
+    role proof_claim_scaffold
+    lexeme en
+      surface
+        text prove
+      surface
+        text proof
+      surface
+        text "prove that …"
+      surface
+        text "prove …"
+      surface
+        text "proof of …"
+      surface
+        text "proof that …"
+      surface
+        text "show that …"
+      surface
+        text "demonstrate that …"
+      surface
+        text "demonstrate …"
+      surface
+        text "can you prove that …"
+      surface
+        text "can you prove …"
+      surface
+        text "could you prove that …"
+      surface
+        text "could you prove …"
+      surface
+        text "please prove that …"
+      surface
+        text "please prove …"
+      surface
+        text "give me a proof of …"
+      surface
+        text "give me a proof that …"
+      surface
+        text "give a proof of …"
+      surface
+        text "give a proof that …"
+    lexeme ru
+      surface
+        text докажи
+      surface
+        text докажите
+      surface
+        text доказать
+      surface
+        text доказательство
+      surface
+        text "докажи что …"
+      surface
+        text "докажите что …"
+      surface
+        text "доказать что …"
+      surface
+        text "докажите …"
+      surface
+        text "докажи …"
+      surface
+        text "доказать …"
+      surface
+        text "доказательство …"
+    lexeme hi
+      surface
+        text "साबित करो कि …"
+      surface
+        text "साबित कीजिए कि …"
+      surface
+        text "साबित कर …"
+      surface
+        text "सिद्ध कीजिए कि …"
+      surface
+        text "सिद्ध करो कि …"
+    lexeme zh
+      surface
+        text 证明…
+      surface
+        text 證明…
+  proof_request_frame
+    defined-by inquiry
+    defined-by prove
+    role proof_request_lead
+    lexeme en
+      surface
+        text "can you prove…"
+      surface
+        text "could you prove…"
+      surface
+        text "please prove…"
+      surface
+        text "give me a proof…"
+      surface
+        text "give a proof…"
+      surface
+        text "show that …"
+      surface
+        text "demonstrate that …"
+    lexeme ru
+      surface
+        text "можешь доказать…"
+      surface
+        text "можете доказать…"
+      surface
+        text "сможешь доказать…"
+      surface
+        text "пожалуйста докажи…"
+      surface
+        text "пожалуйста докажите…"
+    lexeme hi
+      surface
+        text "क्या आप साबित कर सकते हैं…"
+      surface
+        text "क्या आप सिद्ध कर सकते हैं…"
+      surface
+        text "कृपया सिद्ध कीजिए…"
+      surface
+        text "कृपया साबित कीजिए…"
+    lexeme zh
+      surface
+        text 你能证明…
+      surface
+        text 你能證明…
+      surface
+        text 请证明…
+      surface
+        text 請證明…
+  proof_assertion
+    defined-by inquiry
+    defined-by prove
+    role proof_marker
+    lexeme en
+      surface
+        text " prove that "
+      surface
+        text " proof of "
+    lexeme ru
+      surface
+        text " докажи "
+      surface
+        text " докажите "
+      surface
+        text " доказать "
+      surface
+        text " доказательство "
+    lexeme hi
+      surface
+        text "साबित कर"
+      surface
+        text "साबित कीजिए"
+      surface
+        text "साबित कीजिये"
+      surface
+        text "सिद्ध कर"
+      surface
+        text "सिद्ध कीजिए"
+      surface
+        text "सिद्ध कीजिये"
+      surface
+        text प्रमाण
+    lexeme zh
+      surface
+        text 证明
+      surface
+        text 證明
+  godel
+    defined-by concept
+    role proof_concept_godel
+    lexeme en
+      surface
+        text godel
+      surface
+        text gödel
+    lexeme ru
+      surface
+        text гёдел
+      surface
+        text гёделя
+      surface
+        text гедел
+    lexeme hi
+      surface
+        text गोडेल
+    lexeme zh
+      surface
+        text 哥德尔
+  determinism
+    defined-by concept
+    role proof_concept_determinism
+    lexeme en
+      surface
+        text determinism
+      surface
+        text deterministic
+    lexeme ru
+      surface
+        text детерминизм
+    lexeme hi
+      surface
+        text निर्धारणवाद
+    lexeme zh
+      surface
+        text 决定论
+  metatheory
+    defined-by concept
+    role proof_concept_metatheory
+    lexeme en
+      surface
+        text metatheory
+      surface
+        text meta-theory
+    lexeme ru
+      surface
+        text метатеория
+    lexeme hi
+      surface
+        text परासिद्धांत
+    lexeme zh
+      surface
+        text 元理论

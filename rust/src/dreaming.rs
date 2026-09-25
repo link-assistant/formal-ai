@@ -799,7 +799,7 @@ pub fn render_dreaming_plan(plan: &DreamingPlan) -> String {
 pub fn compose_recipe_with_amendments(events: &[MemoryEvent]) -> String {
     let base = lexicon::load_data_document(
         "dreaming-recipe.lino",
-        include_str!("../../data/meta/dreaming-recipe.lino"),
+        include_str!("../embedded/data/meta/dreaming-recipe.lino"),
     );
     let mut composed = base.trim_end().to_owned();
     for amendment in crate::dreaming_application::retained_amendments(events) {

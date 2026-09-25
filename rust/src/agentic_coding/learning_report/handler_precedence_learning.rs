@@ -18,7 +18,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("routing_precedence_from_seed_and_parity_fixture_pass"),
     path: HANDLER_PRECEDENCE_LEARNING_PATH,
     task: HANDLER_PRECEDENCE_LEARNING_TASK,
-    memory: include_str!("../../../../data/meta/issue-663-handler-precedence-learning.lino"),
+    memory: include_str!("../../../embedded/data/meta/issue-663-handler-precedence-learning.lino"),
     subject: "handler-precedence observations and the precedence-is-data amendment",
 };
 

@@ -188,8 +188,8 @@ fn detection_registry_is_seed_data_not_rust_constants() {
 
     let detector = read("rust/src/language.rs");
     assert!(
-        detector.contains("include_str!(\"../../data/seed/language-detection.lino\")"),
-        "the detector must read its rules from seed data"
+        detector.contains("include_str!(\"../embedded/data/seed/language-detection.lino\")"),
+        "the detector must read its rules from seed data (the package mirror of it)"
     );
 
     let slugs: Vec<String> = formal_ai::language::registered_languages()
@@ -262,8 +262,8 @@ fn unknown_openers_are_seed_data_on_every_surface() {
 
     let core = read("rust/src/web_engine_core.rs");
     assert!(
-        core.contains("include_str!(\"../../data/seed/unknown-openers.lino\")"),
-        "the Rust core must read the opener pools from seed data"
+        core.contains("include_str!(\"../embedded/data/seed/unknown-openers.lino\")"),
+        "the Rust core must read the opener pools from seed data (the package mirror of it)"
     );
     assert!(
         !core.contains("UNKNOWN_OPENERS_RU"),

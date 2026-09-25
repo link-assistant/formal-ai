@@ -25,8 +25,9 @@ use crate::seed::supported_languages;
 pub const GOOGLE_TRENDS_TOP_LIMIT: usize = 10;
 
 const GOOGLE_TRENDS_SNAPSHOT_LINO: &str =
-    include_str!("../../data/seed/google-trends-snapshot.lino");
-const GOOGLE_TRENDS_PROMPTS_LINO: &str = include_str!("../../data/seed/google-trends-prompts.lino");
+    include_str!("../embedded/data/seed/google-trends-snapshot.lino");
+const GOOGLE_TRENDS_PROMPTS_LINO: &str =
+    include_str!("../embedded/data/seed/google-trends-prompts.lino");
 
 /// A parsed Google Trends RSS snapshot plus generated prompts and answers.
 #[derive(Debug, Clone, PartialEq)]

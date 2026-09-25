@@ -18,7 +18,7 @@ use crate::seed::parser::{LinoNode, parse_lino};
 use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handlers::finalize_simple;
 
-const FAMILY_METHODS_LINO: &str = include_str!("../../data/seed/handler-family-methods.lino");
+const FAMILY_METHODS_LINO: &str = include_str!("../embedded/data/seed/handler-family-methods.lino");
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct EvidenceGroup {

@@ -1,0 +1,111 @@
+meanings
+  followup_instruction_verb
+    defined-by action
+    role followup_instruction_verb
+    lexeme en
+      surface
+        text compare
+      surface
+        text summarize
+      surface
+        text summarise
+      surface
+        text explain
+      surface
+        text describe
+      surface
+        text show
+      surface
+        text tell
+    lexeme ru
+      surface
+        text сравни
+      surface
+        text обобщи
+      surface
+        text резюмируй
+      surface
+        text объясни
+      surface
+        text опиши
+      surface
+        text покажи
+      surface
+        text расскажи
+    lexeme hi
+      surface
+        text "तुलना करो"
+      surface
+        text "सारांश दो"
+      surface
+        text समझाओ
+      surface
+        text "वर्णन करो"
+      surface
+        text दिखाओ
+      surface
+        text बताओ
+    lexeme zh
+      surface
+        text 比较
+      surface
+        text 总结
+      surface
+        text 概括
+      surface
+        text 解释
+      surface
+        text 描述
+      surface
+        text 显示
+      surface
+        text 告诉
+    lexeme es
+      surface
+        text compara
+      surface
+        text resume
+      surface
+        text explica
+      surface
+        text describe
+      surface
+        text muestra
+      surface
+        text cuenta
+  clause_continuation_marker
+    defined-by relation
+    role clause_continuation_marker
+    lexeme en
+      surface
+        text and
+      surface
+        text then
+    lexeme ru
+      surface
+        text и
+      surface
+        text затем
+      surface
+        text потом
+    lexeme hi
+      surface
+        text और
+      surface
+        text फिर
+      surface
+        text तब
+    lexeme zh
+      surface
+        text 并
+      surface
+        text 然后
+      surface
+        text 接着
+    lexeme es
+      surface
+        text y
+      surface
+        text luego
+      surface
+        text después

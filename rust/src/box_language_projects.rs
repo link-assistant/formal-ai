@@ -18,10 +18,11 @@ use crate::seed::parser::{LinoNode, parse_lino};
 
 /// The embedded contract, so a released binary carries the same mapping the
 /// repository scripts read from disk.
-const BOX_LANGUAGE_PROJECTS_LINO: &str = include_str!("../../data/meta/box-language-projects.lino");
+const BOX_LANGUAGE_PROJECTS_LINO: &str =
+    include_str!("../embedded/data/meta/box-language-projects.lino");
 
 /// The embedded image survey the contract is checked against.
-const BOX_IMAGE_SURVEY_LINO: &str = include_str!("../../data/meta/box-image-survey.lino");
+const BOX_IMAGE_SURVEY_LINO: &str = include_str!("../embedded/data/meta/box-image-survey.lino");
 
 /// Record type of a language that has a dedicated box image.
 const RECORD_PROJECT: &str = "box_language_project";

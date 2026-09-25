@@ -17,7 +17,7 @@ pub const DEFAULT_RESEARCH_TIME_LIMIT_SECONDS: u64 = 60 * 60;
 
 /// The ordered meta-algorithm interpreted by [`recipe_steps`].
 pub const RESEARCH_LEARNING_RECIPE: &str =
-    include_str!("../../data/meta/research-learning-recovery.lino");
+    include_str!("../embedded/data/meta/research-learning-recovery.lino");
 
 /// How the cycle handles a recoverable action.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

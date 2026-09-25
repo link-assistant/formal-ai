@@ -20,7 +20,7 @@ use crate::seed::parser::parse_lino;
 use crate::source_walk::{LookupBounds, SourceLookup};
 
 /// The seed document pinning one authoritative publisher per program.
-const SETUP_PUBLISHERS_LINO: &str = include_str!("../../../data/seed/setup-publishers.lino");
+const SETUP_PUBLISHERS_LINO: &str = include_str!("../../embedded/data/seed/setup-publishers.lino");
 
 /// Record type of one publisher row.
 const RECORD_PUBLISHER: &str = "setup_publisher";

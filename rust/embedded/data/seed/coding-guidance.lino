@@ -1,0 +1,85 @@
+coding_guidance
+  record_type "coding_guidance_registry"
+  issue "1138"
+  language "es"
+  plan "docs/case-studies/issue-1138/plans/06-prerequisite-discovery.md"
+coding_guidance_how_it_works_heading
+  record_type "coding_guidance"
+  id "how_it_works_heading"
+  es "Cómo funciona:"
+coding_guidance_how_to_test_heading
+  record_type "coding_guidance"
+  id "how_to_test_heading"
+  es "Cómo probarlo tú mismo:"
+coding_guidance_hello_world
+  record_type "coding_guidance"
+  id "hello_world"
+  es "El programa imprime el texto `Hello, world!` en la salida estándar y luego termina."
+coding_guidance_count_to_three
+  record_type "coding_guidance"
+  id "count_to_three"
+  es "El programa imprime los números 1, 2 y 3 — cada uno en su propia línea — y luego termina."
+coding_guidance_list_files_arg_reverse_sort
+  record_type "coding_guidance"
+  id "list_files_arg_reverse_sort"
+  es "El programa toma la ruta del directorio del primer argumento de la línea de órdenes (y usa el directorio actual cuando no se indica ninguno), lee las entradas de ese directorio, conserva solo los archivos regulares, ordena sus nombres en orden alfabético inverso e imprime cada nombre en su propia línea."
+coding_guidance_list_files_arg
+  record_type "coding_guidance"
+  id "list_files_arg"
+  es "El programa toma la ruta del directorio del primer argumento de la línea de órdenes (y usa el directorio actual cuando no se indica ninguno), lee las entradas de ese directorio, conserva solo los archivos regulares, ordena sus nombres alfabéticamente e imprime cada nombre en su propia línea."
+coding_guidance_list_files_reverse_sort
+  record_type "coding_guidance"
+  id "list_files_reverse_sort"
+  es "El programa lee las entradas del directorio actual, conserva solo los archivos regulares, reúne sus nombres en una lista, ordena la lista en orden alfabético inverso e imprime cada nombre en su propia línea."
+coding_guidance_list_files
+  record_type "coding_guidance"
+  id "list_files"
+  es "El programa lee las entradas del directorio actual, conserva solo los archivos regulares, reúne sus nombres en una lista, ordena la lista alfabéticamente e imprime cada nombre en su propia línea."
+coding_guidance_fizzbuzz
+  record_type "coding_guidance"
+  id "fizzbuzz"
+  es "El programa recorre los números del 1 al 15. Para cada número imprime `FizzBuzz` cuando es divisible por 3 y por 5, `Fizz` cuando es divisible por 3, `Buzz` cuando es divisible por 5 y, en los demás casos, el número mismo — cada uno en su propia línea."
+coding_guidance_factorial
+  record_type "coding_guidance"
+  id "factorial"
+  es "El programa multiplica los números del 1 al 5 (1×2×3×4×5), que es el factorial de 5, e imprime el resultado, 120."
+coding_guidance_reverse_string
+  record_type "coding_guidance"
+  id "reverse_string"
+  es "El programa toma la cadena `hello`, invierte el orden de sus caracteres e imprime el resultado, `olleh`."
+coding_guidance_sum_to_ten
+  record_type "coding_guidance"
+  id "sum_to_ten"
+  es "El programa suma los enteros del 1 al 10 (1 + 2 + … + 10) e imprime el total, 55."
+coding_guidance_fibonacci
+  record_type "coding_guidance"
+  id "fibonacci"
+  es "El programa define una función recursiva `fibonacci`: F(1) y F(2) valen 1, y cada término posterior es la suma de los dos anteriores (F(n) = F(n-1) + F(n-2)). Calcula el décimo término de la sucesión e imprime el resultado, 55."
+coding_guidance_default_explanation
+  record_type "coding_guidance"
+  id "default_explanation"
+  es "El programa realiza la tarea solicitada e imprime su resultado en la salida estándar."
+coding_guidance_prior_code_note
+  record_type "coding_guidance"
+  id "prior_code_note"
+  es "Prueba el programa actualizado igual que antes: guarda el código en `{save_as}` y vuelve a ejecutar `{run_command}`."
+coding_guidance_step_install
+  record_type "coding_guidance"
+  id "step_install"
+  es "Instala {setup_hint}."
+coding_guidance_step_save
+  record_type "coding_guidance"
+  id "step_save"
+  es "Guarda el código de arriba en un archivo llamado `{save_as}`."
+coding_guidance_step_check
+  record_type "coding_guidance"
+  id "step_check"
+  es "Comprueba que compila: `{check_command}`."
+coding_guidance_step_run
+  record_type "coding_guidance"
+  id "step_run"
+  es "Ejecútalo: `{run_command}`."
+coding_guidance_step_compare
+  record_type "coding_guidance"
+  id "step_compare"
+  es "Compara la salida con la salida esperada que se muestra arriba."

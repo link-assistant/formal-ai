@@ -15,7 +15,7 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("reported_matrix_and_unseen_paraphrases_pass"),
     path: ROUTING_LEARNING_PATH,
     task: ROUTING_LEARNING_TASK,
-    memory: include_str!("../../../data/meta/issue-712-routing-learning.lino"),
+    memory: include_str!("../../embedded/data/meta/issue-712-routing-learning.lino"),
     subject: "routing observations and amendments",
 };
 

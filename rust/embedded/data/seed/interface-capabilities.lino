@@ -1,0 +1,94 @@
+interface_capabilities
+  capability mode
+    kind enum
+    label Mode
+    intent configure_mode
+    phrase mode
+    option fullAuto
+      alias "full auto"
+      alias autonomous
+    option agent
+      alias agent
+    option chat
+      alias chat
+  capability thinkingDetailLevel
+    kind enum
+    label "Thinking detail"
+    intent configure_thinking_detail
+    phrase "thinking detail"
+    phrase "reasoning detail"
+    option brief
+      alias brief
+      alias concise
+    option standard
+      alias standard
+      alias normal
+    option detailed
+      alias detailed
+      alias verbose
+  capability minMessageAnimationMs
+    kind number
+    label "Minimum message animation"
+    intent configure_message_animation
+    phrase "message animation"
+    phrase "animation duration"
+    scale 1000
+  capability responseLanguage
+    kind enum
+    label "Response language"
+    intent configure_response_language
+    phrase "response language"
+    phrase "reply language"
+    option last_message
+      alias "last message"
+      alias automatic
+    option preferred
+      alias preferred
+    option ui
+      alias interface
+      alias ui
+  capability preferredLanguage
+    kind enum
+    label "Preferred language"
+    intent configure_preferred_language
+    phrase "preferred language"
+    option en
+      alias english
+    option ru
+      alias russian
+      alias русский
+    option zh
+      alias chinese
+      alias 中文
+    option hi
+      alias hindi
+      alias हिन्दी
+  capability followUpProbability
+    kind number
+    label "Follow-up probability"
+    intent configure_follow_up_probability
+    phrase "follow up probability"
+    phrase "follow-up probability"
+    scale 0.01
+  capability toolbarIconPack
+    kind enum
+    label "Toolbar icon pack"
+    intent configure_toolbar_icon_pack
+    phrase "toolbar icon pack"
+    phrase "icon pack"
+    option fontawesome
+      alias fontawesome
+      alias "font awesome"
+    option material-symbols
+      alias material
+      alias "material symbols"
+    option bootstrap-icons
+      alias bootstrap
+    option ionicons
+      alias ionicons
+    option remix-icon
+      alias remix
+    option tabler-icons
+      alias tabler
+    option names
+      alias names

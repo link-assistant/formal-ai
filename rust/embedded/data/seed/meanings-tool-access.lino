@@ -1,0 +1,288 @@
+meanings
+  tool_invocation_cue
+    defined-by action
+    role tool_invocation_cue
+    lexeme en
+      surface
+        text call
+      surface
+        text invoke
+      surface
+        text run
+      surface
+        text api
+      surface
+        text tool
+    lexeme ru
+      surface
+        text вызови
+      surface
+        text вызвать
+      surface
+        text запусти
+      surface
+        text инструмент
+    lexeme hi
+      surface
+        text कॉल
+      surface
+        text चलाओ
+      surface
+        text उपकरण
+    lexeme zh
+      surface
+        text 调用
+      surface
+        text 运行
+      surface
+        text 工具
+  calculator_tool
+    defined-by entity
+    role calculator_tool_name
+    lexeme en
+      surface
+        text calculator
+    lexeme ru
+      surface
+        text калькулятор
+    lexeme hi
+      surface
+        text कैलकुलेटर
+    lexeme zh
+      surface
+        text 计算器
+  web_search_tool
+    defined-by entity
+    role web_search_tool_name
+    lexeme en
+      surface
+        text web_search
+      surface
+        text "web search"
+      surface
+        text web-search
+    lexeme ru
+      surface
+        text веб-поиск
+      surface
+        text "поиск в интернете"
+    lexeme hi
+      surface
+        text "वेब खोज"
+      surface
+        text "इंटरनेट खोज"
+    lexeme zh
+      surface
+        text 网络搜索
+      surface
+        text 网页搜索
+  local_shell_tool
+    defined-by entity
+    role local_shell_request_cue
+    lexeme en
+      surface
+        text local_shell
+      surface
+        text "local shell tool"
+      surface
+        text "local shell api"
+      surface
+        text "call the shell tool"
+      surface
+        text "invoke the shell tool"
+    lexeme ru
+      surface
+        text "локальная оболочка"
+      surface
+        text "вызови оболочку"
+    lexeme hi
+      surface
+        text "लोकल शेल"
+      surface
+        text "शेल टूल चलाओ"
+    lexeme zh
+      surface
+        text 本地外壳
+      surface
+        text 调用外壳工具
+  tool_argument_marker
+    defined-by relation
+    role tool_argument_marker
+    lexeme en
+      surface
+        text "with query"
+      surface
+        text query
+      surface
+        text with
+      surface
+        text for
+    lexeme ru
+      surface
+        text "с запросом"
+      surface
+        text для
+    lexeme hi
+      surface
+        text "क्वेरी के साथ"
+      surface
+        text "के लिए"
+    lexeme zh
+      surface
+        text 查询
+      surface
+        text 用于
+  tool_result_failure
+    defined-by concept
+    role tool_result_failure_signal
+    lexeme en
+      surface
+        text "error"
+      surface
+        text "failed"
+      surface
+        text "not found"
+      surface
+        text 404
+      surface
+        text "non 2xx status code"
+      surface
+        text "you can t perform that action at this time"
+      surface
+        text "too many requests"
+      surface
+        text "rate limit"
+      surface
+        text "temporarily unavailable"
+    lexeme ru
+      surface
+        text "не удалось"
+      surface
+        text "действие недоступно"
+      surface
+        text "слишком много запросов"
+    lexeme hi
+      surface
+        text "कार्रवाई नहीं कर सकते"
+      surface
+        text "बहुत अधिक अनुरोध"
+    lexeme zh
+      surface
+        text 无法执行此操作
+      surface
+        text 请求过多
+  tool_result_detail_request
+    defined-by action
+    role tool_result_detail_request
+    lexeme en
+      surface
+        text "full result"
+      surface
+        text "more detail"
+      surface
+        text "original result"
+    lexeme ru
+      surface
+        text "полный результат"
+      surface
+        text подробнее
+      surface
+        text "исходный результат"
+    lexeme hi
+      surface
+        text "पूरा परिणाम"
+      surface
+        text "अधिक विवरण"
+      surface
+        text "मूल परिणाम"
+    lexeme zh
+      surface
+        text 完整结果
+      surface
+        text 更多详情
+      surface
+        text 原始结果
+  tool_result_url_request
+    defined-by entity
+    role tool_result_url_request
+    lexeme en
+      surface
+        text url
+      surface
+        text link
+    lexeme ru
+      surface
+        text ссылка
+    lexeme hi
+      surface
+        text यूआरएल
+      surface
+        text लिंक
+    lexeme zh
+      surface
+        text 网址
+      surface
+        text 链接
+  tool_result_line_request
+    defined-by entity
+    role tool_result_line_request
+    lexeme en
+      surface
+        text line
+    lexeme ru
+      surface
+        text строка
+      surface
+        text строку
+    lexeme hi
+      surface
+        text पंक्ति
+    lexeme zh
+      surface
+        text 行
+  tool_result_first_reference
+    defined-by concept
+    role tool_result_first_reference
+    lexeme en
+      surface
+        text first
+    lexeme ru
+      surface
+        text первый
+      surface
+        text первого
+      surface
+        text первую
+    lexeme hi
+      surface
+        text पहले
+      surface
+        text पहली
+    lexeme zh
+      surface
+        text 第一个
+      surface
+        text 第一
+  tool_result_second_reference
+    defined-by concept
+    role tool_result_second_reference
+    lexeme en
+      surface
+        text second
+    lexeme ru
+      surface
+        text второй
+      surface
+        text второго
+      surface
+        text вторую
+    lexeme hi
+      surface
+        text दूसरे
+      surface
+        text दूसरी
+    lexeme zh
+      surface
+        text 第二个
+      surface
+        text 第二

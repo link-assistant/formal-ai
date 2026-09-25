@@ -28,7 +28,7 @@ use crate::links_format::format_lino_record;
 
 /// The recipe — the meta algorithm encoded as link data — read at compile time so
 /// the loop can reason about itself with no runtime filesystem dependency.
-const RECIPE_LINO: &str = include_str!("../../data/meta/recursive-core-recipe.lino");
+const RECIPE_LINO: &str = include_str!("../embedded/data/meta/recursive-core-recipe.lino");
 
 /// The live meta-core pipeline source — the ground truth of what the algorithm
 /// actually does, also embedded at compile time.

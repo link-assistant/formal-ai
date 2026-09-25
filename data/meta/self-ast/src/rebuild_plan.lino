@@ -2,9 +2,9 @@ self_ast_census
   target src/rebuild_plan.rs
   language rust
   fidelity signature
-  byte_len 13903
+  byte_len 13915
   line_count 296
-  content_id source_module_118a73fa82a9f523
+  content_id source_module_07306eaa5065cd7b
   symbol_count 14
   symbols
     struct ReattachArtifact 33 40

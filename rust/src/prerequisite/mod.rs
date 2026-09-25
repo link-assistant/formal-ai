@@ -22,7 +22,8 @@ use publisher::SetupProcedure;
 
 /// The recovery sequence, as data. The document is the authority; `recover`
 /// walks it and `tests/unit/specification/prerequisite_recipe.rs` grounds it.
-const PREREQUISITE_RECIPE_LINO: &str = include_str!("../../../data/meta/prerequisite-recipe.lino");
+const PREREQUISITE_RECIPE_LINO: &str =
+    include_str!("../../embedded/data/meta/prerequisite-recipe.lino");
 
 /// The host platform, as observed — never inferred from the requested language
 /// (issue-710 plan 07 recovery step 2).

@@ -1,0 +1,298 @@
+handler_promotions
+  issue 1138
+  purpose "Which handlers a prompt hoists ahead of data/seed/handler-precedence.lino. Conditions use the handler-rules grammar and are evaluated by the same interpreter, so a promotion is a seed edit, never a Rust edit."
+  promotion conversation_control
+    rank 10
+    when
+      any
+        role conversation_preference_avoid forms of cleaned
+        role unauthorized_mutation_correction forms of cleaned
+    because "conversation preferences and action corrections must bind before ordinary task routing"
+  promotion execution_failure
+    rank 20
+    when
+      any
+        substring undefined_function of lowercase
+        all
+          substring undefined of cleaned
+          substring function of cleaned
+    because "an explicit execution failure must be explained before source text is treated as a new task"
+  promotion calendar_create_event
+    rank 30
+    when
+      all
+        any
+          role calendar_day_reference of padded
+          shape digit of trimmed
+        any
+          role calendar_schedule_action of padded
+          role calendar_event of padded
+          all
+            role calendar_hour_reference of padded
+            shape digit of trimmed
+          all
+            role calendar_date_marker of padded
+            any
+              role temporal_preposition of padded
+              shape time_separator of trimmed
+    because "issue 869 and issue 595 — a date signal conjoined with a scheduling act, or an elliptical clock hour that only the calendar handler's entity context can ground"
+  promotion program_synthesis
+    rank 40
+    when
+      all
+        role program_synthesis_subject of cleaned
+        role program_synthesis_domain of cleaned
+        role program_synthesis_action of cleaned
+    because "issue 710: a structural coding task is resolved before arithmetic and concepts inside its examples"
+  promotion web_search
+    rank 50
+    when
+      any
+        role web_search_action of cleaned
+        all
+          role web_search_news_subject of padded
+          role web_search_news_recency of padded
+        all
+          role web_search_records_subject of padded
+          role web_search_topic_marker of padded
+    because "issue 745: an explicit search act, a news request, or a records request"
+  promotion arithmetic
+    rank 60
+    when
+      all
+        shape digit of trimmed
+        any
+          substring + of lowercase
+          substring - of lowercase
+          substring * of lowercase
+          substring / of lowercase
+          substring plus of lowercase
+          substring minus of lowercase
+          substring times of lowercase
+          substring divided of lowercase
+          role arithmetic_operator_word of lowercase
+    because "a digit and an arithmetic operator form an executable arithmetic expression"
+  promotion task_decomposition
+    rank 70
+    when
+      any
+        all
+          role task_atomicity_predicate forms of cleaned
+          any
+            role decomposable_task_noun forms of cleaned
+            role subtask_unit_noun forms of cleaned
+        all
+          role task_first_step_cue forms of cleaned
+          role decomposable_task_noun forms of cleaned
+        all
+          any
+            role task_decomposition_action forms of cleaned
+            role task_decomposition_action separated of cleaned
+          any
+            role decomposable_task_noun forms of cleaned
+            role subtask_unit_noun forms of cleaned
+        all
+          role subtask_enumeration_cue forms of cleaned
+          role subtask_unit_noun forms of cleaned
+          role decomposable_task_noun forms of cleaned
+    because "issue 847: questions about task structure rank before a how-to reading of the same verbs"
+  promotion procedural_how_to
+    rank 80
+    when
+      any
+        role_prefix procedural_request of cleaned
+        all
+          role_prefix procedural_request_elided_lead of cleaned
+          role procedural_action_verb forms of cleaned
+    because "a seeded procedural request with a concrete action reaches procedure discovery"
+  promotion proof_request
+    rank 90
+    when
+      any
+        role proof_directive of cleaned
+        role proof_request_lead of cleaned
+    because "an explicit request for proof reaches formal proof handling before opinion routing"
+  promotion fact_checking
+    rank 100
+    when
+      role fact_check_current_dialogue_query raw of cleaned
+    because "a claim-check request is evaluated against the current dialogue"
+  promotion world_state
+    rank 110
+    when
+      cue_set world_state_query of normalized
+    because "a remaining-goal question reads the dialogue world model when that mode is enabled; the cue lexicon holds the multilingual remaining-goal leads so this row cannot drift out of sync with recognition"
+  promotion installation_conversion
+    rank 120
+    when
+      all
+        any
+          substring convert of cleaned
+          substring transform of cleaned
+          substring translate of cleaned
+          substring конверт of cleaned
+          substring преобраз of cleaned
+          substring बदल of cleaned
+          substring 转换 of cleaned
+        any
+          substring readme of cleaned
+          substring markdown of cleaned
+          substring install of cleaned
+          substring deploy of cleaned
+          substring установ of cleaned
+          substring स्थापना of cleaned
+          substring 安装 of cleaned
+        any
+          substring script of cleaned
+          substring shell of cleaned
+          substring bash of cleaned
+          substring powershell of cleaned
+          substring скрипт of cleaned
+          substring 脚本 of cleaned
+    because "issue 932: guide-to-script conversion wins over generic script and project readings"
+  promotion write_script
+    rank 130
+    when
+      all
+        role script_authoring_verb of cleaned
+        role script_or_code_artifact of cleaned
+        none
+          role program_genus of cleaned
+          role hello_world_reference of cleaned
+    because "a script authoring act paired with a script artifact reaches the minimal script route"
+  promotion write_program
+    rank 140
+    when
+      all
+        role program_request of cleaned
+        role program_kind of cleaned
+    because "a program request is parameterized from seeded task and language meanings"
+  promotion text_manipulation
+    rank 150
+    when
+      any
+        substring uppercase of cleaned
+        substring lowercase of cleaned
+        substring replace of cleaned
+        substring append of cleaned
+        substring prepend of cleaned
+        substring extract of cleaned
+        substring deduplicate of cleaned
+        substring sort of cleaned
+        substring trim of cleaned
+        substring normalize of cleaned
+        substring reverse of cleaned
+    because "text transformations are selected by their operation, while operands remain data"
+  promotion software_project
+    rank 160
+    when
+      role software_authoring_action of cleaned
+    because "a software authoring action reaches project planning before a generic concept response"
+  promotion meta_explanation
+    rank 170
+    when
+      role assistant_mechanism_inquiry raw of cleaned
+    because "a question about the assistant mechanism is answered from its architecture trace"
+  promotion verifiable_task
+    rank 180
+    when
+      role verifiable_expectation of lowercase
+    because "issues 531 and 1138: every seeded checkable expectation outranks generic retrieval; slot-backed paraphrases remain data and are interpreted by the shared rule grammar"
+  promotion concept_lookup
+    rank 190
+    when
+      cue_set concept_lookup of normalized
+    because "a definition question opens with the pinned concept_lookup lead cues (data/meta/cue-lexicon.lino), so the cue class routes by prefix instead of an exact-route enumeration that cannot cover the open class"
+  promotion document_generation_plan
+    rank 200
+    when
+      all
+        none
+          substring "http://" of lowercase
+          substring "https://" of lowercase
+          substring "www." of lowercase
+        any
+          substring "make me" of lowercase
+          substring "make a" of lowercase
+          substring "make an" of lowercase
+          substring create of lowercase
+          substring generate of lowercase
+          substring produce of lowercase
+          substring compile of lowercase
+          substring prepare of lowercase
+          substring assemble of lowercase
+          substring draft of lowercase
+          substring "build me" of lowercase
+          substring export of lowercase
+          substring "give me" of lowercase
+          substring "i need" of lowercase
+          substring "i want" of lowercase
+          substring "put together" of lowercase
+          substring сдела of lowercase
+          substring созда of lowercase
+          substring сгенерир of lowercase
+          substring подготов of lowercase
+          substring сформир of lowercase
+          substring состав of lowercase
+          substring собери of lowercase
+          substring собрать of lowercase
+          substring оформ of lowercase
+          substring выгрузи of lowercase
+          substring экспортир of lowercase
+          substring сверста of lowercase
+          substring बना of lowercase
+          substring तैयार of lowercase
+          substring उत्पन्न of lowercase
+          substring चाहिए of lowercase
+          substring 做 of lowercase
+          substring 制作 of lowercase
+          substring 生成 of lowercase
+          substring 创建 of lowercase
+          substring 编写 of lowercase
+          substring 整理 of lowercase
+        any
+          substring pdf of lowercase
+          substring пдф of lowercase
+          substring docx of lowercase
+          substring ".doc" of lowercase
+          substring "word document" of lowercase
+          substring ворд of lowercase
+          substring xlsx of lowercase
+          substring csv of lowercase
+          substring spreadsheet of lowercase
+          substring excel of lowercase
+          substring эксель of lowercase
+          substring табличк of lowercase
+          substring 电子表格 of lowercase
+          substring 表格 of lowercase
+          substring स्प्रेडशीट of lowercase
+          substring pptx of lowercase
+          substring powerpoint of lowercase
+          substring "slide deck" of lowercase
+          substring презентаци of lowercase
+          substring слайд of lowercase
+          substring 演示 of lowercase
+          substring 幻灯片 of lowercase
+          substring प्रस्तुति of lowercase
+          substring document of lowercase
+          substring документ of lowercase
+          substring report of lowercase
+          substring отчет of lowercase
+          substring отчёт of lowercase
+          substring dossier of lowercase
+          substring досье of lowercase
+          substring brochure of lowercase
+          substring брошюр of lowercase
+          substring booklet of lowercase
+          substring буклет of lowercase
+          substring memo of lowercase
+          substring записку of lowercase
+          substring записка of lowercase
+          substring दस्तावेज़ of lowercase
+          substring दस्तावेज of lowercase
+          substring रिपोर्ट of lowercase
+          substring 文档 of lowercase
+          substring 文件 of lowercase
+          substring 报告 of lowercase
+    because "issue 425 and issue 1138: an authoring verb over a named document artifact is the document-generation recipe to plan. The mirrors are the recognizer in src/solver_handlers/document_request.rs until issue 1085 migrates that handler to rules, and the promotion exists because the capability table reads the output artifact as a workspace path and gaps it before rank 550 runs"
+

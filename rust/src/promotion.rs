@@ -42,8 +42,8 @@ pub use gates::{GateCommandOutput, replay_promotion_gates, replay_promotion_gate
 pub use materialize::apply_promotions;
 
 const CODING_MODIFICATION_SUITE_LINO: &str =
-    include_str!("../../data/benchmarks/coding-modification-suite.lino");
-const INDUSTRY_SUITE_LINO: &str = include_str!("../../data/benchmarks/industry-suite.lino");
+    include_str!("../embedded/data/benchmarks/coding-modification-suite.lino");
+const INDUSTRY_SUITE_LINO: &str = include_str!("../embedded/data/benchmarks/industry-suite.lino");
 
 /// The default seed file learned program-plan rules are promoted into.
 pub const LEARNED_PROGRAM_RULES_SEED_FILE: &str = "data/seed/learned-program-rules.lino";

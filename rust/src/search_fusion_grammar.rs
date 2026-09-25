@@ -1,6 +1,7 @@
 //! Data-driven semantic-role order for search-fusion deformalization.
 
-const LANGUAGE_GRAMMAR: &str = include_str!("../../data/seed/search-fusion-language-grammar.lino");
+const LANGUAGE_GRAMMAR: &str =
+    include_str!("../embedded/data/seed/search-fusion-language-grammar.lino");
 const DEFAULT_ORDER: [&str; 3] = ["subject", "predicate", "object"];
 
 /// Return the semantic-role order declared for `language`, or the declared

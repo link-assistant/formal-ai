@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/learning_report/lexeme_import_learning.rs
   language rust
   fidelity full_ast
-  byte_len 1090
+  byte_len 1096
   line_count 36
-  content_id source_module_caa7bc599cf9932b
+  content_id source_module_51bb6ea5ef4081c1
   symbol_count 7
   symbols
     const LEXEME_IMPORT_LEARNING_PATH 5 5
