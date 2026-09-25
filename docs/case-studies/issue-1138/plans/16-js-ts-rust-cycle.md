@@ -281,6 +281,15 @@ implemented, box ticked in the landing commit.
   family (FOL ↔ natural-language statements, plan 04's territory); the
   L8 rules get their own seed surface, declared the way L2 declared the
   ES token classes and L5 the root rows.
+- The construct inventory is already half-committed: the #673 census
+  carries two tiers — 83 modules under `src/agentic_coding/` at
+  `full_ast` fidelity with their node-kind histograms in the document,
+  544 at `signature` — and the tree-sitter kind rides
+  `metadata.term()` (the census groups by it), so an L8 rule is
+  `LinkQuery::by_type(Syntax).with_term(kind)` plus templates.
+  Aggregating the committed histograms: **114 distinct kinds** across the
+  full_ast tier — the honest lower bound of the rule checklist; the
+  corpus-wide number derives at check time the same way.
 
 ### Design note 2026-09-25 — L2's material legs (written before any L2 code)
 
