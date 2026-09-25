@@ -37,6 +37,9 @@
 //!   - workflow-changed: 'true' if any .github/workflows/ files changed
 //!   - any-code-changed: 'true' if any non-ignored code files changed
 //!   - agentic-routing-changed: 'true' if agentic routing source changed
+//!   - js-changed: 'true' if the js tier's inputs changed (plan 16 L4)
+//!   - ts-changed: 'true' if the ts tier's inputs changed (plan 16 L4)
+//!   - rust-changed: 'true' if the rust tier's inputs changed (plan 16 L4)
 //!
 //! ```cargo
 //! [package]
@@ -56,6 +59,19 @@ use std::process::Command;
 // These paths are CI evidence or non-shipping scratch work. No output used to
 // gate a job may be set by a file below one of these prefixes.
 const CI_IGNORED_PATH_PREFIXES: &[&str] = &["experiments/", "dev/log/", "docs/case-studies/"];
+
+// The js -> ts -> rust development cycle (issue #1138, plan 16 L4). The tier
+// predicates are cumulative downward because each tier consumes the one
+// above it: the committed ts tree is a function of the js tree, and the
+// dogfood gate in the rust tier binds all three trees. A change therefore
+// wakes every tier below its folder and none above it -- that asymmetry is
+// the cycle's saving ("once JavaScript version stabilized, we don't
+// reexecute it CI/CD"). `data/seed/` wakes every tier (plan 16 risk 3: a
+// seed consumed by all three roots must not hide behind an untouched
+// folder), and the classifier and the layered workflow gate themselves so
+// an edit to the gating rules re-runs the tiers they gate.
+const LAYERED_WORKFLOW: &str = ".github/workflows/layered-ci.yml";
+const LAYER_CLASSIFIER: &str = "scripts/detect-code-changes.rs";
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
@@ -199,6 +215,9 @@ struct ChangeFlags {
     pipeline_changed: bool,
     agentic_routing_changed: bool,
     any_code_changed: bool,
+    js_changed: bool,
+    ts_changed: bool,
+    rust_changed: bool,
 }
 
 fn classify_changes(changed_files: &[String]) -> ChangeFlags {
@@ -216,6 +235,21 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
     // edit still runs lint and the workflow gates through `workflow_changed`.
     let is_workflow_only_change = |file: &str| {
         file.starts_with(".github/workflows/") && file != ".github/workflows/release.yml"
+    };
+
+    // Plan 16 L4 tier inputs, cumulative downward (see the constants above).
+    let js_tier_input = |file: &str| {
+        file.starts_with("js/")
+            || file.starts_with("data/seed/")
+            || file == LAYERED_WORKFLOW
+            || file == LAYER_CLASSIFIER
+    };
+    let ts_tier_input =
+        |file: &str| js_tier_input(file) || file.starts_with("ts/");
+    let rust_tier_input = |file: &str| {
+        ts_tier_input(file)
+            || file.starts_with("rust/")
+            || file.starts_with(".github/actions/formal-ai-binary/")
     };
 
     ChangeFlags {
@@ -243,10 +277,16 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         // The clients expose different tool vocabularies. A change anywhere in
         // this bounded routing subsystem therefore needs the real four-client
         // replay before merge, even though other feature branches retain the
-        // cheaper held-out-only Agent CLI gate (issue #1137).
+        // cheaper held-out-only Agent CLI gate (issue #1137). The prefix is
+        // the post-L1 crate path: the restructure (plan 16 L1) moved
+        // src/ to rust/src/, and the pre-L1 spelling silently disabled this
+        // gate on every pull request after it.
         agentic_routing_changed: relevant_files
             .iter()
-            .any(|file| file.starts_with("src/agentic_coding/")),
+            .any(|file| file.starts_with("rust/src/agentic_coding/")),
+        js_changed: relevant_files.iter().any(|file| js_tier_input(file)),
+        ts_changed: relevant_files.iter().any(|file| ts_tier_input(file)),
+        rust_changed: relevant_files.iter().any(|file| rust_tier_input(file)),
         any_code_changed: relevant_files
             .iter()
             .filter(|file| !is_excluded_from_code_changes(file))
@@ -307,6 +347,18 @@ fn main() {
             "false"
         },
     );
+    set_output(
+        "js-changed",
+        if flags.js_changed { "true" } else { "false" },
+    );
+    set_output(
+        "ts-changed",
+        if flags.ts_changed { "true" } else { "false" },
+    );
+    set_output(
+        "rust-changed",
+        if flags.rust_changed { "true" } else { "false" },
+    );
 
     // Show code changes after both the CI-wide ignored paths and the broader
     // any-code documentation/example exclusions have been applied.
@@ -345,7 +397,9 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::{ChangeFlags, classify_changes, comparison_for_event};
+    use super::{
+        ChangeFlags, LAYERED_WORKFLOW, LAYER_CLASSIFIER, classify_changes, comparison_for_event,
+    };
 
     #[test]
     fn pull_requests_compare_the_complete_base_to_head_range() {
@@ -463,9 +517,9 @@ mod tests {
     #[test]
     fn agentic_source_changes_request_the_four_client_replay() {
         for path in [
-            "src/agentic_coding/capability_router.rs",
-            "src/agentic_coding/planner.rs",
-            "src/agentic_coding/new_router.rs",
+            "rust/src/agentic_coding/capability_router.rs",
+            "rust/src/agentic_coding/planner.rs",
+            "rust/src/agentic_coding/new_router.rs",
         ] {
             assert!(
                 classify_changes(&[path.to_string()]).agentic_routing_changed,
@@ -473,11 +527,85 @@ mod tests {
             );
         }
 
-        for path in ["src/coding/composition.rs", "docs/agentic_coding/README.md"] {
+        for path in [
+            "rust/src/coding/composition.rs",
+            "docs/agentic_coding/README.md",
+        ] {
             assert!(
                 !classify_changes(&[path.to_string()]).agentic_routing_changed,
                 "{path} is outside the agentic routing source boundary"
             );
         }
+    }
+
+    /// The js -> ts -> rust cycle's tier matrix (issue #1138, plan 16 L4).
+    ///
+    /// Cumulative downward, never upward: the committed ts tree is a
+    /// function of the js tree and the dogfood gate binds all three, so a
+    /// change wakes every tier below its folder and none above it. That
+    /// asymmetry is the instruction's saving -- a rust iteration lets the
+    /// js and ts tiers stand on their last green runs.
+    #[test]
+    fn tier_gates_are_cumulative_downward_and_never_upward() {
+        let rust_only = classify_changes(&["rust/src/lib.rs".to_string()]);
+        assert!(rust_only.rust_changed, "a rust change wakes the rust tier");
+        assert!(
+            !rust_only.js_changed && !rust_only.ts_changed,
+            "a rust change lets the js and ts tiers carry their last green runs forward"
+        );
+
+        let js_only = classify_changes(&["js/app.js".to_string()]);
+        assert!(
+            js_only.js_changed && js_only.ts_changed && js_only.rust_changed,
+            "a js change wakes every tier below it: the ts tree is a function of \
+             the js tree, so a sleeping ts tier would carry a stale-green tier \
+             past the plan 16 L3 regeneration contract"
+        );
+
+        let ts_only = classify_changes(&["ts/app.ts".to_string()]);
+        assert!(
+            ts_only.ts_changed && ts_only.rust_changed,
+            "a ts change still reaches the tier that regenerates it"
+        );
+        assert!(
+            !ts_only.js_changed,
+            "the cycle never ascends: a ts change does not reexecute the js tier"
+        );
+
+        let seed = classify_changes(&["data/seed/tools.lino".to_string()]);
+        assert!(
+            seed.js_changed && seed.ts_changed && seed.rust_changed,
+            "a seed consumed by all three roots wakes every tier (plan 16 risk 3)"
+        );
+
+        let docs = classify_changes(&["README.md".to_string()]);
+        assert!(
+            !docs.js_changed && !docs.ts_changed && !docs.rust_changed,
+            "a docs-only change wakes no tier"
+        );
+    }
+
+    /// The gating files re-run the tiers they gate, so the cycle's own
+    /// rules can never go stale on a green branch.
+    #[test]
+    fn the_gating_files_rerun_the_tiers_they_gate() {
+        for path in [LAYERED_WORKFLOW, LAYER_CLASSIFIER] {
+            let flags = classify_changes(&[path.to_string()]);
+            assert!(
+                flags.js_changed && flags.ts_changed && flags.rust_changed,
+                "{path} edits the tier rules, so every tier must re-run"
+            );
+        }
+
+        let binary_action =
+            classify_changes(&[".github/actions/formal-ai-binary/action.yml".to_string()]);
+        assert!(
+            binary_action.rust_changed,
+            "the binary action changes what the rust tier executes"
+        );
+        assert!(
+            !binary_action.js_changed && !binary_action.ts_changed,
+            "the binary action feeds only the rust tier"
+        );
     }
 }

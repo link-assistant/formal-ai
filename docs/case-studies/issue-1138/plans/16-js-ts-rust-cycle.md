@@ -145,7 +145,7 @@ implemented, box ticked in the landing commit.
   byte-for-byte and proves the renderers follow the seed by corrupting the
   identifier class's ts carry and watching the refusal name
   `token_class identifier`.
-- [ ] **L4 — path-filtered CI with carry-forward and cycle enforcement.**
+- [x] **L4 — path-filtered CI with carry-forward and cycle enforcement.**
   Workflows gain folder predicates: the js checks run only when `./js`
   changed, ts only when `./ts` changed, rust only when `./rust` (plus
   workflow/config) changed. Each layer's checks reuse the **last green run of
@@ -160,6 +160,20 @@ implemented, box ticked in the landing commit.
   every job declares the intended path filter; the dependency graph proves
   the js→ts→rust gating order; no layer's check runs when only another
   layer's folder changed.
+  Landed 2026-09-25 as `.github/workflows/layered-ci.yml` (four jobs:
+  `changes`, `js`, `ts`, `rust`) with the tier predicates in
+  `scripts/detect-code-changes.rs` (`js-changed`/`ts-changed`/`rust-changed`,
+  cumulative downward, never upward — see the design note above). The js
+  tier's `node --check` was measured green over the whole 63-file corpus
+  before the leaf landed; the ts tier holds the js↔ts file-set parity; the
+  rust tier runs the L3 dogfood gate in CI (delete `ts/**/*.ts`, regenerate,
+  `git diff --exit-code -- ts/`). The shared tier stayed where it already
+  lives — `release.yml` and the other spanning audits run ungated on every
+  pull request synchronize, which the test pins so it cannot silently
+  narrow. The same leaf repaired the L1 casualty found during the survey:
+  the detector's `agentic_routing_changed` still matched the pre-L1
+  `src/agentic_coding/` path, so the issue #1137 full four-client replay had
+  been unreachable on pull requests since the restructure.
 - [ ] **L5 — round-trip verification from Rust.** The meta-language is a full
   CST-like intermediate language, so the CI proves it: Rust modules →
   meta-language (the self-AST extraction that already feeds
@@ -417,6 +431,96 @@ Decisions fixed before any of it is written:
 Not in this leaf: committing the generated `./ts` tree, the
 mismatch-is-red check, and the fix-the-source-or-the-translator rule —
 that is L3 whole.
+
+### Design note 2026-09-25 — L4: the cycle as CI structure (written before the code)
+
+Survey facts the leaf is planned against:
+
+- `release.yml` already runs a `detect-changes` job
+  (`rust-script scripts/detect-code-changes.rs`, `fetch-depth: 0`) whose
+  outputs gate individual jobs — the established per-job path mechanism this
+  repository practices. Workflow-level `paths:` predicates also exist
+  (`workflows.yml` on `.github/**`, `coding-ladder.yml` on both triggers),
+  but per-tier layering needs the outputs form: a workflow-level predicate
+  cannot express job-to-job gating, where the ts job must be skipped-by-js
+  when js is red yet still run when only `ts/` changed.
+- **Defect found while surveying, fixed in this leaf:** the detector's
+  `agentic_routing_changed` matches `src/agentic_coding/`, and plan 16 L1
+  moved the crate to `rust/src/agentic_coding/` — so the issue #1137 gate
+  (full four-client replay on routing-changing pull requests) has been
+  unreachable on every PR since the restructure, while the detector's own
+  fixtures and the #1137 pin kept the stale spelling green. The fix is the
+  prefix plus its pin; the full replay is additionally exercised once by
+  `workflow_dispatch` (which sets `full-replay: true` on its own) before
+  merge, because no PR run has ever taken that path under the L1 layout.
+- No YAML crate sits in the dev-dependencies, and the repo convention audits
+  workflows textually (`ci_gates.rs`, `ci-cd/workflow_fixtures.rs` with
+  `job_block`); the leaf's test follows the convention rather than adding a
+  parser dependency for one file.
+- The js corpus is 63 files and every one of them passes `node --check`
+  (measured 2026-09-25) — the js tier's fast check is real and green today,
+  not ceremony. The ts tree is the 63 generated `.ts` files plus the README.
+
+Decisions fixed before any of it is written:
+
+1. **One new workflow, `.github/workflows/layered-ci.yml`, four jobs**:
+   `changes` (the classifier — always runs), `js`, `ts`, `rust`. The checks
+   that span all layers stay in their own ungated workflows: the shared tier
+   is the audits whose inputs cross tier boundaries, and `release.yml`'s
+   pull_request trigger carrying no `paths:` filter *is* the shared tier —
+   the leaf's "shared job keyed on the union" reads, against this repository,
+   as "the spanning jobs are not layer-gated", which the pipeline already
+   satisfies and the test pins so it cannot silently narrow.
+2. **Tier predicates are cumulative down the cycle, never up.** js tier:
+   `js/**` + `data/seed/**` + the classifier and the layered workflow
+   themselves; ts tier: `ts/**` + every js-tier input (the committed ts tree
+   is a *function of* the js tree — a js-only edit that let the ts tier sleep
+   would carry a stale-green tier past L3's regeneration contract); rust
+   tier: `rust/**` + `js/**` + `ts/**` + `data/seed/**` + the binary action
+   the rust job executes. `data/seed/**` in every tier is the plan's risk-3
+   mitigation: a seed consumed by all three roots must not hide behind an
+   untouched folder.
+3. **Carry-forward is GitHub-native.** A tier whose predicate is false
+   reports *skipped*, never red, so the tier's last green run stands — the
+   instruction's "once JavaScript version stabilized, we don't reexecute its
+   CI/CD". The workflow header states this so a skipped tier is read as
+   carried, not ignored.
+4. **Ordering is `needs`-structural.** ts `needs: [changes, js]` with
+   `if: ts-changed && (needs.js.result == 'success' || needs.js.result ==
+   'skipped')`: js red ⇒ ts reports skipped-by-js, not its own red; js
+   skipped-by-path ⇒ ts still runs, because the js tier's last green carried
+   forward. The rust job is the same over both js and ts. No `always()`
+   anywhere — `always()` would let a tier report its own red over a red tier
+   above it, which the instruction forbids.
+5. **The classifier grows three outputs** (`js-changed`, `ts-changed`,
+   `rust-changed`) with the cumulative rules and embedded fixtures proving
+   the matrix: rust-only ⇒ js/ts asleep; ts-only ⇒ js asleep; js-only ⇒ all
+   three awake; seed ⇒ all three; docs-only ⇒ none.
+6. **Tier content is real and cheap where the tier admits it.** The js job
+   runs `node --check` over every committed `js/**/*.js`. The ts job runs the
+   js↔ts file-set parity (every `.js` has its `.ts` sibling and no extras) —
+   the fast tier-2 rung, failing in seconds before the rust tier spends
+   minutes. The rust job runs the L3 dogfood gate in CI, not only in the
+   unit suite: delete `ts/**/*.ts`, regenerate with
+   `formal-ai translate --from js --to ts --write`, then
+   `git diff --exit-code -- ts/` — one diff catches byte drift, missing and
+   extra files, and a transactional refusal (a refused regeneration writes
+   nothing, so the tree stays deleted and the diff is the full red). The
+   binary comes from `.github/actions/formal-ai-binary` (cached by source
+   digest), so the tier costs one cached release build, not a second test
+   suite.
+7. **Named test** `rust/tests/unit/ci-cd/issue_1138_layered_ci.rs` (the
+   directory spelling follows the existing `ci-cd` module; the leaf's
+   `ci_cd` was a variance): the job graph and per-tier predicates, no
+   cross-tier wiring (the js job's condition mentions no other tier's
+   output), the skipped-by-js ordering clauses, the delete-regenerate-diff
+   pins, the classifier wiring, and the shared tier staying ungated.
+
+Not in this leaf: L5's round-trip projection; and narrowing the rust tier to
+`rust/**` alone — it keeps `js/**` and `ts/**` today because the rust suite
+audits both trees (the three-roots, translation-tool and dogfood tests read
+them); the filter narrows when those audits migrate into the tiers that own
+the trees.
 
 ## Risks
 

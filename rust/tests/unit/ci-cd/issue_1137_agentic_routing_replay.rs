@@ -20,7 +20,12 @@ fn agentic_routing_changes_enable_full_four_client_replay_on_pull_requests() {
     assert!(release.contains(
         "github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true'"
     ));
-    assert!(detector.contains("file.starts_with(\"src/agentic_coding/\")"));
+    // The post-L1 crate path (plan 16 L1 moved src/ to rust/src/). The
+    // pre-L1 spelling left this gate unreachable on every pull request
+    // after the restructure -- the detector matched a folder that no longer
+    // existed -- while this pin kept the stale prefix green, so the pin
+    // must follow the real boundary (issue #1138, plan 16 L4).
+    assert!(detector.contains("file.starts_with(\"rust/src/agentic_coding/\")"));
     assert!(
         reusable.contains("pull requests that change agentic routing pass true"),
         "the reusable workflow input must document the pre-merge replay contract"
