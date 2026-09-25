@@ -96,7 +96,7 @@ meanings
     precondition "a requested direction is registered but not materialized"
     effect "the plan-16 leaf that owes the leg is named"
     unit "not applicable"
-    example "rust → js  pending (plan 16 L5)"
+    example "rust → js  pending (plan 16 L7)"
     lexeme en
       surface
         text "translate pending leg"
@@ -184,7 +184,7 @@ meanings
     precondition "a requested leg inside a live direction is not materialized"
     effect "the plan-16 leaf that owes the leg is named with its leaf number"
     unit "not applicable"
-    example "rust → js  pending (plan 16 L5)"
+    example "rust → js  pending (plan 16 L7)"
     lexeme en
       surface
         text "translate leg pending report"

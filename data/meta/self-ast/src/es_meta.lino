@@ -2,10 +2,10 @@ self_ast_census
   target src/es_meta.rs
   language rust
   fidelity signature
-  byte_len 28020
-  line_count 810
-  content_id source_module_2b2f5399e3432575
-  symbol_count 47
+  byte_len 30070
+  line_count 863
+  content_id source_module_c1cefc9950d39082
+  symbol_count 48
   symbols
     enum SourceLanguage 39 44
     function name 49 54
@@ -37,20 +37,21 @@ self_ast_census
     enum SignatureItem 465 472
     struct ClassRule 476 482
     struct ConstructRule 486 493
-    struct ProjectionRules 497 502
-    function projection_rules 506 508
-    function projection_rules_from 513 543
-    function flag_values 545 551
-    function signature_item 553 569
-    struct Refusal 574 579
-    struct RenderReport 583 588
-    struct RenderedSource 592 597
-    function render_source 605 607
-    function render_source_under 615 636
-    function refuse_classes 640 671
-    function check_class 673 689
-    enum LevelItem 694 697
-    function level_items 699 708
-    function refuse_constructs 714 754
-    function window_matches 756 769
-    function write_source 776 810
+    struct RootProjectionRule 499 509
+    struct ProjectionRules 513 520
+    function projection_rules 524 526
+    function projection_rules_from 531 596
+    function flag_values 598 604
+    function signature_item 606 622
+    struct Refusal 627 632
+    struct RenderReport 636 641
+    struct RenderedSource 645 650
+    function render_source 658 660
+    function render_source_under 668 689
+    function refuse_classes 693 724
+    function check_class 726 742
+    enum LevelItem 747 750
+    function level_items 752 761
+    function refuse_constructs 767 807
+    function window_matches 809 822
+    function write_source 829 863

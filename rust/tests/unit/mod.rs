@@ -63,6 +63,7 @@ mod issue_1138_formalization_depth;
 mod issue_1138_membership_taxonomy;
 mod issue_1138_repository_world_model;
 mod issue_1138_retrieval_method;
+mod issue_1138_round_trip_projection;
 mod issue_1138_segmentation;
 mod issue_1138_source_walk_parity;
 mod issue_1138_three_source_roots;

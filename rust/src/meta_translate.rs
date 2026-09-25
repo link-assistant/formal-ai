@@ -82,9 +82,13 @@ pub enum TranslationOutcome {
 ///
 /// Live: `rust → meta` (self-AST), and the ES quadrant — `js ↔ meta`,
 /// `ts ↔ meta`, `js → ts`, `ts → js` (plan 16 L2's token-tree pivot).
-/// Owed: the dogfood back-translation into Rust by L3, and the CST-equal
-/// round trip — including the full `meta → rust` inverse — by L5. `L0`
-/// marks a same-root non-direction.
+/// Owed: every leg that renders source text of another grammar — the
+/// `×rust` renders and `rust → js/ts` — by L7, which owns the whole rust
+/// rendering quadrant (L3 landed as the dogfood loop and L5 as round-trip
+/// verification, so neither may be named here). `L0` marks a same-root
+/// non-direction. The seed's `root_projection` rows mirror this table;
+/// [`root_projections`] reads them, and the round-trip projection test pins
+/// the two surfaces in agreement.
 #[must_use]
 pub const fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static str> {
     match (from, to) {
@@ -93,8 +97,9 @@ pub const fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static st
         | (SourceRoot::JavaScript, SourceRoot::TypeScript)
         | (SourceRoot::TypeScript, SourceRoot::JavaScript) => None,
         (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript)
-        | (SourceRoot::Meta, SourceRoot::Rust) => Some("L5"),
-        (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => Some("L3"),
+        | (SourceRoot::Meta | SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => {
+            Some("L7")
+        }
         (SourceRoot::Rust, SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::JavaScript)
         | (SourceRoot::TypeScript, SourceRoot::TypeScript)
@@ -209,6 +214,56 @@ pub fn directions() -> Vec<(SourceRoot, SourceRoot, Option<&'static str>)> {
         }
     }
     listed
+}
+
+/// A declared root projection from the committed seed (plan 16 L5): the
+/// data-side mirror of the leg table, so the seed — not code — answers
+/// "which projections exist and at what fidelity".
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RootProjection {
+    /// The leg's from-root.
+    pub from: SourceRoot,
+    /// The leg's to-root.
+    pub to: SourceRoot,
+    /// The pivot fidelity the projection carries (`signature`,
+    /// `token_tree`), spelled as the seed spells it.
+    pub fidelity: String,
+    /// The plan-16 leaf that owes this leg; `None` when it is live.
+    pub owed_by: Option<String>,
+}
+
+/// The declared root projections from the committed projection seed.
+///
+/// Rows whose roots or status the table does not know are dropped, so the
+/// agreement check (every directed pair exactly one row, live ⇔
+/// [`pending_leg`] is `None`) is what surfaces seed drift — a silently
+/// skipped row is a missing row there.
+#[must_use]
+pub fn root_projections() -> Vec<RootProjection> {
+    crate::es_meta::projection_rules()
+        .roots
+        .iter()
+        .filter_map(|rule| {
+            let from = SourceRoot::parse(&rule.from)?;
+            let to = SourceRoot::parse(&rule.to)?;
+            let owed_by = if rule.status == "live" {
+                None
+            } else {
+                Some(
+                    rule.status
+                        .strip_prefix("owed_by ")
+                        .filter(|leaf| leaf.starts_with('L'))
+                        .map(str::to_string)?,
+                )
+            };
+            Some(RootProjection {
+                from,
+                to,
+                fidelity: rule.fidelity.clone(),
+                owed_by,
+            })
+        })
+        .collect()
 }
 
 /// Why a write target could not be mapped (plan 16 L2g).

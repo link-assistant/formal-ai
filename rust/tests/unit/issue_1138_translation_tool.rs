@@ -48,9 +48,9 @@ fn every_translate_cli_text_lives_in_the_seed() {
         formal_ai::render_response(
             "translate_leg_pending",
             "en",
-            &[("from", "rust"), ("to", "js"), ("leaf", "L5")]
+            &[("from", "rust"), ("to", "js"), ("leaf", "L7")]
         ),
-        Some("rust → js  pending (plan 16 L5)".to_owned())
+        Some("rust → js  pending (plan 16 L7)".to_owned())
     );
     assert_eq!(
         formal_ai::render_response(
@@ -326,8 +326,10 @@ fn pending_legs_name_their_plan_leaf() {
         );
     }
     // Plan 16 L2 opened the ES quadrant: js/ts ↔ meta and js ↔ ts carry
-    // through the token-tree pivot. The dogfood back-translation into rust
-    // is owed by L3, and the meta → rust inverse by L5.
+    // through the token-tree pivot. Every leg that renders source text of
+    // another grammar — the ×rust renders and rust → js/ts — is owed by L7
+    // (L3 landed as the dogfood loop and L5 as round-trip verification, so
+    // neither may be named here).
     for (from, to) in [
         (SourceRoot::JavaScript, SourceRoot::Meta),
         (SourceRoot::Meta, SourceRoot::JavaScript),
@@ -344,11 +346,11 @@ fn pending_legs_name_their_plan_leaf() {
     }
     assert_eq!(
         meta_translate::pending_leg(SourceRoot::JavaScript, SourceRoot::Rust),
-        Some("L3")
+        Some("L7")
     );
     assert_eq!(
         meta_translate::pending_leg(SourceRoot::Meta, SourceRoot::Rust),
-        Some("L5")
+        Some("L7")
     );
     // A same-root call is a non-direction, not a leaf.
     assert_eq!(

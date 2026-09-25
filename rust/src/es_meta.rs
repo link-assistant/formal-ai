@@ -492,6 +492,22 @@ pub struct ConstructRule {
     pub refuses_to: Vec<String>,
 }
 
+/// One declared root projection (plan 16 L5): the raw seed strings, named
+/// exactly as the seed spells them. `status` is `live` or
+/// `owed_by <plan-16 leaf>` while the leg is pending.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RootProjectionRule {
+    /// The from-root spelling (`rust`, `js`, `ts`, `meta`).
+    pub from: String,
+    /// The to-root spelling.
+    pub to: String,
+    /// The pivot fidelity the projection carries (`signature`,
+    /// `token_tree`).
+    pub fidelity: String,
+    /// `live`, or `owed_by <leaf>` naming the plan 16 leaf that owes it.
+    pub status: String,
+}
+
 /// The parsed projection seed.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ProjectionRules {
@@ -499,6 +515,8 @@ pub struct ProjectionRules {
     pub classes: Vec<ClassRule>,
     /// Construct rules.
     pub constructs: Vec<ConstructRule>,
+    /// Declared root projections (plan 16 L5).
+    pub roots: Vec<RootProjectionRule>,
 }
 
 /// The projection rules from the committed seed.
@@ -536,6 +554,41 @@ pub fn projection_rules_from(lino_text: &str) -> ProjectionRules {
                     .collect(),
                 refuses_to: flag_values(node, "refuses_to"),
             }),
+            "root_projection" => {
+                let from = node
+                    .children
+                    .iter()
+                    .find(|child| child.name == "from")
+                    .map(|child| child.id.clone())
+                    .unwrap_or_default();
+                let to = node
+                    .children
+                    .iter()
+                    .find(|child| child.name == "to")
+                    .map(|child| child.id.clone())
+                    .unwrap_or_default();
+                let fidelity = node
+                    .children
+                    .iter()
+                    .find(|child| child.name == "fidelity")
+                    .map(|child| child.id.clone())
+                    .unwrap_or_default();
+                let status = node
+                    .children
+                    .iter()
+                    .find(|child| child.name == "status")
+                    .map(|child| child.id.clone())
+                    .unwrap_or_default();
+                if !from.is_empty() && !to.is_empty() && !fidelity.is_empty() && !status.is_empty()
+                {
+                    rules.roots.push(RootProjectionRule {
+                        from,
+                        to,
+                        fidelity,
+                        status,
+                    });
+                }
+            }
             _ => {}
         }
     }

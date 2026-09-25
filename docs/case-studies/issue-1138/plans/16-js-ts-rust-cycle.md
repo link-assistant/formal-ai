@@ -174,7 +174,7 @@ implemented, box ticked in the landing commit.
   the detector's `agentic_routing_changed` still matched the pre-L1
   `src/agentic_coding/` path, so the issue #1137 full four-client replay had
   been unreachable on pull requests since the restructure.
-- [ ] **L5 — round-trip verification from Rust.** The meta-language is a full
+- [x] **L5 — round-trip verification from Rust.** The meta-language is a full
   CST-like intermediate language, so the CI proves it: Rust modules →
   meta-language (the self-AST extraction that already feeds
   `data/meta/self-ast/`) → generated TypeScript and JavaScript → back to
@@ -185,6 +185,12 @@ implemented, box ticked in the landing commit.
   Test: `tests/unit/issue_1138_round_trip_projection.rs` — for every Rust
   module with a declared projection, lino→ts→lino and lino→js→lino round
   trips are CST-identical.
+  Landed 2026-09-25 at the fidelity each quadrant owns (see the design note
+  below): the corpus round trips run over every committed js and ts source
+  through the pivot document medium, the declared-projection registry is
+  `root_projection` policy rows in the projection seed with membership
+  derived at check time, and the stale pending-leg pointers re-point to L7,
+  which now owns the whole rust rendering quadrant.
 - [x] **L6 — dependency policy wired to the cycle.** When the translator or
   the layer check needs a feature a self-maintained dependency has not
   released, the workaround is `[patch]`-style source installs, and a separate
@@ -198,6 +204,22 @@ implemented, box ticked in the landing commit.
   Test: `tests/unit/ci_cd/issue_1138_dependency_patches.rs` — every
   `[patch]`/source-install entry in `Cargo.toml` has an open issue referenced
   by URL in a comment beside it, and every referenced issue exists.
+- [ ] **L7 — Rust rendering from the pivot.** The quadrant L5's survey
+  measured as missing, answering the instruction's "we can test in CI/CD
+  that we can get generated typescript and javascript back from Rust":
+  every leg whose target is Rust source (meta → rust, js → rust, ts →
+  rust), and the Rust → js/ts renders that compose through the pivot. The
+  ladder, recorded so the next survey does not re-measure: raise the Rust
+  leg's committed meta fidelity from `signature` (today's census) to
+  `token_tree` — the meta-language engine already parses Rust losslessly
+  (`reconstruct_source` is byte-identical), so the CST exists in memory and
+  only the committed rendering is missing — then declare the grammar
+  projection rules (rust meta kinds → es token classes) in the projection
+  seed the way L2 declared the ES token classes, then the renderers, each
+  refusing rather than guessing.
+  Test: `tests/unit/issue_1138_rust_projection.rs` — for every owned Rust
+  module, rust → meta at `token_tree` fidelity round-trips, and the
+  ×Rust / Rust→ES legs it opens are CST-identical.
 
 ### Design note 2026-09-25 — L2's material legs (written before any L2 code)
 
@@ -521,6 +543,89 @@ Not in this leaf: L5's round-trip projection; and narrowing the rust tier to
 audits both trees (the three-roots, translation-tool and dogfood tests read
 them); the filter narrows when those audits migrate into the tiers that own
 the trees.
+
+### Design note 2026-09-25 — L5: the round trip the pivot can prove today (written before the code)
+
+Survey facts the leaf is planned against:
+
+- The leaf's sentence was written before the L2 design notes measured the
+  census. rust → meta renders the self-AST census at `fidelity signature`
+  (symbol names, line spans, node-kind counts) — a table of contents, not a
+  CST. The meta → ES legs (`parse_document` → `render_source`) accept only
+  `token_tree` pivot documents, so a census document cannot cross to ts or
+  js: the literal chain "census lino → generated ts/js → back to lino" is
+  mechanically impossible today. The leaf is executed at the fidelity each
+  quadrant owns instead of faked at the fidelity the instruction dreams of.
+- The engine itself parses Rust losslessly (`LinkNetwork::parse` +
+  `reconstruct_source` is byte-identical; the census is a rendered summary,
+  not the network's limit). But a Rust token tree still cannot render ES
+  text without a grammar-to-grammar projection: no
+  LinkNetwork↔PivotDocument bridge exists, and the ES tokenizer cannot lex
+  Rust. That quadrant is L7, above.
+- `parse_document` is documented as the inverse of `extract` +
+  `render_document`, yet no corpus-wide check exercises the meta → ES legs
+  through the document medium. The L2f acceptance proved js → ts → js by
+  render + re-tokenize; it never parsed a rendered lino back. The serialize
+  / parse pair is exactly what a pivot must guarantee and what L5 proves.
+- The rust ↔ worker parity corpus is capability-level (recipe rows pair
+  Rust handlers with `js/worker/` bundle files; 37 files), not a per-module
+  projection manifest — so no per-module rust → es rows exist to declare,
+  and a registry seeded with them would be invented coverage.
+- The pending-leg pointers are stale or about to be: `(js|ts, rust)` still
+  names L3, which landed as the dogfood loop and delivered no ES → Rust;
+  `(meta, rust)` and `(rust, js|ts)` name L5, which this note scopes to
+  verification only — landing it would stale them the same way. Pins live
+  in three surfaces that must move together: `meta_translate.rs`'s
+  `pending_leg`, the translation-tool test, and the two
+  `rust → js  pending` example rows in `meanings-translate-cycle.lino`.
+
+Decisions fixed before any of it is written:
+
+1. **L5 proves the round trip over the whole committed ES corpus, through
+   the document medium.** For every committed `js/**/*.js` and `ts/**/*.ts`:
+   source → meta (`extract` + `render_document`), meta → ts and meta → js
+   (`parse_document` + `render_source`), each rendered target → meta again
+   (`extract`), and the token trees compare CST-equal to the source's
+   pivot. That is the leaf's "lino → ts → lino and lino → js → lino round
+   trips are CST-identical", with the lino being the rendered pivot of a
+   committed ES source. CST equality keeps the L2 definition — kind, text
+   and shape, spans ignored — plus `token_count`; the header fields
+   `target` and `language` are provenance (where a document came from, not
+   what it is) and are compared only on the identity legs. Corpus-wide is
+   the point, not ceremony: the bundle files carry strings, escapes and
+   template literals, so the sanitize/unescape pair is proven on the worst
+   corpus the repository has, not on fixtures.
+2. **The declared-projection registry is policy rows in the projection
+   seed; membership is derived, never enumerated.**
+   `data/seed/language-projection.lino` gains `root_projection` rows
+   (from-root, to-root, fidelity, status `live`/`owed_by <leaf>`) stating
+   exactly what is true: rust → meta at `signature`, live; the ES quadrant
+   at `token_tree`, live; and every leg that renders source text of another
+   grammar (meta → rust, js|ts → rust, rust → js|ts) `owed_by L7`. No row
+   marks rust → es live at any fidelity — that projection does not exist,
+   and a live row saying it would be invented coverage. Per-module
+   membership is derived at check time — the census set under
+   `data/meta/self-ast/` is the rust signature-projection set, the
+   committed ES trees are the token-tree set — so the registry cannot drift
+   from the trees it describes.
+   `meta_translate` grows a registry reader over the seed so the data, not
+   code, answers "which projections exist"; `pending_leg` stays the
+   compile-time mirror, and the new test pins seed ⇄ code agreement (the
+   two-surfaces pattern of `tools.lino` ⇄ `DRIVER_TOOLS`).
+3. **The stale pointers are repaired by naming the owner leaf.** All three
+   rendering legs re-point to L7 in one move — `meta_translate.rs`, the
+   translation-tool test's three pins, and the two seed example rows — so
+   `translate --list` never names a leaf that has already landed and
+   disclaimed the leg.
+4. **Named test, drafted failing first**: `tests/unit/issue_1138_round_trip_projection.rs`
+   (the leaf's own name) — the corpus round trips of decision 1, the
+   registry reader contract of decision 2, and the seed ⇄ `pending_leg`
+   agreement of decision 3.
+
+Not in this leaf: any Rust rendering (L7 whole), raising the census
+fidelity, and a per-module worker-parity manifest — the capability-level
+recipe rows stay the honest record of which Rust behaviors have js
+counterparts until a projection that can compare them exists.
 
 ## Risks
 
