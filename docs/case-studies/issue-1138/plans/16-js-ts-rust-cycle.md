@@ -290,6 +290,14 @@ implemented, box ticked in the landing commit.
   Aggregating the committed histograms: **114 distinct kinds** across the
   full_ast tier — the honest lower bound of the rule checklist; the
   corpus-wide number derives at check time the same way.
+- Both directions are authorable, with no upstream blocker: the
+  repository's own `program-cst-grammars.lino` declares the dependency
+  ships real tree-sitter grammars for `javascript` and `typescript`
+  (among ten languages), so js/ts → rust parses its own network the same
+  way the rust leg does — the reverse rules run over js/ts node kinds,
+  with a js-side inventory derivable by parsing the committed ES corpus
+  with its grammar. The survey is closed; the design note is next,
+  before any rule row.
 
 ### Design note 2026-09-25 — L2's material legs (written before any L2 code)
 
