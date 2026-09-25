@@ -105,6 +105,10 @@ fn current_template_security_and_link_gates_are_present() {
     assert!(links.contains("> LYCHEE_CHANGELOG.md"));
     assert!(links.contains("--exclude-path docs/case-studies"));
     assert!(links.contains("--exclude-path dev/log"));
+    // Issue #1138: the rust/embedded/ byte mirror duplicates files whose
+    // relative links only resolve next to the originals; dropping this
+    // exclusion reddens the check on the mirror's index.html.
+    assert!(links.contains("--exclude-path rust/embedded"));
     assert!(links.contains("node scripts/check-web-archive.mjs"));
     // Issue #1017 narrowed this from `always()`: a cancelled link check has no
     // verdict to report, so it must not append a "broken links" error to a run
