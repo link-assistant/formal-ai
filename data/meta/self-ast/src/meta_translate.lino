@@ -2,28 +2,28 @@ self_ast_census
   target src/meta_translate.rs
   language rust
   fidelity signature
-  byte_len 16452
-  line_count 431
-  content_id source_module_003cf929533759ec
+  byte_len 16881
+  line_count 437
+  content_id source_module_3da1ab3ffc9f9ab0
   symbol_count 20
   symbols
     enum SourceRoot 29 34
     function parse 40 48
     function name 52 59
     enum TranslationOutcome 68 79
-    function pending_leg 93 108
-    function translate 116 164
-    function es_language 166 171
-    function projection_target 173 180
-    function es_render 182 196
-    function directions 201 217
-    struct RootProjection 223 233
-    function root_projections 242 267
-    enum WriteTargetError 271 279
-    function directory 285 292
-    function owned_extension 296 302
-    function write_target 312 340
-    struct SourceTreeRequest 345 349
-    function escapes_root 353 355
-    function source_tree_request 365 407
-    function describe_leg 412 431
+    function pending_leg 95 108
+    function translate 116 170
+    function es_language 172 177
+    function projection_target 179 186
+    function es_render 188 202
+    function directions 207 223
+    struct RootProjection 229 239
+    function root_projections 248 273
+    enum WriteTargetError 277 285
+    function directory 291 298
+    function owned_extension 302 308
+    function write_target 318 346
+    struct SourceTreeRequest 351 355
+    function escapes_root 359 361
+    function source_tree_request 371 413
+    function describe_leg 418 437

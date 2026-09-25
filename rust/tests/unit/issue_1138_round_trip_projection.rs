@@ -147,25 +147,28 @@ fn the_seed_registry_and_the_leg_table_agree() {
             ),
         }
         assert!(
-            matches!(row.fidelity.as_str(), "signature" | "token_tree"),
+            matches!(
+                row.fidelity.as_str(),
+                "signature" | "token_tree" | "network"
+            ),
             "known fidelity spellings only: {}",
             row.fidelity
         );
     }
-    // The pointer repair this leaf landed: every leg that renders source
-    // text of another grammar names L7 — L3 landed as the dogfood loop and
-    // L5 as round-trip verification, so neither may be named any more.
+    // The pointer history, kept honest: the legs that render source text of
+    // another grammar name the leaf that owes them — L7 inherited the
+    // quadrant from L3 (the dogfood loop) and L5 (verification), landed the
+    // meta → rust network leg, and passed the grammar-projection legs to L8.
     for (from, to) in [
         (SourceRoot::Rust, SourceRoot::JavaScript),
         (SourceRoot::Rust, SourceRoot::TypeScript),
-        (SourceRoot::Meta, SourceRoot::Rust),
         (SourceRoot::JavaScript, SourceRoot::Rust),
         (SourceRoot::TypeScript, SourceRoot::Rust),
     ] {
         assert_eq!(
             meta_translate::pending_leg(from, to),
-            Some("L7"),
-            "{from:?} → {to:?} is owed by the rust rendering quadrant"
+            Some("L8"),
+            "{from:?} → {to:?} is owed by the grammar projection rules"
         );
     }
     // The rust row states the honest fidelity: the self-AST census is a
@@ -177,6 +180,14 @@ fn the_seed_registry_and_the_leg_table_agree() {
         .expect("rust → meta is declared");
     assert_eq!(rust_row.fidelity, "signature");
     assert_eq!(rust_row.owed_by, None);
+    // L7 landed the reverse leg at full network fidelity: the lossless
+    // serialization in, reconstructed rust out.
+    let meta_rust_row = projections
+        .iter()
+        .find(|row| row.from == SourceRoot::Meta && row.to == SourceRoot::Rust)
+        .expect("meta → rust is declared");
+    assert_eq!(meta_rust_row.fidelity, "network");
+    assert_eq!(meta_rust_row.owed_by, None);
     assert!(
         projections
             .iter()

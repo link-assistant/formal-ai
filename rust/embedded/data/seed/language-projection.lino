@@ -13,12 +13,12 @@
 #
 # Plan 16 L5 declares the root projections here too: one row per directed
 # pair of distinct roots, stating the pivot fidelity the projection carries
-# and whether it is live or owed by a plan 16 leaf. No row marks rust to
-# es live at any fidelity — that projection does not exist yet, and a live
-# row saying it would be invented coverage; the legs are declared owed by
-# L7 until that leaf delivers them. `rust to meta` is `signature` (the
-# self-AST census); everything touching another grammar's source text is
-# owed by L7.
+# and whether it is live or owed by a plan 16 leaf. `rust to meta` is
+# `signature` (the self-AST census); `meta to rust` is `network` (the
+# lossless LinkNetwork serialization, plan 16 L7, rendered back with
+# reconstruct_text). No row marks rust to es live at any fidelity — that
+# projection does not exist yet, and a live row saying it would be invented
+# coverage; the legs are declared owed by L8 until that leaf delivers them.
 language_projection
   description "Token-class and construct projection rules for the plan 16 js ts rust cycle. A token class either carries to a root or is refused there. A ts_construct signature names a leaf and group sequence that cannot be valid plain JavaScript, and refusing it to js is how the ts to js direction stays honest. Generic parameter lists are not recognizable at token fidelity and carry; that gap is deliberate and documented. Root projection rows declare, per directed root pair, the fidelity the pivot carries and the plan 16 leaf that owes any leg not yet live."
   token_class identifier
@@ -106,24 +106,24 @@ language_projection
     from rust
     to js
     fidelity token_tree
-    status owed_by L7
+    status owed_by L8
   root_projection rust_to_ts
     from rust
     to ts
     fidelity token_tree
-    status owed_by L7
+    status owed_by L8
   root_projection meta_to_rust
     from meta
     to rust
-    fidelity token_tree
-    status owed_by L7
+    fidelity network
+    status live
   root_projection js_to_rust
     from js
     to rust
     fidelity token_tree
-    status owed_by L7
+    status owed_by L8
   root_projection ts_to_rust
     from ts
     to rust
     fidelity token_tree
-    status owed_by L7
+    status owed_by L8

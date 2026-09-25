@@ -204,7 +204,7 @@ implemented, box ticked in the landing commit.
   Test: `tests/unit/ci_cd/issue_1138_dependency_patches.rs` — every
   `[patch]`/source-install entry in `Cargo.toml` has an open issue referenced
   by URL in a comment beside it, and every referenced issue exists.
-- [ ] **L7 — Rust rendering from the pivot.** The quadrant L5's survey
+- [x] **L7 — Rust rendering from the pivot.** The quadrant L5's survey
   measured as missing, answering the instruction's "we can test in CI/CD
   that we can get generated typescript and javascript back from Rust":
   every leg whose target is Rust source (meta → rust, js → rust, ts →
@@ -220,6 +220,29 @@ implemented, box ticked in the landing commit.
   Test: `tests/unit/issue_1138_rust_projection.rs` — for every owned Rust
   module, rust → meta at `token_tree` fidelity round-trips, and the
   ×Rust / Rust→ES legs it opens are CST-identical.
+  Landed 2026-09-25, re-scoped by the design note below the way L5 was:
+  the survey found the ladder's first rung is not `token_tree` but the
+  lossless *network* serialization the engine already ships
+  (`to_lino`/`from_lino` plus `reconstruct_text`), so the leaf lands the
+  meta → rust leg live at `network` fidelity — every owned module
+  round-trips byte-identically through the public translate surface, a
+  runtime-verified check rather than a committed per-module tree, and a
+  document in any other lino dialect is refused with the dialect named.
+  The grammar-projection legs (rust → js/ts, js/ts → rust) need rule
+  authoring, not wiring, and move to the new L8 leaf.
+- [ ] **L8 — grammar projection rules.** The remainder of L7's quadrant:
+  every leg that renders the source text of another grammar — rust → js,
+  rust → ts, js → rust, ts → rust — through the translation-rule engine
+  the meta-language dependency already ships (`TranslationRuleSet`: named
+  rules, each a link query plus per-target templates, serialized as lino).
+  The engine belongs to the dependency (the L6 policy); the rules are seed
+  data here, discovered from the worker-parity corpus, and until a
+  construct has a rule the renderer refuses it — the L2 doctrine restated
+  across grammars. Opens with its own survey of the corpus's construct
+  inventory; no rule row ships before that survey.
+  Test: extends `tests/unit/issue_1138_rust_projection.rs` — each ruled
+  construct renders, each unruled construct refuses by name, and the four
+  legs flip live in the registry only as their rules land.
 
 ### Design note 2026-09-25 — L2's material legs (written before any L2 code)
 
@@ -626,6 +649,79 @@ Not in this leaf: any Rust rendering (L7 whole), raising the census
 fidelity, and a per-module worker-parity manifest — the capability-level
 recipe rows stay the honest record of which Rust behaviors have js
 counterparts until a projection that can compare them exists.
+
+### Design note 2026-09-25 — L7: the rust rendering quadrant, measured (written before the code)
+
+Survey facts the leaf is planned against (meta-language 0.58.2, the
+self-maintained dependency, plus this repository's own surfaces):
+
+- **The lossless rust serialization already ships.**
+  `LinkNetwork::to_lino()` / `from_lino()` are an exact pair — the crate
+  documents `from_lino(to_lino(n))` as isomorphic for any network,
+  covering references, names, types, terms, definitions, languages,
+  source spans, parse flags, and term registration. And the repo already
+  proves the other direction per module: `self_ast::reconstruct_source`
+  (issue #558) is `parse(rust) + reconstruct_text()`, byte-identical,
+  verified by `self_ast::round_trips`. So `rust → meta` at full network
+  fidelity and `meta → rust` are both off-the-shelf; the (Meta, Rust)
+  leg is not missing machinery, only wiring.
+- **`render_source(language)` is same-grammar only.** The dependency's
+  source generation renders token/syntax links whose language label
+  matches the target — it cannot translate a rust-parsed network into
+  JavaScript. The genuinely missing engine is the grammar-to-grammar
+  projection, and the dependency ships its general shape:
+  `TranslationRuleSet` — named rules, each a `LinkQuery` match plus
+  per-target templates, serialized to and from lino. Per the dependency
+  policy, the rule *engine* belongs there; the *rules* are seed data
+  here, discovered from the parity corpus.
+- **The Meta root now has three lino dialects**, and a leg must say
+  which it reads: the census (signature, what `--from rust --to meta`
+  renders and what `data/meta/self-ast/` commits), the pivot token_tree
+  (what the ES legs carry), and the network serialization (what
+  `from_lino` accepts). A census or token_tree document fed to
+  meta → rust is not a wrong guess — it is a named refusal.
+- The L5 registry (root_projection rows + the seed ⇄ `pending_leg`
+  agreement test) is the mechanism that flips legs live: one seed row
+  and one code arm move together, and the test keeps them honest.
+
+Decisions fixed before any of it is written:
+
+1. **L7a — the (Meta, Rust) leg goes live at `network` fidelity, as a
+   runtime-verified round trip, not a committed tree.** Wiring:
+   `translate(Meta, Rust, …)` = `LinkNetwork::from_lino(source)` +
+   `reconstruct_text()`; the honest-gap contract names the dialect —
+   input that is census or token_tree lino is refused with the
+   network-serialization expectation, not mis-parsed. The full-fidelity
+   rust → meta direction is `parse + to_lino`, proven per owned module
+   by round trip (`parse → to_lino → from_lino → reconstruct_text` is
+   byte-identical) in the named test — nothing is committed, because the
+   runtime comparison is the check and the census stays the committed
+   fingerprint; committing the network lino of every module would add a
+   ~14k-line-per-module derived tree with no additional guarantee. The
+   seed's meta_to_rust row flips to `fidelity network, status live`,
+   `pending_leg` drops the arm, and the fidelity vocabulary grows the
+   `network` spelling.
+2. **L7b — the registry vocabulary follows the ladder.** Fidelity
+   spellings are `signature` (census), `token_tree` (ES pivot),
+   `network` (full link serialization); the agreement test pins the
+   closed set so a new spelling is a deliberate act. Rust → meta keeps
+   rendering the census on the CLI (it is the documented, committed
+   artifact); the network round trip is the L7 test's property, and a
+   future CLI surface for it stays out of this leaf.
+3. **L7c — the grammar projection (rust → js/ts and js/ts → rust) stays
+   owed, by name, until rules exist.** The mechanism is
+   `TranslationRuleSet` in the dependency; the seed of rules is authored
+   here from the worker-parity corpus, and until a construct has a rule
+   the renderer refuses it — the L2 doctrine restated across grammars.
+   No rule row ships in this leaf; the leaf that authors them opens with
+   its own survey of the corpus's construct inventory.
+4. **Named test, drafted failing first**:
+   `tests/unit/issue_1138_rust_projection.rs` — every owned Rust module
+   (the census set, derived) round-trips byte-identically through the
+   network serialization; `translate` meta → rust renders reconstructed
+   source from a network document and refuses census/token_tree input
+   by name; the leg table and the seed registry agree after the flip
+   (the L5 agreement test re-runs green with the new row).
 
 ## Risks
 

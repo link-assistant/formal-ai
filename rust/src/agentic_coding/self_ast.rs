@@ -257,6 +257,60 @@ pub fn round_trips(source: &str) -> bool {
     reconstruct_source(source) == source
 }
 
+/// Serialize Rust `source` into the *network* dialect of lino — plan 16 L7's
+/// full-fidelity rust → meta direction (issue #1138).
+///
+/// `to_lino` is the dependency's documented lossless serialization
+/// (`from_lino(to_lino(n))` is isomorphic for any network, spans included), so
+/// this is the whole projection: nothing is dropped and nothing is invented.
+/// The committed census ([`render_ast_document`]) stays the `signature`
+/// artifact; this is the dialect the meta → rust leg reads back.
+#[must_use]
+#[cfg(feature = "meta-language")]
+pub fn network_lino(source: &str) -> String {
+    LinkNetwork::parse(source, RUST_GRAMMAR_LABEL, ParseConfiguration::default()).to_lino()
+}
+
+/// Preserve the input when the optional parsing engine is disabled.
+#[must_use]
+#[cfg(not(feature = "meta-language"))]
+pub fn network_lino(source: &str) -> String {
+    source.to_owned()
+}
+
+/// Render Rust source back out of a network-serialization lino document —
+/// plan 16 L7's meta → rust direction: `from_lino`, then `reconstruct_text`.
+///
+/// The Meta root carries three lino dialects (the signature census, the ES
+/// token-tree pivot, and this network serialization), and only the third
+/// renders Rust — so a document in any other dialect is an error naming the
+/// expected dialect, never a mis-parse into invented source.
+#[cfg(feature = "meta-language")]
+pub fn render_network_source(document: &str) -> Result<String, String> {
+    LinkNetwork::from_lino(document)
+        .map(|network| network.reconstruct_text())
+        .map_err(|error| {
+            format!(
+                "meta → rust renders only the network serialization dialect of lino (the \
+                 output side of LinkNetwork::to_lino); a census or token-tree pivot \
+                 document is not one: {error}"
+            )
+        })
+}
+
+/// The engine-disabled shape of [`render_network_source`]: without the
+/// optional parsing engine the leg cannot render, and the honest answer is
+/// the error, not a guess.
+#[cfg(not(feature = "meta-language"))]
+pub fn render_network_source(document: &str) -> Result<String, String> {
+    let _ = document;
+    Err(
+        "the meta-language engine (feature `meta-language`) is disabled, so meta → rust \
+         cannot render"
+            .to_owned(),
+    )
+}
+
 /// Render the CST/AST document for the pinned self-inspection target (the planner).
 #[must_use]
 pub fn render_document() -> String {

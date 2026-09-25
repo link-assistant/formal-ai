@@ -80,26 +80,26 @@ pub enum TranslationOutcome {
 
 /// The plan-16 leaf that owes a leg, or `None` when the leg is live.
 ///
-/// Live: `rust → meta` (self-AST), and the ES quadrant — `js ↔ meta`,
-/// `ts ↔ meta`, `js → ts`, `ts → js` (plan 16 L2's token-tree pivot).
-/// Owed: every leg that renders source text of another grammar — the
-/// `×rust` renders and `rust → js/ts` — by L7, which owns the whole rust
-/// rendering quadrant (L3 landed as the dogfood loop and L5 as round-trip
-/// verification, so neither may be named here). `L0` marks a same-root
-/// non-direction. The seed's `root_projection` rows mirror this table;
-/// [`root_projections`] reads them, and the round-trip projection test pins
-/// the two surfaces in agreement.
+/// Live: `rust → meta` (self-AST census), the ES quadrant — `js ↔ meta`,
+/// `ts ↔ meta`, `js → ts`, `ts → js` (plan 16 L2's token-tree pivot) — and
+/// `meta → rust` (plan 16 L7's network serialization, rendered back with
+/// `reconstruct_text`). Owed: every leg that renders source text of another
+/// grammar — the `×rust` renders and `rust → js/ts` — by L8, which owns the
+/// grammar projection rules (L3 landed as the dogfood loop, L5 as round-trip
+/// verification and L7 as the network round trip, so none of them may be
+/// named here). `L0` marks a same-root non-direction. The seed's
+/// `root_projection` rows mirror this table; [`root_projections`] reads
+/// them, and the round-trip projection test pins the two surfaces in
+/// agreement.
 #[must_use]
 pub const fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static str> {
     match (from, to) {
         (SourceRoot::Rust | SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta)
-        | (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript)
+        | (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript | SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::TypeScript)
         | (SourceRoot::TypeScript, SourceRoot::JavaScript) => None,
         (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript)
-        | (SourceRoot::Meta | SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => {
-            Some("L7")
-        }
+        | (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => Some("L8"),
         (SourceRoot::Rust, SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::JavaScript)
         | (SourceRoot::TypeScript, SourceRoot::TypeScript)
@@ -127,6 +127,12 @@ pub fn translate(
             target: crate::agentic_coding::self_ast::render_ast_document(display_path, source),
             carried: 0,
         },
+        (SourceRoot::Meta, SourceRoot::Rust) => {
+            match crate::agentic_coding::self_ast::render_network_source(source) {
+                Ok(target) => TranslationOutcome::Rendered { target, carried: 0 },
+                Err(reason) => TranslationOutcome::Invalid { reason },
+            }
+        }
         (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta) => {
             let language = es_language(from);
             match crate::es_meta::extract(display_path, language, source) {
