@@ -73,7 +73,7 @@ fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
                 registry[offset..]
                     .lines()
                     .take(3)
-                    .any(|line| line.contains(&format!("../../{path}"))),
+                    .any(|line| line.contains(&format!("../../embedded/{path}"))),
                 "{leaf}: {} does not embed {path}",
                 target.symbol
             );

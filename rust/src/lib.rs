@@ -208,6 +208,7 @@ pub mod thinking;
 pub mod thinking_prose;
 pub mod tool_scope;
 pub mod trace_record;
+pub mod translate_write;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod verifiable_task;

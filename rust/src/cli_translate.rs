@@ -19,6 +19,7 @@ pub fn run_translate(
     from: Option<&str>,
     to: Option<&str>,
     input: Option<PathBuf>,
+    write: bool,
     list: bool,
 ) -> Result<(), Box<dyn Error>> {
     if list {
@@ -50,6 +51,32 @@ pub fn run_translate(
             ],
         )
         .into());
+    }
+    if write {
+        let root = std::env::current_dir()?;
+        let report = match input.as_deref().and_then(|path| path.to_str()) {
+            // `--input` carries a path relative to the working directory,
+            // which is the repository root the sibling mapping is stated on.
+            Some(input) => formal_ai::translate_write::write_one(
+                from_root,
+                to_root,
+                &root,
+                &input.replace('\\', "/"),
+            ),
+            None => formal_ai::translate_write::write_tree(from_root, to_root, &root),
+        };
+        let (intent, values) = report.intent();
+        let values = values
+            .iter()
+            .map(|(key, value)| (*key, value.as_str()))
+            .collect::<Vec<_>>();
+        let rendered = cli_text(intent, &values);
+        return if report.is_failure() {
+            Err(rendered.into())
+        } else {
+            println!("{rendered}");
+            Ok(())
+        };
     }
     let Some(path) = input else {
         return Err(cli_text("translate_needs_input", &roots).into());

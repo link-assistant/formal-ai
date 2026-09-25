@@ -220,6 +220,23 @@ tools_registry
     localized hi
       name write_program
       note "language और task parameters से seeded programs दिखाता है।"
+  tool tool_translate
+    name translate
+    note "Translate a source file or the whole tree between the js and ts roots through the meta pivot; refusals are named, never guessed."
+    mode thinking
+    inputs ("from" "to" "path" "write")
+    outputs ("target" "carried" "refused" "written")
+    isolation seed
+    sources ("rust:meta_translate" "data/seed/language-projection.lino")
+    localized ru
+      name translate
+      note "Переводит файл или всё дерево между корнями js и ts через мета-пивот; отказы называются, а не угадываются."
+    localized zh
+      name translate
+      note 通过元枢轴在 js 与 ts 根之间翻译单个文件或整棵树；拒绝会被点名，绝不猜测。
+    localized hi
+      name translate
+      note "meta pivot के through js और ts roots के बीच एक source file या पूला tree अनुवाद करता है; refusals नामित होते हैं, अनुमान नहीं।"
   tool tool_run_agent
     name run_agent
     note "Run one seed-registered external agent CLI only after an explicit workspace-scoped grant; capture process output, file effects, verification results, and chained provenance without implicit retries."

@@ -120,7 +120,8 @@ enum Command {
     /// Translate a document between the source roots through the meta
     /// language (plan 16 L2): `--from`/`--to` one of rust|js|ts|meta,
     /// `--input` the source file for a live leg, `--list` every direction
-    /// and the leaf that owes the ones still pending.
+    /// and the leaf that owes the ones still pending, `--write` to write the
+    /// mapped sibling-root file (or, without `--input`, the whole tree).
     Translate {
         #[arg(long)]
         from: Option<String>,
@@ -130,6 +131,11 @@ enum Command {
 
         #[arg(long)]
         input: Option<PathBuf>,
+
+        /// Write the translation at its mapped path under the target root
+        /// instead of printing it (plan 16 L2g).
+        #[arg(long, default_value_t = false)]
+        write: bool,
 
         #[arg(long, default_value_t = false)]
         list: bool,
@@ -648,8 +654,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             from,
             to,
             input,
+            write,
             list,
-        } => run_translate(from.as_deref(), to.as_deref(), input, list)?,
+        } => run_translate(from.as_deref(), to.as_deref(), input, write, list)?,
         Command::Coding(args) => run_coding(args)?,
         Command::Context(args) => run_context(args)?,
         Command::Report(args) => run_report(args)?,

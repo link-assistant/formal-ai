@@ -478,6 +478,20 @@ pub(super) fn plan_settled_routes(
     // Unambiguous is the operative word: a request that also pins the target
     // file's opening line has not spelled its bytes out, and content recovered
     // from its prose would be written without that line (issue #1066).
+    // Plan 16 L2g: a request that names a source-tree file (`js/app.js … to
+    // typescript`) is the meta pivot's translate family, and must be claimed
+    // before the literal-write and obligation composers read "write it" as an
+    // artifact write of the goal text. The structural gate (a path token plus
+    // the target's canonical spelling) is cheap; the family itself is decided
+    // by the shared solver, whose bridge lowers it to one `translate` tool
+    // call — or answers with the rendered gap on a client without the tool.
+    if crate::meta_translate::source_tree_request(task).is_some() {
+        match super::conversation_recall::plan_shared_solver_step(messages, tool_names) {
+            super::conversation_recall::SharedSolverStep::Ready(plan) => return Some(plan),
+            super::conversation_recall::SharedSolverStep::NotOurs
+            | super::conversation_recall::SharedSolverStep::Defer => {}
+        }
+    }
     // An enumerated request is planned one obligation at a time, and is not
     // successfully finished until the runtime ledger has discharged every
     // node with at least one execution record (issues #1099 and #1138 B5).

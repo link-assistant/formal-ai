@@ -39,3 +39,43 @@ multilingual_responses
     intent translate_refused
     language en
     text "translate {from} → {to} refused {constructs}: the projection seed does not carry them, so nothing was written"
+  response response_translate_wrote_file_en
+    intent translate_wrote_file
+    language en
+    text "wrote {target} from {source} ({carried} tokens carried)"
+  response response_translate_wrote_en
+    intent translate_wrote
+    language en
+    text "translated {files} files ({tokens} tokens carried); wrote the {to} tree"
+  response response_translate_write_wrong_root_en
+    intent translate_write_wrong_root
+    language en
+    text "{path}: --write maps js/ ↔ ts/ sibling roots; the input must live under the source root"
+  response response_translate_write_unsupported_en
+    intent translate_write_unsupported
+    language en
+    text "writing {from} → {to} is not a tree write this rung maps; only js ↔ ts"
+  response response_translate_write_refused_en
+    intent translate_write_refused
+    language en
+    text "nothing was written; refused: {items}"
+  response response_translate_source_missing_en
+    intent translate_source_missing
+    language en
+    text "{path}: no source file to translate at that path"
+  response response_translate_source_invalid_en
+    intent translate_source_invalid
+    language en
+    text "{path} cannot be normalized into the pivot: {reason}"
+  response response_translate_write_empty_en
+    intent translate_write_empty
+    language en
+    text "the {root} root holds no source files this leg owns, so nothing was written"
+  response response_translate_write_refused_item_en
+    intent translate_write_refused_item
+    language en
+    text "{source}: {constructs}"
+  response response_translate_tool_schema_en
+    intent translate_tool_schema
+    language en
+    text "Translate a source file (or, with no path, the whole tree) between the js and ts roots through the meta pivot; refusals are named, never guessed. Arguments: from js|ts, to js|ts, path string, write boolean."

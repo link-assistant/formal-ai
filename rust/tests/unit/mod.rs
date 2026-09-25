@@ -290,5 +290,6 @@ mod issue_1138_surface_honesty;
 mod issue_1138_telegram_execution;
 mod issue_1138_toolchain_ledger;
 mod issue_1138_toolchain_probe;
+mod issue_1138_translate_agent_tool;
 mod issue_1138_uniform_dispatch;
 mod verifiable_task;

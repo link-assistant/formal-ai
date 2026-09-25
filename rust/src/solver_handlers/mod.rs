@@ -306,6 +306,71 @@ pub fn try_translation(
         return None;
     }
 
+    // Plan 16 L2g: a request that names a source-tree file (`js/app.js … to
+    // typescript`) is the meta pivot's job, not the Wiktionary pipeline's.
+    // The meaning gate above already fired; the path token and the target
+    // spelling are structural vocabulary (`SourceRoot`'s own names), so no
+    // phrase table is added. The file is read relative to the working
+    // directory, the same contract `formal-ai translate --input` practices;
+    // a missing file answers the honest gap instead of translating prose.
+    // Nothing is written here — the answer carries the rendered target, and
+    // the write belongs to `--write` or the agent tool.
+    if backticked.is_none()
+        && let Some(request) = crate::meta_translate::source_tree_request(prompt)
+    {
+        log.append("language_from", request.from.name().to_owned());
+        log.append("language_to", request.to.name().to_owned());
+        log.append("path", request.path.clone());
+        let seed_body = |intent: &str, values: &[(&str, &str)]| -> String {
+            crate::seed::render_response(intent, "en", values).unwrap_or_else(|| intent.to_string())
+        };
+        if let Ok(source) = std::fs::read_to_string(&request.path) {
+            let outcome =
+                crate::meta_translate::translate(request.from, request.to, &request.path, &source);
+            let (body, confidence) = match outcome {
+                crate::meta_translate::TranslationOutcome::Rendered { target, .. } => (target, 1.0),
+                crate::meta_translate::TranslationOutcome::Refused { refusals } => {
+                    let items = refusals
+                        .iter()
+                        .map(|refusal| refusal.construct.as_str())
+                        .collect::<Vec<_>>()
+                        .join(", ");
+                    (
+                        seed_body("translate_write_refused", &[("items", &items)]),
+                        0.4,
+                    )
+                }
+                crate::meta_translate::TranslationOutcome::Invalid { reason } => (
+                    seed_body(
+                        "translate_source_invalid",
+                        &[("path", &request.path), ("reason", &reason)],
+                    ),
+                    0.4,
+                ),
+                crate::meta_translate::TranslationOutcome::Pending { .. } => (String::new(), 0.0),
+            };
+            if !body.is_empty() {
+                return Some(finalize_simple(
+                    prompt,
+                    log,
+                    "translate_source_tree",
+                    "response:translate_code",
+                    &body,
+                    confidence,
+                ));
+            }
+        } else {
+            return Some(finalize_simple(
+                prompt,
+                log,
+                "translate_source_tree",
+                "response:translate_code",
+                &seed_body("translate_source_missing", &[("path", &request.path)]),
+                0.4,
+            ));
+        }
+    }
+
     let mut source = detect_source_language(normalized);
     if source.is_none() {
         source = Some(infer_source_from_prompt(prompt));

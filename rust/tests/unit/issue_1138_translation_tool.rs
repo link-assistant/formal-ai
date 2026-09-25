@@ -18,6 +18,18 @@ fn every_translate_cli_text_lives_in_the_seed() {
         "translate_leg_live",
         "translate_leg_pending",
         "translate_refused",
+        // Plan 16 L2g: the write-mode report texts.
+        "translate_wrote_file",
+        "translate_wrote",
+        "translate_write_wrong_root",
+        "translate_write_unsupported",
+        "translate_write_refused",
+        "translate_source_missing",
+        "translate_source_invalid",
+        "translate_write_empty",
+        // The per-file refusal item and the agent tool's schema row.
+        "translate_write_refused_item",
+        "translate_tool_schema",
     ] {
         assert!(
             formal_ai::response_for(intent, "en").is_some(),
@@ -40,6 +52,222 @@ fn every_translate_cli_text_lives_in_the_seed() {
         ),
         Some("rust → js  pending (plan 16 L5)".to_owned())
     );
+    assert_eq!(
+        formal_ai::render_response(
+            "translate_write_refused_item",
+            "en",
+            &[
+                ("source", "ts/typed.ts"),
+                ("constructs", "interface_declaration")
+            ]
+        ),
+        Some("ts/typed.ts: interface_declaration".to_owned())
+    );
+}
+
+/// Plan 16 L2g: the sibling-root write mapping is a total contract on the
+/// two ES roots and refuses everything else by name.
+#[test]
+fn write_target_maps_the_sibling_roots_and_refuses_the_rest() {
+    use formal_ai::meta_translate::{SourceRoot, WriteTargetError, write_target};
+    assert_eq!(
+        write_target(
+            SourceRoot::JavaScript,
+            SourceRoot::TypeScript,
+            "js/app/foo.js"
+        ),
+        Ok("ts/app/foo.ts".to_owned())
+    );
+    assert_eq!(
+        write_target(SourceRoot::TypeScript, SourceRoot::JavaScript, "ts/one.ts"),
+        Ok("js/one.js".to_owned())
+    );
+    for wrong in [
+        "src/app.js",
+        "js/../secret.js",
+        "js/catalog.lino",
+        "app.js",
+        "/js/a.js",
+    ] {
+        assert_eq!(
+            write_target(SourceRoot::JavaScript, SourceRoot::TypeScript, wrong),
+            Err(WriteTargetError::WrongRoot {
+                path: wrong.to_owned()
+            }),
+            "{wrong} must be a wrong root, not a mapped write"
+        );
+    }
+    assert_eq!(
+        write_target(SourceRoot::JavaScript, SourceRoot::Meta, "js/app.js"),
+        Err(WriteTargetError::UnsupportedLeg {
+            from: SourceRoot::JavaScript,
+            to: SourceRoot::Meta,
+        }),
+        "the pivot document is not a committed tree to write"
+    );
+    assert_eq!(
+        write_target(SourceRoot::Rust, SourceRoot::Meta, "rust/src/lib.rs"),
+        Err(WriteTargetError::UnsupportedLeg {
+            from: SourceRoot::Rust,
+            to: SourceRoot::Meta,
+        })
+    );
+}
+
+/// Plan 16 L2g: the recognizer reads only structural vocabulary — a path
+/// token under a source root and the target's canonical spelling.
+#[test]
+fn source_tree_requests_recognize_paths_and_targets() {
+    use formal_ai::meta_translate::{SourceRoot, source_tree_request};
+    assert_eq!(
+        source_tree_request("Translate js/app/foo.js to TypeScript and write it"),
+        Some(formal_ai::meta_translate::SourceTreeRequest {
+            from: SourceRoot::JavaScript,
+            to: SourceRoot::TypeScript,
+            path: "js/app/foo.js".to_owned(),
+        })
+    );
+    assert_eq!(
+        source_tree_request("translate ts/one.ts to javascript"),
+        Some(formal_ai::meta_translate::SourceTreeRequest {
+            from: SourceRoot::TypeScript,
+            to: SourceRoot::JavaScript,
+            path: "ts/one.ts".to_owned(),
+        })
+    );
+    // No path token, no target window, or the same root twice: not ours. A
+    // verb like "summarize" is deliberately NOT screened here — the meaning
+    // gate belongs to the solver arm that calls this recognizer.
+    assert_eq!(source_tree_request("translate \"apple\" to russian"), None);
+    assert_eq!(source_tree_request("translate js/a.js to javascript"), None);
+    assert_eq!(
+        source_tree_request("summarize js/app.js for the typescript review"),
+        None
+    );
+}
+
+/// Plan 16 L2g: one mapped file writes its sibling target; the report is
+/// seed-rendered and refuses wrong roots and unsupported legs without
+/// touching the tree.
+#[test]
+fn write_one_writes_the_mapped_sibling_file() {
+    use formal_ai::meta_translate::SourceRoot;
+    use formal_ai::translate_write::{self, WriteReport};
+    let root = temp_source_tree(&[
+        ("js/greeting.js", "export const greeting = \"hi\";\n"),
+        ("js/notes/readme.js", "export const note = 1;\n"),
+    ]);
+    let report = translate_write::write_one(
+        SourceRoot::JavaScript,
+        SourceRoot::TypeScript,
+        &root,
+        "js/greeting.js",
+    );
+    let translate_write::WriteReport::WroteOne(file) = &report else {
+        panic!("the mapped file must write, got {report:?}");
+    };
+    assert_eq!(file.source, "js/greeting.js");
+    assert_eq!(file.target, "ts/greeting.ts");
+    assert!(
+        file.carried >= 5,
+        "the whole token tree must cross the pivot: {carried}",
+        carried = file.carried
+    );
+    let written = std::fs::read_to_string(root.join("ts/greeting.ts")).expect("the mapped file");
+    assert!(written.contains("export const greeting"));
+    assert!(
+        !root.join("ts/notes").exists(),
+        "an untouched file must not create its target directories"
+    );
+    assert_eq!(
+        translate_write::write_one(
+            SourceRoot::JavaScript,
+            SourceRoot::TypeScript,
+            &root,
+            "js/../escape.js"
+        ),
+        WriteReport::WrongRoot {
+            path: "js/../escape.js".to_owned()
+        }
+    );
+    let _ = std::fs::remove_dir_all(&root);
+}
+
+/// Plan 16 L2g: a tree write is transactional — one refused file writes
+/// nothing, because a half-generated sibling tree is the corrupt state the
+/// L3 mismatch check exists to refuse.
+#[test]
+fn write_tree_is_transactional_on_refusal() {
+    use formal_ai::meta_translate::SourceRoot;
+    use formal_ai::translate_write::{self, WriteReport};
+    // `ts → js` is the direction with a real refusal vocabulary: the
+    // projection seed refuses TypeScript-only constructs when the target
+    // is plain JavaScript.
+    let root = temp_source_tree(&[
+        ("ts/plain.ts", "export const plain = 1;\n"),
+        (
+            "ts/typed.ts",
+            "interface Shape { sides: number }\nexport const shape: Shape = { sides: 3 };\n",
+        ),
+    ]);
+    let report = translate_write::write_tree(SourceRoot::TypeScript, SourceRoot::JavaScript, &root);
+    let WriteReport::Refused { items } = &report else {
+        panic!("the typed file must be refused by name, got {report:?}");
+    };
+    assert!(
+        items.iter().any(|item| item.starts_with("ts/typed.ts")),
+        "the refused item names its file: {items:?}"
+    );
+    assert!(
+        !root.join("js").exists(),
+        "a refused tree writes nothing at all"
+    );
+    let _ = std::fs::remove_dir_all(&root);
+}
+
+/// Plan 16 L2g: a clean tree writes every owned file and skips the assets
+/// the translator does not own.
+#[test]
+fn write_tree_writes_every_owned_file() {
+    use formal_ai::meta_translate::SourceRoot;
+    use formal_ai::translate_write::{self, WriteReport};
+    let root = temp_source_tree(&[
+        ("js/one.js", "export const one = 1;\n"),
+        ("js/nested/two.js", "export const two = 2;\n"),
+        ("js/landing.css", "body { margin: 0 }\n"),
+    ]);
+    let report = translate_write::write_tree(SourceRoot::JavaScript, SourceRoot::TypeScript, &root);
+    let WriteReport::Wrote { files, to } = &report else {
+        panic!("the clean tree must write, got {report:?}");
+    };
+    assert_eq!(*to, SourceRoot::TypeScript);
+    let mut targets = files
+        .iter()
+        .map(|file| file.target.as_str())
+        .collect::<Vec<_>>();
+    targets.sort_unstable();
+    assert_eq!(targets, ["ts/nested/two.ts", "ts/one.ts"]);
+    assert!(root.join("ts/nested/two.ts").is_file());
+    assert!(
+        !root.join("ts/landing.css").exists(),
+        "assets are not the translator's"
+    );
+    let _ = std::fs::remove_dir_all(&root);
+}
+
+fn temp_source_tree(files: &[(&str, &str)]) -> std::path::PathBuf {
+    let root = std::env::temp_dir().join(format!(
+        "formal-ai-l2g-write-{}-{:p}",
+        std::process::id(),
+        files as *const _
+    ));
+    let _ = std::fs::remove_dir_all(&root);
+    for (path, content) in files {
+        let full = root.join(path);
+        std::fs::create_dir_all(full.parent().expect("a parent")).expect("create the directory");
+        std::fs::write(full, content).expect("seed the source file");
+    }
+    root
 }
 
 #[test]

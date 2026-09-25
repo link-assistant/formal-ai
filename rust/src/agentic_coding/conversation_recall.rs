@@ -63,6 +63,29 @@ pub(super) fn plan_shared_solver_step(
                 SharedSolverStep::Ready(AgenticPlan::Final(answer.answer))
             }
         }
+        // Plan 16 L2g: the source-tree translation family. A client that
+        // advertises the `translate` tool owns the read--translate--write
+        // chain inside its own workspace, so the solver's in-process answer
+        // (which reads the working directory, not the workspace) yields to
+        // one tool call. Without the tool, the solver's rendered target (or
+        // its honest gap) is the answer, exactly like `write_program`.
+        "translate_source_tree" => {
+            if tool_names.contains(&"translate")
+                && let Some(request) = crate::meta_translate::source_tree_request(&prompt)
+            {
+                SharedSolverStep::Ready(AgenticPlan::ToolCalls(vec![super::planner::PlannedToolCall {
+                    tool: "translate".to_owned(),
+                    arguments: format!(
+                        "{{\"from\":\"{}\",\"to\":\"{}\",\"path\":\"{}\",\"write\":true}}",
+                        request.from.name(),
+                        request.to.name(),
+                        request.path
+                    ),
+                }]))
+            } else {
+                SharedSolverStep::Ready(AgenticPlan::Final(answer.answer))
+            }
+        }
         _ => SharedSolverStep::NotOurs,
     }
 }

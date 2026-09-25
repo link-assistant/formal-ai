@@ -211,6 +211,129 @@ pub fn directions() -> Vec<(SourceRoot, SourceRoot, Option<&'static str>)> {
     listed
 }
 
+/// Why a write target could not be mapped (plan 16 L2g).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum WriteTargetError {
+    /// The path does not live under the source root with its owned
+    /// extension, or escapes it with `..`.
+    WrongRoot { path: String },
+    /// The leg is live for reading, but its target is not a committed
+    /// source tree `--write` maps into (the pivot document and the rust
+    /// legs owe their writes to L3/L5).
+    UnsupportedLeg { from: SourceRoot, to: SourceRoot },
+}
+
+impl SourceRoot {
+    /// The directory spelling of the root inside the repository, for the
+    /// sibling-root write mapping (`js/`, `ts/`).
+    #[must_use]
+    pub const fn directory(self) -> &'static str {
+        match self {
+            Self::Rust => "rust",
+            Self::JavaScript => "js",
+            Self::TypeScript => "ts",
+            Self::Meta => "meta",
+        }
+    }
+
+    /// The file extension this root's owned source files carry.
+    #[must_use]
+    pub const fn owned_extension(self) -> Option<&'static str> {
+        match self {
+            Self::JavaScript => Some("js"),
+            Self::TypeScript => Some("ts"),
+            Self::Rust | Self::Meta => None,
+        }
+    }
+}
+
+/// Map one repo-relative source path to its write target under the sibling
+/// root: `js/app/foo.js` → `ts/app/foo.ts`, and the reverse (plan 16 L2g).
+///
+/// The mapping is total on the two ES roots because those are the committed
+/// sibling trees the cycle turns; every other leg is refused by name rather
+/// than guessed, and the refusal carries the roots so the seed can say what
+/// is owed.
+#[must_use]
+pub fn write_target(
+    from: SourceRoot,
+    to: SourceRoot,
+    repo_relative: &str,
+) -> Result<String, WriteTargetError> {
+    if !matches!(
+        (from, to),
+        (SourceRoot::JavaScript, SourceRoot::TypeScript)
+            | (SourceRoot::TypeScript, SourceRoot::JavaScript)
+    ) {
+        return Err(WriteTargetError::UnsupportedLeg { from, to });
+    }
+    let directory = from.directory();
+    let extension = from
+        .owned_extension()
+        .expect("the ES roots declare their owned extension");
+    let mapped = repo_relative
+        .strip_prefix(&format!("{directory}/"))
+        .and_then(|sub| sub.strip_suffix(&format!(".{extension}")))
+        .filter(|_| !repo_relative.contains(".."))
+        .ok_or_else(|| WriteTargetError::WrongRoot {
+            path: repo_relative.to_owned(),
+        })?;
+    Ok(format!(
+        "{}/{mapped}.{}",
+        to.directory(),
+        to.owned_extension().expect("the ES roots declare one")
+    ))
+}
+
+/// A request to translate one source tree file between the ES roots,
+/// recognized from the path token and the named target (plan 16 L2g).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceTreeRequest {
+    pub from: SourceRoot,
+    pub to: SourceRoot,
+    pub path: String,
+}
+
+/// Recognize a source-tree translation request in a prompt: a path token
+/// under `js/` or `ts/` with its owned extension, plus a named ES target.
+///
+/// The path token is structural vocabulary (the source roots' directory
+/// names), not a natural-language phrase, and the target names are the same
+/// spellings [`SourceRoot::parse`] accepts — so this adds no phrase table;
+/// the meaning gate (the translation-action lexicon) stays in the caller.
+#[must_use]
+pub fn source_tree_request(prompt: &str) -> Option<SourceTreeRequest> {
+    let folded = prompt.to_ascii_lowercase();
+    let path = folded
+        .split_whitespace()
+        .find(|token| {
+            (token.starts_with("js/") && token.ends_with(".js"))
+                || (token.starts_with("ts/") && token.ends_with(".ts"))
+        })?
+        .trim_matches(|c: char| !c.is_ascii_alphanumeric() && c != '/' && c != '.')
+        .to_owned();
+    if path.contains("..") {
+        return None;
+    }
+    let from = if path.starts_with("js/") {
+        SourceRoot::JavaScript
+    } else {
+        SourceRoot::TypeScript
+    };
+    let words = folded.split_whitespace().collect::<Vec<_>>();
+    let to_alias = ["typescript", "javascript"].into_iter().find(|alias| {
+        words
+            .windows(2)
+            .any(|pair| pair[0] == "to" && pair[1] == *alias)
+    });
+    let to =
+        to_alias.map(|alias| SourceRoot::parse(alias).expect("the alias is a root spelling"))?;
+    if from == to {
+        return None;
+    }
+    Some(SourceTreeRequest { from, to, path })
+}
+
 /// The one-line CLI rendering of a leg row; the row text is carried by the
 /// seed (`translate_leg_live` / `translate_leg_pending`).
 #[must_use]

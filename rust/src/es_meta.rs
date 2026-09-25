@@ -474,8 +474,8 @@ pub enum SignatureItem {
 /// A token-class rule from the seed.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ClassRule {
-    /// The class slug ([`class_slug`] vocabulary, plus `group`, `template`,
-    /// `interpolation` for the structural nodes).
+    /// The class slug (the tokenizer's class-name vocabulary, plus `group`,
+    /// `template`, `interpolation` for the structural nodes).
     pub class: String,
     /// Roots this class carries to.
     pub carries_to: Vec<String>,

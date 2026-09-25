@@ -35,8 +35,16 @@ use crate::skill_procedure::CompiledProcedure;
 use crate::solver::{SolverConfig, UniversalSolver};
 
 /// The tool set the driver advertises — the four capabilities the planner's recipe
-/// relies on (`web_search` → `web_fetch` → `write_file` → `run_command`).
-pub const DRIVER_TOOLS: [&str; 4] = ["web_search", "web_fetch", "write_file", "run_command"];
+/// relies on (`web_search` → `web_fetch` → `write_file` → `run_command`), plus
+/// the source-tree translator (plan 16 L2g) so the agent CLI can turn the js/ts
+/// cycle mid-session without shelling out.
+pub const DRIVER_TOOLS: [&str; 5] = [
+    "web_search",
+    "web_fetch",
+    "write_file",
+    "run_command",
+    "translate",
+];
 
 /// A hard cap on agentic turns (server round-trips). The recipe needs five; the
 /// cap is generous but finite so the loop can never run away.
@@ -251,8 +259,88 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String
                 |executed| (format_command_result(executed), false),
             )
         }
+        // Plan 16 L2g: the same library the CLI's `--write` runs, executed
+        // against the sandbox workspace — the workspace root plays the
+        // repository root, so `js/…` paths are the ones the plan wrote
+        // there. The report text is rendered from the seed the CLI uses,
+        // and a refusal, wrong root or unreadable source is an error result
+        // so the agent sees the failure instead of a silent no-op.
+        "translate" => {
+            let Some(from) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "from"))
+            else {
+                return ("error: translate needs a known from root (js, ts)".to_owned(), true);
+            };
+            let Some(to) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "to"))
+            else {
+                return ("error: translate needs a known to root (js, ts)".to_owned(), true);
+            };
+            let path = arg_str(&arguments, "path");
+            let write = arguments
+                .get("write")
+                .and_then(serde_json::Value::as_bool)
+                .unwrap_or(false);
+            let report = if path.is_empty() {
+                if !write {
+                    return (
+                        "error: a tree translation must set write, or name one path".to_owned(),
+                        true,
+                    );
+                }
+                crate::translate_write::write_tree(from, to, workspace.root())
+            } else if write {
+                crate::translate_write::write_one(from, to, workspace.root(), path)
+            } else {
+                return translate_without_write(from, to, workspace.root(), path);
+            };
+            let (intent, values) = report.intent();
+            let values = values
+                .iter()
+                .map(|(key, value)| (*key, value.as_str()))
+                .collect::<Vec<_>>();
+            let rendered = crate::seed::render_response(intent, "en", &values)
+                .unwrap_or_else(|| intent.to_owned());
+            (rendered, report.is_failure())
+        }
         other => (format!("error: unsupported tool {other}"), true),
     }
+}
+
+/// The read-only half of the translate tool: the result text is the rendered
+/// target itself (the CLI's stdout mode), and every honest gap renders from
+/// the same seed intents the write half uses.
+fn translate_without_write(
+    from: crate::meta_translate::SourceRoot,
+    to: crate::meta_translate::SourceRoot,
+    root: &std::path::Path,
+    repo_relative: &str,
+) -> (String, bool) {
+    use crate::meta_translate::TranslationOutcome;
+    let report = match std::fs::read_to_string(root.join(repo_relative)) {
+        Ok(source) => match crate::meta_translate::translate(from, to, repo_relative, &source) {
+            TranslationOutcome::Rendered { target, .. } => return (target, false),
+            TranslationOutcome::Refused { refusals } => crate::translate_write::WriteReport::Refused {
+                items: crate::translate_write::refusal_items(repo_relative, &refusals),
+            },
+            TranslationOutcome::Pending { .. } => {
+                crate::translate_write::WriteReport::UnsupportedLeg { from, to }
+            }
+            TranslationOutcome::Invalid { reason } => crate::translate_write::WriteReport::Invalid {
+                path: repo_relative.to_owned(),
+                reason,
+            },
+        },
+        Err(_) => crate::translate_write::WriteReport::Missing {
+            path: repo_relative.to_owned(),
+        },
+    };
+    let (intent, values) = report.intent();
+    let values = values
+        .iter()
+        .map(|(key, value)| (*key, value.as_str()))
+        .collect::<Vec<_>>();
+    let rendered = crate::seed::render_response(intent, "en", &values)
+        .unwrap_or_else(|| intent.to_owned());
+    (rendered, true)
 }
 
 /// Mirror the public discovery/conformance commands inside the deterministic
@@ -362,17 +450,25 @@ fn tool_definitions(names: &[&str]) -> Vec<Value> {
         .collect()
 }
 
-fn tool_description(name: &str) -> &'static str {
+fn tool_description(name: &str) -> String {
     match name {
-        "web_search" => "Search the web for sources. Arguments: {\"query\": string}.",
-        "web_fetch" => "Fetch the text at a URL. Arguments: {\"url\": string}.",
+        "web_search" => "Search the web for sources. Arguments: {\"query\": string}.".to_owned(),
+        "web_fetch" => {
+            "Fetch the text at a URL. Arguments: {\"url\": string}.".to_owned()
+        }
         "write_file" => {
-            "Write a workspace file. Arguments: {\"path\": string, \"content\": string}."
+            "Write a workspace file. Arguments: {\"path\": string, \"content\": string}.".to_owned()
         }
         "run_command" => {
             "Run an allowlisted command in the workspace. Arguments: {\"command\": string}."
+                .to_owned()
         }
-        _ => "Tool.",
+        // The translate schema is new with the tool (plan 16 L2g), so it is
+        // seed-grounded from the start (R379); the four older descriptions
+        // are the allowlisted debt this arm retires one entry at a time.
+        "translate" => crate::seed::render_response("translate_tool_schema", "en", &[])
+            .unwrap_or_else(|| "translate_tool_schema".to_owned()),
+        _ => "Tool.".to_owned(),
     }
 }
 

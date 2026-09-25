@@ -222,3 +222,223 @@ meanings
     lexeme es
       surface
         text "informe de rechazo de traducción"
+  translate_wrote_file
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode translated one mapped file and wrote its sibling-root target"
+    effect "the written pair and the carried token count are reported"
+    unit "not applicable"
+    example "wrote ts/greeting.ts from js/greeting.js (57 tokens carried)"
+    lexeme en
+      surface
+        text "one translated file written"
+    lexeme ru
+      surface
+        text "один переведённый файл записан"
+    lexeme hi
+      surface
+        text "एक अनुवादित फ़ाइल लिखी गई"
+    lexeme zh
+      surface
+        text "已写入一个翻译文件"
+    lexeme es
+      surface
+        text "un archivo traducido escrito"
+  translate_wrote
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode translated the whole source tree into the sibling root"
+    effect "the file count, carried token total, and target root are reported"
+    unit "not applicable"
+    example "translated 63 files (12045 tokens carried); wrote the ts tree"
+    lexeme en
+      surface
+        text "translated tree written"
+    lexeme ru
+      surface
+        text "переведённое дерево записано"
+    lexeme hi
+      surface
+        text "अनुवादित ट्री लिखा गया"
+    lexeme zh
+      surface
+        text "已写入翻译后的树"
+    lexeme es
+      surface
+        text "árbol traducido escrito"
+  translate_write_wrong_root
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode received a path the sibling-root mapping does not own"
+    effect "the path is refused and the accepted mapping is stated"
+    unit "not applicable"
+    example "src/app.js: --write maps js/ ↔ ts/ sibling roots; the input must live under the source root"
+    lexeme en
+      surface
+        text "write path outside the sibling roots"
+    lexeme ru
+      surface
+        text "путь записи вне корней-близнецов"
+    lexeme hi
+      surface
+        text "लेखन पथ जुड़वाँ मूलों के बाहर"
+    lexeme zh
+      surface
+        text "写入路径在孪生根之外"
+    lexeme es
+      surface
+        text "ruta de escritura fuera de las raíces hermanas"
+  translate_write_unsupported
+    defined-by answer
+    role localized_response_template
+    precondition "the write mode was asked for a leg whose target is not a committed sibling tree"
+    effect "the leg is refused and the only mapped write directions are named"
+    unit "not applicable"
+    example "writing js → meta is not a tree write this rung maps; only js ↔ ts"
+    lexeme en
+      surface
+        text "unsupported write direction"
+    lexeme ru
+      surface
+        text "неподдерживаемое направление записи"
+    lexeme hi
+      surface
+        text "असमर्थित लेखन दिशा"
+    lexeme zh
+      surface
+        text "不支持的写入方向"
+    lexeme es
+      surface
+        text "dirección de escritura no admitida"
+  translate_write_refused
+    defined-by answer
+    role localized_response_template
+    precondition "a tree or file write met a construct the projection seed refuses"
+    effect "every refused file and construct is named and nothing was written"
+    unit "not applicable"
+    example "nothing was written; refused: js/app.js: interface declaration"
+    lexeme en
+      surface
+        text "write refused by the projection seed"
+    lexeme ru
+      surface
+        text "запись отклонена правилами проекции"
+    lexeme hi
+      surface
+        text "प्रोजेक्शन नियमों ने लेखन से इनकार किया"
+    lexeme zh
+      surface
+        text "投影规则拒绝了写入"
+    lexeme es
+      surface
+        text "escritura rechazada por las reglas de proyección"
+  translate_source_missing
+    defined-by answer
+    role localized_response_template
+    precondition "a source file named for translation is not there to read"
+    effect "the missing path is reported without writing anything"
+    unit "not applicable"
+    example "js/nope.js: no source file to translate at that path"
+    lexeme en
+      surface
+        text "source file missing"
+    lexeme ru
+      surface
+        text "исходный файл отсутствует"
+    lexeme hi
+      surface
+        text "स्रोत फ़ाइल अनुपस्थित"
+    lexeme zh
+      surface
+        text "源文件缺失"
+    lexeme es
+      surface
+        text "falta el archivo fuente"
+  translate_source_invalid
+    defined-by answer
+    role localized_response_template
+    precondition "a source file could not be normalized into the pivot"
+    effect "the path and the tokenizer's reason are reported without writing"
+    unit "not applicable"
+    example "js/broken.js: unterminated template literal"
+    lexeme en
+      surface
+        text "source file cannot be normalized"
+    lexeme ru
+      surface
+        text "исходный файл не нормализуется"
+    lexeme hi
+      surface
+        text "स्रोत फ़ाइल सामान्य नहीं होती"
+    lexeme zh
+      surface
+        text "源文件无法规范化"
+    lexeme es
+      surface
+        text "el archivo fuente no se puede normalizar"
+  translate_write_empty
+    defined-by answer
+    role localized_response_template
+    precondition "a tree write found no owned source files under the source root"
+    effect "the empty root is reported without writing anything"
+    unit "not applicable"
+    example "the ts root holds no .ts files to translate"
+    lexeme en
+      surface
+        text "no owned files under the source root"
+    lexeme ru
+      surface
+        text "под исходным корнем нет принадлежащих файлов"
+    lexeme hi
+      surface
+        text "स्रोत मूल के अंतर्गत कोई स्वामित्व फ़ाइल नहीं"
+    lexeme zh
+      surface
+        text "源根下没有所属文件"
+    lexeme es
+      surface
+        text "sin archivos propios bajo la raíz de origen"
+  translate_write_refused_item
+    defined-by answer
+    role localized_response_template
+    precondition "one source file was refused by the projection seed"
+    effect "the file and its named constructs are reported as the refused item"
+    unit "not applicable"
+    example "ts/typed.ts: interface_declaration"
+    lexeme en
+      surface
+        text "one refused file named with its constructs"
+    lexeme ru
+      surface
+        text "один отклонённый файл назван со своими конструкциями"
+    lexeme hi
+      surface
+        text "एक अस्वीकृत फ़ाइल अपनी संरचनाओं के साथ नामित"
+    lexeme zh
+      surface
+        text "一个被拒文件连同其构造被点名"
+    lexeme es
+      surface
+        text "un archivo rechazado nombrado con sus construcciones"
+  translate_tool_schema
+    defined-by answer
+    role localized_response_template
+    precondition "the agent advertised the translate tool"
+    effect "the tool's arguments schema is stated for the calling client"
+    unit "not applicable"
+    example "translate tool schema"
+    lexeme en
+      surface
+        text "translate tool schema"
+    lexeme ru
+      surface
+        text "схема инструмента перевода"
+    lexeme hi
+      surface
+        text "अनुवाद उपकरण स्कीमा"
+    lexeme zh
+      surface
+        text "翻译工具模式"
+    lexeme es
+      surface
+        text "esquema de la herramienta de traducción"

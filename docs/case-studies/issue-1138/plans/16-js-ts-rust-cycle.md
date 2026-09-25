@@ -335,6 +335,81 @@ mirror's ~2.3 MiB raw (lino text compresses ~4×) on top of today's
 2.1 MiB compressed, far under the 10 MiB crates.io ceiling that
 `scripts/check-crate-package-size.rs` enforces.
 
+### Design note 2026-09-25 — L2g: the write mode and the agent tool (written before the code)
+
+Survey facts the leaf is planned against:
+
+- L2a–L2f landed (`c348d4634`, `d48f7fb48`): the ES quadrant is live,
+  `formal-ai translate` prints a rendered target, refusals are
+  seed-grounded, and the acceptance test already walks the committed
+  `./js` corpus (recursive `*.js`) with zero refusals and CST-equal
+  round trips. `./ts` holds only the README placeholder, which names
+  `--write` as its regenerator.
+- The agent surface that exists: the in-repo driver
+  (`rust/src/agentic_coding/driver.rs`) advertises `DRIVER_TOOLS` and
+  executes every planned call inside a sandboxed `AgentWorkspace`; the
+  planner lowers typed answers into `PlannedToolCall { tool, arguments }`.
+- The gap: `try_translation` answers backticked snippets, FOL statements
+  and natural-language surfaces — a file-shaped request ("translate
+  js/app.js to typescript") names no quoted surface, so it falls through
+  to the Wiktionary arm and comes back a translation gap. The tool the
+  instruction asked for would exist on no surface.
+
+Decisions fixed before any of it is written:
+
+- **The write mapping is a pure contract on repo-relative paths**, in
+  `meta_translate` (alloc-pure, so the wasm surface keeps it): a path
+  under `js/` ending `.js` maps to the same subpath under `ts/` ending
+  `.ts`, and the reverse. Anything else is refused by name — a path with
+  `..`, outside the two roots, or with an unowned extension is a wrong
+  root, and a leg whose target is not a committed source tree (everything
+  involving `meta` or `rust`) is an unsupported write, because the pivot
+  document is not a tree and the rust write legs are owed by L3/L5.
+- **The std half is one new module, `rust/src/translate_write.rs`**, shared
+  by the CLI and the agent driver: `write_one` (a mapped file) and
+  `write_tree` (the whole from-root) return a `WriteReport` whose
+  rendering values feed the seed intents. Tree mode is transactional:
+  every owned file is translated first and any refusal or invalid file
+  writes nothing — a half-generated `./ts` is exactly the corrupt state
+  L3's mismatch check exists to refuse. Non-owned files under the root
+  (`.html`, `.css`, `.lino`, `.wasm`) are not the translator's to move;
+  whether `ts/` also carries assets is L3/L4 policy, not this leaf.
+- **CLI**: `--write`. With `--input`, one mapped file; without it, the
+  whole from-root tree (the command L3's README already names).
+  `--list` still answers first, and pending-leg honesty fires before any
+  write. New diagnostics are seed intents in the existing translate pair
+  (`meanings-translate-cycle.lino` carries the five lexemes, the
+  responses file the `{placeholder}` texts):
+  `translate_wrote_file`, `translate_wrote`, `translate_write_wrong_root`,
+  `translate_write_unsupported`, `translate_write_refused`,
+  `translate_source_missing`, `translate_source_invalid`,
+  `translate_write_empty`.
+- **The agent tool is three surfaces over the same library**: the
+  registry record `tool tool_translate` in `data/seed/tools.lino`
+  (mode thinking, inputs `from`/`to`/`path`/`write`, sources
+  `rust:meta_translate` and the projection seed); the driver, where
+  `translate` joins `DRIVER_TOOLS` with a schema and an execution arm
+  that reads the path from the sandbox workspace, translates in-process,
+  writes the mapped file when `write` is set, and reports the
+  `WriteReport` text (`is_error` on refusal, wrong root or invalid); and
+  the planner, where `try_translation` gains a source-tree arm — gated by
+  the meaning-based translation-action check that already fires, plus a
+  `js/`/`ts/` path token and a named ES target, so no new phrase table —
+  answering through the pivot, with the shared-solver bridge lowering
+  the same family to one `translate` tool call when the client
+  advertises it (the write_program Ready-or-Defer shape).
+- **Named tests, drafted failing first**: `issue_1138_translation_tool.rs`
+  gains the mapping table, the `WriteReport` contract on temp
+  directories (including the transactional refusal), and the new seed
+  pins; a new `issue_1138_translate_agent_tool.rs` pins the registry
+  record, the driver surface (`DRIVER_TOOLS`, the schema, the
+  description), the planner lowering (one `translate` call with
+  `{from, to, path, write}` against an advertised tool), and the solver
+  family id.
+
+Not in this leaf: committing the generated `./ts` tree, the
+mismatch-is-red check, and the fix-the-source-or-the-translator rule —
+that is L3 whole.
 
 ## Risks
 
