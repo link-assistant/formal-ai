@@ -244,6 +244,29 @@ implemented, box ticked in the landing commit.
   construct renders, each unruled construct refuses by name, and the four
   legs flip live in the registry only as their rules land.
 
+### Survey note 2026-09-25 — L8: the engine is measured (facts for the leaf's own survey)
+
+- The dependency's `TranslationRuleSet` has a network-level entry point —
+  `render_roots` over a parsed network for a target language, with
+  `render_link` recursing per matched link — so rust → js/ts is rule
+  authoring on top of the engine L7 already exercises, exactly as the
+  leaf assumes.
+- A `TranslationRule` is name + `LinkQuery` + reference-index captures +
+  templates **keyed by target language**, so one rule set can carry both
+  the `javascript` and `typescript` spellings per construct — the same
+  row serves rust → js and rust → ts.
+- Rule sets serialize as lino (`to_lino`/`from_lino`), so the rules are
+  seed data here by construction; the leaf's open questions, to measure
+  before any row ships: whether `LinkQuery` selects by the tree-sitter
+  node kinds the census already inventories (that inventory is the
+  corpus's construct list, free), what `render_roots` does with an
+  unruled root (partial output or nothing — the refusal contract depends
+  on it), and the template placeholder syntax for captures.
+- `data/seed/formal-language-projections.lino` is a different projection
+  family (FOL ↔ natural-language statements, plan 04's territory); the
+  L8 rules get their own seed surface, declared the way L2 declared the
+  ES token classes and L5 the root rows.
+
 ### Design note 2026-09-25 — L2's material legs (written before any L2 code)
 
 Survey the same day, so the leaf is planned against measured facts and not
