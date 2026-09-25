@@ -603,7 +603,18 @@ pub struct RenderedSource {
 /// dropping only the refused pieces would silently change the tree.
 #[must_use]
 pub fn render_source(document: &PivotDocument, target: ProjectionTarget) -> RenderedSource {
-    let rules = projection_rules();
+    render_source_under(document, target, &projection_rules())
+}
+
+/// Render under an explicit rule set — exposed so the dogfood check (plan 16
+/// L3) can prove the committed target tree follows the seed: a corrupted rule
+/// refuses by name instead of the renderer carrying a copy of the data.
+#[must_use]
+pub fn render_source_under(
+    document: &PivotDocument,
+    target: ProjectionTarget,
+    rules: &ProjectionRules,
+) -> RenderedSource {
     let mut report = RenderReport::default();
     refuse_classes(&document.trees, target, &rules, &mut report);
     refuse_constructs(&document.trees, target, &rules, &mut report);

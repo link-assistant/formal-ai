@@ -256,6 +256,7 @@ mod issue_1138_bounded_file_analysis;
 mod issue_1138_capability_routing;
 mod issue_1138_command_allowlist;
 mod issue_1138_conversation_container;
+mod issue_1138_dogfood_translation;
 mod issue_1138_execution_box;
 mod issue_1138_family_migration;
 mod issue_1138_frontier_classes;

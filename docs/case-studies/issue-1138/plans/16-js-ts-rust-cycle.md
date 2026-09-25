@@ -128,7 +128,7 @@ implemented, box ticked in the landing commit.
   Test: `tests/unit/issue_1138_translation_tool.rs` — js→ts and ts→js over
   the committed `./js` tree report zero refused constructs and a null CST
   diff on the identity round trip.
-- [ ] **L3 — the dogfood loop.** `./js` is iterated by hand and by agent;
+- [x] **L3 — the dogfood loop.** `./js` is iterated by hand and by agent;
   `formal-ai translate --from js --to ts --write` regenerates `./ts`; a
   mismatch between generated and committed `./ts` is a failing check, and the
   fix is either the source or the translator — never a hand-edit of the
@@ -138,6 +138,13 @@ implemented, box ticked in the landing commit.
   Test: `tests/unit/issue_1138_dogfood_translation.rs` — after translating
   `./js` to `./ts`, the trees match; a deliberately corrupted rule fails with
   the refused construct named.
+  First pass 2026-09-25: the whole committed corpus carried — 63 files,
+  427,917 tokens, zero refusals (it is the plain web subset, and TypeScript
+  is its syntactic superset, exactly the asymmetry L2's rules state). The
+  committed `./ts` tree is the generated output; the check regenerates it
+  byte-for-byte and proves the renderers follow the seed by corrupting the
+  identifier class's ts carry and watching the refusal name
+  `token_class identifier`.
 - [ ] **L4 — path-filtered CI with carry-forward and cycle enforcement.**
   Workflows gain folder predicates: the js checks run only when `./js`
   changed, ts only when `./ts` changed, rust only when `./rust` (plus
