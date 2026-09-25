@@ -299,6 +299,49 @@ implemented, box ticked in the landing commit.
   with its grammar. The survey is closed; the design note is next,
   before any rule row.
 
+### Design note 2026-09-25 — L8: grammar projection rules (written before the code)
+
+Decisions fixed against the closed survey above:
+
+1. **The rules ship in the engine's own lino format, not a bespoke row
+   style.** `TranslationRuleSet::to_lino`/`from_lino` are the dependency's
+   documented pair, so the committed seed *is* a rule set the engine
+   loads directly — no parser of our own, the same trust posture as the
+   network serialization L7 committed to. One seed file
+   (`data/seed/grammar-projection-rules.lino`) carries every direction:
+   a rule's templates are keyed by target language, so one matched
+   construct serves `javascript`, `typescript`, and `rust` at once, and
+   the leaf authors rows per construct, not per leg.
+2. **Refusal is our coverage pre-check, and refusals are declared data
+   too.** The renderer silently falls back on unruled links, so the leg
+   wrapper (a new owned module `rust_projection.rs`, wired into
+   `meta_translate`'s four pending arms) walks the parsed network's
+   syntax links, collects the kinds, and requires each to be either
+   ruled for the target or listed in the seed's declared-refusal rows —
+   anything else is `Refused` naming the kind, never a silent fallback
+   render. A construct with no rule and no refusal row is a bug the
+   corpus test catches, not a runtime guess.
+3. **Completeness is corpus-driven, the L5 pattern restated.** The named
+   test extends `issue_1138_rust_projection.rs`: for every committed
+   rust module, every kind the parse produces is ruled-for-target or
+   refused-by-name (the ratchet that forces rule rows to grow with the
+   corpus), each ruled render re-parses under the *target* grammar
+   (`javascript`/`typescript`) — structural validity is checkable and
+   therefore checked — and byte identity stays a same-grammar contract
+   only: cross-grammar legs are honest projections, not reconstructions.
+4. **Sequencing inside the leaf**: rust → js/ts first (the 114-kind
+   committed inventory is the checklist), js/ts → rust second (its
+   checklist derives by parsing the committed ES corpus with the
+   javascript/typescript grammars — same check, other side). The four
+   registry rows flip `live` only as each direction's coverage test
+   passes; the legs stay `owed_by L8` until then.
+5. **Nothing semantic ships here.** The rules project syntax (kind →
+   template with captured children); behavioral parity between the rust
+   module and its rendering is the worker-parity corpus's question, not
+   this leaf's — the projection gives that corpus a comparable artifact,
+   which is exactly what L5's "not in this leaf" note promised it would
+   one day need.
+
 ### Design note 2026-09-25 — L2's material legs (written before any L2 code)
 
 Survey the same day, so the leaf is planned against measured facts and not
