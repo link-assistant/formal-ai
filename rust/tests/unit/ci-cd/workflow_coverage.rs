@@ -85,12 +85,16 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
         // `timeout-minutes` *cancels* the job, and a cancelled job is not a red
         // check. Run 33955786082 spent 33m08s inside `cargo llvm-cov` and was
         // cancelled at the 40-minute cap, which the pipeline read as "not
-        // failed". The step now owns a 2400s budget of its own
+        // failed". The step now owns a 4200s budget of its own
         // (`run-with-budget-warning.sh`, asserted in ci_cd::issue_1076), so the
         // deadline that actually fires exits 124 with an `::error` annotation.
-        // 60 minutes leaves that budget room to fire first: 2400s is 66% of the
-        // cap, inside the 70% ceiling issue #1017 pinned.
-        ("coverage", 60),
+        // Issue #1138 re-measured: run 36046809360 had 2553 tests finished when
+        // the old 2400s budget killed the lane -- ordinary progress, no hanger
+        // -- while the uninstrumented twin lane ran all 2856 in 1235.57s, so
+        // the lane outgrew 2400s instrumented. 105 minutes leaves the 4200s
+        // budget room to fire first: 4200s is 66.7% of the cap, inside the 70%
+        // ceiling issue #1017 pinned.
+        ("coverage", 105),
         // Issue #895: the browser denominator. `node --test` over tests/web/
         // needs no cargo build, so the budget is dominated by checkout plus the
         // rust-script install for the ratchet gate.

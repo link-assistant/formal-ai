@@ -80,6 +80,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/meanings-substitution-compiler.lino",
   "seed/meanings-summary.lino",
   "seed/meanings-tool-access.lino",
+  "seed/meanings-translate-cycle.lino",
   "seed/meanings-translation.lino",
   "seed/meanings-units.lino",
   "seed/meanings-verifiable-task.lino",

@@ -167,6 +167,8 @@ pub const MEANINGS_SUBSTITUTION_COMPILER_LINO: &str =
 pub const MEANINGS_SUMMARY_LINO: &str = include_str!("../../../data/seed/meanings-summary.lino");
 pub const MEANINGS_TOOL_ACCESS_LINO: &str =
     include_str!("../../../data/seed/meanings-tool-access.lino");
+pub const MEANINGS_TRANSLATE_CYCLE_LINO: &str =
+    include_str!("../../../data/seed/meanings-translate-cycle.lino");
 pub const MEANINGS_TRANSLATION_LINO: &str =
     include_str!("../../../data/seed/meanings-translation.lino");
 pub const MEANINGS_UNITS_LINO: &str = include_str!("../../../data/seed/meanings-units.lino");
@@ -377,6 +379,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-substitution-compiler.lino", MEANINGS_SUBSTITUTION_COMPILER_LINO),
         ("data/seed/meanings-summary.lino", MEANINGS_SUMMARY_LINO),
         ("data/seed/meanings-tool-access.lino", MEANINGS_TOOL_ACCESS_LINO),
+        ("data/seed/meanings-translate-cycle.lino", MEANINGS_TRANSLATE_CYCLE_LINO),
         ("data/seed/meanings-translation.lino", MEANINGS_TRANSLATION_LINO),
         ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
         ("data/seed/meanings-verifiable-task.lino", MEANINGS_VERIFIABLE_TASK_LINO),
@@ -582,6 +585,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_SUBSTITUTION_COMPILER_LINO,
     MEANINGS_SUMMARY_LINO,
     MEANINGS_TOOL_ACCESS_LINO,
+    MEANINGS_TRANSLATE_CYCLE_LINO,
     MEANINGS_TRANSLATION_LINO,
     MEANINGS_UNITS_LINO,
     MEANINGS_VERIFIABLE_TASK_LINO,

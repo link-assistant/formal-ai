@@ -1,0 +1,40 @@
+self_ast_census
+  target src/es_tokenizer.rs
+  language rust
+  fidelity signature
+  byte_len 25321
+  line_count 736
+  content_id source_module_b7f4b7b78e5b403f
+  symbol_count 31
+  symbols
+    type Span 21 21
+    enum TokenKind 27 41
+    struct Token 45 52
+    enum Delimiter 56 63
+    function opens 68 74
+    function closes 78 84
+    enum Tree 89 108
+    function span 113 118
+    enum TemplatePart 123 133
+    struct TokenizeError 137 143
+    enum TokenizeErrorKind 147 164
+    function fmt 167 178
+    const KEYWORDS 183 183
+    const REGEX_CONTEXT_KEYWORDS 228 228
+    const PUNCTUATORS 247 247
+    function is_keyword 256 258
+    function regex_may_follow 264 266
+    enum Frame 269 284
+    function start 287 293
+    enum Close 297 304
+    function tokenize 316 600
+    enum ChunkEnd 602 605
+    function scan_template_chunk 607 625
+    function scan_regex 629 649
+    function scan_string 654 665
+    function scan_number 667 702
+    function skip_line 704 710
+    function find 712 715
+    function is_ident_byte 717 719
+    function root_or_parent 723 732
+    function emit 734 736

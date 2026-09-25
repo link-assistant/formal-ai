@@ -1,0 +1,202 @@
+# Response-intent meanings for the plan 16 translate CLI diagnostics
+# (issue #1138). Each slug grounds one multilingual-responses-translate
+# intent so the honest closure audit counts it as defined, not owed.
+meanings
+  translate_needs_from_to
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command ran without both roots"
+    effect "the missing root options are requested"
+    unit "not applicable"
+    example "translate needs --from and --to (or --list to see every direction)"
+    lexeme en
+      surface
+        text "translate needs from and to"
+    lexeme ru
+      surface
+        text "переводу нужны источник и цель"
+    lexeme hi
+      surface
+        text "अनुवाद को स्रोत और लक्ष्य चाहिए"
+    lexeme zh
+      surface
+        text "翻译需要源和目标"
+    lexeme es
+      surface
+        text "traducir necesita origen y destino"
+  translate_unknown_from
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command received an unknown source root"
+    effect "the accepted source root spellings are listed"
+    unit "not applicable"
+    example "unknown --from 'rust2': expected one of rust, js, ts, or meta"
+    lexeme en
+      surface
+        text "translate unknown source root"
+    lexeme ru
+      surface
+        text "неизвестный исходный корень перевода"
+    lexeme hi
+      surface
+        text "अनुवाद का अज्ञात स्रोत मूल"
+    lexeme zh
+      surface
+        text "翻译的未知源根"
+    lexeme es
+      surface
+        text "raíz de origen desconocida de traducción"
+  translate_unknown_to
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command received an unknown target root"
+    effect "the accepted target root spellings are listed"
+    unit "not applicable"
+    example "unknown --to 'wasm': expected one of rust, js, ts, or meta"
+    lexeme en
+      surface
+        text "translate unknown target root"
+    lexeme ru
+      surface
+        text "неизвестный целевой корень перевода"
+    lexeme hi
+      surface
+        text "अनुवाद का अज्ञात लक्ष्य मूल"
+    lexeme zh
+      surface
+        text "翻译的未知目标根"
+    lexeme es
+      surface
+        text "raíz de destino desconocida de traducción"
+  translate_same_roots
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command named the same source and target root"
+    effect "the non-direction is refused without invoking a leg"
+    unit "not applicable"
+    example "rust → rust is not a direction: the roots are the same"
+    lexeme en
+      surface
+        text "translate same roots refusal"
+    lexeme ru
+      surface
+        text "отказ перевода при совпадающих корнях"
+    lexeme hi
+      surface
+        text "समान मूलों पर अनुवाद से इनकार"
+    lexeme zh
+      surface
+        text "相同根时拒绝翻译"
+    lexeme es
+      surface
+        text "rechazo de traducción con raíces iguales"
+  translate_pending
+    defined-by answer
+    role localized_response_template
+    precondition "a requested direction is registered but not materialized"
+    effect "the plan-16 leaf that owes the leg is named"
+    unit "not applicable"
+    example "rust → js  pending (plan 16 L5)"
+    lexeme en
+      surface
+        text "translate pending leg"
+    lexeme ru
+      surface
+        text "ожидающее звено перевода"
+    lexeme hi
+      surface
+        text "अनुवाद का लंबित चरण"
+    lexeme zh
+      surface
+        text "翻译的待完成环节"
+    lexeme es
+      surface
+        text "etapa de traducción pendiente"
+  translate_pending_docs
+    defined-by answer
+    role localized_response_template
+    precondition "a pending direction is asked about in documentation mode"
+    effect "the plan-16 leaf that owes the leg is named for the docs page"
+    unit "not applicable"
+    example "see docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md"
+    lexeme en
+      surface
+        text "translate pending docs pointer"
+    lexeme ru
+      surface
+        text "указатель на документацию ожидающего звена перевода"
+    lexeme hi
+      surface
+        text "लंबित अनुवाद चरण का दस्तावेज़ संकेत"
+    lexeme zh
+      surface
+        text "翻译待完成环节的文档指引"
+    lexeme es
+      surface
+        text "indicador de documentación de la etapa pendiente de traducción"
+  translate_needs_input
+    defined-by answer
+    role localized_response_template
+    precondition "the translate command ran with no input text or file"
+    effect "the missing input is requested"
+    unit "not applicable"
+    example "translate needs input text or --input"
+    lexeme en
+      surface
+        text "translate needs input"
+    lexeme ru
+      surface
+        text "переводу нужен входной текст"
+    lexeme hi
+      surface
+        text "अनुवाद को इनपुट चाहिए"
+    lexeme zh
+      surface
+        text "翻译需要输入"
+    lexeme es
+      surface
+        text "traducir necesita entrada"
+  translate_leg_live
+    defined-by answer
+    role localized_response_template
+    precondition "a requested direction is materialized"
+    effect "the leg is reported as live"
+    unit "not applicable"
+    example "rust → meta  live"
+    lexeme en
+      surface
+        text "translate leg live report"
+    lexeme ru
+      surface
+        text "отчёт о действующем звене перевода"
+    lexeme hi
+      surface
+        text "अनुवाद चरण सक्रिय रिपोर्ट"
+    lexeme zh
+      surface
+        text "翻译环节可用报告"
+    lexeme es
+      surface
+        text "informe de etapa de traducción activa"
+  translate_leg_pending
+    defined-by answer
+    role localized_response_template
+    precondition "a requested leg inside a live direction is not materialized"
+    effect "the plan-16 leaf that owes the leg is named with its leaf number"
+    unit "not applicable"
+    example "rust → js  pending (plan 16 L5)"
+    lexeme en
+      surface
+        text "translate leg pending report"
+    lexeme ru
+      surface
+        text "отчёт об ожидающем звене перевода"
+    lexeme hi
+      surface
+        text "अनुवाद चरण लंबित रिपोर्ट"
+    lexeme zh
+      surface
+        text "翻译环节待完成报告"
+    lexeme es
+      surface
+        text "informe de etapa de traducción pendiente"

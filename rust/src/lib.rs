@@ -57,6 +57,7 @@ pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod entity_resolution;
+pub mod es_tokenizer;
 pub mod event_log;
 pub mod execution_box;
 pub mod execution_evidence;

@@ -348,6 +348,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-translate-cycle
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-translation
     bundle true
     lexicon meaning
