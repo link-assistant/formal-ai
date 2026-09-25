@@ -263,6 +263,7 @@ mod issue_1138_handler_promotions;
 mod issue_1138_held_out_toolchain;
 mod issue_1138_install_scope;
 mod issue_1138_intent_phrase_migration;
+mod issue_1138_js_meta;
 mod issue_1138_js_tokenizer;
 mod issue_1138_learned_items_change_answers;
 mod issue_1138_learning_ratchet;

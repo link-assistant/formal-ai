@@ -233,6 +233,57 @@ first, per repo convention:
 - **L2g** — `--write` mode and the agent `translate` tool, so the dogfood
   loop of L3 has something to turn.
 
+### Design note 2026-09-25 — the L2b–L2f batch (written before the code)
+
+L2a landed (`rust/src/es_tokenizer.rs`, the engine lexer). The rest of L2
+is one batch because the legs are mutually defining — the renderer cannot
+be tested without the extractor's document, and the acceptance test needs
+both renderers. Decisions fixed before any of it is written:
+
+- **The pivot document is a lino `token_tree` document** rendered from the
+  L2a token tree: `target`, `language` (javascript/typescript), `engine
+  es_tokenizer`, `fidelity token_tree`, `token_count`, then the tree itself
+  (`leaf <kind> "<text>"`, `group <delim>`, `template` with `chunk` and
+  `interpolation` children, indentation = nesting). Values are
+  double-quoted with the `sanitize_lino_value` escape set (`\` `"` newline
+  tab CR), so the shared `seed::parser` reads them back exactly; the
+  extractor writes, a pivot parser reads, and `js → meta` and `meta → js`
+  are inverse by construction.
+- **CST equality is token-tree equality, spans ignored.** Spans name bytes
+  of one text; a rendered target is a different text. A round trip is
+  perfect exactly when kind, text, and shape survive.
+- **The renderers emit canonical spacing** — leaf tokens joined by single
+  spaces, group delimiters spaced, template chunks verbatim between
+  backticks. Because the tokenizer's regex/division decision is a pure
+  function of the previous significant token, re-tokenizing canonically
+  spaced output repeats every decision the original made; no token can
+  merge because every pair is separated. Rendered code is not promised to
+  be *runnable* (ASI is not a token-tree fact); it is promised to
+  re-tokenize to the same tree.
+- **Projection rules live in the seed, not the engine.**
+  `data/seed/language-projection.lino` carries, per token class, which
+  targets carry it (`carries_to js|ts`), and per recognizable
+  TypeScript-only construct, a signature (a short leaf/group sequence)
+  with `refuses_to js`. The engine is a generic matcher over whatever the
+  seed declares — `projection_rules_from(lino_text)` is exposed so a test
+  can prove the behavior moves with the data.
+- **Refusal is total, not partial.** A refused construct or token class
+  produces *no* target, and the report names every refused construct;
+  dropping just the refused tokens would silently change the tree. The
+  `translate` CLI reports refusals through a new `translate_refused`
+  response intent, grounded like the other nine.
+- **Signature recognition is conservative and documented.** The seed's
+  signatures match only sequences that cannot be valid plain JavaScript
+  (`interface`/`enum` declarations, `type X =` aliases, `x satisfies T`).
+  Two candidates are deliberately excluded and the seed says why: generic
+  parameter lists (`a < b > c` is legal JavaScript) and `as` casts
+  (`export { x as y }` is plain ES module syntax, and the committed js
+  corpus uses it); they carry silently until a fidelity raise or a real
+  `./ts` corpus owes the recognizer.
+- **Live legs after the batch:** js↔meta, ts↔meta, js→ts, ts→js. Rust legs
+  stay pending (L3/L5) exactly as before; only the L2 rows of the leg
+  table change.
+
 
 ## Risks
 

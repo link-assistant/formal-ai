@@ -6,11 +6,23 @@
 //! opens by carrying a leg, and a leg that is not materialized yet reports
 //! the plan-16 leaf that owes it — the same honesty the capability table
 //! practices: a gap is stated, never papered over with a silent no-op.
+//!
+//! Live legs: `rust → meta` (the self-AST signature projection) and, since
+//! plan 16 L2, the whole ES quadrant — `js ↔ meta`, `ts ↔ meta`,
+//! `js → ts`, `ts → js` — carried by the token-tree pivot in
+//! [`crate::es_meta`] under the seed's projection rules. Every other
+//! direction runs through the pivot in principle and is owed by exactly one
+//! leaf: the dogfood back-translation into Rust by L3, and the
+//! CST-equal round trip including the full `meta → rust` inverse by L5.
+//! `L0` marks a same-root non-direction: no leaf owes it because it is not
+//! a translation, and callers reject it before listing.
 
 extern crate alloc;
 
 use alloc::string::String;
 use alloc::vec::Vec;
+
+use crate::es_meta::{ProjectionTarget, Refusal, SourceLanguage, render_document, render_source};
 
 /// The four trees the pivot connects; `Meta` is the pivot itself.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -47,37 +59,41 @@ impl SourceRoot {
     }
 }
 
-/// What one translate call produced: the rendered target, or the honest gap
-/// naming the plan-16 leaf that owes the missing half of the leg.
+/// What one translate call produced.
+///
+/// The rendered target, the honest gap naming the plan-16 leaf that owes the
+/// missing half of the leg, the seed's refusal of a construct the target
+/// does not accept, or the reason the source could not be normalized at all.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TranslationOutcome {
-    /// The pivot carried the source into the target language.
-    Rendered { target: String },
+    /// The pivot carried the source into the target language; `carried`
+    /// counts what crossed (tokens for the ES legs).
+    Rendered { target: String, carried: usize },
+    /// The seed's projection rules refuse named constructs; nothing was
+    /// produced, because carrying the rest would silently change the tree.
+    Refused { refusals: Vec<Refusal> },
     /// The leg is registered but not materialized; the leaf owes it.
     Pending { plan_leaf: &'static str },
+    /// The source could not be normalized into the pivot.
+    Invalid { reason: String },
 }
 
 /// The plan-16 leaf that owes a leg, or `None` when the leg is live.
 ///
-/// Live today: `rust → meta`, the self-AST projection that renders one Rust
-/// module as its meta-language census document (the format committed under
-/// `data/meta/self-ast/`). Every other direction runs through the pivot in
-/// principle and is owed by exactly one leaf: the projection renderers and the
-/// advertised `js → ts` command by L2, the dogfood back-translation into Rust
-/// by L3, and the CST-equal round trip — including the full `meta → rust`
-/// inverse and the js/ts extractors into the pivot — by L5. `L0` marks a
-/// same-root non-direction: no leaf owes it because it is not a translation,
-/// and callers reject it before listing.
+/// Live: `rust → meta` (self-AST), and the ES quadrant — `js ↔ meta`,
+/// `ts ↔ meta`, `js → ts`, `ts → js` (plan 16 L2's token-tree pivot).
+/// Owed: the dogfood back-translation into Rust by L3, and the CST-equal
+/// round trip — including the full `meta → rust` inverse — by L5. `L0`
+/// marks a same-root non-direction.
 #[must_use]
 pub const fn pending_leg(from: SourceRoot, to: SourceRoot) -> Option<&'static str> {
     match (from, to) {
-        (SourceRoot::Rust, SourceRoot::Meta) => None,
-        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript)
-        | (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta)
-        | (SourceRoot::Meta, SourceRoot::Rust) => Some("L5"),
-        (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript)
+        (SourceRoot::Rust | SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta)
+        | (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript)
         | (SourceRoot::JavaScript, SourceRoot::TypeScript)
-        | (SourceRoot::TypeScript, SourceRoot::JavaScript) => Some("L2"),
+        | (SourceRoot::TypeScript, SourceRoot::JavaScript) => None,
+        (SourceRoot::Rust, SourceRoot::JavaScript | SourceRoot::TypeScript)
+        | (SourceRoot::Meta, SourceRoot::Rust) => Some("L5"),
         (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Rust) => Some("L3"),
         (SourceRoot::Rust, SourceRoot::Rust)
         | (SourceRoot::JavaScript, SourceRoot::JavaScript)
@@ -104,9 +120,72 @@ pub fn translate(
     match (from, to) {
         (SourceRoot::Rust, SourceRoot::Meta) => TranslationOutcome::Rendered {
             target: crate::agentic_coding::self_ast::render_ast_document(display_path, source),
+            carried: 0,
         },
+        (SourceRoot::JavaScript | SourceRoot::TypeScript, SourceRoot::Meta) => {
+            let language = es_language(from);
+            match crate::es_meta::extract(display_path, language, source) {
+                Ok(document) => TranslationOutcome::Rendered {
+                    target: render_document(&document),
+                    carried: document.token_count,
+                },
+                Err(error) => TranslationOutcome::Invalid {
+                    reason: error.to_string(),
+                },
+            }
+        }
+        (SourceRoot::JavaScript, SourceRoot::TypeScript)
+        | (SourceRoot::TypeScript, SourceRoot::JavaScript) => {
+            let language = es_language(from);
+            match crate::es_meta::extract(display_path, language, source) {
+                Ok(document) => es_render(&document, projection_target(to)),
+                Err(error) => TranslationOutcome::Invalid {
+                    reason: error.to_string(),
+                },
+            }
+        }
+        (SourceRoot::Meta, SourceRoot::JavaScript | SourceRoot::TypeScript) => {
+            match crate::es_meta::parse_document(source) {
+                Ok(document) => es_render(&document, projection_target(to)),
+                Err(error) => TranslationOutcome::Invalid {
+                    reason: error.to_string(),
+                },
+            }
+        }
         _ => TranslationOutcome::Pending {
             plan_leaf: pending_leg(from, to).unwrap_or("L2"),
+        },
+    }
+}
+
+const fn es_language(root: SourceRoot) -> SourceLanguage {
+    match root {
+        SourceRoot::TypeScript => SourceLanguage::TypeScript,
+        SourceRoot::Rust | SourceRoot::JavaScript | SourceRoot::Meta => SourceLanguage::JavaScript,
+    }
+}
+
+const fn projection_target(root: SourceRoot) -> ProjectionTarget {
+    match root {
+        SourceRoot::TypeScript => ProjectionTarget::TypeScript,
+        SourceRoot::Rust | SourceRoot::JavaScript | SourceRoot::Meta => {
+            ProjectionTarget::JavaScript
+        }
+    }
+}
+
+fn es_render(
+    document: &crate::es_meta::PivotDocument,
+    target: ProjectionTarget,
+) -> TranslationOutcome {
+    let rendered = render_source(document, target);
+    match rendered.output {
+        Some(target_text) => TranslationOutcome::Rendered {
+            target: target_text,
+            carried: rendered.report.carried,
+        },
+        None => TranslationOutcome::Refused {
+            refusals: rendered.report.refused,
         },
     }
 }

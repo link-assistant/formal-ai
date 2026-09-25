@@ -32,9 +32,12 @@ total_closure_schema
   declaration_identity_head task
   declaration_identity_head template
   declaration_identity_head timeline
+  declaration_identity_head token_class
   declaration_identity_head tool
   declaration_identity_head topic
+  declaration_identity_head ts_construct
   literal_operand_head cue
   literal_operand_head prefix
+  literal_operand_head signature
   literal_operand_head substring
   literal_operand_head word

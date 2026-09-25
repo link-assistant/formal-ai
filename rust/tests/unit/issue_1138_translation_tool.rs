@@ -17,6 +17,7 @@ fn every_translate_cli_text_lives_in_the_seed() {
         "translate_needs_input",
         "translate_leg_live",
         "translate_leg_pending",
+        "translate_refused",
     ] {
         assert!(
             formal_ai::response_for(intent, "en").is_some(),
@@ -65,21 +66,23 @@ fn every_distinct_pair_is_listed_exactly_once() {
 }
 
 #[test]
-fn rust_to_meta_is_the_live_leg() {
+fn rust_to_meta_is_the_live_signature_leg() {
     assert_eq!(
         meta_translate::pending_leg(SourceRoot::Rust, SourceRoot::Meta),
         None
     );
     let source = "fn answer() -> u32 {\n    41 + 1\n}\n";
     match meta_translate::translate(SourceRoot::Rust, SourceRoot::Meta, "probe.rs", source) {
-        TranslationOutcome::Rendered { target } => {
+        TranslationOutcome::Rendered { target, .. } => {
             assert!(target.contains("self_ast"));
             assert!(target.contains("target probe.rs"));
             assert!(target.contains("language rust"));
             assert!(target.contains("engine meta_language"));
             assert!(target.contains("named_node_count"));
         }
-        other @ TranslationOutcome::Pending { .. } => {
+        other @ (TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Refused { .. }
+        | TranslationOutcome::Invalid { .. }) => {
             panic!("rust → meta must render the self-AST document; got {other:?}")
         }
     }
@@ -94,15 +97,30 @@ fn pending_legs_name_their_plan_leaf() {
             "leaf {leaf:?} for {from:?} → {to:?} must name a plan 16 leaf"
         );
     }
-    // The ts/README-advertised js → ts command is owed by L2, and the dogfood
-    // back-translation into rust by L3.
+    // Plan 16 L2 opened the ES quadrant: js/ts ↔ meta and js ↔ ts carry
+    // through the token-tree pivot. The dogfood back-translation into rust
+    // is owed by L3, and the meta → rust inverse by L5.
+    for (from, to) in [
+        (SourceRoot::JavaScript, SourceRoot::Meta),
+        (SourceRoot::Meta, SourceRoot::JavaScript),
+        (SourceRoot::TypeScript, SourceRoot::Meta),
+        (SourceRoot::Meta, SourceRoot::TypeScript),
+        (SourceRoot::JavaScript, SourceRoot::TypeScript),
+        (SourceRoot::TypeScript, SourceRoot::JavaScript),
+    ] {
+        assert_eq!(
+            meta_translate::pending_leg(from, to),
+            None,
+            "{from:?} → {to:?} is a plan 16 L2 leg and must be live"
+        );
+    }
     assert_eq!(
-        meta_translate::pending_leg(SourceRoot::JavaScript, SourceRoot::TypeScript),
-        Some("L2")
+        meta_translate::pending_leg(SourceRoot::JavaScript, SourceRoot::Rust),
+        Some("L3")
     );
     assert_eq!(
-        meta_translate::pending_leg(SourceRoot::TypeScript, SourceRoot::Rust),
-        Some("L3")
+        meta_translate::pending_leg(SourceRoot::Meta, SourceRoot::Rust),
+        Some("L5")
     );
     // A same-root call is a non-direction, not a leaf.
     assert_eq!(
@@ -112,16 +130,24 @@ fn pending_legs_name_their_plan_leaf() {
 }
 
 #[test]
-fn a_pending_leg_translates_to_the_honest_gap_never_a_no_op() {
+fn js_to_ts_carries_through_the_pivot() {
     match meta_translate::translate(
         SourceRoot::JavaScript,
         SourceRoot::TypeScript,
         "app.js",
         "export const x = 1;\n",
     ) {
-        TranslationOutcome::Pending { plan_leaf } => assert_eq!(plan_leaf, "L2"),
-        other @ TranslationOutcome::Rendered { .. } => {
-            panic!("js → ts is pending and must say so; got {other:?}")
+        TranslationOutcome::Rendered { target, carried } => {
+            assert!(carried >= 5, "five tokens must cross: {carried}");
+            assert!(
+                target.contains("export const x = 1"),
+                "the token-faithful carry renders the tokens: {target}"
+            );
+        }
+        other @ (TranslationOutcome::Pending { .. }
+        | TranslationOutcome::Refused { .. }
+        | TranslationOutcome::Invalid { .. }) => {
+            panic!("js → ts must carry through the pivot; got {other:?}")
         }
     }
 }

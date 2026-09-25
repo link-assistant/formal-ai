@@ -328,6 +328,7 @@ rust/src/engine_responses.rs	What is formal-ai?
 rust/src/engine_responses.rs	Who are you?
 rust/src/engine_responses.rs	add a rule in Links Notation, then run the request again.
 rust/src/engine_responses.rs	Что делаешь в свободное время?
+rust/src/es_meta.rs	token_class {class}
 rust/src/external_benchmarks/cases.rs	no case parser for suite `{other}`
 rust/src/external_benchmarks/cases.rs	{}: record {index} is missing a `target`
 rust/src/external_benchmarks/cases.rs	{}: record {index} is missing the numeric field `{field}`

@@ -1,0 +1,55 @@
+self_ast_census
+  target src/es_meta.rs
+  language rust
+  fidelity signature
+  byte_len 27592
+  line_count 797
+  content_id source_module_2ee32525315a765a
+  symbol_count 46
+  symbols
+    enum SourceLanguage 39 44
+    function name 49 54
+    function parse 58 64
+    struct OwnedToken 69 74
+    enum OwnedTree 80 95
+    enum OwnedPart 99 107
+    struct PivotDocument 112 121
+    function extract 129 143
+    function own_tree 145 167
+    function count_tokens 169 186
+    function class_slug 190 199
+    function delimiter_slug 201 207
+    function delimiter_from_slug 209 216
+    function render_document 222 233
+    function write_trees 235 257
+    function write_parts 259 272
+    function quoted 276 291
+    enum PivotParseError 295 304
+    function fmt 307 314
+    function parse_document 325 362
+    function parse_tree 364 390
+    function parse_part 392 406
+    function kind_from_slug 408 418
+    function split_kind_and_value 423 428
+    function quoted_tail 432 440
+    enum ProjectionTarget 444 449
+    function name 454 459
+    enum SignatureItem 465 472
+    struct ClassRule 476 482
+    struct ConstructRule 486 493
+    struct ProjectionRules 497 502
+    function projection_rules 506 508
+    function projection_rules_from 513 543
+    function flag_values 545 551
+    function signature_item 553 569
+    struct Refusal 574 579
+    struct RenderReport 583 588
+    struct RenderedSource 592 597
+    function render_source 605 623
+    function refuse_classes 627 658
+    function check_class 660 676
+    enum LevelItem 681 684
+    function level_items 686 695
+    function refuse_constructs 701 741
+    function window_matches 743 756
+    function write_source 763 797

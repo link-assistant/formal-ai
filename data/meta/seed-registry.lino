@@ -109,6 +109,8 @@ seed_registry
   seed language-detection
     bundle true
     web true
+  seed language-projection
+    bundle true
   seed languages
     bundle true
     web true

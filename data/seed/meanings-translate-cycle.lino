@@ -200,3 +200,25 @@ meanings
     lexeme es
       surface
         text "informe de etapa de traducción pendiente"
+  translate_refused
+    defined-by answer
+    role localized_response_template
+    precondition "a projection seed refuses a construct the target root does not accept"
+    effect "the refused constructs are named and nothing is written"
+    unit "not applicable"
+    example "translate ts → js refused interface_declaration: the projection seed does not carry it, so nothing was written"
+    lexeme en
+      surface
+        text "translate refusal report"
+    lexeme ru
+      surface
+        text "отчёт об отказе перевода"
+    lexeme hi
+      surface
+        text "अनुवाद से इनकार रिपोर्ट"
+    lexeme zh
+      surface
+        text "翻译拒绝报告"
+    lexeme es
+      surface
+        text "informe de rechazo de traducción"

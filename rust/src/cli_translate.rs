@@ -56,9 +56,25 @@ pub fn run_translate(
     };
     let source = std::fs::read_to_string(&path)?;
     match meta_translate::translate(from_root, to_root, &path.display().to_string(), &source) {
-        TranslationOutcome::Rendered { target } => {
+        TranslationOutcome::Rendered { target, .. } => {
             println!("{target}");
             Ok(())
+        }
+        TranslationOutcome::Refused { refusals } => {
+            let constructs = refusals
+                .iter()
+                .map(|refusal| refusal.construct.as_str())
+                .collect::<Vec<_>>()
+                .join(", ");
+            Err(cli_text(
+                "translate_refused",
+                &[
+                    ("from", from_root.name()),
+                    ("to", to_root.name()),
+                    ("constructs", &constructs),
+                ],
+            )
+            .into())
         }
         TranslationOutcome::Pending { plan_leaf } => Err(cli_text(
             "translate_pending",
@@ -69,5 +85,6 @@ pub fn run_translate(
             ],
         )
         .into()),
+        TranslationOutcome::Invalid { reason } => Err(reason.into()),
     }
 }

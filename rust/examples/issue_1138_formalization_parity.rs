@@ -50,9 +50,11 @@ fn requirements() -> Vec<Requirement> {
             });
         } else if let Some(record) = &mut current {
             if let Some(value) = trimmed.strip_prefix("family ") {
-                record.family = value.to_owned();
+                record.family.clear();
+                record.family.push_str(value);
             } else if let Some(value) = trimmed.strip_prefix("language ") {
-                record.language = value.to_owned();
+                record.language.clear();
+                record.language.push_str(value);
             } else if let Some(value) = trimmed.strip_prefix("prompt ") {
                 record.prompt = value.trim_matches('"').replace("\"\"", "\"");
             }
@@ -94,7 +96,7 @@ fn main() {
             &client,
             &preferences,
             &mut availability,
-            bounds.clone(),
+            bounds,
             &requirement.language,
             now,
         );

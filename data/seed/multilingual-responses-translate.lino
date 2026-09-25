@@ -35,3 +35,7 @@ multilingual_responses
     intent translate_leg_pending
     language en
     text "{from} → {to}  pending (plan 16 {leaf})"
+  response response_translate_refused_en
+    intent translate_refused
+    language en
+    text "translate {from} → {to} refused {constructs}: the projection seed does not carry them, so nothing was written"
