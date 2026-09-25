@@ -1,0 +1,20 @@
+self_ast_census
+  target src/grammar_kinds.rs
+  language rust
+  fidelity signature
+  byte_len 4882
+  line_count 141
+  content_id source_module_f1efaf9637302e34
+  symbol_count 11
+  symbols
+    struct Corpus 25 34
+    const CORPORA 37 37
+    function corpus_by_label 60 62
+    function corpus_inventory 70 81
+    function source_kinds 85 87
+    function parse_network 92 94
+    function parse_network 100 103
+    struct GrammarlessNetwork 108 108
+    function links 114 116
+    function kind_histogram 122 133
+    function kind_histogram 138 141

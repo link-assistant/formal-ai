@@ -75,6 +75,7 @@ pub mod gemini;
 pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+pub mod grammar_kinds;
 pub mod handler_promotion;
 pub mod how_to_capture_manifest;
 pub mod how_to_guide;

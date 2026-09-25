@@ -342,6 +342,72 @@ Decisions fixed against the closed survey above:
    which is exactly what L5's "not in this leaf" note promised it would
    one day need.
 
+### Design note 2026-09-25 — L8 amendment: the renderer walks the wrong way, so the walk is ours (measured before the code)
+
+Authoring the first rule rows forced the survey's open question — "the
+exact encoding of a tree-sitter kind on the parsed link" — to be answered
+against the adapter source, and the answer changes decision 2's mechanics,
+not its contract. Measured facts, all from meta-language 0.58.2:
+
+- Parsed tree-sitter networks are **leaf-up**: `convert_node` inserts every
+  node link with `[parent]` as its references, leaf nodes carry exactly one
+  token child whose term is the leaf's source text, inter-child whitespace
+  rides extra-flag token children, field names ride field links
+  `[parent, label, child]`, and trivia attachment adds separate wrapper
+  links. The kind rides `metadata.term()` on `LinkType::Syntax` links as
+  the survey note assumed.
+- The **query engine** navigates leaf-up correctly: `structural_children`
+  scans links whose first reference is the parent (minus field/trivia), and
+  s-expression child patterns bind captures by field with quantifiers —
+  `(parameters (* _) @param)` binds one `@param` capture per child in
+  document order. Predicates are rejected by the default host, so rules
+  carry none. All of this is public (`query_matches`).
+- The **renderer does not**: `captured_text` — which backs
+  `{cap:text}`, `render_unclaimed`, and therefore every unclaimed link —
+  recurses into `references()`, and the variadic `{*cap}` maps the captured
+  link's `references()`. On a downward-reference semantic network (the
+  statehood demo's shape) references are components and this is correct;
+  on a leaf-up parse they are the ancestor chain, so a parsed node's
+  "captured text" is its ancestors, not its span. `resolve` also returns
+  only the *first* binding of a capture name, so no engine template can
+  enumerate a variadic child list (parameters, block statements, call
+  arguments — every real file has them). Measured against the public
+  surface: no entry point (`render`, `render_link`) changes this.
+
+Decision (amending decision 2's mechanics only): **the rule set stays the
+dependency's; the expansion walk is ours.** The seed loads through
+`TranslationRuleSet::from_lino` — decision 1 unchanged — and links are
+claimed through the engine's public `query_matches` per rule. But template
+expansion runs our own leaf-up walk in `rust_projection.rs`: per claimed
+link, expand the rule's target template resolving `{cap}` recursively
+through the rules, `{cap:text}` to the captured link's span text, and
+`{*cap|sep}` over **all** bindings of `cap` in match order — the leaf-up
+reading of the engine's variadic — with token links rendering their term
+(the leaf text). This is the same owned-walk-over-dependency-primitives
+shape every plan-16 leaf uses (L2's tokenizer, L5's census renderer, L7's
+serialization wiring); it adds no dependency patch, and generalizing the
+engine's renderer for leaf-up parses remains the upstream general case the
+CONTRIBUTING dependency policy names — nothing today needs the bridge, so
+no patch and no tracking issue ship with this leaf. The refusal contract
+is unchanged: every syntax link the document parse produces must be
+claimed-with-template-for-target or declared-refused, else the leg
+refuses naming the kind — the renderer's silent fallback is unreachable
+because our walk never calls it.
+
+The checklist is now measured corpus-wide, not estimated from the census's
+full-AST tier: `cargo run --example dump_grammar_kind_inventory` (landing
+with this note, backed by the `grammar_kinds` module the tests share)
+parses every owned corpus file with its grammar and counts the syntax
+kinds — **218 distinct kinds across the 627-module rust corpus, 177 across
+the 63 js files, 182 across the 63 ts files**. The distribution is what
+makes the leaf tractable: a few dozen composite kinds carry almost all
+occurrences (identifier alone is 226 421 of the rust corpus's links), and
+the long tail is punctuation and literal leaves whose honest projection is
+the span splice. Sequencing inside the leaf is unchanged — the machinery
+(seed loading, claim map, coverage pre-check, the expansion walk) lands
+first, then the rule rows grow against the corpus ratchet until each
+direction's coverage passes and its registry rows flip live.
+
 ### Design note 2026-09-25 — L2's material legs (written before any L2 code)
 
 Survey the same day, so the leaf is planned against measured facts and not
