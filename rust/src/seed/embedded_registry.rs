@@ -81,6 +81,8 @@ pub const MEANINGS_LINO: &str = include_str!("../../embedded/data/seed/meanings.
 pub const MEANINGS_ACTS_LINO: &str = include_str!("../../embedded/data/seed/meanings-acts.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-agent-actions.lino");
+pub const MEANINGS_LANGUAGE_PROJECTION_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-language-projection.lino");
 pub const MEANINGS_BEHAVIOR_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-behavior-rules.lino");
 pub const MEANINGS_CALCULATOR_LINO: &str =
@@ -355,6 +357,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/meanings-acts.lino", MEANINGS_ACTS_LINO),
         ("data/seed/meanings-agent-actions.lino", MEANINGS_AGENT_ACTIONS_LINO),
+        ("data/seed/meanings-language-projection.lino", MEANINGS_LANGUAGE_PROJECTION_LINO),
         ("data/seed/meanings-behavior-rules.lino", MEANINGS_BEHAVIOR_RULES_LINO),
         ("data/seed/meanings-calculator.lino", MEANINGS_CALCULATOR_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
@@ -560,6 +563,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_LINO,
     MEANINGS_ACTS_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
+    MEANINGS_LANGUAGE_PROJECTION_LINO,
     MEANINGS_BEHAVIOR_RULES_LINO,
     MEANINGS_CALCULATOR_LINO,
     MEANINGS_CALENDAR_LINO,

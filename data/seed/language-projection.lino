@@ -11,12 +11,12 @@
 # by an identifier is not TypeScript-only evidence. A fidelity raise or a
 # real ./ts corpus owes both recognizers.
 #
-# Plan 16 L5 declares the root projections here too: one row per directed
+# Plan 16 L5 declares the root projections here too — one row per directed
 # pair of distinct roots, stating the pivot fidelity the projection carries
 # and whether it is live or owed by a plan 16 leaf. `rust to meta` is
-# `signature` (the self-AST census); `meta to rust` is `network` (the
-# lossless LinkNetwork serialization, plan 16 L7, rendered back with
-# reconstruct_text). No row marks rust to es live at any fidelity — that
+# `signature` (the self-AST census) and `meta to rust` is `network`, the
+# lossless LinkNetwork serialization of plan 16 L7, rendered back with
+# `reconstruct_text`. No row marks rust to es live at any fidelity — that
 # projection does not exist yet, and a live row saying it would be invented
 # coverage; the legs are declared owed by L8 until that leaf delivers them.
 language_projection

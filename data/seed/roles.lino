@@ -573,6 +573,10 @@ roles
     kind meaning
   program_task_alias
     kind predicate
+  projection_root
+    kind predicate
+  projection_route
+    kind predicate
   proof_claim_scaffold
     kind predicate
   proof_concept_determinism

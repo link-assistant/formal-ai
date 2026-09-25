@@ -1,0 +1,137 @@
+meanings
+  rust_to_meta
+    defined-by relation
+    role projection_route
+    precondition "a rust source document is parsed into the self-ast census dialect"
+    effect "renders the module's link network as a census document"
+    unit "not applicable"
+    example "project the owned module into its census serialization"
+    grounding "data/seed/language-projection.lino"
+  js_to_meta
+    defined-by relation
+    role projection_route
+    precondition "a javascript source document is tokenized into the es pivot"
+    effect "renders the token tree as a meta document"
+    unit "not applicable"
+    example "carry the script's token tree into the pivot"
+    grounding "data/seed/language-projection.lino"
+  ts_to_meta
+    defined-by relation
+    role projection_route
+    precondition "a typescript source document is tokenized into the es pivot"
+    effect "renders the token tree as a meta document"
+    unit "not applicable"
+    example "carry the typed module's token tree into the pivot"
+    grounding "data/seed/language-projection.lino"
+  meta_to_js
+    defined-by relation
+    role projection_route
+    precondition "a meta token-tree document names javascript as its target"
+    effect "re-emits the token tree as javascript source text"
+    unit "not applicable"
+    example "render the pivot document back out as a script"
+    grounding "data/seed/language-projection.lino"
+  meta_to_ts
+    defined-by relation
+    role projection_route
+    precondition "a meta token-tree document names typescript as its target"
+    effect "re-emits the token tree as typescript source text"
+    unit "not applicable"
+    example "render the pivot document back out as a typed module"
+    grounding "data/seed/language-projection.lino"
+  js_to_ts
+    defined-by relation
+    role projection_route
+    precondition "a javascript document crosses to typescript through the pivot"
+    effect "round-trips the token tree and re-emits it as typescript"
+    unit "not applicable"
+    example "retype the script by way of the token-tree pivot"
+    grounding "data/seed/language-projection.lino"
+  ts_to_js
+    defined-by relation
+    role projection_route
+    precondition "a typescript document crosses to javascript through the pivot"
+    effect "round-trips the token tree and re-emits it as javascript"
+    unit "not applicable"
+    example "strip the types by way of the token-tree pivot"
+    grounding "data/seed/language-projection.lino"
+  meta_to_rust
+    defined-by relation
+    role projection_route
+    precondition "a meta document in the network serialization dialect names rust as its target"
+    effect "reconstructs the rust source text byte-for-byte from the network"
+    unit "not applicable"
+    example "render the network document back out as a rust module"
+    grounding "data/seed/language-projection.lino"
+  rust_to_js
+    defined-by relation
+    role projection_route
+    precondition "a rust source document names javascript as its target"
+    effect "renders the module through the grammar projection rules"
+    unit "not applicable"
+    example "project the owned function out as a script"
+    grounding "data/seed/language-projection.lino"
+  rust_to_ts
+    defined-by relation
+    role projection_route
+    precondition "a rust source document names typescript as its target"
+    effect "renders the module through the grammar projection rules"
+    unit "not applicable"
+    example "project the owned function out as a typed module"
+    grounding "data/seed/language-projection.lino"
+  js_to_rust
+    defined-by relation
+    role projection_route
+    precondition "a javascript source document names rust as its target"
+    effect "renders the script through the grammar projection rules"
+    unit "not applicable"
+    example "project the script out as a rust module"
+    grounding "data/seed/language-projection.lino"
+  ts_to_rust
+    defined-by relation
+    role projection_route
+    precondition "a typescript source document names rust as its target"
+    effect "renders the typed module through the grammar projection rules"
+    unit "not applicable"
+    example "project the typed module out as a rust module"
+    grounding "data/seed/language-projection.lino"
+  signature
+    defined-by concept
+    role translation_property
+    precondition "a projection row states the fidelity its pivot carries"
+    effect "declares that the leg carries only the signature dialect of the meta root"
+    unit "not applicable"
+    example "the census leg carries the signature dialect"
+    grounding "data/seed/language-projection.lino"
+  token_tree
+    defined-by concept
+    role translation_property
+    precondition "a projection row states the fidelity its pivot carries"
+    effect "declares that the leg carries the token-tree dialect of the meta root"
+    unit "not applicable"
+    example "the es legs carry the token-tree dialect"
+    grounding "data/seed/language-projection.lino"
+  live
+    defined-by concept
+    role translation_property
+    precondition "a projection row states whether its leg is delivered"
+    effect "declares that the leg renders today through the public translate surface"
+    unit "not applicable"
+    example "the pivot legs are marked live"
+    grounding "data/seed/language-projection.lino"
+  owed_by
+    defined-by concept
+    role translation_property
+    precondition "a projection row states whether its leg is delivered"
+    effect "declares that a named plan leaf still owes the leg"
+    unit "not applicable"
+    example "the grammar legs are owed by the L8 leaf"
+    grounding "data/seed/language-projection.lino"
+  meta
+    defined-by concept
+    role projection_root
+    precondition "a directed pair of source roots names the pivot endpoint"
+    effect "declares that the leg passes through the intermediate-representation root"
+    unit "not applicable"
+    example "every es leg routes through the meta root"
+    grounding "data/seed/language-projection.lino"
