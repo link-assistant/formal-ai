@@ -237,6 +237,9 @@ tools_registry
     localized hi
       name translate
       note "meta pivot के through js और ts roots के बीच एक source file या पूला tree अनुवाद करता है; refusals नामित होते हैं, अनुमान नहीं।"
+    localized es
+      name translate
+      note "Traduce un archivo fuente o el árbol completo entre las raíces js y ts a través del pivote meta; las negativas se nombran, nunca se adivinan."
   tool tool_run_agent
     name run_agent
     note "Run one seed-registered external agent CLI only after an explicit workspace-scoped grant; capture process output, file effects, verification results, and chained provenance without implicit retries."
