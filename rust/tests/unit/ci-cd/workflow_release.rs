@@ -49,7 +49,7 @@ fn rust_script_install_steps_use_retry_wrapper() {
         // extracting it brought `release.yml` back under the 1500-line warning
         // band (issues #999, #1012); its install step is counted by
         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
-        8,
+        9,
         "each rust-script install step should use the retry wrapper"
     );
     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
