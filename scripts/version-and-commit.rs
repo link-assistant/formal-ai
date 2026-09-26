@@ -42,7 +42,7 @@ mod rust_paths;
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
 
-use prepared_release::{PreparedRelease, ensure_prepared_release_tag, prepared_release};
+use prepared_release::{ensure_prepared_release_tag, prepared_release};
 
 const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
 const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";

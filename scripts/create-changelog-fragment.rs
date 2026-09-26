@@ -12,6 +12,7 @@
 //!
 //! [dependencies]
 //! chrono = "0.4"
+//! regex = "1"
 //! ```
 
 use std::env;
