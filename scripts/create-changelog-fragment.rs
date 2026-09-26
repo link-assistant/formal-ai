@@ -20,6 +20,9 @@ use std::path::Path;
 use std::process::exit;
 use chrono::Utc;
 
+#[path = "rust-paths.rs"]
+mod rust_paths;
+
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
     let flag = format!("--{}", name);
@@ -55,11 +58,9 @@ fn get_rust_root() -> String {
 }
 
 fn get_changelog_dir(rust_root: &str) -> String {
-    if rust_root == "." {
-        "changelog.d".to_string()
-    } else {
-        format!("{}/changelog.d", rust_root)
-    }
+    rust_paths::get_changelog_dir(rust_root)
+        .to_string_lossy()
+        .to_string()
 }
 
 fn get_category(bump_type: &str) -> &'static str {

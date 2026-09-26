@@ -60,19 +60,15 @@ fn get_arg(name: &str) -> Option<String> {
 }
 
 fn get_changelog_dir(rust_root: &str) -> String {
-    if rust_root == "." {
-        "./changelog.d".to_string()
-    } else {
-        format!("{}/changelog.d", rust_root)
-    }
+    rust_paths::get_changelog_dir(rust_root)
+        .to_string_lossy()
+        .to_string()
 }
 
 fn get_changelog_path(rust_root: &str) -> String {
-    if rust_root == "." {
-        "./CHANGELOG.md".to_string()
-    } else {
-        format!("{}/CHANGELOG.md", rust_root)
-    }
+    rust_paths::get_changelog_path(rust_root)
+        .to_string_lossy()
+        .to_string()
 }
 
 fn set_output(key: &str, value: &str) {

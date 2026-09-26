@@ -122,21 +122,37 @@ pub fn get_cargo_lock_path(rust_root: &str) -> PathBuf {
 }
 
 /// Get the path to changelog.d directory
+///
+/// The fragment directory is discovered where it actually lives rather than
+/// derived from the rust root: multi-language checkouts keep their fragments
+/// at the repository root, so `./changelog.d` wins when it exists,
+/// `{rust_root}/changelog.d` is the fallback for layouts that co-locate
+/// fragments with the crate, and a fresh checkout defaults to the repository
+/// root so creation and reading agree on one location.
 pub fn get_changelog_dir(rust_root: &str) -> PathBuf {
-    if rust_root == "." {
-        PathBuf::from("./changelog.d")
-    } else {
-        PathBuf::from(rust_root).join("changelog.d")
-    }
+    discover_changelog_path(rust_root, "changelog.d")
 }
 
 /// Get the path to CHANGELOG.md
+///
+/// Same discovery rule as [`get_changelog_dir`]: the collected changelog
+/// follows the fragments, not the rust root.
 pub fn get_changelog_path(rust_root: &str) -> PathBuf {
-    if rust_root == "." {
-        PathBuf::from("./CHANGELOG.md")
-    } else {
-        PathBuf::from(rust_root).join("CHANGELOG.md")
+    discover_changelog_path(rust_root, "CHANGELOG.md")
+}
+
+/// Resolve a changelog artefact: repository root first, then the rust root,
+/// defaulting to the repository root when neither exists yet.
+fn discover_changelog_path(rust_root: &str, file_name: &str) -> PathBuf {
+    let at_repo_root = PathBuf::from(".").join(file_name);
+    if at_repo_root.exists() {
+        return at_repo_root;
     }
+    let under_rust_root = PathBuf::from(rust_root).join(file_name);
+    if under_rust_root.exists() {
+        return under_rust_root;
+    }
+    at_repo_root
 }
 
 /// Check if we need to change directory before running cargo commands

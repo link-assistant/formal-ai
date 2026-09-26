@@ -4,9 +4,10 @@
 //! This script collects all .md files from changelog.d/ (except README.md)
 //! and prepends them to CHANGELOG.md, then removes the processed fragments.
 //!
-//! Supports both single-language and multi-language repository structures:
-//! - Single-language: Cargo.toml and changelog.d/ in repository root
-//! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
+//! Supports both single-language and multi-language repository structures;
+//! the fragment directory and CHANGELOG.md are discovered via rust-paths.rs
+//! (repository root first, then the rust root) so either layout resolves to
+//! the files that actually exist.
 //!
 //! Usage: rust-script scripts/collect-changelog.rs [--rust-root <path>]
 //!
@@ -25,6 +26,9 @@ use std::path::Path;
 use std::process::exit;
 use chrono::Utc;
 use regex::Regex;
+
+#[path = "rust-paths.rs"]
+mod rust_paths;
 
 const INSERT_MARKER: &str = "<!-- changelog-insert-here -->";
 
@@ -69,19 +73,15 @@ fn get_cargo_toml_path(rust_root: &str) -> String {
 }
 
 fn get_changelog_dir(rust_root: &str) -> String {
-    if rust_root == "." {
-        "./changelog.d".to_string()
-    } else {
-        format!("{}/changelog.d", rust_root)
-    }
+    rust_paths::get_changelog_dir(rust_root)
+        .to_string_lossy()
+        .to_string()
 }
 
 fn get_changelog_path(rust_root: &str) -> String {
-    if rust_root == "." {
-        "./CHANGELOG.md".to_string()
-    } else {
-        format!("{}/CHANGELOG.md", rust_root)
-    }
+    rust_paths::get_changelog_path(rust_root)
+        .to_string_lossy()
+        .to_string()
 }
 
 fn get_version_from_cargo(cargo_toml_path: &str) -> Result<String, String> {

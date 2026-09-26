@@ -4,9 +4,10 @@
 //! This script reads changeset fragments from changelog.d/ and determines
 //! the version bump type based on the frontmatter in each fragment.
 //!
-//! Supports both single-language and multi-language repository structures:
-//! - Single-language: changelog.d/ in repository root
-//! - Multi-language: changelog.d/ in rust/ subfolder
+//! The fragment directory is discovered via rust-paths.rs — repository-root
+//! changelog.d/ first, then {rust-root}/changelog.d/ — so both single- and
+//! multi-language layouts resolve to the directory that actually holds the
+//! fragments.
 //!
 //! Fragment format:
 //! ---
@@ -32,6 +33,9 @@ use std::io::Write;
 use std::path::Path;
 use std::process::exit;
 use regex::Regex;
+
+#[path = "rust-paths.rs"]
+mod rust_paths;
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -66,11 +70,9 @@ fn get_rust_root() -> String {
 }
 
 fn get_changelog_dir(rust_root: &str) -> String {
-    if rust_root == "." {
-        "./changelog.d".to_string()
-    } else {
-        format!("{}/changelog.d", rust_root)
-    }
+    rust_paths::get_changelog_dir(rust_root)
+        .to_string_lossy()
+        .to_string()
 }
 
 fn set_output(key: &str, value: &str) {
